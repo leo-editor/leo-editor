@@ -1,0 +1,22 @@
+\ @+leo-ver=4
+\ @+node:@file leo-forthstringwords.txt
+\ @@language forth
+\ List of supplementary tokens to be syntax-coloured by
+\ Leo as Forth 'string words'.
+\ These must all end with '"'.
+\ The parts up till the final '"' will be coloured blue, with the '"', and all text
+\ up to and including the trailing '"', coloured green.
+\ 
+\ Have this file in your cwd when you start up Leo
+\ lines beginning with '\' are comments, and ignored.
+\ Put your supplementary string-words, strictly one per line, below
+
+tty"
+ttyl"
+lcd1"
+lcd2"
+lcd1c"
+lcd2c"
+c"
+\ @-node:@file leo-forthstringwords.txt
+\ @-leo

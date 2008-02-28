@@ -1,0 +1,30 @@
+/*@+leo-ver=4-thin*/
+/*@+node:pap.20060703125652:@thin keys.css*/
+/*@@language css*/
+
+table {
+	margin-top : 20;
+	margin-bottom : 30;
+	border-width : thin;
+	border-style : solid;
+	border-color : black;    
+}
+
+td {
+	text-align : center;
+        font-size : 11;
+		padding-left : 10;
+		padding-right : 10;
+		
+}
+
+th {
+	background-color : rgb(255, 255, 204);
+	font-family : arial;
+	font-size : 12;
+    font-weight : bold;
+	height : 12;   
+}
+/*@nonl*/
+/*@-node:pap.20060703125652:@thin keys.css*/
+/*@-leo*/

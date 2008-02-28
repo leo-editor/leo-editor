@@ -1,0 +1,2180 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20050421093045.134:@thin dyna.txt
+#@+all
+#@+node:ekr.20050421093045.135:you need
+python code and style checkers, pylint and makeatemp macro
+to use you pylint need both.
+http://www.logilab.org/projects/pylint
+http://www.logilab.org/projects/common
+%HOME% .pylintrc
+see how to get the rc file below
+
+for pychecker
+http://pychecker.sourceforge.net/
+%HOME% .pycheckrc
+in test.leo I think there is a good rc file for pychecker
+
+http://www.python.org/peps/pep-0008.html
+http://www.python.org/doc/current/tut/tut.html
+
+
+astyle macro, reformat c, java/javascript code
+http://astyle.sourceforge.net/  
+can use  ~/.astylerc not included
+
+
+syntax highlight from htmlize
+docutils
+silvercity
+source-highlight
+
+
+for subprocess for python less than v2.4
+replaces popen and used to call various externals
+pychecker source-highlight and others
+http://effbot.org/download
+
+not sure it helps, might even slow things down
+but if its installed a few macros can enable it.
+http://psyco.sourceforge.net/ 
+
+
+
+
+set HOME=c:\sve\mii or whatever in your .rc or autoexec.bat
+or somehow set HOME or export in your env 
+or use the os default for home if there is one.
+many programs look in your home for .rc files
+
+it may also be possible to set which config on the command line
+for some of the chekers or source highlighters.
+
+   few macros expect python 2.3 or python 2.4 modules.
+   instruction how to get modules from cvs are on c.l.py
+ cvs.sourceforge.net/cgi-bin/viewcvs.cgi/python/python/nondist/sandbox/csv
+
+   some modules that have been left in compatible python source 
+   on cvs will work in py2.2 or less.
+   textwrap, csv, sets, iterators, datetime and the list is growing.
+
+    you may need generators and enumerate for some operations.
+    py2.2 you can uncomment from  __future__ import generators
+    enumerate you have to search a little. dyna_menu has enumerate.
+    or ask on IRC. (Internet Relay Chat)
+     
+type in: 
+/server irc.freenode.net 
+/join #Leo  
+from an IRC client sometime! 
+if you have Leo questions or answers. 
+    #python too. ask good questions get good answers.
+    and many open source projects have channels there.
+
+   c.l.py is the usenet comp.lang.python gated mailing list
+   source of all knowledge and misinformation about python.
+   time marches on, Leo backward compatibility is not perfect either.
+
+other dependencies are in the doc strings of the individual macro's 
+many of them are just shells that produce some typical output 
+to use as a template if the need arises. url's included
+or use http://www.python.org/pypi/ 
+or Vaults of Parnassus  http://www.vex.net/~x/parnassus/ 
+ or the archive of google site:python.org
+ help(module) 
+ help needs to installed python docs and PYTHONDOC env variable set.
+or run pydoc in gui mode 
+or search the index in the chm a python install should setup
+a shortcut for you and for other systems there are chm readers.
+
+aspn recipes refer to numbers add the number after this url
+http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/
+
+don't forget the dead tree version of information exchange
+for the python cookbook and many other titles.
+and the many link sites for python have links to articles
+or tutorials that should be read and tested more than once.
+
+ Daily Python-URL [http://www.pythonware.com/daily/]
+
+http://www.python.org/moin/PythonSpeed/PerformanceTips
+http://www.awaretek.com/ output.html
+
+http://www.speedygrl.com/p/44.html
+
+Tom Loredo's page is one of the first I ever saw about python.
+http://astrosun.tn.cornell.edu/staff/loredo/
+#@+node:ekr.20050421093045.136:get the pylint rc
+#howtto get the pylint rc file
+#@verbatim
+#@url file:///C|/C/PY/PYTHON~1/SCRIPTS/PYLINT.bat%20c:\sve\mi\.pylintrt
+#    os.startfile(url)
+#WindowsError: [Errno 2] The system cannot find the file specified: 
+#I thought maybe with %20 I could sneak in a parameter to pylint.bat
+#actually the command would be
+#C:\C\PY\PYTHON~1\SCRIPTS\PYLINT.bat >c:\sve\mi\.pylintrc
+#but that even wont work because they dopily put the output on stderr
+#so I cameup with this script, run from a macro. I leave it up to you
+#you could copy the runcmd function and import os and exscript from here too
+#you need to edit the resultnant rc file because pylint is a style checker
+#it complains about alot of stuff. no space after coma, single char names
+#etc etc etc
+#if you have msys shell or other shell rather than a dos window
+#you can run pylint and redirect stderr or copy from the screen
+
+#not recently tested, runit in dynacommon
+it = r'C:\C\PY\PYTHON~1\SCRIPTS\PYLINT.bat'
+para = r' --generate-rcfile'
+outit = None  or r'c:\sve\mii\.pylintrc'
+output, outerr = runcmd(it + para )
+if outit:
+    fo = file(outit, 'w')
+    fo.writelines(output + "\n" + outerr )
+    fo.close()
+    print 'written to', outit
+
+
+
+@language python
+@color
+#@nonl
+#@-node:ekr.20050421093045.136:get the pylint rc
+#@-node:ekr.20050421093045.135:you need
+#@+node:ekr.20050421093045.137:rc
+#@verbatim
+#@path ~home
+
+@  rc option files & url's for pychecker and pylint
+
+1> executeScript on this node will insert 
+the proper path to your home directory
+as the first line of this node.
+if it looks ok, remove the #comment to enable it.
+of course, you can just setup the path however you want
+no executescript is required, just another toy to play with.
+
+2> remove ignore from at least pylint and pycheckrc
+check over details in the subnodes,
+although they both may work ok w/o rc files or with these as defaults.
+rc files are not one size fits all for every project and small script
+in some cases may have to specify an rc file on the command line.
+tags files is for source-highlite
+
+3> if you already have rc files,
+before you save the leo do read @file first
+or don't remove the ignore on those you don't want to generate.
+
+4>  write @file here to generate your
+pchecker and pylint rc files
+or save the leo as the case may be.
+nothing could be simpler...
+
+5> this has not been tested on all systems.
+worst case if no suitable home can be found
+you must insert a proper path yourself.
+worst case than that, please post a traceback
+or some indication how it failed.
+
+6. as to pychecker and pylint being able to find
+the rc, if there are problems you may have to try
+to run them from the commandline to see whats what.
+you might try to set the env variable home=somewhere
+on nix systems this would probably never be necessary.
+although you cuold want to have the rc file accessable 
+for all users, I have no idea how to make that happen.
+
+7. with .name  files, there have been reports of some 
+problems on older windows. I've never had a problem.
+
+@c
+<< @home >>
+insertAhome(c)
+@language python
+@color
+#@+node:ekr.20050421093045.138:<< @home >>
+@others
+def insertAhome(c,wch= 'i'): #i/r
+    """use to insertAt 1.0 #@path user.home
+   
+    incorperate fallbacks for win2k, XP, mac and nix 
+    still to be determined if spaces in path is a problem
+    not tested on a mac or nix or XP
+    """
+    import leoGlobals as g
+    import os, sys
+
+    home = None
+    #         ,nt/w2k?   xp  ,xp,   ,nix/mac 
+    l = 'USERPROFILE APPDATA home'.split()  #HOMEPATH HOMEDRIVE 
+    x = l.pop()
+    while x:
+        print x 
+        try:
+            home = os.environ[x]
+            if home.startswith('%') and home.endswith('%'):
+                home = os.environ[x[1:-1]]
+            break
+        except KeyError:
+            x = l.pop()
+    
+    if home is None:
+        if sys.platform == "win32": 
+            home = _APPDATA()
+    
+        elif sys.platform == "darwin": 
+            home =  getPrefsDir() 
+    
+        else:
+            home = os.path.expanduser("~")
+            if home == "~":
+                home = os.getenv("home", None)
+        
+    if home is None:
+        home = './' #use curent dir
+
+    home = g.os_path_normpath(g.os_path_abspath(home, encoding=None))
+
+    if sys.platform == "win32": 
+        home = GetLongPath(home)
+
+    if not g.os_path_isdir(home):
+        print 'give up', home; raise NameError
+
+    if 'i' in wch:
+        Tx = c.frame.body
+        Tx.setInsertionPoint(1.0)
+        Tx.insertAtInsertPoint('#@path %s\n'%(home,))
+        Tx.onBodyChanged("Typing")  
+
+    #return home
+#@+node:ekr.20050421093045.139:windefs
+
+def GetLongPath(shortname):
+    r"""
+    >>> GetLongPath('c:\\Program Files')
+    'c:\\Program Files'
+    >>> GetLongPath('c:\\progra~1')
+    'c:\\Program Files'
+    """
+    try:
+        from win32api import GetLongPathName
+        name = GetLongPathName(shortname)
+    except ImportError:
+        #not going to attempt to do this...
+        name = shortname
+    return name
+
+#shortpath = win32api.GetShortPathName(path)
+
+
+#maybe the Leo plugin dir belongs here? not sure on nix/mac
+def _APPDATA():
+    """
+     same code as above by changing CSIDL_APPDATA to
+CSIDL_LOCAL_APPDATA
+However, Win98/Me/NT4 do not support CSIDL_LOCAL_APPDATA, so you'll need to
+check for an error 
+    """
+    #check is win, if not there is major problem
+    print 'try for CSIDL_APPDATA'  # '%windir%/application data'
+    try:
+        from win32com.shell import shell, shellcon
+    except ImportError:
+        return None
+        
+    return shell.SHGetPathFromIDList (
+      shell.SHGetSpecialFolderLocation (0, shellcon.CSIDL_APPDATA)
+    )
+#@-node:ekr.20050421093045.139:windefs
+#@+node:ekr.20050421093045.140:macdefs
+@
+from http://www.astro.washington.edu/rowen/ROPython.html
+
+@c
+
+
+def findFolder(domain, dirType, doCreate=False):
+    """Return a path to the specified standard directory or None if not found.
+    
+    The path is in unix notation for MacOS X native python
+    and Mac colon notation for Carbon python,
+    i.e. the form expected by the os.path module.
+    
+    Inputs:
+    - domain: one of the domain constants found in Carbon.Folders,
+        such as kUserDomain, kLocalDomain or kSystemDomain.
+    - dirType: one of the type constants found in Carbon.Folders,
+        such as kPreferencesFolderType or kTrashFolderType.
+    - doCreate: try to create the directory if it does not exist?
+    """
+    import Carbon.Folder, Carbon.Folders
+    import MacOS
+    try:
+        fsref = Carbon.Folder.FSFindFolder(domain, dirType, doCreate)
+        return fsref.as_pathname()
+    except MacOS.Error:
+        return None
+
+def getPrefsDir(doCreate = False):
+    """Return a path to the user's preferences folder.
+    
+    Inputs:
+    - doCreate	try to create the dir if it does not exist?
+
+    Returns None if the directory does not exist
+    (and could not be created if doCreate True).
+    """
+    import Carbon.Folder, Carbon.Folders
+    import MacOS
+    return findFolder(
+        domain = Carbon.Folders.kUserDomain,
+        dirType = Carbon.Folders.kPreferencesFolderType,
+        doCreate = doCreate,
+    )
+
+def getAppSuppDirs(doCreate = False):
+    """Return a list of paths to the user's and local (shared) application support folder.
+    
+    Inputs:
+    - doCreate	try to create each dir if it does not exist?
+    
+    If a folder does not exist (and could not be created if doCreate True),
+    it is omitted; hence returns [] if nothing found.
+    """
+    import Carbon.Folder, Carbon.Folders
+    import MacOS
+    retDirs = []
+    for domain in Carbon.Folders.kUserDomain, Carbon.Folders.kLocalDomain:
+        path = findFolder(
+            domain = domain,
+            dirType = Carbon.Folders.kApplicationSupportFolderType,
+            doCreate = doCreate,
+        )
+        if path != None:
+            retDirs.append(path)
+    return retDirs  
+#@-node:ekr.20050421093045.140:macdefs
+#@-node:ekr.20050421093045.138:<< @home >>
+#@+node:ekr.20050421093045.141:@test onetest
+#this should work even if python -O or -OO
+#http://rclick.netfirms.com/commonerrors.html
+if 1: #try:
+    assert(1 == 1)
+
+if 1: #finally:
+    import unittest
+    class t_(unittest.TestCase):
+        def runTest(self):
+            pass
+    t = t_()
+    t.assert_(1 == 1)
+#@-node:ekr.20050421093045.141:@test onetest
+#@+node:ekr.20050421093045.142:urls
+urls to pychecker and pylint
+#@+node:ekr.20050421093045.143:@url http://www.logilab.org/projects/pylint
+need common too
+run python setup.py install on both of them
+#@-node:ekr.20050421093045.143:@url http://www.logilab.org/projects/pylint
+#@+node:ekr.20050421093045.144:@url http://www.logilab.org/projects/common
+#@-node:ekr.20050421093045.144:@url http://www.logilab.org/projects/common
+#@+node:ekr.20050421093045.145:@url http://pychecker.sourceforge.net/
+install pychecker python setup.py install
+then copy pychecker2 to site-packages
+and make mods mentioned in the pychecker2 macro if you want to try it.
+experimental and so far provides a minimal value on hard to debug scripts
+while pychecker is proven useful in more cases
+#@nonl
+#@-node:ekr.20050421093045.145:@url http://pychecker.sourceforge.net/
+#@-node:ekr.20050421093045.142:urls
+#@+node:ekr.20050421093045.146:@file-nosent .pdbrc
+@ignore
+#Print instance variables (usage "pi classInst")
+alias pi for k in %1.__dict__.keys(): print "%1.",k,"=",%1.__dict__[k]
+#Print instance variables in self
+alias ps pi self
+
+#@-node:ekr.20050421093045.146:@file-nosent .pdbrc
+#@+node:ekr.20050421093045.147:@file-nosent .pythonrc.py
+@ignore
+#import user
+#sys.version 
+#@-node:ekr.20050421093045.147:@file-nosent .pythonrc.py
+#@+node:ekr.20050421093045.148:@file-nosent .pycheckrc
+@ignore
+# Sample defaults file for PyChecker 0.8.13
+# This file should be called:  .pycheckrc
+# It should be placed in your home directory (value of $HOME).
+# If $HOME is not set, it will look in the current directory.
+
+# file = c:/prog/leoCVS/leo/src/leo.py
+
+# bool: warnings for Doc Strings
+noDocModule = 0
+noDocClass = 0
+noDocFunc = 0
+
+# bool: when checking if class data members (attributes) are set
+#       check all members or __init__() only
+onlyCheckInitForMembers = 0
+
+# bool: warn when all module variables are not used (including private vars)
+allVariablesUsed = 0
+
+# bool: produce warnings for each occurrence of a warning for global (xxx)
+reportAllGlobals = 0
+
+# bool: warn when private module variables are not used (_var)
+privateVariableUsed = 1
+
+# bool: warn when imports are not used
+importUsed = 1
+
+# bool: warn when import and from ... import are used for same module
+mixImport = 0 # EKR
+
+# bool: warn when imports are not used in __init__.py
+packageImportUsed = 1
+
+# bool: warn when a module reimports another module (import & from/import)
+moduleImportErrors = 0 # EKR
+
+# bool: warn when modules import themselves
+reimportSelf = 0 # EKR
+
+# bool: warn when local variables are not used
+localVariablesUsed = 1
+
+# bool:  assume a, b, and c are used in this case:  a, b, c = func()
+unusedLocalTuple = 0
+
+# bool:  warn when class attributes (data members) are unused
+membersUsed = 0
+
+# bool: warn when Subclass.__init__ is not called in a subclass
+baseClassInitted = 1
+
+# bool: warn when Subclass needs to override methods that only throw exceptions
+abstractClasses = 1
+
+# bool: warn when __init__ is defined in a subclass
+initDefinedInSubclass = 0
+
+# bool: warn when __init__ returns None
+returnNoneFromInit = 1
+
+# bool: warn when code is not reachable
+unreachableCode = 0
+
+# bool: warn when a constant is used in a conditional statement (if '':)
+constantConditions = 1
+
+# bool: warn when 1 is used in a conditional statement, (if 1: while 1: etc)
+constant1 = 0
+
+# bool: warn when iterating over a string in a for loop
+stringIteration = 1
+
+# bool: warn when setting a variable to different types
+inconsistentTypes = 0
+
+# bool: warn when setting a tuple of variables to a non-sequence (a, b = None)
+unpackNonSequence = 1
+
+# bool: warn when setting a tuple of variables to the wrong length (a, b = 1,)
+unpackLength = 1
+
+# bool: warn when using strings exceptions or 
+#       other classes not derived from Exception to raise/catch exceptions
+badExceptions = 1
+
+# bool: warn when statements appear to have no effect
+noEffect = 1
+
+# bool: warn when using (expr % 1), it has no effect on integers and strings
+modulo1 = 1
+
+# bool: warn if using (expr is const-literal), 
+# doesn't always work on integers and strings
+isLiteral = 0 # EKR
+
+# bool: warn when using a deprecated module or function
+deprecated = 1
+
+# bool: warn when the class attribute does not exist
+classAttrExists = 1
+
+# bool: warn when calling an attribute not a method
+callingAttribute = 0
+
+# bool: warn when using named arguments: func(a=1, b=2), where def func(a, b):
+#       def func2(a, b, **kw): doesn't generate a warning
+namedArgs = 0 # EKR
+
+# str: name of 'self' parameter
+methodArgName = 'self'
+
+# list of str: names of first parameter to classmethods
+## classmethodArgNames = ['cls', 'klass']
+
+# bool: warn when method/function arguments are unused
+argumentsUsed = 1
+
+# bool: ignore if self is unused in methods
+ignoreSelfUnused = 0
+
+# bool: warn if functions/classes/methods names are redefined in same scope
+redefiningFunction = 1
+
+# bool:  check if an overriden method has the same signature
+#	 as base class method (__init__() methods are not checked)
+checkOverridenMethods = 1
+
+# bool:  check if a special (reserved) method has the correct signature
+#	 and is known (these are methods that begin and end with __
+## checkSpecialMethods = 1
+
+# int: warnings for code complexity, max value before generating a warning
+maxLines = 2000
+maxBranches = 500
+maxReturns = 100
+maxArgs = 100
+maxLocals = 250
+maxReferences = 500
+
+# bool:  ignore all warnings from standard library components
+#	 (this includes anything under the standard library, eg, site-packages)
+ignoreStandardLibrary = 1 # EKR
+
+# list of strings: ignore unused locals/arguments if name is one of
+unusedNames = [
+    '_', 'empty', 'unused', 'dummy', 'event', 'commander',
+    'c', 'i', 'j', 'k', 's',
+    'tag', 'args', 'keys', 'keywords']
+
+# list of strings: ignore warnings generated from these modules
+blacklist = [
+    'leoGlobals',
+    'leoConfig',
+    'leoFrame', 'leoMenu', 'leoGui', # Base classes have lots of unused params.
+    'Tkinter', 'wxPython', 'gtk', 'GTK', 'GDK', ]
+
+# list of strings: ignore global variables not used if name is one of
+variablesToIgnore = [ '__all__', '__version__', '__copyright__', ]
+
+# bool: print the PyChecker parse of modules, classes, etc.
+printParse = 0
+
+# bool: turn debugging of PyChecker on
+debug = 0
+
+# bool: check that attributes of objects exist
+checkObjectAttrs = 1
+
+# bool: various warnings about incorrect usage of __slots__
+slots = 1
+
+# bool: check if __slots__ is empty
+emptySlots = 1
+
+# bool: check for using properties in classic classes
+classicProperties = 1
+
+# bool: check for integer division (may be problem between Python versions)
+intDivide = 1
+
+# bool: check if local variables shadow a global variable with same name
+shadows = 0 # EKR
+
+# bool: check if input() is used, which is a security problem, use raw_input()
+usesInput = 1
+
+# bool: check if using a constant string to getattr()/setattr()
+# Doesn't exist.
+## constAttr = 1
+
+# bool: check for using +variable, since it is almost always has no effect
+unaryPositive = 1
+
+# bool: check for modifying a parameter with a default value
+#       (value must be: list, dict, instance)
+#       modifying the value may have undesirable/unexpected side-effects
+modifyDefaultValue = 1
+
+# bool: check if the exec statement is used (possible security problem)
+usesExec = 0
+
+# bool: check consistent return values
+checkReturnValues = 1
+
+# bool: check if using implict and explicit return values
+checkImplicitReturns = 1
+
+# dict: suppress warnings, key is module.class.method or module.function
+#	value is a string of command line arguments (can omit -- for long args)
+#       { 'module1': 'no-namedargs maxlines=0',
+#	  'module2.my_func': 'argsused',
+#	  'module3.my_class': 'no-initreturn', }
+if 1:
+    suppressions = {}
+else: # Doesn't work
+    suppressions = {
+        'leoFrame' : 'argumentsUsed=0',
+        'leoGui' : 'argumentsUsed=0' }
+
+# dict: suppress warnings where keys can be regular expressions
+suppressionRegexs = {}
+#@nonl
+#@-node:ekr.20050421093045.148:@file-nosent .pycheckrc
+#@+node:ekr.20050421093045.149:@file-nosent .pylintrc
+@ignore
+#t04413p12:07 lint Python modules using external checkers.
+    
+[MASTER]
+# Add <file> (may be a directory) to the black list. It should be a base name,
+# not a path. You may set this option multiple times.
+ignore=CVS
+
+# Pickle collected data for later comparisons.
+persistent=yes
+
+# Tells wether to display a full report or only the messages
+reports=yes
+
+# Python expression which should return a note less than 10 (10 is the highest
+# note).You have access to the variables errors, warnings, statements which
+# respectivly contain the number of errors / warnings messages and the total
+# number of statements analyzed. This is used by the global evaluation report
+# (R0004).
+evaluation='10.0 - ((float(5 * errors + warnings) / statements) * 10)'
+
+# Add a comment according to your evaluation note. This is used by the global
+# evaluation report (R0004).
+comment=no
+
+# Include message's id in output
+include-ids=no
+
+# checks for                                                              
+#    * external modules dependancies                                            
+#    * relative / wildcard imports                                                         
+#    * cyclic imports                                                           
+#    * uses of deprecated modules
+    
+[IMPORTS]
+# Enable / disable this checker
+enable-imports=yes
+
+# Deprecated modules which should not be used, separated by a comma
+deprecated-modules=regsub,string,TERMIOS,Bastion,rexec
+
+
+# checks for :                                                            
+#    * doc strings                                                              
+#    * modules / classes / functions / methods / arguments / variables name     
+#    * number of arguments, local variables, branchs, returns and statements infunctions, methods                                                       
+#    * required module attributes                                             
+#    * dangerous default values as arguments                                    
+#    * redefinition of function / method / class                                
+#    * uses of the global statement                                             
+    
+[BASIC]
+# Enable / disable this checker
+enable-basic=yes
+
+# Maximum number of arguments for function / method
+max-args=5
+
+# Maximum number of locals for function / method body
+max-locals=15
+
+# Maximum number of return / yield for function / method body
+max-returns=6
+
+# Maximum number of branch for function / method body
+max-branchs=12
+
+# Maximum number of statements in function / method body
+max-statements=50
+
+# Required attributes for module, separated by a comma
+required-attributes=__revision__
+
+# Regular expression which should only match functions which do not require a
+# docstring
+no-docstring-rgx=__.*__
+
+# Minimal length for module / class / function / method / argument / variable
+# names
+min-name-length=3
+
+# Regular expression which should only match correct module names
+module-rgx=([a-z_][a-z1-9_]*)|([A-Z][a-zA-Z]+)
+
+# Regular expression which should only match correct class names
+class-rgx=[A-Z][a-zA-Z1-9]+
+
+# Regular expression which should only match correct function names
+function-rgx=[a-z_][a-z1-9_]*
+
+# Regular expression which should only match correct argument names
+argument-rgx=[a-z_][a-z1-9_]*
+
+# Regular expression which should only match correct variable names
+variable-rgx=[a-z_][a-z1-9_]*
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=i,j,k,ex
+
+# Bad variable names which should always be refused, separated by a comma
+bad-names=foo,bar,baz,toto,tutu,tata
+
+# List of builtins function names that should not be used, separated by a comma
+bad-functions=map,filter,apply,input
+
+# checks for                                                              
+#    * unused variables / imports                                               
+#    * undefined variables                                                      
+#    * redefinition of variable from builtins or from an outer scope            
+#    * use of variable before assigment                                         
+    
+[VARIABLES]
+# Enable / disable this checker
+enable-variables=yes
+
+# Tells wether we should check for unused import in __init__ files.
+init-import=no
+
+
+# checks for :                                                            
+#    * methods without self as first argument                                   
+#    * overriden methods signature                                              
+#    * access only to existant members via self                                 
+#    * attributes not defined in the __init__ method                            
+#    * supported interfaces implementation                                      
+#    * unreachable code                                                         
+    
+[CLASSES]
+# Enable / disable this checker
+enable-classes=yes
+
+# List of interface methods to ignore, separated by a comma. This is used for
+# instance to not check methods defines in Zope's Interface base class.
+ignore-iface-methods=isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf
+
+# Tells wether missing members accessed in mixin class should be ignored. A
+# mixin class is detected if its name ends with "mixin" (case insensitive).
+ignore-mixin-members=yes
+
+
+
+# checks for                                                              
+#    * excepts without exception filter                                         
+#    * string exceptions                                                        
+    
+[EXCEPTIONS]
+# Enable / disable this checker
+enable-exceptions=yes
+
+
+
+# does not check anything but gives some raw metrics :                    
+#    * total number of lines                                                    
+#    * total number of code lines                                               
+#    * total number of docstring lines                                          
+#    * total number of comments lines                                           
+#    * total number of empty lines                                              
+    
+[METRICS]
+# Enable / disable this checker
+enable-metrics=yes
+
+
+
+# checks for:                                                             
+#    * source code with non ascii characters but np encoding declaration ( 263)                                                                     
+#    * warning notes in the code like FIXME, XXX
+    
+[MISCELLANEOUS]
+# Enable / disable this checker
+enable-miscellaneous=yes
+
+# List of note tags to take in consideration, separated by a comma. Default to
+# FIXME, XXX, TODO
+notes=FIXME,XXX,TODO
+
+
+
+# checks for :                                                            
+#    * unauthorized constructions                                               
+#    * strict indentation                                                       
+#    * line length                                                              
+#    * use of <>
+    
+[FORMAT]
+# Enable / disable this checker
+enable-format=yes
+
+# Maximum number of characters on a single line.
+max-line-length=80
+
+# Maximum number of lines in a module
+max-module-lines=1000
+
+# String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1# tab). leave a tab here '	'
+indent-string='    '
+#this is a tab indent-string='	' 
+
+
+#@-node:ekr.20050421093045.149:@file-nosent .pylintrc
+#@+node:ekr.20050421093045.150:@nosent tags.j2h
+@ignore
+// generate to exist in your homeDir for source-highlite from htmlize
+keyword blue b ;
+type blue  ;
+string green ;
+comment red;
+number purple ;
+preproc darkblue b ;
+symbol brown ;
+function darkblue b;
+cbracket gray;
+
+// line numbers
+linenum black;
+
+// other elements for ChangeLog and Log files
+date blue b ;
+time darkblue b ;
+ip darkgreen ;
+file darkblue b ;
+name darkgreen ; 
+#@nonl
+#@-node:ekr.20050421093045.150:@nosent tags.j2h
+#@-node:ekr.20050421093045.137:rc
+#@+node:ekr.20050421093045.151:leo css
+@ignore 
+# css files for the rst plugin and htmlize macro
+
+#set @path to where the rst plugin and htmlize will output 
+path c:/windows/temp
+path c:/c/leo/HTML
+@language css
+
+
+fixed colors to be more Leo like
+uped the fonts a little. looks ok in IE 
+but firefox fonts are too small 
+and the @import url in the default doesn't work in firefox
+@color 
+#@nonl
+#@+node:ekr.20050421093045.152:@file default.css
+/*alternate default style sheet for the HTML output of Docutils.
+:Author: David Goodger, Ian Bicking 
+Blue Bars with Boxed Admonitions
+:version: $Revision: 1.1 $
+:copyright: This stylesheet has been placed in the public domain.
+ 
+
+preincluded leo and silvercity at the end, so firefox works better
+is not fully compatible yet. not sure why but @import url() failed.
+
+generate file rename to default.css where you will generate @rst nodes
+I guess htmlize should use this file as well.
+some kind of script to automatically change the font size and style
+to suite individulat taste would probably not be much work.
+some simplification is in order and some duplication is evident.
+
+
+there is also the problem of adding Rest directives on the fly
+and keeping the css up to date.
+code-block is one
+simple too small
+*/
+BODY {
+	FONT-FAMILY: Arial, sans-serif
+}
+EM {
+	FONT-FAMILY: Times New Roman, Times, serif
+}
+I {
+	FONT-FAMILY: Times New Roman, Times, serif
+}
+LI {
+	LIST-STYLE-TYPE: circle
+}
+A.target {
+	COLOR: blue
+}
+A.toc-backref {
+	COLOR: black; TEXT-DECORATION: none
+}
+A.toc-backref:hover {
+	
+}
+A:hover {
+	BACKGROUND-COLOR: #cccccc
+}
+CITE {
+	FONT-WEIGHT: bold; FONT-STYLE: normal; FONT-FAMILY: monospace
+}
+DD {
+	MARGIN-BOTTOM: 0.5em
+}
+DIV.abstract {
+	MARGIN: 2em 5em
+}
+DIV.abstract P.topic-title {
+	FONT-WEIGHT: bold; TEXT-ALIGN: center
+}
+DIV.attention {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.caution {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.danger {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.error {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.hint {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.important {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.note {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.tip {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.warning {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 3px; BORDER-TOP: outset; PADDING-LEFT: 3px; FLOAT: right; PADDING-BOTTOM: 3px; BORDER-LEFT: outset; WIDTH: 40%; PADDING-TOP: 3px; BORDER-BOTTOM: outset; BACKGROUND-COLOR: #cccccc
+}
+DIV.attention P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; COLOR: #cc0000; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.caution P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; COLOR: #cc0000; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.danger P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; COLOR: #cc0000; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.error P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; COLOR: #cc0000; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.warning P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; COLOR: #cc0000; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.hint P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.important P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.note P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.tip P.admonition-title {
+	DISPLAY: block; FONT-WEIGHT: bold; MARGIN: 0px; FONT-FAMILY: sans-serif; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center
+}
+DIV.dedication {
+	MARGIN: 2em 5em; FONT-STYLE: italic; TEXT-ALIGN: center
+}
+DIV.dedication P.topic-title {
+	FONT-WEIGHT: bold; FONT-STYLE: normal
+}
+DIV.figure {
+	MARGIN-LEFT: 2em
+}
+DIV.footer {
+	FONT-SIZE: smaller
+}
+DIV.header {
+	FONT-SIZE: smaller
+}
+DIV.system-messages {
+	MARGIN: 5em
+}
+DIV.system-messages H1 {
+	COLOR: red
+}
+DIV.system-message {
+	BORDER-RIGHT: outset; PADDING-RIGHT: 1em; BORDER-TOP: outset; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; BORDER-LEFT: outset; PADDING-TOP: 1em; BORDER-BOTTOM: outset
+}
+DIV.system-message P.system-message-title {
+	FONT-WEIGHT: bold; COLOR: red
+}
+DIV.topic {
+	MARGIN: 2em
+}
+H1 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H2 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H3 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H4 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H5 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H6 {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 4px; BORDER-TOP: black thin solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 4px; BORDER-LEFT: black thin solid; PADDING-TOP: 4px; BORDER-BOTTOM: black thin solid; FONT-FAMILY: Helvetica, Arial, sans-serif; moz-border-radius: 8px
+}
+H1 {
+	BORDER-RIGHT: black solid; BORDER-TOP: black solid; BORDER-LEFT: black solid; COLOR: #ffffff; BORDER-BOTTOM: black solid; BACKGROUND-COLOR: #444499
+}
+H1 A.toc-backref {
+	COLOR: #ffffff
+}
+H2 A.toc-backref {
+	COLOR: #ffffff
+}
+H2 {
+	BORDER-RIGHT: black solid; BORDER-TOP: black solid; BORDER-LEFT: black solid; COLOR: #ffffff; BORDER-BOTTOM: black solid; BACKGROUND-COLOR: #666666
+}
+H3 {
+	COLOR: #000000; BACKGROUND-COLOR: #cccccc
+}
+H4 {
+	COLOR: #000000; BACKGROUND-COLOR: #cccccc
+}
+H5 {
+	COLOR: #000000; BACKGROUND-COLOR: #cccccc
+}
+H6 {
+	COLOR: #000000; BACKGROUND-COLOR: #cccccc
+}
+H3 A.toc-backref {
+	COLOR: #000000
+}
+H4 A.toc-backref {
+	COLOR: #000000
+}
+H5 A.toc-backref {
+	COLOR: #000000
+}
+H6 A.toc-backref {
+	COLOR: #000000
+}
+H1.title {
+	BORDER-RIGHT: black thick solid; BORDER-TOP: black thick solid; BORDER-LEFT: black thick solid; COLOR: #eeeeee; BORDER-BOTTOM: black thick solid; BACKGROUND-COLOR: #444499; TEXT-ALIGN: center; moz-border-radius: 20px
+}
+H2.subtitle {
+	TEXT-ALIGN: center
+}
+HR {
+	WIDTH: 75%
+}
+OL.simple {
+	MARGIN-BOTTOM: 1em
+}
+UL.simple {
+	MARGIN-BOTTOM: 1em
+}
+OL.arabic {
+	LIST-STYLE-TYPE: decimal
+}
+OL.loweralpha {
+	LIST-STYLE-TYPE: lower-alpha
+}
+OL.upperalpha {
+	LIST-STYLE-TYPE: upper-alpha
+}
+OL.lowerroman {
+	LIST-STYLE-TYPE: lower-roman
+}
+OL.upperroman {
+	LIST-STYLE-TYPE: upper-roman
+}
+P.caption {
+	FONT-STYLE: italic
+}
+P.credits {
+	FONT-SIZE: smaller; FONT-STYLE: italic
+}
+P.first {
+	MARGIN-TOP: 0px
+}
+P.label {
+	WHITE-SPACE: nowrap
+}
+P.topic-title {
+	FONT-WEIGHT: bold
+}
+PRE.address {
+	MARGIN-TOP: 0px; FONT-SIZE: 100%; MARGIN-BOTTOM: 0px; FONT-FAMILY: serif
+}
+PRE.line-block {
+	FONT-SIZE: 100%; FONT-FAMILY: serif
+}
+PRE.literal-block {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 5px; BORDER-TOP: black thin solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN-LEFT: 2em; BORDER-LEFT: black thin solid; MARGIN-RIGHT: 2em; PADDING-TOP: 5px; BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #eeeeee
+}
+PRE.doctest-block {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 5px; BORDER-TOP: black thin solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN-LEFT: 2em; BORDER-LEFT: black thin solid; MARGIN-RIGHT: 2em; PADDING-TOP: 5px; BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #eeeeee
+}
+SPAN.classifier {
+	FONT-STYLE: oblique; FONT-FAMILY: sans-serif
+}
+SPAN.classifier-delimiter {
+	FONT-WEIGHT: bold; FONT-FAMILY: sans-serif
+}
+SPAN.interpreted {
+	FONT-FAMILY: sans-serif
+}
+SPAN.option-argument {
+	FONT-STYLE: italic
+}
+SPAN.pre {
+	WHITE-SPACE: pre
+}
+SPAN.problematic {
+	COLOR: red
+}
+TABLE {
+	MARGIN-TOP: 0.5em; MARGIN-BOTTOM: 0.5em
+}
+TABLE.citation {
+	PADDING-LEFT: 0.5ex; BORDER-LEFT: gray thin solid
+}
+TABLE.docinfo {
+	MARGIN: 2em 4em
+}
+TABLE.footnote {
+	PADDING-LEFT: 0.5ex; BORDER-LEFT: black thin solid
+}
+TD {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; VERTICAL-ALIGN: top
+}
+TH {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; VERTICAL-ALIGN: top
+}
+UNKNOWN {
+	MARGIN-TOP: 0em
+}
+TH.docinfo-name {
+	FONT-WEIGHT: bold; WHITE-SPACE: nowrap; TEXT-ALIGN: left
+}
+TH.field-name {
+	FONT-WEIGHT: bold; WHITE-SPACE: nowrap; TEXT-ALIGN: left
+}
+H1 TT {
+	FONT-SIZE: 100%
+}
+H2 TT {
+	FONT-SIZE: 100%
+}
+H3 TT {
+	FONT-SIZE: 100%
+}
+H4 TT {
+	FONT-SIZE: 100%
+}
+H5 TT {
+	FONT-SIZE: 100%
+}
+H6 TT {
+	FONT-SIZE: 100%
+}
+CODE {
+	COLOR: #000066
+}
+TT {
+	COLOR: #000066
+}
+UL.auto-toc {
+	LIST-STYLE-TYPE: none
+}
+
+@others
+#@nonl
+#@+node:ekr.20050421093045.153:leo_rst1.css
+/* Some of these styles taken from Gunnar Schwant's (g.schwant@gmx.de) DocFactory */
+
+/* tt is the class of the inline literal
+as 10pt
+*/
+
+tt { background-color: #ffffee } 
+
+.first {
+  font-size: 110% }
+
+.last {
+  font-size: 110% }
+
+a {
+  text-decoration: none }
+
+a.reference {
+  color: #00009F }
+
+a:hover {
+  background-color: #00009F ;
+  color: white }
+
+body {
+  font-family: arial,helvetica,univers ;
+  font-size: 110% ;
+  padding-top: 0.6cm ;
+  margin-left:0.5cm ;
+  margin-right:0.5cm ;
+  margin-bottom:0.5cm }
+
+/* dd appears to be the text of the definitions  padding-top: 0.1cm */
+dd {
+  font-size: 110% }
+  
+ dt {
+   font-style: italic }
+
+/* dt appears to be the word in a definition list line-height: 110%
+
+dt {
+  font-size: 110% ;
+  font-family: "Courier New", Courier;
+  }
+*/
+
+div.abstract {
+  font-size: 110% }
+
+div.abstract p.topic-title {
+  font-size: 110% }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning {
+  font-size: 110% }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, div.hint p.admonition-title, 
+div.important p.admonition-title, div.note p.admonition-title, 
+div.tip p.admonition-title {
+  margin-top: 0em ;
+  font-size: 120% ;
+  font-family: arial,helvetica,univers }
+
+div.dedication {
+  font-size: 110% }
+
+div.dedication p.topic-title {
+  font-size: 110% }
+
+div.figure {
+  font-size: 110% }
+
+div.footer, div.header {
+  font-size: 9pt }
+
+div.system-messages {
+  font-size: 110% }
+
+div.system-messages h1 {
+  font-size: 120% }
+
+div.system-message {
+  font-size: 110% }
+
+div.system-message p.system-message-title {
+  font-size: 110% }
+
+div.topic {
+  font-size: 110% }
+
+h1, h2, h3, h4, h5, h6 {
+  padding-top: 0.5cm ;
+  page-break-after: avoid ;
+  font-family: arial,helvetica,univers }
+
+#content .subtitle {
+	font-size: .9em;
+}
+
+#content .title {
+	font-size: 1.6em;
+	font-weight: normal;
+}
+
+#content ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+p {
+	margin-bottom: 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+
+h1 {
+	font-size: 1.4em;
+	border-bottom: .25pt solid #ccc;
+}
+
+h1.title {
+         font-size: 1.6em;
+         border-bottom:none}
+
+h2 {
+	font-size: 1.2em;
+}
+
+h3, h4, h5, h6 {
+	font-size: 1.0em;}
+
+hr {
+  width: 100%;
+  page-break-after: always }
+
+/* the following was creating too much space in the table of contents*/
+/*li {
+  padding-top: 1mm ;
+  padding-bottom: 1mm }*/
+  
+li {font-size: 10pt}
+
+ol.simple, ul.simple {
+  font-size: 110% }
+
+ol.arabic {
+  font-size: 110% }
+
+ol.loweralpha {
+  font-size: 110% }
+
+ol.upperalpha {
+  font-size: 110% }
+
+ol.lowerroman {
+  font-size: 110% }
+
+ol.upperroman {
+  font-size: 110% }
+
+p.caption {
+  font-size: 110% }
+
+p.credits {
+  font-style: italic ;
+  font-size: 8pt }
+
+p.label {
+  font-size: 110% }
+
+p.topic-title {
+  font-size: 110% }
+
+pre.address {
+  font-family: arial,helvetica,univers ;
+  font-size: 110% }
+
+pre.line-block {
+  background-color: #eeeeee ;
+  border-color: #999999 ;
+  border-width: 1pt ;
+  font-size: 10pt;
+  font-family: "Courier New", Courier }
+  
+  /*border: 1px dotted #999;*/
+
+pre.literal-block, pre.doctest-block {
+  border-width: 1pt ;
+  border-style: solid ;
+  border-color: #999999 ;
+  background-color: #ffffee ;
+  padding-left: 0.5ex ;
+  margin-left:0.5cm ;
+  font-size: 110% }
+  
+/*code class - this allows us to use literal-block for program code and make it gray with small text*/
+  pre.code {
+  background-color: #eeeeee ;
+  font-size: 10pt }
+
+span.classifier {
+  font-size: 110% ;
+  font-family: arial,helvetica,univers }
+
+span.classifier-delimiter {
+  font-size: 110% ;
+  font-family: arial,helvetica,univers }
+
+span.field-argument {
+  font-size: 110% }
+
+span.interpreted {
+  font-size: 110% ;
+  font-family: arial,helvetica,univers }
+
+span.option-argument {
+  font-size: 110% }
+
+span.problematic {
+  font-size: 110% }
+
+table {
+  font-size: 110% ;
+  border-collapse: collapse ;
+  border-width: 1.5pt ;
+  border-color: #003366 }
+
+table.citation {
+  font-size: 110% }
+
+table.docinfo {
+  font-size: 110% }
+
+table.footnote {
+  font-size: 8pt ;
+  text-align: left }
+
+/*table.table {
+  width: 100% } */
+
+th {
+  border-width: 1.5pt }
+
+td {
+  border-width: 1pt }
+
+td, th {
+  font-size: 9pt ;
+  border-style: thin ;
+  border-color: #003366 }
+
+td.docinfo-name, th.field-name {
+  font-size: 110% }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 110% }
+  
+  /* SZ CHANGES*/
+  
+  div.system-messages {
+    margin: 5em }
+  
+  div.system-messages h1 {
+    color: red }
+  
+  div.system-message {
+    border: medium outset ;
+    padding: 1em }
+  
+  div.system-message p.system-message-title {
+    color: red ;
+  font-weight: bold }
+  
+  div.hint p.admonition-title, div.important p.admonition-title,
+  div.note p.admonition-title, div.tip p.admonition-title,
+  div.admonition p.admonition-title {
+  color: maroon }
+  
+  p.topic-title {
+  font-weight: bold }
+  
+  p.rubric {
+    text-align: left} ;
+    
+/* Following added for code-blocks if SilverCity is present*/
+    
+  div.code-block{
+    margin-left: 2em ;
+    margin-right: 2em ;
+    background-color: #eeeeee;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    white-space: nowrap;
+    }
+#@-node:ekr.20050421093045.153:leo_rst1.css
+#@+node:ekr.20050421093045.154:silver_city1.css
+
+.code_default
+{
+    FONT-FAMILY: "Courier New", Courier, monospace;
+    FONT-SIZE: 110%;
+}
+
+.c_character
+{
+	color: olive;
+}
+
+.c_comment
+{
+	color: firebrick;
+	font-style: italic;
+}
+
+.c_commentdoc
+{
+	color: green;
+	font-style: italic;
+}
+
+.c_commentdockeyword
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.c_commentdockeyworderror
+{
+	color: red;
+	font-weight: bold;
+}
+
+.c_commentline
+{
+	color: green;
+	font-style: italic;
+}
+
+.c_commentlinedoc
+{
+	color: firebrick;
+	font-style: italic;
+}
+
+.c_default
+{
+}
+
+.c_identifier
+{
+	color: black;
+}
+
+.c_number
+{
+    color: #009999;
+}
+
+.c_operator
+{
+	color: black;
+}
+
+.c_preprocessor
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.c_regex
+{
+	color: #00aa00;
+}
+
+.c_string
+{
+	color: #00aa00;
+}
+
+.c_stringeol
+{
+	color: #00aa00;
+}
+
+.c_uuid
+{
+	color: olive;
+}
+
+.c_verbatim
+{
+	color: olive;
+}
+
+.c_word
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.c_word2
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.h_asp
+{
+    color: #ffff00;
+}
+
+.h_aspat
+{
+    color: #ffdf00;
+}
+
+.h_attribute
+{
+    color: #008080;
+}
+
+.h_attributeunknown
+{
+    color: #ff0000;
+}
+
+.h_cdata
+{
+    color: #ffdf00;
+}
+
+.h_comment
+{
+    color: #808000;
+}
+
+.h_default
+{
+}
+
+.h_doublestring
+{
+	color: olive;
+}
+
+.h_entity
+{
+    color: #800080;
+}
+
+.h_number
+{
+    color: #009999;
+}
+
+.h_other
+{
+    color: #800080;
+}
+
+.h_script
+{
+    color: #000080;
+}
+
+.h_singlestring
+{
+	color: olive;
+}
+
+.h_tag
+{
+    color: #000080;
+}
+
+.h_tagend
+{
+    color: #000080;
+}
+
+.h_tagunknown
+{
+    color: #ff0000;
+}
+
+.h_xmlend
+{
+    color: #0000ff;
+}
+
+.h_xmlstart
+{
+    color: #0000ff;
+}
+
+.pl_array
+{
+	color: black;
+}
+
+.pl_backticks
+{
+	color: olive;
+}
+
+.pl_character
+{
+	color: olive;
+}
+
+.pl_commentline
+{
+	color: green;
+	font-style: italic;
+}
+
+.pl_datasection
+{
+	color: olive;
+}
+
+.pl_default
+{
+}
+
+.pl_error
+{
+	color: red;
+	font-style: bold;
+}
+
+.pl_hash
+{
+	color: black;
+}
+
+.pl_here_delim
+{
+	color: olive;
+}
+
+.pl_here_q
+{
+	color: olive;
+}
+
+.pl_here_qq
+{
+	color: olive;
+}
+
+.pl_here_qx
+{
+	color: olive;
+}
+
+.pl_identifier
+{
+	color: black;
+}
+
+.pl_longquote
+{
+	color: olive;
+}
+
+.pl_number
+{
+    color: #009999;
+}
+
+.pl_operator
+{
+	color: black;
+}
+
+.pl_pod
+{
+	color: black;
+	font-style: italic;
+}
+
+.pl_preprocessor
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.pl_punctuation
+{
+	color: black;
+}
+
+.pl_regex
+{
+	color: olive;
+}
+
+.pl_regsubst
+{
+	color: olive;
+}
+
+.pl_scalar
+{
+	color: black;
+}
+
+.pl_string
+{
+	color: olive;
+}
+
+.pl_string_q
+{
+	color: olive;
+}
+
+.pl_string_qq
+{
+	color: olive;
+}
+
+.pl_string_qr
+{
+	color: olive;
+}
+
+.pl_string_qw
+{
+	color: olive;
+}
+
+.pl_string_qx
+{
+	color: olive;
+}
+
+.pl_symboltable
+{
+	color: black;
+}
+
+.pl_word
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.p_character
+{
+	color: 00aa00;
+}
+
+.p_classname
+{
+	color: blue;
+	font-weight: bold;
+}
+
+.p_commentblock
+{
+	color: firebrick;
+	font-style: italic;
+}
+
+.p_commentline
+{
+	color: firebrick;
+	font-style: italic;
+}
+
+.p_default
+{
+}
+
+.p_defname
+{
+    color: blue;
+	font-weight: bold;
+}
+
+.p_identifier
+{
+	color: black;
+}
+
+.p_number
+{
+    color: black;
+}
+
+.p_operator
+{
+	color: olive;
+}
+
+.p_string
+{
+	color: #00aa00;
+}
+
+.p_stringeol
+{
+	color: #00aa00;
+}
+
+.p_triple
+{
+	color: #00aa00;
+}
+
+.p_tripledouble
+{
+	color: #00aa00;
+}
+
+.p_word
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.yaml_comment
+{
+    color: #008800;
+	font-style: italic;
+}
+
+.yaml_default
+{
+}
+
+.yaml_document
+{
+    color: #808080;
+	font-style: italic;
+}
+
+.yaml_identifier
+{
+	color: navy;
+	font-weight: bold;
+}
+
+.yaml_keyword
+{
+    color: #880088;
+}
+
+.yaml_number
+{
+    color: #880000;
+}
+
+.yaml_reference
+{
+    color: #008888;
+}
+
+#@-node:ekr.20050421093045.154:silver_city1.css
+#@-node:ekr.20050421093045.152:@file default.css
+#@-node:ekr.20050421093045.151:leo css
+#@+node:ekr.20050421093045.155:rpdb
+to debug a script that is run from an embedded interpreter,
+add 'rpdb.set_active()' in the beginning of your script.
+#@nonl
+#@+node:ekr.20050421093045.156:@file-nosent rpdb.bat
+@path c:\bIn\bat\
+@lineending crlf
+set pydir=c:\c\py\Python233
+set rpdb=%pydir%\Lib\site-packages\rpdb.py
+
+%pydir%\python.exe %rpdb% --server %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+
+exit
+#Started server on port 50009
+rpdb.py [-h] [-c [-aN] | -s] [-pM] script-name [script-args...]
+
+    Where the options above mean the following:
+    -h, --help     print extended help
+    -c, --client   start client side only (server will not spawn automatically)
+    -s, --server   start server side only (will wait for clients to connect)
+    -aN, --host=N  connect to server on host N
+    -pM, --port=M  connect to port M
+    
+   If you want to debug a script that is run from an embedded interpreter,
+        add 'rpdb.set_active()' in the beginning of your script. This will 
+        make the calls to 'rpdb.set_trace()' break into the debugger (they
+        will not be ignored). Don't forget to add an extra 'rpdb.set_trace()'
+        for your main thread. You also need to manually start rpdb.py in 
+        server mode before you run your script.
+
+#run the bat first to start rpdb in server mode
+#try debugging. at set trace control leo hangs and control is to rpdp
+#q will exit the console and return control to leo
+#probably there is a  continue
+Documented commands (type help <topic>):
+========================================
+EOF    bn     clear      debug    exit    jump  next  quit    step    unalias
+a      break  condition  disable  h       l     p     r       tbreak  up
+alias  bt     cont       down     help    list  pdb   return  tc      w
+args   c      continue   enable   ignore  load  pp    s       ts      whatis
+b      cl     d          exec     j       n     q     save    u       where
+
+* > q
+Connection MainThread is not responsive.It may be running, blocked on system call, or doing non Pythonish code.
+
+
+
+import rpdb
+rpdb.set_active()
+try:
+    a = a
+except Exception:
+    rpdb.set_trace()
+    print 'caught a=a and set trace'
+
+
+#print help
+import os, sys
+runcmd = sys.modules['dyna_menu'].runcmd
+
+rpdb= r'c:\c\py\Python233\Lib\site-packages\rpdb.py'
+output, errout = runcmd('python.exe %s --help'%rpdb)
+
+print output, errout
+
+
+#e
+#@nonl
+#@-node:ekr.20050421093045.156:@file-nosent rpdb.bat
+#@+node:ekr.20050421093045.157:@url file:///c|/bIn/bat/rpdb.bat
+remote pdb. http://rpdb.digitalpeers.com/
+c:\bIn\bat\rpdb.bat
+#@-node:ekr.20050421093045.157:@url file:///c|/bIn/bat/rpdb.bat
+#@-node:ekr.20050421093045.155:rpdb
+#@+node:ekr.20050421093045.158:au3
+<http://www.hiddensoft.com/AutoIt> 
+a way to automate open leo. 
+AutoIt3, windows only though. 
+
+
+http://www.autoitscript.com/autoit3/
+ 
+regsvr32 AutoItX3.dll
+#@+node:ekr.20050421093045.159:@nosent leoopen1.au3
+@path c:\c\chall\osix_Geek\
+@language elisp
+;
+; AutoIt Version: 3.0
+;
+;   Opens Leo with no filename, then opens a new, closes it
+;  preliminary will eventually programatically create
+;    leoPlugins.txt and various leoSettings.leo
+;   and run commands in all permutations looking for failures
+; paths hardwired but later scripts will be created on the fly
+; not sure about reading back the error returns and and stderr tracebacks
+; maybe Leo can have a -trace mode to output to file a log of activities?
+
+; exit when CTRL+ALT+x is pressed
+HotKeySet("^!x", "MyExit")
+
+
+@color 
+
+Func MyExit()
+    Exit 
+EndFunc 
+
+;===============================================================================
+;
+; Description:      Executes a DOS command in a hidden command window.
+; Syntax:           _RunDOS( $sCommand )
+; Parameter(s):     $sCommand - Command to execute
+; Requirement(s):   None
+; Return Value(s):  On Success - Returns the exit code of the command
+;                   On Failure - Depends on RunErrorsFatal setting
+; Author(s):        Jeremy Landes <jlandes@landeserve.com>
+; Note(s):          None
+;
+;===============================================================================
+Func _RunDOS( $sCommand )
+  Return RunWait( @ComSpec & " /C """ & $sCommand & """", "", @SW_HIDE )
+EndFunc
+
+
+Opt("SendKeyDelay", 1)
+Opt("WinWaitDelay", 80)
+
+
+; Send("cd \c\{ENTER}") ;need to cd somewhere?
+Run("python c:\c\leo\V43leos\leo\src\leo.py")
+Sleep(2700) 
+
+WinWaitActive("untitled")   
+
+Sleep(700) 
+Send("!Fn")  ;how to tell if there are errors?
+Sleep(2700) 
+
+
+Send("!Fx")
+Sleep(2700) 
+
+
+Send("!Fx")
+
+; Finished!
+#@nonl
+#@-node:ekr.20050421093045.159:@nosent leoopen1.au3
+#@+node:ekr.20050421093045.160:@url c:/c/chall/osix_Geek/leoopen1.au3
+
+c:/c/chall/osix_Geek/leoopen1.au3cd 
+
+
+
+have to learn the sendkeys better
+some of the output is to this node
+exiting Leo exits the python command window too
+
+x and %F went into the body of the untitled leo
+
+
+will need to change HOME on demand so don't use my settings etc
+rename leoSettings so test with builtin defaults and on and on
+
+
+AutoItSetOption().
+SendKeyDelay Alters the the length of the brief pause in between sent keystrokes.
+Time in milliseconds to pause (default=5). Sometimes a value of 0 does not work; use 1 instead. 
+WinWaitDelay Alters how long a script should briefly pause after a successful window-related operation.
+Time in milliseconds to pause (default=250). 
+Set oAutoIt = WScript.CreateObject("AutoItX3.Control")
+oldvalue = oAutoIt.Opt("SendAttachMode", 0)
+
+
+
+Run("c:\WINDOWS\Command.pif")
+WinWaitActive("MS-DOS Prompt")   
+
+
+#@-node:ekr.20050421093045.160:@url c:/c/chall/osix_Geek/leoopen1.au3
+#@-node:ekr.20050421093045.158:au3
+#@-all
+ you need
+< @home >
+
+rc, urls to pychecker and pylint,
+    tags.j2h,
+     css,
+   rpdb,
+   au3,
+
+.astylerc for astyle reformater not included
+
+HappyDoc3-r3_0_a1 from happydoc.sourceforge.net or pydoc (in stdlib).
+need PYTHONDOCS env set and download the help from python.org
+for print help(whatever) type answers. think pydoc imports the module.
+
+happydoc doesn't import so is safe on untrusted code. but is proving
+to be quite out of date so will try something from docutils sandbox
+other apps like epydoc also possible. why does noone think of scriptability!
+everything is input file and output file and no mention of anything else.
+
+
+silvercity or source-highlight for syntax highlighted htmlize output
+
+
+#u05417a10:51
+#@@killcolor 
+#@nonl
+#@-node:ekr.20050421093045.134:@thin dyna.txt
+#@-leo

@@ -1,0 +1,4592 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20060207133601:@thin ../doc/leoToDoLater.txt
+#@+all
+#@+node:ekr.20060824110846:Colorizing
+#@+node:ekr.20060813121814:Add colorizer files for cweb, forth,  rapidq
+#@+node:ekr.20060824103837:Notes
+@nocolor
+
+Renamed pl-sql.* to plsql.* (This required rerunning jEdit2py.)
+
+Forth is going to be a problem, because keywords can be extensible.
+Perhaps the user should be responsible for updating forth.xml.
+#@nonl
+#@-node:ekr.20060824103837:Notes
+#@+node:ekr.20041107093834:forth keywords
+# Default forth keywords: extended by leo-forthwords.txt.
+forth_keywords = [
+    "variable", "constant", "code", "end-code",
+    "dup", "2dup", "swap", "2swap", "drop", "2drop",
+    "r>", ">r", "2r>", "2>r",
+    "if", "else", "then",
+    "begin", "again", "until", "while", "repeat",
+    "v-for", "v-next", "exit",
+    "meta", "host", "target", "picasm", "macro",
+    "needs", "include",
+    "'", "[']",
+    ":", ";",
+    "@", "!", ",", "1+", "+", "-",
+    "<", "<=", "=", ">=", ">",
+    "invert", "and", "or", 
+    ]
+
+# Forth words which define other words: extended by leo-forthdefwords.txt.
+forth_definingwords = [
+    ":", "variable", "constant", "code",
+    ]
+
+# Forth words which start strings: extended by leo-forthstringwords.txt.
+forth_stringwords = [
+    's"', '."', '"', '."',
+    'abort"',
+    ]
+
+# Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
+forth_boldwords = [ ]
+
+# Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
+forth_italicwords = [ ]
+
+# Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
+# Note: on some boxen, bold italics may show in plain bold.
+forth_bolditalicwords = [ ]
+#@-node:ekr.20041107093834:forth keywords
+#@+node:ekr.20040331145826:rapidq keywords
+rapidq_keywords = [
+# Syntax file for RapidQ
+"$APPTYPE","$DEFINE","$ELSE","$ENDIF","$ESCAPECHARS","$IFDEF","$IFNDEF",
+"$INCLUDE","$MACRO","$OPTIMIZE","$OPTION","$RESOURCE","$TYPECHECK","$UNDEF",
+"ABS","ACOS","ALIAS","AND","AS","ASC","ASIN","ATAN","ATN","BIN$","BIND","BYTE",
+"CALL","CALLBACK","CALLFUNC","CASE","CEIL","CHDIR","CHDRIVE","CHR$","CINT",
+"CLNG","CLS","CODEPTR","COMMAND$","COMMANDCOUNT","CONSOLE","CONST","CONSTRUCTOR",
+"CONVBASE$","COS","CREATE","CSRLIN","CURDIR$","DATA","DATE$","DEC","DECLARE",
+"DEFBYTE","DEFDBL","DEFDWORD","DEFINT","DEFLNG","DEFSHORT","DEFSNG","DEFSTR",
+"DEFWORD","DELETE$","DIM","DIR$","DIREXISTS","DO","DOEVENTS","DOUBLE","DWORD",
+"ELSE","ELSEIF","END","ENVIRON","ENVIRON$","EVENT","EXIT","EXP","EXTENDS",
+"EXTRACTRESOURCE","FIELD$","FILEEXISTS","FIX","FLOOR","FOR","FORMAT$","FRAC",
+"FUNCTION","FUNCTIONI","GET$","GOSUB","GOTO","HEX$","IF","INC","INITARRAY",
+"INKEY$","INP","INPUT","INPUT$","INPUTHANDLE","INSERT$","INSTR","INT","INTEGER",
+"INV","IS","ISCONSOLE","KILL","KILLMESSAGE","LBOUND","LCASE$","LEFT$","LEN",
+"LFLUSH","LIB","LIBRARYINST","LOCATE","LOG","LONG","LOOP","LPRINT","LTRIM$",
+"MEMCMP","MESSAGEBOX","MESSAGEDLG","MID$","MKDIR","MOD","MOUSEX","MOUSEY",
+"NEXT","NOT","OFF","ON","OR","OUT","OUTPUTHANDLE","PARAMSTR$","PARAMSTRCOUNT",
+"PARAMVAL","PARAMVALCOUNT","PCOPY","PEEK","PLAYWAV","POKE","POS","POSTMESSAGE",
+"PRINT","PROPERTY","QUICKSORT","RANDOMIZE","REDIM","RENAME","REPLACE$",
+"REPLACESUBSTR$","RESOURCE","RESOURCECOUNT","RESTORE","RESULT","RETURN",
+"REVERSE$","RGB","RIGHT$","RINSTR","RMDIR","RND","ROUND","RTRIM$","RUN",
+"SCREEN","SELECT","SENDER","SENDMESSAGE","SETCONSOLETITLE","SGN","SHELL",
+"SHL","SHORT","SHOWMESSAGE","SHR","SIN","SINGLE","SIZEOF","SLEEP","SOUND",
+"SPACE$","SQR","STACK","STATIC","STEP","STR$","STRF$","STRING","STRING$",
+"SUB","SUBI","SWAP","TALLY","TAN","THEN","TIME$","TIMER","TO","TYPE","UBOUND",
+"UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
+"WEND","WHILE","WITH","WORD","XOR"]
+#@-node:ekr.20040331145826:rapidq keywords
+#@-node:ekr.20060813121814:Add colorizer files for cweb, forth,  rapidq
+#@-node:ekr.20060824110846:Colorizing
+#@+node:ekr.20060527184335.1:Command-line options
+#@+node:ekr.20060103101524:Improve command-line handling
+@nocolor
+https://sourceforge.net/forum/message.php?msg_id=3501995
+By: nobody
+
+::But I don't understand why it's difficult to edit leoSettings.leo
+
+--safe would use default settings,
+maybe you set all body fg/bg to the same color
+by mistake and you don't have a backup leoSettings to use. as a dumb example.
+
+another nice option would be to override a setting
+--set something=whatever
+this could breakdown easy and on (older?) windows.
+there is a limit to how many chars on a command line.
+this would add another layer of choice
+yet another chicken egg problem, 
+parsing settings before settings can be parsed.
+
+what about override @settings file, its a standard thing.
+many people will expect this is possible 
+and try it
+or even leo.py -? 
+help you get for free w/optparse.
+--keys emacs anyone? 
+especially the first time
+untill you can get a chance to edit leoSettings.leo
+
+I have already started enabling optparse
+for leo.py so I can try various profile options.
+I will post it when it works.
+
+have to check how it handles filenames with spaces
+seems that is all Leo is currently doing 
+with multiple args, if there is no problem.
+and later checking for -batch -script etc.
+
+not to minimize how much work this would be.
+parsing options is probably the least difficult part.
+
+e
+#@nonl
+#@-node:ekr.20060103101524:Improve command-line handling
+#@+node:ekr.20060110102039:--script option
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3505544
+By: nobody
+
+this topic deserves another thread, rather 
+than hijack the IPython one in the main forum.
+
+presently Leo has a few options documented,
+--script has a required parameter filename
+batch mode also requires a filename.
+why are they not documented in the same place?
+why is batch mode option called --script?
+is it too late to change to --batch ?
+
+filenames in windows that have spaces will 
+have to be quoted if they follow an option.
+otherwise there will be no telling the filename
+after a --script from a possibly 'file name.leo'
+
+luckily, there was no need to force everyone 
+on windows to quote leo names or use -fsome.leo,
+especially when other options aren't used.
+a little tricky, but I think it works.
+
+the --script could as well load the leo itself
+for that matter maybe all the args after --script 
+should be assumed to be part of the scripts options
+and Leo should only process up to the --script fname.
+maybe there can be another option to collect
+options for the script to batch process.
+not necessary to decide now.
+
+optparse can verify option parameters 
+with callbacks. like does a filename exist,
+is there enough free diskspace etc etc.
+and provide a standard usage menu on exit.
+rather than a roll your own wherever it happens.
+I am not familiar enough with Leo startup to say
+how is the best way to verify filenames or to
+pass the filenames to run or set ivars.
+import leoGlobals as I have might not be possible
+this early in startup. need to get version info too.
+
+leo -script whatever.py  error or not? typo? fixable?
+leo --script whatever.py is ['script', 'whatever.py'] 
+coming up with a comprehensive set of input args and
+expected outcomes will be necessary for testing.
+I'll do that next.
+
+what about encoding problems, should check optparse archive.
+what about py2.2 using optparse from 2.4? trust but verify.
+this also has to be well tested.
+
+--help -? or -h all work.
+wasn't able to mimic the /help  /?
+windows world method of option entry.
+probably someone knows how.
+hope its not a registry setting!
+
+profile options might only be available if you
+enter -xpert mode, to avoid confusing anyone who 
+thinks they may need to run it because it is there.
+and be removed from the help menu as well.
+
+here is the proof of concept leomain.py,
+all it does is process commandline args and 
+print what command it will run or var it will set.
+nothing is actually opened or run.
+
+$ \c\py\python22\python leomain.py some.leo
+run(some.leo)
+
+$ \c\py\python22\python leomain.py some.leo -P
+profile(leoProfile.txt,some.leo)
+
+$ python leomain.py -profile=/tmp/proFile.txt my favorite.leo
+profile(rofile=/tmp/proFile.txt,my favorite.leo)
+
+woops! not sure how to guard against that.
+verifing is valid creatable filename could help.
+that should have been:
+
+$ python leomain.py --profile=/tmp/proFile.txt my favorite.leo
+profile(/tmp/proFile.txt,my favorite.leo)
+
+$ python leomain.py --script some.py some.leo
+script some.py
+run(some.leo)
+
+$ python leomain.py --script some.py
+script some.py
+run()
+
+that's the basics.
+needless to add, some of the code default 
+choices and wording of help messages 
+will have to be fine tuned. 
+have at it.
+
+post a note if something breaks.
+I know of a few typos already.
+
+[http://rclick.netfirms.com/leomain.py.htm]
+
+e
+#@+node:ekr.20060110102239.1:leomain.py
+@color
+"""  to run, add your path to leo below if not already set.
+
+proposed modification to leo.py for hprof or hotshot profile 
+giving standard help options from the commandline
+and making additional options or combinations less work.
+
+using optparse for commandline parsing
+for py2.2 will use optik if installed, but not critical
+requires copy of optparse.py from py2.4 in leo/extensions
+no problem for py2.3+ already in the stdlib
+this also need seperate testing, unittests to follow.
+
+to use from command or shell window:
+python leomain.py some args, see what happens.
+nothing except print will happen, no open or file creation.
+presently use a copy of sys.argv but that would be mutated.
+if something is not obvious it should be fixed.
+
+
+comments presently are interspersed throughout the file
+will be collected and shortened as bugs are removed.
+getting all options and filenames correctly is complicated
+by the possibility of unicode or spaces in filenames.
+some options require filenames for later processing in run()
+and a leo may be specified or even more than one at some point
+wildcard handling is not especially cross platform compatible.
+
+want to make it possible to enter filenames w/o quoting
+but will be impossible for now for batch & script option params.
+they have to have quotes if there are spaces in the filenames on win.
+
+also somewhat ambiguous, -sscript filename
+will actually parse as --script cript filename
+this could be a source of error and questions.
+not sure if it can be avoided if there is to be longword args.
+
+another point, -script is a possible typo to document at least.
+
+a script like this could actually be some kind of leo launcher.
+an option could popup a filedialog to get a leo, so it could in Leo.
+or open the last leo that has been modified on the local filesystem.
+as well as be a test bed for optparse & profile, read from ini file.
+not dependant on changing leo.py, just import leo, then leo.run(fname)
+
+for scripting, ability to set argv should be possible somehow.
+maybe set sys.argv = [] before run
+
+maybe just breeze through argv trying to concatenate filenames
+then try to parse it. and let parseopts save a copy
+later calls to parseopts w/o argv will use the saved attribute copy.
+probably passing opts+args to run() is cleaner though.
+
+
+this is the kind of merge that can give cvs merge a bad name, 
+good luck!
+leoGlobals and change of sys.path used only for testing.
+import leoGlobals may not work for the real leo.py this early
+before g.app is created. some refactoring is inevitable
+
+why check for win before trying to make filename w/spaces?
+does other os not have problem w/spaces in argv w/o quotes?
+and why win32? is there no win64 in Leo's user base
+or does it not have the space problem w/argv
+are single and double quotes around filename the same for other os?
+for windows they don't work like double quotes.
+
+
+the order of parameters might have to be significant
+but as it is, the.leo can appear anywhere
+and on win, all unused args are joined with spaces just in case
+if you do strange stuff possibly you get what you ask for.
+
+does Leo try to find filename.leo if filename is sans the extension?
+does it cause an overwrite existing file y/n/c or pass silently overwriting?
+
+-d datadir might be useful if you want to have other than the some.leo same dir
+-set somesetting=this like for outline bg color in script playback mode
+
+if leo is started from another shell, argv[0] might not be python or might be
+it could be IPython or something else, but there might be its args
+as well as the program it started that started Leo
+so really, argv should be [find(leo.py'):]
+and for some associations or os, no .py or .pyw required
+for that matter import leo; leo.run() bypasses option parsing altogether!
+this is another problem now that I think of it...
+but only if you also expected to get --script or some other option parsed
+if you import leo you probably know what you are doing
+you would have to set some global options, args I guess is what __main__ will do.
+searching to cut back sys.argv for python or python.exe leo etc etc 
+is bound to failure, too many cross platform possibilities.
+
+__file__ can also be unreliable when started from py2exe or freeze or a zip
+
+can't so far get /h (a default windows help option) to trigger --help.
+seems like if there is no -h option defined, -hanything gets help
+could be a source of typo errors 
+if other longword no param option started w/'h' 
+optparse doesn't handle word-otherword conversion to word_otherword
+may be reading the doc wrong on that.
+but will handle -sb scriptfile batchfile combining
+says -s outfile equivalent to --script=outfile
+but what about --script outfile?
+carefully avoiding too much smart processing.
+
+
+hopefully a test suite will expose any anomalies.
+the default help output has a few more inconsistencies.
+strange there are no bug reports about it in 2 years!
+also want to give default values in help, maybe there is a %default
+
+help gets cutoff at 80 chars, 79 according to a lone bugtrack entry
+but that was for optparse, nd maybe its base0 counting.
+maybe its still bug tracked as optik.sf.net, the original project name.
+
+for future editors, and I sense there will be future edits,
+if an individual help entry is longer than ~79 it will get formated ok.
+
+
+see if we can avoid the ridiculous problem on win where on error
+you get an exit and see nothing unless started from console!
+source of some forum traffic as well.
+maybe, if sys.platform etc: raw_input('press any key to exit')
+and for pythonw maybe should popup an alert somehow...
+one can dream.
+
+proof of concept, still missing pasing args to run somehow
+or seetting an ivar or whatever to get script/batchmode filenames
+from main to where it is required. that should be easy enough.
+
+
+
+filename is be mandatory for both and it should exist
+its checked for batch in leo.py already so checking should be more generic
+haven't looked up where --script is processed
+didn't rewtrite getbatchfile or whatever its called.
+that will be replaced with a check if tobatch has a filename
+decide if optparse callback should check for valid existing file
+and exit or continue accordingly.
+
+and for an opposing view, if you are scripting leo from another script
+then want to enter script mode or batch mode
+what has to be available is to intercept the call to read the file.
+and pass it a string of the script or batch, w/o problem.
+a seperate function instead of hardwireing the read at least.
+
+
+
+if I've forgotten anything please post a note to the forums.
+beyond that, I don't know what to tell you.
+this is proto typical alpha proof of concept pseudo code
+although tested somewhat and worked as I expect it to,
+it can't be expected to do everything unforseen as well.
+and I can't be sure some transmission error hasn't occured.
+hold me harmless or hit delete now.
+
+"""
+
+#replace w/Leo's real version assuming it can be known this early
+#won't be much use if its leo.py's version
+__version__ = '4.4a5' #w06104p01:34 optparse & profile for Leo
+
+import sys, os
+
+#####for testing use only, obviously don't add to leo.py
+k = os.path.normpath(os.path.abspath(r"C:\c\leo\V43leos\leo-4-4-\src"))
+
+#path being unicode can affect less than py2.3
+if sys.version_info[:2] < (2, 3):
+    k = str(k)
+
+#might not be found in sys path on win9x, there is no unicode paths
+if k not in sys.path:
+    sys.path.append(k)
+del k
+#needed in profile()too
+import leoGlobals as g
+
+
+@others
+
+#replace from here to end, sans comments
+if __name__ == "__main__":
+
+
+@
+
+    #print os.environ #('IPYTHON') #thought they had this!
+    #there is no IPY env var when @run is used -p shell?
+    #for IPy need to trim sys.argv
+    #sys.argv = sys.argv[2:]
+@c
+
+
+    #not the final configuration FIXME FIXME, danger will robinson
+    leofile = None
+    argvtight = []
+
+    #going to have to decide to build OptionParser seperatly
+    #before parsing so concatate can have access to it.
+    #concatate() should be here but is problematic
+    #needs to know too much about options.
+
+    #no sense if there are no options or no args.
+    #there are ways this can fail though probably rare 
+    #dir name w/trailing space + filename leading minus sign
+    #and have to decide if slash is ok for option indicator
+    #assume no complains if not win argv[1] is ok
+    if sys.argv > 1:
+        if not [x for x in sys.argv if x[0] == '-']:  #in '-/'
+            if sys.platform=="win32": # 
+                leofile = ' '.join(sys.argv[1:])
+            else:
+                leofile = sys.argv[1]
+        else:
+            #just a test, don't trust it yet
+            #may not even need it after all.
+            #argvtight = concatate(sys.argv)
+            argvtight = sys.argv[1:]
+            #print 'concatate arg', argvtight
+
+    #might have to add these to g.app or some kind of global?
+    #they are needed in other parts of Leo before it completely starts
+    #may need to pass to run and through profile into run as well.
+
+    opts, args = parseopts(argvtight)
+
+    if args and not leofile: leofile = ' '.join(args)
+    elif args:
+        print >> sys.stderr, 'too many args, try --help'
+        #maybe print usage too? except its defined in parseopts
+        raise SystemExit(2)
+
+    #print 'past parse_args', `args`, 'leo=', `leofile`
+
+    #for testing only, don't merge exactly
+    if opts.tobatch:
+        #w/filename hopefully w/o spaces
+        print 'batch', opts.tobatch
+    if opts.toscript:
+        #w/filename hopefully w/o spaces
+        print 'script', opts.toscript
+
+    #assume run can get the options it needs at some later point
+    #the profile run might require other options 
+    #like print sorted stats report to file after exit
+    #maybe delay start gathering for 20 seconds but continue
+
+    #maybe should pass run a dict of the options 
+    #rather than a static function attribute or global 
+    #or just add to globals?
+
+    if opts.toprofile:
+        #will probably require filename arg
+        #can take a leofile arg as well, default to ''
+        #have to use keywords in case leofile is '' or drop coma
+        #the actual call may be different, print is for ease of testing
+        if leofile is None:  leofile = ''
+        else:  leofile  = ','+ leofile
+        #must be -P otherwise would be a string filename
+        if opts.toprofile == True: opts.toprofile = 'leoProfile.txt'
+        print 'profile(%s%s)'%(opts.toprofile, leofile)
+
+    else:
+        if leofile is None:  leofile = ''
+        print 'run(%s)'%leofile
+
+
+#e
+
+#@+node:ekr.20060110102239.2:def profile
+def profile (statfile='/tmp/leoProfile.txt', leofile= ''):
+
+    """Gather and print statistics about Leo
+    using new speedy hprof 
+    http://www.planetsoc.com
+    http://www.soton.ac.uk/~fb102/Python/hprof-0.1.0.tar.gz
+    needs a blank __init__.py in the hprof dir
+
+    or hotshot 
+    even older profile if you want to go that far back
+    add option to force profile, hotshot, hprof or lstat
+
+    valid combined w/script or batch mode as well.
+
+    may have the default args and calling sequence wrong
+    refactored too much too fast with no time for testing
+    should be easily fixed though. it did work yesterday!
+    """
+
+    #import profile, pstats
+    try:
+        from hprof.hprofile import Profile
+    except ImportError:
+        from hotshot import Profile
+
+    import time
+
+    start = time.time()
+    #print "start %s seconds"%((start))
+
+
+    prof = Profile(statfile)
+    prof.run('run(%s)' % leofile)
+    prof.close()
+
+    stop = time.time()
+    print 'Profile process ', statfile
+    print "took %7.3f seconds"%((stop-start)),
+    print "or %7.3f min"%((stop-start)/60)
+
+    #skip the profile stats output after run
+    #use scriptButton hprof in your work leo
+    #may add option to generate stats after the run
+#@-node:ekr.20060110102239.2:def profile
+#@+node:ekr.20060110102239.3:def parseopts(argv)
+def parseopts(argv):
+    """  
+    should verify leo.py is [0]? optparse ignores [:1] if no argv passed
+    except as %prog  in usage help
+    running test in commandline manually too, 
+    maybe need a maintest.py based on optik unit tests?
+
+    >>> import sys
+    >>> print 'argv:',`sys.argv`
+    'before sys set'
+    >>> sys.argv = ["leo.py", "b", "b.txt"]
+    >>> sys.argv = ["leo.py", "b", "-?"]
+    >>> print 'argv:',`sys.argv`
+    'after sys set'
+    >>> parseopts(sys.argv)
+    profile
+    """    
+    import leoGlobals as g
+    try:
+        #was the original name available for py2.2
+        import optik as optparse
+    except ImportError:
+        #using py2.3+ optparse
+        optparse = g.importExtension('optparse')
+
+    #description is in addition to normal help
+    #any way to get description to be the help w/o subclassing?
+    #later can use parser.usage= '%prog [-h,-n etc  defaults: -c ]'
+
+    #if a filename doesn't have leo extension is it assumed?
+    #I think some of the comments are starting to repeat.
+    #maybe come will get closer to the point of active choice
+    #and I can delete the impostor comments.
+
+    descript = 'Leo the python scriptable literate programming editor '
+
+    #usage  and description mutually exclusive?
+    #usage alone is printed on unknown option or maybe other error
+    #no wrap in that case
+
+    #getting this cross platform correct could be difficult
+    #especially with variations in associations
+    #and isn't and can't be complete wrt paths and pythonpath
+    #maybe point to the webspace and docs is enough
+    #.py not required for some , python not required for others
+    #maybe no choice but to generate some os specific strings
+
+    #doesn't mac also have pythonw and can we detect running under wine?
+    #has to be some way of embedding \n 
+
+    #-s file -sfile --script=file or --script file all the same?
+
+    usage = r'''options [-s/--script scriptfile -b/--batch batchfile leofile]
+        more options [-h, --help  and --version]
+        problems: try quoting any filenames
+        if there is still a problem: please report it with any details
+   http://webpages.charter.net/edreamleo/front.html  Leo version %s'''% __version__
+
+    #prog name assumed eventually to be leo.py
+    if sys.platform[:3] == 'win':
+        usage = 'python -i %%prog leofile.leo  no console pythonw leo.py'+ usage
+    else:
+        usage = 'python %%prog leofile.leo  -h or --help' + usage
+
+
+    parser = optparse.OptionParser(version='%%prog %s' % __version__, 
+                        description=descript, usage= usage)
+
+    #how to require a filename? and how to specify it is possibly w/spaces
+    #is -s:filename acceptable? that is a common arg convention.
+    #ideally tobatch would be None or be the filename
+    #and because of spaces con-cation will have to happen outside the parser
+
+    #please comment out any options that are not implemented yet.
+
+    for (l,w,a,t,d,f,h) in (
+
+        # -help does work because its just -h, gets me every time!
+        ('-?', '--hepl', "help", "", "", "",
+            "help message"),
+
+        ("-q", "--quiet", "store_true", "int", "verbose", 0,
+            "don't print status or trace messages"),
+
+        #    -script invalid option
+        ("-s", "--script", "store", "string", "toscript", None,
+            " script.py to run on startup"),
+
+        ("-b", "--batch", "store", "string", "tobatch", None,
+            "batch.py to run, no GUI"),
+
+        #if validate callback for script & batch filename exists, 
+        #could happen here if Leo is going to quit later anyway
+        #and --safe may be mutually exclusive, confused -s being --script
+        #so validate has to wait for parsing to complete, would it?
+
+        #for profile filename is it valid? have permissions/disk space?
+        #may want to force hotshot even if hprof or lprof installed
+        #maybe only show these options if expert mode is on
+        #no need to get a flood of forum reports about profile results
+        #maybe leox.py has these options. oh, the possibilitiies.
+        #this is for the 5 other people interested in this...
+        #not something you want to do every day unless under duress.
+        #combined with script and/or batch mode should be very powerful
+        ("-p", "--profile", "store", "string", "toprofile", "",
+            " save  profile results in outfile.ext       DEFAULT:\
+            hprof or hotshot"),
+
+        #a conflicting option repeat of -p won't work, so upcased it
+        ("-P", "--Profile", "store_true", "", "toprofile", 0,
+            " save  profile results in leoProfile.txt in the leo dir"),
+
+        ):
+
+
+
+        #add --settings add -home for change of home maybe -temp maybe -set
+        #--settingsneeds leo/config as well as -home which one is germain
+
+
+        if a == 'help':
+            parser.add_option(l, w, action=a)
+
+        elif a != 'store':
+            parser.add_option(l, w, action=a,
+                        dest= d, default= f, help= h )
+        else:
+            parser.add_option(l, w, action=a,
+                type= t, dest= d, default= f, help= h )
+#
+
+
+@
+
+    parser.add_option("--no-trace",action="store_false",
+                  dest="trace", 
+                  help="Don't print commands before executing them.") 
+
+
+    #may want to subclass OptionParser to provide a Leo error exit
+
+    #is there a generic way to check for / used as an option trigger?
+    #is // even valid as a trigger
+
+
+    #woops, if -h in argv a little too good
+    #better not prevent -high 20 or something similar
+    if '-h' in argv or '--help' in argv
+
+    #for the win nubiee, / is the default win option starter
+    #have to check every arg individually, py2.2 no substring in
+    #definate bug that -? is not expected as help in optparse.
+    #able to enter -? as an option though.
+
+    #can't seem to get /h to trigger help
+    for h in argv:
+        for i in ('-?', '/help', '/h', '/?'):
+            if i == h:
+                #parser.error("does this help?")
+                #parser.print_help()
+                parser.print_usage()
+                #print "didn't already exit!"
+                raise SystemExit(2)
+@c
+
+
+    (opts, args) = parser.parse_args(argv)
+
+    #can I just trap error: no such option: -? and set help=True
+
+    return opts, args
+#@nonl
+#@-node:ekr.20060110102239.3:def parseopts(argv)
+#@+node:ekr.20060110102239.4:concatate(sys.argv)
+#### may have to skip this whole concatate thing ###
+#please ignore the comments too
+def concatate(argv, paramdict={}):
+    """
+    paramdict is a dict of single letter keys and
+    item = [T/F, 'longname'] set [1] as True/False for require param
+
+    walk the list concatate anything with a space
+    to the previous item if it doesn't look like a valid option.
+    what are the valid options? we don't care...
+    is - s filename parseable as -s:filename ??
+    this has got to have generated lots of point counterpoint over the years.
+    should do some research... 
+    have to decide if will accept / as option seperator or if optparse does
+    this may not be doable if we alow options to also have spaces in filenames
+    does optparse resolve -ffilename as well as -f:filenname the same?
+
+    lets assume an options param can't have spaces, just get it working for now.
+    if you enter an option you better quote it if you need to
+    leave the space correcting behaviour for default or trailing filenames only
+
+    now there is a problem need to know which oiptions have required params
+    otherwise can't decide how to concate, unless the space was preserved (it isn't)
+    I think on win or anywhere argv[n][0] is never going to be a space
+    dito for argv[n][-1]
+    so, its a simple FSM with 2 states, an option or a param
+    cancel concatate space if previous was an option
+    but here we go again, what about options that don't have params?
+    optparse doc talks at length about options not having optional params.
+    in Leo's case we may need to pass it a list of options that have no params?
+    maybe optparse team needs to gix this not the module user
+    maybe someone filed a patch already? more study!
+    if not who is going to need optparse after this gets done?
+
+    maybe just concatate all trailing args till an option, process backward
+    its looking moore like a parser than a FSM now and I need to know too much.
+    maybe assume all options have required params for now untill imp paramdict
+    what about "-script=name, the doc implys that this may be valid?
+
+    all validm but they don't mention -file=outfile, maybe is a typo missing -?
+    <yourscript> -f outfile --quiet
+    <yourscript> --quiet --file outfile
+    <yourscript> -q -foutfile
+    <yourscript> -qfoutfile
+    damm, this is not going to even be worth trying
+    seems -script == --script criptm 
+    that could be confusing and error prone
+
+
+    >>> concatate(['1','2','3'])
+    ['1 2 3']
+    >>> concatate(['-1','2','3'])  #rule option param can't have spaces
+    ['-1', '2', '3']
+    >>> concatate(['-s','2','3' '4']) #-s has required param
+    ['-s', '2', '3 4']
+    >>> # a little trickier -ffilename default arg, 
+    >>> #optparse won't do this? getopt probably would,
+    >>> concatate(['-1',' 2','3' '4'])
+    ['-1', '2', '3 4']
+
+    >>> #fix for extra credit, user probably screwed up? should ask them?
+    >>> concatate(['1','- 2','3'])
+    ['1', '- 2', '3']
+
+    """
+
+    #preparse sys.argv concating filenames w/spaces 
+    #as appropriate for --script and --batch and any leofilename
+    #or is this something parseopts should be doing?
+    #not so simple really 
+    #if argc ==1 then no options or filename
+    #if any options start w/ - or / then it gets dicey
+    # could be a space in the last part of a directory in seperate items
+    #we may not be able to cover every concievable case
+
+    prev = ''
+    lst = []
+
+    for x in argv:
+
+        if x[0] == '-':  #or '/' or x in '/-'
+            lst.append(x)
+            if prev:
+                lst.append(prev)
+                prev = ''
+        else:
+            if prev: prev = prev + ' ' + x
+            else:    prev = x
+
+        #print 'droped thru x:prev', `x`, `prev`
+    else:
+        if prev:
+            lst.append(prev)
+
+    return lst
+
+
+#@-node:ekr.20060110102239.4:concatate(sys.argv)
+#@+node:ekr.20060110102239.5:test run manual
+@
+make into a real series of tests
+I made the name leo\smain.py because my associateions for py are to open editor
+so this could never run leo then open main.py even if I was in leo/src
+
+
+$ python leo main.py
+C:\C\PY\PYTHON~1\PYTHON.EXE: can't open file 'leo'
+
+$ python "leo main.py"
+past parse_args ['leo main.py']
+leo.run()
+
+$ python 'leo main.py'
+C:\C\PY\PYTHON~1\PYTHON.EXE: can't open file ''leo'
+
+$ python "leo main.py" filename
+past parse_args ['leo main.py', 'filename']
+leo.run()
+
+$ python "leo main.py" c:/filename /help/some.leo
+processed arg ['leo main.py', 'c:/filename', '/help/some.leo']
+past parse_args ['leo main.py', 'c:/filename', '/help/some.leo']
+leo.run()
+
+$ python "leo main.py" "c:/filename /help/some.leo"
+processed arg ['leo main.py', 'c:/filename /help/some.leo']
+past parse_args ['leo main.py', 'c:/filename /help/some.leo']
+leo.run()
+
+$ python "leo main.py" "c:/filename /help/some.leo"
+processed arg ['leo main.py', 'c:/filename /help/some.leo']
+past parse_args ['leo main.py', 'c:/filename /help/some.leo'] leo= c:/filename /
+help/some.leo
+leo.run(c:/filename /help/some.leo)
+
+$ python "leo main.py" c:/filename /help/some.leo
+processed arg ['leo main.py', 'c:/filename', '/help/some.leo']
+past parse_args ['leo main.py', 'c:/filename', '/help/some.leo'] leo= c:/filenam
+e /help/some.leo
+leo.run(c:/filename /help/some.leo)
+
+-script works for --script cript it seems
+and that could be a typo missing --script so the next filename
+gets concatated into the leo name which I guess can't be helped
+
+OTOH, if you use the default version=
+then --versions works but -v or -version doesn't
+
+
+$ \c\py\python24\python "leo main.py" test.leo -p whatever else
+concatate arg ['test.leo', '-p', 'whatever', 'else']
+past parse_args ['test.leo', 'else'] leo= 'test.leo else'
+profile(whatever, test.leo else)
+this is the thing that is still hard to avoid. on win, has to be
+$ \c\py\python24\python "leo main.py" test.leo -p "whatever else"
+
+really need to get this tested on other than old win9x,
+
+
+
+
+
+@killcolor
+#@-node:ekr.20060110102239.5:test run manual
+#@+node:ekr.20060110102239.6:notes
+@
+will it handle spaces in filenames w/o quotes?
+
+leo.py --script filename.leo is not good
+leo.py -script filename is not good, which is it a scriptfile or a leo to be?
+
+as error for -profile as an option, going to have to subclass override error
+AttributeError Values instance has no attribute 'profile' ["__module__ = 'exceptions' .", "__doc__ = 'Attribute not found.' ."] 
+this was a programmer error though, the var is toprofile
+
+little hard to test this as a script, can't control argv
+update, sys.argv = seems now to be working from doctest
+better readup, haven't used this in a while
+haven't read the docs in a while either, a good read.
+especially the origional optik.sf.net
+
+
+need to make this a function to call returning a dict maybe?
+at least to doctest it better w/o needing to create a test module 
+and then run it saving stdout
+
+its also going to be a little trickier to --script or --batch with --profile
+and what is exactly the difference with --batch and --script?
+one has no GUI maybe?
+
+
+- is valid in a filename, so primitive argv parsing
+will be difficult to distinguish in a filename w./spaces
+since the spaces cause seperate items and just a join
+is not good because you have to know if it is a valid arg
+what if it is a valid arg? this is a nightmare in any case...
+
+
+need a timer on operations while getting a profile
+expandall, contrract all so can be output with the pstats
+
+need to set options in a seperate function
+so can generate test for all functions and params on the fly
+this will be good in the general case for other programs
+
+anyone already depending on case insensitive args?
+
+default file for profile not working out
+comprimise -P as an option w/o param uses default leoProfile.txt
+
+if -p file name -s some.py will be difficult to get right w/o quoting
+will anyone ever expect a default? 
+unless thats in the leodir or something?
+dito for script and batch but what possible default could they have, 
+
+
+
+does x is None work on py2.2?
+
+#@-node:ekr.20060110102239.6:notes
+#@-node:ekr.20060110102239.1:leomain.py
+#@+node:ekr.20060110102239.7:Leo hprof script
+@color
+@
+hprof from google summer of code replace hotshot & profile
+much faster on the uptake and output!
+has compatibility modules so can use mostly the same calls
+this script uses the hprof calls. didn't mod leo.py yet
+as I am not able to compile _hotshot.c to pyd or .so
+it will use hotshot created profile ok.
+
+added psyco, need to create batch file so can automate & timeit.
+also have modified leoGlobals match and a few other things already
+and proven You can shave at lest a few seconds overall,
+
+can combine add more than one profile run to get better data
+but I don;t do that in this script.
+
+and pypy has lstat which also didn't compile for me
+and possibly isn't windows compatible yet
+along with another mentioned in this past weeks py-dev summary.
+
+
+need something to compare the diff of 2 profiles
+sorted the same way, something to add comments to the
+profile, maybe a simple flatfile to manage profiling.
+seems this would have been a project for someone already?
+
+chg leo.py profile to create hotshot profile file
+then run, copy a node from library
+expand/contract a few times then exit.
+
+takes a few minutes to process the hotshot file
+then prints enormous amout of stats...
+you see a few leoGlobals called a few hundred thousand times
+on a run of 5 or 10 minutes.
+
+        Stats('foo', 'goo').strip_dirs().sort_stats('calls').\
+                            print_stats(5).print_callers(5)
+              "calls"     : (((1,-1),              ), "call count"),
+              "cumulative": (((3,-1),              ), "cumulative time"),
+              "file"      : (((4, 1),              ), "file name"),
+              "line"      : (((5, 1),              ), "line number"),
+              "module"    : (((4, 1),              ), "file name"),
+              "name"      : (((6, 1),              ), "function name"),
+              "nfl"       : (((6, 1),(4, 1),(5, 1),), "name/file/line"),
+              "pcalls"    : (((0,-1),              ), "call count"),
+              "stdname"   : (((7, 1),              ), "standard name"),
+              "time"      : (((2,-1),              ), "internal time"),
+
+@c
+from dyna_menu import dtef
+@others 
+
+
+def showstats():
+    """ log sort of stops printing when you type! or grab scrollbars.
+    need to print to copybuffer, redirect io to log print very slow
+    may actually be faster if you minimize leo
+    also can make the log window very small
+    in Leo4.4 you can multitask a little when it starts to print.
+    """
+    import leoGlobals as g
+    #import profile, pstats
+    try:
+        from hprof.hpstats import Stats
+    except ImportError:
+        from hotshot import Stats
+    import sys
+
+    name = "/tmp/leoProfile.txt"
+    print 'processing ', name
+
+    #profile.run('leo.run()',name)
+    #prof = hotshot.Profile(name)
+    #prof.runcall(run)
+    #prof.close()
+
+    #p = pstats.Stats(name)
+    #p.strip_dirs()
+    #p.sort_stats('cum','file','name')
+    #p.print_stats()
+
+
+    #would be nicer if strip_dirs left one more level of dir
+    #or even better took an int to leave how many levels
+    #several modules have similar def names, __init__ etc
+    #will have to override that.
+
+    s = Stats(name).strip_dirs()
+
+    #need to reverse or trap stdout to file    
+    #why does g. not have a simple command to do this?
+    #whydoes stats.print not take a filename? 
+    #weird no one thinks of these things. is it just me?
+
+#    sys.stdout = g.fileLikeObject()
+
+    print 'start.sort', dtef(c),
+    s.sort_stats("time").print_stats()  #.print_callers()
+@
+    stat = sys.stdout.get()
+    sys.stdout.close()
+    sys.stdout = sys.__stdout__
+
+    #attempt to get a better strip_dirs later
+    for k,v in repdict.iteritems():
+        stat = stat.replace(k,v)
+    print stat[:400]
+@c    
+
+print 'start', dtef(c),
+showstats()
+print 'done', dtef(c)
+#@nonl
+#@+node:ekr.20060110102239.8:try: psyco
+try:
+    if 1:#1/0  If present, use psyco to accelerate the program
+        import psyco
+        psyco.full()  #carefull with this in py2.3 esp w/leo 
+        #shows alot of time in tkinter and other plain leo routines!
+        #though this was per module only 
+        #from psyco.classes import *
+
+        #psyco.log(logfile='c:/temp/sb1.log', mode='w', top=30)
+        #psyco.profile(0.2)
+        #psyco.profile( watermark=0.09, halflife=0.5, pollfreq=20,  parentframe=0.25, memory=None, time=None, memorymax=None, timemax=None) 
+        #psyco.bind(searchButton) #not in scope, put after def
+        #psyco.bind(gen_nodes)  #generators 
+except ImportError: pass
+#@-node:ekr.20060110102239.8:try: psyco
+#@-node:ekr.20060110102239.7:Leo hprof script
+#@-node:ekr.20060110102039:--script option
+#@+node:ekr.20060102092148.1:--safe option
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3501193
+By: nobody
+
+::improving how Leo handle's arguments? 
+
+Leo only needs a few simple options.
+I don't think option handling would
+work correctly in the IPYthon case either.
+
+put optparse.py in leo/extensions for py2.2
+docutils installs it if it isn't available.
+its been the standard since py2.3
+adding new options will be much less painfull.
+some kind of --safe startup to allow editing
+of leoSettings.leo, no @buttons or @scripts
+might be a good thing.
+
+Leo should allow scripts to set sys.argv for
+commands they create. its very difficult to do now.
+
+e
+#@nonl
+#@-node:ekr.20060102092148.1:--safe option
+#@-node:ekr.20060527184335.1:Command-line options
+#@+node:ekr.20060227142119:Drawing, printing and rendering
+#@+node:ekr.20060822162521:Make headlines scroll
+Limit the with of the headline to the width of the outline pane.
+#@nonl
+#@-node:ekr.20060822162521:Make headlines scroll
+#@+node:ekr.20050512031131:Use global_log_window_position to specify outline/log ratio?
+#@-node:ekr.20050512031131:Use global_log_window_position to specify outline/log ratio?
+#@+node:ekr.20060227123536:Tiddlywiki and related comments about rendering body text
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3578252
+By: bwmulder
+
+I have been thinking for a while that it ought to be possible to somehow  to
+unite Leo with wiki features (my thinking is still vague at this point).
+
+If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will
+find that they already pretty much provide all the formatting features mentioned
+in the article.
+
+MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use
+a graphical interface for editing in the latest version.
+
+Maybe Leo can be split up into three components:
+
+1. A storage component is responsible for storing nodes. Currently, this is
+just memory, but databases like shelve, Zope or sqllite should also be possible.
+
+2. The control component is responsible for converting from the internal format
+to external files which can be processed by existing compilers, searching within
+a document, and the like.
+
+3. A display component is responsible for interfacing with the user. If can
+be TK, but it can also be something like the Tiddlywiki interface, which immediately
+shows the formatting applied to text.
+
+I don't know much about javascript, so I would have to learn more about this
+language before doing anything in this direction.
+
+As an intermediate step, maybe we could allow mixing RST processing with regular
+program text.  Leo would produce two documents out of a source file: a version
+for the compiler in plain ascii, and an HTML file for reading the source.
+#@-node:ekr.20060227123536:Tiddlywiki and related comments about rendering body text
+#@+node:ekr.20050127110221:Printing & flash
+@killcolor
+https://sourceforge.net/forum/message.php?msg_id=2962825
+By: jasonic
+
+-- pdf -- 
+yes I know what you mean, PDF has it uses.  If nicely embedded into Leo via
+'reportwriter'  and some export scripts {and clear useinterfance} would stillbe
+a good thing.
+
+
+As I start to think about how to print Leo, I become more aware of the differneces
+between Leo structures and linear [print] layouts.
+
+Different kinds of outlines obviously will need different kinds of printing.
+I don't yet have enough experience or overview.
+
+--xslt--
+Seems a natural way to go for printing Leo, but yet another langauge and syntax
+to wrassle with. Last time I looked I went from being horrified to very impressed
+to be being exhausted.
+
+--htmlize--
+thanks I'll check into that
+
+"print to web"  should definitely be on Leo's missing PRINT MENU.
+
+--swf [flash]--
+This printing topic pushes me harder to get FLC  [my FlashLeoClient project]
+into the Leosphere.
+
+Flash has*limited*  CSS handling, but enough to do some nice and useful typographic
+formatting in a pretty clean object-oriented manner.
+
+FLC parses .leo files into a Flash object. Flash Textformat instances are created
+using CSS and can be applied then to rendering any parts of  the deserialized
+Leo object.. The beauty is it can be very fast and ynamic so I can imagine a
+real-time WYSIWYG laytou tool for printing Leo to web and at the same making
+it suitable at the same time for print-to-paper.
+
+Since FLC is in the very first instance a READ-ONLY client tool for Leo, it
+makes it a natural Leo printing service.
+
+To complete full service, it woudl be good if Leo could create SWF files directly
+itself, just like using PDF reportwriter.
+There are a couple of libraries to help this 
+- Ming [with PHP, Perl, Python and Ruby wrappers]
+http://ming.sourceforge.net/
+
+- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
+http://sweb.cz/oliva.david/swf/
+
+These could also be both configured as web-services.
+So Leo print-to-web would include by default rendering a flash swf file versoin
+of itself either using locally installed libraries or by passing a view of itself
+to a chosen client or server-based tool.
+
+But even without those extra 'services' and libraries a single flash file in
+the form of FLC could become an effective Leo printing kit. Using a standalone
+desktop  version [not embedded in the browser, out of the sandbox] much more
+is possible - remote control, peer-peer editing, file writing etc.
+
+-- flashpaper2--
+btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often
+from web pages to my local adhoc home filebase. It's a very fast lighweight
+alternative to PDF, saves paper, has excellent zooming and nice search features
+built-in.
+Flashpaper renders a very litteral snapshot, but as I am discovering that turns
+out to be extremely useful.
+For example you visit a page and click on some links. Flashpaper saves teh pages
+exactly as it looks, viisted links disntinguished.  In the era of info-overload,
+even that crude mnemonic is valuable.
+
+Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play
+with it if only for for the experience.
+30 day trial downlaod from
+http://www.macromedia.com/software/flashpaper/
+
+And of course the flash _players_ is free, so can send people flashpaper documents
+just like PDF.
+Brilliant when you have a big Excel spreadsheet or CAD document which would
+normally get all messy printing across pages, confusing people.
+Instead adjust and print to a generous 'piece' of flashpaper - letting your
+coleagues pan and zoom to their comfort.
+
+I've not quite figured out the place where  Leo meets Flashpaper, because Leo
+needs to preserve its full pane contents. Flashpaper works fine with long web
+pages, automatically reading the full window contents and cutting into a paginated
+sequence, ready for paper printing.
+Leo's does not have aprint menu, so it's off the sytem's print-devices map,
+which Flash paper appearing just  like any phtycial printer.
+
+I imagine is possible to fix that in Leo, but I do not where to begin and woudl
+not be surprised to learn its a major heachche to write adn debug for multiple
+operating systems.
+
+An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
+
+[vnc2swf uses Ming-0.2a]
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://www.multidmedia.com/software/capture/index.php
+
+But much is hidden or lost from view. 
+Still very vauable for creating dynamic narrative tutorials [aka screencasting]
+
+AS you know I am very excited about what flash can do for Leo, and vice versa.
+But I am concerned that there is not yet a 100% Leo means which supports people's
+standard print needs and habits.
+
+-- PRINT MENU-- 
+Leo deserves good friendly printing features which anyone can use. At the moment
+we have a confusing patchwork of choices. Printing Leo seems to be both harder
+and easier than  first meets the eye.
+
+Having a little library of export scripts - well named, documented and intended
+to aid printing woudl go a long way. Thesse scripts anyone coiuld be called
+by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list.
+Or they can just insert the appropriate script  into an outline giving finer
+grained print control on the fly.
+#@nonl
+#@-node:ekr.20050127110221:Printing & flash
+#@+node:EKR.20040512082621:HTML widgets
+#@+node:EKR.20040512082621.1:htmllib.tcl
+http://sourceforge.net/forum/message.php?msg_id=2565345
+By: nobody
+
+I just met a nice TCL-based html help viewer bundled with the evaluation version
+of Fujitsu-Siemens OpenFT for Unix (see
+fujitsu-siemens.com/products/software/openseas/openft.html)
+
+It is based on a TCL library htmllib.tcl, written by Stephen Uhler in 1995 while
+working in Sun's TCL group.Iit seemts that this lib is owned by Sun and i'm
+not certain about license. It is freely downloadable, anyway.
+
+The usage is really simple -- you have to create a text widget, a string variable
+containing html text and a link callback, then feed all three to the library
+routine. It should be not hard pythonize this process.
+
+see http://www.usenix.org/publications/login/1999-8/features/tclsh.html,
+ftp://ftp.scriptics.com/pub/tcl/misc/html_library-0.3.tar.gz
+or just google for htmllib.tcl
+#@-node:EKR.20040512082621.1:htmllib.tcl
+#@+node:ekr.20031218072017.729:HTML rendering in Leo's body pane
+#@+node:ekr.20031218072017.731:HTML plugin: opml
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=2283466
+By: billp9619
+
+FYI
+I played around with opml a while back and it seemed very versatile.
+
+It basically consists of an xml file of nested outline tags similiar to v-nodes
+in leo xml. This then works with an xsl stylesheet that displays the outline
+in a browser with scripted outline manipulation. (Uses div tags for this
+display.)
+
+What I discovered is that any html can make up the outline nodes , even forms,
+etc. which collapse with the outline interaction. Just that the angle brackets
+in the html must be escaped as is done within leo t nodes in .leo xml.
+
+Actually, it would be interesting to see an addin that just passes leo nodes
+to opml and then pops into the default browser. Also keep in mind that javascript
+has an eval() statement that can be passed any script as a string. The leo text
+box could be a form textarea box except that then there is no way to emulate
+syntax coloring. Alternatively, this could be a floating window wrappiing node
+text in html/body. (if nothing else, just destroy/close the window and reinitialize).
+Maybe the images used in the opml could have javascript events like onclick()
+to trigger refreshing leo text box from the t-nodes stored in an array or in
+hidden form boxes.
+
+Of course the effect of the stylesheet could be done via python script if no
+xslt in the receiving browser. The minimal html and script might be just boilerplate
+output.
+
+regards,
+bill p
+#@nonl
+#@-node:ekr.20031218072017.731:HTML plugin: opml
+#@-node:ekr.20031218072017.729:HTML rendering in Leo's body pane
+#@-node:EKR.20040512082621:HTML widgets
+#@+node:ekr.20041228092223:Play with wiki markup
+http://sourceforge.net/forum/message.php?msg_id=2205285
+From: Rich
+
+Color ''and'' italic/bold characters with @markup. One thing I'd like to
+''not'' see are the markup characters in @file-nosent files.  "~~red:NOTE:~~"
+does nothing for readability in plain text.
+#@nonl
+#@-node:ekr.20041228092223:Play with wiki markup
+#@+node:ekr.20041201084142:Add convenience methods to change individual headlines color directly
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2877106
+
+By: Paul Paterson - paulpaterson
+RE: Can I color the headline text ?  
+2004-12-01 08:01
+
+The cleo plugin makes a permanent change to the headline appearance (using node attributes) while the footprints plugin makes a temporary change in the current session. Footprints was derived from cleo, although you might not be able to tell from looking at it! 
+
+Cleo: http://sourceforge.net/forum/message.php?msg_id=2617221 
+
+Footprints: http://sourceforge.net/forum/message.php?msg_id=2813450 
+
+Between the two of them there should be enough information to help you achieve what you want. 
+
+It is possible to do pretty much anything you want but you will have to provide the infrastructure yourself because Leo doesn't natively support it.  
+#@nonl
+#@-node:ekr.20041201084142:Add convenience methods to change individual headlines color directly
+#@-node:ekr.20060227142119:Drawing, printing and rendering
+#@+node:ekr.20041228091154:Commands
+#@+node:ekr.20061021131443:Emacs support
+#@+node:ekr.20060628103226.3:Make sure repeat counts work on basic editing commands
+#@-node:ekr.20060628103226.3:Make sure repeat counts work on basic editing commands
+#@+node:ekr.20060628094329.2:Test/Fix macros
+#@-node:ekr.20060628094329.2:Test/Fix macros
+#@+node:ekr.20060628103226.2:Alt-x handlers should add to lossage
+#@-node:ekr.20060628103226.2:Alt-x handlers should add to lossage
+#@+node:ekr.20051202102337:Finish minibuffer commands
+@nocolor
+#@nonl
+#@+node:ekr.20051202102337.1:abbrevCommandsClass (not ready yet)
+auto-complete command is merely a prototype.
+#@nonl
+#@-node:ekr.20051202102337.1:abbrevCommandsClass (not ready yet)
+#@+node:ekr.20051202102337.2:bufferCommandsClass Inot ready yet)
+ok:
+
+list-buffers
+
+Not ready yet:
+
+append-to-buffer
+copy-to-buffer
+insert-to-buffer
+kill-buffer
+prepend-to-buffer
+rename-buffer       probably should change headline too
+switch-to-buffer    use typing completion to get node name (headline)
+#@nonl
+#@-node:ekr.20051202102337.2:bufferCommandsClass Inot ready yet)
+#@+node:ekr.20051202102752.1:keyHandlerCommandsClass (not ready yet)
+digit-argument
+help
+hide-mini-buffer
+negative-argument
+number-command
+number-command-0
+number-command-1
+number-command-2
+number-command-3
+number-command-4
+number-command-5
+number-command-6
+number-command-7
+number-command-8
+number-command-9
+print-bindings
+print-commands
+repeat-complex-command
+show-mini-buffer
+toggle-mini-buffer
+universal-argument
+#@nonl
+#@-node:ekr.20051202102752.1:keyHandlerCommandsClass (not ready yet)
+#@+node:ekr.20051202102752.2:killBufferCommandsClass
+backward-kill-sentence
+backward-kill-word
+kill-line
+kill-word
+kill-sentence
+kill-region
+kill-region-save
+yank
+yank-pop
+zap-to-character
+#@nonl
+#@-node:ekr.20051202102752.2:killBufferCommandsClass
+#@+node:ekr.20051202102752.3:macroCommandsClass
+call-last-keyboard-macro
+end-kbd-macro
+name-last-kbd-macro
+load-file
+insert-keyboard-macro 
+start-kbd-macro
+#@nonl
+#@-node:ekr.20051202102752.3:macroCommandsClass
+#@+node:ekr.20051202102752.4:queryReplaceCommandsClass
+query-replace
+query-replace-regex
+#@nonl
+#@-node:ekr.20051202102752.4:queryReplaceCommandsClass
+#@+node:ekr.20051202102752.6:registerCommandsClass (ok, but could be expanded)
+append-to-register
+copy-rectangle-to-register
+copy-to-register
+increment-register
+insert-register
+jump-to-register
+number-to-register not used: used copy-to-register insead.
+point-to-register
+prepend-to-register
+view-register
+
+To do:
+
+point-to-register should write an 'expanded point' so inter-node jumps are possible.
+#@nonl
+#@-node:ekr.20051202102752.6:registerCommandsClass (ok, but could be expanded)
+#@-node:ekr.20051202102337:Finish minibuffer commands
+#@+node:ekr.20060122194643:isearch-headline (forward & backward)
+#@-node:ekr.20060122194643:isearch-headline (forward & backward)
+#@+node:ekr.20060123091352:Incremental search in switch-to-buffer
+#@-node:ekr.20060123091352:Incremental search in switch-to-buffer
+#@+node:ekr.20060116090428:Expand 'point' so it indicates node as well as text location
+#@-node:ekr.20060116090428:Expand 'point' so it indicates node as well as text location
+#@+node:ekr.20051021074728:Space completion
+#@-node:ekr.20051021074728:Space completion
+#@-node:ekr.20061021131443:Emacs support
+#@+node:ekr.20051110155735.1:Improve Spell tab
+@nocolor
+
+- Per-pane key bindings. (arrows, etc.)
+- Try default fonts for spell buttons.
+- Select the first entry.
+
+@color
+#@nonl
+#@-node:ekr.20051110155735.1:Improve Spell tab
+#@+node:ekr.20061006165447:Let import commands decide what kind of import to do
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3940843
+By: ktenney
+
+>the distiction between importing 'foreign' text files and importing derived
+files created by Leo.
+
+Couldn't Leo make this distinction by looking at
+the file being imported? If so, I think it should.
+
+This could eliminate a lot of confusion IMO, if
+I want to bring a file into a node, just
+'import' it, and the right thing happens.
+
+An emergency measure could be available in a 
+'File Special' menu.
+#@nonl
+#@-node:ekr.20061006165447:Let import commands decide what kind of import to do
+#@+node:ekr.20041022083833.1:Easy
+#@+node:ekr.20040315060557:Declone command
+By: nobody ( Nobody/Anonymous ) 
+ having a declone() method for vnodes?   
+2004-03-15 04:36  
+
+ hi,
+
+Ive had a use for a declone() method in vnodes recently. Have you ever thought about adding a method that declones a clone? This would entail:
+
+1. Making a clone node a normal node.
+
+I can see this happening when cutting a node and pasting a node that is a clone. But there doesn't seem to be a dedicated function to do the operation. :)  
+#@nonl
+#@-node:ekr.20040315060557:Declone command
+#@+node:ekr.20041219162724:Add dialog to insert recent directories
+http://sourceforge.net/forum/message.php?msg_id=2903742
+By: nobody
+
+In the multifile plugin there is an option to insert a directory string.  I
+use it alot for the @path directive.  What happens is that when executed a FileDialog
+opens up and the user selects the directory he wants to use as a directory string.
+When chosen the directory string is inserted into the text editor.
+
+The good of this:
+1. It makes using path simpler, you dont have to type out the directory path
+yourself, just use the tkFileDialog to select it and have Leo insert the string.
+For long directories this saves a lot of typing.
+
+simple, short and quite helpful.  Thoughts? :)
+
+-----------
+
+Time to create a directory class??
+
+#@-node:ekr.20041219162724:Add dialog to insert recent directories
+#@+node:ekr.20031218072017.800:Improve extract section command
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1858824
+By: gilshwartz
+Open discusstion
+
+Currently Extract Section is only available if the first line in a selection
+is a section name <<x>>. I would like to propose a few enhancements I think
+should be useful, while I believe most of the code is already implemented in
+Leo.
+
+1. If the first line in a selection is not <<x>>, than Extract Section WILL
+make a section name from the first line (or a version of it, see below), leave
+the section name in the body, create a new node with that section name, and
+will copy the selection including the first line to the new node.
+
+Rational: this is useful when selecting a function or a class. Thus the section
+name becomes the function or the class definition. The section name can either
+be the full first line, or, knowing the language, Leo can make a nice section
+name like it does in import, e.g. "function foo", or "class bar", without the
+parameters list.
+
+2. Even better, when Extract Section is called WITHOUT a selection it will look
+for the first function/class definition before the cursor's position and will
+either use it as a selection and do 1 above, or just mark it as selection, which
+will enable 1 above upon a second Extract Section.
+
+Rational: Leo does it beautifully in import and when a node's code starts to
+build it is most convenient. Also, I think a variation on this was recently
+asked by another user.
+
+3. Add an option Merge Section, which when called from a named section will
+merge it back to all the sections containing it.
+
+Rational: make it easy (together with 2) to create/delete sections until the
+sections picture of a new code becomes clear.
+
+Gil
+
+--
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1859516
+By: nobody
+
+Simpler & more intutive:
+Mark text, select from menu - 'extract section', this presents a dialog box
+in which you fill in the section name. It is too much work to type <<name>>
+then select the whole thing...
+
+As an enhancement, the dialog can show the first line of the selection as the
+default section name, which obviously can be changed.
+
+- Rajiv Bhagwat
+#@-node:ekr.20031218072017.800:Improve extract section command
+#@+node:ekr.20041130123243:Clear Undo command
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2859273
+e
+
+theres a config option to clear undo on save.
+can that be a menu choice as well? 
+clear undo now.
+enable clear undo on save.
+moot as it will be with the new config options
+and any undo changes on the table.
+maybe there is a single point to involke clear 
+undo that could be run from a button?
+
+with py2.3 after allot of small edits on an open leo after a few hours gc can
+hit unexpectedly and last several minutes
+and return at any time lasting several more minutes.
+I think its gc related because the memory use and disk grinding demanding I
+free up memory or kill python.
+
+I have no idea if undo is the cause,
+ just guessing.
+using cvs of last week. I just updated, 
+will let you know if it happens again.
+(new error reporting jump to error is great)
+
+usually I don't edit in the same process that long.
+I have run scripts from leo that run 6, 12 
+or 24 hours no problem. 
+maybe I can turn on some internals reporting and
+get some feedback on whats going on from python if it happens again. 
+or run the gc script before and after.
+
+ win98 128meg w/maxmem memory defrager that works well.
+but I go from 50% free to 10% when this starts happening.
+I haven't noticed this problem yet in py2.4, and it is peppier,
+but don't use py2.4 enough. it doesn't happen every day.
+I reboot at least once a day for various reasons.
+so it isn't that either. 
+you do need to reboot and or exit python once it starts.
+this was never an issue with py2.2 and Leo 4.1 or less with only 64 megs.
+I don't really have any other long running python processes to compare to Leo. 
+can't say what it is.
+Aha, progress. 
+this started sometime early in 4.2 or late 4.1
+but I can still be persuaded something in my 
+local system is to blame, some install or dll update. or script, psyco or plugin
+related.
+
+nonwithstanding, I should be taking better advantage Moore's law in my CPU and
+memory.
+I only notice this when I'm running the same leo over a few hours of constant
+editing and running scrips.
+and when I exit python and restart leo everything returns to normal.
+more a supporting anomaly report 
+than a bug report or feature request.
+#@nonl
+#@-node:ekr.20041130123243:Clear Undo command
+#@+node:ekr.20031218072017.790:Import dialog improvements
+@nocolor
+
+Other options I though would be really handy:
+
+1. Use an existing node as a source also
+
+2. Use an node from another Leo file.. I am not sure what the syntax for that
+would be exactly
+
+3. From a URL.. this would be really cool. People could post outlines not only
+as existing Leo xml files, but as text files or even dynamic scripts. The code
+to handle these would presumably need to deal with http:// intelligently. But
+that's easy in Python. Rebol is great at that too.
+
+4. Other XML file with valid filepaths in them.
+That's probably a much bigger project like Leo 3.10  
+
+Jason
+#@-node:ekr.20031218072017.790:Import dialog improvements
+#@+node:ekr.20031218072017.807:Put up file dialog on empty @url, etc.
+@nocolor
+
+Open Discussion
+https://sourceforge.net/forum/message.php?msg_id=2003457
+By: dsalomoni
+
+Proposal: modify the code for @url so that if you type for example just "@url"
+(no file specified) in a headline, a window pops up allowing you to browse the
+local file system and select the file (similar to what browsers do when you
+want to open a file).
+
+This would be more convenient than manually writing @url
+file://a/long/path/to/the/file. @read-only nodes already allow this, it would
+perhaps be nice if all these types of plugins (@folder might be another one
+for example) and directives (@file etc) had the same behavior (and this should
+probably be specified in some guidelines for writing new plugins -see e.g. the
+jedit plugin guidelines).
+
+Davide
+#@-node:ekr.20031218072017.807:Put up file dialog on empty @url, etc.
+#@+node:ekr.20040217153407:User customizeable tangling and untangling
+@template plugin does some (most?) of this.
+#@nonl
+#@-node:ekr.20040217153407:User customizeable tangling and untangling
+#@-node:ekr.20041022083833.1:Easy
+#@+node:ekr.20040329094003:Apply patch command
+#@-node:ekr.20040329094003:Apply patch command
+#@+node:ekr.20031218072017.748:Import/Export to yaml
+Need a good yaml parser first: I don't want to write another parser by hand.
+#@nonl
+#@-node:ekr.20031218072017.748:Import/Export to yaml
+#@+node:ekr.20041016134312.2:Standard Weave command
+Use noweb and TeX, or maybe Pyx.
+#@nonl
+#@-node:ekr.20041016134312.2:Standard Weave command
+#@+node:ekr.20060227124411:Import/export from wiki's
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3583737
+By: Offray
+
+I was previously thinking in the relation between Leo and Wikis, and I think
+that may be a thing that would help to make Leo more visible in Wiki space could
+be if Leo can export/import to/from a Wiki (something limilar to th @file or
+@url directives). Let me explain a little better the scenary where this idea
+come.
+
+We have a local wiki for colombian Free Software Community related issues, and
+I have used Leo for writing the migration scripts from Mediawiki to MoinMoin
+(wich I think is more flexible and extensible that the popular wiki behind
+wikipedia). I was probing also the idea of a Wiki like environment for solving
+colaborative problems, so I was posting the scripts I made on Leo in a Wiki
+page, and republishing them in the moment they changed. This keeps me pasting
+all the time the script and in some moments I was thinking what about if someone
+make a change in the Wiki page. Would be nice then to have the same capability
+to detect and sincronize that change as Leo make with the hard disk files.
+
+But this doesnt end here. Another Wiki-Leo interaction is to use outlines as
+a way to organice Wiki content. For example "= Title =" in a Wiki would be a
+Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all
+arranged in the proper hierarchy.
+
+Somekind of Wisiwyg display would be nice, but this must be a plugin or something
+like that, so Leo could become a "Layered" front end to some kind of data.
+
+About and article on Wikipedia. That would be nice, but I'm a little tired of
+fighting with some wikipedians ignorance on certain matters combined with power
+(a pretty bad combination). I think that a Wiki page is nice because its live
+comes from the community knowledge, but I'm not interested in that fighting,
+so I have made a Leo wiki page in our local Wiki:
+
+http://www.el-directorio.org:8080/Leo
+
+and when I have enough knowledge about Leo (and time) I hope to start making
+contribs in the spanish documentation (for the moment I'm only workind in the
+evangelism here).
+#@nonl
+#@-node:ekr.20060227124411:Import/export from wiki's
+#@+node:ekr.20060227131611:Two ideas from Kent
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+This work may or may not be related to a couple
+things which have been on my mind lately.
+
+When I have a traceback in the log pane, I'd love
+to be able to select an item and cause the file
+to appear in a node.
+It would be cool to have 'Next' and 'Prev' 
+capability while in this mode, effortlessly 
+traversing views of the source of the stack items.
+
+Also; 
+Zope3, with it's component based architecture,
+has machinery which hooks components together ..
+Interfaces, Adapters and ZCML, the configuration
+language.
+
+It sounds like the autocompleter code is able
+to build indexes of classes and methods. It would
+be cool if that capability could be extensible,
+allowing building indexes of the couplings between
+components.
+
+I think this might look like some kind of automatic
+hyperlinking, providing access to related code,
+as defined for that application.
+
+I really don't know if this makes sense, but
+I see you moving in the direction of making Leo
+capable of doing some _explaining_ of the code 
+being written.
+
+I think this holds lots of promise.
+
+Thanks,
+Kent
+#@nonl
+#@-node:ekr.20060227131611:Two ideas from Kent
+#@+node:ekr.20061011111007:@bool autoload_most_recent_leo_file
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3957908
+
+> Is there a setting for autmoatically loading most recent file or files.
+
+@color
+#@nonl
+#@-node:ekr.20061011111007:@bool autoload_most_recent_leo_file
+#@-node:ekr.20041228091154:Commands
+#@+node:ekr.20041022083226:Directives
+#@+node:ekr.20050225070857:@path stuff
+#@+node:ekr.20050121081635:Request:  cumulative @path directives
+@killcolor
+https://sourceforge.net/forum/message.php?msg_id=2936513
+By: ktenney
+
+In the @view plugin is a method, currentPath() which examines the current headline
+and body, and the headlines and bodies of it's parents, looking for @path and
+@view directives. It builds a path from them and checks for validity.
+
+if a top level node contains;
+@path /home/ktenney
+
+and a descendant of that node contains;
+@path projects/myproject
+
+Then a node further down the tree which contains;
+@view readme.txt
+
+will display /home/ktenney/projects/myproject/readme.txt
+
+I like this principle of cumulative paths, and would like other plugins to work
+the same way ... @image, @url etc.
+
+This brings me to my question, would it make sense for Leo to offer a 'Plugin'
+class to inherit from? It seems that there are some operations that are being
+re-written in many plugins.
+#@-node:ekr.20050121081635:Request:  cumulative @path directives
+#@+node:ekr.20050222045210:Better @path conventions
+See g.getBaseDirectory
+#@nonl
+#@-node:ekr.20050222045210:Better @path conventions
+#@-node:ekr.20050225070857:@path stuff
+#@+node:ekr.20031218072017.833:Use @file extension by default if no @language
+@nocolor
+
+Open discussion
+By: jasonic ( Jason Cunliffe ) 
+ use of @language   
+2003-07-16 03:40  
+
+I am wondering why Leo does not default to just use the file suffix in @file nodes, instead of obliging @language line in in the body pane 
+
+For example any @file ending with a suffix as defined in the language extensions could just default to use those. 
+
+".py" for python 
+".r" for rebol 
+".as" for actionscript etc.. 
+
+Should anyone need to over-ride those, they could use @language.
+#@nonl
+#@-node:ekr.20031218072017.833:Use @file extension by default if no @language
+#@+node:ekr.20041016134312.1:Allow multiple @language directives in a single node
+@killcolor
+
+Treat @language like @color: ambiguous nodes (nodes containing more than one
+@language directive) should not affect descendent nodes.
+#@nonl
+#@-node:ekr.20041016134312.1:Allow multiple @language directives in a single node
+#@+node:ekr.20031218072017.805:Allow other section delims besides << and >>
+Maybe the section operator could be customizable, 
+I personally prefer the wiki way [[name of section]]. 
+
+@setlink-tag [[ ]] 
+#@-node:ekr.20031218072017.805:Allow other section delims besides << and >>
+#@+node:ekr.20031218072017.745:@@first <n>
+@nocolor
+
+Hate to break into the grand design discussions, but here's a hopefully small thing. If you need to place a good sized copyright statement at the top of your files, LEO doesn't handle this case very cleanly. As I'm sure you're aware, you wind up with a matching number of @@first lines for each leading line in your source. 
+
+As an example: 
+# 1 
+# 2 
+# 3 
+# 4 
+# 5 
+#@verbatim
+#@+leo 
+#@verbatim
+#@+node:0::@file /tmp/firstcheck.py 
+#@verbatim
+#@+body 
+#@verbatim
+#@@first 
+#@verbatim
+#@@first 
+#@verbatim
+#@@first 
+#@verbatim
+#@@first 
+#@verbatim
+#@@first 
+#@verbatim
+#@+doc 
+# 
+# How many firsts do I get? 
+
+#@verbatim
+#@-doc 
+#@verbatim
+#@@c 
+Start code. 
+#@verbatim
+#@-body 
+#@verbatim
+#@-node:0::@file /tmp/firstcheck.py 
+#@verbatim
+#@-leo 
+
+My fellow co-workers who don't use LEO, aren't exactly loving me here. 
+
+Might we introduce an: 
+
+@@first <num> 
+
+Type tag instead? So one '@@first 5' could represent all 5 of the above @@first lines? It makes for a smaller, cleaner LEO footprint and will tick off non-LEO users much less. 
+
+Thanks. 
+
+- ordinarius 
+#@nonl
+#@-node:ekr.20031218072017.745:@@first <n>
+#@+node:ekr.20031218072017.795:Metatags
+@nocolor
+
+By: nobody ( Nobody/Anonymous ) 
+ RE: 3.11 todo list & schedule   
+2003-02-11 03:25  
+
+Here are some features I'd like to see: 
+
+3. Metatags. @sectionname or @savedate are expanded to the appropriate text when saved.
+
+-marshall-  
+
+There are quite a few of these now.  It would be good to generalize:
+- Register @node type.
+#@-node:ekr.20031218072017.795:Metatags
+#@+node:ekr.20041130104552:(Support bird-track programs/comments?)
+@killcolor
+
+By: Guenther Enthaler - genthaler
+RE: Haskell support  
+2004-11-18 22:55
+
+There's a literate programming mode in Haskell (and in a number of other functional programming languages such as Clean & Curry), where the program is in a comment, usually where the line starts with ">" (bird track style, I think it's called), and the comments/documentation are freeform. It would be difficult but cool if Leo could support it, if only because the sentinels in the derived files wouldn't make whole file look so busy. 
+
+Günther 
+#@nonl
+#@-node:ekr.20041130104552:(Support bird-track programs/comments?)
+#@-node:ekr.20041022083226:Directives
+#@+node:ekr.20060527184335:Gui
+#@+node:ekr.20031218072017.793:Keep right panes constant when tiling horizontally (Tix)
+This is done automatically now!  I may have to use configure events.
+
+> When I have the 'split mode' set to display tree and log on left, and viewpane
+on right, I sometimes need to increase the width of the window.
+
+When I do the resize, the tree/log panes grow in proportion. I don't know about
+others, but I'd much prefer if the tree/log panes stayed at the same width,
+and only the view pane grew.
+#@-node:ekr.20031218072017.793:Keep right panes constant when tiling horizontally (Tix)
+#@+node:ekr.20060213151918:Add baloons
+#@+node:ekr.20060212125650:createBalloon
+def createBalloon (tab,sv):
+
+    'Create a balloon for a widget.' ''
+
+    balloon = Pmw.Balloon(tab,initwait=100)
+    balloon.bind(tab,'')
+    hull = balloon.component('hull')
+    def blockExpose (event):
+        if sv.get() == '':
+             hull.withdraw()
+    hull.bind('<Expose>',blockExpose,'+')
+    balloon._label.configure(textvariable=sv)
+#@nonl
+#@-node:ekr.20060212125650:createBalloon
+#@-node:ekr.20060213151918:Add baloons
+#@+node:ekr.20060116083043.1:Add context-menus on nodes or text
+#@-node:ekr.20060116083043.1:Add context-menus on nodes or text
+#@+node:ekr.20060203165231:Change outline or body text background when changing panes.
+#@-node:ekr.20060203165231:Change outline or body text background when changing panes.
+#@+node:ekr.20051207130144:Investigate Tk DnD
+@nocolor
+https://sourceforge.net/forum/message.php?msg_id=3460955
+By: nobody
+
+I found this link:
+http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
+TkinterDnD
+
+so if Edward is interested in adding drag and drop support for regular leo,
+this might be a path to do so.  It looks like an active project.
+
+leouser
+#@+node:ekr.20051207130144.1:@url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
+#@-node:ekr.20051207130144.1:@url http://www.8ung.at/klappnase/TkinterDnD/TkinterDnD.html
+#@-node:ekr.20051207130144:Investigate Tk DnD
+#@-node:ekr.20060527184335:Gui
+#@+node:ekr.20050509085713:Installer
+#@+node:ekr.20050328093147.1:Report: improving installer
+@killcolor
+http://sourceforge.net/forum/message.php?msg_id=3064212
+By: djsg
+
+The following applies to Leo 4.3, which is in alpha as I write this. It describes
+the LeoSetup routine that I submitted to Edward to solve the "can't find Python"
+problem, and which Edward cleaned up for distribution.
+
+I think a few further issues need attention. I noticed them while working on
+the "can't find Python" problem, and deferred dealing with them. This appears
+to me to be a good time to pick them up.
+
+Before I start work on them, I would like to lay them out for your comment.
+Are they pains in the first place? Are my proposals good enough, and do they
+make sense?
+
+Issue 1. LeoSetup still thinks Leo's user is an Administrator who owns the whole
+machine.
+
+For explanation, let's say that I log on as David to Windows 2000 or Windows
+XP and install Leo 4.3. You then log out. You log in as Edward, and click Start,
+pick Programs... you have no visible entry for Leo!
+
+The current Setup routine allows no one but David to use Leo on this computer.
+To make things worse, when I go to use Leo, I have to log in to Windows using
+the account under which I installed it, which has Administrator rights to the
+computer. In other words, I can't use Leo without operating the computer in
+a mode that leaves it needlessly vulnerable to security violations.
+
+Issue 2. LeoSetup allows only one copy of Leo on a given computer. 
+
+LeoSetup assumes that you want Leo in C:\Program Files\Leo. The installer can
+override that already. LeoSetup also goes to some trouble to set up the usual
+click-to-open behavior for .leo files. That behavior is tied to the copy of
+Python that was current when I ran LeoSetup, and tied to the copy of Leo that
+was installed most recently.
+
+Proposal: While LeoSetup should allow all accounts to share the Python code
+for core Leo and its plug-ins, my guess is that we don't want to enforce that,
+since Leo is a programmer's tool and the individual programmer will wish to
+modify Leo and its pieces for the programmer's use.
+
+Proposal Option 1. Setup should ask whether to install Leo for everyone or for
+the installer's account only. If the answer to that question is "yes," Setup
+should give the user a private copy of everything that comes with Leo -- the
+only application shared should be the current Python, assuming that it is installed
+for all users.
+
+Python.org's installer for Python 2.4 allows the installed Python to work only
+for the account that installed it. I found this in December and wrote code to
+handle it, which I then commented out since the issue wasn't critical. I can
+check a computer with a single-account installation of Python in order to figure
+out how a single-account installation of Leo would have to handle the click-to-open
+behavior.
+
+Proposal Option 2. When LeoSetup finds Python installed for that single user,
+it should ask whether to install Leo for the installer's account only. If the
+answer to that question is "yes," Setup should give the user a private copy
+of everything that comes with Leo and use the single-user installation of Python.
+Why does this matter. If you need to test your plug-ins with different versions
+of Python, this would make that easier.
+
+Issue 3. LeoSetup always installs Python MegaWidgets ("Pmw"), even on computers
+whose installed Python installation already includes it.
+
+Proposal: put up a dialog box and ask whether Setup should install Pmw  I do
+not know whether doing this is a good idea.
+
+Issue 4. LeoSetup does not run without human intervention. This complicates
+deploying Leo in multi-computer sites.
+
+The message box that displays the path of the Python installation found is one
+issue. I put it in to allow the installer to cross-check Setup's behavior. Since
+nobody has complained about problems with the code I wrote to fix the problem
+installing with Python 2.4 and Active Python, Setup need no longer force the
+installer to review the message box's contents.
+
+Proposal: The message box needs to time out after, say, 15 seconds. 
+
+I last looked at the installer three months ago so I would have to look at the
+rest of it for other barriers to automated installation.
+
+Let me know what you think. I won't be able to start work for a week or so,
+so there's no rush.
+
+-- David
+#@nonl
+#@-node:ekr.20050328093147.1:Report: improving installer
+#@-node:ekr.20050509085713:Installer
+#@+node:ekr.20041228085245:Options & settings
+#@+node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder
+1. Warn when creating _any_ new file.
+
+2. Warn when rewriting any file that was not read properly.
+
+This prevents "hijacking" an already existing file.
+#@nonl
+#@-node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder
+#@+node:ekr.20040311022923:Make sentinel name in @-node optional
+#@-node:ekr.20040311022923:Make sentinel name in @-node optional
+#@+node:ekr.20050713105353:Add configuration setting to set menu fonts
+#@+node:ekr.20050713105353.1:Email from Martin Moncrieffe <mcm35@cam.ac.uk>
+@nocolor
+
+I have looked into leo's code and managed to figure out how to change 
+some fonts. Here's what I did to change the menu fonts for example.
+
+Fonts for the menu can be set in Code->Gui Tkinter classes->@thin 
+leoTkinterMenu.py->Tkinter menu bindings->Routines with Tk 
+spellings->new_menu
+
+so to use the system font (linux) I changed the return statement to:
+
+return Tk.Menu(parent,tearoff=tearoff, font=("System",11))
+
+I'll try using .leo_xresources file and see if that works as well.
+#@nonl
+#@-node:ekr.20050713105353.1:Email from Martin Moncrieffe <mcm35@cam.ac.uk>
+#@-node:ekr.20050713105353:Add configuration setting to set menu fonts
+#@-node:ekr.20041228085245:Options & settings
+#@+node:ekr.20070814070357:Performance
+#@+node:ekr.20061207073104:Convert bottlenecks to pyrex code
+# To do:  actually generate Leo's bottlenecks.
+#@nonl
+#@+node:ekr.20061207073104.1:gcc build docs
+@nocolor
+
+To build your module using GCC is a three step process on Unix. (I have know
+idea how many steps it is on Windows™.)
+
+Start by running the Pyrex compiler over your code as follows, where
+mymodule.pyx is the name of the Pyrex module you are writing. python2.2 pyrexc
+mymodule.pyx Next, compile the resulting C file into a .o file. The call to gcc
+looks like this:
+
+gcc -c -fPIC -I/usr/include/python2.2/ mymodule.c
+The arguments to gcc are explained below.
+
+-c 
+Produces a .o file instead of an executable. 
+-fPIC 
+Produces position independent code, so we can dynamically link against it later. 
+-I/usr/include/python2.2/ 
+is the location of the Python 2.2 include file. The location of your Python include file may differ from /usr/include/python2.2/. 
+mymodule.c 
+is the name of the C file produced by Pyrex. 
+Finally, link the .o into a .so: gcc -shared mymodule.o -lxosd -o mymodule.so
+-shared 
+produces a shared-object file, instead of an executable. 
+mymodule.o 
+is the name of the module you wish to compile. 
+-lxosd 
+links against a C-library, with the name of the library given as the argument. 
+-o mymodule.so 
+causes gcc to put the output into a file called mymodule.so 
+The C library that you are wrapping will probably differ from mymodule. 
+#@-node:ekr.20061207073104.1:gcc build docs
+#@+node:ekr.20061207073104.2:pyrexc command-line options
+@nocolor
+
+The pyrexc command supports the following options:
+
+  Short Long              Argument    Description
+  -----------------------------------------------------------------------------
+  -v    --version                     Display version number of pyrex compiler
+  -l    --create-listing              Write error messages to a .lis file
+  -I    --include-dir     <directory> Search for include files in named 
+                                       directory (may be repeated)
+  -o    --output-file     <filename>  Specify name of generated C file (only
+                                       one source file allowed if this is used)
+
+Anything else is taken as the name of a Pyrex source file and compiled
+to a C source file. Multiple Pyrex source files can be specified
+(unless -o is used), in which case each source file is treated as the
+source of a distinct extension module and compiled separately to
+produce its own C file.
+#@-node:ekr.20061207073104.2:pyrexc command-line options
+#@+node:ekr.20061207073104.3:@file myModule.pyx
+def spam(int i, char *s):
+    if 1:
+        print i,s
+#@nonl
+#@-node:ekr.20061207073104.3:@file myModule.pyx
+#@+node:ekr.20061207073104.4:Make myModule.c
+# Use pyrexc to create myModule.c from myModule.pyx.
+import os,sys
+python = sys.executable
+theFile = r'C:\prog\tigris-cvs\leo\test\myModule.pyx'
+pyrexc = r'c:\prog\Pyrex-0.9.4.1\pyrexc.py'
+os.system(r'%s %s %s' % (python,pyrexc,theFile))
+
+if 0: # Build myModule library using distutils.
+    from distutils.core import setup, Extension
+
+    # Make the extension module ("mymodule") link against xosd
+    xosdExtn = Extension("mymodule", ["mymodule.c"], libraries=["xosd"])
+
+    # Compile the extension module
+    setup(name="mymodule", ext_modules=[xosdExtn])
+
+@ Save the above code in a file called setup.py and run the following code
+to build and install your module.
+
+    python setup.py build
+    python setup.py install
+#@nonl
+#@-node:ekr.20061207073104.4:Make myModule.c
+#@+node:ekr.20040812170616:Pyrex versions of key classes
+#@+node:ekr.20040812155849.74:v.Iterators (Can't use yield in pyrex)
+#@+node:ekr.20040812155849.75:self_subtree_iter
+def subtree_iter(self):
+
+    """Return all nodes of self's tree in outline order."""
+
+    v = self
+
+    if v:
+        yield v
+        child = v.t._firstChild
+        while child:
+            for v1 in child.subtree_iter():
+                yield v1
+            child = child.next()
+
+self_and_subtree_iter = subtree_iter
+#@nonl
+#@-node:ekr.20040812155849.75:self_subtree_iter
+#@+node:ekr.20040812155849.76:unique_subtree_iter
+def unique_subtree_iter(self,marks=None):
+
+    """Return all vnodes in self's tree, discarding duplicates """
+
+    v = self
+
+    if marks == None: marks = {}
+
+    if v and v not in marks:
+        marks[v] = v
+        yield v
+        if v.t._firstChild:
+            for v1 in v.t._firstChild.unique_subtree_iter(marks):
+                yield v1
+        v = v._next
+        while v:
+            for v in v.unique_subtree_iter(marks):
+                yield v
+            v = v._next
+
+self_and_unique_subtree_iter = unique_subtree_iter
+#@nonl
+#@-node:ekr.20040812155849.76:unique_subtree_iter
+#@-node:ekr.20040812155849.74:v.Iterators (Can't use yield in pyrex)
+#@+node:ekr.20040812154341.64:p.Iterators (Can't use yield in pyrex)
+@ 3/18/04: a crucial optimization:
+
+Iterators make no copies at all if they would return an empty sequence.
+@c
+
+@others
+#@nonl
+#@+node:ekr.20040812154341.65:p.tnodes_iter & unique_tnodes_iter
+def tnodes_iter(self):
+
+    """Return all tnode's in a positions subtree."""
+
+    p = self
+    for p in p.self_and_subtree_iter():
+        yield p.v
+
+def unique_tnodes_iter(self):
+
+    """Return all unique tnode's in a positions subtree."""
+
+    p = self
+    marks = {}
+    for p in p.self_and_subtree_iter():
+        if p.v not in marks:
+            marks[p.v] = p.v
+            yield p.v
+#@nonl
+#@-node:ekr.20040812154341.65:p.tnodes_iter & unique_tnodes_iter
+#@+node:ekr.20040812154341.66:p.vnodes_iter & unique_vnodes_iter
+def vnodes_iter(self):
+
+    """Return all vnode's in a positions subtree."""
+
+    p = self
+    for p in p.self_and_subtree_iter():
+        yield p.v
+
+def unique_vnodes_iter(self):
+
+    """Return all unique vnode's in a positions subtree."""
+
+    p = self
+    marks = {}
+    for p in p.self_and_subtree_iter():
+        if p.v not in marks:
+            marks[p.v] = p.v
+            yield p.v
+#@nonl
+#@-node:ekr.20040812154341.66:p.vnodes_iter & unique_vnodes_iter
+#@+node:ekr.20040812154341.67:p.allNodes_iter
+class allNodes_iter_class:
+
+    """Returns a list of positions in the entire outline."""
+
+    @others
+
+def allNodes_iter (self,copy=False):
+
+    return self.allNodes_iter_class(self,copy)
+#@nonl
+#@+node:ekr.20040812154341.68:__init__ & __iter__
+def __init__(self,p,copy):
+
+    self.first = p.c.rootPosition().copy()
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040812154341.68:__init__ & __iter__
+#@+node:ekr.20040812154341.69:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+#@nonl
+#@-node:ekr.20040812154341.69:next
+#@-node:ekr.20040812154341.67:p.allNodes_iter
+#@+node:ekr.20040812154341.70:p.subtree_iter
+class subtree_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+
+def self_and_subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=True)
+#@nonl
+#@+node:ekr.20040812154341.71:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+        self.after = p.nodeAfterTree()
+    elif p.hasChildren():
+        self.first = p.copy().moveToFirstChild() 
+        self.after = p.nodeAfterTree()
+    else:
+        self.first = None
+        self.after = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040812154341.71:__init__ & __iter__
+#@+node:ekr.20040812154341.72:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p and self.p != self.after:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+#@nonl
+#@-node:ekr.20040812154341.72:next
+#@-node:ekr.20040812154341.70:p.subtree_iter
+#@+node:ekr.20040812154341.73:p.children_iter
+class children_iter_class:
+
+    """Returns a list of children of a position."""
+
+    @others
+
+def children_iter (self,copy=False):
+
+    return self.children_iter_class(self,copy)
+#@nonl
+#@+node:ekr.20040812154341.74:__init__ & __iter__
+def __init__(self,p,copy):
+
+    if p.hasChildren():
+        self.first = p.copy().moveToFirstChild()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040812154341.74:__init__ & __iter__
+#@+node:ekr.20040812154341.75:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+#@nonl
+#@-node:ekr.20040812154341.75:next
+#@-node:ekr.20040812154341.73:p.children_iter
+#@+node:ekr.20040812154341.76:p.parents_iter
+class parents_iter_class:
+
+    """Returns a list of positions of a position."""
+
+    @others
+
+def parents_iter (self,copy=False):
+
+    p = self
+
+    return self.parents_iter_class(self,copy,includeSelf=False)
+
+def self_and_parents_iter(self,copy=False):
+
+    return self.parents_iter_class(self,copy,includeSelf=True)
+#@nonl
+#@+node:ekr.20040812154341.77:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+    elif p.hasParent():
+        self.first = p.copy().moveToParent()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@nonl
+#@-node:ekr.20040812154341.77:__init__ & __iter__
+#@+node:ekr.20040812154341.78:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToParent()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+#@-node:ekr.20040812154341.78:next
+#@-node:ekr.20040812154341.76:p.parents_iter
+#@+node:ekr.20040812154341.79:p.siblings_iter
+class siblings_iter_class:
+
+    """Returns a list of siblings of a position."""
+
+    @others
+
+def siblings_iter (self,copy=False,following=False):
+
+    return self.siblings_iter_class(self,copy,following)
+
+self_and_siblings_iter = siblings_iter
+
+def following_siblings_iter (self,copy=False):
+
+    return self.siblings_iter_class(self,copy,following=True)
+#@nonl
+#@+node:ekr.20040812154341.80:__init__ & __iter__
+def __init__(self,p,copy,following):
+
+    # We always include p, even if following is True.
+
+    if following:
+        self.first = p.copy()
+    else:
+        p = p.copy()
+        while p.hasBack():
+            p.moveToBack()
+        self.first = p
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+
+#@-node:ekr.20040812154341.80:__init__ & __iter__
+#@+node:ekr.20040812154341.81:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+#@nonl
+#@-node:ekr.20040812154341.81:next
+#@-node:ekr.20040812154341.79:p.siblings_iter
+#@-node:ekr.20040812154341.64:p.Iterators (Can't use yield in pyrex)
+#@-node:ekr.20040812170616:Pyrex versions of key classes
+#@-node:ekr.20061207073104:Convert bottlenecks to pyrex code
+#@-node:ekr.20070814070357:Performance
+#@+node:ekr.20041228090855.2:Plugins
+#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
+#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
+#@+node:ekr.20031218072017.797:Allow @file http & @file ftp
+@nocolor
+
+I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
+
+in short, it would be very sweet if the following work: 
+
+@file http://www.somedomain.org/python/foo.py 
+
+@file pass@ftp.sd.org/python/foo.py" target="_blank" target="_new">ftp://user:pass@ftp.sd.org/python/foo.py> 
+
+while we are at it, what about xmlrpc/soap? 
+
+should there be new directive, like @source ?
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.810:Remote access Scott Powell
+I will wait. Here's clarification, when you're ready for it:
+
+All of my projects are stored on remote computers, and accessed via FTP. 
+What I want is basically the ability to open up these projects directly 
+through leo, instead of transferring the files manually between my computer 
+and the computers that hold my projects, preferably through FTP.
+
+My solution: A new menu item called 'FTP' or 'Remote'. Click on this, and an 
+FTP dialog opens up, with an empty list of FTP sites, and the ability to add 
+more. You select a site, and it brings up a list of files. You select a 
+file, and it is added to your project. When you hit 'save', it automatically 
+does an FTP send.
+
+Python makes this a lot easier with the builtin module 'ftplib'. I'm sure 
+there are similar things for C++. I hope you take this idea into 
+consideration.
+
+Scott Powell
+CEO, Dev Designs
+#@-node:ekr.20031218072017.810:Remote access Scott Powell
+#@-node:ekr.20031218072017.797:Allow @file http & @file ftp
+#@+node:ekr.20040124074218.3:pyGtk plugin
+#@-node:ekr.20040124074218.3:pyGtk plugin
+#@-node:ekr.20041228090855.2:Plugins
+#@+node:ekr.20041228092223.3:Scripting
+#@+node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2321235
+By: paulpaterson
+
+I think I understand what Samir is getting at. 
+
+In PythonWin, or other IDE's for other languages, you are able to execute the
+"current program" in a way that it will behave identically to if it had been
+run from the command line.
+
+For Python this requires,
+
+1. That the script run with __name__ == "__main__", so that the standard "if
+__name__ ..." section will be executed properly.
+
+2. You are able to pass command line parameters to the script. In some IDE's
+you are able to set default command line parameters and these are "injected"
+into the sys.argv (or equivalent) so that, as far as the program is concerned,
+it looks like you ran it from the command line with some aruments.
+
+The underlying assumption is that you want to run an entire program from Leo,
+not just a script. I would find this very useful also as I could run unit tests
+or even my entire apps by just hitting, for exampe, F5.
+
+Paul
+#@nonl
+#@+node:ekr.20041022083005.5:Define name == "__main__"
+#@-node:ekr.20041022083005.5:Define name == "__main__"
+#@-node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
+#@+node:EKR.20040611081747.1:Look at windows scripting
+------cut openleo.pys
+@path c:\bIn\pys\
+@lineending crnl
+@
+w04609p09:57:19 a pys to open leo and do something.
+you need the win32 extensions and you have to enable 
+the script engine. details how on google or on the win32 page.
+
+the sendkeys method can insert any test or control codes
+msdn or microsoft.com/scripting
+
+@c
+pypath = r'C:\c\py\Python233'
+py =  pypath + r'\python.exe -itOO '
+leosrc = r'c:\c\leo\leo4CVS233\src'
+name = "blank.leo"
+
+WshShell = WScript.CreateObject("WScript.Shell")
+
+#look like it comes up untitled 
+# if it cant find an existing leo of that name?
+
+WshShell.Run(py + leosrc + r'\Leo.py ../' + name)
+WScript.Sleep(4900) 
+
+wname = "untitled"
+
+WshShell.AppActivate(wname);  WScript.Sleep(2100)
+WshShell.SendKeys("%Fe");   WScript.Sleep(1300);  #^Q
+
+---end openleo.pys
+#@nonl
+#@-node:EKR.20040611081747.1:Look at windows scripting
+#@+node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+@nocolor
+
+Michael Manti
+mmanti@mac.com
+
+P.S. I think a feature that could make Leo *the* IDE for developing in 
+interpreted languages is something like the (X)Emacs comint-mode.el for 
+interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of
+languages--OCaml, Haskell, SML, among them. It allows for editing expressions in
+one buffer and triggering their evaluation in another buffer that has an
+interpreter running in it, along with entering commands in the interpreter
+buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and
+its children evaluated in an interpreter running in a separate window or pane,
+much as Leo can open a Python shell now. Users of those languages could build
+plug-ins specific to their language atop that layer, and the @language directive
+could activate that. I think that would be very cool.
+#@-node:ekr.20031218072017.753:Emacs comint-mode:  The improved Execute Script command does most of this
+#@-node:ekr.20041228092223.3:Scripting
+#@+node:ekr.20041228092223.4:Windows
+#@+node:ekr.20050108051818:Add hyperlinks for url's
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2928436
+By: jasonic
+
+> I really do want and need to be able to embed basic links throughout out my Leo outlines in a natural 2005 fashion. 
+
+This should be fairly easy to do.
+
+At present, the use_hyperlinks configuration option controls whether Leo generates 'live' hyperlinks for section names.  I don't enable this be default because I dislike jumping around the outline.  Instead, I use clones.
+
+The code to do these kinds of hyperlinks is pretty straightforward.  There is a little code in the colorizer and callbacks in the leoTkinterTree, iirc.
+
+Supporting hyperlinks to urls would be similar.  They could appear in the following situations:
+
+- Anywhere where @language plain is in effect.
+- In comments where @language (a programming language) is in effect.
+- Anywhere (except in comments?) where @language html is in effect.
+
+This would make a straightforward plugin.  Mind you, this should be in Leo's core, but a plugin would get my attention :-)  Perhaps the reason I haven't done this is that I keep thinking a generalized syntax colorer is near ;-)
+
+Edward
+#@nonl
+#@-node:ekr.20050108051818:Add hyperlinks for url's
+#@+node:ekr.20041022083005.2:add a Stop button for find/change
+#@-node:ekr.20041022083005.2:add a Stop button for find/change
+#@+node:ekr.20040908104644:Leo splash screen
+To create a splash screen:
+
+- Draw the screen.
+- Erase the screen with self.after(5000, self.destroy)
+#@+node:ekr.20040908221501:@url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
+#@-node:ekr.20040908221501:@url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
+#@-node:ekr.20040908104644:Leo splash screen
+#@-node:ekr.20041228092223.4:Windows
+#@+node:ekr.20041228094138:4.5  LeoN and collaboration
+This may not be so big a project.  LeoN already exists.
+#@nonl
+#@+node:ekr.20031218072017.420:Jabber
+Open Discussion
+https://sourceforge.net/forum/message.php?msg_id=2016634
+By: jasonic
+
+I have been thinking about LeoZopeWiki integration. I am a recovering Zope addict
+[1999-2001] :-)  I believe Zope offers a very valuable client and server for
+Leo.
+
+I think Ed higlighted the distinction of collboration vs. sharing. So consdering
+that re:  Leo and CVS , Leo and Zope, Leo and wikis, I had another idea this
+morning..
+
+LEO+JABBER
+
+Jabber is an open XML-based  instant messaging and *presence* system. Although
+Jabber is typically used for IM chat, its core designers have a much bigger
+vision in mind.
+
+Jabber Software Foundation
+http://www.jabber.org/
+O'Reilly Book
+http://www.oreilly.com/catalog/jabber/
+Python Jabber library
+http://jabberpy.sourceforge.net/
+
+CVS etc all depend on runing diff on posted static files which are checked in
+or out. Clearly valuable, and good for __sharing__ but not so suitable as the
+communication paradigm needed for collboration.
+
+Wikis and Zope all suffer from problem of versioning and the time delay and
+lack of timely communications to their cobtributors. There is no 'shared state'
+or persistence in the collaboration beyond their own files or objectdatabases.
+
+For example if two people want to edit a wiki or Zope site, they have an imeedaiet
+problem of knowing whether or not the someone else is working one it already.
+
+Score:
+Sharing 1
+Collaboration 0
+
+Two  or more people wanting to edit a common project based on Leo have the same
+dilemma. They can check the leo file into a wiki, Zope or CVS, but they still
+don't have direct communication at teh content level.
+
+score:
+Sharing 1
+Collaboration 0
+
+PROPOSAL: LeoJabber
+1. Integrate a Jabber client into Leo 
+2. Add special Leo module to jabberd [Jabber's server daemon]
+
+Leo-based developers could work in direct communication with each other allowing
+them to add, edit and comment nodes in a shared le-space, local or remote. Static
+publishing via upload/import etc all still apply.
+
+LeoJabber would mean subscribing developers could immediately be aware of changes
+and then apply whatever strategy is appropriate for handling them, such as:
+
+a. autoUpdate()
+b. makeNewNode()
+c. runDiffFunctions()
+d. notifyPartners()
+e. notifyPublic()
+etc..
+
+Jabber via its presencing mechanism offers real-time and just-in time communcations.
+If you are logged out, then mesages are queued.
+
+An open Jabber message session is actually one long piece of XML data passed
+over an XMLSocket :-) Sounds like a great fit for Leo
+
+- All Jabber configs are XML.
+- Good smart open source community.
+- Similar open embracing philsophy as Leo
+- Jabber connects diverse messaging systems., MSN, AOL etc [Most are
+close/proprietary, though the trend is toward greater openness and connectivity]
+- Many Jabber clients already. There is even one written in Flash so that any
+webpage can participate.
+
+Embedding Jabber in Leo would allow 'discussion' threads to  be integrated.
+Developers need to bounce idea and notes around just as this forum does. But
+often they need to be more provate or more focused on project specifics.
+WORKFLOW 
+It is important to know  which code is uptodate, but arguably, even *more* important
+is to know which people and what discussions are uptodate. And if not, what
+their status is. The larger, longer the more global the develpoment office/project,
+the more this is true.
+
+IM [instant messaging] are popular largely becuae they offer direct communication
+with status feedback to crucial people's workflow:
+"off-line", "on-line", "back-soon", "later" etc
+
+Jabber extends this idea to create a platform for any presence application.
+That is its long term-goal.
+
+So in a Leo deevlopment project, that presence might apply to adding status
+mesages such as
+"making changes" "new version" "debugging" "review only" "major re-write"
+
+or perhaps status/presence woudl be used for much lower level Leo-specific
+purposes.
+
+"new node"
+"cloned to .."
+"@file imported"
+"version uploaded"
+etc
+
+I am not suggesting that Leo forget CVS or file upload storage. But I think
+Jabber may truly provide the Missing Link, literally for Leo collaboration.
+
+Jabber Software Foundation
+http://www.jabber.org/
+O'Reilly Book
+http://www.oreilly.com/catalog/jabber/
+Python Jabber library
+http://jabberpy.sourceforge.net/
+
+hope this makes sense
+Jason
+#@-node:ekr.20031218072017.420:Jabber
+#@+node:ekr.20031218072017.411:From Rodrigo
+Developers Forum
+By: rodrigo_b ( Rodrigo Benenson ) 
+ RE: Leo over the network   
+2003-05-10 00:06  
+So this is my first proposal: 
+
+Requirements 
+-------------------- 
+
+* Read remote outlines. 
+** With Leo clients. 
+** Over the web. 
+
+* Edit remote outlines. 
+
+* Import remote outlines (retrieve outlines from the web). 
+
+* Synchronize local outlines with remote ones (web to local and local to web). 
+
+* Publish outlines (send outlines to the web). 
+
+* The Leo client have to be keept lighweigth. 
+
+* The Leo remote outline access server should be a lighweigth daemon. 
+
+* This daemon should automagically render HTML from the outlines. 
+
+* The outlines should be editable from the web and via Leo client. 
+
+* Concurency management is must. 
+
+* The remote servers should be included in the leo client as leo nodes (just like leo files, but remotes). 
+"@leo-outline leo.server.org:854" 
+
+* By this way I could have access to local server nodes. 
+"@leo-outline localhost:854" 
+
+* The remote server should offer one and only one big outline with sub nodes, and so on, and so on... 
+
+* At least the concurency should be managed as "when someone write, all the other ones only can read" 
+
+* It is better if Leo devellop simultaneaously some hypertext/wiki extensions. 
+
+---------------------------- 
+End of requeriments 
+
+This requeriments requires a client-server architecture, with basic commands as: 
+- Update node 
+- Lock/release node 
+- Edit outline 
+- Download outline 
+- Upload outline 
+
+well that is by the moment, I hope that we will be able to create a Finite, clear, requeriments list for this branch of Leo. 
+
+RodrigoB.  
+
+#@-node:ekr.20031218072017.411:From Rodrigo
+#@-node:ekr.20041228094138:4.5  LeoN and collaboration
+#@+node:ekr.20041228084143:Maybe never
+#@+node:ekr.20070426092031:Consider another way to compute home directory
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4281562
+By: ktenney
+
+I don't know if this is a resolved issue, here's another approach,
+looks like a good one.
+
+email link
+http://murl.se/24201
+
+python.org os.path doc
+http://murl.se/24202
+
+>>> import os
+>>> lin_key, win_key = "home", "Documents"
+>>> homedir = os.path.expanduser('~')
+>>> if os.name == 'nt': os_key = win_key
+>>> if os.name == 'posix': os_key = lin_key
+>>> print homedir.find(os_key) > -1
+True
+
+#@-node:ekr.20070426092031:Consider another way to compute home directory
+#@+node:ekr.20060930110925:Fix arrow keys (if possible)
+Up/down arrow keys should move straight up/down, but this is difficult with Tk.
+Still the present way is very bad.
+#@nonl
+#@-node:ekr.20060930110925:Fix arrow keys (if possible)
+#@+node:ekr.20041022070154:(options for setting working directory during startup)
+#@+node:ekr.20041022070154.1:Request & response
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2815599
+By: Antonio Pala
+
+All plugins I have tried (notably @run and the @rst variants) have their working
+directory set to my home directory, regardless of the position of the Leo file
+and all @path directives. This renders most of them useless, since I would have
+to use absolute pathnames. Is this the way they were meant to work, or is there
+a bug somewhere? Or maybe I have missed some configuration parameter?
+
+I am using Leo 4.2 with Python 2.3 on Linux.
+
+> All plugins I have tried (notably @run and the @rst variants) have their working directory set to my home directory, regardless of the position of the Leo file and all @path directives.
+
+Directory issues are different on different platforms.
+
+I would welcome specific proposals for setting directories during startup.  Early in the startup process Leo sets g.app.loadDir to the directory from which Leo was loaded.  Plugins can use this directory to set the working directory as they choose.
+
+@path directives will have no effect on plugins:  they are loaded before the outline.
+
+> This renders most [plugins] useless, since I would have to use absolute pathnames.
+
+No, it means you might have to add a few lines of code to your plugin to make it work just as you would like it to work.
+
+> Is this the way they were meant to work?
+
+I don't have much control over how plugins were "meant" to work.  However, an improved plugin manager might have facilities for setting the working directory.
+
+This is a non-trivial issue;   Leo uses and sets paths in many places in the code.  It seems dubious to have plugins change the working directory at random times.  Perhaps an option that inits the working directory would be good.  The new config system will allow per-outline options as well as global option. I believe such options could be loaded before plugins.
+
+Edward
+#@nonl
+#@-node:ekr.20041022070154.1:Request & response
+#@-node:ekr.20041022070154:(options for setting working directory during startup)
+#@+node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
+FocusIn does nothing for Label widgets.
+
+http://sourceforge.net/forum/message.php?msg_id=3412640
+By: btheado
+
+Currently clicking on the minibuffer and typing text has no effect.  Kinda confusing
+until the Alt-x binding I discovered that Alt-x is the way to access the minibuffer
+command mode.
+
+It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
+to Alt-x.
+#@nonl
+#@-node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
+#@+node:ekr.20031218072017.995:(Incremental update of screen)
+@ignore
+@nocolor
+
+To enable incremental allocation of Tk widgets during redraws, set self.allocateOnlyVisibleNodes = True in tree.__init__.
+
+To do:
+
+- We might switch to a line-oriented scheme.
+	- This might simplify the code and make the code more useful to users.
+	- Conceivably this scheme might eliminate the need for the auto-scroll in the redraw code,
+	and that might make a single-pass redraw scheme possible.
+
+- The last line isn't always completely visible: this is clearly a bug.
+
+@color
+#@nonl
+#@-node:ekr.20031218072017.995:(Incremental update of screen)
+#@-node:ekr.20041228084143:Maybe never
+#@+node:ekr.20040123102724:Can't or won't
+#@+node:ekr.20060329102951:@ref
+@nocolor
+
+The graph world is a better solution.
+#@nonl
+#@+node:ekr.20060329102951.1:My summary post
+http://sourceforge.net/forum/message.php?msg_id=3598136
+
+> It appears that @ref nodes introduce a flexibility that can not be simulated (at all?) with clones.  
+
+Now that something like @ref appears necessary, it is so much easier to see how @ref is useful :-) 
+
+1. @ref is an explicit link (arc) that creates the links of a general graph structure explictily. 
+
+The simplest cycle is: 
+
+- root 
+..- a 
+.... - @ref b 
+..- b 
+.... - @ref a 
+
+This is not possible with clones! No more mumbling about being able to represent such links in uA's! 
+
+2. @ref allows users to compose documents from 'atomic' pieces of text properly. That is, adding a 'virtual' child to a piece of text does not add it to all other uses of that text in (possibly unrelated) documents. This vastly increases the flexibility of rst3 plugin. 
+
+I suspect other essential uses of @ref will appear. I am sure we can declare the 'post-leo LP tool' project a great success already :-) 
+
+Edward 
+#@-node:ekr.20060329102951.1:My summary post
+#@+node:ekr.20060329102951.2:Reply
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3650005
+By: itsme213
+
+Imho ...
+
+There will not be any "arbitrary graph" from @ref. Instead there is a forest
+of trees, and across trees, some nodes are same_as some other nodes (caused
+by @ref). same_as is transitive. Quite likely the roots of all trees are same_as.
+There may need to be some rules to ensure things make structural sense. Children
+of a node are just that -- children of that node.
+
+There will be a totally separate Merge node whose children will be the union
+of the children of all the nodes it merges. A Merge node is, itself, the ordinary child of some
+node.
+
+Tree traversals will be tree traversals.
+
+Hope that did not muddy the waters even more ... 
+#@-node:ekr.20060329102951.2:Reply
+#@-node:ekr.20060329102951:@ref
+#@+node:ekr.20070627151457:--runCommand option
+@
+
+--runCommand "leo-command-name" runs the command at idle-time after loading the file.
+
+I am not going to do this: this, in conjunction with @command nodes, is a big security hole, equivalent to @script.
+
+The only safe thing would be to disallow user-defined commands from being executed by --runCommand, but then what is the point of --runCommand.
+#@nonl
+#@-node:ekr.20070627151457:--runCommand option
+#@+node:ekr.20040220110030:Change cursor when caps lock is down
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2431552
+By: nobody
+
+From: Rich
+
+ I just got nipped twice by the following effect: the Caps-Lock key is ON, but
+because the LED is on the Caps-Lock key, it is hidden behind my hand. I hit
+Ctrl-x, expecting to cut my selection, but the entire node is cut.
+
+   I know there's a problem with tk and the shift key status, so I'm wondering
+if it would be possible to change the shape of the cursor when the Caps-Lock
+is ON (preferrably a big red flashing blot 8-), or otherwise show that Caps-Lock
+is active ( "CAPS" on a status line, for instance).
+
+  Another way: I don't know if this goes against an "anti-modalism rule," but
+only allowing Ctrl-Shift-x|c|v in the outline pane would also be acceptable
+to me.
+#@nonl
+#@-node:ekr.20040220110030:Change cursor when caps lock is down
+#@+node:ekr.20031218072017.743:Note window for each node
+http://sourceforge.net/forum/message.php?msg_id=2205285
+From: Rich
+
+I envision a short window at the bottom of the edit window that could hold notes
+and comments about the code, such as "Test this harder" or "Find a better way of
+phrasing this". This is currently available in uSoft Office and the Eclipse IDE
+(http://www.eclipse.org). Perhaps a numeric reference, such as "<<1>>" could be
+used.
+#@nonl
+#@-node:ekr.20031218072017.743:Note window for each node
+#@+node:ekr.20060610193837:open python window does not appear to work on Solaris
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3771068
+By: leouser
+
+The open python window does not appear to work on Solaris.
+
+http://sourceforge.net/forum/message.php?msg_id=3771167
+By: nobody
+
+from what I could see it looked like it was trying to start the shell up with
+a location that pointed to a nonexistent path.
+
+@color
+#@nonl
+#@-node:ekr.20060610193837:open python window does not appear to work on Solaris
+#@+node:ekr.20040216054459:@h @f @endh and @endf directives
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=2424151
+By: ksejlod ( Peter Barrel ) 
+ I Have a (maybe) great idea!   
+2004-02-15 04:29
+
+I've been using LEO for a while and finding surprinsingly powerfull new uses now and then, (hey, not a week passes that i dont think to myself : "why did'nt anyone thought of that kind of tool that is LEO. It's so stupid to program such a tool, yet no one thought of doing such a thing ! ")
+
+I was wondering if there was a leo keyword (beginning with "@") that would do a feature I thought would be great: something such as :
+@h
+@endh
+and of course, similarily...
+@f
+@endf
+
+Standing for "Header", "End Header", "Footer" and "End Footer". Let me please explain ...
+
+When creating files with @file (or nosentinels) I use the keyword "@others" in the starting node body of the file and place in the file, as it's decendants (children, grand-children & so on) some clones of other stuff somewhere else outside of this file (usualy, clones of parts of program regrouped as children of a "components" node up in the leo outline. Typical Example:
+
+-Introduction
+-+components
+-a
+-b
+-c
+-+@file program.BAS
+-b
+-c
+-a
+
+a, b, and c are clones and the @file node contains @others.
+
+As you see, I proceed that way because in older programming languages or in lower level languages, the order of components such as procs, declarations, etc as an importance. It also has the implication that << and >> brackets are irrelevant in my way of using leo.
+
+Now, my feature that I looked for in the doc but could not find (so i suggest it here in case no one had any need of this before) is that when used in the BODY of a node part of an "@file" the @h and @endh would define a chunk of text in the body, you've guessed it, to be added before _each_ children node and ONLY children no grandchildren or any deeper. But It could also be used INSIDE the body of a children to define headers or footers for IT'S OWN direct children.
+
+so, eehh, do you see the relevance of such a feature? Have i explained it clearly? maybe this would help:
+CONST baba=2 AS INTEGER
+CONST bebe=7 AS INTEGER
+CONST zaza=5 AS INTEGER
+CONST bobo=1 AS INTEGER
+... the beginning and end of each of those "parts-of-a-program" is the same for a potential lot of lines... 
+
+To Be Precise :
+It's just really for adding something at end or beginning of a direct children of a node part of an @file in the tangling process. 
+
+Is this feature already implemented but i have not found it? I'm pretty sure it easy to implement... what do you people think of this?
+Thanks 
+--
+k
+
+p.s. I'm the guy who proposed that in the untangling process, a clone would not be updated by it's _Last-Instance-Found_ in the @file beeing untangled, but instead updated by the _Last-Modified-One-Found_ in the @file... :)
+
+(ooouuuuhh that would be slick...)  
+
+By: ksejlod ( Peter Barrel ) 
+ RE: I Have a (maybe) great idea!   
+2004-02-15 04:35  
+
+ The tree i tried to draw in ascii did not came out the way i did it, sourceforge "eated" leading spaces sorry a, b and c are children of their "+" node just above them		.
+--
+k  
+#@nonl
+#@-node:ekr.20040216054459:@h @f @endh and @endf directives
+#@+node:ekr.20040329185649:Known Bugs: can't be fixed or can wait
+#@+node:ekr.20031218072017.663:Bug: can't be fixed
+#@+node:ekr.20031218072017.664:Cut/paste bug on X windows (waiting for help)
+@nocolor
+
+Under X Window system, when text is selected, it is automatically entered into a buffer and can be pasted with the middle button of the mouse.
+
+In Leo, when this is done, the text is rendered in right place, but it doesn't stick unless some key is pressed after pasting. That is, if I leave the node in question without pressing any key after pressing the middle button, the pasted text is gone when I come back to that node.
+
+Doing copy and paste works normally when done through the edit menu.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.665:(Cut & Paste ) (Middle-button bug reported by Timo)
+#@+node:ekr.20031218072017.666: Paste bug report
+@nocolor
+
+By: riotnrrrd ( Timo Honkasalo ) 
+ Pasted text doesn't stick   
+2002-11-01 13:38  
+System: Linux 
+
+Under X Window system, when text is selected, it is automatically entered into a buffer and can be pasted with the middle button of the mouse. 
+
+In Leo, when this is done, the text is rendered in right place, but it doesn't stick unless some key is pressed after pasting. That is, if I leave the node in question without pressing any key after pressing the middle button, the pasted text is gone when I come back to that node. 
+
+Doing copy and paste works normally when done through the edit menu. 
+
+-------------------
+
+I also found out that if you do an extra "click" on the control key, it will
+stick from then on.
+
+If your text should have color in it, you can see that right before you "click",
+the text has no color and the color back on right after you click the control.
+
+It maybe a clue to someone, but seems strange to me. 
+#@-node:ekr.20031218072017.666: Paste bug report
+#@+node:ekr.20031218072017.667: Test
+abc bbb bbbxyz bbb
+#@nonl
+#@-node:ekr.20031218072017.667: Test
+#@-node:ekr.20031218072017.665:(Cut & Paste ) (Middle-button bug reported by Timo)
+#@+node:ekr.20031218072017.668:Automatic select & Paste bug (Linux?)
+@nocolor
+
+Bumping the thread because the bug still persists. 
+
+I've also noticed that the automatic select'n'paste doesn't work between nodes. That is, I can select text and paste a copy of it in the same node with middle button, but if I change click to another node, the paste buffer is erased. The automatic pasting works between Leo and other applications, however, and I can paste between nodes if I copy the selection to buffer by CTR-C. 
+
+Maybe this is related to the non-sticking bug?
+
+----
+
+This may be a Linux-only bug related to the control-v workaround.
+#@nonl
+#@-node:ekr.20031218072017.668:Automatic select & Paste bug (Linux?)
+#@-node:ekr.20031218072017.664:Cut/paste bug on X windows (waiting for help)
+#@+node:ekr.20050514171429:Glitch pasting into headlines
+
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=3152036
+By: ngirard
+
+Hi again,
+
+Leo has IMHO a slight inconsistency as when a new node is created and has to
+be given a name.
+
+When the new node is created, the string "NewHeadline" appears and is selected.
+Then there are 2 ways of setting a new name:
+
+1. by typing the new name character by character using the keyboard. This way,
+"NewHeadline" disappears as the first character of the new name is typed. Here
+the implicit idea is that "NewHeadline" is very unlikely to be the final node
+name -- which makes sense to me ;-)
+
+2. by pasting the contents of the clipboard, with Ctrl-v. This way, "NewHeadline"
+*remains* and the contents of the clipboard is appended to it.
+
+
+I find leo's behaviour in case #2 inconsistent with #1 and suggest that the
+first approach should be preferred.
+
+Cheers,
+Nicolas
+
+
+______________________________________________________________________
+You are receiving this email because you elected to monitor this forum.
+To stop monitoring this forum, login to SourceForge.net and visit: 
+https://sourceforge.net/forum/unmonitor.php?forum_id=10226
+
+#@-node:ekr.20050514171429:Glitch pasting into headlines
+#@+node:ekr.20031218072017.669:Linux-only Bugs
+These may indicate problems with Tk on Linux.  I can not reproduce them on XP.
+#@nonl
+#@+node:ekr.20031218072017.670:Possible webbrowser bug
+(In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field. 
+#@nonl
+#@-node:ekr.20031218072017.670:Possible webbrowser bug
+#@+node:ekr.20031218072017.671:Fix horiz scrollbar bug when tiling horizontally
+When in 'vertical split' mode (with viewpane on right, and tree pane over log pane on left), the horixontal scrollbar at bottom of screen is at full width, despite the fact that not all of the tree pane area is displayed. 
+
+Another way of saying this - I narrow the tree and log panes, to the extent that the display of tree node headings is truncated. But the horizontal scrollbar at the bottom doesn't contract, and doesn't allow me to horizontally scroll the tree pane to expose the rest of the node headings. 
+#@-node:ekr.20031218072017.671:Fix horiz scrollbar bug when tiling horizontally
+#@+node:ekr.20031218072017.672:Control-V doesn't work on Linux
+This has been and continues to be a known issue with Tk. Has been logged as a bug; no response from the Tk folks. 
+
+Here is a link to the Tk bug report: 
+
+http://sourceforge.net/tracker/?func=detail&aid=605277&group_id=12997&atid=112997 
+
+Note the work-around/patch in the followup post at the bottom of that page. Commenting out some statements in text.tcl removes the problem. 
+#@-node:ekr.20031218072017.672:Control-V doesn't work on Linux
+#@-node:ekr.20031218072017.669:Linux-only Bugs
+#@+node:ekr.20050202073944:Mac bugs
+#@+node:ekr.20050201175325.2:Can't delete script buttons
+#@-node:ekr.20050201175325.2:Can't delete script buttons
+#@+node:ekr.20050201175325.1:Icon buttons are not colored, nor do they have square borders, etc.
+#@-node:ekr.20050201175325.1:Icon buttons are not colored, nor do they have square borders, etc.
+#@+node:ekr.20050202052911.1:Find Text in Find Panel gets focus only if it contains text
+#@-node:ekr.20050202052911.1:Find Text in Find Panel gets focus only if it contains text
+#@-node:ekr.20050202073944:Mac bugs
+#@+node:ekr.20031218072017.673:Tk bugs
+The following bugs can not be fixed because they are Tk bugs.
+#@nonl
+#@+node:ekr.20041201071145:Tk Freezes on debean when libtk is compiled with thread support
+http://sourceforge.net/forum/message.php?msg_id=2876797
+By: skal
+
+By: Grossé Pascal - skal
+RE: Leo freezing up  
+2004-12-01 06:15
+
+The freezing problem on debian sid (which is also my current OS) is caused by a bug in Tkinter: Tkinter does not work when libtk is compiled with thread support, which is the case on debian sid for tk8.4 
+I compiled my own non-threaded libtk with the corresponding python/tkinter, and the freeze magically vanished.  
+
+This is a known bug in debian bugtrack: 
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=171353 
+
+Skal
+#@-node:ekr.20041201071145:Tk Freezes on debean when libtk is compiled with thread support
+#@+node:EKR.20040523192553:(Crash when pasting large text into headlines)
+#@+node:EKR.20040606104355:Report
+@nocolor
+
+From: <eltronic@juno.com>
+To: <edreamleo@charter.net>
+Sent: Sunday, May 23, 2004 9:36 AM
+Subject: fatal bug in Leo headline handling
+
+
+> found a fatal bug in Leo headline handling.
+> not sure if anyone reported before,
+> an oversize string can crash python 2.3.3
+> 
+> 
+> the text was about 4500 bytes. nothing but text.
+> opened the  leo again, copy a large page of text,
+> insert headline, paste, fatal error in python.
+> 
+> I have by mistake pasted whatever node xml was in 
+> the copy buffer into a headline w/o problem.
+> but that was just dumb luck. just verified,
+> had the node been large enough it crashes.
+> 
+> Leo 4.1 final, py2.3.3 win98
+> PYTHON caused an invalid page fault in
+> module TK84.DLL at 0167:1022b74f.
+> 
+> Leo 4.1 final, py2.2 win98
+> paste a 15k node copy into headline. no problem.
+> 
+> this is the first repeatable hard crash I've stumbled on
+> and thought it best to report it privately.
+> I can think of no advantage to allowing a headline 
+> of this size anyway. think of the tooltip that would create!
+> 
+> there are latent bugs in the selectall and delete from 
+> the edit menu related to headline as well on the todo list.
+> reported many times. 
+> covert destruction of the selected body text.
+> use of virtual events, with out proper focus to headline.
+> 
+> without myself being able to supply a patch, I'll guess,
+> the virtual event paste called can as well point 
+> to a function that checks the size before pasting.
+> or simply sets the headline directly with 
+> g.app.gui.getTextFromClipboard()[:1024]
+> 
+> 
+> e
+#@-node:EKR.20040606104355:Report
+#@-node:EKR.20040523192553:(Crash when pasting large text into headlines)
+#@+node:ekr.20031218072017.674:Caps lock affects keyboard shortcuts on Windows
+Using leo under Windows, the keyboard shortcuts seem to use the "Caps Lock" state in determining the shift state when executing a shortcut.   For example, if the caps-lock key is on, then Ctrl-X is interpreted as Shift-Ctrl-X and cuts a node rather than selected text, and Shift-Ctrl-X is interpreted as Ctrl-X and cuts text.
+#@-node:ekr.20031218072017.674:Caps lock affects keyboard shortcuts on Windows
+#@+node:ekr.20031218072017.675:Tree problems
+1. The border of the tree control is gray, and it is overwritten with large headlines.  This may be a Tk or Tkinter bug.
+
+2. Adding trailing whitespace to a line in body text does not set the file-dirty mark.  This can never cause a derived file to become "out-of-synch" because the read code does not compare body text.
+
+Apparently there is no way to fix this glitch because of holes in Tk's event mechanism.  Specifically, tree.idle_body_key has no way to tell directly what keystroke caused it to be entered.
+#@nonl
+#@-node:ekr.20031218072017.675:Tree problems
+#@+node:ekr.20031218072017.676:Control-T can't be overridden in canvas text.
+#@-node:ekr.20031218072017.676:Control-T can't be overridden in canvas text.
+#@+node:ekr.20031218072017.677:(Alt-ctrl = Alt)
+@nocolor
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1765069
+By: dalcolmo
+
+I use the bindings that come with Leo:
+
+[keyboard shortcuts]
+pastenode = Shift+Ctrl+V
+gonextvisible = Alt+DnArrow
+importtofile = Shift+Ctrl+F
+writefilenodes = Shift+Ctrl+W
+editheadline = Ctrl+H
+markchangeditems = Alt+C
+replace = Ctrl+=
+goprevvisible = Alt+UpArrow
+gotonextmarked = Alt+M
+readoutlineonly = Shift+Ctrl+R
+extractnames = Shift+Ctrl+N
+gonext = Alt+Shift+DnArrow
+findpanel = Ctrl+F
+close = Ctrl+W
+demote = Ctrl+}
+tangle = Shift+Ctrl+T
+extract = Shift+Ctrl+D
+openpythonwindow = Alt+P
+marksubheads = Alt+S
+saveas = Shift+Ctrl+S
+cut = Ctrl+X
+preferences = Ctrl+Y
+equalsizedpanes = Ctrl+E
+cantundo = Ctrl+Z
+open = Ctrl+O
+promote = Ctrl+{
+sortsiblings = Alt-A
+unmarkall = Alt+U
+mark = Ctrl+M
+showinvisibles = Alt+V
+exit = Ctrl-Q
+insertnode = Ctrl+I
+findprevious = F4
+converttabs = Shift+Ctrl+J
+save = Ctrl+S
+tanglemarked = Shift+Ctrl+M
+moveup = Ctrl+U
+copynode = Shift+Ctrl+C
+contractparent = Alt+0
+selectall = Ctrl+A
+setfont = Alt+Shift+T
+aborteditheadline = Shift+Esc
+goback = Alt+Shift+UpArrow
+toggleactivepane = Ctrl+T
+findnext = F3
+tangleall = Shift+Ctrl+A
+endeditheadline = Esc
+deletenode = Shift+Ctrl+BkSp
+cantredo = Shift+Ctrl+Z
+new = Ctrl+N
+contractall = Alt+1
+moveleft = Ctrl+L
+copy = Ctrl+C
+paste = Ctrl+V
+convertblanks = Shift+Ctrl+B
+expandall = Alt+9
+markchangedroots = Alt+R
+cutnode = Shift+Ctrl+X
+indent = Ctrl+]
+gotonextchanged = Alt+D
+expandnextlevel = Alt+=
+setcolors = Alt+Shift+S
+matchbrackets = Ctrl+K
+movedown = Ctrl+D
+clonenode = Ctrl+`
+untangle = Shift+Ctrl+U
+expandtolevel7 = Alt+7
+expandtolevel6 = Alt+6
+expandtolevel5 = Alt+5
+expandtolevel4 = Alt+4
+expandtolevel3 = Alt+3
+expandtolevel2 = Alt+2
+moveright = Ctrl+R
+unindent = Ctrl+[
+replacethenfind = Ctrl+-
+extractsection = Shift+Ctrl+E
+expandtolevel8 = Alt+8
+
+
+However, I use a utility called AllChars (Free as in beer :-(  ) to be able
+to type all kinds of chars on my US keyboard, and "Handything" to place the
+windows on the screen (Win2000). Perhaps this makes a difference, although disabling
+them did not seem to make it go away. Still, on pressing alt+ctrl+uparrow I
+end up at the next upper node etc...
+
+- Josef
+
+#@-node:ekr.20031218072017.677:(Alt-ctrl = Alt)
+#@+node:ekr.20031218072017.718:(tab bug)
+#@+node:ekr.20040117092727:This is definitely a Tk bug
+By: dthein ( Dave Hein ) 
+ RE: BUG: Non-leading tabs not working properl   
+2004-01-17 14:40  
+
+ This seems to be a TK bug. I've reproduced the problem directly in Tk.
+
+It's been around for a long time :-(
+
+More details on this page, along with a patch for an earlier version.
+
+http://www.qs.co.nz/Tcl/TkTabs.html
+
+The Tk folks fixed a bug I reported with Ctrl-V behavior, but it took about a year for them to get to it. I don't have high expectations with this problem either, but I'll probably put together a patch for some of the recent version of Tk and submit the patches and bug report.  
+#@-node:ekr.20040117092727:This is definitely a Tk bug
+#@+node:ekr.20040118090055:Patch and bug report
+https://sourceforge.net/forum/message.php?msg_id=2380238
+By: dthein
+
+I've submitted a patch and bug report to the Tk project.
+
+The patch, #879073, for those that want to fix this problem on their systems,
+is at:
+
+http://sourceforge.net/tracker/?func=detail&aid=879073&group_id=12997&atid=31299
+7
+
+And the bug report, #879077, is at:
+
+http://sourceforge.net/tracker/?func=detail&aid=879077&group_id=12997&atid=11299
+7
+
+The patch is for 8.4.2.  If you have a different version, you can probably figure
+out the changes needed by looking at the patch file.  If not, let me know your
+version and I may be able to produce a patch for it.
+
+Note: If you use tabs for anything other than leading whitespace, you will find
+this patch really helpful.  I make lots of little tables when I'm documenting
+or note-taking ... this fix really helped my sanity when making those tables
+inside Leo.
+
+Dave Hein
+#@nonl
+#@-node:ekr.20040118090055:Patch and bug report
+#@+node:ekr.20031218072017.719:Report
+@nocolor
+
+Read and respond to this message at: 
+https://sourceforge.net/forum/message.php?msg_id=1906790
+By: dspeed
+Open Discussion
+
+-- Tabs are not expanded correctly in .c files, when language in preferences is set to c, and when the tabs occur in the middle of a line. The tabs are expanded as spaces until the next tab location is reached, then the tabs are expanded correctly. 
+#@-node:ekr.20031218072017.719:Report
+#@+node:ekr.20040105070023.5:Report 2
+Leo 4.1 rc3, build 1.62 , December 19, 2003
+Python 2.3.0, Tk 8.4.2
+Linux 2.4.22-21mdkenterprise
+
+1. Any tab typed before the first tab stop behaves correctly (the cursor is moved to the tab stop). Good.
+
+2. Any tab typed after a non-tab character (even a space) _and_ after the first tab stop position doesn't behave like a tab and doesn't move the cursor to the next tab stop. Bad.
+
+3. Any tab typed after a tab character will behave properly no matter what position on the line. Okay.
+
+To reproduce this, set your global tab prefernence to 4. Show invisibles. And then create a node containing:
+
+[BEGIN BODY TEXT]
+@language plain
+@tabwidth 8
+[END BODY TEXT]
+
+Create a child node to that one, containing:
+
+[BEGIN BODY TEXT]
+@root-code somefilename
+\t\tThis works
+bbb\tAnd This works
+So\tdoes this
+
+But, this \tdoes not.
+Here is the two-tab \t\t behavior.
+[END BODY TEXT]
+
+I hope this is a Leo bug and not a Tk bug. 
+
+Dave Hein 
+#@nonl
+#@-node:ekr.20040105070023.5:Report 2
+#@+node:ekr.20031218072017.720:Minimal test
+This is a test line.
+#@nonl
+#@-node:ekr.20031218072017.720:Minimal test
+#@+node:ekr.20031218072017.721:Test File for Non Expanding Tabs
+This is a test line.
+put the text insertion point in the space between 'a' and 'test' above. Enter 3 tabs in a row and watch it not work.
+
+If your expansion works correctly, then maybe something with leoconfig?  But wait, Im using the leoconfig from the beta download.
+
+The contents of my Log Windows when opening this file:
+
+Leo Log Window...
+Pyton 2.2.2, Tk 8.3.2
+reading d:\test.leo
+
+
+#@-node:ekr.20031218072017.721:Test File for Non Expanding Tabs
+#@-node:ekr.20031218072017.718:(tab bug)
+#@-node:ekr.20031218072017.673:Tk bugs
+#@+node:ekr.20040129133809.8:top node not saved
+@nocolor
+
+When opening a .leo file Leo selects the correct node but it is no longer the top most node in the window.
+
+What I did:
+
+- Eliminated entries like a="":  This happened because Leo no longer writes clone bits.
+
+- Made sure Leo writes a="T" entries.  However, Leo really can't use this easily.
+
+Another possibility would be to save the scrolling state, but that is very gui-dependent.
+#@nonl
+#@-node:ekr.20040129133809.8:top node not saved
+#@-node:ekr.20031218072017.663:Bug: can't be fixed
+#@+node:ekr.20040105064959:Bugs: can wait
+@nocolor
+#@nonl
+#@+node:ekr.20040115165036:bug in xml doc parts (hard to fix?)
+@language html
+@ignore
+@color
+#@nonl
+#@+node:ekr.20040115165036.1:Demo XML comment bug
+@ 
+This document demonstrates what appears to be a bug in Leo 4.1 rc3, build 1.62 of December 19, 2003.
+
+It has manifested when Leo is executed under Python 2.3.3, Tk 8.4.3 under Windows 2000.
+
+In brief, derived XML files are not well-formed with respect to comments under some conditions.  Comments can wind up nested, which looks okay to humans but not to XML parsers.
+@c
+#@nonl
+#@-node:ekr.20040115165036.1:Demo XML comment bug
+#@+node:ekr.20040115165036.3:@file xmlcommentbug.xml
+@first
+@language HTML
+<HiMom>
+@ This will produce, in the derived file, an XML comment with another XML comment embedded.  Or, if you prefer, it will produce an unclosed XML comment followed by a well-formed one, followed by a string of text containing a comment-close marker.
+
+This text is sitting in the inner comment, according to the first view.
+@c
+
+
+@
+This comment is well-formed, seemingly because its content does not begin on the same line as the at-sign.
+@c
+</HiMom>
+#@nonl
+#@-node:ekr.20040115165036.3:@file xmlcommentbug.xml
+#@+node:ekr.20040115165036.4:xmlcommentbug.xml
+<?xml version='1.0'?>
+<!--@+leo-ver=4-->
+<!--@+node:@file xmlcommentbug.xml-->
+<!--@@first-->
+<!--@@language HTML-->
+<HiMom>
+<!--@+at -->
+<!--
+<!--@nonl-->
+This will produce, in the derived file, an XML comment with another XML 
+comment embedded.  Or, if you prefer, it will produce an unclosed XML comment 
+followed by a well-formed one, followed by a string of text containing a 
+comment-close marker.
+
+This text is sitting in the inner comment, according to the first view.
+-->
+<!--@-at-->
+<!--@@c-->
+
+
+<!--@+at-->
+<!--
+This comment is well-formed, seemingly because its content does not begin on 
+the same line as the at-sign.
+-->
+<!--@-at-->
+<!--@@c-->
+</HiMom>
+<!--@nonl-->
+<!--@-node:@file xmlcommentbug.xml-->
+<!--@-leo-->
+#@nonl
+#@-node:ekr.20040115165036.4:xmlcommentbug.xml
+#@-node:ekr.20040115165036:bug in xml doc parts (hard to fix?)
+#@+node:ekr.20040125114453:Import bug?control-alt-f of python code misalloctes code (waiting for answer)
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=2391076
+By: thyrsus
+
+There is a lot of correct intepretation going on, but there are some errors.
+As an example, the anaconda code, in text.py, contains the following lines.
+I'll use periods for leading whitespace, the two characters ^I for leading tabs,
+and a $ to indicate a newline:
+
+class WaitWindow:
+def pop(self):
+    self.screen.popWindow()
+    self.screen.refresh()
+
+def __init__(self, screen, title, text):
+    self.screen = screen
+    width = 40
+    if (len(text) < width): width = len(text)
+
+    t = TextboxReflowed(width, text)
+
+    g = GridForm(self.screen, title, 1, 1)
+    g.add(t, 0, 0)
+    g.draw()
+    self.screen.refresh()
+
+
+After importing file text.py, I get three associated nodes like so:
+
+[class WaitWindow]
+.|
+.+-[pop]
+.|
+.+-[__init__]
+
+However, the contents of the nodes are off.  In node [class WaitWindow] the
+text is
+
+class WaitWindow:
+@others
+    self.screen = screen
+    width = 40
+    if (len(text) < width): width = len(text)
+
+    t = TextboxReflowed(width, text)
+    g = GridForm(self.screen, title, 1, 1)
+    g.add(t, 0, 0)
+    g.draw()
+    self.screen.refresh()
+
+Node [pop] contains the text
+
+def pop(self):
+
+Node [__init__] contains the text
+
+self.screen.popWindow()
+self.screen.refresh()
+
+def __init__(self, screen, title, text):
+
+This anaconda code is being correctly interpreted by the python 1.5 interpreter.
+I'm too green with python to pronounce on whether the formatting is conventional.
+I don't consider this a bug a major problem, but it should probably be addressed
+before we start touting Leo for large collections of existing code.
+
+This is my first experience importing python; in the past I've imported perl
+code, and Leo gave me just one big @file node, and I was on my own to better
+structure it.  Given the perversity of perl syntax ("Nothing but perl can parse
+Perl." - Tom Christiansen), that's probably the right thing to do.  It's a judgement
+call for whomever wants to take responsibility for the python importer as to
+whether that may be the right thing to do for python.
+#@nonl
+#@-node:ekr.20040125114453:Import bug?control-alt-f of python code misalloctes code (waiting for answer)
+#@+node:ekr.20040129133809.5:Expand/contract may not work after drag (works for me)
+sometimes after a drag of a node, 
+then the expand/contract doesnt work.
+click or menu has no effect.
+in an open leo
+maybe it is ok after you save the file
+other times only fix is to exit & restart.
+#@nonl
+#@-node:ekr.20040129133809.5:Expand/contract may not work after drag (works for me)
+#@-node:ekr.20040105064959:Bugs: can wait
+#@-node:ekr.20040329185649:Known Bugs: can't be fixed or can wait
+#@+node:ekr.20040217153407.1:Unify @root and @file
+@nocolor
+
+- There is no way to unify the syntax: a different syntax is needed to specify sections that may appear in pieces.
+
+- I have little interest in this project, even if a better read logic for @root derived files might make automatic untangling possible.
+#@-node:ekr.20040217153407.1:Unify @root and @file
+#@+node:ekr.20060228072202:New undoer
+#@+node:ekr.20060201161901.1:Postings re undo
+#@+node:ekr.20060201161901.2:@url http://sourceforge.net/forum/message.php?msg_id=3332355
+@nocolor
+
+By: Edward K. Ream - edream 
+   RE: Dividing The Undo: doing w/o v.uA 
+2005-09-09 14:17  
+> If we can open up how [Leo] reads xml, it may make it simpler to start developing a stash scheme. 
+
+I agree that reading xml more properly would be A Good Thing (tm). As we shall see, however, it is not the main issue. 
+
+> DOM seems like a good path to start out on. 
+
+This is not the path I would have chosen. The new colorizer at in leoPlugins.leo at: 
+
+Plugins-->Experimental/unfinished-->New colorizer-->@thin __jEdit_colorizer__.py 
+
+uses sax. I like the light-weight approach. I would rather do a bit more work in the initial parsing and create the data structures myself then relying on DOM. 
+
+But parsing is irrelevant. The problem is the design of *thin* derived files and the code that reads such files. Let us consider how we can "do without" v.unknownAttributes in thin derived files. I **shall not** change the format of thin derived files, so some trickery is required. The first step is read this section of Leo's new docs: 
+
+http://webpages.charter.net/edreamleo/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files  /> 
+The key here is the so-called 'hidden machinery'. This is an essential feature of the code that reads and writes thin derived files and it **will not** change. **Note**: Leo has two sets of read code: the code that reads .leo files has no trouble whatever recreating vnodes. It is only vnodes in thin derived files that may not have attributes. 
+
+**Important**: for @thin trees (in the outline) Leo saves *only* the <v> element corresponding to the @thin node itself. It is this <v> element that contains the 'hidden machinery'. Don't even think about having Leo write the whole tree of <v> elements: the 4.0 read code is made possible because these <v> elements do *not* exist. This eliminates all the error 'recovery' schemes that can not, if fact, be robust enough. 
+
+So the only real alternative is to add uA's sufficient to recreate elements in the *reconstituted* vnodes that Leo creates in the leoAtFile read logic. Happily, we can do this as follows. When writing, a plugin (or an extended Leo) would 'piggyback' the vnode attributes in the corresponding **t**.unknownAttributes field. When reading, the plugin (or Leo) would put the vnode attributes "where they belong" in the appropriate vnode. We associate a 'vnode traversal index' with each vnode. This is simply how many previous "same" vnodes appeared in the traversal before getting to the desired vnode. Something like this:: 
+
+vx = {} # traversal indices for vnodes. 
+for p in c.allNodes_iter(): 
+....n = vx.get(p.v.t,0) # n is the traversal index for vnode p.v. 
+....vx[p.v.t] = n+1 # bump the index for the next v such that v.t == p.v.t 
+
+We store attributes for vnode v in v.t.unknownAttributes, along with the traversal index. The read code uses the traversal index to copy vnode attributes from t.unknownAttributes to v.unknownAttrutes. Rather than forcing each plugin to do this, Leo should probably have support for this in the leoFileCommands read/write code. In short, the t.unknownAttributes machinery suffices in theory, and in practice a bit of support code would be good. 
+
+Glad you asked :-) . I have been willing to live without v.uA's in thin derived files. I never thought much about this until you asked, but necessity is the mother... So this is good. A way exists to treat all vnodes as first-class citizens. 
+
+Edward 
+#@-node:ekr.20060201161901.2:@url http://sourceforge.net/forum/message.php?msg_id=3332355
+#@-node:ekr.20060201161901.1:Postings re undo
+#@+node:ekr.20060201152349:NodeUndoer.py
+@ignore
+
+<<imports>>
+#commanders = util.WeakHashMap()
+commanders = {}
+
+
+class NodeUndoer:
+    '''A class that manages NodeUndoerBase instances for tnodes'''
+
+    undoers = {} #util.WeakHashMap()
+    checksums = util.WeakHashMap()
+
+    def __init__( self, c, umenu, rmenu, gtnu, gtnr, vunstack, clearundo ):
+        '''c -> a commander
+           umenu -> a JMenuItem that is the 'undo' action
+           rmenu -> a JMenuItem that is the 'redo' action
+           gtnu -> a JMenuItem that is the 'goto next undo' action
+           gtnr -> a JMenuItem that is the 'goto next redo' action
+           vunstack -> a JMenuItem that is the 'visualise undo stack' action
+           clearundo -> a JMenuItem that is the 'clear undo stack' action
+        '''
+
+        self.c = c
+        self.umenu = umenu
+        umenu.actionPerformed = lambda event: self.undo()
+        self.rmenu = rmenu
+        rmenu.actionPerformed = lambda event: self.redo()
+        self.gtnu = gtnu
+        gtnu.actionPerformed = lambda event: self.gotoNextUndoSpot()
+        self.gtnr = gtnr
+        gtnr.actionPerformed = lambda event : self.gotoNextRedoSpot()
+        self.umanager = None
+        self.vunstack = vunstack
+        vunstack.actionPerformed = lambda event: self.visualiseUndoStack()
+        self.clearundo = clearundo
+        clearundo.actionPerformed = lambda event: self.clearUndo()
+        self.ignore = 0
+        self.tnode = None
+        self.compound = None 
+        self.checksums_ok = 1
+        self.checksum_violations = []
+        wm1 = WeakMethod( self, "serializeForLeoFile" ); wm2 = WeakMethod( self, "unserializeFromLeoFile" )
+        wm3 = WeakMethod( self, "checkSumViolation" )
+        leoPlugins.registerHandler( "write-leo-file-data", wm1 )
+        leoPlugins.registerHandler( "read-leo-file-data", wm2 )
+        leoPlugins.registerHandler( "checksum-violation", wm3 )
+
+    def undo( self ):
+
+        if self.ignore: return
+        self.ignore = 1
+        self.umanager.undo()
+        self.setMenu()
+        self.ignore = 0
+        return
+
+    def redo( self ):
+
+        if self.ignore: return
+        self.ignore = 1
+        self.umanager.redo()
+        self.setMenu()
+        self.ignore = 0
+        return
+
+
+    def setNode( self, p ):
+
+        #print "SETTING NODE!!! %s" % t
+        #print "FILEINDEX %s" % t.fileIndex
+        #java.lang.Thread.dumpStack()
+        v = p.v
+        t = v.t
+        #vid = v.vid
+
+        if self.tnode:
+            self.checksums[ self.tnode ] = md5.md5( self.tnode.bodyString ).hexdigest()
+
+        #if self.undoers.containsKey( t ):
+        if self.undoers.has_key( v ):
+            #print "CONTAINTS %s" % t
+            ua = self.undoers[ v ]
+            print "--!!!!!!-- %s" % v
+            print ua.__class__
+            if ua.__class__ == leoSwingUndo.UndoBase:
+                self.umanager = self.undoers[ v ]
+                #if self.checksums.containsKey( v ):
+                #    checksum = self.checksums[ v ]
+                #    amd5 = md5.md5( t.bodyString )
+                #    if amd5.hexdigest() != checksum:
+                #        self.umanager.discardAllEdits()
+                #        g.es( "Emptied undoer for %s:%s because of checksum mismatch" % ( t.headString, t ), color = "red" )
+                #        #self.tnode = t
+                #        #return
+                #for z in self.umanager.undostack:
+                #    commanders[ z ] = self.c
+            else:
+                print "UNPICKLING!!!!!"
+                ua = cPickle.loads( ua )
+                print "UNPICKLED Is now %s %s" % ( ua, len( ua.undostack ) )
+                self.undoers[ v ] = ua
+                self.umanager = ua
+            if self.checksums.containsKey( t ):
+                checksum = self.checksums[ t ]
+                amd5 = md5.md5( t.bodyString )
+                if amd5.hexdigest() != checksum:
+                    self.umanager.discardAllEdits()
+                    print "DISCARDED EDITSS!!!!"
+                    g.es( "Emptied undoer for %s:%s because of checksum mismatch" % ( t.headString, t ), color = "red" )
+                    #self.tnode = t
+                    #return
+            for z in self.umanager.undostack:
+                commanders[ z ] = self.c
+
+        else:
+            print "V not in Undoers %s" % v
+            #print v.vid
+            self.umanager = leoSwingUndo.UndoBase()
+            self.undoers[ v ] = self.umanager
+
+        self.tnode = t
+        self.setMenu()
+
+    def __addUndo( self, undo ):
+        #self.umanager.addEdit( undo )
+        self.umanager.addUndo( undo )
+        #upe = self.UndoableProxyEvent( undo, self.umanager, self, self.c )
+        #self.c.undoer.addUndo( upe )
+        #die_listeners[ undo ] = upe
+
+
+    def addUndo( self, undo ):
+
+        if not self.ignore:
+
+            if self.compound:
+                self.compound.addEdit( undo )
+                return
+
+            self.__addUndo( undo )                
+
+        self.setMenu()
+
+    def setMenu( self ):
+
+        self.umenu.setText( self.umanager.getUndoPresentationName() )
+        self.umenu.setEnabled( self.umanager.canUndo() )
+        if self.umanager.canUndo():
+            self.gtnu.setEnabled( 1 )
+        else:
+            self.gtnu.setEnabled( 0 )
+        self.rmenu.setText( self.umanager.getRedoPresentationName() )    
+        self.rmenu.setEnabled( self.umanager.canRedo() ) 
+        if self.umanager.canRedo():
+            self.gtnr.setEnabled( 1 )
+        else:
+            self.gtnr.setEnabled( 0 )
+
+        self.c.undoer.setMenu()
+
+
+
+    def getUStack( self, tnode ):
+
+        if hasattr( tnode, 'unknownAttributes' ):
+            uas = tnode.unknownAttributes
+        else:
+            tnode.unknownAttributes = uas = {}
+
+        return uas
+
+
+    def clearUndo( self ):
+
+        self.umanager.discardAllEdits()
+        self.setMenu()
+
+    def gotoNextUndoSpot( self ):
+
+        ua = self.umanager.editToBeUndone()
+        if ua:
+            spot = ua.spot
+            self.c.frame.body._current_editor.setCaretPosition( spot )
+            return
+
+    def gotoNextRedoSpot( self ):
+        ua = self.umanager.editToBeRedone()
+        if ua:
+            spot = ua.spot
+            self.c.frame.body._current_editor.setCaretPosition( spot )
+            return
+
+    @others
+
+
+
+<<UndoableDocumentEvent>>
+<<UndoableCompoundEvent>>
+
+
+
+
+#@+node:ekr.20060201152349.1:<<imports>>
+import java
+import java.util as util
+import javax.swing as swing
+import javax.swing.undo as sundo
+import javax.swing.event as sevent
+import java.io as io
+import jarray
+import md5
+import org.python.util as putil
+import NodeUndoerBase
+import LeoCompoundEdit
+import leoGlobals as g
+import zlib
+import leoSwingUndo
+import leoPlugins
+import leoNodes
+import base64
+import pickle
+import cPickle
+from utilities.WeakMethod import WeakMethod
+#@nonl
+#@-node:ekr.20060201152349.1:<<imports>>
+#@+node:ekr.20060201152349.2:visualiseUndoStack
+def visualiseUndoStack( self ):
+
+    umanager = self.umanager            
+    table = swing.JTable( self.UneditableTableModel() )#( data, util.Vector( [ 'spot', 'data', 'action', 'redo/undo' ] ) )
+    table.setSelectionMode( swing.ListSelectionModel.SINGLE_SELECTION )
+    self.setDataForTable( table )
+
+
+    jd = swing.JDialog()
+    jd.setTitle( "Undo Stack" )
+    cp = jd.getContentPane()
+    cp.add( swing.JScrollPane( table ) )
+    bholder = swing.JPanel()
+    cp.add( bholder, java.awt.BorderLayout.SOUTH )
+    uto = swing.JButton( "Undo To" )
+    bholder.add( uto )
+    <<_undoTo>>
+    uto.actionPerformed = _undoTo
+
+    rto = swing.JButton( "Redo To" )
+    bholder.add( rto )
+    <<_redoTo>>
+    rto.actionPerformed = _redoTo
+
+
+    jb = swing.JButton( "Close" )
+    jb.actionPerformed = lambda event : jd.dispose()
+    bholder.add( jb )
+    jd.pack()
+    g.app.gui.center_dialog( jd )
+    jd.setModal( 1 )
+    jd.show()
+
+
+#@+node:ekr.20060201152349.3:<<_undoTo>>
+def _undoTo( event ):
+    sr = table.getSelectedRow()
+    if sr == -1:
+        swing.JOptionPane.showMessageDialog( None,
+                                            "No Selected Row",
+                                            "Select A Row Please",
+                                            swing.JOptionPane.INFORMATION_MESSAGE )
+        return
+    edits = umanager.getEdits()
+    undo = edits.get( sr )
+    if not undo.canUndo():
+        swing.JOptionPane.showMessageDialog( None, 
+                                            "Cant Undo To This Point", 
+                                            "Illegal Undo Selection", 
+                                            swing.JOptionPane.WARNING_MESSAGE )
+        return
+    self.ignore = 1
+    umanager.undoTo( undo )
+    self.ignore = 0
+    self.setDataForTable( table )
+#@-node:ekr.20060201152349.3:<<_undoTo>>
+#@+node:ekr.20060201152349.4:<<_redoTo>>
+def _redoTo( event ):
+    sr = table.getSelectedRow()
+    if sr == -1:
+        swing.JOptionPane.showMessageDialog( None,
+                                            "No Selected Row",
+                                            "Select A Row Please",
+                                            swing.JOptionPane.INFORMATION_MESSAGE )
+        return
+    edits = umanager.getEdits()
+    undo = edits.get( sr )
+    if not undo.canRedo():
+        swing.JOptionPane.showMessageDialog( None, 
+                                            "Cant Redo To This Point", 
+                                            "Illegal Redo Selection", 
+                                            swing.JOptionPane.WARNING_MESSAGE )
+        return
+
+    self.ignore = 1
+    umanager.redoTo( undo )
+    self.ignore = 0
+    self.setDataForTable( table )
+
+#@-node:ekr.20060201152349.4:<<_redoTo>>
+#@-node:ekr.20060201152349.2:visualiseUndoStack
+#@+node:ekr.20060201152349.5:buildTableData
+def buildTableData( self ):
+
+    data = util.Vector()
+    editu = self.umanager.editToBeUndone()
+    editr = self.umanager.editToBeRedone()
+    umanager = self.umanager
+    cu = cr = -1
+    edits = umanager.getEdits()
+    for z in edits:
+        if z.__class__ == LeoCompoundEdit:
+            vec = java.util.Vector()
+            edits2 = z.getEdits()
+            spot = edits2[ 0 ].spot
+            vec.add( spot )
+            vec.add( "?" )
+            vec.add( z.getPresentationName() )
+            vec.add( "" )
+        else:
+            vec = z.getForTableModel()
+
+        if z is editu:
+            vec.set( 3, 'current undo' )
+            cu = edits.indexOf( z )
+        elif z.canUndo():
+            vec.set( 3, 'undo' )
+        if z is editr:
+            vec.set( 3, 'current redo' )
+            cr = edits.indexOf( z )
+        elif z.canRedo():
+            vec.set( 3, 'redo' )
+        data.add( vec )
+
+    return data, cu, cr
+
+
+#@-node:ekr.20060201152349.5:buildTableData
+#@+node:ekr.20060201152349.6:setDataForTable
+def setDataForTable( self, table ):
+
+    data, cu, cr = self.buildTableData()
+    dm = table.getModel()
+    dm.setDataVector( data, util.Vector( [ 'spot', 'data', 'action', 'redo/undo' ] ) )
+    lsm = table.getSelectionModel()
+    if cu != -1:
+        lsm.setLeadSelectionIndex( cu )
+    elif cr != -1:
+        lsm.setLeadSelectionIndex( cr )
+
+#@-node:ekr.20060201152349.6:setDataForTable
+#@+node:ekr.20060201152349.7:pickle and unpickle
+def serializeForLeoFile( self, tag, *args, **kwords ):
+
+    if not args[ 0 ].has_key( "c" ): return
+    c = args[ 0 ][ 'c' ]
+    store = args[ 0 ][ 'store' ]
+    if c == self.c:
+        nwundoers = {}
+        for z in self.undoers:
+            if  self.undoers[ z ].__class__ == leoSwingUndo.UndoBase:
+                nwundoers[ z.vid ] = cPickle.dumps( self.undoers[ z ] )
+            else:
+                nwundoers[ z.vid ] = self.undoers[ z ]
+
+        store.addData( "tundoer", nwundoers ) #the storage class does the rest of the work for us
+
+
+def unserializeFromLeoFile( self, tag, *args, **kwords ):
+
+    if not args[ 0 ].has_key( "c" ): return
+    c = args[ 0 ][ 'c' ]
+    store = args[ 0 ][ 'store' ]
+    if c == self.c and self.checksums_ok:
+        try:
+            udata = store.getData( "tundoer" )
+            if udata:
+                for z in udata:
+                    if leoNodes.vid_vnode.has_key( z ):
+                        #print "A connection %s %s" % ( z, leoNodes.vid_vnode[ z ] )
+                        v = leoNodes.vid_vnode[ z ]
+                        self.undoers[ v ] = udata[ z ]
+
+        except:
+            self.undostack = []
+            self.undopointer = 0
+
+    if not self.checksums_ok:
+        self.checksums_ok = 1
+        self.checksum_violations = []
+        self.undostack = []
+        self.undopointer = 0
+
+#@-node:ekr.20060201152349.7:pickle and unpickle
+#@+node:ekr.20060201152349.8:checkSumViolation
+def checkSumViolation( self, tag, *args, **kwords ):
+
+    if not args[ 0 ].has_key( "c" ): return
+    c = args[ 0 ][ 'c' ]
+    filename = args[ 0 ][ 'filename' ]
+    if c == self.c:
+        self.checksums_ok = 0
+        self.checksum_violations.append( filename )
+#@nonl
+#@-node:ekr.20060201152349.8:checkSumViolation
+#@+node:ekr.20060201152349.9:startCompounding stopCompounding
+def startCompounding( self, name ):
+    self.compound = UndoableCompoundEvent( name )
+    #self.compound = LeoCompoundEdit( name )
+
+def stopCompounding( self ):
+
+    compound = self.compound
+    compound.end()
+    self.compound = None
+    #print "COMPOUND is %s" % compound
+    self.__addUndo( compound )
+    self.setMenu()
+#@-node:ekr.20060201152349.9:startCompounding stopCompounding
+#@+node:ekr.20060201152349.10:infrastructure
+@others
+#@nonl
+#@+node:ekr.20060201152349.11:UneditableTableModel
+class UneditableTableModel( swing.table.DefaultTableModel ):
+
+    def __init__( self ):
+        swing.table.DefaultTableModel.__init__( self )
+
+    def isCellEditable( self, row, column ):
+        return 0
+
+#@-node:ekr.20060201152349.11:UneditableTableModel
+#@+node:ekr.20060201152349.12:PickleProxy
+class PickleProxy:
+    '''This class exists to pickle the NodeUndoerBase instance into a form
+       that can be safely stored in a Leo ua.'''
+
+    def __init__( self, undoer, t ):
+        self.undoer = undoer
+        self.t = t
+
+    def getPickleProxy( self ):
+
+
+        try:
+            #array = self.undoer.serializeSelf()
+            data = pickle.dumps( self.undoer )
+            ds = len( data )
+            pp = zlib.compress( data, level = 9 )
+            ps = len( pp )
+            amd5 = md5.md5( self.t.bodyString )
+            checksum = amd5.hexdigest()
+            return pp, checksum 
+        except Exception, x:
+            return "", ""  
+#@-node:ekr.20060201152349.12:PickleProxy
+#@-node:ekr.20060201152349.10:infrastructure
+#@+node:ekr.20060201152349.13:UndoableProxyEvent
+class UndoableProxyEvent( sundo.UndoableEdit ):
+
+
+    def __init__( self, event, owner, master , c):
+
+        self.event = event
+        self.owner = owner
+        self.master = master
+        self.c = c
+        self.cp = c.currentPosition().copy()
+        self._can_undo = event.canUndo()
+        self._can_redo = event.canRedo()
+        self.can_undo = self._can_undo
+        self.can_redo = self._can_redo
+        self.dieable = 0
+        self.ignore = 0
+
+
+    def __canRedo( self ):
+        return self._can_redo == self.event.canRedo()
+
+    def __canUndo( self ):
+        return self._can_undo == self.event.canUndo()
+
+
+    def addEdit( self, edit ):
+        return 0
+
+    def canRedo( self ):
+        #if self.__canUndo():
+        return self.can_redo
+        #else:
+        #    return self.event.canRedo()
+
+    def canUndo( self ):
+        #if self.__canRedo():
+        return self.can_undo
+        #else:
+        #    return self.event.canUndo()
+
+    def isAlive( self ):
+        return self.can_redo or self.can_undo
+
+    def invalidate( self ):
+        self.c.undoer.killFromEvent( self )
+
+    def die( self ):    
+        self.can_undo = self.can_redo = 0
+        #edits = self.owner.getEdits()
+        #spot = edits.indexOf( self.event )
+        #self.owner.trimEdits( spot, edits.size() )
+
+
+    def getPresentationName( self ):
+        return self.event.getPresentationName()
+
+    def getRedoPresentationName( self ):
+
+        if self.__canRedo():
+            return self.event.getRedoPresentationName()
+        elif self.isAlive():
+            return "Expended %s" % self.event.getRedoPresentationName()
+        else:
+            return "Dead %s" % self.event.getRedoPresentationName()
+
+    def getUndoPresentationName( self ):
+
+        if self.__canUndo():
+            return self.event.getUndoPresentationName()
+        elif self.isAlive():
+            return "Expended %s" % self.event.getUndoPresentationName()
+        else:
+            return "Dead %s" % self.event.getUndoPresentationName()
+
+
+    def isSignificant( self ):
+        return 1
+
+    def sync( self ):
+        self._can_redo = self.event.canRedo()
+        self._can_undo = self.event.canUndo()
+
+    def redo( self ):
+
+        self.c.selectPosition( self.cp.copy() )
+        self.can_redo = 0
+        self.can_undo = 1
+        if self.__canRedo():
+            self.master.ignore = 1
+            if not self.ignore:
+                self.owner.redo()
+            self.master.ignore = 0
+            self.master.setMenu()
+
+        self.sync()
+
+
+    def undo( self ):
+
+        self.c.selectPosition( self.cp.copy() )
+        self.can_undo = 0
+        self.can_redo = 1
+        if self.__canUndo():
+            self.master.ignore = 1
+            if not self.ignore:
+                self.owner.undo()
+            self.master.ignore = 0
+            self.master.setMenu()
+
+        self.sync()
+
+    def replaceEdit( self, edit ):
+        return 0
+
+
+#@-node:ekr.20060201152349.13:UndoableProxyEvent
+#@+node:ekr.20060201152349.14:<<UndoableDocumentEvent>>
+class UndoableDocumentEvent3:#( sundo.UndoableEdit, io.Serializable ):
+    '''A class that takes the current Editors document and does undo changes
+       upon the data within the Editor.  It is assumed that the data in the document
+       will be in sync with the changes represented within the UndoableDocumentEvent'''
+
+    def __init__( self, c, event, txt = "" ):
+
+        commanders[ self ] = c
+        self.spot = event.getOffset()
+        self.length = event.getLength()
+        self.txt = txt
+
+        self.can_undo = 1
+        self.can_redo = 0
+        if self.txt.isspace():
+           name_txt = "%s whitespaces" % len( self.txt )
+        else:
+           name_txt = self.txt
+
+        if event.getType() == sevent.DocumentEvent.EventType.INSERT:
+            self.etype = "insert"
+        elif event.getType() == sevent.DocumentEvent.EventType.REMOVE:
+            self.etype = "remove"
+
+
+
+        if self.etype == "insert":
+            self.name = "insert %s" % name_txt  
+        elif self.etype == "remove":
+            self.name = "remove %s" % name_txt
+
+    #def __getstate__( self ):
+    #    dic = self.__dict__
+    #    import copy
+    #    rv = copy.copy( dic )
+    #    #del rv[ c ]
+    #    return rv        
+
+    def addEdit( self, edit ):
+        return 0
+
+    def canRedo( self ):
+        return self.can_redo
+
+    def canUndo( self ):
+
+        return self.can_undo
+
+    def die( self ):    
+        self.can_undo = self.can_redo = 0
+        #if die_listeners.has_key( self ):
+        #    dlistener = die_listeners[ self ]
+        #    if dlistener.dieable:
+        #        print "WHACKING %s" % dlistener
+        #        dlistener.invalidate()
+
+
+    def getPresentationName( self ):
+        return self.name 
+
+    def getRedoPresentationName( self ):
+        return "Redo %s" % self.name
+
+    def getUndoPresentationName( self ):
+        return "Undo %s" % self.name
+
+    def isSignificant( self ):
+        return 1
+
+    def redo( self ):
+
+        self.can_redo = 0
+        self.can_undo = 1
+        self.redoEvent()
+
+    def undo( self ):
+
+        self.can_undo = 0
+        self.can_redo = 1
+        self.undoEvent()
+
+    def replaceEdit( self, edit ):
+        return 0
+
+    def redoEvent( self ):
+
+        c = commanders.get( self )
+        doc = c.frame.body._current_editor.getDocument()
+        if self.etype == "insert":
+            doc.insertString( self.spot, self.txt, None )
+            return       
+        elif self.etype == "remove":            
+            doc.remove( self.spot, self.length )
+            return    
+
+    def undoEvent( self ):
+
+
+        c = commanders.get( self )                
+        doc = c.frame.body._current_editor.getDocument()
+        if self.etype == "insert":
+            print 'undoing spot %s %s %s' % ( self.spot, self.length, self.txt )
+            doc.remove( self.spot, self.length )
+            print 'undone %s' % self
+            return  
+        elif self.etype == "remove":
+            doc.insertString( self.spot, self.txt, None )
+            return 
+
+    def getForTableModel( self ):
+        return util.Vector( [ self.spot, self.txt, self.name, '' ] )
+
+
+
+#@-node:ekr.20060201152349.14:<<UndoableDocumentEvent>>
+#@+node:ekr.20060201152349.15:<<UndoableCompoundEvent>>
+class UndoableCompoundEvent3:
+
+    def __init__( self, pname ):
+        #self.ce = sundo.CompoundEdit()
+        self.pname = pname
+        self.undostack = []
+        self.can_undo = 1
+        self.can_redo = 0
+
+    def getPresentationName( self ):
+        return self.pname
+
+    def getRedoPresentationName( self ):
+        return "Redo %s" % self.pname
+
+    def getUndoPresentationName( self ):
+        return "Undo %s" % self.pname
+
+    def canUndo( self ):
+        return self.can_undo
+        #return self.ce.canUndo()
+
+    def canRedo( self ):
+        return self.can_redo
+        #return self.ce.canRedo()
+
+    def undo( self ):
+        for z in self.undostack:
+            print z
+            z.undo()
+        self.can_undo = 0
+        self.can_redo = 1
+
+    def redo( self ):
+
+        self.undostack.reverse()
+        for z in self.undostack:
+            print z
+            z.redo()
+
+        self.undostack.reverse()
+        self.can_undo = 1
+        self.can_redo = 0
+
+    def isSignificant( self ):
+        return 1
+        #return self.ce.isSignificant()
+
+    def addEdit( self, edit ):
+        self.undostack.insert( 0, edit )
+
+
+
+    def die( self ):
+        pass
+        #return self.ce.die()
+
+    def end( self ):
+        pass
+        #return self.ce.end()
+
+
+
+
+
+
+#@-node:ekr.20060201152349.15:<<UndoableCompoundEvent>>
+#@-node:ekr.20060201152349:NodeUndoer.py
+#@-node:ekr.20060228072202:New undoer
+#@-node:ekr.20040123102724:Can't or won't
+#@-all
+#@nonl
+#@-node:ekr.20060207133601:@thin ../doc/leoToDoLater.txt
+#@-leo

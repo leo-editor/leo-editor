@@ -1,0 +1,2169 @@
+#@+leo-ver=4-thin
+#@+node:edream.110203113231:@thin pluginsNotes.txt
+#@@nocolor
+#@+all
+#@+node:edream.110203113231.3:Documentation and security warnings
+@nocolor
+
+This file contains code for all plugins distributed with Leo.
+#@nonl
+#@+node:edream.110203113231.4:Overview of plugins and hooks
+@nocolor
+
+What is a plugin?
+
+A plugin is a .py file that appears in Leo's plugin subdirectory. Leo tries to
+import all such files while starting up. This is done at "start1" time, that
+is, in the call to doHook("start1") in the run function in leo.py. Plugins
+exist to define "hook code".
+
+What is hook code?
+
+Leo automatically calls hook code at various times during Leo's execution.
+Typical hooks are:
+
+- "start2", called at the end of Leo's startup process,
+- "command1", called before executing any of Leo's commands
+- "idle", called at Tk's idle time, when nothing else is happening,
+
+See the documentation for hooks in this file for full details.
+
+N.B. Plugins can use "start2" hooks to override any of Leo's classes. See
+"Overriding functions, methods & classes" in leoPlugins.leo for several
+examples of how to do this.
+
+How do plugins work?
+
+Plugins register themselves when Leo imports them using the following code,
+which should appear as the outer level of the .py file:
+
+@color
+
+"""A description of this plugin"""
+
+leoPlugins.registerHandler("xxx", onXXX)
+__version__ = "1.2"
+g.plugin_signon(__name__)
+	
+@nocolor
+
+Line by line:
+
+1) """A description of this plugin"""
+
+This is a Python doc string describing the plugin. This string becomes the
+value of the __name__ attribute for the module (.py file).
+
+2) leoPlugins.registerHandler("xxx", onXXX)
+
+This line registers a handler called onXXX for the hook called "xxx". See the
+documentation for hooks for a complete list of hook names that you can use
+instead of "xxx". onXXX is the name of a function or method, presumably defined
+in the plugin file, that Leo will call at "xxx" time. For example:
+
+leoPlugins.registerHandler("idle",onIdle)
+
+will cause Leo to call the onIdle function at "idle" time.
+
+You can pass a list of hook names as the first argument to leoPlugins.registerHandler. For
+example:
+
+leoPlugins.registerHandler(("bodykey1","bodykey2","headkey1","headkey2"), onKey)
+
+3) __version__ = "1.2"
+
+This assigns a version attribute to module. At present this attribute is used
+by the plugin code that creates Leo's Plugins menu.
+
+4) g.plugin_signon(__name__)
+
+This line increases the count of loaded modules. The present code for
+plugin_signon does not actually print separate signons--it seems to verbose.
+
+About hook handlers
+
+See the "About hooks" section of leoPlugins.leo for full documentation about
+how to write hook handler routines, like onXXX or onKey in the examples above.
+Basically, each hook should have this pattern:
+	
+@color
+
+def onXXX (tag,keywords):
+	c = keywords.get("c")
+	otherKeyword = keywords.get("otherKeyword")
+	<< do something with c and otherKeyword, etc. >>
+	
+@nocolor
+
+In other words, keywords is a Python dictionary containing the keyword
+arguments passed to the hook handler. See the See the "About hooks" section of
+leoPlugins.leo for a list of the keywords passed to each hook handler.
+
+The tag is the name of the hook. For example, tag would one of
+"bodykey1","bodykey2","headkey1","headkey2", for the onKey hook handler in the
+example above.
+
+What's next?
+
+It's one thing to know how to create a plugin. It's another to know how to
+actually change Leo. Obviously, some study is needed. The place to start your
+study is LeoPy.leo. In particular, study very carefully the section called
+"Overview of code". Leo is a highly modular program, and Python is ideally
+suited to this style of programming.
+#@nonl
+#@-node:edream.110203113231.4:Overview of plugins and hooks
+#@+node:edream.110203113231.5:Intro to scripts
+@nocolor
+
+Scripting is fully documented in Leo's Users Guide, and the following should be enough to get you started:
+
+@color
+
+top() # The commander of the top (current) windows.
+top().rootVnode() # The root vnode of the outline.
+top().currentVnode() # The presently selected vnode.
+
+@nocolor
+
+If v is any vnode:
+	
+@color
+
+v.headString() # is the headline of v.
+v.bodyString() # is the body of v.
+v.threadNext() # is node after v in outline order.
+
+@nocolor
+
+For example, this prints every headline of an outline:
+	
+@color
+
+v = top().rootVnode()
+while v:
+	print v.headString()
+	v = v.threadNext()
+#@-node:edream.110203113231.5:Intro to scripts
+#@+node:ekr.20050312084851:About hooks
+@nowrap
+
+At startup time Leo looks all files of the form .py in the plugins
+directory. Leo assumes that these files are 'plugins' containing Python modules
+that customizes Leo's operation. Leo attempts to import each file.
+
+Each module should register routines that are called at various times during
+execution. Such times are identified by strings known as 'tags'. The code in in
+one or more plugins corresponding to each tag are known as the 'hook' routines
+for that tag. Leo catches exceptions (including syntax errors) in hook
+routines, so it is safe to hack away on this code.
+
+Leo passes two argument to all hook routines: the tag and a keywords dictionary
+containing additional information. For example, keywords.get('label') returns the
+kind of command for 'command1' and 'command2' hooks.
+
+Hooks have full access to all of Leo's source code. Just import the
+relevant file. For example, top() returns the commander for the topmost Leo
+window.
+
+The following table summarizes the arguments passed to hooks: 'Overrides?' is
+'yes' if returning anything other than None overrides Leo's normal command or
+event processing.)
+
+New in version Leo 4.2: the 'v', 'old_v' and 'new_v' keys in the keyword dictionary
+contain _positions_, not vnodes. These keys are deprecated.
+
+New in version Leo 4.3: the 'new_c' key is deprecated.  Use the 'c' key instead.
+
+tag argument               over-                                        keys in keywords
+(hook name)                rides?   when called                         dictionary
+---------                  ------   -----------                         ----------------
+'after-create-leo-frame'            after creating any frame            c
+'after-redraw-outline'              end of tree.redraw                  c (note 6)
+'before-create-leo-frame'           before frame.finishCreate           c
+'bodyclick1'                yes     before normal click in body         c,p,v,event
+'bodyclick2'                        after normal click in body          c,p,v,event
+'bodydclick1'               yes     before double click in body         c,p,v,event
+'bodydclick2'                       after  double click in body         c,p,v,event
+'bodykey1'                  yes     before body keystrokes              c,p,v,ch,oldSel,undoType
+'bodykey2'                          after  body keystrokes              c,p,v,ch,oldSel,undoType
+'bodyrclick1'               yes     before right click in body          c,p,v,event
+'bodyrclick2'                       after  right click in body          c,p,v,event
+'boxclick1'                 yes     before click in +- box              c,p,v,event
+'boxclick2'                         after  click in +- box              c,p,v,event
+'clear-mark'                        when mark is set                    c,p,v
+'close-frame'                       in app.closeLeoWindow               c
+'color-optional-markup'     yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
+'command1'                  yes     before each command                 c,p,v,label (note 2)
+'command2'                          after  each command                 c,p,v,label (note 2)
+'create-optional-menus'             (note 8)                            c (note 8)
+'create-popup-menu-items'           in tree.OnPopup                     c,p,v,event (new)
+'destroy-all-global-windows'        (note 12)                           None
+'draw-outline-box',         yes     when drawing +- box                 tree,p,v,x,y
+'draw-outline-icon',        yes     when drawing icon                   tree,p,v,x,y
+'draw-outline-node',        yes     when drawing node                   tree,p,v,x,y
+'draw-outline-text-box',    yes     when drawing headline               tree,p,v,x,y
+'drag1'                     yes     before start of drag                c,p,v,event
+'drag2'                             after  start of drag                c,p,v,event
+'dragging1'                 yes     before continuing to drag           c,p,v,event
+'dragging2'                         after  continuing to drag           c,p,v,event
+'enable-popup-menu-items'           in tree.OnPopup                     c,p,v,event
+'end1'                              start of app.quit()                 None
+'enddrag1'                  yes     before end of drag                  c,p,v,event
+'enddrag2'                          after  end of drag                  c,p,v,event
+'headclick1'                yes     before normal click in headline     c,p,v,event
+'headclick2'                        after  normal click in headline     c,p,v,event
+'headrclick1'               yes     before right click in headline      c,p,v,event
+'headrclick2'                       after  right click in headline      c,p,v,event
+'headkey1'                  yes     before headline keystrokes          c,p,v,ch
+'headkey2'                          after  headline keystrokes          c,p,v,ch
+'hypercclick1'              yes     before control click in hyperlink   c,p,v,event
+'hypercclick2'                      after  control click in hyperlink   c,p,v,event
+'hyperenter1'               yes     before entering hyperlink           c,p,v,event
+'hyperenter2'                       after  entering hyperlink           c,p,v,event
+'hyperleave1'               yes     before leaving  hyperlink           c,p,v,event
+'hyperleave2'                       after  leaving  hyperlink           c,p,v,event
+'iconclick1'                yes     before single click in icon box     c,p,v,event
+'iconclick2'                        after  single click in icon box     c,p,v,event
+'iconrclick1'               yes     before right click in icon box      c,p,v,event
+'iconrclick2'                       after  right click in icon box      c,p,v,event
+'icondclick1'               yes     before double click in icon box     c,p,v,event
+'icondclick2'                       after  double click in icon box     c,p,v,event
+'idle'                              periodically (at idle time)         c
+'init-color-markup'                 (note 7)                            colorer,p,v (note 7)
+'menu1'                     yes     before creating menus               c,p,v (note 3)
+'menu2'                     yes     before updating menus               c,p,v
+'new'                               start of New command                c,old_c,new_c (note 9)
+'open1'                     yes     before opening any file             c,old_c,new_c,fileName (note 4)
+'open2'                             after  opening any file             c,old_c,new_c,fileName (note 4)
+'openwith1'                 yes     before Open With command            c,p,v,openType,arg,ext
+'openwith2'                         after  Open With command            c,p,v,openType,arg,ext
+'recentfiles1'              yes     before Recent Files command         c,p,v,fileName,closeFlag
+'recentfiles2'                      after  Recent Files command         c,p,v,fileName,closeFlag
+'redraw-entire-outline'     yes     start of tree.redraw                c (note 6)
+'save1'                     yes     before any Save command             c,p,v,fileName
+'save2'                             after  any Save command             c,p,v,fileName
+'scan-directives'                   in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
+'select1'                   yes     before selecting a position         c,new_p,old_p,new_v,new_v
+'select2'                           after  selecting a position         c,new_p,old_p,new_v,old_v
+'select3'                           after  selecting a position         c,new_p,old_p,new_v,old_v
+'set-mark'                          when a mark is set                  c,p,v
+'show-popup-menu'                   in tree.OnPopup                     c,p,v,event
+'start1'                            after app.finishCreate()            None
+'start2'                            after opening first Leo window      c,p,v,fileName
+'unselect1'                 yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
+'unselect2'                         after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'@url1'                     yes     before double-click @url node       c,p,v (note 5)
+'@url2'                             after  double-click @url node       c,p,v(note 5)
+
+Notes:
+
+(1) 'activate' and 'deactivate' hooks have been removed because they do not work
+as expected.
+
+(2) 'commands' hooks: The label entry in the keywords dict contains the
+'canonicalized' form of the command, that is, the lowercase name of the command
+with all non-alphabetic characters removed.
+
+Commands hooks now set the label for undo and redo commands 'undo' and 'redo'
+rather than 'cantundo' and 'cantredo'.
+
+(3) 'menu1' hook: Setting app().realMenuNameDict in this hook is an easy way of
+translating menu names to other languages. Note: the 'new' names created this
+way affect only the actual spelling of the menu items, they do _not_ affect how
+you specify shortcuts in leoConfig.txt, nor do they affect the 'official'
+command names passed in app().commandName. For example, suppose you set
+app().realMenuNameDict['Open...'] = 'Ouvre'.
+
+(4) 'open1' and 'open2' hooks: These are called with a keywords dict containing
+the following entries:
+
+c:          The commander of the newly opened window.
+old_c:      The commander of the previously open window.
+new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
+fileName:   The name of the file being opened.
+
+You can use old_c.currentVnode() and c.currentVnode() to get the current
+vnode in the old and new windows.
+
+Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
+will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
+Recent Files menu and b) the file is not already open.
+
+(5) '@url1' and '@url2' hooks are only executed if 'icondclick1' hook returns None.
+
+(6) These hooks are useful for testing.
+
+(7) These hooks allow plugins to parse and handle markup withing doc parts,
+comments and Python ''' strings. Note that these hooks are _not_ called in
+Python ''' strings. See the color_markup plugin for a complete example of how to
+use these hooks.
+
+(8) The 'create-optional-menus' hook is called when Leo is creating menus, at
+the place at which creating new menus is appropriate. Therefore, this hook need
+only create new menus in the correct order, without worrying about the placement
+of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
+examples of how to use this hook. Leo now executes hooks in alphabetical order,
+so that the Plugins menu will be created before the Scripts menu.
+
+(9) The 'new' hook is called at the beginning of the code that implements the
+New command. This provides a much easier way of recognizing when Leo is about to
+create a new Leo window.
+
+Thke 'new_c' key is deprecated.  Use the 'c' key instead.
+
+(10) The 'scan-directives' hook is called inside the scanDirectives
+global function. The dictionary returned by scanDirectives now contains an item
+whose key is 'pluginsList'. The value of this item is a list of tuples
+(d,v,s,k) where:
+
+- d is the spelling of the @directive, without the leading @.
+- v is the vnode containing the directive, _not_ the original vnode.
+- s[k:] is a string containing whatever follows the @directive. k has already
+been moved past any whitespace that follows the @directive.
+
+See the add_directives plugins directive for a complete example of how to use
+the 'scan-directives' hook.
+
+(11) The 'close-frame' hook is called in app.closeLeoWindow just before
+removing the window from app.windowList. The hook code may remove the window
+from app.windowList to prevent app.closeLeoWindow from destroying the window.
+
+(12) Leo calls the 'destroy-all-global-windows' hook in app.destroyAllGlobalWindows().
+This hook gives plugins the chance to clean up after themselves when Leo shuts down.
+#@nonl
+#@-node:ekr.20050312084851:About hooks
+#@+node:edream.110203113231.7:Hooks should never blindly Python scripts
+Naively using hooks can expose you and your .leo files to malicious attacks.
+
+** Hooks should never blindly execute Python scripts in .leo files.
+
+It is safe to import and execute code from Leo itself, provided that you got Leo from Leo's SourceForge site.
+#@nonl
+#@-node:edream.110203113231.7:Hooks should never blindly Python scripts
+#@+node:edream.110203113231.8:NEVER use this kind of code in a hook!!
+@color
+@ WARNING     ** Using the following routine exposes you malicious code in .leo files!     **
+
+Do not EVER use code that blindly executes code in .leo files!
+Someone could send you malicious code embedded in the .leo file.
+
+WARNING 1: Changing "@onloadpythonscript" to something else will NOT protect
+           you if you EVER share either your files with anyone else.
+
+WARNING 2: Replacing exec by rexec below provides NO additional protection!
+           A malicious rexec script could trash your .leo file in subtle ways.
+@c
+if 0: # WRONG: This blindly execute scripts found in an .leo file! NEVER DO THIS!
+	def onLoadFile():
+		v = top().rootVnode()
+		while v:
+			h = v.headString().lower()
+			if match_word(h,0,"@onloadpythonscript"):
+				s = v.bodyString()
+				if s and len(s) > 0:
+					try: # SECURITY BREACH: s may be malicious!
+						exec s + '\n' in {}
+					except:
+						es_exception()
+			v = v.threadNext()
+#@nonl
+#@-node:edream.110203113231.8:NEVER use this kind of code in a hook!!
+#@+node:ekr.20040401054523:New coding conventions for plugins
+@nocolor
+
+Leo 4.2 uses new coding conventions internally.  I recommend using the new coding conventions in all plugins, although the old way will work inside LeoPlugins.leo.
+
+The new way replaces:
+	
+from leoPlugins import *
+from leoGlobals import *
+
+with:
+
+import leoPlugins
+import leoGlobals as g
+
+This removes a major source of namespace pollution and it makes clear where all functions are defined.  To access functions in leoGlobals.py you must preceed the names of such functions with g. N.B. script in the node called
+
+"Script to find and replace all functions in leoGlobals.py"
+
+does this for you. This script make replacements only in a named, top-level subtree.  To change the name of the subtree change the name of the argument in the statement:
+
+p = g.findTopLevelNode("New or improved in 4.2")
+
+Besides changing the imports as shown above, you should do the following:
+
+1. Change app or app() to g.app
+
+2. Change registerHandler(...) to leoPlugins.registerHandler(...)
+
+3. The new standard for importing and using Tkinter is as follows:
+
+try: import Tkinter as Tk
+except ImportError: Tk = None
+
+if Tk:
+	if g.app.gui is None:
+		g.app.createTkGui(__file__)
+	
+	if g.app.gui.guiName() == "tkinter":
+		leoPlugins.registerHandler(...)
+		g.plugin_signon(__name__)
+
+This means that the code would refer to Tk.widget instead of Tkinter.widget.  Also, please avoid the use of the completely useless Tk constants such as Tk.RIGHT, Tk.TOP.  Use "right" or "top" instead.
+
+Typical calls to functions in leoGlobals.py include the following:
+
+g.plugin_signon(__name__)
+g.es(...) # etc.
+
+Please use @file trees unless you _must_ use an @root tree for some reason.
+Please put each class, method and function in a separate node.
+#@nonl
+#@-node:ekr.20040401054523:New coding conventions for plugins
+#@-node:edream.110203113231.3:Documentation and security warnings
+#@+node:edream.110203113231.9:Unfinished projects
+#@+node:edream.110203113231.10:(Settings menu)
+#@+node:edream.110203113231.11:To do
+@nocolor
+
+Allow different default types for each section.
+Create _all_ menus from settings ?
+
+[plugins]
+
+pluginName = 1/0 # enables or disables plugin
+
+# option = type (overrides defaults)
+
+	[types]
+
+__default_type = bool
+page_width = int
+tab_width = int
+default_tangle_directory = string
+
+	use type name in option?
+	
+	_color: color
+	
+	_font: font
+	_key: keystroke
+	_flag: bool
+	everything else: bool
+	
+	bool: checkmark
+	color: picker (or use dialog)
+
+[menus]
+child = parent
+#@nonl
+#@-node:edream.110203113231.11:To do
+#@+node:edream.110203113231.12:Design of Settings menu
+#@-node:edream.110203113231.12:Design of Settings menu
+#@+node:edream.110203113231.13:settings_menu.py
+"""Create a settings menu to replace LeoConfig.leo"""
+
+import leoGlobals as g
+import leoPlugins
+
+try: import Tkinter as Tk
+except ImportError: Tk = None
+
+import leoApp,leoAtFile,leoTkinterDialog,leoFileCommands,leoFrame,leoNodes
+
+if Tk and 0: # Register the handlers...
+
+	settingsMenu = None
+
+@others
+	
+	# leoPlugins.registerHandler("start1",onAfterFinishCreate)
+	leoPlugins.registerHandler("create-optional-menus",createSettingsMenu)
+
+	__version__ = "0.1"
+	g.plugin_signon(__name__)
+#@nonl
+#@+node:edream.110203113231.14:createSettingsMenu
+def createSettingsMenu (tag,keywords):
+
+	c = keywords.get("c")
+	
+	global settingsMenu
+	settingsMenu = c.frame.createNewMenu("&Settings")
+#@nonl
+#@-node:edream.110203113231.14:createSettingsMenu
+#@-node:edream.110203113231.13:settings_menu.py
+#@-node:edream.110203113231.10:(Settings menu)
+#@+node:edream.112003032318:About html plugin
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=2295621
+By: billp9619
+
+As I was explaining my ideas about opml it occurred to me that it uses DIV tags
+and a Javascript as the output of the stylesheet.
+
+But then that is what ALL the HTML collapsing outlines use! So the html behavior
+is nothing special to opml...it is a behavior of scripted DIV tags in html.
+
+I found a style sheet named outline_leo,xsl on my computer. This is really tiny
+and works pretty good. Don't know where I got it from though.
+ 
+Anyway, as I expected the insertion of a html FORM  and a  TEXTAREA box into
+one of these DIV tags would collapse out of sight then reappear when clicked
+just like any other node.. Actually this is one of those odd things that maybe
+noone ever thought of trying,,,,I've never seen it in one of these html outlines
+before.
+
+Interestingly, the familiar collapsing xml display in Internet Explorer is really
+just a xsl stylesheet and  produces DIV tags and a script like all these other
+html outlines. Somewhere I found a version with minor revisions to make it work
+with standard xpath.
+
+There is a program called xpathvisualizer that runs in IE and gives basically
+the same xml display but highlights an inputted xpath expression. With this
+you can view source and see the script and DIV tags.
+
+At the end of the day the only benefit to opml is that others are using
+it (standard?) and perhaps  there is something especially good about its Javascript
+implementation.
+
+BTW, to load leo into internet explorer just save a copy with an .xml file extension.
+Then drag it to IE.
+And of course the file  could have an embedded xml-stylesheet instruction to
+use leo_outline.xsl which just shows headlines, etc,
+
+Also BTW... I have been using Python for some time now but I don't know if i
+can handle plug-in development at this stage.  :-)
+
+(But I might be up to refining the html/script environment further. )
+#@nonl
+#@-node:edream.112003032318:About html plugin
+#@+node:ekr.20040331072431:Custom @file plugin (prototype)
+#@+node:ekr.20040331072431.1:Documentation
+@nocolor
+#@nonl
+#@+node:ekr.20040331072431.2:Summary of the problem
+Leo's @file concept is very powerful but there are numerous occasions when the user wants to read and write outlines in specialized formats which cannot be handled using the @comment, @first etc directives. Examples would be,
+
+- exporting to restructured text (where additional markup steps are required
+- exporting to MS Word
+- custom file formats/XML which require restructuring before input/output
+
+Currently there exist two approaches to get around this,
+
+1. Use tangle_done (or other script) to post-process the file - not very efficient since all knowledge of the structure of the outline has to be reinvented by the tangle_done script
+
+2. Use a plugin (eg rst or mod_wordexport) - more efficient but still not ideal since each plugin writer ends up spinning his/her own node traversal scheme and strategy for handling directives, <<headers>> etc
+
+
+#@-node:ekr.20040331072431.2:Summary of the problem
+#@+node:ekr.20040331072431.3:Proposed solution
+The solution proposed here is to allow handlers to register themselves to hook into the process of deriving/underiving a file. Handlers would be dispatched on a file type basis (determined by the file extension) and would be able to take over all or part of the (un)derivation process. 
+
+The tricky part of the proposal is to design the hooks to allow the user enough control to completely redefine the format of the derived file whilst not requiring them to rewrite the hard parts of the @file code.
+
+Based on the proof-of-concept example presented here, the following hooks may be sufficient for writing,
+
+1. start (begining to derive a file)
+2. body (complete handling of the body)
+3. sentinel (handle a sentinel)
+4. line (handle a line or part of a line)
+5. startnode (when a new node is being processed)
+6. endnode (the node and all its children have been processed)
+7. end (ready to write the file)
+
+
+At this time it is not clear whether hooking the read code is actually the best way to go - it may be that the handler would have to override the entire read process.
+#@nonl
+#@-node:ekr.20040331072431.3:Proposed solution
+#@+node:ekr.20040331072431.4:Proof-of-concept
+A proof-of-concept has been built to try out the feasibility on the writing side. The example chosen is to write a FreeMind file. FreeMind (freemind.sourceforge.net) is an open source mind-mapping program which fits very well with Leo as an outlining system. A two-way link between the two would offer interesting possibilities.
+
+The FreeMind file is an XML file which is very similar to Leo's. It would be rather easy to write a converter but it serves as a good starting point.
+#@nonl
+#@+node:ekr.20040331072431.5:Base Implementation
+The code is implemented as a plugin which subclasses leoAtFile.baseNewDerivedFile and replaces it. The new class implements a dispatching mechanism similar to the plugin system itself, allowing handlers to register themselves to take over various stages of the derivation process.
+
+Most of the heavy lifting is done in the _doDispatch method which checks to see if a handler is available for the current action for the current file type.
+
+Many of the method of baseNewDerivedFile are override to pass through _doDispatch. In addition, it was necessary to wrap some methods in pre and post calls to allow, for example, the startnode and endnode functions.
+
+One example of this is putAtOthersChild.
+
+
+A slightly more ugly wrapping of the 'write' method was required since this method performs many actions which we would like to control. In this case these methods had to be switched out with dummy calls so that the handler could call them when it required.
+
+#@+node:ekr.20040331072431.6:_doDispatch
+<< class dispatchedDerivedFile methods >>=
+
+def _doDispatch(self, ontype, default, *args, **kw):
+	"""Do a dispatch"""
+	base, ext = os.path.splitext(self.derivedname)
+	print "Putting %s, dispatching on '%s' ('%s')" % (ontype, ext, self.derivedname)
+	try:
+		function = self.dispatch[ontype][ext[1:]] # [1:] to remove the "." from the extension
+	except KeyError:
+		function = default
+	if function:
+		return function(self, *args, **kw)
+#@-node:ekr.20040331072431.6:_doDispatch
+#@+node:ekr.20040331072431.7:putAtOthersChild
+<< class dispatchedDerivedFile methods >>=
+
+def putAtOthersChild(self, *args, **kw):
+	self._handleStartNode(*args, **kw)
+	leoAtFile.baseNewDerivedFile.putAtOthersChild(self, *args, **kw)
+	self._handleEndNode(*args, **kw)
+#@-node:ekr.20040331072431.7:putAtOthersChild
+#@+node:ekr.20040331072431.8:write
+<< class dispatchedDerivedFile methods >>=
+
+def write(self, *args, **kw):
+	root = args[0]
+	self.derivedname = root.t.headString
+	self._handleStart(*args, **kw)
+	#
+	# Make sure we hold the write file open
+	oldclose = self.closeWriteFile
+	oldreplace = self.replaceTargetFileIfDifferent
+	self.closeWriteFile = lambda : None
+	self.replaceTargetFileIfDifferent = lambda : None
+	#
+	leoAtFile.baseNewDerivedFile.write(self, *args, **kw)
+	self._handleEnd(*args, **kw)
+	#
+	# Now we can close it
+	self.closeWriteFile = oldclose
+	self.closeWriteFile()
+	self.replaceTargetFileIfDifferent = oldreplace
+	self.replaceTargetFileIfDifferent()
+#@-node:ekr.20040331072431.8:write
+#@-node:ekr.20040331072431.5:Base Implementation
+#@+node:ekr.20040331072431.9:Handler calls
+Handler clients register themselves using the registerDispatcher call which takes three parameters
+
+- extension (the file extension to register for)
+- ontype (the handler event to hook, see declarations)
+- handler (the function to recieve the call)
+
+
+In addition, a convenience blank handler (ie ignore the event) can be inserted by calling the registerNullDispatcher for a particular extension and ontype.
+#@nonl
+#@+node:ekr.20040331072431.10:<< class dispatchedDerivedFile declarations >>
+@code
+
+"""New type of derived file which can dispatch on the file type"""
+
+dispatch = {"startnode" : {},
+			"endnode" : {},
+			"body" : {},  # Only dispatch 'body' if you know what you are doing!
+			"code" : {},
+			"sentinel" : {},
+			"start" : {},
+			"end" : {},
+			}
+
+#@-node:ekr.20040331072431.10:<< class dispatchedDerivedFile declarations >>
+#@+node:ekr.20040331072431.11:registerDispatcher
+<< atfile_dispatch methods >>=
+
+leoAtFile.newDerivedFile = dispatchedDerivedFile
+
+def registerDispatcher(extension, ontype, handler):
+	"""Register a handler for an file extension"""
+	dispatchedDerivedFile.dispatch[ontype][extension] = handler
+#@-node:ekr.20040331072431.11:registerDispatcher
+#@+node:ekr.20040331072431.12:registerNullDispatcher
+<< atfile_dispatch methods >>=
+
+def registerNullDispatcher(extension, ontype):
+	"""Register that a handler shouldn't be called"""
+	dispatchedDerivedFile.dispatch[ontype][extension] = None
+#@-node:ekr.20040331072431.12:registerNullDispatcher
+#@-node:ekr.20040331072431.9:Handler calls
+#@+node:ekr.20040331072431.13:FreeMind Implementation
+The FreeMind example shows that the plugin begins by registering its dispatchers. It is then called during the normal process of deriving a file (with a ".mm" extension).
+
+It hooks nearly all the events with the exception of body (see the child of this node for a discussion of why not!). The handler functions are rather simple although I took a slightly more complex route than is required in order to exercise all the events.
+
+The implementation builds a separate node structure to represent the tree and then writes this out when the process is complete.
+#@nonl
+#@+node:ekr.20040331072431.14:Hooking the body call
+This hooks the putBody method call. It is tough to override this as this basically means the handler must do all the hard work of traversing the tree and remembering to call v.setVisited. Finer control of this process is probably a good idea since getting someone to override this properly is quite tricky.
+#@nonl
+#@-node:ekr.20040331072431.14:Hooking the body call
+#@-node:ekr.20040331072431.13:FreeMind Implementation
+#@-node:ekr.20040331072431.4:Proof-of-concept
+#@+node:ekr.20040331072431.15:Conclusions from the proof-of-concept
+1. It works for writing the derived file.
+
+2. The handler code is pretty clean and doesn't require the handler writer to know about the internals of the @file writing code.
+
+3. Overriding "putBody" is probably a bit too tough to expect people to do.
+
+4. It isn't clear that the same approach will work for reading derived files. This might have to be delegated completely to the handler.
+
+#@-node:ekr.20040331072431.15:Conclusions from the proof-of-concept
+#@+node:ekr.20040331072431.16:Next steps
+I want to try out something on the read side (mainly because I want to see if I can get a two way link with FreeMind!). This would complete the proof-of-concept and achieve the aim, which was to demonstrate that Leo could incorporate custom handlers for derived files without any structural changes.
+
+Following that a more complete implementation could be put together if this is thought to be a valuable way to go.
+#@nonl
+#@-node:ekr.20040331072431.16:Next steps
+#@-node:ekr.20040331072431.1:Documentation
+#@+node:ekr.20040331072431.17:Code
+#@+node:ekr.20040331072431.18:atfile_dispatch.py
+@ignore
+@root atfile_dispatch.py
+@language python
+<< atfile_dispatch declarations >>
+<< atfile_dispatch methods >>
+
+	
+if 1: # Register the handlers...
+	g.plugin_signon(__name__)
+
+#@+node:ekr.20040331072431.19:<< atfile_dispatch declarations >>
+@code
+
+"""Enable dispatching of @file writing to custom handlers"""
+
+__version__ = "0.1"
+
+import leoGlobals as g
+import leoPlugins
+
+import leoAtFile
+import os
+#@nonl
+#@-node:ekr.20040331072431.19:<< atfile_dispatch declarations >>
+#@+node:ekr.20040331072431.20:class dispatchedDerivedFile
+<< atfile_dispatch methods >>=
+
+class dispatchedDerivedFile(leoAtFile.baseNewDerivedFile):
+	<< class dispatchedDerivedFile declarations >>
+	<< class dispatchedDerivedFile methods >>
+
+#@+node:ekr.20040331072431.10:<< class dispatchedDerivedFile declarations >>
+@code
+
+"""New type of derived file which can dispatch on the file type"""
+
+dispatch = {"startnode" : {},
+			"endnode" : {},
+			"body" : {},  # Only dispatch 'body' if you know what you are doing!
+			"code" : {},
+			"sentinel" : {},
+			"start" : {},
+			"end" : {},
+			}
+
+#@-node:ekr.20040331072431.10:<< class dispatchedDerivedFile declarations >>
+#@+node:ekr.20040331072431.6:_doDispatch
+<< class dispatchedDerivedFile methods >>=
+
+def _doDispatch(self, ontype, default, *args, **kw):
+	"""Do a dispatch"""
+	base, ext = os.path.splitext(self.derivedname)
+	print "Putting %s, dispatching on '%s' ('%s')" % (ontype, ext, self.derivedname)
+	try:
+		function = self.dispatch[ontype][ext[1:]] # [1:] to remove the "." from the extension
+	except KeyError:
+		function = default
+	if function:
+		return function(self, *args, **kw)
+#@-node:ekr.20040331072431.6:_doDispatch
+#@+node:ekr.20040331072431.21:putBody
+<< class dispatchedDerivedFile methods >>=
+
+def putBody(self, *args, **kw):
+	"""Put the body text"""
+	return self._doDispatch("body", leoAtFile.baseNewDerivedFile.putBody, *args, **kw)
+#@-node:ekr.20040331072431.21:putBody
+#@+node:ekr.20040331072431.22:putCodeLine
+<< class dispatchedDerivedFile methods >>=
+
+def putCodeLine(self, *args, **kw):
+	"""Put the code line"""
+	return self._doDispatch("code", leoAtFile.baseNewDerivedFile.putCodeLine, *args, **kw)
+#@-node:ekr.20040331072431.22:putCodeLine
+#@+node:ekr.20040331072431.23:putSentinel
+<< class dispatchedDerivedFile methods >>=
+
+def putSentinel(self, *args, **kw):
+	"""Put the sentinel line"""
+	return self._doDispatch("sentinel", leoAtFile.baseNewDerivedFile.putSentinel, *args, **kw)
+#@-node:ekr.20040331072431.23:putSentinel
+#@+node:ekr.20040331072431.24:_handleStartNode
+<< class dispatchedDerivedFile methods >>=
+
+def _handleStartNode(self, *args, **kw):
+	return self._doDispatch("startnode", None, *args, **kw)
+#@-node:ekr.20040331072431.24:_handleStartNode
+#@+node:ekr.20040331072431.25:_handleEndNode
+<< class dispatchedDerivedFile methods >>=
+
+def _handleEndNode(self, *args, **kw):
+	return self._doDispatch("endnode", None, *args, **kw)
+#@-node:ekr.20040331072431.25:_handleEndNode
+#@+node:ekr.20040331072431.7:putAtOthersChild
+<< class dispatchedDerivedFile methods >>=
+
+def putAtOthersChild(self, *args, **kw):
+	self._handleStartNode(*args, **kw)
+	leoAtFile.baseNewDerivedFile.putAtOthersChild(self, *args, **kw)
+	self._handleEndNode(*args, **kw)
+#@-node:ekr.20040331072431.7:putAtOthersChild
+#@+node:ekr.20040331072431.26:_handleStart
+<< class dispatchedDerivedFile methods >>=
+
+def _handleStart(self, *args, **kw):
+	return self._doDispatch("start", None, *args, **kw)
+#@-node:ekr.20040331072431.26:_handleStart
+#@+node:ekr.20040331072431.27:_handleEnd
+<< class dispatchedDerivedFile methods >>=
+
+def _handleEnd(self, *args, **kw):
+	return self._doDispatch("end", None, *args, **kw)
+#@-node:ekr.20040331072431.27:_handleEnd
+#@+node:ekr.20040331072431.8:write
+<< class dispatchedDerivedFile methods >>=
+
+def write(self, *args, **kw):
+	root = args[0]
+	self.derivedname = root.t.headString
+	self._handleStart(*args, **kw)
+	#
+	# Make sure we hold the write file open
+	oldclose = self.closeWriteFile
+	oldreplace = self.replaceTargetFileIfDifferent
+	self.closeWriteFile = lambda : None
+	self.replaceTargetFileIfDifferent = lambda : None
+	#
+	leoAtFile.baseNewDerivedFile.write(self, *args, **kw)
+	self._handleEnd(*args, **kw)
+	#
+	# Now we can close it
+	self.closeWriteFile = oldclose
+	self.closeWriteFile()
+	self.replaceTargetFileIfDifferent = oldreplace
+	self.replaceTargetFileIfDifferent()
+#@-node:ekr.20040331072431.8:write
+#@-node:ekr.20040331072431.20:class dispatchedDerivedFile
+#@+node:ekr.20040331072431.11:registerDispatcher
+<< atfile_dispatch methods >>=
+
+leoAtFile.newDerivedFile = dispatchedDerivedFile
+
+def registerDispatcher(extension, ontype, handler):
+	"""Register a handler for an file extension"""
+	dispatchedDerivedFile.dispatch[ontype][extension] = handler
+#@-node:ekr.20040331072431.11:registerDispatcher
+#@+node:ekr.20040331072431.12:registerNullDispatcher
+<< atfile_dispatch methods >>=
+
+def registerNullDispatcher(extension, ontype):
+	"""Register that a handler shouldn't be called"""
+	dispatchedDerivedFile.dispatch[ontype][extension] = None
+#@-node:ekr.20040331072431.12:registerNullDispatcher
+#@-node:ekr.20040331072431.18:atfile_dispatch.py
+#@+node:ekr.20040331072431.28:freemind_export.py
+@ignore
+@root freemind_export.py
+@language python
+<< freemind_export declarations >>
+<< freemind_export methods >>
+
+		
+if 1: # Register the handlers...
+	g.plugin_signon(__name__)
+	import atfile_dispatch
+	# Register dispatch functions for writing
+	atfile_dispatch.registerDispatcher("mm", "code", handleMindMapLine)
+	atfile_dispatch.registerDispatcher("mm", "startnode", handleMindMapStartNode)
+	atfile_dispatch.registerDispatcher("mm", "endnode", handleMindMapEndNode)
+	atfile_dispatch.registerNullDispatcher("mm", "sentinel")
+	atfile_dispatch.registerDispatcher("mm", "start", handleStart)
+	atfile_dispatch.registerDispatcher("mm", "end", handleEnd)
+	
+#@+node:ekr.20040331072431.29:<< freemind_export declarations >>
+@code
+
+"""Export part of a Leo outline to FreeMind"""
+
+__version__ = "0.1"
+
+import leoGlobals as g
+import leoPlugins
+#@-node:ekr.20040331072431.29:<< freemind_export declarations >>
+#@+node:ekr.20040331072431.30:class MindMapNode
+<< freemind_export methods >>=
+
+class MindMapNode(list):
+	<< class MindMapNode declarations >>
+	<< class MindMapNode methods >>
+
+#@+node:ekr.20040331072431.31:<< class MindMapNode declarations >>
+@code
+
+"""Class representing a mind map node"""
+
+#@-node:ekr.20040331072431.31:<< class MindMapNode declarations >>
+#@+node:ekr.20040331072431.32:__init__
+<< class MindMapNode methods >>=
+
+def __init__(self, header, parent, body=""):
+	"""Initialize"""
+	self.header = header
+	self.parent = parent
+	self.body = body
+#@-node:ekr.20040331072431.32:__init__
+#@+node:ekr.20040331072431.33:render
+<< class MindMapNode methods >>=
+
+def render(self, at):
+	"""Render to the file"""
+	if not self.body:
+		txt = self.header
+	else:
+		txt = "%s\n%s" % (self.header, self.body)
+		txt = txt.replace("\n", "e&#xa;")
+	at.os('<node text="%s">\n' % (txt,))
+	for child in self:
+		child.render(at)
+	at.os('</node>\n')
+#@-node:ekr.20040331072431.33:render
+#@-node:ekr.20040331072431.30:class MindMapNode
+#@+node:ekr.20040331072431.34:handleStart
+<< freemind_export methods >>=
+
+def handleStart(self, *args, **kw):
+	"""Start of writing process"""
+	print "Handling start"
+	global nodes, current_node, first_node
+	nodes = {} # Dictionary of nodes
+	root = args[0]
+	nodes[root] = current_node = MindMapNode(root.t.headString, None)
+	first_node = current_node
+	print "End"
+#@-node:ekr.20040331072431.34:handleStart
+#@+node:ekr.20040331072431.35:handleMindMapLine
+<< freemind_export methods >>=
+
+def handleMindMapLine(self, s, i):
+	"""Handling body for mind mapper"""
+	print "Handling body '%s'" % s
+	current_node.body += s
+	print "End"
+#@-node:ekr.20040331072431.35:handleMindMapLine
+#@+node:ekr.20040331072431.36:handleMindMapStartNode
+<< freemind_export methods >>=
+
+def handleMindMapStartNode(self, v):
+	"""Handle the start header"""
+	global current_node
+	print "Handling start header '%s'" % (v, )
+	this = MindMapNode(v.t.headString, current_node)
+	nodes[v] = this
+	current_node.append(this)
+	current_node = this
+	print "End"
+#@-node:ekr.20040331072431.36:handleMindMapStartNode
+#@+node:ekr.20040331072431.37:handleMindMapEndNode
+<< freemind_export methods >>=
+
+def handleMindMapEndNode(self, v):
+	"""Handle the end header"""
+	global current_node
+	print "Handling end header '%s'" % (v, )
+	current_node = current_node.parent
+	print "End"
+#@-node:ekr.20040331072431.37:handleMindMapEndNode
+#@+node:ekr.20040331072431.38:handleEnd
+<< freemind_export methods >>=
+
+def handleEnd(self, *args, **kw):
+	"""Handle the end"""
+	print "Handling end"
+	self.os("<map>\n")	
+	first_node.render(self)
+	self.os("</map>\n")
+	print "End"	
+#@-node:ekr.20040331072431.38:handleEnd
+#@-node:ekr.20040331072431.28:freemind_export.py
+#@-node:ekr.20040331072431.17:Code
+#@+node:ekr.20040331072431.39:Test files
+@ignore
+#@nonl
+#@+node:ekr.20040331072431.40:@file c:\temp\mind.mm
+The main node
+@others
+#@+node:ekr.20040331072431.41:a
+aaaa
+#@nonl
+#@-node:ekr.20040331072431.41:a
+#@+node:ekr.20040331072431.42:b
+bbb
+#@nonl
+#@-node:ekr.20040331072431.42:b
+#@+node:ekr.20040331072431.43:c
+ccc
+@others
+#@nonl
+#@+node:ekr.20040331072431.44:c1
+c1c1
+
+@others
+#@nonl
+#@+node:ekr.20040331072431.45:c1a
+c1ac1a
+#@nonl
+#@-node:ekr.20040331072431.45:c1a
+#@-node:ekr.20040331072431.44:c1
+#@+node:ekr.20040331072431.46:c2
+c2c2
+#@nonl
+#@-node:ekr.20040331072431.46:c2
+#@-node:ekr.20040331072431.43:c
+#@+node:ekr.20040331072431.47:d
+ddd
+#@nonl
+#@-node:ekr.20040331072431.47:d
+#@-node:ekr.20040331072431.40:@file c:\temp\mind.mm
+#@+node:ekr.20040331072431.48:@file c:\temp\mind2.txt
+@others
+#@nonl
+#@+node:ekr.20040331072431.49:a
+aaaa
+#@nonl
+#@-node:ekr.20040331072431.49:a
+#@+node:ekr.20040331072431.50:b
+bbb
+#@nonl
+#@-node:ekr.20040331072431.50:b
+#@+node:ekr.20040331072431.51:c
+ccc
+#@nonl
+#@+node:ekr.20040331072431.52:c1
+c1c1
+#@nonl
+#@+node:ekr.20040331072431.53:c1a
+c1ac1a
+#@nonl
+#@-node:ekr.20040331072431.53:c1a
+#@-node:ekr.20040331072431.52:c1
+#@+node:ekr.20040331072431.54:c2
+c2c2
+#@nonl
+#@-node:ekr.20040331072431.54:c2
+#@-node:ekr.20040331072431.51:c
+#@+node:ekr.20040331072431.55:d
+ddd
+#@nonl
+#@-node:ekr.20040331072431.55:d
+#@-node:ekr.20040331072431.48:@file c:\temp\mind2.txt
+#@+node:ekr.20040331072431.56:@file c:\temp\test.txt
+This is some text
+second line
+third
+
+@others
+#@+node:ekr.20040331072431.57:Header
+inside header
+#@-node:ekr.20040331072431.57:Header
+#@-node:ekr.20040331072431.56:@file c:\temp\test.txt
+#@-node:ekr.20040331072431.39:Test files
+#@-node:ekr.20040331072431:Custom @file plugin (prototype)
+#@+node:ekr.20040320072156:Word completion (prototype)
+#@+node:ekr.20040320075528:Documentation
+@nocolor
+
+This plugin implements a word completion scheme for Leo. In the body pane you
+have two new options,
+
+* F4 - complete a dotted word (eg type "self." followed F4 will cycle through
+the methods and attributes of an object)
+
+* F5 - complete a stand alone word (eg type "imp" followed by F5 will cycle
+though some standard words ... import etc)
+
+Pressing F4 with a partial g.match (eg "os.pa") will cycle through the methods
+begining with "pa".
+
+The plugin works by scanning the Leo file to look for words and objects. Hence
+you will only get things that have been referencing in the Leo file already.
+The scanning currently takes place at file load so any new things you add wont
+get added to the list until you reload.
+
+If there is more than one word suggestions then repeatedly pressing F4/F5 will
+cycle through them. The order is from the most to the least used so the most
+frequently used words should appear first. Once you reach the end it stops.
+#@nonl
+#@-node:ekr.20040320075528:Documentation
+#@+node:ekr.20040320075528.1:Code notes
+@nocolor
+
+Why two keys? I tried the get the "dotted completion" to work when you press
+the "." key but I couldn't stop the "." appearing in the body as well. The code
+is all there so if someone knows the trick then you can just enable this by
+adding and appropriate <bind>.
+
+The completion is "python style", ie it doesn't try to know anything about the
+source - it just looks for likely looking combinations. For other languages
+(php, java etc) you could be smarter. If you feel inclined then you can create
+a custom completer by subclassing the basic class used (Extender) and adding
+another WordCompleter class.
+#@nonl
+#@-node:ekr.20040320075528.1:Code notes
+#@+node:ekr.20040320121631:Changes made
+@nocolor
+
+Changes made:
+
+EKR: 3/20/04
+
+- Converted to @file.
+	- Used @others where possible.
+	- Removed unused sections.
+- Coverted to "import leoGlobals as g" style.
+	- Used g.trace rather than most calls to es.
+
+- Fixed bug in split.
+- Fixed bug in suggestWords
+
+I don't understand the code yet, but already I love this plugin!
+#@nonl
+#@-node:ekr.20040320121631:Changes made
+#@+node:ekr.20040320072156.1:@file-thin extender.py
+import leoGlobals as g
+import leoPlugins
+import re
+
+@others
+
+if __name__ == "__main__":
+	test()
+#@nonl
+#@+node:ekr.20040320072156.2:class Splitter
+class Splitter(object):
+
+	"""Split text into base/extension parts"""
+
+@others
+#@+node:ekr.20040320072156.4:__init__
+def __init__(self):
+
+	"""Initialise the Splitter instance"""
+#@-node:ekr.20040320072156.4:__init__
+#@+node:ekr.20040320072156.5:split
+def split(self, text):
+
+	"""Return a list of the base/extension pairs from a block of text"""
+
+	raise NotImplementedError("Must override split method")
+#@-node:ekr.20040320072156.5:split
+#@-node:ekr.20040320072156.2:class Splitter
+#@+node:ekr.20040320072156.6:class ReSplitter
+class ReSplitter(Splitter):
+
+@others
+#@+node:ekr.20040320072156.7:__init__
+def __init__(self, base, extension, *args):
+
+	"""Initialise the ReSplitter instance"""
+
+	self._base = re.compile(base,*args)
+	self._extension = re.compile(extension,*args)
+#@-node:ekr.20040320072156.7:__init__
+#@+node:ekr.20040320072156.8:split
+def split(self,text):
+
+	"""Split the text"""
+
+	# g.trace(len(text))
+
+	results = []
+	if not text: # EKR
+		return results
+
+	for base in self._base.finditer(text):
+		ext = self._extension.match(text[base.end():])
+		if ext:
+			results.append((base.groups()[0],
+							ext.groups()[0]))
+
+	# g.trace("done")
+	return results
+#@-node:ekr.20040320072156.8:split
+#@-node:ekr.20040320072156.6:class ReSplitter
+#@+node:ekr.20040320072156.9:class Extender
+class Extender(object):
+
+	"""Learn about text strings and suggest ways to extend a string"""
+
+@others
+#@+node:ekr.20040320072156.10:__init__
+def __init__(self, splitter):
+
+	"""Initialise the Extender instance"""
+
+	self._buffer = "" # The stream of characters to learn
+	self._memory = {} # The store of all we have learnt
+	self._splitter = splitter
+	self.size = 0
+#@-node:ekr.20040320072156.10:__init__
+#@+node:ekr.20040320072156.11:feed
+def feed(self, text):
+
+	"""Learn from some text"""
+
+	# g.trace(len(text))
+
+	for base,extension in self._splitter.split(text):
+
+		self.learn(base,extension)
+#@-node:ekr.20040320072156.11:feed
+#@+node:ekr.20040320072156.12:learn
+def learn(self, stem, extender):
+
+	"""Learn the relationship between the stem and the extender"""
+
+	# g.trace(stem,extender)
+
+	self._memory.setdefault(stem, {})
+	self._memory[stem][extender] = self._memory[stem].get(extender, 0)+1
+	self.size = len(self._memory)
+#@-node:ekr.20040320072156.12:learn
+#@+node:ekr.20040320072156.13:suggestions
+def suggestions(self, base, start=None, number=None):
+
+	"""Return a list of suggestions in order of most to least likely
+
+	If specified, start indicates the initial characters of the match.
+
+	By default we return all the possible suggestions but this can be
+	limited by setting the number to return."""
+
+	# g.trace()
+
+	if start:
+		allmatched = self.suggestions(base)
+		result = [item for item in allmatched if item.startswith(start)]
+	else:
+		try:
+			items = self._memory[base]
+		except KeyError:
+			return []
+		else:
+			values = [(value, key) for key, value in items.iteritems()]
+			values.sort()
+			values.reverse()
+			result = [key for value, key in values]
+
+	if number is None:
+		return result
+	else:
+		return result[:number]
+#@-node:ekr.20040320072156.13:suggestions
+#@+node:ekr.20040320072156.14:suggestfrom
+def suggestfrom(self,text,number=None):
+
+	"""Find suggestions from a block of text
+
+	This method returns the base string and a list of alternatives
+	for how the base might be extended."""
+
+	# Add some characters to the text so that the end will match
+	trytext = "  " + text + "DDD"
+	matches = self._splitter.split(trytext)
+	
+	g.trace(text,number,matches)
+
+	# Make sure the last one is a match
+	if not matches:
+		return None, []
+
+	base,ext = matches[-1]
+	if not ext.endswith("DDD"):
+		return text, []
+
+	# Remove the dummy part
+	ext = ext[:-3]
+	if not ext:
+		ext = None
+		base_text = text
+	else:
+		base_text = text[:-len(ext)]
+
+	suggestions = self.suggestions(base,ext,number)
+	g.trace(base_text,len(suggestions))
+	return base_text, suggestions
+#@-node:ekr.20040320072156.14:suggestfrom
+#@-node:ekr.20040320072156.9:class Extender
+#@+node:ekr.20040320072156.15:class DottedExtender
+class DottedExtender(Extender):
+
+	"""An extender based around dotted names"""
+
+@others
+#@+node:ekr.20040320072156.16:__init__
+def __init__(self):
+
+	"""Initialise the DottedExtender instance"""
+
+	super(DottedExtender, self).__init__(
+		ReSplitter("(\w+?)\.", "(\w+)"))
+#@-node:ekr.20040320072156.16:__init__
+#@-node:ekr.20040320072156.15:class DottedExtender
+#@+node:ekr.20040320072156.17:class WordExtender
+class WordExtender(Extender):
+
+	"""An extender based on simple words"""
+
+@others
+#@+node:ekr.20040320072156.18:__init__
+def __init__(self):
+
+	"""Initialise the WordExtender instance"""
+
+	super(WordExtender, self).__init__(
+		ReSplitter("^|\s()", "(\w+)"))
+#@-node:ekr.20040320072156.18:__init__
+#@-node:ekr.20040320072156.17:class WordExtender
+#@+node:ekr.20040320072156.19:test
+def test():
+
+	import sys
+	text = file(sys.argv[-1], "r").read()
+
+	e = DottedExtender()
+	e.feed(text)
+
+	w = WordExtender()
+	w.feed(text)
+#@-node:ekr.20040320072156.19:test
+#@-node:ekr.20040320072156.1:@file-thin extender.py
+#@+node:ekr.20040320072156.20:@file-thin wordcompleter.py
+"""Plugin to add word completion to the edit pane"""
+
+import leoGlobals as g
+import leoPlugins
+
+try: import Tkinter as Tk
+except ImportError: Tk = None
+
+import extender
+
+@others
+
+if Tk:
+	__version__ = "0.2" # Converted to @file by EKR.
+	__name__ = "Word Completer"
+
+	g.plugin_signon("wordcompleter")
+
+	s = "Starting word completer"
+	g.trace(s) ; g.es(s,color="purple")
+
+	completer1 = DottedCompleter()
+	completer2 = SimpleCompleter()
+
+	#leoPlugins.registerHandler("start2", completer.addKeyBinding)
+	leoPlugins.registerHandler("open2", completer1.createWordList)
+#@nonl
+#@+node:ekr.20040320072156.21:class WordCompleter
+class WordCompleter:
+
+	"""A class to help in suggesting words"""
+
+	keybinding = None # Override this 
+	extender_class = None # Override this
+
+@others
+#@nonl
+#@+node:ekr.20040320072156.22:__init__
+def __init__(self):
+
+	"""Initialise the WordCompleter instance"""
+
+	self.extender = self.extender_class()
+	self.extender.feed("self.this self.that self.other")
+	self.previous = [] # Previous suggestions
+#@-node:ekr.20040320072156.22:__init__
+#@+node:ekr.20040320072156.23:addKeyBinding
+def addKeyBinding(self, tag, keywords):
+
+	"""Add key bindings to intercept the hot key"""
+
+	c = g.top()
+
+	c.frame.body.bodyCtrl.bind(self.keybinding,self.suggestWords)
+
+	c.frame.body.bodyCtrl.bind(".", self.suggestWords)
+#@-node:ekr.20040320072156.23:addKeyBinding
+#@+node:ekr.20040320072156.24:createWordList
+def createWordList(self, tag, keywords):
+
+	"""Initialize the list of words to use"""
+
+	# g.trace(tag,keywords)
+
+	v = g.top().rootVnode()
+	while v:
+		self.extender.feed(v.bodyString())
+		v = v.threadNext()
+
+	self.addKeyBinding(tag,keywords)
+#@-node:ekr.20040320072156.24:createWordList
+#@+node:ekr.20040320072156.25:suggestWords
+def suggestWords(self, event):
+
+	"""Suggest words to be inserted at the cursor"""
+
+	# g.trace(self)
+
+	# Find text on this line before the insertion point
+	c = g.top()
+	insert = c.frame.body.getInsertionPoint()
+	thisline = insert.split(".")[0]
+	start = "%s.0" % (thisline, )
+	text = c.frame.body.getTextRange(start, insert)
+	# If the user pressed '.' then this isn't in the text yet so we
+	# manually add it -      This doesn't work!
+	if event.char == ".":
+		text += "."
+		dotted = 1
+	else:
+		dotted = 0
+	# Find suggestions
+	base,suggestions = self.extender.suggestfrom(text)
+	#import pdb; pdb.set_trace()
+
+	if suggestions: # 3/30/04
+		# Delete back from the current position to the start of the suggestion
+		dot = "%s.%s" % (thisline,len(base))
+		oldtext = c.frame.body.getTextRange(dot, insert)
+		c.frame.body.deleteRange(dot, insert)
+		# If the current text is the suggestion then we are cycling
+		# through the possibilities
+		if oldtext == suggestions[0] and self.previous:
+			word = self.previous.pop(0)
+		else:
+			word = suggestions[0]
+			self.previous = suggestions[1:]
+		# Insert suggestion
+		if dotted:
+			word = "." + word
+		c.frame.body.insertAtInsertPoint(word)
+
+	return dotted
+#@-node:ekr.20040320072156.25:suggestWords
+#@-node:ekr.20040320072156.21:class WordCompleter
+#@+node:ekr.20040320072156.26:class DottedCompleter
+class DottedCompleter(WordCompleter):
+
+	"""Completer to complete dotted.names"""
+
+	keybinding = "<F4>"
+	extender_class = extender.DottedExtender
+
+	# No methods.
+#@-node:ekr.20040320072156.26:class DottedCompleter
+#@+node:ekr.20040320072156.27:class SimpleCompleter
+class SimpleCompleter(WordCompleter):
+
+	"""A completer which works on any word in a text stream"""
+
+	keybinding = "<F5>"
+	extender_class = extender.WordExtender
+
+	# No methods
+#@-node:ekr.20040320072156.27:class SimpleCompleter
+#@-node:ekr.20040320072156.20:@file-thin wordcompleter.py
+#@-node:ekr.20040320072156:Word completion (prototype)
+#@+node:ekr.20040320091826:(problem with dot in Word completion plugin)
+v.body
+#@nonl
+#@+node:ekr.20040320072156.23:addKeyBinding
+def addKeyBinding(self, tag, keywords):
+
+	"""Add key bindings to intercept the hot key"""
+
+	c = g.top()
+
+	c.frame.body.bodyCtrl.bind(self.keybinding,self.suggestWords)
+
+	c.frame.body.bodyCtrl.bind(".", self.suggestWords)
+#@-node:ekr.20040320072156.23:addKeyBinding
+#@+node:ekr.20040320072156.14:suggestfrom
+def suggestfrom(self,text,number=None):
+
+	"""Find suggestions from a block of text
+
+	This method returns the base string and a list of alternatives
+	for how the base might be extended."""
+
+	# Add some characters to the text so that the end will match
+	trytext = "  " + text + "DDD"
+	matches = self._splitter.split(trytext)
+	
+	g.trace(text,number,matches)
+
+	# Make sure the last one is a match
+	if not matches:
+		return None, []
+
+	base,ext = matches[-1]
+	if not ext.endswith("DDD"):
+		return text, []
+
+	# Remove the dummy part
+	ext = ext[:-3]
+	if not ext:
+		ext = None
+		base_text = text
+	else:
+		base_text = text[:-len(ext)]
+
+	suggestions = self.suggestions(base,ext,number)
+	g.trace(base_text,len(suggestions))
+	return base_text, suggestions
+#@-node:ekr.20040320072156.14:suggestfrom
+#@+node:ekr.20040320072156.13:suggestions
+def suggestions(self, base, start=None, number=None):
+
+	"""Return a list of suggestions in order of most to least likely
+
+	If specified, start indicates the initial characters of the match.
+
+	By default we return all the possible suggestions but this can be
+	limited by setting the number to return."""
+
+	# g.trace()
+
+	if start:
+		allmatched = self.suggestions(base)
+		result = [item for item in allmatched if item.startswith(start)]
+	else:
+		try:
+			items = self._memory[base]
+		except KeyError:
+			return []
+		else:
+			values = [(value, key) for key, value in items.iteritems()]
+			values.sort()
+			values.reverse()
+			result = [key for value, key in values]
+
+	if number is None:
+		return result
+	else:
+		return result[:number]
+#@-node:ekr.20040320072156.13:suggestions
+#@-node:ekr.20040320091826:(problem with dot in Word completion plugin)
+#@-node:edream.110203113231.9:Unfinished projects
+#@+node:EKR.20040517075110:replaceLeoGlobals
+"""Script to find and replace all functions in leoGlobals.py."""
+@color
+@language python
+@tabwidth -4
+
+import leoGlobals as g
+import leoPlugins
+
+import string
+
+c = g.top() ; p = c.currentPosition()
+
+@others
+
+if 1:
+    << set nameList to the list of functions in leoGlobals.py >>
+else:
+    p = g.findNodeAnywhere("@file leoGlobals.py")
+    nameList = findFunctionsInTree(p)
+
+    nameList.sort() ; g.enl()
+    for name in nameList: g.es("'%s'," % name)
+    
+    s = "%d functions in leoGlobals.py" % len(nameList)
+    print s ; g.es(s)
+
+if 1:
+    g.enl() ; g.enl()
+    count = prependNamesInTree(p,nameList,"g.",replace=True) # Just prints if replace==False.
+    s = "%d --- done --- " % count
+    print s ; g.es(s)
+#@+node:EKR.20040517075110.1:<< set nameList to the list of functions in leoGlobals.py >>
+nameList = (
+'alert',
+'angleBrackets',
+'appendToList',
+'callerName',
+'CheckVersion',
+'choose',
+'clearAllIvars',
+'clear_stats',
+'collectGarbage',
+'computeLeadingWhitespace',
+'computeWidth',
+'computeWindowTitle',
+'createTopologyList',
+'create_temp_name',
+'disableIdleTimeHook',
+'doHook',
+'dump',
+'ecnl',
+'ecnls',
+'enableIdleTimeHook',
+'enl',
+'ensure_extension',
+'es',
+'esDiffTime',
+'es_error',
+'es_event_exception',
+'es_exception',
+'escaped',
+'executeScript',
+'file_date',
+'findNodeAnywhere',
+'findNodeInTree',
+'findTopLevelNode',
+'findReference',
+'find_line_start',
+'find_on_line',
+'flattenList',
+'funcToMethod',
+'getBaseDirectory',
+'getOutputNewline',
+'getTime',
+'get_Sherlock_args',
+'get_directives_dict',
+'get_leading_ws',
+'get_line',
+'get_line_after',
+'getpreferredencoding',
+'idleTimeHookHandler',
+'importFromPath',
+'initScriptFind',
+'init_sherlock',
+'init_trace',
+'isUnicode',
+'isValidEncoding',
+'is_c_id',
+'is_nl',
+'is_special',
+'is_ws',
+'is_ws_or_nl',
+'joinLines',
+'listToString',
+'makeAllNonExistentDirectories',
+'makeDict',
+'match',
+'match_c_word',
+'match_ignoring_case',
+'match_word',
+'module_date',
+'openWithFileName',
+'optimizeLeadingWhitespace',
+'os_path_abspath',
+'os_path_basename',
+'os_path_dirname',
+'os_path_exists',
+'os_path_getmtime',
+'os_path_isabs',
+'os_path_isdir',
+'os_path_isfile',
+'os_path_join',
+'os_path_norm',
+'os_path_normcase',
+'os_path_normpath',
+'os_path_split',
+'os_path_splitext',
+'pause',
+'plugin_date',
+'plugin_signon',
+'printDiffTime',
+'printGc',
+'printGcRefs',
+'printGlobals',
+'printLeoModules',
+'print_bindings',
+'print_stats',
+'readlineForceUnixNewline',
+'redirectStderr',
+'redirectStdout',
+'removeLeadingWhitespace',
+'removeTrailingWs',
+'reportBadChars',
+'restoreStderr',
+'restoreStdout',
+'sanitize_filename',
+'scanAtEncodingDirective',
+'scanAtFileOptions',
+'scanAtLineendingDirective',
+'scanAtPagewidthDirective',
+'scanAtRootOptions',
+'scanAtTabwidthDirective',
+'scanDirectives',
+'scanError',
+'scanf',
+'set_delims_from_language',
+'set_delims_from_string',
+'set_language',
+'shortFileName',
+'skip_blank_lines',
+'skip_block_comment',
+'skip_braces',
+'skip_c_id',
+'skip_heredoc_string',
+'skip_leading_ws',
+'skip_leading_ws_with_indent',
+'skip_line',
+'skip_long',
+'skip_matching_delims',
+'skip_nl',
+'skip_non_ws',
+'skip_parens',
+'skip_pascal_begin_end',
+'skip_pascal_block_comment',
+'skip_pascal_braces',
+'skip_pascal_string',
+'skip_php_braces',
+'skip_pp_directive',
+'skip_pp_if',
+'skip_pp_part',
+'skip_python_string',
+'skip_string',
+'skip_to_char',
+'skip_to_end_of_line',
+'skip_to_semicolon',
+'skip_typedef',
+'skip_ws',
+'skip_ws_and_nl',
+'splitLines',
+'stat',
+'stdErrIsRedirected',
+'stdOutIsRedirected',
+'toEncodedString',
+'toUnicode',
+'toUnicodeFileEncoding',
+'top',
+'trace',
+'trace_tag',
+'update_file_if_changed',
+'utils_rename',
+'windows',
+'wrap_lines')
+#@nonl
+#@-node:EKR.20040517075110.1:<< set nameList to the list of functions in leoGlobals.py >>
+#@+node:EKR.20040517075110.2:findFunctionsInTree
+def findFunctionsInTree(p):
+    
+    nameList = []
+    for p in p.self_and_subtree_iter():
+        names = findDefs(p.bodyString())
+        if names:
+            for name in names:
+                if name not in nameList:
+                    nameList.append(name)
+    return nameList
+#@nonl
+#@-node:EKR.20040517075110.2:findFunctionsInTree
+#@+node:EKR.20040517075110.3:findDefs
+def findDefs(body):
+    
+    lines = body.split('\n')
+    names = []
+    for s in lines:
+        i = g.skip_ws(s,0)
+        if g.match(s,i,"class"):
+            return [] # The classes are defined in a single node.
+        if g.match(s,i,"def"):
+            i = g.skip_ws(s,i+3)
+            j = g.skip_c_id(s,i)
+            if j > i:
+                name = s[i:j]
+                if g.match(name,0,"__init__"): 
+                    return [] # Disallow other class methods.
+                names.append(name)
+    return names
+#@nonl
+#@-node:EKR.20040517075110.3:findDefs
+#@+node:EKR.20040517075110.4:prependNamesInTree
+def prependNamesInTree(p,nameList,prefix,replace=False):
+    
+    c = p.c
+    
+    assert(len(prefix) > 0)
+    ch1 = string.letters + '_'
+    ch2 = string.letters + string.digits + '_'
+    def_s = "def " ; def_n = len(def_s)
+    prefix_n = len(prefix)
+    total = 0
+    c.beginUpdate()
+    for p in p.self_and_subtree_iter():
+        count = 0 ; s = p.bodyString()
+        printFlag = False
+        if s:
+            for name in nameList:
+                i = 0 ; n = len(name)
+                while 1:
+                    << look for name followed by '(' >>
+            if count and replace:
+                if 0:
+                    << print before and after >>
+                p.setBodyStringOrPane(s)
+                p.setDirty()
+        g.es("%3d %s" % (count,p.headString()))
+        total += count
+    c.endUpdate()
+    return total
+#@nonl
+#@+node:EKR.20040517075110.5:<< look for name followed by '(' >>
+i = s.find(name,i)
+if i == -1:
+    break
+elif g.match(s,i-1,'.'):
+    i += n # Already an attribute.
+elif g.match(s,i-prefix_n,prefix):
+    i += n # Already preceded by the prefix.
+elif g.match(s,i-def_n,def_s):
+    i += n # preceded by "def"
+elif i > 0 and s[i-1] in ch1:
+    i += n # Not a word match.
+elif i+n < len(s) and s[i+n] in ch2:
+    i += n # Not a word match.
+else:
+    j = i + n
+    j = g.skip_ws(s,j)
+    if j >= len(s) or s[j] != '(':
+        i += n
+    else: # Replace name by prefix+name
+        s = s[:i] + prefix + name + s[i+n:]
+        i += n ; count += 1
+        # g.es('.',newline=False)
+        if 1:
+            if not printFlag:
+                printFlag = True
+                # print p.headString()
+            print g.get_line(s,i-n)
+#@nonl
+#@-node:EKR.20040517075110.5:<< look for name followed by '(' >>
+#@+node:EKR.20040517075110.6:<< print before and after >>
+print "-"*10,count,p.headString()
+print "before..."
+print p.bodyString()
+print "-"*10,"after..."
+print s
+#@nonl
+#@-node:EKR.20040517075110.6:<< print before and after >>
+#@-node:EKR.20040517075110.4:prependNamesInTree
+#@-node:EKR.20040517075110:replaceLeoGlobals
+#@+node:ekr.20050126102008:Projects...
+#@+node:EKR.20040608102548:(Fixed unicode bug in plugins_menu.py)
+#@+node:EKR.20040608102548.1:Report
+@nocolor
+
+By: Maxim Krikun - tws5
+ Non-ASCII in plugin config   
+2004-03-25 23:34  
+
+ I run Leo 4.1 final, build 1.77 ,
+Python 2.3.0, Tk 8.4.3, on windows 98.
+
+For some reason i had to enter non-ascii string in plugin preferences box (header_style for word export plugin, since ms word is localized and has style names different from "Header"). 
+
+I found that the dialog doesn't close on OK button, and the ini file gets broken -- not all options remain there. 
+
+As i investigated, ConfigParser.write() method when writing to a file claimed it can't convert unicode string to ascii. This problem was fixed by setting system default locale in site.py, (s/if: 0/if: 1/ at line 321).
+
+The fix:
+
+in << Create widgets for each section and option >>:
+
+e = Tk.Entry(b)
+e.insert(0, unicode(config.get(section, option)))
+#@nonl
+#@-node:EKR.20040608102548.1:Report
+#@+node:EKR.20040608103502:Unicode chars
+楢
+#@-node:EKR.20040608103502:Unicode chars
+#@+node:EKR.20040608104417:Traceback
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\PYTHON23\lib\lib-tk\Tkinter.py", line 1345, in __call__
+    return self.func(*args)
+  File "C:\prog\leoCVS\leo\plugins\plugins_menu.py", line 208, in onOk
+    self.writeConfiguration()
+  File "C:\prog\leoCVS\leo\plugins\plugins_menu.py", line 223, in writeConfiguration
+    self.config.write(f)
+  File "C:\PYTHON23\lib\ConfigParser.py", line 366, in write
+    fp.write("%s = %s\n" %
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u6962' in position 0: ordinal not in range(128)
+#@-node:EKR.20040608104417:Traceback
+#@+node:EKR.20040517080555.13:<< create the frame from the configuration data >>
+root = g.app.root
+
+<< Create the top level and the main frame >>
+<< Create widgets for each section and option >>
+<< Create Ok, Cancel and Apply buttons >>
+
+g.app.gui.center_dialog(top) # Do this after packing.
+top.grab_set() # Make the dialog a modal dialog.
+top.focus_force() # Get all keystrokes.
+root.wait_window(top)
+#@nonl
+#@+node:EKR.20040517080555.14:<< Create the top level and the main frame >>
+self.top = top = Tk.Toplevel(root)
+g.app.gui.attachLeoIcon(self.top)
+top.title("Properties of "+ plugin.name)
+top.resizable(0,0) # neither height or width is resizable.
+    
+self.frame = frame = Tk.Frame(top)
+frame.pack(side="top")
+#@nonl
+#@-node:EKR.20040517080555.14:<< Create the top level and the main frame >>
+#@+node:EKR.20040517080555.15:<< Create widgets for each section and option >>
+# Create all the entry boxes on the screen to allow the user to edit the properties
+sections = config.sections()
+sections.sort()
+for section in sections:
+    # Create a frame for the section.
+    f = Tk.Frame(top, relief="groove",bd=2)
+    f.pack(side="top",padx=5,pady=5)
+    Tk.Label(f, text=section.capitalize()).pack(side="top")
+    # Create an inner frame for the options.
+    b = Tk.Frame(f)
+    b.pack(side="top",padx=2,pady=2)
+    # Create a Tk.Label and Tk.Entry for each option.
+    options = config.options(section)
+    options.sort()
+    row = 0
+    for option in options:
+        e = Tk.Entry(b)
+        e.insert(0, unicode(config.get(section,option))) # 6/8/04
+        Tk.Label(b, text=option).grid(row=row, column=0, sticky="e", pady=4)
+        e.grid(row=row, column=1, sticky="ew", pady = 4)
+        row += 1
+        self.entries.append((section, option, e))
+#@nonl
+#@-node:EKR.20040517080555.15:<< Create widgets for each section and option >>
+#@+node:EKR.20040517080555.16:<< Create Ok, Cancel and Apply buttons >>
+box = Tk.Frame(top, borderwidth=5)
+box.pack(side="bottom")
+
+list = [("OK",self.onOk),("Cancel",top.destroy)]
+if plugin.hasapply:
+    list.append(("Apply",self.onApply),)
+
+for text,f in list:
+    Tk.Button(box,text=text,width=6,command=f).pack(side="left",padx=5)
+#@nonl
+#@-node:EKR.20040517080555.16:<< Create Ok, Cancel and Apply buttons >>
+#@-node:EKR.20040517080555.13:<< create the frame from the configuration data >>
+#@+node:EKR.20040517080555.18:writeConfiguration
+def writeConfiguration(self):
+    
+    """Write the configuration to disk"""
+
+    # Set values back into the config item.
+    for section, option, entry in self.entries:
+        s = entry.get()
+        s = g.toEncodedString(s,"ascii",reportErrors=True) # Config params had better be ascii.
+        self.config.set(section,option,s)
+
+    # Write out to the file.
+    f = open(self.filename, "w")
+    self.config.write(f)
+    f.close()
+#@nonl
+#@-node:EKR.20040517080555.18:writeConfiguration
+#@-node:EKR.20040608102548:(Fixed unicode bug in plugins_menu.py)
+#@+node:ekr.20050116104455:(Fixed plugin manager)
+#@+node:ekr.20050121174138:Bug 1: enable/disable lists must be created in synch
+#@+node:pap.20041008200028:parseManagerText
+def parseManagerText(self, text):
+    """Parse the text in the manager file"""
+
+    # Regular expressions for scanning the file
+    find_active = re.compile(r"^\s*(\w+)\.py", re.MULTILINE)
+    find_inactive = re.compile(r"^\s*#\s*(\w+)\.py", re.MULTILINE)
+    find_manager = re.compile(r"^\s*plugin_manager\.py", re.MULTILINE)
+
+    if 1: # Put the first match in the starts dict.
+        starts = {}
+        for kind,iter in (
+            ('on',find_active.finditer(text)),
+            ('off',find_inactive.finditer(text)),
+        ):
+            for match in iter:
+                name = match.groups()[0]
+                start = match.start()
+                if start != -1:
+                    bunch = starts.get(name)
+                    if not bunch or bunch.start > start:
+                      starts[name] = g.Bunch(
+                        kind=kind,name=name,start=start,match=match)
+                    
+        self.actives = dict(
+            [(bunch.name,bunch.match) for bunch in starts.values() if bunch.kind=='on'])
+            
+        self.inactives = dict(
+            [(bunch.name,bunch.match) for bunch in starts.values() if bunch.kind=='off'])
+            
+        if 0: # debugging.
+            starts2 = [(bunch.start,bunch.name,bunch.kind) for bunch in starts.values()]
+            starts2.sort()
+            g.trace(g.listToString(starts2,tag='starts2 list'))
+            g.trace(g.dictToString(self.actives,tag='Active Plugins'))
+                  
+    else: # Original code.
+        # Get active plugin defintions
+        self.actives = dict([(match.groups()[0], match) 
+            for match in find_active.finditer(text)])
+    
+        # Get inactive plugin definitions
+        self.inactives = dict([(match.groups()[0], match) 
+            for match in find_inactive.finditer(text)])
+
+    # List of all plugins
+    self.all = {}
+    self.all.update(self.actives)
+    self.all.update(self.inactives)
+
+    # Locaction of the plugin_manager.py plugin - this is where
+    # we add additional files
+    self.manager = find_manager.search(text)
+#@nonl
+#@-node:pap.20041008200028:parseManagerText
+#@-node:ekr.20050121174138:Bug 1: enable/disable lists must be created in synch
+#@+node:ekr.20050121174138.1:Bug 2: ''' (triple-single quotes) not recognized as start of docstrings
+#@+node:pap.20041006194759:getDetails
+def getDetails(self, text):
+    """Get the details of the plugin
+    
+    We look for
+        __version__
+        hooks
+        config
+        commands
+    """
+    # The following line tried to detect plugins by looking 
+    # for self.hasImport(text, "leoPlugins") - now we assume all .py are plugins
+    self.is_plugin = not self.hasPattern(text, '__not_a_plugin__\s*=\s*True(?!")')
+    self.version = self.getPattern(text, r'__version__\s*=\s*[\'"](.*?)[\'"]', "-")
+    self.group = self.getPattern(text, r'__plugin_group__\s*=\s*[\'"](.*?)[\'"]', "-")
+    # Allow both single and double triple-quoted strings.
+    match1 = self.getMatch(text, r'"""(.*?)"""')
+    match2 = self.getMatch(text, r"'''(.*?)'''")
+    pat1 = match1 and match1.group(1)
+    pat2 = match2 and match2.group(1)
+    if pat1 and pat2:
+        # Take the first pattern that appears.
+        self.description = g.choose(match1.start() < match2.start(),pat1,pat2)
+    else:
+        # Take whatever.
+        self.description = pat1 or pat2 or 'Unknown'
+    # g.trace('%4d %s' % (len(self.description),self.name))
+    self.commands = sets.Set(self.getPatterns(text, "def cmd_(\w*?)\("))
+    # Get a list of the handlers
+    handler_list = self.getPattern(text, r'registerHandler\((.*?)\)')
+    if handler_list:
+        self.handlers = sets.Set(self.getPatterns(handler_list, r'["\'](.*?)["\']'))
+    else:
+        self.handlers = sets.Set()
+    # Look for the matching .ini file.
+    ini_file_name = g.os_path_join(
+        g.app.loadDir,"..","plugins",
+        self.getName(self.filename)+".ini")
+    ini_file_name = g.os_path_abspath(ini_file_name)
+    self.has_config = g.os_path_exists(ini_file_name)
+    self.hash = sha.sha(text).hexdigest()
+    self.can_read = True
+    if USE_PRIORITY:
+        self.priority = self.getPattern(text, r'__plugin_priority__\s*=\s*(.*?)$', "-")
+    self.has_toplevel = self.hasPattern(text, "def topLevelMenu")
+    self.getVersionHistory(text)
+#@nonl
+#@-node:pap.20041006194759:getDetails
+#@+node:pap.20041006194759.1:getPattern
+def getPattern(self, text, pattern, default=None):
+
+    """Return a single match for the specified pattern in the text or the default"""
+
+    matches = self.getPatterns(text, pattern)
+    if matches:
+        return matches[0]
+    else:
+        return default
+#@nonl
+#@-node:pap.20041006194759.1:getPattern
+#@+node:pap.20041006194917:getPatterns
+def getPatterns(self, text, pattern):
+
+    """Return all matches of the pattern in the text"""
+
+    exp = re.compile(pattern, re.MULTILINE + re.DOTALL)
+
+    return exp.findall(text)
+#@nonl
+#@-node:pap.20041006194917:getPatterns
+#@+node:pap.20041008224625:showPlugin
+def showPlugin(self, plugin):
+    """Show a plugin"""
+    self.name.setentry(plugin.name)
+    self.version.setentry(plugin.version)
+    self.group.setentry(plugin.group)
+    self.filename.setentry(g.os_path_abspath(plugin.filename)) # EKR
+    self.status.setentry(plugin.enabled)
+    self.has_ini.setentry(
+        g.choose(plugin.has_config,"Yes","No"))
+    self.has_toplevel.setentry(
+        g.choose(plugin.has_toplevel,"Yes","No"))
+    if USE_PRIORITY:
+        self.priority.setentry(plugin.priority)
+    self.description.settext(plugin.description.strip())
+    self.version_history.settext(plugin.versions.strip())
+    self.commands.setlist(plugin.commands)
+    self.handlers.setlist(plugin.handlers)
+    self.requires.setlist(plugin.requires)
+#@nonl
+#@-node:pap.20041008224625:showPlugin
+#@+node:pap.20041006193013:initFrom
+def initFrom(self, location):
+    """Initialize the plugin from the specified location"""
+
+    # Initial properties
+    self.filename = location
+    self.name = self.getName(location)
+    self.nicename = self.getNiceName(self.name)
+
+    # Get the contents of the file
+    try:
+        text = self.getContents()
+        self.getDetails(text)
+    except InvalidPlugin, err:
+        print 'InvalidPlugin',str(err)
+        self.description = str(err)
+    except:
+        g.es('Unexpected exception in initFrom')
+        g.es_exception()
+#@nonl
+#@-node:pap.20041006193013:initFrom
+#@+node:ekr.20050121183012:getMatch (new)
+def getMatch(self, text, pattern):
+
+    """Return a single match for the specified pattern in the text"""
+    
+    return re.search(pattern,text,re.MULTILINE + re.DOTALL)
+#@nonl
+#@-node:ekr.20050121183012:getMatch (new)
+#@-node:ekr.20050121174138.1:Bug 2: ''' (triple-single quotes) not recognized as start of docstrings
+#@-node:ekr.20050116104455:(Fixed plugin manager)
+#@-node:ekr.20050126102008:Projects...
+#@-all
+#@nonl
+#@-node:edream.110203113231:@thin pluginsNotes.txt
+#@-leo

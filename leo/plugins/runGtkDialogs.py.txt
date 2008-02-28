@@ -1,0 +1,161 @@
+#@+leo-ver=4-thin
+#@+node:bob.20080109185406.2:@thin runGtkDialogs.py.txt
+#@@language python
+#@@tabwidth -4
+
+#@<< docstring >>
+#@+node:bob.20071220183842:<< docstring >>
+"""Show a dialog to the user and return the result on stdout."""
+
+#@-node:bob.20071220183842:<< docstring >>
+#@nl
+
+#@<< imports >>
+#@+node:bob.20071220172506.1:<< imports >>
+
+import sys
+
+import pygtk
+pygtk.require('2.0')
+
+import gtk
+
+import pickle
+
+
+#@-node:bob.20071220172506.1:<< imports >>
+#@nl
+
+import re
+
+__revision__ = re.sub(r'^\D+([\d\.]+)\D+$', r'\1', "$Revision: 1.2 $")
+
+__version__ = '0.%s'% __revision__
+
+
+
+gtkactions = {
+    'open': gtk.FILE_CHOOSER_ACTION_OPEN,
+    'save': gtk.FILE_CHOOSER_ACTION_SAVE,
+}
+
+
+#err = sys.stderr.write
+err = lambda *args, **kw: None
+
+#@+others
+#@+node:bob.20071220173044.1:class FilesDialog
+class FilesDialog(object):
+
+    #@    @+others
+    #@+node:bob.20071220173044.2:__init__
+
+
+    def __init__(self, config):
+
+
+
+        self.exitvalue = 1
+
+        if config.strAction == 'open':
+            btns = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+        else:
+            btns = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK)
+
+        dialog = gtk.FileChooserDialog(
+            config.title,
+            None,
+            config.action,
+            btns
+        )
+
+        try:
+
+            dialog.set_default_response(gtk.RESPONSE_OK)
+            dialog.set_do_overwrite_confirmation(True)
+            dialog.set_select_multiple(config.multiple)
+            if config.initialdir:
+                dialog.set_current_folder(config.initialdir)
+
+
+            if config.filetypes:
+
+                for name, patern in config.filetypes:
+                    filter = gtk.FileFilter()
+                    filter.set_name(name)
+                    filter.add_pattern(patern)
+                    dialog.add_filter(filter)
+
+
+            response = dialog.run()
+            err('response is %s\n\n' % response)
+
+            if response == gtk.RESPONSE_OK:
+
+
+                if config.multiple:
+                    result = {'result': dialog.get_filenames()}
+                else:
+                    result = {'result': dialog.get_filename()}
+
+                err('\n\nresponse ok: %s\n\n' % result)
+
+                print pickle.dumps(result)
+
+                self.exitvalue = 0
+
+            elif response == gtk.RESPONSE_CANCEL:
+                self.exitvalue = 1
+
+        finally:
+
+            dialog.destroy()
+
+
+
+    #@-node:bob.20071220173044.2:__init__
+    #@-others
+#@-node:bob.20071220173044.1:class FilesDialog
+#@+node:bob.20071220172506.2:class FileConfig
+class FileConfig(object):
+    #@    @+others
+    #@+node:bob.20071220172506.3:__init__
+
+    def __init__(self, config):
+
+        action = config.get('action', 'open')
+
+        self.strAction = action
+        self.action = gtkactions[action]
+
+        self.title = config.get('title', action + ' file dialog')
+
+        self.multiple = config.get('multiple', False)
+
+        self.filetypes = config.get('filetypes', [])
+
+        self.initialdir = config.get('initialdir', '')
+
+
+    #@-node:bob.20071220172506.3:__init__
+    #@-others
+#@-node:bob.20071220172506.2:class FileConfig
+#@-others
+
+
+config = pickle.loads(sys.argv[1])
+
+err('\n\n%s\n\n' % config)
+
+config = FileConfig(config)
+
+err(str(config))
+
+chooser = FilesDialog(config)
+
+err(str(chooser))
+
+sys.exit(chooser.exitvalue)
+
+#@-node:bob.20080109185406.2:@thin runGtkDialogs.py.txt
+#@-leo

@@ -1,0 +1,110 @@
+# The manifest template: specifies all files to be included in the distribution.
+
+# Note: these are glob patterns.
+# There seems to be a bug in distutils: ../ doesn't get handled properly.
+# manifest.in must be in the current directory.
+
+include __init__.py
+include manifest.in
+include MANIFEST
+include install
+include setup.py
+include uninstall
+
+include config/leoSettings.leo
+
+include dist/leo-4-3.nsi
+include dist/leoDist.leo
+include dist/.pycheckrc
+
+include doc/LeoDocs.leo
+include doc/leoNotes.txt
+include doc/LeoSlideShows.leo
+include doc/leoToDo.txt
+include doc/leoToDoLater.txt
+
+include doc/README.TXT
+include doc/INSTALL.TXT
+include doc/PKG-INFO.TXT
+include doc/LICENSE.TXT
+
+include doc/default.css
+include doc/leo_rst.css
+include doc/silver_city.css
+
+include doc/LeoN/sun98achieving.pdf
+include doc/LeoN/sun97generic.pdf
+include doc/LeoN/sun98operational.pdf
+include doc/LeoN/sun98reversible.pdf
+
+include doc/html/*.*
+
+include extensions/aspell23.pyd
+include extensions/aspell24.pyd
+include extensions/optparse.py
+include extensions/path.py
+include extensions/sets.py
+include extensions/subprocess.py
+
+# include extensions/__init__.py
+
+include extensions/Pmw/__init__.py
+include extensions/Pmw/Pmw_1_3/__init__.py
+include extensions/Pmw/Pmw_1_3/bin/*.*
+include extensions/Pmw/Pmw_1_3/contrib/*.*
+include extensions/Pmw/Pmw_1_3/demos/*.*
+include extensions/Pmw/Pmw_1_3/doc/*.*
+include extensions/Pmw/Pmw_1_3/lib/*.*
+include extensions/Pmw/Pmw_1_3/tests/*.*
+
+# These will typically generate sdist warnings.
+exclude extensions/Pmw/Pmw_1_3/bin/*.pyc
+exclude extensions/Pmw/Pmw_1_3/contrib/*.pyc
+exclude extensions/Pmw/Pmw_1_3/demos/*.pyc
+exclude extensions/Pmw/Pmw_1_3/doc/*.pyc
+exclude extensions/Pmw/Pmw_1_3/lib/*.pyc
+exclude extensions/Pmw/Pmw_1_3/tests/*.pyc
+
+# These will typically generate sdist warnings.
+exclude extensions/Pmw/Pmw_1_3/bin/*.pyo
+exclude extensions/Pmw/Pmw_1_3/contrib/*.pyo
+exclude extensions/Pmw/Pmw_1_3/demos/*.pyo
+exclude extensions/Pmw/Pmw_1_3/doc/*.pyo
+exclude extensions/Pmw/Pmw_1_3/lib/*.pyo
+exclude extensions/Pmw/Pmw_1_3/tests/*.pyo
+
+include Icons/*.*
+
+include modes/*.xml
+include modes/*.py
+
+include plugins/leoPlugins.leo
+include plugins/*.ini
+include plugins/*.txt
+include plugins/*.py
+
+include plugins/trees/*.py
+# trees/pluginsManager.txt is for the use of a plugin
+include plugins/trees/pluginsManager.txt
+
+include scripts/openLeoScript.sh
+include scripts/scripts.leo
+include scripts/leoScripts.txt
+include scripts/*.py
+
+# include src/__init__.py
+include src/buttons.txt
+include src/LeoPy.leo
+include src/leo*.py
+include src/leoProjects.txt
+include src/oldLeoProjects.leo
+include src/unitTests.txt
+
+# include test/__init__.py
+include test/test.leo
+include test/unitTest.leo
+
+include test/unittest/at-file-thin-test2.txt
+include test/unittest/batchTest.py
+include test/unittest/leoDynamicTest.py
+include test/unittest/errorTest.py

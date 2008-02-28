@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<MODE>
+    <PROPS>
+        <PROPERTY NAME="commentStart" VALUE="/*" />
+        <PROPERTY NAME="commentEnd" VALUE="*/" />
+        <PROPERTY NAME="lineComment" VALUE="//" />
+        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*" />
+
+        <!-- Auto indent -->
+        <PROPERTY NAME="indentOpenBrackets" VALUE="{" />
+        <PROPERTY NAME="indentCloseBrackets" VALUE="}" />
+        <PROPERTY NAME="indentNextLine"
+            VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)" />
+        <!-- set this to 'true' if you want to use GNU coding style -->
+        <PROPERTY NAME="doubleBracketIndent" VALUE="false" />
+        <PROPERTY NAME="lineUpClosingBracket" VALUE="true" />
+    </PROPS>
+    <RULES ESCAPE="\"
+        IGNORE_CASE="FALSE"
+        HIGHLIGHT_DIGITS="TRUE"
+        DIGIT_RE="(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)">
+
+        <!-- Doxygen comment, Javadoc style -->
+        <SPAN TYPE="COMMENT3" DELEGATE="doxygen::DOXYGEN">
+            <BEGIN>/**</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- Doxygen comment, Qt style -->
+        <SPAN TYPE="COMMENT3" DELEGATE="doxygen::DOXYGEN">
+            <BEGIN>/*!</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- C style comment -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>'</BEGIN>
+            <END>'</END>
+        </SPAN>
+
+        <!-- preprocessor statements -->
+        <SEQ TYPE="KEYWORD2">##</SEQ>
+        <EOL_SPAN TYPE="KEYWORD2" DELEGATE="c::CPP">#</EOL_SPAN>
+
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <SEQ TYPE="OPERATOR">=</SEQ>
+        <SEQ TYPE="OPERATOR">!</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;=</SEQ>
+        <SEQ TYPE="OPERATOR">+</SEQ>
+        <SEQ TYPE="OPERATOR">-</SEQ>
+        <SEQ TYPE="OPERATOR">/</SEQ>
+
+        <SEQ TYPE="OPERATOR">*</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;</SEQ>
+        <SEQ TYPE="OPERATOR">%</SEQ>
+        <SEQ TYPE="OPERATOR">&amp;</SEQ>
+        <SEQ TYPE="OPERATOR">|</SEQ>
+        <SEQ TYPE="OPERATOR">^</SEQ>
+        <SEQ TYPE="OPERATOR">~</SEQ>
+        <SEQ TYPE="OPERATOR">}</SEQ>
+        <SEQ TYPE="OPERATOR">{</SEQ>
+        
+        <MARK_PREVIOUS TYPE="FUNCTION">::</MARK_PREVIOUS>
+        
+        <MARK_PREVIOUS AT_WHITESPACE_END="TRUE"
+            EXCLUDE_MATCH="TRUE"
+            TYPE="LABEL">:</MARK_PREVIOUS>
+
+        <!-- Function calls -->
+        <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
+
+        <KEYWORDS>
+            <KEYWORD3>and</KEYWORD3>
+            <KEYWORD3>and_eq</KEYWORD3>
+            <KEYWORD2>asm</KEYWORD2>
+            <KEYWORD1>auto</KEYWORD1>
+            <KEYWORD3>bitand</KEYWORD3>
+            <KEYWORD3>bitor</KEYWORD3>
+            <KEYWORD3>bool</KEYWORD3>
+            <KEYWORD1>break</KEYWORD1>
+            <KEYWORD1>case</KEYWORD1>
+            <KEYWORD1>catch</KEYWORD1>
+            <KEYWORD3>char</KEYWORD3>
+            <KEYWORD3>class</KEYWORD3>
+            <KEYWORD3>compl</KEYWORD3>
+            <KEYWORD1>const</KEYWORD1>
+            <KEYWORD3>const_cast</KEYWORD3>
+            <KEYWORD1>continue</KEYWORD1>
+            <KEYWORD1>default</KEYWORD1>
+            <KEYWORD1>delete</KEYWORD1>
+            <KEYWORD1>do</KEYWORD1>
+            <KEYWORD3>double</KEYWORD3>
+            <KEYWORD3>dynamic_cast</KEYWORD3>
+            <KEYWORD1>else</KEYWORD1>
+            <KEYWORD3>enum</KEYWORD3>
+            <KEYWORD1>explicit</KEYWORD1>
+            <KEYWORD2>export</KEYWORD2>
+            <KEYWORD2>extern</KEYWORD2>
+            <LITERAL2>false</LITERAL2>
+            <KEYWORD3>float</KEYWORD3>
+            <KEYWORD1>for</KEYWORD1>
+            <KEYWORD1>friend</KEYWORD1>
+            <KEYWORD1>goto</KEYWORD1>
+            <KEYWORD1>if</KEYWORD1>
+            <KEYWORD1>inline</KEYWORD1>
+            <KEYWORD3>int</KEYWORD3>
+            <KEYWORD3>long</KEYWORD3>
+            <KEYWORD3>mutable</KEYWORD3>
+            <KEYWORD2>namespace</KEYWORD2>
+            <KEYWORD1>new</KEYWORD1>
+            <KEYWORD3>not</KEYWORD3>
+            <KEYWORD3>not_eq</KEYWORD3>
+            <KEYWORD3>operator</KEYWORD3>
+            <KEYWORD3>or</KEYWORD3>
+            <KEYWORD3>or_eq</KEYWORD3>
+            <KEYWORD1>private</KEYWORD1>
+            <KEYWORD1>protected</KEYWORD1>
+            <KEYWORD1>public</KEYWORD1>
+            <KEYWORD1>register</KEYWORD1>
+            <KEYWORD3>reinterpret_cast</KEYWORD3>
+            <KEYWORD1>return</KEYWORD1>
+            <KEYWORD3>short</KEYWORD3>
+            <KEYWORD3>signed</KEYWORD3>
+            <KEYWORD1>sizeof</KEYWORD1>
+            <KEYWORD1>static</KEYWORD1>
+            <KEYWORD3>static_cast</KEYWORD3>
+            <KEYWORD3>struct</KEYWORD3>
+            <KEYWORD1>switch</KEYWORD1>
+            <KEYWORD3>template</KEYWORD3>
+            <LITERAL2>this</LITERAL2>
+            <KEYWORD1>throw</KEYWORD1>
+            <LITERAL2>true</LITERAL2>
+            <KEYWORD1>try</KEYWORD1>
+            <KEYWORD3>typedef</KEYWORD3>
+            <KEYWORD3>typeid</KEYWORD3>
+            <KEYWORD3>typename</KEYWORD3>
+            <KEYWORD3>union</KEYWORD3>
+            <KEYWORD3>unsigned</KEYWORD3>
+            <KEYWORD2>using</KEYWORD2>
+            <KEYWORD1>virtual</KEYWORD1>
+            <KEYWORD1>void</KEYWORD1>
+            <KEYWORD1>volatile</KEYWORD1>
+            <KEYWORD3>wchar_t</KEYWORD3>
+            <KEYWORD1>while</KEYWORD1>
+            <KEYWORD3>xor</KEYWORD3>
+            <KEYWORD3>xor_eq</KEYWORD3>
+            <LITERAL2>NULL</LITERAL2>
+        </KEYWORDS>
+    </RULES>
+</MODE>

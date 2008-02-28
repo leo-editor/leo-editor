@@ -1,0 +1,39 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20080114142724:@thin leoGtkNotes.txt
+#@@nocolor
+
+#@+all
+#@+node:ekr.20080112175736: gtk: to do
+gtkGui:
+
+** Rewrite leoKeyEventClass.
+   This should be done by EKR: it is an essential part of all key handline.
+- There is no root ivar in the gtk gui.  Rewrite all code that uses self.root.
+- Rewrite runOpenFileDialog
+- Rewrite runSaveFileDialog
+
+gtkFrame:
+- What is the correct way to close a window?
+- Should there be a separate minibuffer class?
+- Should there be separate files for the log, body, etc.?
+- Should there be smaller methods to create components and make bindings?
+
+gtkFind:
+- Create the find tab.
+
+gtkComparePanel:
+- At present this does not exist.  The compare window is optional.
+
+General:
+- Write unit tests for all new gui code.
+- Unit tests for showFindPanel and openCompareWindow.
+
+#@-node:ekr.20080112175736: gtk: to do
+#@+node:ekr.20080113061130: gtk: what I did
+- Added code to Leo's code to do nothing it the compare panel and stand-alone find panel do not exist.
+#@nonl
+#@-node:ekr.20080113061130: gtk: what I did
+#@-all
+#@nonl
+#@-node:ekr.20080114142724:@thin leoGtkNotes.txt
+#@-leo

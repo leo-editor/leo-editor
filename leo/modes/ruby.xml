@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<!-- Ruby mode by Ian Maclean -->
+<!-- tweakage by Chris Morris - clabs.org -->
+<MODE>
+	<PROPS>
+		<PROPERTY NAME="indentOpenBrackets" VALUE="{" />
+		<PROPERTY NAME="indentCloseBrackets" VALUE="}" />
+		<PROPERTY NAME="lineUpClosingBracket" VALUE="true" />
+		<PROPERTY NAME="commentStart" VALUE="=begin" />
+		<PROPERTY NAME="commentEnd" VALUE="=end" />
+		<PROPERTY NAME="lineComment" VALUE="#" />
+	</PROPS>
+	<RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+		<!-- Ruby comment (Inline Documetation ) -->
+		<SPAN TYPE="COMMENT2">
+			<BEGIN>=begin</BEGIN>
+			<END>=end</END>
+		</SPAN>
+
+    <SPAN TYPE="LITERAL2" EXCLUDE_MATCH="TRUE">
+      <BEGIN>#{</BEGIN>
+      <END>}</END>
+    </SPAN>
+    
+		<SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE" DELEGATE="doubleQuoteLiteral">
+			<BEGIN>"</BEGIN>
+			<END>"</END>
+		</SPAN>
+		<SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+			<BEGIN>'</BEGIN>
+			<END>'</END>
+		</SPAN>
+
+		<!-- Std Comment   -->
+		<EOL_SPAN TYPE="COMMENT1">#</EOL_SPAN>
+
+		<!-- Not Operators but like the syntak hightligh to match operators -->
+		<SEQ TYPE="OPERATOR">{</SEQ>
+		<SEQ TYPE="OPERATOR">}</SEQ>
+		<SEQ TYPE="OPERATOR">(</SEQ>
+		<SEQ TYPE="OPERATOR">)</SEQ>
+
+		<!-- Arithmetic operators -->
+		<SEQ TYPE="OPERATOR">::</SEQ>
+		<SEQ TYPE="OPERATOR">===</SEQ>
+		<SEQ TYPE="OPERATOR">=</SEQ>
+		<SEQ TYPE="OPERATOR">&gt;&gt;</SEQ>
+		<SEQ TYPE="OPERATOR">&lt;&lt;</SEQ>
+		<SEQ TYPE="OPERATOR">&lt;=</SEQ>
+		<SEQ TYPE="OPERATOR">+</SEQ>
+		<SEQ TYPE="OPERATOR">-</SEQ>
+		<SEQ TYPE="OPERATOR">/</SEQ>
+
+		<SEQ TYPE="OPERATOR">**</SEQ>
+		<SEQ TYPE="OPERATOR">*</SEQ>
+
+		<SEQ TYPE="OPERATOR">%</SEQ>
+
+		<!-- Logical Operators -->
+		<SEQ TYPE="OPERATOR">&amp;</SEQ>
+		<SEQ TYPE="OPERATOR">|</SEQ>
+		<SEQ TYPE="OPERATOR">!</SEQ>
+		<SEQ TYPE="OPERATOR">&gt;</SEQ>
+		<SEQ TYPE="OPERATOR">&lt;</SEQ>
+		<SEQ TYPE="OPERATOR">^</SEQ>
+		<SEQ TYPE="OPERATOR">~</SEQ>
+
+		<!--Range operators -->
+		<SEQ TYPE="OPERATOR">...</SEQ>
+		<SEQ TYPE="OPERATOR">..</SEQ>
+
+		<SEQ TYPE="OPERATOR">]</SEQ>
+		<SEQ TYPE="OPERATOR">[</SEQ>
+		<SEQ TYPE="OPERATOR">?</SEQ>
+		<MARK_PREVIOUS AT_WHITESPACE_END="TRUE"
+			EXCLUDE_MATCH="TRUE"
+			TYPE="LABEL">:</MARK_PREVIOUS>
+		<SEQ TYPE="OPERATOR">:</SEQ>
+
+		<KEYWORDS>
+			<KEYWORD1>BEGIN</KEYWORD1>
+			<KEYWORD1>END</KEYWORD1>
+			<KEYWORD1>alias</KEYWORD1>
+			<KEYWORD1>and</KEYWORD1>
+			<KEYWORD1>begin</KEYWORD1>
+			<KEYWORD1>break</KEYWORD1>
+			<KEYWORD1>case</KEYWORD1>
+			<KEYWORD1>class</KEYWORD1>
+			<KEYWORD1>def</KEYWORD1>
+			<KEYWORD1>defined</KEYWORD1>
+			<KEYWORD1>do</KEYWORD1>
+			<KEYWORD1>else</KEYWORD1>
+			<KEYWORD1>elsif</KEYWORD1>
+			<KEYWORD1>end</KEYWORD1>
+			<KEYWORD1>ensure</KEYWORD1>
+			<KEYWORD1>for</KEYWORD1>
+			<KEYWORD1>if</KEYWORD1>
+			<KEYWORD1>in</KEYWORD1>
+			<KEYWORD1>module</KEYWORD1>
+			<KEYWORD1>next</KEYWORD1>
+			<KEYWORD1>elsif</KEYWORD1>
+			<KEYWORD1>nil</KEYWORD1>
+			<KEYWORD1>or</KEYWORD1>
+			<KEYWORD1>redo</KEYWORD1>
+			<KEYWORD1>rescue</KEYWORD1>
+			<KEYWORD1>retry</KEYWORD1>
+			<KEYWORD1>return</KEYWORD1>
+			<KEYWORD1>then</KEYWORD1>
+			<KEYWORD1>undef</KEYWORD1>
+			<KEYWORD1>unless</KEYWORD1>
+			<KEYWORD1>until</KEYWORD1>
+			<KEYWORD1>when</KEYWORD1>
+			<KEYWORD1>while</KEYWORD1>
+			<KEYWORD1>yield</KEYWORD1>
+
+			<!--   Keyword 2's -->
+			<KEYWORD2>require</KEYWORD2>
+			<KEYWORD2>include</KEYWORD2>
+
+			<!--
+			<KEYWORD3>short</KEYWORD3>
+			<KEYWORD3>void</KEYWORD3>  -->
+
+			<OPERATOR>not</OPERATOR>
+
+			<LITERAL2>super</LITERAL2>
+			<LITERAL2>self</LITERAL2>
+			<LITERAL2>false</LITERAL2>
+			<LITERAL2>true</LITERAL2>
+			<LITERAL2>__FILE__</LITERAL2>
+			<LITERAL2>__LINE__</LITERAL2>
+		</KEYWORDS>
+	</RULES>
+  <RULES SET="doubleQuoteLiteral">
+    <SPAN TYPE="LITERAL2" EXCLUDE_MATCH="TRUE">
+      <BEGIN>#{</BEGIN>
+      <END>}</END>
+    </SPAN>
+  </RULES>
+</MODE>

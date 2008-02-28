@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<MODE>
+    <PROPS>
+        <PROPERTY NAME="commentStart" VALUE="/*" />
+        <PROPERTY NAME="commentEnd" VALUE="*/" />
+        <PROPERTY NAME="lineComment" VALUE="//" />
+        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*" />
+
+        <!-- Auto indent -->
+        <PROPERTY NAME="indentOpenBrackets" VALUE="{" />
+        <PROPERTY NAME="indentCloseBrackets" VALUE="}" />
+        <PROPERTY NAME="indentNextLine"
+            VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)" />
+        <!-- set this to 'true' if you want to use GNU coding style -->
+        <PROPERTY NAME="doubleBracketIndent" VALUE="false" />
+        <PROPERTY NAME="lineUpClosingBracket" VALUE="true" />
+    </PROPS>
+    <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+        <!-- Doxygen comment, Javadoc style -->
+        <SPAN TYPE="COMMENT3" DELEGATE="doxygen::DOXYGEN">
+            <BEGIN>/**</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- Doxygen comment, Qt style -->
+        <SPAN TYPE="COMMENT3" DELEGATE="doxygen::DOXYGEN">
+            <BEGIN>/*!</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- C style comment -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>'</BEGIN>
+            <END>'</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL3" NO_LINE_BREAK="TRUE">
+            <BEGIN>@"</BEGIN>
+            <END>"</END>
+        </SPAN>
+
+        <!-- preprocessor statements -->
+        <SEQ TYPE="KEYWORD2">##</SEQ>
+        <EOL_SPAN TYPE="KEYWORD2" DELEGATE="c::CPP">#</EOL_SPAN>
+        
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <SEQ TYPE="OPERATOR">=</SEQ>
+        <SEQ TYPE="OPERATOR">!</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;=</SEQ>
+        <SEQ TYPE="OPERATOR">+</SEQ>
+        <SEQ TYPE="OPERATOR">-</SEQ>
+        <SEQ TYPE="OPERATOR">/</SEQ>
+
+        <SEQ TYPE="OPERATOR">*</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;</SEQ>
+        <SEQ TYPE="OPERATOR">%</SEQ>
+        <SEQ TYPE="OPERATOR">&amp;</SEQ>
+        <SEQ TYPE="OPERATOR">|</SEQ>
+        <SEQ TYPE="OPERATOR">^</SEQ>
+        <SEQ TYPE="OPERATOR">~</SEQ>
+        <SEQ TYPE="OPERATOR">}</SEQ>
+        <SEQ TYPE="OPERATOR">{</SEQ>
+        <MARK_PREVIOUS AT_WHITESPACE_END="TRUE"
+            EXCLUDE_MATCH="TRUE"
+            TYPE="LABEL">:</MARK_PREVIOUS>
+
+        <!-- Function calls -->
+        <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
+
+        <KEYWORDS>
+            <!-- Types (Standard C) -->
+            <KEYWORD3>char</KEYWORD3>
+            <KEYWORD3>const</KEYWORD3>
+            <KEYWORD3>double</KEYWORD3>
+            <KEYWORD3>enum</KEYWORD3>
+            <KEYWORD3>float</KEYWORD3>
+            <KEYWORD3>int</KEYWORD3>
+            <KEYWORD3>long</KEYWORD3>
+            <KEYWORD3>short</KEYWORD3>
+            <KEYWORD3>signed</KEYWORD3>
+            <KEYWORD3>struct</KEYWORD3>
+            <KEYWORD3>typedef</KEYWORD3>
+            <KEYWORD3>union</KEYWORD3>
+            <KEYWORD3>unsigned</KEYWORD3>
+            <KEYWORD3>void</KEYWORD3>
+            <!-- Types (Objective C) -->
+            <KEYWORD3>id</KEYWORD3>
+            <KEYWORD3>Class</KEYWORD3>
+            <KEYWORD3>SEL</KEYWORD3>
+            <KEYWORD3>IMP</KEYWORD3>
+            <KEYWORD3>BOOL</KEYWORD3>
+            
+            <!-- Keywords (Standard C) -->
+            <KEYWORD1>auto</KEYWORD1>
+            <KEYWORD1>break</KEYWORD1>
+            <KEYWORD1>case</KEYWORD1>
+            <KEYWORD1>continue</KEYWORD1>
+            <KEYWORD1>default</KEYWORD1>
+            <KEYWORD1>do</KEYWORD1>
+            <KEYWORD1>else</KEYWORD1>
+            <KEYWORD1>extern</KEYWORD1>
+            <KEYWORD1>for</KEYWORD1>
+            <KEYWORD1>goto</KEYWORD1>
+            <KEYWORD1>if</KEYWORD1>
+            <KEYWORD1>register</KEYWORD1>
+            <KEYWORD1>return</KEYWORD1>
+            <KEYWORD1>sizeof</KEYWORD1>
+            <KEYWORD1>static</KEYWORD1>
+            <KEYWORD1>switch</KEYWORD1>
+            <KEYWORD1>volatile</KEYWORD1>
+            <KEYWORD1>while</KEYWORD1>
+            <!-- Non-standard -->
+            <KEYWORD1>asm</KEYWORD1>
+            <KEYWORD1>inline</KEYWORD1>
+            <!-- Keywords (Objective C) -->
+            <KEYWORD1>oneway</KEYWORD1>
+            <KEYWORD1>in</KEYWORD1>
+            <KEYWORD1>out</KEYWORD1>
+            <KEYWORD1>inout</KEYWORD1>
+            <KEYWORD1>bycopy</KEYWORD1>
+            <KEYWORD1>byref</KEYWORD1>
+            <KEYWORD1>self</KEYWORD1>
+            <KEYWORD1>super</KEYWORD1>
+            
+            <!-- Preprocessor Directives (Objective C)-->
+            <KEYWORD1>@interface</KEYWORD1>
+            <KEYWORD1>@implementation</KEYWORD1>
+            <KEYWORD1>@protocol</KEYWORD1>
+            <KEYWORD1>@end</KEYWORD1>
+            <KEYWORD1>@private</KEYWORD1>
+            <KEYWORD1>@protected</KEYWORD1>
+            <KEYWORD1>@public</KEYWORD1>
+            <KEYWORD1>@class</KEYWORD1>
+            <KEYWORD1>@selector</KEYWORD1>
+            <KEYWORD1>@endcode</KEYWORD1>
+            <KEYWORD1>@defs</KEYWORD1>
+            
+            <LITERAL2>true</LITERAL2>
+            <LITERAL2>false</LITERAL2>
+            <LITERAL2>TRUE</LITERAL2>
+            <LITERAL2>FALSE</LITERAL2>
+            <LITERAL2>YES</LITERAL2>
+            <LITERAL2>NO</LITERAL2>
+            <LITERAL2>NULL</LITERAL2>
+            <LITERAL2>nil</LITERAL2>
+            <LITERAL2>NIl</LITERAL2>
+        </KEYWORDS>
+    </RULES>
+</MODE>

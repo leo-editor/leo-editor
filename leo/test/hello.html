@@ -1,0 +1,51 @@
+<!--@+leo-ver=4-->
+<!--@+node:@file hello.html-->
+<!--@@language html-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title></title>
+
+<!-- Used by edward.old.py
+<script language="JavaScript" type="text/javascript">
+   var openImg = new Image();
+   openImg.src = "open.gif";
+   var closedImg = new Image();
+   closedImg.src = "closed.gif";
+
+   function showNode(node) {
+      var objBranch = 
+         document.getElementById(node).style;
+      if(objBranch.display=="block")
+         objBranch.display="none";
+      else
+         objBranch.display="block";
+   }
+
+   function swapFolder(img) {
+      objImg = document.getElementById(img);
+      if(objImg.src.indexOf('closed.gif')>-1)
+         objImg.src = openImg.src;
+      else
+         objImg.src = closedImg.src;
+   }
+</script>
+-->
+
+</head>
+<body>
+<form action="cgi-bin/edward.py" method="GET">
+<input type="submit" name="George">
+</form>
+
+<p>This is the hello world test page.
+The server in server.py should be running when using this page.
+
+<p>The button (form) above should cause the server to send a "GET" request
+to the edward.py script, which will respond with a new page.
+
+</body>
+</html>
+<!--@-node:@file hello.html-->
+<!--@-leo-->

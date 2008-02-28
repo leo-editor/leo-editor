@@ -1,0 +1,8577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.477886977887">
+	<global_window_position top="141" left="490" height="616" width="864"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070622214401"><vh>Startup</vh>
+<v t="ekr.20070326094544"><vh>@chapters</vh></v>
+<v t="ekr.20060112110750"><vh>Buttons</vh>
+<v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
+<v t="ekr.20051011123608" annotate="7d71002e"><vh>@@button align to col</vh></v>
+<v t="ekr.20060112103537.17"><vh>@button Check Bindings</vh>
+<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
+<v t="ekr.20060112104333"><vh>doSet</vh></v>
+<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
+<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
+<v t="ekr.20060112104823"><vh>main</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20041119035137" str_leo_pos="3,10"><vh>About this file</vh>
+<v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
+<v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
+<v t="ekr.20041119042929"><vh>@bool</vh></v>
+<v t="ekr.20041119042929.1"><vh>@color</vh></v>
+<v t="ekr.20041119044139"><vh>@directory</vh></v>
+<v t="ekr.20041119042929.3"><vh>@encoding</vh></v>
+<v t="ekr.20041119042929.4"><vh>@int</vh></v>
+<v t="ekr.20061002115414"><vh>@float</vh></v>
+<v t="ekr.20041119042929.5"><vh>@font</vh></v>
+<v t="ekr.20041120181045"><vh>@ratio</vh></v>
+<v t="ekr.20041119042929.2"><vh>@path</vh></v>
+<v t="ekr.20041119042929.7"><vh>@string</vh></v>
+</v>
+<v t="ekr.20041119035704.1"><vh> Organizer nodes</vh></v>
+<v t="ekr.20071217093419"><vh>\@data</vh></v>
+<v t="ekr.20070224073109"><vh>\@enabled-plugins</vh></v>
+<v t="ekr.20060913144412"><vh>\@keys keyset-name</vh></v>
+<v t="ekr.20041119035931"><vh>\@if expression</vh></v>
+<v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
+<v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
+<v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
+<v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
+<v t="ekr.20041120155431.1"><vh>\@shortcuts</vh></v>
+<v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
+<v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
+</v>
+<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
+<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
+<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
+<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
+<v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
+<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
+<v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
+<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
+<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
+<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
+<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
+<v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
+<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
+<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
+<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
+<v t="ekr.20041119050105.15"><vh>@bool search_headline = False</vh></v>
+<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
+<v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
+</v>
+</v>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20070926132045"><vh>Buttons</vh>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
+<v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
+</v>
+</v>
+<v t="ekr.20041213105007.1" annotate="7d71002e"><vh>Colors</vh>
+<v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
+<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
+<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
+<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
+<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
+<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = MistyRose1</vh></v>
+<v t="ekr.20060822101942"><vh>@color command_mode_bg_color = None</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
+<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = None</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = None</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = None</vh></v>
+</v>
+<v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
+<v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
+<v t="ekr.20041119050749.6"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ekr.20041119051246.3"><vh>@color headline_text_selected_background_color = #dbdbdb</vh></v>
+<v t="ekr.20041119050749.7"><vh>@color headline_text_selected_foreground_color = None</vh></v>
+<v t="ekr.20041119051901"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="ekr.20041119050749.8"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ekr.20041119050749.9"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
+</v>
+<v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
+<v t="ekr.20060828145228"><vh>Options for old colorizer</vh>
+<v t="ekr.20041119034357.73"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
+<v t="ekr.20041119034357.72"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
+<v t="ekr.20041119034357.74"><vh>@bool color_directives_in_plain_text = True</vh></v>
+<v t="ekr.20041119034357.75"><vh>@bool underline_undefined_section_names = True</vh></v>
+<v t="ekr.20041119034357.76"><vh>@bool use_hyperlinks = False</vh></v>
+<v t="ekr.20041119034357.78"><vh>@color comment_color = firebrick3</vh></v>
+<v t="ekr.20041119034357.79"><vh>@color cweb_section_name_color = red</vh></v>
+<v t="ekr.20041119034357.80"><vh>@color directive_color = blue</vh></v>
+<v t="ekr.20041119034357.81"><vh>@color doc_part_color = firebrick3</vh></v>
+<v t="ekr.20041119034357.82"><vh>@color keyword_color = blue</vh></v>
+<v t="ekr.20041120152508"><vh>@color latex_background_color = None</vh></v>
+<v t="ekr.20041119034357.83"><vh>@color leo_keyword_color = #00aa00</vh></v>
+<v t="ekr.20041119034357.85"><vh>@color section_name_brackets_color = blue</vh></v>
+<v t="ekr.20041119034357.84"><vh>@color section_name_color = red</vh></v>
+<v t="ekr.20041119034357.86"><vh>@color show_invisibles_space_background_color = Gray90</vh></v>
+<v t="ekr.20041119034357.87"><vh>@color show_invisibles_tab_foreground_color = Gray80</vh></v>
+<v t="ekr.20041119034357.88"><vh>@color string_color = #00aa00</vh></v>
+<v t="ekr.20041119034357.89"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20060829085840"><vh>@font php keyword fonts (old colorizer)</vh></v>
+</v>
+<v t="ekr.20060504131831"><vh>Options for jEdit colorer</vh>
+<v t="ekr.20060513100933"><vh>@int colorizer_interrupt_count1 = 10</vh></v>
+<v t="ekr.20060513100933.1"><vh>@int colorizer_interrupt_count2 = 5000</vh></v>
+<v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="ekr.20060704090341"><vh>@color label_color = red</vh></v>
+<v t="ekr.20060504131831.1"><vh>@color keyword1_color = blue</vh></v>
+<v t="ekr.20060827102902"><vh>@color keyword2_color = blue</vh></v>
+<v t="ekr.20060827102902.1"><vh>@color keyword3_color = blue</vh></v>
+<v t="ekr.20060827102902.2"><vh>@color keyword4_color = blue</vh></v>
+<v t="ekr.20060504131831.2"><vh>@color literal1_color = #00aa00</vh></v>
+<v t="ekr.20060504134056"><vh>@color literal2_color = #00aa00</vh></v>
+<v t="ekr.20060504134056.1"><vh>@color literal3_color = #00aa00</vh></v>
+<v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
+<v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
+<v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
+<v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
+<v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
+<v t="ekr.20060504140408.2"><vh>@color comment4_color = orchid1</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator_color = black</vh></v>
+</v>
+<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20060828110551.2"><vh>php</vh>
+<v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php keyword fonts (new colorizer)</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
+</v>
+<v t="ekr.20041119034357.10" annotate="7d71002e"><vh>Command options</vh>
+<v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
+<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
+<v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
+<v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
+<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
+<v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
+<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
+<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
+<v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
+<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
+<v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
+<v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
+<v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+<v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
+</v>
+<v t="ekr.20041119034357.16" annotate="7d71002e"><vh>Compare panel</vh>
+<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
+<v t="ekr.20041119043902"><vh>@string compare_file_1 = None</vh></v>
+<v t="ekr.20041119043902.1"><vh>@string compare_file_2 = None</vh></v>
+<v t="ekr.20041119043902.2"><vh>@string output_file = None</vh></v>
+<v t="ekr.20041119043902.3"><vh>@bool append_output_to_output_file = False</vh></v>
+<v t="ekr.20041119034357.18"><vh>@string limit_directory_search_extension = .py</vh></v>
+</v>
+<v t="ekr.20041119034357.19"><vh>file compare options</vh>
+<v t="ekr.20041119043902.4"><vh>@bool ignore_blank_lines = True</vh></v>
+<v t="ekr.20041119043902.5"><vh>@bool ignore_first_line_of_file_1 = False</vh></v>
+<v t="ekr.20041119043902.6"><vh>@bool ignore_first_line_of_file_2 = False</vh></v>
+<v t="ekr.20041119043902.7"><vh>@bool ignore_interior_whitespace = False</vh></v>
+<v t="ekr.20041119043902.8"><vh>@bool ignore_leading_whitespace = False</vh></v>
+<v t="ekr.20041119043902.9"><vh>@bool ignore_sentinel_lines = False</vh></v>
+</v>
+<v t="ekr.20041119050105"><vh>output options</vh>
+<v t="ekr.20041119043902.10"><vh>@int limit_count = 9</vh></v>
+<v t="ekr.20041119043902.11"><vh>@bool make_whitespace_visible = False</vh></v>
+<v t="ekr.20041119043902.12"><vh>@bool print_both_lines_for_matches = False</vh></v>
+<v t="ekr.20041119043902.13"><vh>@bool print_matching_lines = False</vh></v>
+<v t="ekr.20041119043902.14"><vh>@bool print_mismatching_lines = True</vh></v>
+<v t="ekr.20041119043902.15"><vh>@bool print_trailing_lines = True</vh></v>
+</v>
+</v>
+<v t="ekr.20060524151415"><vh>Debugger</vh>
+<v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
+<v t="ekr.20070115134125.1"><vh>@string script_file_path = ../test/scriptFile.py</vh></v>
+<v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
+<v t="ekr.20060521132401"><vh>@string debugger_path = None</vh></v>
+</v>
+<v t="ekr.20051126062243" annotate="7d71002e"><vh>Debugging</vh>
+<v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
+<v t="ekr.20060201110016"><vh>@bool allow_idle_time_hook = False</vh></v>
+<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
+<v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
+<v t="ekr.20060216145416"><vh>@bool trace_autocompleter = False</vh></v>
+<v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
+<v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
+<v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
+<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
+<v t="ekr.20060204093736"><vh>@bool trace_doCommand = False</vh></v>
+<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
+<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
+<v t="ekr.20051126062830"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
+<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
+<v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
+<v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
+<v t="ekr.20060131071947"><vh>@bool trace_masterClickHandler = False</vh></v>
+<v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
+<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
+<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
+<v t="ekr.20060216091239"><vh>@bool trace_minibuffer = False</vh></v>
+<v t="ekr.20060121102627"><vh>@bool trace_modes = False</vh></v>
+<v t="ekr.20060306031258"><vh>@bool trace_onBodyChanged = False</vh></v>
+<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
+<v t="ekr.20060210105437"><vh>@bool trace_select = False</vh></v>
+<v t="ekr.20060216130607"><vh>@bool trace_status_line = False</vh></v>
+<v t="ekr.20060202092911"><vh>@bool trace_tree = False</vh></v>
+<v t="ekr.20060206155101"><vh>@bool trace_tree_alloc = False</vh></v>
+<v t="ekr.20060206161839"><vh>@bool trace_tree_edit = False</vh></v>
+<v t="ekr.20070503080312"><vh>@bool trace_tree_gc = False</vh></v>
+<v t="ekr.20051126062243.1"><vh>@bool trace_tree_redraw = False</vh></v>
+<v t="ekr.20060425125015"><vh>@bool verbose_trace_color_parser = False</vh></v>
+<v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
+<v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
+<v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
+<v t="ekr.20060114082205"><vh>@string trace_bindings_filter = </vh></v>
+<v t="ekr.20060114083009"><vh>@string trace_bindings_pane_filter =</vh></v>
+<v t="ekr.20060325071916"><vh>For unit tests</vh>
+<v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
+<v t="ekr.20060325071042.1"><vh>@bool test_win32_setting = True</vh></v>
+</v>
+<v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
+<v t="ekr.20060325071042.3"><vh>@bool test_darwin_setting = True</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20041119034357.7"><vh>.leo file options</vh>
+<v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
+<v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
+<v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
+</v>
+<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119034357.12"><vh>derived files options</vh>
+<v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
+<v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
+<v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
+<v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
+</v>
+<v t="ekr.20041119034357.11"><vh>directory options</vh>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
+<v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
+<v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
+</v>
+</v>
+<v t="ekr.20041119034357.20" annotate="7d71002e"><vh>Find/Change panel</vh>
+<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
+<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
+<v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
+<v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
+<v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
+<v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
+<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
+<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
+<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
+<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
+<v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
+<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
+<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
+<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
+<v t="ekr.20041119050105.15"><vh>@bool search_headline = False</vh></v>
+<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
+<v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
+</v>
+<v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
+<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
+</v>
+<v t="ekr.20041213105007" a="E" annotate="7d71002e"><vh>Fonts</vh>
+<v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
+<v t="ekr.20070919125633"><vh>@font button font</vh></v>
+<v t="ekr.20041213105508"><vh>@font log font</vh></v>
+<v t="ekr.20060702100257"><vh>@font menu text font</vh></v>
+<v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
+</v>
+<v t="ekr.20071214132254"><vh>Import options</vh>
+<v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
+</v>
+<v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
+<v t="ekr.20060216170801"><vh>@bool enable_calltips = False</vh></v>
+<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = True</vh></v>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
+<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
+<v t="ekr.20060122105527.5" annotate="7d71002e"><vh>@bool useCmdMenu = True</vh></v>
+<v t="ekr.20060122105527.6" annotate="7d71002e"><vh>@bool useMinibuffer = True</vh></v>
+<v t="ekr.20060125165241"><vh>@bool useTextMinibuffer = True</vh></v>
+<v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
+<v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
+<v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
+<v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
+<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
+</v>
+<v t="ekr.20060117092249"><vh>About modes</vh></v>
+<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
+<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
+</v>
+<v t="ekr.20060103103812" annotate="7d71002e"><vh>@keys Legacy Leo shortcuts with important Emacs bindings</vh>
+<v t="ekr.20060111082632.1"><vh>@shortcuts Legacy+: A-E</vh></v>
+<v t="ekr.20060112085643"><vh>@shortcuts Legacy+: F-M</vh></v>
+<v t="ekr.20060112085643.1"><vh>@shortcuts Legacy+: N-Z</vh></v>
+</v>
+<v t="ekr.20060110141538.2" annotate="7d71002e"><vh>@keys Legacy Leo bindings</vh>
+<v t="ekr.20051218203646" annotate="7d71002e"><vh>@shortcuts Legacy: A-E</vh></v>
+<v t="ekr.20060112090844.4"><vh>@shortcuts Legacy: F-M</vh></v>
+<v t="ekr.20060112090844.5"><vh>@shortcuts Legacy: N-Z</vh></v>
+</v>
+<v t="ekr.20060607182402"><vh>@keys groupoperstions plugin</vh>
+<v t="ekr.20060325091143"><vh>@shortcuts group-operations</vh></v>
+</v>
+<v t="ekr.20051010112558"><vh>@keys EKR bindings: a mix of legacy Leo shortcuts with important Emacs bindings</vh>
+<v t="ekr.20060122105438"><vh>To do</vh></v>
+<v t="ekr.20060115162748"><vh>Modes</vh>
+<v t="ekr.20060121131041.2"><vh>@mode Command</vh></v>
+<v t="ekr.20060102113259" annotate="7d71002e"><vh>@mode File</vh></v>
+<v t="ekr.20060117182225"><vh>@mode Find (Control-F)</vh></v>
+<v t="ekr.20060122103118"><vh>@mode Find-reverse</vh></v>
+<v t="ekr.20060117130936"><vh>@mode Find-options</vh></v>
+<v t="ekr.20060115153348"><vh>@mode Quick-command</vh></v>
+<v t="ekr.20060115160004"><vh>@mode Register</vh></v>
+<v t="ekr.20060115160004.1"><vh>@mode Rect</vh></v>
+</v>
+<v t="ekr.20060115162748.1"><vh>Shortcuts</vh>
+<v t="ekr.20060103103812.1" annotate="7d71002e"><vh>@shortcuts EKR: mode-changing commands</vh></v>
+<v t="ekr.20060102102958" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060112085325"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060102102958.1" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20060122105527"><vh>@keys EKR bindings: Mode-oriented bindings + Emacs bindings</vh>
+<v t="ekr.20060604180807" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060122105527.2"><vh>Summary of Ctrl bindings</vh></v>
+<v t="ekr.20060122105527.9"><vh>Modes</vh>
+<v t="ekr.20060122113439"><vh>@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20060122122150"><vh>@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20060122105527.11" annotate="7d71002e"><vh>@mode File</vh></v>
+<v t="ekr.20060122182825"><vh>@mode File-open</vh></v>
+<v t="ekr.20060122105527.12"><vh>@mode Find </vh>
+<v t="ekr.20060122105527.13"><vh>@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20060122105527.14"><vh>@mode Find-options</vh></v>
+<v t="ekr.20060122105732" annotate="7d71002e"><vh>@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20060122130002"><vh>@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20060122105527.15"><vh>@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20060122105527.18"><vh>Shortcuts</vh>
+<v t="ekr.20060122105527.19" annotate="7d71002e"><vh>@shortcuts EKR: mode-changing commands</vh></v>
+<v t="ekr.20060124070546"><vh>@shortcuts Find Commands</vh></v>
+<v t="ekr.20060203131942"><vh>@shortcuts Minibuffer bindings</vh></v>
+<v t="ekr.20060122105527.20" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060122105527.21"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060122105527.22" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20060923114638"><vh>@keys EKR bindings: Emacs keys + modes (prior to Leo 4.4.2)</vh>
+<v t="ekr.20060923114638.1"><vh>Settings related to key bindings</vh>
+<v t="ekr.20060923114638.2"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
+<v t="ekr.20060923114638.3" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
+<v t="ekr.20060923114638.4"><vh>Modes</vh>
+<v t="ekr.20060923114638.5"><vh>@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20060923114638.6"><vh>@mode apropos</vh></v>
+<v t="ekr.20060923114638.7"><vh>@mode buttons</vh></v>
+<v t="ekr.20060923114638.8"><vh>@mode commands</vh></v>
+<v t="ekr.20060923114638.9"><vh>@mode edit</vh></v>
+<v t="ekr.20060923114638.10"><vh>@mode Edit-extend</vh></v>
+<v t="ekr.20060923114638.11"><vh>@mode emacs</vh></v>
+<v t="ekr.20060923114638.12"><vh>@mode extract</vh></v>
+<v t="ekr.20060923114638.13"><vh>@mode file</vh></v>
+<v t="ekr.20060923114638.14" a="M"><vh>@mode gui</vh></v>
+<v t="ekr.20060923114638.15"><vh>@mode help</vh></v>
+<v t="ekr.20060923114638.16"><vh>@mode kill</vh></v>
+<v t="ekr.20060923114638.17"><vh>@mode modes</vh></v>
+<v t="ekr.20060923114638.18"><vh>@mode move-outline</vh></v>
+<v t="ekr.20060923114638.19"><vh>@mode outline</vh></v>
+<v t="ekr.20060923114638.20"><vh>@mode toggle-find</vh></v>
+</v>
+<v t="ekr.20060923114638.21"><vh>Shortcuts</vh>
+<v t="ekr.20060923114638.22"><vh>@@@@shortcuts top-level keys (like vim)</vh></v>
+<v t="ekr.20060923114638.23"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20060923114638.24"><vh>@shortcuts Find Commands</vh></v>
+<v t="ekr.20060923114638.25"><vh>@shortcuts Minibuffer bindings</vh></v>
+<v t="ekr.20060923114638.26" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060923114638.27"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060923114638.28" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
+<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810182514"><vh>@mode focus</vh></v>
+<v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
+<v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20070810181929.2"><vh>@@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20070810181929.3"><vh>@@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20070810181929.4" annotate="7d71002e"><vh>@@mode File</vh></v>
+<v t="ekr.20070810181929.5"><vh>@@mode File-open</vh></v>
+<v t="ekr.20070810181929.6"><vh>@@mode Find </vh>
+<v t="ekr.20070810181929.7"><vh>@@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20070810181929.8"><vh>@@mode Find-options</vh></v>
+<v t="ekr.20070810181929.9" annotate="7d71002e"><vh>@@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20070810181929.10"><vh>@@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20070810181929.11"><vh>@@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20070810180015.3"><vh>Shortcuts</vh>
+<v t="ekr.20070810181453"><vh>@shortcuts Arrow keys</vh></v>
+<v t="ekr.20070810181453.1"><vh>@shortcuts Home/End keys</vh></v>
+<v t="ekr.20070810181453.2"><vh>old...</vh></v>
+<v t="ekr.20070810180015.4"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20070810180015.5"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20070810180015.6"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20070810180015.7"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20070810180015.15"><vh>@shortcuts Text operations</vh></v>
+</v>
+</v>
+<v t="ekr.20070810181604"><vh>Vim stuff: not ready yet</vh>
+<v t="ekr.20070810181528"><vh>@@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
+<v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
+<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810182514"><vh>@mode focus</vh></v>
+<v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
+<v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20070810181929.2"><vh>@@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20070810181929.3"><vh>@@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20070810181929.4" annotate="7d71002e"><vh>@@mode File</vh></v>
+<v t="ekr.20070810181929.5"><vh>@@mode File-open</vh></v>
+<v t="ekr.20070810181929.6"><vh>@@mode Find </vh>
+<v t="ekr.20070810181929.7"><vh>@@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20070810181929.8"><vh>@@mode Find-options</vh></v>
+<v t="ekr.20070810181929.9" annotate="7d71002e"><vh>@@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20070810181929.10"><vh>@@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20070810181929.11"><vh>@@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20070810180015.3"><vh>Shortcuts</vh>
+<v t="ekr.20070810181453"><vh>@shortcuts Arrow keys</vh></v>
+<v t="ekr.20070810181453.1"><vh>@shortcuts Home/End keys</vh></v>
+<v t="ekr.20070810181453.2"><vh>old...</vh></v>
+<v t="ekr.20070810180015.4"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20070810180015.5"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20070810180015.6"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20070810180015.7"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20070810180015.15"><vh>@shortcuts Text operations</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
+</v>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+</v>
+</v>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
+<v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
+<v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
+<v t="ekr.20070925144534.5"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.6"><vh>@item close-window</vh></v>
+<v t="ekr.20070925144534.7"><vh>@item save-file</vh></v>
+<v t="ekr.20070925144534.8"><vh>@item save-file-as</vh></v>
+<v t="ekr.20070925144534.9"><vh>@item save-file-as-unzipped</vh></v>
+<v t="ekr.20070925144534.10"><vh>@item save-file-as-zipped</vh></v>
+<v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
+<v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
+<v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
+<v t="ekr.20070927051742"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
+<v t="ekr.20071001120755"><vh>@item *&amp;check-derived-file</vh></v>
+<v t="ekr.20071001120755.1"><vh>@item *check-le&amp;o-file</vh></v>
+<v t="ekr.20071001121059"><vh>@item *compare-leo-file&amp;s</vh></v>
+<v t="ekr.20071001120755.2"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.14"><vh>@item *&amp;read-outline-only</vh></v>
+<v t="ekr.20070925144534.15"><vh>@item *write-&amp;outline-only</vh></v>
+<v t="ekr.20071001123216"><vh>@item -</vh></v>
+<v t="ekr.20071001120755.3"><vh>@item *read-&amp;file-into-node</vh></v>
+<v t="ekr.20071001120755.4"><vh>@item *writ&amp;e-file-from-node</vh></v>
+<v t="ekr.20070925144534.16"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.17"><vh>@item read-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.18"><vh>@item write-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.19"><vh>@item write-dirty-at-auto-nodes</vh></v>
+<v t="ekr.20070925144534.20"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.21"><vh>@item read-at-file-nodes</vh></v>
+<v t="ekr.20070925144534.22"><vh>@item write-dirty-at-file-nodes</vh></v>
+<v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
+<v t="ekr.20070925144534.24"><vh>@item write-at-file-nodes</vh></v>
+</v>
+<v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
+<v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
+<v t="ekr.20070925144534.27"><vh>@item *tangle-&amp;marked</vh></v>
+<v t="ekr.20070925144534.28"><vh>@item *&amp;tangle</vh></v>
+</v>
+<v t="ekr.20070925144534.29"><vh>@menu &amp;Untangle...</vh>
+<v t="ekr.20070925144534.30"><vh>@item *untangle-&amp;all</vh></v>
+<v t="ekr.20070925144534.31"><vh>@item *untangle-&amp;marked</vh></v>
+<v t="ekr.20070925144534.32"><vh>@item *&amp;untangle</vh></v>
+</v>
+<v t="ekr.20070925144534.33"><vh>@menu &amp;Import...</vh>
+<v t="ekr.20070925144534.34"><vh>@item *import-&amp;derived-file</vh></v>
+<v t="ekr.20070925144534.35"><vh>@item import-at-file</vh></v>
+<v t="ekr.20070925144534.36"><vh>@item import-at-root</vh></v>
+<v t="ekr.20070925144534.37"><vh>@item *import-&amp;cweb-files</vh></v>
+<v t="ekr.20070925144534.38"><vh>@item *import-&amp;noweb-files</vh></v>
+<v t="ekr.20070925144534.39"><vh>@item *import-flattened-&amp;outline</vh></v>
+</v>
+<v t="ekr.20070925144534.40"><vh>@menu &amp;Export...</vh>
+<v t="ekr.20070925144534.41"><vh>@item *export-&amp;headlines</vh></v>
+<v t="ekr.20070925144534.42"><vh>@item *outline-to-&amp;cweb</vh></v>
+<v t="ekr.20070925144534.43"><vh>@item *outline-to-&amp;noweb</vh></v>
+<v t="ekr.20070925144534.44"><vh>@item *&amp;flatten-outline</vh></v>
+<v t="ekr.20070925144534.45"><vh>@item *&amp;remove-sentinels</vh></v>
+<v t="ekr.20070925144534.46"><vh>@item *&amp;weave</vh></v>
+</v>
+<v t="ekr.20070927051856"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.47"><vh>@item exit-leo</vh></v>
+</v>
+<v t="ekr.20070925144534.48"><vh>@menu &amp;Edit</vh>
+<v t="ekr.20070925144534.49"><vh>@item undo</vh></v>
+<v t="ekr.20070925144534.50"><vh>@item redo</vh></v>
+<v t="ekr.20070925144534.51"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.52"><vh>@item cut-text</vh></v>
+<v t="ekr.20070925144534.53"><vh>@item copy-text</vh></v>
+<v t="ekr.20070925144534.54"><vh>@item paste-text</vh></v>
+<v t="ekr.20070925144534.55"><vh>@item backward-delete-char</vh></v>
+<v t="ekr.20070925144534.56"><vh>@item select-all</vh></v>
+<v t="ekr.20070925144534.57"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
+<v t="ekr.20070925144534.59"><vh>@item *extract-&amp;section</vh></v>
+<v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
+<v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
+<v t="ekr.20070925144534.62"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.63"><vh>@item *convert-all-b&amp;lanks</vh></v>
+<v t="ekr.20070925144534.64"><vh>@item *convert-all-t&amp;abs</vh></v>
+<v t="ekr.20070925144534.65"><vh>@item *convert-&amp;blanks</vh></v>
+<v t="ekr.20070925144534.66"><vh>@item *convert-&amp;tabs</vh></v>
+<v t="ekr.20070925144534.67"><vh>@item *insert-body-&amp;time</vh></v>
+<v t="ekr.20070925144534.68"><vh>@item *&amp;reformat-paragraph</vh></v>
+<v t="ekr.20070925144534.69"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.70"><vh>@item *&amp;indent-region</vh></v>
+<v t="ekr.20070925144534.71"><vh>@item *&amp;unindent-region</vh></v>
+<v t="ekr.20070925144534.72"><vh>@item *&amp;match-brackets</vh></v>
+<v t="ekr.20070925144534.73"><vh>@item *add-comments</vh></v>
+<v t="ekr.20070925144534.74"><vh>@item *delete-comments</vh></v>
+</v>
+<v t="ekr.20070925144534.75"><vh>@menu Edit &amp;Headline...</vh>
+<v t="ekr.20070925144534.76"><vh>@item *edit-&amp;headline</vh></v>
+<v t="ekr.20070925144534.77"><vh>@item *&amp;end-edit-headline</vh></v>
+<v t="ekr.20070925144534.78"><vh>@item *&amp;abort-edit-headline</vh></v>
+<v t="ekr.20070925144534.79"><vh>@item *insert-headline-&amp;time</vh></v>
+<v t="ekr.20070925144534.80"><vh>@item *toggle-&amp;angle-brackets</vh></v>
+</v>
+<v t="ekr.20070925144534.81"><vh>@menu &amp;Find...</vh>
+<v t="ekr.20070925144534.82"><vh>@item *&amp;open-find-tab</vh></v>
+<v t="ekr.20070925144534.83"><vh>@item *&amp;hide-find-tab</vh></v>
+<v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
+<v t="ekr.20070925144534.85"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
+<v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
+<v t="ekr.20070925144534.88"><vh>@item *&amp;change</vh></v>
+<v t="ekr.20070925144534.89"><vh>@item *find-&amp;all</vh></v>
+<v t="ekr.20070925144534.90"><vh>@item *clone-fi&amp;nd-all</vh></v>
+<v t="ekr.20070925144534.91"><vh>@item *change-a&amp;ll</vh></v>
+<v t="ekr.20070925144534.92"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.93"><vh>@item *&amp;find-character</vh></v>
+<v t="ekr.20070925144534.94"><vh>@item *find-character-extend-&amp;selection</vh></v>
+<v t="ekr.20070925144534.95"><vh>@item *&amp;backward-find-character</vh></v>
+<v t="ekr.20070925144534.96"><vh>@item *backward-find-character-&amp;extend-selection</vh></v>
+<v t="ekr.20070925144534.97"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.98"><vh>@item *&amp;isearch-forward</vh></v>
+<v t="ekr.20070925144534.99"><vh>@item *isea&amp;rch-backward</vh></v>
+<v t="ekr.20070925144534.100"><vh>@item *isearch-forward-rege&amp;xp</vh></v>
+<v t="ekr.20070925144534.101"><vh>@item *isearch-backward-regex&amp;p</vh></v>
+<v t="ekr.20070925144534.102"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.103"><vh>@item *&amp;query-replace</vh></v>
+<v t="ekr.20070925144534.104"><vh>@item *q&amp;uery-replace-regex</vh></v>
+</v>
+<v t="ekr.20070925144534.105"><vh>@item *&amp;goto-global-line</vh></v>
+<v t="ekr.20070925144534.106"><vh>@item *&amp;execute-script</vh></v>
+<v t="ekr.20070925144534.107"><vh>@item toggle-invisibles</vh></v>
+<v t="ekr.20070925144534.108"><vh>@item open-leoSettings-leo</vh></v>
+</v>
+<v t="ekr.20070925144534.109"><vh>@menu &amp;Outline</vh>
+<v t="ekr.20070925144534.110"><vh>@item *c&amp;ut-node</vh></v>
+<v t="ekr.20070925144534.111"><vh>@item *c&amp;opy-node</vh></v>
+<v t="ekr.20070925144534.112"><vh>@item *&amp;paste-node</vh></v>
+<v t="ekr.20070925144534.113"><vh>@item paste-retaining-clones</vh></v>
+<v t="ekr.20070925144534.114"><vh>@item *&amp;delete-node</vh></v>
+<v t="ekr.20070925144534.115"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.116"><vh>@item *&amp;insert-node</vh></v>
+<v t="ekr.20071005173455"><vh>@item *insert-child</vh></v>
+<v t="ekr.20070925144534.117"><vh>@item *&amp;clone-node</vh></v>
+<v t="ekr.20070925144534.118"><vh>@item *sort-childre&amp;n</vh></v>
+<v t="ekr.20070925144534.119"><vh>@item *&amp;sort-siblings</vh></v>
+<v t="ekr.20070925144534.120"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.121"><vh>@item *&amp;hoist</vh></v>
+<v t="ekr.20070925144534.122"><vh>@item de-hoist</vh></v>
+<v t="ekr.20070925144534.123"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.124"><vh>@menu Chec&amp;k...</vh>
+<v t="ekr.20070925144534.125"><vh>@item *check-&amp;outline</vh></v>
+<v t="ekr.20070925144534.126"><vh>@item *&amp;dump-outline</vh></v>
+<v t="ekr.20070925144534.127"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.128"><vh>@item *check-&amp;all-python-code</vh></v>
+<v t="ekr.20070925144534.129"><vh>@item *&amp;check-python-code</vh></v>
+</v>
+<v t="ekr.20070925144534.130"><vh>@menu E&amp;xpand/Contract...</vh>
+<v t="ekr.20070925144534.131"><vh>@item *&amp;contract-all</vh></v>
+<v t="ekr.20070925144534.132"><vh>@item *contract-&amp;node</vh></v>
+<v t="ekr.20070925144534.133"><vh>@item *contract-&amp;parent</vh></v>
+<v t="ekr.20070925144534.134"><vh>@item *contract-or-go-&amp;left</vh></v>
+<v t="ekr.20070925144534.135"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.136"><vh>@item *expand-p&amp;rev-level</vh></v>
+<v t="ekr.20070925144534.137"><vh>@item *expand-n&amp;ext-level</vh></v>
+<v t="ekr.20070925144534.138"><vh>@item *expand-and-go-right</vh></v>
+<v t="ekr.20070925144534.139"><vh>@item *expand-or-go-right</vh></v>
+<v t="ekr.20070925144534.140"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.141"><vh>@item *expand-to-level-&amp;1</vh></v>
+<v t="ekr.20070925144534.142"><vh>@item *expand-to-level-&amp;2</vh></v>
+<v t="ekr.20070925144534.143"><vh>@item *expand-to-level-&amp;3</vh></v>
+<v t="ekr.20070925144534.144"><vh>@item *expand-to-level-&amp;4</vh></v>
+<v t="ekr.20070925144534.145"><vh>@item *expand-to-level-&amp;5</vh></v>
+<v t="ekr.20070925144534.146"><vh>@item *expand-to-level-&amp;6</vh></v>
+<v t="ekr.20070925144534.147"><vh>@item *expand-to-level-&amp;7</vh></v>
+<v t="ekr.20070925144534.148"><vh>@item *expand-to-level-&amp;8</vh></v>
+<v t="ekr.20070925144534.149"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.150"><vh>@item *expand-&amp;all</vh></v>
+<v t="ekr.20070925144534.151"><vh>@item *expand-n&amp;ode</vh></v>
+</v>
+<v t="ekr.20070925144534.152"><vh>@menu &amp;Move...</vh>
+<v t="ekr.20070925144534.153"><vh>@item move-outline-down</vh></v>
+<v t="ekr.20070925144534.154"><vh>@item move-outline-left</vh></v>
+<v t="ekr.20070925144534.155"><vh>@item move-outline-right</vh></v>
+<v t="ekr.20070925144534.156"><vh>@item move-outline-up</vh></v>
+<v t="ekr.20070925144534.157"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.158"><vh>@item *&amp;promote</vh></v>
+<v t="ekr.20070925144534.159"><vh>@item *&amp;demote</vh></v>
+</v>
+<v t="ekr.20070925144534.160"><vh>@menu M&amp;ark...</vh>
+<v t="ekr.20070925144534.161"><vh>@item *&amp;mark</vh></v>
+<v t="ekr.20070925144534.162"><vh>@item *mark-&amp;subheads</vh></v>
+<v t="ekr.20070925144534.163"><vh>@item *mark-changed-&amp;items</vh></v>
+<v t="ekr.20070925144534.164"><vh>@item *mark-changed-&amp;roots</vh></v>
+<v t="ekr.20070925144534.165"><vh>@item *mark-&amp;clones</vh></v>
+<v t="ekr.20070925144534.166"><vh>@item *&amp;unmark-all</vh></v>
+</v>
+<v t="ekr.20070925144534.167"><vh>@menu &amp;Go To...</vh>
+<v t="ekr.20071213190345"><vh>@item find-next-clone</vh></v>
+<v t="ekr.20070925144534.168"><vh>@item goto-first-node</vh></v>
+<v t="ekr.20070925144534.169"><vh>@item goto-first-visible-node</vh></v>
+<v t="ekr.20070925144534.170"><vh>@item goto-first-sibling</vh></v>
+<v t="ekr.20070925144534.171"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.172"><vh>@item goto-next-changed</vh></v>
+<v t="ekr.20070925144534.173"><vh>@item goto-next-clone</vh></v>
+<v t="ekr.20070925144534.174"><vh>@item goto-next-marked</vh></v>
+<v t="ekr.20070925144534.175"><vh>@item goto-next-node</vh></v>
+<v t="ekr.20070925144534.176"><vh>@item goto-next-sibling</vh></v>
+<v t="ekr.20070925144534.177"><vh>@item goto-next-visible</vh></v>
+<v t="ekr.20070925144534.178"><vh>@item go-forward</vh></v>
+<v t="ekr.20070925144534.179"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.180"><vh>@item goto-parent</vh></v>
+<v t="ekr.20070925144534.181"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.182"><vh>@item goto-prev-node</vh></v>
+<v t="ekr.20070925144534.183"><vh>@item goto-prev-sibling</vh></v>
+<v t="ekr.20070925144534.184"><vh>@item goto-prev-visible</vh></v>
+<v t="ekr.20070925144534.185"><vh>@item go-back</vh></v>
+<v t="ekr.20070925144534.186"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.187"><vh>@item goto-last-node</vh></v>
+<v t="ekr.20070925144534.188"><vh>@item goto-last-sibling</vh></v>
+<v t="ekr.20070925144534.189"><vh>@item goto-last-visible-node</vh></v>
+</v>
+</v>
+<v t="ekr.20070925144534.190"><vh>@menu &amp;Plugins</vh></v>
+<v t="ekr.20070925144534.191"><vh>@menu &amp;Cmds</vh>
+<v t="ekr.20070925144534.192"><vh>@menu &amp;Abbrev...</vh>
+<v t="ekr.20070925144534.193"><vh>@item abbre&amp;v-mode</vh></v>
+<v t="ekr.20070925144534.194"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.195"><vh>@item &amp;list-abbrevs</vh></v>
+<v t="ekr.20070925144534.196"><vh>@item &amp;read-abbrev-file</vh></v>
+<v t="ekr.20070925144534.197"><vh>@item &amp;write-abbrev-file</vh></v>
+<v t="ekr.20070925144534.198"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.199"><vh>@item &amp;add-global-abbrev</vh></v>
+<v t="ekr.20070925144534.200"><vh>@item &amp;inverse-add-global-abbrev</vh></v>
+<v t="ekr.20070925144534.201"><vh>@item &amp;kill-all-abbrevs</vh></v>
+<v t="ekr.20070925144534.202"><vh>@@item -</vh></v>
+<v t="ekr.20070925144534.203"><vh>@@item &amp;expand-region-abbrevs</vh></v>
+</v>
+<v t="ekr.20070925144534.204"><vh>@menu &amp;Body Editors...</vh>
+<v t="ekr.20070925144534.205"><vh>@item &amp;add-editor</vh></v>
+<v t="ekr.20070925144534.206"><vh>@item &amp;cycle-editor-focus</vh></v>
+<v t="ekr.20070925144534.207"><vh>@item &amp;delete-editor</vh></v>
+</v>
+<v t="ekr.20070925144534.208"><vh>@menu Buffers...</vh>
+<v t="ekr.20070925144534.209"><vh>@item &amp;append-to-buffer</vh></v>
+<v t="ekr.20070925144534.210"><vh>@item &amp;kill-buffer</vh></v>
+<v t="ekr.20070925144534.211"><vh>@item list-&amp;buffers</vh></v>
+<v t="ekr.20070925144534.212"><vh>@item &amp;list-buffers-alphabetically</vh></v>
+<v t="ekr.20070925144534.213"><vh>@item &amp;prepend-to-buffer</vh></v>
+<v t="ekr.20070925144534.214"><vh>@item &amp;rename-buffer</vh></v>
+<v t="ekr.20070925144534.215"><vh>@item &amp;switch-to-buffer</vh></v>
+</v>
+<v t="ekr.20070925144534.216"><vh>@menu &amp;Chapters...</vh>
+<v t="ekr.20070925144534.217"><vh>@item &amp;clone-node-to-chapter</vh></v>
+<v t="ekr.20070925144534.218"><vh>@item c&amp;opy-node-to-chapter</vh></v>
+<v t="ekr.20070925144534.219"><vh>@item c&amp;reate-chapter</vh></v>
+<v t="ekr.20070925144534.220"><vh>@item &amp;move-node-to-chapter</vh></v>
+<v t="ekr.20070925144534.221"><vh>@item &amp;remove-chapter</vh></v>
+<v t="ekr.20070925144534.222"><vh>@item &amp;select-chapter</vh></v>
+</v>
+<v t="ekr.20070925144534.223"><vh>@menu Cursor/Selection...</vh>
+<v t="ekr.20070925144534.224"><vh>@menu Cursor &amp;Back...</vh>
+<v t="ekr.20070925144534.225"><vh>@item back-&amp;char</vh></v>
+<v t="ekr.20070925144534.226"><vh>@item back-&amp;paragraph</vh></v>
+<v t="ekr.20070925144534.227"><vh>@item back-&amp;sentence</vh></v>
+<v t="ekr.20070925144534.228"><vh>@item back-&amp;word</vh></v>
+<v t="ekr.20070925144534.229"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.230"><vh>@item beginning-of-&amp;buffer</vh></v>
+<v t="ekr.20070925144534.231"><vh>@item beginning-of-&amp;line</vh></v>
+<v t="ekr.20070925144534.232"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.233"><vh>@item pre&amp;vious-line</vh></v>
+</v>
+<v t="ekr.20070925144534.234"><vh>@menu Cursor Back &amp;Extend Selection...</vh>
+<v t="ekr.20070925144534.235"><vh>@item back-&amp;char-extend-selection</vh></v>
+<v t="ekr.20070925144534.236"><vh>@item back-&amp;paragraph-extend-selection</vh></v>
+<v t="ekr.20070925144534.237"><vh>@item back-&amp;sentence-extend-selection</vh></v>
+<v t="ekr.20070925144534.238"><vh>@item back-&amp;word-extend-selection</vh></v>
+<v t="ekr.20070925144534.239"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.240"><vh>@item beginning-of-&amp;buffer-extend-selection</vh></v>
+<v t="ekr.20070925144534.241"><vh>@item beginning-of-&amp;line-extend-selection</vh></v>
+<v t="ekr.20070925144534.242"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.243"><vh>@item pre&amp;vious-line-extend-selection</vh></v>
+</v>
+<v t="ekr.20070925144534.244"><vh>@menu Cursor Back Extend &amp;to...</vh>
+<v t="ekr.20070925144534.245"><vh>@item extend-to-&amp;line</vh></v>
+<v t="ekr.20070925144534.246"><vh>@item extend-to-&amp;paragraph</vh></v>
+<v t="ekr.20070925144534.247"><vh>@item extend-to-&amp;sentence</vh></v>
+<v t="ekr.20070925144534.248"><vh>@item extend-to-&amp;word</vh></v>
+</v>
+<v t="ekr.20070925144534.249"><vh>@menu Cursor &amp;Forward...</vh>
+<v t="ekr.20070925144534.250"><vh>@item end-of-&amp;buffer</vh></v>
+<v t="ekr.20070925144534.251"><vh>@item end-of-&amp;line</vh></v>
+<v t="ekr.20070925144534.252"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.253"><vh>@item forward-&amp;char</vh></v>
+<v t="ekr.20070925144534.254"><vh>@item forward-&amp;paragraph</vh></v>
+<v t="ekr.20070925144534.255"><vh>@item forward-&amp;sentence</vh></v>
+<v t="ekr.20070925144534.256"><vh>@item forward-&amp;end-word</vh></v>
+<v t="ekr.20070925144534.257"><vh>@item forward-&amp;word</vh></v>
+<v t="ekr.20070925144534.258"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.259"><vh>@item &amp;next-line</vh></v>
+</v>
+<v t="ekr.20070925144534.260"><vh>@menu Cursor Forward E&amp;xtend Selection...</vh>
+<v t="ekr.20070925144534.261"><vh>@item end-of-&amp;buffer-extend-selection</vh></v>
+<v t="ekr.20070925144534.262"><vh>@item end-of-&amp;line-extend-selection</vh></v>
+<v t="ekr.20070925144534.263"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.264"><vh>@item forward-&amp;char-extend-selection</vh></v>
+<v t="ekr.20070925144534.265"><vh>@item forward-&amp;paragraph-extend-selection</vh></v>
+<v t="ekr.20070925144534.266"><vh>@item forward-&amp;sentence-extend-selection</vh></v>
+<v t="ekr.20070925144534.267"><vh>@item forward-&amp;end-word-extend-selection</vh></v>
+<v t="ekr.20070925144534.268"><vh>@item forward-&amp;word-extend-selection</vh></v>
+<v t="ekr.20070925144534.269"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.270"><vh>@item &amp;next-line-extend-selection</vh></v>
+</v>
+</v>
+<v t="ekr.20070925144534.271"><vh>@menu &amp;Focus...</vh>
+<v t="ekr.20070925144534.272"><vh>@item &amp;cycle-all-focus</vh></v>
+<v t="ekr.20070925144534.273"><vh>@item focus-to-&amp;body</vh></v>
+<v t="ekr.20070925144534.274"><vh>@item focus-to-&amp;log</vh></v>
+<v t="ekr.20070925144534.275"><vh>@item focus-to-&amp;minibuffer</vh></v>
+<v t="ekr.20070925144534.276"><vh>@item focus-to-&amp;tree</vh></v>
+</v>
+<v t="ekr.20071114081712"><vh>@menu &amp;Icons...</vh>
+<v t="ekr.20071114084709"><vh>@item delete-&amp;first-icon</vh></v>
+<v t="ekr.20071114084709.1"><vh>@item delete-&amp;last-icon</vh></v>
+<v t="ekr.20071114081712.3"><vh>@item delete-&amp;node-icons</vh></v>
+<v t="ekr.20071114081712.4"><vh>@item -</vh></v>
+<v t="ekr.20071114081712.5"><vh>@item &amp;insert-icon</vh></v>
+</v>
+<v t="ekr.20070925144534.277"><vh>@menu &amp;Macro...</vh>
+<v t="ekr.20070925144534.278"><vh>@item &amp;load-file</vh></v>
+<v t="ekr.20070925144534.279"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.280"><vh>@item &amp;start-kbd-macro</vh></v>
+<v t="ekr.20070925144534.281"><vh>@item &amp;end-kbd-macro</vh></v>
+<v t="ekr.20070925144534.282"><vh>@item &amp;name-last-kbd-macro</vh></v>
+<v t="ekr.20070925144534.283"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.284"><vh>@item &amp;call-last-keyboard-macro</vh></v>
+<v t="ekr.20070925144534.285"><vh>@item &amp;insert-keyboard-macro</vh></v>
+</v>
+<v t="ekr.20070925144534.286"><vh>@menu Minibuffer...</vh>
+<v t="ekr.20070925144534.287"><vh>@item &amp;full-command</vh></v>
+<v t="ekr.20070925144534.288"><vh>@item keyboard-&amp;quit</vh></v>
+<v t="ekr.20070925144534.289"><vh>@item &amp;repeat-complex-command</vh></v>
+<v t="ekr.20070925144534.290"><vh>@item &amp;view-lossage</vh></v>
+<v t="ekr.20070925144534.291"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.292"><vh>@item &amp;show-mini-buffer</vh></v>
+<v t="ekr.20070925144534.293"><vh>@item h&amp;ide-mini-buffer</vh></v>
+<v t="ekr.20070925144534.294"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.295"><vh>@item &amp;help-for-minibuffer</vh></v>
+</v>
+<v t="ekr.20070925144534.296"><vh>@menu &amp;Pickers...</vh>
+<v t="ekr.20070925144534.297"><vh>@item show-&amp;colors</vh></v>
+<v t="ekr.20070925144534.298"><vh>@item show-find-&amp;options</vh></v>
+<v t="ekr.20070925144534.299"><vh>@item show-&amp;fonts</vh></v>
+</v>
+<v t="ekr.20070925144534.300"><vh>@menu &amp;Rectangles...</vh>
+<v t="ekr.20070925144534.301"><vh>@item &amp;clear-rectangle</vh></v>
+<v t="ekr.20070925144534.302"><vh>@item c&amp;lose-rectangle</vh></v>
+<v t="ekr.20070925144534.303"><vh>@item &amp;delete-rectangle</vh></v>
+<v t="ekr.20070925144534.304"><vh>@item &amp;kill-rectangle</vh></v>
+<v t="ekr.20070925144534.305"><vh>@item &amp;open-rectangle</vh></v>
+<v t="ekr.20070925144534.306"><vh>@item &amp;string-rectangle</vh></v>
+<v t="ekr.20070925144534.307"><vh>@item &amp;yank-rectangle</vh></v>
+</v>
+<v t="ekr.20070925144534.308"><vh>@menu Registers...</vh>
+<v t="ekr.20070925144534.309"><vh>@item &amp;append-to-register</vh></v>
+<v t="ekr.20070925144534.310"><vh>@item copy-r&amp;ectangle-to-register</vh></v>
+<v t="ekr.20070925144534.311"><vh>@item &amp;copy-to-register</vh></v>
+<v t="ekr.20070925144534.312"><vh>@item i&amp;ncrement-register</vh></v>
+<v t="ekr.20070925144534.313"><vh>@item &amp;insert-register</vh></v>
+<v t="ekr.20070925144534.314"><vh>@item &amp;jump-to-register</vh></v>
+<v t="ekr.20070925144534.315"><vh>@item &amp;point-to-register</vh></v>
+<v t="ekr.20070925144534.316"><vh>@item p&amp;repend-to-register</vh></v>
+<v t="ekr.20070925144534.317"><vh>@item &amp;view-register</vh></v>
+</v>
+<v t="ekr.20070925144534.318"><vh>@menu Run Script/Tests...</vh>
+<v t="ekr.20070925144534.319"><vh>@item &amp;execute-script</vh></v>
+<v t="ekr.20070925144534.320"><vh>@item &amp;run-unit-tests</vh></v>
+</v>
+<v t="ekr.20070925144534.321"><vh>@menu &amp;Scrolling...</vh>
+<v t="ekr.20070925144534.322"><vh>@item scroll-outline-down-&amp;line</vh></v>
+<v t="ekr.20070925144534.323"><vh>@item scroll-outline-down-&amp;page</vh></v>
+<v t="ekr.20070925144534.324"><vh>@item scroll-outline-le&amp;ft</vh></v>
+<v t="ekr.20070925144534.325"><vh>@item scroll-outline-&amp;right</vh></v>
+<v t="ekr.20070925144534.326"><vh>@item s&amp;croll-outline-up-line</vh></v>
+<v t="ekr.20070925144534.327"><vh>@item scr&amp;oll-outline-up-page</vh></v>
+<v t="ekr.20070925144534.328"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.329"><vh>@item scroll-&amp;down</vh></v>
+<v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up</vh></v>
+<v t="ekr.20070925144534.331"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.332"><vh>@item scroll-down-&amp;extend-selection</vh></v>
+<v t="ekr.20070925144534.333"><vh>@item scroll-up-e&amp;xtend-selection</vh></v>
+</v>
+<v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck...</vh>
+<v t="ekr.20070925144534.335"><vh>@item &amp;open-spell-tab</vh></v>
+<v t="ekr.20070925144534.336"><vh>@item spell-&amp;change</vh></v>
+<v t="ekr.20070925144534.337"><vh>@item spell-change-&amp;then-find</vh></v>
+<v t="ekr.20070925144534.338"><vh>@item spell-&amp;find</vh></v>
+<v t="ekr.20070925144534.339"><vh>@item spell-&amp;ignore</vh></v>
+</v>
+<v t="ekr.20070925144534.340"><vh>@menu &amp;Text Commands...</vh>
+<v t="ekr.20070925144534.341"><vh>@item &amp;beautify</vh></v>
+<v t="ekr.20070925144534.342"><vh>@item beautify-&amp;all</vh></v>
+<v t="ekr.20070925144534.343"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.344"><vh>@item center-&amp;line</vh></v>
+<v t="ekr.20070925144534.345"><vh>@item center-&amp;region</vh></v>
+<v t="ekr.20070925144534.346"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.347"><vh>@item &amp;capitalize-word</vh></v>
+<v t="ekr.20070925144534.348"><vh>@item &amp;downcase-word</vh></v>
+<v t="ekr.20070925144534.349"><vh>@item &amp;upcase-word</vh></v>
+<v t="ekr.20070925144534.350"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.351"><vh>@item d&amp;owncase-region</vh></v>
+<v t="ekr.20070925144534.352"><vh>@item u&amp;pcase-region</vh></v>
+<v t="ekr.20070925144534.353"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.354"><vh>@item &amp;indent-region</vh></v>
+<v t="ekr.20070925144534.355"><vh>@item indent-r&amp;elative</vh></v>
+<v t="ekr.20070925144534.356"><vh>@item indent-ri&amp;gidly</vh></v>
+<v t="ekr.20070925144534.357"><vh>@item u&amp;nindent-region</vh></v>
+<v t="ekr.20070925144534.358"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.359"><vh>@item sort-colu&amp;mns</vh></v>
+<v t="ekr.20070925144534.360"><vh>@item sort-&amp;fields</vh></v>
+<v t="ekr.20070925144534.361"><vh>@item &amp;sort-lines</vh></v>
+</v>
+<v t="ekr.20070925144534.362"><vh>@menu Toggle Settings...</vh>
+<v t="ekr.20070925144534.363"><vh>@item toggle-a&amp;utocompleter</vh></v>
+<v t="ekr.20070925144534.364"><vh>@item toggle-call&amp;tips</vh></v>
+<v t="ekr.20070925144534.365"><vh>@item toggle-&amp;extend-mode</vh></v>
+<v t="ekr.20070925144534.366"><vh>@item toggle-input-&amp;state</vh></v>
+<v t="ekr.20070925144534.367"><vh>@item toggle-in&amp;visibles</vh></v>
+<v t="ekr.20070925144534.368"><vh>@item toggle-&amp;mini-buffer</vh></v>
+<v t="ekr.20070925144534.369"><vh>@item toggle-split-&amp;direction</vh></v>
+<v t="ekr.20070925144534.370"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.371"><vh>@item toggle-find-&amp;ignore-case-option</vh></v>
+<v t="ekr.20070925144534.372"><vh>@item toggle-find-in-&amp;body-option</vh></v>
+<v t="ekr.20070925144534.373"><vh>@item toggle-find-in-&amp;headline-option</vh></v>
+<v t="ekr.20070925144534.374"><vh>@item toggle-find-mark-&amp;changes-option</vh></v>
+<v t="ekr.20070925144534.375"><vh>@item toggle-find-mark-&amp;finds-option</vh></v>
+<v t="ekr.20070925144534.376"><vh>@item toggle-find-rege&amp;x-option</vh></v>
+<v t="ekr.20070925144534.377"><vh>@item toggle-find-&amp;reverse-option</vh></v>
+<v t="ekr.20070925144534.378"><vh>@item toggle-find-&amp;word-option</vh></v>
+<v t="ekr.20070925144534.379"><vh>@item toggle-find-wrap-&amp;around-option</vh></v>
+<v t="ekr.20071213190345.1"><vh>@item toggle-s&amp;parce-move</vh></v>
+</v>
+<v t="ekr.20071004121248"><vh>@menu &amp;Yank And Kill</vh>
+<v t="ekr.20071004121328"><vh>@item kill-&amp;buffer</vh></v>
+<v t="ekr.20071004121840"><vh>@item kill-&amp;line</vh></v>
+<v t="ekr.20071004121401"><vh>@item kill-&amp;rectangle</vh></v>
+<v t="ekr.20071004121840.1"><vh>@item kill-re&amp;gion</vh></v>
+<v t="ekr.20071004121840.2"><vh>@item kill-region-s&amp;ave</vh></v>
+<v t="ekr.20071004121248.2"><vh>@item kill-&amp;sentence</vh></v>
+<v t="ekr.20071006153725"><vh>@item kill-ws</vh></v>
+<v t="ekr.20071004121248.1"><vh>@item kill-&amp;word</vh></v>
+<v t="ekr.20071004121248.3"><vh>@item -</vh></v>
+<v t="ekr.20071004121248.4"><vh>@item &amp;yank</vh></v>
+<v t="ekr.20071004121619"><vh>@item yank-&amp;pop</vh></v>
+<v t="ekr.20071004121248.5"><vh>@item yank-r&amp;ectangle</vh></v>
+</v>
+</v>
+<v t="ekr.20070925144534.380"><vh>@menu &amp;Window</vh>
+<v t="ekr.20070925144534.381"><vh>@item *&amp;equal-sized-panes</vh></v>
+<v t="ekr.20070925144534.382"><vh>@item *&amp;toggle-active-pane</vh></v>
+<v t="ekr.20070925144534.383"><vh>@item *toggle-&amp;split-direction</vh></v>
+<v t="ekr.20070925144534.384"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.385"><vh>@item *contract-&amp;body-pane</vh></v>
+<v t="ekr.20070925144534.386"><vh>@item *contract-&amp;log-pane</vh></v>
+<v t="ekr.20070925144534.387"><vh>@item *contract-&amp;outline-pane</vh></v>
+<v t="ekr.20070925144534.388"><vh>@item *contract-&amp;pane</vh></v>
+<v t="ekr.20070925144534.389"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.390"><vh>@item *expand-bo&amp;dy-pane</vh></v>
+<v t="ekr.20070925144534.391"><vh>@item *expand-lo&amp;g-pane</vh></v>
+<v t="ekr.20070925144534.392"><vh>@item *expand-o&amp;utline-pane</vh></v>
+<v t="ekr.20070925144534.393"><vh>@item *expand-pa&amp;ne</vh></v>
+<v t="ekr.20070925144534.394"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.395"><vh>@item *&amp;fully-expand-body-pane</vh></v>
+<v t="ekr.20070925144534.396"><vh>@item *full&amp;y-expand-log-pane</vh></v>
+<v t="ekr.20070925144534.397"><vh>@item *fully-e&amp;xpand-outline-pane</vh></v>
+<v t="ekr.20070925144534.398"><vh>@item *fully-exp&amp;and-pane</vh></v>
+<v t="ekr.20070925144534.399"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.400"><vh>@item *&amp;resize-to-screen</vh></v>
+<v t="ekr.20070925144534.401"><vh>@item *&amp;cascade-windows</vh></v>
+<v t="ekr.20070925144534.402"><vh>@item *&amp;minimize-all</vh></v>
+<v t="ekr.20070925144534.403"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
+<v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
+</v>
+<v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
+<v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
+<v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
+<v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>
+<v t="ekr.20070925144534.410"><vh>@item *open-&amp;users-guide</vh></v>
+<v t="ekr.20070925144534.411"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.412"><vh>@item open-leoDocs-leo</vh></v>
+<v t="ekr.20070925144534.413"><vh>@item open-leoPlugins-leo</vh></v>
+<v t="ekr.20070925144534.414"><vh>@item open-leoSettings-leo</vh></v>
+<v t="ekr.20070925144534.415"><vh>@item open-myLeoSettings-leo</vh></v>
+<v t="ekr.20070925144534.416"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20070925144534.417"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.418"><vh>@item *he&amp;lp-for-minibuffer</vh></v>
+<v t="ekr.20070925144534.419"><vh>@item *help-for-&amp;command</vh></v>
+<v t="ekr.20070925144534.420"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.421"><vh>@item *&amp;apropos-autocompletion</vh></v>
+<v t="ekr.20070925144534.422"><vh>@item *apropos-&amp;bindings</vh></v>
+<v t="ekr.20070925144534.423"><vh>@item *apropos-&amp;debugging-commands</vh></v>
+<v t="ekr.20070925144534.424"><vh>@item *apropos-&amp;find-commands</vh></v>
+<v t="ekr.20070925144534.425"><vh>@item -</vh></v>
+<v t="ekr.20070925144534.426"><vh>@item *pri&amp;nt-bindings</vh></v>
+<v t="ekr.20070925144534.427"><vh>@item *print-c&amp;ommands</vh></v>
+</v>
+<v t="ekr.20071010123015"><vh>@@menu 文件</vh>
+<v t="ekr.20071010123015.1"><vh>@item new</vh></v>
+<v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
+<v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
+<v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20060807103220"><vh>datenodes plugin</vh>
+<v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
+<v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
+<v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.4"><vh>@string datenodes_month_node_month_headline = %B %Y</vh></v>
+<v t="ekr.20060807103220.5"><vh>@bool datenodes_month_node_omit_saturdays = True</vh></v>
+<v t="ekr.20060807103220.6"><vh>@bool datenodes_month_node_omit_sundays = True</vh></v>
+<v t="ekr.20060807103220.7"><vh>@string datenodes_year_node_day_headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.8"><vh>@string datenodes_year_node_month_headline = %B</vh></v>
+<v t="ekr.20060807103220.9"><vh>@string datenodes_year_node_year_headline = %Y</vh></v>
+<v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
+<v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
+</v>
+<v t="ekr.20060111091324" a="TV"><vh>fastgotonode plugin</vh>
+<v t="ekr.20060111091324.1"><vh>@bool fastgotonode_useKeyBinding = True</vh></v>
+<v t="ekr.20060111091324.2"><vh>@string fastgotonode_binding =  Shift-space</vh></v>
+</v>
+<v t="ekr.20060109115046"><vh>library plugin</vh>
+<v t="ekr.20060109115046.1"><vh>@bool library_verbose = True</vh></v>
+<v t="ekr.20060109115046.2"><vh>@string library_lib = default</vh></v>
+<v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
+<v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
+</v>
+<v t="ekr.20070411101857"><vh>Open With plugin</vh>
+<v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+<v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
+<v t="ekr.20070411101857.3"><vh>@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+</v>
+<v t="ekr.20060919171527"><vh>opml plugin</vh>
+<v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
+<v t="ekr.20060919171527.1"><vh>@bool opml_use_outline_elements = True</vh></v>
+<v t="ekr.20060919195145"><vh>@string opml_version = 2.0</vh></v>
+<v t="ekr.20060919181622"><vh>@bool opml_write_body_text = True</vh></v>
+<v t="ekr.20060921080239.1"><vh>@bool opml_write_derived_files = True</vh></v>
+<v t="ekr.20060919173031"><vh>@bool opml_write_leo_details = True</vh></v>
+<v t="ekr.20060919173031.1"><vh>@bool opml_write_leo_globals_attributes = True</vh></v>
+<v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
+<v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
+</v>
+<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
+<v t="ekr.20071213061454"><vh>rst3_clear_http_attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>rst3_http_server_support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>rst3_http_attributename = rst_http_attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>rst3_node_begin_marker = http-node-marker-</vh></v>
+</v>
+<v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
+<v t="ekr.20071213061504"><vh>rst3_default_path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>rst3_stylesheet_name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>rst3_stylesheet_path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+</v>
+<v t="ekr.20071213060514"><vh>rst3 global options</vh>
+<v t="ekr.20071213061811"><vh>rst3_number_code_lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
+<v t="ekr.20071213061811.2"><vh>rst3_verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>rst3_write_intermediate_file = False</vh></v>
+</v>
+<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
+<v t="ekr.20071213061923"><vh>rst3_code_mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>rst3_doc_only_mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>rst3_generate_rst = True</vh></v>
+</v>
+<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
+<v t="ekr.20071213061930.1"><vh>rst3_show_headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>rst3_show_organizer_nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>rst3_show_options_nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>rst3_strip_at_file_prefixes = True</vh></v>
+</v>
+<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
+<v t="ekr.20071213062019"><vh>rst3_show_doc_parts_as_paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>rst3_show_leo_directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>rst3_show_markup_doc_parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>rst3_show_options_doc_parts = False</vh></v>
+</v>
+<v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
+<v t="ekr.20071213062019.4"><vh>rst3_code_prefix = @rst-code</vh></v>
+<v t="ekr.20071213062019.5"><vh>rst3_doc_only_prefix = @rst-doc-only</vh></v>
+<v t="ekr.20071213062019.6"><vh>rst3_rst_prefix = @rst</vh></v>
+<v t="ekr.20071213062019.7"><vh>rst3_ignore_headline_prefix = @rst-no-head</vh></v>
+<v t="ekr.20071213062019.8"><vh>rst3_ignore_headlines_prefix = @rst-no-headlines</vh></v>
+<v t="ekr.20071213062019.9"><vh>rst3_ignore_node_prefix = @rst-ignore-node</vh></v>
+<v t="ekr.20071213062019.10"><vh>rst3_ignore_prefix = @rst-ignore</vh></v>
+<v t="ekr.20071213062019.11"><vh>rst3_ignore_tree_prefix = @rst-ignore-tree</vh></v>
+<v t="ekr.20071213062019.12"><vh>rst3_option_prefix = @rst-option</vh></v>
+<v t="ekr.20071213062019.13"><vh>rst3_options_prefix = @rst-options</vh></v>
+<v t="ekr.20071213062019.14"><vh>rst3_preformat_prefix = @rst-preformat</vh></v>
+<v t="ekr.20071213062019.15"><vh>rst3_show_headline_prefix = @rst-head</vh></v>
+</v>
+</v>
+<v t="ekr.20060930111325"><vh>scripting plugin</vh>
+<v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>
+<v t="ekr.20060930111325.3"><vh>@bool scripting-at-commands-nodes = True</vh></v>
+<v t="ekr.20060930111325.4"><vh>@bool scripting-at-plugin-nodes = False</vh></v>
+<v t="ekr.20060930111325.5"><vh>@bool scripting-at-script-nodes = False</vh></v>
+<v t="ekr.20060930111325.6"><vh>@bool scripting-create-debug-button = False</vh></v>
+<v t="ekr.20060930111325.7"><vh>@bool scripting-create-run-script-button = False</vh></v>
+<v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
+<v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
+</v>
+<v t="ekr.20060730101451"><vh>shadow plugin</vh>
+<v t="ekr.20060730101451.1"><vh>@bool shadow_active = True</vh></v>
+<v t="ekr.20060730101451.2"><vh>@bool shadow_backups = True</vh></v>
+<v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
+<v t="ekr.20060730101451.4"><vh>@bool shadow_print_copy_operations = True</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = LeoShadow</vh></v>
+<v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
+<v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
+</v>
+<v t="ekr.20051123100536.1"><vh>vim plugin</vh>
+<v t="ekr.20051123100536.2"><vh>@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
+<v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
+<v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
+</v>
+<v t="ekr.20060904211808"><vh>zodb plugin</vh>
+<v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
+</v>
+</v>
+<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
+<v t="ekr.20041119034357.30"><vh>@language default_target_language = python</vh></v>
+<v t="ekr.20050620083647"><vh>@language target_language = python</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
+<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
+<v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
+<v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
+<v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
+</v>
+<v t="ekr.20051025084017" annotate="7d71002e"><vh>Spell tab</vh>
+<v t="ekr.20071025161551"><vh>@bool diagnose-aspell-installation = True</vh></v>
+<v t="ekr.20051025084017.1"><vh>@string aspell_local_language_code = en</vh></v>
+<v t="ekr.20051025084017.2"><vh>@string aspell_local_dictionary = None</vh></v>
+<v t="ekr.20051025085144"><vh>@string aspell_dir = c:\aspell</vh></v>
+<v t="ekr.20051025085144.1"><vh>@string aspell_bin_dir = c:\aspell\bin</vh></v>
+</v>
+<v t="ekr.20041119034357.15"><vh>Unicode options</vh>
+<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.11"><vh>@string tk_encoding = None</vh></v>
+</v>
+<v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
+<v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
+</v>
+<v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
+<v t="ekr.20041119034357.38"><vh>Body pane options</vh>
+<v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
+<v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
+<v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
+<v t="ekr.20041119034357.39"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
+<v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
+<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
+<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
+<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
+<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
+<v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
+<v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
+<v t="ekr.20041119034357.53"><vh>@int additional_body_text_border = 0</vh></v>
+<v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
+<v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
+</v>
+<v t="ekr.20041213105954.1"><vh>Log pane options</vh>
+<v t="ekr.20041119052015.1"><vh>@bool log_pane_wraps = False</vh></v>
+</v>
+<v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
+<v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
+<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20041119034357.59"><vh>@strings[vertical,horizontal] initial_splitter_orientation = vertical</vh></v>
+<v t="ekr.20041119034357.57"><vh>@ratio initial_horizontal_ratio = 0.4</vh></v>
+<v t="ekr.20041119034357.58"><vh>@ratio initial_horizontal_secondary_ratio = 0.8</vh></v>
+<v t="ekr.20041119034357.60"><vh>@ratio initial_vertical_ratio = 0.5</vh></v>
+<v t="ekr.20041119034357.61"><vh>@ratio initial_vertical_secondary_ratio = 0.65</vh></v>
+<v t="ekr.20041119034357.62"><vh>@int initial_window_height = 600</vh></v>
+<v t="ekr.20041119034357.63"><vh>@int initial_window_left =  20</vh></v>
+<v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
+<v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
+</v>
+<v t="ekr.20041119034357.54"><vh>Outline pane options</vh>
+<v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
+<v t="ekr.20061030092620"><vh>@bool center_selected_tree_node = True</vh></v>
+<v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
+<v t="ekr.20041119050749.5"><vh>@bool expanded_click_area = True</vh></v>
+<v t="ekr.20060528175513"><vh>@bool idle_redraw = False</vh></v>
+<v t="ekr.20060120123529"><vh>@bool initialClickExpandsOrContractsNode = True</vh></v>
+<v t="ekr.20061030104734"><vh>@bool invisible_outline_navigation = False</vh></v>
+<v t="ekr.20041119050749.17"><vh>@bool look_for_control_drag_on_mouse_down = True</vh></v>
+<v t="ekr.20041119050749.18"><vh>@bool outline_pane_scrolls_horizontally = True</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
+</v>
+<v t="ekr.20041213105954.2"><vh>Splitter options</vh>
+<v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
+<v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
+</v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20041119034357.1">@nocolor
+
+The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
+<t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
+<t tx="ekr.20041119034357.7"></t>
+<t tx="ekr.20041119034357.8">Example:
+
+"Created by Leo at @date"
+
+A comment to be iserted in derived files just after the initial @+leo line.
+The comment will appear in an @comment sentinel.
+Notes:
+1. Leo replaces @date with the date and time that the derived file was created.
+2. Use \n to separate lines.
+3. This must be empty for compatibility with older versions of Leo.
+4. Please use an empty comment when updating to CVS!</t>
+<t tx="ekr.20041119034357.9">A string, s.  If present, .leo files will contain an xml-stylesheet line following
+the opening xml line. 
+For example:
+  &lt;?xml ....?&gt; 
+  &lt;?xml-stylesheet ekr_stylesheet?&gt;
+  
+Notes:
+- The string s should contain any needed XML escapes.
+- Leo writes the line &lt;?xml-stylesheet s ?&gt;
+  where s is the value of this setting.
+- Please set this field empty when uploading to CVS.
+- Very old versions of Leo did not support reading files containing xml-stylesheet lines.</t>
+<t tx="ekr.20041119034357.10"></t>
+<t tx="ekr.20041119034357.11"></t>
+<t tx="ekr.20041119034357.12"></t>
+<t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
+
+Warnings:
+
+- This is a global option ONLY. It can only be set in the leoSettings.leo files
+that Leo reads during startup. Changing this option in other Leo files will have
+NO effect.
+
+- When this option is enabled, plugins could potentially execute HOSTILE CODE
+contained in Leo files. See further warnings in LeoDocs.leo.</t>
+<t tx="ekr.20041119034357.14">This option affects how Leo treats body text in @root trees.
+
+True:    Body text in @root trees start in doc mode.
+
+This is the way @root trees always worked prior to version 3.10.
+
+False:    Body text in @root trees start in code mode.
+
+This way makes @root trees more compatible with @file trees.</t>
+<t tx="ekr.20041119034357.15"></t>
+<t tx="ekr.20041119034357.16"></t>
+<t tx="ekr.20041119034357.17"></t>
+<t tx="ekr.20041119034357.18">Limit directory searches to files with the given file extension.
+
+None  Compares all files when comparing directories.
+.py   Compares only .py files when comparing directories.</t>
+<t tx="ekr.20041119034357.19">These options have no effect when comparing directories.</t>
+<t tx="ekr.20041119034357.20"></t>
+<t tx="ekr.20041119034357.28">@nocolor</t>
+<t tx="ekr.20041119034357.29">DEPRECATED
+
+The default directory used if no directory specified in @path, @root or @file directives.
+
+</t>
+<t tx="ekr.20041119034357.30">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20041119034357.31">The width of tabs on the screen.  This setting is also used when writing doc parts.
+
+Valid values: Any nonzero integer.
+
+Negative tab widths (recommended) cause Leo to convert tabs to blanks when typing.</t>
+<t tx="ekr.20041119034357.32">The page width for wrapping doc parts in derived files.
+
+Valid values: any nonzero positive integer.</t>
+<t tx="ekr.20041119034357.33">True: Explicit Tangle commands output doc parts.</t>
+<t tx="ekr.20041119034357.34">True: Explicit Tangle commands output file header.</t>
+<t tx="ekr.20041119034357.35">True: Run tangle_done.py after explicit Tangle commands.</t>
+<t tx="ekr.20041119034357.36">True: Run tangle_done.py after explicit Untangle commands.</t>
+<t tx="ekr.20041119034357.38"></t>
+<t tx="ekr.20041119034357.39">True: Wrap body text.
+
+</t>
+<t tx="ekr.20041119034357.40">
+
+Foreground color for the cursor in body text.
+
+</t>
+<t tx="ekr.20041119034357.41">Background color for the cursor in body text.
+
+</t>
+<t tx="ekr.20041119034357.42">The format string used when creating the Time/Date string for the Insert Time/Date command.
+See the Python documentation for time.strftime for full details.
+
+Examples:
+
+1/30/2003 8:31:55
+%m/%d/%y %H:%M:%S
+
+Thu, 30 Jan 2003 16:57:12
+%a, %d %b %Y %H:%M:%S</t>
+<t tx="ekr.20041119034357.43">True:  use gmt time.
+False: use local time.</t>
+<t tx="ekr.20041119034357.44">True:  auto-indent aligns with open ({[ brackets
+
+False: auto-indent increases indentation by one tab for Python only.</t>
+<t tx="ekr.20041119034357.45">body_text_font_family = None
+body_text_font_size = None
+body_text_font_slant = None
+body_text_font_weight = None
+</t>
+<t tx="ekr.20041119034357.48">Foreground color of body text.
+
+Note: this setting can be overridden by the x_mode_fg_color settings.</t>
+<t tx="ekr.20041119034357.49">Background color of body text.
+
+#ffecea
+
+Note: this setting can be overridden by the x_mode_bg_color settings.</t>
+<t tx="ekr.20041119034357.50">Color of insertion cursor
+
+</t>
+<t tx="ekr.20041119034357.53">Additional border in body text pane, in pixels.</t>
+<t tx="ekr.20041119034357.54"></t>
+<t tx="ekr.20041119034357.56">These options apply only to windows opened with the New command.</t>
+<t tx="ekr.20041119034357.57">The ratio of tree pane size to body pane size when splitting primary panes horizontally.
+
+Valid values: 0.0 to 1.0.
+
+**Important**: Leo **does** save this ratio when saving a .leo file, so Leo
+always uses this ratio only when creating a new outline.</t>
+<t tx="ekr.20041119034357.58">The ratio of outline (tree) pane size to log pane size when splitting the primary panes horizontally.
+
+Valid values: 0.0 to 1.0.
+
+**Important**: Leo does not save this ratio when saving a .leo file, so Leo
+always uses this ratio when opening a file that is being split horizontally.</t>
+<t tx="ekr.20041119034357.59">Defines the primary splitter orientation.
+
+The primary panes are the body pane and the secondary pane.
+The secondary pane contains the outline and log panes.
+
+vertical: body pane below outline and log panes.
+horizontal: body pane to right of outline and log panes.
+
+The so-called 'primary' ratio is the ratio between the body pane and the pane
+containing the other two panes. The so-called secondary ratio is the ratio
+between sizes of the log pane and the outline pane.
+
+The thing to keep in mind is that Leo saves *only* the primary ratio in .leo
+files. Leo does not save the so-called 'secondary' ratio in .leo files, because
+doing so would change Leo's file format.
+
+Because Leo **does** save the primary ratio in .leo files, Leo will open a file
+with the same primary ratio that you had when you last saved the file.
+
+Because Leo does **not** save the secondary ratio in the .leo file Leo
+determines the relative sizes of the log and outline panes from settings in
+leoSettings.leo. One of the two settings is used:
+
+- initial_horizontal_secondary_ratio or
+
+- initial_vertical_secondary_ratio
+
+Which one is used depends on the initial_splitter_orientation setting.
+
+**Important** If you change these settings you must restart Leo for them to take effect.
+
+Here are some further notes adapted from comments from Paul Paterson:
+
+Leo also doesn't save the split direction. This can be confusing, because if you
+save a horizontal split file but your default split is vertical, then when you
+reload and correct the split Leo has forgotten the ratio!  To restate:
+
+- if you change the split direction (window .. toggle split) Leo resets the
+split ratios.
+
+- if you save a Leo file with a split other than the default (in settings) Leo
+won't remember that.
+</t>
+<t tx="ekr.20041119034357.60">The ratio of tree pane size to body pane size when splitting primary panes vertically.
+
+Valid values: 0.0 to 1.0.
+
+**Important**: Leo **does** save this ratio when saving a .leo file, so Leo
+always uses this ratio only when creating a new outline.</t>
+<t tx="ekr.20041119034357.61">The ratio of outline (tree) pane size to log pane size when splitting the primary panes vertically.
+
+Valid values: 0.0 to 1.0.
+
+**Important**: Leo does not save this ratio when saving a .leo file, so Leo
+always uses this ratio when opening a file that is being split vertically.</t>
+<t tx="ekr.20041119034357.62">Height of window in pixels.
+    
+</t>
+<t tx="ekr.20041119034357.63">Distance from left of screen of window, in pixels.
+</t>
+<t tx="ekr.20041119034357.64">Distance from top of screen of window, in pixels.</t>
+<t tx="ekr.20041119034357.65">Width window in pixels.
+
+</t>
+<t tx="ekr.20041119034357.67">The color of the split bar. gray90 also looks good.</t>
+<t tx="ekr.20041119034357.68">The Tk -relief option for the split bar.</t>
+<t tx="ekr.20041119034357.69">The width of the split bar, in pixels (must be an integer).</t>
+<t tx="ekr.20041119034357.70">Syntax colors may be any valid Tk color name or color value.
+
+For example, "00aa00" is the dark green used by IDLE.
+
+See http://www.tcl.tk/man/tcl8.3/TkCmd/colors.htm for a list of valid color
+names. These names are case sensitive, for example: BlanchedAlmond.</t>
+<t tx="ekr.20041119034357.72">True:  Leo colors @space, @* and @** sections in cweb mode as black with LaTeX keywords highlighted.
+False: Leo colors @space, @* and @** sections in cweb mode as comments (default is red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.</t>
+<t tx="ekr.20041119034357.73">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
+Flase: Leo colors C language comments in cweb mode as comments (default red).
+
+Note: this setting does not affect how Leo colors noweb section references and defintions.</t>
+<t tx="ekr.20041119034357.74">True:  Leo colors @directives when @language plain is in effect.
+False: Leo colors everything black when @language plain is in effect.</t>
+<t tx="ekr.20041119034357.75">True: Underline undefined section names
+
+Only functional if use_hyperlinks = 0
+
+</t>
+<t tx="ekr.20041119034357.76">True:  underline "live" links.
+False: (recommended): Underline undefined section names.</t>
+<t tx="ekr.20041119034357.78">The color of comments in code parts.</t>
+<t tx="ekr.20041119034357.79">The color of name in @&lt;name@&gt;</t>
+<t tx="ekr.20041119034357.80">The color of C/C++ preprocessor directive lines.</t>
+<t tx="ekr.20041119034357.81">The color of text in doc parts.</t>
+<t tx="ekr.20041119034357.82">The color of keywords of the present language.
+
+For example, the color of "if", "try" and "except" in Python.</t>
+<t tx="ekr.20041119034357.83">The color of Leo keywords such as @ignore, @color, etc.</t>
+<t tx="ekr.20041119034357.84">The color of name in &lt; &lt; name &gt; &gt; when name is defined.</t>
+<t tx="ekr.20041119034357.85">The color of the double angle brackets in &lt;&lt; name &gt;&gt;
+
+</t>
+<t tx="ekr.20041119034357.86">The background color that represents spaces and tabs when Show Invisibles mode is in effect.</t>
+<t tx="ekr.20041119034357.87">The foreground color that represents spaces and tabs when Show Invisibles mode is in effect.</t>
+<t tx="ekr.20041119034357.88">The color of strings and their delimiters.
+
+</t>
+<t tx="ekr.20041119034357.89">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.</t>
+<t tx="ekr.20041119035137">@nocolor
+@pagewidth 80
+
+This is Leo's main settings file.  It specifies settings used to customize Leo.
+
+**New in Leo 4.4.2**: You can 'override' settings defined here by placing your
+own settings in myLeoSettings.leo, either in your HOME directory or in the
+leo/config directory (the directory containing this file.) Distributions of Leo
+leave myLeoSettings.leo along, and myLeoSettings.leo is not part of Leo's cvs
+repository, so Leo never changes myLeoSettings.leo.
+
+@settings trees are composed of various kinds of nodes. The headline of each
+node indicates its type. The body text of most nodes contain comments. However,
+the body text of @font and @shortcuts nodes contain settings. See the children
+of this node for details.
+</t>
+<t tx="ekr.20041119035704">These nodes describe the type, name and value of a single setting.  Headlines have the form:
+
+@type-name setting-name = value
+
+The basic types are: @bool, @color, @directory, @encoding, @font, @int, @path, and @string.  However, @type nodes can define other types.  The body text of basic nodes contains comments to be displayed in the settings dialog.
+
+None is a valid value for all types.  It indicates that the setting node has no effect.
+</t>
+<t tx="ekr.20041119035704.1">Organizer nodes have headlines that do no start with @.
+
+Organizer nodes may be inserted freely without changing the meaning of an @setting tree.</t>
+<t tx="ekr.20041119035704.2">Leo ignores subtrees of @settings trees whose headline starts with @ignore.</t>
+<t tx="ekr.20041119035704.3">Not implemented yet.
+
+Creates a user-defined type. For example:
+
+@type relief: string = [raised, sunken, flat, ridge, solid, groove]
+
+This is much better than using a base type because the dialog creator can
+present the user with a listbox containing only the valid options.</t>
+<t tx="ekr.20041119035931">Acts like an organizer node if the expression evaluates to True, otherwise acts
+like an @ignore node. If the expression is empty thebody text should contain a
+script that will be evaluated (in an empty context).
+</t>
+<t tx="ekr.20041119041019">False: Print sends its output to stdout (console) when doing Execute Script command.
+True:  Print redirected to Leo's log pane when doing Execute Script command.
+</t>
+<t tx="ekr.20041119041019.1">
+The string to be appended to file names resulting from the Remove Sentinels command.
+If the value starts with . the extension is appended to the original file name.
+Otherwise, the extension is appended before the file extension.
+Example 1:
+  File name x.y
+  remove_sentinels_extension = _ns
+  Result: x_ns.y
+Example 2:
+  File name x.y
+  remove_sentinels_extension = .txt
+  Result: x.y.txt
+
+</t>
+<t tx="ekr.20041119041019.2">True:  The Save command clears undo buffer.
+False: The undo buffer persists across saves.</t>
+<t tx="ekr.20041119041304">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
+
+True:  Leo attempts to create directories if they do not exist.
+False: Leo never attempts to create directories.</t>
+<t tx="ekr.20041119041304.1">This option specifies the directory to be used as a prefix for &lt;filename&gt; in
+
+@path &lt;filename&gt;
+@file &lt;filename&gt;
+@root &lt;filename&gt;
+
+when &lt;filename&gt; is a relative path.
+
+Valid values for this option:
+
+'!' means relative to the location leo.py (recommended).
+'.' means relative to the location of the .leo file in the top window.
+
+An absolute path (in platform-dependent format).
+
+Relative paths are not allowed because their meaning would depend on the changing value of the current working directory.</t>
+<t tx="ekr.20041119041747">nl or lf: (recommended) All lines end with "\n"
+cr:       All lines end with "\r"
+crlf:     All lines end with "\r\n"
+platform: Lines end in platform-specific way.
+
+With platform Leo opens output files in "w" mode rather than "wb" mode and writes '\n'
+
+Please specify nl when uploading files to Leo's CVS site.</t>
+<t tx="ekr.20041119041747.1">The number of trailing newlines Leo retains at the end of each body text.
+
+asis: Leo retains the number of newlines contained in each body text.
+      
+    Warning: Leo sometimes has problems determining which ending newlines are "real".
+
+zero: Leo removes all trailing whitespace from body text.
+
+one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
+<t tx="ekr.20041119041747.4">
+True:  Leo strips blanks and tabs from otherwise blank lines.
+False: Leo retains whitespace even in otherwise blank lines.</t>
+<t tx="ekr.20041119042929"></t>
+<t tx="ekr.20041119042929.1"></t>
+<t tx="ekr.20041119042929.2">Same as @directory.</t>
+<t tx="ekr.20041119042929.3"></t>
+<t tx="ekr.20041119042929.4"></t>
+<t tx="ekr.20041119042929.5">Valid values:
+    
+weight: bold, normal, None
+slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.</t>
+<t tx="ekr.20041119042929.7"></t>
+<t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
+This setting is also used to encode files created by the Tangle commands.
+Default is UTF-8 (case not important).</t>
+<t tx="ekr.20041119042929.10">The encoding specified in the following line of new .leo files:
+
+&lt;?xml version="1.0" encoding="UTF-8"&gt;
+
+The recommended value is UTF-8 (upper case for compatibility for old versions of Leo).
+
+iso-8859-1 would be a popular alternative.
+
+Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be changed by hand.  Alas, changing the &lt;?xml..."&gt; line by hand may cause unicode errors the next time the .leo file is loaded.  Therefore, you should change the &lt;?xml..."&gt; line by hand only when first creating a .leo file.</t>
+<t tx="ekr.20041119042929.11">The encoding that Tk text widgets are assumed for non-ascii character strings.
+
+You would typically use this setting only in an emergency.
+
+Leo assumes that Tk text widgets return:
+
+1. The value specified by the tk_encoding parameter, if it exists.
+2. locale.getdefaultlocale()[1] if it is exists.
+3. sys.getdefaultencoding()</t>
+<t tx="ekr.20041119043902">The path to the first file or directory to be compared.
+
+Directory compares ignore a filename part of the path, if present.
+
+E.g., c:/directory2/spam.py is valid for directory compares</t>
+<t tx="ekr.20041119043902.1">The path to the second file or directory to be compared.
+
+Directory compares ignore a filename part of the path, if present.
+
+E.g., c:/directory2/spam.py is valid for directory compares</t>
+<t tx="ekr.20041119043902.2">The path to the output file.
+
+Leo will silently write to this file, regardless of whether it already exists, creating the file if needed.
+
+Leo will write to the log pane if this path is empty or invalid.</t>
+<t tx="ekr.20041119043902.3">True:  Append output to output file.
+
+False: Replace output file with results of compare.</t>
+<t tx="ekr.20041119043902.4">True: Ignore blanks lines when comparing files.
+
+</t>
+<t tx="ekr.20041119043902.5">True: Ignore the first line of compare_file_1 when comparing files.
+
+</t>
+<t tx="ekr.20041119043902.6">True: Ignore the first line of compare_file_2 when comparing files.</t>
+<t tx="ekr.20041119043902.7">True: Ignore whitespace after the leading whitespace of a line when comparing files.</t>
+<t tx="ekr.20041119043902.8">True:  Ignore leading whitespace of each line when comparing files.
+
+False: The recommended setting when comparing Python source files.
+
+</t>
+<t tx="ekr.20041119043902.9">True: Ignore sentinel lines when comparing files.
+
+Leo sets sentinel comment delimiters from the first line of each file.  This option has no effect if the first line is not a @+leo line.</t>
+<t tx="ekr.20041119043902.10">0: Show lines regardless of the number of mismatches.
+
+n: Stop showing lines after n mismatches.
+
+</t>
+<t tx="ekr.20041119043902.11">
+1: Show blanks as [ ] and tabs as [t]
+
+</t>
+<t tx="ekr.20041119043902.12">True:  Print lines of both files when showing matching lines.
+
+False: Print only the line of compare_file_1 when showing matching lines.
+
+</t>
+<t tx="ekr.20041119043902.13">True: Print lines that match using the print_both_lines_for_matches option.
+
+</t>
+<t tx="ekr.20041119043902.14">True: Print lines that do not compare equal to each other.
+
+</t>
+<t tx="ekr.20041119043902.15">True: Print lines all lines in one file after an end-of-file is seen on the other file.</t>
+<t tx="ekr.20041119044139"></t>
+<t tx="ekr.20041119050105">These options affecting how Leo shows the results of file compares.
+
+Leo gathers statistics regardless of these options.</t>
+<t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
+
+N.B. Leo requires utf-8 encoding for any non-ascii characters.</t>
+<t tx="ekr.20041119050105.2">The find string (without the quotes unless quotes are part of the string).
+
+N.B. Leo requires utf-8 encoding for any non-ascii characters.
+
+</t>
+<t tx="ekr.20041119050105.3">These settings determine whether the corresponding checkbox is checked by default.</t>
+<t tx="ekr.20041119050105.4">Despite its name, this setting affects the default value of the Show Context checkbox.</t>
+<t tx="ekr.20041119050105.5">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+</t>
+<t tx="ekr.20041119050105.6">When checked, the Change command marks all headlines whose headline or body text are changed by the command.
+</t>
+<t tx="ekr.20041119050105.7">When checked, the Find and Change commands mark all headlines in which a match is found with the pattern.
+</t>
+<t tx="ekr.20041119050105.8">When checked, the Find and Change commands treat several characters specially in
+the find pattern. The '*' character matches any sequence of zero or more
+characters. The '.' character matches any single character. The '^' character at
+the start of a pattern, or a '$' character at the end of a pattern matches a
+newline.
+
+Examples:
+
+The pattern "^abc$" matches lines that only contain "abc".
+The pattern "^a" matches any line starting with "A".
+The pattern "a$" matches any line ending with "a".
+The pattern "^*$" matches any line at all.</t>
+<t tx="ekr.20041119050105.9"></t>
+<t tx="ekr.20041119050105.10"></t>
+<t tx="ekr.20041119050105.11"></t>
+<t tx="ekr.20041119050105.12"></t>
+<t tx="ekr.20041119050105.14">When checked, the Find and Change commands search body text.
+</t>
+<t tx="ekr.20041119050105.15">When checked, the Find and Change commands search headline text.
+</t>
+<t tx="ekr.20041119050105.16">When checked, the Find and Change commands search only the currently selected headline and its offspring.
+</t>
+<t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
+False: All drags move nodes.
+
+See also: look_for_control_drag_on_mouse_down
+Setting this setting to False allows Leo to be used on Aqua.</t>
+<t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
+False: Don't issue such messages.
+
+</t>
+<t tx="ekr.20041119050749.5">1: Click near a node expands or contracts the node.
+0: Only clicks in a node's plus/minus box expands or contracts the node.
+
+Note:  @bool expanded_click_area = True conflicts with the UniversalScrolling plugin.</t>
+<t tx="ekr.20041119050749.6">Foreground color of unselected headline text.</t>
+<t tx="ekr.20041119050749.7">Foreground color of selected headline text that is not being edited.
+
+DodgerBlue4</t>
+<t tx="ekr.20041119050749.8">Foreground color of unselected headline text in a headline that is being edited.
+
+Background color must also be specified for either setting to take effect.</t>
+<t tx="ekr.20041119050749.9">Foreground color of selected text headline text in a headline that is being edited.
+
+Background must also be specified for either setting to take effect.</t>
+<t tx="ekr.20041119050749.10">The format string used when creating the Time/Date string for the Insert Time/Date command.
+
+See the Python documentation for time.strftime for full details.
+
+Examples:
+1/30
+%m/%d
+
+1/30/03 8:31:02
+%m/%d/%y %H:%M:%S
+
+Thu, 30 Jan 2003 16:57:12
+%a, %d %b %Y %H:%M:%S
+</t>
+<t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
+
+False: use local time.</t>
+<t tx="ekr.20041119050749.12">Background color of outline pane itself.
+
+LavenderBlush1
+#ffffe1 # a little too yellow.
+#ffffec
+LightSteelBlue1 # Good for testing.</t>
+<t tx="ekr.20041119050749.17">This option controls the interpretation of the control key when dragging nodes in the outline pane.
+
+True: A drag is a control-drag if the control key is down at the start of the drag.
+
+False: A drag is a control-drag if the control key is down at the end of the drag.</t>
+<t tx="ekr.20041119050749.18">True: Use horizontal scrollbar in outline pane.</t>
+<t tx="ekr.20041119051246.1"></t>
+<t tx="ekr.20041119051246.2">Background color of unselected headline text.
+
+LavenderBlush1</t>
+<t tx="ekr.20041119051246.3">Background color of selected headline text that is not being edited.
+
+LavenderBlush2</t>
+<t tx="ekr.20041119051246.4">headline_text_font_family = None
+headline_text_font_size = None
+headline_text_font_slant = roman
+headline_text_font_weight = normal
+</t>
+<t tx="ekr.20041119051901">Background color of unselected headline text in a headline that is being edited.
+
+Foreground color must also be specified for either setting to take effect.</t>
+<t tx="ekr.20041119051901.1">Background color of selected text headline text in a headline that is being edited.
+
+Foreground must also be specified for either setting to take effect.</t>
+<t tx="ekr.20041119052015">Color for error messages written to the log window.</t>
+<t tx="ekr.20041119052015.1">True: Wrap body text.
+
+</t>
+<t tx="ekr.20041119052015.2">Foreground color of log text.
+
+</t>
+<t tx="ekr.20041119053445">Background color of log text.</t>
+<t tx="ekr.20041119105509">Not implemented yet.
+
+Creates a permanent value that can be tested later with @if. That is, it alters
+the environment in which @if code is executed.</t>
+<t tx="ekr.20041119110141">Same as:
+
+@if sys.platform == "platform-name":
+
+except that it isn't necessary to import sys.
+
+This would be the natural way to implement platform-dependent settings.</t>
+<t tx="ekr.20041120152508"></t>
+<t tx="ekr.20041120152657"></t>
+<t tx="ekr.20041120152900.2">When the Script Search radio button is selected Leo treats the contents of the
+Search Text as a script to execute whenever any kind of Find command is
+executed. Similarly, when the Script Change checkbox is selected Leo treats the
+context of the Change Text as a script to execute whenever any kind of Change
+command is executed. See below for just how this works.
+
+Script-based find-change is extremely powerful. In effect, Leo's Find/Change
+panel becomes a new platform for running scripts interactively. Leo now has all
+the find/change capability of pattern matching languages like Snobol and Icon,
+just by using the capabilities of the plain Python language. Moreover, Leo can
+deliver these capabilities interactively or not depending which buttons you push
+in Leo's Find/Change panel.
+
+Script-based find/change frees the user from having to control script-based
+searches interactively. Rather than forcing find/change scripts to implement
+their own interactive controls, it is much easier to use what Leo already has.
+
+HOW IT WORKS
+
+Leo dedicates a Python dictionary called app.searchDict for communication
+between Leo and the search and change scripts. The search and change scripts may
+also use app.searchDict for communication between themselves. Leo sets
+app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to indicate
+the kind of command being executed. Scripts may use all other entries in
+app.searchDict as they please.
+
+Leo executes the find script once when you press the Find button (or the Change
+then Find button) in Leo's Find/Change dialog. Typically, the find script would
+traversing the tree and highlight the found text or otherwise indicate to the
+user that the find operation has succeeded. However, the script can do anything
+it pleases.
+
+Leo executes the the find script repeatedly when you press the Find All button.
+Leo keeps executing the find script until app.searchDict["continue"] evaluates
+to false. Initially there is no entry for app.searchDict["continue"], so the
+find script must set app.searchDict["continue"] = true if it wants Leo to keep
+executing it.
+
+Leo executes the change script once when you press the Change button. Typically,
+the change script would change the selected text. Usually the change script will
+compute the new value of body text and call v.setBodyStringOrPane(newText) to
+make that change permanent. 
+
+The change script also may handle undo, typically by calling
+c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
+automatically. Indeed, Leo makes no assumptions whatever about what the change
+script really does.
+
+Leo executes the the change script repeatedly when you press the Change All
+button. Just as with the Find All command, Leo keeps executing the change script
+until app.searchDict["continue"] evaluates to false.
+
+Most find and change scripts will ignore settings in the Find Panel like "whole
+word", "pattern match", and "reverse". However, these settings are available to
+the scripts via ivars such as c.whole_word_flag, etc. if desired.
+
+For examples, see the node called 'Script Find and Script Change' in leoDocs.leo.</t>
+<t tx="ekr.20041120155431.1">The body text of @shortcut nodes contain the specification for zero or more shortcuts.
+
+Lines starting with # are ignored.
+
+All other non-blank lines should have the form:
+
+commandName = shortcut specifier.</t>
+<t tx="ekr.20041120155431.2">Not implemented yet.
+
+Autments the settings parser and the dialog creator with scripts.</t>
+<t tx="ekr.20041120181045">A float value restricted to the range 0.0 to 1.0.</t>
+<t tx="ekr.20041122163623">When looking at @x, Leo converts to lower case and removes minus signs.
+Therefore, @if-platform and @ifPlatformare equivalent to @ifplatform.</t>
+<t tx="ekr.20041213105007">@nocolor
+@
+
+Valid values:
+
+weight: bold, normal, None
+slant: roman, italic, None
+
+Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.
+
+@c
+
+import sys ; print sys.platform
+</t>
+<t tx="ekr.20041213105007.1"></t>
+<t tx="ekr.20041213105007.2"></t>
+<t tx="ekr.20041213105007.3"></t>
+<t tx="ekr.20041213105508"># The font for the log pane. Default is default font for Tk.Text widgets.
+# Tk translates invalid font names to another font in a system-dependent way.
+# 
+# Default size is 12 for Linux, 9 otherwise.
+
+log_text_font_family = Courier
+log_text_font_size = 9
+log_text_font_slant = roman
+log_text_font_weight = normal
+</t>
+<t tx="ekr.20041213105954">Options that require pixel values can be any Python expression that yields an int.
+Warning: the number of pixels per inch varies...</t>
+<t tx="ekr.20041213105954.1"></t>
+<t tx="ekr.20041213105954.2"></t>
+<t tx="ekr.20041217184352.2">LightYellow1
+
+#f2fdff</t>
+<t tx="ekr.20050126083026">node granularity: start a new undo unit when typing moves to a new node.
+line granularity: start a new undo unit when typing moves to new line.
+word granularity: start a new undo unit when typing starts a new word.
+char granularity: start a new undo unit for each character typed.
+
+'line' granularity is the default used if no valid setting is specified.
+
+Leo used char granularity for all version prior to 4.3. char granularity is not
+recommended; it is clumsy and wasteful of computer memory.</t>
+<t tx="ekr.20050203085250">This is not used in Leo, except in unit tests.
+
+Please do not change this; it would make a unit test fail.</t>
+<t tx="ekr.20050203090810">Please do not change any of these settings.
+
+Doing so would make unit tests fail.
+</t>
+<t tx="ekr.20050620083647">The following languages are presently supported:
+
+ada, actionscript, c, C++, objective C, c#,
+elisp, forth, fortran, fortran90, html, java, latex,
+pascal, perl, perlpod, php, plain, plsql, python,
+rapidq, rebol, shell, tcltk
+
+For instructions on how to add support for a new languages, see leoPy.leo:
+
+Notes--&gt;@thin ../doc/leoNotes.txt--&gt;How to...--&gt;How to add support for a new language</t>
+<t tx="ekr.20051006200015">Use a light selectbackground value so syntax coloring looks good.
+
+Default is Gray80.
+CadetBlue3 has been suggested.</t>
+<t tx="ekr.20051006200015.1">Default is white.</t>
+<t tx="ekr.20051007193321"># append-next-kill                  = None
+# apply settings                    = None
+# call-last-keyboard-macro          = None
+# check-spelling                    = None
+# copy-to-buffer                    = None
+# end-kbd-macro                     = None
+        
+abbrev-mode                         = None
+abort-edit-headline                 = Shift-Esc
+about-leo                           = None
+add-comments                        = Ctrl-(
+add-global-abbrev                   = None
+advertised-undo                     = Control-underscore
+append-to-buffer                    = None
+append-to-register                  = None
+auto-complete                       = None
+back-char                           = Control-b
+back-char-extend-selection          = None
+back-paragraph                      = Alt-braceleft
+back-paragraph-extend-selection     = None
+back-sentence                       = Alt-a
+back-sentence-extend-selection      = None
+back-to-indentation                 = Alt-m
+back-word                           = Alt-b          
+back-word                           = Control-Left
+back-word-extend-selection          = None
+backward-delete-char                = Delete
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                 ! text =  Alt-less
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = Alt-Up        
+beginning-of-line                   = Control-a
+beginning-of-line-extend-selection  = None
+capitalize-word                     = Alt-c
+cascade-windows                     = None
+center-line                         = Alt-s
+center-region                       = None
+check-all-python-code               = None
+check-outline                       = None
+check-python-code                   = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-rectangle                     = None
+clone-node                          = Ctrl-`
+
+close-rectangle                     = None
+close-window                        = Alt-F4
+contract-all                        = None             # Alt-- conflicts with negative-arg.
+contract-node                       = Alt-[
+contract-or-go-left                 = Alt-LtArrow
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-rectangle-to-register          = None
+copy-text                           = None      # Ctrl-C conflicts with quick-command.
+copy-to-register                    = None
+count-region                        = Alt-equal
+cut-node                            = Shift-Ctrl-X
+cut-text                            = None      # Ctrl-X (possible)
+cycle-focus                         = None
+dabbrev-completion                  = Control-Alt-slash
+dabbrev-expands                     = Alt-slash
+de-hoist                            = None
+delete-char                         = Control-d
+delete-comments                     = Ctrl-)
+delete-file                         = None
+delete-indentation                  = Alt-asciicircum
+delete-node                         = Shift-Ctrl-BkSp
+delete-rectangle                    = None
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+diff                                = None
+digit-argument                      = None
+downcase-region                     = None
+downcase-word                       = Alt-l
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   = None             # Esc conflicts with watch-escape.
+end-of-buffer                       ! text = Alt-greater
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+end-of-line                         = Alt-Down      
+end-of-line                         = Control-e
+end-of-line-extend-selection        = None
+equal-sized-panes                   = Alt-Shift-E
+escape                              = Escape
+eval-expression                     = Alt-colon
+eval-expression                     = None
+exchange-point-mark                 = None  # Should be Control-X Control-X.
+execute-script                      = None             # Ctrl-e conflicts with end-of-line
+exit-leo                            = Ctrl-Q
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = Alt-]
+expand-or-go-right                  = Alt-RtArrow
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-paragraph                 = Alt-h
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+extract-section                     = Shift-Ctrl-E</t>
+<t tx="ekr.20051007200824">@nocolor
+
+This node contains sets of key bindings and settings.
+These sets should have headlines starting with @keys so that the Check Bindings script can find them.
+
+- The *inactive* sets should be children of the node '@ignore Unused key bindings'
+
+- The *active* set should be *outside* of the @ignore and its descendants.
+
+@color</t>
+<t tx="ekr.20051007200824.1">The following special single characters may be used in the tails of shortcuts.
+They are listed along with their associated Tk binding value. Leo contains
+special code to handle these characters. No other single characters may be
+specified.
+
+For example, you could specify Ctrl+! as a shortcut, and Leo will create a
+binding for &lt;Control+exclam&gt;. Some of these values may be invalid on some
+machines.
+
+The full list is at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm
+
+! exclam
+" quotedbl
+# numbersign
+$ dollar
+% percent
+&amp; ampersand
+' quoteright
+( parenleft
+) parenright
+* asterisk
++ plus
+, comma
+- minus
+. period
+/ slash
+: colon
+; semicolon
+&lt; less
+= equal
+&gt; greater
+? question
+@ at
+[ bracketleft
+\ backslash
+] bracketright
+^ asciicircum
+_ underscore
+` quoteleft
+{ braceleft
+| bar
+} braceright
+~ asciitilde
+
+Leo recognizes the following mult-character names, and translates the indicated
+strings in the menu items:
+    
+"bksp"     : "BkSp"
+"dnarrow"  : "DnArrow"
+"ltarrow"  : "LtArrow"
+"rtarrow"  : "RtArrow"
+"uparrow"  : "UpArrow"
+"pageup"   : "PgUp"),
+"pagedn"   : "PgDn")
+
+For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.
+
+Leo passes all other mult-character names verbatim to Tk, so on some platforms
+you may be able to use any of the following. Most appear on the numeric keypad.
+For example, the following may work on some systems:
+    
+"Ctrl+BackSpace"
+
+Don't use these if you want to be sure that the binding work on all platforms.
+The complete list of names may be found at:
+http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
+    
+F1, F2, F3, F4, F5, F6, F7, F8, F9, F10,
+BackSpace, Break, Clear, Delete, Escape, Linefeed, Return, Tab, 
+Down, Left, Right, Up,
+Begin, End, Home, Next, Prior,
+Num_Lock, Pause, Scroll_Lock, Sys_Req,
+KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
+KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
+KP_F1, KP_F2, KP_F3, KP_F4,
+KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
+<t tx="ekr.20051010093913">c.save()</t>
+<t tx="ekr.20051010112558">@color</t>
+<t tx="ekr.20051011123608">n = len('insert-newline              ')
+
+s = p.bodyString()
+result = []
+for line in g.splitLines(s):
+    i = line.find('=')
+    if i == -1 or i &lt;= n:
+        result.append(line)
+    else:
+        result.append(line[:n] + line[i:])
+
+result = ''.join(result)
+# print result
+p.setBodyString(result)</t>
+<t tx="ekr.20051020125928">#d6c7d3
+#d2cad0
+#c6d3d7</t>
+<t tx="ekr.20051025070845">#d6c7d3
+#d2cad0
+#c6d3d7
+#ffffec # Same as outline.</t>
+<t tx="ekr.20051025084017">How to install the Aspell spell checker for the Spell tab
+
+Linux:
+    
+You must be using Python 2.5 or later.
+
+1. Download and install the aspell package.
+
+2. Leo will find the aspell package automatically using Python's ctypes module.
+   You must specify the locations of the aspell and aspell/bin directories using
+   the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
+   This allows Leo to find the aspell dictionaries.
+
+Windows:
+
+1. Download and install the Aspell package from http://aspell.sourceforge.net
+   Typically this will create a directory called Aspell/bin
+   
+2a. If you are using Python 2.5 or later that's all you need to do.
+    Leo will find the aspell package automatically using Python's ctypes module.
+
+2b. If you are using Python 2.3 or Python 2.4 you must copy a dll to the Aspell/bin directory.
+   This step is *not* needed if you are using Python 2.5 or later.
+   Leo's extensions folder comes with two dll's: aspell23.pyd and aspell24.pyd, for Python 2.3 and 2.4 respectively.
+   Make a copy of the appropriate dll, **rename it** to be aspell.pyd, and copy the renamed aspell.pyd file to Aspell/bin.
+
+   Specify the location of the Aspell and Aspell/bin directories using
+   the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.</t>
+<t tx="ekr.20051025084017.1"></t>
+<t tx="ekr.20051025084017.2">The full path to the spelling dictionary.</t>
+<t tx="ekr.20051025085144">@color
+
+# The top-level aspell directory.
+
+if sys.platform == 'darwin':
+    aspell_dir = '/sw/lib'
+else:
+    aspell_dir = r'c:\Aspell'</t>
+<t tx="ekr.20051025085144.1">@color
+
+# The directory containing the executable
+
+if sys.platform == 'darwin':
+   
+    aspell_bin_dir = '/sw/lib/bin'
+        # NOT TESTED YET.
+else:
+    aspell_bin_dir = r'c:\Aspell\bin'
+        # The directory continaing apell.pyd and aspell-15.dll</t>
+<t tx="ekr.20051027175030">True: When typing an opening bracket '(','[' or '{', immediately type the
+corresponding closing bracket.  To move past the closing bracket, just type it.</t>
+<t tx="ekr.20051101160257">A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all panes except the minibuffer. The second
+form creates a binding for one or more panes. The possible values for 'pane'
+are:
+
+pane    bound panes
+----    -----------
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+    
+You may use None as the specifier. Otherwise, a shortcut specifier consists of a
+head followed by a tail. The head may be empty, or may be a concatenation of the
+following: (All entries in each row are equivalent).
+    
+Shift+ Shift-
+Alt+ or Alt-
+Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:  a is not A.
+
+2. The Shift- (or Shift+) prefix can be applied *only* to letters or
+multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to
+other single letters, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant.
+
+The following table illustrates these rules.  In each row, the first entry is the key (for k.bindingsDict) and the other entries are equivalents that the user may specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+    
+See "About shortcut specifiers" for a full discussion of what may appear in the tail of a shortcut.</t>
+<t tx="ekr.20051123100536">Note: These settings have effect only if the corresponding plugin has been enabled.</t>
+<t tx="ekr.20051123100536.1">For MacOS X (darwin) the following are typical defaults:
+
+vim_cmd = /Applications/gvim.app/Contents/MacOS/gvim --servername LEO
+vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
+</t>
+<t tx="ekr.20051123100536.2"></t>
+<t tx="ekr.20051123100536.3"></t>
+<t tx="ekr.20051126062243"></t>
+<t tx="ekr.20051126062243.1"></t>
+<t tx="ekr.20051126062525"></t>
+<t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
+<t tx="ekr.20051218202206"># append-next-kill                  = None
+# apply settings                    = None
+# back-char                         = None
+# call-last-keyboard-macro          = None
+# contract-parent                   = None
+# copy-to-buffer                    = None
+# end-kbd-macro                     = None
+
+abbrev-mode                         = None
+abort-edit-headline                 = None
+about-leo                           = None
+activate-cmds-menu                  = None
+activate-edit-menu                  = None
+activate-file-menu                  = None
+activate-help-menu                  = None
+activate-outline-menu               = None
+activate-plugins-menu               = None
+activate-window-menu                = None
+add-comments                        = None
+add-global-abbrev                   = None
+add-tab-to-lines                    = None
+advertised-undo                     = None
+append-to-buffer                    = None
+append-to-register                  = None
+apropos-autocompletion              = None
+apropos-bindings                    = None
+apropos-find-commands               = None
+auto-complete                       = None
+auto-complete-force                 = None
+back-char                           = None
+back-char-extend-selection          = None
+back-paragraph                      = None
+back-paragraph-extend-selection     = None
+back-sentence                       = None
+back-sentence-extend-selection      = None
+back-to-indentation                 = None
+back-word                           = None
+back-word-extend-selection          = None
+backward-delete-char                = None
+backward-find-character                     = None
+backward-find-character-extend-selection    = None
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = None
+beginning-of-buffer                 = None
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = None
+beginning-of-line-extend-selection  = None
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+check-all-python-code               = None
+check-outline                       = None
+check-python-code                   = None
+clean-lines                         = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-rectangle                     = None
+click-click-box                     = None
+click-headline                      = None
+click-icon-box                      = None
+clone-find-all                      = None
+clone-node                          = None
+clone-node-to-chapter               = None
+close-rectangle                     = None
+close-window                        = None
+collect-garbage                     = None
+contract-all                        = None
+contract-node                       = None
+contract-or-go-left                 = None
+contract-body-pane                  = None
+contract-log-pane                   = None
+contract-outline-pane               = None
+contract-pane                       = None
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = None
+convert-tabs                        = None
+copy-node                           = None
+copy-node-to-chapter                = None
+copy-rectangle-to-register          = None
+copy-text                           = None
+copy-to-register                    = None
+count-region                        = None
+create-chapter                      = None
+cut-node                            = None
+cut-text                            = None
+cycle-all-focus                     = None
+cycle-focus                         = None
+cycle-editor-focus                  = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+debug                               = None
+de-hoist                            = None
+delete-char                         = None
+delete-comments                     = None
+delete-file                         = None
+delete-indentation                  = None
+delete-node                         = None
+delete-rectangle                    = None
+delete-spaces                       = None
+demote                              = None
+diff                                = None
+digit-argument                      = None
+disable-autocompleter               = None
+disable-calltips                    = None
+disable-gc-trace                    = None
+downcase-region                     = None
+downcase-word                       = None
+double-click-headline               = None
+double-click-icon-box               = None
+dump-all-objects                    = None
+dump-new-objects                    = None
+dump-outline                        = None
+edit-headline                       = None
+enable-autocompleter                = None
+enable-calltips                     = None
+enable-gc-trace                     = None
+end-edit-headline                   = None
+end-of-buffer                       = None
+end-of-buffer-extend-selection      = None
+end-of-line                         = None
+end-of-line-extend-selection        = None
+equal-sized-panes                   = None
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None
+push-to-ipython                     = None
+execute-script                      = None
+exit-leo                            = None
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = None
+expand-or-go-right                  = None
+expand-body-pane                    = None
+expand-log-pane                     = None
+expand-outline-pane                 = None
+expand-pane                         = None
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-line                      = None
+extend-to-paragraph                 = None
+extend-to-sentence                  = None
+extend-to-word                      = None
+extract                             = None
+extract-names                       = None
+extract-section                     = None
+</t>
+<t tx="ekr.20051218203646"># Important: the print-commands and print-bindings show what bindings are in effect.
+
+# append-next-kill                  = None
+# apply settings                    = None
+# call-last-keyboard-macro          = None
+# copy-to-buffer                    = None
+# end-kbd-macro                     = None
+
+abbrev-mode                         = None
+abort-edit-headline                 = Shift-Esc # New command
+about-leo                           = None
+add-comments                        = Ctrl-(
+add-global-abbrev                   = None
+advertised-undo                     = None
+append-to-buffer                    = None
+append-to-register                  = None
+auto-complete                       = None
+back-char                           ! text = LtArrow
+back-char-extend-selection          ! text = Shift-LtArrow
+back-paragraph                      = None
+back-paragraph-extend-selection     = None
+back-sentence                       = None
+back-sentence-extend-selection      = None
+back-to-indentation                 = None
+back-word                           = Ctrl-LtArrow
+back-word-extend-selection          = Shift-Ctrl-LtArrow
+backward-delete-char                = None
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = None
+beginning-of-buffer                 = Ctrl-Home
+beginning-of-buffer-extend-selection= Shift-Ctrl-Home
+beginning-of-line                   = Home
+beginning-of-line-extend-selection  = Shift-Home
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+check-all-python-code               = None
+check-outline                       = None
+check-python-code                   = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-rectangle                     = None
+clone-node                          = Ctrl-`
+close-rectangle                     = None
+close-window                        = Ctrl-W
+close-window                        = Alt-F4
+contract-all                        = Alt--
+contract-node                       = Alt-[
+contract-or-go-left                 = Alt-LtArrow
+contract-parent                     = Alt-0
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-rectangle-to-register          = None
+copy-text                           = Ctrl-C
+copy-to-register                    = None
+count-region                        = None
+cut-node                            = Shift-Ctrl-X
+cut-text                            = Ctrl-X
+cycle-focus                         = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+de-hoist                            = None
+delete-char                         = Delete
+delete-comments                     = Ctrl-)
+delete-file                         = None
+delete-indentation                  = None
+delete-node                         = Shift-Ctrl-BkSp
+delete-rectangle                    = None
+delete-spaces                       = None
+demote                              = Ctrl-}
+diff                                = None
+digit-argument                      = None
+downcase-region                     = None
+downcase-word                       = None
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   = Esc
+end-of-buffer                       = Ctrl-End
+end-of-buffer-extend-selection      = Shift-Ctrl-End
+end-of-line                         = End
+end-of-line-extend-selection        = Shift-End
+equal-sized-panes                   = Alt-Shift-E
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None
+execute-script                      = Ctrl-E
+exit-leo                            = Ctrl-Q
+exit-named-mode                     = None
+expand-all                          = Alt-9
+expand-and-go-right                 = None
+expand-next-level                   = Alt+=
+expand-node                         = Alt-]
+expand-or-go-right                  = Alt-RtArrow
+expand-prev-level                   = Alt+.
+# expand-region-abbrevs             = None
+expand-to-level-1                   = Alt-1
+expand-to-level-2                   = Alt-2
+expand-to-level-3                   = Alt-3
+expand-to-level-4                   = Alt-4
+expand-to-level-5                   = Alt-5
+expand-to-level-6                   = Alt-6
+expand-to-level-7                   = Alt-7
+expand-to-level-8                   = Alt-8
+expand-to-level-9                   = None
+export-headlines                    = None
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+extract-section                     = Shift-Ctrl-E</t>
+<t tx="ekr.20060102102958"># Important: the print-commands and print-bindings show what bindings are in effect.
+
+# append-next-kill                  = None
+# apply settings                    = None
+# call-last-keyboard-macro          = None
+# copy-to-buffer                    = None
+# end-kbd-macro                     = None
+
+abbrev-mode                         = None
+abort-edit-headline                 = Esc
+about-leo                           = None
+add-comments                        = Ctrl-(
+add-global-abbrev                   = None
+advertised-undo                     = None
+append-to-buffer                    = None
+append-to-register                  = None
+auto-complete                       = Ctrl-Tab
+# back-char                           ! text = Ctrl-b
+back-char                           ! text = LtArrow
+back-char-extend-selection          ! text = Shift-LtArrow
+back-paragraph                      ! text = Alt-braceleft 
+back-paragraph-extend-selection     ! text = Alt-Shift-braceleft
+back-sentence                       ! text = Alt-a  # No conflict
+back-sentence-extend-selection      = None # **Must** be Alt-Shift-a, but that conflicts with Sort Siblings.  Sigh.
+back-to-indentation                 = None
+back-word                           ! text = Alt-b  
+back-word                           ! text = Ctrl-LtArrow
+back-word-extend-selection          ! text = Alt-Shift-b
+back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+backward-delete-char                = BackSpace
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                 ! text = Alt-less # Note: same as Alt-Shift-less
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection! text = Ctrl-Shift-Home
+beginning-of-line                   ! text = Ctrl-a         # Ctrl-a Conflicts with select-all
+beginning-of-line                   ! text = Home
+beginning-of-line-extend-selection  ! text = Shift-Home
+beginning-of-line-extend-selection  = Ctrl-Shift-a # conflicts with select-all
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+check-all-python-code               = None
+check-outline                       = None
+check-python-code                   = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-rectangle                     = None
+clone-node                          = Ctrl-`   
+close-rectangle                     = None
+close-window                        = Alt-F4
+contract-all                        = Alt--
+contract-node                       = Alt-[
+contract-or-go-left                 ! text = Alt-LtArrow
+contract-or-go-left                 ! tree = Alt-LtArrow
+contract-or-go-left                 ! tree = LtArrow
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-rectangle-to-register          = None
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+copy-to-register                    = None
+count-region                        = None
+cut-node                            = Shift-Ctrl-X
+cut-text                            = Ctrl-x
+cycle-focus                         = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+de-hoist                            = None
+delete-char                         = Delete
+delete-comments                     = Ctrl-)
+delete-file                         = None
+delete-indentation                  = None
+delete-node                         = Shift-Ctrl-BkSp
+delete-rectangle                    = None
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+diff                                = None
+digit-argument                      = None
+downcase-region                     = None
+downcase-word                       = None
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   ! tree = Return     # Esc is also possible.
+end-of-buffer                       ! text = Alt-greater # Same as Alt-Shift-greater
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Shift-Ctrl-End
+end-of-line                         ! text = Ctrl-e
+end-of-line                         ! text = End
+end-of-line-extend-selection        ! text = Ctrl-Shift-e
+end-of-line-extend-selection        ! text = Shift-End
+exit-named-mode                    = None
+equal-sized-panes                   = None
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None      # Should be Ctrl-X Ctrl-X.
+execute-script                      = None
+exit-leo                            = Ctrl-Q
+expand-all                          = None  
+expand-and-go-right                 ! text = Alt-RtArrow
+expand-and-go-right                 ! tree = Alt-RtArrow
+expand-and-go-right                 ! tree = RtArrow
+expand-next-level                   = Alt-=
+expand-node                         = Alt-]
+expand-or-go-right                  = None
+expand-prev-level                   = Alt-.
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extract                             = Shift-Ctrl-d
+extract-names                       = Shift-Ctrl-n
+extract-section                     = None # Was Shift-Ctrl-e</t>
+<t tx="ekr.20060102102958.1"># name-last-kbd-macro               = None
+negative-argument                   = None      # Alt-minus conflicts with contract-all.
+new                                 = Ctrl-n    # Ctrl-n conflicts with next-line.
+newline-and-indent                  = Control-j
+next-line                           ! text = DnArrow
+next-line-extend-selection          ! text = Shift-DnArrow
+number-command                      = None
+number-command-0                    = None
+number-command-1                    = None
+number-command-2                    = None
+number-command-3                    = None
+number-command-4                    = None
+number-command-5                    = None
+number-command-6                    = None
+number-command-7                    = None
+number-command-8                    = None
+number-command-9                    = None
+# number-to-register                = None
+open-compare-window                 = None
+open-find-tab                       = Ctrl-Shift-F
+open-leoDocs-leo                    = None
+open-leoPlugins-leo                 = None
+open-leoSettings-leo                = None
+open-scripts-leo                    = None
+open-offline-tutorial               = None
+open-online-home                    = None
+open-online-tutorial                = None
+open-outline                        = Ctrl-O    # Ctrl-O conflicts with insert-newline
+open-python-window                  = None  
+open-rectangle                      = None
+open-spell-tab                      = F7
+open-with                           = None
+outline-to-cweb                     = None
+outline-to-noweb                    = None
+paste-node                          = Shift-Ctrl-V
+paste-retaining-clones              = None
+paste-text                          = Ctrl-v
+point-to-register                   = None
+prepend-to-buffer                   = None
+prepend-to-register                 = None
+pretty-print-all-python-code        = None
+pretty-print-python-code            = None
+previous-line                       ! text = UpArrow
+previous-line-extend-selection      ! text = Shift-UpArrow
+print-bindings                      = None
+print-commands                      = None
+promote                             = Ctrl-{            
+query-replace                       = None
+query-replace-regex                 = None
+quick-command                       = None # Now implemented with @mode
+re-search-backward                  = None
+re-search-forward                   = None
+read-abbrev-file                    = None
+read-at-file-nodes                  = None
+read-outline-only                   = None
+redo                                = Shift-Ctrl-Z
+reformat-paragraph                  = Shift-Ctrl-P
+remove-blank-lines                  = None
+remove-directory                    = None
+remove-sentinels                    = None
+rename-buffer                       = None
+repeat-complex-command              = None      # Usually 'again', whatever that is.
+replace-string                      = None
+resize-to-screen                    = None
+reverse-region                      = None
+revert                              = None
+save-buffers-kill-leo               = None
+save-file                           = Ctrl-s
+save-file-as                        = Shift-Ctrl-S
+save-file-to                        = None
+scroll-down                         ! text = PageDn 
+scroll-up                           ! text = PageUp 
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-up-extend-selection          ! text = Shift-PageUp
+search-again                        = None
+search-backward                     = None
+search-forward                      = None
+select-all                          = None # Shift-Ctrl-A conflicts with beginning-of-line-extend-selection.
+set-colors                          = None
+set-comment-column                  = None
+set-extend-mode                     = None
+set-command-state                   = None
+set-insert-state                    = None
+set-fill-column                     = None
+set-fill-prefix                     = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                            = None
+# set-mark-command                  = Ctrl-space    # Also Ctrl-Shift-at
+set-overwrite-state                 = None
+settings                            = None          
+shell-command                       = None
+shell-command-on-region             = None
+show-colors                         = None
+show-fonts                          = None
+show-invisibles                     = Alt-Shift-v   
+show-mini-buffer                    = None
+sort-children                       = None
+sort-columns                        = None
+sort-fields                         = None
+sort-lines                          = None
+sort-siblings                       = Alt-Shift-A   # Alt-A conflicts with back-sentence.
+spell-change                        = None
+spell-change-then-find              = None
+spell-find                          = None
+spell-ignore                        = None
+split-line                          = Alt-Ctrl-o
+# start-kbd-macro                   = None
+string-rectangle                    = None
+suspend                             = None
+switch-to-buffer                    = None
+tabify                              = None
+tangle                              = None      
+tangle-all                          = None      
+tangle-marked                       = None     
+toggle-active-pane                  = Ctrl-T
+toggle-angle-brackets               = None
+toggle-extend-mode                  = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-mini-buffer                  = None
+    # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
+    # This had better be defined if you intend ever to hide the minibuffer.
+    # To avoid confusion, it should be something unlikely to be typed by accident.
+toggle-split-direction              = None
+transpose-chars                     = None
+transpose-lines                     = None
+transpose-words                     = None
+undo                                = Ctrl-Z
+unindent-region                     = Ctrl-[
+universal-argument                  = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+unmark-all                          = None
+untabify                            = None
+untangle                            = None  
+untangle-all                        = None
+untangle-marked                     = None
+upcase-region                       = None
+upcase-word                         = None
+view-lossage                        = None
+view-register                       = None
+weave                               = None
+what-line                           = None
+word-search-backward                = None
+word-search-forward                 = None
+write-abbrev-file                   = None
+write-at-file-nodes                 = Shift-Ctrl-W
+write-dirty-at-file-nodes           = None
+write-missing-at-file-nodes         = None
+write-outline-only                  = None 
+yank                                = Control-y
+yank-pop                            = Alt-y
+yank-rectangle                      = None
+zap-to-character                    = Alt-z</t>
+<t tx="ekr.20060102113259"># A silly mode illustrating vim-like operation.
+
+# Boilerplate for most modes.
+keyboard-quit   = Return
+exit-named-mode = Ctrl-g
+mode-help       = Tab
+
+# The key bindings for this node.
+# Plain keys can be specied as 'Key-x' or just 'x'.
+close-window    = c
+close-window    = Alt-F4
+exit-leo        = q
+new             = n
+open-outline    = o
+save-file       = s
+
+# Bindings to None have no effect.
+# They can be used as documentation here.
+save-file-as    = None
+save-file-to    = None</t>
+<t tx="ekr.20060103103812">@color</t>
+<t tx="ekr.20060103103812.1"># Defined by @mode nodes: needed to suppress warnings.
+
+enter-command-mode          = Alt-space
+#enter-command-mode          = Ctrl-space
+enter-file-mode             = None
+enter-find-mode             = Ctrl-f
+enter-find-options-mode     = None
+enter-quick-command-mode    = None
+enter-rect-mode             = None
+enter-register-mode         = None</t>
+<t tx="ekr.20060104093101">@nocolor
+
+This file contains 6 sets of key bindings and settings.
+
+- The *active* set should be *outside* of this node and its descendants.
+- The *inactive* sets should be children of this node.
+
+@color</t>
+<t tx="ekr.20060109115046"></t>
+<t tx="ekr.20060109115046.1">True: turns on extra feedback</t>
+<t tx="ekr.20060109115046.2"></t>
+<t tx="ekr.20060109115046.3"></t>
+<t tx="ekr.20060109121753"></t>
+<t tx="ekr.20060110141538">@color</t>
+<t tx="ekr.20060110141538.1">@color
+@
+
+These are no options for this keyset: we assume other options sets will also be in effect.
+
+**Important**:
+    
+- With this keyset in effect other binding sets need only specify the commands
+that actually have bindings.
+    
+- These definitions do not interfere with other settings, and do not cause
+warnings about duplicate bindings.
+
+- The Check Bindings script only checks for missing bindings in this set.</t>
+<t tx="ekr.20060110141538.2">@color</t>
+<t tx="ekr.20060111082632.1"># Important: the print-commands and print-bindings show what bindings are in effect.
+
+# append-next-kill                  = None      # Control-Alt-w
+# apply settings                    = None      # Does not exist yet.
+# call-last-keyboard-macro          = None
+# contract-parent                   ! tree = LtArrow # Was Alt-0, but this seems more consistent.
+# copy-to-buffer                    = None
+# end-kbd-macro                     = None
+# expand-and-go-right               ! tree = RtArrow # It would make sense to bind Alt-RtArrow to this too.
+
+abbrev-mode                         = None
+abort-edit-headline                 ! tree = Esc
+about-leo                           = None
+add-comments                        = Ctrl-(
+add-global-abbrev                   = None
+advertised-undo                     = None
+append-to-buffer                    = None
+append-to-register                  = None
+auto-complete                       = Ctrl-Tab
+back-char                           = Ctrl-b # No conflict
+back-char                           = LtArrow
+back-char-extend-selection          = Shift-LtArrow
+back-paragraph                      = Alt-braceleft 
+back-paragraph-extend-selection     = Alt-Shift-braceleft
+back-sentence                       = Alt-a  # No conflict
+back-sentence-extend-selection      = None
+back-to-indentation                 = None
+back-word                           = Alt-b         # No conflict
+back-word                           = Ctrl-LtArrow
+back-word-extend-selection          = Alt-Shift-b   # No conflict
+back-word-extend-selection          = Shift-Ctrl-LtArrow
+backward-delete-char                = BackSpace
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                 = Alt-less          # Note: same as Alt-Shift-less
+beginning-of-buffer                 = Ctrl-Home
+beginning-of-buffer-extend-selection= Shift-Ctrl-Home   # Ctrl-Shift-a conflicts with select-all
+beginning-of-line                   = Ctrl-a            # Ctrl-a Conflicts with select-all 
+beginning-of-line-extend-selection  = Shift-Home
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+check-all-python-code               = None
+check-outline                       = None
+check-python-code                   = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-rectangle                     = None
+clone-node                          = Ctrl-`
+close-rectangle                     = None
+close-window                        = Alt-F4 # Ctrl-w conflicts with kill-region.
+contract-all                        = Alt--
+contract-node                       = Alt-[
+contract-or-go-left                 = None
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-rectangle-to-register          = None
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+copy-to-register                    = None
+count-region                        = None
+cut-node                            = Shift-Ctrl-X
+cut-text                            = Ctrl-x
+cycle-focus                         = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+de-hoist                            = None
+delete-char                         = Delete
+delete-comments                     = Ctrl-)
+delete-file                         = None
+delete-indentation                  = None
+delete-node                         = Shift-Ctrl-BkSp
+delete-rectangle                    = None
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+diff                                = None
+digit-argument                      = None
+downcase-region                     = None
+downcase-word                       = None
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   ! tree = Return # Esc is also possible.
+end-of-buffer                       = Alt-greater # Note: same as Alt-Shift-greater
+end-of-buffer                       = Ctrl-End
+end-of-buffer-extend-selection      = Shift-Ctrl-End
+end-of-line                         = Ctrl-e             # Ctrl-e conflicts with execute-script
+end-of-line                         = End
+end-of-line-extend-selection        = Ctrl-Shift-e       # Ctrl-Shift-e conflicts with extract-section-names.
+end-of-line-extend-selection        = Shift-End
+equal-sized-panes                   = Alt-Shift-E
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None      # Should be Ctrl-X Ctrl-X.
+execute-script                      = None      # Ctrl-e conflicts with end-of-line
+exit-leo                            = Ctrl-Q
+exit-named-mode                     = None
+expand-all                          = None      # Alt-9: not useful enough.
+expand-and-go-right                 = None
+expand-next-level                   = Alt-=
+expand-node                         = Alt-]
+expand-or-go-right                  = None
+expand-prev-level                   = Alt-.
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None      # Was Alt-1 through Alt-8...
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extract                             = Shift-Ctrl-d
+extract-names                       = Shift-Ctrl-n
+extract-section                     = Shift-Ctrl-e</t>
+<t tx="ekr.20060111091324"></t>
+<t tx="ekr.20060111091324.1">If this setting is True, the ``fastgotonode_binding`` setting should be a
+Keyspecifier that does not conflict with any key binding in leoSettings.leo.
+
+If this setting is False, the ``fastgotonode_binding`` setting should be some
+other event specifier, typically 'Button-3'.</t>
+<t tx="ekr.20060111091324.2"># The binding used to invoke the popup menu.
+# Some possibilities:
+
+Shift-space  # Control-space conflicts with an Emacs binding.
+Button-3
+Double-Button-3 # Useful if you also have the rClick plugin enabled.</t>
+<t tx="ekr.20060112085325">fill-paragraph                      = None
+fill-region                         = None
+fill-region-as-paragraph            = None
+change                     = Ctrl-=
+change-all                 = None  # Not recommended to bind this to a shortcut.
+change-then-find           = Ctrl--
+find-next                  = F3
+find-prev                  = F2
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+# forward-char                      ! text = Ctrl-f   # Ctrl-f Conflicts with Find panel.
+forward-char                        ! text = RtArrow
+forward-char-extend-selection       ! text = Shift-RtArrow
+forward-paragraph                   ! text = Alt-braceright
+forward-paragraph-extend-selection  ! text = Alt-Shift-braceright
+forward-sentence                    ! text = Alt-e
+forward-sentence-extend-selection   ! text = Alt-Shift-e
+# forward-word                        ! text = Alt-f          # Usually opens file menu.
+# forward-word-extend-selection       ! text = Alt-Shift-f
+forward-word                        ! text = Ctrl-RtArrow
+forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow
+full-command                        = Alt-x     
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = None
+goto-first-sibling                  = None
+goto-first-visible-node             = Alt-Home
+goto-last-node                      = None
+goto-last-sibling                   = None
+goto-last-visible-node              = Alt-End
+goto-line                           = None  # Leo's goto-line-number is better.
+goto-line-number                    = Alt-g 
+goto-next-changed                   = None
+goto-next-clone                     = Alt-N
+goto-next-marked                    = None
+goto-next-node                      = None
+goto-next-sibling                   = None
+goto-next-visible                   ! text = Alt-DnArrow
+goto-next-visible                   ! tree = Alt-DnArrow
+goto-next-visible                   ! tree = DnArrow
+goto-parent                         = None
+goto-prev-node                      = None
+goto-prev-sibling                   = None
+goto-prev-visible                   ! text = Alt-UpArrow
+goto-prev-visible                   ! tree = Alt-UpArrow
+goto-prev-visible                   ! tree = UpArrow
+help-for-minibuffer                 = F1
+hide-find-tab                       = None
+hide-mini-buffer                    = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = None
+import-at-file                      = None
+import-at-root                      = None
+import-cweb-files                   = None
+import-derived-file                 = None
+import-flattened-outline            = None
+import-noweb-files                  = None
+increment-register                  = None
+indent-region                       = Ctrl-]
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = None
+insert-body-time                    = None
+insert-child                        = None
+insert-file                         = None
+insert-headline-time                = None
+# insert-keyboard-macro             = None
+insert-newline                      = None # Ctrl-o conflicts with open.
+insert-node                         = Ctrl-I
+insert-parentheses                  = None
+insert-register                     = None
+# insert-to-buffer                  = None
+inverse-add-global-abbrev           = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+isearch-forward-regexp              = None
+jump-to-register                    = None
+keep-lines                          = None
+keyboard-quit                       = Ctrl-g
+kill-all-abbrevs                    = None
+kill-buffer                         = None
+kill-line                           ! text = Shift-Ctrl-k  # Ctrl-K conflicts with match-braket.
+kill-paragraph                      = None
+kill-rectangle                      = None
+kill-region                         = Ctrl-w
+kill-region-save                    = Alt-w 	   # Ctrl-w conflicts with close.
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+line-number                         = None
+list-abbrevs                        = None
+list-buffers                        = None
+list-buffers-alphabetically         = None
+make-directory                      = None
+mark                                = Ctrl-M
+mark-changed-items                  = None
+mark-changed-roots                  = None 
+mark-clones                         = None
+mark-subheads                       = None  
+match-brackets                      = Ctrl-K    # Conflicts with kill-line
+minimize-all                        = None
+mode-help                           = None
+move-outline-down                   = Ctrl-D
+move-outline-down                   = Alt-Shift-DnArrow
+move-outline-left                   = Ctrl-L
+move-outline-left                   = Alt-Shift-LtArrow
+move-outline-right                  = Ctrl-R
+move-outline-right                  = Alt-Shift-RtArrow
+move-outline-up                     = Ctrl-U
+move-outline-up                     = Alt-Shift-UpArrow
+move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20060112085643">fill-paragraph                          = None
+fill-region                             = None
+fill-region-as-paragraph                = None
+change                                  = Ctrl-=
+change-all                              = None  # Not recommended to bind this to a shortcut.
+change-then-find                        = Ctrl--
+find-next                               = F3
+find-prev                               = F2
+flatten-outline                         = None
+flush-lines                             = None
+focus-to-body                           = None
+focus-to-log                            = None
+focus-to-minibuffer                     = None
+focus-to-tree                           = None
+forward-char                            = Shift-Ctrl-f   # Ctrl-f Conflicts with Find panel.
+forward-char                            = RtArrow
+forward-char-extend-selection           = Shift-RtArrow
+forward-paragraph                       = Alt-braceright
+forward-paragraph-extend-selection      = Alt-Shift-braceright
+forward-sentence                        = Alt-e          # No conflict
+forward-sentence-extend-selection       = Alt-Shift-e
+forward-word                            = Alt-f          # No conflict with bindings, but usually opens file menu.
+forward-word                            = Ctrl-RtArrow
+forward-word-extend-selection           = Alt-Shift-f
+forward-word-extend-selection           = Shift-Ctrl-RtArrow
+full-command                            = Alt-x                 # No conflict.
+go-back                                 = None
+go-forward                              = None
+goto-char                               = None
+goto-first-node                         = None       # Was: Alt-Shift-G
+goto-first-sibling                      ! tree = Alt-Shift-Home
+goto-first-visible-node                 ! tree = Alt-Home
+goto-last-node                          ! tree = None           # Was: Alt-Shift-H
+goto-last-sibling                       ! tree = Alt-Shift-End
+goto-last-visible-node                  ! tree = Alt-End
+goto-line                               = None              # Usually Alt-g, but Leo's goto-line-number is better.
+goto-line-number                        = Alt-g             # The Leo equivalent.
+goto-next-changed                       = None              # Removed Alt-D: not useful enough.
+goto-next-clone                         ! tree = Alt-N
+goto-next-marked                        = None              # Removed Alt-M: not useful enough.
+goto-next-node                          ! tree = Alt-DnArrow
+goto-next-sibling                       = None
+goto-next-visible                       ! tree = DnArrow    # Alt-UpArrow conflicts with beginning-of-line.
+goto-parent                             ! tree = Alt-LtArrow
+goto-prev-node                          ! tree = Alt-UpArrow
+goto-prev-sibling                       = None              # Removed Alt-Shift-R: not useful enough.
+goto-prev-visible                       ! tree = UpArrow
+help-for-minibuffer                     = None              # Ctrl-h conflicts with edit headline.
+hide-find-tab                           = None
+hide-mini-buffer                        = None
+hide-spell-tab                          = None
+hoist                                   = None
+how-many                                = None
+iconify-frame                           = None      # Same as suspend.
+import-at-file                          = None      # Removed Shift-Ctrl-F: not useful enough.
+import-at-root                          = None
+import-cweb-files                       = None
+import-derived-file                     = None
+import-flattened-outline                = None
+import-noweb-files                      = None
+increment-register                      = None
+indent-region                           = Ctrl-]
+indent-relative                         = None
+indent-rigidly                          = None
+indent-to-comment-column                = None
+insert-body-time                        = None      # Shift-Ctrl-G: not useful enough.
+insert-child                            = None
+insert-file                             = None
+insert-headline-time                    = None      # Shift-Ctrl-H: not useful enough.
+# insert-keyboard-macro                 = None
+insert-newline                          = None      # Ctrl-o conflicts with open.
+insert-node                             = Ctrl-I
+insert-parentheses                      = None
+insert-register                         = None
+# insert-to-buffer                      = None
+inverse-add-global-abbrev               = None
+isearch-backward                        = None
+isearch-backward-regexp                 = None
+isearch-forward                         = None
+isearch-forward-regexp                  = None
+jump-to-register                        = None
+keep-lines                              = None
+keyboard-quit                           = Ctrl-g    # Emacs binding.
+kill-all-abbrevs                        = None
+kill-buffer                             = None
+kill-line                               = Shift-Ctrl-k  # Ctrl-K conflicts with match-braket.
+kill-paragraph                          = None
+kill-rectangle                          = None
+kill-region                             = Control-w
+kill-region-save                        = Alt-w 	   # Ctrl-w conflicts with close.
+kill-sentence                           = Alt-k
+kill-word                               = Alt-d
+line-number                             = None
+list-abbrevs                            = None
+list-buffers                            = None
+list-buffers-alphabetically             = None
+make-directory                          = None
+mark                                    = Ctrl-M
+mark-changed-items                      = None      # Alt-C: now quick-command.
+mark-changed-roots                      = None      # Alt-R: not useful enough.
+mark-clones                             = None      # Alt-K: not useful enough.
+mark-subheads                           = None      # Alt-S: not useful enough.
+match-brackets                          = Ctrl-K    # Conflicts with kill-line
+minimize-all                            = None
+mode-help                               = None
+move-outline-down                       = Ctrl-D
+move-outline-left                       = Ctrl-L
+move-outline-right                      = Ctrl-R
+move-outline-up                         = Ctrl-U
+move-past-close                         = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection        = None</t>
+<t tx="ekr.20060112085643.1"># name-last-kbd-macro                   = None
+negative-argument                       = None      # Alt-minus conflicts with contract-all.
+new                                     = Ctrl-n    # Ctrl-n conflicts with next-line.
+newline-and-indent                      = Control-j
+next-line                               = DnArrow
+next-line-extend-selection              = Shift-DnArrow
+number-command                          = None
+number-command-0                        = None
+number-command-1                        = None
+number-command-2                        = None
+number-command-3                        = None
+number-command-4                        = None
+number-command-5                        = None
+number-command-6                        = None
+number-command-7                        = None
+number-command-8                        = None
+number-command-9                        = None
+# number-to-register                    = None
+open-compare-window                     = None
+open-find-tab                           = Ctrl-f
+open-leoDocs-leo                        = None
+open-leoPlugins-leo                     = None
+open-leoSettings-leo                    = None
+open-scripts-leo                        = None
+open-offline-tutorial                   = None
+open-online-home                        = None
+open-online-tutorial                    = None
+open-outline                            = Ctrl-O    # Ctrl-O conflicts with insert-newline
+open-python-window                      = None      # Alt-P: not useful enough.
+open-rectangle                          = None
+open-spell-tab                          = None
+open-with                               = None
+outline-to-cweb                         = None
+outline-to-noweb                        = None
+paste-node                              = Shift-Ctrl-V
+paste-retaining-clones                  = None
+paste-text                              = Ctrl-v    # For testing only: Alt-Shift-Ctrl-v
+point-to-register                       = None
+prepend-to-buffer                       = None
+prepend-to-register                     = None
+pretty-print-all-python-code            = None
+pretty-print-python-code                = None
+previous-line                           = UpArrow
+previous-line-extend-selection          = Shift-UpArrow
+print-bindings                          = None
+print-commands                          = None
+promote                                 = Ctrl-{            
+query-replace                           = None
+query-replace-regex                     = None
+quick-command                           = Alt-c     # Usually Ctrl-c, conflicts with cut-text.
+re-search-backward                      = None
+re-search-forward                       = None
+read-abbrev-file                        = None
+read-at-file-nodes                      = None
+read-outline-only                       = None      # Shift-Ctrl-R: not useful enough.
+redo                                    = Shift-Ctrl-Z
+reformat-paragraph                      = Shift-Ctrl-P
+remove-blank-lines                      = None
+remove-directory                        = None
+remove-sentinels                        = None
+rename-buffer                           = None
+repeat-complex-command                  = None      # Usually 'again', whatever that is.
+replace-string                          = None
+resize-to-screen                        = None
+reverse-region                          = None
+revert                                  = None
+save-buffers-kill-leo                   = None
+save-file                               = Ctrl-s    # Ctrl-s conflicts with search.
+save-file-as                            = Shift-Ctrl-S
+save-file-to                            = None
+scroll-down                             = PageDn    # Ctrl-v conflicts with paste-text.
+scroll-down-extend-selection            = None
+scroll-up                               = PageUp    # Alt-v conflicts with view-all-characters.
+scroll-up-extend-selection              = None
+search-again                            = None
+search-backward                         = None
+search-forward                          = None
+select-all                              = Shift-Ctrl-A # Ctrl-Shift-a conflicts with beginning-of-line-extend-selection.
+set-colors                              = None
+set-comment-column                      = None
+set-extend-mode                         = None
+set-fill-column                         = None
+set-fill-prefix                         = None
+set-find-everywhere                     = None
+set-find-node-only                      = None
+set-find-suboutline-only                = None
+set-font                                = None
+set-command-state                       = None
+set-insert-state                        = None
+# set-mark-command                      = Ctrl-space    # Also Ctrl-Shift-at
+set-overwrite-state                     = None
+settings                                = None          # Ctrl-Y conflicts with yank.
+shell-command                           = None
+shell-command-on-region                 = None
+show-colors                             = None
+show-fonts                              = None
+show-invisibles                         = Alt-Shift-v   # Alt-V conflicts with scroll-up .
+show-mini-buffer                        = None
+sort-children                           = None
+sort-columns                            = None
+sort-fields                             = None
+sort-lines                              = None
+sort-siblings                           = Alt-Shift-A   # Alt-A conflicts with back-sentence.
+spell-change                            = None
+spell-change-then-find                  = None
+spell-find                              = None
+spell-ignore                            = None
+split-line                              = Alt-Ctrl-o
+# start-kbd-macro                       = None
+string-rectangle                        = None
+suspend                                 = None
+switch-to-buffer                        = None
+tabify                                  = None
+tangle                                  = None      # Removed Shift-Ctrl-T: not useful enough.
+tangle-all                              = None      # Removed Shift-Ctrl-A: not useful enough.
+tangle-marked                           = None      # Removed Shift-Ctrl-M: not useful enough.
+toggle-active-pane                      = Ctrl-T
+toggle-angle-brackets                   = None
+toggle-extend-mode                      = None
+toggle-find-ignore-case-option          = None
+toggle-find-in-body-option              = None
+toggle-find-in-headline-option          = None
+toggle-find-mark-changes-option         = None
+toggle-find-mark-finds-option           = None
+toggle-find-regex-option                = None
+toggle-find-reverse-option              = None
+toggle-find-word-option                 = None
+toggle-find-wrap-around-option          = None
+toggle-mini-buffer                      = None
+    # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
+    # This had better be defined if you intend ever to hide the minibuffer.
+    # To avoid confusion, it should be something unlikely to be typed by accident.
+toggle-split-direction                  = None
+transpose-chars                         = None
+transpose-lines                         = None
+transpose-words                         = None
+undo                                    = Ctrl-Z
+unindent-region                         = Ctrl-[
+universal-argument                      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+unmark-all                              = None
+untabify                                = None
+untangle                                = None      # Removed Shift-Ctrl-U: not useful enough
+untangle-all                            = None
+untangle-marked                         = None
+upcase-region                           = None
+upcase-word                             = None
+view-lossage                            = None
+view-register                           = None
+weave                                   = None
+what-line                               = None
+word-search-backward                    = None
+word-search-forward                     = None
+write-abbrev-file                       = None
+write-at-file-nodes                     = Shift-Ctrl-W
+write-dirty-at-file-nodes               = None
+write-missing-at-file-nodes             = None
+write-outline-only                      = None 
+yank                                    = Control-y
+yank-pop                                = Alt-y
+yank-rectangle                          = None
+zap-to-character                        = Alt-z</t>
+<t tx="ekr.20060112090844"># indent-for-tab                    = Control-i
+# insert-keyboard-macro             = None
+# insert-to-buffer                  = None
+
+fill-paragraph                      = Alt-q
+fill-region                         = None
+fill-region-as-paragraph            = None
+change                              = Ctrl-=
+change-all                          = None  # Not recommended to bind this to a shortcut.
+change-then-find                    = Ctrl--
+find-next                           = F3
+find-prev                           = F2
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+forward-char                        = Control-f
+forward-char-extend-selection       = None
+forward-paragraph                   = Alt-braceright
+forward-paragraph-extend-selection  = None
+forward-sentence                    = Alt-e
+forward-sentence-extend-selection   = None
+forward-word                        = Alt-f
+forward-word                        = Control-Right
+forward-word-extend-selection       = None
+full-command                        = Alt-x
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = Alt-Shift-G
+goto-first-sibling                  = None
+goto-last-node                      = Alt-Shift-H
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = Alt-g
+goto-line                           = None         # Emacs version is less powerful than Leo version
+goto-line-number                    = Alt-G
+goto-next-changed                   = None         # Alt-D conflicts with kill-word
+goto-next-clone                     = None         # Removed Alt-N: not useful enough.
+goto-next-marked                    = None         # Alt-M conflicts with back-to-indentation.
+goto-next-node                      = Alt-Shift-DnArrow
+goto-next-sibling                   = Alt-Shift-S
+goto-next-visible                   = None         # Alt-DnArrow conflicts with end-of-line.
+goto-parent                         = Alt-Shift-P
+goto-prev-node                      = Alt-Shift-UpArrow
+goto-prev-sibling                   = Alt-Shift-R
+goto-prev-visible                   = None         # Alt-UpArrow conflicts with beginning-of-line.
+help-for-minibuffer                 = None
+hide-find-tab                       = None
+hide-mini-buffer                    = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = Control-z
+import-at-file                      = None         # Removed Shift-Ctrl-F: not useful enough.
+import-at-root                      = None
+import-cweb-files                   = None
+import-derived-file                 = None
+import-flattened-outline            = None
+import-noweb-files                  = None
+increment-register                  = None
+indent-region                       = Alt-Control-backslash
+indent-region                       = Ctrl-]
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = Alt-semicolon
+insert-body-time                    = None         # Removed Shift-Ctrl-G: not useful enough.
+insert-child                        = None
+insert-file                         = None
+insert-headline-time                = None         # Removed Shift-Ctrl-H: not useful enough.
+insert-newline                      = Control-o
+insert-node                         = Ctrl-I
+insert-parentheses                  = Alt-parenleft
+insert-register                     = None
+inverse-add-global-abbrev           = None
+isearch-backward                    = Control-R
+isearch-backward-regexp             = Control-Alt-r
+isearch-forward                     = Control-S
+isearch-forward-regexp              = Control-Alt-s
+jump-to-register                    = None
+keep-lines                          = None
+keyboard-quit                       = Ctrl-g
+kill-all-abbrevs                    = None
+kill-buffer                         = None
+kill-line                           = Control-k
+kill-paragraph                      = None
+kill-rectangle                      = None
+kill-region                         = Control-w
+kill-region-save                    = Alt-w
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+line-number                         = None
+list-abbrevs                        = None
+list-buffers                        = None
+list-buffers-alphabetically         = None
+mode-help                           = None
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20060112090844.1"># name-last-kbd-macro           = None
+# number-to-register            = None
+# save-buffer                   = None  # Use save instead.
+# start-kbd-macro               = None
+
+make-directory                  = None
+mark                            = Ctrl-M
+mark-changed-items              = None         # Alt-C: now quick-command.
+mark-changed-roots              = None         # Removed Alt-R: not useful enough.
+mark-clones                     = None         # Alt-K conflicts with kill-sentence.
+mark-subheads                   = None         # Alt-S conflicts with center-line.
+match-brackets                  = None         # Ctrl-K conflicts with kill-line.
+minimize-all                    = None
+move-outline-down               = None         # Removed Ctrl-D: no point if other moves are not defined.
+move-outline-left               = None         # Removed Ctrl-L: no point if other moves are not defined.
+move-outline-right              = None         # Ctrl-R conflicts with search-backward.
+move-outline-up                 = None         # Ctrl-U confllicts with universal-argument.
+move-past-close                 = Alt-parenright
+negative-argument               = Alt-minus
+new                             = None         # Ctrl-n conflicts with next-line.
+newline-and-indent              = Control-j
+next-line                       = Control-n
+next-line-extend-selection      = None
+number-command                  = None
+number-command-0                = Alt-0
+number-command-1                = Alt-1
+number-command-2                = Alt-2
+number-command-3                = Alt-3
+number-command-4                = Alt-4
+number-command-5                = Alt-5
+number-command-6                = Alt-6
+number-command-7                = Alt-7
+number-command-8                = Alt-8
+number-command-9                = Alt-9 
+open-compare-window             = None
+open-find-tab                   = None
+open-leoDocs-leo                = None
+open-leoPlugins-leo             = None
+open-leoSettings-leo            = None
+open-scripts-leo                = None
+open-offline-tutorial           = None
+open-online-home                = None
+open-online-tutorial            = None
+open-outline                    = None         # Ctrl-O conflicts with insert-newline
+open-python-window              = None         # Removed Alt-P: not useful enough.
+open-rectangle                  = None
+open-spell-tab                  = None
+open-with                       = None
+outline-to-cweb                 = None
+outline-to-noweb                = None
+paste-node                      = Shift-Ctrl-V
+paste-retaining-clones          = None
+paste-text                      = None      # Ctrl-V conflicts with scroll-down
+point-to-register               = None
+prepend-to-buffer               = None
+prepend-to-register             = None
+pretty-print-all-python-code    = None
+pretty-print-python-code        = None
+previous-line                   = Control-p
+previous-line-extend-selection  = None
+print-bindings                  = None
+print-commands                  = None
+promote                         = Ctrl-{            
+query-replace                   = Alt-percent
+query-replace-regex             = None
+quick-command                   = Ctrl-c
+re-search-backward              = None
+re-search-forward               = None
+read-abbrev-file                = None
+read-at-file-nodes              = None
+read-outline-only               = None         # Removed Shift-Ctrl-R: not useful enough.
+redo                            = None         # Ctrl-Z not defined, so Shift-Ctrl-Z less useful.
+reformat-paragraph              = Shift-Ctrl-P
+remove-blank-lines              = None
+remove-directory                = None
+remove-sentinels                = None
+rename-buffer                   = None
+repeat-complex-command          = None
+replace-string                  = None
+resize-to-screen                = None
+reverse-region                  = None
+revert                          = None
+save-buffers-kill-leo           = None # Should be Control-x Control-c
+save-file                       = None         # Ctrl-s conflicts with isearch-forward.
+save-file-as                    = Shift-Ctrl-S
+save-file-to                    = None
+scroll-down                     = Control-v
+scroll-down-extend-selection    = None
+scroll-up                       = Alt-v
+scroll-up-extend-selection      = None
+search-again                    = None
+search-backward                 = None
+search-forward                  = None
+select-all                      = None  # Ctrl-A conflicts with beginning-of-line.
+set-colors                      = None
+set-comment-column              = None
+set-extend-mode                 = None
+set-fill-column                 = None
+set-fill-prefix                 = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                        = None
+set-command-state               = None
+set-insert-state                = None
+# set-mark-command              = Control-Shift-at
+set-overwrite-state             = None
+settings                        = None  # Ctrl-Y conflicts with yank.
+shell-command                   = Alt-exclam
+shell-command-on-region         = Alt-bar
+show-colors                     = None
+show-fonts                      = None
+show-invisibles                 = Alt-V
+show-invisibles                 = None  # Alt-V conflicts with scroll-up .
+show-mini-buffer                = None
+sort-children                   = None
+sort-columns                    = None
+sort-fields                     = None
+sort-lines                      = None
+sort-siblings                   = Shift-Alt-A  # Alt-A conflicts with back-sentence.
+spell-change                    = None
+spell-change-then-find          = None
+spell-find                      = None
+spell-ignore                    = None
+split-line                      = Control-Alt-o
+string-rectangle                = None
+suspend                         = None
+switch-to-buffer                = None
+tabify                          = None
+tangle                          = None      # Removed Shift-Ctrl-T: not useful enough.
+tangle-all                      = None      # Removed Shift-Ctrl-A: not useful enough.
+tangle-marked                   = None      # Removed Shift-Ctrl-M: not useful enough.
+toggle-active-pane              = None      # Ctrl-T conflicts with swap-characters.
+toggle-angle-brackets           = None
+toggle-extend-mode              = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-mini-buffer                  = Alt+Shift+S
+    # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
+    # This had better be defined if you intend ever to hide the minibuffer.
+    # To avoid confusion, it should be something unlikely to be typed by accident.
+toggle-split-direction          = None
+transpose-chars                 = Control-t
+transpose-lines                 = None
+transpose-words                 = Alt-t
+undo                            = None         # Ctrl-Z conflicts with suspend.
+unindent-region                 = None
+universal-argument              = Ctrl-u
+unmark-all                      = None         # Alt-U: conflicts with upcase-word.
+untabify                        = None
+untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
+untangle-all                    = None
+untangle-marked                 = None
+upcase-region                   = None
+upcase-word                     = Alt-u
+view-lossage                    = None
+view-register                   = None
+weave                           = None
+what-line                       = None
+word-search-backward            = None
+word-search-forward             = None
+write-abbrev-file               = None
+write-at-file-nodes             = Shift-Ctrl-W
+write-dirty-at-file-nodes       = None
+write-missing-at-file-nodes     = None
+write-outline-only              = None 
+yank                            = Control-y
+yank-pop                        = Alt-y
+yank-rectangle                  = None
+zap-to-character                = Alt-z
+</t>
+<t tx="ekr.20060112090844.4">fill-paragraph                          = None
+fill-region                             = None
+fill-region-as-paragraph                = None
+change                                  = Ctrl-=
+change-all                              = None  # Not recommended to bind this to a shortcut.
+change-then-find                        = Ctrl--
+find-next                               = F3
+find-prev                               = F2
+flatten-outline                         = None
+flush-lines                             = None
+focus-to-body                           = None
+focus-to-log                            = None
+focus-to-minibuffer                     = None
+focus-to-tree                           = None
+forward-char                            ! text = RtArrow
+forward-char-extend-selection           ! text = Shift-RtArrow
+forward-paragraph                       = None
+forward-paragraph-extend-selection      = None
+forward-sentence                        = None
+forward-sentence-extend-selection       = None
+forward-word                            = Ctrl-RtArrow
+forward-word-extend-selection           = Shift-Ctrl-RtArrow
+full-command                            = None
+go-back                                 = None
+go-forward                              = None
+goto-char                               = None
+goto-first-node                         = Alt-Shift-G
+goto-first-sibling                      = None
+goto-first-visible-node                 = None
+goto-last-node                          = Alt-Shift-H
+goto-last-sibling                       = None
+goto-last-visible-node                  = None
+goto-line                               = None
+goto-line-number                        = Alt-G
+goto-next-changed                       = Alt-D
+goto-next-clone                         = Alt-N
+goto-next-marked                        = Alt-M
+goto-next-node                          = Alt-Shift-DnArrow
+goto-next-sibling                       = Alt-Shift-S
+goto-next-visible                       = Alt-DnArrow
+goto-parent                             = Alt-Shift-P
+goto-prev-node                          = Alt-Shift-UpArrow
+goto-prev-sibling                       = Alt-Shift-R
+goto-prev-visible                       = Alt-UpArrow
+help-for-minibuffer                     = None
+hide-find-tab                           = None
+hide-mini-buffer                        = None
+hide-spell-tab                          = None
+hoist                                   = None
+how-many                                = None
+iconify-frame                           = None
+import-at-file                          = Shift-Ctrl-F
+import-at-root                          = None
+import-cweb-files                       = None
+import-derived-file                     = None
+import-flattened-outline                = None
+import-noweb-files                      = None
+increment-register                      = None
+indent-region                           = Ctrl-]
+indent-relative                         = None
+indent-rigidly                          = None
+indent-to-comment-column                = None
+insert-body-time                        = Shift-Ctrl-G
+insert-child                            = None
+insert-file                             = None
+insert-headline-time                    = Shift-Ctrl-H
+# insert-keyboard-macro                 = None
+insert-newline                          = None
+insert-node                             = Ctrl-I
+insert-parentheses                      = None
+insert-register                         = None
+# insert-to-buffer                      = None
+inverse-add-global-abbrev               = None
+isearch-backward                        = None
+isearch-backward-regexp                 = None
+isearch-forward                         = None
+isearch-forward-regexp                  = None
+jump-to-register                        = None
+keep-lines                              = None
+keyboard-quit                           = None
+kill-all-abbrevs                        = None
+kill-buffer                             = None
+kill-line                               = None
+kill-paragraph                          = None
+kill-rectangle                          = None
+kill-region                             = None
+kill-region-save                        = None
+kill-sentence                           = None
+kill-word                               = None
+line-number                             = None
+list-abbrevs                            = None
+list-buffers                            = None
+list-buffers-alphabetically             = None
+make-directory                          = None
+mark                                    = Ctrl-M
+mark-changed-items                      = Alt-C
+mark-changed-roots                      = Alt-R
+mark-clones                             = Alt-K
+mark-subheads                           = Alt-S
+match-brackets                          = Ctrl-K
+minimize-all                            = None
+mode-help                               = None
+move-outline-down                       = Ctrl-D
+move-outline-left                       = Ctrl-L
+move-outline-right                      = Ctrl-R
+move-outline-up                         = Ctrl-U
+move-past-close                         = None
+move-past-close-extend-selection        = None</t>
+<t tx="ekr.20060112090844.5"># name-last-kbd-macro               = None
+# number-to-register                = None
+# start-kbd-macro                   = None
+
+negative-argument                   = None
+new                                 = Ctrl-N
+newline-and-indent                  = None
+next-line                           ! text = DnArrow
+next-line-extend-selection          ! text = Shift-DnArrow
+number-command                      = None
+number-command-0                    = None
+number-command-1                    = None
+number-command-2                    = None
+number-command-3                    = None
+number-command-4                    = None
+number-command-5                    = None
+number-command-6                    = None
+number-command-7                    = None
+number-command-8                    = None
+number-command-9                    = None
+open-compare-window                 = None
+open-find-tab                       = Ctrl-F
+open-leoDocs-leo                    = None
+open-leoPlugins-leo                 = None
+open-leoSettings-leo                = None
+open-scripts-leo                    = None
+open-offline-tutorial               = None
+open-online-home                    = None
+open-online-tutorial                = None
+open-outline                        = Ctrl-O
+open-python-window                  = Alt-P
+open-rectangle                      = None
+open-spell-tab                      = Alt+Shift+A
+open-with                           = None
+outline-to-cweb                     = None
+outline-to-noweb                    = None
+paste-node                          = Shift-Ctrl-V
+paste-retaining-clones              = None
+paste-text                          = Ctrl-V
+point-to-register                   = None
+prepend-to-buffer                   = None
+prepend-to-register                 = None
+pretty-print-all-python-code        = None
+pretty-print-python-code            = None
+previous-line                       = UpArrow
+previous-line-extend-selection      = Shift-UpArrow
+print-bindings                      = None
+print-commands                      = None
+promote                             = Ctrl-{            
+query-replace                       = None
+quick-command                       = None
+re-search-backward                  = None
+re-search-forward                   = None
+read-abbrev-file                    = None
+read-at-file-nodes                  = None
+read-outline-only                   = Shift-Ctrl-R
+redo                                = Shift-Ctrl-Z
+reformat-paragraph                  = Shift-Ctrl-P
+remove-blank-lines                  = None
+remove-directory                    = None
+remove-sentinels                    = None
+rename-buffer                       = None
+repeat-complex-command              = None
+replace-string                      = None
+resize-to-screen                    = None
+reverse-region                      = None
+revert                              = None
+save-buffers-kill-leo               = None
+save-file                           = Ctrl-s
+save-file-as                        = Shift-Ctrl-S
+save-file-to                        = None
+scroll-down                         = PageDn
+scroll-down-extend-selection        = None
+scroll-up                           = PageUp
+scroll-up-extend-selection          = None
+search-again                        = None
+search-backward                     = None
+search-forward                      = None
+select-all                          = Ctrl-A
+set-colors                          = None
+set-comment-column                  = None
+set-extend-mode                     = None
+set-fill-column                     = None
+set-fill-prefix                     = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                            = None
+set-command-state                   = None
+set-insert-state                    = None
+# set-mark-command                  = None
+set-overwrite-state                 = None
+settings                            = Ctrl-Y
+shell-command                       = None
+shell-command-on-region             = None
+show-colors                         = None
+show-fonts                          = None
+show-invisibles                     = Alt-V
+show-mini-buffer                    = None
+sort-children                       = None
+sort-columns                        = None
+sort-fields                         = None
+sort-lines                          = None
+sort-siblings                       = Alt-A
+spell-change                        = None
+spell-change-then-find              = None
+spell-find                          = None
+spell-ignore                        = None
+split-line                          = None
+string-rectangle                    = None
+suspend                             = None
+switch-to-buffer                    = None
+tabify                              = None
+tangle                              = Shift-Ctrl-T
+tangle-all                          = Shift-Ctrl-A
+tangle-marked                       = Shift-Ctrl-M
+toggle-active-pane                  = Ctrl-T
+toggle-angle-brackets               = None
+toggle-extend-mode                  = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-mini-buffer                  = None
+    # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
+    # This had better be defined if you intend ever to hide the minibuffer.
+    # To avoid confusion, it should be something unlikely to be typed by accident.
+toggle-split-direction              = None
+transpose-chars                     = None
+transpose-lines                     = None
+transpose-words                     = None
+undo                                = Ctrl-Z
+unindent-region                     = Ctrl-[
+universal-argument                  = None
+unmark-all                          = Alt-U
+untabify                            = None
+untangle                            = Shift-Ctrl-U
+untangle-all                        = None
+untangle-marked                     = None
+upcase-region                       = None
+upcase-word                         = None
+view-lossage                        = None
+view-register                       = None
+weave                               = None
+what-line                           = None
+word-search-backward                = None
+word-search-forward                 = None
+write-abbrev-file                   = None
+write-at-file-nodes                 = Shift-Ctrl-W
+write-dirty-at-file-nodes           = Shift+Ctrl+Q
+write-missing-at-file-nodes         = None
+write-outline-only                  = None
+yank                                = None
+yank-pop                            = None
+yank-rectangle                      = None
+zap-to-character                    = None</t>
+<t tx="ekr.20060112093227.1">fill-paragraph                      = None
+fill-region                         = None
+fill-region-as-paragraph            = None
+find-character                      = None
+find-character-extend-selection     = None
+find-next-clone                     = None
+change                              = None
+change-all                          = None
+change-then-find                    = None
+find-next                           = None
+find-all                            = None
+find-prev                           = None
+find-word                           = None
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+# forward-char                      = None
+forward-char                        = None
+forward-char-extend-selection       = None
+forward-end-word                    = None
+forward-end-word-extend-selection   = None
+forward-paragraph                   = None
+forward-paragraph-extend-selection  = None
+forward-sentence                    = None
+forward-sentence-extend-selection   = None
+forward-word                        = None
+forward-word-extend-selection       = None
+free-tree-widgets                   = None
+full-command                        = None
+fully-expand-body-pane              = None
+fully-expand-log-pane               = None
+fully-expand-outline-pane           = None
+fully-expand-pane                   = None
+get-ipyton-results                  = None
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = None
+goto-first-visible-node             = None
+goto-first-sibling                  = None
+goto-global-line                    = None
+goto-last-node                      = None
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = None # Leo's goto-line-number is better.
+goto-line-number                    = None # Leo's legacy Go To Line number command.  goto-global-line is preferred.
+goto-next-changed                   = None
+goto-next-clone                     = None
+goto-next-marked                    = None
+goto-next-node                      = None
+goto-next-sibling                   = None
+goto-next-visible                   = None
+goto-parent                         = None
+goto-prev-node                      = None
+goto-prev-sibling                   = None
+goto-prev-visible                   = None
+group-operations-clear-marked       = None
+group-operations-mark-for-clone     = None
+group-operations-mark-for-copy      = None
+group-operations-mark-for-move      = None
+group-operations-mark-target        = None
+group-operations-operate-on-marked  = None
+group-operations-transfer           = None
+toggle-input-state                  = None
+help-for-minibuffer                 = None
+help-for-command                    = None
+hide-body-pane                      = None
+hide-find-tab                       = None
+hide-log-pane                       = None
+hide-mini-buffer                    = None
+hide-pane                           = None
+hide-outline-pane                   = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = None
+import-at-file                      = None
+import-at-root                      = None
+import-cweb-files                   = None
+import-derived-file                 = None
+import-flattened-outline            = None
+import-noweb-files                  = None
+increment-register                  = None
+indent-region                       = None
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = None
+insert-body-time                    = None
+insert-child                        = None
+insert-file                         = None
+insert-headline-time                = None
+# insert-keyboard-macro             = None
+insert-newline                      = None
+insert-node                         = None
+insert-parentheses                  = None
+insert-register                     = None
+# insert-to-buffer                  = None
+inverse-add-global-abbrev           = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+isearch-forward-regexp              = None
+isearch-with-present-options        = None
+jump-to-register                    = None
+keep-lines                          = None
+keyboard-quit                       = None
+kill-all-abbrevs                    = None
+kill-buffer                         = None
+kill-line                           = None
+kill-paragraph                      = None
+kill-rectangle                      = None
+kill-region                         = None
+kill-region-save                    = None
+kill-sentence                       = None
+kill-word                           = None
+line-number                         = None
+list-abbrevs                        = None
+list-buffers                        = None
+list-buffers-alphabetically         = None
+make-directory                      = None
+mark                                = None
+mark-changed-items                  = None
+mark-changed-roots                  = None
+mark-clones                         = None
+mark-subheads                       = None
+match-brackets                      = None
+minimize-all                        = None
+mode-help                           = None
+move-node-to-chapter                = None
+move-outline-down                   = None
+move-outline-left                   = None
+move-outline-right                  = None
+move-outline-up                     = None
+move-past-close                     = None
+move-past-close-extend-selection    = None
+</t>
+<t tx="ekr.20060112093227.2"># name-last-kbd-macro               = None
+negative-argument                   = None
+new                                 = None
+newline-and-indent                  = None
+next-line                           = None
+next-line-extend-selection          = None
+number-command                      = None
+number-command-0                    = None
+number-command-1                    = None
+number-command-2                    = None
+number-command-3                    = None
+number-command-4                    = None
+number-command-5                    = None
+number-command-6                    = None
+number-command-7                    = None
+number-command-8                    = None
+number-command-9                    = None
+# number-to-register                = None
+open-compare-window                 = None
+open-find-dialog                    = None # Deprecated: all find commands use the Find *tab*
+open-find-tab                       = None
+open-leoDocs-leo                    = None
+open-leoPlugins-leo                 = None
+open-leoSettings-leo                = None
+open-scripts-leo                    = None
+open-offline-tutorial               = None
+open-online-home                    = None
+open-online-tutorial                = None
+open-outline                        = None
+open-python-window                  = None
+open-rectangle                      = None
+open-spell-tab                      = None
+open-with                           = None
+outline-to-cweb                     = None
+outline-to-noweb                    = None
+paste-node                          = None
+paste-retaining-clones              = None
+paste-text                          = None
+point-to-register                   = None
+prepend-to-buffer                   = None
+prepend-to-register                 = None
+pretty-print-all-python-code        = None
+pretty-print-python-code            = None
+previous-line                       = None
+previous-line-extend-selection      = None
+print-bindings                      = None
+print-commands                      = None
+print-focus                         = None
+print-gc-summary                    = None
+print-stats                         = None
+promote                             = None
+propagate-key-event                 = None
+query-replace                       = None
+query-replace-regex                 = None
+quick-command                       = None
+re-search-backward                  = None
+re-search-forward                   = None
+read-abbrev-file                    = None
+read-at-file-nodes                  = None
+read-outline-only                   = None
+redo                                = None
+reformat-paragraph                  = None
+remove-blank-lines                  = None
+remove-chapter                      = None
+remove-directory                    = None
+remove-sentinels                    = None
+remove-space-from-lines             = None
+remove-tab-from-lines               = None
+rename-buffer                       = None
+repeat-complex-command              = None
+replace-string                      = None
+resize-to-screen                    = None
+reverse-region                      = None
+revert                              = None
+run-unit-tests                      = None
+save-buffers-kill-leo               = None
+save-file                           = None
+save-file-as                        = None
+save-file-to                        = None
+# scan-for-autocompleter            = None
+scroll-down                         = None
+scroll-down-extend-selection        = None
+scroll-outline-down-line            = None
+scroll-outline-down-page            = None
+scroll-outline-left                 = None
+scroll-outline-right                = None
+scroll-outline-up-line              = None
+scroll-outline-up-page              = None
+scroll-up                           = None
+scroll-up-extend-selection          = None
+search-again                        = None
+search-backward                     = None
+search-forward                      = None
+search-with-present-options         = None
+select-all                          = None
+select-chapter                      = None
+set-colors                          = None
+set-comment-column                  = None
+set-extend-mode                     = None
+set-fill-column                     = None
+set-fill-prefix                     = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                            = None
+set-command-state                   = None
+set-insert-state                    = None
+# set-mark-command                  = None
+set-overwrite-state                 = None
+settings                            = None
+shell-command                       = None
+shell-command-on-region             = None
+show-calltips                       = None
+show-calltips-force                 = None
+show-colors                         = None
+show-find-options                   = None
+show-fonts                          = None
+show-invisibles                     = None
+show-mini-buffer                    = None
+simulate-begin-drag                 = None
+simulate-end-drag                   = None
+sort-children                       = None
+sort-columns                        = None
+sort-fields                         = None
+sort-lines                          = None
+sort-siblings                       = None
+spell-change                        = None
+spell-change-then-find              = None
+spell-find                          = None
+spell-ignore                        = None
+split-line                          = None
+start-ipython                       = None
+# start-kbd-macro                   = None
+string-rectangle                    = None
+suspend                             = None
+switch-to-buffer                    = None
+tabify                              = None
+tangle                              = None
+tangle-all                          = None
+tangle-marked                       = None
+toggle-active-pane                  = None
+toggle-angle-brackets               = None
+toggle-autocompleter                = None
+toggle-calltips                     = None
+toggle-extend-mode                  = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-mini-buffer                  = None
+    # It **is** possible to use &lt;alt-x&gt;toggle-mini-buffer&lt;return&gt; even if the mini-buffer isn't visible!
+    # This had better be defined if you intend ever to hide the minibuffer.
+    # To avoid confusion, it should be something unlikely to be typed by accident.
+toggle-sparce-move                  = None
+toggle-split-direction              = None
+transpose-chars                     = None
+transpose-lines                     = None
+transpose-words                     = None
+undo                                = None
+unindent-region                     = None
+universal-argument                  = None
+unmark-all                          = None
+untabify                            = None
+untangle                            = None
+untangle-all                        = None
+untangle-marked                     = None
+upcase-region                       = None
+upcase-word                         = None
+verbose-dump-objects                = None
+view-lossage                        = None
+view-register                       = None
+weave                               = None
+what-line                           = None
+word-search-backward                = None
+word-search-forward                 = None
+write-abbrev-file                   = None
+write-at-file-nodes                 = None
+write-dirty-at-file-nodes           = None
+write-missing-at-file-nodes         = None
+write-outline-only                  = None
+yank                                = None
+yank-pop                            = None
+yank-rectangle                      = None
+zap-to-character                    = None</t>
+<t tx="ekr.20060112103537.17">'''This script reports commands that exist in some but not all key- binding
+sets. setNames is a list of the roots of all such sets.'''
+
+import leoConfig
+import leoTest
+
+u = leoTest.testUtils(c)
+parser = leoConfig.settingsTreeParser(c)
+
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+]
+
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+
+@others
+
+main()
+</t>
+<t tx="ekr.20060112104119">def defineSetNames():
+
+    global setNames
+
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+</t>
+<t tx="ekr.20060112104333">def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+</t>
+<t tx="ekr.20060112104333.1">def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+
+    k = c.keyHandler
+    keys = allNames.keys()
+    keys.sort()
+
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if not d:
+            g.es_print("'@keys No bindings' not found",color='red')
+        for key in keys:
+            if key not in ('none','None',None) and key not in d.keys():
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if (
+                    not (key.startswith('enter-') and key.endswith('-mode')) and
+                    not (key.startswith('press-') and key.endswith('-button'))
+                ):
+                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+</t>
+<t tx="ekr.20060112104823">def main ():
+
+    global setNames
+    defineSetNames()
+
+    # root = u.findNodeAnywhere('Keyboard shortcuts')
+    # for p in root.self_and_subtree_iter():
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+</t>
+<t tx="ekr.20060112105523">def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,bunch = parser.parseShortcutLine(line)
+            if not bunch:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = bunch and bunch.val
+                pane = bunch and bunch.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+</t>
+<t tx="ekr.20060112110750"></t>
+<t tx="ekr.20060112112006"></t>
+<t tx="ekr.20060114073238">If True, Leo will report to the console which bindings have been created.
+
+Thus, you must be running from a console window for this setting to be useful.</t>
+<t tx="ekr.20060114082205">If this setting is non-empty the trace_bindings setting will report only
+bindings that match the string (ignoring case).
+
+For this setting to be useful the following must be true:
+
+- you must be running from a console window.
+
+- @bool trace_bindings must be True.</t>
+<t tx="ekr.20060114083009">If this setting is non-empty the trace_bindings setting will report only bindings for matching panes.  For example, to see all ! text bindings, set this setting to text.
+
+For this setting to be useful the following must be true:
+
+- you must be running from a console window.
+
+- @bool trace_bindings must be True.</t>
+<t tx="ekr.20060115153348"># Boilerplate for most modes.
+exit-named-mode     = Ctrl-g
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# enter-register-mode = Key-r
+
+
+# The most common bindings.
+# forward-word                        ! text = Ctrl-RtArrow   
+# forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow 
+# back-word                           ! text = Ctrl-LtArrow
+# back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+
+isearch-forward      = s
+isearch-backward     = b
+
+# backward-kill-sentence  = Delete
+# downcase-region         = Ctrl-D
+# exchange-point-mark     = Ctrl-X
+# insert-file             = Ctrl-I
+# kill-region             = Ctrl-Shift-at # This should just delete the selected text.
+# list-buffers            = Ctrl-B
+# remove-blank-lines      = Ctrl-O
+# save-buffers-kill-leo   = Ctrl-C
+# save-file               = Ctrl-S
+# transpose-lines         = Ctrl-T
+# upcase-region           = Ctrl-U
+# </t>
+<t tx="ekr.20060115160004"># Boilerplate for most modes.
+exit-named-mode     = Ctrl-g
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+append-to-register  = a
+copy-to-register    = s
+enter-rect-mode     = r
+# increment-register= Key-+
+insert-register     = i
+jump-to-register    = j
+# number-to-register= n
+point-to-register   = Space
+prepend-to-register = p
+view-register       = v
+</t>
+<t tx="ekr.20060115160004.1"># Boilerplate for most modes.
+exit-named-mode     = Ctrl-g
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# These should execute rectangle commands, as in Alt-X r r</t>
+<t tx="ekr.20060115162748"></t>
+<t tx="ekr.20060115162748.1"></t>
+<t tx="ekr.20060116090646">@nocolor
+
+Standard keys (Windows defaults in parens)
+
+F1 help
+Windows key + F1 Windows Help
+F2 find-prev (Rename)
+F3 find-next (Find Files)
+F4 None (Address bar in Windows Explorer)
+F5 None (Refresh, Reload in Windows Explorer)
+F6 None (Should cycle from window to window)
+F7 open-spell-tab (Spell in Word)
+Shift-F7 None (Thesaurus in Word)
+F8 None (Safe mode)
+F9 None
+F10 None (Activate menu bar in many programs)
+F11 None (Toggle full screen mode in explorer)
+F12 None
+
+You can use F10 to highlight the first menu choice, and then use the arrow keys to move around the menus. Pressing the Shift key while pressing F10 will bring up the shortcut menu. This is similar to right-clicking on an object.</t>
+<t tx="ekr.20060117092249">A mode is a temporary set of key bindings. Modes are created by nodes whose
+headline has the form:
+
+@mode &lt;mode name&gt;
+
+The body text contains a list of shortcut specifiers. @mode nodes work just like
+@shortcuts, but as a side effect they create the enter-&lt;mode name&gt;-mode
+command.  For example, 
+
+@mode quick-commands
+
+creates the enter-quick-commands command. You can bind keys to such commands in
+@shortcut nodes as usual.
+
+Notes:
+
+- Pane specifiers are ignored in @mode nodes. Bindings apply only to a single
+mode.
+
+- @shortcuts nodes specify the bindings in effect for the 'default' or
+'top-level' mode. The keyboard-quit command always set the mode to the top-level
+mode.
+
+- The top_level_unbound_key_action setting determines what happens to unbound
+keys *only* for the top-level mode.
+
+- A mode contains *only* the key bindings explicitly specified in the @mode
+node. The only default key binding is the binding for the keyboard-quit command
+(usually Control-g). Thus, all modes except the top-level mode act as if
+top_level_unbound_key_action = 'ignore'. In particular, the set-command-state,
+set-insert-state and set-overwrite-state commands affect only the top-level mode.
+
+- The mode-help command (recommend binding is Tab) lists all bound keystrokes in
+a mode.
+
+- ** New in 4.4.1: In @mode nodes, shortcut specifier lines of the form::
+
+    --&gt; command-name
+    
+Specify that the named command will be executed before entering the mode. More
+than one such **mode-entry commands may appear. - In @mode nodes, shortcut
+specifier lines of the form:
+
+    command-name -&gt; mode-name = binding
+
+specify that Leo will enter the named mode after executing the command. As a
+special case,
+
+    command-name -&gt; same = binding
+
+will cause the command to be executed without changing mode.</t>
+<t tx="ekr.20060117130936"># Boilerplate for most modes.
+exit-named-mode = Ctrl-g
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+toggle-find-ignore-case-option      = i
+toggle-find-in-body-option          = b
+toggle-find-in-headline-option      = h
+toggle-find-mark-changes-option     = c
+toggle-find-mark-finds-option       = f
+toggle-find-regex-option            = x
+toggle-find-reverse-option          = r
+toggle-find-word-option             = w
+toggle-find-wrap-around-option      = a</t>
+<t tx="ekr.20060117182225"># Control-F
+
+# Boilerplate for most modes.
+exit-named-mode = Ctrl-g
+keyboard-quit   = Ctrl-g
+mode-help       = Tab
+
+enter-find-reverse-mode = r
+
+search-again            = a
+
+switch-to-buffer        = h
+
+isearch-forward         = i
+isearch-forward-regexp  = x
+
+search-forward          = f
+word-search-forward     = w
+re-search-forward       = Shift-R</t>
+<t tx="ekr.20060120123529">True:  Clicking anywhere in an unselected node selects the node and *also* expands or contracts it.
+False: Clicking an unselected node just selects the node, unless the click happens in the expand/contract box.</t>
+<t tx="ekr.20060121102627"></t>
+<t tx="ekr.20060121131041.2"># Boilerplate for all modes.
+keyboard-quit           = Return
+exit-named-mode         = Ctrl-g
+mode-help               = Tab
+
+enter-file-mode             = f
+enter-find-mode             = s
+enter-find-options-mode     = o
+enter-quick-command-mode    = q
+enter-rect-mode             = None
+enter-register-mode         = None</t>
+<t tx="ekr.20060122103118"># Boilerplate for most modes.
+exit-named-mode         = Return
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+
+search-again            = a
+
+isearch-backward        = i
+isearch-backward-regexp = x
+
+search-backward         = f
+word-search-backward    = w
+re-search-backward      = Shift-R</t>
+<t tx="ekr.20060122105438">@nocolor
+
+Support the exectution of a command when entering a mode.
+
+- Finish options mode</t>
+<t tx="ekr.20060122105527">@color</t>
+<t tx="ekr.20060122105527.2">#enter-command-mode     = Ctrl-space
+add-comments            = Ctrl-(
+clone-node              = Ctrl-`
+# set-mark-command      = Ctrl-space    # Also Ctrl-Shift-at
+
+beginning-of-line       = Ctrl-a         # Ctrl-a Conflicts with select-all
+# back-char             = Ctrl-b
+copy-text               = Ctrl-c        # Conflicts with Emacs ctrl-c
+move-outline-down       = Ctrl-d
+end-of-line             = Ctrl-e
+enter-find-mode         = Ctrl-F
+keyboard-quit           = Ctrl-g
+edit-headline           = Ctrl-H
+insert-node             = Ctrl-I
+newline-and-indent      = Ctrl-J
+match-brackets          = Ctrl-K    # Conflicts with kill-line
+move-outline-left       = Ctrl-L
+mark                    = Ctrl-M
+new                     = Ctrl-N    # next-line.
+enter-outline-mode      = Ctrl-O    # insert-newline, open-outline
+# UNUSED                = Ctrl-P    # previous-line
+exit-leo                = Ctrl-Q
+move-outline-right      = Ctrl-R
+save-file               = Ctrl-S
+toggle-active-pane      = Ctrl-T
+move-outline-up         = Ctrl-U
+paste-text              = Ctrl-V
+enter-file-mode         = Ctrl-W    # kill-region
+cut-text                = Ctrl-X
+yank                    = Ctrl-y
+undo                    = Ctrl-Z</t>
+<t tx="ekr.20060122105527.3"></t>
+<t tx="ekr.20060122105527.4">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20060122105527.5">The Cmds menu is not ready yet.  It will be similar to the Emacs Cmds menu.</t>
+<t tx="ekr.20060122105527.6">Important:
+
+1. The minibuffer will exist regardless of this setting, but will not be shown
+   initially if it is False.
+
+2. Hiding the minibuffer does not change any bindings or the operation of Leo in
+   any other way. Therefore, if you do hide the minibuffer initially, and never
+   want to use it, you should not bind shortcuts to any commands that use the
+   minibuffer.
+
+3. You can execute the show-mini-buffer, hide-mini-buffer and toggle-mini-buffer
+   commands (or any other minibuffer command!) if the minibuffer is hidden.
+   Indeed, the following will work even if the minibuffer is hidden.
+
+       &lt;alt-x&gt;show-mini-buffer&lt;return&gt;</t>
+<t tx="ekr.20060122105527.7">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
+
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
+<t tx="ekr.20060122105527.8"></t>
+<t tx="ekr.20060122105527.9">@color</t>
+<t tx="ekr.20060122105527.11"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = Return
+exit-named-mode     = BackSpace
+mode-help           = Tab
+
+close-window            = Alt-F4
+
+enter-file-open-mode    = o
+
+save-file-as            = a
+new                     = n
+exit-leo                = q
+save-file               = s
+save-file-to            = t
+close-window            = w
+</t>
+<t tx="ekr.20060122105527.12"># Entry commands...
+--&gt; open-find-tab
+--&gt; show-find-options
+
+# Boilerplate for most modes.
+exit-named-mode     -&gt; same = Return
+exit-named-mode     -&gt; same = BackSpace
+keyboard-quit       -&gt; same = Ctrl-g
+mode-help           -&gt; same = Tab
+
+enter-find-options-mode  = Ctrl-Y
+
+search-again                 = a
+switch-to-buffer             = h
+search-with-present-options  = f
+show-find-options    -&gt; same = o
+open-find-tab        -&gt; same = t
+word-search-forward          = w
+
+# isearch-forward          = i
+# isearch-forward-regexp   = x
+# re-search-forward        = r</t>
+<t tx="ekr.20060122105527.13"># Boilerplate for most modes.
+exit-named-mode         = Return
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+enter-find-mode         = BackSpace
+
+search-again            = a
+
+isearch-backward        = i
+isearch-backward-regexp = x
+
+search-backward         = f
+word-search-backward    = w
+re-search-backward      = Shift-R</t>
+<t tx="ekr.20060122105527.14"># Entry commands...
+--&gt; open-find-tab
+--&gt; show-find-options
+
+# Boilerplate for most modes.
+exit-named-mode     = Return
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# enter-find-mode     = Ctrl-F
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+find-next                           = F3
+find-prev                           = F2
+change                              = Ctrl-=
+change-then-find                    = Ctrl--
+
+set-find-everywhere                 -&gt; same = e
+set-find-node-only                  -&gt; same = n
+set-find-suboutline-only            -&gt; same = s
+
+# One or both should happen automatically on entry to this mode.
+open-find-tab                       -&gt; same = t
+show-find-options                   -&gt; same = o  
+
+toggle-find-ignore-case-option      -&gt; same = i
+toggle-find-in-body-option          -&gt; same = b
+toggle-find-in-headline-option      -&gt; same = h
+toggle-find-mark-changes-option     -&gt; same = c
+toggle-find-mark-finds-option       -&gt; same = m
+toggle-find-regex-option            -&gt; same = x
+toggle-find-reverse-option          -&gt; same = r
+toggle-find-word-option             -&gt; same = w
+toggle-find-wrap-around-option      -&gt; same = a</t>
+<t tx="ekr.20060122105527.15"># Boilerplate for most modes.
+exit-named-mode     = Return
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# enter-edit-mode     = e
+enter-file-mode       = w
+# enter-find-mode     = f
+
+# An extremely useful mode.  It allows the traditional Leo bindings without interference
+# with the Emacs enditing bindings.
+
+toggle-invisibles       = Alt-v   
+sort-siblings           = Alt-a
+
+# convert-blanks          = Shift-Ctrl-b
+# convert-tabs            = Shift-Ctrl-j
+extract                 = Shift-Ctrl-d
+extract-names           = Shift-Ctrl-n
+extract-section         = Shift-Ctrl-e
+# reformat-paragraph      = Shift-Ctrl-p
+write-at-file-nodes     = Shift-Ctrl-w
+
+close-rectangle         = c
+convert-blanks          = b
+convert-tabs            = t
+extract                 = d
+extract-names           = n
+extract-section         = e
+open-rectangle          = o
+reformat-paragraph      = p
+sort-lines              = s
+write-at-file-nodes     = w
+
+# backward-kill-sentence  = Delete
+# downcase-region         = Ctrl-D
+# exchange-point-mark     = Ctrl-X
+# insert-file             = Ctrl-I
+# kill-region             = Ctrl-Shift-at # This should just delete the selected text.
+# list-buffers            = Ctrl-B
+# remove-blank-lines      = Ctrl-O
+# save-buffers-kill-leo   = Ctrl-C
+# save-file               = Ctrl-S
+# transpose-lines         = Ctrl-T
+# upcase-region           = Ctrl-U</t>
+<t tx="ekr.20060122105527.18"></t>
+<t tx="ekr.20060122105527.19"># Defined by @mode nodes: needed to suppress warnings.
+
+enter-edit-mode             = Alt-Control-space
+enter-edit-extend-mode      = None
+
+enter-options-mode          = Ctrl-Shift-Y
+enter-outline-mode          = Ctrl-Shift-O
+
+enter-outline-move-mode     = None
+enter-file-mode             = None
+enter-file-open-mode        = None
+enter-find-mode             = None
+
+enter-quick-command-mode    = Alt-C</t>
+<t tx="ekr.20060122105527.20"># Important: the print-commands and print-bindings show what bindings are in effect.
+
+# back-paragraph                      ! text = Alt-braceleft 
+# back-paragraph-extend-selection     ! text = Alt-Shift-braceleft
+# back-sentence                       ! text = Alt-a  # No conflict
+# back-sentence-extend-selection      = None # Alt-Shift-a, sort-siblings
+
+abort-edit-headline                 = Esc
+add-comments                        = Ctrl-(
+auto-complete-force                 = Ctrl-Tab
+auto-complete                       = period
+back-char                           ! text = LtArrow
+back-char-extend-selection          ! text = Shift-LtArrow
+back-word                           ! text = Alt-b  
+back-word                           ! text = Ctrl-LtArrow
+back-word-extend-selection          ! text = Alt-Shift-b
+back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+backward-delete-char                = BackSpace
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                  ! text = Ctrl-Home
+beginning-of-buffer-extend-selection ! text = Ctrl-Shift-Home
+beginning-of-line                    ! text = Home
+beginning-of-line-extend-selection   ! text = Shift-Home
+beginning-of-line                  ! text = Ctrl-a
+beginning-of-line-extend-selection ! text = Ctrl-Shift-a
+clone-node                          = Ctrl-`   
+close-window                        = Ctrl-w
+close-window                        = Alt-F4
+contract-all                        = Alt--
+contract-log-pane                   = Alt-Ctrl-RtArrow # Alt-Ctrl-DnArrow in other orientation.
+contract-pane                       = Alt+Ctrl+-
+contract-node                       = Alt-bracketleft
+contract-or-go-left                 ! text = Alt-LtArrow
+contract-or-go-left                 ! tree = Alt-LtArrow
+contract-or-go-left                 ! tree = LtArrow
+copy-node                           = Shift-Ctrl-c
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-node                            = Shift-Ctrl-x
+cut-text                            = Ctrl-x
+debug                               = Alt-Shift-d
+delete-char                         = Delete
+delete-comments                     = Ctrl-)
+delete-node                         = Shift-Ctrl-BkSp
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+edit-headline                       = Ctrl-h
+end-edit-headline                   ! tree = Return     # Esc is also possible.
+# end-of-buffer                      ! text = Alt-greater # Same as Alt-Shift-greater
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+end-of-line                         ! text = End
+end-of-line-extend-selection        ! text = Shift-End
+end-of-line                         ! text = Ctrl-e
+end-of-line-extend-selection        ! text = Ctrl-Shift-e
+exchange-point-mark                 = None      # Should be Ctrl-X Ctrl-X.
+exit-leo                            = Ctrl-q
+expand-and-go-right                 ! text = Alt-RtArrow
+expand-and-go-right                 ! tree = Alt-RtArrow
+expand-and-go-right                 ! tree = RtArrow
+expand-body-pane                    = Alt-Ctrl-UpArrow  # Alt-Ctrl-LtArrow in other orientation.
+expand-log-pane                     = Alt-Ctrl-LtArrow  # Alt-Ctrl-UpArrow in other orientation.
+expand-pane                         = Alt+Ctrl-=
+expand-outline-pane                 = Alt-Ctrl-DnArrow  # Alt-Ctrl-RtArrow in other orientation.
+expand-next-level                   = Alt-=
+expand-node                         = Alt-bracketright
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+extract-section                     = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection</t>
+<t tx="ekr.20060122105527.21">find-character                      = Control-B
+focus-to-tree                       = Alt-space
+forward-char                        ! text = RtArrow
+forward-char-extend-selection       ! text = Shift-RtArrow
+forward-paragraph                   ! text = Alt-braceright
+forward-paragraph-extend-selection  ! text = Alt-Shift-braceright
+forward-sentence                    ! text = Alt-e
+forward-sentence-extend-selection   ! text = Alt-Shift-e
+forward-word                        ! text = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       ! text = Alt-Shift-f
+forward-word                        ! text = Ctrl-RtArrow
+forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow
+full-command                        = Alt-x
+fully-expand-pane                   = Alt-Ctrl-!
+goto-first-node                     ! text = Alt-Home
+goto-first-node                     ! tree = Alt-Home
+goto-first-node                     ! tree = Home
+goto-global-line                    = Alt-g # New minibuffer interface.
+goto-last-visible-node              ! text = Alt-End
+goto-last-visible-node              ! tree = Alt-End
+goto-last-visible-node              ! tree = End
+goto-line-number                    = None # Leo's legacy Go To Line Number command: uses dialog.
+goto-next-clone                     = Alt-N
+goto-next-visible                   ! text = Alt-DnArrow
+goto-next-visible                   ! tree = Alt-DnArrow
+goto-next-visible                   ! tree = DnArrow
+goto-prev-visible                   ! text = Alt-UpArrow
+goto-prev-visible                   ! tree = Alt-UpArrow
+goto-prev-visible                   ! tree = UpArrow
+help-for-minibuffer                 = F1
+hide-pane                           = None
+indent-region                       = Ctrl-]
+insert-newline                      = None # = Return # for MacOs X.
+insert-node                         = Ctrl-I
+keyboard-quit                       = Ctrl-g
+kill-line                           ! text = Shift-Ctrl-k  # Ctrl-K
+kill-region-save                    = Alt-w 	   # Ctrl-w
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+mark                                = Ctrl-M
+match-brackets                      = Ctrl-K    # kill-line
+move-outline-down                   = Ctrl-D
+move-outline-down                   = Alt-Shift-DnArrow
+move-outline-left                   = Ctrl-L
+move-outline-left                   = Alt-Shift-LtArrow
+move-outline-right                  = Ctrl-R
+move-outline-right                  = Alt-Shift-RtArrow
+move-outline-up                     = Ctrl-U
+move-outline-up                     = Alt-Shift-UpArrow
+move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20060122105527.22"># name-last-kbd-macro               = None
+negative-argument                   = None      # Alt-minus conflicts with contract-all.
+new                                 = Ctrl-n    # Ctrl-n conflicts with next-line.
+newline-and-indent                  = Ctrl-j
+next-line                           ! text = DnArrow
+next-line-extend-selection          ! text = Shift-DnArrow
+open-outline                        = Ctrl-o
+open-spell-tab                      = F7
+paste-node                          = Shift-Ctrl-V
+paste-text                          = Ctrl-v
+# previous-line                       ! text = Ctrl-P
+# previous-line-extend-selection      ! text = Ctrl-Shift-P
+previous-line                       ! text = UpArrow
+previous-line-extend-selection      ! text = Shift-UpArrow
+print-focus                         = Alt-Ctrl-Shift-F
+promote                             = Ctrl-{            
+redo                                = Shift-Ctrl-Z
+reformat-paragraph                  = Shift-Ctrl-p
+run-unit-tests                      = None
+save-file                           = Ctrl-s
+scroll-down                         ! text = PageDn 
+scroll-up                           ! text = PageUp 
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-up-extend-selection          ! text = Shift-PageUp
+select-all                          ! text =  Alt-Shift-A 
+    # Shift-Ctrl-A conflicts with beginning-of-line-extend-selection.
+show-calltips                       = parenleft
+sort-siblings                       = Alt-A
+split-line                          = Alt-Ctrl-o
+
+toggle-active-pane                  = Ctrl-T
+undo                                = Ctrl-Z
+unindent-region                     = Ctrl-[
+universal-argument                  = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+write-at-file-nodes                 = Shift-Ctrl-W
+write-dirty-at-file-nodes           = Shift+Ctrl+Q
+zap-to-character                    = Alt-z</t>
+<t tx="ekr.20060122105732"># Boilerplate for all modes.
+exit-named-mode         = Return
+exit-named-mode         = BackSpace
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+enter-outline-move-mode = M
+
+demote                  -&gt; same = Ctrl-{
+promote                 -&gt; same = Ctrl-}
+copy-node               -&gt; same = Ctrl-Shift-c
+cut-node                -&gt; same = Ctrl-Shift-x
+paste-node              -&gt; same = Ctrl-Shift-p
+undo                    -&gt; same = Ctrl-z
+redo                    -&gt; same = Ctrl-Shift-z
+
+# These must exit the mode so the headline can be editied.
+edit-headline           = Ctrl-h
+insert-node             = Ctrl-i 
+edit-headline           = h
+insert-node             = i
+
+goto-first-visible-node -&gt; same = Home
+goto-last-visible-node  -&gt; same = End
+goto-first-visible-node -&gt; same = a
+goto-last-visible-node  -&gt; same = z
+
+contract-or-go-left     -&gt; same = l
+expand-and-go-right     -&gt; same = r
+goto-next-visible       -&gt; same = d
+goto-prev-visible       -&gt; same = u
+
+contract-or-go-left     -&gt; same = LtArrow
+expand-and-go-right     -&gt; same = RtArrow
+goto-next-visible       -&gt; same = DnArrow
+goto-prev-visible       -&gt; same = UpArrow</t>
+<t tx="ekr.20060122113439"># **Note**: commands that affect the text selection do not become visible
+#           until the mode ends, which kinda defeats the purpose of this mode.
+
+--&gt; set-silent-mode
+--&gt; disable-mode-help
+
+# Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+# exit-named-mode     = Return # Doesn't work well in headlines.
+mode-help           = Tab
+exit-named-mode     = BackSpace # backward-delete-char
+
+# Other modes
+enter-edit-extend-mode  = x
+enter-find-mode         = Ctrl-Shift-f
+
+# Standard bindings:
+# undo                -&gt; same = Ctrl-z
+# redo                -&gt; same = Ctrl-Shift-z
+
+# Arrow keys
+back-char                           -&gt; same = LtArrow
+back-char-extend-selection          -&gt; same = Shift-LtArrow
+forward-char                        -&gt; same = RtArrow
+forward-char-extend-selection       -&gt; same = Shift-RtArrow
+next-line                           -&gt; same = DnArrow
+next-line-extend-selection          -&gt; same = Shift-DnArrow
+previous-line                       -&gt; same = UpArrow
+previous-line-extend-selection      -&gt; same = Shift-UpArrow
+
+# Ctrl-arrow keys (words)
+back-word                           -&gt; same = Ctrl-LtArrow
+back-word-extend-selection          -&gt; same = Ctrl-Shift-LtArrow
+forward-word                        -&gt; same = Ctrl-RtArrow
+forward-word-extend-selection       -&gt; same = Ctrl-Shift-RtArrow
+
+# Home &amp; End: usually start/end of line, but here using the buffer is convenient.
+beginning-of-buffer                  -&gt; same = Home
+beginning-of-buffer-extend-selection -&gt; same = Shift-Home
+end-of-buffer                        -&gt; same = End
+end-of-buffer-extend-selection       -&gt; same = Shift-End
+
+scroll-down                         -&gt; same = PageDn
+scroll-down-extend-selection        -&gt; same = Shift-PageDn
+scroll-up                           -&gt; same = PageUp 
+scroll-up-extend-selection          -&gt; same = Shift-PageUp
+
+# Plain keys
+back-char                           -&gt; same = b
+back-char-extend-selection          -&gt; same = Shift-b
+back-word                           -&gt; same = r         # unusual
+back-word-extend-selection          -&gt; same = Shift-r   # unusual
+beginning-of-buffer                 -&gt; same = h         # unusual
+beginning-of-buffer-extend-selection -&gt;same = Shift-h   # unusual
+end-of-buffer                       -&gt; same = z         # unusual
+end-of-buffer-extend-selection      -&gt; same = Shift-z   # unusual
+beginning-of-line                   -&gt; same = a
+beginning-of-line-extend-selection  -&gt; same = Shift-a       
+end-of-line                         -&gt; same = e
+end-of-line-extend-selection        -&gt; same = Shift-e
+forward-char                        -&gt; same = f
+forward-char-extend-selection       -&gt; same = Shift-f
+forward-word                        -&gt; same = w
+forward-word-extend-selection       -&gt; same = Shift-w
+next-line                           -&gt; same = d
+next-line-extend-selection          -&gt; same = Shift-d
+next-line                           -&gt; same = n
+next-line-extend-selection          -&gt; same = Shift-n
+previous-line                       -&gt; same = p
+previous-line-extend-selection      -&gt; same = Shift-p
+previous-line                       -&gt; same = u
+previous-line-extend-selection      -&gt; same = Shift-u</t>
+<t tx="ekr.20060122122150"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = BackSpace
+mode-help           = Tab
+
+# Other modes
+enter-edit-mode     = Ctrl-e
+enter-find-mode     = Ctrl-Shift-f
+# enter-edit-mode     = BackSpace
+
+# Standard bindings.
+# undo                -&gt; same = Ctrl-z
+# redo                -&gt; same = Ctrl-Shift-z
+
+# Arrow keys
+back-char-extend-selection          -&gt; same = LtArrow
+forward-char-extend-selection       -&gt; same = RtArrow
+next-line-extend-selection          -&gt; same = DnArrow
+previous-line-extend-selection      -&gt; same = UpArrow
+back-word-extend-selection          -&gt; same = Ctrl-LtArrow
+forward-word-extend-selection       -&gt; same = Ctrl-RtArrow
+
+# Special keys
+end-of-buffer-extend-selection       -&gt; same = End
+beginning-of-buffer-extend-selection -&gt; same = Home
+scroll-down-extend-selection         -&gt; same = PageDn
+scroll-up-extend-selection           -&gt; same = PageUp
+
+# Plain keys
+back-char-extend-selection          -&gt; same = b
+back-word-extend-selection          -&gt; same = r   # unusual
+beginning-of-line-extend-selection  -&gt; same = a
+beginning-of-buffer-extend-selection -&gt;same = h   # unusual
+end-of-buffer-extend-selection      -&gt; same = z   # unusual
+end-of-line-extend-selection        -&gt; same = e
+forward-char-extend-selection       -&gt; same = f
+next-line-extend-selection          -&gt; same = n
+next-line-extend-selection          -&gt; same = d
+previous-line-extend-selection      -&gt; same = p
+previous-line-extend-selection      -&gt; same = u
+forward-word-extend-selection       -&gt; same = w</t>
+<t tx="ekr.20060122130002"># Boilerplate for all modes.
+exit-named-mode         = Return
+enter-outline-mode      = BackSpace
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+
+# ** In this mode the meanings of keys and their Alt/Shift-partners are reversed.
+
+# These must exit the mode so the headline can be editied.
+edit-headline           = Ctrl-h
+insert-node             = Ctrl-i 
+edit-headline           = h
+insert-node             = i
+
+# Standard control keys.
+contract-all            -&gt; same = Alt--
+demote                  -&gt; same = Ctrl-{
+promote                 -&gt; same = Ctrl-}
+copy-node               -&gt; same = Ctrl-Shift-c
+cut-node                -&gt; same = Ctrl-Shift-x
+paste-node              -&gt; same = Ctrl-Shift-p
+undo                    -&gt; same = Ctrl-z
+redo                    -&gt; same = Ctrl-Shift-z
+
+goto-first-visible-node -&gt; same = Home
+goto-first-visible-node -&gt; same = Alt-Home
+goto-last-visible-node  -&gt; same = End
+goto-last-visible-node  -&gt; same = Alt-End
+
+contract-or-go-left     -&gt; same = Alt-LtArrow
+expand-and-go-right     -&gt; same = Alt-RtArrow
+goto-next-visible       -&gt; same = Alt-DnArrow
+goto-prev-visible       -&gt; same = Alt-UpArrow
+
+contract-or-go-left     -&gt; same = Shift-l
+expand-and-go-right     -&gt; same = Shift-r
+goto-next-visible       -&gt; same = Shift-d
+goto-prev-visible       -&gt; same = Shift-u
+
+move-outline-down       -&gt; same = DnArrow
+move-outline-left       -&gt; same = LtArrow
+move-outline-right      -&gt; same = RtArrow
+move-outline-up         -&gt; same = UpArrow
+
+move-outline-down       -&gt; same = d
+move-outline-left       -&gt; same = l
+move-outline-right      -&gt; same = r
+move-outline-up         -&gt; same = u</t>
+<t tx="ekr.20060122182825"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = Return
+mode-help           = Tab
+enter-file-mode     = BackSpace
+
+open-leoDocs-leo        = d
+open-leoPlugins-leo     = p
+open-leoSettings-leo    = s
+open-scripts-leo        = c
+open-outline-by-name    = o
+open-outline            = Shift-o</t>
+<t tx="ekr.20060124070546"># Frequently used...
+enter-find-options-mode             = Ctrl-Shift-F
+
+# To start finds and changes...
+search-again                        = None  # similar to search-with-present-options.
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+
+clone-find-all                      = None
+isearch-backward                    = None 
+isearch-backward-regexp             = None 
+isearch-forward                     = None
+isearch-forward-regexp              = None
+query-replace                       = None
+query-replace-regex                 = None
+search-backward                     = None
+search-forward                      = None
+word-search-backward                = None 
+word-search-forward                 = None
+
+# To coninue finds and changes...
+find-next                           = F3
+find-all                            = None
+find-prev                           = F2
+change                              = Ctrl-=
+change-all                          = None  # Not recommended to bind this to a shortcut.
+change-then-find                    = Ctrl--
+
+hide-find-tab                       = None
+open-find-tab                       = None # Shift-Ctrl-f
+
+# Options.  Shift-Ctrl v,x,z are taken by cut-node, paste-node and redo.
+# These are now minibuffer-only bindings.
+
+# set-find-everywhere                 = Shift-Ctrl-e
+# set-find-node-only                  = Shift-Ctrl-n
+# set-find-suboutline-only            = Shift-Ctrl-o
+# show-find-options                   = None
+# toggle-find-ignore-case-option      = Shift-Ctrl-i
+# toggle-find-in-body-option          = Shift-Ctrl-b
+# toggle-find-in-headline-option      = Shift-Ctrl-h
+# toggle-find-mark-changes-option     = None
+# toggle-find-mark-finds-option       = None
+# toggle-find-regex-option            = None # The conflict isn't severe: there are separate regex commands.
+# toggle-find-reverse-option          = Shift-Ctrl-r
+# toggle-find-word-option             = Shift-Ctrl-w
+# toggle-find-wrap-around-option      = Shift-Ctrl-a</t>
+<t tx="ekr.20060125104049">True: (recommended) The Find tab shows only options, not text or buttons.
+False: (legacy)     The Find tab shows text, options and buttons.</t>
+<t tx="ekr.20060125165241"></t>
+<t tx="ekr.20060126075152"># True: calls to the garbage collector.</t>
+<t tx="ekr.20060126083715"># True: verbose trace the garbage collector.</t>
+<t tx="ekr.20060127050605">Zero (recommended): unlimited stack size.
+Non-zero: limit the maximum stack size to the given number.</t>
+<t tx="ekr.20060131071612">
+</t>
+<t tx="ekr.20060131071947"></t>
+<t tx="ekr.20060201110016"></t>
+<t tx="ekr.20060201111002"></t>
+<t tx="ekr.20060202092911"></t>
+<t tx="ekr.20060202113731"></t>
+<t tx="ekr.20060203131942">copy-text           ! mini = Ctrl-c
+cut-text            ! mini = Ctrl-x
+paste-text          ! mini = Ctrl-v
+save-file           ! mini = Ctrl-s
+
+# keyboard-quit       ! mini = Ctrl-g
+
+# Important: at present binding to BackSpace in the minibuffer causes problems.
+# backward-delete-char                ! mini = BackSpace
+
+back-char                           ! mini = LtArrow
+back-char-extend-selection          ! mini = Shift-LtArrow
+back-word                           ! mini = Alt-b  
+back-word                           ! mini = Ctrl-LtArrow
+back-word-extend-selection          ! mini = Alt-Shift-b
+back-word-extend-selection          ! mini = Ctrl-Shift-LtArrow
+backward-kill-word                  ! mini = Alt-Delete
+beginning-of-line                   ! mini = Home
+beginning-of-line-extend-selection  ! mini = Shift-Home
+beginning-of-line                   ! mini = Ctrl-a
+beginning-of-line-extend-selection  ! mini = Ctrl-Shift-a
+end-of-line                         ! mini = End
+end-of-line-extend-selection        ! mini = Shift-End
+end-of-line                         ! mini = Ctrl-e
+end-of-line-extend-selection        ! mini = Ctrl-Shift-e
+forward-char                        ! mini = RtArrow
+forward-char-extend-selection       ! mini = Shift-RtArrow
+forward-word                        ! mini = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       ! mini = Alt-Shift-f
+forward-word                        ! mini = Ctrl-RtArrow
+forward-word-extend-selection       ! mini = Ctrl-Shift-RtArrow
+select-all                          ! mini = Alt-Shift-A
+
+# Find options.  Important: conflicts with non-minibuffer bindings do not matter here!
+find-next                           ! mini = F3
+find-prev                           ! mini = F2
+change                              ! mini  =Ctrl-=
+change-then-find                    ! mini = Ctrl--
+
+set-find-everywhere                 ! mini = Alt-Ctrl-e
+set-find-node-only                  ! mini = Alt-Ctrl-n
+set-find-suboutline-only            ! mini = Alt-Ctrl-s
+toggle-find-ignore-case-option      ! mini = Alt-Ctrl-i
+toggle-find-in-body-option          ! mini = Alt-Ctrl-b
+toggle-find-in-headline-option      ! mini = Alt-Ctrl-h
+toggle-find-mark-changes-option     ! mini = Alt-Ctrl-c
+toggle-find-mark-finds-option       ! mini = Alt-Ctrl-f
+toggle-find-regex-option            ! mini = Alt-Ctrl-x
+toggle-find-reverse-option          ! mini = Alt-Ctrl-r
+toggle-find-word-option             ! mini = Alt-Ctrl-w
+toggle-find-wrap-around-option      ! mini = Alt-Ctrl-a</t>
+<t tx="ekr.20060204093736"></t>
+<t tx="ekr.20060204102644"></t>
+<t tx="ekr.20060204124608">True: minibuffer commands show the Find Tab.
+False: minibuffer commands hide the Find Tab.
+
+Important: the Find Tab always exists regardless of this setting.</t>
+<t tx="ekr.20060206155101"></t>
+<t tx="ekr.20060206161839"></t>
+<t tx="ekr.20060207142012"></t>
+<t tx="ekr.20060209045356"></t>
+<t tx="ekr.20060210105437"></t>
+<t tx="ekr.20060212101234"># True: call Python's garbage collector before every screen redraw.
+# There used to be a warning about this slowing Leo, but I seen now problem with it at present.</t>
+<t tx="ekr.20060212103826"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
+<t tx="ekr.20060215054710"></t>
+<t tx="ekr.20060215094146">No longer functional
+
+True (recommended): Leo completely ignores the caps-lock key.
+False: The caps-lock key reverses the case of alphabetic characters.
+
+Regardless of this setting, the caps-lock key has no effect on Control or Alt keys.</t>
+<t tx="ekr.20060215102141">True (Legacy):          ignore unbound non-ascii keys, like Ä.
+False: (Recommended):   allow unicode characters in Leo's text.</t>
+<t tx="ekr.20060215104345">True (legacy):      Translate control-only keys to command keys on the Mac.
+False (recommended):  No translation.</t>
+<t tx="ekr.20060216091239">True: trace all changes to the minibuffer</t>
+<t tx="ekr.20060216130607">True: trace all changes to the status line.</t>
+<t tx="ekr.20060216135834">True:  enable autocompletion initially.
+False: disable autocomopletion initially.
+
+You can use the enable-autocompleter and disable-autocompleter
+commands to enable or disable autocompletion at any time.
+
+Note: The 'initially' prefix is needed to distinguish this setting from
+enable-autocompleter command. Otherwised they would get 'munged' to the same
+configuration value.</t>
+<t tx="ekr.20060216145416"></t>
+<t tx="ekr.20060216170801"></t>
+<t tx="ekr.20060303075452">The following commands are will be useful for operating Leo without a mouse.
+
+Clicks
+
+click-headline
+click-icon-box
+double-click-headline
+double-click-icon-box
+
+Cursor moves and selection (Basic Emacs commands)
+
+back-char
+back-char-extend-selection
+back-paragraph
+back-paragraph-extend-selection
+back-sentence
+back-sentence-extend-selection
+back-to-indentation
+back-word
+back-word-extend-selection
+backward-delete-char
+backward-kill-paragraph
+backward-kill-sentence
+backward-kill-word
+beginning-of-buffer
+beginning-of-buffer-extend-selection=
+beginning-of-line
+beginning-of-line-extend-selection
+delete-char
+end-of-buffer
+end-of-buffer-extend-selection
+end-of-line
+end-of-line-extend-selection
+exchange-point-mark
+forward-char
+forward-char-extend-selection
+forward-paragraph
+forward-paragraph-extend-selection
+forward-sentence
+forward-sentence-extend-selection
+forward-word
+forward-word-extend-selection
+insert-newline
+kill-line
+kill-paragraph
+kill-rectangle
+kill-region
+kill-region-save
+kill-sentence
+kill-word
+move-past-close
+move-past-close-extend-selection
+newline-and-indent 
+next-line
+next-line-extend-selection
+paste-text
+point-to-register
+prepend-to-buffer
+previous-line
+previous-line-extend-selection
+scroll-down
+scroll-down-extend-selection
+scroll-up
+scroll-up-extend-selection
+yank
+yank-pop  
+zap-to-character
+
+Focus
+
+abort-edit-headline
+cycle-focus
+edit-headline
+end-edit-headline
+focus-to-body
+focus-to-log
+focus-to-minibuffer
+focus-to-tree
+
+Menus
+
+activate-cmds-menu
+activate-edit-menu
+activate-file-menu
+activate-help-menu
+activate-outline-menu
+activate-plugins-menu
+activate-window-menu
+
+Nodes: selecting, expanding and contracting
+
+contract-all
+contract-node
+contract-or-go-left
+contract-parent
+equal-sized-panes
+expand-all
+expand-and-go-right
+expand-next-level
+expand-node
+expand-or-go-right
+expand-prev-level
+go-back
+go-forward
+goto-char
+goto-first-node
+goto-first-sibling
+goto-first-visible-node
+goto-last-node
+goto-last-sibling
+goto-last-visible-node
+goto-next-node
+goto-next-sibling
+goto-next-visible
+goto-parent
+goto-prev-node
+goto-prev-sibling
+goto-prev-visible
+
+Panes
+
+contract-body-pane
+contract-log-pane
+contract-outline-pane
+contract-pane
+expand-body-pane
+expand-log-pane
+expand-outline-pane
+expand-pane
+fully-expand-body-pane
+fully-expand-log-pane
+fully-expand-outline-pane
+fully-expand-pane
+hide-body-pane
+hide-find-tab
+hide-log-pane
+hide-mini-buffer
+hide-pane
+hide-outline-pane
+hide-spell-tab
+
+Furthermore, the find commands are a good tool for using Leo without a mouse
+(More commands are coming)
+
+change
+change-all
+change-then-find
+find-next
+find-all
+find-prev
+hide-find-tab
+isearch-backward
+isearch-backward-regexp
+isearch-forward
+isearch-forward-regexp
+open-find-tab
+query-replace
+query-replace-regex
+replace-string
+search-again
+search-backward
+search-forward
+search-with-present-options
+
+Setting find options:
+
+enter-find-options-mode
+set-find-everywhere
+set-find-node-only
+set-find-suboutline-only
+show-find-options
+toggle-find-ignore-case-option
+toggle-find-in-body-option
+toggle-find-in-headline-option
+toggle-find-mark-changes-option
+toggle-find-mark-finds-option
+toggle-find-regex-option
+toggle-find-reverse-option
+toggle-find-word-option
+toggle-find-wrap-around-option
+word-search-backward
+word-search-forward</t>
+<t tx="ekr.20060306031258"></t>
+<t tx="ekr.20060309022759"></t>
+<t tx="ekr.20060323131801">True: warn if a command has no setting.</t>
+<t tx="ekr.20060325071042"></t>
+<t tx="ekr.20060325071042.1"></t>
+<t tx="ekr.20060325071042.2"></t>
+<t tx="ekr.20060325071042.3"></t>
+<t tx="ekr.20060325071916"></t>
+<t tx="ekr.20060325091143">group-operations-clear-marked       = Alt-Ctrl-Shift-l
+group-operations-mark-for-copy      = Alt-Ctrl-Shift-c
+group-operations-mark-for-move      = Alt-Ctrl-Shift-m
+group-operations-mark-for-clone     = Alt-Ctrl-`
+group-operations-mark-target        = Alt-Ctrl-Shift-t
+group-operations-operate-on-marked  = Alt-Ctrl-Shift-o
+group-operations-transfer           = Alt-Ctrl-Shift-d</t>
+<t tx="ekr.20060408090018"></t>
+<t tx="ekr.20060425124142"></t>
+<t tx="ekr.20060425125015"></t>
+<t tx="ekr.20060504131831"></t>
+<t tx="ekr.20060504131831.1"></t>
+<t tx="ekr.20060504131831.2"></t>
+<t tx="ekr.20060504134056"></t>
+<t tx="ekr.20060504134056.1"></t>
+<t tx="ekr.20060504134056.2"></t>
+<t tx="ekr.20060504140351"></t>
+<t tx="ekr.20060504140408"></t>
+<t tx="ekr.20060504140408.1"></t>
+<t tx="ekr.20060504140408.2"></t>
+<t tx="ekr.20060513100933">The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
+A reasonable value is 10.</t>
+<t tx="ekr.20060513100933.1">The number of times the colorizer's main loop in colorOneChunk executes before actually colorizing text.
+A reasonable value is 5000.</t>
+<t tx="ekr.20060521132401">c:\Python24\Scripts\_winpdb.py</t>
+<t tx="ekr.20060521134125">The debug target to use if no target is specified otherwise.
+
+c:\prog\tigris-cvs\leo\src\leo.py
+</t>
+<t tx="ekr.20060521134125.1">The debug target to use regardless of the selected node or other settings.</t>
+<t tx="ekr.20060524151415"></t>
+<t tx="ekr.20060524151415.1">idle: use Python's standard Idle debugger.
+
+winpdb: (recommended) use winpdb debugger.
+
+To use winpdb you must download and install winpdb from:
+http://www.digitalpeers.com/pythondebugger/
+
+There is no special support for Idle, so you may as well open Idle using Leo's
+open-python-window command.</t>
+<t tx="ekr.20060528175513"></t>
+<t tx="ekr.20060531094310">True:  auto-indent regardless of how text is colored.
+False: suppress auto-indenting if in range @nocolor or @kill.</t>
+<t tx="ekr.20060603070801">True:  enable calltip expansion initially.
+False: disable calltip expansion initially.
+
+You can use the enable-calltips and disable-calltips
+commands to enable or disable autocompletion at any time.
+
+Note: The 'initially' prefix is needed to distinguish this setting from
+enable-calltips command. Otherwised they would get 'munged' to the same
+configuration value.</t>
+<t tx="ekr.20060603215208"></t>
+<t tx="ekr.20060603215208.4">@color
+
+# Important: input state is **not** a mode.</t>
+<t tx="ekr.20060603215208.16"># Allows temporary rebindings without interfering with typical bindings.
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+close-rectangle         = c
+convert-blanks          = b
+convert-tabs            = t
+execute-script          = e
+open-rectangle          = o
+repeat-complex-command  = a
+reformat-paragraph      = r
+remove-blank-lines      = b
+sort-lines              = l
+sort-siblings           = s
+
+# enter-emacs-mode        = space
+# enter-buttons-mode      = b
+# enter-commands-mode     = c
+# enter-edit-mode         = e
+# enter-file-mode         = f
+# enter-gui-mode          = g
+# enter-help-mode         = h
+# enter-kill-mode         = k
+# enter-modes-mode        = m
+# enter-outline-mode      = o
+# enter-move-outline-mode = Shift-o
+# enter-toggle-find-mode  = t
+# enter-extract-mode      = x</t>
+<t tx="ekr.20060603215208.17"></t>
+<t tx="ekr.20060603215208.19"># Quick finds
+backward-find-character                     = Alt-Q
+backward-find-character-extend-selection    = Alt-Shift-Q
+find-character                              = None ### = Alt-P
+find-character-extend-selection             = None ### = Alt-Shift-P
+
+# To start finds and changes...
+search-again                        = None  # similar to search-with-present-options.
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+hide-find-tab                       = None
+open-find-tab                       = None
+
+clone-find-all                      = None
+isearch-backward                    = Alt-R
+isearch-backward-regexp             = None
+isearch-forward                     = Alt-S
+isearch-forward-regexp              = None
+# isearch-with-present-options      = Alt-i
+query-replace                       = None
+query-replace-regex                 = None
+search-backward                     = None
+search-forward                      = None
+word-search-backward                = None 
+word-search-forward                 = None
+
+# To coninue finds and changes...
+find-next                           = F3
+find-all                            = None
+find-prev                           = F2
+change                              = Ctrl-=
+change-all                          = None  # Not recommended to bind this to a shortcut.
+change-then-find                    = Ctrl--</t>
+<t tx="ekr.20060603215208.20">full-command            = Alt-x
+keyboard-quit           = Ctrl-g
+negative-argument       = None      # Alt-minus conflicts with contract-all.
+repeat-complex-command  = Ctrl-P
+universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+
+# Top-level bindings are *not* inherited in the minibuffer!
+copy-text           ! mini = Ctrl-c
+cut-text            ! mini = Ctrl-x
+paste-text          ! mini = Ctrl-v
+save-file           ! mini = Ctrl-s
+
+# Important: at present binding to BackSpace in the minibuffer causes problems.
+# backward-delete-char                ! mini = BackSpace
+
+back-char                           ! mini = LtArrow
+back-char-extend-selection          ! mini = Shift-LtArrow
+back-word                           ! mini = Alt-b  
+back-word-extend-selection          ! mini = Alt-Shift-b
+# back-word                           ! mini = Ctrl-LtArrow
+# back-word-extend-selection          ! mini = Ctrl-Shift-LtArrow
+backward-kill-word                  ! mini = Alt-Delete
+beginning-of-line                   ! mini = Home
+beginning-of-line-extend-selection  ! mini = Shift-Home
+beginning-of-line                   ! mini = Ctrl-a
+beginning-of-line-extend-selection  ! mini = Ctrl-Shift-a
+dabbrev-completion                  = Alt-\
+dabbrev-expands                     = Alt-Ctrl-\
+end-of-line                         ! mini = End
+end-of-line-extend-selection        ! mini = Shift-End
+end-of-line                         ! mini = Ctrl-e
+end-of-line-extend-selection        ! mini = Ctrl-Shift-e
+forward-char                        ! mini = RtArrow
+forward-char-extend-selection       ! mini = Shift-RtArrow
+forward-word                        = None ### ! mini = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       = None ### ! mini = Alt-Shift-f
+# forward-word                        ! mini = Ctrl-RtArrow
+# forward-word-extend-selection       ! mini = Ctrl-Shift-RtArrow
+kill-line                           ! mini = Ctrl-K
+select-all                          ! mini = Alt-Shift-A
+yank                                ! mini = Ctrl-Y
+
+# Find options.  Important: conflicts with non-minibuffer bindings do not matter here!
+find-next                           ! mini = F3
+find-prev                           ! mini = F2
+change                              ! mini  =Ctrl-=
+change-then-find                    ! mini = Ctrl--
+
+set-find-everywhere                 ! mini = Alt-Ctrl-e
+set-find-node-only                  ! mini = Alt-Ctrl-n
+set-find-suboutline-only            ! mini = Alt-Ctrl-s
+toggle-find-ignore-case-option      ! mini = Alt-Ctrl-i
+toggle-find-in-body-option          ! mini = Alt-Ctrl-b
+toggle-find-in-headline-option      ! mini = Alt-Ctrl-h
+toggle-find-mark-changes-option     ! mini = Alt-Ctrl-c
+toggle-find-mark-finds-option       ! mini = Alt-Ctrl-f
+toggle-find-regex-option            ! mini = Alt-Ctrl-x
+toggle-find-reverse-option          ! mini = Alt-Ctrl-r
+toggle-find-word-option             ! mini = Alt-Ctrl-w
+toggle-find-wrap-around-option      ! mini = Alt-Ctrl-a</t>
+<t tx="ekr.20060604180807">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20060605081712">Recommended:
+    
+white                   if top_level_unbound_key_action is command
+a color like MistyRose1 if top_level_unbound_key_action is insert or overwrite.</t>
+<t tx="ekr.20060605081712.3">Overrides body_text_foreground_color.</t>
+<t tx="ekr.20060606085536">Overrides body_text_background_color.
+
+wheat1
+PeachPuff1
+LemonChiffon1
+cornsilk1
+honeydew1
+LavenderBlush1
+azure2
+aquamarine1</t>
+<t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
+<t tx="ekr.20060607182402"></t>
+<t tx="ekr.20060608191518.2"># Keyboard-quit sets the input state to the *default* input state
+# Specified by @strings top_level_unbound_key_action.
+
+enter-quick-command-mode = Alt-Shift-C
+</t>
+<t tx="ekr.20060616172614"></t>
+<t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
+horizontal: pack body-pane editors horizontally.</t>
+<t tx="ekr.20060627065953"></t>
+<t tx="ekr.20060627084739">True: flash matching bracket when typing (, ), [, ], { or }.</t>
+<t tx="ekr.20060627121646"></t>
+<t tx="ekr.20060627121646.1"></t>
+<t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
+<t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
+<t tx="ekr.20060702100257">menu_text_font_family = None
+menu_text_font_size = None
+menu_text_font_slant = None
+menu_text_font_weight = None</t>
+<t tx="ekr.20060704090341"></t>
+<t tx="ekr.20060713101831"></t>
+<t tx="ekr.20060730101451"></t>
+<t tx="ekr.20060730101451.1"></t>
+<t tx="ekr.20060730101451.2"></t>
+<t tx="ekr.20060730101451.3"></t>
+<t tx="ekr.20060730101451.4"></t>
+<t tx="ekr.20060730101451.5"></t>
+<t tx="ekr.20060730101451.6"></t>
+<t tx="ekr.20060730101451.7"></t>
+<t tx="ekr.20060804095015">Important: the order the open_flash_brackets and close_flash_brackets settings must be consistent.</t>
+<t tx="ekr.20060804095015.1">Important: the order the open_flash_brackets and close_flash_brackets settings must be consistent.</t>
+<t tx="ekr.20060807103220"></t>
+<t tx="ekr.20060807103220.1">This is the body text of a single day node.</t>
+<t tx="ekr.20060807103220.2">This is the format of the headline if a single day node is inserted.</t>
+<t tx="ekr.20060807103220.3">This is the format of day node headline if a whole month is inserted.</t>
+<t tx="ekr.20060807103220.4">This is the format of the month node headline if a whole month is inserted.</t>
+<t tx="ekr.20060807103220.5">True: Omit saturdays if a whole month is inserted.</t>
+<t tx="ekr.20060807103220.6">True: Omit sundays if a whole month is inserted.</t>
+<t tx="ekr.20060807103220.7">This is the format of the day node headline if a whole year is inserted.</t>
+<t tx="ekr.20060807103220.8">This is the format of the month node headline if a whole year is inserted.</t>
+<t tx="ekr.20060807103220.9">This is the format of the year node headline if a whole year is inserted.</t>
+<t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
+<t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
+<t tx="ekr.20060822101942">Overrides body_text_background_color.</t>
+<t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
+<t tx="ekr.20060822101942.2">Overrides body_text_background_color.</t>
+<t tx="ekr.20060826152759"></t>
+<t tx="ekr.20060827102902"></t>
+<t tx="ekr.20060827102902.1"></t>
+<t tx="ekr.20060827102902.2"></t>
+<t tx="ekr.20060828110551"></t>
+<t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.</t>
+<t tx="ekr.20060828110551.2"></t>
+<t tx="ekr.20060828110551.3"></t>
+<t tx="ekr.20060828145228"></t>
+<t tx="ekr.20060828145228.1"># For new colorizer
+
+# php_keyword1_font_family = None
+php_keyword1_font_size = None
+php_keyword1_font_slant = roman
+    # roman, italic
+php_keyword1_font_weight = normal
+    # normal, bold</t>
+<t tx="ekr.20060829085840"># php_keyword_font_family = None
+php_keyword_font_size = None
+php_keyword_font_slant = roman
+    # roman, italic
+php_keyword_font_weight = none
+    # normal, bold</t>
+<t tx="ekr.20060904211808"></t>
+<t tx="ekr.20060904211808.1">The path to the zodb storage.</t>
+<t tx="ekr.20060913144412">@keys nodes mark as set of @shortcuts nodes.  @keys nodes are used only by the script in the node:
+    
+    @button Check Bindings
+    
+in this file.  This makes it possible for the script to produce better error messages.</t>
+<t tx="ekr.20060919171527"></t>
+<t tx="ekr.20060919171527.1">True:  Use &lt;:body&gt; elements to hold body text in &lt;outline&gt; elements.
+False: Use :body attributes to hold body text in &lt;outline&gt; elements.</t>
+<t tx="ekr.20060919171527.2">The namespace urn for the xmlns attribute of &lt;opml&gt; elements.
+This value typically is not used, but it should refer to Leo in some way.</t>
+<t tx="ekr.20060919173031">True: Write (as attributes of the opml &lt;outline&gt; elements) the Leo-specific
+      attributes written in Leo's &lt;v&gt; elements, namely 'a',
+      'descendentTnodeUnknownAttributes', 'expanded', 'marks','t', and
+      'tnodeList' elements.
+    
+False: Do not write such attributes.</t>
+<t tx="ekr.20060919173031.1">True:  Write (as attributes of the opml &lt;head&gt; element) the attributes in Leo's &lt;globals&gt; element.
+False: Do not write such attributes.</t>
+<t tx="ekr.20060919181622">True:  Write body text in either &lt;:body&gt; elements or :body attributes,
+       depending on the opml_use_outline_elements setting.
+
+False: Write only outlines.</t>
+<t tx="ekr.20060919195145">This should be either 2.0 or 1.0.
+Version 2.0 is more flexible, and should be used unless there are problems.</t>
+<t tx="ekr.20060921080239">True:  Read derived files referenced from @file and @thin nodes when reading .opml files.
+
+False: Do not read derived when reading .opml files.</t>
+<t tx="ekr.20060921080239.1">True:  Write derived files when writing .opml files.
+
+False: Do not write derived when reading .opml files.</t>
+<t tx="ekr.20060922110220">True:  Write unknown attributes (uA's) in either &lt;:uA&gt; sub-elements of &lt;outline&gt; elements.
+
+False: Do not write uA's.</t>
+<t tx="ekr.20060923114638">@color</t>
+<t tx="ekr.20060923114638.1"></t>
+<t tx="ekr.20060923114638.2"></t>
+<t tx="ekr.20060923114638.3">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20060923114638.4">@color
+
+# Important: input state is **not** a mode.</t>
+<t tx="ekr.20060923114638.5"># Allows temporary rebindings without interfering with typical bindings.
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+enter-emacs-mode        = space
+enter-buttons-mode      = b
+enter-commands-mode     = c
+enter-edit-mode         = e
+enter-file-mode         = f
+enter-gui-mode          = g
+enter-help-mode         = h
+enter-kill-mode         = k
+enter-modes-mode        = m
+enter-outline-mode      = o
+enter-move-outline-mode = Shift-o
+enter-toggle-find-mode  = t
+enter-extract-mode      = x</t>
+<t tx="ekr.20060923114638.6">--&gt; set-silent-mode
+--&gt; mode-help
+
+# All top-level bindings apply unless over-ridden
+
+mode-help               -&gt; same  = question
+
+apropos-autocompletion  = a
+apropos-bindings        = b
+apropos-find-commands   = f</t>
+<t tx="ekr.20060923114638.7">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+execute-script      = e
+# make-script-button  = m
+# 
+# script-button-1     = 1
+# script-button-2     = 2
+# script-button-3     = 3
+# script-button-4     = 4
+# script-button-5     = 5
+# script-button-6     = 6
+# script-button-7     = 7
+# script-button-8     = 8
+# script-button-9     = 9</t>
+<t tx="ekr.20060923114638.8">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+close-rectangle         = c
+convert-all-blanks      = Shift-b
+convert-all-tabs        = Shift-t
+convert-blanks          = b
+convert-tabs            = t
+execute-script          = e
+open-rectangle          = o
+repeat-complex-command  = a
+reformat-paragraph      = r
+remove-blank-lines      = b
+sort-lines              = l
+sort-siblings           = s</t>
+<t tx="ekr.20060923114638.9">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+
+
+# set-mark              = s
+transpose-lines         = t
+exchange-point-mark     = x     # This should be a top-level binding.
+
+# downcase-region       = d
+# upcase-region         = u
+</t>
+<t tx="ekr.20060923114638.10"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = BackSpace
+mode-help           = Tab
+
+# Other modes
+enter-edit-mode     = Ctrl-e
+enter-find-mode     = Ctrl-Shift-f
+# enter-edit-mode     = BackSpace
+
+# Standard bindings.
+# undo                -&gt; same = Ctrl-z
+# redo                -&gt; same = Ctrl-Shift-z
+
+# Arrow keys
+back-char-extend-selection          -&gt; same = LtArrow
+forward-char-extend-selection       -&gt; same = RtArrow
+next-line-extend-selection          -&gt; same = DnArrow
+previous-line-extend-selection      -&gt; same = UpArrow
+back-word-extend-selection          -&gt; same = Ctrl-LtArrow
+forward-word-extend-selection       -&gt; same = Ctrl-RtArrow
+
+# Special keys
+end-of-buffer-extend-selection       -&gt; same = End
+beginning-of-buffer-extend-selection -&gt; same = Home
+scroll-down-extend-selection         -&gt; same = PageDn
+scroll-up-extend-selection           -&gt; same = PageUp
+
+# Plain keys
+back-char-extend-selection          -&gt; same = b
+back-word-extend-selection          -&gt; same = r   # unusual
+beginning-of-line-extend-selection  -&gt; same = a
+beginning-of-buffer-extend-selection -&gt;same = h   # unusual
+end-of-buffer-extend-selection      -&gt; same = z   # unusual
+end-of-line-extend-selection        -&gt; same = e
+forward-char-extend-selection       -&gt; same = f
+next-line-extend-selection          -&gt; same = n
+next-line-extend-selection          -&gt; same = d
+previous-line-extend-selection      -&gt; same = p
+previous-line-extend-selection      -&gt; same = u
+forward-word-extend-selection       -&gt; same = w</t>
+<t tx="ekr.20060923114638.11">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit                   = Ctrl-g # not needed, but a good reminder
+enter-quick-command-mode        = Alt-c
+
+### bind newline and backspace??
+
+repeat-complex-command              -&gt; same = Control-a
+
+beginning-of-line                   -&gt; same = a
+beginning-of-line-extend-selection  -&gt; same = Shift-a
+#                                   -&gt; same = b
+#                                   -&gt; same = c
+next-line                           -&gt; same = d
+next-line-extend-selection          -&gt; same = Shift-d
+end-of-line                         -&gt; same = e
+end-of-line-extend-selection        -&gt; same = Shift-e
+#                                   -&gt; same = f
+#                                   -&gt; same = g
+#                                   -&gt; same = h
+#                                   -&gt; same = i
+#                                   -&gt; same = j
+#                                   -&gt; same = k         # kill ?
+back-char                           -&gt; same = l
+back-char-extend-selection          -&gt; same = Shift-l
+#                                   -&gt; same = m  
+#                                   -&gt; same = n
+#                                   -&gt; same = o
+#                                   -&gt; same = p
+#                                   -&gt; same = q
+forward-char                        -&gt; same = r
+forward-char-extend-selection       -&gt; same = Shift-r
+#                                   -&gt; same = s
+#                                   -&gt; same = t
+previous-line                       -&gt; same = u
+previous-line-extend-selection      -&gt; same = Shift-u
+#                                   -&gt; same = v
+#                                   -&gt; same = w
+yank                                -&gt; same = y
+undo                                -&gt; same = z
+redo                                -&gt; same = Shift-z</t>
+<t tx="ekr.20060923114638.12">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+extract                 = e
+extract-names           = n
+extract-section         = s</t>
+<t tx="ekr.20060923114638.13">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+save-file               = Ctrl-S
+save-file-as            = a
+open-outline-by-name    = o
+save-file-to            = t
+
+open-leoDocs-leo        = d
+open-leoPlugins-leo     = p
+open-leoSettings-leo    = s
+open-scripts-leo        = c
+
+insert-file             = i
+write-at-file-nodes     = w
+read-at-file-nodes      = r</t>
+<t tx="ekr.20060923114638.14">--&gt; set-silent-mode
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+
+contract-pane                       -&gt; same = c
+expand-pane                         -&gt; same = e
+cycle-focus                         -&gt; same = f
+cycle-editor-focus                  -&gt; same = y
+
+scroll-outline-down-line            -&gt; same= d
+scroll-outline-down-page            -&gt; same= Shift-d
+scroll-outline-up-line              -&gt; same= u
+scroll-outline-up-page              -&gt; same= Shift-u
+
+# scroll-down                         -&gt; same = d
+# scroll-down-extend-selection        -&gt; same = Shift-d
+# scroll-up                           -&gt; same = u
+# scroll-up-extend-selection          -&gt; same = Shift-u
+
+# scroll-outline-down-line
+# scroll-outline-down-page
+# scroll-outline-up-line
+# scroll-outline-up-page</t>
+<t tx="ekr.20060923114638.15">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+apropos-autocompletion  = Shift-a
+apropos-bindings        = Shift-b
+apropos-find-commands   = Shift-f
+
+print-bindings          = b
+print-commands          = c
+help-for-command        = f
+python-help             = p</t>
+<t tx="ekr.20060923114638.16">--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+kill-all-abbrevs    = a       
+kill-buffer         = b              
+kill-line           = l
+kill-paragraph      = p          
+kill-rectangle      = e
+kill-region         = r
+# kill-region-save  all: &lt;Alt+W&gt;
+kill-sentence       = s
+kill-word           = w
+backward-kill-word  = Shift-w</t>
+<t tx="ekr.20060923114638.17"># This mode toggles various modes.
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+toggle-autocompleter    = a
+toggle-calltips         = t
+toggle-extend-mode      = x
+toggle-invisibles       = v</t>
+<t tx="ekr.20060923114638.18">--&gt; set-silent-mode
+--&gt; mode-help
+--&gt; focus-to-tree
+
+keyboard-quit               = Ctrl-g # not needed, but a good reminder
+keyboard-quit               = Return
+enter-outline-mode          = o
+
+goto-first-node-node        -&gt; same = Home
+goto-last-visible-node      -&gt; same = End
+
+move-outline-down           -&gt; same = d
+move-outline-left           -&gt; same = l
+move-outline-right          -&gt; same = r
+move-outline-up             -&gt; same = u
+
+undo                        -&gt; same = z
+redo                        -&gt; same = Shift-z</t>
+<t tx="ekr.20060923114638.19">--&gt; set-silent-mode
+--&gt; mode-help
+--&gt; focus-to-tree
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+enter-move-outline-mode     = m
+
+demote                      -&gt; same = {
+promote                     -&gt; same = }
+copy-node                   -&gt; same = Shift-c
+cut-node                    -&gt; same = Shift-x
+paste-node                  -&gt; same = Shift-p
+
+clone-node                  -&gt; same = c
+goto-next-visible           -&gt; same = d
+edit-headline                       = e # Must exit.
+insert-node                         = i # Must exit.
+contract-or-go-left         -&gt; same = l
+expand-and-go-right         -&gt; same = r
+goto-prev-visible           -&gt; same = u
+undo                        -&gt; same = z
+redo                        -&gt; same = Shift-z</t>
+<t tx="ekr.20060923114638.20"># A mode to toggle find options and invoke various find commands.
+--&gt; set-silent-mode
+--&gt; open-find-tab
+
+mode-help = ?
+keyboard-quit = Return
+
+isearch-with-present-options        = Alt-i
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+find-next                           = F3
+find-prev                           = F2
+change                              = Ctrl-=
+change-then-find                    = Ctrl--
+
+toggle-find-ignore-case-option      -&gt; same = i
+toggle-find-in-body-option          -&gt; same = b
+toggle-find-in-headline-option      -&gt; same = h
+toggle-find-mark-changes-option     -&gt; same = c
+toggle-find-mark-finds-option       -&gt; same = m
+toggle-find-regex-option            -&gt; same = x
+toggle-find-reverse-option          -&gt; same = r
+toggle-find-word-option             -&gt; same = w
+toggle-find-wrap-around-option      -&gt; same = a</t>
+<t tx="ekr.20060923114638.21"></t>
+<t tx="ekr.20060923114638.22"># Keyboard-quit sets the input state to the *default* input state
+# Specified by @strings top_level_unbound_key_action.
+
+toggle-input-state                  = Alt-space # was: focus to tree.
+enter-quick-command-mode            = Alt-C # also c
+
+# repeat-complex-command            !command = ???
+
+beginning-of-line                   !command = a
+beginning-of-line-extend-selection  !command = Shift-a
+#                                   !command = b
+enter-quick-command-mode            !command = c
+next-line                           !command = d
+next-line-extend-selection          !command = Shift-d
+end-of-line                         !command= e
+end-of-line-extend-selection        !command = Shift-e
+search-with-present-options         !command = f
+replace-string                      !command = Shift-f
+enter-gui-mode                      !command = g
+enter-help-mode                     !command = h
+isearch-with-present-options        !command = i
+isearch-backward                    !command = Shift-i
+#                                   !command = j
+enter-kill-mode                     !command = k
+back-char                           !command = l
+back-char-extend-selection          !command = Shift-l
+enter-modes-mode                    !command = m  
+#                                   !command = n
+enter-outline-mode                  !command = o
+#                                   !command = p
+find-character                      !command = q
+forward-char                        !command = r
+forward-char-extend-selection       !command = Shift-r
+#                                   !command = s
+enter-toggle-find-mode              !command = t
+previous-line                       !command = u
+previous-line-extend-selection      !command = Shift-u
+#                                   !command = v
+enter-file-mode                     !command = w
+yank                                !command = y
+undo                                !command = z
+redo                                !command = Shift-z</t>
+<t tx="ekr.20060923114638.23"># Keyboard-quit sets the input state to the *default* input state
+# Specified by @strings top_level_unbound_key_action.
+
+enter-quick-command-mode            = Alt-C
+</t>
+<t tx="ekr.20060923114638.24"># To start finds and changes...
+search-again                        = None  # similar to search-with-present-options.
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+hide-find-tab                       = None
+open-find-tab                       = None
+
+clone-find-all                      = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+isearch-forward-regexp              = None
+isearch-with-present-options        = Alt-i
+query-replace                       = None
+query-replace-regex                 = None
+search-backward                     = None
+search-forward                      = None
+word-search-backward                = None 
+word-search-forward                 = None
+
+# To coninue finds and changes...
+find-next                           = F3
+find-all                            = None
+find-prev                           = F2
+change                              = Ctrl-=
+change-all                          = None  # Not recommended to bind this to a shortcut.
+change-then-find                    = Ctrl--</t>
+<t tx="ekr.20060923114638.25"># Top-level bindings are *not* inherited in the minibuffer!
+copy-text           ! mini = Ctrl-c
+cut-text            ! mini = Ctrl-x
+paste-text          ! mini = Ctrl-v
+save-file           ! mini = Ctrl-s
+
+# Important: at present binding to BackSpace in the minibuffer causes problems.
+# backward-delete-char                ! mini = BackSpace
+
+back-char                           ! mini = LtArrow
+back-char-extend-selection          ! mini = Shift-LtArrow
+back-word                           ! mini = Alt-b  
+back-word                           ! mini = Ctrl-LtArrow
+back-word-extend-selection          ! mini = Alt-Shift-b
+back-word-extend-selection          ! mini = Ctrl-Shift-LtArrow
+backward-kill-word                  ! mini = Alt-Delete
+beginning-of-line                   ! mini = Home
+beginning-of-line-extend-selection  ! mini = Shift-Home
+beginning-of-line                   ! mini = Ctrl-a
+beginning-of-line-extend-selection  ! mini = Ctrl-Shift-a
+end-of-line                         ! mini = End
+end-of-line-extend-selection        ! mini = Shift-End
+end-of-line                         ! mini = Ctrl-e
+end-of-line-extend-selection        ! mini = Ctrl-Shift-e
+forward-char                        ! mini = RtArrow
+forward-char-extend-selection       ! mini = Shift-RtArrow
+forward-word                        ! mini = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       ! mini = Alt-Shift-f
+forward-word                        ! mini = Ctrl-RtArrow
+forward-word-extend-selection       ! mini = Ctrl-Shift-RtArrow
+select-all                          ! mini = Alt-Shift-A
+
+# Find options.  Important: conflicts with non-minibuffer bindings do not matter here!
+find-next                           ! mini = F3
+find-prev                           ! mini = F2
+change                              ! mini  =Ctrl-=
+change-then-find                    ! mini = Ctrl--
+
+set-find-everywhere                 ! mini = Alt-Ctrl-e
+set-find-node-only                  ! mini = Alt-Ctrl-n
+set-find-suboutline-only            ! mini = Alt-Ctrl-s
+toggle-find-ignore-case-option      ! mini = Alt-Ctrl-i
+toggle-find-in-body-option          ! mini = Alt-Ctrl-b
+toggle-find-in-headline-option      ! mini = Alt-Ctrl-h
+toggle-find-mark-changes-option     ! mini = Alt-Ctrl-c
+toggle-find-mark-finds-option       ! mini = Alt-Ctrl-f
+toggle-find-regex-option            ! mini = Alt-Ctrl-x
+toggle-find-reverse-option          ! mini = Alt-Ctrl-r
+toggle-find-word-option             ! mini = Alt-Ctrl-w
+toggle-find-wrap-around-option      ! mini = Alt-Ctrl-a</t>
+<t tx="ekr.20060923114638.26"># Important: the print-commands and print-bindings show what bindings are in effect.
+
+#abort-edit-headline                = Esc
+add-comments                        = Ctrl-parenleft
+auto-complete-force                 = Ctrl-period
+auto-complete                       = period
+back-char                           ! text = LtArrow
+back-char-extend-selection          ! text = Shift-LtArrow
+back-word                           ! text = Alt-b  
+back-word                           ! text = Ctrl-LtArrow
+back-word-extend-selection          ! text = Alt-Shift-b
+back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+backward-delete-char                = BackSpace
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                  ! text = Home
+beginning-of-buffer-extend-selection ! text = Shift-Home
+beginning-of-line                  ! text = Ctrl-a
+beginning-of-line-extend-selection ! text = Ctrl-Shift-a
+clone-node                          = Ctrl-`   
+close-window                        = Ctrl-w
+close-window                        = Alt-F4
+contract-all                        = Alt--
+contract-log-pane                   = Alt-Ctrl-RtArrow # Alt-Ctrl-DnArrow in other orientation.
+contract-pane                       = Alt+Ctrl+-
+contract-node                       = Alt-bracketleft
+contract-or-go-left                 ! text = Alt-LtArrow
+contract-or-go-left                 ! tree = Alt-LtArrow
+contract-or-go-left                 ! tree = LtArrow
+copy-node                           = Shift-Ctrl-c
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-node                            = Shift-Ctrl-x
+cut-text                            = Ctrl-x
+cycle-all-focus                     = Alt-Ctrl-p
+debug                               = Alt-Shift-d
+delete-char                         = Delete
+delete-comments                     = Ctrl-parenright
+delete-node                         = Shift-Ctrl-BkSp
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+edit-headline                       = Ctrl-h
+end-edit-headline                   ! tree = Return     # Esc is also possible.
+end-of-buffer                       ! text = End
+end-of-buffer-extend-selection      ! text = Shift-End
+end-of-line                         ! text = Ctrl-e
+end-of-line-extend-selection        ! text = Ctrl-Shift-e
+exchange-point-mark                 = None      # Should be Ctrl-X Ctrl-X.
+exit-leo                            = Ctrl-q
+expand-and-go-right                 ! text = Alt-RtArrow
+expand-and-go-right                 ! tree = Alt-RtArrow
+expand-and-go-right                 ! tree = RtArrow
+expand-body-pane                    = Alt-Ctrl-UpArrow  # Alt-Ctrl-LtArrow in other orientation.
+expand-log-pane                     = Alt-Ctrl-LtArrow  # Alt-Ctrl-UpArrow in other orientation.
+expand-pane                         = Alt+Ctrl-=
+expand-outline-pane                 = Alt-Ctrl-DnArrow  # Alt-Ctrl-RtArrow in other orientation.
+expand-next-level                   = Alt-=
+expand-node                         = Alt-bracketright
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+extract-section                     = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection</t>
+<t tx="ekr.20060923114638.27">find-character                      = Control-b
+# focus-to-tree                     = Alt-space
+forward-char                        ! text = RtArrow
+forward-char-extend-selection       ! text = Shift-RtArrow
+forward-paragraph                   ! text = Alt-braceright
+forward-paragraph-extend-selection  ! text = Alt-Shift-braceright
+forward-sentence                    ! text = Alt-e
+forward-sentence-extend-selection   ! text = Alt-Shift-e
+forward-word                        ! text = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       ! text = Alt-Shift-f
+forward-word                        ! text = Ctrl-RtArrow
+forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow
+full-command                        = Alt-x
+fully-expand-pane                   = Alt-Ctrl-!
+goto-first-node                     ! text = Alt-Home
+goto-first-node                     ! tree = Alt-Home
+goto-first-node                     ! tree = Home
+goto-global-line                    = Alt-g # New minibuffer interface.
+goto-last-visible-node              ! text = Alt-End
+goto-last-visible-node              ! tree = Alt-End
+goto-last-visible-node              ! tree = End
+goto-line-number                    = None # Leo's legacy Go To Line Number command: uses dialog.
+goto-next-clone                     = Alt-N
+goto-next-visible                   ! text = Alt-DnArrow
+goto-next-visible                   ! tree = Alt-DnArrow
+goto-next-visible                   ! tree = DnArrow
+goto-prev-visible                   ! text = Alt-UpArrow
+goto-prev-visible                   ! tree = Alt-UpArrow
+goto-prev-visible                   ! tree = UpArrow
+help-for-minibuffer                 = F1
+hide-pane                           = None
+indent-region                       = Ctrl-]
+insert-newline                      = None # = Return # for MacOs X.
+insert-node                         = Ctrl-I
+keyboard-quit                       = Ctrl-g
+kill-line                           ! text = Ctrl-k # Was match bracket.
+kill-region-save                    = Alt-w 	   # Ctrl-w
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+mark                                = Ctrl-M
+# match-brackets                    = Ctrl-K    # kill-line
+move-outline-down                   = Ctrl-D
+move-outline-down                   = Alt-Shift-DnArrow
+move-outline-left                   = Ctrl-L
+move-outline-left                   = Alt-Shift-LtArrow
+move-outline-right                  = Ctrl-R
+move-outline-right                  = Alt-Shift-RtArrow
+move-outline-up                     = Ctrl-U
+move-outline-up                     = Alt-Shift-UpArrow
+move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20060923114638.28"># name-last-kbd-macro               = None
+negative-argument                   = None      # Alt-minus conflicts with contract-all.
+new                                 = Ctrl-n    # Ctrl-n conflicts with next-line.
+newline-and-indent                  = Ctrl-j
+next-line                           ! text = DnArrow
+next-line-extend-selection          ! text = Shift-DnArrow
+open-outline                        = Ctrl-o
+open-spell-tab                      = F7
+paste-node                          = Shift-Ctrl-V
+paste-text                          = Ctrl-v
+# previous-line                       ! text = Ctrl-P
+# previous-line-extend-selection      ! text = Ctrl-Shift-P
+previous-line                       ! text = UpArrow
+previous-line-extend-selection      ! text = Shift-UpArrow
+print-focus                         = Alt-Ctrl-Shift-F
+promote                             = Ctrl-{            
+redo                                = Shift-Ctrl-Z
+reformat-paragraph                  = Shift-Ctrl-p
+run-unit-tests                      = None
+save-file                           = Ctrl-s
+scroll-down                         ! text = PageDn 
+scroll-up                           ! text = PageUp
+scroll-outline-down-line            ! tree = PageDn
+scroll-outline-down-page            ! tree = Shift-PageDn
+#scroll-outline-left                 = Alt+Shift+LtArrow
+#scroll-outline-right                = Alt+Shift+RtArrow
+scroll-outline-up-line              ! tree = PageUp
+scroll-outline-up-page              ! tree = Shift-PageUp
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-up-extend-selection          ! text = Shift-PageUp
+select-all                          ! text =  Alt-Shift-A 
+    # Shift-Ctrl-A conflicts with beginning-of-line-extend-selection.
+show-calltips                       = parenleft
+show-calltips-force                 = Alt-parenleft
+sort-siblings                       = Alt-A
+split-line                          = Alt-Ctrl-o
+
+toggle-active-pane                  = Ctrl-T
+undo                                = Ctrl-Z
+unindent-region                     = Ctrl-[
+universal-argument                  = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+write-at-file-nodes                 = Shift-Ctrl-W
+write-dirty-at-file-nodes           = Shift+Ctrl+Q
+yank                                = Ctrl-Y
+zap-to-character                    = Alt-z</t>
+<t tx="ekr.20060925060533.1"># Important: arrow keys also move the cursor: all arrow keys are handled elsewhere.
+
+back-word                           ! text = Alt-b  
+back-word-extend-selection          ! text = Alt-Shift-b
+beginning-of-line                   ! text = Ctrl-a
+beginning-of-line-extend-selection  ! text = Ctrl-Shift-a
+end-of-line                         ! text = Ctrl-e
+exchange-point-mark                 = Alt-M     # Should be Ctrl-X Ctrl-X.
+end-of-line-extend-selection        ! text = Ctrl-Shift-e
+extend-to-line                      = Alt-L
+extend-to-word                      = None ### = Alt-W
+extend-to-word                      = Ctrl-W
+forward-paragraph                   ! text = Alt-braceright
+forward-paragraph-extend-selection  ! text = Alt-Shift-braceright
+forward-sentence                    = None ### ! text = Alt-e
+forward-sentence-extend-selection   = None ### ! text = Alt-Shift-e
+forward-word                        = None ### ! text = Alt-f
+forward-word-extend-selection       = None ### ! text = Alt-Shift-f
+goto-global-line                    = Alt-g
+# match-brackets                    = Ctrl-K    # kill-line
+move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection    = None
+# next-line                         ! text = Ctrl-N
+# next-line-extend-selection        ! text = Ctrl-Shift-N
+# previous-line                     ! text = Ctrl-P
+# previous-line-extend-selection    ! text = Ctrl-Shift-P
+select-all                          ! text =  Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.
+</t>
+<t tx="ekr.20060925060533.2">cycle-all-focus             = Alt-Ctrl-Y
+contract-pane               = Alt+Ctrl+-
+expand-pane                 = Alt+Ctrl-=
+focus-to-body               = Alt-D  # boDy
+focus-to-tree               = Alt-T
+toggle-active-pane          = Ctrl-T</t>
+<t tx="ekr.20060925060533.3">contract-or-go-left         ! tree = LtArrow
+expand-and-go-right         ! tree = RtArrow
+goto-first-sibling          ! tree = Alt-Ctrl-UpArrow
+goto-last-sibling           ! tree = Alt-Ctrl-DnArrow
+goto-next-visible           ! tree = DnArrow
+goto-prev-visible           ! tree = UpArrow
+
+clone-node                  = Ctrl-`
+clone-node-to-chapter       = None
+contract-node               = None
+copy-node                   = Shift-Ctrl-c
+copy-node-to-chapter        = None
+create-chapter              = None
+cut-node                    = Shift-Ctrl-x
+contract-all                = Alt--
+edit-headline               = Ctrl-h
+end-edit-headline           ! tree = Return     # Esc is also possible.
+delete-node                 = None
+demote                      = Ctrl-}
+expand-next-level           = None
+expand-node                 = Alt-bracketright
+extract                     = Shift-Ctrl-D
+extract-names               = Shift-Ctrl-N
+extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
+goto-next-clone             = Alt-N
+insert-node                 = Ctrl-I
+mark                        = Ctrl-M
+move-node-to-chapter        = None
+move-outline-down           = Ctrl-D
+move-outline-left           = Ctrl-L
+move-outline-right          = Ctrl-R
+move-outline-up             = Ctrl-U
+paste-node                  = Shift-Ctrl-V
+promote                     = Ctrl-{
+remove-chapter              = None
+select-chapter              = None</t>
+<t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
+backward-delete-char                = BackSpace
+backward-kill-word                  = Alt-Delete
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-text                            = Ctrl-x
+delete-char                         = Delete
+delete-comments                     = Ctrl-parenright
+delete-spaces                       = None
+indent-region                       = Ctrl-]
+insert-newline                      = None # = Return # for MacOs X.
+kill-line                           = Ctrl-k
+newline-and-indent                  = Ctrl-j
+paste-text                          = Ctrl-v
+reformat-paragraph                  = Shift-Ctrl-p
+split-line                          = None
+unindent-region                     = Ctrl-[
+yank                                = Ctrl-Y
+yank-pop                            = Alt-Y
+zap-to-character                    = Alt-z</t>
+<t tx="ekr.20060925061845">close-window                = Alt-F4
+exit-leo                    = Ctrl-q
+new                         = Ctrl-n    # Ctrl-n conflicts with next-line.
+open-outline                = Ctrl-o
+save-file                   = Ctrl-s
+write-at-file-nodes         = Shift-Ctrl-W
+write-dirty-at-file-nodes   = Shift+Ctrl+Q
+</t>
+<t tx="ekr.20060925061845.1">auto-complete-force         = None # This command needs work before it is useful. Ctrl-period
+auto-complete               = period
+debug                       = None
+execute-script              = Ctrl+B
+help-for-command            = F1
+open-spell-tab              = F7
+redo                        = Shift-Ctrl-Z
+run-unit-tests              = None
+show-calltips               = parenleft
+show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
+sort-siblings               = Alt-A
+toggle-autocompleter        = Alt-1
+toggle-calltips             = Alt-2
+toggle-extend-mode          = Alt-3
+undo                        = Ctrl-Z</t>
+<t tx="ekr.20060926160657">True: Focus moves to outline pane after editing a headline.
+
+False: (legacy operation) Focus moves to body pane after editing a headline.
+       </t>
+<t tx="ekr.20060926161207.1"></t>
+<t tx="ekr.20060926161207.2">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20060930085332">True: Outline gets focus when a new window is opened.
+False Body pane gets focus when a new window is opened.</t>
+<t tx="ekr.20060930085532">True: (Recommended) The find commands collapse all nodes that are not ancestors of the node containing the match.
+False: The find command expands nodes needed to show the match, but does not collapse any nodes.</t>
+<t tx="ekr.20060930111325"></t>
+<t tx="ekr.20060930111325.1">The maximum length of button names.
+</t>
+<t tx="ekr.20060930111325.2">True: adds a button for every @button node.
+</t>
+<t tx="ekr.20060930111325.3">True: define a minibuffer command for every @command node.
+</t>
+<t tx="ekr.20060930111325.4">True: dynamically loads plugins in @plugins nodes when a window is created.
+</t>
+<t tx="ekr.20060930111325.5">True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
+</t>
+<t tx="ekr.20060930111325.6">True: create Debug Script button.
+</t>
+<t tx="ekr.20060930111325.7">True: create Run Script button.
+
+Note: The plugin creates the press-run-script-button regardless of this setting.</t>
+<t tx="ekr.20060930112030">True: create Script Button button in icon area.
+
+Note: The plugin creates the press-script-button-button regardless of this setting.</t>
+<t tx="ekr.20061002115414"></t>
+<t tx="ekr.20061002115414.1">This setting appears in two places: 'Keyboard and minibuffer options' and 'Outline pane options'.
+
+A time (in seconds) that controls how handles keystrokes when the outline pane has focus.
+
+When two keystrokes are separated by less than this time, Leo will attempt to
+find the next headline that starts with the previous match, extended by the key
+just typed. Otherwise, Leo will find the next headline that starts with the key
+just typed.
+
+The outline nav search reverts to a single-character search if the extended
+search fails, so in practice everything works well without thinking about what
+is happening.
+</t>
+<t tx="ekr.20061003173413"></t>
+<t tx="ekr.20061004150211">True:  Use a sax-based parser to read .leo files.
+       This is slower than using Leo's legacy xml parser, but may solve some unicode problems.
+False: Use Leo's legacy xml parser code.</t>
+<t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.</t>
+<t tx="ekr.20061009190510">True: update .leoRecentFiles.txt, creating it if if does not exist.
+False: don't update .leoRecentFiles and don't create it.</t>
+<t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
+False: Put the cursor at the end of the headline text.</t>
+<t tx="ekr.20061011082224">@nocolor
+
+myLeoSettings.leo is a major improvement in how Leo handles settings. You can
+'override' settings defined in any leoSettings.leo file by placing your own
+settings in myLeoSettings.leo, either in your HOME directory or in the
+leo/config directory (the directory containing this file.) Distributions of Leo
+leave myLeoSettings.leo alone, and myLeoSettings.leo is not part of Leo's cvs
+repository, so Leo never changes myLeoSettings.leo.
+
+This section lists settings that would be natural candidates for inclusion in
+myLeoSettings.leo. That is, you may have strong preferences for these settings
+that differ from mine.
+
+Notes:
+
+- The actual settings here have no effect because they are not in an @settings
+tree. However, their *clones* can have effect elsewhere in this file. You can use
+the Go To Next Clone (Alt-N) to find clones elsewhere in the file.
+
+- I have not included any keyboard shortcuts here because they are highly personal.
+  However, the ignore_unbound_non_ascii_keys option affects how Leo handles 'plain' keys.</t>
+<t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
+False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
+<t tx="ekr.20061018061727"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.
+
+# These try to implement DWIM (Do What I mean) by shifting focus to the body pane for normal arrow keys.
+# The main price: having to hold the Alt key down when moving or selecting outline nodes.
+
+# Plain special keys **always** refer to the body text.
+back-char                   = LtArrow
+forward-char                = RtArrow
+next-line                   = DnArrow
+previous-line               = UpArrow
+
+beginning-of-buffer         = Ctrl-Home
+beginning-of-line           = Home
+end-of-buffer               = Ctrl-End
+end-of-line                 = End
+
+# contract-or-go-left       ! tree = LtArrow
+# expand-and-go-right       ! tree = RtArrow
+# goto-next-visible         ! tree = DnArrow
+# goto-prev-visible         ! tree = UpArrow
+# goto-first-visible-node   ! tree = Home
+# goto-last-visible-node    ! tree = End
+
+# Shift-special keys **always** refer to the body text.
+back-char-extend-selection      = Shift-LtArrow
+forward-char-extend-selection   = Shift-RtArrow
+next-line-extend-selection      = Shift-DnArrow
+previous-line-extend-selection  = Shift-UpArrow
+
+# move-outline-down             ! tree = Shift-DnArrow
+# move-outline-left             ! tree = Shift-LtArrow
+# move-outline-right            ! tree = Shift-RtArrow
+# move-outline-up               ! tree = Shift-UpArrow
+
+# Ctrl-arrow and Ctrl-shift keys work only in text.
+back-word                           = Ctrl-LtArrow
+back-word-extend-selection          = Ctrl-Shift-LtArrow
+forward-word                        = Ctrl-RtArrow
+forward-word-extend-selection       = Ctrl-Shift-RtArrow
+
+beginning-of-buffer-extend-selection= Ctrl-Shift-Home
+beginning-of-line-extend-selection  = Shift-Home
+end-of-buffer-extend-selection      = Ctrl-Shift-End
+end-of-line-extend-selection        = Shift-End
+
+scroll-outline-down-page            ! tree = PageDn
+scroll-outline-up-page              ! tree = PageUp
+
+scroll-down                         ! text = PageDn 
+scroll-up                           ! text = PageUp
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-up-extend-selection          ! text = Shift-PageUp
+
+# Alt arrow/home/end/page keys always refer to the tree.
+contract-or-go-left         = Alt-LtArrow
+expand-and-go-right         = Alt-RtArrow
+goto-next-visible           = Alt-DnArrow
+goto-prev-visible           = Alt-UpArrow
+
+goto-first-visible-node     = Alt-Home
+goto-last-visible-node      = Alt-End
+
+move-outline-down           = Alt-Shift-DnArrow
+move-outline-left           = Alt-Shift-LtArrow
+move-outline-right          = Alt-Shift-RtArrow
+move-outline-up             = Alt-Shift-UpArrow
+
+scroll-outline-down-page    = Alt-PageDn
+scroll-outline-up-page      = Alt-PageUp
+
+scroll-outline-left         = Alt+Ctrl+LtArrow
+scroll-outline-right        = Alt+Ctrl+RtArrow</t>
+<t tx="ekr.20061018061727.1"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.
+
+# Plain arrow keys depend on focus.
+back-char                   ! text = LtArrow
+forward-char                ! text = RtArrow
+next-line                   ! text = DnArrow
+previous-line               ! text = UpArrow
+
+# Shift arrow keys depend on focus.
+back-char-extend-selection      ! text = Shift-LtArrow
+forward-char-extend-selection   ! text = Shift-RtArrow
+next-line-extend-selection      ! text = Shift-DnArrow
+previous-line-extend-selection  ! text = Shift-UpArrow
+
+move-outline-down               ! tree = Shift-DnArrow
+move-outline-left               ! tree = Shift-LtArrow
+move-outline-right              ! tree = Shift-RtArrow
+move-outline-up                 ! tree = Shift-UpArrow
+
+# Ctrl-arrow and Ctrl-shift keys work only in text.
+back-word                           ! text = Ctrl-LtArrow
+back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection! text = Ctrl-Shift-Home
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+forward-word                        ! text = Ctrl-RtArrow
+forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow
+
+# Home, End, and Page Keys (and shift varients) depend on focus.
+beginning-of-line                   ! text = Home
+beginning-of-line-extend-selection  ! text = Shift-Home
+end-of-line                         ! text = End
+end-of-line-extend-selection        ! text = Shift-End
+goto-first-visible-node             ! tree = Home
+goto-last-visible-node              ! tree = End
+scroll-down                         ! text = PageDn 
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-outline-down-page            ! tree = PageDn
+scroll-outline-up-page              ! tree = PageUp
+scroll-up                           ! text = PageUp
+scroll-up-extend-selection          ! text = Shift-PageUp
+
+# Alt arrow/home/end/page keys always refer to the tree.
+contract-or-go-left         = Alt-LtArrow
+expand-and-go-right         = Alt-RtArrow
+goto-first-node             = None
+goto-first-visible-node     = Alt-Home
+goto-last-visible-node      = Alt-End
+goto-next-visible           = Alt-DnArrow
+goto-prev-visible           = Alt-UpArrow
+move-outline-down           = Alt-Shift-DnArrow
+move-outline-left           = Alt-Shift-LtArrow
+move-outline-right          = Alt-Shift-RtArrow
+move-outline-up             = Alt-Shift-UpArrow
+scroll-outline-down-page    = Alt-PageDn
+scroll-outline-left         = Alt+Ctrl+LtArrow
+scroll-outline-right        = Alt+Ctrl+RtArrow
+scroll-outline-up-page      = Alt-PageUp
+</t>
+<t tx="ekr.20061029091403"></t>
+<t tx="ekr.20061030092620">True (Recommended): Leo scrolls the outline to put the selected node near the center of the outline pane.
+False (Legacy): Leo scrolls the outline to put the selected node at the top or bottom of the outline pane.</t>
+<t tx="ekr.20061030104734">This option tells how to treat an uppercase letter typed when the outline pane
+is active but no headline is being edited. In such situations Leo searchs for an
+node whose headline starts with the present prefix, ignoring case The prefix
+starts with the first letter typed and other letters are added if they are typed
+within a 'short' period of time, as specified by the outline_nav_extend_delay
+
+True: Look in invisible nodes.
+False: Look only in visible nodes.
+
+I set this option to False because it is too easy form me to type Shift-whatever when I meant Ctrl-whatever.</t>
+<t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
+      as specified by the @string relative_path_base_directory setting.
+      
+False: Do not call os.chdir(base) when handing a relative path.</t>
+<t tx="ekr.20070115134125">True: The execute script command writes the script to be executed to a file,
+      then executes the script using Python's execFile function.
+      The script_file_path setting specifies the path to this file.
+      
+False (legacy): The execute script command uses Python's exec command to execute the script. </t>
+<t tx="ekr.20070115134125.1">The path to the file to be written by the execute-script command.
+
+Notes:
+    
+- This setting has effect only if the write_script_file setting is True.
+- Use / to as the path delimiter, regardless of platform.
+- The default path is ../test/scriptFile.py if no path is given.
+- The path starts at g.app.loadDir, so for example ../test/scriptFile.py is equivalent to leo/test/scriptFile.py
+- The filename should end in .py.</t>
+<t tx="ekr.20070224073109">@enabled-plugins nodes contain the list of enabled plugins,
+just as was formerly contained in pluginsManager.txt files.
+
+Leo loads plugins in the order they appear. The *first* mention of a plugin in
+controls whether the plugin is enabled or not. If the plugin's name is commented
+out (appears on a line starting with #), it is disabled, otherwise it is
+enabled. Plugins not appearing here are disabled. File names may be indented as
+desired.</t>
+<t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
+#
+# The FIRST mention of a plugin controls whether the plugin is enable or not:
+# - If the plugin's name is commented out, it is disabled, otherwise it is enabled.
+# - Plugins not appearing here are disabled.
+# 
+# File names may be indented as desired.
+
+#Standard plugins enabled in official distributions.
+
+# This plugin creates the Plugins menu.
+plugins_menu.py
+
+# The plugins manager plugin is too confusing at present:
+# It doesn't understand @enabled-plugins nodes.
+# plugin_manager.py
+
+# cleo.py
+open_with.py
+mod_scripting.py
+rst3.py
+UNL.py
+
+# Enabled by default in Leo 4.4.3. (order is important)
+nav_buttons.py
+hoist.py
+image.py
+leo_to_html.py
+
+#All other plugins.
+# Order is important for enabled plugins that add items to the icon area.
+
+threading_colorizer.py
+
+#ConceptualSort.py
+#EditAttributes.py
+#FileActions.py
+#Library.py
+#UASearch.py
+#URLloader.py
+#UniversalScrolling.py
+
+#add_directives.py
+#arrows.py
+#at_folder.py
+#at_view.py
+#autotrees.py
+#base64Packager.py
+#bibtex.py
+#chapter_hoist.py
+#cleo.py
+#color_markup.py
+#datenodes.py
+#detect_urls.py
+#dyna_menu.py
+#fastGotoNode.py
+#footprints.py
+#groupOperations.py
+#hoist.py
+#image.py
+#import_cisco_config.py
+#keybindings.py
+#leoOPML.py
+#leo_to_html.py
+#leo_to_rtf.py
+#leoupdate.py
+#macros.py
+#mod_autosave.py
+#mod_http.py
+#mod_labels.py
+#mod_read_dir_outline.py
+#mod_shadow.py
+#multifile.py
+#nav_buttons.py
+#newButtons.py
+#niceNosent.py
+#nodebar.py
+#nodenavigator.py
+#open_shell.py
+#paste_as_headlines.py
+#pie_menus.py
+#pretty_print.py
+#print_cp.py
+#quickMove.py
+#rClick.py
+#read_only_nodes.py
+#rowcol.py
+#run_nodes.py
+#s_menu.py
+#scheduler.py
+#searchbox.py
+#shortcut_button.py
+#slideshow.py
+#table.py
+#templates.py
+#trace_tags.py
+#vim.py
+#word_count.py
+#word_export.py
+#xcc_nodes.py
+#xemacs.py
+#xsltWithNodes.py
+#zodb.py</t>
+<t tx="ekr.20070318065601">True:  Chapter commands are functional.
+False: Chapter commands do not exists.</t>
+<t tx="ekr.20070326094544"></t>
+<t tx="ekr.20070411101857"></t>
+<t tx="ekr.20070411101857.1">'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+</t>
+<t tx="ekr.20070411101857.2">'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None</t>
+<t tx="ekr.20070411101857.3">'subprocess.Popen','C:/Program Files/Windows NT/Accessories/wordpad.exe',None</t>
+<t tx="ekr.20070411172718">@openwith nodes in @settings trees create menu items. The openWith
+plugin must be active for these settings to have any effect.
+
+The headline of an @openwith node has the form::
+
+    @openwith name = shortcut
+    
+name is name of the menu item. shortcut specifies the shortcut used to invoke
+the menu item. shortcut may be None.
+
+The body text @openwith nodes should contain a single line contain a tuple of the form::
+
+    command,arg,ext
+
+For example::
+    
+    'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+    
+When the user selects this menu item Leo executes command(arg+path) where path
+is the full path to the temp file. The ext argument specifies the extension of
+the temp file. Notes:
+
+- command is a string.  Valid values are::
+    
+  'subprocess.Popen'
+  'os.system'
+  'os.startfile'
+  'os.spawnl'
+  'os.spawnv'
+  'exec'
+  
+- arg is either a single string or a list of strings.
+
+- ext is a string or None. If None, Leo computes a file extension base on what
+  @language directive is in effect.
+  
+- If the .leo file being loaded contains @openwith nodes, the File:Open With
+menu contains only the items created by those nodes. Similarly, @openwith nodes
+in myLeoSettings.leo override entries in leoSettings.leo.
+
+- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
+tables in the plugin itself.</t>
+<t tx="ekr.20070417071249">True: show info as plugins are loaded.</t>
+<t tx="ekr.20070419103554">True:  Leo ensures that non-empty body text ends in a newline in @nosent trees.
+False: Leo leaves body text alone when writing @nosent trees.</t>
+<t tx="ekr.20070503080312">True: trace storage allocation in Leo's tree.</t>
+<t tx="ekr.20070531103454"></t>
+<t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
+False: Chapter tabs do not appear.</t>
+<t tx="ekr.20070613133747">propagate-key-event = Alt-C
+propagate-key-event = Alt-E
+propagate-key-event = Alt-F
+propagate-key-event = Alt-H
+propagate-key-event = Alt-P
+propagate-key-event = Alt-O
+propagate-key-event = Alt-W
+
+# These new bindings replace the following bindings:
+    
+# enter-quick-command-mode = Alt-C (Now Alt-Shift-C)
+# extend-to-word           = Alt-W
+# forward-sentence                    ! text = Alt-e
+# forward-sentence-extend-selection   ! text = Alt-Shift-e
+# forward-word                        ! text = Alt-f
+# forward-word-extend-selection       ! text = Alt-Shift-f
+# find-character                      = Alt-P
+# find-character-extend-selection     = Alt-Shift-P
+# forward-word                        ! mini = Alt-f
+# forward-word-extend-selection       ! mini = Alt-Shift-f</t>
+<t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
+<t tx="ekr.20070622214401"></t>
+<t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
+<t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
+<t tx="ekr.20070810180015"></t>
+<t tx="ekr.20070810180015.1">@color
+
+# Important: input state is **not** a mode.</t>
+<t tx="ekr.20070810180015.2"># Allows temporary rebindings without interfering with typical bindings.
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+keyboard-quit           = Ctrl-g # not needed, but a good reminder
+keyboard-quit           = Return
+
+close-rectangle         = c
+convert-blanks          = b
+convert-tabs            = t
+execute-script          = e
+open-rectangle          = o
+repeat-complex-command  = a
+reformat-paragraph      = r
+remove-blank-lines      = b
+sort-lines              = l
+sort-siblings           = s
+
+# enter-emacs-mode        = space
+# enter-buttons-mode      = b
+# enter-commands-mode     = c
+# enter-edit-mode         = e
+# enter-file-mode         = f
+# enter-gui-mode          = g
+# enter-help-mode         = h
+# enter-kill-mode         = k
+# enter-modes-mode        = m
+# enter-outline-mode      = o
+# enter-move-outline-mode = Shift-o
+# enter-toggle-find-mode  = t
+# enter-extract-mode      = x</t>
+<t tx="ekr.20070810180015.3"></t>
+<t tx="ekr.20070810180015.4"># Keyboard-quit sets the input state to the *default* input state
+# Specified by @strings top_level_unbound_key_action.
+
+enter-quick-command-mode = Alt-Shift-C
+</t>
+<t tx="ekr.20070810180015.5"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.
+
+# These try to implement DWIM (Do What I mean) by shifting focus to the body pane for normal arrow keys.
+# The main price: having to hold the Alt key down when moving or selecting outline nodes.
+
+# Plain special keys **always** refer to the body text.
+back-char                   = LtArrow
+forward-char                = RtArrow
+next-line                   = DnArrow
+previous-line               = UpArrow
+
+beginning-of-buffer         = Ctrl-Home
+beginning-of-line           = Home
+end-of-buffer               = Ctrl-End
+end-of-line                 = End
+
+# contract-or-go-left       ! tree = LtArrow
+# expand-and-go-right       ! tree = RtArrow
+# goto-next-visible         ! tree = DnArrow
+# goto-prev-visible         ! tree = UpArrow
+# goto-first-visible-node   ! tree = Home
+# goto-last-visible-node    ! tree = End
+
+# Ctrl-arrow and Ctrl-shift keys work only in text.
+back-word                           = Ctrl-LtArrow
+back-word-extend-selection          = Ctrl-Shift-LtArrow
+forward-word                        = Ctrl-RtArrow
+forward-word-extend-selection       = Ctrl-Shift-RtArrow
+
+beginning-of-buffer-extend-selection= Ctrl-Shift-Home
+beginning-of-line-extend-selection  = Shift-Home
+end-of-buffer-extend-selection      = Ctrl-Shift-End
+end-of-line-extend-selection        = Shift-End
+
+scroll-outline-down-page            ! tree = PageDn
+scroll-outline-up-page              ! tree = PageUp
+
+scroll-down                         ! text = PageDn 
+scroll-up                           ! text = PageUp
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-up-extend-selection          ! text = Shift-PageUp
+
+# Alt arrow/home/end/page keys always refer to the tree.
+contract-or-go-left         = Alt-LtArrow
+expand-and-go-right         = Alt-RtArrow
+goto-next-visible           = Alt-DnArrow
+goto-prev-visible           = Alt-UpArrow
+
+goto-first-visible-node     = Alt-Home
+goto-last-visible-node      = Alt-End
+
+move-outline-down           = Alt-Shift-DnArrow
+move-outline-left           = Alt-Shift-LtArrow
+move-outline-right          = Alt-Shift-RtArrow
+move-outline-up             = Alt-Shift-UpArrow
+
+scroll-outline-down-page    = Alt-PageDn
+scroll-outline-up-page      = Alt-PageUp
+
+scroll-outline-left         = Alt+Ctrl+LtArrow
+scroll-outline-right        = Alt+Ctrl+RtArrow</t>
+<t tx="ekr.20070810180015.6"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.
+
+# Plain arrow keys depend on focus.
+back-char                   ! text = LtArrow
+forward-char                ! text = RtArrow
+next-line                   ! text = DnArrow
+previous-line               ! text = UpArrow
+
+# Shift arrow keys depend on focus.
+back-char-extend-selection      ! text = Shift-LtArrow
+forward-char-extend-selection   ! text = Shift-RtArrow
+next-line-extend-selection      ! text = Shift-DnArrow
+previous-line-extend-selection  ! text = Shift-UpArrow
+
+move-outline-down               ! tree = Shift-DnArrow
+move-outline-left               ! tree = Shift-LtArrow
+move-outline-right              ! tree = Shift-RtArrow
+move-outline-up                 ! tree = Shift-UpArrow
+
+# Ctrl-arrow and Ctrl-shift keys work only in text.
+back-word                           ! text = Ctrl-LtArrow
+back-word-extend-selection          ! text = Ctrl-Shift-LtArrow
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection! text = Ctrl-Shift-Home
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+forward-word                        ! text = Ctrl-RtArrow
+forward-word-extend-selection       ! text = Ctrl-Shift-RtArrow
+
+# Home, End, and Page Keys (and shift varients) depend on focus.
+beginning-of-line                   ! text = Home
+beginning-of-line-extend-selection  ! text = Shift-Home
+end-of-line                         ! text = End
+end-of-line-extend-selection        ! text = Shift-End
+goto-first-visible-node             ! tree = Home
+goto-last-visible-node              ! tree = End
+scroll-down                         ! text = PageDn 
+scroll-down-extend-selection        ! text = Shift-PageDn
+scroll-outline-down-page            ! tree = PageDn
+scroll-outline-up-page              ! tree = PageUp
+scroll-up                           ! text = PageUp
+scroll-up-extend-selection          ! text = Shift-PageUp
+
+# Alt arrow/home/end/page keys always refer to the tree.
+contract-or-go-left         = Alt-LtArrow
+expand-and-go-right         = Alt-RtArrow
+goto-first-node             = None
+goto-first-visible-node     = Alt-Home
+goto-last-visible-node      = Alt-End
+goto-next-visible           = Alt-DnArrow
+goto-prev-visible           = Alt-UpArrow
+move-outline-down           = Alt-Shift-DnArrow
+move-outline-left           = Alt-Shift-LtArrow
+move-outline-right          = Alt-Shift-RtArrow
+move-outline-up             = Alt-Shift-UpArrow
+scroll-outline-down-page    = Alt-PageDn
+scroll-outline-left         = Alt+Ctrl+LtArrow
+scroll-outline-right        = Alt+Ctrl+RtArrow
+scroll-outline-up-page      = Alt-PageUp
+</t>
+<t tx="ekr.20070810180015.7"># Important: arrow keys also move the cursor: all arrow keys are handled elsewhere.
+
+back-word                           ! text = Alt-b  
+back-word-extend-selection          ! text = Alt-Shift-b
+beginning-of-line                   ! text = Ctrl-a
+beginning-of-line-extend-selection  ! text = Ctrl-Shift-a
+end-of-line                         ! text = Ctrl-e
+exchange-point-mark                 = Alt-M     # Should be Ctrl-X Ctrl-X.
+end-of-line-extend-selection        ! text = Ctrl-Shift-e
+extend-to-line                      = Alt-L
+extend-to-word                      = None ### = Alt-W
+extend-to-word                      = Ctrl-W
+forward-paragraph                   ! text = Alt-braceright
+forward-paragraph-extend-selection  ! text = Alt-Shift-braceright
+forward-sentence                    = None ### ! text = Alt-e
+forward-sentence-extend-selection   = None ### ! text = Alt-Shift-e
+forward-word                        = None ### ! text = Alt-f
+forward-word-extend-selection       = None ### ! text = Alt-Shift-f
+goto-global-line                    = Alt-g
+# match-brackets                    = Ctrl-K    # kill-line
+move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
+move-past-close-extend-selection    = None
+# next-line                         ! text = Ctrl-N
+# next-line-extend-selection        ! text = Ctrl-Shift-N
+# previous-line                     ! text = Ctrl-P
+# previous-line-extend-selection    ! text = Ctrl-Shift-P
+select-all                          ! text =  Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.
+</t>
+<t tx="ekr.20070810180015.8">cycle-all-focus             = Alt-Y
+contract-pane               = Alt+Ctrl+-
+expand-pane                 = Alt+Ctrl-=
+focus-to-body               = Alt-D  # boDy
+focus-to-tree               = Alt-T
+toggle-active-pane          = Ctrl-T</t>
+<t tx="ekr.20070810180015.9">close-window                = Alt-F4
+exit-leo                    = Ctrl-q
+new                         = Ctrl-n    # Ctrl-n conflicts with next-line.
+open-outline                = Ctrl-o
+save-file                   = Ctrl-s
+write-at-file-nodes         = Shift-Ctrl-W
+write-dirty-at-file-nodes   = Shift+Ctrl+Q
+</t>
+<t tx="ekr.20070810180015.10"># Quick finds
+backward-find-character                     = Alt-Q
+backward-find-character-extend-selection    = Alt-Shift-Q
+find-character                              = None ### = Alt-P
+find-character-extend-selection             = None ### = Alt-Shift-P
+
+# To start finds and changes...
+search-again                        = None  # similar to search-with-present-options.
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+hide-find-tab                       = None
+open-find-tab                       = None
+
+clone-find-all                      = None
+isearch-backward                    = Alt-R
+isearch-backward-regexp             = None
+isearch-forward                     = Alt-S
+isearch-forward-regexp              = None
+# isearch-with-present-options      = Alt-i
+query-replace                       = None
+query-replace-regex                 = None
+search-backward                     = None
+search-forward                      = None
+word-search-backward                = None 
+word-search-forward                 = None
+
+# To coninue finds and changes...
+find-next                           = F3
+find-all                            = None
+find-prev                           = F2
+change                              = Ctrl-=
+change-all                          = None  # Not recommended to bind this to a shortcut.
+change-then-find                    = Ctrl--</t>
+<t tx="ekr.20070810180015.11">propagate-key-event = Alt-C
+propagate-key-event = Alt-E
+propagate-key-event = Alt-F
+propagate-key-event = Alt-H
+propagate-key-event = Alt-P
+propagate-key-event = Alt-O
+propagate-key-event = Alt-W
+
+# These new bindings replace the following bindings:
+    
+# enter-quick-command-mode = Alt-C (Now Alt-Shift-C)
+# extend-to-word           = Alt-W
+# forward-sentence                    ! text = Alt-e
+# forward-sentence-extend-selection   ! text = Alt-Shift-e
+# forward-word                        ! text = Alt-f
+# forward-word-extend-selection       ! text = Alt-Shift-f
+# find-character                      = Alt-P
+# find-character-extend-selection     = Alt-Shift-P
+# forward-word                        ! mini = Alt-f
+# forward-word-extend-selection       ! mini = Alt-Shift-f</t>
+<t tx="ekr.20070810180015.12">full-command            = Alt-x
+keyboard-quit           = Ctrl-g
+negative-argument       = None      # Alt-minus conflicts with contract-all.
+repeat-complex-command  = Ctrl-P
+universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+
+# Top-level bindings are *not* inherited in the minibuffer!
+copy-text           ! mini = Ctrl-c
+cut-text            ! mini = Ctrl-x
+paste-text          ! mini = Ctrl-v
+save-file           ! mini = Ctrl-s
+
+# Important: at present binding to BackSpace in the minibuffer causes problems.
+# backward-delete-char                ! mini = BackSpace
+
+back-char                           ! mini = LtArrow
+back-char-extend-selection          ! mini = Shift-LtArrow
+back-word                           ! mini = Alt-b  
+back-word-extend-selection          ! mini = Alt-Shift-b
+# back-word                           ! mini = Ctrl-LtArrow
+# back-word-extend-selection          ! mini = Ctrl-Shift-LtArrow
+backward-kill-word                  ! mini = Alt-Delete
+beginning-of-line                   ! mini = Home
+beginning-of-line-extend-selection  ! mini = Shift-Home
+beginning-of-line                   ! mini = Ctrl-a
+beginning-of-line-extend-selection  ! mini = Ctrl-Shift-a
+dabbrev-completion                  = Alt-\
+dabbrev-expands                     = Alt-Ctrl-\
+end-of-line                         ! mini = End
+end-of-line-extend-selection        ! mini = Shift-End
+end-of-line                         ! mini = Ctrl-e
+end-of-line-extend-selection        ! mini = Ctrl-Shift-e
+forward-char                        ! mini = RtArrow
+forward-char-extend-selection       ! mini = Shift-RtArrow
+forward-word                        = None ### ! mini = Alt-f          # Usually opens file menu.
+forward-word-extend-selection       = None ### ! mini = Alt-Shift-f
+# forward-word                        ! mini = Ctrl-RtArrow
+# forward-word-extend-selection       ! mini = Ctrl-Shift-RtArrow
+kill-line                           ! mini = Ctrl-K
+select-all                          ! mini = Alt-Shift-A
+yank                                ! mini = Ctrl-Y
+
+# Find options.  Important: conflicts with non-minibuffer bindings do not matter here!
+find-next                           ! mini = F3
+find-prev                           ! mini = F2
+change                              ! mini  =Ctrl-=
+change-then-find                    ! mini = Ctrl--
+
+set-find-everywhere                 ! mini = Alt-Ctrl-e
+set-find-node-only                  ! mini = Alt-Ctrl-n
+set-find-suboutline-only            ! mini = Alt-Ctrl-s
+toggle-find-ignore-case-option      ! mini = Alt-Ctrl-i
+toggle-find-in-body-option          ! mini = Alt-Ctrl-b
+toggle-find-in-headline-option      ! mini = Alt-Ctrl-h
+toggle-find-mark-changes-option     ! mini = Alt-Ctrl-c
+toggle-find-mark-finds-option       ! mini = Alt-Ctrl-f
+toggle-find-regex-option            ! mini = Alt-Ctrl-x
+toggle-find-reverse-option          ! mini = Alt-Ctrl-r
+toggle-find-word-option             ! mini = Alt-Ctrl-w
+toggle-find-wrap-around-option      ! mini = Alt-Ctrl-a</t>
+<t tx="ekr.20070810180015.13">auto-complete-force         = None # This command needs work before it is useful. Ctrl-period
+auto-complete               = period
+debug                       = None
+execute-script              = Ctrl+B
+help-for-command            = F1
+open-spell-tab              = F7
+redo                        = Shift-Ctrl-Z
+run-unit-tests              = None
+show-calltips               = parenleft
+show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
+sort-siblings               = Alt-A
+toggle-autocompleter        = Alt-1
+toggle-calltips             = Alt-2
+toggle-extend-mode          = Alt-3
+undo                        = Ctrl-Z</t>
+<t tx="ekr.20070810180015.14">contract-or-go-left         ! tree = LtArrow
+expand-and-go-right         ! tree = RtArrow
+goto-first-sibling          ! tree = Alt-Ctrl-UpArrow
+goto-last-sibling           ! tree = Alt-Ctrl-DnArrow
+goto-next-visible           ! tree = DnArrow
+goto-prev-visible           ! tree = UpArrow
+
+clone-node                  = Ctrl-`
+clone-node-to-chapter       = None
+contract-node               = None
+copy-node                   = Shift-Ctrl-c
+copy-node-to-chapter        = None
+create-chapter              = None
+cut-node                    = Shift-Ctrl-x
+contract-all                = Alt--
+edit-headline               = Ctrl-h
+end-edit-headline           ! tree = Return     # Esc is also possible.
+delete-node                 = None
+demote                      = Ctrl-}
+expand-next-level           = None
+expand-node                 = Alt-bracketright
+extract                     = Shift-Ctrl-D
+extract-names               = Shift-Ctrl-N
+extract-section             = Shift-Ctrl-S  # Shift-Ctrl-E: end-of-line-extend-selection
+goto-next-clone             = Alt-N
+insert-node                 = Ctrl-I
+mark                        = Ctrl-M
+move-node-to-chapter        = None
+move-outline-down           = Ctrl-D
+move-outline-left           = Ctrl-L
+move-outline-right          = Ctrl-R
+move-outline-up             = Ctrl-U
+paste-node                  = Shift-Ctrl-V
+promote                     = Ctrl-{
+remove-chapter              = None
+select-chapter              = None</t>
+<t tx="ekr.20070810180015.15">add-comments                        = Ctrl-parenleft
+backward-delete-char                = BackSpace
+backward-kill-word                  = Alt-Delete
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-text                            = Ctrl-x
+delete-char                         = Delete
+delete-comments                     = Ctrl-parenright
+delete-spaces                       = None
+indent-region                       = Ctrl-]
+insert-newline                      = None # = Return # for MacOs X.
+kill-line                           = Ctrl-k
+newline-and-indent                  = Ctrl-j
+paste-text                          = Ctrl-v
+reformat-paragraph                  = Shift-Ctrl-p
+split-line                          = None
+unindent-region                     = Ctrl-[
+yank                                = Ctrl-Y
+zap-to-character                    = Alt-z</t>
+<t tx="ekr.20070810181453">back-char           ! text = LtArrow
+forward-char        ! text = RtArrow
+next-line           ! text = DnArrow
+previous-line       ! text = UpArrow
+
+back-char-extend-selection      ! text = Shift-LtArrow
+forward-char-extend-selection   ! text = Shift-RtArrow
+next-line-extend-selection      ! text = Shift-DnArrow
+previous-line-extend-selection  ! text = Shift-UpArrow
+
+contract-or-go-left         ! tree = LtArrow
+expand-and-go-right         ! tree = RtArrow
+goto-next-visible           ! tree = DnArrow
+goto-prev-visible           ! tree = UpArrow
+
+move-outline-down   ! tree = Shift-DnArrow
+move-outline-left   ! tree = Shift-LtArrow
+move-outline-right  ! tree = Shift-RtArrow
+move-outline-up     ! tree = Shift-UpArrow
+
+# goto-first-sibling          ! tree = Alt-Ctrl-UpArrow
+# goto-last-sibling           ! tree = Alt-Ctrl-DnArrow</t>
+<t tx="ekr.20070810181453.1"></t>
+<t tx="ekr.20070810181453.2"></t>
+<t tx="ekr.20070810181528">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20070810181604"></t>
+<t tx="ekr.20070810181929"># Must keep all these bindings for basic vim compatibility.
+
+# cursor movement keys...
+back-char           ! text = h
+forward-char        ! text = l
+next-line           ! text = j
+previous-line       ! text = k
+
+A 	Append to the end of the current line.
+C 	Change the rest of the current line.
+H 	To the first line of the screen.
+I 	Insert to the start of the current line. (first non-whitespace char)
+L 	To the the last line of the screen.
+M 	To the middle line of the screen.
+N 	Scan for next search match but opposite direction.
+O 	Open a new line above and insert.
+P 	Put characters before the cursor. Put lines above the current line.
+V 	Start highlighting lines.
+U 	Undo all the latest changes that were made to the current line.
+X 	Delete characters before the cursor.
+^ 	Move to the first non-whitespace character of a line.
+$ 	Move to the end of a line.
+Ctrl + r 	Redo.
+
+a 	Append after cursor.
+b 	Move to the beginning of a word.
+d6  Delete 6 lines.
+dd  Delete the current line.
+e  	Move to the end of a word.
+i  	Insert before cursor.
+o 	Open a new line below and insert.
+n 	Scan for next search match in the same direction.
+p 	Put (paste) the text you yanked or deleted.
+    Put characters after the cursor. Put lines below the current line.
+r 	Overwrite one character. After overwriting the single character, go back to command mode.
+v  	Start highlighting characters. Use the normal movement keys and commands to select text for highlighting.
+    Then use any other command, like d, on the region.
+u  	Undo the last action.
+x  	Delete characters under the cursor.
+/pattern Incremental search for pattern.
+
+# Commands for visual mode
+&gt; Shift right.
+&lt; Shift left.
+c Change the highlighted text.
+yy or Y Yank the highlighted text and copy to clipboard.
+d Delete the highlighted text and copy to clipboar.
+
+# Perhaps less useful
+# ~  	Change the case of characters.
+#   - In visual mode, change the case of highlighted characters.
+#   - In command mode, change the case of the character uder cursor.
+# R 	Enter insert mode but replace characters rather than inserting.
+# E 	To the end of a whitespace-delimited word.
+# B 	To the beginning of a whitespace-delimited word.
+
+# Commands...
+. repeat last complete editing command.
+% match paren
+: enter file (command?) mode
+:42&lt;return&gt; go to line 42
+:d Delete the current line.
+
+:s/foo/bar 	Substitute foo with bar on current line
+:s/foo/bar c Confirm each substitution. y: make match, n: skip match, a: all remaining, q: quit.
+:s/foo/bar/g Substitute all occurances on current line.
+:s/foo/bar/i Ignore case
+:s/foo/bar/gi (combination of arguments)
+:s/foo/bar/I Do not ignore case
+:42s/foo/bar Substitute on line 42
+:%s/foo/bar Substitute on entire file.
+:y Yank the current line.
+
+enter-focus-mode = f
+enter-options-mode = o
+enter-file-mode = x
+enter-search-mode = s</t>
+<t tx="ekr.20070810181929.2"># **Note**: commands that affect the text selection do not become visible
+#           until the mode ends, which kinda defeats the purpose of this mode.
+
+--&gt; set-silent-mode
+--&gt; disable-mode-help
+
+# Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+# exit-named-mode     = Return # Doesn't work well in headlines.
+mode-help           = Tab
+exit-named-mode     = BackSpace # backward-delete-char
+
+# Other modes
+enter-edit-extend-mode  = x
+enter-find-mode         = Ctrl-Shift-f
+
+# Standard bindings:
+# undo                -&gt; same = Ctrl-z
+# redo                -&gt; same = Ctrl-Shift-z
+
+# Arrow keys
+back-char                           -&gt; same = LtArrow
+back-char-extend-selection          -&gt; same = Shift-LtArrow
+forward-char                        -&gt; same = RtArrow
+forward-char-extend-selection       -&gt; same = Shift-RtArrow
+next-line                           -&gt; same = DnArrow
+next-line-extend-selection          -&gt; same = Shift-DnArrow
+previous-line                       -&gt; same = UpArrow
+previous-line-extend-selection      -&gt; same = Shift-UpArrow
+
+# Ctrl-arrow keys (words)
+back-word                           -&gt; same = Ctrl-LtArrow
+back-word-extend-selection          -&gt; same = Ctrl-Shift-LtArrow
+forward-word                        -&gt; same = Ctrl-RtArrow
+forward-word-extend-selection       -&gt; same = Ctrl-Shift-RtArrow
+
+# Home &amp; End: usually start/end of line, but here using the buffer is convenient.
+beginning-of-buffer                  -&gt; same = Home
+beginning-of-buffer-extend-selection -&gt; same = Shift-Home
+end-of-buffer                        -&gt; same = End
+end-of-buffer-extend-selection       -&gt; same = Shift-End
+
+scroll-down                         -&gt; same = PageDn
+scroll-down-extend-selection        -&gt; same = Shift-PageDn
+scroll-up                           -&gt; same = PageUp 
+scroll-up-extend-selection          -&gt; same = Shift-PageUp
+
+# Plain keys
+back-char                           -&gt; same = b
+back-char-extend-selection          -&gt; same = Shift-b
+back-word                           -&gt; same = r         # unusual
+back-word-extend-selection          -&gt; same = Shift-r   # unusual
+beginning-of-buffer                 -&gt; same = h         # unusual
+beginning-of-buffer-extend-selection -&gt;same = Shift-h   # unusual
+end-of-buffer                       -&gt; same = z         # unusual
+end-of-buffer-extend-selection      -&gt; same = Shift-z   # unusual
+beginning-of-line                   -&gt; same = a
+beginning-of-line-extend-selection  -&gt; same = Shift-a       
+end-of-line                         -&gt; same = e
+end-of-line-extend-selection        -&gt; same = Shift-e
+forward-char                        -&gt; same = f
+forward-char-extend-selection       -&gt; same = Shift-f
+forward-word                        -&gt; same = w
+forward-word-extend-selection       -&gt; same = Shift-w
+next-line                           -&gt; same = d
+next-line-extend-selection          -&gt; same = Shift-d
+next-line                           -&gt; same = n
+next-line-extend-selection          -&gt; same = Shift-n
+previous-line                       -&gt; same = p
+previous-line-extend-selection      -&gt; same = Shift-p
+previous-line                       -&gt; same = u
+previous-line-extend-selection      -&gt; same = Shift-u</t>
+<t tx="ekr.20070810181929.3"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = BackSpace
+mode-help           = Tab
+
+# Other modes
+enter-edit-mode     = Ctrl-e
+enter-find-mode     = Ctrl-Shift-f
+# enter-edit-mode     = BackSpace
+
+# Standard bindings.
+# undo                -&gt; same = Ctrl-z
+# redo                -&gt; same = Ctrl-Shift-z
+
+# Arrow keys
+back-char-extend-selection          -&gt; same = LtArrow
+forward-char-extend-selection       -&gt; same = RtArrow
+next-line-extend-selection          -&gt; same = DnArrow
+previous-line-extend-selection      -&gt; same = UpArrow
+back-word-extend-selection          -&gt; same = Ctrl-LtArrow
+forward-word-extend-selection       -&gt; same = Ctrl-RtArrow
+
+# Special keys
+end-of-buffer-extend-selection       -&gt; same = End
+beginning-of-buffer-extend-selection -&gt; same = Home
+scroll-down-extend-selection         -&gt; same = PageDn
+scroll-up-extend-selection           -&gt; same = PageUp
+
+# Plain keys
+back-char-extend-selection          -&gt; same = b
+back-word-extend-selection          -&gt; same = r   # unusual
+beginning-of-line-extend-selection  -&gt; same = a
+beginning-of-buffer-extend-selection -&gt;same = h   # unusual
+end-of-buffer-extend-selection      -&gt; same = z   # unusual
+end-of-line-extend-selection        -&gt; same = e
+forward-char-extend-selection       -&gt; same = f
+next-line-extend-selection          -&gt; same = n
+next-line-extend-selection          -&gt; same = d
+previous-line-extend-selection      -&gt; same = p
+previous-line-extend-selection      -&gt; same = u
+forward-word-extend-selection       -&gt; same = w</t>
+<t tx="ekr.20070810181929.4"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = Return
+exit-named-mode     = BackSpace
+mode-help           = Tab
+
+close-window            = Alt-F4
+
+enter-file-open-mode    = o
+
+save-file-as            = a
+new                     = n
+exit-leo                = q
+save-file               = s
+save-file-to            = t
+close-window            = w
+</t>
+<t tx="ekr.20070810181929.5"># Boilerplate for most modes.
+keyboard-quit       = Ctrl-g
+exit-named-mode     = Return
+mode-help           = Tab
+enter-file-mode     = BackSpace
+
+open-leoDocs-leo        = d
+open-leoPlugins-leo     = p
+open-leoSettings-leo    = s
+open-scripts-leo        = c
+open-outline-by-name    = o
+open-outline            = Shift-o</t>
+<t tx="ekr.20070810181929.6"># Entry commands...
+--&gt; open-find-tab
+--&gt; show-find-options
+
+# Boilerplate for most modes.
+exit-named-mode     -&gt; same = Return
+exit-named-mode     -&gt; same = BackSpace
+keyboard-quit       -&gt; same = Ctrl-g
+mode-help           -&gt; same = Tab
+
+enter-find-options-mode  = Ctrl-Y
+
+search-again                 = a
+switch-to-buffer             = h
+search-with-present-options  = f
+show-find-options    -&gt; same = o
+open-find-tab        -&gt; same = t
+word-search-forward          = w
+
+# isearch-forward          = i
+# isearch-forward-regexp   = x
+# re-search-forward        = r</t>
+<t tx="ekr.20070810181929.7"># Boilerplate for most modes.
+exit-named-mode         = Return
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+enter-find-mode         = BackSpace
+
+search-again            = a
+
+isearch-backward        = i
+isearch-backward-regexp = x
+
+search-backward         = f
+word-search-backward    = w
+re-search-backward      = Shift-R</t>
+<t tx="ekr.20070810181929.8"># Entry commands...
+--&gt; open-find-tab
+--&gt; show-find-options
+
+# Boilerplate for most modes.
+exit-named-mode     = Return
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# enter-find-mode     = Ctrl-F
+search-with-present-options         = Ctrl-f
+replace-string                      = Ctrl-Shift-r
+find-next                           = F3
+find-prev                           = F2
+change                              = Ctrl-=
+change-then-find                    = Ctrl--
+
+set-find-everywhere                 -&gt; same = e
+set-find-node-only                  -&gt; same = n
+set-find-suboutline-only            -&gt; same = s
+
+# One or both should happen automatically on entry to this mode.
+open-find-tab                       -&gt; same = t
+show-find-options                   -&gt; same = o  
+
+toggle-find-ignore-case-option      -&gt; same = i
+toggle-find-in-body-option          -&gt; same = b
+toggle-find-in-headline-option      -&gt; same = h
+toggle-find-mark-changes-option     -&gt; same = c
+toggle-find-mark-finds-option       -&gt; same = m
+toggle-find-regex-option            -&gt; same = x
+toggle-find-reverse-option          -&gt; same = r
+toggle-find-word-option             -&gt; same = w
+toggle-find-wrap-around-option      -&gt; same = a</t>
+<t tx="ekr.20070810181929.9"># Boilerplate for all modes.
+exit-named-mode         = Return
+exit-named-mode         = BackSpace
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+enter-outline-move-mode = M
+
+demote                  -&gt; same = Ctrl-{
+promote                 -&gt; same = Ctrl-}
+copy-node               -&gt; same = Ctrl-Shift-c
+cut-node                -&gt; same = Ctrl-Shift-x
+paste-node              -&gt; same = Ctrl-Shift-p
+undo                    -&gt; same = Ctrl-z
+redo                    -&gt; same = Ctrl-Shift-z
+
+# These must exit the mode so the headline can be editied.
+edit-headline           = Ctrl-h
+insert-node             = Ctrl-i 
+edit-headline           = h
+insert-node             = i
+
+goto-first-visible-node -&gt; same = Home
+goto-last-visible-node  -&gt; same = End
+goto-first-visible-node -&gt; same = a
+goto-last-visible-node  -&gt; same = z
+
+contract-or-go-left     -&gt; same = l
+expand-and-go-right     -&gt; same = r
+goto-next-visible       -&gt; same = d
+goto-prev-visible       -&gt; same = u
+
+contract-or-go-left     -&gt; same = LtArrow
+expand-and-go-right     -&gt; same = RtArrow
+goto-next-visible       -&gt; same = DnArrow
+goto-prev-visible       -&gt; same = UpArrow</t>
+<t tx="ekr.20070810181929.10"># Boilerplate for all modes.
+exit-named-mode         = Return
+enter-outline-mode      = BackSpace
+keyboard-quit           = Ctrl-g
+mode-help               = Tab
+
+# ** In this mode the meanings of keys and their Alt/Shift-partners are reversed.
+
+# These must exit the mode so the headline can be editied.
+edit-headline           = Ctrl-h
+insert-node             = Ctrl-i 
+edit-headline           = h
+insert-node             = i
+
+# Standard control keys.
+contract-all            -&gt; same = Alt--
+demote                  -&gt; same = Ctrl-{
+promote                 -&gt; same = Ctrl-}
+copy-node               -&gt; same = Ctrl-Shift-c
+cut-node                -&gt; same = Ctrl-Shift-x
+paste-node              -&gt; same = Ctrl-Shift-p
+undo                    -&gt; same = Ctrl-z
+redo                    -&gt; same = Ctrl-Shift-z
+
+goto-first-visible-node -&gt; same = Home
+goto-first-visible-node -&gt; same = Alt-Home
+goto-last-visible-node  -&gt; same = End
+goto-last-visible-node  -&gt; same = Alt-End
+
+contract-or-go-left     -&gt; same = Alt-LtArrow
+expand-and-go-right     -&gt; same = Alt-RtArrow
+goto-next-visible       -&gt; same = Alt-DnArrow
+goto-prev-visible       -&gt; same = Alt-UpArrow
+
+contract-or-go-left     -&gt; same = Shift-l
+expand-and-go-right     -&gt; same = Shift-r
+goto-next-visible       -&gt; same = Shift-d
+goto-prev-visible       -&gt; same = Shift-u
+
+move-outline-down       -&gt; same = DnArrow
+move-outline-left       -&gt; same = LtArrow
+move-outline-right      -&gt; same = RtArrow
+move-outline-up         -&gt; same = UpArrow
+
+move-outline-down       -&gt; same = d
+move-outline-left       -&gt; same = l
+move-outline-right      -&gt; same = r
+move-outline-up         -&gt; same = u</t>
+<t tx="ekr.20070810181929.11"># Boilerplate for most modes.
+exit-named-mode     = Return
+keyboard-quit       = Ctrl-g
+mode-help           = Tab
+
+# enter-edit-mode     = e
+enter-file-mode       = w
+# enter-find-mode     = f
+
+# An extremely useful mode.  It allows the traditional Leo bindings without interference
+# with the Emacs enditing bindings.
+
+toggle-invisibles       = Alt-v   
+sort-siblings           = Alt-a
+
+# convert-blanks          = Shift-Ctrl-b
+# convert-tabs            = Shift-Ctrl-j
+extract                 = Shift-Ctrl-d
+extract-names           = Shift-Ctrl-n
+extract-section         = Shift-Ctrl-e
+# reformat-paragraph      = Shift-Ctrl-p
+write-at-file-nodes     = Shift-Ctrl-w
+
+close-rectangle         = c
+convert-blanks          = b
+convert-tabs            = t
+extract                 = d
+extract-names           = n
+extract-section         = e
+open-rectangle          = o
+reformat-paragraph      = p
+sort-lines              = s
+write-at-file-nodes     = w
+
+# backward-kill-sentence  = Delete
+# downcase-region         = Ctrl-D
+# exchange-point-mark     = Ctrl-X
+# insert-file             = Ctrl-I
+# kill-region             = Ctrl-Shift-at # This should just delete the selected text.
+# list-buffers            = Ctrl-B
+# remove-blank-lines      = Ctrl-O
+# save-buffers-kill-leo   = Ctrl-C
+# save-file               = Ctrl-S
+# transpose-lines         = Ctrl-T
+# upcase-region           = Ctrl-U</t>
+<t tx="ekr.20070810182514">focus-to-body           = b
+focus-to-log            = l
+focus-to-minibuffer     = m
+focus-to-tree           = o</t>
+<t tx="ekr.20070919125633">button_text_font_family = verdana
+button_text_font_size = 7
+button_text_font_slant = roman
+button_text_font_weight = bold
+</t>
+<t tx="ekr.20070925144534"></t>
+<t tx="ekr.20070925144534.1"></t>
+<t tx="ekr.20070925144534.2"></t>
+<t tx="ekr.20070925144534.3">&amp;Open...</t>
+<t tx="ekr.20070925144534.4"></t>
+<t tx="ekr.20070925144534.5"></t>
+<t tx="ekr.20070925144534.6">&amp;Close</t>
+<t tx="ekr.20070925144534.7">&amp;Save</t>
+<t tx="ekr.20070925144534.8">Save &amp;As</t>
+<t tx="ekr.20070925144534.9">Save As &amp;Unzipped</t>
+<t tx="ekr.20070925144534.10">Save As &amp;Zipped</t>
+<t tx="ekr.20070925144534.11">Save &amp;To</t>
+<t tx="ekr.20070925144534.12">Re&amp;vert To Saved</t>
+<t tx="ekr.20070925144534.13"></t>
+<t tx="ekr.20070925144534.14"></t>
+<t tx="ekr.20070925144534.15"></t>
+<t tx="ekr.20070925144534.16"></t>
+<t tx="ekr.20070925144534.17">Read @&amp;auto Nodes</t>
+<t tx="ekr.20070925144534.18">Write @a&amp;uto Nodes</t>
+<t tx="ekr.20070925144534.19">Write D&amp;irty @a&amp;uto Nodes</t>
+<t tx="ekr.20070925144534.20"></t>
+<t tx="ekr.20070925144534.21">Read @file &amp;Nodes</t>
+<t tx="ekr.20070925144534.22">Write &amp;Dirty @file Nodes</t>
+<t tx="ekr.20070925144534.23">Write &amp;Missing @file Nodes</t>
+<t tx="ekr.20070925144534.24">&amp;Write @file Nodes</t>
+<t tx="ekr.20070925144534.25"></t>
+<t tx="ekr.20070925144534.26"></t>
+<t tx="ekr.20070925144534.27"></t>
+<t tx="ekr.20070925144534.28"></t>
+<t tx="ekr.20070925144534.29"></t>
+<t tx="ekr.20070925144534.30"></t>
+<t tx="ekr.20070925144534.31"></t>
+<t tx="ekr.20070925144534.32"></t>
+<t tx="ekr.20070925144534.33"></t>
+<t tx="ekr.20070925144534.34"></t>
+<t tx="ekr.20070925144534.35">Import To @&amp;file</t>
+<t tx="ekr.20070925144534.36">Import To @&amp;root</t>
+<t tx="ekr.20070925144534.37"></t>
+<t tx="ekr.20070925144534.38"></t>
+<t tx="ekr.20070925144534.39"></t>
+<t tx="ekr.20070925144534.40"></t>
+<t tx="ekr.20070925144534.41"></t>
+<t tx="ekr.20070925144534.42"></t>
+<t tx="ekr.20070925144534.43"></t>
+<t tx="ekr.20070925144534.44"></t>
+<t tx="ekr.20070925144534.45"></t>
+<t tx="ekr.20070925144534.46"></t>
+<t tx="ekr.20070925144534.47">E&amp;xit</t>
+<t tx="ekr.20070925144534.48"></t>
+<t tx="ekr.20070925144534.49">Can't Undo</t>
+<t tx="ekr.20070925144534.50">Can't Redo</t>
+<t tx="ekr.20070925144534.51"></t>
+<t tx="ekr.20070925144534.52">Cu&amp;t</t>
+<t tx="ekr.20070925144534.53">Cop&amp;y</t>
+<t tx="ekr.20070925144534.54">&amp;Paste</t>
+<t tx="ekr.20070925144534.55">&amp;Delete</t>
+<t tx="ekr.20070925144534.56">Select &amp;All</t>
+<t tx="ekr.20070925144534.57"></t>
+<t tx="ekr.20070925144534.58"></t>
+<t tx="ekr.20070925144534.59"></t>
+<t tx="ekr.20070925144534.60"></t>
+<t tx="ekr.20070925144534.61"></t>
+<t tx="ekr.20070925144534.62"></t>
+<t tx="ekr.20070925144534.63"></t>
+<t tx="ekr.20070925144534.64"></t>
+<t tx="ekr.20070925144534.65"></t>
+<t tx="ekr.20070925144534.66"></t>
+<t tx="ekr.20070925144534.67"></t>
+<t tx="ekr.20070925144534.68"></t>
+<t tx="ekr.20070925144534.69"></t>
+<t tx="ekr.20070925144534.70"></t>
+<t tx="ekr.20070925144534.71"></t>
+<t tx="ekr.20070925144534.72"></t>
+<t tx="ekr.20070925144534.73"></t>
+<t tx="ekr.20070925144534.74"></t>
+<t tx="ekr.20070925144534.75"></t>
+<t tx="ekr.20070925144534.76"></t>
+<t tx="ekr.20070925144534.77"></t>
+<t tx="ekr.20070925144534.78"></t>
+<t tx="ekr.20070925144534.79"></t>
+<t tx="ekr.20070925144534.80"></t>
+<t tx="ekr.20070925144534.81"></t>
+<t tx="ekr.20070925144534.82"></t>
+<t tx="ekr.20070925144534.83"></t>
+<t tx="ekr.20070925144534.84"></t>
+<t tx="ekr.20070925144534.85"></t>
+<t tx="ekr.20070925144534.86"></t>
+<t tx="ekr.20070925144534.87"></t>
+<t tx="ekr.20070925144534.88"></t>
+<t tx="ekr.20070925144534.89"></t>
+<t tx="ekr.20070925144534.90"></t>
+<t tx="ekr.20070925144534.91"></t>
+<t tx="ekr.20070925144534.92"></t>
+<t tx="ekr.20070925144534.93"></t>
+<t tx="ekr.20070925144534.94"></t>
+<t tx="ekr.20070925144534.95"></t>
+<t tx="ekr.20070925144534.96"></t>
+<t tx="ekr.20070925144534.97"></t>
+<t tx="ekr.20070925144534.98"></t>
+<t tx="ekr.20070925144534.99"></t>
+<t tx="ekr.20070925144534.100"></t>
+<t tx="ekr.20070925144534.101"></t>
+<t tx="ekr.20070925144534.102"></t>
+<t tx="ekr.20070925144534.103"></t>
+<t tx="ekr.20070925144534.104"></t>
+<t tx="ekr.20070925144534.105"></t>
+<t tx="ekr.20070925144534.106"></t>
+<t tx="ekr.20070925144534.107">Show In&amp;visibles</t>
+<t tx="ekr.20070925144534.108">Setti&amp;ngs</t>
+<t tx="ekr.20070925144534.109"></t>
+<t tx="ekr.20070925144534.110"></t>
+<t tx="ekr.20070925144534.111"></t>
+<t tx="ekr.20070925144534.112"></t>
+<t tx="ekr.20070925144534.113">Pas&amp;te Node As Clone</t>
+<t tx="ekr.20070925144534.114"></t>
+<t tx="ekr.20070925144534.115"></t>
+<t tx="ekr.20070925144534.116"></t>
+<t tx="ekr.20070925144534.117"></t>
+<t tx="ekr.20070925144534.118"></t>
+<t tx="ekr.20070925144534.119"></t>
+<t tx="ekr.20070925144534.120"></t>
+<t tx="ekr.20070925144534.121"></t>
+<t tx="ekr.20070925144534.122">D&amp;e-Hoist</t>
+<t tx="ekr.20070925144534.123"></t>
+<t tx="ekr.20070925144534.124"></t>
+<t tx="ekr.20070925144534.125"></t>
+<t tx="ekr.20070925144534.126"></t>
+<t tx="ekr.20070925144534.127"></t>
+<t tx="ekr.20070925144534.128"></t>
+<t tx="ekr.20070925144534.129"></t>
+<t tx="ekr.20070925144534.130"></t>
+<t tx="ekr.20070925144534.131"></t>
+<t tx="ekr.20070925144534.132"></t>
+<t tx="ekr.20070925144534.133"></t>
+<t tx="ekr.20070925144534.134"></t>
+<t tx="ekr.20070925144534.135"></t>
+<t tx="ekr.20070925144534.136"></t>
+<t tx="ekr.20070925144534.137"></t>
+<t tx="ekr.20070925144534.138"></t>
+<t tx="ekr.20070925144534.139"></t>
+<t tx="ekr.20070925144534.140"></t>
+<t tx="ekr.20070925144534.141"></t>
+<t tx="ekr.20070925144534.142"></t>
+<t tx="ekr.20070925144534.143"></t>
+<t tx="ekr.20070925144534.144"></t>
+<t tx="ekr.20070925144534.145"></t>
+<t tx="ekr.20070925144534.146"></t>
+<t tx="ekr.20070925144534.147"></t>
+<t tx="ekr.20070925144534.148"></t>
+<t tx="ekr.20070925144534.149"></t>
+<t tx="ekr.20070925144534.150"></t>
+<t tx="ekr.20070925144534.151"></t>
+<t tx="ekr.20070925144534.152"></t>
+<t tx="ekr.20070925144534.153">Move &amp;Down</t>
+<t tx="ekr.20070925144534.154">Move &amp;Left</t>
+<t tx="ekr.20070925144534.155">Move &amp;Right</t>
+<t tx="ekr.20070925144534.156">Move &amp;Up</t>
+<t tx="ekr.20070925144534.157"></t>
+<t tx="ekr.20070925144534.158"></t>
+<t tx="ekr.20070925144534.159"></t>
+<t tx="ekr.20070925144534.160"></t>
+<t tx="ekr.20070925144534.161"></t>
+<t tx="ekr.20070925144534.162"></t>
+<t tx="ekr.20070925144534.163"></t>
+<t tx="ekr.20070925144534.164"></t>
+<t tx="ekr.20070925144534.165"></t>
+<t tx="ekr.20070925144534.166"></t>
+<t tx="ekr.20070925144534.167"></t>
+<t tx="ekr.20070925144534.168">Go To &amp;First Node</t>
+<t tx="ekr.20070925144534.169">Go To First V&amp;isible</t>
+<t tx="ekr.20070925144534.170">Go To First Si&amp;bling</t>
+<t tx="ekr.20070925144534.171"></t>
+<t tx="ekr.20070925144534.172">Go To Next C&amp;hanged</t>
+<t tx="ekr.20070925144534.173">Go To Next &amp;Clone</t>
+<t tx="ekr.20070925144534.174">Go To Next &amp;Marked</t>
+<t tx="ekr.20070925144534.175">Go To Next N&amp;ode</t>
+<t tx="ekr.20070925144534.176">Go To Next &amp;Sibling</t>
+<t tx="ekr.20070925144534.177">Go To Next Visibl&amp;e</t>
+<t tx="ekr.20070925144534.178">Go To Next Visite&amp;d</t>
+<t tx="ekr.20070925144534.179"></t>
+<t tx="ekr.20070925144534.180">Go To P&amp;arent</t>
+<t tx="ekr.20070925144534.181"></t>
+<t tx="ekr.20070925144534.182">Go To &amp;Prev Node</t>
+<t tx="ekr.20070925144534.183">Go To P&amp;rev Sibling</t>
+<t tx="ekr.20070925144534.184">Go To Pre&amp;v Visible</t>
+<t tx="ekr.20070925144534.185">Go To Prev Visi&amp;ted</t>
+<t tx="ekr.20070925144534.186"></t>
+<t tx="ekr.20070925144534.187">Go To Last Node</t>
+<t tx="ekr.20070925144534.188">Go To Last Siblin&amp;g</t>
+<t tx="ekr.20070925144534.189">Go To &amp;Last Visible</t>
+<t tx="ekr.20070925144534.190"></t>
+<t tx="ekr.20070925144534.191"></t>
+<t tx="ekr.20070925144534.192"></t>
+<t tx="ekr.20070925144534.193"></t>
+<t tx="ekr.20070925144534.194"></t>
+<t tx="ekr.20070925144534.195"></t>
+<t tx="ekr.20070925144534.196"></t>
+<t tx="ekr.20070925144534.197"></t>
+<t tx="ekr.20070925144534.198"></t>
+<t tx="ekr.20070925144534.199"></t>
+<t tx="ekr.20070925144534.200"></t>
+<t tx="ekr.20070925144534.201"></t>
+<t tx="ekr.20070925144534.202"></t>
+<t tx="ekr.20070925144534.203"></t>
+<t tx="ekr.20070925144534.204"></t>
+<t tx="ekr.20070925144534.205"></t>
+<t tx="ekr.20070925144534.206"></t>
+<t tx="ekr.20070925144534.207"></t>
+<t tx="ekr.20070925144534.208"></t>
+<t tx="ekr.20070925144534.209"></t>
+<t tx="ekr.20070925144534.210"></t>
+<t tx="ekr.20070925144534.211"></t>
+<t tx="ekr.20070925144534.212"></t>
+<t tx="ekr.20070925144534.213"></t>
+<t tx="ekr.20070925144534.214"></t>
+<t tx="ekr.20070925144534.215"></t>
+<t tx="ekr.20070925144534.216"></t>
+<t tx="ekr.20070925144534.217"></t>
+<t tx="ekr.20070925144534.218"></t>
+<t tx="ekr.20070925144534.219"></t>
+<t tx="ekr.20070925144534.220"></t>
+<t tx="ekr.20070925144534.221"></t>
+<t tx="ekr.20070925144534.222"></t>
+<t tx="ekr.20070925144534.223"></t>
+<t tx="ekr.20070925144534.224"></t>
+<t tx="ekr.20070925144534.225"></t>
+<t tx="ekr.20070925144534.226"></t>
+<t tx="ekr.20070925144534.227"></t>
+<t tx="ekr.20070925144534.228"></t>
+<t tx="ekr.20070925144534.229"></t>
+<t tx="ekr.20070925144534.230"></t>
+<t tx="ekr.20070925144534.231"></t>
+<t tx="ekr.20070925144534.232"></t>
+<t tx="ekr.20070925144534.233"></t>
+<t tx="ekr.20070925144534.234"></t>
+<t tx="ekr.20070925144534.235"></t>
+<t tx="ekr.20070925144534.236"></t>
+<t tx="ekr.20070925144534.237"></t>
+<t tx="ekr.20070925144534.238"></t>
+<t tx="ekr.20070925144534.239"></t>
+<t tx="ekr.20070925144534.240"></t>
+<t tx="ekr.20070925144534.241"></t>
+<t tx="ekr.20070925144534.242"></t>
+<t tx="ekr.20070925144534.243"></t>
+<t tx="ekr.20070925144534.244"></t>
+<t tx="ekr.20070925144534.245"></t>
+<t tx="ekr.20070925144534.246"></t>
+<t tx="ekr.20070925144534.247"></t>
+<t tx="ekr.20070925144534.248"></t>
+<t tx="ekr.20070925144534.249"></t>
+<t tx="ekr.20070925144534.250"></t>
+<t tx="ekr.20070925144534.251"></t>
+<t tx="ekr.20070925144534.252"></t>
+<t tx="ekr.20070925144534.253"></t>
+<t tx="ekr.20070925144534.254"></t>
+<t tx="ekr.20070925144534.255"></t>
+<t tx="ekr.20070925144534.256"></t>
+<t tx="ekr.20070925144534.257"></t>
+<t tx="ekr.20070925144534.258"></t>
+<t tx="ekr.20070925144534.259"></t>
+<t tx="ekr.20070925144534.260"></t>
+<t tx="ekr.20070925144534.261"></t>
+<t tx="ekr.20070925144534.262"></t>
+<t tx="ekr.20070925144534.263"></t>
+<t tx="ekr.20070925144534.264"></t>
+<t tx="ekr.20070925144534.265"></t>
+<t tx="ekr.20070925144534.266"></t>
+<t tx="ekr.20070925144534.267"></t>
+<t tx="ekr.20070925144534.268"></t>
+<t tx="ekr.20070925144534.269"></t>
+<t tx="ekr.20070925144534.270"></t>
+<t tx="ekr.20070925144534.271"></t>
+<t tx="ekr.20070925144534.272"></t>
+<t tx="ekr.20070925144534.273"></t>
+<t tx="ekr.20070925144534.274"></t>
+<t tx="ekr.20070925144534.275"></t>
+<t tx="ekr.20070925144534.276"></t>
+<t tx="ekr.20070925144534.277"></t>
+<t tx="ekr.20070925144534.278"></t>
+<t tx="ekr.20070925144534.279"></t>
+<t tx="ekr.20070925144534.280"></t>
+<t tx="ekr.20070925144534.281"></t>
+<t tx="ekr.20070925144534.282"></t>
+<t tx="ekr.20070925144534.283"></t>
+<t tx="ekr.20070925144534.284"></t>
+<t tx="ekr.20070925144534.285"></t>
+<t tx="ekr.20070925144534.286"></t>
+<t tx="ekr.20070925144534.287"></t>
+<t tx="ekr.20070925144534.288"></t>
+<t tx="ekr.20070925144534.289"></t>
+<t tx="ekr.20070925144534.290"></t>
+<t tx="ekr.20070925144534.291"></t>
+<t tx="ekr.20070925144534.292"></t>
+<t tx="ekr.20070925144534.293"></t>
+<t tx="ekr.20070925144534.294"></t>
+<t tx="ekr.20070925144534.295"></t>
+<t tx="ekr.20070925144534.296"></t>
+<t tx="ekr.20070925144534.297"></t>
+<t tx="ekr.20070925144534.298"></t>
+<t tx="ekr.20070925144534.299"></t>
+<t tx="ekr.20070925144534.300"></t>
+<t tx="ekr.20070925144534.301"></t>
+<t tx="ekr.20070925144534.302"></t>
+<t tx="ekr.20070925144534.303"></t>
+<t tx="ekr.20070925144534.304"></t>
+<t tx="ekr.20070925144534.305"></t>
+<t tx="ekr.20070925144534.306"></t>
+<t tx="ekr.20070925144534.307"></t>
+<t tx="ekr.20070925144534.308"></t>
+<t tx="ekr.20070925144534.309"></t>
+<t tx="ekr.20070925144534.310"></t>
+<t tx="ekr.20070925144534.311"></t>
+<t tx="ekr.20070925144534.312"></t>
+<t tx="ekr.20070925144534.313"></t>
+<t tx="ekr.20070925144534.314"></t>
+<t tx="ekr.20070925144534.315"></t>
+<t tx="ekr.20070925144534.316"></t>
+<t tx="ekr.20070925144534.317"></t>
+<t tx="ekr.20070925144534.318"></t>
+<t tx="ekr.20070925144534.319"></t>
+<t tx="ekr.20070925144534.320"></t>
+<t tx="ekr.20070925144534.321"></t>
+<t tx="ekr.20070925144534.322"></t>
+<t tx="ekr.20070925144534.323"></t>
+<t tx="ekr.20070925144534.324"></t>
+<t tx="ekr.20070925144534.325"></t>
+<t tx="ekr.20070925144534.326"></t>
+<t tx="ekr.20070925144534.327"></t>
+<t tx="ekr.20070925144534.328"></t>
+<t tx="ekr.20070925144534.329"></t>
+<t tx="ekr.20070925144534.330"></t>
+<t tx="ekr.20070925144534.331"></t>
+<t tx="ekr.20070925144534.332"></t>
+<t tx="ekr.20070925144534.333"></t>
+<t tx="ekr.20070925144534.334"></t>
+<t tx="ekr.20070925144534.335"></t>
+<t tx="ekr.20070925144534.336"></t>
+<t tx="ekr.20070925144534.337"></t>
+<t tx="ekr.20070925144534.338"></t>
+<t tx="ekr.20070925144534.339"></t>
+<t tx="ekr.20070925144534.340"></t>
+<t tx="ekr.20070925144534.341"></t>
+<t tx="ekr.20070925144534.342"></t>
+<t tx="ekr.20070925144534.343"></t>
+<t tx="ekr.20070925144534.344"></t>
+<t tx="ekr.20070925144534.345"></t>
+<t tx="ekr.20070925144534.346"></t>
+<t tx="ekr.20070925144534.347"></t>
+<t tx="ekr.20070925144534.348"></t>
+<t tx="ekr.20070925144534.349"></t>
+<t tx="ekr.20070925144534.350"></t>
+<t tx="ekr.20070925144534.351"></t>
+<t tx="ekr.20070925144534.352"></t>
+<t tx="ekr.20070925144534.353"></t>
+<t tx="ekr.20070925144534.354"></t>
+<t tx="ekr.20070925144534.355"></t>
+<t tx="ekr.20070925144534.356"></t>
+<t tx="ekr.20070925144534.357"></t>
+<t tx="ekr.20070925144534.358"></t>
+<t tx="ekr.20070925144534.359"></t>
+<t tx="ekr.20070925144534.360"></t>
+<t tx="ekr.20070925144534.361"></t>
+<t tx="ekr.20070925144534.362"># accel: a,b,c,d,e,f,h,i,m,p,r,s,t,u,v,w,x</t>
+<t tx="ekr.20070925144534.363"></t>
+<t tx="ekr.20070925144534.364"></t>
+<t tx="ekr.20070925144534.365"></t>
+<t tx="ekr.20070925144534.366"></t>
+<t tx="ekr.20070925144534.367"></t>
+<t tx="ekr.20070925144534.368"></t>
+<t tx="ekr.20070925144534.369"></t>
+<t tx="ekr.20070925144534.370"></t>
+<t tx="ekr.20070925144534.371"></t>
+<t tx="ekr.20070925144534.372"></t>
+<t tx="ekr.20070925144534.373"></t>
+<t tx="ekr.20070925144534.374"></t>
+<t tx="ekr.20070925144534.375"></t>
+<t tx="ekr.20070925144534.376"></t>
+<t tx="ekr.20070925144534.377"></t>
+<t tx="ekr.20070925144534.378"></t>
+<t tx="ekr.20070925144534.379"></t>
+<t tx="ekr.20070925144534.380"></t>
+<t tx="ekr.20070925144534.381"></t>
+<t tx="ekr.20070925144534.382"></t>
+<t tx="ekr.20070925144534.383"></t>
+<t tx="ekr.20070925144534.384"></t>
+<t tx="ekr.20070925144534.385"></t>
+<t tx="ekr.20070925144534.386"></t>
+<t tx="ekr.20070925144534.387"></t>
+<t tx="ekr.20070925144534.388"></t>
+<t tx="ekr.20070925144534.389"></t>
+<t tx="ekr.20070925144534.390"></t>
+<t tx="ekr.20070925144534.391"></t>
+<t tx="ekr.20070925144534.392"></t>
+<t tx="ekr.20070925144534.393"></t>
+<t tx="ekr.20070925144534.394"></t>
+<t tx="ekr.20070925144534.395"></t>
+<t tx="ekr.20070925144534.396"></t>
+<t tx="ekr.20070925144534.397"></t>
+<t tx="ekr.20070925144534.398"></t>
+<t tx="ekr.20070925144534.399"></t>
+<t tx="ekr.20070925144534.400"></t>
+<t tx="ekr.20070925144534.401"></t>
+<t tx="ekr.20070925144534.402"></t>
+<t tx="ekr.20070925144534.403"></t>
+<t tx="ekr.20070925144534.404"></t>
+<t tx="ekr.20070925144534.405"></t>
+<t tx="ekr.20070925144534.406"></t>
+<t tx="ekr.20070925144534.407">&amp;About Leo...</t>
+<t tx="ekr.20070925144534.408">Online &amp;Home Page</t>
+<t tx="ekr.20070925144534.409"></t>
+<t tx="ekr.20070925144534.410"></t>
+<t tx="ekr.20070925144534.411"></t>
+<t tx="ekr.20070925144534.412">Open Leo&amp;Docs.leo</t>
+<t tx="ekr.20070925144534.413">Open Leo&amp;Plugins.leo</t>
+<t tx="ekr.20070925144534.414">Open Leo&amp;Settings.leo</t>
+<t tx="ekr.20070925144534.415">Open &amp;myLeoSettings.leo</t>
+<t tx="ekr.20070925144534.416">Open scr&amp;ipts.leo</t>
+<t tx="ekr.20070925144534.417"></t>
+<t tx="ekr.20070925144534.418"></t>
+<t tx="ekr.20070925144534.419"></t>
+<t tx="ekr.20070925144534.420"></t>
+<t tx="ekr.20070925144534.421"></t>
+<t tx="ekr.20070925144534.422"></t>
+<t tx="ekr.20070925144534.423"></t>
+<t tx="ekr.20070925144534.424"></t>
+<t tx="ekr.20070925144534.425"></t>
+<t tx="ekr.20070925144534.426"></t>
+<t tx="ekr.20070925144534.427"></t>
+<t tx="ekr.20070925144552">New in Leo 4.4.4. Leo creates its menus using @menus trees. Within @menus trees,
+@menu nodes create menus and @item nodes create menu items.
+
+Notes:
+
+- The menu name always follows @menu. If the menu name is 'Plugins', Leo will
+create the Plugins menu and populate the menu by calling the
+'create-optional-menus' hook. This creates the Plugins menu as usual.
+
+- Nested @menu nodes contain submenus.
+
+- The command name follows @item. If the body text of an @item node exists, this
+body text is the menu name. Otherwise, the menu name is the command name.
+However, if the command name starts with a '*', hyphens are removed from the
+menu name.
+
+- Menu names and command names may contain a single ampersand (&amp;). If present,
+the following character is underlined in the name.
+
+- If the command name in an @item node is just a hyphen (-), the item represents
+a menu separator.</t>
+<t tx="ekr.20070926082256.1">c.prettyPrintPythonNode()</t>
+<t tx="ekr.20070926082407">@color</t>
+<t tx="ekr.20070926132045">All @button nodes in this tree define **global buttons** that appear in all Leo outlines.
+
+At present, all @button nodes in this tree are disabled because they start with
+@@ instead of just @. A better place for global buttons is in myLeoSettings.leo.</t>
+<t tx="ekr.20070927051742"></t>
+<t tx="ekr.20070927051856"></t>
+<t tx="ekr.20070927173324">A placeholder for the actual menu.
+Leo's init code populates this menu as a special case.</t>
+<t tx="ekr.20071001120755"></t>
+<t tx="ekr.20071001120755.1"></t>
+<t tx="ekr.20071001120755.2"></t>
+<t tx="ekr.20071001120755.3"></t>
+<t tx="ekr.20071001120755.4"></t>
+<t tx="ekr.20071001121059"></t>
+<t tx="ekr.20071001123216"></t>
+<t tx="ekr.20071004121248"></t>
+<t tx="ekr.20071004121248.1"></t>
+<t tx="ekr.20071004121248.2"></t>
+<t tx="ekr.20071004121248.3"></t>
+<t tx="ekr.20071004121248.4"></t>
+<t tx="ekr.20071004121248.5"></t>
+<t tx="ekr.20071004121328"></t>
+<t tx="ekr.20071004121401"></t>
+<t tx="ekr.20071004121619"></t>
+<t tx="ekr.20071004121840"></t>
+<t tx="ekr.20071004121840.1"></t>
+<t tx="ekr.20071004121840.2"></t>
+<t tx="ekr.20071005173455"></t>
+<t tx="ekr.20071006153053">True: add stuff consisting only of whitespace to the kill ring.</t>
+<t tx="ekr.20071006153725"></t>
+<t tx="ekr.20071009135515">import leoPlugins
+
+rst3 = leoPlugins.getPluginModule('rst3')
+
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        controller.processTopTree(p)
+else:
+    rst3 = leoPlugins.loadOnePlugin('rst3',verbose=True)
+    if rst3:
+        g.es('rst3 loaded')
+        rst3.onCreate('tag',{'c':c})
+    else:
+        # Ask to be removed.
+        g.app.scriptDict['removeMe'] = True</t>
+<t tx="ekr.20071010123015">文件</t>
+<t tx="ekr.20071010123015.1">新建</t>
+<t tx="ekr.20071010123223.1">打开</t>
+<t tx="ekr.20071024145953">False (legacy): Top pane contains outline and log panes.
+True: Top pane contains only outline.  Bottom pane contains body and log panes.</t>
+<t tx="ekr.20071025161551">True: a message will be printed if aspell fails to load.</t>
+<t tx="ekr.20071110153046">This option has effect only when importing so-called non-strict languages,
+for which leading whitespace is not terribly significant.
+
+True: @auto warns about mismatches that occur solely in leading whitespace.</t>
+<t tx="ekr.20071113084330"></t>
+<t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
+<t tx="ekr.20071114081712"></t>
+<t tx="ekr.20071114081712.3"></t>
+<t tx="ekr.20071114081712.4"></t>
+<t tx="ekr.20071114081712.5"></t>
+<t tx="ekr.20071114084709"></t>
+<t tx="ekr.20071114084709.1"></t>
+<t tx="ekr.20071213060239">@color</t>
+<t tx="ekr.20071213060239.1"></t>
+<t tx="ekr.20071213060239.2"></t>
+<t tx="ekr.20071213060514"></t>
+<t tx="ekr.20071213060514.1"></t>
+<t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
+<t tx="ekr.20071213060607">rst3_code_prefix =             @rst-code     # Enter code mode.
+rst3_doc_only_prefix =         @rst-doc-only # Enter doc-only mode.
+rst3_rst_prefix =              @rst          # Enter rst mode.
+rst3_ignore_headline_prefix =  @rst-no-head
+rst3_ignore_headlines_prefix = @rst-no-headlines
+rst3_ignore_node_prefix =      @rst-ignore-node
+rst3_ignore_prefix =           @rst-ignore
+rst3_ignore_tree_prefix =      @rst-ignore-tree
+rst3_option_prefix =           @rst-option
+rst3_options_prefix =          @rst-options
+rst3_preformat_prefix =        @rst-preformat
+rst3_show_headline_prefix =    @rst-head</t>
+<t tx="ekr.20071213061454"></t>
+<t tx="ekr.20071213061454.1"></t>
+<t tx="ekr.20071213061454.2"></t>
+<t tx="ekr.20071213061454.3"></t>
+<t tx="ekr.20071213061504"></t>
+<t tx="ekr.20071213061504.1"></t>
+<t tx="ekr.20071213061504.2"></t>
+<t tx="ekr.20071213061504.3"></t>
+<t tx="ekr.20071213061811"></t>
+<t tx="ekr.20071213061811.1"></t>
+<t tx="ekr.20071213061811.2"></t>
+<t tx="ekr.20071213061811.3"># Used only if generate_rst is True.</t>
+<t tx="ekr.20071213061923"># True: generate rst markup from @code and @doc parts.</t>
+<t tx="ekr.20071213061923.1"># True: generate only from @doc parts.</t>
+<t tx="ekr.20071213061923.2"># True: generate rst markup. False: generate plain text.</t>
+<t tx="ekr.20071213061923.3"></t>
+<t tx="ekr.20071213061930.1"># Can be set by @rst-no-head headlines.</t>
+<t tx="ekr.20071213061930.2"></t>
+<t tx="ekr.20071213061930.3"></t>
+<t tx="ekr.20071213061930.4"></t>
+<t tx="ekr.20071213062019"></t>
+<t tx="ekr.20071213062019.1"></t>
+<t tx="ekr.20071213062019.2"></t>
+<t tx="ekr.20071213062019.3"></t>
+<t tx="ekr.20071213062019.4"># Enter code mode.</t>
+<t tx="ekr.20071213062019.5"># Enter doc-only mode.</t>
+<t tx="ekr.20071213062019.6"># Enter rst mode.</t>
+<t tx="ekr.20071213062019.7"></t>
+<t tx="ekr.20071213062019.8"></t>
+<t tx="ekr.20071213062019.9"></t>
+<t tx="ekr.20071213062019.10"></t>
+<t tx="ekr.20071213062019.11"></t>
+<t tx="ekr.20071213062019.12"></t>
+<t tx="ekr.20071213062019.13"></t>
+<t tx="ekr.20071213062019.14"></t>
+<t tx="ekr.20071213062019.15"></t>
+<t tx="ekr.20071213190345"></t>
+<t tx="ekr.20071213190345.1"></t>
+<t tx="ekr.20071214132254"></t>
+<t tx="ekr.20071214132254.1"># xml tags, one per line.
+
+html
+body
+head
+div</t>
+<t tx="ekr.20071217093419">The body text should contain the data, one string per line.
+Comments lines starting with '#' are ignored.</t>
+<t tx="ekr.20080204124255"># For testing only.
+
+start-ipython           = Alt-5
+get-ipython-results     = Alt-6
+push-to-ipython         = Alt-i
+</t>
+<t tx="ekr.20080212084020">The encoding used for files imported by @auto if no @encoding directive is in effect.
+Default is UTF-8 (case not important).</t>
+</tnodes>
+</leo_file>

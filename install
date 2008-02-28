@@ -1,0 +1,75 @@
+#!/bin/sh
+#@+leo-ver=4-thin
+#@+node:EKR.20040519082027.33:@file-thin ../install
+#@@first
+
+# This script installs Leo on *nix.
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_SOURCE='./scripts/install/leo-script.txt'
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+
+# Make the directory structure
+if [ ! -d $LEO_LIB_DIR ] ; then
+    echo ""
+    echo Making directory structure $LEO_LIB_DIR
+
+    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2>&1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_LIB_DIR!
+        exit 1;
+    fi
+fi
+
+if [ ! -d $LEO_PREFIX/bin ] ; then
+    echo ""
+    echo Making directory structure $LEO_PREFIX/bin
+    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2>&1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_PREFIX/bin!
+        exit 1;
+    fi
+fi
+
+# Copy the files
+#echo ""
+#echo Copying files	.
+
+RESULTS=`cp -rp * $LEO_LIB_DIR/ 2>&1`
+if [ $? -ne 0 ]; then
+    echo Failure copying files to $LEO_LIB_DIR
+    exit 1;
+fi
+
+# Clean up the duplicate files.
+# Permissions were checked above.
+rm -rf $LEO_LIB_DIR/src
+rm -rf $LEO_LIB_DIR/config
+
+# Copy the files
+cp -rp src $LEO_LIB_DIR/.
+cp -rp config $LEO_LIB_DIR/.
+
+# Create the startup script
+#echo ""
+#echo "Creating startup script located at: $LEO_RUN_SCRIPT_OUTPUT"
+
+echo "python ${LEO_PREFIX}/lib/leo/src/leo.py \"\$1\"" > $LEO_RUN_SCRIPT_OUTPUT
+
+RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
+
+echo ""
+echo "Leo installed successfully"
+echo "Make sure ${LEO_PREFIX}/bin is in your path then"
+echo "type 'leo filename.leo' to use it."   
+echo ""
+
+exit 0;
+#@-node:EKR.20040519082027.33:@file-thin ../install
+#@-leo

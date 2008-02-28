@@ -1,0 +1,101 @@
+#@+leo-ver=4-thin
+#@+node:edream.120603093808:@thin pluginsManager.txt
+#@@comment #
+#@@tabwidth -4
+
+#@+at 
+#@nonl
+# Leo loads plugins in the order they appear in this file.
+# 
+# The FIRST mention of a plugin in this file controls whether the plugin is 
+# enabled or not:
+# - If the plugin's name is commented out, it is disabled, otherwise it is 
+# enabled.
+# - Plugins not appearing in this file are disabled.
+# 
+# File names may be indented as desired.
+#@-at
+#@@c
+
+# Standard plugins enabled in official distributions.
+
+# Plugin_manager.py needs plugins_menu.py
+plugins_menu.py
+plugin_manager.py
+open_with.py
+mod_scripting.py
+rst3.py
+UNL.py
+
+# All other plugins.
+# Order is important for enabled plugins that add items to the icon area.
+
+#ConceptualSort.py
+#EditAttributes.py
+#FileActions.py
+#Library.py
+#UASearch.py
+#URLloader.py
+#UniversalScrolling.py
+
+#add_directives.py
+#arrows.py
+#at_folder.py
+#at_view.py
+#autotrees.py
+#base64Packager.py
+#bibtex.py
+#chapter_hoist.py
+#cleo.py
+#color_markup.py
+#datenodes.py
+#detect_urls.py
+#dyna_menu.py
+#fastGotoNode.py
+#footprints.py
+#groupOperations.py
+#hoist.py
+#image.py
+#import_cisco_config.py
+#keybindings.py
+#leo_to_html.py
+#leo_to_rtf.py
+#leoupdate.py
+#macros.py
+#mod_autosave.py
+#mod_http.py
+#mod_labels.py
+#mod_read_dir_outline.py
+#mod_shadow.py
+#multifile.py
+#nav_buttons.py
+#newButtons.py
+#niceNosent.py
+#nodebar.py
+#nodenavigator.py
+#open_shell.py
+#paste_as_headlines.py
+#pie_menus.py
+#pretty_print.py
+#print_cp.py
+#rClick.py
+#read_only_nodes.py
+#rowcol.py
+#run_nodes.py
+#s_menu.py
+#scheduler.py
+#searchbox.py
+#shortcut_button.py
+#slideshow.py
+#table.py
+#templates.py
+#trace_tags.py
+#vim.py
+#word_count.py
+#word_export.py
+#xcc_nodes.py
+#xemacs.py
+#xsltWithNodes.py
+#zodb.py
+#@-node:edream.120603093808:@thin pluginsManager.txt
+#@-leo

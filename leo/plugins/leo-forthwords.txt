@@ -1,0 +1,17 @@
+\ @+leo-ver=4
+\ @+node:@file leo-forthwords.txt
+\ @@language forth
+\ Have this file in your cwd when you start up Leo
+\ lines beginning with '\' are comments, and ignored.
+\ declare any supplementary forth words you want coloured, one per line, below
+
+asm[
+]asm
+return-in-w
+w>
+>w
+::
+::code
+label:
+\ @-node:@file leo-forthwords.txt
+\ @-leo

@@ -1,0 +1,13 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20050329082101.145:@thin trees\pluginsManager.txt
+# This file allows you to turn handlers on and off
+doc.py
+remote.py
+rss.py
+test.py
+news.py
+
+plugin_manager.py
+#@nonl
+#@-node:ekr.20050329082101.145:@thin trees\pluginsManager.txt
+#@-leo

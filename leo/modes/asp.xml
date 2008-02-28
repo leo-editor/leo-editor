@@ -1,0 +1,372 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<!-- ASP mode by Andre Kaplan -->
+<MODE>
+	<PROPS>
+		<PROPERTY NAME="commentStart" VALUE="&lt;!--" />
+		<PROPERTY NAME="commentEnd" VALUE="--&gt;" />
+	</PROPS>
+
+	<RULES IGNORE_CASE="TRUE">
+		<SEQ TYPE="MARKUP" DELEGATE="ASPVB">&lt;%@LANGUAGE="VBSCRIPT"%&gt;</SEQ>
+		<SEQ TYPE="MARKUP" DELEGATE="ASPJS">&lt;%@LANGUAGE="JSCRIPT"%&gt;</SEQ>
+		<SEQ TYPE="MARKUP" DELEGATE="ASPJS">&lt;%@LANGUAGE="JAVASCRIPT"%&gt;</SEQ>
+		<SEQ TYPE="MARKUP" DELEGATE="ASPPL">&lt;%@LANGUAGE="PERLSCRIPT"%&gt;</SEQ>
+
+		<!-- Inlined server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+
+		<!-- Server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;script language="vbscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side Javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side PerlScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;script language="perlscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Client-side javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-Side include -->
+		<SPAN TYPE="MARKUP">
+			<BEGIN>&lt;!--#</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- SGML comment -->
+		<SPAN TYPE="COMMENT1">
+			<BEGIN>&lt;!--</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- stylesheet -->
+		<SPAN TYPE="MARKUP" DELEGATE="css::MAIN">
+			<BEGIN>&lt;STYLE&gt;</BEGIN>
+			<END>&lt;/STYLE&gt;</END>
+		</SPAN>
+
+		<!-- markup tags -->
+		<SPAN TYPE="MARKUP" DELEGATE="ASPVB_TAGS">
+			<BEGIN>&lt;</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<!-- SGML entities -->
+		<SPAN TYPE="LITERAL2" NO_WORD_BREAK="TRUE">
+			<BEGIN>&amp;</BEGIN>
+			<END>;</END>
+		</SPAN>
+	</RULES>
+
+	<!-- ******************************************************************
+	     ASP with VBScript as default script engine
+	     ****************************************************************** -->
+	<RULES SET="ASPVB" IGNORE_CASE="TRUE">
+		<!-- Inlined server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+
+		<!-- Server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;script language="vbscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side Javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side PerlScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;script language="perlscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Client-side javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-Side include -->
+		<SPAN TYPE="MARKUP">
+			<BEGIN>&lt;!--#</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- SGML comment -->
+		<SPAN TYPE="COMMENT1">
+			<BEGIN>&lt;!--</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- stylesheet -->
+		<SPAN TYPE="MARKUP" DELEGATE="css::MAIN">
+			<BEGIN>&lt;STYLE&gt;</BEGIN>
+			<END>&lt;/STYLE&gt;</END>
+		</SPAN>
+
+		<!-- markup tags -->
+		<SPAN TYPE="MARKUP" DELEGATE="ASPVB_TAGS">
+			<BEGIN>&lt;/</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="ASPVB_TAGS">
+			<BEGIN>&lt;</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<!-- SGML entities -->
+		<SPAN TYPE="LITERAL2" NO_WORD_BREAK="TRUE">
+			<BEGIN>&amp;</BEGIN>
+			<END>;</END>
+		</SPAN>
+	</RULES>
+
+	<!-- ******************************************************************
+	     ASP with JScript as default script engine
+	     ****************************************************************** -->
+	<RULES SET="ASPJS" IGNORE_CASE="TRUE">
+		<!-- Inlined server-side Javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+
+		<!-- Server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;script language="vbscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side Javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side PerlScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;script language="perlscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Client-side javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-Side include -->
+		<SPAN TYPE="MARKUP">
+			<BEGIN>&lt;!--#</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- SGML comment -->
+		<SPAN TYPE="COMMENT1">
+			<BEGIN>&lt;!--</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- stylesheet -->
+		<SPAN TYPE="MARKUP" DELEGATE="css::MAIN">
+			<BEGIN>&lt;STYLE&gt;</BEGIN>
+			<END>&lt;/STYLE&gt;</END>
+		</SPAN>
+
+		<!-- markup tags -->
+		<SPAN TYPE="MARKUP" DELEGATE="ASPJS_TAGS">
+			<BEGIN>&lt;/</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="ASPJS_TAGS">
+			<BEGIN>&lt;</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<!-- SGML entities -->
+		<SPAN TYPE="LITERAL2" NO_WORD_BREAK="TRUE">
+			<BEGIN>&amp;</BEGIN>
+			<END>;</END>
+		</SPAN>
+	</RULES>
+
+	<!-- ******************************************************************
+	     ASP with PerlScript as default script engine
+	     ****************************************************************** -->
+	<RULES SET="ASPPL" IGNORE_CASE="TRUE">
+		<!-- Inlined server-side Perlscript -->
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+
+		<!-- Server-side VBScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;script language="vbscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side Javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="jscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;script language="javascript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-side PerlScript -->
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;script language="perlscript" runat="server"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Client-side javascript -->
+		<SPAN TYPE="MARKUP" DELEGATE="ASPPL_CSJS">
+			<BEGIN>&lt;script language="jscript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="ASPPL_CSJS">
+			<BEGIN>&lt;script language="javascript"&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="ASPPL_CSJS">
+			<BEGIN>&lt;script&gt;</BEGIN>
+			<END>&lt;/script&gt;</END>
+		</SPAN>
+
+		<!-- Server-Side include -->
+		<SPAN TYPE="MARKUP">
+			<BEGIN>&lt;!--#</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- SGML comment -->
+		<SPAN TYPE="COMMENT1">
+			<BEGIN>&lt;!--</BEGIN>
+			<END>--&gt;</END>
+		</SPAN>
+
+		<!-- stylesheet -->
+		<SPAN TYPE="MARKUP" DELEGATE="css::MAIN">
+			<BEGIN>&lt;STYLE&gt;</BEGIN>
+			<END>&lt;/STYLE&gt;</END>
+		</SPAN>
+
+		<!-- markup tags -->
+		<SPAN TYPE="MARKUP" DELEGATE="ASPPL_TAGS">
+			<BEGIN>&lt;/</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<SPAN TYPE="MARKUP" DELEGATE="ASPPL_TAGS">
+			<BEGIN>&lt;</BEGIN>
+			<END>&gt;</END>
+		</SPAN>
+
+		<!-- SGML entities -->
+		<SPAN TYPE="LITERAL2" NO_WORD_BREAK="TRUE">
+			<BEGIN>&amp;</BEGIN>
+			<END>;</END>
+		</SPAN>
+	</RULES>
+
+	<!-- ******************************************************************
+	     HTML Tags
+	     ****************************************************************** -->
+	<RULES SET="ASPVB_TAGS" DEFAULT="MARKUP">
+		<SPAN TYPE="MARKUP" DELEGATE="vbscript::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+	</RULES>
+
+	<RULES SET="ASPJS_TAGS" DEFAULT="MARKUP">
+		<SPAN TYPE="MARKUP" DELEGATE="javascript::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+	</RULES>
+
+	<RULES SET="ASPPL_TAGS" DEFAULT="MARKUP">
+		<SPAN TYPE="MARKUP" DELEGATE="perl::MAIN">
+			<BEGIN>&lt;%</BEGIN>
+			<END>%&gt;</END>
+		</SPAN>
+	</RULES>
+</MODE>
