@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>What's New in Leo 4.4.3</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\new-4-4-3.html -->
+<p><a class="reference" href="new-4-4-4.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-2.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="what-s-new-in-leo-4-4-3">
+<h1><a class="toc-backref" href="#id1">What's New in Leo 4.4.3</a></h1>
+<p>The highlights of Leo 4.4.3:</p>
+<ul class="simple">
+<li>&#64;test and &#64;suite nodes may now be embedded directly in derived files.</li>
+<li>Added support for chapters in Leo's core.</li>
+<li>Added support for zipped .leo files.</li>
+<li>The new leoBridge module allows full access to all of Leo's capabilities
+from programs running outside of Leo.</li>
+<li>Better support for the winpdb debugger.</li>
+<li>Added support for &#64;enabled-plugins and &#64;open-with nodes in settings files.</li>
+<li>Removed all gui-dependent code from Leo's core.</li>
+<li>The__wx_gui plugin is now functional.</li>
+</ul>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#what-s-new-in-leo-4-4-3" id="id1" name="id1">What's New in Leo 4.4.3</a><ul>
+<li><a class="reference" href="#important-new-features" id="id2" name="id2">Important new features</a></li>
+<li><a class="reference" href="#new-commands" id="id3" name="id3">New commands</a></li>
+<li><a class="reference" href="#new-settings" id="id4" name="id4">New settings</a></li>
+<li><a class="reference" href="#plugins" id="id5" name="id5">Plugins</a></li>
+<li><a class="reference" href="#minor-improvements" id="id6" name="id6">Minor improvements</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- Links used in this document. -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="important-new-features">
+<h2><a class="toc-backref" href="#id2">Important new features</a></h2>
+<ul>
+<li><p class="first">&#64;test and &#64;suite nodes may now be embedded in derived files.</p>
+</li>
+<li><p class="first">Added support for chapters to Leo's core</p>
+<p>Chapters are regions of a Leo outline whose root is an &#64;chapter node. &#64;chapter
+nodes may appear anywhere in an outline, but the create-chapter command (see
+below) creates &#64;chapter nodes as children of a single &#64;chapters node.</p>
+<p>Selecting a chapter shows the nodes in the selected chapter; in this
+respect, chapters are like hoists. The main chapter represents the entire
+outline and can not be deleted by name. When chapters are in effect, Leo
+creates a hidden &#64;chapters node containing one &#64;chapter node for every chapter
+except the 'main' chapter.</p>
+<p>Associated settings:</p>
+<ul class="simple">
+<li>The &#64;bool use_chapters setting determines whether chapters are enabled.</li>
+<li>The &#64;bool use_chapter_tabs setting determines whether the chapters
+pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.</li>
+</ul>
+<p>When chapters are enabled, the Cmds:Chapters menu shows all available chapter commands:</p>
+<ul class="simple">
+<li>The create-chapter command creates an &#64;chapter node and with a single node.</li>
+<li>The delete-chapter command deletes the presently selected chapter.</li>
+<li>The select-chapter command makes only the nodes of the selected chapter visible.</li>
+<li>The move-node-to-chapter, clone-node-to-chapter and copy-node-to-chapter commands
+add a node (and its descendants) to another chapter.</li>
+</ul>
+</li>
+<li><p class="first">Added support for compressed .leo files</p>
+<p>Leo now has save-file-as-zipped and save-file-as-unzipped commands, and
+corresponding Save File As Zipped and Save File as Unzipped items in the File
+menu. These are exactly the same as Leo's Save As commands except that they
+temporarily force Leo to write the file in either zipped or unzipped format.
+Leo remembers whether a file was originally zipped. The read logic handles
+either zipped or unzipped .leo files automatically. The write logic will zip
+the file if it was originally zipped or if the save-file-as-zipped command is
+being executed. Leo writes files with .leo extension, regardless of whether
+the file is zipped or not. Zipped .leo files contain a single archive, whose
+name is the same as the .leo file itself.</p>
+<p><strong>Notes</strong>: The new save commands suffice to compress and expand .leo files on
+a file-by-file basis. In particular, there is no need for any user settings.
+Outside of Leo you can change the extension to .leo.zip and use stuffit or
+other program to expand the .leo file contained within. I've only tested this
+on XP, but it should work everywhere...At present the code uses Python's
+zipfile module to read and write zipped files.</p>
+</li>
+<li><p class="first">Added leoBridge module.
+See the <a class="reference" href="leoBridge.html">leoBridge chapter</a> for full details.</p>
+</li>
+<li><p class="first">Removed all (or almost all) gui-independent from Leo's core.</p>
+</li>
+<li><p class="first">Improved support for the winpdb debugger.
+See the <a class="reference" href="debuggers.html">debugging with Leo</a> chapter for full details.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="new-commands">
+<h2><a class="toc-backref" href="#id3">New commands</a></h2>
+<pre class="literal-block">
+apropos-debugging-commands
+clean-all-lines
+clone-node-to-chapter
+copy-node-to-chapter
+create-chapter
+delete-chapter
+goto-first-visible-node
+move-node-to-chapter
+print-plugin-handlers
+print-plugins
+print-settings
+save-file-as-unzipped
+save-file-as-zipped
+select-chapter
+</pre>
+</div>
+<div class="section" id="new-settings">
+<h2><a class="toc-backref" href="#id4">New settings</a></h2>
+<pre class="literal-block">
+&#64;openwith nodes
+&#64;enabled-plugins nodes
+&#64;bool center_selected_tree_node
+&#64;bool chdir_to_relative_path
+&#64;bool contractVisitedNodes
+&#64;bool force_newlines_in_at_nosent_bodies
+&#64;bool invisible_outline_navigation
+&#64;bool show_full_tracebacks_in_scripts
+&#64;bool use_chapter_tabs
+&#64;bool use_chapters
+</pre>
+<p>For details of these new settings, see leoSettings.leo</p>
+</div>
+<div class="section" id="plugins">
+<h2><a class="toc-backref" href="#id5">Plugins</a></h2>
+<ul class="simple">
+<li>The __wx_gui.py plugin is now minimally functional. Alas, some problems
+remain. See the bug list in the plugin for details.</li>
+<li>Added new search path for pluginsManager.txt
+For details, see: <a class="reference" href="http://sourceforge.net/forum/message.php?msg_id=4169720">http://sourceforge.net/forum/message.php?msg_id=4169720</a></li>
+<li>Changed bindings in the UniversalScrolling plugin.</li>
+<li>Registered the write-restructured-text command in rst3 plugin.</li>
+</ul>
+</div>
+<div class="section" id="minor-improvements">
+<h2><a class="toc-backref" href="#id6">Minor improvements</a></h2>
+<ul class="simple">
+<li>See the release notes for a list of the many bugs fixed in Leo 4.4.3.</li>
+<li>Warn on dubious section brackets.
+For details, see <a class="reference" href="http://sourceforge.net/forum/message.php?msg_id=4162357">http://sourceforge.net/forum/message.php?msg_id=4162357</a></li>
+<li>Added Find and Spell tabs to log pane on startup.
+The spell tab is only shown if Aspell was properly imported.</li>
+<li>Added shortcuts for goto-first/last-sibling commands.</li>
+<li>Made escape in the minibuffer work like ctrl-g.</li>
+<li>Only do one message re writing recent files.</li>
+<li>Added handleUrlInUrlNode helper for OnIconDoubleClick.</li>
+<li>Made copied nodes valid Leo files.
+For details, see <a class="reference" href="http://sourceforge.net/forum/message.php?msg_id=4014079">http://sourceforge.net/forum/message.php?msg_id=4014079</a></li>
+<li>changeAll now works like findAll</li>
+<li>Created standard pluginsManager.txt only if it does not exist.</li>
+<li>Clear status line in repeat-complex-command.</li>
+</ul>
+<hr class="docutils" />
+<p><a class="reference" href="new-4-4-4.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-2.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

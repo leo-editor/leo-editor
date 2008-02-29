@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Chapter 14: Using the rst3 plugin</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\rstplugin3.html -->
+<!-- June 8, 2006 -->
+<!-- publish_argv_for_missing_stylesheets = - -language=de,- -documentclass=report,- -use-latex-toc -->
+<p><a class="reference" href="writingPlugins.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="coloring.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="chapter-14-using-the-rst3-plugin">
+<h1><a class="toc-backref" href="#id1">Chapter 14: Using the rst3 plugin</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#chapter-14-using-the-rst3-plugin" id="id1" name="id1">Chapter 14: Using the rst3 plugin</a><ul>
+<li><a class="reference" href="#overview" id="id2" name="id2">Overview</a></li>
+<li><a class="reference" href="#comparison-with-previous-rst-plugins" id="id3" name="id3">Comparison with previous rst plugins</a></li>
+<li><a class="reference" href="#options" id="id4" name="id4">Options</a><ul>
+<li><a class="reference" href="#options-supporting-the-http-plugin" id="id5" name="id5">Options supporting the http plugin</a></li>
+<li><a class="reference" href="#options-that-set-command-names" id="id6" name="id6">Options that set command names</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#headline-commands" id="id7" name="id7">Headline Commands</a></li>
+<li><a class="reference" href="#using-doc-parts" id="id8" name="id8">Using doc parts</a></li>
+<li><a class="reference" href="#setting-defaults" id="id9" name="id9">Setting defaults</a></li>
+<li><a class="reference" href="#the-code-block-directive" id="id10" name="id10">The code-block directive</a></li>
+<li><a class="reference" href="#required-cascading-style-sheets" id="id11" name="id11">Required cascading style sheets</a></li>
+<li><a class="reference" href="#notes-about-rst-markup" id="id12" name="id12">Notes about rST markup</a></li>
+<li><a class="reference" href="#examples" id="id13" name="id13">Examples</a></li>
+<li><a class="reference" href="#theory-of-operation" id="id14" name="id14">Theory of operation</a></li>
+<li><a class="reference" href="#controlling-the-rst3-plugin-from-scripts" id="id15" name="id15">Controlling the rst3 plugin from scripts</a></li>
+<li><a class="reference" href="#acknowledgements" id="id16" name="id16">Acknowledgements</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- rST links used in this document... -->
+<!-- External links... -->
+<!-- Hard links to Leo's web site... -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2">Overview</a></h2>
+<p>The rst3 plugin creates output files from Leo outlines containing
+<a class="reference" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> (rST) ReStructuredText is a simple and powerful text
+formatting markup language. Outlines are a natural way to organize rST (or any
+text).</p>
+<p>This plugin adds the Write Restructured Text command to Leo's Edit menu. The Write
+Restructured Text command searches the selected outline looking for <strong>rst root nodes</strong>
+whose headline have the form &#64;rst &lt;filename&gt;. The plugin then creates
+the named file in various ways depending which rst3 options are in effect.</p>
+<p>By default, the rst3 plugin creates rST headings automatically from outlines, so
+the higher-level nodes in the outline correspond to higher-level sections in the
+output. Creating rST headings automatically relieves you from one of the most
+tedious chores in creating rST markup.</p>
+<p>To use this plugin effectively, Python's <a class="reference" href="http://docutils.sourceforge.net">docutils</a> module must be installed. The
+rst3 plugin will use the <a class="reference" href="http://silvercity.sourceforge.net">SilverCity</a> syntax coloring package if it installed.</p>
+<p>This plugin sends .htm, .html or .tex files to the docutils module for further
+processing. Docutils generates HTML files or LaTeX files depending on the file's
+extension. HTML files generated by docutils refer to three .css (cascading style
+sheet) files that should exist in the same directory as the generated HTML file.
+You can control the formatting of the HTML file by altering these .css files.
+See <a class="reference" href="#required-cascading-style-sheets">Required cascading style sheets</a> for more details.</p>
+</div>
+<div class="section" id="comparison-with-previous-rst-plugins">
+<h2><a class="toc-backref" href="#id3">Comparison with previous rst plugins</a></h2>
+<p>The rst3 plugin provides several important benefits compared to previous rst plugins:</p>
+<p>1. This plugin allows much more flexible control over its operations using <strong>rst3 options</strong>. You can
+set options in &#64;settings trees, in headlines and in body text. Nodes inherit most rst3 options from
+ancestor nodes much like nodes inherit Leo directives.  See <a class="reference" href="#options">Options</a>.</p>
+<p>The most important option is the code_mode option. This option specifies whether to process the
+body text of a node as rst markup (rst mode) or source code that is to be converted to rST
+markup (code mode). Unlike previous versions of this plugin, any node can be processed in any
+mode.</p>
+<p>2. Headlines can set any option. This turns out to be very convenient. See <a class="reference" href="#headline-commands">Headline commands</a> for
+details.  Nodes whose headlines start with &#64;rst-options are treated specially. The body text of such <strong>rst
+options nodes</strong> should contain nothing but lines of the form:</p>
+<pre class="literal-block">
+&lt;option&gt;=&lt;value&gt;
+</pre>
+<p>3. You can set any rst3 options in the <em>body text</em> of any node
+using doc parts of the form:</p>
+<pre class="literal-block">
+&#64; &#64;rst-options
+list of rst3 options, one per line
+&#64;c
+</pre>
+<p>Such <strong>option doc parts</strong> allows you to specify rst3 options even with source code files.</p>
+<p>4. You can embed rST markup in the body text
+of any node using doc parts of the form:</p>
+<pre class="literal-block">
+&#64; &#64;rst-markup
+any rST markup
+&#64;c
+</pre>
+<p>Such <strong>markup doc parts</strong> allow you to fine-tune the formatting of your source files.
+See <a class="reference" href="#using-doc-parts">Using doc parts</a> for full details.</p>
+<p>All these features create a wonderful environment for using rST.
+There is complete integration of Leo outlines with rST markup.
+You can embed both rst3 options and rST markup in any node, even node in derived files.</p>
+</div>
+<div class="section" id="options">
+<h2><a class="toc-backref" href="#id4">Options</a></h2>
+<p>You can set any option in any node, so you have complete control over how this plugin processes each
+node.  The following is a list of options that control how the rst3 plugin formats each particular node.</p>
+<dl class="docutils">
+<dt>code_mode (default: False)</dt>
+<dd>True: process nodes in code mode.  False: process nodes in rst mode.
+In code mode, the rst3 plugin automatically creates rST markup to display the body text as an
+rst code-block. In rst mode the rst3 simply copies the body text of the node to the output. That
+is, the plugin assumes that body text is already valid rST markup.</dd>
+<dt>doc_only_mode (default: False)</dt>
+<dd>True: process nodes in doc_only mode.
+False: process nodes in rst mode or code_mode, depending on options.
+In doc_only mode, the rst3 plugin outputs only regular doc parts and &#64; &#64;rst-markup doc parts.
+Headlines create section in doc_only mode only if
+a) the node contains a doc part or b) the show_organizer_nodes option is in effect.
+As always can use &#64; &#64;rst-options for per-node control of the process,
+especially node-by-node control of the show_organizer_nodes option.</dd>
+<dt>default_path (default: '')</dt>
+<dd>The path to be prepended to filenames given in root nodes.</dd>
+<dt>generate_rst (default: True)</dt>
+<dd>A master switch.
+True: generate rST markup for rST sections and rST code-blocks.
+False: don't generate rST markup and ignore &#64; &#64;rst-markup doc parts.</dd>
+<dt>number_code_lines (default: True)</dt>
+<dd>Controls whether to number code lines in code mode.
+This option has no effect in rst mode.</dd>
+<dt>show_doc_parts_as_paragraphs (default: False)</dt>
+<dd>True: Move doc parts outside of the code-block directive in code mode.
+This option has no effect in rst mode.
+<strong>Cool</strong>: Any rST markup in doc parts included as the result of this option will be rendered properly.</dd>
+<dt>show_headlines (default: True)</dt>
+<dd>True: automatically generate rST sections from headlines.
+Applies to both code mode and rst mode.
+The level of the node in the outline determines the level of the section
+underling in the rST markup. Higher-level headlines in the outline
+correspond to higher-level section headings; lower-level headlines in the
+outline correspond to lower-level section headings.</dd>
+<dt>show_leo_directives (default: True)</dt>
+<dd>True: include Leo directives in code mode.
+This option has no effect in rst mode.</dd>
+<dt>show_markup_doc_parts (default: False)</dt>
+<dd>True: include markup doc parts in code mode.
+This option has no effect in rst mode.</dd>
+<dt>show_options_doc_parts (default: False)</dt>
+<dd>True: include options doc parts in code mode.
+This option has no effect in rst mode.</dd>
+<dt>show_options_nodes (default: False)</dt>
+<dd>True: show &#64;rst-options nodes.</dd>
+<dt>show_organizer_nodes (default: True)</dt>
+<dd>True: generate rST sections for nodes that do not contain body text.
+This option has no effect unless the rST section would otherwise be written.</dd>
+<dt>strip_at_file_prefixes (default: True)</dt>
+<dd>True: remove &#64;auto, &#64;file, &#64;nosent and &#64;thin from the start of headlines.</dd>
+<dt>stylesheet_name (default: 'default.css')</dt>
+<dd>The name of the stylesheet passed to docutils.</dd>
+<dt>stylesheet_path (default: '')</dt>
+<dd>The directory containing the stylesheet passed to docutils.</dd>
+<dt>underline_characters (default: '''#=+*^~&quot;'`-:&gt;&lt;_''')</dt>
+<dd>The underlining characters to be used to specify rST sections.
+The first character is reserved so you can specify the top-level section explicitly.</dd>
+<dt>verbose (default: True)</dt>
+<dd>True: write informational messages.</dd>
+<dt>write_intermediate_file (default: False)</dt>
+<dd>True: writes intermediate files before sending them to docutils.
+This option only applies to .htm, .html and .tex files.
+The name of the intermediate file has the name of the output file with .txt appended.
+This option has effect only if the generate_rst option is True.</dd>
+<dt>publish-argv-for-missing-stylesheets (Default: '')</dt>
+<dd><p class="first">The arguments to be passed to docutils.core.Publisher().publish()
+when no stylesheet is in effect.
+This is a string that represents a comma-separated list of strings:
+For example, the option:</p>
+<pre class="literal-block">
+publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
+</pre>
+<p>results in the call:</p>
+<pre class="last literal-block">
+publish(['--language=de','--documentclass=report','--use-latex-toc'])
+</pre>
+</dd>
+</dl>
+<div class="section" id="options-supporting-the-http-plugin">
+<h3><a class="toc-backref" href="#id5">Options supporting the http plugin</a></h3>
+<p>The following options are for the use of Bernhard Mulder's http plugin.  The http plugin creates an http server running on a local port, typically 8080.  When the http plugin is running you will see a purple message in the log window that looks something like this:</p>
+<pre class="literal-block">
+http serving enabled on port 8080, version 0.91
+</pre>
+<p>To use the http plugin, start a web browser and enter this url:</p>
+<pre class="literal-block">
+http://localhost:8080/
+</pre>
+<p>You will see a a top level page containing one link for every open .leo file.  Clicking on link will cause the http server to pass a new page to the browser.  You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.</p>
+<p><strong>Important</strong>: See the docstring for the http plugin for information on configuring the plugin.
+Some of the following rst3 settings must match values of settings for the http plugin.
+Here are the rst3 options that support the http plugin:</p>
+<dl class="docutils">
+<dt>http_server_support (default: False)</dt>
+<dd><p class="first">A master switch: none of the following options have any effect unless this option is True.
+If True, the rst3 plugin does the following:</p>
+<ul class="last">
+<li><p class="first">Writes <strong>node markers</strong> in the rst output for use by the http plugin. Node markers are rst named hyperlink targets.  By default they look like:</p>
+<pre class="literal-block">
+.. _http-node-marker-N
+</pre>
+<p>where N is a unique node number.</p>
+</li>
+<li><p class="first">Adds additional information to all nodes of the tree being formatted using Leo's
+unknownAttributes mechanism.</p>
+</li>
+</ul>
+</dd>
+<dt>http_attributename (default: 'rst_http_attribute')</dt>
+<dd><p class="first">The name of the attribute name written to the unknownAttributes attribute of
+each each outline node in the rst root tree.
+The default is 'rst_http_attribute';
+it should match the following setting of the <em>http</em> plugin:</p>
+<pre class="literal-block">
+&#64;string rst_http_attributename = 'rst_http_attribute'
+</pre>
+<p class="last">This option has no effect unless the http_server_support option is True.</p>
+</dd>
+<dt>clear_http_attributes (default: False)</dt>
+<dd>If True the rst3 plugin initially clears the fields specified by <cite>http_attributename</cite>.
+This option has no effect unless the http_server_support option is True.</dd>
+<dt>node_begin_marker (default: 'http-node-marker-')</dt>
+<dd>The string used for node markers.
+This option has no effect unless the http_server_support option is True.</dd>
+</dl>
+</div>
+<div class="section" id="options-that-set-command-names">
+<h3><a class="toc-backref" href="#id6">Options that set command names</a></h3>
+<p>The following options specify the 'spelling' of headline commands.  The option_prefix and option_prefixes command also define the spelling of special doc parts.</p>
+<p>You can change these to make them shorter or to avoid conflicts with headlines in your Leo files.  The list below merely gives the default value for each setting.</p>
+<p><cite>code_prefix</cite>: '&#64;rst-code'</p>
+<p><cite>ignore_headline_prefix</cite>: '&#64;rst-no-head'</p>
+<p><cite>ignore_headlines_prefix</cite>: '&#64;rst-no-headlines'</p>
+<p><cite>ignore_prefix_tree</cite>: '&#64;rst-ignore'</p>
+<p><cite>ignore_node_prefix</cite>: '&#64;rst-ignore-node'</p>
+<p><cite>ignore_tree_prefix</cite>: '&#64;rst-ignore-tree'</p>
+<p><cite>option_prefix</cite>: '&#64;rst-option'</p>
+<p><cite>options_prefix</cite>: '&#64;rst-options'</p>
+<p><cite>preformat_prefix</cite>: '&#64;rst-preformat'</p>
+<p><cite>rst_prefix</cite>: '&#64;rst'</p>
+<p><cite>show_headline_prefix</cite>: '&#64;rst-head'</p>
+</div>
+</div>
+<div class="section" id="headline-commands">
+<h2><a class="toc-backref" href="#id7">Headline Commands</a></h2>
+<p>It is often convenient to set options in headlines.  This is done with the following <strong>headline commands</strong>:</p>
+<dl class="docutils">
+<dt>&#64;rst TEXT</dt>
+<dd>Enter rst mode.  Create a section called TEXT provided the show_headlines option is set.</dd>
+<dt>&#64;rst-code TEXT</dt>
+<dd>Enter code mode.  Create a section called TEXT provided the show_headlines option is set.</dd>
+<dt>&#64;rst-ignore-node TEXT</dt>
+<dd>Suppress all output from a single node. TEXT is ignored.
+Has <em>no</em> effect on descendant nodes and does <strong>not</strong> change any rst3 option.</dd>
+<dt>&#64;rst-ignore-tree TEXT and &#64;rst-ignore TEXT</dt>
+<dd>Suppress all output from the node and its descendants.  TEXT is ignored.
+Does <strong>not</strong> change any rst3 formatting option.</dd>
+<dt>&#64;rst-no-head TEXT</dt>
+<dd>Suppress the generation of an rST section for this node only.  Does not affect descendant nodes.
+Has <em>no</em> effect on descendant nodes and does <strong>not</strong> change any rst3 option.</dd>
+<dt>&#64;rst-no-headlines TEXT</dt>
+<dd>Set the show_headlines option to False.  As a result, TEXT is ignored.</dd>
+<dt>&#64;rst-option &lt;option&gt; = &lt;value&gt;</dt>
+<dd>Set a single option to the given value.  The default value is True.</dd>
+<dt>&#64;rst-options TEXT</dt>
+<dd>Set zero or more options from the body text of the node.  TEXT is ignored.
+The entire body text is treated as if it were in an &#64; &#64;rst-options doc part.</dd>
+<dt>&#64;rst-preformat TEXT</dt>
+<dd>Format the entire body text of the node as if the entire text preformatted.
+TEXT is ignored. In effect, a line containing '::' is added to the start of
+the text, and all following lines of the text are indented. This option has
+no effect on descendant nodes.</dd>
+</dl>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li>Several of these commands affect only the node in which they appear.  Such commands set internal settings variables only: they have no effect on the visible rst3 options.</li>
+<li>If a headline generates an rST section, the section name does not include the headline command.  Furthermore, no rST section is generated if the TEXT is empty.</li>
+</ul>
+</div>
+<div class="section" id="using-doc-parts">
+<h2><a class="toc-backref" href="#id8">Using doc parts</a></h2>
+<p>Recall that in Leo a doc part starts with the '&#64;' directive and continues until the end of body text or until the '&#64;c' directive is seen.  For example:</p>
+<pre class="literal-block">
+&#64; This is a comment in a doc part.
+Doc parts can span multiple lines.
+The next line ends the doc part
+&#64;c
+</pre>
+<p>Leo converts doc parts into comments using whatever comment delimiters are in effect.</p>
+<p><strong>Option doc parts</strong> are doc parts that start with &#64; &#64;rst-options. All other
+lines of such doc parts should be of the form name=value. (rST comments lines
+starting with '..' are allowed). For example:</p>
+<pre class="literal-block">
+&#64; &#64;rst-options
+.. This comment line is ignored.
+show_headlines=False
+show_leo_directives=False
+verbose=True
+&#64;c
+</pre>
+<p>The rst3 plugin sets options from option doc parts, even in code mode.</p>
+<p><strong>Markup doc parts</strong> are doc parts that start with &#64; &#64;rst-markup.  For example:</p>
+<pre class="literal-block">
+&#64; &#64;rst-markup
+.. contents::
+</pre>
+<p>The rst3 plugin replaces markup doc parts by the markup they contain, even in code mode.</p>
+<p>Option and markup doc parts are especially useful in code mode. They allow you
+to specify options or insert rST markup directly from with derived files. This
+makes your source files self contained: there is no need to add other nodes to
+make the rst3 plugin happy.</p>
+<p>A cool feature: In code mode, rST markup in <em>ordinary</em> doc parts will be
+rendered properly when the show_doc_parts_as_paragraphs option is in effect.
+<em>Important</em>: Regardless of the show_doc_parts_as_paragraphs option, doc parts
+have no special significance in rst mode. That is, the entire <cite>doc part</cite> from
+the opening '&#64;' to the closing '&#64;c and everything in between are treated normal
+rST markup.</p>
+</div>
+<div class="section" id="setting-defaults">
+<h2><a class="toc-backref" href="#id9">Setting defaults</a></h2>
+<p>You can set the defaults for any rst3 option in several ways:</p>
+<p>1.  By setting options in the root node using &#64; &#64;rst-options doc parts.
+For example, the root of the file that generated this documentation contains:</p>
+<pre class="literal-block">
+&#64; &#64;rst-options
+code_mode=False
+doc_mode_only=False
+generate_rst=True
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+verbose=True
+&#64;c
+</pre>
+<p>2. By setting options in &#64;settings trees.  To do this, you must prefix the option name shown in this documentation with the prefix 'rst3_'.  For example:</p>
+<pre class="literal-block">
+&#64;settings
+    &#64;bool rst3_write_intermediate_file = True
+</pre>
+</div>
+<div class="section" id="the-code-block-directive">
+<h2><a class="toc-backref" href="#id10">The code-block directive</a></h2>
+<p>This plugin defines a code-block rST directive.  The primary purpose of this directive is to show formatted source code.</p>
+<p>In rst mode you can insert the code-block directive like any other rST markup.  The rst3 plugin generates code-block directives when handling nodes in code mode.</p>
+<p>This directive takes one argument, a language name.  Like this:</p>
+<pre class="literal-block">
+.. code-block:: Python
+
+    import leoPlugins
+    import leoGlobals as g
+</pre>
+<p>This directive syntax colors the code in the indented code block that follows the directive.
+The result looks like this if the SilverCity syntax coloring module has been installed.</p>
+<div class="code-block">
+import leoPlugins<br>
+import leoGlobals as g
+</div>
+<p>Otherwise, the output looks like this:</p>
+<pre class="literal-block">
+import leoPlugins
+import leoGlobals as g
+</pre>
+<p>See the tree called &quot;Scripting chapter using the rst plugin&quot; in LeoDocs.leo for many examples of how to use code-blocks.</p>
+</div>
+<div class="section" id="required-cascading-style-sheets">
+<h2><a class="toc-backref" href="#id11">Required cascading style sheets</a></h2>
+<p>HTML files generated by the rst3 plugin assume that three .css (cascading style sheet) files exist
+in the same directory. For the HTML output to look good the following .css
+files should exist:</p>
+<ul class="simple">
+<li>default.css is the default style sheet that docutils expects to exist.</li>
+<li>leo_rst.css contains some style improvements based on Gunnar Schwant's DocFactory.</li>
+<li>silver_city.css is the style sheet that controls the syntax highlighting generated by SilverCity.</li>
+</ul>
+<p>The latter two style sheets are imported at the end of the default.css.</p>
+<p><strong>Important:</strong> You can use cascading style sheets to do things that otherwise
+wouldn't be possible with &quot;plain&quot; rST. For instance, the background color of
+this page was specified in a body style.</p>
+</div>
+<div class="section" id="notes-about-rst-markup">
+<h2><a class="toc-backref" href="#id12">Notes about rST markup</a></h2>
+<p>The plugin reserves the '#' character for your own use so that you can
+specify an rST headline explicitly. For example,:</p>
+<pre class="literal-block">
+#####
+Title
+#####
+</pre>
+<p>You would typically put such a title in the rst root node. Otherwise, you should
+let the rst3 plugin automatically generate rST sections from headlines.</p>
+<p>To create a table of contents (TOC) put:</p>
+<pre class="literal-block">
+.. contents:: Table of Contents
+</pre>
+<p>on its own line wherever you want the TOC to appear.  This line can appear in body text in rst mode,
+or in an &#64; &#64;rst-markup doc part in code mode.</p>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id13">Examples</a></h2>
+<p>The file <a class="reference" href="http://webpages.charter.net/edreamleo/ListManagerDocs.html">ListManagerDocs.html</a> is an impressive example of the kind of output
+that can be generated relatively easily using this plugin.</p>
+<p>The source for ListManagerDocs.html is <a class="reference" href="http://webpages.charter.net/edreamleo/wxListManager.leo">wxListManager.leo</a>.
+<strong>Important</strong>: wxListManager.leo was written for the rst2 plugin; it
+could be greatly simplified if adapted for the rst3 plugin.</p>
+<p>The files in LeoDocs.leo under the node 'Leo's HTML Users Guide' contain
+examples of using the rst3 plugin.</p>
+<p>This documentation was created using the rst3 plugin. The source code for this
+documentation is in LeoDocs.leo. The source code for all the rst plugins is in
+LeoPlugins.leo.</p>
+</div>
+<div class="section" id="theory-of-operation">
+<h2><a class="toc-backref" href="#id14">Theory of operation</a></h2>
+<p>The code for the rst3 plugin is more complex than usual.  Fortunately, the overall organization is straightforward.</p>
+<dl class="docutils">
+<dt>defaultOptionsDict</dt>
+<dd>This dictionary represents each rst3 option.
+To add another option, just add another entry to this dictionary.
+Keys are the option name, including the <cite>rst3_</cite> prefix.
+Values are the default value of the option.
+The hard values in the dictionary may be changed as the result of &#64;settings entries.</dd>
+<dt>processTree</dt>
+<dd>processTree is the top-level code that handles one rst root node.
+It calls preprocessTree to create the <strong>tnodeOptionDict</strong> ivar.
+processTree then calls either writeNormalTree or writeSpecialTree
+depending on whether text will be sent to docutils for further processing.
+These two methods handle mundane details of opening an closing files.
+Both writeNormalTree and writeSpecialTree call <strong>writeTree</strong> to do the actual work.</dd>
+<dt>tnodeOptionDict</dt>
+<dd>The entries in this dictionary represents the options that are set in one particular node.
+The keys of tnodeOptionDict are tnodes, the values are anonymous dictionaries.
+These anonymous inner dictionaries contain the options that are explicitly set at each tnode
+(and thus each position).
+Preprocessing the tree this way ensures that each node (headline and body text) is parsed exactly once.</dd>
+<dt>writeTree</dt>
+<dd>writeTree first calls <strong>scanAllOptions</strong>, which has the effect of
+initializing all options. writeTree then calls <strong>writeNode</strong> for each node
+that will be processed by the rst3 plugin. Options may cause the plugin to
+skip a node or an entire subtree.</dd>
+<dt>writeNode</dt>
+<dd>writeNode first calls <strong>scanAllOptions</strong> to compute the options that are in
+effect for that <em>single</em> node. Once options have computed, processing the
+node is straightforward. writeNode calls writeBody and writeHeadline
+to do the real work. These methods generate or skip text based on various
+options.</dd>
+<dt>scanAllOptions</dt>
+<dd><p class="first">scanAllOptions recreates the optionsDict ivar to represent <em>all</em> the options
+in effect for <em>for the particular node being processed by writeNode</em>. Client
+code gets these options by calling the getOption method.</p>
+<p class="last">scanAllOptions first inits all options from settings,
+then updates those options using the anonymous
+dictionaries contained in the tnodeOptionsDict.
+scanAllOptions works like g.scanAllDirectives, but the code is much simpler.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="controlling-the-rst3-plugin-from-scripts">
+<h2><a class="toc-backref" href="#id15">Controlling the rst3 plugin from scripts</a></h2>
+<p><strong>New in Leo 4.4.1</strong>:
+A new method has been added to the rst3 plugin to make it more easily to drive
+the plugin from scripts:</p>
+<pre class="literal-block">
+def writeNodeToString (self,p=None,ext=None)
+</pre>
+<p>writeNodeToString scans p's tree (p defaults to presently selected node) looking for &#64;rst nodes.
+When the first &#64;rst node is found, writeNodeToString processes the node as usual, with the following changes:</p>
+<ul class="simple">
+<li>&#64;rst need not be followed by a filename; any filename and its extension are <em>ignored</em>.</li>
+<li>Only the <tt class="docutils literal"><span class="pre">ext</span></tt> argument to writeNodeToString determines the type of output produced.
+The valid values for the <tt class="docutils literal"><span class="pre">ext</span></tt> argument are None (for rst output), '.html', '.pdf', and '.tex'.</li>
+<li>Instead of writing the result to a file, writeNodeToString returns the tuple (p,s),
+where p is the node whose tree produced the output, and s is the output itself.</li>
+<li>writeNodeToString returns after processing at most one &#64;rst node.</li>
+</ul>
+<p>Scripts can easily use writeNodeToString to convert &#64;rst trees into various kinds of output.
+For example, here is the body of &#64;button rst-&gt;html in LeoDocs.leo:</p>
+<pre class="literal-block">
+import leoPlugins
+rst3 = leoPlugins.getPluginModule('rst3')
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext='.html')
+        print '*' * 40,p
+        print s
+</pre>
+<p>Notes:</p>
+<ul class="simple">
+<li>This script scans the presently selected tree for &#64;rst nodes, just like the &#64;button rst script does.
+In particular, if the presently selected tree does not contain an &#64;rst node the search continues in parent trees.
+When an &#64;rst node is found, it converts the node (and descendants) to html and returns p,
+the found &#64;rst node and s, the html itself.</li>
+<li>The script shown above merely prints the output, but many other actions could be taken.
+In particular, because writeNodeToString returns p it would be possible to write a script that
+would scan multiple &#64;rst nodes.</li>
+<li>None and '.tex' are also valid values for the ext argument to writeNodeToString.
+None converts the &#64;rst tree to a single reStructuredText string, as shown in &#64;button rst-&gt;rst.</li>
+<li>There is some support for ext='.pdf', but this is experimental code.  Expect crashes.</li>
+</ul>
+</div>
+<div class="section" id="acknowledgements">
+<h2><a class="toc-backref" href="#id16">Acknowledgements</a></h2>
+<p>Josef Dalcolmo wrote the initial rst plugin.
+Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and
+Steve Zatz made contributions to the rst and rst2 plugins.
+Edward K. Ream designed and wrote the rst3 plugin.</p>
+<hr class="docutils" />
+<p><a class="reference" href="writingPlugins.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="coloring.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

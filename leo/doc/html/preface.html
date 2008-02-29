@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Preface</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\preface.html -->
+<p><a class="reference" href="leo_TOC.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="testimonials.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="preface">
+<h1>Preface</h1>
+<!-- links... -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<p>Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are
+superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo possibly compete with such strong competition? What does Leo offer that these other tools don't?</p>
+<p>Leo does have something unique to offer--something missing from Emacs,Vim, Visual Studio and Eclipse. Leo's users often speak of an Aha! moment when they understand what this 'something' is.
+The Aha! arises from considering programs, design and data in a new light. You might call this 'The Leo Way'. In essence, Leo shows that computer programs, designs and data are <em>not</em>, after all, mostly about text. Yes, people usually <em>express</em> programs, designs and data as text. Yes, people manipulate programs, designs and data <em>using</em> text, but <em>text is not the whole story</em>.</p>
+<p>In The Leo Way, text is simply a manifestation (a shadow) of something more
+fundamental. That 'something else' might be called 'organization' or 'structure' or 'views' or even 'architecture'. However, let us use the term <strong>node</strong> to represent the fundamental unit of structure in Leo. We'll see why in a moment.</p>
+<p>In architectural terms, nodes are bricks that make up a building. In computer
+programming terms, nodes make up methods, classes, files and entire
+applications. So the term 'node' does <em>not</em> have a fixed meaning--it is simply a
+unit of organization. Any node can be built from other nodes, and any node can
+be used by any other node. Leo represent nodes directly, as nodes (headlines) in
+an outline. An outline node contains a headline and body text. The <strong>outline
+pane</strong> shows all headlines; the <strong>body pane</strong> shows the body text of the
+presently selected node.</p>
+<p><strong>Outline structure is real data</strong></p>
+<p>To repeat: the fundamental unit in Leo is <em>not</em> text. True, headlines and body <em>consist</em> of text, but a node is just not text, it is a true (Python) object. This means several specific things:</p>
+<ol class="arabic simple">
+<li>Because nodes are true objects, Leo commands understand what a node is, and
+where a node fits into the entire outline. I'll say more about outline
+organization soon, but let me give an example. Every node has exactly one
+parent node, (except for top-level nodes that have no parents) and every node
+has zero or more children and zero or more siblings. A node's parent,
+children and siblings are real properties of the node, <em>completely
+independent</em> of the node's headline or body text. Furthermore, any of Leo's
+commands (or user-written scripts or plugins, the big sisters of user
+scripts.) can <em>easily</em> access the all aspects of an outline <em>without</em> having
+to parse any text whatsoever. Commands, scripts and plugins can easily do the
+following: get the root of the outline, the presently selected node in the
+outline, the parent, siblings, children or descendants of any node in the
+outline, etc., etc. Commands, scripts and plugins can easily insert, delete
+or move nodes, and can alter the headline or body text in any node. All this
+<em>without</em> parsing text.</li>
+<li>Having nodes be true objects means that commands scripts and plugins can
+treat the headline text as <em>something truly different from</em> body text. The
+natural interpretation of headline text is as a description of the body text.
+This is important! Headlines often control Leo's commands. For example,
+headlines that start with &#64;thin, &#64;file, &#64;asis, &#64;auto, etc. serve to guide and
+control Leo's read and write commands. Headlines that start with &#64;test,
+&#64;suite and &#64;mark-for-unit-tests guide Leo's unit testing commands. Moreover,
+it is easy to create new conventions for headlines that control user-written
+scripts or plugins. For example, plugins define specific meanings for
+headlines that start with &#64;url, &#64;rst, &#64;bookmark, &#64;slideshow, etc., etc. So
+the separation of headline and body text, <strong>as true components of a node
+object</strong>, is a very big deal.</li>
+<li>One application of these ideas deserves special mention. Leo's scripting
+plugin provides support for &#64;button nodes. The headline is &#64;button
+&lt;command-name&gt;. The body text contains a script. When Leo opens a Leo
+outline, each &#64;button node creates a command and an icon. Clicking the icon
+(or executing the command) applies the script in the &#64;button node <strong>to the
+presently selected outline</strong>. That is, the script is executed in a context in
+which it is easy to get access to all aspects of the outline in which the
+script is embedded. This is a major advance in scripting. It allows you to
+'bring scripts to data', i.e., any part of an outline. In particular, it is
+very easy to create <strong>editing scripts</strong> that automate what would otherwise be
+boring and repetitive editing tasks.</li>
+</ol>
+<p><strong>Leo outlines aren't your average outline</strong></p>
+<p>Earlier I said that <em>any</em> node can be built from other nodes, and <em>any</em> node can be used by any other node. It takes a very special kind of outline for this to be possible. In a typical outline, such as Emacs outline mode, for example, nodes appear exactly once in the outline. This makes it impossible to 'reuse' nodes in multiple places. Leo removes that limitation: any outline node can be <strong>cloned</strong>, and clones can appear in as many places in an outline as you like.</p>
+<p>Cloned nodes are distinct: they must be distinct so they can be moved throughout the outline, but <strong>cloned nodes share all their information</strong>. That is, changing the headline or body text in a node instantly changes the headline and body text in all the other nodes cloned to it. Furthermore, similar remarks apply to the children and descendants of any node--changing any child (or other descendant) of a node, say node A, instantly makes corresponding changes to all nodes cloned to node A.</p>
+<p>Earlier I said that you can think of nodes as representing 'organization' or
+'structure' or 'views' or even 'architecture'. Clones are the crucial feature that allows this point of view. For example, we can build up multiple 'views' of data in an outline using clones as follows:</p>
+<ul class="simple">
+<li>Create a 'view node' that will represent a <em>user-specified</em> view.</li>
+<li>Clone all nodes that are to be part of the view, and move them so that each clone is a child of the view node.</li>
+</ul>
+<p>That's about all there is to it. The view node, and its children <em>is</em> a new view of the outline. This notion of 'view' is so important that Leo supports it directly. Leo's <strong>chapters</strong> are simply views created as I have just described. When you select one chapter, you only see the nodes of that chapter in Leo's outline pane.</p>
+<p><strong>Conclusions &amp; encouragements</strong></p>
+<p>So Leo offers a new way to understand, organize and manipulate <em>any</em> kind of
+complex data, including computer programs, <em>designs</em> of computer programs, web
+sites, personal data, whatever. The Aha that I invite you to experience is this:
+Outlines are more than mere eye candy. Having organization be real data creates
+an entirely new dimension, literally and figuratively, in computer programming,
+computer design and data organization, including web-site design, database
+design, etc. Leo's commands use headline and body text in many creative ways. So
+can you and your scripts. It's easy, it's fun, and it's revolutionary.</p>
+<p>That's about it, except for some words of caution and advice:</p>
+<ol class="arabic simple">
+<li>Leo has been under active development for over 10 years. The new world
+created by nodes is rich and varied. You won't learn it all in a day or so.
+Please be patient. Start by learning Leo's basic features as explained in the
+tutorial. You can learn more advanced features later.</li>
+<li>Those of you who are comfortable with Emacs should feel pretty much at home
+with Leo. Leo has shamelessly stolen the best features of Emacs, including
+the minibuffer and many Emacs-like commands.</li>
+<li>For those of you who are <em>not</em> comfortable with Emacs, please understand that
+you do <em>not</em> need to understand all of Leo's commands in order to use Leo.
+Start by ignoring the minibuffer. Later, the minibuffer can become your
+friend, but you can get the Aha! without it.</li>
+</ol>
+<p>Edward K. Ream
+July, 2007</p>
+<hr class="docutils" />
+<p><a class="reference" href="leo_TOC.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="testimonials.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</body>
+</html>

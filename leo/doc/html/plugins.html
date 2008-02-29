@@ -1,0 +1,1816 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Chapter 12: Plugins</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\plugins.html -->
+<!-- August 30, 2005 -->
+<p><a class="reference" href="whitepapers.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="writingPlugins.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="chapter-12-plugins">
+<h1><a class="toc-backref" href="#id1">Chapter 12: Plugins</a></h1>
+<p>This chapter discusses the plugins contained in leoPlugins.leo.
+These plugins are part of Leo's official distribution.
+<a class="reference" href="writingPlugins.html">Chapter 13: Writing Plugins</a> tells how to write plugins.</p>
+<p>The scripting plugin (<tt class="docutils literal"><span class="pre">mod_scripting.py</span></tt>) deserves special mention. This
+plugin lets you create <strong>script buttons</strong> in a matter of seconds. See <a class="reference" href="scripting.html#creating-script-buttons">Creating
+script buttons</a>. Script buttons are extraordinarily useful. Try them, you'll be
+instantly hooked.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#chapter-12-plugins" id="id1" name="id1">Chapter 12: Plugins</a><ul>
+<li><a class="reference" href="#enabling-plugins" id="id2" name="id2">Enabling plugins</a></li>
+<li><a class="reference" href="#body-pane" id="id3" name="id3">Body pane</a><ul>
+<li><a class="reference" href="#arrows-py" id="id4" name="id4">arrows.py</a></li>
+<li><a class="reference" href="#image-py" id="id5" name="id5">image.py</a></li>
+<li><a class="reference" href="#rclick-py" id="id6" name="id6">rClick.py</a></li>
+<li><a class="reference" href="#autocompleter-py" id="id7" name="id7">autocompleter.py</a></li>
+<li><a class="reference" href="#color-markup-py" id="id8" name="id8">color_markup.py</a></li>
+<li><a class="reference" href="#script-io-to-body-py" id="id9" name="id9">script_io_to_body.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#commands-directives" id="id10" name="id10">Commands &amp; directives</a><ul>
+<li><a class="reference" href="#add-directives-py" id="id11" name="id11">add_directives.py</a></li>
+<li><a class="reference" href="#bibtex-py" id="id12" name="id12">bibtex.py</a></li>
+<li><a class="reference" href="#conceptualsort-py" id="id13" name="id13">ConceptualSort.py</a></li>
+<li><a class="reference" href="#datenodes-py" id="id14" name="id14">datenodes.py</a></li>
+<li><a class="reference" href="#fileactions-py" id="id15" name="id15">FileActions.py</a></li>
+<li><a class="reference" href="#groupoperations-py" id="id16" name="id16">groupOperations.py</a></li>
+<li><a class="reference" href="#import-cisco-config-py" id="id17" name="id17">import_cisco_config.py</a></li>
+<li><a class="reference" href="#library-py" id="id18" name="id18">Library.py</a></li>
+<li><a class="reference" href="#macros-py" id="id19" name="id19">macros.py</a></li>
+<li><a class="reference" href="#mod-autosave-py" id="id20" name="id20">mod_autosave.py</a></li>
+<li><a class="reference" href="#mod-read-dir-outline-py" id="id21" name="id21">mod_read_dir_outline.py</a></li>
+<li><a class="reference" href="#mod-timestamp-py" id="id22" name="id22">mod_timestamp.py</a></li>
+<li><a class="reference" href="#outline-export-py" id="id23" name="id23">outline_export.py</a></li>
+<li><a class="reference" href="#paste-as-headlines-py" id="id24" name="id24">paste_as_headlines.py</a></li>
+<li><a class="reference" href="#pretty-print-py" id="id25" name="id25">pretty_print.py</a></li>
+<li><a class="reference" href="#scheduler-py" id="id26" name="id26">scheduler.py</a></li>
+<li><a class="reference" href="#table-py" id="id27" name="id27">table.py</a></li>
+<li><a class="reference" href="#templates-py" id="id28" name="id28">templates.py</a></li>
+<li><a class="reference" href="#word-cound-py" id="id29" name="id29">word_cound.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#dialogs" id="id30" name="id30">Dialogs</a><ul>
+<li><a class="reference" href="#gtkdialogs" id="id31" name="id31">gtkDialogs</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#debugging-testing" id="id32" name="id32">Debugging &amp;  testing</a><ul>
+<li><a class="reference" href="#failed-import-py" id="id33" name="id33">failed_import.py</a></li>
+<li><a class="reference" href="#dump-globals-py" id="id34" name="id34">dump_globals.py</a></li>
+<li><a class="reference" href="#enable-gc-py" id="id35" name="id35">enable_gc.py</a></li>
+<li><a class="reference" href="#trace-gc-py" id="id36" name="id36">trace_gc.py</a></li>
+<li><a class="reference" href="#trace-keys-py" id="id37" name="id37">trace_keys.py</a></li>
+<li><a class="reference" href="#trace-tags-py" id="id38" name="id38">trace_tags.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#external-editors-open-with" id="id39" name="id39">External editors &amp; Open With</a><ul>
+<li><a class="reference" href="#mod-tempfname-py" id="id40" name="id40">mod_tempfname.py</a></li>
+<li><a class="reference" href="#open-shell-py" id="id41" name="id41">open_shell.py</a></li>
+<li><a class="reference" href="#open-with-py" id="id42" name="id42">open_with.py</a></li>
+<li><a class="reference" href="#temacs-py-usetemacs-py" id="id43" name="id43">temacs.py &amp; usetemacs.py</a></li>
+<li><a class="reference" href="#vim-py" id="id44" name="id44">vim.py</a></li>
+<li><a class="reference" href="#word-export-py" id="id45" name="id45">word_export.py</a></li>
+<li><a class="reference" href="#xemacs-py" id="id46" name="id46">xemacs.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#files" id="id47" name="id47">Files</a><ul>
+<li><a class="reference" href="#empty-leo-file-py" id="id48" name="id48">empty_leo_file.py</a></li>
+<li><a class="reference" href="#leoopml-py" id="id49" name="id49">leoOPML.py</a></li>
+<li><a class="reference" href="#linenumbers-py" id="id50" name="id50">lineNumbers.py</a></li>
+<li><a class="reference" href="#multifile-py" id="id51" name="id51">multifile.py</a></li>
+<li><a class="reference" href="#nicenosent-py" id="id52" name="id52">niceNosent.py</a></li>
+<li><a class="reference" href="#leotortf" id="id53" name="id53">leoToRTF</a></li>
+<li><a class="reference" href="#leotohtml" id="id54" name="id54">leoToHTML</a></li>
+<li><a class="reference" href="#leoopml" id="id55" name="id55">leoOPML</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#guis" id="id56" name="id56">Guis</a><ul>
+<li><a class="reference" href="#wx-alt-gui-py" id="id57" name="id57">__wx_alt_gui.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#icon-and-status-areas" id="id58" name="id58">Icon and status areas</a><ul>
+<li><a class="reference" href="#chapter-hoist-py" id="id59" name="id59">chapter_hoist.py</a></li>
+<li><a class="reference" href="#nav-buttons-py" id="id60" name="id60">nav_buttons.py</a></li>
+<li><a class="reference" href="#newbuttons-py" id="id61" name="id61">newButtons.py</a></li>
+<li><a class="reference" href="#hoist-py" id="id62" name="id62">hoist.py</a></li>
+<li><a class="reference" href="#nodenavigator-py" id="id63" name="id63">nodenavigator.py</a></li>
+<li><a class="reference" href="#searchbox-py" id="id64" name="id64">searchbox.py</a></li>
+<li><a class="reference" href="#shortcut-button-py" id="id65" name="id65">shortcut_button.py</a></li>
+<li><a class="reference" href="#unl-py" id="id66" name="id66">UNL.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#leon" id="id67" name="id67">LeoN</a></li>
+<li><a class="reference" href="#menus-translations" id="id68" name="id68">Menus &amp; translations</a><ul>
+<li><a class="reference" href="#chinese-menu-py" id="id69" name="id69">chinese_menu.py</a></li>
+<li><a class="reference" href="#french-fm-py" id="id70" name="id70">french_fm.py</a></li>
+<li><a class="reference" href="#pie-menus-py" id="id71" name="id71">pie_menus.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#nodes" id="id72" name="id72">Nodes</a><ul>
+<li><a class="reference" href="#at-folder-py" id="id73" name="id73">at_folder.py</a></li>
+<li><a class="reference" href="#at-produce-py" id="id74" name="id74">at_produce.py</a></li>
+<li><a class="reference" href="#at-view-py" id="id75" name="id75">at_view.py</a></li>
+<li><a class="reference" href="#autotrees-py" id="id76" name="id76">autotrees.py</a></li>
+<li><a class="reference" href="#base64packager-py" id="id77" name="id77">base64Packager.py</a></li>
+<li><a class="reference" href="#fastgotonode-py" id="id78" name="id78">fastGotoNode.py</a></li>
+<li><a class="reference" href="#mod-labels-py" id="id79" name="id79">mod_labels.py</a></li>
+<li><a class="reference" href="#read-only-nodes-py" id="id80" name="id80">read_only_nodes.py</a></li>
+<li><a class="reference" href="#run-nodes-py" id="id81" name="id81">run_nodes.py</a></li>
+<li><a class="reference" href="#slideshow-py" id="id82" name="id82">slideshow.py</a></li>
+<li><a class="reference" href="#startfile-py" id="id83" name="id83">startfile.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#plugins-manager-menu" id="id84" name="id84">Plugins manager &amp; menu</a><ul>
+<li><a class="reference" href="#leoupdate-py" id="id85" name="id85">leoupdate.py</a></li>
+<li><a class="reference" href="#plugin-manager-py" id="id86" name="id86">plugin_manager.py</a></li>
+<li><a class="reference" href="#plugins-menu-py" id="id87" name="id87">plugins_menu.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#scripting" id="id88" name="id88">Scripting</a><ul>
+<li><a class="reference" href="#dyna-menu" id="id89" name="id89">dyna_menu</a></li>
+<li><a class="reference" href="#mod-scripting" id="id90" name="id90">mod_scripting</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#servers" id="id91" name="id91">Servers</a><ul>
+<li><a class="reference" href="#mod-http-py" id="id92" name="id92">mod_http.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#shadow-files" id="id93" name="id93">Shadow files</a><ul>
+<li><a class="reference" href="#mod-shadow-py" id="id94" name="id94">mod_shadow.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#spell-checking" id="id95" name="id95">Spell checking</a><ul>
+<li><a class="reference" href="#spellpyx-py" id="id96" name="id96">spellpyx.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#text-formatting" id="id97" name="id97">Text formatting</a><ul>
+<li><a class="reference" href="#leo-to-asciidoc" id="id98" name="id98">Leo to AsciiDoc</a></li>
+<li><a class="reference" href="#rst3-py" id="id99" name="id99">rst3.py</a></li>
+<li><a class="reference" href="#xsltwithnodes-py" id="id100" name="id100">xsltWithNodes.py</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#windows" id="id101" name="id101">Windows</a><ul>
+<li><a class="reference" href="#cleo-py" id="id102" name="id102">cleo.py</a></li>
+<li><a class="reference" href="#footprints-py" id="id103" name="id103">footprints.py</a></li>
+<li><a class="reference" href="#editattributes-py" id="id104" name="id104">EditAttributes.py</a></li>
+<li><a class="reference" href="#maximizenewwindows-py" id="id105" name="id105">maximizeNewWindows.py</a></li>
+<li><a class="reference" href="#nodebar-py" id="id106" name="id106">nodebar.py</a></li>
+<li><a class="reference" href="#redirect-to-log-py" id="id107" name="id107">redirect_to_log.py</a></li>
+<li><a class="reference" href="#tabbedlog-py" id="id108" name="id108">TabbedLog.py</a></li>
+<li><a class="reference" href="#uasearch-py" id="id109" name="id109">UASearch.py</a></li>
+<li><a class="reference" href="#universalscrolling-py" id="id110" name="id110">UniversalScrolling.py</a></li>
+<li><a class="reference" href="#urlloader-py" id="id111" name="id111">URLloader.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- External links... -->
+<!-- Relative links... -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="enabling-plugins">
+<h2><a class="toc-backref" href="#id2">Enabling plugins</a></h2>
+<p>You enable or disable plugins using &#64;enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded).  See <a class="reference" href="customizer.html#specifying-settings">Specifying settings</a> for full details of settings files.</p>
+<p>The body text of the &#64;enabled-plugins node contains a list of enabled plugins.
+Notes:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Leo attempts to load all plugins every time an &#64;enabled-plugins node is seen.</dt>
+<dd><p class="first last">If the plugin has already been loaded, Leo silently ignores the request to
+re-enable the plugin. Leo never attempts to disable a plugin while processing
+enabled plugin strings. Thus, plugins enabled in an &#64;enabled-plugins node in
+leoSettings.leo <em>will</em> be enabled regardless of the contents of any other
+&#64;enabled-plugins node.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>g.app.gui.getEnabledPlugins contains the last value last processed</dt>
+<dd><p class="first last">&#64;enabled-plugins node, or the contents of the first pluginsManager.txt file
+encountered.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="body-pane">
+<h2><a class="toc-backref" href="#id3">Body pane</a></h2>
+<div class="section" id="arrows-py">
+<h3><a class="toc-backref" href="#id4">arrows.py</a></h3>
+<p>Rebinds up/down arrow keys.</p>
+</div>
+<div class="section" id="image-py">
+<h3><a class="toc-backref" href="#id5">image.py</a></h3>
+<p>Handles images in body text. Based on work by Gil Shwartz. Brent Burley provided
+many important insights. See:
+<a class="reference" href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52264">http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52264</a></p>
+</div>
+<div class="section" id="rclick-py">
+<h3><a class="toc-backref" href="#id6">rClick.py</a></h3>
+<p>Create a context menu when right-clicking in the body pane.</p>
+</div>
+<div class="section" id="autocompleter-py">
+<h3><a class="toc-backref" href="#id7">autocompleter.py</a></h3>
+<p>Autocompletion and calltips plugin.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">.</span></tt> summons the autocompletion.</li>
+<li><tt class="docutils literal"><span class="pre">(</span></tt> summons the calltips</li>
+<li><tt class="docutils literal"><span class="pre">Escape</span></tt> closes either box.</li>
+<li><tt class="docutils literal"><span class="pre">Ctrl</span></tt> selects an item.</li>
+<li><tt class="docutils literal"><span class="pre">alt-up_arrow</span></tt>, <tt class="docutils literal"><span class="pre">alt-down_arrow</span></tt> move up or down in the list.
+The mouse will work for this as well.</li>
+</ul>
+<p>This plugin scans the complete outline at startup.
+You many enable or disable features in autocompleter.ini.
+This file contains two options under the [ autocompleter ] section:</p>
+<pre class="literal-block">
+useauto
+usecalltips
+</pre>
+<p>Setting either to 1 will turn on the feature. 0 means off. If there is a section
+called [ newlanguages ] it will read each option as a new language for
+autocompleter to recognize, and compile its value as a regex pattern for the
+autocompleter system to recognize as a calltip. This has relevance for the .ato
+system described below.  Languages that currently have patterns:</p>
+<pre class="literal-block">
+python, java, c++, c, perl
+</pre>
+<p>Autocompleter looks in the plugin directory for a directory called
+autocompleter. If it doesn't find one it will attempt to create this directory.
+This directory should contain what are called .ato files ( pronounced auto ).
+Autocompleter will scan each .ato file that has a first part that matches a
+languages name. For example: python.ato autocompleter recognizes python, and
+will scan this file. The contents are read with the same mechanism that reads
+the information in the nodes, so calltip and autocompleter information is added
+to autocompleter's runtime database. If a new language has been added in the
+autocompleter.ini file then an .ato file that starts with the new languages name
+will be recognized and read in. Note, this language needs to be recognizable to
+Leo. Used correctly an .ato file is a mechanism by which a user can carry
+autocompletion and calltip information between .leo files/sessions.</p>
+</div>
+<div class="section" id="color-markup-py">
+<h3><a class="toc-backref" href="#id8">color_markup.py</a></h3>
+<p>Handle coloring for markup in doc parts and Python triple-double-quoted strings.</p>
+<p><strong>Important</strong>:</p>
+<ul class="simple">
+<li>This plugin requires that the <tt class="docutils literal"><span class="pre">add_directives</span></tt> plugin is enabled.</li>
+<li>To color a text with wiki markup the text must be in the range of an <tt class="docutils literal"><span class="pre">&#64;markup</span> <span class="pre">wiki</span></tt> directive.</li>
+</ul>
+<p>The currently supported markups are:</p>
+<pre class="literal-block">
+''text''                    # write text in italics
+__text__                    # write text in bold
+~~&lt;color&gt;:text~~            # write text in the color specified by &lt;color&gt; (e.g. blue, grey, etc)
+{picture file=&lt;filename&gt;}   # load the picture indicated by &lt;filename&gt;
+http://url                  # URL support: double clicking on the url will open it in the default browser.
+https://url                 # URL support: double clicking on the url will open it in the default browser.
+</pre>
+<ul>
+<li><p class="first">Note 1: italics and bold markups can be nested, e.g.,:</p>
+<pre class="literal-block">
+''__text__''            # write text in italics and bold
+</pre>
+<p>Just remember to terminate the tags in the order they were opened.</p>
+</li>
+<li><p class="first">Note 2: URLs must be terminated by a space.</p>
+</li>
+</ul>
+<p>By default, once the text has been markup up, the actual tags (e.g. <tt class="docutils literal"><span class="pre">__</span></tt> for
+bold) are not displayed anymore. You can choose to display them selecting &quot;Show
+Invisibles&quot; from the Edit menu.</p>
+</div>
+<div class="section" id="script-io-to-body-py">
+<h3><a class="toc-backref" href="#id9">script_io_to_body.py</a></h3>
+<p>Send output from the Execute Script command to the end of the body pane.</p>
+</div>
+</div>
+<div class="section" id="commands-directives">
+<h2><a class="toc-backref" href="#id10">Commands &amp; directives</a></h2>
+<div class="section" id="add-directives-py">
+<h3><a class="toc-backref" href="#id11">add_directives.py</a></h3>
+<p>Supports new Leo directives.</p>
+</div>
+<div class="section" id="bibtex-py">
+<h3><a class="toc-backref" href="#id12">bibtex.py</a></h3>
+<p>This plugin manages BibTeX files with Leo. Create a bibliographic database by
+putting <tt class="docutils literal"><span class="pre">&#64;bibtex</span> <span class="pre">filename</span></tt> in a headline. Entries are added as nodes, with
+<tt class="docutils literal"><span class="pre">&#64;entrytype</span> <span class="pre">key</span></tt> as the headline, and the contents of the entry in body text.
+The plugin will automatically insert a template for the entry in the body pane
+when a new entry is created (hooked to pressing enter when typing the headline
+text). The templates are defined in dictionary <tt class="docutils literal"><span class="pre">templates</span></tt> in the &lt;&lt;globals&gt;&gt;
+section, by default containing all required fields for every entry.</p>
+<p>The file is written by double-clicking the node. Thus the following outline:</p>
+<pre class="literal-block">
+-&#64;bibtex biblio.bib
+ +&#64;book key
+  author = {A. Uthor},
+  year = 1999
+</pre>
+<p>will be written in the file 'biblio.bib' as:</p>
+<pre class="literal-block">
+&#64;book{key,
+author = {A. Uthor},
+year= 1999}
+</pre>
+<p>Strings are defined in <tt class="docutils literal"><span class="pre">&#64;string</span></tt> nodes and they can contain multiple entries.
+All <tt class="docutils literal"><span class="pre">&#64;string</span></tt> nodes are written at the start of the file. Thus the following
+outline:</p>
+<pre class="literal-block">
+-&#64;bibtext biblio.bib
+ +&#64;string
+  j1 = {Journal}
+ +&#64;article AUj1
+  author = {A. Uthor},
+  journal = j1
+ +&#64;string
+  j2 = {Journal2}
+  j3 = {Journal3}
+</pre>
+<p>Will be written as:</p>
+<pre class="literal-block">
+&#64;string{j1 = {Journal1}}
+&#64;string{j2 = {Journal2}}
+&#64;string{j3 = {Journal3}}
+
+&#64;article{AUj1,
+author = {A. Uthor},
+journal = j1}
+</pre>
+<p>No error checking is made on the syntax. The entries can be organised under
+nodes--if the headline doesn't start with '&#64;', the headline and body text are
+ignored, but the child nodes are parsed as usual. BibTeX files can be imported
+by creating an empty node with <tt class="docutils literal"><span class="pre">&#64;bibtex</span> <span class="pre">filename</span></tt> in the headline.
+Double-clicking it will read the file <tt class="docutils literal"><span class="pre">filename</span></tt> and parse it into a
+<tt class="docutils literal"><span class="pre">&#64;bibtex</span></tt> tree. No syntax checking is made, <tt class="docutils literal"><span class="pre">filename</span></tt> is expected to be a
+valid BibTeX file.</p>
+</div>
+<div class="section" id="conceptualsort-py">
+<h3><a class="toc-backref" href="#id13">ConceptualSort.py</a></h3>
+<p>This plugin is enhances the EditAttributes.py plugin. It puts a command in
+Outline called ConceptualSort. This will prompt you for a concept to sort by.
+This gives the user some more flexibility in how they want to arrange their
+nodes. Nodes without the attribute in question go to the bottom of the sort.
+The user can:</p>
+<ul>
+<li><p class="first">Select which attribute he wants to sort on by clicking on the Attribute box.</p>
+</li>
+<li><p class="first">Select the type of sort he wants by clicking on the radio buttons:</p>
+<blockquote>
+<ul>
+<li><p class="first">Normal.</p>
+</li>
+<li><p class="first">Reversed. Like normal but the results are reversed.</p>
+</li>
+<li><p class="first">Used defined. For advanced users. The text box is where a user can type in
+their own python code to sort the nodes-attributes. There is no need for a
+def. That gets appended to the beginning of the code. It prototype looks
+like:</p>
+<pre class="literal-block">
+def( a, b, att ):
+</pre>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>where a and b are nodes and att is dictionary of the nodes and the respective
+value of the selected attribute. There is no need to indent on the first level
+since indentation is added at compile time.</p>
+</div>
+<div class="section" id="datenodes-py">
+<h3><a class="toc-backref" href="#id14">datenodes.py</a></h3>
+<p>This plugin adds <strong>date nodes</strong> (nodes with dates as their headlines) to the
+current outline. Date nodes may be added one at a time, a month's-worth at a
+time, or a year's-worth at a time. The format of the headlines is
+configurable in the ini file.</p>
+</div>
+<div class="section" id="fileactions-py">
+<h3><a class="toc-backref" href="#id15">FileActions.py</a></h3>
+<p>Leo plugin that permits the definition of actions for double-clicking on file
+nodes. Double-clicking in a <tt class="docutils literal"><span class="pre">&#64;file</span></tt> node writes out the file if changes have
+been made since the last save, and then runs a script on it, which is retrieved
+from the outline. Scripts are located in a node whose headline is FileActions.
+This node can be anywhere in the outline. If there is more than one such node,
+the first one in outline order is used. The children of that node are expected
+to contain a file pattern in the headline and the script to be executed in the
+body. The file name is matched against the patterns (which are Unix-style shell
+patterns), and the first matching node is selected. If the filename is a path,
+only the last item is matched. Execution of the scripts is similar to the
+<tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command in Leo. The main difference is that the namespace in
+which the scripts are run contains two elements:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">filename</span></tt>, which contains the filename from the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> directive.</li>
+<li><tt class="docutils literal"><span class="pre">shellScriptInWindow</span></tt>, a utility function that runs
+a shell script in an external windows, thus permitting
+programs to be called that require user interaction</li>
+</ul>
+<p>File actions are implemented for <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes and all its variants
+(<tt class="docutils literal"><span class="pre">&#64;file-nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, etc.). There is also a new node type
+<tt class="docutils literal"><span class="pre">&#64;file-ref</span></tt> for referring to files purely for the purpose of
+file actions, Leo does not do anything with or to such files.</p>
+</div>
+<div class="section" id="groupoperations-py">
+<h3><a class="toc-backref" href="#id16">groupOperations.py</a></h3>
+<p>A Leo Plugin that adds Group commands functionality.  Restrictions currently apply to using Leo with a Tk front end.
+There are several commands in this plugin:</p>
+<ul class="simple">
+<li>Mark Node: marks a node for further operations such as copying, cloning and moving.</li>
+<li>Mark Spot: marks a node as the place where group operations are to target.</li>
+<li>Operate On Marked: moves lassoed nodes to the spot where the roundup node is
+placed. Clones are maintained.</li>
+<li>Clear Marked: unmarks all marked nodes and removes the roundup node.</li>
+<li>Transfer Lassoed Nodes: this is a menu for inter-window communication.
+The windows must all be spawned from the same Leo instance.
+It allows the user to move all node marked for copying and moving from another window to this one.</li>
+</ul>
+</div>
+<div class="section" id="import-cisco-config-py">
+<h3><a class="toc-backref" href="#id17">import_cisco_config.py</a></h3>
+<p>This plugin adds a menu item under the File-&gt;Import menu to import
+Cisco configuration files.
+The plugin will:</p>
+<ol class="arabic simple">
+<li>Create a new node, under the current node, where the configuration will be
+written. This node will typically have references to several sections (see below).</li>
+<li>Create sections (child nodes) for the indented blocks present in the original
+config file. These child nodes will have sub-nodes grouping similar blocks (e.g.
+there will be an 'interface' child node, with as many sub-nodes as there are real
+interfaces in the configuration file).</li>
+<li>Create sections for the custom keywords specified in the customBlocks[] list in
+importCiscoConfig(). You can modify this list to specify different keywords. DO
+NOT put keywords that are followed by indented blocks (these are taken care of by
+point 2 above). The negated form of the keywords (for example, if the keyword is
+'service', the negated form is 'no service') is also included in the sections.</li>
+<li>Not display consecutive empty comment lines (lines with only a '!').</li>
+</ol>
+<p>All created sections are alphabetically ordered.</p>
+</div>
+<div class="section" id="library-py">
+<h3><a class="toc-backref" href="#id18">Library.py</a></h3>
+<p>A plugin to store Leo trees in anydbm files. Note: there isn't such a thing as an
+anydbm file: it's whatever the anydbm module uses.
+Under Outline, there is an option called <tt class="docutils literal"><span class="pre">Library</span></tt>. This will open a
+dialog with a list of the trees that you have saved. You can insert trees stored
+in the library, remove them and add trees to the library. Be aware of unicode,
+any characters outside of the ascii set gets turned into a ?. I found this
+problem in storing some trees from Edward's Leo outline. Id like it to be able to
+store unicode, but that may require a more specific db background, than anydbm.
+Also note, that your library files may not be OS independent. If your python
+distribution does not have the backing db on another machine, it will not be
+able to open your library.
+This should help people develop templates that they want to reuse between Leo
+projects.  For example, Id like a template of many Java interfaces to be easily
+accessible.</p>
+</div>
+<div class="section" id="macros-py">
+<h3><a class="toc-backref" href="#id19">macros.py</a></h3>
+<p>Creates new nodes containing parameterized section references.</p>
+</div>
+<div class="section" id="mod-autosave-py">
+<h3><a class="toc-backref" href="#id20">mod_autosave.py</a></h3>
+<p>Autosave the Leo document every so often. The time between saves is given in
+seconds in autosave.ini.</p>
+</div>
+<div class="section" id="mod-read-dir-outline-py">
+<h3><a class="toc-backref" href="#id21">mod_read_dir_outline.py</a></h3>
+<p>This plugin allows Leo to read a complete directory's outline into a Leo's
+Outline. Directories are converted into headlines and files names are listed
+into the bodies.</p>
+</div>
+<div class="section" id="mod-timestamp-py">
+<h3><a class="toc-backref" href="#id22">mod_timestamp.py</a></h3>
+<p>Timestamp all save operations to show when they occur.</p>
+</div>
+<div class="section" id="outline-export-py">
+<h3><a class="toc-backref" href="#id23">outline_export.py</a></h3>
+<p>Modify the way exported outlines are displayed.</p>
+</div>
+<div class="section" id="paste-as-headlines-py">
+<h3><a class="toc-backref" href="#id24">paste_as_headlines.py</a></h3>
+<p>This plug-in takes any text is stored in the clipboard and creates new headlines
+for each line of text. The paste routine checks to make sure the line of text is not
+greater than 50 characters in length. If it is, the routine truncates the headline to
+50 characters and pastes the entire line into the body text of that node.</p>
+<p>If the plug-in is functioning properly, a &quot;Paste as Headlines&quot; option should appear in
+the Edit menu directly under the existing Paste option.</p>
+</div>
+<div class="section" id="pretty-print-py">
+<h3><a class="toc-backref" href="#id25">pretty_print.py</a></h3>
+<p>A plugin that helps customize pretty printing. It creates a do-nothing subclass
+of the default pretty printer. To customize, simply override in this file the
+methods of the base prettyPrinter class in leoCommands.py. You would typically
+want to override putNormalToken or its allies. Templates for these methods have
+been provided. You may, however, override any methods you like. You could even
+define your own class entirely, provided you implement the prettyPrintNode
+method.</p>
+</div>
+<div class="section" id="scheduler-py">
+<h3><a class="toc-backref" href="#id26">scheduler.py</a></h3>
+<p>A plugin to schedule commands for later execution. It's provides the ability to
+issue commands at a future time and to write messages that will be displayed at
+a later time. To record commands You goto Schedule and choose begin recording.
+Then you jump to the nodes and select the commands you want issued on them. This
+process is ended with the end recording option. A dialog pops up. You can then
+click on the individual commands and set the time for execution. To set the
+execution time for all, enter a value and hit set_all. All times must be in the
+form hh:mm. For example I want to issue a save command for 5:00 PM. I would do
+so by using the value 17:00. The Schedule Message is simple. There is a Text box
+to enter the message and a Entry to place the time. View Queue will summon a
+view of The Queue. This dialog will show the commands that have been enqueued.
+There is also the option to Cancel out any scheduled commands/messages.</p>
+</div>
+<div class="section" id="table-py">
+<h3><a class="toc-backref" href="#id27">table.py</a></h3>
+<p>This plugin puts the View Table command in the Outline menu. This command checks
+the current node using the csv (comma separated values) mods Sniffer. It tries
+to determine the format that is in the nodes data. If you had excel data in it,
+it should be able to determine its excel data. It then creates a dialog with the
+data presented as in a table for the user to see it. Requires Pmw and the
+tktable widget at <a class="reference" href="http://sourceforge.net/projects/tktable">http://sourceforge.net/projects/tktable</a>.</p>
+</div>
+<div class="section" id="templates-py">
+<h3><a class="toc-backref" href="#id28">templates.py</a></h3>
+<p>This plugin lets you add customizable templates to an outline. Templates are
+like any other node except that the plugin replaces %s in the body text by
+values that you specify when using template. Templates may have section
+references; this plugin uses Leo's <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> write machinery to create one
+string out of possibly many nodes. This plugin requires the simplified atFile
+write code that is new in 4.2.1.</p>
+<p>This plugin creates two buttons in Leo's icon area:</p>
+<ul class="simple">
+<li>The '%s' button marks or unmarks a node as a template. A %s symbol will appear to
+the left of the node when it is marked as a template.</li>
+<li>The '----&gt; %s' button brings up a dialog that shows you the template text and
+asks you to specify the value for all %s instances. Dismissing this dialog
+inserts the template as the first child of the node, and creates a section
+reference in the node that references the template.</li>
+</ul>
+<p>If a template does not have a '%s' in it, then the templates plugin just adds
+the text as a node. Templates once marked are stored across sessions. Do not put
+a template in a thin file, as your template mark will be erased between
+sessions.</p>
+</div>
+<div class="section" id="word-cound-py">
+<h3><a class="toc-backref" href="#id29">word_cound.py</a></h3>
+<p>This plugin displays a message box with information about the body text of the current node
+such as number of: characters, words, lines, and paragraphs. It adds a &quot;Word Count...&quot; option
+to the bottom of the Edit menu that will activate the message box.</p>
+<p>The Word Count... menu has a shortcut key of 'W'.</p>
+</div>
+</div>
+<div class="section" id="dialogs">
+<h2><a class="toc-backref" href="#id30">Dialogs</a></h2>
+<div class="section" id="gtkdialogs">
+<h3><a class="toc-backref" href="#id31">gtkDialogs</a></h3>
+<p>gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.</p>
+<p>The plugin is aimed mainly at Linux users with pyGtk installed on their systems,
+but it should work on on any system that support Gtk2 and pyGtk.</p>
+</div>
+</div>
+<div class="section" id="debugging-testing">
+<h2><a class="toc-backref" href="#id32">Debugging &amp;  testing</a></h2>
+<div class="section" id="failed-import-py">
+<h3><a class="toc-backref" href="#id33">failed_import.py</a></h3>
+<p>A plugin to test import problems.</p>
+</div>
+<div class="section" id="dump-globals-py">
+<h3><a class="toc-backref" href="#id34">dump_globals.py</a></h3>
+<p>Dump Python globals at startup.</p>
+</div>
+<div class="section" id="enable-gc-py">
+<h3><a class="toc-backref" href="#id35">enable_gc.py</a></h3>
+<p>Enable debugging and tracing for Python's garbage collector.</p>
+</div>
+<div class="section" id="trace-gc-py">
+<h3><a class="toc-backref" href="#id36">trace_gc.py</a></h3>
+<p>Trace changes to Leo's objects at idle time.</p>
+</div>
+<div class="section" id="trace-keys-py">
+<h3><a class="toc-backref" href="#id37">trace_keys.py</a></h3>
+<p>Trace keystrokes in the outline and body panes.</p>
+</div>
+<div class="section" id="trace-tags-py">
+<h3><a class="toc-backref" href="#id38">trace_tags.py</a></h3>
+<p>Trace the most common hooks, but not key, drag or idle hooks.</p>
+</div>
+</div>
+<div class="section" id="external-editors-open-with">
+<h2><a class="toc-backref" href="#id39">External editors &amp; Open With</a></h2>
+<div class="section" id="mod-tempfname-py">
+<h3><a class="toc-backref" href="#id40">mod_tempfname.py</a></h3>
+<p>Replaces <tt class="docutils literal"><span class="pre">Commands.openWithTempFilePath</span></tt> so Leo opens temporary
+files with a filename that begins with the headline text, and
+located in a <tt class="docutils literal"><span class="pre">username_Leo</span></tt> subdirectory of the temporary
+directory. The <tt class="docutils literal"><span class="pre">LeoTemp</span></tt> prefix is omitted.  This makes it easier to
+see which temporary file is related to which outline node.</p>
+</div>
+<div class="section" id="open-shell-py">
+<h3><a class="toc-backref" href="#id41">open_shell.py</a></h3>
+<p>Creates an 'extensions' menu with commands to open either an xterm on Linux
+or a cmd windows/explorer window on win32 in the directory of the current <tt class="docutils literal"><span class="pre">&#64;file</span></tt> node.
+This allows quick navigation to facilitate testing and navigating large systems
+with complex directories.</p>
+</div>
+<div class="section" id="open-with-py">
+<h3><a class="toc-backref" href="#id42">open_with.py</a></h3>
+<p>This plugin creates menu items in the <a class="reference" href="File:Open">File:Open</a> With menu.</p>
+<p>&#64;openwith nodes in &#64;settings trees create menu items. The openWith
+plugin must be active for these settings to have any effect.</p>
+<p>The headline of an &#64;openwith node has the form:</p>
+<pre class="literal-block">
+&#64;openwith name = shortcut
+</pre>
+<p>name is name of the menu item. shortcut specifies the shortcut used to invoke
+the menu item. shortcut may be None.</p>
+<p>The body text &#64;openwith nodes should contain a single line contain a tuple of the form:</p>
+<pre class="literal-block">
+command,arg,ext
+</pre>
+<p>For example:</p>
+<pre class="literal-block">
+'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+</pre>
+<p>When the user selects this menu itmen Leo executes command(arg+path) where path
+is the full path to the temp file. The ext argument specifies the extension of
+the temp file.</p>
+<p>Notes:</p>
+<ul>
+<li><p class="first">command is a string.  Valid values are:</p>
+<pre class="literal-block">
+'subprocess.Popen'
+'os.system'
+'os.startfile'
+'os.spawnl'
+'os.spawnv'
+'exec'
+</pre>
+</li>
+<li><p class="first">arg is either a single string or a list of strings.</p>
+</li>
+<li><p class="first">ext is a string or None. If None, Leo computes a file extension base on what
+&#64;language directive is in effect.</p>
+</li>
+<li><p class="first">If the .leo file being loaded contains  &#64;openwith nodes, the <a class="reference" href="File:Open">File:Open</a> With menu contains only the items created by those nodes.  Similarly, &#64;openwith nodes in myLeoSettings.leo override entries in leoSettings.leo.</p>
+</li>
+<li><p class="first">If no &#64;openwith nodes are found anywhere the openWith plugin uses hard-coded tables in the plugin itself.</p>
+</li>
+</ul>
+<p>This plugin will use Python's new subprocess module if it is present. This
+module comes standard with Python 2.4. For Linux systems, Leo will use
+subprocess.py in Leo's extensions folder if necessary.</p>
+<p>For Windows systems you can install Python's subprocess module in Python 2.2 or
+2.3 as follows:</p>
+<ul>
+<li><p class="first">Go to <a class="reference" href="http://www.effbot.org/downloads/#subprocess">http://www.effbot.org/downloads/#subprocess</a></p>
+</li>
+<li><p class="first">Download and execute one of the following installers, depending on your version of Python:</p>
+<pre class="literal-block">
+subprocess-0.1-20041012.win32-py2.3.exe
+subprocess-0.1-20041012.win32-py2.2.exe
+</pre>
+</li>
+</ul>
+<p>This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.</p>
+</div>
+<div class="section" id="temacs-py-usetemacs-py">
+<h3><a class="toc-backref" href="#id43">temacs.py &amp; usetemacs.py</a></h3>
+<p><tt class="docutils literal"><span class="pre">temacs</span></tt> is a binding module for the Tkinter Text widget.
+<tt class="docutils literal"><span class="pre">usetemacs</span></tt> is a Leo plugin that patches the temacs modules Emacs emulation
+into the standard Leo Tkinter Text editor.</p>
+</div>
+<div class="section" id="vim-py">
+<h3><a class="toc-backref" href="#id44">vim.py</a></h3>
+<p>A plugin that communicates with VIM:</p>
+<ul class="simple">
+<li>Double clicking on a node's icon opens that node in VIM. You can open nodes in
+VIM with a single-click if you set useDoubleClick = False. However, that
+interferes with Leo's dragging logic.</li>
+<li>Leo will update the node in the outline when you save the file in VIM.</li>
+</ul>
+</div>
+<div class="section" id="word-export-py">
+<h3><a class="toc-backref" href="#id45">word_export.py</a></h3>
+<p>Use commands in the <tt class="docutils literal"><span class="pre">Plugins:Word</span> <span class="pre">Export:Export</span></tt> menu to formats and export
+the selected outline to a Word document, starting Word if necessary.</p>
+</div>
+<div class="section" id="xemacs-py">
+<h3><a class="toc-backref" href="#id46">xemacs.py</a></h3>
+<p>This plugin allows you to edit nodes in emacs/xemacs.
+Depending on your preference, selecting or double-clicking a node will pass the
+body text of that node to emacs. You may edit the node in the emacs buffer and
+changes will appear in Leo.</p>
+</div>
+</div>
+<div class="section" id="files">
+<h2><a class="toc-backref" href="#id47">Files</a></h2>
+<div class="section" id="empty-leo-file-py">
+<h3><a class="toc-backref" href="#id48">empty_leo_file.py</a></h3>
+<p>Opens any empty file as a minimal .leo file.</p>
+</div>
+<div class="section" id="leoopml-py">
+<h3><a class="toc-backref" href="#id49">leoOPML.py</a></h3>
+<p><strong>Warning</strong>: the OPML plugin is not fully functional at present.  Use with caution.</p>
+<p>The OPML plugin creates two new commands that read and write
+Leo outlines in <a class="reference" href="http://en.wikipedia.org/wiki/OPML">OPML</a> format.
+The read-opml-file command creates a Leo outline from an .opml file.
+The write-opml-file command writes the present Leo outline to an .opml file.</p>
+<p>Various settings control what gets written to .opml files, and in what format.
+As usual, you specify settings for the OPML plugin using leoSettings.leo.
+The settings for the OPML are found in the node:</p>
+<pre class="literal-block">
+&#64;settings--&gt;Plugins--&gt;opml plugin
+</pre>
+<p>Here are the settings that control the format of .opml files.
+The default values are shown.</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_read_derived_files</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo reads derived files when reading .opml files.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;string</span> <span class="pre">opml_namespace</span> <span class="pre">=</span> <span class="pre">leo:com:leo-opml-version-1</span></tt></p>
+<p>The namespace urn for the xmlns attribute of <tt class="docutils literal"><span class="pre">&lt;opml&gt;</span></tt> elements.
+This value typically is not used, but it should refer to Leo in some way.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_use_outline_elements</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes body text to <tt class="docutils literal"><span class="pre">&lt;:body&gt;</span></tt> elements nested in <tt class="docutils literal"><span class="pre">&lt;outline&gt;</span></tt> elements.
+Otherwise, Leo writes body text to <tt class="docutils literal"><span class="pre">:body</span></tt> attributes of <tt class="docutils literal"><span class="pre">&lt;outline&gt;</span></tt> elements.</p>
+<p><strong>Note</strong>: Leo-specific attributes and elements are clearly distinguished from 'standard' opml elements:
+they are preceded by a colon, which marks them as members of the default namespace specified specified
+by this option.  Thus, all OPML text generated by this plugin should conform to the <a class="reference" href="http://www.opml.org">OPML 2.0 standard</a>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;string</span> <span class="pre">opml_version</span> <span class="pre">=</span> <span class="pre">2.0</span></tt></p>
+<p>The opml version string written to the <tt class="docutils literal"><span class="pre">&lt;OPML&gt;</span></tt> element.
+Use <tt class="docutils literal"><span class="pre">2.0</span></tt> unless there is a specific reason to use <tt class="docutils literal"><span class="pre">1.0</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_write_body_text</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes body text to the OPML file.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_write_derived_files</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes derived files when writing .opml files.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_write_leo_details</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes the native attributes of Leo's <tt class="docutils literal"><span class="pre">&lt;v&gt;</span></tt> elements
+as attributes of the opml <tt class="docutils literal"><span class="pre">&lt;outline&gt;</span></tt> elements.
+The native attributes of <tt class="docutils literal"><span class="pre">&lt;v&gt;</span></tt> elements are
+<tt class="docutils literal"><span class="pre">a</span></tt>, <tt class="docutils literal"><span class="pre">descendentTnodeUnknownAttributes</span></tt>, <tt class="docutils literal"><span class="pre">expanded</span></tt>, <tt class="docutils literal"><span class="pre">marks</span></tt>,
+<tt class="docutils literal"><span class="pre">t</span></tt>, and <tt class="docutils literal"><span class="pre">tnodeList</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_write_leo_globals_attributes</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes <cite>body_outline_ratio`</cite> and <tt class="docutils literal"><span class="pre">global_window_position</span></tt>
+attributes to the <tt class="docutils literal"><span class="pre">&lt;head&gt;</span></tt> element of the .opml file.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">opml_write_uAs</span> <span class="pre">=</span> <span class="pre">True</span></tt></p>
+<p>If True, Leo writes unknown attributes (uA's) in &lt;:uA&gt; sub-elements of &lt;outline&gt; elements.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="linenumbers-py">
+<h3><a class="toc-backref" href="#id50">lineNumbers.py</a></h3>
+<p>Adds #line directives in perl and perlpod programs.
+Currently supports only perl and perlpod.</p>
+</div>
+<div class="section" id="multifile-py">
+<h3><a class="toc-backref" href="#id51">multifile.py</a></h3>
+<p>Multipath enables the ability to write a file to multiple locations. It acts as
+a post-write mechanism, a file must be written to the file system for it to work.
+At this point it is not a replacement for <tt class="docutils literal"><span class="pre">&#64;path</span></tt> or an absolute path, it works in
+tandem with them. To use, place <tt class="docutils literal"><span class="pre">&#64;multipath</span></tt> at the start of a line in the root
+node or an ancestor of the node. The format is (On Unix systems):</p>
+<pre class="literal-block">
+&#64;multipath /machine/unit/:/machine/robot/:/machine/
+</pre>
+<p>It will place a copy of the written file in each of these directories.</p>
+<p>There is an additional directive that simplifies common paths, it is called
+<tt class="docutils literal"><span class="pre">&#64;multiprefix</span></tt>. By typing <tt class="docutils literal"><span class="pre">&#64;multiprefix</span></tt> with a path following it, before a
+<tt class="docutils literal"><span class="pre">&#64;multipath</span></tt> directive you set the beginning of the paths in the
+<tt class="docutils literal"><span class="pre">&#64;multipath</span></tt> directive. For example:</p>
+<pre class="literal-block">
+&#64;multiprefix /leo #&#64;multipath /plugins
+</pre>
+<p>or:</p>
+<pre class="literal-block">
+&#64;multiprefix /leo/
+&#64;multipath plugins: fungus : drain
+</pre>
+<p>copies a file to /leo/plugins /leo/fungus /leo/drain.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;multiprefix</span></tt> stays in effect for the entire tree until reset with
+another <tt class="docutils literal"><span class="pre">&#64;multiprefix</span></tt> directive. <tt class="docutils literal"><span class="pre">&#64;multipath</span></tt> is cumulative, in that for
+each <tt class="docutils literal"><span class="pre">&#64;multipath</span></tt> in an ancestor a copy of the file is created. These
+directives must at the beginning of the line and by themselves.</p>
+</div>
+<div class="section" id="nicenosent-py">
+<h3><a class="toc-backref" href="#id52">niceNosent.py</a></h3>
+<p>Preprocess <tt class="docutils literal"><span class="pre">&#64;file-nosent</span></tt> nodes: make sure each subnode ends
+with exactly one newline, replace all tabs with spaces, and
+add a newline before class and functions in the derived file.</p>
+</div>
+<div class="section" id="leotortf">
+<h3><a class="toc-backref" href="#id53">leoToRTF</a></h3>
+<p>This plugin takes an outline stored in LEO and outputs it as a numbered list to
+an RTF file. The RTF file can be loaded into Microsoft Word and formatted as a
+proper outline.</p>
+<p>If this plug-in loads properly, you should have an &quot;Outline to Microsoft RTF&quot;
+option added to your File &gt; Export... menu in Leo.</p>
+<p>Settings such as outputting just the headlines (vs. headlines &amp; body text) and whether
+to include or ignore the contents of &#64;file nodes are stored in the rtf_export.ini file
+in your Leoplugins folder.</p>
+<p>The default export path is also stored in the INI file. By default, it's set to c:so
+you may need to modify it depending on your system.</p>
+</div>
+<div class="section" id="leotohtml">
+<h3><a class="toc-backref" href="#id54">leoToHTML</a></h3>
+<p>This plugin takes an outline stored in LEO and converts it to html which is
+then either saved in a file or shown in a browser.</p>
+<p>The outline can be represented as a bullet list, a numbered list or using html
+&lt;h?&gt; type headings. Optionally, the body text may be included in the output.</p>
+<p>If desired, only the current node will be included in the output rather than
+the entire outline.</p>
+<p>An xhtml header may be included in the output, in which case the generated html
+will be valid XHTML 1.0 Strict.</p>
+<p>The plugin is fully scriptable as all its functionality is available through a
+Leo_to_HTML object which can be imported and used in scripts.</p>
+<p>Several commands and menu items are provided to give easy access to the plugins
+various features and options may be set via leo_to_html.ini file and the plugins
+properties dialog.</p>
+</div>
+<div class="section" id="leoopml">
+<h3><a class="toc-backref" href="#id55">leoOPML</a></h3>
+<p>This plugin reads and writes Leo outlines in .opml (<a class="reference" href="http://en.wikipedia.org/wiki/OPML">http://en.wikipedia.org/wiki/OPML</a>) format.</p>
+<p>The OPML plugin creates two new commands that read and write Leo outlines in OPML format.
+The read-opml-file command creates a Leo outline from an .opml file.
+The write-opml-file command writes the present Leo outline to an .opml file.</p>
+<p>Various settings control what gets written to .opml files, and in what format.
+As usual, you specify settings for the OPML plugin using leoSettings.leo.
+The settings for the OPML are found in the node: &#64;settings--&gt;Plugins--&gt;opml plugin</p>
+<p>Here are the settings that control the format of .opml files. The default values are shown.</p>
+<ul>
+<li><p class="first">&#64;string opml_namespace = leo:com:leo-opml-version-1</p>
+<p>The namespace urn for the xmlns attribute of &lt;opml&gt; elements.
+This value typically is not used, but it should refer to Leo in some way.</p>
+</li>
+<li><p class="first">&#64;bool opml_use_outline_elements = True</p>
+<p>If True, Leo writes body text to &lt;:body&gt; elements nested in &lt;outline&gt; elements.
+Otherwise, Leo writes body text to :body attributes of &lt;outline&gt; elements.</p>
+</li>
+<li><p class="first">&#64;string opml_version = 2.0</p>
+<p>The opml version string written to the &lt;OPML&gt; element.
+Use 2.0 unless there is a specific reason to use 1.0.</p>
+</li>
+<li><p class="first">&#64;bool opml_write_body_text = True</p>
+<p>Leo writes body text to the OPML file only if this is True.</p>
+</li>
+<li><p class="first">&#64;bool opml_write_leo_details = True</p>
+<p>If True, Leo writes the native attributes of Leo's &lt;v&gt; elements as attributes of
+the opml &lt;outline&gt; elements. The native attributes of &lt;v&gt; elements are a,
+descendentTnodeUnknownAttributes, expanded, marks, t, and tnodeList.</p>
+</li>
+<li><p class="first">&#64;bool opml_write_leo_globals_attributes = True</p>
+<p>If True, Leo writes body_outline_ratio` and global_window_position attributes to
+the &lt;head&gt; element of the .opml file.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="guis">
+<h2><a class="toc-backref" href="#id56">Guis</a></h2>
+<div class="section" id="wx-alt-gui-py">
+<h3><a class="toc-backref" href="#id57">__wx_alt_gui.py</a></h3>
+<p>This plugin allows wxPython to be used as leo's gui instead of TK.</p>
+<p>It is a prototype under development and so does not have all the features of Tk
+leo nor are there many plugins compatible with it yet.</p>
+<p>It is mainly being developed for Linux at the moment, but attempts are being
+made to keep it working on Windows as well.</p>
+<p>Work on this project has now halted in favour of a gtkLeo plugin.</p>
+</div>
+</div>
+<div class="section" id="icon-and-status-areas">
+<h2><a class="toc-backref" href="#id58">Icon and status areas</a></h2>
+<div class="section" id="chapter-hoist-py">
+<h3><a class="toc-backref" href="#id59">chapter_hoist.py</a></h3>
+<p>This plugin puts two buttons in the icon area.
+The 'Save Hoist' button hoists the presently selected node and creates a button
+which can later rehoist the same node.
+The 'Dehoist' button performs one level of dehoisting.</p>
+<p>This plugin replaces the old chapters plugin.</p>
+</div>
+<div class="section" id="nav-buttons-py">
+<h3><a class="toc-backref" href="#id60">nav_buttons.py</a></h3>
+<p>Adds navigation buttons to icon bar.</p>
+</div>
+<div class="section" id="newbuttons-py">
+<h3><a class="toc-backref" href="#id61">newButtons.py</a></h3>
+<p>Automatically add nodes for common tasks.</p>
+</div>
+<div class="section" id="hoist-py">
+<h3><a class="toc-backref" href="#id62">hoist.py</a></h3>
+<p>Add Hoist/De-Hoist buttons to the toolbar.</p>
+</div>
+<div class="section" id="nodenavigator-py">
+<h3><a class="toc-backref" href="#id63">nodenavigator.py</a></h3>
+<p>Adds &quot;Recent&quot; and &quot;Marks&quot; pulldown buttons to the toolbar.</p>
+</div>
+<div class="section" id="searchbox-py">
+<h3><a class="toc-backref" href="#id64">searchbox.py</a></h3>
+<p>Adds a quick search to Leo's toolbar, along with a &quot;GO&quot; button to do quick
+searches right from the main Leo window. All the current search options are
+retained except that &quot;search body text&quot; is explicitly set - mainly because this
+is by far the most common use case. Pressing &lt;CR&gt; while editing the text
+automatically does a search. Repeated searches can be done by clicking the &quot;GO&quot;
+button. The combo box also stores a list of previous searches, which can be
+selected to quickly repeat a search. When activating a previous search the
+original search mode is used.</p>
+</div>
+<div class="section" id="shortcut-button-py">
+<h3><a class="toc-backref" href="#id65">shortcut_button.py</a></h3>
+<p>Creates a 'Shortcut' button in the icon area.
+Pressing the Shortcut button creates <em>another</em> button which when pressed will
+select the presently selected node at the time the button was created.</p>
+</div>
+<div class="section" id="unl-py">
+<h3><a class="toc-backref" href="#id66">UNL.py</a></h3>
+<p>This plugin supports Uniform Node Locators (UNL's). UNL's specify nodes within
+Leo files. UNL's are not limited to nodes within the present Leo file; you can
+use them to create cross-Leo-file links. This plugin consists of two parts:</p>
+<ol class="arabic simple">
+<li>Selecting a node shows the UNL in the status line at the bottom of the Leo
+window. You can copy from the status line and paste it into headlines, emails,
+whatever.</li>
+<li>Double-clicking <tt class="docutils literal"><span class="pre">&#64;url</span></tt> nodes containing UNL's select the node specified in the
+UNL. If the UNL species in another Leo file, the other file will be opened.</li>
+</ol>
+<p>UNL's referring to nodes within the present outline have the form:</p>
+<pre class="literal-block">
+headline1--&gt;headline2--&gt;...--&gt;headlineN
+</pre>
+<p>where headline1 is the headline of a top-level node, and each successive headline is
+the headline of a child node.  UNL's of the form:</p>
+<pre class="literal-block">
+file:&lt;path&gt;#headline1--&gt;...--&gt;headlineN
+</pre>
+<p>refer to a node specified in &lt;path&gt; For example, double clicking the following
+headline will take you to Chapter 8 of Leo's Users Guide:</p>
+<pre class="literal-block">
+&#64;url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide--&gt;Chapter 8: Customizing Leo
+</pre>
+<p>For example, suppose you want to email someone with comments about a Leo file.
+Create a comments.leo file containing <tt class="docutils literal"><span class="pre">&#64;url</span> <span class="pre">UNL</span></tt> nodes. That is, headlines are
+<tt class="docutils literal"><span class="pre">&#64;url</span></tt> followed by a UNL. The body text contains your comments about the nodes in
+the _other_ Leo file! Send the comments.leo to your friend, who can use the
+comments.leo file to quickly navigate to the various nodes you are talking
+about. As another example, you can copy UNL's into emails. The recipient can
+navigate to the nodes 'by hand' by following the arrows in the UNL.</p>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li>At present, UNL's refer to nodes by their position in the outline. Moving a
+node will break the link.</li>
+<li>Don't refer to nodes that contain UNL's in the headline. Instead, refer to the
+parent or child of such nodes.</li>
+<li>You don't have to replace spaces in URL's or UNL's by '%20'.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="leon">
+<h2><a class="toc-backref" href="#id67">LeoN</a></h2>
+<p>LeoN is Leo over the Network. LeoN is Collaborative Leo. This is an important
+project for Leo's long-term development. See leo/doc/LeoN for important research
+papers that form the basis of this project.</p>
+</div>
+<div class="section" id="menus-translations">
+<h2><a class="toc-backref" href="#id68">Menus &amp; translations</a></h2>
+<div class="section" id="chinese-menu-py">
+<h3><a class="toc-backref" href="#id69">chinese_menu.py</a></h3>
+<p>Translate a few menu items into Simplified Chinese
+本插件将部分Leo菜单翻译成简体中文
+By Zhang Le &lt;<a class="reference" href="mailto:ejoy&#64;xinhuanet.com">ejoy&#64;xinhuanet.com</a>&gt;</p>
+</div>
+<div class="section" id="french-fm-py">
+<h3><a class="toc-backref" href="#id70">french_fm.py</a></h3>
+<p>Traduit les menus en Français.</p>
+</div>
+<div class="section" id="pie-menus-py">
+<h3><a class="toc-backref" href="#id71">pie_menus.py</a></h3>
+<p>Adds pie menus.  See <a class="reference" href="http://www.piemenus.com/">http://www.piemenus.com/</a></p>
+</div>
+</div>
+<div class="section" id="nodes">
+<h2><a class="toc-backref" href="#id72">Nodes</a></h2>
+<div class="section" id="at-folder-py">
+<h3><a class="toc-backref" href="#id73">at_folder.py</a></h3>
+<p>Synchronizes <tt class="docutils literal"><span class="pre">&#64;folder</span></tt> nodes with folders. If a node is named <tt class="docutils literal"><span class="pre">&#64;folder</span>
+<span class="pre">path_to_folder</span></tt>, the content (filenames) of the folder and the children of that
+node will be sync. Whenever a new file is put there, a new node will appear on
+top of the children list (with mark). So that I can put my description (i.e.,
+annotation) as the content of that node. In this way, I can find any files much
+easier from leo. Moreover, I add another feature to allow you to group files(in
+leo) into children of another group. This will help when there are many files in
+that folder. You can logically group it in leo (or even clone it to many
+groups), while keep every files in a flat/single directory on your computer.</p>
+</div>
+<div class="section" id="at-produce-py">
+<h3><a class="toc-backref" href="#id74">at_produce.py</a></h3>
+<p>Executes commands in nodes whose body text starts with <tt class="docutils literal"><span class="pre">&#64;produce</span></tt>.
+To use, put in the body text of a node:</p>
+<pre class="literal-block">
+&#64;produce javac -verbose Test.java
+</pre>
+<p>To execute, you goto Outline and look at Produce. Choose Execute All Produce or
+Execute Tree Produce. The Tree does the current Tree, All does the whole
+Outline. Executing will fire javac, or whatever your using. <tt class="docutils literal"><span class="pre">&#64;produce</span></tt> functions
+as a directive. After executing, a log file/node is created at the top of the
+Outline. Any output, even error messages, should be there. It executes in a
+hierarchal manner. Nodes that come before that contain <tt class="docutils literal"><span class="pre">&#64;produce</span></tt> go first. I'm
+hoping that this orthogonal to <tt class="docutils literal"><span class="pre">&#64;run</span></tt> nodes and anything like that. Its not
+intended as a replacement for make or Ant, but as a simple substitute when that
+machinery is overkill. <strong>Warning</strong>: trying to execute a non-existent command
+will hang Leo.</p>
+</div>
+<div class="section" id="at-view-py">
+<h3><a class="toc-backref" href="#id75">at_view.py</a></h3>
+<p>A plugin that supports <tt class="docutils literal"><span class="pre">&#64;clip</span></tt>, <tt class="docutils literal"><span class="pre">&#64;view</span></tt> and <tt class="docutils literal"><span class="pre">&#64;strip</span></tt> nodes.</p>
+<ul class="simple">
+<li>Selecting a headline containing <tt class="docutils literal"><span class="pre">&#64;clip</span></tt> appends the contents of the clipboard to
+the end of the body pane.</li>
+<li>Double clicking the icon box of a node whose headline contains <tt class="docutils literal"><span class="pre">&#64;view</span> <span class="pre">&lt;path-to-file&gt;</span></tt>
+places the contents of the file in the body pane.</li>
+<li>Double clicking the icon box of a node whose headline contains <tt class="docutils literal"><span class="pre">&#64;strip</span> <span class="pre">&lt;path-to-file&gt;</span></tt>
+places the contents of the file in the body pane, with all sentinels removed.</li>
+</ul>
+<p>This plugin also accumulates the effect of all <tt class="docutils literal"><span class="pre">&#64;path</span></tt> nodes.</p>
+</div>
+<div class="section" id="autotrees-py">
+<h3><a class="toc-backref" href="#id76">autotrees.py</a></h3>
+<p>The AutoTrees plugin is a helper plugin designed to make it very easy to write
+&quot;handler&quot; plugins to manage dynamic content in Leo outlines. AutoTrees provides:</p>
+<ul class="simple">
+<li>Convenient handler base classes which can be specialized for particular uses.</li>
+<li>A manager to turn handlers on and off.</li>
+<li>A set of example handlers to show the kinds of things that are possible.</li>
+</ul>
+<p>AutoTrees doesn't do anything that you cannot do in other ways, but it does
+provide a consistent way of adding dynamic content. This means that individual
+plugin writers don't have to rewrite all the same kinds of code each time and
+also makes it easier to maintain Leo, since it standardizes the way that certain
+classes of plugin interact with the Leo core. Why use this? I'm a plugin writer
+and I want to write a plugin to display dynamic content, i.e., content not
+directly contained in the .leo or derived files, e.g.,</p>
+<ul class="simple">
+<li>email messages</li>
+<li>news feeds</li>
+<li>news groups</li>
+<li>documentation</li>
+<li>remote files</li>
+<li>statistics</li>
+<li>file system data</li>
+<li>data base records</li>
+</ul>
+<p>You can do this as a standard plugin, but as an AutoTrees handler you,</p>
+<ul class="simple">
+<li>don't need to write code that interacts with the tree (this is done for you)</li>
+<li>get centralized management</li>
+<li>can still do everything else you could as a normal plugin</li>
+</ul>
+</div>
+<div class="section" id="base64packager-py">
+<h3><a class="toc-backref" href="#id77">base64Packager.py</a></h3>
+<p>This plugin allows the user to import binary data and store it in Leo as a
+base64 string. This plugin adds <tt class="docutils literal"><span class="pre">Import</span> <span class="pre">base64</span></tt> and <tt class="docutils literal"><span class="pre">Export</span> <span class="pre">base64</span></tt> commands
+to the Import menu and adds the 'View base64' command to the outline menu. The
+Import base64 command creates a new node with the headline:</p>
+<pre class="literal-block">
+&#64;base64 &lt;filename&gt;
+</pre>
+<p>The body of this node will kill the colorizer, add some info on the original
+file and create a section reference to the payload node, which contains the
+data. The Export base64 command asks for a location to place the file. The
+plugin checks that the structure of the base64 node is what it expected,
+basically what an import operation creates. If Ok, it will write the file to the
+selected directory. The View base64 command brings up a Pmw Dialog that displays
+the data as a PhotoImage. This currently only supports formats recognized by the
+PhotoImage class. This would be the .gif format. This functionality may be
+enhanced in the future by PIL to support more image types. Depending on the size
+of the image, you may have to scroll around to see it. For example, a leo clone
+icon will require scrolling to find. Id like to change this in the future.</p>
+</div>
+<div class="section" id="fastgotonode-py">
+<h3><a class="toc-backref" href="#id78">fastGotoNode.py</a></h3>
+<p>A Leo plugin that adds quick utility commands through a pop-up menu.
+To summon Menu, type control-space.
+To unsummon, Right Click.</p>
+<p>1. Movement. If a node has ancestors,siblings or children a menu option will
+appear offering the user the ability to jump to the node from the current node.
+This is an improvement over moving one node at a time with the keyboard
+commands.</p>
+<p>2. Inserting text. These menus offer the current language keywords, the
+directives the body recognizes and any <tt class="docutils literal"><span class="pre">&#64;file</span></tt> type headline directives. It offers
+the new user easy access to the different directives and ways to write a file.</p>
+<p>3. Moving Nodes(experimental). You can quickly move a node to its
+parent's parent or after a sibling, if they exist.</p>
+</div>
+<div class="section" id="mod-labels-py">
+<h3><a class="toc-backref" href="#id79">mod_labels.py</a></h3>
+<p>This plugin allows you to associate information with nodes. This information is
+organized around &quot;labels&quot;, which is are just strings and freely chosen by the
+user. The plugin allows you to create such a label quickly for each marked node,
+and to mark all nodes which have a certain label. Labels can be converted to
+subnodes, and vice versa. This facility allows you to add additional information
+for each label. You can create clones for each node which has a label. These
+clones are created as children of the current node. This last facility can be
+used to create clones for each node which has been found or changed by the
+standard search/replace dialog:</p>
+<ul class="simple">
+<li>Delete all marks.</li>
+<li>Do a &quot;find all&quot; / &quot;change all&quot;.</li>
+<li>Convert the marks to a label.</li>
+<li>Run the &quot;Clone label subnodes&quot; command.</li>
+</ul>
+<p>Finally, if you read a derived file, and the content of a node changes, the
+previous content is available under the label &quot;before change:&quot;</p>
+</div>
+<div class="section" id="read-only-nodes-py">
+<h3><a class="toc-backref" href="#id80">read_only_nodes.py</a></h3>
+<p>A plugin to create and update <tt class="docutils literal"><span class="pre">&#64;read-only</span></tt> nodes. I wanted to have the ability to
+import files in &quot;read-only&quot; mode, that is, in a mode where files could only be
+read by leo (not tangled), and also kept in sync with the content on the drive.
+The reason for this is for example that I have external programs that generate
+resource files. I want these files to be part of a leo outline, but I don't want
+leo to tangle or in any way modify them. At the same time, I want them to be
+up-to-date in the leo outline. This plugin has the following characteristics:</p>
+<ul class="simple">
+<li>It reads the specified file and puts it into the node content.</li>
+<li>If the <tt class="docutils literal"><span class="pre">&#64;read-only</span></tt> directive was in the leo outline already, and the file content
+on disk has changed from what is stored in the outline, it marks the node as
+changed and prints a &quot;changed&quot; message to the log window; if, on the other hand,
+the file content has <em>not</em> changed, the file is simply read and the node is
+not marked as changed.</li>
+<li>When you write a <tt class="docutils literal"><span class="pre">&#64;read-only</span></tt> directive, the file content is added to the node
+immediately, i.e. as soon as you press Enter (no need to call a menu
+entry to import the content).</li>
+<li>If you want to refresh/update the content of the file, just edit the headline
+and press Enter. The file is reloaded, and if in the meantime it has changed,
+a &quot;change&quot; message is sent to the log window.</li>
+<li>The body text of a <tt class="docutils literal"><span class="pre">&#64;read-only</span></tt> file cannot be modified in leo.</li>
+</ul>
+<p>The syntax to access files in <tt class="docutils literal"><span class="pre">&#64;read-only</span></tt> via ftp/http is the following:</p>
+<pre class="literal-block">
+&#64;read-only http://www.ietf.org/rfc/rfc0791.txt
+&#64;read-only ftp://ftp.someserver.org/filepath
+</pre>
+<p>If FTP authentication (username/password) is required, it can be specified as follows:</p>
+<pre class="literal-block">
+&#64;read-only ftp://username:password&#64;ftp.someserver.org/filepath
+</pre>
+</div>
+<div class="section" id="run-nodes-py">
+<h3><a class="toc-backref" href="#id81">run_nodes.py</a></h3>
+<p>Runs a program and interface Leo through its input/output/error streams.
+Double clicking the icon box whose headlines are <tt class="docutils literal"><span class="pre">&#64;run</span> <span class="pre">'cmd</span> <span class="pre">args'</span></tt> will execute
+the command. There are several other features, including <tt class="docutils literal"><span class="pre">&#64;arg</span></tt> and <tt class="docutils literal"><span class="pre">&#64;input</span></tt> nodes.</p>
+<p>The run_nodes.py plugin introduce two new nodes that transform leo into a
+terminal. It was mostly intended to run compilers and debuggers while having the
+possibility to send messages to the program.</p>
+<ul>
+<li><p class="first">Double clicking on the icon of an node whose headline is:</p>
+<pre class="literal-block">
+&#64;run &lt;command&gt; &lt;args&gt;
+</pre>
+</li>
+</ul>
+<p>will launch &lt;command&gt; with the given arguments. It will also mark the node. #
+Terminates the argument list. <tt class="docutils literal"><span class="pre">&#64;run</span> <span class="pre">#</span> <span class="pre">&lt;comment&gt;</span></tt> is also valid.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">&#64;in</span></tt> nodes are used to send input to the running process. Double clicking
+on the icon of an <tt class="docutils literal"><span class="pre">&#64;in</span> <span class="pre">&lt;message&gt;</span></tt> node will append a &quot;n&quot; to &lt;message&gt; and
+write it to the program, no matter where the node is placed. If no <tt class="docutils literal"><span class="pre">&#64;run</span></tt> node is
+active, nothing happens.</li>
+<li>The body text of every child, in which the headlines do not begin with <tt class="docutils literal"><span class="pre">&#64;run</span></tt>
+or <tt class="docutils literal"><span class="pre">&#64;in</span></tt>, will be appended to &lt;command&gt;, allowing you to add an infinite number
+of arguments to &lt;command&gt;.</li>
+<li>The output of the program is written in the log pane (Error outputted in red).
+When the program exit the node is set unmarked and the return value is
+displayed...When the enter key is pressed in the body pane of an active <tt class="docutils literal"><span class="pre">&#64;run</span></tt>
+node the content of it body pane is written to the program and then emptied
+ready for another line of input. If the node have <tt class="docutils literal"><span class="pre">&#64;run</span></tt> nodes in its descendants,
+they will be launched successively (unless one returned an exit code other
+than 0, then it will stop there).</li>
+</ul>
+</div>
+<div class="section" id="slideshow-py">
+<h3><a class="toc-backref" href="#id82">slideshow.py</a></h3>
+<p>This plugin supports slideshows in Leo outlines.</p>
+<p>It defines four new commands:</p>
+<ul class="simple">
+<li>next-slide-show:  move to the start of the next slide show,
+or the first slide show if no slide show has been seen yet.</li>
+<li>prev-slide-show:  move to the start of the previous slide show,
+or the first slide show if no slide show has been seen yet.</li>
+<li>next-slide: move to the next slide of a present slide show.</li>
+<li>prev-slide: move to the previous slide of the present slide show.</li>
+</ul>
+<p>Slides shows consist of a root &#64;slideshow node with descendant &#64;slide nodes.
+&#64;slide nodes may be organized via <a class="reference" href="mailto:non-&#64;slide">non-&#64;slide</a> nodes that do not appear in the slideshow.</p>
+<p>All these commands ignore &#64;ignore trees.</p>
+</div>
+<div class="section" id="startfile-py">
+<h3><a class="toc-backref" href="#id83">startfile.py</a></h3>
+<p>Launches (starts) a file given by a headline when double-clicking the icon.
+Ignores headlines starting with an '&#64;'. Uses the <tt class="docutils literal"><span class="pre">&#64;folder</span></tt> path if the headline
+is under an <tt class="docutils literal"><span class="pre">&#64;folder</span></tt> headline. Otherwise the path is relative to the Leo file.</p>
+</div>
+</div>
+<div class="section" id="plugins-manager-menu">
+<h2><a class="toc-backref" href="#id84">Plugins manager &amp; menu</a></h2>
+<div class="section" id="leoupdate-py">
+<h3><a class="toc-backref" href="#id85">leoupdate.py</a></h3>
+<p>A plugin to automatically update Leo from the current CVS version
+of the code stored on the SourceForge site. You can view individual
+files and update your entire Leo installation directly without needing
+a CVS client.</p>
+</div>
+<div class="section" id="plugin-manager-py">
+<h3><a class="toc-backref" href="#id86">plugin_manager.py</a></h3>
+<p>A plugin to manage Leo's Plugins:</p>
+<ul class="simple">
+<li>Enables and disables plugins.</li>
+<li>Shows plugin details.</li>
+<li>Checks for conflicting hook handlers.</li>
+<li>Checks for and updates plugins from the web.</li>
+</ul>
+</div>
+<div class="section" id="plugins-menu-py">
+<h3><a class="toc-backref" href="#id87">plugins_menu.py</a></h3>
+<p>Create a Plugins menu and adds an item to the plugin menu for each active
+plugin. Selecting this menu item will bring up a short About dialog with the
+details of the plugin. Plugins can create additional menu items by defining
+functions named <tt class="docutils literal"><span class="pre">cmd_XZY</span></tt>. These will appear in a submenu. If the plugin
+requires an INI file then a configure menu item will be created which will show
+an INI file editor. The plugin can define an <tt class="docutils literal"><span class="pre">applyConfiguration</span></tt> function,
+which will be called when the configuration changes. Plugins can also define a
+top level function to be called instead of the default &quot;About&quot; dialog by
+defining a &quot;topLevelMenu&quot; function in the plugin. This function will be called
+when the user clicks on the plugin name in the plugins menu, but only if the
+plugin was loaded properly and registered with <tt class="docutils literal"><span class="pre">g.plugin_signon</span></tt>.</p>
+<p>Plugins can define their name by setting the <tt class="docutils literal"><span class="pre">__plugin_name__</span></tt> property.
+Plugins can also attempt to select the order they will appear in the menu by
+defining a <tt class="docutils literal"><span class="pre">__plugin_prioriy__</span></tt>. The menu will be created with the highest
+priority items first. This behaviour is not guaranteed since other plugins can
+define any priority. This priority does not affect the order of calling
+handlers. To change the order select a number outside the range 0-200 since this
+range is used internally for sorting alphabetically.</p>
+</div>
+</div>
+<div class="section" id="scripting">
+<h2><a class="toc-backref" href="#id88">Scripting</a></h2>
+<div class="section" id="dyna-menu">
+<h3><a class="toc-backref" href="#id89">dyna_menu</a></h3>
+<p>The dyna_menu plugin is a remarkable body of work by 'e'.
+This plugin creates a dyna_menu menu from which you can execute commands.
+You may download the latest version at: <a class="reference" href="http://rclick.netfirms.com/dyna_menu.py.html">http://rclick.netfirms.com/dyna_menu.py.html</a></p>
+</div>
+<div class="section" id="mod-scripting">
+<h3><a class="toc-backref" href="#id90">mod_scripting</a></h3>
+<p>A plugin to create script buttons and <tt class="docutils literal"><span class="pre">&#64;button</span></tt>, <tt class="docutils literal"><span class="pre">&#64;plugin</span></tt> and <tt class="docutils literal"><span class="pre">&#64;script</span></tt> nodes.
+This plugin puts two buttons in the icon area: a button called <tt class="docutils literal"><span class="pre">run</span> <span class="pre">Script</span></tt> and
+a button called <tt class="docutils literal"><span class="pre">script</span> <span class="pre">Button</span></tt>. The <tt class="docutils literal"><span class="pre">run</span> <span class="pre">Script</span></tt> button is simply another way
+of doing the Execute Script command: it executes the selected text of the
+presently selected node, or the entire text if no text is selected. The 'script
+Button' button creates another button in the icon area every time you push it.
+The name of the button is the headline of the presently selected node. Hitting
+this _new_ button executes the button's script.</p>
+<p>For example, to run a script on any part of an outline do the following:</p>
+<ol class="arabic simple">
+<li>Select the node containing the script.</li>
+<li>Press the scriptButton button.  This will create a new button, call it X.</li>
+<li>Select the node on which you want to run the script.</li>
+<li>Push button X.</li>
+</ol>
+<p>That's all.  You can delete a script button by right-clicking on it.
+This plugin optionally scans for <tt class="docutils literal"><span class="pre">&#64;button</span></tt> nodes, <tt class="docutils literal"><span class="pre">&#64;plugin</span></tt> nodes and <tt class="docutils literal"><span class="pre">&#64;script</span></tt> nodes
+whenever a .leo file is opened.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">&#64;button</span></tt> nodes create script buttons.</li>
+<li><tt class="docutils literal"><span class="pre">&#64;plugin</span></tt> nodes cause plugins to be loaded.</li>
+<li><tt class="docutils literal"><span class="pre">&#64;script</span></tt> nodes cause a script to be executed when opening a .leo file.</li>
+</ul>
+<p>Such nodes may be security risks. This plugin scans for such nodes only if the
+corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
+to True in this plugin.</p>
+</div>
+</div>
+<div class="section" id="servers">
+<h2><a class="toc-backref" href="#id91">Servers</a></h2>
+<div class="section" id="mod-http-py">
+<h3><a class="toc-backref" href="#id92">mod_http.py</a></h3>
+<p>A minimal http plugin for LEO, based on AsyncHttpServer.py.
+Use this plugin is as follows:</p>
+<ol class="arabic">
+<li><p class="first">Start Leo with the plugin enabled.  You will see a purple message that says something like:</p>
+<pre class="literal-block">
+http serving enabled on port 8080, version 0.91
+</pre>
+</li>
+<li><p class="first">Start a web browser, and enter the following url: <a class="reference" href="http://localhost:8080/">http://localhost:8080/</a> You
+will see a a &quot;top&quot; level page containing one link for every open .leo
+file.  Start clicking :-)</p>
+</li>
+</ol>
+<p>You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.</p>
+<p>To enable this plugin put this into your file:</p>
+<pre class="literal-block">
+&#64;settings
+    &#64;bool http_active = True
+    &#64;int  port = 8080
+    &#64;string rst_http_attributename = 'rst_http_attribute'
+</pre>
+</div>
+</div>
+<div class="section" id="shadow-files">
+<h2><a class="toc-backref" href="#id93">Shadow files</a></h2>
+<div class="section" id="mod-shadow-py">
+<h3><a class="toc-backref" href="#id94">mod_shadow.py</a></h3>
+<p>The shadow plugin allows you to use Leo with files which contain no
+Leo comments, and still have information flow in both directions:
+from the file into Leo, and from Leo into the file.</p>
+<p>To use this plugin:</p>
+<ol class="arabic">
+<li><p class="first">Install the shadow script button found in leoPy.leo in the node:</p>
+<pre class="literal-block">
+Code--&gt;Buttons and settings--&gt;&#64;&#64;button shadow
+</pre>
+<p>That is, copy and paste this &#64;button node to your Leo outline, and change &#64;&#64;button to &#64;button.</p>
+</li>
+<li><p class="first">Position the cursor somewhere in your tree.</p>
+</li>
+<li><p class="first">Clicking the shadow button will create a shadow file for all &#64;thin nodes
+in the selected outline.</p>
+</li>
+</ol>
+<p>After this initial setup, changes in Leo will be reflected both in the file
+in the Leo subfolder, and the file without sentinels.
+Conversely, changes in the file without sentinels will flow back to the file
+in the leo subfolder, and show up in Leo.
+Text insertions within a node will show up as expected. Text insertion
+at the end of the node will show up and the end of the node.
+Note that the plugin never structures input; this has to be done manually
+within Leo.</p>
+<p>You can set settings for this plugin in leoSettings.leo at:</p>
+<pre class="literal-block">
+&#64;settings--&gt;Plugins--&gt;shadow plugin.
+</pre>
+<ul class="simple">
+<li>&#64;string shadow_subdir (default: LeoFolder): name of the shadow directory.</li>
+<li>&#64;string shadow_prefix (default: x): prefix of shadow files.
+This prefix allows the shadow file and the original file to have different names.
+This is useful for name-based tools like py.test.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="spell-checking">
+<h2><a class="toc-backref" href="#id95">Spell checking</a></h2>
+<div class="section" id="spellpyx-py">
+<h3><a class="toc-backref" href="#id96">spellpyx.py</a></h3>
+<p>aspell.pyx: Leo's new spell checking plugin that uses aspell.exe. It is much
+faster than the old mod_spelling plugin, but requires Python 2.3 or above and a
+recent version of Aspell. When properly installed and enabled, this plugin adds
+a Check Spelling command to Leo's Edit menu. This command brings up a spell
+checking dialog. You can set options by changing entries in spellpyx.ini in
+Leo's plugins menu. One of these settings is the name of the dictionary,
+spellpyx.txt by default. <strong>Warning</strong>: do not create spellpyx.txt with an <tt class="docutils literal"><span class="pre">&#64;asis</span></tt>
+tree in leoPlugins.leo: only the plugin code should typically change
+spellpyx.txt. You <strong>can</strong> edit <tt class="docutils literal"><span class="pre">spellpyx.txt</span></tt> yourself in an external editor: just
+make sure that Leo isn't running when you do this. You can bring up the spell
+checker without enabling the spellpyx plugin by using an <tt class="docutils literal"><span class="pre">&#64;button</span> <span class="pre">Check</span>
+<span class="pre">Spelling...</span></tt> script button. LeoDocs.leo contains such a script button.</p>
+</div>
+</div>
+<div class="section" id="text-formatting">
+<h2><a class="toc-backref" href="#id97">Text formatting</a></h2>
+<div class="section" id="leo-to-asciidoc">
+<h3><a class="toc-backref" href="#id98">Leo to AsciiDoc</a></h3>
+<p>Leo2AsciiDoc is a small Python program which has been built to be used as a
+plugin module for the Leo outlining editor.
+For more information see:  <a class="reference" href="http://www.marshallresearch.com/michael-dawson/os/leo.html">http://www.marshallresearch.com/michael-dawson/os/leo.html</a>
+I am still using Leo version 4.1 (rc3, build 1.62), as I've been unable to keep
+up with the speed of Edward's Leo development. He has made such significant
+changes to Leo since 4.1 that I doubt that Leo2AsciiDoc will work with any
+version later than 4.1. I do intend to rewrite Leo2AsciiDoc for the new Leo, but
+there is no schedule set.</p>
+<p>Leo2AscDoc enables the contents of plain text Leo outlines to be published to HTML
+or PDF via the AsciiDoc program and the DocBook set of publishing tools. Plain
+text from the Leo outline can be transformed into a final result that has
+typeset body text, in which bulleted and numbered lists, variable lists, page
+numbers, URLs, index terms,and bold and italic text are automatically
+recognized. typeset Headings a Table of Contents an Index containing any items
+marked by the user, and any Python classes or functions. To produce HTML and
+PDF, you'll need to have the AsciiDoc program installed (a trivial task) and a
+DocBook tool chain installed, which is not a trivial task. And, of course,
+Python and Leo. In sum, this little program is an easy install for people who
+are already using Leo and DocBook. As noted later, Leo2AsciiDoc has only been
+tested on Linux</p>
+</div>
+<div class="section" id="rst3-py">
+<h3><a class="toc-backref" href="#id99">rst3.py</a></h3>
+<p>The rst3 plugin creates output files from Leo outlines containing rST
+(<a class="reference" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a>) markup. rst3 options control most aspects of this plugin's
+operations. You can set options in <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, in headlines and in body
+text. There are too many options to describe here. See:
+<a class="reference" href="http://webpages.charter.net/edreamleo/rstplugin3.html">http://webpages.charter.net/edreamleo/rstplugin3.html</a> for full documentation. To
+use this plugin effectively, Python's <a class="reference" href="http://docutils.sourceforge.net">docutils</a> module must be installed. The
+rst3 plugin will use the <a class="reference" href="http://silvercity.sourceforge.net">SilverCity</a> syntax coloring package if it installed.</p>
+<p>The rst3 plugin adds the <tt class="docutils literal"><span class="pre">Write</span> <span class="pre">Restructured</span> <span class="pre">Text</span></tt> command to Leo's Edit menu.
+This command searches the selected outline looking for <strong>rst root nodes</strong> whose
+headline have the form:</p>
+<pre class="literal-block">
+&#64;rst &lt;filename&gt;
+</pre>
+<p>The plugin then creates the named file in various ways depending which rst3
+options are in effect. By default, the rst3 plugin creates rST headings
+automatically from outlines, so the higher-level nodes in the outline correspond
+to higher-level sections in the output. Creating rST headings automatically
+eliminates one of the most tedious chores associated with rST markup.
+This plugin sends .htm, .html or .tex files to the docutils module for further
+processing. Docutils generates HTML files or LaTeX files depending on the file's
+extension. HTML files generated by docutils refer to three .css (cascading style
+sheet) files that should exist in the same directory as the generated HTML file.
+You can control the formatting of the HTML file by altering these .css files.</p>
+<p>For full details on this plugin, see <a class="reference" href="http://webpages.charter.net/edreamleo/rstplugin3.html">http://webpages.charter.net/edreamleo/rstplugin3.html</a></p>
+<p><strong>New in Leo 4.4.1</strong>:
+A new method has been added to the rst3 plugin to make it more easily to drive
+the plugin from scripts:</p>
+<pre class="literal-block">
+def writeNodeToString (self,p=None,ext=None)
+</pre>
+<p>writeNodeToString scans p's tree (p defaults to presently selected node) looking for &#64;rst nodes.
+When the first &#64;rst node is found, writeNodeToString processes the node as usual, with the following changes:</p>
+<ul class="simple">
+<li>&#64;rst need not be followed by a filename; any filename and its extension are <em>ignored</em>.</li>
+<li>Only the <tt class="docutils literal"><span class="pre">ext</span></tt> argument to writeNodeToString determines the type of output produced.
+The valid values for the <tt class="docutils literal"><span class="pre">ext</span></tt> argument are None (for rst output), '.html', '.pdf', and '.tex'.</li>
+<li>Instead of writing the result to a file, writeNodeToString returns the tuple (p,s),
+where p is the node whose tree produced the output, and s is the output itself.</li>
+<li>writeNodeToString returns after processing at most one &#64;rst node.</li>
+</ul>
+<p>Scripts can easily use writeNodeToString to convert &#64;rst trees into various kinds of output.
+For example, here is the body of &#64;button rst-&gt;html in LeoDocs.leo:</p>
+<pre class="literal-block">
+import leoPlugins
+rst3 = leoPlugins.getPluginModule('rst3')
+if rst3:
+    controller = rst3.controllers.get(c)
+    if controller:
+        p,s = controller.writeNodeToString(ext='.html')
+        print '*' * 40,p
+        print s
+</pre>
+<p>Notes:</p>
+<ul class="simple">
+<li>This script scans the presently selected tree for &#64;rst nodes, just like the &#64;button rst script does.
+In particular, if the presently selected tree does not contain an &#64;rst node the search continues in parent trees.
+When an &#64;rst node is found, it converts the node (and descendants) to html and returns p,
+the found &#64;rst node and s, the html itself.</li>
+<li>The script shown above merely prints the output, but many other actions could be taken.
+In particular, because writeNodeToString returns p it would be possible to write a script that
+would scan multiple &#64;rst nodes.</li>
+<li>None and '.tex' are also valid values for the ext argument to writeNodeToString.
+None converts the &#64;rst tree to a single reStructuredText string, as shown in &#64;button rst-&gt;rst.</li>
+<li>There is some support for ext='.pdf', but this is experimental code.  Expect crashes.</li>
+</ul>
+</div>
+<div class="section" id="xsltwithnodes-py">
+<h3><a class="toc-backref" href="#id100">xsltWithNodes.py</a></h3>
+<p>Adds XSLT-Node Command submenu item to the Outline menu.
+This menu contains the following items:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">Set</span> <span class="pre">StyleSheet</span> <span class="pre">Node</span></tt></dt>
+<dd>Selects the current node as the xsl stylesheet the plugin will use.</dd>
+<dt><tt class="docutils literal"><span class="pre">Process</span> <span class="pre">Node</span> <span class="pre">with</span> <span class="pre">Stylesheet</span> <span class="pre">Node</span></tt></dt>
+<dd>Processes the current node as an xml document,
+resolving section references and Leo directives,
+and creates a sibling containing the results.</dd>
+</dl>
+<p>Requires 4Suite 1.0a3 or better, downloadable from <a class="reference" href="http://4Suite.org">http://4Suite.org</a>.</p>
+</div>
+</div>
+<div class="section" id="windows">
+<h2><a class="toc-backref" href="#id101">Windows</a></h2>
+<div class="section" id="cleo-py">
+<h3><a class="toc-backref" href="#id102">cleo.py</a></h3>
+<p>Cleo allows you to annotate or colour leo outlines based on priority, code
+archetype, node types or some arbitrary criteria. The annotations and colour
+coding can play a similar role like that of syntax highlighting. Right-click on
+the icon area to popup its menu to play with it.</p>
+</div>
+<div class="section" id="footprints-py">
+<h3><a class="toc-backref" href="#id103">footprints.py</a></h3>
+<p>A plugin to leave footprints! This colours the Leo nodes so that the ones you
+have visited most and most recently will stand out.</p>
+</div>
+<div class="section" id="editattributes-py">
+<h3><a class="toc-backref" href="#id104">EditAttributes.py</a></h3>
+<p>A plugin that lets the user to associate text with a specific node.
+Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
+will create an attribute editor where the user can add, remove and edit
+attributes. Since attributes use the underlying tnode, clones will share the
+attributes of one another.</p>
+</div>
+<div class="section" id="maximizenewwindows-py">
+<h3><a class="toc-backref" href="#id105">maximizeNewWindows.py</a></h3>
+<p>Maximizes all new windows.</p>
+</div>
+<div class="section" id="nodebar-py">
+<h3><a class="toc-backref" href="#id106">nodebar.py</a></h3>
+<p>The nodebar plugin adds buttons at the bottom of the tree canvas. The buttons
+correspond to commands found in the Outline commands. It is intended to speed up
+a new users ability to use the outline. Experienced users may find value in
+being able to quickly execute commands they do not use very often.</p>
+</div>
+<div class="section" id="redirect-to-log-py">
+<h3><a class="toc-backref" href="#id107">redirect_to_log.py</a></h3>
+<p>Send all output to the log pane.</p>
+</div>
+<div class="section" id="tabbedlog-py">
+<h3><a class="toc-backref" href="#id108">TabbedLog.py</a></h3>
+<p>Turns the log into a tabbed component.  Other plugins may add tabs.
+To get a new tab in TabbedLog:</p>
+<pre class="literal-block">
+import TabbedLog
+pane = TabbedLog.getPane(name,c)
+</pre>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">pane</span></tt> is the pane returned for you to work with.</li>
+<li><tt class="docutils literal"><span class="pre">name</span></tt> is the name of the tab you want for the pane.</li>
+<li><tt class="docutils literal"><span class="pre">c</span></tt> is the commander for the leoFrame.</li>
+</ul>
+</div>
+<div class="section" id="uasearch-py">
+<h3><a class="toc-backref" href="#id109">UASearch.py</a></h3>
+<p>A plugin for searching unknownAttributes (uA's).</p>
+</div>
+<div class="section" id="universalscrolling-py">
+<h3><a class="toc-backref" href="#id110">UniversalScrolling.py</a></h3>
+<p>A plugin that enables the user to scroll down with a left mouse click and hold,
+and to scroll up with a right mouse click and hold. Scrolling continues until
+the user releases the mouse. Originally designed as a workaround for various
+bugs in Tkinter scrolling, this may actually be superior to wheel scrolling, in
+that there is little work a user has to do to scroll except to press a button.</p>
+</div>
+<div class="section" id="urlloader-py">
+<h3><a class="toc-backref" href="#id111">URLloader.py</a></h3>
+<p>This plugin uses Python's urllib module to download files and import them into Leo.
+It requires the TabbedLog plugin.</p>
+<hr class="docutils" />
+<p><a class="reference" href="whitepapers.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="writingPlugins.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
