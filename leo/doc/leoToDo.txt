@@ -1,26 +1,8 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080229083614:Remove xp newlines from all files
-#@-node:ekr.20080229083614:Remove xp newlines from all files
 #@+node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
 #@-node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
-#@+node:ekr.20080224180411:** fix problems with install script
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/9ac0ca91f1cb09a6?hl=en
-
-On Feb 18, 2:17 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
-
-> Leo 4.4.7 final is available at:http://sourceforge.net/project/showfiles.php?group_id=3458&package_id...
-
-i'm trying to install from the zip archive in linux. all of the text
-files appear to be in DOS format and this is confusing bash when i
-invoke the install script. i also used unzip -a to convert the files
-but it had no effect; i think everything in the archive is marked as
-binary. 
-#@nonl
-#@-node:ekr.20080224180411:** fix problems with install script
 #@+node:ekr.20080229073116:Allow arguments to minibuffer commands
 @nocolor
 
