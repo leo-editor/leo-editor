@@ -4462,19 +4462,22 @@ import glob
 
 @others
 
-dir = c.frame.openDirectory
-files = glob.glob('%s\*.py' % dir)
-
+baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
 n = 0
-for name in files:
-    f = file(name)
-    lines = f.readlines()
-    # print '%5d %s' % (len(lines),name)
-    f.close()
-    check(name,lines)
-    n += 1
+for dir2 in ('','src','scripts','plugins',):
+
+    theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
+    print theDir
+    files = glob.glob('%s\*.py' % theDir)
+    for name in files:
+        f = file(name)
+        lines = f.readlines()
+        # print '%5d %s' % (len(lines),name)
+        f.close()
+        check(name,lines)
+        n += 1
+
 print 'done.  checked %d files' % (n)
-#@nonl
 #@+node:check
 def check(name,lines):
 
