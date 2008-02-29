@@ -1,6 +1,10 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
+#@+node:ekr.20080229083614:Remove xp newlines from all files
+#@-node:ekr.20080229083614:Remove xp newlines from all files
+#@+node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
+#@-node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
 #@+node:ekr.20080224180411:** fix problems with install script
 @nocolor
 
