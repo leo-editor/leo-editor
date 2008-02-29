@@ -17,19 +17,51 @@ but it had no effect; i think everything in the archive is marked as
 binary. 
 #@nonl
 #@-node:ekr.20080224180411:** fix problems with install script
-#@+node:ekr.20080223084211:To do: ILeo
+#@+node:ekr.20080229073116:Allow arguments to minibuffer commands
 @nocolor
 
-ILeo:
-- Important to emphasize simplicity of foundation: leox.c and leox.g.
-- Important ot emphasize that ILeo is similar to scripting plugin.
+http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
-* Scripts can create other scripts (like g.es, like unit tests).
-* Data can be **anything**: uA's.
+For now, just do save-to, save-as, open-outline, and maybe find.
 
-- Implementation of ILeo similar to implementation of scripting plugin
+>  Standing in the shower a few minutes ago I realized that something
+>  like this will work.  The Aha was that we are only talking about a few
+>  minibuffer commands:  open, save-as, save-to, find, replace (not the
+>  accurate command names).  Maybe a few more...
+
+Yeah, we can add them as time goes on, little by little.
+
+>  That being so, each command handler can look for the k.givenArgs
+>  ivar.  The handler will bypass the argument accumulation logic if the
+>  k.givenArgs exists.  It's a bit ugly, but so what--it will do what you
+>  want.
+
+Keep it simple & stupid. That's not really all that ugly, and
+certainly isn't over-engineering :-)
+
+>  So please let me know if there are any other commands you would like
+>  to support "given" args.  Please keep the list short.  Thanks.
+
+I don't even know that many minibuffer commands yet :-). Time will
+show where those args will be handy. On ipython side we have file name
+completion working for those args, at least.
 #@nonl
-#@-node:ekr.20080223084211:To do: ILeo
+#@-node:ekr.20080229073116:Allow arguments to minibuffer commands
+#@+node:ekr.20080229074114:Apply tkinter hack
+@nocolor
+
+Hmm, I just found this:
+
+https://sourceforge.net/forum/message.php?msg_id=4078577
+
+which suggests this:
+
+import Tkinter
+Tkinter.wantobjects = 0
+
+which does seem to fix the problem. 
+#@nonl
+#@-node:ekr.20080229074114:Apply tkinter hack
 #@+node:ekr.20080226133349:at.readError may have wrong args
 #@-node:ekr.20080226133349:at.readError may have wrong args
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
