@@ -5,6 +5,34 @@
 #@+all
 #@+node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
 #@-node:ekr.20061116060847:@url http://www.jhorman.org/wikidPad/
+#@+node:ekr.20080225084626:Bzr notes
+@nocolor
+
+Common
+
+- No need for aliases for push, pull or commit.  do bzr info to find url.
+
+Docs:
+- http://doc.bazaar-vcs.org/latest/en/user-guide/index.html
+    - http://bazaar-vcs.org/BzrWhy (referenced in sec 1.1.3 of the guide)
+        - http://ianclatworthy.files.wordpress.com/2007/10/dvcs-why-and-how3.pdf
+        - PQM: https://launchpad.net/pqm (google)
+        - BB Bundle buggy: http://bundlebuggy.aaronbentley.com/help (google)
+        - Spike solution: http://www.extremeprogramming.org/rules/spike.html (google)
+- My log was at: http://bzr.arbash-meinel.com/irc_log/bzr/2008/02/bzr-2008-02-25.html
+
+Windows
+
+- c:\prog\bzr-leo contains my sandbox.
+- Edward\keys contains the keys
+- Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
+- To open a connection: Open pagent, then select "add key"
+
+Linux:
+
+- Configuration file is bazaar.conf in ~/.bazaar directory
+- BZR automatically 
+#@-node:ekr.20080225084626:Bzr notes
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg

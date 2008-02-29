@@ -1,67 +1,1577 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
-#@-node:ekr.20080229084148:Clean up Leo's home page: remove obsolete links
+#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080229111540:To do first
 #@+node:ekr.20080229073116:Allow arguments to minibuffer commands
 @nocolor
 
 http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
-For now, just do save-to, save-as, open-outline, and maybe find.
+The following minibuffer commands now support k.givenArgs:
 
->  Standing in the shower a few minutes ago I realized that something
->  like this will work.  The Aha was that we are only talking about a few
->  minibuffer commands:  open, save-as, save-to, find, replace (not the
->  accurate command names).  Maybe a few more...
+- open-outline and open-outline-by-name
+- save-file, save-file-as, save-file-as-unzipped, save-file-as-zipped
 
-Yeah, we can add them as time goes on, little by little.
+To do:
+- (maybe) search/replace.
+- repeat-complex-command.
 
->  That being so, each command handler can look for the k.givenArgs
->  ivar.  The handler will bypass the argument accumulation logic if the
->  k.givenArgs exists.  It's a bit ugly, but so what--it will do what you
->  want.
+@color
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
 
-Keep it simple & stupid. That's not really all that ugly, and
-certainly isn't over-engineering :-)
+    '''Create a new Leo window.'''
 
->  So please let me know if there are any other commands you would like
->  to support "given" args.  Please keep the list short.  Thanks.
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
-I don't even know that many minibuffer commands yet :-). Time will
-show where those args will be handy. On ipython side we have file name
-completion working for those args, at least.
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        t = leoNodes.tnode()
+        v = leoNodes.vnode(t)
+        p = leoNodes.position(v,[])
+        v.initHeadString("NewHeadline")
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # print language,ext
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# print "ext",ext
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    c.beginUpdate()
+    try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.fileCommands.save(c.mFileName)
+                c.updateRecentFiles(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
 #@nonl
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            g.trace(fileName)
+            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.saveAs(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        # set local fileName, _not_ c.mFileName
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            fileName = g.ensure_extension(fileName, ".leo")
+            c.fileCommands.saveTo(fileName)
+            c.updateRecentFiles(fileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20060419123128:open-outline-by-name
+def openOutlineByName (self,event):
+
+    '''Prompt for the name of a Leo outline and open it.'''
+
+    c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
+
+    if fileName:
+        g.openWithFileName(fileName,c)
+    else:
+        k.setLabelBlue('Open Leo Outline: ',protect=True)
+        k.getFileName(event,handler=self.openOutlineByNameFinisher)
+
+def openOutlineByNameFinisher (self,event):
+
+    c = self.c ; k = self.k ; fileName = k.arg
+
+    k.resetLabel()
+    if fileName and g.os_path_exists(fileName) and not g.os_path_isdir(fileName):
+        g.openWithFileName(fileName,c)
+#@-node:ekr.20060419123128:open-outline-by-name
+#@+node:ekr.20061031131434.78:<< define externally visible ivars >>
+self.abbrevOn = False # True: abbreviations are on.
+self.arg = '' # The value returned by k.getArg.
+self.commandName = None # The name of the command being executed.
+self.funcReturn = None # For k.simulateCommand
+self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+self.inputModeBindings = {}
+self.inputModeName = '' # The name of the input mode, or None.
+self.inverseCommandsDict = {}
+    # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+self.negativeArg = False
+self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
+self.regx = g.bunch(iter=None,key=None)
+self.repeatCount = None
+self.previousGivenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
+self.state = g.bunch(kind=None,n=None,handler=None)
+#@-node:ekr.20061031131434.78:<< define externally visible ivars >>
+#@+node:ekr.20061031131434.122:repeatComplexCommand & helper
+def repeatComplexCommand (self,event):
+
+    '''Repeat the previously executed minibuffer command.'''
+    k = self
+    if k.mb_history:
+        k.setState('last-full-command',1,handler=k.repeatComplexCommandHelper)
+        k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
+    else:
+        g.es('No previous command',color='blue')
+    return 'break'
+
+def repeatComplexCommandHelper (self,event):
+
+    k = self ; c = k.c ; gui = g.app.gui
+
+    keysym = gui.eventKeysym(event)
+    # g.trace('state',k.state.kind,'event',repr(event),g.callers())
+    if keysym == 'Return' and k.mb_history:
+    # if k.mb_history:
+        last = k.mb_history [0]
+        k.resetLabel()
+        k.clearState() # Bug fix.
+        c.commandsDict [last](event)
+        return 'break'
+    else:
+        g.trace('oops')
+        return k.keyboardQuit(event)
+#@-node:ekr.20061031131434.122:repeatComplexCommand & helper
+#@+node:ekr.20061031131434.127:simulateCommand
+def simulateCommand (self,commandName):
+
+    k = self ; c = k.c
+
+    commandName,args = commandName.split(None)
+    k.givenArgs = args or []
+    # g.trace('args',args)
+    if k.givenArgs: k.previousGivenArgs = None
+
+    func = c.commandsDict.get(commandName)
+
+    if func:
+        # g.trace(commandName,func.__name__)
+        stroke = None
+        if commandName.startswith('specialCallback'):
+            event = None # A legacy function.
+        else: # Create a dummy event as a signal.
+            event = g.bunch(c=c,keysym='',char='',widget=None)
+        k.masterCommand(event,func,stroke)
+        return k.funcReturn
+    else:
+        g.trace('no command for %s' % (commandName),color='red')
+        if g.app.unitTesting:
+            raise AttributeError
+        else:
+            return None
+#@-node:ekr.20061031131434.127:simulateCommand
+#@+node:ekr.20051023094009:Search classes
+#@+node:ekr.20060123125256:class minibufferFind( (the findHandler)
+class minibufferFind (baseEditCommandsClass):
+
+    '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
+
+    @others
+#@+node:ekr.20060123125317.2: ctor (minibufferFind)
+def __init__(self,c,finder):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # g.trace('minibufferFind: finder',finder)
+
+    self.c = c
+    self.k = k = c.k
+    self.w = None
+    self.finder = finder
+    self.findTextList = []
+    self.changeTextList = []
+
+    commandName = 'replace-string'
+    s = k.getShortcutForCommandName(commandName)
+    s = k.prettyPrintKey(s)
+    s = k.shortcutFromSetting(s)
+    self.replaceStringShortcut = s
+#@-node:ekr.20060123125317.2: ctor (minibufferFind)
+#@+node:ekr.20060124140114: Options (minibufferFind)
+#@+node:ekr.20060124123133:setFindScope
+def setFindScope(self,where):
+
+    '''Set the find-scope radio buttons.
+
+    `where` must be in ('node-only','entire-outline','suboutline-only'). '''
+
+    h = self.finder
+
+    if where in ('node-only','entire-outline','suboutline-only'):
+        var = h.svarDict['radio-search-scope'].get()
+        if var:
+            h.svarDict["radio-search-scope"].set(where)
+    else:
+        g.trace('oops: bad `where` value: %s' % where)
+#@-node:ekr.20060124123133:setFindScope
+#@+node:ekr.20060124122844:get/set/toggleOption (minibufferFind)
+# This redirection is required to remove gui-dependencies.
+
+def getOption (self,ivar):          return self.finder.getOption(ivar)
+def setOption (self,ivar,val):      self.finder.setOption(ivar,val)
+def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+#@-node:ekr.20060124122844:get/set/toggleOption (minibufferFind)
+#@+node:ekr.20060125074939:showFindOptions
+def showFindOptions (self):
+
+    '''Show the present find options in the status line.'''
+
+    frame = self.c.frame ; z = []
+    # Set the scope field.
+    head  = self.getOption('search_headline')
+    body  = self.getOption('search_body')
+    scope = self.getOption('radio-search-scope')
+    d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
+    scope = d.get(scope) or ''
+    head = g.choose(head,'head','')
+    body = g.choose(body,'body','')
+    sep = g.choose(head and body,'+','')
+
+    frame.clearStatusLine()
+    s = '%s%s%s %s  ' % (head,sep,body,scope)
+    frame.putStatusLine(s,color='blue')
+
+    # Set the type field.
+    script = self.getOption('script_search')
+    regex  = self.getOption('pattern_match')
+    change = self.getOption('script_change')
+    if script:
+        s1 = '*Script-find'
+        s2 = g.choose(change,'-change*','*')
+        z.append(s1+s2)
+    elif regex: z.append('regex')
+
+    table = (
+        ('reverse',         'reverse'),
+        ('ignore_case',     'noCase'),
+        ('whole_word',      'word'),
+        ('wrap',            'wrap'),
+        ('mark_changes',    'markChg'),
+        ('mark_finds',      'markFnd'),
+    )
+
+    for ivar,s in table:
+        val = self.getOption(ivar)
+        if val: z.append(s)
+
+    frame.putStatusLine(' '.join(z))
+#@-node:ekr.20060125074939:showFindOptions
+#@+node:ekr.20060205105950:setupChangePattern
+def setupChangePattern (self,pattern):
+
+    h = self.finder ; w = h.change_ctrl
+
+    s = g.toUnicode(pattern,g.app.tkEncoding)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+#@-node:ekr.20060205105950:setupChangePattern
+#@+node:ekr.20060125091234:setupSearchPattern
+def setupSearchPattern (self,pattern):
+
+    h = self.finder ; w = h.find_ctrl
+
+    s = g.toUnicode(pattern,g.app.tkEncoding)
+
+    w.delete(0,'end')
+    w.insert(0,s)
+
+    h.update_ivars()
+#@-node:ekr.20060125091234:setupSearchPattern
+#@-node:ekr.20060124140114: Options (minibufferFind)
+#@+node:ekr.20060210180352:addChangeStringToLabel
+def addChangeStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.change_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocusNow()
+
+    s = w.getAllText()
+
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+#@-node:ekr.20060210180352:addChangeStringToLabel
+#@+node:ekr.20060210164421:addFindStringToLabel
+def addFindStringToLabel (self,protect=True):
+
+    c = self.c ; k = c.k ; h = self.finder ; w = h.find_ctrl
+
+    c.frame.log.selectTab('Find')
+    c.minibufferWantsFocusNow()
+
+    s = w.getAllText()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+
+    k.extendLabel(s,select=True,protect=protect)
+#@-node:ekr.20060210164421:addFindStringToLabel
+#@+node:ekr.20070105123800:changeAll
+def changeAll (self,event):
+
+    k = self.k ; tag = 'change-all' ; state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=True,regexp=False,word=True)
+        k.setLabelBlue('Change All From: ',protect=True)
+        k.getArg(event,tag,1,self.changeAll)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = 'Change All: %s With: ' % (self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,tag,2,self.changeAll,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg,changeAll=True)
+
+#@-node:ekr.20070105123800:changeAll
+#@+node:ekr.20060128080201:cloneFindAll
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Clone Find All: ',protect=True)
+        k.getArg(event,tag,1,self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+#@-node:ekr.20060128080201:cloneFindAll
+#@+node:ekr.20060204120158:findAgain
+def findAgain (self,event):
+
+    f = self.finder
+
+    f.p = self.c.currentPosition()
+    f.v = self.finder.p.v
+
+    # This handles the reverse option.
+    return f.findAgainCommand()
+#@-node:ekr.20060204120158:findAgain
+#@+node:ekr.20060209064140:findAll
+def findAll (self,event):
+
+    k = self.k ; state = k.getState('find-all')
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=True,regexp=False,word=True)
+        k.setLabelBlue('Find All: ',protect=True)
+        k.getArg(event,'find-all',1,self.findAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,findAll=True)
+#@-node:ekr.20060209064140:findAll
+#@+node:ekr.20060205105950.1:generalChangeHelper
+def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
+
+    # g.trace(repr(change_pattern))
+
+    c = self.c
+
+    self.setupSearchPattern(find_pattern)
+    self.setupChangePattern(change_pattern)
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.currentPosition()
+    self.finder.v = self.finder.p.v
+
+    # Bug fix: 2007-12-14: remove call to self.finder.findNextCommand.
+    # This was the cause of replaces not starting in the right place!
+
+    if changeAll:
+        self.finder.changeAllCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+#@-node:ekr.20060205105950.1:generalChangeHelper
+#@+node:ekr.20060124181213.4:generalSearchHelper
+def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
+
+    c = self.c
+
+    self.setupSearchPattern(pattern)
+    c.widgetWantsFocusNow(self.w)
+
+    self.finder.p = self.c.currentPosition()
+    self.finder.v = self.finder.p.v
+
+    if findAll:
+        self.finder.findAllCommand()
+    elif cloneFindAll:
+        self.finder.cloneFindAllCommand()
+    else:
+        # This handles the reverse option.
+        self.finder.findNextCommand()
+#@-node:ekr.20060124181213.4:generalSearchHelper
+#@+node:ekr.20060210174441:lastStateHelper
+def lastStateHelper (self):
+
+    k = self.k
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+#@-node:ekr.20060210174441:lastStateHelper
+#@+node:ekr.20050920084036.113:replaceString
+def replaceString (self,event):
+
+    k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
+    pattern_match = self.getOption ('pattern_match')
+    prompt = 'Replace ' + g.choose(pattern_match,'Regex','String')
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        prefix = '%s: ' % prompt
+        self.stateZeroHelper(event,tag,prefix,self.replaceString)
+    elif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = '%s: %s With: ' % (prompt,self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,'replace-string',2,self.replaceString,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg)
+#@-node:ekr.20050920084036.113:replaceString
+#@+node:ekr.20060124140224.3:reSearchBackward/Forward
+def reSearchBackward (self,event):
+
+    k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search Backward:',self.reSearchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def reSearchForward (self,event):
+
+    k = self.k ; tag = 're-search-forward' ; state = k.getState(tag)
+    if state == 0:
+        self.setupArgs(forward=True,regexp=True,word=None)
+        self.stateZeroHelper(
+            event,tag,'Regexp Search:',self.reSearchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.3:reSearchBackward/Forward
+#@+node:ekr.20060124140224.1:seachForward/Backward
+def searchBackward (self,event):
+
+    k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search Backward: ',self.searchBackward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def searchForward (self,event):
+
+    k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=False)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchForward,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.1:seachForward/Backward
+#@+node:ekr.20060125093807:searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060125093807:searchWithPresentOptions
+#@+node:ekr.20060124134356:setupArgs
+def setupArgs (self,forward=False,regexp=False,word=False):
+
+    h = self.finder ; k = self.k
+
+    if forward is None:
+        reverse = None
+    else:
+        reverse = not forward
+
+    for ivar,val,in (
+        ('reverse', reverse),
+        ('pattern_match',regexp),
+        ('whole_word',word),
+    ):
+        if val is not None:
+            self.setOption(ivar,val)
+
+    h.p = p = self.c.currentPosition()
+    h.v = p.v
+    h.update_ivars()
+    self.showFindOptions()
+#@-node:ekr.20060124134356:setupArgs
+#@+node:ekr.20060210173041:stateZeroHelper
+def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
+
+    k = self.k
+    self.w = self.editWidget(event)
+    if not self.w: return
+
+    k.setLabelBlue(prefix,protect=True)
+    self.addFindStringToLabel(protect=False)
+
+    # g.trace(escapes,g.callers())
+    if escapes is None: escapes = []
+    k.getArgEscapes = escapes
+    k.getArgEscape = None # k.getArg may set this.
+    k.getArg(event,tag,1,handler, # enter state 1
+        tabList=self.findTextList,completion=True,prefix=prefix)
+#@-node:ekr.20060210173041:stateZeroHelper
+#@+node:ekr.20060224171851:updateChange/FindList
+def updateChangeList (self,s):
+
+    if s not in self.changeTextList:
+        self.changeTextList.append(s)
+
+def updateFindList (self,s):
+
+    if s not in self.findTextList:
+        self.findTextList.append(s)
+#@-node:ekr.20060224171851:updateChange/FindList
+#@+node:ekr.20060124140224.2:wordSearchBackward/Forward
+def wordSearchBackward (self,event):
+
+    k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=False,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search Backward: ',self.wordSearchBackward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+
+def wordSearchForward (self,event):
+
+    k = self.k ; tag = 'word-search-forward' ; state = k.getState(tag)
+
+    if state == 0:
+        self.setupArgs(forward=True,regexp=False,word=True)
+        self.stateZeroHelper(event,tag,'Word Search: ',self.wordSearchForward)
+    else:
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060124140224.2:wordSearchBackward/Forward
+#@-node:ekr.20060123125256:class minibufferFind( (the findHandler)
+#@+node:ekr.20050920084036.257:class searchCommandsClass
+class searchCommandsClass (baseEditCommandsClass):
+
+    '''Implements many kinds of searches.'''
+
+    @others
+#@+node:ekr.20050920084036.258: ctor (searchCommandsClass)
+def __init__ (self,c):
+
+    # g.trace('searchCommandsClass')
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    self.findTabHandler = None
+    self.minibufferFindHandler = None
+    self.inited = False
+
+    try:
+        self.w = c.frame.body.bodyCtrl
+    except AttributeError:
+        self.w = None
+
+    # For isearch commands.
+    self.ifinder = leoFind.leoFind(c,title='ifinder')
+    self.isearch_v = None # vnode of last isearch.
+    self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
+    self.ignoreCase = None
+    self.forward = None
+    self.regexp = None
+#@-node:ekr.20050920084036.258: ctor (searchCommandsClass)
+#@+node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
+def getPublicCommands (self):
+
+    return {
+        'clone-find-all':                       self.cloneFindAll,
+
+        'find-all':                             self.findAll,
+        'change-all':                           self.changeAll,
+
+        # Thin wrappers on Find tab
+        'change':                               self.findTabChange,
+        'change-then-find':                     self.findTabChangeThenFind,
+        'find-next':                            self.findTabFindNext,
+        'find-prev':                            self.findTabFindPrev,
+
+        'hide-find-tab':                        self.hideFindTab,
+
+        'isearch-forward':                      self.isearchForward,
+        'isearch-backward':                     self.isearchBackward,
+        'isearch-forward-regexp':               self.isearchForwardRegexp,
+        'isearch-backward-regexp':              self.isearchBackwardRegexp,
+        'isearch-with-present-options':         self.isearchWithPresentOptions,
+
+        'open-find-tab':                        self.openFindTab,
+
+        'replace-string':                       self.replaceString,
+
+        're-search-forward':                    self.reSearchForward,
+        're-search-backward':                   self.reSearchBackward,
+
+        'search-again':                         self.findAgain,
+        # Uses existing search pattern.
+
+        'search-forward':                       self.searchForward,
+        'search-backward':                      self.searchBackward,
+        'search-with-present-options':          self.searchWithPresentOptions,
+        # Prompts for search pattern.
+
+        'set-find-everywhere':                  self.setFindScopeEveryWhere,
+        'set-find-node-only':                   self.setFindScopeNodeOnly,
+        'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
+
+        'show-find-options':                    self.showFindOptions,
+
+        'toggle-find-collapses_nodes':          self.toggleFindCollapesNodes,
+
+        'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
+        'toggle-find-in-body-option':           self.toggleSearchBodyOption,
+        'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
+        'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
+        'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
+        'toggle-find-regex-option':             self.toggleRegexOption,
+        'toggle-find-reverse-option':           self.toggleReverseOption,
+        'toggle-find-word-option':              self.toggleWholeWordOption,
+        'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
+
+        'word-search-forward':                  self.wordSearchForward,
+        'word-search-backward':                 self.wordSearchBackward,
+    }
+#@-node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
+#@+node:ekr.20060123131421:Top-level methods
+#@+node:ekr.20051020120306:openFindTab
+def openFindTab (self,event=None,show=True):
+
+    '''Open the Find tab in the log pane.'''
+
+    c = self.c ; log = c.frame.log ; tabName = 'Find'
+
+    wasOpen = self.inited
+
+    if self.inited:
+        log.selectTab(tabName)
+    else:
+        self.inited = True
+        log.selectTab(tabName,createText=False)
+        f = log.frameDict.get(tabName)
+        self.findTabHandler = g.app.gui.createFindTab(c,f)
+
+    if show or wasOpen or c.config.getBool('minibufferSearchesShowFindTab'):
+        pass # self.findTabHandler.bringToFront()
+    else:
+        log.hideTab(tabName)
+#@-node:ekr.20051020120306:openFindTab
+#@+node:ekr.20051022212004:Find Tab commands
+# Just open the Find tab if it has never been opened.
+# For minibuffer commands, it would be good to force the Find tab to be visible.
+# However, this leads to unfortunate confusion when executed from a shortcut.
+
+def findTabChange(self,event=None):
+    '''Execute the 'Change' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeCommand()
+    else:
+        self.openFindTab()
+
+def findTabChangeThenFind(self,event=None):
+    '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeThenFindCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindAll(self,event=None):
+    '''Execute the 'Find All' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findAllCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindNext (self,event=None):
+    '''Execute the 'Find Next' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findNextCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindPrev (self,event=None):
+    '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findPrevCommand()
+    else:
+        self.openFindTab()
+
+def hideFindTab (self,event=None):
+    '''Hide the Find tab.'''
+    if self.findTabHandler:
+        self.c.frame.log.selectTab('Log')
+#@-node:ekr.20051022212004:Find Tab commands
+#@+node:ekr.20060124115801:getHandler
+def getHandler(self,show=False):
+
+    '''Return the minibuffer handler, creating it if necessary.'''
+
+    c = self.c
+
+    self.openFindTab(show=show)
+        # sets self.findTabHandler,
+        # but *not* minibufferFindHandler.
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    return self.minibufferFindHandler
+#@-node:ekr.20060124115801:getHandler
+#@+node:ekr.20060123115459:Find options wrappers
+def setFindScopeEveryWhere (self, event):
+    '''Set the 'Entire Outline' radio button in the Find tab.'''
+    return self.setFindScope('entire-outline')
+
+def setFindScopeNodeOnly  (self, event):
+    '''Set the 'Node Only' radio button in the Find tab.'''
+    return self.setFindScope('node-only')
+
+def setFindScopeSuboutlineOnly (self, event):
+    '''Set the 'Suboutline Only' radio button in the Find tab.'''
+    return self.setFindScope('suboutline-only')
+
+def showFindOptions (self,event):
+    '''Show all Find options in the minibuffer label area.'''
+    self.getHandler().showFindOptions()
+
+def toggleFindCollapesNodes(self,event):
+    '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
+    # return self.toggleOption('collapse_nodes')
+    c = self.c ; p = c.currentPosition()
+    val = c.config.getBool('collapse_nodes_during_finds')
+    c.config.set(p,'collapse_nodes_during_finds',not val)
+    g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
+
+def toggleIgnoreCaseOption     (self, event):
+    '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+    return self.toggleOption('ignore_case')
+
+def toggleMarkChangesOption (self, event):
+    '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+    return self.toggleOption('mark_changes')
+def toggleMarkFindsOption (self, event):
+    '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+    return self.toggleOption('mark_finds')
+def toggleRegexOption (self, event):
+    '''Toggle the 'Regexp' checkbox in the Find tab.'''
+    return self.toggleOption('pattern_match')
+def toggleReverseOption        (self, event):
+    '''Toggle the 'Reverse' checkbox in the Find tab.'''
+    return self.toggleOption('reverse')
+
+def toggleSearchBodyOption (self, event):
+    '''Set the 'Search Body' checkbox in the Find tab.'''
+    return self.toggleOption('search_body')
+
+def toggleSearchHeadlineOption (self, event):
+    '''Toggle the 'Search Headline' checkbox in the Find tab.'''
+    return self.toggleOption('search_headline')
+
+def toggleWholeWordOption (self, event):
+    '''Toggle the 'Whole Word' checkbox in the Find tab.'''
+    return self.toggleOption('whole_word')
+
+def toggleWrapSearchOption (self, event):
+    '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+    return self.toggleOption('wrap')
+
+def setFindScope (self, where):  self.getHandler().setFindScope(where)
+def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
+#@-node:ekr.20060123115459:Find options wrappers
+#@+node:ekr.20060124093828:Find wrappers
+def changeAll(self,event=None):
+    '''Execute the 'Change All' command with the settings shown in the Find tab.'''
+    self.getHandler().changeAll(event)
+
+def cloneFindAll (self,event):
+    '''Do search-with-present-options and print all matches in the log pane. It
+    also creates a node at the beginning of the outline containing clones of all
+    nodes containing the 'find' string. Only one clone is made of each node,
+    regardless of how many clones the node has, or of how many matches are found
+    in each node.'''
+    self.getHandler().cloneFindAll(event)
+
+def findAll            (self,event):
+    '''Do search-with-present-options and print all matches in the log pane.'''
+    self.getHandler().findAll(event)
+
+def replaceString      (self,event):
+    '''Prompts for a search string. Type <Return> to end the search string. The
+    command will then prompt for the replacement string. Typing a second
+    <Return> key will place both strings in the Find tab and executes a **find**
+    command, that is, the search-with-present-options command.'''
+    self.getHandler().replaceString(event)
+
+def reSearchBackward   (self,event):
+    '''Set the 'Regexp' checkbox to True and the 'Reverse' checkbox to True,
+    then do search-with-present-options.'''
+    self.getHandler().reSearchBackward(event)
+
+def reSearchForward    (self,event):
+    '''Set the 'Regexp' checkbox to True, then do search-with-present-options.'''
+    self.getHandler().reSearchForward(event)
+
+def searchBackward     (self,event):
+    '''Set the 'Word Search' checkbox to False and the 'Reverse' checkbox to True,
+    then do search-with-present-options.'''
+    self.getHandler().searchBackward(event)
+
+def searchForward      (self,event):
+    '''Set the 'Word Search' checkbox to False, then do search-with-present-options.'''
+    self.getHandler().searchForward(event)
+
+def wordSearchBackward (self,event):
+    '''Set the 'Word Search' checkbox to True, then do search-with-present-options.'''
+    self.getHandler().wordSearchBackward(event)
+
+def wordSearchForward  (self,event):
+    '''Set the Word Search' checkbox to True and the 'Reverse' checkbox to True,
+    then do search-with-present-options.'''
+    self.getHandler().wordSearchForward(event)
+
+def searchWithPresentOptions (self,event):
+    '''Prompts for a search string. Typing the <Return> key puts the search
+    string in the Find tab and executes a search based on all the settings in
+    the Find tab. Recommended as the default search command.'''
+    self.getHandler().searchWithPresentOptions(event)
+#@-node:ekr.20060124093828:Find wrappers
+#@+node:ekr.20060204120158.2:findAgain
+def findAgain (self,event):
+
+    '''The find-again command is the same as the find-next command
+    if the search pattern in the Find tab is not '<find pattern here>'
+    Otherwise, the find-again is the same as the search-with-present-options command.'''
+
+    h = self.getHandler()
+
+    # h.findAgain returns False if there is no search pattern.
+    # In that case, we revert to search-with-present-options.
+    if not h.findAgain(event):
+        h.searchWithPresentOptions(event)
+#@-node:ekr.20060204120158.2:findAgain
+#@-node:ekr.20060123131421:Top-level methods
+#@+node:ekr.20050920084036.261:incremental search...
+def isearchForward (self,event):
+    '''Begin a forward incremental search.'''
+    self.startIncremental(event,forward=True,ignoreCase=False,regexp=False)
+
+def isearchBackward (self,event):
+    '''Begin a backward incremental search.'''
+    self.startIncremental(event,forward=False,ignoreCase=False,regexp=False)
+
+def isearchForwardRegexp (self,event):
+    '''Begin a forward incremental regexp search.'''
+    self.startIncremental(event,forward=True,ignoreCase=False,regexp=True)
+
+def isearchBackwardRegexp (self,event):
+    '''Begin a backard incremental regexp search.'''
+    self.startIncremental(event,forward=False,ignoreCase=False,regexp=True)
+
+def isearchWithPresentOptions (self,event):
+    '''Begin an incremental regexp search using the regexp and reverse options from the find panel.'''
+    self.startIncremental(event,forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20060420144640:iSearchBackspace
+def iSearchBackspace (self):
+
+    c = self.c ; k = self.k ; gui = g.app.gui ; w = self.w
+
+    if not self.isearch_stack:
+        ins = w.getInsertPoint()
+        self.endSearch(ins,ins)
+        return 
+
+    gui.set_focus(c,w)
+    pattern = k.getLabel(ignorePrompt=True)
+    self.scolorizer(event=None,pattern=pattern)
+
+    sel,ins = self.isearch_stack.pop()
+
+    if sel:
+        i,j = sel
+        w.setSelectionRange(i,j,insert=ins)
+    else:
+        w.setInsertPoint(ins)
+
+    w.seeInsertPoint()
+
+    if not self.isearch_stack:
+        self.endSearch(ins,ins)
+#@-node:ekr.20060420144640:iSearchBackspace
+#@+node:ekr.20050920084036.262:startIncremental
+def startIncremental (self,event,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k ; w = self.w
+
+    # None is a signal to get the option from the find tab.
+    if forward is None or regexp is None:
+        self.openFindTab(show=False)
+        if not self.minibufferFindHandler:
+            self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+        getOption = self.minibufferFindHandler.getOption
+        # g.trace('reverse',getOption('reverse'))
+        # g.trace('pattern',getOption('pattern_match'))
+    else:
+        getOption = lambda a: False # The value isn't used.
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.ins1 = ins = w.getInsertPoint()
+    sel = w.getSelectionRange() or (ins,ins),
+    self.isearch_stack = [(sel,ins),]
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocusNow()
+#@-node:ekr.20050920084036.262:startIncremental
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called when from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k ; w = self.w
+
+    if not event:
+        g.trace('no event',g.callers())
+        return
+    keysym = event.keysym
+    ch = event.char
+    if keysym == 'Control_L': return
+
+    c.bodyWantsFocusNow()
+    if keysym == 'Return':
+        i,j = w.getSelectionRange()
+        if not self.forward: i,j = j,i
+        self.endSearch(i,j)
+    elif keysym == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif ch:
+        k.updateLabel(event)
+        self.iSearchHelper(event)
+        self.scolorizer(event)
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@+node:ekr.20050920084036.263:iSearchHelper
+def iSearchHelper (self,event):
+
+    '''Move the cursor to position that matches the pattern in the miniBuffer.
+    isearches do not cross node boundaries.'''
+
+    c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
+    p = c.currentPosition()
+    self.searchString = pattern = k.getLabel(ignorePrompt=True)
+    if not pattern: return
+    s = w.getAllText()
+
+    if self.isearch_v != p.v:
+        self.isearch_v = p.v
+        self.isearch_stack = []
+
+    sel = w.getSelectionRange()
+    startindex = insert = w.getInsertPoint()
+
+    if self.forward:
+        i1 = startindex
+        j1 = len(s)
+    else:
+        i1 = 0
+        j1 = min(len(s),startindex + len(pattern))
+
+    i,j = self.ifinder.searchHelper(s,i1,j1,pattern,
+        backwards=not self.forward,
+        nocase=self.ignoreCase,
+        regexp=self.regexp,
+        word=False, # Incremental word-matches are not possible!
+        swapij=False)
+
+    if i != -1:
+        self.isearch_stack.append((sel,insert),)
+        # g.trace(i1,j1,i,j,pos,newpos)
+        gui.set_focus(c,w)
+        w.setSelectionRange(i,j,insert=i)
+#@-node:ekr.20050920084036.263:iSearchHelper
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self,i,j):
+
+    w = self.w
+    w.tag_delete('color','color1')
+
+    insert = g.choose(self.forward,'sel.end','sel.start')
+    w.setSelectionRange(i,j,insert=insert)
+
+    self.k.keyboardQuit(event=None)
+#@nonl
+#@-node:ekr.20060203072636:endSearch
+#@-node:ekr.20050920084036.261:incremental search...
+#@-node:ekr.20050920084036.257:class searchCommandsClass
+#@-node:ekr.20051023094009:Search classes
 #@-node:ekr.20080229073116:Allow arguments to minibuffer commands
-#@+node:ekr.20080229074114:Apply tkinter hack
-@nocolor
-
-Hmm, I just found this:
-
-https://sourceforge.net/forum/message.php?msg_id=4078577
-
-which suggests this:
-
-import Tkinter
-Tkinter.wantobjects = 0
-
-which does seem to fix the problem. 
-#@nonl
-#@-node:ekr.20080229074114:Apply tkinter hack
-#@+node:ekr.20080226133349:at.readError may have wrong args
-#@-node:ekr.20080226133349:at.readError may have wrong args
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20070625091423:Add translation services
 @nocolor
 
-*Many* calls to g.es and g.es_print have a mix of translated and untranslated items.
-Untranslated items should include file names, directories, gnx's, leo_id's etc.
+To do:
 
-**Don't bother to do clone-find-all: there are 666 matches!**
+- Add translate keyword arg to g.es and g.es_print.
+  This is needed to handle 'error' methods.
 
-Regardless of the chosen scheme:
+- at.readError may have wrong args.
 
-- g.translate will do the actual translation.
+Notes:
+
+- g.translateString does the actual translation.
 
 - g.es and g.es_print will translate only the first, third, etc arguments
   (Keyword arguments, color & newline, etc. are never translated)
@@ -69,641 +1579,668 @@ Regardless of the chosen scheme:
 
 @color
 #@nonl
-#@+node:ekr.20071115113231:Results
-@color
+#@+node:ekr.20031218072017.3145:Most common functions...
+# These are guaranteed always to exist for scripts.
+#@+node:ekr.20031218072017.3147:choose
+def choose(cond, a, b): # warning: evaluates all arguments
 
-# Idea: g.et translates only the first arg.
-# But this means we can use g.es and g.es *as is*!  (change s1 + s2 to s1,s2)
-# Standard messages: 'done', 'not found', 'can not open', 'can not create', '%s: %s'
+    if cond: return a
+    else: return b
+#@-node:ekr.20031218072017.3147:choose
+#@+node:ekr.20031218072017.1474:enl, ecnl & ecnls
+def ecnl(tabName='Log'):
+    g.ecnls(1,tabName)
 
-@thin leo.py
-g.et("disabling save commands",color="red")
-g.es("File not found: " + fileName)
-g.es_print("can not open script file: " + name, color="red")
-g.es("%s dir: %s" % (kind,theDir),color="blue")
-g.es("psyco now logging to",theFile,color="blue")
-g.et("psyco now running",color="blue")
+def ecnls(n,tabName='Log'):
+    log = app.log
+    if log and not log.isNull:
+        while log.newlines < n:
+            g.enl(tabName)
 
-@thin leoApp.py
-g.es_print("leoID = " + g.app.leoID, color='red')
-g.es("leoID = %s (in %s)" % (g.app.leoID,theDir), color="red")
-g.es("empty %s (in %s)" % (tag,theDir), color = "red")
-g.et_print('Unexpected exception in app.setLeoID',color='red')
-g.es("using os.getenv('USER'): %s " % (repr(theId)),color='red')
-g.es("leoID = %s" % (repr(g.app.leoID)),color="blue")
-g.et_print(s, color="red")
-g.es(cant,color='red')
-g.es(cant,color='red')
-g.es(s,color=color,newline=0) # The caller must write the newlines.
+def enl(tabName='Log'):
+    log = app.log
+    if log and not log.isNull:
+        log.newlines += 1
+        log.putnl(tabName)
+#@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
+#@+node:ekr.20070626132332:es & minitest
+def es(s,*args,**keys):
+    # print 'es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s)
+    # print 'es',repr(s)
+    log = app.log
+    if app.killed:
+        return
 
-@thin leoAtFile.py
-g.et_print('check-derived-file passed',color='blue')
-g.es("read only: " + fn,color="red")
-g.es("reading: " + root.headString())
-g.es('resurrected node: %s' % (p.headString()),color='blue')
-g.es('in file: %s' % (fileName),color='blue')
-g.et('you may want to delete ressurected nodes')
-g.et("no @file nodes in the selected tree")
-g.es_print('Errors inhibited read @auto %s' % (fileName),color='red')
-g.es("dummy created")
-g.es("using " + s)
-g.es(len(lines), " lines" + m)
-g.et("Write the @file node or use the Import Derived File command")
-g.es("Warning: updating changed text in %s" %
-g.es("Correcting hidden node: t=%s" % repr(at.t),color="red")
-g.es("Ignoring 3.x sentinel: " + s.strip(), color="blue")
-g.es("Ignoring bad @@language sentinel: %s" % line,color="red")
-g.es("Ignoring bad @comment sentinel: %s" % line,color="red")
-g.es("changed: " + p.headString(),color="blue")
-g.es("bad encoding in derived file:",encoding)
-g.es("Not written: " + at.outputFileName)
-g.et("finished")
-g.et("no @file nodes in the selected tree")
-g.es("no dirty @file nodes")
-g.es("finished")
-g.et("no dirty @auto nodes in the selected tree")
-g.et("no @auto nodes in the selected tree")
-g.es("Not written: " + at.outputFileName)
-g.es_print('@auto node not written:\n') ### continued
-g.et("finished")
-g.et("no @file node in the selected tree")
-g.es('dubious brackets in %s' % line)
-g.es("Ignoring bad @language directive: %s" % line,color="blue")
-g.es("Ignoring bad @comment directive: %s" % line,color="blue")
-g.es('%-10s %s' % ('unchanged:',self.shortFileName))
-g.es('%-10s %s' % ('wrote:',self.shortFileName))
-g.es('%-10s %s' % ('created:',self.targetFileName))
-g.es("correcting line endings in: " + self.targetFileName,color="blue")
-g.es("parent node: " + p.parent().headString(),color="blue")
-g.es("exception writing:" + self.targetFileName,color="red")
-g.es("exception deleting:" + self.outputFileName,color="red")
-g.et("conflicting @header and @noheader directives")
-g.et("Unknown language: using Python comment delimiters")
-g.es("c.target_language:",c.target_language)
-g.es("delim1,delim2,delim3:",delim1,delim2,delim3)
+    # Important: defining keyword arguments in addition to *args **does not work**.
+    # See Section 5.3.4 (Calls) of the Python reference manual.
+    # In other words, the following is about the best that can be done.
+    color = keys.get('color')
+    commas = keys.get('commas') ; commas = g.choose(commas=='True',True,False) # default is False
+    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
+    spaces= keys.get('spaces') ; spaces = g.choose(spaces=='False',False,True) # default is True
+    tabName = keys.get('tabName','Log')
 
-@thin leoBridge.py
-g.es("leoID = %s (in %s)" % (g.app.leoID,theDir), color="red")
-g.es("empty %s (in %s)" % (tag,theDir), color = "red")
-g.et('Unexpected exception in app.setLeoID',color='red')
-g.es('%s dir: %s' % (kind,theDir),color="blue")
+        # Default goes to log pane *not* the presently active pane.
+    if color == 'suppress': return # New in 4.3.
+    if type(s) != type("") and type(s) != type(u""):
+        s = repr(s)
+    s = g.translateArgs(s,args,commas,spaces)
 
-@thin leoChapters.py
-g.es_print(s,color='red')
+    if app.batchMode:
+        if app.log:
+            app.log.put(s)
+    elif g.unitTesting:
+        if log and not log.isNull:
+            s = g.toEncodedString(s,'ascii')
+            if newline: print s
+            else: print s,
+    else:
+        if log and log.isNull:
+            pass
+        elif log:
+            log.put(s,color=color,tabName=tabName)
+            for ch in s:
+                if ch == '\n': log.newlines += 1
+                else: log.newlines = 0
+            if newline:
+                g.ecnl(tabName=tabName) # only valid here
+        elif newline:
+            app.logWaiting.append((s+'\n',color),)
+        else:
+            app.logWaiting.append((s,color),)
+#@+node:ekr.20071024101611:mini test of es
+@nocolor
+@first
+@first
+@
 
-@thin leoColor.py
+This doesn't work as an external unit test.
+To test, select all following lines and do execute-script.
 
-@thin leoCommands.py
-g.es(c.disableCommandsMessage,color='blue')
-g.et('Ignoring command: already executing a command.',color='red')
-g.et("exception executing command")
-g.et("Leo Log Window...",color=color)
-g.es(signon)
-g.es("Python %d.%d.%d, %s\n%s" % (n1,n2,n3,g.app.gui.getFullVersion(c),version))
-g.et("unexpected exception in c.openWith")
-g.es("reopening: " + g.shortFileName(path),color="blue")
-g.es("exception executing: "+command)
-g.es("recreating:  " + g.shortFileName(path),color="red")
-g.es("creating:  " + g.shortFileName(path),color="blue")
-g.es("exception creating temp file",color="red")
-g.es("Could not retrieve your user name.")
-g.es("Temporary files will be stored in: %s" % leoTempDir)
-g.es("Save commands disabled",color="purple")
-g.es("Save commands disabled",color="purple")
-g.es("Save commands disabled",color="purple")
-g.es("can not open:" + fileName)
-g.es("can not open:" + fileName)
-g.es_print('wrote: %s' % (fileName),color='blue')
-g.es('can not write %s' % (fileName),color='red')
-g.es("end of script",color="purple",tabName=tabName)
-g.es("no script selected",color="blue",tabName=tabName)
-g.es("error handling: " + root.headString())
-g.es("No ancestor @file node: using script line numbers", color="blue")
-g.es("not found: " + fileName)
-g.es("not found: " + vnodeName, color="red")
-g.es_print(s, color="red")
-g.es_print(s, color="red") ; ok = False
-g.es_print(s, color="red")
-g.es_print(s, color = "red")
-g.es_print(s, color="red")
-g.es("not found: " + vnodeName, color="red")
-g.es("%d lines" % len(lines), color="blue")
-g.es("bad @+leo sentinel")
-g.es("line "+str(n)+" is a sentinel line")
-g.es("bad @+node sentinel")
-g.es("blanks converted to tabs in %d nodes" % count) # Must come before c.endUpdate().
-g.es("tabs converted to blanks in %d nodes" % count)
-g.es("Nothing follows section name",color="blue")
-g.es("Nothing follows section name",color="blue")
-g.es("Selected text should start with a section name",color="blue")
-g.es("Selected text should contain one or more section names",color="blue")
-g.es_print("head_lines: ",head_lines)
-g.es_print("ins: ",ins)
-g.es_print("tail_lines: ",tail_lines)
-g.es("unmatched %s" % repr(ch))
-g.es("time.strftime not available on this platform",color="blue")
-g.es('No text selected',color='blue')
-g.es('No text selected',color='blue')
-g.es("'%s' not found" % (d2),color='blue')
-g.es("'%s' not found" % (d3),color='blue')
-g.es("%s command is not valid in batch mode" % commandName)
-g.es("all tests enabled: this may take awhile",color="blue")
-g.es('.',newline=False)
-g.es_print(s,color="red")
-g.es(s,color="green")
-g.es("Check complete",color="blue")
-g.es('.',newline=False)
-g.es("checking Python code   ")
-g.es("surprise in checkPythonNode")
-g.es("Check complete",color="blue")
-g.es('.',newline=False)
-g.es_print(s,color="blue")
-g.es("ParserError in %s" % headline,color="blue")
-g.es(str(msg))
-g.es("TokenError in %s" % headline,color="blue")
-g.es(str(msg))
-g.es("Indentation error in %s, line %d" % (headline, badline),color="blue")
-g.es(message)
-g.es("offending line:\n%s" % repr(str(line))[1:-1])
-g.es("Error pretty-printing %s.  Not changed." % h, color="blue")
-g.es("done",color="blue")
-g.es("done",color="blue")
-g.es('The current node is not a clone',color='blue')
-g.es("Can't move node out of %s" % (kind),color="blue")
-g.es("%s not found in %s" % (name,configDir))
-g.es("%s not found in %s or %s" % (name,configDir,homeDir))
-g.es('not found: %s' % fileName)
-g.es("not found: %s" % name)
-g.es("not found: " + url)
-g.es("not found: %s" % name)
-g.es("not found: " + url)
-g.es("not found: " + url)
-g.es("bad %s: %s" % (encodingName,encoding))
+s1 = 'line1 Ä, ڱ,  궯, 奠 end'
+s2 = g.toUnicode(s1,'utf-8')
 
-@thin leoConfig.py
-g.es(s,color="blue")
-g.es_print(s,color='blue')
-g.es("over-riding setting: %s from %s" % (name,path))
-g.es_print(s,color='blue')
-g.es("bad %s: %s" % (encodingName,encoding))
-g.es("g.app.config: bad encoding: %s: %s" % (ivar,encoding))
-g.es_print(s % (bunch.kind,setting,requestedType),color='red')
-g.es_print('created %s' % (fileName),color='red')
-g.es_print('can not create %s' % (fileName),color='red')
-g.es('unexpected exception writing %s' % fileName,color='red')
-g.es('%s %s = %s' % (letter,key,val))
+for s in (s1,s2):
+    g.es(s)
+    g.es_print(s)
+#@-node:ekr.20071024101611:mini test of es
+#@-node:ekr.20070626132332:es & minitest
+#@+node:ekr.20050707064040:es_print
+# see: http://www.diveintopython.org/xml_processing/unicode.html
 
-@thin leoEditCommands.py
-g.es('%s=%s' % (z,self.abbrevs[z]))
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es('Buffers...')
-g.es(name)
-g.es('Buffers...')
-g.es(name)
-g.es('Debugger does not exist: %s' % (debugger),color='blue')
-g.es('No debugger found.')
-g.es('enabled verbose gc stats',color='blue')
-g.es('enabled brief gc stats',color='blue')
-g.es_print('      hasFocusWidget: %s' % c.widget_name(c.hasFocusWidget))
-g.es_print('requestedFocusWidget: %s' % c.widget_name(c.requestedFocusWidget))
-g.es_print('           get_focus: %s' % c.widget_name(c.get_focus()))
-g.es('can not load image: %s' % (path))
-g.es_print('bad open/close_flash_brackets setting: using defaults')
-g.es('Lossage...')
-g.es(stroke or d.get(ch) or ch or 'None')
-g.es('Extend mode %s' % (g.choose(val,'on','off')), color='red')
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es_print(s)
-g.es('%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
-g.es_print(s)
-g.es_print(s)
-g.es_print(s)
-g.es_print(s)
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
-g.es_print('Can not open dictionary file: %s' % (
-g.es("Unable to open local dictionary '%s' - using a blank one instead" % fileName)
-g.es("Adding ", color= "blue", newline= False)
-g.es('%s' % self.currentWord)
-g.es("Can not add %s to dictionary" % self.currentWord, color="red")
-g.es("no more misspellings")
-g.es(message,color='blue')
-g.es("Ignoring ", color= "blue", newline= False)
-g.es('%s' % self.currentWord)
-g.es_print(message,color='blue')
+def es_print(s,*args,**keys):
 
-@thin leoFileCommands.py
-g.es('%s: %s' % (target,data),color='blue')
-g.es("reading: " + self.fileName)
-g.es_print('check-leo-file passed',color='blue')
-g.es_print('check-leo-file failed: %s' % str(message),color='red')
-g.es("Invalid Paste As Clone",color="blue")
-g.es("The clipboard is not valid ",color="blue")
-g.es("read only: " + fileName,color="red")
-g.es("bad tnode index: %s. Using empty text." % str(index))
-g.es("newTnode: unexpected index type:",type(index),index,color="red")
-g.es("reading: " + fileName)
-g.es("default tangle directory not found:" + c.tangle_directory)
-g.es("no tnode with index: %s.  The text will be discarded" % str(index))
-g.es_print(s, color = "blue")
-g.es_print(s)
-g.es_print(s,color="blue")
-g.es_print(s)
-g.es("Missing vnode:",headline,color="red")
-g.es("Probably an outline topology error.")
-g.es("invalid encoding in .leo file: " + encoding, color="red")
-g.es_print('Unexpected exception converting hexlified string to string')
-g.es_print('Error parsing %s' % (inputFileName),color='red')
-g.es_print('Unexpected exception parsing %s' % (inputFileName),color='red')
-g.es("clearing undo")
-g.es("saved: %s%s" % (zipMark,g.shortFileName(fileName)))
-g.es("read only",color="red")
-g.es("exception deleting backup file:" + fileName)
-g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
-g.es("ignoring non-string attribute %s in %s" % (
-g.es('putUaHelper: unexpected pickling exception',color='red')
-g.es("ignoring non-pickleable attribute %s in %s" % (
-g.es("deleting tnode list for %s" % p.headString(),color="blue")
-g.es("Writing erroneous: %s" % p.headString(),color="blue")
-g.es("ignoring non-dictionary unknownAttributes for",p,color="blue")
-g.es("ignoring bad unknownAttributes key %s in %s" % (
-g.es('putDescendentUnknownAttributes: unexpected pickling exception',color='red')
-g.es("putDescendentUnknownAttributes can't happen 2",color='red')
-g.es("exception writing: " + fileName)
-g.es("can not create: read only: " + fileName,color="red")
-g.es("read only",color="red")
-g.es("restoring " + fileName + " from " + backupName)
-g.es("auto-saving outline",color="blue")
-g.es("auto-saving outline",color="blue")
-g.es("auto-saving outline",color="blue")
+    encoding = sys.getdefaultencoding()
 
-@thin leoGlobals.py
-g.es("ignoring: " + g.get_line(s,i))
-g.es(g.angleBrackets("*") + "= requires @root in the headline")
-g.es("invalid @encoding: "+encoding,color="red")
-g.es("ignoring " + s,color="red")
-g.es("Ignoring " + s,color="red")
-g.es(message)
-g.es_print(title)
-g.es_print(''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]]))
-g.es(s,color=color)
-g.es("exception handling ", eventName, " event")
-g.es(i)
-g.es_print('%s, %s' % (exctype.__name__, value),color=color)
-g.es("%s %6.3f" % (message,(time.clock()-start)))
-g.es('Unexpected exception in g.create_temp_file',color='red')
-g.es("Can't happen: is_sentinel",color="red")
-g.es("created directory: "+path)
-g.es("exception creating directory: "+path)
-g.es("can not open: %s" % (fileName),color="blue")
-g.es('%12s: %s' % (kind,file_name))
-g.es("rename failed: no file created!",color="red")
-g.es(file_name," may be read-only or in use")
-g.es("exception removing:" + fileName)
-g.es('Exception renaming %s to %s' % (src,dst),color='red')
-g.es("exception in os.chmod(%s)" % (fileName))
-g.es('Can not import gc module',color='blue')
-g.es_print(s,color="blue")
-g.es("...%s.py v%s: %s" % (
-g.es(s)
-g.es_print(s)
-g.es(s,*args,**keys)
-g.es_print('\ntest of es_print: ?',color='red',newline=False)
-g.es_print('after')
-g.es_print('done')
-g.es(s,*args,**keys)
-g.es("using -asis option in:" + h)
-g.es("ignoring redundant -noref in:" + h)
-g.es("ignoring redundant -nosent in:" + h)
-g.es("using -thin option in:" + h)
-g.es("unknown option:" + h[err:i] + " in " + h)
-g.es("unknown option:" + s[err:i] + " in " + g.get_line(s,i))
-g.es(s)
-g.es("#if and #else parts have different braces: " + start_line)
-g.es("no matching #endif: " + start_line)
-g.es("no Find script node",color="red")
-g.es("exception executing script",color='blue')
-g.es_print(s)
-g.es(s,newline=False)
-g.es(s2,color='red')
-g.es(s2,color='red')
-g.es("Exception executing " + name,color="red")
-g.es_print(s)
-g.es_print(s,color="blue")
-g.es_print("Exception in g.importFromPath",color='blue')
-g.es_print("unexpected exception in g.importFromPath(%s)" %
-g.es('g.init_zodb: can not import ZODB')
-g.es('g.init_zodb: exception creating ZODB.DB instance')
+    # Important: defining keyword arguments in addition to *args **does not work**.
+    # See Section 5.3.4 (Calls) of the Python reference manual.
+    # In other words, the following is about the best that can be done.
+    commas = keys.get('commas') ; commas  = g.choose(commas=='True',True,False) # default is False
+    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
+    spaces= keys.get('spaces') ; spaces  = g.choose(spaces=='False',False,True) # default is True
 
-@thin leoImport.py
+    try:
+        if type(s) != type(u''):
+            s = unicode(s,encoding)
+    except Exception:
+        s = g.toEncodedString(s,'ascii')
+
+    s2 = g.translateArgs(s,args,commas,spaces)
+
+    if newline:
+        try:
+            print s2
+        except Exception:
+            print g.toEncodedString(s2,'ascii')
+    else:
+        try:
+            print s2,
+        except Exception:
+            print g.toEncodedString(s2,'ascii'),
+
+    if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
+        g.es(s,*args,**keys)
+#@+node:ekr.20070621092938:@@test g.es_print
+if g.unitTesting:
+    g.es_print('\ntest of es_print: Ă',color='red',newline=False)
+    g.es_print('after')
+    g.es_print('done')
+#@-node:ekr.20070621092938:@@test g.es_print
+#@-node:ekr.20050707064040:es_print
+#@+node:ekr.20050707065530:es_trace
+def es_trace(s,*args,**keys):
+
+    g.trace(g.toEncodedString(s,'ascii'))
+    g.es(s,*args,**keys)
+#@-node:ekr.20050707065530:es_trace
+#@+node:ekr.20080220111323:translateArgs
+def translateArgs (s,args,commas,spaces):
+
+    '''Return the concatenation of s and all args,
+
+    with odd args translated.'''
+
+    # Print the translated strings, but retain s for the later call to g.es.
+    result = []
+    if s:
+        result.append(g.translateString(s))
+    n = 1
+    for arg in args:
+        n += 1
+        if type(arg) != type("") and type(arg) != type(u""):
+            arg = repr(arg)
+        elif (n % 2) == 1:
+            arg = g.translateString(arg)
+        if arg:
+            if result:
+                # if commas: result.append(',')
+                if spaces: result.append(' ')
+            result.append(arg)
+
+    return ''.join(result)
+#@-node:ekr.20080220111323:translateArgs
+#@+node:ekr.20060810095921:translateString
+def translateString (s):
+
+    '''Return the translated text of s.'''
+
+    if g.app.translateToUpperCase:
+        return s.upper()
+    else:
+        return gettext.gettext(s)
+#@-node:ekr.20060810095921:translateString
+#@+node:ekr.20031218072017.3148:top
+if 0: # An extremely dangerous function.
+
+    def top():
+
+        """Return the commander of the topmost window"""
+
+        # Warning: may be called during startup or shutdown when nothing exists.
+        try:
+            return app.log.c
+        except Exception:
+            return None
+#@-node:ekr.20031218072017.3148:top
+#@+node:ekr.20031218072017.3149:trace is defined below
+#@-node:ekr.20031218072017.3149:trace is defined below
+#@+node:ekr.20031218072017.3150:windows
+def windows():
+    return app.windowList
+#@-node:ekr.20031218072017.3150:windows
+#@-node:ekr.20031218072017.3145:Most common functions...
+#@+node:ekr.20080220082617:@button print g.es stats
+@first # -*- coding: utf-8 -*-
+
+# To do: put list of to-be-translated strings in a doc part.
+
+<< docstring >>
+<< version history >>
+
+class controllerClass:
+    @others
+
+x = controllerClass(c,p)
+x.main()
+#@+node:ekr.20080220082617.1:<< docstring >>
+'''Here is a cute Leo script. It discovers all g.es statements and the unbound
+variables in those statements in a single pass over the selected outline. It
+then puts the decls followed by the statements in the body text of the @scan_g.es_results node.
+
+Thus, after this script, you can **execute** the body text of the @scan_g.es_results node.
+In particular, assuming that g.translateString converts all translated text to upper case,
+it is easy to tell which strings have been translated.
+'''
+#@nonl
+#@-node:ekr.20080220082617.1:<< docstring >>
+#@+node:ekr.20080220082617.2:<< version history >>
+@nocolor
+@
+
+2008/2/19 EKR: Initial 2-pass version.
+2008/2/20 EKR:
+- Convert to single-pass using decls and statements arrays.
+- Add 'tabName' to list of keyword arguments.
+- Fixed various bugs.
+2008/2/20 EKR 2:
+- Generate g.es statements to inicate beginnings of files.
+  This allows us to execute all generated statements at once.
+- Convert between '.' and '__' as needed to avoid using real ivars.
+2008/2/21 EKR:
+- Added mungeString.
+- Rewrote mungeStatements, scanParens and scanIdChain.
+These changes now properly handle all arguments.
+2008/2/21 EKR 2:
+- Added stringize and related logic.
+- Added setToBeTranslated to put list of to-be-translated strings into leading docstring.
+#@nonl
+#@-node:ekr.20080220082617.2:<< version history >>
+#@+node:ekr.20080220082617.3: ctor
+def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p
+
+    self.decls = {}
+    self.keywordArgs = ('color','commas','newline','spaces','tabName',)
+    self.nodeName = '@scan_g.es_results'
+    self.statements = []
+    self.printStatements = ('g.es','g.es_print',)
+    self.suppressTranslation = False # True: keyword arg to g.es seen.
+    self.toBeTranslated = []
+    self.traceFlag = False
+
+    self.root = g.findNodeAnywhere(c,self.nodeName)
+#@-node:ekr.20080220082617.3: ctor
+#@+node:ekr.20080220082617.4:error & trace
+def error (self,s):
+
+    self.statements.append('***error: %s' % s)
+
+def trace(self,s):
+
+    if self.traceFlag:
+        self.statements.append(s)
+#@-node:ekr.20080220082617.4:error & trace
+#@+node:ekr.20080220082617.5:main
+def main (self):
+
+    '''The main line.'''
+
+    c = self.c
+    self.scan()
+    self.mungeStatements()
+    keys = self.decls.keys()
+    keys.sort()
+    # This is such a great hack :-)
+    decls = ["%s = '%s'" % (self.mungeString(z),self.stringize(z,delim="'")) for z in keys]
+
+    # Put to-be-translated.
+    results = ['@ To be translated...',]
+    self.toBeTranslated.sort()
+    results.extend(self.toBeTranslated)
+    results.extend(['@c',])
+    # Put decls.
+    results.extend(['# Decls...',])
+    results.extend(["color='red'","newline=True","tabName='Log'"])
+    results.extend(decls)
+    # Put statements
+    results.extend(["g.app.translateToUpperCase=True",])
+    results.extend(self.statements)
+    results.extend(["g.app.translateToUpperCase=False",])
+
+    results = '\n'.join(results)
+
+    # Put the results in the root node, or print them.
+    if self.root:
+        c.setBodyString(self.root,results)
+        c.beginUpdate()
+        try:
+            c.selectPosition(self.root)
+        finally:
+            c.endUpdate()
+    else:
+        print 'node not found',self.rootName
+        print results
+
+    g.es('done')
+#@-node:ekr.20080220082617.5:main
+#@+node:ekr.20080221101728:munging...
+#@+node:ekr.20080221071308:mungeString
+def mungeString (self,s):
+
+    '''Convert string s so that it is a valid Python name.'''
+
+    s = s.strip()
+    # s = s.replace('@','_AT_')
+    # s = s.replace('<','_LT_')
+    # s = s.replace('>','_GT_')
+    s = s.replace(',','_COMMA_')
+    s = s.replace('.','_DOT_')
+    s = s.replace('()','_PARENS_')
+    s = s.replace('(','_LP_')
+    s = s.replace(')','_RP_')
+    s = s.replace('"','_DQ_')
+    s = s.replace("'",'_SQ_')
+    s = ''.join([g.choose(z == '_' or z.isalnum(),z,'_') for z in s])
+    return s
+#@-node:ekr.20080221071308:mungeString
+#@+node:ekr.20080220093930:mungeHeadline
+def mungeHeadline (self,s):
+
+    s = s.strip()
+    s = s.replace('<<','< <')
+    s = s.replace('>>','> >')
+    return s
+#@-node:ekr.20080220093930:mungeHeadline
+#@+node:ekr.20080221073909:mungeStatements
+def mungeStatements (self):
+
+    '''Convert a references to an known id chain by the corresponding decl.'''
+
+    keys = self.decls.keys()
+    for tag in self.printStatements:
+        if tag in keys: keys.remove(tag)
+
+    results = []
+    for s in self.statements:
+        i = 0 ; inner_result = []
+        while i < len(s):
+            progress = i
+            for key in keys:
+                if g.match_word(s,i,key):
+                    inner_result.append(self.mungeString(key))
+                    i += len(key)
+                    break
+            else:
+                inner_result.append(s[i])
+            i = max(i,progress+1)
+        new_statement = ''.join(inner_result)
+        if new_statement != s:
+            # Add the original lines as comments.
+            for z in g.splitLines(s):
+                results.append ('# %s' % (z.rstrip()))
+        results.append(new_statement) # Add the munged line.
+
+    self.statements = results
+
+#@-node:ekr.20080221073909:mungeStatements
+#@+node:ekr.20080221101728.1:stringize
+def stringize (self,s,delim):
+
+    s = s.strip()
+    s = s.replace(delim,'\\%s' % (delim))
+    return s
+#@-node:ekr.20080221101728.1:stringize
+#@-node:ekr.20080221101728:munging...
+#@+node:ekr.20080220082617.6:scan & helpers
+def scan(self):
+
+
+    for p in self.p.self_and_subtree_iter():
+
+        self.scanNode(p)
+#@nonl
+#@+node:ekr.20080220182141:scanIdChain
+def scanIdChain (self,s,i,outer):
+
+    assert g.is_c_id(s[i])
+    start = i 
+
+    while i < len(s):
+        progress = i
+        # Skip a.b.c...
+        if not g.is_c_id(s[i]): break
+        i = g.skip_id(s,i,chars='.')
+        i = g.skip_ws(s,i)
+        word = s[start:i].strip()
+        if outer and g.match(s,i,'=') and word in (self.keywordArgs):
+            # g.trace('***','=',word)
+            self.suppressTranslation = True
+        # Only a paren is valid now.
+        if not g.match(s,i,'('): break
+        # We shall munge the entire paren expression.
+        i = g.skip_matching_python_parens(s,i)
+        if g.match(s,i,')'): i += 1
+        # Only a dot is valid now.
+        if not g.match(s,i,'.'): break
+        i += 1
+        assert i > progress
+
+    self.setDecl(s[start:i])
+    return i
+#@-node:ekr.20080220182141:scanIdChain
+#@+node:ekr.20080220082617.9:scanNode
+def scanNode(self,p):
+
+    tags = ('g.es','g.es_print',)
+    s,h = p.bodyString(), p.headString()
+    print_h = True
+
+    if h.startswith('@thin'):
+        << insert statements highlighting the @thin node >>
+
+    i = 0
+    while i < len(s):
+        progress = i
+        for tag in tags:
+            if g.match_word(s,i,tag):
+                start = i ; i += len(tag)
+                self.suppressTranslation = False
+                i = g.skip_ws(s,i)
+                if g.match(s,i,'('):
+                    << Insert a comment containing the headline >>
+                    i = self.scanParens(s,i,outer=True)
+                    statement = s[start:i]
+                    self.statements.append(statement)
+                break
+        i = max(i,progress+1)
+#@+node:ekr.20080221071734:<< insert statements highlighting the @thin node >>
+self.statements.append('# ---- %s' % (h))
+self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))
+#@nonl
+#@-node:ekr.20080221071734:<< insert statements highlighting the @thin node >>
+#@+node:ekr.20080221071734.1:<< Insert a comment containing the headline >>
+if print_h:
+    print_h = False
+    if not h.startswith('@thin'):
+        self.statements.append('# -- node %s' % (self.mungeHeadline(h)))
+#@nonl
+#@-node:ekr.20080221071734.1:<< Insert a comment containing the headline >>
+#@-node:ekr.20080220082617.9:scanNode
+#@+node:ekr.20080220082617.8:scanParens
+def scanParens(self,s,i,outer):
+
+    '''Scan a parenthesized list of args.'''
+
+    assert g.match(s,i,'(')
+    j = g.skip_matching_python_parens(s,i)
+    if j == -1:
+        self.error('**incomplete paren at: %s' % s[i:])
+        return i+1 # Just skip the paren
+
+    assert g.match(s,j,')')
+    n = 1
+    while i < j:
+        progress = i ; ch = s[i]
+
+        if ch in ("'",'"',):
+            i = self.scanStringArg(s,i,n,outer)
+            n += 1
+
+        elif g.is_c_id(ch):
+            i = self.scanIdChain(s,i,outer)
+            n += 1
+
+        i = max(i,progress+1)
+
+    return j + 1 # return the character after the paren.
+#@-node:ekr.20080220082617.8:scanParens
+#@+node:ekr.20080220183819:scanStringArg
+def scanStringArg(self,s,i,n,outer):
+
+    '''Skip a string, and possible %'''
+
+    j = g.skip_python_string(s,i)
+    if j <= i: return i
+
+    # g.trace(n,s[i:j])
+
+    if outer:
+        self.setToBeTranslated(s[i:j],n)
+
+    i = g.skip_ws(s,j)
+    if not g.match(s,i,'%'):
+        return i
+
+    # Handle what follows the '%'
+    i = g.skip_ws(s,i+1)
+
+    if g.match(s,i,'('):
+        i = self.scanParens(s,i,outer=False)
+    elif i < len(s) and g.is_c_id(s[i]):
+        i = self.scanIdChain(s,i,outer)
+
+    return i
+#@-node:ekr.20080220183819:scanStringArg
+#@-node:ekr.20080220082617.6:scan & helpers
+#@+node:ekr.20080220082617.10:setDecl
+def setDecl (self,s):
+
+    s = s.strip()
+
+    if s in ('c','g','p','len','str','repr','and','or','not','is',):
+        return # Don't need a binding for these.
+
+    if s in ('color','newline','tabName',):
+        return # Special binding will be used for these.
+
+    if s.isdigit():
+        return # Don't bind integers.
+
+    self.decls[s] = True
+#@-node:ekr.20080220082617.10:setDecl
+#@+node:ekr.20080221110301:setToBeTranslated
+def setToBeTranslated (self,s,n):
+
+
+    s = s.strip()
+
+    if s.startswith('"') or s.startswith("'"):
+        s = s[1:]
+    if s.endswith('"') or s.endswith("'"):
+        s = s[:-1]
+
+    s = s.strip()
+
+    # Suppress translation when a keyword is seen, regardless of position.
+    if s in self.keywordArgs:
+        self.suppressTranslation = True
+
+    if self.suppressTranslation:
+        # g.trace('not added',s)
+        return
+
+    if (n % 2) == 1 and s not in self.toBeTranslated:
+        self.toBeTranslated.append(s)
+#@-node:ekr.20080221110301:setToBeTranslated
+#@-node:ekr.20080220082617:@button print g.es stats
+#@+node:ekr.20080220082727:@scan_g.es_results
+@ To be translated...
+%s seems to be mixed HTML and PHP.
+*** first mismatch at line %d
+******
+: is also a prefix of:
+Can not import
+Can not open
+can not open
+can not open %s%s
+created:
+error: %s
+exception creating:
+exception opening:
+first mismatched line at line %d
+generated line: %s
+ignoring %s
+imported
+inserting @ignore
+invalid @+leo sentinel in
+line: %s
+missing lines
+original line:  %s
+replacing:
+warning: %s
+with:
+@c
+# Decls...
+color='red'
+newline=True
+tabName='Log'
+args = 'args'
+fileName = 'fileName'
+filename = 'filename'
+g_DOT_choose_LP_atAuto_COMMA__SQ__auto__SQ__COMMA__SQ__SQ__RP_ = 'g.choose(atAuto,\'@auto \',\'\')'
+g_DOT_choose_LP_found_COMMA__SQ_finished_SQ__COMMA__SQ_no__auto_nodes_in_the_selected_tree_SQ__RP_ = 'g.choose(found,\'finished\',\'no @auto nodes in the selected tree\')'
+i = 'i'
+keys = 'keys'
+line1 = 'line1'
+line2 = 'line2'
+newFileName = 'newFileName'
+p_DOT_headString_PARENS_ = 'p.headString()'
+repr_LP_line_RP_ = 'repr(line)'
+s = 's'
+target = 'target'
+g.app.translateToUpperCase=True
+# ---- @thin leoImport.py
+g.es_print('','-------------------- @thin leoImport.py',color='red')
+# -- node exportHeadlines
 g.es("Can not open " + fileName,color="blue")
+# -- node flattenOutline
 g.es("Can not open " + fileName,color="blue")
+# -- node outlineToWeb
 g.es("Can not open " + fileName,color="blue")
+# -- node < < Read file into s > >
 g.es("can not open " + fileName, color="blue")
+# -- node < < set delims from the header line > >
+g.es("invalid @+leo sentinel in " + fileName)
+# -- node < < Write s into newFileName > >
 g.es("created: " + newFileName)
 g.es("exception creating: " + newFileName)
+# -- node < < open filename to f, or return > >
 g.es("exception opening:" + filename)
-g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
-g.es_print('ignoring %s' % (p.headString()),color='blue')
-g.es(g.choose(found,'finished','no @auto nodes in the selected tree'),color='blue')
+# -- node error
+g.es(s)
+# -- node < < Read file into s > >
+# g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
+g.es("can not open %s%s" % (g_DOT_choose_LP_atAuto_COMMA__SQ__auto__SQ__COMMA__SQ__SQ__RP_,fileName),color='red')
+# -- node readAtAutoNodes (importCommands) & helper
+# g.es_print('ignoring %s' % (p.headString()),color='blue')
+g.es_print('ignoring %s' % (p_DOT_headString_PARENS_),color='blue')
+# g.es(g.choose(found,'finished','no @auto nodes in the selected tree'),color='blue')
+g.es(g_DOT_choose_LP_found_COMMA__SQ_finished_SQ__COMMA__SQ_no__auto_nodes_in_the_selected_tree_SQ__RP_,color='blue')
+# -- node importFilesCommand
 g.es("imported " + fileName,color="blue")
+# -- node importFlattenedOutline
 g.es(fileName + " is not a valid MORE file.")
+# -- node < < Read the file into array > >
 g.es("Can not open " + fileName, color="blue")
+# -- node scanWebFile (handles limbo)
 g.es("Can not import " + fileName, color="blue")
+# -- node cstLookup
 g.es("****** " + target + ": is also a prefix of: " + s)
+g.es("replacing: " + target + " with: " + s)
+# -- node scanPHPText
+g.es_print('%s seems to be mixed HTML and PHP.' % fileName)
+# -- node compareHelper
 g.es_print(color='blue',*args,**keys)
+g.es_print('first mismatched line at line %d' % (i+1))
+g.es_print('original line:  %s' % line1)
+g.es_print('generated line: %s' % line2)
 g.es_print('missing lines')
-g.es_print(repr(line))
+# g.es_print(repr(line))
+g.es_print(repr_LP_line_RP_)
 g.es_print('first mismatched line at line %d' % (i+1))
 g.es_print('original line:  %s' % line1)
 g.es_print('generated line: %s' % line2)
 g.es_print('*** first mismatch at line %d' % (i+1))
 g.es_print('original line:  %s' % line1)
 g.es_print('generated line: %s' % line2)
-g.es_print('line: %s' % (repr(line)),color='red')
+# -- node checkLeadingWhitespace
+# g.es_print('line: %s' % (repr(line)),color='red')
+g.es_print('line: %s' % (repr_LP_line_RP_),color='red')
+# -- node reportMismatch
 g.es_print(color='blue',*args,**keys)
-g.es_print(color='blue',*args,**keys)
+# -- node insertIgnoreDirective
 g.es_print('inserting @ignore',color='blue')
+# -- node error, oops, report and warning
 g.es_print(s,color='red')
 g.es_print('error: %s' % (s),color='red')
 g.es_print('warning: %s' % (s),color='red')
-g.es_print('%s seems to be mixed HTML and PHP.' % fileName)
-
-@thin leoNodes.py
-g.es_print(s,color="red")
-g.es_print(s,color="red")
-g.es("scanGnx: unexpected index type:",type(s),s,color="red")
-
-@thin leoPlugins.py
-g.es_print(*args,**keys)
-g.es_print(s,color="blue")
-g.es_print('loadOnePlugin: loading module %s failed' % (moduleName),color="red")
-g.es('Exception loading plugin',color='red')
-g.es_print(s,color="red")
-g.es_print(s,color="blue")
-g.es_print('handlers for %s...' % (moduleName))
-g.es_print('all plugin handlers...')
-g.es_print('%25s %s' % (tag,key))
-g.es_print('Enabled plugins...')
-g.es_print(key)
-g.es("*** Two exclusive handlers for '%s'" % tag)
-
-@thin leoPymacs.py
-g.es_print('leoPymacs.open: no file name')
-g.es_print('leoPymacs.open: %s' % c)
-g.es_print('leoPymacs.open: Can not open %s' % fileName)
-
-@thin leoTangle.py
-g.es("Can not execute tangle_done.run()")
-g.es("Can not execute tangle_done.run()")
-g.es("Tangling...")
-g.es("Untangling...")
-g.es("looking for a parent to tangle...")
-g.es("tangling parent")
-g.es("tangle complete")
-g.es("Tangle complete")
-g.es("Tangle complete")
-g.es("Untangle complete")
-g.es("Untangle complete")
-g.es("Untangle complete")
-g.es("@root " + path)
-g.es("@comment disables Untangle for " + path, color="blue")
-g.es("@" + self.print_mode +  " inhibits Untangle for " + path, color="blue")
-g.es("error reading: " + path)
-g.es("Can not create temp file")
-g.es("unchanged:  " + file_name)
-g.es(' ' * 4 + "Warning: " +
-g.es("Warning: possible duplicate definition of: <<" +
-g.es("Warning: " +
-g.es("***Updating: " + p.headString())
-g.es("ignoring: @comment " + z)
-g.es("relative_path_base_directory: " + base)
-g.es("relative path in @path directive: " + relative_path)
-g.es("conflicting @header and @noheader directives")
-g.es("relative_path_base_directory: " + base)
-g.es(kind + " directory: " + dir2)
-
-@thin leoTest.py
-g.es_print("count: %d time/count: %f %s" % (count,result/count,p.headString()))
-g.es('Running %sunit tests' % (g.choose(self.all,'all ','')),color='blue')
-g.es_print('no @test or @suite nodes in selected outline')
-g.es("Syntax error in: %s" % fileName,color="blue")
-g.es("path does not exist: %s" % path)
-
-@thin leoUndo.py
-g.es('Exception in setUndoRedoTypingParams',color='blue')
-g.es("redo %d instances" % count)
-g.es("undo %d instances" % count)
-
-@thin leoCompare.py
-g.es(s)
-
-@thin leoFind.py
-g.es("changed: %d instances" % (count))
-g.es("No text selected") ; return False
-g.es("exception executing change script")
-g.es("exception executing find script")
-g.es("found: %d matches" % (count))
-g.es("end of wrapped search")
-g.es("not found: " + "'" + self.find_text + "'")
-g.es('Invalid regular expression: %s' % (pattern),color='blue')
-g.es('Wrap disabled in hoisted outlines',color='blue')
-g.es('Found match outside of hoisted outline',color='blue')
-g.es("not searching headline or body")
-g.es("empty find patttern")
-g.es('-' * 20,self.p.headString())
-g.es(theType + line)
-g.es('-' * 20,self.p.headString())
-g.es(line)
-g.es(line)
-
-@thin leoFrame.py
-g.es("Truncating headline to one line",color="blue")
-g.es("Truncating headline to %d characters" % (limit),color="blue")
-g.es("ignoring characters after space in url:"+url[i:])
-g.es("use %20 instead of spaces")
-g.es("no url following @url")
-g.es("invalid url: "+url)
-g.es("exception opening " + url)
-
-@thin leoGui.py
-
-@thin leoKeys.py
-g.es('Autocompleter %s' % (g.choose(k.enable_autocompleter,'On','Off')),color='red')
-g.es('Calltips %s' % (g.choose(k.enable_calltips,'On','Off')),color='red')
-g.es('%s' % (name),tabName=self.tabName)
-g.es('No docstring for %s' % (word),color='blue')
-g.es(doc,tabName='Info')
-g.es('No docstring for %s' % (word),color='blue')
-g.es_print('\nauto-completer scan complete',color='blue')
-g.es_print('unexpected exception in computeProxyObject')
-g.es_print('Syntax error in class node: can not continue')
-g.es_print('Exception binding %s to %s' % (shortcut,commandName))
-g.es_print('Ignoring invalid key binding: %s = %s' % (
-g.es_print('redefining %s in %s to %s in %s' % (
-g.es_print('bad abbrev: %s: unknown command name: %s' %
-g.es_print('exception binding %s to %s' % (
-g.es_print('no state function for %s' % (k.state.kind),color='red')
-g.es('Minibuffer hidden',color='red')
-g.es('%s is bound to: %s' % (commandName,shortcut))
-g.es('%s %s' % (sep, prefix),tabName=tabName)
-g.es('%s %s' % (sep, 'Plain Keys',),tabName=tabName)
-g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
-g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
-g.es('No previous command',color='blue')
-g.es_print('Redefining %s' % (commandName), color='red')
-g.es_print('@command: %s = %s' % (
-g.es_print('@command: %s' % (commandName),color='blue')
-g.es_print('No such command: %s. Referenced from %s' % (
-g.es('%s mode\n\n' % modeName,tabName=tabName)
-g.es('%*s %s' % (n,s1,s2),tabName=tabName)
-g.es('%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
-g.es(s,tabName=tabName)
-
-@thin leoMenu.py
-g.es("exception updating File menu")
-g.es("exception updating Edit menu")
-g.es("exception updating Outline menu")
-g.es("menu does not exist: ",menuName)
-g.es_print(s)
-g.es("menu already exists: " + menuName,color="red")
-g.es("exception creating " + menuName + " menu")
-g.es("createOpenWithMenuFromTable: invalid data",color="red")
-g.es("can't delete menu: " + menuName)
-g.es("exception deleting " + menuName + " menu")
-g.es("menu not found: " + menuName)
-g.es("exception deleting " + itemName + " from " + menuName + " menu")
-g.es("exception in setRealMenuNamesFromTable")
-
-@thin leoSwingDialog.py
-g.es("not found: " + self.email)
-g.es("not found: " + self.url)
-
-@thin leoSwingFrame.py
-g.es("exception setting outline pane background color")
-g.es("exception in user configuration for splitbar")
-g.es("exception in user configuration for splitbar")
-g.es("exception dowloading sbooks.chm")
-g.es("exception setting body text background color")
-g.es("exception setting body textforeground color")
-g.es("exception setting body pane cursor color")
-g.es("exception setting body pane text selection background color")
-g.es("exception setting body pane text selection foreground color")
-g.es("exception setting log pane background color")
-g.es('can not rename %s tab' % (tabName),color='blue')
-g.es("exception setting font")
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es_print('\n' + '\n'.join(z))
-g.es("Exception loading: " + fullname)
-g.es_print('oops: eventToPosition failed')
-g.es("dragged node will be cloned")
-g.es("dragged node will be moved")
-
-@thin leoSwingGui.py
-g.es("LeoApp16.ico not in Icons directory", color="red")
-g.es("Icons directory not found: "+path, color="red")
-g.es("exception setting font from ",family_name)
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es(c.disableCommandsMessage,color='blue')
-g.es("Removing '%s' button at its request" % buttonText)
-g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
-
-@thin leoSwingUtils.py
-
-@thin leoTkinterComparePanel.py
-
-@thin leoTkinterDialog.py
-g.es("not found: " + self.email)
-g.es("not found: " + self.url)
-
-@thin leoTkinterFind.py
-
-@thin leoTkinterFrame.py
-g.es("exception setting body text background color")
-g.es("exception setting body textforeground color")
-g.es("exception setting body pane cursor color")
-g.es("exception setting body pane text selection background color")
-g.es("exception setting body pane text selection foreground color")
-g.es("exception setting outline pane background color")
-g.es("exception in user configuration for splitbar")
-g.es("exception in user configuration for splitbar")
-g.es("exception dowloading sbooks.chm")
-g.es("exception setting log pane background color")
-g.es('can not rename %s tab' % (tabName),color='blue')
-g.es("exception setting font")
-g.es("family,size,slant,weight:",family,size,slant,weight)
-
-@thin leoTkinterGui.py
-g.es("LeoApp16.ico not in Icons directory", color="red")
-g.es("Icons directory not found: "+path, color="red")
-g.es("exception setting font from ",family_name)
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es(c.disableCommandsMessage,color='blue')
-g.es("Removing '%s' button at its request" % buttonText)
-g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
-
-@thin leoTkinterKeys.py
-
-@thin leoTkinterMenu.py
-
-@thin leoTkinterTree.py
-g.es_print('\n' + '\n'.join(z))
-g.es("exception setting outline line height")
-g.es("Exception loading: " + fullname)
-g.es_print('oops: eventToPosition failed')
-g.es("dragged node will be cloned")
-g.es("dragged node will be moved")
-#@-node:ekr.20071115113231:Results
-#@-node:ekr.20070625091423:Add translation services
-#@+node:ekr.20080227084250:Investigate more general arguments to minibuffer commands
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/46a7ec1079de4fb0
-
-> You could provide the information that will be used by the minibuffer
-> command as an argument to the command. E.g.
-
-> alt-x save-file-as foo.leo
-
-Some of Leo's minibuffer commands work this way. Compare open-outline with
-open-outline-by-name.
-
-I never paid much attention to generalizing arguments to minibuffer
-commands.  Maybe it is because different commands require different types of
-arguments.  For example, open-outline-by-name supports filename completion,
-while other kinds of commands support other kinds of completion.
-
-In my mind, the issue of arguments to minibuffer commands may be a separate
-issue from whether k.simulateCommand should allow arguments, because the
-implementation issues are complex.  k.getArgs is already hairy, and each
-minibuffer command that requires arguments requires special code to call
-k.getArgs.
-
-So you've given me something new and challenging to think about.
-
-I'll rethink all the implementation issues sometime in this release cycle.
-Now is the appropriate time to do this because I'm going to be messing with
-key bindings anyway. (k.getArgs is all about key bindings).
-
-That would allow us to use minibuffer in a more powerful way,
-
-> especially from IPython. E.g. "mb open-file mydoc.leo" could be used
-> directly when you see the file in file system (and thus benefit from
-> filename tab completion). "open file" dialog can be a drag sometimes,
-> and many commands could benefit from an argument.
-
-If I understand you correctly, you are saying that IPython more command
-oriented than script oriented, so it is more natural to do an "mb
-command-name" IPython command than it is to execute the IPython script
-"_leo.c.command(args)."  Is this correct?
-
-In conclusion, my guess is that generalizing how Leo handles minibuffer
-arguments could be useful, but it won't happen easily.
+g.app.translateToUpperCase=False
 #@nonl
-#@-node:ekr.20080227084250:Investigate more general arguments to minibuffer commands
+#@-node:ekr.20080220082727:@scan_g.es_results
+#@-node:ekr.20070625091423:Add translation services
+#@-node:ekr.20080229111540:To do first
 #@+node:ekr.20080218110223:Easy
 #@+node:ekr.20080218152956:Better home page
 #@+node:ekr.20071211093323:more screen shots on Leo's web site
@@ -2031,7 +3568,7 @@ def open (self,event=None):
     c = self
     << Set closeFlag if the only open window is empty >>
 
-    fileName = g.app.gui.runOpenFileDialog(
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
         title = "Open",
         filetypes = [("Leo files","*.leo"), ("All files","*")],
         defaultextension = ".leo")
@@ -2051,7 +3588,6 @@ def open (self,event=None):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
-#@nonl
 #@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
 @ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
 @c
@@ -2315,11 +3851,11 @@ def save (self,event=None):
 
     c.beginUpdate()
     try:
-        if c.mFileName != "":
+        if c.mFileName:
             # Calls c.setChanged(False) if no error.
             c.fileCommands.save(c.mFileName)
         else:
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save",
                 filetypes=[("Leo files", "*.leo")],
@@ -2356,7 +3892,7 @@ def saveAs (self,event=None):
         if not c.mFileName:
             c.frame.title = ""
 
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save As",
             filetypes=[("Leo files", "*.leo")],
@@ -2364,6 +3900,7 @@ def saveAs (self,event=None):
         c.bringToFront()
 
         if fileName:
+            g.trace(fileName)
             # 7/2/02: don't change mFileName until the dialog has suceeded.
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
@@ -2417,7 +3954,7 @@ def saveTo (self,event=None):
             c.frame.title = ""
 
         # set local fileName, _not_ c.mFileName
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save To",
             filetypes=[("Leo files", "*.leo")],
