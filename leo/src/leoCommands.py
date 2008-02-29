@@ -675,7 +675,7 @@ class baseCommands:
         #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
         #@nl
 
-        fileName = g.app.gui.runOpenFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
             title = "Open",
             filetypes = [("Leo files","*.leo"), ("All files","*")],
             defaultextension = ".leo")
@@ -695,7 +695,6 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@nonl
     #@-node:ekr.20031218072017.2821:open
     #@+node:ekr.20031218072017.2823:openWith and allies
     def openWith(self,event=None,data=None):
@@ -962,11 +961,11 @@ class baseCommands:
 
         c.beginUpdate()
         try:
-            if c.mFileName != "":
+            if c.mFileName:
                 # Calls c.setChanged(False) if no error.
                 c.fileCommands.save(c.mFileName)
             else:
-                fileName = g.app.gui.runSaveFileDialog(
+                fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                     initialfile = c.mFileName,
                     title="Save",
                     filetypes=[("Leo files", "*.leo")],
@@ -1003,7 +1002,7 @@ class baseCommands:
             if not c.mFileName:
                 c.frame.title = ""
 
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save As",
                 filetypes=[("Leo files", "*.leo")],
@@ -1011,6 +1010,7 @@ class baseCommands:
             c.bringToFront()
 
             if fileName:
+                g.trace(fileName)
                 # 7/2/02: don't change mFileName until the dialog has suceeded.
                 c.mFileName = g.ensure_extension(fileName, ".leo")
                 c.frame.title = c.mFileName
@@ -1064,7 +1064,7 @@ class baseCommands:
                 c.frame.title = ""
 
             # set local fileName, _not_ c.mFileName
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save To",
                 filetypes=[("Leo files", "*.leo")],
