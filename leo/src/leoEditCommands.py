@@ -4942,9 +4942,13 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         '''Prompt for the name of a Leo outline and open it.'''
 
-        k = self.k
-        k.setLabelBlue('Open Leo Outline: ',protect=True)
-        k.getFileName(event,handler=self.openOutlineByNameFinisher)
+        c = self.c ; k = self.k ; fileName = ''.join(k.givenArgs)
+
+        if fileName:
+            g.openWithFileName(fileName,c)
+        else:
+            k.setLabelBlue('Open Leo Outline: ',protect=True)
+            k.getFileName(event,handler=self.openOutlineByNameFinisher)
 
     def openOutlineByNameFinisher (self,event):
 
@@ -8042,8 +8046,6 @@ class searchCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20050920084036.261:incremental search...
     #@-others
 #@-node:ekr.20050920084036.257:class searchCommandsClass
-#@+node:ekr.20070627082044.633:Unit tests
-#@-node:ekr.20070627082044.633:Unit tests
 #@-node:ekr.20051023094009:Search classes
 #@+node:ekr.20051025071455:Spell classes
 #@+others
