@@ -2284,32 +2284,6 @@ class editCommandsClass (baseEditCommandsClass):
     #@-at
     #@+node:ekr.20080108092811: Helpers
     #@+node:ekr.20080108091349:appendImageDictToList
-    #@+node:tbrown.20080119085249:getIconList
-    def getIconList(self, p):
-        """Return list of icons for position p, call setIconList to apply changes"""
-        if not hasattr(p.v.t,'unknownAttributes'):
-            return []
-
-        return list(p.v.t.unknownAttributes.get('icons',[]))
-    #@-node:tbrown.20080119085249:getIconList
-    #@+node:tbrown.20080119085249.1:setIconList
-    def setIconList(self, p, l):
-        """Set list of icons for position p to l"""
-        if not hasattr(p.v.t,'unknownAttributes'):
-            if l:
-                p.v.t.unknownAttributes = {}
-            else:
-                return
-
-        p.v.t.unknownAttributes['icons'] = list(l)
-        p.setDirty()
-
-        if len(l) == 0:
-            p.v.t.unknownAttributes["lineYOffset"] = 0
-        else:
-            p.v.t.unknownAttributes["lineYOffset"] = 3
-    #@nonl
-    #@-node:tbrown.20080119085249.1:setIconList
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
@@ -2338,6 +2312,32 @@ class editCommandsClass (baseEditCommandsClass):
         xoffset += 2
 
         return xoffset
+    #@+node:tbrown.20080119085249:getIconList
+    def getIconList(self, p):
+        """Return list of icons for position p, call setIconList to apply changes"""
+        if not hasattr(p.v.t,'unknownAttributes'):
+            return []
+
+        return list(p.v.t.unknownAttributes.get('icons',[]))
+    #@-node:tbrown.20080119085249:getIconList
+    #@+node:tbrown.20080119085249.1:setIconList
+    def setIconList(self, p, l):
+        """Set list of icons for position p to l"""
+        if not hasattr(p.v.t,'unknownAttributes'):
+            if l:
+                p.v.t.unknownAttributes = {}
+            else:
+                return
+
+        p.v.t.unknownAttributes['icons'] = list(l)
+        p.setDirty()
+
+        if len(l) == 0:
+            p.v.t.unknownAttributes["lineYOffset"] = 0
+        else:
+            p.v.t.unknownAttributes["lineYOffset"] = 3
+    #@nonl
+    #@-node:tbrown.20080119085249.1:setIconList
     #@-node:ekr.20080108091349:appendImageDictToList
     #@+node:ekr.20071114083142:getImage
     def getImage (self,path):
@@ -2455,6 +2455,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c ; p = c.currentPosition()
 
         if hasattr(p.v.t,"unknownAttributes"):
+            a = p.v.t.unknownAttributes
             if dict:  # ???
                 self.setIconList(p,[])
                 a["lineYOffset"] = 0
