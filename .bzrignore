@@ -2,7 +2,7 @@
 *~
 *.tmp
 *.py[co]
-leo/leo/test/scriptFile.py
-leo/leo/plugins/leoPlugins.leo
-leo/leo/plugins/temacs_ext/
-leo/leo/src/LeoPy.leo
+leo/test/scriptFile.py
+leo/plugins/leoPlugins.leo
+leo/plugins/temacs_ext/
+leo/src/LeoPy.leo
