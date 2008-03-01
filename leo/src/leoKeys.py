@@ -1593,7 +1593,6 @@ class keyHandlerClass:
         self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
         self.regx = g.bunch(iter=None,key=None)
         self.repeatCount = None
-        self.previousGivenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.previousSelection = None # A hack for middle-button paste: set by masterClickHandler, used by pasteText.
         self.state = g.bunch(kind=None,n=None,handler=None)
         #@-node:ekr.20061031131434.78:<< define externally visible ivars >>
@@ -2768,11 +2767,18 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        commandName,args = commandName.split(None)
-        k.givenArgs = args or []
-        # g.trace('args',args)
-        if k.givenArgs: k.previousGivenArgs = None
+        commandName = commandName.strip()
+        if not commandName: return
 
+
+        aList = commandName.split(None)
+        if len(aList) == 1:
+            k.givenArgs = []
+        else:
+            commandName = aList[0]
+            k.givenArgs = aList[1:]
+
+        # g.trace(commandName,k.givenArgs)
         func = c.commandsDict.get(commandName)
 
         if func:
