@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="49" left="212" height="830" width="877"/>
+	<global_window_position top="49" left="212" height="750" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -49,6 +49,9 @@
 </v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
+<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
+<v t="ekr.20080301071818.1" a="EV"><vh>@thin html/front.html</vh></v>
+</v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
@@ -1129,7 +1132,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
@@ -3556,8 +3559,8 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080218153931" a="ETV"><vh>leo 4.4.7 final</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080218153931"><vh>leo 4.4.7 final</vh>
 <v t="ekr.20080218153931.1"><vh>Fixed bugs</vh>
 <v t="ekr.20080218153931.2"><vh>Fixed perl syntax coloring bug</vh></v>
 <v t="ekr.20080218153931.3"><vh>Removed warnings while typing @language directives</vh></v>
@@ -34135,5 +34138,6 @@ Python's # -*- coding line. This line must be the first line of the imported fil
 </t>
 <t tx="ekr.20080218154129"></t>
 <t tx="ekr.20080218154129.1"></t>
+<t tx="ekr.20080301071818"></t>
 </tnodes>
 </leo_file>
