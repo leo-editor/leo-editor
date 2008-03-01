@@ -21229,7 +21229,9 @@ test('s',newline=False,color='red')
 # This fails, illustrating that we can't reliably mix keyword args with *args.
 test('a','b',color='red',newline=False)
 </t>
-<t tx="ekr.20080229140820">if 0: # passed.
+<t tx="ekr.20080229140820">if 0: # passed
+    c.k.simulateCommand('about-leo')
+elif 0: # passed.
     fileName = r'c:\prog\test\test2.leo'
     c.k.simulateCommand('save-file-as %s' % fileName)
 elif 0: # passed
