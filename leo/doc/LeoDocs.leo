@@ -49,8 +49,9 @@
 </v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
-<v t="ekr.20080301071818.1" a="EV"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818" a="TV"><vh>Home page</vh>
+<v t="ekr.20080301071818.1"
+expanded="ekr.20080301075734.4,ekr.20080301082848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
