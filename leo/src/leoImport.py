@@ -3829,7 +3829,7 @@ class xmlScanner (baseScannerClass):
                 i += 2 ; j = i
                 i = self.skipId(s,j)
                 tag2 = s[j:i]
-                if tag2 == tag:
+                if tag2.lower() == tag.lower():
                     i,ok = self.skipToEndOfTag(s,i)
                     return i,ok
             else:
