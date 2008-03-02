@@ -6700,12 +6700,22 @@ def doAtKeyword (self,s,i):
 
 http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
 
-The following minibuffer commands now support k.givenArgs:
+Leo now contains minimal support for arguments to minibuffer commands.
 
-- open-outline and open-outline-by-name
-- save-file, save-file-as, save-file-as-unzipped, save-file-as-zipped
+- k.simulateCommand now puts arguments following the command name in k.givenArgs.
+  Whitespace separates arguments.
 
-To do (maybe): search/replace.
+- k.simulateCommand knows nothing about what the arguments mean. That is up to
+  the individual commands.
+
+- At present, only the following minibuffer commands now support k.givenArgs:
+  open-outline, open-outline-by-name, save-file, save-file-as,
+  save-file-as-unzipped and save-file-as-zipped.
+
+  These commands use ''.join(k.givenArgs) to get the file name,
+  which may cause problems if the file name contains whitespace.
+
+- At present, the repeat-complex-command command does not support arguments.
 
 @color
 #@+node:ekr.20031218072017.2820:top level (file menu)

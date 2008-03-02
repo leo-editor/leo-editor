@@ -276,7 +276,7 @@
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20071105085941" a="TV"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 <v t="ekr.20071027111751"><vh>@test javaScript import</vh>
 <v t="ekr.20071027111751.1"><vh>functions</vh></v>
@@ -399,9 +399,8 @@
 <v t="ekr.20080212114457"><vh>django-tests declarations</vh></v>
 </v>
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
+<v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080222150903"><vh>@scan_g.es_results</vh></v>
-<v t="ekr.20080229140820" a="TV"><vh>test minibuffer command with args</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -21172,53 +21171,6 @@ ValidationError: [u'Each tag may be no more than 50 characters long.']
 """
 </t>
 <t tx="ekr.20080214091706.2">print 'hello from ekr'</t>
-<t tx="ekr.20080222150903">@ To be translated...
-
-(in
-)
-Unexpected exception in app.setLeoID
-can not create
-created in
-empty
-in
-leoID=
-using os.getenv('USER'):
-@c
-# Decls...
-color='red'
-newline=True
-tabName='Log'
-False = 'False'
-g_DOT_app_DOT_leoID = 'g.app.leoID'
-repr_LP_g_DOT_app_DOT_leoID_RP_ = 'repr(g.app.leoID)'
-repr_LP_theId_RP_ = 'repr(theId)'
-s = 's'
-spaces = 'spaces'
-tag = 'tag'
-theDir = 'theDir'
-g.app.translateToUpperCase=True
-# ---- @thin leoApp.py
-g.es_print('','-------------------- @thin leoApp.py',color='red')
-# -- node &lt; &lt; return if we can set leoID from sys.leoID&gt; &gt;
-# g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
-g.es_print("leoID=",g_DOT_app_DOT_leoID,spaces=False,color='red')
-# -- node &lt; &lt; return if we can set leoID from "leoID.txt" &gt; &gt;
-# g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
-g.es('leoID=',g_DOT_app_DOT_leoID,' (in ',theDir,')',spaces=False,color="red")
-g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
-g.es_print('Unexpected exception in app.setLeoID',color='red')
-# -- node &lt; &lt; return if we can set leoID from os.getenv('USER') &gt; &gt;
-# g.es("using os.getenv('USER'):",repr(theId),color='red')
-g.es("using os.getenv('USER'):",repr_LP_theId_RP_,color='red')
-# -- node &lt; &lt; put up a dialog requiring a valid id &gt; &gt;
-# g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
-g.es('leoID=',repr_LP_g_DOT_app_DOT_leoID_RP_,spaces=False,color="blue")
-# -- node &lt; &lt; attempt to create leoID.txt &gt; &gt;
-g.es_print('',tag,'created in',theDir,color='red')
-g.es('can not create',tag,'in',theDir,color='red')
-# -- node app.writeWaitingLog
-g.es('',s,color=color,newline=0)
-g.app.translateToUpperCase=False</t>
 <t tx="ekr.20080223084414">def test (s,color='red',*args,**keys):
     g.es(args,keys)
 
