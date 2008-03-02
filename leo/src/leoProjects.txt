@@ -556,7 +556,7 @@ def undoGroup (self):
         v.t.setDirty() # Bug fix: Leo 4.4.6.
 
     if not g.unitTesting:
-        g.es("undo %d instances" % count)
+        g.es("undo",count,"instances")
 
     c.selectPosition(p)
     if oldSel: c.frame.body.setSelectionRange(oldSel)
@@ -928,7 +928,7 @@ def redoGroup (self):
         v.t.setDirty()
 
     if not g.unitTesting:
-        g.es("redo %d instances" % count)
+        g.es("redo",count,"instances")
 
     c.selectPosition(p)
     if newSel: c.frame.body.setSelectionRange(newSel)
@@ -5047,7 +5047,7 @@ def checkFileSyntax (fileName,s):
     try:
         compiler.parse(s + '\n')
     except SyntaxError:
-        g.es("syntax error in: %s" % fileName,color="blue")
+        g.es("syntax error in:",fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
 #@-node:ekr.20051104075904.93:checkFileSyntax

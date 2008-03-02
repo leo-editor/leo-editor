@@ -244,7 +244,8 @@ def runTimerOnNode (c,p,count):
         if count is None:
             count = 1000000
         result = t.timeit(count)
-        g.es_print("count: %d time/count: %f %s" % (count,result/count,p.headString()))
+        ratio = "%f" % result/count
+        g.es_print("count:",count,"time/count:",ratio,'',p.headString())
     except:
         t.print_exc()
 #@-node:ekr.20051104075904.15:runTimerOnNode
@@ -769,7 +770,8 @@ def runTestsExternally (c,all):
 
             trace = False
             if trace: import time
-            g.es('running %sunit tests' % (g.choose(self.all,'all ','')),color='blue')
+            kind = g.choose(self.all,'all ','')
+            g.es('running',kind,'unit tests',color='blue')
             print 'creating: %s' % (self.fileName)
             c = self.c ; p = c.currentPosition()
             if trace: t1 = time.time()
@@ -1600,7 +1602,7 @@ def checkFileSyntax (fileName,s):
     try:
         compiler.parse(s + '\n')
     except SyntaxError:
-        g.es("syntax error in: %s" % fileName,color="blue")
+        g.es("syntax error in:",fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
 #@-node:ekr.20051104075904.93:checkFileSyntax
@@ -1612,26 +1614,22 @@ def checkFileTabs (fileName,s):
         tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
     except tokenize.TokenError, msg:
-        s = "Token error in %s" % fileName
-        print s ; g.es(s,color="blue")
-        s = str(msg)
-        print s ; g.es(s)
+        g.es_print("Token error in",fileName,color="blue")
+        g.es_print('',msg)
         assert 0, "test failed"
 
     except tabnanny.NannyNag, nag:
         badline = nag.get_lineno()
         line    = nag.get_line()
         message = nag.get_msg()
-        s = "Indentation error in %s, line %d" % (fileName, badline)
-        print s ; g.es(s,color="blue")
-        print message ; g.es(message)
-        s = "offending line:\n%s" % repr(str(line))[1:-1]
-        print s ; g.es(s)
+        g.es_print("Indentation error in",fileName,"line",badline,color="blue")
+        g.es_print('',message)
+        g.es_print("offending line...")
+        g.es_print('',line)
         assert 0, "test failed"
 
     except:
-        s = "unexpected exception"
-        print s ; g.trace(s)
+        g.trace("unexpected exception")
         g.es_exception()
         assert 0, "test failed"
 #@-node:ekr.20051104075904.94:checkFileTabs
@@ -1812,7 +1810,7 @@ def importAllModulesInPath (path):
     path = g.os_path_abspath(path)
 
     if not g.os_path_exists(path):
-        g.es("path does not exist: %s" % path)
+        g.es("path does not exist:",path)
         return []
 
     path2 = g.os_path_join(path,"leo*.py")

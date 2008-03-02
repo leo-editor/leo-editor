@@ -201,8 +201,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     if isLoaded(moduleName):
         module = loadedModules.get(moduleName)
         if verbose:
-            s = 'plugin %s already loaded' % moduleName
-            g.es_print(s,color="blue")
+            g.es_print('plugin',moduleName,'already loaded',color="blue")
         return module
 
     plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
@@ -224,7 +223,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
                     loadedModules[moduleName] = result
                 else:
                     if verbose and not g.app.initing: ## or not g.app.unitTesting:
-                        g.es_print('loadOnePlugin: loading module %s failed' % (moduleName),color="red")
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
                     result = None
             except Exception:
                 g.es('exception loading plugin',color='red')
@@ -246,11 +245,9 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
         pass
     elif result is None:
         if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            s = 'can not load enabled %s plugin' % moduleName
-            g.es_print(s,color="red")
+            g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
-        s = 'loaded %s plugin' % moduleName
-        g.es_print(s,color="blue")
+        g.es_print('loaded plugin:',moduleName,color="blue")
 
     return result
 #@-node:ekr.20041113113140:loadOnePlugin
@@ -258,7 +255,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
 def printHandlers (moduleName=None):
 
     if moduleName:
-        g.es_print('handlers for %s...' % (moduleName))
+        g.es_print('handlers for',moduleName,'...')
     else:
         g.es_print('all plugin handlers...')
 
@@ -276,7 +273,7 @@ def printHandlers (moduleName=None):
         tags = modules.get(key)
         if moduleName in (None,key):
             for tag in tags:
-                g.es_print('%25s %s' % (tag,key))
+                g.es_print('','%25s %s' % (tag,key))
 #@-node:ekr.20050110191444:printHandlers
 #@+node:ekr.20070429090122:printPlugins
 def printPlugins ():
@@ -286,7 +283,7 @@ def printPlugins ():
     keys = [s.lower() for s in keys]
     keys.sort()
     for key in keys:
-        g.es_print(key)
+        g.es_print('',key)
 #@-node:ekr.20070429090122:printPlugins
 #@+node:ekr.20031218072017.3444:registerExclusiveHandler
 def registerExclusiveHandler(tags, fn):
@@ -318,7 +315,7 @@ def registerOneExclusiveHandler(tag, fn):
     if g.app.unitTesting: return
 
     if handlers.has_key(tag):
-        g.es("*** Two exclusive handlers for '%s'" % tag)
+        g.es("*** Two exclusive handlers for","'%s'" % (tag))
     else:
         bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')
         handlers = [bunch]
@@ -503,13 +500,13 @@ class baseLeoPlugin(object):
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
             def hello(self, event):
-                self.g.es( "hello from node %s" % self.c.currentPosition().headString())
+                print("hello from node %s" % self.c.currentPosition().headString())
 
             def hola(self, event):
-                self.g.es( "hola from node %s" % self.c.currentPosition().headString())
+                print("hola from node %s" % self.c.currentPosition().headString())
 
             def ciao(self, event):
-                self.g.es( "ciao baby (%s)" % self.c.currentPosition().headString())
+                print("ciao baby (%s)" % self.c.currentPosition().headString())
 
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)

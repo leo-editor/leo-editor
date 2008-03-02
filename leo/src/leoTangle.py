@@ -530,14 +530,14 @@ class baseTangleCommands:
                     import tangle_done
                     tangle_done.run(root_names)
                 except:
-                    g.es("can not execute tangle_done.run()")
+                    g.es("can not execute","tangle_done.run()")
                     g.es_exception()
             if not self.tangling and self.untangle_batch_flag:
                 try:
                     import untangle_done
                     untangle_done.run(root_names)
                 except:
-                    g.es("can not execute tangle_done.run()")
+                    g.es("can not execute","tangle_done.run()")
                     g.es_exception()
             #@-node:ekr.20031218072017.3469:<< call tangle_done.run() or untangle_done.run() >>
             #@nl
@@ -838,11 +838,11 @@ class baseTangleCommands:
         #@    << return if @silent or unknown language >>
         #@+node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
         if self.language == "unknown":
-            g.es("@comment disables Untangle for " + path, color="blue")
+            g.es("@comment disables untangle for",path, color="blue")
             return
 
         if self.print_mode in ("quiet","silent"):
-            g.es("@" + self.print_mode +  " inhibits Untangle for " + path, color="blue")
+            g.es('','@%s' % (self.print_mode),"inhibits untangle for",path, color="blue")
             return
         #@-node:ekr.20031218072017.3482:<< return if @silent or unknown language >>
         #@nl
@@ -857,13 +857,13 @@ class baseTangleCommands:
                 file_buf = string.replace(file_buf,g.body_ignored_newline,'')
         except:
             if f: f.close()
-            g.es("error reading: " + path)
+            g.es("error reading:",path)
             g.es_exception()
             self.cleanup()
             return
         #@-node:ekr.20031218072017.3484:<< Read the file into file_buf  >> in untangleRoot
         #@nl
-        g.es("@root " + path)
+        g.es('','@root ' + path)
         # Pass 1: Scan the C file, creating the UST
         self.scan_derived_file(file_buf)
         # g.trace(self.ust_dump())
@@ -1448,7 +1448,7 @@ class baseTangleCommands:
                 if self.errors + g.app.scanErrors == 0:
                     g.update_file_if_changed(c,file_name,temp_name)
                 else:
-                    g.es("unchanged:  " + file_name)
+                    g.es("unchanged:",file_name)
                     #@                << Erase the temporary file >>
                     #@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
                     try: # Just delete the temp file.
@@ -1978,11 +1978,9 @@ class baseTangleCommands:
         for name in keys:
             section = self.tst[name]
             if not section.referenced:
-                g.es(' ' * 4 + "Warning: " +
-                    g.choose(self.use_noweb_flag,"<< ","@< ") +
-                    section.name +
-                    g.choose(self.use_noweb_flag," >>"," @>") +
-                    " has been defined but not used.")
+                lp = g.choose(self.use_noweb_flag,"<< ","@< ")
+                rp = g.choose(self.use_noweb_flag," >>"," @>")
+                g.es('',' ' * 4,'warning:',lp,'',section.name,'',rp,'has been defined but not used.')
     #@-node:ekr.20031218072017.3529:st_check
     #@+node:ekr.20031218072017.3530:st_dump
     # Dumps the given symbol table in a readable format.
@@ -2048,8 +2046,9 @@ class baseTangleCommands:
                     return 0 # part number
 
                 if self.tangling and code and code == part.code:
-                    g.es("warning: possible duplicate definition of: <<" +
-                        section.name + ">>")
+                    s = g.angleBrackets(section.name)
+                    g.es('warning: possible duplicate definition of:',s)
+            #@nonl
             #@-node:ekr.20031218072017.3533:<<check for duplicate code definitions >>
             #@nl
         if code or doc:
@@ -2194,11 +2193,9 @@ class baseTangleCommands:
             for part in section.parts.values():
                 assert(part.of == section.of)
                 if not part.update_flag:
-                    g.es("warning: " +
-                        g.choose(self.use_noweb_flag,"<< ","@< ") +
-                        part.name +
-                        g.choose(self.use_noweb_flag," >>"," @>") +
-                        " is not in the outline")
+                    lp = g.choose(self.use_noweb_flag,"<< ","@< ")
+                    rp = g.choose(self.use_noweb_flag," >>"," @>")
+                    g.es("warning:",'%s%s%s' % (lp,part.name,rp),"is not in the outline")
                     break # One warning per section is enough.
     #@-node:ekr.20031218072017.3543:ust_warn_about_orphans
     #@-node:ekr.20031218072017.3538:ust
@@ -2955,7 +2952,7 @@ class baseTangleCommands:
         if code and self.forgiving_compare(name,part,code,ucode):
             return false_ret # Not an error.
         # Update the body.
-        g.es("***Updating: " + p.headString())
+        g.es("***Updating:",p.headString())
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
         ucode = string.rstrip(ucode)
@@ -3026,7 +3023,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3579:error, pathError, warning
     def error (self,s):
         self.errors += 1
-        g.es_error(s)
+        g.es_error('',s)
 
     def pathError (self,s):
         if not self.path_warning_given:
@@ -3034,7 +3031,7 @@ class baseTangleCommands:
             self.error(s)
 
     def warning (self,s):
-        g.es_error(s)
+        g.es_error('',s)
     #@-node:ekr.20031218072017.3579:error, pathError, warning
     #@+node:ekr.20031218072017.3580:is_end_of_directive
     # This function returns True if we are at the end of preprocessor directive.
@@ -3495,7 +3492,7 @@ class baseTangleCommands:
                     self.language = "unknown"
                 else:
                     if issue_error_flag:
-                        g.es("ignoring: @comment " + z)
+                        g.es("ignoring: @comment",z)
 
             elif theDict.has_key("language"):
 
@@ -3575,9 +3572,9 @@ class baseTangleCommands:
                                         self.path_warning_given = True # supress future warnings
                                         self.error("@path directory does not exist: " + theDir)
                                         if base and len(base) > 0:
-                                            g.es("relative_path_base_directory: " + base)
+                                            g.es("relative_path_base_directory:",base)
                                         if relative_path and len(relative_path) > 0:
-                                            g.es("relative path in @path directive: " + relative_path)
+                                            g.es("relative path in @path directive:",relative_path)
                             #@-node:ekr.20031218072017.1368:<< handle absolute @path >>
                             #@nl
                         elif issue_error_flag and not self.path_warning_given:
@@ -3686,9 +3683,9 @@ class baseTangleCommands:
                                 # 10/27/02: It is an error for this not to exist now.
                                 self.error("@root directory does not exist:" + theDir)
                                 if base and len(base) > 0:
-                                    g.es("relative_path_base_directory: " + base)
+                                    g.es("relative_path_base_directory:",base)
                                 if dir2 and len(dir2) > 0:
-                                    g.es(kind + " directory: " + dir2)
+                                    g.es('',kind,"directory:",dir2)
                         #@-node:ekr.20031218072017.1374:<< handle absolute path >>
                         #@nl
 
