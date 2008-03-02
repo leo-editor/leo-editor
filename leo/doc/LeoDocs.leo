@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="49" left="212" height="710" width="996"/>
+	<global_window_position top="120" left="292" height="710" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -29,6 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="vivainio.20080302173815"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -50,12 +51,11 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
-<v t="ekr.20080301071818.1" a="E"
-expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
-<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
-<v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20050831184021.2" a="E"><vh>Table of contents</vh>
+<v t="ekr.20040414162124" a="E"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
 <v t="ekr.20040414163815"><vh>Table of Contents</vh></v>
 <v t="ekr.20050812134441.3"><vh>@rst-no-head end</vh></v>
@@ -104,7 +104,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -739,7 +739,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20061025065357.12"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20070317033759"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
+<v t="ekr.20070317033759" a="E"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
 <v t="ekr.20070317033759.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
@@ -760,16 +760,28 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507"><vh>Chapter 21: IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
+<v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Installation</vh></v>
+<v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
+<v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
+<v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
+<v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
+<v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
+<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080302194307" a="TV"><vh>Magic functions	</vh></v>
+<v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
+<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
+<v t="vivainio.20080302174957" a="E"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
+<v t="ekr.20080204100523.1" a="E"><vh>Commands</vh></v>
 <v t="ekr.20080204100523"><vh>Startup</vh></v>
-<v t="ekr.20080204100523.1"><vh>Commands</vh></v>
 <v t="ekr.20080204100523.2"><vh>Scripting IPython from Leo</vh></v>
 <v t="ekr.20080205080801"><vh>Scripting Leo from IPython</vh></v>
 <v t="ekr.20080204100523.3"><vh>@rst-ignore User Settings</vh></v>
 <v t="ekr.20080210101336"><vh>Acknowledgements</vh></v>
-<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -1112,7 +1124,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
@@ -3538,8 +3550,8 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080218153931" a="TV"><vh>leo 4.4.7 final</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080218153931"><vh>leo 4.4.7 final</vh>
 <v t="ekr.20080218153931.1"><vh>Fixed bugs</vh>
 <v t="ekr.20080218153931.2"><vh>Fixed perl syntax coloring bug</vh></v>
 <v t="ekr.20080218153931.3"><vh>Removed warnings while typing @language directives</vh></v>
@@ -11104,7 +11116,7 @@ Leo's Users Guide
 
 `Chapter 20: Unit testing with Leo`_
 
-`Chapter 21\: Ipython and Leo`_
+`Chapter 21: ILeo - the IPython bridge`_
 
 Appendices_
 
@@ -15614,7 +15626,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 18\: Leo and Emacs`:                   emacs.html
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
-.. _`Chapter 21\: Ipython and Leo`:                 IPythonBridge.html
+.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.6`:                      new-4-4-6.html
@@ -33752,30 +33764,35 @@ The bridge between Leo and IPython is powerful because it is simple. Indeed,
 1. **You can run any IPython script from Leo**.
 On the Leo side, as single variable::
 
-    ip = c.ipythonController.ip
-    
+    ip = IPython.ipapi.get()
+
 assigns ip to IPython's _ip variable. The ip variable allows scripts running in
 Leo to do *anything* that an IPython script can do.
 
 2. **You can run any Leo script from IPython**. 
-The ipython plugin injects a single object, typically called leox,
-into the IPython namespace. IPython scripts access Leo's c and g objects as
+The ipython plugin injects a single object named '_leo' into the IPython namespace. 
+IPython scripts access Leo's c and g objects as
 follows::
 
-    c,g = leox.c, leox.g
-    
+    c,g = _leo.c, _leo.g
+
 The c and g variables allow scripts running in IPython to do *anything* that a
-Leo script can do.
+Leo script can do. 
+
+This is basically everything that is required for IPython-Leo interaction.
+However, you probably wont use 'c' and 'g' directly, but use a series of
+convenience wrappers described in this document that make interactive work
+painless and powerfull.
 
 .. contents::
-    </t>
+
+</t>
 <t tx="ekr.20080203101507.2">.. Links
 
 .. _discussions:            http://sourceforge.net/forum/forum.php?thread_id=1911662&amp;forum_id=10226
 .. _ipython:                http://ipython.scipy.org/
 .. _IPython:                http://ipython.scipy.org/
 .. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
-.. _IPShellEmbed:           http://ipython.scipy.org/doc/manual/node9.html
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
 
 .. _`The Ipython Extension API`: extensionAPI_
@@ -33876,31 +33893,7 @@ To run a given script in IPython::
     x = c.ipythonController
     if x and x.started(): x.pushToIPython(script=script)
     </t>
-<t tx="ekr.20080204100523.3">This plugin honors the following user options, defined in leoSettings.leo, etc.
-
-- \@string ipython-interface-object-name = leox 
-
-  The name of the interface object injected into IPython when the bridge is created.
-  
-- \@string 'ipython-results-node-headline' = @ipython-results
-
-  The headline of the root of all results nodes created by the get-ipython-results command.
- 
-**Important**:
-As discussed in `Scripting Leo from IPython`_ scripts running in IPython can easily
-support many other Leo settings. The following settings are **not** supported
-directly by the ipython plugin, but they indicate the kinds of settings that
-IPython scripts might find useful:
-
-- \@data ipython-bridge-startup-script
-
-  The body text contains a script to be executed at startup time.
-  
-- \@data ipython-bridge-auto-open-leo-files
-
-  The body text contains a list of .leo files to be opened automatically
-  at startup time.
-</t>
+<t tx="ekr.20080204100523.3"></t>
 <t tx="ekr.20080205080801">The start-ipython command injects the leox object into IPython's
 user namespace.
 The c and g ivars of the leox object are
@@ -33941,8 +33934,7 @@ All these examples have been tested.
         g.openWithFileName(fileName, old_c=c)
 </t>
 <t tx="ekr.20080210101336">This plugin would not have been possible without the help of Ville M. Vainio.
-Discussions_ on SourceForge show how the goal of close cooperation between Leo and IPython went from
-vague dream to completed reality over the span of about 10 days.</t>
+</t>
 <t tx="ekr.20080212221711.1"></t>
 <t tx="ekr.20080212221711.2"></t>
 <t tx="ekr.20080212221711.4"></t>
@@ -34052,5 +34044,377 @@ Python's # -*- coding line. This line must be the first line of the imported fil
 <t tx="ekr.20080218154129"></t>
 <t tx="ekr.20080218154129.1"></t>
 <t tx="ekr.20080301071818"></t>
+<t tx="vivainio.20080302173815">mod_scripting.py
+</t>
+<t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
+channel between Leo and IPython. The level of integration is much deeper than
+conventional integration in IDEs; most notably, you are able to store and
+manipulate **data** in Leo nodes, in addition to mere program code - essentially
+making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data.
+The possibilities of this are endless, and the approach can be applied in wide
+range of problem domains with very little actual coding.
+
+IPython users are accustomed to using things like %edit to produce non-trivial
+functions/classes (i.e. something that they don't want to enter directly on the
+interactive prompt, but creating a proper script/module involves too much
+overhead). In ILeo, this task consists just going to the Leo window, creating a node
+and writing the code there, and pressing alt+I (push-to-ipython).
+
+Obviously, you can save the Leo document as usual - this is a great advantage
+of ILeo over using %edit, you can save your experimental scripts all at one
+time, without having to organize them into script/module files (before you
+really want to, of course!)
+</t>
+<t tx="vivainio.20080302174639.2">You need at least Leo 4.4.8, and IPython 0.8.3
+
+The ILeo concept is still being developed actively, so if you want to get access
+to latest features you can get IPython from Launchpad by installing bzr and
+doing::
+
+    bzr branch lp:ipython
+    cd ipython
+    python eggsetup.py develop
+
+You need to enable the 'ipython.py' plugin in Leo: 
+
+- Help -&gt; Open LeoSettings.leo
+
+- Edit @settings--&gt;Plugins--&gt;@enabled-plugins, add/uncomment 'ipython.py'
+
+- Alternatively, you can add @settings--&gt;@enabled-plugins with body ipython.py to your leo document.
+
+- Restart Leo. Be sure that you have the console window open (start leo.py from console, or double-click leo.py on windows)
+
+- Press alt+shif+i OR alt-x ipython-start to launch IPython in the console that
+  started leo. You can start entering IPython commands normally, and Leo will keep
+  running at the same time.
+
+- Note that you can just press alt-I (push-to-ipython) - it will start IPython
+  if it has not been previously started. However, when you open a new leo
+  document, you have to execute ipython-start again to tell IPython that the new
+  commands should target the new document. IPython session will not be
+  restarted, only the leo commander object is updated in the existing
+  session.</t>
+<t tx="vivainio.20080302174639.3">IPython code
+------------
+
+Just enter IPython commands on a Leo node and press alt-I to execute
+push-to-ipython in order to execute the script in IPython. 'commands' is
+interpreted loosely here - you can enter function and class definitions, in
+addition to the things you would usually enter at IPython prompt - calculations,
+system commands etc.
+
+Everything that would be legal to enter on IPython prompt is legal to execute
+from ILeo.
+
+Results will be shows in Leo log window for convenience, in addition to the console.
+
+Suppose that a node had the following contents::
+
+    1+2
+    print "hello"
+    3+4
+    
+    def f(x):
+        return x.upper()
+    
+    f('hello world')
+
+If you press alt+I on that node, you will see the following in Leo log window (IPython tab)::
+
+    In: 1+2
+    &lt;2&gt; 3
+    In: 3+4
+    &lt;4&gt; 7
+    In: f('hello world')
+    &lt;6&gt; 'HELLO WORLD'
+
+(numbers like &lt;6&gt; mean IPython output history indices; the actual object can be
+referenced with _6 as usual in IPython).
+
+
+Plain Python code
+-----------------
+
+If the headline of the node ends with capital P, alt-I will not run the code
+through IPython translation mechanism but use the direct python 'exec' statement
+(in IPython user namespace) to execute the code. It wont be shown in IPython
+history, and sometimes it is safer (and more efficient) to execute things as
+plain Python statements. Large class definitions are good candidates for P
+nodes.
+</t>
+<t tx="vivainio.20080302174639.4">The real fun starts when you start entering text to leo nodes, and are using
+that as data (input/output) for your IPython work.
+
+Accessing Leo nodes happens through the variable **wb** (short for "WorkBook")
+that exist in the IPython user namespace. Nodes that are directly accessible are
+the ones that have simple names which could also be Python variable names;
+'foo_1' will be accessible directly from IPython, whereas 'my scripts' will not.
+If you want to access a node with arbitrary headline, add a child node '@a foo'
+(@a stands for 'anchor'). Then, the parent of '@a foo' is accessible through
+'wb.foo'.
+
+You can see what nodes are accessible be entering (in IPython) wb.&lt;TAB&gt;. Example::
+
+    [C:leo/src]|12&gt; wb.
+    wb.b           wb.tempfile    wb.rfile       wb.NewHeadline
+    wb.bar         wb.Docs        wb.strlist     wb.csvr    
+    [C:leo/src]|12&gt; wb.tempfile
+               &lt;12&gt; &lt;ipy_leo.LeoNode object at 0x044B6D90&gt;
+    
+So here, we meet the 'LeoNode' class that is your key to manipulating Leo
+content from IPython!
+
+LeoNode
+-------
+
+Suppose that we had a node with headline 'spam' and body::
+
+    ['12',2222+32]
+
+we can access it from IPython (or from scripts entered into other Leo nodes!) by doing::
+
+    C:leo/src]|19&gt; wb.spam.v
+              &lt;19&gt; ['12', 2254]
+    
+'v' attribute stands for 'value', which means the node contents will be run
+through 'eval' and everything you would be able to enter into IPython prompt
+will be converted to objects. This mechanism can be extended far beyond direct
+evaluation (see '@cl definitions').
+
+'v' attribute also has a setter, i.e. you can do::
+
+    wb.spam.v = "mystring"
+
+Which will result in the node 'spam' having the following text::
+
+    'mystring'
+
+What assignment to 'v' does can be configured through generic functions
+('simplegeneric' module, see ipy_leo.py for examples).
+
+Besides v, you can set the body text directly through::
+
+    wb.spam.b = "some\nstring", 
+
+headline by::
+
+    wb.spam.h = 'new_headline' 
+
+(obviously you must access the node through wb.new_headline from that point
+onwards), and access the contents as string list (IPython SList) through
+'wb.spam.l'.
+
+If you do 'wb.foo.v = 12' when node named 'foo' does not exist, the node titled
+'foo' will be automatically created and assigned body 12.
+
+LeoNode also supports go() that focuses the node in the Leo window, and ipush()
+that simulates pressing alt+I on the node (beware of the possible recursion!).
+
+You can access unknownAttributes by .uA property dictionary. Unknown attributes
+allow you to store arbitrary (pickleable) python objects in the Leo nodes; the
+attributes are stored when you save the .leo document, and recreated when you
+open the document again. The attributes are not visible anywhere, but can be
+used for domain-specific metatada. Example::
+
+    [C:leo/src]|12&gt; wb.spam.uA['coords'] = (12,222)
+    [C:leo/src]|13&gt; wb.spam.uA
+               &lt;13&gt; {'coords': (12, 222)}    
+
+Accessing children with iteration and dict notation
+---------------------------------------------------
+
+Sometimes, you may want to treat a node as a 'database', where the nodes
+children represent elements in the database. You can create a new child node for
+node 'spam', with headline 'foo bar' like this::
+
+    wb.spam['foo bar'] = "Hello"
+
+And assign a new value for it by doing::
+
+    wb.spam['foo bar'].v = "Hello again"
+
+Note how you can't use .v when you first create the node - i.e. the node needs
+to be initialized by simple assignment, that will be interpreted as assignment
+to '.v'. This is a conscious design choice.
+
+If you try to do wb.spam['bar'] = 'Hello', ILeo will assign '@k bar' as the
+headline for the child instead, because 'bar' is a legal python name (and as
+such would be incorporated in the workbook namespace). This is done to avoid
+crowding the workbook namespace with extraneous items. The item will still be
+accessible as wb.spam['bar']
+
+LeoNodes are iterable, so to see the headlines of all the children of 'spam' do::
+
+    for n in wb.spam:
+        print n.h
+</t>
+<t tx="vivainio.20080302174639.5">If the first line in the body text is of the form '@cl sometext', IPython will
+evaluate 'sometext' and call the result with the rest of the body when you do
+'wb.foo.v' or press alt+I on the node. An example is in place here. Suppose that we have defined a class (I
+use the term class in a non-python sense here)::
+
+    def rfile(body,node):
+        """ @cl rfile 
+    
+        produces a StringIO (file like obj) of the rest of the body """
+    
+        import StringIO
+        return StringIO.StringIO(body)
+    
+(note that node is ignored here - but it could be used to access headline,
+children etc.),
+
+Now, let's say you have node 'spam' with text::
+
+    @cl rfile
+    hello
+    world
+    and whatever
+
+Now, in IPython, we can do this::
+
+    [C:leo/src]|22&gt; f = wb.spam.v
+    [C:leo/src]|23&gt; f
+               &lt;23&gt; &lt;StringIO.StringIO instance at 0x04E7E490&gt;
+    [C:leo/src]|24&gt; f.readline()
+               &lt;24&gt; u'hello\n'
+    [C:leo/src]|25&gt; f.readline()
+               &lt;25&gt; u'world\n'
+    [C:leo/src]|26&gt; f.readline()
+               &lt;26&gt; u'and whatever'
+    [C:leo/src]|27&gt; f.readline()
+               &lt;27&gt; u''    
+
+You should declare new @cl types to make ILeo as convenient your problem domain
+as possible. For example, a "@cl etree" could return the elementtree object for
+xml content.
+</t>
+<t tx="vivainio.20080302174639.6">@ipy-startup
+------------
+
+If this node exist, the *direct children* of this will be pushed to IPython when
+ILeo is started (you press alt+shift-i). Use it to push your own @cl
+definitions, import the modules you will be using elsewhere in the document, etc.
+
+The contents of of the node itself will be ignored.
+
+
+@ipy-results
+------------
+
+If you press alt+I on a node that has @cl, it will be evaluated and the result
+will be put into this node. Otherwise, it will just be displayed in log tab.
+
+@ipy-root
+---------
+
+You can set up a subportion of the leo document as a "sandbox" for your IPython
+work. Only the nodes under @ipy-root will be visible through the 'wb' variable.
+
+Also, when you create a new node (wb.foo.v = 'stuff'), the node foo will be created as
+a child of this node. 
+
+@a nodes
+--------
+
+You can attach these as children of existing nodes to provide a way to access
+nodes with arbitrary headlines, or to provide aliases to other nodes. If
+multiple @a nodes are attached as children of a node, all the names can be used
+to access the same object.
+</t>
+<t tx="vivainio.20080302174639.7">Sometimes, you might want to configure what alt+I on a node does. You can do
+that by creating your own push function and expose it using
+ipy_leo.expose_ileo_push(f, priority). The function should check whether the
+node should by handled by the function and raise IPython.ipapi.TryNext if it
+will not do the handling, giving the next function in the chain a chance to see
+whether it should handle the push.
+
+This example would print an uppercase version of node body if the node headline ends
+with U (yes, this is completely useless!)::
+
+    def push_upcase(node):
+        if not node.h.endswith('U'):
+            raise TryNext
+        print node.b.upper()
+    
+    ipy_leo.expose_ileo_push(push_upcase, 12)
+    
+(the priority should be between 0-100, with 0 being the highest (first one to
+try) - typically, you don't need to care about it and can usually omit the
+argument altogether)
+</t>
+<t tx="vivainio.20080302174639.8">Get list of all headlines of all the nodes in leo::
+
+    [node.h for node in wb]
+
+Create node with headline 'baz', empty body::
+
+    wb.baz
+
+Create 10 child nodes for baz, where i is headline and 'Hello ' + i is body::
+
+    for i in range(10):
+        wb.baz[i] = 'Hello %d' % i
+
+Create 5 child nodes for the current node (note the use of special _p variable,
+which means "current node") and moves focus to node number 5::
+
+    for i in range(10):
+        _p[i] = 'hello %d' % d
+    _p[5].go()
+</t>
+<t tx="vivainio.20080302174639.9">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
+Leo) on IPython developer mailing list:
+
+    http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
+
+I was using FreeMind as mind mapping software, and so I had an immediate use
+case for Leo (which, incidentally, is superior to FreeMind as mind mapper). The
+wheels started rolling, I got obsessed with the power of this concept
+(everything clicked together), and Edwards excitement paralleled mine.
+Everything was mind-bogglingly easy/trivial, something that is typical of all
+promising technologies.
+
+Discussions_ on SourceForge show how the goal of close cooperation between Leo and IPython went from
+vague dream to completed reality over the span of about 10 days.
+
+</t>
+<t tx="vivainio.20080302174957"></t>
+<t tx="vivainio.20080302194307">%mb
+---
+
+Execute leo minibuffer command. Tab completion works. Example::
+
+    mb open-outline
+    
+%lee
+----
+
+Stands for "LEo Edit". Allows you to open file(s), and even objects in Leo for editing. Examples::
+
+    lee *.txt
+
+Opens all txt files in @auto nodes
+
+::
+
+    lee MyMacro
+
+Opens the macro MyMacro for editing. Press alt-I to push the edited macro back to IPython.
+
+::
+
+  s = 'hello word'
+  lee s
+  
+Opens the variable s for editing. Prell alt+I to push the new value to IPython.
+
+::
+
+    lee hist   
+    
+Opens IPython interactive history (both input and output) in Leo.
+</t>
 </tnodes>
 </leo_file>
