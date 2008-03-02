@@ -2126,7 +2126,7 @@ def changeSelection(self):
     start,end = sel
     if start > end: start,end = end,start
     if start == end:
-        g.es("No text selected") ; return False
+        g.es("no text selected") ; return False
 
     # g.trace(start,end)
 
@@ -2456,7 +2456,7 @@ def regexHelper (self,s,i,j,pattern,backwards,nocase):
         if nocase: flags |= re.IGNORECASE
         re_obj = re.compile(pattern,flags)
     except Exception:
-        g.es('Invalid regular expression: %s' % (pattern),color='blue')
+        g.es('invalid regular expression: %s' % (pattern),color='blue')
         self.errors += 1 # Abort the search.
         return -1, -1
 
@@ -2668,11 +2668,11 @@ def selectNextPosition(self):
     if c.hoistStack:
         if not p:
             if self.wrapping:
-                g.es('Wrap disabled in hoisted outlines',color='blue')
+                g.es('wrap disabled in hoisted outlines',color='blue')
             return
         bunch = c.hoistStack[-1]
         if not bunch.p.isAncestorOf(p):
-            g.es('Found match outside of hoisted outline',color='blue')
+            g.es('found match outside of hoisted outline',color='blue')
             return None
 
     # Wrap if needed.
@@ -3146,7 +3146,7 @@ def regexHelper (self,s,i,j,pattern,backwards,nocase):
         if nocase: flags |= re.IGNORECASE
         re_obj = re.compile(pattern,flags)
     except Exception:
-        g.es('Invalid regular expression: %s' % (pattern),color='blue')
+        g.es('invalid regular expression: %s' % (pattern),color='blue')
         self.errors += 1 # Abort the search.
         return -1, -1
 
@@ -3810,7 +3810,7 @@ def findNextClone (self,event=None):
         finally:
             c.endUpdate()
     else:
-        g.es('No more clones',color='blue')
+        g.es('no more clones',color='blue')
 #@-node:ekr.20071213123942:findNextClone
 #@-node:ekr.20071211132156:Added find-next-clone command
 #@+node:ekr.20071115055315:Added toggle-sparse-move command
@@ -5046,7 +5046,7 @@ def checkFileSyntax (fileName,s):
     try:
         compiler.parse(s + '\n')
     except SyntaxError:
-        g.es("Syntax error in: %s" % fileName,color="blue")
+        g.es("syntax error in: %s" % fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
 #@-node:ekr.20051104075904.93:checkFileSyntax
