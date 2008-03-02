@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="110" left="449" height="710" width="996"/>
+	<global_window_position top="120" left="292" height="710" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -56,7 +56,7 @@
 <v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2" a="E"><vh>Table of contents</vh>
 <v t="ekr.20040414162124" a="E"><vh>@rst html\leo_TOC.html</vh>
-<v t="ekr.20050828112159" a="TV"><vh>@rst-no-head All links (TOC)</vh></v>
+<v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
 <v t="ekr.20040414163815"><vh>Table of Contents</vh></v>
 <v t="ekr.20050812134441.3"><vh>@rst-no-head end</vh></v>
 </v>
@@ -771,6 +771,7 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
 <v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080302194307" a="TV"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
 <v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
 <v t="vivainio.20080302174957" a="E"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
@@ -34380,5 +34381,40 @@ vague dream to completed reality over the span of about 10 days.
 
 </t>
 <t tx="vivainio.20080302174957"></t>
+<t tx="vivainio.20080302194307">%mb
+---
+
+Execute leo minibuffer command. Tab completion works. Example::
+
+    mb open-outline
+    
+%lee
+----
+
+Stands for "LEo Edit". Allows you to open file(s), and even objects in Leo for editing. Examples::
+
+    lee *.txt
+
+Opens all txt files in @auto nodes
+
+::
+
+    lee MyMacro
+
+Opens the macro MyMacro for editing. Press alt-I to push the edited macro back to IPython.
+
+::
+
+  s = 'hello word'
+  lee s
+  
+Opens the variable s for editing. Prell alt+I to push the new value to IPython.
+
+::
+
+    lee hist   
+    
+Opens IPython interactive history (both input and output) in Leo.
+</t>
 </tnodes>
 </leo_file>
