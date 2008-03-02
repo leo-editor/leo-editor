@@ -577,7 +577,9 @@ def scanAtRootOptions (s,i,err_flag=False):
             i += 1
 
         if err > -1 and err_flag:
-            g.es("unknown option:",s[err:i],"in",g.get_line(s,i))
+            z_opt = s[err:i]
+            z_line = g.get_line(s,i)
+            g.es("unknown option:",z_opt,"in",z_line)
         #@-node:ekr.20031218072017.3155:<< scan another @root option >>
         #@nl
 
@@ -996,7 +998,8 @@ def es_dump (s,n = 30,title=None):
 
     i = 0
     while i < len(s):
-        g.es_print('',''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]]))
+        aList = ''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]])
+        g.es_print('',aList)
         i += n
 #@nonl
 #@-node:ekr.20060917120951:es_dump
@@ -2985,7 +2988,8 @@ def scanAtFileOptions (h,err_flag=False):
         while i < len(h) and h[i] not in (' ','\t','-'):
             i += 1
         if err > -1:
-            g.es("unknown option:",h[err:i],"in",h)
+            z_opt = h[err:i]
+            g.es("unknown option:",z_opt,"in",h)
         #@-node:ekr.20031218072017.3153:<< scan another @file option >>
         #@nl
 

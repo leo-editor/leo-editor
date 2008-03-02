@@ -2529,8 +2529,9 @@ class leoTree:
                     i = url.find(' ')
                     if i > -1:
                         if 0: # No need for a warning.  Assume everything else is a comment.
-                            g.es("ignoring characters after space in url:"+url[i:])
-                            g.es("use %20 instead of spaces")
+                            z_url = url[i:]
+                            g.es("ignoring characters after space in url:",z_url)
+                            g.es("use %%20 instead of spaces")
                         url = url[:i]
                 #@-node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
                 #@nl
