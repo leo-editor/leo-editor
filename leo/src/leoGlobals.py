@@ -1685,11 +1685,13 @@ def getTime():
     return time.clock()
 
 def esDiffTime(message, start):
-    g.es('',"%s %6.3f" % (message,(time.clock()-start)))
+    delta = time.clock()-start
+    g.es('',"%s %6.3f" % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
-    print "%s %6.3f" % (message,(time.clock()-start))
+    delta = time.clock()-start
+    print "%s %6.3f" % (message,delta)
     return time.clock()
 #@-node:ekr.20031218072017.3137:Timing
 #@-node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
