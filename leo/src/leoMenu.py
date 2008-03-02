@@ -46,7 +46,7 @@ class leoMenu:
 
     def error (self,s):
 
-        g.es_print(s,color='red')
+        g.es_print('',s,color='red')
     #@-node:ekr.20031218072017.3775:error and oops
     #@+node:ekr.20031218072017.3776:Gui-independent menu enablers
     #@+node:ekr.20031218072017.3777:updateAllMenus
@@ -1447,13 +1447,11 @@ class leoMenu:
             menu = self.getMenu(menuName)
             if menu == None:
                 if not g.app.gui.isNullGui:
-                    print "menu does not exist: ",menuName
-                    g.es("menu does not exist: ",menuName)
+                    g.es_print("menu does not exist: ",menuName)
                 return
             self.createMenuEntries(menu,table,dynamicMenu=dynamicMenu)
         except:
-            s = "exception creating items for %s menu" % menuName
-            g.es_print(s)
+            g.es_print("exception creating items for",menuName,"menu")
             g.es_exception()
 
         g.app.menuWarningsGiven = True
@@ -1465,7 +1463,7 @@ class leoMenu:
             parent = self.getMenu(parentName) # parent may be None.
             menu = self.getMenu(menuName)
             if menu:
-                g.es("menu already exists: " + menuName,color="red")
+                g.es("menu already exists:",menuName,color="red")
             else:
                 menu = self.new_menu(parent,tearoff=0)
                 self.setMenu(menuName,menu)
@@ -1482,7 +1480,7 @@ class leoMenu:
                     self.add_cascade(parent,label=label,menu=menu,underline=amp_index)
                 return menu
         except:
-            g.es("exception creating " + menuName + " menu")
+            g.es("exception creating",menuName,"menu")
             g.es_exception()
             return None
     #@-node:ekr.20031218072017.3804:createNewMenu
@@ -1521,7 +1519,7 @@ class leoMenu:
         # Create the menu items in of the Open With menu.
         for entry in table:
             if len(entry) != 3: # 6/22/03
-                g.es("createOpenWithMenuFromTable: invalid data",color="red")
+                g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
                 return
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
         for entry in table:
@@ -1644,9 +1642,9 @@ class leoMenu:
                 self.destroy(menu)
                 self.destroyMenu(menuName)
             else:
-                g.es("can't delete menu: " + menuName)
+                g.es("can't delete menu:",menuName)
         except:
-            g.es("exception deleting " + menuName + " menu")
+            g.es("exception deleting",menuName,"menu")
             g.es_exception()
     #@-node:ekr.20031218072017.3805:deleteMenu
     #@+node:ekr.20031218072017.3806:deleteMenuItem
@@ -1660,9 +1658,9 @@ class leoMenu:
                 realItemName = self.getRealMenuName(itemName)
                 self.delete(menu,realItemName)
             else:
-                g.es("menu not found: " + menuName)
+                g.es("menu not found:",menuName)
         except:
-            g.es("exception deleting " + itemName + " from " + menuName + " menu")
+            g.es("exception deleting",itemName,"from",menuName,"menu")
             g.es_exception()
     #@-node:ekr.20031218072017.3806:deleteMenuItem
     #@+node:ekr.20031218072017.3782:get/setRealMenuName & setRealMenuNamesFromTable
@@ -1684,7 +1682,7 @@ class leoMenu:
             for untrans,trans in table:
                 self.setRealMenuName(untrans,trans)
         except:
-            g.es("exception in setRealMenuNamesFromTable")
+            g.es("exception in","setRealMenuNamesFromTable")
             g.es_exception()
     #@-node:ekr.20031218072017.3782:get/setRealMenuName & setRealMenuNamesFromTable
     #@+node:ekr.20031218072017.3807:getMenu, setMenu, destroyMenu

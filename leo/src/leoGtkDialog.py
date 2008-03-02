@@ -273,7 +273,7 @@ class gtkAboutLeo (leoGtkDialog):
             import webbrowser
             webbrowser.open("mailto:" + self.email)
         except:
-            g.es("not found: " + self.email)
+            g.es("not found:",self.email)
     #@-node:ekr.20080112145409.14:gtkAboutLeo.onAboutLeoEmail
     #@+node:ekr.20080112145409.15:gtkAboutLeo.onAboutLeoUrl
     def onAboutLeoUrl(self,event=None):
@@ -286,7 +286,7 @@ class gtkAboutLeo (leoGtkDialog):
             import webbrowser
             webbrowser.open(self.url)
         except:
-            g.es("not found: " + self.url)
+            g.es("not found:",self.url)
     #@-node:ekr.20080112145409.15:gtkAboutLeo.onAboutLeoUrl
     #@+node:ekr.20080112145409.16:gtkAboutLeo: setArrowCursor, setDefaultCursor
     def setArrowCursor (self,event=None):

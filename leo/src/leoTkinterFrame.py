@@ -1958,7 +1958,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         os.chdir(g.app.loadDir)
                         webbrowser.open_new(url)
                 except:
-                    g.es("exception dowloading sbooks.chm")
+                    g.es("exception downloading","sbooks.chm")
                     g.es_exception()
     #@+node:ekr.20031218072017.3993:showProgressBar
     def showProgressBar (self,count,size,total):
@@ -2665,7 +2665,7 @@ class leoTkinterLog (leoFrame.leoLog):
     def renameTabFromMenu (self,tabName):
 
         if tabName in ('Log','Completions'):
-            g.es('can not rename %s tab' % (tabName),color='blue')
+            g.es('can not rename',tabName,'tab',color='blue')
         else:
             def renameTabCallback (newName):
                 return self.renameTab(tabName,newName)
@@ -2956,7 +2956,7 @@ class leoTkinterLog (leoFrame.leoLog):
             return tkFont.Font(family=family,size=size,slant=slant,weight=weight)
         except Exception:
             g.es("exception setting font")
-            g.es("family,size,slant,weight:",family,size,slant,weight)
+            g.es('','family,size,slant,weight:','',family,'',size,'',slant,'',weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@-node:ekr.20051019201809.6:getFont
@@ -3164,7 +3164,7 @@ class leoTkTextWidget (Tk.Text):
             row,col = int(row),int(col)
             row -= 1
             i = g.convertRowColToPythonIndex(s,row,col)
-            #g.es_print(i)
+            #g.es_print('',i)
         return i
     #@-node:ekr.20061117085824.1:w.toPythonIndex
     #@+node:ekr.20061117085824.2:w.rowColToGuiIndex

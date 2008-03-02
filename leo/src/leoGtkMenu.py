@@ -528,7 +528,7 @@ class leoGtkMenu(leoMenu.leoMenu):
         # Create the menu items in of the Open With menu.
         for entry in table:
             if len(entry) != 3: # 6/22/03
-                g.es("createOpenWithMenuFromTable: invalid data",color="red")
+                g.es("","createOpenWithMenuFromTable:","invalid data",color="red")
                 return
         self.createOpenWithMenuItemsFromTable(openWithMenu,table)
     #@+node:bob.20080115223114.3:createOpenWithMenuItemsFromTable
