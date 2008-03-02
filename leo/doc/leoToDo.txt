@@ -2,7 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080229111540:To do first
 #@+node:ekr.20070625091423:Add translation services
 @nocolor
 
@@ -10,6 +9,11 @@ To do:
 
 - Add translate keyword arg to g.es and g.es_print.
   This is needed to handle 'error' methods.
+
+- A short name, g.tr, for g.translateString would be good.
+
+** Alternately, error methods could support the translate-odd-arg convention.
+   But until *all* such methods support this convention, g.tr will be needed.
 
 - at.readError may have wrong args.
 
@@ -684,9 +688,6 @@ g.app.translateToUpperCase=False
 #@nonl
 #@-node:ekr.20080220082727:@scan_g.es_results
 #@-node:ekr.20070625091423:Add translation services
-#@+node:ekr.20080301064840:Update iLeo docs
-#@-node:ekr.20080301064840:Update iLeo docs
-#@-node:ekr.20080229111540:To do first
 #@+node:ekr.20080218110223:Easy
 #@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process
 # This would allow @menu items to refer to commands created by @button.
