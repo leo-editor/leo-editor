@@ -195,7 +195,7 @@ class ipythonController:
             return
 
         try:
-            sys.argv = []
+            sys.argv = ['leo.py']
             api = IPython.ipapi
             self.message('creating IPython shell...')
             leox = leoInterface(c,g) # inject leox into the namespace.
