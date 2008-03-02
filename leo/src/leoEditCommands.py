@@ -542,7 +542,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         if self.abbrevs:
             for z in self.abbrevs:
-                g.es('','%s=%s' % (z,self.abbrevs[z]))
+                s = self.abbrevs[z]
+                g.es('','%s=%s' % (z,s))
     #@-node:ekr.20050920084036.19:listAbbrevs
     #@+node:ekr.20050920084036.20:readAbbreviations
     def readAbbreviations (self,event):

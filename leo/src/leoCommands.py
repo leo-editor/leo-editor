@@ -3960,7 +3960,8 @@ class baseCommands:
                 message = nag.get_msg()
                 g.es("indentation error in",headline,"line",badline,color="blue")
                 g.es(message)
-                g.es("offending line:\n",repr(str(line))[1:-1])
+                line2 = repr(str(line))[1:-1]
+                g.es("offending line:\n",line2)
 
         except:
             g.trace("unexpected exception")

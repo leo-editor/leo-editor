@@ -1376,7 +1376,7 @@ def importFilesCommand (self,files=None,treeType=None):
             v = self.createOutline(fileName,current)
             if v: # createOutline may fail.
                 if not g.unitTesting:
-                    g.es("imported " + fileName,color="blue")
+                    g.es("imported",fileName,color="blue")
                 v.contract()
                 v.setDirty()
                 c.setChanged(True)
@@ -1471,7 +1471,8 @@ try:
     s = theFile.read()
     theFile.close()
 except IOError:
-    g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
+    z = g.choose(atAuto,'@auto ','')
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
     leoTest.fail()
     return None
 #@-node:ekr.20031218072017.3211:<< Read file into s >>
@@ -5237,7 +5238,8 @@ try:
     s = theFile.read()
     theFile.close()
 except IOError:
-    g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
+    z = g.choose(atAuto,'@auto ','')
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
     leoTest.fail()
     return None
 #@-node:ekr.20031218072017.3211:<< Read file into s >>
@@ -6304,7 +6306,8 @@ try:
     s = theFile.read()
     theFile.close()
 except IOError:
-    g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
+    z = g.choose(atAuto,'@auto ','')
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
     leoTest.fail()
     return None
 #@-node:ekr.20031218072017.3211:<< Read file into s >>

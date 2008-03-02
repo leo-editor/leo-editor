@@ -606,7 +606,7 @@ class vnode (baseVnode):
         # This message should never be printed and we want to avoid crashing here!
         if not g.isUnicode(self.t.bodyString):
             s = "v.bodyString: Leo internal error: not unicode:" + repr(self.t.bodyString)
-            g.es_print(s,color="red")
+            g.es_print('',s,color="red")
 
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self.t.bodyString,g.app.tkEncoding)
@@ -619,7 +619,7 @@ class vnode (baseVnode):
         # This message should never be printed and we want to avoid crashing here!
         if not g.isUnicode(self.t.headString):
             s = "Leo internal error: not unicode:" + repr(self.t.headString)
-            g.es_print(s,color="red")
+            g.es_print('',s,color="red")
 
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self.t.headString,g.app.tkEncoding)
@@ -996,7 +996,7 @@ class nodeIndices (object):
         """Create a gnx from its string representation"""
 
         if type(s) not in (type(""),type(u"")):
-            g.es("scanGnx: unexpected index type:",type(s),s,color="red")
+            g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
             return None,None,None
 
         s = s.strip()
