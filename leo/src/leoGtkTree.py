@@ -1136,7 +1136,7 @@ class leoGtkTree (leoFrame.leoTree):
                     image = gtk.PhotoImage(master=self.canvas,file=fullname)
                     self.iconimages[fullname] = image
                 except:
-                    #g.es("Exception loading: " + fullname)
+                    #g.es("exception loading: " + fullname)
                     #g.es_exception()
                     image = None
 
@@ -1267,7 +1267,7 @@ class leoGtkTree (leoFrame.leoTree):
             self.iconimages[name] = image
             return image
         except:
-            g.es("Exception loading: " + fullname)
+            g.es("exception loading: " + fullname)
             g.es_exception()
             return None
     #@-node:ekr.20080112145409.370:getIconImage

@@ -501,9 +501,9 @@ class nullGui(leoGui):
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log
-            # g.es("Start of batch script...\n")
+            # g.es("start of batch script...\n")
             self.lastFrame.c.executeScript(script=self.script)
-            # g.es("\nEnd of batch script")
+            # g.es("\nend of batch script")
 
         # Getting here will terminate Leo.
     #@-node:ekr.20031218072017.2229:runMainLoop

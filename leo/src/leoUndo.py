@@ -1242,7 +1242,7 @@ class undoer:
                     if 0:
                         g.trace('old_lines',old_lines)
                         g.trace('new_lines',new_lines)
-                    g.es('Exception in setUndoRedoTypingParams',color='blue')
+                    g.es('exception in setUndoRedoTypingParams',color='blue')
                     g.es_exception()
                     newBead = True
         #@-node:ekr.20050125220613:<< set newBead if we can't share the previous bead >>

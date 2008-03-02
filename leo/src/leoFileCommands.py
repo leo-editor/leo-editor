@@ -619,10 +619,10 @@ class baseFileCommands:
             v = self.getLeoOutlineHelper(s,reassignIndices,checking=False)
         except invalidPaste:
             v = None
-            g.es("Invalid Paste As Clone",color="blue")
+            g.es("invalid Paste As Clone",color="blue")
         except BadLeoFile:
             v = None
-            g.es("The clipboard is not valid ",color="blue")
+            g.es("the clipboard is not valid ",color="blue")
 
         return v
 
@@ -1849,8 +1849,8 @@ class baseFileCommands:
         try:
             return t.vnodeList[0]
         except (IndexError,AttributeError):
-            g.es("Missing vnode:",headline,color="red")
-            g.es("Probably an outline topology error.")
+            g.es("missing vnode:",headline,color="red")
+            g.es("probably an outline topology error.")
             return None
     #@-node:ekr.20040326063413:getExistingVnode
     #@-node:ekr.20031218072017.1566:getVnode & helpers
@@ -2152,7 +2152,7 @@ class baseFileCommands:
         try:
             val = str(val)
         except UnicodeError:
-            g.es_print('Unexpected exception converting hexlified string to string')
+            g.es_print('unexpected exception converting hexlified string to string')
             g.es_exception()
 
         # g.trace(attr,repr(val))
@@ -2206,10 +2206,10 @@ class baseFileCommands:
             parser.parse(theFile) # expat does not support parseString
             node = handler.getRootNode()
         except xml.sax.SAXParseException:
-            g.es_print('Error parsing',inputFileName,color='red')
+            g.es_print('error parsing',inputFileName,color='red')
             g.es_exception()
         except Exception:
-            g.es_print('Unexpected exception parsing',inputFileName,color='red')
+            g.es_print('unexpected exception parsing',inputFileName,color='red')
             g.es_exception()
 
         return node
@@ -2790,7 +2790,7 @@ class baseFileCommands:
             #@        << issue informational messages >>
             #@+node:ekr.20040702085529:<< issue informational messages >>
             if isOrphan and isThin:
-                g.es("Writing erroneous:",p.headString(),color="blue")
+                g.es("writing erroneous:",p.headString(),color="blue")
                 p.clearOrphan()
             #@-node:ekr.20040702085529:<< issue informational messages >>
             #@nl

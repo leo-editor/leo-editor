@@ -2290,12 +2290,12 @@ class leoTree:
         i = s.find('\n')
         if i > -1:
             # g.trace(i,len(s),repr(s))
-            g.es("Truncating headline to one line",color="blue")
+            g.es("truncating headline to one line",color="blue")
             s = s[:i]
 
         limit = 1000
         if len(s) > limit:
-            g.es("Truncating headline to %d characters" % (limit),color="blue")
+            g.es("truncating headline to %d characters" % (limit),color="blue")
             s = s[:limit]
 
         s = g.toUnicode(s or '',g.app.tkEncoding)

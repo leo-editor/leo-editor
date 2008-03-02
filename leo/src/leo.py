@@ -234,7 +234,7 @@ def createFrame (fileName,relativeFileName):
 
     # Report the failure to open the file.
     if fileName:
-        g.es("File not found:",fileName)
+        g.es("file not found:",fileName)
 
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (leo.py)

@@ -277,7 +277,7 @@ class bridgeController:
                         g.app.leoID = None
                     except Exception:
                         g.app.leoID = None
-                        g.es('Unexpected exception in app.setLeoID',color='red')
+                        g.es('unexpected exception in app.setLeoID',color='red')
                         g.es_exception()
             #@-node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
             #@nl
@@ -367,7 +367,7 @@ class bridgeController:
                 ok, frame = g.openWithFileName(fileName,None)
                 if ok: return frame.c
             else:
-                g.es('File not found', fileName,'creating new window')
+                g.es('file not found', fileName,'creating new window')
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
         frame.setInitialWindowGeometry()

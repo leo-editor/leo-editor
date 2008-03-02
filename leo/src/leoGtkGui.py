@@ -711,7 +711,7 @@ class gtkGui(leoGui.leoGui):
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
-                    g.es("Removing '%s' button at its request" % buttonText)
+                    g.es("removing '%s' button at its request" % buttonText)
                     b.pack_forget()
             # Do not assume the script will want to remain in this commander.
         #@-node:ekr.20080112145409.476:<< define the callbacks for b >>
@@ -725,7 +725,7 @@ class gtkGui(leoGui.leoGui):
             shortcut = k.canonicalizeShortcut(shortcut)
             ok = k.bindKey ('button', shortcut,func,buttonText)
             if ok:
-                g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
+                g.es_print('bound @button %s to %s' % (buttonText,shortcut),color='blue')
             #@-node:ekr.20080112145409.477:<< bind the shortcut to executeScriptCallback >>
             #@nl
         #@    << create press-buttonText-button command >>

@@ -227,7 +227,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
                         g.es_print('loadOnePlugin: loading module %s failed' % (moduleName),color="red")
                     result = None
             except Exception:
-                g.es('Exception loading plugin',color='red')
+                g.es('exception loading plugin',color='red')
                 g.es_exception()
                 result = None
         else:
@@ -281,7 +281,7 @@ def printHandlers (moduleName=None):
 #@+node:ekr.20070429090122:printPlugins
 def printPlugins ():
 
-    g.es_print('Enabled plugins...')
+    g.es_print('enabled plugins...')
     keys = loadedModules.keys()
     keys = [s.lower() for s in keys]
     keys.sort()

@@ -535,7 +535,7 @@ class leoFind:
         start,end = sel
         if start > end: start,end = end,start
         if start == end:
-            g.es("No text selected") ; return False
+            g.es("no text selected") ; return False
 
         # g.trace(start,end)
 
@@ -868,7 +868,7 @@ class leoFind:
             if nocase: flags |= re.IGNORECASE
             re_obj = re.compile(pattern,flags)
         except Exception:
-            g.es('Invalid regular expression: %s' % (pattern),color='blue')
+            g.es('invalid regular expression: %s' % (pattern),color='blue')
             self.errors += 1 # Abort the search.
             return -1, -1
 
@@ -1083,11 +1083,11 @@ class leoFind:
         if c.hoistStack:
             if not p:
                 if self.wrapping:
-                    g.es('Wrap disabled in hoisted outlines',color='blue')
+                    g.es('wrap disabled in hoisted outlines',color='blue')
                 return
             bunch = c.hoistStack[-1]
             if not bunch.p.isAncestorOf(p):
-                g.es('Found match outside of hoisted outline',color='blue')
+                g.es('found match outside of hoisted outline',color='blue')
                 return None
 
         # Wrap if needed.

@@ -530,14 +530,14 @@ class baseTangleCommands:
                     import tangle_done
                     tangle_done.run(root_names)
                 except:
-                    g.es("Can not execute tangle_done.run()")
+                    g.es("can not execute tangle_done.run()")
                     g.es_exception()
             if not self.tangling and self.untangle_batch_flag:
                 try:
                     import untangle_done
                     untangle_done.run(root_names)
                 except:
-                    g.es("Can not execute tangle_done.run()")
+                    g.es("can not execute tangle_done.run()")
                     g.es_exception()
             #@-node:ekr.20031218072017.3469:<< call tangle_done.run() or untangle_done.run() >>
             #@nl
@@ -555,7 +555,7 @@ class baseTangleCommands:
         c.endEditing()
 
         if not g.unitTesting:
-            g.es("Tangling...")
+            g.es("tangling...")
         self.init_ivars()
         self.tangling = True
     #@-node:ekr.20031218072017.3470:initTangleCommand
@@ -565,7 +565,7 @@ class baseTangleCommands:
         c = self.c
         c.endEditing()
 
-        g.es("Untangling...")
+        g.es("untangling...")
         self.init_ivars()
         self.tangling = False
     #@-node:ekr.20031218072017.3471:initUntangleCommand
@@ -606,12 +606,12 @@ class baseTangleCommands:
         self.errors += g.app.scanErrors
 
         if not has_roots:
-            self.warning("----- The outline contains no roots")
+            self.warning("----- the outline contains no roots")
         elif self.errors > 0 and not self.path_warning_given:
-            self.warning("----- Tangle halted because of errors")
+            self.warning("----- tangle halted because of errors")
         else:
             if not g.unitTesting:
-                g.es("Tangle complete")
+                g.es("tangle complete")
     #@-node:ekr.20031218072017.3473:tangleAll
     #@+node:ekr.20031218072017.3474:tangleMarked
     def tangleMarked(self,event=None):
@@ -641,7 +641,7 @@ class baseTangleCommands:
             self.warning("----- Tangle halted because of errors")
         else:
             if not g.unitTesting:
-                g.es("Tangle complete")
+                g.es("tangle complete")
     #@-node:ekr.20031218072017.3474:tangleMarked
     #@+node:ekr.20031218072017.3475:tanglePass1
     # Traverses the tree whose root is given, handling each headline and associated body text.
@@ -740,7 +740,7 @@ class baseTangleCommands:
         try:
             self.untangleTree(p,report_errors)
             if not g.unitTesting:
-                g.es("Untangle complete")
+                g.es("untangle complete")
         finally:
             c.endUpdate()
     #@-node:ekr.20031218072017.3478:untangle
@@ -762,12 +762,12 @@ class baseTangleCommands:
         self.errors += g.app.scanErrors
 
         if not has_roots:
-            self.warning("----- The outline contains no roots")
+            self.warning("----- the outline contains no roots")
         elif self.errors > 0:
-            self.warning("----- Untangle command halted because of errors")
+            self.warning("----- untangle command halted because of errors")
         else:
             if not g.unitTesting:
-                g.es("Untangle complete")
+                g.es("untangle complete")
     #@-node:ekr.20031218072017.3479:untangleAll
     #@+node:ekr.20031218072017.3480:untangleMarked
     def untangleMarked(self,event=None):
@@ -792,12 +792,12 @@ class baseTangleCommands:
         self.errors += g.app.scanErrors
 
         if not marked_flag:
-            self.warning("----- The outline contains no marked roots")
+            self.warning("----- the outline contains no marked roots")
         elif self.errors > 0:
-            self.warning("----- Untangle command halted because of errors")
+            self.warning("----- untangle command halted because of errors")
         else:
             if not g.unitTesting:
-                g.es("Untangle complete")
+                g.es("untangle complete")
     #@-node:ekr.20031218072017.3480:untangleMarked
     #@+node:ekr.20031218072017.3481:untangleRoot (calls cleanup)
     #@+at 
@@ -1393,7 +1393,7 @@ class baseTangleCommands:
             else:
                 self.output_file,temp_name = g.create_temp_file(textMode=textMode)
             if not temp_name:
-                g.es("Can not create temp file")
+                g.es("can not create temp file")
                 break
             #@        <<Get root specific attributes>>
             #@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
@@ -2048,7 +2048,7 @@ class baseTangleCommands:
                     return 0 # part number
 
                 if self.tangling and code and code == part.code:
-                    g.es("Warning: possible duplicate definition of: <<" +
+                    g.es("warning: possible duplicate definition of: <<" +
                         section.name + ">>")
             #@-node:ekr.20031218072017.3533:<<check for duplicate code definitions >>
             #@nl
@@ -2194,7 +2194,7 @@ class baseTangleCommands:
             for part in section.parts.values():
                 assert(part.of == section.of)
                 if not part.update_flag:
-                    g.es("Warning: " +
+                    g.es("warning: " +
                         g.choose(self.use_noweb_flag,"<< ","@< ") +
                         part.name +
                         g.choose(self.use_noweb_flag," >>"," @>") +

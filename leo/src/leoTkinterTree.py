@@ -1264,7 +1264,7 @@ class leoTkinterTree (leoFrame.leoTree):
             self.iconimages[name] = image
             return image
         except:
-            g.es("Exception loading: " + fullname)
+            g.es("exception loading: " + fullname)
             g.es_exception()
             return None
     #@-node:ekr.20040803072955.64:getIconImage

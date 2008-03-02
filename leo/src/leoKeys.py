@@ -376,12 +376,12 @@ class autoCompleterClass:
         '''Show the autocompleter status on the status line.'''
 
         k = self.k
-        g.es('Autocompleter %s' % (g.choose(k.enable_autocompleter,'On','Off')),color='red')
+        g.es('autocompleter %s' % (g.choose(k.enable_autocompleter,'On','Off')),color='red')
 
     def showCalltipsStatus (self):
         '''Show the autocompleter status on the status line.'''
         k = self.k
-        g.es('Calltips %s' % (g.choose(k.enable_calltips,'On','Off')),color='red')
+        g.es('calltips %s' % (g.choose(k.enable_calltips,'On','Off')),color='red')
     #@nonl
     #@-node:ekr.20061031131434.15:showAutocompleter/CalltipsStatus
     #@-node:ekr.20061031131434.8:Top level
@@ -837,7 +837,7 @@ class autoCompleterClass:
 
         if not doc:
             if not self.hasAttr(obj,word):
-                g.es('No docstring for %s' % (word),color='blue')
+                g.es('no docstring for %s' % (word),color='blue')
                 return
             obj = self.getAttr(obj,word)
             doc = inspect.getdoc(obj)
@@ -846,7 +846,7 @@ class autoCompleterClass:
             c.frame.log.clearTab('Info',wrap='word')
             g.es(doc,tabName='Info')
         else:
-            g.es('No docstring for %s' % (word),color='blue')
+            g.es('no docstring for %s' % (word),color='blue')
     #@-node:ekr.20061031131434.38:info
     #@+node:ekr.20061031131434.39:insertNormalChar
     def insertNormalChar (self,ch,keysym):
@@ -1125,7 +1125,7 @@ class autoCompleterClass:
 
         '''Traverse an outline and build the autocommander database.'''
 
-        if verbose: g.es_print('Scanning for auto-completer...')
+        if verbose: g.es_print('scanning for auto-completer...')
 
         c = self.c ; k = self.k ; count = 0
         for p in c.allNodes_iter():
@@ -1375,10 +1375,10 @@ class autoCompleterClass:
                     fileName, n = g.getLastTracebackFileAndLineNumber()
                     p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
                     if not p or p == root:
-                        g.es_print('Syntax error in class node: can not continue')
+                        g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:
-                        # g.es_print('Syntax error: deleting %s' % p.headString())
+                        # g.es_print('syntax error: deleting %s' % p.headString())
                         self.excludedTnodesList.append(p.v.t)
                         s = g.getScript(c,root,useSelectedText=False)
             return s or ''
@@ -1873,7 +1873,7 @@ class keyHandlerClass:
         if shortcut:
             for s in ('enter','leave'):
                 if -1 != shortcut.lower().find(s):
-                    g.es_print('Ignoring invalid key binding: %s = %s' % (
+                    g.es_print('ignoring invalid key binding: %s = %s' % (
                         commandName,shortcut),color='blue')
                     return
         #@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
@@ -1916,7 +1916,7 @@ class keyHandlerClass:
             return True
         except Exception: # Could be a user error.
             if not g.app.menuWarningsGiven:
-                g.es_print('Exception binding %s to %s' % (shortcut,commandName))
+                g.es_print('exception binding %s to %s' % (shortcut,commandName))
                 g.es_exception()
                 g.app.menuWarningsGiven = True
             return False
@@ -2492,7 +2492,7 @@ class keyHandlerClass:
         '''Hide the minibuffer.'''
         k = self ; c = k.c
         c.frame.hideMinibuffer()
-        g.es('Minibuffer hidden',color='red')
+        g.es('minibuffer hidden',color='red')
         for commandName in ('show-mini-buffer','toggle-mini-buffer'):
             shortcut = k.getShortcutForCommandName(commandName)
             if shortcut:
@@ -2688,7 +2688,7 @@ class keyHandlerClass:
             k.setState('last-full-command',1,handler=k.repeatComplexCommandHelper)
             k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
         else:
-            g.es('No previous command',color='blue')
+            g.es('no previous command',color='blue')
         return 'break'
 
     def repeatComplexCommandHelper (self,event):
@@ -2912,7 +2912,7 @@ class keyHandlerClass:
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting
         if f and f.__name__ != 'dummyCallback' and verbose:
-            g.es_print('Redefining %s' % (commandName), color='red')
+            g.es_print('redefining %s' % (commandName), color='red')
 
         c.commandsDict [commandName] = func
         k.inverseCommandsDict [func.__name__] = commandName
@@ -3439,7 +3439,7 @@ class keyHandlerClass:
             if commandName == '*entry-commands*': continue
             func = c.commandsDict.get(commandName)
             if not func:
-                g.es_print('No such command: %s. Referenced from %s' % (
+                g.es_print('no such command: %s. Referenced from %s' % (
                     commandName,modeName))
                 continue
             bunchList = d.get(commandName,[])

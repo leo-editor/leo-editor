@@ -458,7 +458,7 @@ def get_directives_dict(p,root=None):
                     if theDict.has_key(word):
                         # Ignore second value.
                         pass
-                        # g.es("Warning: conflicting values for",word,color="blue")
+                        # g.es("warning: conflicting values for",word,color="blue")
                     else:
                         # theDict [word] = i
                         k = g.skip_line(s,j)
@@ -603,7 +603,7 @@ def scanAtTabwidthDirective(theDict,issue_error_flag=False):
         return val
     else:
         if issue_error_flag:
-            g.es("Ignoring",s,color="red")
+            g.es("ignoring",s,color="red")
         return None
 #@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
 #@+node:ekr.20070302160802:g.scanColorDirectives
@@ -1716,7 +1716,7 @@ def create_temp_file (textMode=False):
         except IOError:
             theFile,theFileName = None,''
     except Exception:
-        g.es('Unexpected exception in g.create_temp_file',color='red')
+        g.es('unexpected exception in g.create_temp_file',color='red')
         g.es_exception()
         theFile,theFileName = None,''
 
@@ -1800,7 +1800,7 @@ def is_sentinel (line,delims):
         return 0 == i < j
     else:
         print repr(delims)
-        g.es("Can't happen: is_sentinel",color="red")
+        g.es("can't happen: is_sentinel",color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
 #@+node:ekr.20071114113736:g.makePathRelativeTo
@@ -2101,7 +2101,7 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
         return True
     except Exception:
         if verbose:
-            g.es('Exception renaming',src,'to',dst,color='red')
+            g.es('exception renaming',src,'to',dst,color='red')
             g.es_exception(full=False)
         return False
 #@-node:ekr.20031218072017.1263:g.utils_rename
@@ -2187,7 +2187,7 @@ def enable_gc_debug(event=None):
             # gc.set_debug(gc.DEBUG_STATS)
     elif not g.no_gc_message:
         g.no_gc_message = True
-        g.es('Can not import gc module',color='blue')
+        g.es('can not import gc module',color='blue')
 #@-node:ekr.20060127162818:enable_gc_debug
 #@+node:ekr.20031218072017.1592:printGc
 # Formerly called from unit tests.
@@ -4883,7 +4883,7 @@ def executeScript (name):
         theFile,filename,description = imp.find_module(mod_name)
         imp.load_module(mod_name,theFile,filename,description)
     except Exception:
-        g.es("Exception executing",name,color="red")
+        g.es("exception executing",name,color="red")
         g.es_exception()
 
     if theFile:
@@ -5348,7 +5348,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
                 module = imp.load_module(moduleName,theFile,pathname,description)
             except ImportError:
                 if 0: # verbose:
-                    g.es_print("Exception in g.importFromPath",color='blue')
+                    g.es_print("exception in g.importFromPath",color='blue')
                     g.es_exception()
             except Exception:
                 g.es_print("unexpected exception in g.importFromPath(%s)" %

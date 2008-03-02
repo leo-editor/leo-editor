@@ -460,7 +460,7 @@ class LeoApp:
                     g.app.leoID = None
                 except Exception:
                     g.app.leoID = None
-                    g.es_print('Unexpected exception in app.setLeoID',color='red')
+                    g.es_print('unexpected exception in app.setLeoID',color='red')
                     g.es_exception()
         #@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
         #@nl

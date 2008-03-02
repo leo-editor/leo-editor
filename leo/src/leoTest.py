@@ -769,7 +769,7 @@ def runTestsExternally (c,all):
 
             trace = False
             if trace: import time
-            g.es('Running %sunit tests' % (g.choose(self.all,'all ','')),color='blue')
+            g.es('running %sunit tests' % (g.choose(self.all,'all ','')),color='blue')
             print 'creating: %s' % (self.fileName)
             c = self.c ; p = c.currentPosition()
             if trace: t1 = time.time()
@@ -1600,7 +1600,7 @@ def checkFileSyntax (fileName,s):
     try:
         compiler.parse(s + '\n')
     except SyntaxError:
-        g.es("Syntax error in: %s" % fileName,color="blue")
+        g.es("syntax error in: %s" % fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
 #@-node:ekr.20051104075904.93:checkFileSyntax

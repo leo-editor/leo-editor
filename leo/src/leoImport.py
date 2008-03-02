@@ -317,7 +317,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open " + fileName,color="blue")
             leoTest.fail()
             return
         for p in p.self_and_subtree_iter():
@@ -341,7 +341,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open " + fileName,color="blue")
             leoTest.fail()
             return
 
@@ -369,7 +369,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open " + fileName,color="blue")
             leoTest.fail()
             return
 
@@ -1133,7 +1133,7 @@ class leoImportCommands:
             array = string.split(s,"\n")
             theFile.close()
         except IOError:
-            g.es("Can not open " + fileName, color="blue")
+            g.es("can not open " + fileName, color="blue")
             leoTest.fail()
             return
         #@-node:ekr.20031218072017.3221:<< Read the file into array >>
@@ -1336,7 +1336,7 @@ class leoImportCommands:
             f = open(fileName)
             s = f.read()
         except Exception:
-            g.es("Can not import " + fileName, color="blue")
+            g.es("can not import " + fileName, color="blue")
             return
 
         #@    << Create a symbol table of all section names >>

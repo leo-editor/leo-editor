@@ -8669,8 +8669,7 @@ class AspellClass:
             return True
 
         except Exception, err:
-            # g.es_print("Unable to update local aspell dictionary:",err)
-            print "Unable to update local aspell dictionary:",err
+            print "unable to update local aspell dictionary:",err
             return False
     #@-node:ekr.20051025071455.11:updateDictionary
     #@-others
