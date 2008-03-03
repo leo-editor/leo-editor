@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>What's New in Leo 4.4.2</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\new-4-4-2.html -->
+<p><a class="reference" href="new-4-4-3.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-1.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="what-s-new-in-leo-4-4-2">
+<h1><a class="toc-backref" href="#id1">What's New in Leo 4.4.2</a></h1>
+<p>This page summarizes the changes made in Leo 4.4.2
+For full details see the release notes section in LeoDocs.leo.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#what-s-new-in-leo-4-4-2" id="id1" name="id1">What's New in Leo 4.4.2</a><ul>
+<li><a class="reference" href="#a-major-code-reorg" id="id2" name="id2">A major code reorg</a></li>
+<li><a class="reference" href="#new-commands" id="id3" name="id3">New commands</a></li>
+<li><a class="reference" href="#new-features" id="id4" name="id4">New features</a></li>
+<li><a class="reference" href="#new-and-improved-plugins" id="id5" name="id5">New and improved plugins</a></li>
+<li><a class="reference" href="#settings" id="id6" name="id6">Settings</a></li>
+<li><a class="reference" href="#zodb-scripting" id="id7" name="id7">ZODB scripting</a></li>
+<li><a class="reference" href="#leap-204-new-positions-allow-leo-outlines-to-represent-arbitrary-directed-graphs" id="id8" name="id8">Leap 204. &quot;New&quot; positions allow Leo outlines to represent arbitrary directed graphs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- Links used in this document. -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="a-major-code-reorg">
+<h2><a class="toc-backref" href="#id2">A major code reorg</a></h2>
+<p>Leo's vnode and tnode classes are now completely independent of the rest of Leo.
+Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.</p>
+</div>
+<div class="section" id="new-commands">
+<h2><a class="toc-backref" href="#id3">New commands</a></h2>
+<pre class="literal-block">
+extend-to-line
+extend-to-paragraph
+extend-to-sentence
+forward-end-word
+forward-end-word-extend-selection
+</pre>
+</div>
+<div class="section" id="new-features">
+<h2><a class="toc-backref" href="#id4">New features</a></h2>
+<ul class="simple">
+<li>Added support for controlling Leo from <a class="reference" href="http://www.xemacs.org/">Emacs</a> with <a class="reference" href="http://pymacs.progiciels-bpi.ca/index.html">pymacs</a>.
+See <a class="reference" href="emacs.html">Chapter 18: Leo and Emacs</a> for full details.</li>
+<li>Added Minibuffer and Settings submenus of the Cmds menu.</li>
+<li>At long last Leo creates a proper help menu on the Mac.</li>
+<li>Added a new convention for menu tables. If the first item (a string
+representing the menu label) starts with '*' Leo will convert hyphens to
+spaces and upcase the label. This convention allows a single string to
+represent both the menu label and its associated minibuffer command. As part
+of this reorganization, all menu tables in Leo's core now use only strings.
+This is an essential precondition to supporting &#64;menu nodes in
+leoSettings.leo.</li>
+<li>Leo's Help menu now contains the Open scripts.leo command.</li>
+<li>Leo uses ctypes to import Aspell when run from Python 2.5 or later.
+Leo no longer needs Python-specific versions of aspell.dll.</li>
+<li>Added support for x-windows middle-button paste.
+This only works when the paste is made in the pane containing the selected text.</li>
+<li>Leo looks for myLeoSettings.leo files in the same place Leo looks for leoSettings.leo files.</li>
+<li>Created three scripts (in test.leo) that help create unit tests for Leo's edit commands.
+Create Created runEditCommandTest for use by these scripts.</li>
+<li>Improved print-bindings command.
+The bindings are sorted by prefix: this is a big help in understanding bindings.
+For each prefix, first print items with only a single character after the prefix.</li>
+<li>Made writing .leo files faster.
+The new code almost exactly twice as fast as the old.</li>
+<li>Added p.archivedPosition.
+This is a key first step towards Leap 204.</li>
+<li>Integrated sax with read logic.</li>
+<li>You can now store settings in myLeoSettings.leo without fear of those settings
+being changed by cvs updates or in future versions of Leo.</li>
+<li>Eliminated unnecessary redraws when moving the cursor in the outline pane.</li>
+<li>Much faster navigation through the outline using Alt-arrow keys.</li>
+<li>When focus is in the outline pane, you can move to headlines by typing the first letter of headlines.</li>
+<li>The find command now closes nodes not needed to show the node containing the present match.</li>
+<li>Numerous changes that make Leo easier to use without using a mouse.</li>
+<li>Many new minibuffer commands now appear in the Cmds menu.</li>
+</ul>
+<p>Further improved outline navigation:</p>
+<ul class="simple">
+<li>Generalized navigation in outline pane to ignore &#64;file, &#64;thin, etc prefixes.</li>
+<li>Made outline navigation cumulative.
+When keystrokes in the outline pane are typed 'close' together Leo first tries to look
+for prefix + ch, where ch is the character just typed and prefix is the previous match.
+The term 'close together' is specified by the setting &#64;float outline_nav_extend_delay.
+The outline search revers to a single-character if the extended search
+fails, so in fact the delay is not too significant. In practice everything works
+well without me thinking at all about what is happening.</li>
+</ul>
+</div>
+<div class="section" id="new-and-improved-plugins">
+<h2><a class="toc-backref" href="#id5">New and improved plugins</a></h2>
+<ul class="simple">
+<li>Improved the mod_scripting plugin. Every button created by the plugin creates
+a corresponding command. The command name is the 'cleaned' version of the
+button name. Likewise, the plugin also creates a delete-x-button command,
+where x is the command name as just discussed. So now you can delete script
+buttons without right-clicking.</li>
+<li>Made 'About Plugin' dialog scrollable.</li>
+<li>Fixed bugs in groupoperations, multifile, nodenavigator and shortcut_button plugins.</li>
+<li>The rst3 plugin now registers the rst3-process-tree command.</li>
+<li>The leoOPML.py plugin defines commands to read and write OPML files.</li>
+<li>The slideshow.py plugin allows Leo to run slideshows defined by &#64;slideshow and &#64;slide nodes.</li>
+<li>The leo_to_rtf and leo_to_html plugins create rtf and html files from Leo outlines.</li>
+<li>The paste_as_headlines.py plugins creates multiple headlines at once.</li>
+<li>The word_count.py plugin.</li>
+</ul>
+<p>Improved the mod_scripting plugin:</p>
+<ul class="simple">
+<li>Made showing the Run Script button optional.</li>
+<li>The Script Button button now creates the press-script-button-button command.</li>
+<li>A new utility method does a much better job of massaging button and command names.</li>
+</ul>
+</div>
+<div class="section" id="settings">
+<h2><a class="toc-backref" href="#id6">Settings</a></h2>
+<ul class="simple">
+<li>Removed .leoRecentFiles.txt from the distribution and cvs and added &#64;bool
+write_recent_files_as_needed. The presence or absence of .leoRecentFiles.txt
+no longer controls whether Leo creates and updates .leoRecentFiles.txt.</li>
+<li>Added &#64;bool insert_new_nodes_at_end.</li>
+<li>Added &#64;bool select_all_text_when_editing_headlines.
+Creating a new node always selects the entire text, regardless of this option.</li>
+<li>Leo looks for myLeoSettings.leo files in the same place Leo looks for leoSettings.leo files.</li>
+<li>Added settings for all mod_scripting switches.</li>
+<li>Added &#64;bool collapse_nodes_during_finds.
+This greatly speeds searches that used to open many nodes.
+See: <a class="reference" href="http://sourceforge.net/forum/message.php?msg_id=3935780">http://sourceforge.net/forum/message.php?msg_id=3935780</a></li>
+<li>Added &#64;bool outline_pane_has_initial_focus.</li>
+<li>Added &#64;bool sparse_move_outline_left.</li>
+<li>Added bindings for Alt-Shift-Arrow keys to force an outline move.</li>
+<li>Added &#64;bool use_sax_based_read = False.
+True:  Use a sax-based parser to read .leo files.
+This is slower than using Leo's legacy xml parser, but may solve some unicode problems.</li>
+</ul>
+<p>Changed default settings:</p>
+<pre class="literal-block">
+focus-to-body = Alt-D
+focus-to-tree = Alt-T
+toggle-extend-mode = Alt-3
+</pre>
+</div>
+<div class="section" id="zodb-scripting">
+<h2><a class="toc-backref" href="#id7">ZODB scripting</a></h2>
+<p>Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
+i.e., they can optionally derive from ZODB.Persistence.Persistent.
+See Chapter 17: Using ZODB with Leo for details.</p>
+</div>
+<div class="section" id="leap-204-new-positions-allow-leo-outlines-to-represent-arbitrary-directed-graphs">
+<h2><a class="toc-backref" href="#id8">Leap 204. &quot;New&quot; positions allow Leo outlines to represent arbitrary directed graphs</a></h2>
+<p>See: <a class="reference" href="http://sourceforge.net/forum/forum.php?thread_id=1587064&amp;forum_id=10226">http://sourceforge.net/forum/forum.php?thread_id=1587064&amp;forum_id=10226</a></p>
+<p>Leo's theory of relativity</p>
+<ol class="arabic simple">
+<li>We can archive any position p by saving the list [p.childIndex() for p in
+p.self_and_parents_iter()]. Let us call the <em>reverse</em> of this list the
+<strong>parents index list</strong>. Clearly, this list provides an unambiguous way of
+reaching position p from the root node. Archived positions, like all other
+positions, become invalid when the outline changes.</li>
+<li>Leo's position class can be based on parents index lists. Let us call such
+positions <strong>new positions</strong>. Replacing legacy positions with new position
+will have important benefits:</li>
+</ol>
+<ul class="simple">
+<li>The only structure information in vnodes will be a v.links field. Two
+interpretations of v.links are possible. When Leo's data is a DAG (the clone
+world), v.links is a lists of v's children. This is the legacy world we all
+know and love. When Leo's data is an arbitrary graph, v.links is simply the
+list of all vnodes to which v points, with <em>no</em> necessary restrictions on what
+nodes may be contained in v.links.</li>
+<li>New positions provide a self contained way of traversing an arbitrary graphs
+<strong>largely independently</strong> of the data. This is Leo's theory of relativity. The
+notions of 'parent' and 'sibling' have meaning <em>only</em> in the context of a
+particular position. The v.links field appears to be the absolute minimum
+amount of structure information that vnodes must contain. v.links defines the
+children or linked-to nodes in a general graph.</li>
+<li>Leo's data can be considered an unrooted tree: <em>any</em> node could be considered
+the root. New positions provide enough information to traverse an arbitrary
+graph starting at any node.</li>
+<li>The fundamental p.moveToX methods should be significantly faster. All of Leo's
+iterators use p.moveToX methods.</li>
+</ul>
+<ol class="arabic simple" start="3">
+<li>The changeover to new positions can be done easily. Initially, the api of the
+new position class will be identical to the api of the present position
+class. Later, the api for the new position class might be extended in an
+upward compatible manner. The api's for the vnode and tnode class will remain
+strictly unchanged.</li>
+<li>These changes imply no change to the separation of data into vnodes and
+tnodes. This separation is required to handle clones. Furthermore, the format
+of .leo files is a separate issue from the internal representation of Leo's
+data, as proved by the opml plugin. Thus, the transition to new positions
+will have <em>no</em> effect on file formats, and no effect of scripts. All scripts
+will continue to work <em>exactly</em> as they have before, <em>except</em> scripts, e.g.
+unit tests, that probe Leo's internals.</li>
+</ol>
+<p>Summary</p>
+<p>Leo's theory of relativity is this: the position class provides a 'frame of
+reference' for traversing data. <strong>Only in a particular frame of reference</strong> do
+the notions of 'parent' and 'siblings' have meaning. Leo's theory of relatively
+is the ultimate expression of LeoUser's notion of a 'sea of nodes'. It provides
+a solid context on which to base traversals of either outlines with clones
+(DAG's) or general directed graphs.</p>
+<p>Leo's position class, far from being just a technical tool, is important
+theoretically. The position class (old or new) provides the essential tool
+needed to separate data from traversals of the data. The re-visioning of the
+position and vnode classes brings that potential into reality.</p>
+<hr class="docutils" />
+<p><a class="reference" href="new-4-4-3.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-1.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

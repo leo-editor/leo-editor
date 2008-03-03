@@ -17,7 +17,7 @@ see: LeoDocs.leo or http://webpages.charter.net/edreamleo/IPythonBridge.html
 #@-node:ekr.20080201151802:<< docstring >>
 #@nl
 
-__version__ = '0.7'
+__version__ = '0.8'
 #@<< version history >>
 #@+node:ekr.20080201143145.2:<< version history >>
 #@@killcolor
@@ -49,7 +49,13 @@ __version__ = '0.7'
 # v 0.7 EKR:
 # - changed execute-ipython-script to push-to-ipython.
 # - Disabled trace of script in push-to-ipython.
+# 
+# v 0.8 VMV and EKR:
+# - This version is based on mods made by VMV.
+# - EKR: set sys.argv = [] in startIPython before calling any IPython api.
+#   This prevents IPython from trying to load the .leo file.
 #@-at
+#@nonl
 #@-node:ekr.20080201143145.2:<< version history >>
 #@nl
 #@<< to do >>
@@ -180,15 +186,16 @@ class ipythonController:
         except ImportError:
             self.error("ipy_leo.py extension not available - upgrade your IPython!")
             return
-        
+
         if gIP:
             # if we are already running, just inject a new commander for current document
-            
+
             leox = leoInterface(c,g) # inject leox into the namespace.
             ipy_leo.update_commander(leox)
             return
 
         try:
+            sys.argv = ['leo.py']
             api = IPython.ipapi
             self.message('creating IPython shell...')
             leox = leoInterface(c,g) # inject leox into the namespace.
@@ -197,9 +204,7 @@ class ipythonController:
             gIP = ses.IP.getapi()
             ipy_leo_m = gIP.load('ipy_leo')
             ipy_leo_m.update_commander(leox)
-
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
-            sys.argv = []
             ses.mainloop()
                 # Does not return until IPython closes!
         except Exception:

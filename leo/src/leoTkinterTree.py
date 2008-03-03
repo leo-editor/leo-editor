@@ -659,7 +659,8 @@ class leoTkinterTree (leoFrame.leoTree):
         ):
             z.append('%10s used: %4d free: %4d' % (kind,len(a),len(b)))
 
-        g.es_print('\n' + '\n'.join(z))
+        s = '\n' + '\n'.join(z)
+        g.es_print('',s)
     #@-node:ekr.20060202125419:showStats
     #@-node:ekr.20040803072955.6:Allocation...
     #@+node:ekr.20040803072955.26:Config & Measuring...
@@ -1264,7 +1265,7 @@ class leoTkinterTree (leoFrame.leoTree):
             self.iconimages[name] = image
             return image
         except:
-            g.es("Exception loading: " + fullname)
+            g.es("exception loading:",fullname)
             g.es_exception()
             return None
     #@-node:ekr.20040803072955.64:getIconImage
@@ -1533,7 +1534,7 @@ class leoTkinterTree (leoFrame.leoTree):
             try:    theId = item[0]
             except: theId = item
             if not theId:
-                g.es_print('oops: eventToPosition failed')
+                g.es_print('oops:','eventToPosition','failed')
                 return None
             p = self.ids.get(theId)
             # g.trace("was vertical line",p)
@@ -1751,7 +1752,6 @@ class leoTkinterTree (leoFrame.leoTree):
                     frac = g.choose(y < 0, lo - line_frac, lo + line_frac)
                     frac = min(frac,1.0)
                     frac = max(frac,0.0)
-                    # g.es("lo,hi,frac:",lo,hi,frac)
                     canvas.yview("moveto", frac)
 
                     # Queue up another event to keep scrolling while the cursor is outside the canvas.

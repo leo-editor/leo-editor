@@ -317,7 +317,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open",fileName,color="blue")
             leoTest.fail()
             return
         for p in p.self_and_subtree_iter():
@@ -341,7 +341,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open",fileName,color="blue")
             leoTest.fail()
             return
 
@@ -369,7 +369,7 @@ class leoImportCommands:
         try:
             theFile = open(fileName,mode)
         except IOError:
-            g.es("Can not open " + fileName,color="blue")
+            g.es("can not open",fileName,color="blue")
             leoTest.fail()
             return
 
@@ -406,7 +406,7 @@ class leoImportCommands:
                 s = g.toUnicode(s,self.encoding)
                 theFile.close()
             except IOError:
-                g.es("can not open " + fileName, color="blue")
+                g.es("can not open",fileName, color="blue")
                 leoTest.fail()
                 return
             #@-node:ekr.20031218072017.3301:<< Read file into s >>
@@ -424,7 +424,7 @@ class leoImportCommands:
 
             valid,junk,start_delim,end_delim,junk = at.parseLeoSentinel(line)
             if not valid:
-                if not toString: g.es("invalid @+leo sentinel in " + fileName)
+                if not toString: g.es("invalid @+leo sentinel in",fileName)
                 return
 
             if end_delim:
@@ -456,9 +456,9 @@ class leoImportCommands:
                     theFile.write(s)
                     theFile.close()
                     if not g.unitTesting:
-                        g.es("created: " + newFileName)
+                        g.es("created:",newFileName)
                 except Exception:
-                    g.es("exception creating: " + newFileName)
+                    g.es("exception creating:",newFileName)
                     g.es_exception()
                 #@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
                 #@nl
@@ -502,7 +502,7 @@ class leoImportCommands:
             f = open(filename,mode)
             if not f: return
         except Exception:
-            g.es("exception opening:" + filename)
+            g.es("exception opening:",filename)
             g.es_exception()
             return
         #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
@@ -553,7 +553,8 @@ class leoImportCommands:
         return v
     #@-node:ekr.20031218072017.3306:createHeadline
     #@+node:ekr.20031218072017.3307:error
-    def error (self,s): g.es(s)
+    def error (self,s):
+        g.es('',s)
     #@-node:ekr.20031218072017.3307:error
     #@+node:ekr.20041126042730:getTabWidth
     def getTabWidth (self,p=None):
@@ -805,7 +806,8 @@ class leoImportCommands:
                 s = theFile.read()
                 theFile.close()
             except IOError:
-                g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
+                z = g.choose(atAuto,'@auto ','')
+                g.es("can not open", "%s%s" % (z,fileName),color='red')
                 leoTest.fail()
                 return None
             #@-node:ekr.20031218072017.3211:<< Read file into s >>
@@ -885,7 +887,7 @@ class leoImportCommands:
             while p and p != after:
                 if p.isAtAutoNode():
                     if p.isAtIgnoreNode():
-                        g.es_print('ignoring %s' % (p.headString()),color='blue')
+                        g.es_print('ignoring',p.headString(),color='blue')
                         p.moveToThreadNext()
                     else:
                         self.readOneAtAutoNode(p)
@@ -893,7 +895,8 @@ class leoImportCommands:
                         p.moveToNodeAfterTree()
                 else:
                     p.moveToThreadNext()
-            g.es(g.choose(found,'finished','no @auto nodes in the selected tree'),color='blue')
+            message = g.choose(found,'finished','no @auto nodes in the selected tree')
+            g.es(message,color='blue')
         finally:
             c.endUpdate()
 
@@ -1001,7 +1004,7 @@ class leoImportCommands:
                 v = self.createOutline(fileName,current)
                 if v: # createOutline may fail.
                     if not g.unitTesting:
-                        g.es("imported " + fileName,color="blue")
+                        g.es("imported",fileName,color="blue")
                     v.contract()
                     v.setDirty()
                     c.setChanged(True)
@@ -1133,7 +1136,7 @@ class leoImportCommands:
             array = string.split(s,"\n")
             theFile.close()
         except IOError:
-            g.es("Can not open " + fileName, color="blue")
+            g.es("can not open",fileName, color="blue")
             leoTest.fail()
             return
         #@-node:ekr.20031218072017.3221:<< Read the file into array >>
@@ -1150,7 +1153,7 @@ class leoImportCommands:
             c.setChanged(True)
             u.afterInsertNode(p,'Import',undoData)
         else:
-            g.es(fileName + " is not a valid MORE file.")
+            g.es("not a valid MORE file",fileName)
     #@-node:ekr.20031218072017.3220:importFlattenedOutline
     #@+node:ekr.20031218072017.3222:moreHeadlineLevel
     # return the headline level of s,or -1 if the string is not a MORE headline.
@@ -1336,7 +1339,7 @@ class leoImportCommands:
             f = open(fileName)
             s = f.read()
         except Exception:
-            g.es("Can not import " + fileName, color="blue")
+            g.es("can not import",fileName, color="blue")
             return
 
         #@    << Create a symbol table of all section names >>
@@ -1512,10 +1515,10 @@ class leoImportCommands:
             cs = self.cstCanonicalize(s)
             if cs[:len(ctarget)] == ctarget:
                 if found:
-                    g.es("****** " + target + ": is also a prefix of: " + s)
+                    g.es('',"****** %s" % (target),"is also a prefix of",s)
                 else:
                     found = True ; result = s
-                    # g.es("replacing: " + target + " with: " + s)
+                    # g.es("replacing",target,"with",s)
         return result
     #@-node:ekr.20031218072017.3240:cstLookup
     #@-node:ekr.20031218072017.3236:Symbol table
@@ -1669,7 +1672,7 @@ class leoImportCommands:
         else:
             fileName = scanner.fileName
             if not atAuto:
-                g.es_print('%s seems to be mixed HTML and PHP.' % fileName)
+                g.es_print('seems to be mixed HTML and PHP:',fileName)
             scanner.createHeadline(
                 parent,body=s,headline=fileName)
     #@-node:ekr.20070711090122:scanPHPText
@@ -1867,9 +1870,9 @@ class baseScannerClass:
             g.es_print(color='blue',*args,**keys)
 
         def pr_mismatch(i,line1,line2):
-            g.es_print('first mismatched line at line %d' % (i+1))
-            g.es_print('original line:  %s' % line1)
-            g.es_print('generated line: %s' % line2)
+            g.es_print('first mismatched line at line',str(i+1))
+            g.es_print('original line: ',line1)
+            g.es_print('generated line:',line2)
 
         d = g.app.unitTestDict
         expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
@@ -1888,7 +1891,7 @@ class baseScannerClass:
             if i != expectedMismatch or not g.unitTesting:
                 g.es_print('missing lines')
                 for line in lines2[i:]:
-                    g.es_print(repr(line))
+                    g.es_print('',repr(line))
             d ['actualMismatchLine'] = i
             return False
 
@@ -1928,25 +1931,7 @@ class baseScannerClass:
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-
-        # elif (not strict and not g.unitTesting) and line1.lstrip() == line2.lstrip():
-            # if not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace:
-                # self.mismatchWarningGiven = True
-                # self.checkLeadingWhitespace(line1)
-                # self.warning('mismatch in leading whitespace')
-                # g.es_print('first mismatched line at line %d' % (i+1))
-                # g.es_print('original line:  %s' % line1)
-                # g.es_print('generated line: %s' % line2)
-            # return True # A match excluding leading whitespace.
-        # else: # strict OR unit testing.
-            # if not g.unitTesting or i+1 != expectedMismatch:
-                # # g.trace('unitTesting',g.unitTesting)
-                # g.es_print('*** first mismatch at line %d' % (i+1))
-                # g.es_print('original line:  %s' % line1)
-                # g.es_print('generated line: %s' % line2)
-            # d ['actualMismatchLine'] = i+1
-            # # g.trace('lines 1...\n',repr(lines1),'\nlines2...\n',repr(lines2))
-            # return False
+    #@nonl
     #@-node:ekr.20070730093735:compareHelper
     #@+node:ekr.20071110144948:checkLeadingWhitespace
     def checkLeadingWhitespace (self,line):
@@ -1958,7 +1943,7 @@ class baseScannerClass:
 
         if not ok:
             self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
-            g.es_print('line: %s' % (repr(line)),color='red')
+            g.es_print('line:',repr(line),color='red')
 
         return ok
     #@-node:ekr.20071110144948:checkLeadingWhitespace
@@ -2342,9 +2327,9 @@ class baseScannerClass:
             g.app.unitTestDict ['actualErrors'] = self.errors
             if 0: # For debugging unit tests.
                 g.trace(g.callers())
-                g.es_print(s,color='red')
+                g.es_print('',s,color='red')
         else:
-            g.es_print('error: %s' % (s),color='red')
+            g.es_print('error:',s,color='red')
 
     def oops (self):
         print 'baseScannerClass oops: %s must be overridden in subclass' % g.callers()
@@ -2355,7 +2340,7 @@ class baseScannerClass:
 
     def warning (self,s):
         if not g.unitTesting:
-            g.es_print('warning: %s' % (s),color='red')
+            g.es_print('warning:',s,color='red')
     #@-node:ekr.20070703122141.78:error, oops, report and warning
     #@+node:ekr.20070706084535.1:Parsing
     #@+at 
@@ -3829,7 +3814,7 @@ class xmlScanner (baseScannerClass):
                 i += 2 ; j = i
                 i = self.skipId(s,j)
                 tag2 = s[j:i]
-                if tag2 == tag:
+                if tag2.lower() == tag.lower():
                     i,ok = self.skipToEndOfTag(s,i)
                     return i,ok
             else:

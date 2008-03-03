@@ -272,7 +272,7 @@ class tkinterAboutLeo (leoTkinterDialog):
             import webbrowser
             webbrowser.open("mailto:" + self.email)
         except:
-            g.es("not found: " + self.email)
+            g.es("not found:",self.email)
     #@-node:ekr.20031218072017.3870:tkinterAboutLeo.onAboutLeoEmail
     #@+node:ekr.20031218072017.3871:tkinterAboutLeo.onAboutLeoUrl
     def onAboutLeoUrl(self,event=None):
@@ -285,7 +285,7 @@ class tkinterAboutLeo (leoTkinterDialog):
             import webbrowser
             webbrowser.open(self.url)
         except:
-            g.es("not found: " + self.url)
+            g.es("not found:",self.url)
     #@-node:ekr.20031218072017.3871:tkinterAboutLeo.onAboutLeoUrl
     #@+node:ekr.20031218072017.3872:tkinterAboutLeo: setArrowCursor, setDefaultCursor
     def setArrowCursor (self,event=None):

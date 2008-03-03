@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Glossary</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\glossary.html -->
+<!-- August 30, 2005 -->
+<p><a class="reference" href="appendices.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-6.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="glossary">
+<h1>Glossary</h1>
+<!-- Links used in this document. -->
+<!-- - - - - - External links. -->
+<!-- - - - - - Relative links. -->
+<!-- - - - - - References to the tutorial. -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<p><strong>Important</strong>: We often refer to <a class="reference" href="#outline">outline</a> <a class="reference" href="#nodes">nodes</a> by the <a class="reference" href="#directives">directives</a> they contain.
+For example, an <a class="reference" href="#root-node">&#64;root node</a> is a node containing an &#64;root <a class="reference" href="#directive">directive</a>, etc.
+<strong>Exception</strong>: An <a class="reference" href="#file-node">&#64;file node</a> is a node whose <em>headline</em> starts with <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.</p>
+<dl class="docutils" id="root-nodes">
+<span id="thin-nodes"></span><span id="file-nodes"></span><span id="root-node"></span><span id="thin-node"></span><span id="file-node"></span><span id="auto-node"></span><dt><tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">node</span></tt></dt>
+<dd>An <tt class="docutils literal"><span class="pre">&#64;file</span></tt> <a class="reference" href="#node">node</a> is a node whose <em>headline</em> starts with <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.
+<strong>Important</strong>: <a class="reference" href="#headlines">Headlines</a> that start with <tt class="docutils literal"><span class="pre">&#64;file-asis</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-nosent</span></tt>
+(and their abbreviations <tt class="docutils literal"><span class="pre">&#64;asis</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>) are collectively called <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.</dd>
+</dl>
+<dl class="docutils" id="root-trees">
+<span id="thin-trees"></span><span id="file-trees"></span><span id="root-tree"></span><span id="thin-tree"></span><span id="file-tree"></span><span id="auto-tree"></span><dt><tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">tree,</span> <span class="pre">&#64;others</span> <span class="pre">tree,</span> <span class="pre">&#64;root</span> <span class="pre">tree,</span> <span class="pre">etc.</span></tt></dt>
+<dd>An &#64;file <a class="reference" href="#tree">tree</a> is a tree whose <a class="reference" href="#id2">root</a> is an &#64;file node, etc.</dd>
+<dt><tt class="docutils literal"><span class="pre">&#64;asis,</span> <span class="pre">&#64;auto,</span> <span class="pre">&#64;file,</span> <span class="pre">&#64;noref,</span> <span class="pre">&#64;nosent,</span> <span class="pre">&#64;thin</span></tt></dt>
+<dd><p class="first"><a class="reference" href="#headlines">Headlines</a> that start with one of these create (correspond to) <a class="reference" href="#derived-files">derived files</a>.
+The following synonyms exist:</p>
+<pre class="literal-block">
+&#64;asis, &#64;file-asis
+&#64;noref, &#64;file-noref
+&#64;nosent, &#64;file-nosent
+</pre>
+<p>For more information, see the documentation for <a class="reference" href="directives.html#asis-and-noref">&#64;asis</a>, <a class="reference" href="directives.html#auto">&#64;auto</a>, <a class="reference" href="directives.html#file-and-thin">&#64;file</a>, <a class="reference" href="directives.html#asis-and-noref">&#64;noref</a>, <a class="reference" href="directives.html#nosent">&#64;nosent</a> and <a class="reference" href="directives.html#file-and-thin">&#64;thin</a>
+in Leo's <a class="reference" href="directives.html">programming reference</a> chapter.</p>
+<p class="last"><strong>New in Leo 4.4.4</strong>: &#64;auto trees allow you to edit derived files that contain no sentinels.
+Leo will import the &#64;auto files when reading .leo files.  Be careful when first creating the &#64;auto node.
+<em>Before</em> saving the .leo file containing the new &#64;auto node,
+use the read-at-auto-nodes command to do the initial import.</p>
+</dd>
+</dl>
+<dl class="docutils" id="all-directive">
+<span id="all"></span><dt><tt class="docutils literal"><span class="pre">&#64;all</span></tt></dt>
+<dd>A <a class="reference" href="#directive">directive</a> that copies the <a class="reference" href="#body-text">body text</a> of all <a class="reference" href="#nodes">nodes</a> in an <cite>&#64;thin</cite> tree to the corresponding <a class="reference" href="#derived-file">derived file</a>.
+For more information, see <a class="reference" href="intro.html#directives-for-programming">directives for programming</a> in <a class="reference" href="intro.html">Leo's tutorial</a>.</dd>
+</dl>
+<dl class="docutils" id="others-directive">
+<span id="others"></span><dt><tt class="docutils literal"><span class="pre">&#64;others</span></tt></dt>
+<dd>A <a class="reference" href="#directive">directive</a> that copies the <a class="reference" href="#body-text">body text</a> of all <a class="reference" href="#nodes">nodes</a> <em>except</em> <a class="reference" href="#section-definition-nodes">section definition nodes</a>
+in an <cite>&#64;thin</cite> tree to the corresponding <a class="reference" href="#derived-file">derived file</a>.
+For more information, see <a class="reference" href="intro.html#directives-for-programming">directives for programming</a> in <a class="reference" href="intro.html">Leo's tutorial</a>.</dd>
+</dl>
+<dl class="docutils" id="unit-directive">
+<span id="unit"></span><dt><tt class="docutils literal"><span class="pre">&#64;unit</span></tt></dt>
+<dd>A <a class="reference" href="#directive">directive</a> that expands the <a class="reference" href="#scope">scope</a> of definitions in <cite>&#64;root</cite> trees.
+For more information, see the <cite>&#64;unit documentation</cite> in Leo's <a class="reference" href="directives.html">programming reference</a>.</dd>
+</dl>
+<dl class="docutils" id="body-pane">
+<dt><tt class="docutils literal"><span class="pre">Body</span> <span class="pre">pane</span></tt></dt>
+<dd>The pane containing the <a class="reference" href="#body-text">body text</a> of the currently selected <a class="reference" href="#headline">headline</a> in the <a class="reference" href="#outline-pane">outline pane</a>.</dd>
+</dl>
+<dl class="docutils" id="body-text">
+<dt><tt class="docutils literal"><span class="pre">Body</span> <span class="pre">text</span></tt></dt>
+<dd>The text in the <a class="reference" href="#body-pane">body pane</a>.  Body text is always associated with a particular <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="body-text-box">
+<dt><tt class="docutils literal"><span class="pre">Body</span> <span class="pre">text</span> <span class="pre">box</span></tt></dt>
+<dd>A small blue box in the <a class="reference" href="#icon-box">icon box</a> indicating that the <a class="reference" href="#node">node</a> contains <a class="reference" href="#body-text">body text</a>.</dd>
+</dl>
+<dl class="docutils" id="children">
+<span id="child"></span><dt><tt class="docutils literal"><span class="pre">Child</span></tt></dt>
+<dd>A <a class="reference" href="#node">node</a> directly contained by a node.</dd>
+</dl>
+<dl class="docutils" id="chunks">
+<span id="chunk"></span><dt><tt class="docutils literal"><span class="pre">Chunk</span></tt></dt>
+<dd>A <a class="reference" href="#section">section</a> (<a class="reference" href="#noweb">noweb</a> terminology).</dd>
+</dl>
+<dl class="docutils" id="cloned">
+<span id="clones"></span><span id="clone"></span><dt><tt class="docutils literal"><span class="pre">Clone</span></tt></dt>
+<dd>A copy of a <a class="reference" href="#tree">tree</a> that changes whenever the original changes.
+The original and all clones are treated equally:
+no special status is given to the &quot;original&quot; <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="clone-arrows">
+<span id="clone-arrow"></span><dt><tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Arrow</span></tt></dt>
+<dd>A small red arrow in the <a class="reference" href="#icon-box">icon box</a> indicating that the <a class="reference" href="#node">node</a> is a <a class="reference" href="#clone">clone</a>.</dd>
+</dl>
+<dl class="docutils" id="code-parts">
+<span id="code-part"></span><dt><tt class="docutils literal"><span class="pre">Code</span> <span class="pre">part</span></tt></dt>
+<dd>A part of a <a class="reference" href="#section-definition">section definition</a> that contains code.
+Code parts start with <tt class="docutils literal"><span class="pre">&#64;c</span></tt> or <tt class="docutils literal"><span class="pre">&#64;code</span></tt> <a class="reference" href="#directives">directives</a> and continue until the next <a class="reference" href="#doc-part">doc part</a></dd>
+</dl>
+<dl class="docutils" id="contracted">
+<span id="contracts"></span><span id="contract"></span><dt><tt class="docutils literal"><span class="pre">Contract</span></tt>:</dt>
+<dd>To hide all <a class="reference" href="#descendants">descendants</a> of a <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="cweb">
+<dt><tt class="docutils literal"><span class="pre">CWEB</span></tt></dt>
+<dd>A <a class="reference" href="#literate-programming">literate programming</a> language invented by Donald Knuth and Silvio Levy.
+The <a class="reference" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB language</a> produces derived files for the C language.</dd>
+</dl>
+<dl class="docutils" id="demote">
+<dt><tt class="docutils literal"><span class="pre">Demote</span></tt></dt>
+<dd>To move all <a class="reference" href="#siblings">siblings</a> that follow a <a class="reference" href="#node">node</a> so that they become <a class="reference" href="#children">children</a> of the node.</dd>
+</dl>
+<dl class="docutils" id="derived-files">
+<span id="derived-file"></span><dt><tt class="docutils literal"><span class="pre">Derived</span> <span class="pre">file</span></tt></dt>
+<dd>The file created as the result of <a class="reference" href="#tangling">tangling</a> a node containing an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> <a class="reference" href="#directive">directive</a>.
+The file consists of the expansion of the text following the <tt class="docutils literal"><span class="pre">&#64;root</span></tt> <a class="reference" href="#directive">directive</a>.
+For more information, see the <a class="reference" href="intro.html#derived-files">derived files section</a> of <a class="reference" href="intro.html">Leo's tutorial</a>.</dd>
+</dl>
+<dl class="docutils" id="descendants">
+<span id="descendant"></span><dt><tt class="docutils literal"><span class="pre">Descendant</span></tt></dt>
+<dd>An <a class="reference" href="#offspring">offspring</a> of a <a class="reference" href="#node">node</a>.  That is, a <a class="reference" href="#child">child</a>, <a class="reference" href="#grandchild">grandchild</a>, etc. of a node.</dd>
+</dl>
+<dl class="docutils" id="directives">
+<span id="directive"></span><dt><tt class="docutils literal"><span class="pre">Directive</span></tt></dt>
+<dd>A keyword, preceded by an '&#64;' sign, in <a class="reference" href="#body-text">body text</a> that controls Leo's operation.
+The keyword is empty for the <tt class="docutils literal"><span class="pre">&#64;</span></tt> directive.
+For more information, set the <a class="reference" href="intro.html#leo-directives">Leo directives</a> section of <a class="reference" href="intro.html">Leo's tutorial</a>.</dd>
+</dl>
+<dl class="docutils" id="doc-parts">
+<span id="doc-part"></span><dt><tt class="docutils literal"><span class="pre">Doc</span> <span class="pre">part,</span> <span class="pre">&#64;doc</span> <span class="pre">part,</span> <span class="pre">document</span> <span class="pre">part,</span> <span class="pre">etc.</span></tt></dt>
+<dd>A <a class="reference" href="#part">part</a> of a <a class="reference" href="#section-definition">section definition</a> that contains comments.
+Doc parts start with <tt class="docutils literal"><span class="pre">&#64;</span></tt> and continue until the <tt class="docutils literal"><span class="pre">&#64;c</span></tt> <a class="reference" href="#directive">directive</a> or the end of the <a class="reference" href="#body-text">body text</a>.
+In <a class="reference" href="#root-trees">&#64;root trees</a>, doc parts are associated with the immediately following <a class="reference" href="#code-part">code part</a>, if any.</dd>
+</dl>
+<dl class="docutils" id="escape-conventions">
+<span id="escape-convention"></span><dt><tt class="docutils literal"><span class="pre">Escape</span> <span class="pre">convention</span></tt></dt>
+<dd>A convention for representing sequences of characters that would otherwise have special meaning.
+Leo has only one such convention:
+in <a class="reference" href="#root-trees">&#64;root trees</a>, <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> in the leftmost column of a <a class="reference" href="#code-part">code part</a> stands for a single <tt class="docutils literal"><span class="pre">&#64;</span></tt> character.
+<strong>Important</strong>:
+Leo does not support <a class="reference" href="#noweb-s">noweb's</a> <tt class="docutils literal"><span class="pre">&#64;&lt;&lt;</span></tt> and <tt class="docutils literal"><span class="pre">&#64;&gt;&gt;</span></tt> escape conventions.
+Any line containing matched <tt class="docutils literal"><span class="pre">&lt;&lt;</span></tt> and <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt> is a <a class="reference" href="#section-reference">section reference</a>, regardless of context.
+To use <tt class="docutils literal"><span class="pre">&lt;&lt;</span></tt> and <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt> as ordinary characters, place them on separate lines.</dd>
+</dl>
+<dl class="docutils" id="expanded">
+<span id="expands"></span><span id="expand"></span><dt><tt class="docutils literal"><span class="pre">expand</span></tt></dt>
+<dd>To make the <a class="reference" href="#children">children</a> of a <a class="reference" href="#node">node</a> visible.</dd>
+</dl>
+<dl class="docutils" id="grandchildren">
+<span id="grandchild"></span><dt><tt class="docutils literal"><span class="pre">Grandchild</span></tt></dt>
+<dd>The <a class="reference" href="#child">child</a> of a child of a <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="headline-text">
+<span id="headlines"></span><span id="headline"></span><dt><tt class="docutils literal"><span class="pre">Headline</span></tt></dt>
+<dd>The headline text of a <a class="reference" href="#node">node</a>.  The part of the node visible in the <a class="reference" href="#outline-pane">outline pane</a></dd>
+</dl>
+<dl class="docutils" id="dehoist">
+<span id="hoisted"></span><span id="hoist"></span><dt><tt class="docutils literal"><span class="pre">Hoist</span> <span class="pre">&amp;</span> <span class="pre">dehoist</span></tt></dt>
+<dd>Hoisting a <a class="reference" href="#node">node</a> redraws the screen that node and its <a class="reference" href="#descendants">descendants</a> becomes the only visible part of the <a class="reference" href="#outline">outline</a>.
+Leo prevents the you from moving nodes outside the hoisted outline.  Dehoisting a node restores the outline.
+Multiple hoists may be in effect: each dehoist undoes the effect of the immediately preceding hoist.</dd>
+</dl>
+<dl class="docutils" id="latex">
+<span id="icon-boxes"></span><span id="icon-box"></span><dt><tt class="docutils literal"><span class="pre">LaTex</span></tt></dt>
+<dd>A markup language often used in <cite>literate programming</cite> environments.
+See: <a class="reference" href="http://www.latex-project.org/">http://www.latex-project.org/</a></dd>
+<dt><tt class="docutils literal"><span class="pre">Icon</span> <span class="pre">box</span></tt></dt>
+<dd>An icon just to the left of <a class="reference" href="#headline-text">headline text</a> of a <a class="reference" href="#node">node</a> indicating whether the node is cloned, marked or dirty,
+and indicating whether the node contains <a class="reference" href="#body-text">body text</a>.</dd>
+</dl>
+<dl class="docutils" id="leo2">
+<span id="leo1"></span><dt><tt class="docutils literal"><span class="pre">Leo1</span> <span class="pre">and</span> <span class="pre">Leo2</span></tt></dt>
+<dd><p class="first"><strong>Leo1</strong> denotes all versions of Leo that write version 1 .leo files, that is,
+all Windows version of Leo prior to version 2.0.
+The last version of Leo1, version 1.15, understands enough about Leo2 to issue a warning when opening version 2 files.</p>
+<p class="last"><strong>Leo2</strong> denotes all versions of Leo that write version 2 .leo files, that is,
+all versions of leo.py and all Windows versions with version number 2.0 and above.
+Only Leo2 can generate <a class="reference" href="#derived-files">derived files</a> from <a class="reference" href="#file-trees">&#64;file trees</a>.</p>
+</dd>
+</dl>
+<dl class="docutils" id="literate-programming">
+<dt><tt class="docutils literal"><span class="pre">Literate</span> <span class="pre">programming</span></tt></dt>
+<dd>A style of programming that aims at producing the highest quality program listings.
+Literate programming languages apply two fundamental operations to text: <a class="reference" href="#weaving">weaving</a> and <a class="reference" href="#tangling">tangling</a>.
+Leo supports two literate programming languages, <a class="reference" href="#cweb">CWEB</a> and <a class="reference" href="#noweb">noweb</a>.
+For more links see the <a class="reference" href="http://www.literateprogramming.com/">literate programming web page</a>.</dd>
+</dl>
+<dl class="docutils" id="marks">
+<span id="mark"></span><dt><tt class="docutils literal"><span class="pre">Mark</span></tt></dt>
+<dd>A red vertical line in the <a class="reference" href="#icon-box">icon box</a> of a <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="nodes">
+<span id="node"></span><dt><tt class="docutils literal"><span class="pre">Node</span></tt></dt>
+<dd>The organizational unit of an <a class="reference" href="#outline">outline</a>. The combination of <a class="reference" href="#headline-text">headline text</a> and <a class="reference" href="#body-text">body text</a>.
+Sometimes used as a synonym for <a class="reference" href="#tree">tree</a>.</dd>
+</dl>
+<dl class="docutils" id="noweb-s">
+<span id="noweb"></span><dt><tt class="docutils literal"><span class="pre">noweb</span></tt></dt>
+<dd>A literate programming language invented by Norman Ramsey.
+The <a class="reference" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb language</a> can produce <a class="reference" href="#derived-files">derived files</a> for any text-based programming language.</dd>
+</dl>
+<dl class="docutils" id="offspring">
+<dt><tt class="docutils literal"><span class="pre">Offspring</span></tt></dt>
+<dd>The <a class="reference" href="#children">children</a>, <a class="reference" href="#grandchildren">grandchildren</a>, etc. of a <a class="reference" href="#node">node</a>.</dd>
+</dl>
+<dl class="docutils" id="organizer-nodes">
+<span id="organizer-node"></span><span id="organizing-nodes"></span><span id="organizing-node"></span><dt><tt class="docutils literal"><span class="pre">Organizing</span> <span class="pre">node</span></tt>, <tt class="docutils literal"><span class="pre">organizer</span> <span class="pre">node</span></tt></dt>
+<dd>A <a class="reference" href="#node">node</a> containing no <a class="reference" href="#body-text">body text</a>.
+Organizing nodes may appear anywhere in an <a class="reference" href="#file-tree">&#64;file tree</a>; they do not affect the derived file in any way.
+In particular, organizing nodes do not affect indentation in <a class="reference" href="#derived-files">derived files</a>.</dd>
+</dl>
+<dl class="docutils" id="orphan-nodes">
+<span id="orphan-node"></span><span id="orphan"></span><dt><tt class="docutils literal"><span class="pre">Orphan</span> <span class="pre">node</span></tt></dt>
+<dd><p class="first">A <a class="reference" href="#node">node</a> that would not be copied to a <a class="reference" href="#derived-file">derived file</a>.
+Orphan nodes can arise because an <a class="reference" href="#thin-tree">&#64;thin tree</a> has no <tt class="docutils literal"><span class="pre">&#64;others</span></tt> or <tt class="docutils literal"><span class="pre">&#64;all</span></tt> <a class="reference" href="#directives">directives</a>.
+<a class="reference" href="#sections">Sections</a> that are defined but not used also create orphan nodes.</p>
+<p class="last">Leo issues a warning when attempting to write an <a class="reference" href="#thin-tree">&#64;thin tree</a> containing orphan nodes,
+and does not save the <a class="reference" href="#derived-file">derived file</a>.
+No information is lost; Leo saves the information in the <a class="reference" href="#thin-tree">&#64;thin tree</a> in the .leo file.
+Leo will load the <a class="reference" href="#thin-tree">&#64;thin tree</a> from the .leo file the next time Leo opens the .leo file.</p>
+</dd>
+</dl>
+<dl class="docutils" id="outlines">
+<span id="outliner"></span><span id="outline"></span><dt><tt class="docutils literal"><span class="pre">Outline</span></tt></dt>
+<dd><ul class="first last simple">
+<li>A <a class="reference" href="#node">node</a> and its <a class="reference" href="#descendants">descendants</a>.</li>
+<li>A <a class="reference" href="#tree">tree</a></li>
+<li>All the <a class="reference" href="#nodes">nodes</a> of a .leo file.</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils" id="outline-order">
+<dt><tt class="docutils literal"><span class="pre">Outline</span> <span class="pre">Order</span></tt></dt>
+<dd>The order that <a class="reference" href="#nodes">nodes</a> appear on the screen when all <a class="reference" href="#nodes">nodes</a> are expanded.</dd>
+</dl>
+<dl class="docutils" id="outline-pane">
+<dt><tt class="docutils literal"><span class="pre">Outline</span> <span class="pre">pane</span></tt></dt>
+<dd>The pane containing a visual representation of the entire <a class="reference" href="#outline">outline</a>, or a part of the <a class="reference" href="#outline">outline</a> if the outline is <a class="reference" href="#hoisted">hoisted</a>.</dd>
+</dl>
+<dl class="docutils" id="parents">
+<span id="parent"></span><dt><tt class="docutils literal"><span class="pre">Parent</span></tt></dt>
+<dd>The <a class="reference" href="#node">node</a> that directly contains a node.</dd>
+</dl>
+<dl class="docutils" id="parts">
+<span id="part"></span><dt><tt class="docutils literal"><span class="pre">Part</span></tt></dt>
+<dd>A synonym for <a class="reference" href="#section">section</a>.  See also <a class="reference" href="#code-part">code part</a> and <a class="reference" href="#doc-part">doc part</a>.</dd>
+</dl>
+<dl class="docutils" id="id1">
+<span id="pdf-file"></span><dt><tt class="docutils literal"><span class="pre">pdf</span> <span class="pre">file</span></tt></dt>
+<dd>A file that can be read by Adobe Acrobat.</dd>
+</dl>
+<dl class="docutils" id="plugins">
+<span id="plugin"></span><dt><tt class="docutils literal"><span class="pre">Plugin</span></tt></dt>
+<dd><ul class="first simple">
+<li>A Python file in Leo's <tt class="docutils literal"><span class="pre">plugins</span></tt> folder.</li>
+<li>A way to modify and extend Leo without changing Leo's core code.
+<tt class="docutils literal"><span class="pre">leoPlugins.leo</span></tt> contains all of Leo's official plugins.</li>
+</ul>
+<p class="last">See <cite>Writing plugins and hooks</cite>.</p>
+</dd>
+</dl>
+<dl class="docutils" id="promote">
+<dt><tt class="docutils literal"><span class="pre">Promote</span></tt></dt>
+<dd>To move all <a class="reference" href="#children">children</a> of a <a class="reference" href="#node">node</a> in an outline so that they become <a class="reference" href="#siblings">siblings</a> of the node.</dd>
+</dl>
+<dl class="docutils" id="rst">
+<span id="restructuredtext"></span><dt><tt class="docutils literal"><span class="pre">reStructuredText</span> <span class="pre">(rST)</span></tt></dt>
+<dd>A simple, yet powerful markup language for creating .html, or LaTeX output files.
+See the <a class="reference" href="http://docutils.sourceforge.net/docs/user/rst/quickstart.html">rST primer</a>.</dd>
+</dl>
+<dl class="docutils" id="id3">
+<span id="id2"></span><dt><tt class="docutils literal"><span class="pre">Root</span></tt></dt>
+<dd><ul class="first last simple">
+<li>The first <a class="reference" href="#node">node</a> of a .leo file.</li>
+<li>The first node of an <a class="reference" href="directives.html#root">&#64;root</a> tree or <a class="reference" href="directives.html#file-and-thin">&#64;file</a> tree.</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils" id="rst3-plugin">
+<dt><tt class="docutils literal"><span class="pre">rST</span> <span class="pre">plugin</span></tt></dt>
+<dd>A <a class="reference" href="#plugin">plugin</a> that supports <a class="reference" href="#restructuredtext">reStructuredText</a>.
+Unlike previous rst plugins, the rst3 plugin supports per-node options.</dd>
+</dl>
+<dl class="docutils" id="scope">
+<dt><tt class="docutils literal"><span class="pre">Scope</span></tt></dt>
+<dd>The portion of the <a class="reference" href="#outline">outline</a> in which a <a class="reference" href="#section-definition">section definition</a> is known.</dd>
+</dl>
+<dl class="docutils" id="sections">
+<span id="section"></span><dt><tt class="docutils literal"><span class="pre">Section</span></tt></dt>
+<dd>A fragment of text that can be incorporated into <a class="reference" href="#derived-files">derived files</a>.
+See the <a class="reference" href="intro.html#quick-start-for-programmers">Quick start for programmers</a> in <a class="reference" href="intro.html">Leo's tutorial</a> for more details.</dd>
+</dl>
+<dl class="docutils" id="section-definitions">
+<span id="section-definition"></span><dt><tt class="docutils literal"><span class="pre">Section</span> <span class="pre">definition</span></tt>:</dt>
+<dd>The <a class="reference" href="#body-text">body text</a> of a <a class="reference" href="#section-definition-node">section definition node</a>.
+See the <a class="reference" href="intro.html#quick-start-for-programmers">Quick start for programmers</a> in <a class="reference" href="intro.html">Leo's tutorial</a> for more details.</dd>
+</dl>
+<dl class="docutils" id="section-definition-nodes">
+<span id="section-definition-node"></span><dt><tt class="docutils literal"><span class="pre">Section</span> <span class="pre">definition</span> <span class="pre">node</span></tt></dt>
+<dd>A <a class="reference" href="#node">node</a> whose <a class="reference" href="#headline">headline</a> starts with a <a class="reference" href="#section-name">section name</a> and whose body text defines a <a class="reference" href="#section">section</a>.
+See the <a class="reference" href="intro.html#quick-start-for-programmers">Quick start for programmers</a> in <a class="reference" href="intro.html">Leo's tutorial</a> for more details.</dd>
+</dl>
+<dl class="docutils" id="section-names">
+<span id="section-name"></span><dt><tt class="docutils literal"><span class="pre">Section</span> <span class="pre">name</span></tt></dt>
+<dd>A name enclosed in <tt class="docutils literal"><span class="pre">&lt;&lt;</span></tt> and <tt class="docutils literal"><span class="pre">&gt;&gt;</span></tt>.
+Section names may contain any characters except newlines and &quot;&gt;&gt;&quot;.
+See the <a class="reference" href="intro.html#quick-start-for-programmers">Quick start for programmers</a> in <a class="reference" href="intro.html">Leo's tutorial</a> for more details.</dd>
+</dl>
+<dl class="docutils" id="referenced">
+<span id="references"></span><span id="reference"></span><span id="section-references"></span><span id="section-reference"></span><dt><tt class="docutils literal"><span class="pre">Section</span> <span class="pre">reference</span></tt></dt>
+<dd>A <a class="reference" href="#section-name">section name</a> appearing in a <a class="reference" href="#code-part">code part</a>.
+<a class="reference" href="#tangling">Tangling</a> replaces all references by their definitions.
+See the <a class="reference" href="intro.html#quick-start-for-programmers">Quick start for programmers</a> in <a class="reference" href="intro.html">Leo's tutorial</a> for more details.</dd>
+</dl>
+<dl class="docutils" id="sentinel-lines">
+<span id="sentinels"></span><span id="sentinel"></span><dt><tt class="docutils literal"><span class="pre">Sentinels,</span> <span class="pre">sentinel</span> <span class="pre">lines</span></tt></dt>
+<dd>Comment lines in files derived from <a class="reference" href="#file-nodes">&#64;file nodes</a>.
+Such lines start with an <tt class="docutils literal"><span class="pre">&#64;</span></tt> following the opening comment delimiter.
+Sentinels embed outline structure into <a class="reference" href="#derived-files">derived files</a>.
+<strong>Do not alter sentinel lines</strong>.  Doing so can corrupt the outline structure.
+For more information see <a class="reference" href="#sentinel-lines">Sentinel lines</a> in <a class="reference" href="intro.html">Leo's tutorial</a>.</dd>
+</dl>
+<dl class="docutils" id="id4">
+<span id="setting"></span><span id="settings"></span><dt><tt class="docutils literal"><span class="pre">Setting</span></tt>:</dt>
+<dd><a class="reference" href="#plugins">Plugins</a> and other parts of Leo can get options from <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees,
+<a class="reference" href="#outlines">outlines</a> whose <a class="reference" href="#headline">headline</a> is <tt class="docutils literal"><span class="pre">&#64;settings</span></tt>. When opening a .leo file, Leo looks
+for <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees in the outline being opened and also in various
+<tt class="docutils literal"><span class="pre">leoSettings.leo</span> <span class="pre">files</span></tt>. <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees allow <a class="reference" href="#plugins">plugins</a> to get options without
+any further support from Leo's core code. For a full discussion of
+&#64;settings trees, see <a class="reference" href="customizing.html">Chapter 8: Customizing Leo</a>.</dd>
+</dl>
+<dl class="docutils" id="siblings">
+<span id="sibling"></span><dt><tt class="docutils literal"><span class="pre">Sibling</span></tt></dt>
+<dd>Two <a class="reference" href="#nodes">nodes</a> are siblings if they have the same <a class="reference" href="#parent">parent</a>.  Siblings of the <a class="reference" href="#id2">root</a> have no parent.</dd>
+</dl>
+<dl class="docutils" id="tangling">
+<span id="tangles"></span><span id="tangle"></span><dt><tt class="docutils literal"><span class="pre">Tangling</span></tt></dt>
+<dd>The process of creating <a class="reference" href="#derived-files">derived files</a> from <a class="reference" href="#root-trees">&#64;root trees</a> or <a class="reference" href="#file-trees">&#64;file trees</a>.
+Leo tangles <a class="reference" href="#file-trees">&#64;file trees</a> automatically when writing a .leo file.
+You must explicitly <a class="reference" href="#tangle">tangle</a> <a class="reference" href="#root-trees">&#64;root trees</a> using the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command.
+Tangling expands all <cite>section references</cite> in an <a class="reference" href="#root-node">&#64;root node</a> or <a class="reference" href="#file-node">&#64;file node</a>.
+For more information, see <a class="reference" href="directives.html#tangling-root-trees-with-the-tangle-commands">Tangling &#64;root trees</a> in Leo's <a class="reference" href="directives.html">programming reference</a>.</dd>
+</dl>
+<dl class="docutils" id="target-language">
+<dt><tt class="docutils literal"><span class="pre">Target</span> <span class="pre">language</span></tt></dt>
+<dd>The language used to syntax color text.
+This determines the default comment delimiters used during <a class="reference" href="#tangling">tangling</a> and <a class="reference" href="#untangling">untangling</a>.</dd>
+</dl>
+<dl class="docutils" id="trees">
+<span id="tree"></span><dt><tt class="docutils literal"><span class="pre">Tree</span></tt></dt>
+<dd>An <a class="reference" href="#outline">outline</a>.
+A <a class="reference" href="#node">node</a> and its <a class="reference" href="#descendants">descendants</a>.</dd>
+</dl>
+<dl class="docutils" id="untangling">
+<span id="untangles"></span><span id="untangle"></span><dt><tt class="docutils literal"><span class="pre">Untangling</span></tt></dt>
+<dd>Updating an <a class="reference" href="#outline">outline</a> based on changes to <a class="reference" href="#derived-files">derived files</a>.
+Untangling allows changes to be propagated from derived files back to the outline.
+Especially useful when fixing syntax errors outside Leo.
+For more information, see <a class="reference" href="directives.html#untangling-root-trees-with-the-untangle-commands">Untangling &#64;root trees</a> in Leo's <a class="reference" href="directives.html">programming reference</a>.</dd>
+</dl>
+<dl class="docutils" id="view-nodes">
+<span id="view-node"></span><span id="weaving"></span><span id="weaves"></span><span id="weave"></span><dt><tt class="docutils literal"><span class="pre">View</span> <span class="pre">node</span></tt></dt>
+<dd>A <a class="reference" href="#node">node</a> that represents a view of an <a class="reference" href="#outline">outline</a>.
+View nodes are typically ordinary, non-<a class="reference" href="#cloned">cloned</a> nodes that contain cloned <a class="reference" href="#descendant">descendant</a> nodes.
+The cloned descendant nodes comprise most of the data of the view.
+Other non-cloned nodes may add additional information to the view.
+See <a class="reference" href="intro.html#clones-views">clones &amp; views</a> in the <a class="reference" href="intro.html">Leo's tutorial</a> for more information.</dd>
+<dt><tt class="docutils literal"><span class="pre">Weaving</span></tt></dt>
+<dd>The process of creating typeset documentation from a <a class="reference" href="#noweb">noweb</a> or <a class="reference" href="#cweb">CWEB</a> source file.
+Weaving creates documentation. <a class="reference" href="#tangling">Tangling</a> creates <a class="reference" href="#derived-files">derived files</a>.
+Leo does not support weaving directly.
+To weave a file you can create <a class="reference" href="#noweb">noweb</a> or <a class="reference" href="#cweb">CWEB</a> files using Leo's <tt class="docutils literal"><span class="pre">Export</span></tt> commands,
+then use the <a class="reference" href="#noweb">noweb</a> or <a class="reference" href="#cweb">CWEB</a> systems to weave those files.</dd>
+</dl>
+<hr class="docutils" />
+<p><a class="reference" href="appendices.html"><img alt="prev" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="new-4-4-6.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</body>
+</html>

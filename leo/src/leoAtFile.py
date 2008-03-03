@@ -573,7 +573,7 @@ class atFile:
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
         if ic.errors:
-            g.es_print('Errors inhibited read @auto',fileName,color='red')
+            g.es_print('errors inhibited read @auto',fileName,color='red')
 
         if ic.errors or not g.os_path_exists(fileName):
             #c.setBodyString(p,'')
@@ -728,7 +728,7 @@ class atFile:
             s = lines[1]
             g.es("using",s)
         else:
-            at.readError("unexpected lines",m)
+            at.readError("unexpected lines" + m)
             g.es('',len(lines), "lines",m)
             s = "bad " + sentinel
             if comments: s = start + ' ' + s
@@ -1463,7 +1463,7 @@ class atFile:
 
         if not hasattr(v.t,"tnodeList"):
             at.readError("no tnodeList for " + repr(v))
-            g.es("Write the @file node or use the Import Derived File command")
+            g.es("write the @file node or use the Import Derived File command")
             g.trace("no tnodeList for ",v)
             return None
 
@@ -1878,7 +1878,7 @@ class atFile:
                             print ; print '-' * 40
                     else:
                         # This should never happen.
-                        g.es("Correcting hidden node: t=",repr(at.t),color="red")
+                        g.es("correcting hidden node: t=",repr(at.t),color="red")
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
@@ -1890,7 +1890,7 @@ class atFile:
                         if not at.updateWarningGiven:
                             at.updateWarningGiven = True
                             # print "***",at.t,at.root.t
-                            g.es("Warning: updating changed text in",at.root.headString(),color="blue")
+                            g.es("warning: updating changed text in",at.root.headString(),color="blue")
                     # Just set the dirty bit. Ancestors will be marked dirty later.
                     at.t.setDirty()
                     if 1: # We must avoid the full setChanged logic here!
@@ -4752,7 +4752,7 @@ class atFile:
                 self.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
-                g.es("Unknown language: using Python comment delimiters")
+                g.es("unknown language: using Python comment delimiters")
                 g.es("c.target_language:",c.target_language)
                 g.es('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
                 self.startSentinelComment = "#" # This should never happen!

@@ -783,11 +783,6 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
-<v t="ekr.20071113203234"><vh>Test files</vh>
-<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
-<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
-</v>
 <v t="ekr.20070611105300"><vh>Longer tests (opens windows)</vh>
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -839,6 +834,11 @@
 <v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
 <v t="ekr.20041012084201"><vh>removeFile</vh></v>
 </v>
+</v>
+<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
+<v t="ekr.20071113203234"><vh>Test files</vh>
+<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
+<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
 <v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
 <v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>

@@ -458,7 +458,7 @@ def get_directives_dict(p,root=None):
                     if theDict.has_key(word):
                         # Ignore second value.
                         pass
-                        # g.es("Warning: conflicting values for",word,color="blue")
+                        # g.es("warning: conflicting values for",word,color="blue")
                     else:
                         # theDict [word] = i
                         k = g.skip_line(s,j)
@@ -577,7 +577,9 @@ def scanAtRootOptions (s,i,err_flag=False):
             i += 1
 
         if err > -1 and err_flag:
-            g.es("unknown option:",s[err:i],"in",g.get_line(s,i))
+            z_opt = s[err:i]
+            z_line = g.get_line(s,i)
+            g.es("unknown option:",z_opt,"in",z_line)
         #@-node:ekr.20031218072017.3155:<< scan another @root option >>
         #@nl
 
@@ -603,7 +605,7 @@ def scanAtTabwidthDirective(theDict,issue_error_flag=False):
         return val
     else:
         if issue_error_flag:
-            g.es("Ignoring",s,color="red")
+            g.es("ignoring",s,color="red")
         return None
 #@-node:ekr.20031218072017.1390:g.scanAtTabwidthDirective
 #@+node:ekr.20070302160802:g.scanColorDirectives
@@ -996,7 +998,8 @@ def es_dump (s,n = 30,title=None):
 
     i = 0
     while i < len(s):
-        g.es_print('',''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]]))
+        aList = ''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]])
+        g.es_print('',aList)
         i += n
 #@nonl
 #@-node:ekr.20060917120951:es_dump
@@ -1682,11 +1685,13 @@ def getTime():
     return time.clock()
 
 def esDiffTime(message, start):
-    g.es('',"%s %6.3f" % (message,(time.clock()-start)))
+    delta = time.clock()-start
+    g.es('',"%s %6.3f" % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
-    print "%s %6.3f" % (message,(time.clock()-start))
+    delta = time.clock()-start
+    print "%s %6.3f" % (message,delta)
     return time.clock()
 #@-node:ekr.20031218072017.3137:Timing
 #@-node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
@@ -1716,7 +1721,7 @@ def create_temp_file (textMode=False):
         except IOError:
             theFile,theFileName = None,''
     except Exception:
-        g.es('Unexpected exception in g.create_temp_file',color='red')
+        g.es('unexpected exception in g.create_temp_file',color='red')
         g.es_exception()
         theFile,theFileName = None,''
 
@@ -1800,7 +1805,7 @@ def is_sentinel (line,delims):
         return 0 == i < j
     else:
         print repr(delims)
-        g.es("Can't happen: is_sentinel",color="red")
+        g.es("can't happen: is_sentinel",color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
 #@+node:ekr.20071114113736:g.makePathRelativeTo
@@ -2101,7 +2106,7 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
         return True
     except Exception:
         if verbose:
-            g.es('Exception renaming',src,'to',dst,color='red')
+            g.es('exception renaming',src,'to',dst,color='red')
             g.es_exception(full=False)
         return False
 #@-node:ekr.20031218072017.1263:g.utils_rename
@@ -2187,7 +2192,7 @@ def enable_gc_debug(event=None):
             # gc.set_debug(gc.DEBUG_STATS)
     elif not g.no_gc_message:
         g.no_gc_message = True
-        g.es('Can not import gc module',color='blue')
+        g.es('can not import gc module',color='blue')
 #@-node:ekr.20060127162818:enable_gc_debug
 #@+node:ekr.20031218072017.1592:printGc
 # Formerly called from unit tests.
@@ -2564,6 +2569,11 @@ def enl(tabName='Log'):
 #@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
 #@+node:ekr.20070626132332:es & minitest
 def es(s,*args,**keys):
+
+    '''Put all non-keyword args to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
     # print 'es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s)
     # print 'es',repr(s)
     log = app.log
@@ -2629,6 +2639,11 @@ def es(s,*args,**keys):
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def es_print(s,*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
 
     encoding = sys.getdefaultencoding()
 
@@ -2699,7 +2714,7 @@ def translateArgs (s,args,commas,spaces):
 
     return ''.join(result)
 #@-node:ekr.20080220111323:translateArgs
-#@+node:ekr.20060810095921:translateString
+#@+node:ekr.20060810095921:translateString & tr
 def translateString (s):
 
     '''Return the translated text of s.'''
@@ -2708,7 +2723,10 @@ def translateString (s):
         return s.upper()
     else:
         return gettext.gettext(s)
-#@-node:ekr.20060810095921:translateString
+
+tr = translateString
+#@nonl
+#@-node:ekr.20060810095921:translateString & tr
 #@+node:ekr.20031218072017.3148:top
 if 0: # An extremely dangerous function.
 
@@ -2985,7 +3003,8 @@ def scanAtFileOptions (h,err_flag=False):
         while i < len(h) and h[i] not in (' ','\t','-'):
             i += 1
         if err > -1:
-            g.es("unknown option:",h[err:i],"in",h)
+            z_opt = h[err:i]
+            g.es("unknown option:",z_opt,"in",h)
         #@-node:ekr.20031218072017.3153:<< scan another @file option >>
         #@nl
 
@@ -4883,7 +4902,7 @@ def executeScript (name):
         theFile,filename,description = imp.find_module(mod_name)
         imp.load_module(mod_name,theFile,filename,description)
     except Exception:
-        g.es("Exception executing",name,color="red")
+        g.es("exception executing",name,color="red")
         g.es_exception()
 
     if theFile:
@@ -5348,7 +5367,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
                 module = imp.load_module(moduleName,theFile,pathname,description)
             except ImportError:
                 if 0: # verbose:
-                    g.es_print("Exception in g.importFromPath",color='blue')
+                    g.es_print("exception in g.importFromPath",color='blue')
                     g.es_exception()
             except Exception:
                 g.es_print("unexpected exception in g.importFromPath(%s)" %

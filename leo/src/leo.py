@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2605:@thin leo.py
+#@+node:ekr.20031218072017.2605:@thin leo.py 
 #@@first
 
 """Entry point for Leo in Python."""
@@ -39,6 +39,10 @@
 # Doing so would make g.app invalid in the imported files.
 import os
 import sys
+import Tkinter
+Tkinter.wantobjects = 0
+    # An ugly hack for Tk/Tkinter 8.5
+    # See http://sourceforge.net/forum/message.php?msg_id=4078577
 
 #@+others
 #@+node:ekr.20031218072017.1934:run
@@ -230,7 +234,7 @@ def createFrame (fileName,relativeFileName):
 
     # Report the failure to open the file.
     if fileName:
-        g.es("File not found:",fileName)
+        g.es("file not found:",fileName)
 
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (leo.py)
@@ -423,5 +427,5 @@ if __name__ == "__main__":
         run(getFileName())
     else:
         run()
-#@-node:ekr.20031218072017.2605:@thin leo.py
+#@-node:ekr.20031218072017.2605:@thin leo.py 
 #@-leo

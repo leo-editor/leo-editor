@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Chapter 1: Installing Leo</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\install.html -->
+<p><a class="reference" href="FAQ.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="intro.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="chapter-1-installing-leo">
+<h1><a class="toc-backref" href="#id1">Chapter 1: Installing Leo</a></h1>
+<p>This chapter tells how to install and <a class="reference" href="#running-leo">run</a> Leo.</p>
+<p><strong>Important</strong>:</p>
+<p>If you have <em>any</em> problems installing Leo,
+please ask for help on Leo's help forum:</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#chapter-1-installing-leo" id="id1" name="id1">Chapter 1: Installing Leo</a><ul>
+<li><a class="reference" href="#system-requirements" id="id2" name="id2">System requirements</a></li>
+<li><a class="reference" href="#how-to-install-leo-on-linux" id="id3" name="id3">How to install Leo on Linux</a></li>
+<li><a class="reference" href="#installing-leo-on-windows" id="id4" name="id4">Installing Leo on Windows</a><ul>
+<li><a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows" id="id5" name="id5">How to associate Leo with .leo files on Windows</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#installing-leo-on-macos-x" id="id6" name="id6">Installing Leo on MacOS X</a><ul>
+<li><a class="reference" href="#how-to-use-platypus-to-create-a-mac-launcher-for-leo" id="id7" name="id7">How to use Platypus to create a Mac launcher for Leo</a></li>
+<li><a class="reference" href="#how-to-create-macos-x-pkg-files" id="id8" name="id8">How to create MacOS X .pkg files</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#running-leo" id="id9" name="id9">Running Leo</a></li>
+<li><a class="reference" href="#running-leo-in-batch-mode" id="id10" name="id10">Running Leo in batch mode</a></li>
+<li><a class="reference" href="#how-to-install-the-aspell-spell-checker" id="id11" name="id11">How to install the Aspell spell checker</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- Links used in this document... -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="system-requirements">
+<h2><a class="toc-backref" href="#id2">System requirements</a></h2>
+<p>Leo will work on any platform that supports Python 2.2.1 or later and Tk 8.4 or later.</p>
+<ul>
+<li><p class="first">Download the latest version of Leo from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+</li>
+<li><p class="first">Download Python from: <a class="reference" href="http://python.org/">http://python.org/</a></p>
+</li>
+<li><p class="first">Most installations of Python have Tk pre-installed.
+If your doesn't, you may download it from: <a class="reference" href="http://tcl.activestate.com/software/tcltk/">http://tcl.activestate.com/software/tcltk/</a></p>
+<p><strong>Warning</strong>: When building Tcl on Linux, do <strong>not</strong> specify
+&quot;--enable-threads&quot;.
+Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
+</li>
+<li><p class="first">Leo uses <a class="reference" href="http://pmw.sourceforge.net/">Pmw</a> (Python Mega Widgets). Leo's extensions folder contains a copy
+of Pmw for use if needed. Leo first tries to import Pmw normally. If that
+fails, Leo will use the version of Pmw in the extensions folder.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-install-leo-on-linux">
+<h2><a class="toc-backref" href="#id3">How to install Leo on Linux</a></h2>
+<p>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+<p>Unzip the downloaded .zip file into a folder in your home directory.
+The folder will be called something like leo-4-4-3-final.</p>
+<p>You now have two choices:</p>
+<ol class="arabic">
+<li><p class="first">You can run Leo from your home directory.
+Just add  ~/leo-4-4-3-final to your path.</p>
+</li>
+<li><p class="first">You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows:</p>
+<pre class="literal-block">
+cd ~/leo-4-4-3-final
+chmod u+x install
+sudo ./install
+</pre>
+</li>
+</ol>
+<p>The install script will instruct you to add /usr/local/bin to your path.</p>
+<p>Now you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
+</div>
+<div class="section" id="installing-leo-on-windows">
+<h2><a class="toc-backref" href="#id4">Installing Leo on Windows</a></h2>
+<p>Leo is distributed either as an executable installer (.exe) file or as a .zip file.</p>
+<p>To install Leo using the executable installer:</p>
+<blockquote>
+<ol class="arabic simple">
+<li>Download the latest version of Leo's installer from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.
+The installer will be called something like LeoSetup-4-4-3.exe.</li>
+<li>Run the installer.
+By default, the install will install Leo in your 'Program Files' directory.</li>
+</ol>
+</blockquote>
+<p>To install Leo from the .zip file:</p>
+<blockquote>
+<ol class="arabic simple">
+<li>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</li>
+<li>Unzip the .zip file and place the unpacked leo folder in
+the 'Program Files' folder or any convenient location.</li>
+</ol>
+</blockquote>
+<p>After you have installed Leo, you should add the location of your leo/src folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:</p>
+<pre class="literal-block">
+import sys
+sys.path.append(r'&lt;path-to-leo&gt;leo\src')
+</pre>
+<p>Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.</p>
+<p>Now that you have installed Leo and told Python where to find Leo,
+you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
+<p><strong>Note</strong>:
+If you haven't already created a HOME environment variable, it would be good to
+define home to be &quot;%USERPROFILE%My Documents&quot;.  You can check whether HOME exists
+by typing 'echo %HOME%' (without the quotes) in a console window.</p>
+<div class="section" id="how-to-associate-leo-with-leo-files-on-windows">
+<h3><a class="toc-backref" href="#id5">How to associate Leo with .leo files on Windows</a></h3>
+<p>Leo will open .leo files automatically provided that you associate leo.py with .leo files.
+Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:</p>
+<ul class="simple">
+<li>In Windows 2K or XP, go to <tt class="docutils literal"><span class="pre">Start-&gt;Settings-&gt;Control</span> <span class="pre">panel</span></tt>, open the <tt class="docutils literal"><span class="pre">Folder</span> <span class="pre">Options</span></tt> tab.</li>
+<li>Select the <tt class="docutils literal"><span class="pre">file</span> <span class="pre">types</span></tt> tab. Press the <tt class="docutils literal"><span class="pre">New</span></tt> button.</li>
+<li>Enter <tt class="docutils literal"><span class="pre">Leo</span></tt> into the <tt class="docutils literal"><span class="pre">Create</span> <span class="pre">New</span> <span class="pre">File</span> <span class="pre">Extension</span></tt> field. Press OK.</li>
+<li>With <tt class="docutils literal"><span class="pre">Leo</span></tt> still highlighted in the <tt class="docutils literal"><span class="pre">Registered</span> <span class="pre">File</span> <span class="pre">Types</span></tt> list box, press the <tt class="docutils literal"><span class="pre">Advanced</span></tt> button.</li>
+<li>Change the default file type field to something like <tt class="docutils literal"><span class="pre">Leo</span> <span class="pre">Literate</span> <span class="pre">Outline</span></tt>.</li>
+<li>Press the <tt class="docutils literal"><span class="pre">Icon</span></tt> button and browse to the <tt class="docutils literal"><span class="pre">LeoDoc</span></tt> icon in Leo's <tt class="docutils literal"><span class="pre">Icons</span></tt> folder.</li>
+<li>Click OK. This gets the icons right and registers the description of the .leo file.</li>
+</ul>
+<p>You now have to tell windows what to do to open the file properly:</p>
+<ul>
+<li><p class="first">Press the new button to open the <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Action</span></tt> window.</p>
+</li>
+<li><p class="first">In the <tt class="docutils literal"><span class="pre">Action</span></tt> field type <tt class="docutils literal"><span class="pre">Open</span></tt>, then type <strong>one</strong> of the following lines:</p>
+<pre class="literal-block">
+[python install dir]\pythonw.exe   [leo install dir]\leo.py %1
+[python install dir]\python.exe -i [leo install dir]\leo.py %1
+</pre>
+</li>
+</ul>
+<p><strong>Important</strong>: The -i option is not valid when using pythonw.exe.
+Any call to pythonw -i will cause pythonw.exe to exit immediately.</p>
+<p>The first  line opens Leo files with no console window.
+The second line opens Leo files with a console window and leaves the window open after Leo exits.
+You should now be able to double click on a leo file in explorer with Leo.</p>
+</div>
+</div>
+<div class="section" id="installing-leo-on-macos-x">
+<h2><a class="toc-backref" href="#id6">Installing Leo on MacOS X</a></h2>
+<p>By Randall Voth:
+Leo works reliably only on MacOS X 10.3 (Panther) and above.
+To run Leo on Macintosh OS X 10:</p>
+<ol class="arabic simple">
+<li>Download and install <tt class="docutils literal"><span class="pre">MacPython</span> <span class="pre">2.3</span> <span class="pre">for</span> <span class="pre">Panther</span> <span class="pre">addons</span></tt>.
+Python is already included in OS X 10.3 so only the addons are necessary at
+<a class="reference" href="http://www.cwi.nl/~jack/macpython.html">http://www.cwi.nl/~jack/macpython.html</a></li>
+<li>Download and install TclTkAqua from <a class="reference" href="http://tcltkaqua.sourceforge.net/">http://tcltkaqua.sourceforge.net/</a></li>
+<li>Run the PackageManager found in <tt class="docutils literal"><span class="pre">/Applications/MacPython-2.3</span></tt> and
+install <tt class="docutils literal"><span class="pre">_tkinter-2.3-binary</span></tt> by clicking on the package in the list
+and clicking the [Install:] button with <tt class="docutils literal"><span class="pre">Install</span> <span class="pre">dependencies</span></tt> checked.</li>
+<li>Download Leo (platform independent source.zip) from <a class="reference" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
+<li>Unzip the contents into a directory by double-clicking the downloaded file.
+Typically you would put the Leo folder into the <tt class="docutils literal"><span class="pre">Applications</span></tt> directory.</li>
+<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/src/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
+<li>It is a good idea to set <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt> as the default program to
+open python scripts by clicking on <tt class="docutils literal"><span class="pre">leo.py</span></tt>, choosing Get Info from the
+Finder's File menu, and selecting &quot;PythonLauncher&quot; as the default
+program to <tt class="docutils literal"><span class="pre">Open</span> <span class="pre">With:</span></tt>
+By clicking the <tt class="docutils literal"><span class="pre">Change</span> <span class="pre">All...</span></tt> button, all python scripts will be
+opened with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
+<li>Download <tt class="docutils literal"><span class="pre">Pmw</span></tt> from <a class="reference" href="http://pmw.sourceforge.net/">http://pmw.sourceforge.net/</a>
+<tt class="docutils literal"><span class="pre">Pmw</span></tt> must be installed in order to use the Settings panel.
+Drag the downloaded gzip file into
+<tt class="docutils literal"><span class="pre">/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages</span></tt>
+Double click on it to unzip and untar the file into a folder to make it available to Python</li>
+</ol>
+<div class="section" id="how-to-use-platypus-to-create-a-mac-launcher-for-leo">
+<h3><a class="toc-backref" href="#id7">How to use Platypus to create a Mac launcher for Leo</a></h3>
+<p>This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
+for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
+<em>create</em> MacLeo. You may download Platypus 3.0 from <a class="reference" href="http://sveinbjorn.vefsyn.is/platypus">http://sveinbjorn.vefsyn.is/platypus</a>
+Platypus creates something called an &quot;application bundle,&quot; essentially a wrapper
+for the shell script called openLeoScript.sh.</p>
+<p>At present this script contains just:</p>
+<pre class="literal-block">
+#!/bin/sh
+# $2 only works if .leo is one of the extensions.
+/usr/bin/pythonw ~/leo/src/leo.py $2
+</pre>
+<p>In detail, here is how I created MacLeo:</p>
+<ol class="arabic">
+<li><p class="first">Open Platypus.</p>
+</li>
+<li><p class="first">Set the Platypus settings:</p>
+<pre class="literal-block">
+- Name: MacLeo
+- Script type: shell
+- Icon: Python Icon
+        - Using the standard Leo outline doesn't work, but one could be created…
+- Script Path: /Users/edream/dist/Platypus 3.0/openLeoScript.sh
+- Is droppable checkbox (checked)
+        - Edit Types:  .leo only, not *, not folders.
+        - N.B.  There MUST be a period in front of .leo!  Otherwise $2 will be empty in the script.
+- Output: None (progress bar and text window appear to be essentially useless)
+</pre>
+</li>
+<li><p class="first">Hit the create button to create MacLeo.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="how-to-create-macos-x-pkg-files">
+<h3><a class="toc-backref" href="#id8">How to create MacOS X .pkg files</a></h3>
+<p>This tells how I created <tt class="docutils literal"><span class="pre">leo-4-3-a3.pkg</span></tt> using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is included in the <tt class="docutils literal"><span class="pre">Xtools</span></tt> disk that comes with MacOS X. Installing
+<tt class="docutils literal"><span class="pre">PackageMaker</span></tt> was easy, but I don't remember the details.</p>
+<ol class="arabic simple">
+<li>Make sure <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist</span></tt> contains a folder called <tt class="docutils literal"><span class="pre">leo-(version)</span></tt>.
+The <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist/leo-(version)</span></tt> folder should contain a <em>folder</em> called just <tt class="docutils literal"><span class="pre">leo</span></tt>.
+This is the folder that should have the files to be distributed.
+I got this folder by downloading <tt class="docutils literal"><span class="pre">leo-4-3-a3.zip</span></tt>, the official a3 distribution.</li>
+<li>Open <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> by double-clicking the file <tt class="docutils literal"><span class="pre">~/dist/LeoPackage.pmsp</span></tt>
+I originally created this .pmsp file in <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.
+It will be included in the next official release.  I'll also add it to cvs.
+<tt class="docutils literal"><span class="pre">LeoPackage.pmsp</span></tt> contains most of the information needed to create the .pkg file,
+but even without the .pmsp file using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is pretty self-explanatory</li>
+<li>Update the description in the <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> dialog.
+This should be similar to the readme file.</li>
+<li>Browse to <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist/leo-(version)</span></tt> in the <tt class="docutils literal"><span class="pre">Files</span></tt> tab in the <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> dialog.</li>
+<li>Choose <tt class="docutils literal"><span class="pre">Make</span> <span class="pre">Package</span></tt> from the <tt class="docutils literal"><span class="pre">PackageMaker</span> <span class="pre">File</span></tt> menu.
+If necessary, set the file name to <tt class="docutils literal"><span class="pre">Leo.pkg</span></tt>.  This will create <tt class="docutils literal"><span class="pre">Leo.pkg</span></tt>.</li>
+<li>Quit <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.  Choose 'yes' when prompted to save <tt class="docutils literal"><span class="pre">LeoPackage.pmsp</span></tt>.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="running-leo">
+<h2><a class="toc-backref" href="#id9">Running Leo</a></h2>
+<p>You can run Leo from a Python interpreter as follows:</p>
+<pre class="literal-block">
+import leo
+leo.run() # runs Leo, opening a new outline.
+leo.go() # runs Leo after reloading all modules.
+leo.leoOpen(fileName) # runs Leo, reloads all modules, and opens fileName.
+</pre>
+<p>Here are some tips that may make running Leo easier:</p>
+<dl class="docutils">
+<dt><strong>Linux</strong></dt>
+<dd><p class="first">The following shell script will allow you to open foo.leo files by typing leo foo:</p>
+<pre class="literal-block">
+#!/bin/sh
+python &lt;leopath&gt;/leo.py $1
+</pre>
+<p class="last">where &lt;leopath&gt; is replaced with the path to the leo directory.</p>
+</dd>
+<dt><strong>Windows</strong></dt>
+<dd><p class="first">If you have <a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows">associated .leo files with Leo</a> you may run Leo by double-clicking any .leo file.
+You can also use a batch file.
+Put the following .bat file in c:\Windows:</p>
+<pre class="literal-block">
+cd c:\prog\LeoCVS\leo
+c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
+</pre>
+<p class="last">This opens the file specified by the first argument (%1).</p>
+</dd>
+</dl>
+<p>The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>. Leo attempts to create
+<tt class="docutils literal"><span class="pre">leoID.txt</span></tt> in your home directory, then in Leo's config directory, and
+finally in Leo's src directory. You can change this identifier at any time by
+editing <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>.</p>
+</div>
+<div class="section" id="running-leo-in-batch-mode">
+<h2><a class="toc-backref" href="#id10">Running Leo in batch mode</a></h2>
+<p>On startup, Leo looks for two arguments of the form:</p>
+<pre class="literal-block">
+--script scriptFile
+</pre>
+<p>If found, Leo enters batch mode. In batch mode Leo does not show any windows.
+Leo assumes the scriptFile contains a Python script and executes the contents of
+that file using Leo's <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command. By default, Leo sends all
+output to the console window. Scripts in the scriptFile may disable or enable
+this output by calling <tt class="docutils literal"><span class="pre">app.log.disable</span></tt> or <tt class="docutils literal"><span class="pre">app.log.enable</span></tt></p>
+<p>Scripts in the scriptFile may execute any of Leo's commands except the <tt class="docutils literal"><span class="pre">Edit</span> <span class="pre">Body</span></tt>
+and <tt class="docutils literal"><span class="pre">Edit</span> <span class="pre">Headline</span></tt> commands. Those commands require interaction with the user.
+For example, the following batch script reads a Leo file and prints all the
+headlines in that file:</p>
+<pre class="literal-block">
+path = r&quot;c:\prog\leoCVS\leo\test\test.leo&quot;
+
+g.app.log.disable() # disable reading messages while opening the file
+flag,newFrame = g.openWithFileName(path,None)
+g.app.log.enable() # re-enable the log.
+
+for p in newFrame.c.allNodes_iter():
+    g.es(g.toEncodedString(p.headString(),&quot;utf-8&quot;))
+</pre>
+</div>
+<div class="section" id="how-to-install-the-aspell-spell-checker">
+<h2><a class="toc-backref" href="#id11">How to install the Aspell spell checker</a></h2>
+<p>You must install the Aspell package if you want to use Leo's Spell tab.</p>
+<ol class="arabic simple">
+<li>Download and install the Aspell package from <a class="reference" href="http://aspell.sourceforge.net/">http://aspell.sourceforge.net/</a>
+Typically this will create a directory called Aspell/bin</li>
+<li>If you are using Python 2.3 or Python 2.4 you must copy a dll
+from Leo's extensions folder to the Aspell/bin directory.
+This step is <em>not</em> needed if you are using Python 2.5 or later.
+Leo's extensions folder comes with two dll's: aspell23.pyd and aspell24.pyd,
+for Python 2.3 and 2.4 respectively.
+Make a copy of the appropriate dll, <strong>rename it</strong> to be aspell.pyd,
+and copy the renamed aspell.pyd file to Aspell/bin.</li>
+<li>Specify the location of the Aspell and Aspell/bin directories using
+the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.</li>
+</ol>
+<hr class="docutils" />
+<p><a class="reference" href="FAQ.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="intro.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

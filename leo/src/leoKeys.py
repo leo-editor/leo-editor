@@ -376,12 +376,14 @@ class autoCompleterClass:
         '''Show the autocompleter status on the status line.'''
 
         k = self.k
-        g.es('Autocompleter %s' % (g.choose(k.enable_autocompleter,'On','Off')),color='red')
+        s = 'autocompleter' % g.choose(k.enable_autocompleter,'On','Off')
+        g.es(s,color='red')
 
     def showCalltipsStatus (self):
         '''Show the autocompleter status on the status line.'''
         k = self.k
-        g.es('Calltips %s' % (g.choose(k.enable_calltips,'On','Off')),color='red')
+        s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+        g.es(s,color='red')
     #@nonl
     #@-node:ekr.20061031131434.15:showAutocompleter/CalltipsStatus
     #@-node:ekr.20061031131434.8:Top level
@@ -490,7 +492,6 @@ class autoCompleterClass:
             try:
                 s1,s2,s3,s4 = inspect.getargspec(obj)
             except:
-                # g.es('inspect failed:',repr(obj))
                 self.extendSelection('(')
                 self.finish()
                 return # Not a function.  Just '('.
@@ -612,7 +613,8 @@ class autoCompleterClass:
             self.tabListIndex = -1 # The next item will be item 0.
             self.setSelection(common_prefix)
         for name in self.tabList:
-            g.es('%s' % (name),tabName=self.tabName)
+            z = '%s' % (name)
+            g.es('',z,tabName=self.tabName)
     #@-node:ekr.20061031131434.28:computeCompletionList
     #@+node:ekr.20061031131434.29:doBackSpace (autocompleter)
     def doBackSpace (self):
@@ -837,16 +839,16 @@ class autoCompleterClass:
 
         if not doc:
             if not self.hasAttr(obj,word):
-                g.es('No docstring for %s' % (word),color='blue')
+                g.es('no docstring for',word,color='blue')
                 return
             obj = self.getAttr(obj,word)
             doc = inspect.getdoc(obj)
 
         if doc:
             c.frame.log.clearTab('Info',wrap='word')
-            g.es(doc,tabName='Info')
+            g.es('',doc,tabName='Info')
         else:
-            g.es('No docstring for %s' % (word),color='blue')
+            g.es('no docstring for',word,color='blue')
     #@-node:ekr.20061031131434.38:info
     #@+node:ekr.20061031131434.39:insertNormalChar
     def insertNormalChar (self,ch,keysym):
@@ -1084,7 +1086,7 @@ class autoCompleterClass:
         if 0: # thread:
             # Use a thread to do the initial scan so as not to interfere with the user.            
             def scan ():
-                #g.es( "This is for testing if g.es blocks in a thread", color = 'pink' )
+                #g.es("This is for testing if g.es blocks in a thread", color = 'pink' )
                 # During unit testing c gets destroyed before the scan finishes.
                 if not g.app.unitTesting:
                     self.scanOutline(verbose=True)
@@ -1125,13 +1127,13 @@ class autoCompleterClass:
 
         '''Traverse an outline and build the autocommander database.'''
 
-        if verbose: g.es_print('Scanning for auto-completer...')
+        if verbose: g.es_print('scanning for auto-completer...')
 
         c = self.c ; k = self.k ; count = 0
         for p in c.allNodes_iter():
             if verbose:
                 count += 1 ;
-                if (count % 200) == 0: g.es('.',newline=False)
+                if (count % 200) == 0: g.es('','.',newline=False)
             language = g.scanForAtLanguage(c,p)
             # g.trace('language',language,p.headString())
             s = p.bodyString()
@@ -1316,7 +1318,7 @@ class autoCompleterClass:
 
         except Exception:
             if 1: # Could be a weird kind of user error.
-                g.es_print('unexpected exception in computeProxyObject')
+                g.es_print('unexpected exception in',computeProxyObject)
                 g.es_exception()
             return None
     #@-node:ekr.20061031131434.59:createClassObjectFromString
@@ -1375,10 +1377,10 @@ class autoCompleterClass:
                     fileName, n = g.getLastTracebackFileAndLineNumber()
                     p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
                     if not p or p == root:
-                        g.es_print('Syntax error in class node: can not continue')
+                        g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:
-                        # g.es_print('Syntax error: deleting %s' % p.headString())
+                        # g.es_print('syntax error: deleting',p.headString())
                         self.excludedTnodesList.append(p.v.t)
                         s = g.getScript(c,root,useSelectedText=False)
             return s or ''
@@ -1584,6 +1586,7 @@ class keyHandlerClass:
         self.commandName = None # The name of the command being executed.
         self.funcReturn = None # For k.simulateCommand
         self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+        self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = '' # The name of the input mode, or None.
         self.inverseCommandsDict = {}
@@ -1872,7 +1875,7 @@ class keyHandlerClass:
         if shortcut:
             for s in ('enter','leave'):
                 if -1 != shortcut.lower().find(s):
-                    g.es_print('Ignoring invalid key binding: %s = %s' % (
+                    g.es_print('ignoring invalid key binding:','%s = %s' % (
                         commandName,shortcut),color='blue')
                     return
         #@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
@@ -1902,8 +1905,7 @@ class keyHandlerClass:
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
-                    g.es_print('redefining %s in %s to %s in %s' % (
-                        z,b2.pane,commandName,pane),color='red')
+                    g.es_print('redefining',z,'in',b2.pane,'to',commandName,'in',pane,color='red')
 
             if not modeFlag:
                 bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -1915,7 +1917,7 @@ class keyHandlerClass:
             return True
         except Exception: # Could be a user error.
             if not g.app.menuWarningsGiven:
-                g.es_print('Exception binding %s to %s' % (shortcut,commandName))
+                g.es_print('exception binding',shortcut,'to',commandName)
                 g.es_exception()
                 g.app.menuWarningsGiven = True
             return False
@@ -2060,8 +2062,7 @@ class keyHandlerClass:
                 c.commandsDict [key] = func
                 # k.inverseCommandsDict[func.__name__] = key
             else:
-                g.es_print('bad abbrev: %s: unknown command name: %s' %
-                    (key,commandName),color='blue')
+                g.es_print('bad abbrev:',key,'unknown command name:',commandName,color='blue')
     #@-node:ekr.20061031131434.99:k.initAbbrev
     #@+node:ekr.20061031131434.100:addModeCommands (enterModeCallback)
     def addModeCommands (self):
@@ -2167,8 +2168,8 @@ class keyHandlerClass:
                 except Exception:
                     if self.trace_bind_key_exceptions:
                         g.es_exception()
-                    g.es_print('exception binding %s to %s' % (
-                        bindStroke, c.widget_name(w)), color = 'blue')
+                    g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+
                     if g.app.unitTesting: raise
     #@-node:ekr.20061031131434.103:k.makeMasterGuiBinding
     #@-node:ekr.20061031131434.88:Binding (keyHandler)
@@ -2303,7 +2304,7 @@ class keyHandlerClass:
                 if val != 'continue':
                     k.endCommand(event,k.commandName)
             else:
-                g.es_print('no state function for %s' % (k.state.kind),color='red')
+                g.es_print('no state function for',k.state.kind,color='red')
 
         return val
     #@-node:ekr.20061031131434.108:callStateFunction
@@ -2491,11 +2492,11 @@ class keyHandlerClass:
         '''Hide the minibuffer.'''
         k = self ; c = k.c
         c.frame.hideMinibuffer()
-        g.es('Minibuffer hidden',color='red')
+        g.es('minibuffer hidden',color='red')
         for commandName in ('show-mini-buffer','toggle-mini-buffer'):
             shortcut = k.getShortcutForCommandName(commandName)
             if shortcut:
-                g.es('%s is bound to: %s' % (commandName,shortcut))
+                g.es('',commandName,'is bound to:',shortcut)
 
     def showMinibuffer (self,event):
         '''Show the minibuffer.'''
@@ -2622,14 +2623,14 @@ class keyHandlerClass:
                 s1,s2,s3 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            g.es('%s %s' % (sep, prefix),tabName=tabName)
+            g.es('','%s %s' % (sep, prefix),tabName=tabName)
             self.printBindingsHelper(data2,n1,n2,prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        g.es('%s %s' % (sep, 'Plain Keys',),tabName=tabName)
+        g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
         self.printBindingsHelper(data,n1,n2,prefix=None)
         state = k.unboundKeyAction 
         k.showStateAndMode()
@@ -2647,7 +2648,7 @@ class keyHandlerClass:
         for data in (data1,data2):
             data.sort(lambda x,y: cmp(x[1],y[1]))
             for s1,s2,s3 in data:
-                g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+                g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
     #@-node:ekr.20061031131434.120:printBindingsHelper
     #@-node:ekr.20061031131434.119:printBindings & helper
     #@+node:ekr.20061031131434.121:printCommands
@@ -2676,7 +2677,7 @@ class keyHandlerClass:
 
         # This isn't perfect in variable-width fonts.
         for s1,s2,s3 in data:
-            g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
+            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
     #@-node:ekr.20061031131434.121:printCommands
     #@+node:ekr.20061031131434.122:repeatComplexCommand & helper
     def repeatComplexCommand (self,event):
@@ -2687,7 +2688,7 @@ class keyHandlerClass:
             k.setState('last-full-command',1,handler=k.repeatComplexCommandHelper)
             k.setLabelBlue("Redo: %s" % str(k.mb_history[0]))
         else:
-            g.es('No previous command',color='blue')
+            g.es('no previous command',color='blue')
         return 'break'
 
     def repeatComplexCommandHelper (self,event):
@@ -2766,6 +2767,18 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
+        commandName = commandName.strip()
+        if not commandName: return
+
+
+        aList = commandName.split(None)
+        if len(aList) == 1:
+            k.givenArgs = []
+        else:
+            commandName = aList[0]
+            k.givenArgs = aList[1:]
+
+        # g.trace(commandName,k.givenArgs)
         func = c.commandsDict.get(commandName)
 
         if func:
@@ -2899,7 +2912,7 @@ class keyHandlerClass:
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting
         if f and f.__name__ != 'dummyCallback' and verbose:
-            g.es_print('Redefining %s' % (commandName), color='red')
+            g.es_print('redefining',commandName, color='red')
 
         c.commandsDict [commandName] = func
         k.inverseCommandsDict [func.__name__] = commandName
@@ -2925,14 +2938,14 @@ class keyHandlerClass:
             ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if verbose and ok and not g.app.silentMode:
-                g.es_print('@command: %s = %s' % (
+                g.es_print('','@command: %s = %s' % (
                     commandName,k.prettyPrintKey(stroke)),color='blue')
                 if 0:
                     d = k.masterBindingsDict.get('button',{})
                     g.print_dict(d)
             c.frame.tree.setBindings()
         elif verbose and not g.app.silentMode:
-            g.es_print('@command: %s' % (commandName),color='blue')
+            g.es_print('','@command: %s' % (commandName),color='blue')
 
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
@@ -3426,8 +3439,7 @@ class keyHandlerClass:
             if commandName == '*entry-commands*': continue
             func = c.commandsDict.get(commandName)
             if not func:
-                g.es_print('No such command: %s. Referenced from %s' % (
-                    commandName,modeName))
+                g.es_print('no such command:',commandName,'Referenced from',modeName)
                 continue
             bunchList = d.get(commandName,[])
             for bunch in bunchList:
@@ -3648,16 +3660,14 @@ class keyHandlerClass:
 
         data.sort()
 
-        # g.es('%s\n\n' % (k.inputModeName),tabName=tabName)
-
         modeName = k.inputModeName.replace('-',' ')
         if modeName.endswith('mode'): modeName = modeName[:-4].strip()
 
-        g.es('%s mode\n\n' % modeName,tabName=tabName)
+        g.es('','%s mode\n\n' % modeName,tabName=tabName)
 
         # This isn't perfect in variable-width fonts.
         for s1,s2 in data:
-            g.es('%*s %s' % (n,s1,s2),tabName=tabName)
+            g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
     #@-node:ekr.20061031131434.166:modeHelpHelper
     #@-node:ekr.20061031131434.165:modeHelp
     #@-node:ekr.20061031131434.156:Modes
@@ -3693,7 +3703,7 @@ class keyHandlerClass:
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
             for s1,s2,s3 in data:
-                g.es('%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
+                g.es('','%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
 
         c.bodyWantsFocus()
     #@-node:ekr.20061031131434.175:k.computeCompletionList
@@ -3840,7 +3850,7 @@ class keyHandlerClass:
             theDir,fileName = g.os_path_split(path)
             s = g.choose(path.endswith('\\'),theDir,fileName)
             s = fileName or g.os_path_basename(theDir) + '\\'
-            g.es(s,tabName=tabName)
+            g.es('',s,tabName=tabName)
     #@-node:ekr.20061031131434.174:k.showFileNameTabList
     #@-node:ekr.20061031131434.168:getFileName & helpers
     #@+node:ekr.20061031131434.179:getShortcutForCommand/Name (should return lists)

@@ -266,7 +266,7 @@ class baseCommands:
 
         if c.exists and c.inCommand and not g.unitTesting:
             # g.trace('inCommand',c)
-            g.es('Ignoring command: already executing a command.',color='red')
+            g.es('ignoring command: already executing a command.',color='red')
             return 'break'
 
         if label and event is None: # Do this only for legacy commands.
@@ -675,7 +675,7 @@ class baseCommands:
         #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
         #@nl
 
-        fileName = g.app.gui.runOpenFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
             title = "Open",
             filetypes = [("Leo files","*.leo"), ("All files","*")],
             defaultextension = ".leo")
@@ -695,7 +695,6 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@nonl
     #@-node:ekr.20031218072017.2821:open
     #@+node:ekr.20031218072017.2823:openWith and allies
     def openWith(self,event=None,data=None):
@@ -962,11 +961,11 @@ class baseCommands:
 
         c.beginUpdate()
         try:
-            if c.mFileName != "":
+            if c.mFileName:
                 # Calls c.setChanged(False) if no error.
                 c.fileCommands.save(c.mFileName)
             else:
-                fileName = g.app.gui.runSaveFileDialog(
+                fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                     initialfile = c.mFileName,
                     title="Save",
                     filetypes=[("Leo files", "*.leo")],
@@ -1003,7 +1002,7 @@ class baseCommands:
             if not c.mFileName:
                 c.frame.title = ""
 
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save As",
                 filetypes=[("Leo files", "*.leo")],
@@ -1011,6 +1010,7 @@ class baseCommands:
             c.bringToFront()
 
             if fileName:
+                g.trace(fileName)
                 # 7/2/02: don't change mFileName until the dialog has suceeded.
                 c.mFileName = g.ensure_extension(fileName, ".leo")
                 c.frame.title = c.mFileName
@@ -1064,7 +1064,7 @@ class baseCommands:
                 c.frame.title = ""
 
             # set local fileName, _not_ c.mFileName
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save To",
                 filetypes=[("Leo files", "*.leo")],
@@ -1795,7 +1795,7 @@ class baseCommands:
             else:
                 # New in 4.2.1: assume the c.currentPosition is the root of a script.
                 root = c.currentPosition()
-                g.es("No ancestor @file node: using script line numbers", color="blue")
+                g.es("no ancestor @file node: using script line numbers", color="blue")
                 scriptFind = True
                 lines = g.getScript (c,root,useSelectedText=False)
                 lines = g.splitLines(lines)
@@ -2478,7 +2478,7 @@ class baseCommands:
             del lines[0]
         if not lines:
             if not g.unitTesting:
-                g.es("Nothing follows section name",color="blue")
+                g.es("nothing follows section name",color="blue")
             return
 
         # Remove leading whitespace from all body lines.
@@ -2526,13 +2526,13 @@ class baseCommands:
             oops = not (head1 and tail1) and not (head2 and tail2)
 
         if oops:
-            g.es("Selected text should start with a section name",color="blue")
+            g.es("selected text should start with a section name",color="blue")
             return
         #@-node:ekr.20031218072017.1709:<< Set headline for extractSection >>
         #@nl
         if not lines:
             if not g.unitTesting:
-                g.es("Nothing follows section name",color="blue")
+                g.es("nothing follows section name",color="blue")
             return
 
         # Remove leading whitespace from all body lines.
@@ -2596,7 +2596,7 @@ class baseCommands:
                 c.selectPosition(current)
                 c.validateOutline()
                 if not found:
-                    g.es("Selected text should contain one or more section names",color="blue")
+                    g.es("selected text should contain one or more section names",color="blue")
             u.afterChangeGroup(current,undoType)
         finally:
             c.endUpdate()
@@ -3958,9 +3958,10 @@ class baseCommands:
                 badline = nag.get_lineno()
                 line    = nag.get_line()
                 message = nag.get_msg()
-                g.es("Indentation error in",headline,"line",badline,color="blue")
+                g.es("indentation error in",headline,"line",badline,color="blue")
                 g.es(message)
-                g.es("offending line:\n",repr(str(line))[1:-1])
+                line2 = repr(str(line))[1:-1]
+                g.es("offending line:\n",line2)
 
         except:
             g.trace("unexpected exception")
@@ -4838,7 +4839,7 @@ class baseCommands:
         c = self ; u = c.undoer ; undoType = 'Mark Clones'
         current = c.currentPosition()
         if not current or not current.isCloned():
-            g.es('The current node is not a clone',color='blue')
+            g.es('the current node is not a clone',color='blue')
             return
 
         c.beginUpdate()
@@ -4940,7 +4941,7 @@ class baseCommands:
 
         c = self ; h = c.rootPosition().headString()
         kind = g.choose(h.startswith('@chapter'),'chapter','hoist')
-        g.es("Can't move node out of",kind,color="blue")
+        g.es("can't move node out of",kind,color="blue")
     #@-node:ekr.20070420092425:cantMoveMessage
     #@+node:ekr.20031218072017.1767:demote
     def demote (self,event=None):
@@ -5446,7 +5447,7 @@ class baseCommands:
             finally:
                 c.endUpdate()
         else:
-            g.es('No more clones',color='blue')
+            g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
     #@+node:ekr.20031218072017.2917:goToNextDirtyHeadline
     def goToNextDirtyHeadline (self,event=None):

@@ -1,700 +1,194 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080224180411:** fix problems with install script
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/9ac0ca91f1cb09a6?hl=en
-
-On Feb 18, 2:17 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
-
-> Leo 4.4.7 final is available at:http://sourceforge.net/project/showfiles.php?group_id=3458&package_id...
-
-i'm trying to install from the zip archive in linux. all of the text
-files appear to be in DOS format and this is confusing bash when i
-invoke the install script. i also used unzip -a to convert the files
-but it had no effect; i think everything in the archive is marked as
-binary. 
-#@nonl
-#@-node:ekr.20080224180411:** fix problems with install script
-#@+node:ekr.20080223084211:To do: ILeo
-@nocolor
-
-ILeo:
-- Important to emphasize simplicity of foundation: leox.c and leox.g.
-- Important ot emphasize that ILeo is similar to scripting plugin.
-
-* Scripts can create other scripts (like g.es, like unit tests).
-* Data can be **anything**: uA's.
-
-- Implementation of ILeo similar to implementation of scripting plugin
-#@nonl
-#@-node:ekr.20080223084211:To do: ILeo
-#@+node:ekr.20080226133349:at.readError may have wrong args
-#@-node:ekr.20080226133349:at.readError may have wrong args
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20070625091423:Add translation services
+#@+node:ekr.20080303060023:pyLint
 @nocolor
 
-*Many* calls to g.es and g.es_print have a mix of translated and untranslated items.
-Untranslated items should include file names, directories, gnx's, leo_id's etc.
+pylint did not pick up error in number of args to at.readError.
 
-**Don't bother to do clone-find-all: there are 666 matches!**
+Add pylint tests for leo.py and leoApp.leo (and others?)
 
-Regardless of the chosen scheme:
-
-- g.translate will do the actual translation.
-
-- g.es and g.es_print will translate only the first, third, etc arguments
-  (Keyword arguments, color & newline, etc. are never translated)
-
-
-@color
-#@nonl
-#@+node:ekr.20071115113231:Results
-@color
-
-# Idea: g.et translates only the first arg.
-# But this means we can use g.es and g.es *as is*!  (change s1 + s2 to s1,s2)
-# Standard messages: 'done', 'not found', 'can not open', 'can not create', '%s: %s'
-
-@thin leo.py
-g.et("disabling save commands",color="red")
-g.es("File not found: " + fileName)
-g.es_print("can not open script file: " + name, color="red")
-g.es("%s dir: %s" % (kind,theDir),color="blue")
-g.es("psyco now logging to",theFile,color="blue")
-g.et("psyco now running",color="blue")
-
-@thin leoApp.py
-g.es_print("leoID = " + g.app.leoID, color='red')
-g.es("leoID = %s (in %s)" % (g.app.leoID,theDir), color="red")
-g.es("empty %s (in %s)" % (tag,theDir), color = "red")
-g.et_print('Unexpected exception in app.setLeoID',color='red')
-g.es("using os.getenv('USER'): %s " % (repr(theId)),color='red')
-g.es("leoID = %s" % (repr(g.app.leoID)),color="blue")
-g.et_print(s, color="red")
-g.es(cant,color='red')
-g.es(cant,color='red')
-g.es(s,color=color,newline=0) # The caller must write the newlines.
-
-@thin leoAtFile.py
-g.et_print('check-derived-file passed',color='blue')
-g.es("read only: " + fn,color="red")
-g.es("reading: " + root.headString())
-g.es('resurrected node: %s' % (p.headString()),color='blue')
-g.es('in file: %s' % (fileName),color='blue')
-g.et('you may want to delete ressurected nodes')
-g.et("no @file nodes in the selected tree")
-g.es_print('Errors inhibited read @auto %s' % (fileName),color='red')
-g.es("dummy created")
-g.es("using " + s)
-g.es(len(lines), " lines" + m)
-g.et("Write the @file node or use the Import Derived File command")
-g.es("Warning: updating changed text in %s" %
-g.es("Correcting hidden node: t=%s" % repr(at.t),color="red")
-g.es("Ignoring 3.x sentinel: " + s.strip(), color="blue")
-g.es("Ignoring bad @@language sentinel: %s" % line,color="red")
-g.es("Ignoring bad @comment sentinel: %s" % line,color="red")
-g.es("changed: " + p.headString(),color="blue")
-g.es("bad encoding in derived file:",encoding)
-g.es("Not written: " + at.outputFileName)
-g.et("finished")
-g.et("no @file nodes in the selected tree")
-g.es("no dirty @file nodes")
-g.es("finished")
-g.et("no dirty @auto nodes in the selected tree")
-g.et("no @auto nodes in the selected tree")
-g.es("Not written: " + at.outputFileName)
-g.es_print('@auto node not written:\n') ### continued
-g.et("finished")
-g.et("no @file node in the selected tree")
-g.es('dubious brackets in %s' % line)
-g.es("Ignoring bad @language directive: %s" % line,color="blue")
-g.es("Ignoring bad @comment directive: %s" % line,color="blue")
-g.es('%-10s %s' % ('unchanged:',self.shortFileName))
-g.es('%-10s %s' % ('wrote:',self.shortFileName))
-g.es('%-10s %s' % ('created:',self.targetFileName))
-g.es("correcting line endings in: " + self.targetFileName,color="blue")
-g.es("parent node: " + p.parent().headString(),color="blue")
-g.es("exception writing:" + self.targetFileName,color="red")
-g.es("exception deleting:" + self.outputFileName,color="red")
-g.et("conflicting @header and @noheader directives")
-g.et("Unknown language: using Python comment delimiters")
-g.es("c.target_language:",c.target_language)
-g.es("delim1,delim2,delim3:",delim1,delim2,delim3)
-
-@thin leoBridge.py
-g.es("leoID = %s (in %s)" % (g.app.leoID,theDir), color="red")
-g.es("empty %s (in %s)" % (tag,theDir), color = "red")
-g.et('Unexpected exception in app.setLeoID',color='red')
-g.es('%s dir: %s' % (kind,theDir),color="blue")
-
-@thin leoChapters.py
-g.es_print(s,color='red')
-
-@thin leoColor.py
-
-@thin leoCommands.py
-g.es(c.disableCommandsMessage,color='blue')
-g.et('Ignoring command: already executing a command.',color='red')
-g.et("exception executing command")
-g.et("Leo Log Window...",color=color)
-g.es(signon)
-g.es("Python %d.%d.%d, %s\n%s" % (n1,n2,n3,g.app.gui.getFullVersion(c),version))
-g.et("unexpected exception in c.openWith")
-g.es("reopening: " + g.shortFileName(path),color="blue")
-g.es("exception executing: "+command)
-g.es("recreating:  " + g.shortFileName(path),color="red")
-g.es("creating:  " + g.shortFileName(path),color="blue")
-g.es("exception creating temp file",color="red")
-g.es("Could not retrieve your user name.")
-g.es("Temporary files will be stored in: %s" % leoTempDir)
-g.es("Save commands disabled",color="purple")
-g.es("Save commands disabled",color="purple")
-g.es("Save commands disabled",color="purple")
-g.es("can not open:" + fileName)
-g.es("can not open:" + fileName)
-g.es_print('wrote: %s' % (fileName),color='blue')
-g.es('can not write %s' % (fileName),color='red')
-g.es("end of script",color="purple",tabName=tabName)
-g.es("no script selected",color="blue",tabName=tabName)
-g.es("error handling: " + root.headString())
-g.es("No ancestor @file node: using script line numbers", color="blue")
-g.es("not found: " + fileName)
-g.es("not found: " + vnodeName, color="red")
-g.es_print(s, color="red")
-g.es_print(s, color="red") ; ok = False
-g.es_print(s, color="red")
-g.es_print(s, color = "red")
-g.es_print(s, color="red")
-g.es("not found: " + vnodeName, color="red")
-g.es("%d lines" % len(lines), color="blue")
-g.es("bad @+leo sentinel")
-g.es("line "+str(n)+" is a sentinel line")
-g.es("bad @+node sentinel")
-g.es("blanks converted to tabs in %d nodes" % count) # Must come before c.endUpdate().
-g.es("tabs converted to blanks in %d nodes" % count)
-g.es("Nothing follows section name",color="blue")
-g.es("Nothing follows section name",color="blue")
-g.es("Selected text should start with a section name",color="blue")
-g.es("Selected text should contain one or more section names",color="blue")
-g.es_print("head_lines: ",head_lines)
-g.es_print("ins: ",ins)
-g.es_print("tail_lines: ",tail_lines)
-g.es("unmatched %s" % repr(ch))
-g.es("time.strftime not available on this platform",color="blue")
-g.es('No text selected',color='blue')
-g.es('No text selected',color='blue')
-g.es("'%s' not found" % (d2),color='blue')
-g.es("'%s' not found" % (d3),color='blue')
-g.es("%s command is not valid in batch mode" % commandName)
-g.es("all tests enabled: this may take awhile",color="blue")
-g.es('.',newline=False)
-g.es_print(s,color="red")
-g.es(s,color="green")
-g.es("Check complete",color="blue")
-g.es('.',newline=False)
-g.es("checking Python code   ")
-g.es("surprise in checkPythonNode")
-g.es("Check complete",color="blue")
-g.es('.',newline=False)
-g.es_print(s,color="blue")
-g.es("ParserError in %s" % headline,color="blue")
-g.es(str(msg))
-g.es("TokenError in %s" % headline,color="blue")
-g.es(str(msg))
-g.es("Indentation error in %s, line %d" % (headline, badline),color="blue")
-g.es(message)
-g.es("offending line:\n%s" % repr(str(line))[1:-1])
-g.es("Error pretty-printing %s.  Not changed." % h, color="blue")
-g.es("done",color="blue")
-g.es("done",color="blue")
-g.es('The current node is not a clone',color='blue')
-g.es("Can't move node out of %s" % (kind),color="blue")
-g.es("%s not found in %s" % (name,configDir))
-g.es("%s not found in %s or %s" % (name,configDir,homeDir))
-g.es('not found: %s' % fileName)
-g.es("not found: %s" % name)
-g.es("not found: " + url)
-g.es("not found: %s" % name)
-g.es("not found: " + url)
-g.es("not found: " + url)
-g.es("bad %s: %s" % (encodingName,encoding))
-
-@thin leoConfig.py
-g.es(s,color="blue")
-g.es_print(s,color='blue')
-g.es("over-riding setting: %s from %s" % (name,path))
-g.es_print(s,color='blue')
-g.es("bad %s: %s" % (encodingName,encoding))
-g.es("g.app.config: bad encoding: %s: %s" % (ivar,encoding))
-g.es_print(s % (bunch.kind,setting,requestedType),color='red')
-g.es_print('created %s' % (fileName),color='red')
-g.es_print('can not create %s' % (fileName),color='red')
-g.es('unexpected exception writing %s' % fileName,color='red')
-g.es('%s %s = %s' % (letter,key,val))
-
-@thin leoEditCommands.py
-g.es('%s=%s' % (z,self.abbrevs[z]))
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es('Buffers...')
-g.es(name)
-g.es('Buffers...')
-g.es(name)
-g.es('Debugger does not exist: %s' % (debugger),color='blue')
-g.es('No debugger found.')
-g.es('enabled verbose gc stats',color='blue')
-g.es('enabled brief gc stats',color='blue')
-g.es_print('      hasFocusWidget: %s' % c.widget_name(c.hasFocusWidget))
-g.es_print('requestedFocusWidget: %s' % c.widget_name(c.requestedFocusWidget))
-g.es_print('           get_focus: %s' % c.widget_name(c.get_focus()))
-g.es('can not load image: %s' % (path))
-g.es_print('bad open/close_flash_brackets setting: using defaults')
-g.es('Lossage...')
-g.es(stroke or d.get(ch) or ch or 'None')
-g.es('Extend mode %s' % (g.choose(val,'on','off')), color='red')
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es_print(s)
-g.es('%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
-g.es_print(s)
-g.es_print(s)
-g.es_print(s)
-g.es_print(s)
-g.es('Can not open',fileName)
-g.es('Can not create',fileName)
-g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
-g.es_print('Can not open dictionary file: %s' % (
-g.es("Unable to open local dictionary '%s' - using a blank one instead" % fileName)
-g.es("Adding ", color= "blue", newline= False)
-g.es('%s' % self.currentWord)
-g.es("Can not add %s to dictionary" % self.currentWord, color="red")
-g.es("no more misspellings")
-g.es(message,color='blue')
-g.es("Ignoring ", color= "blue", newline= False)
-g.es('%s' % self.currentWord)
-g.es_print(message,color='blue')
-
-@thin leoFileCommands.py
-g.es('%s: %s' % (target,data),color='blue')
-g.es("reading: " + self.fileName)
-g.es_print('check-leo-file passed',color='blue')
-g.es_print('check-leo-file failed: %s' % str(message),color='red')
-g.es("Invalid Paste As Clone",color="blue")
-g.es("The clipboard is not valid ",color="blue")
-g.es("read only: " + fileName,color="red")
-g.es("bad tnode index: %s. Using empty text." % str(index))
-g.es("newTnode: unexpected index type:",type(index),index,color="red")
-g.es("reading: " + fileName)
-g.es("default tangle directory not found:" + c.tangle_directory)
-g.es("no tnode with index: %s.  The text will be discarded" % str(index))
-g.es_print(s, color = "blue")
-g.es_print(s)
-g.es_print(s,color="blue")
-g.es_print(s)
-g.es("Missing vnode:",headline,color="red")
-g.es("Probably an outline topology error.")
-g.es("invalid encoding in .leo file: " + encoding, color="red")
-g.es_print('Unexpected exception converting hexlified string to string')
-g.es_print('Error parsing %s' % (inputFileName),color='red')
-g.es_print('Unexpected exception parsing %s' % (inputFileName),color='red')
-g.es("clearing undo")
-g.es("saved: %s%s" % (zipMark,g.shortFileName(fileName)))
-g.es("read only",color="red")
-g.es("exception deleting backup file:" + fileName)
-g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
-g.es("ignoring non-string attribute %s in %s" % (
-g.es('putUaHelper: unexpected pickling exception',color='red')
-g.es("ignoring non-pickleable attribute %s in %s" % (
-g.es("deleting tnode list for %s" % p.headString(),color="blue")
-g.es("Writing erroneous: %s" % p.headString(),color="blue")
-g.es("ignoring non-dictionary unknownAttributes for",p,color="blue")
-g.es("ignoring bad unknownAttributes key %s in %s" % (
-g.es('putDescendentUnknownAttributes: unexpected pickling exception',color='red')
-g.es("putDescendentUnknownAttributes can't happen 2",color='red')
-g.es("exception writing: " + fileName)
-g.es("can not create: read only: " + fileName,color="red")
-g.es("read only",color="red")
-g.es("restoring " + fileName + " from " + backupName)
-g.es("auto-saving outline",color="blue")
-g.es("auto-saving outline",color="blue")
-g.es("auto-saving outline",color="blue")
-
-@thin leoGlobals.py
-g.es("ignoring: " + g.get_line(s,i))
-g.es(g.angleBrackets("*") + "= requires @root in the headline")
-g.es("invalid @encoding: "+encoding,color="red")
-g.es("ignoring " + s,color="red")
-g.es("Ignoring " + s,color="red")
-g.es(message)
-g.es_print(title)
-g.es_print(''.join(['%2x ' % (ord(ch)) for ch in s[i:i+n]]))
-g.es(s,color=color)
-g.es("exception handling ", eventName, " event")
-g.es(i)
-g.es_print('%s, %s' % (exctype.__name__, value),color=color)
-g.es("%s %6.3f" % (message,(time.clock()-start)))
-g.es('Unexpected exception in g.create_temp_file',color='red')
-g.es("Can't happen: is_sentinel",color="red")
-g.es("created directory: "+path)
-g.es("exception creating directory: "+path)
-g.es("can not open: %s" % (fileName),color="blue")
-g.es('%12s: %s' % (kind,file_name))
-g.es("rename failed: no file created!",color="red")
-g.es(file_name," may be read-only or in use")
-g.es("exception removing:" + fileName)
-g.es('Exception renaming %s to %s' % (src,dst),color='red')
-g.es("exception in os.chmod(%s)" % (fileName))
-g.es('Can not import gc module',color='blue')
-g.es_print(s,color="blue")
-g.es("...%s.py v%s: %s" % (
-g.es(s)
-g.es_print(s)
-g.es(s,*args,**keys)
-g.es_print('\ntest of es_print: ?',color='red',newline=False)
-g.es_print('after')
-g.es_print('done')
-g.es(s,*args,**keys)
-g.es("using -asis option in:" + h)
-g.es("ignoring redundant -noref in:" + h)
-g.es("ignoring redundant -nosent in:" + h)
-g.es("using -thin option in:" + h)
-g.es("unknown option:" + h[err:i] + " in " + h)
-g.es("unknown option:" + s[err:i] + " in " + g.get_line(s,i))
-g.es(s)
-g.es("#if and #else parts have different braces: " + start_line)
-g.es("no matching #endif: " + start_line)
-g.es("no Find script node",color="red")
-g.es("exception executing script",color='blue')
-g.es_print(s)
-g.es(s,newline=False)
-g.es(s2,color='red')
-g.es(s2,color='red')
-g.es("Exception executing " + name,color="red")
-g.es_print(s)
-g.es_print(s,color="blue")
-g.es_print("Exception in g.importFromPath",color='blue')
-g.es_print("unexpected exception in g.importFromPath(%s)" %
-g.es('g.init_zodb: can not import ZODB')
-g.es('g.init_zodb: exception creating ZODB.DB instance')
-
-@thin leoImport.py
-g.es("Can not open " + fileName,color="blue")
-g.es("Can not open " + fileName,color="blue")
-g.es("Can not open " + fileName,color="blue")
-g.es("can not open " + fileName, color="blue")
-g.es("created: " + newFileName)
-g.es("exception creating: " + newFileName)
-g.es("exception opening:" + filename)
-g.es("can not open %s%s" % (g.choose(atAuto,'@auto ',''),fileName),color='red')
-g.es_print('ignoring %s' % (p.headString()),color='blue')
-g.es(g.choose(found,'finished','no @auto nodes in the selected tree'),color='blue')
-g.es("imported " + fileName,color="blue")
-g.es(fileName + " is not a valid MORE file.")
-g.es("Can not open " + fileName, color="blue")
-g.es("Can not import " + fileName, color="blue")
-g.es("****** " + target + ": is also a prefix of: " + s)
-g.es_print(color='blue',*args,**keys)
-g.es_print('missing lines')
-g.es_print(repr(line))
-g.es_print('first mismatched line at line %d' % (i+1))
-g.es_print('original line:  %s' % line1)
-g.es_print('generated line: %s' % line2)
-g.es_print('*** first mismatch at line %d' % (i+1))
-g.es_print('original line:  %s' % line1)
-g.es_print('generated line: %s' % line2)
-g.es_print('line: %s' % (repr(line)),color='red')
-g.es_print(color='blue',*args,**keys)
-g.es_print(color='blue',*args,**keys)
-g.es_print('inserting @ignore',color='blue')
-g.es_print(s,color='red')
-g.es_print('error: %s' % (s),color='red')
-g.es_print('warning: %s' % (s),color='red')
-g.es_print('%s seems to be mixed HTML and PHP.' % fileName)
-
-@thin leoNodes.py
-g.es_print(s,color="red")
-g.es_print(s,color="red")
-g.es("scanGnx: unexpected index type:",type(s),s,color="red")
-
-@thin leoPlugins.py
-g.es_print(*args,**keys)
-g.es_print(s,color="blue")
-g.es_print('loadOnePlugin: loading module %s failed' % (moduleName),color="red")
-g.es('Exception loading plugin',color='red')
-g.es_print(s,color="red")
-g.es_print(s,color="blue")
-g.es_print('handlers for %s...' % (moduleName))
-g.es_print('all plugin handlers...')
-g.es_print('%25s %s' % (tag,key))
-g.es_print('Enabled plugins...')
-g.es_print(key)
-g.es("*** Two exclusive handlers for '%s'" % tag)
-
-@thin leoPymacs.py
-g.es_print('leoPymacs.open: no file name')
-g.es_print('leoPymacs.open: %s' % c)
-g.es_print('leoPymacs.open: Can not open %s' % fileName)
-
-@thin leoTangle.py
-g.es("Can not execute tangle_done.run()")
-g.es("Can not execute tangle_done.run()")
-g.es("Tangling...")
-g.es("Untangling...")
-g.es("looking for a parent to tangle...")
-g.es("tangling parent")
-g.es("tangle complete")
-g.es("Tangle complete")
-g.es("Tangle complete")
-g.es("Untangle complete")
-g.es("Untangle complete")
-g.es("Untangle complete")
-g.es("@root " + path)
-g.es("@comment disables Untangle for " + path, color="blue")
-g.es("@" + self.print_mode +  " inhibits Untangle for " + path, color="blue")
-g.es("error reading: " + path)
-g.es("Can not create temp file")
-g.es("unchanged:  " + file_name)
-g.es(' ' * 4 + "Warning: " +
-g.es("Warning: possible duplicate definition of: <<" +
-g.es("Warning: " +
-g.es("***Updating: " + p.headString())
-g.es("ignoring: @comment " + z)
-g.es("relative_path_base_directory: " + base)
-g.es("relative path in @path directive: " + relative_path)
-g.es("conflicting @header and @noheader directives")
-g.es("relative_path_base_directory: " + base)
-g.es(kind + " directory: " + dir2)
-
-@thin leoTest.py
-g.es_print("count: %d time/count: %f %s" % (count,result/count,p.headString()))
-g.es('Running %sunit tests' % (g.choose(self.all,'all ','')),color='blue')
-g.es_print('no @test or @suite nodes in selected outline')
-g.es("Syntax error in: %s" % fileName,color="blue")
-g.es("path does not exist: %s" % path)
-
-@thin leoUndo.py
-g.es('Exception in setUndoRedoTypingParams',color='blue')
-g.es("redo %d instances" % count)
-g.es("undo %d instances" % count)
-
-@thin leoCompare.py
-g.es(s)
-
-@thin leoFind.py
-g.es("changed: %d instances" % (count))
-g.es("No text selected") ; return False
-g.es("exception executing change script")
-g.es("exception executing find script")
-g.es("found: %d matches" % (count))
-g.es("end of wrapped search")
-g.es("not found: " + "'" + self.find_text + "'")
-g.es('Invalid regular expression: %s' % (pattern),color='blue')
-g.es('Wrap disabled in hoisted outlines',color='blue')
-g.es('Found match outside of hoisted outline',color='blue')
-g.es("not searching headline or body")
-g.es("empty find patttern")
-g.es('-' * 20,self.p.headString())
-g.es(theType + line)
-g.es('-' * 20,self.p.headString())
-g.es(line)
-g.es(line)
-
-@thin leoFrame.py
-g.es("Truncating headline to one line",color="blue")
-g.es("Truncating headline to %d characters" % (limit),color="blue")
-g.es("ignoring characters after space in url:"+url[i:])
-g.es("use %20 instead of spaces")
-g.es("no url following @url")
-g.es("invalid url: "+url)
-g.es("exception opening " + url)
-
-@thin leoGui.py
-
-@thin leoKeys.py
-g.es('Autocompleter %s' % (g.choose(k.enable_autocompleter,'On','Off')),color='red')
-g.es('Calltips %s' % (g.choose(k.enable_calltips,'On','Off')),color='red')
-g.es('%s' % (name),tabName=self.tabName)
-g.es('No docstring for %s' % (word),color='blue')
-g.es(doc,tabName='Info')
-g.es('No docstring for %s' % (word),color='blue')
-g.es_print('\nauto-completer scan complete',color='blue')
-g.es_print('unexpected exception in computeProxyObject')
-g.es_print('Syntax error in class node: can not continue')
-g.es_print('Exception binding %s to %s' % (shortcut,commandName))
-g.es_print('Ignoring invalid key binding: %s = %s' % (
-g.es_print('redefining %s in %s to %s in %s' % (
-g.es_print('bad abbrev: %s: unknown command name: %s' %
-g.es_print('exception binding %s to %s' % (
-g.es_print('no state function for %s' % (k.state.kind),color='red')
-g.es('Minibuffer hidden',color='red')
-g.es('%s is bound to: %s' % (commandName,shortcut))
-g.es('%s %s' % (sep, prefix),tabName=tabName)
-g.es('%s %s' % (sep, 'Plain Keys',),tabName=tabName)
-g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
-g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
-g.es('No previous command',color='blue')
-g.es_print('Redefining %s' % (commandName), color='red')
-g.es_print('@command: %s = %s' % (
-g.es_print('@command: %s' % (commandName),color='blue')
-g.es_print('No such command: %s. Referenced from %s' % (
-g.es('%s mode\n\n' % modeName,tabName=tabName)
-g.es('%*s %s' % (n,s1,s2),tabName=tabName)
-g.es('%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
-g.es(s,tabName=tabName)
-
-@thin leoMenu.py
-g.es("exception updating File menu")
-g.es("exception updating Edit menu")
-g.es("exception updating Outline menu")
-g.es("menu does not exist: ",menuName)
-g.es_print(s)
-g.es("menu already exists: " + menuName,color="red")
-g.es("exception creating " + menuName + " menu")
-g.es("createOpenWithMenuFromTable: invalid data",color="red")
-g.es("can't delete menu: " + menuName)
-g.es("exception deleting " + menuName + " menu")
-g.es("menu not found: " + menuName)
-g.es("exception deleting " + itemName + " from " + menuName + " menu")
-g.es("exception in setRealMenuNamesFromTable")
-
-@thin leoSwingDialog.py
-g.es("not found: " + self.email)
-g.es("not found: " + self.url)
-
-@thin leoSwingFrame.py
-g.es("exception setting outline pane background color")
-g.es("exception in user configuration for splitbar")
-g.es("exception in user configuration for splitbar")
-g.es("exception dowloading sbooks.chm")
-g.es("exception setting body text background color")
-g.es("exception setting body textforeground color")
-g.es("exception setting body pane cursor color")
-g.es("exception setting body pane text selection background color")
-g.es("exception setting body pane text selection foreground color")
-g.es("exception setting log pane background color")
-g.es('can not rename %s tab' % (tabName),color='blue')
-g.es("exception setting font")
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es_print('\n' + '\n'.join(z))
-g.es("Exception loading: " + fullname)
-g.es_print('oops: eventToPosition failed')
-g.es("dragged node will be cloned")
-g.es("dragged node will be moved")
-
-@thin leoSwingGui.py
-g.es("LeoApp16.ico not in Icons directory", color="red")
-g.es("Icons directory not found: "+path, color="red")
-g.es("exception setting font from ",family_name)
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es(c.disableCommandsMessage,color='blue')
-g.es("Removing '%s' button at its request" % buttonText)
-g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
-
-@thin leoSwingUtils.py
-
-@thin leoTkinterComparePanel.py
-
-@thin leoTkinterDialog.py
-g.es("not found: " + self.email)
-g.es("not found: " + self.url)
-
-@thin leoTkinterFind.py
-
-@thin leoTkinterFrame.py
-g.es("exception setting body text background color")
-g.es("exception setting body textforeground color")
-g.es("exception setting body pane cursor color")
-g.es("exception setting body pane text selection background color")
-g.es("exception setting body pane text selection foreground color")
-g.es("exception setting outline pane background color")
-g.es("exception in user configuration for splitbar")
-g.es("exception in user configuration for splitbar")
-g.es("exception dowloading sbooks.chm")
-g.es("exception setting log pane background color")
-g.es('can not rename %s tab' % (tabName),color='blue')
-g.es("exception setting font")
-g.es("family,size,slant,weight:",family,size,slant,weight)
-
-@thin leoTkinterGui.py
-g.es("LeoApp16.ico not in Icons directory", color="red")
-g.es("Icons directory not found: "+path, color="red")
-g.es("exception setting font from ",family_name)
-g.es("family,size,slant,weight:",family,size,slant,weight)
-g.es(c.disableCommandsMessage,color='blue')
-g.es("Removing '%s' button at its request" % buttonText)
-g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
-
-@thin leoTkinterKeys.py
-
-@thin leoTkinterMenu.py
-
-@thin leoTkinterTree.py
-g.es_print('\n' + '\n'.join(z))
-g.es("exception setting outline line height")
-g.es("Exception loading: " + fullname)
-g.es_print('oops: eventToPosition failed')
-g.es("dragged node will be cloned")
-g.es("dragged node will be moved")
-#@-node:ekr.20071115113231:Results
-#@-node:ekr.20070625091423:Add translation services
-#@+node:ekr.20080227084250:Investigate more general arguments to minibuffer commands
+#@+node:ekr.20080302155758:Fix lint problems
 @nocolor
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/46a7ec1079de4fb0
-
-> You could provide the information that will be used by the minibuffer
-> command as an argument to the command. E.g.
-
-> alt-x save-file-as foo.leo
-
-Some of Leo's minibuffer commands work this way. Compare open-outline with
-open-outline-by-name.
-
-I never paid much attention to generalizing arguments to minibuffer
-commands.  Maybe it is because different commands require different types of
-arguments.  For example, open-outline-by-name supports filename completion,
-while other kinds of commands support other kinds of completion.
-
-In my mind, the issue of arguments to minibuffer commands may be a separate
-issue from whether k.simulateCommand should allow arguments, because the
-implementation issues are complex.  k.getArgs is already hairy, and each
-minibuffer command that requires arguments requires special code to call
-k.getArgs.
-
-So you've given me something new and challenging to think about.
-
-I'll rethink all the implementation issues sometime in this release cycle.
-Now is the appropriate time to do this because I'm going to be messing with
-key bindings anyway. (k.getArgs is all about key bindings).
-
-That would allow us to use minibuffer in a more powerful way,
-
-> especially from IPython. E.g. "mb open-file mydoc.leo" could be used
-> directly when you see the file in file system (and thus benefit from
-> filename tab completion). "open file" dialog can be a drag sometimes,
-> and many commands could benefit from an argument.
-
-If I understand you correctly, you are saying that IPython more command
-oriented than script oriented, so it is more natural to do an "mb
-command-name" IPython command than it is to execute the IPython script
-"_leo.c.command(args)."  Is this correct?
-
-In conclusion, my guess is that generalizing how Leo handles minibuffer
-arguments could be useful, but it won't happen easily.
+C:\leo-editor\trunk\leo\test>echo off
+leoAtFile.py
+leoChapters.py
+leoCommands.py
+leoEditCommands.py
+************* Module leoEditCommands
+E1101:114:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'name' member
+E1101:115:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'undoType' member
+E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldSel' member
+E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldText' member
+E1101:8091:spellCommandsClass.openSpellTab: Instance of 'spellTabHandler' has no 'bringToFront' member
+E1101:8121:spellCommandsClass.changeAll: Instance of 'spellTabHandler' has no 'changeAll' member
+E1101:8129:spellCommandsClass.changeThenFind: Instance of 'spellTabHandler' has no 'changeThenFind' member
+leoFileCommands.py
+leoFind.py
+leoFrame.py
+leoGlobals.py
+************* Module leoGlobals
+E1101:137:computeGlobalConfigDir: Module 'sys' has no 'leo_config_directory' member
+W0104:3902: Statement seems to have no effect
+E0602:3918:getpreferredencoding: Undefined variable 'LC_CTYPE'
+E0602:3919:getpreferredencoding: Undefined variable 'LC_CTYPE'
+E1101:3920:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
+E0602:3920:getpreferredencoding: Undefined variable 'CODESET'
+E0602:3921:getpreferredencoding: Undefined variable 'LC_CTYPE'
+E1101:3924:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
+E0602:3924:getpreferredencoding: Undefined variable 'CODESET'
+E1101:4419:mulderUpdateAlgorithm.copy_time: Module 'os' has no 'mtime' member
+leoGui.py
+leoImport.py
+leoMenu.py
+leoNodes.py
+leoPlugins.py
+leoTangle.py
+leoUndo.py
+leoTkinterDialog.py
+leoTkinterFind.py
+************* Module leoTkinterFind
+E1101: 95:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'title' member
+E1101:101:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'intKeys' member
+E1101:104:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'newStringKeys' member
+E1101:113:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'createTopFrame' member
+E1101:115:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
+E1101:116:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
+E1101:123:leoTkinterFind.init: Instance of 'leoTkinterFind' has no 'intKeys' member
+E1101:177:leoTkinterFind.destroySelf: Instance of 'leoTkinterFind' has no 'top' member
+E1101:185:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'frame' member
+E1101:213:leoTkinterFind.createFrame.setFocus: Instance of 'leoTkinterFind' has no 'c' member
+E1101:298:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
+E1101:305:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
+E1103:325:leoTkinterFind.createFrame.findButtonCallback: Instance of 'leoTkinterFind' has no 'findButton' member (but some types c
+ould not be inferred)
+E1101:341:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'findAllButton' member
+E1101:348:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeButton' member
+E1101:354:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeThenFindButton' member
+E1101:360:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeAllButton' member
+E1101:367:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
+E1101:368:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
+E1103:378:leoTkinterFind.createBindings.findButtonCallback2: Instance of 'leoTkinterFind' has no 'findButton' member (but some typ
+es could not be inferred)
+E1101:382:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
+E1101:383:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
+E1101:384:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'selectAllFindText' member
+E1101:396:leoTkinterFind.onCloseWindow: Instance of 'leoTkinterFind' has no 'top' member
+E1101:401:leoTkinterFind.dismiss: Instance of 'leoTkinterFind' has no 'top' member
+E1101:408:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'c' member
+E1101:410:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
+E1101:411:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
+E1101:412:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
+E1101:438:tkFindTab.initGui: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:441:tkFindTab.initGui: Instance of 'tkFindTab' has no 'newStringKeys' member
+E1101:448:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'c' member
+E1101:489:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:504:tkFindTab.createFrame.setFocus: Instance of 'tkFindTab' has no 'c' member
+E1101:538:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:591:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
+E1101:599:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
+E1101:606:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:623:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findButtonCallback' member
+E1101:624:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findAllButton' member
+E1101:626:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeButton' member
+E1101:627:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeThenFindButton' member
+E1101:628:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeAllButton' member
+E1101:647:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'c' member
+E1103:650:tkFindTab.createBindings.resetWrapCallback: Instance of 'tkFindTab' has no 'resetWrap' member (but some types could not
+be inferred)
+E1103:654:tkFindTab.createBindings.findButtonBindingCallback: Instance of 'tkFindTab' has no 'findButton' member (but some types c
+ould not be inferred)
+E1101:664:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'hideTab' member
+E1101:677:tkFindTab.init: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:746:tkFindTab.setOption: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:758:tkFindTab.toggleOption: Instance of 'tkFindTab' has no 'intKeys' member
+leoTkinterGui.py
+************* Module leoTkinterGui
+E1101:179:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
+E1101:183:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
+leoTkinterFrame.py
+************* Module leoTkinterFrame
+E1101: 53:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
+E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
+E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
+E1101: 88:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
+E1101:102:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:109:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
+E1101:176:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:224:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:241:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
+E1101:245:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
+E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
+E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:379:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
+E1101:437:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:439:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
+E1101:442:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
+E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
+E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
+E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
+E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
+E1101:1347:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
+E1101:1901:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:2111:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2138:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2140:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2303:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
+E1101:2423:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2424:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2431:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2432:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2433:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2462:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2463:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2464:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2475:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2476:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2477:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2489:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2514:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2515:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2516:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2556:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2573:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2574:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2587:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2589:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2787:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2788:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2845:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2846:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:3018:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
+E1101:3065:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
+leoTkinterKeys.py
+************* Module leoTkinterKeys
+E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'useTextWidget' member
+E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
+E1101: 29:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
+leoTkinterMenu.py
+************* Module leoTkinterMenu
+E1101: 62:leoTkinterMenu.computeMenuPositions: Instance of 'leoTkinterMenu' has no 'getMenu' member
+E1101:136:leoTkinterMenu.insert: Instance of 'leoTkinterMenu' has no 'getMenu' member
+E1101:172:leoTkinterMenu.clearAccel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:183:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'updateAllMenus' member
+E1101:186:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'setMenu' member
+E1101:187:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'createMenusFromTables' member
+E1101:208:leoTkinterMenu.disableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:225:leoTkinterMenu.enableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:255:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:258:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:297:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'getMenu' member
+E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'createMenuEntries' member
+leoTkinterTree.py
+"*****done*****"
 #@nonl
-#@-node:ekr.20080227084250:Investigate more general arguments to minibuffer commands
+#@-node:ekr.20080302155758:Fix lint problems
+#@-node:ekr.20080303060023:pyLint
 #@+node:ekr.20080218110223:Easy
-#@+node:ekr.20080218152956:Better home page
-#@+node:ekr.20071211093323:more screen shots on Leo's web site
-#@-node:ekr.20071211093323:more screen shots on Leo's web site
-#@+node:ekr.20080218152956.1:move obsolete links to "links" page
-#@-node:ekr.20080218152956.1:move obsolete links to "links" page
-#@-node:ekr.20080218152956:Better home page
-#@+node:ekr.20080213112752:Prototype of gtk/ipython bridge
-#@-node:ekr.20080213112752:Prototype of gtk/ipython bridge
 #@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process
 # This would allow @menu items to refer to commands created by @button.
 #@nonl
@@ -1035,8 +529,14 @@ EKR
 * Enable sax option.
 * Proper xml namespace in .leo files.  Is this Leo 5.0??
 #@nonl
-#@+node:ekr.20080226042409:Add html files to cvs and to the distro
-#@-node:ekr.20080226042409:Add html files to cvs and to the distro
+#@+node:ekr.20080218152956:Better home page
+#@+node:ekr.20071211093323:more screen shots on Leo's web site
+#@-node:ekr.20071211093323:more screen shots on Leo's web site
+#@+node:ekr.20080218152956.1:move obsolete links to "links" page
+#@-node:ekr.20080218152956.1:move obsolete links to "links" page
+#@-node:ekr.20080218152956:Better home page
+#@+node:ekr.20080226042409:Add html files to the distro
+#@-node:ekr.20080226042409:Add html files to the distro
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor
 
@@ -2013,7 +1513,7 @@ def open (self,event=None):
     c = self
     << Set closeFlag if the only open window is empty >>
 
-    fileName = g.app.gui.runOpenFileDialog(
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
         title = "Open",
         filetypes = [("Leo files","*.leo"), ("All files","*")],
         defaultextension = ".leo")
@@ -2033,7 +1533,6 @@ def open (self,event=None):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
-#@nonl
 #@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
 @ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
 @c
@@ -2297,11 +1796,11 @@ def save (self,event=None):
 
     c.beginUpdate()
     try:
-        if c.mFileName != "":
+        if c.mFileName:
             # Calls c.setChanged(False) if no error.
             c.fileCommands.save(c.mFileName)
         else:
-            fileName = g.app.gui.runSaveFileDialog(
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save",
                 filetypes=[("Leo files", "*.leo")],
@@ -2338,7 +1837,7 @@ def saveAs (self,event=None):
         if not c.mFileName:
             c.frame.title = ""
 
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save As",
             filetypes=[("Leo files", "*.leo")],
@@ -2346,6 +1845,7 @@ def saveAs (self,event=None):
         c.bringToFront()
 
         if fileName:
+            g.trace(fileName)
             # 7/2/02: don't change mFileName until the dialog has suceeded.
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
@@ -2399,7 +1899,7 @@ def saveTo (self,event=None):
             c.frame.title = ""
 
         # set local fileName, _not_ c.mFileName
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save To",
             filetypes=[("Leo files", "*.leo")],

@@ -86,7 +86,7 @@ def open (fileName=None):
         return
 
     if not fileName:
-        g.es_print('leoPymacs.open: no file name')
+        g.es_print('','leoPymacs.open:','no file name')
         return None
 
     # openWithFileName checks to see if the file is already open.
@@ -98,9 +98,9 @@ def open (fileName=None):
 
     c = ok and frame.c or None
     if c:
-        g.es_print('leoPymacs.open: %s' % c)
+        g.es_print('','leoPymacs.open:',c)
     else:
-        g.es_print('leoPymacs.open: Can not open %s' % fileName)
+        g.es_print('','leoPymacs.open:','can not open',fileName)
 
     return c
 #@nonl

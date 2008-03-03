@@ -2290,12 +2290,12 @@ class leoTree:
         i = s.find('\n')
         if i > -1:
             # g.trace(i,len(s),repr(s))
-            g.es("Truncating headline to one line",color="blue")
+            g.es("truncating headline to one line",color="blue")
             s = s[:i]
 
         limit = 1000
         if len(s) > limit:
-            g.es("Truncating headline to %d characters" % (limit),color="blue")
+            g.es("truncating headline to",limit,"characters",color="blue")
             s = s[:limit]
 
         s = g.toUnicode(s or '',g.app.tkEncoding)
@@ -2529,7 +2529,8 @@ class leoTree:
                     i = url.find(' ')
                     if i > -1:
                         if 0: # No need for a warning.  Assume everything else is a comment.
-                            g.es("ignoring characters after space in url:"+url[i:])
+                            z_url = url[i:]
+                            g.es("ignoring characters after space in url:",z_url)
                             g.es("use %20 instead of spaces")
                         url = url[:i]
                 #@-node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
@@ -2572,7 +2573,7 @@ class leoTree:
         if not re.match('^([a-z]{3,}:)',url):
             url = 'http://' + url
         if not re.match(urlPattern,url):
-            g.es("invalid url: "+url)
+            g.es("invalid url:",url)
             return
         #@nonl
         #@-node:ekr.20031218072017.2314:<< check the url; return if bad >>
@@ -2599,7 +2600,7 @@ class leoTree:
                 try: webbrowser.open(url)
                 except: pass
         except:
-            g.es("exception opening " + url)
+            g.es("exception opening",url)
             g.es_exception()
         #@-node:ekr.20031218072017.2315:<< pass the url to the web browser >>
         #@nl

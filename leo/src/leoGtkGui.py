@@ -113,9 +113,9 @@ class gtkGui(leoGui.leoGui):
                         if g.os_path_exists(path):
                             self.bitmap = gtk.BitmapImage(theFile)
                         else:
-                            g.es("LeoApp16.ico not in Icons directory", color="red")
+                            g.es("","LeoApp16.ico","not in Icons directory",color="red")
                     else:
-                        g.es("Icons directory not found: "+path, color="red")
+                        g.es("","Icons","directory not found:",path, color="red")
             except:
                 print "exception setting bitmap"
                 import traceback ; traceback.print_exc()
@@ -539,8 +539,8 @@ class gtkGui(leoGui.leoGui):
             font = gtkFont.Font(family=family,size=size or defaultSize,slant=slant,weight=weight)
             return font
         except:
-            g.es("exception setting font from ",family_name)
-            g.es("family,size,slant,weight:",family,size,slant,weight)
+            g.es("exception setting font from","",family_name)
+            g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@-node:ekr.20080112145409.464:gtkGui.getFontFromParams
@@ -704,14 +704,14 @@ class gtkGui(leoGui.leoGui):
             b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
 
             if c.disableCommandsMessage:
-                g.es(c.disableCommandsMessage,color='blue')
+                g.es('',c.disableCommandsMessage,color='blue')
             else:
                 g.app.scriptDict = {}
                 c.executeScript(p=p,script=script,
                 define_g= define_g,define_name=define_name,silent=silent)
                 # Remove the button if the script asks to be removed.
                 if g.app.scriptDict.get('removeMe'):
-                    g.es("Removing '%s' button at its request" % buttonText)
+                    g.es("removing","'%s'" % (buttonText),"button at its request")
                     b.pack_forget()
             # Do not assume the script will want to remain in this commander.
         #@-node:ekr.20080112145409.476:<< define the callbacks for b >>
@@ -725,7 +725,7 @@ class gtkGui(leoGui.leoGui):
             shortcut = k.canonicalizeShortcut(shortcut)
             ok = k.bindKey ('button', shortcut,func,buttonText)
             if ok:
-                g.es_print('Bound @button %s to %s' % (buttonText,shortcut),color='blue')
+                g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
             #@-node:ekr.20080112145409.477:<< bind the shortcut to executeScriptCallback >>
             #@nl
         #@    << create press-buttonText-button command >>
@@ -815,7 +815,7 @@ class gtkGui(leoGui.leoGui):
             if icon:
                 namedIcons[name] = icon
             else:
-                g.es_print( '~~~~~~~~~~~ failed to load', name)
+                g.es_print('~~~~~~~~~~~','failed to load',name)
 
         self.plusBoxIcon = namedIcons['plusnode']
         self.minusBoxIcon = namedIcons['minusnode']
