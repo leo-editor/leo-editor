@@ -728,7 +728,7 @@ class atFile:
             s = lines[1]
             g.es("using",s)
         else:
-            at.readError("unexpected lines",m)
+            at.readError("unexpected lines" + m)
             g.es('',len(lines), "lines",m)
             s = "bad " + sentinel
             if comments: s = start + ' ' + s

@@ -1242,7 +1242,7 @@ class undoer:
                     if 0:
                         g.trace('old_lines',old_lines)
                         g.trace('new_lines',new_lines)
-                    g.es('exception in setUndoRedoTypingParams',color='blue')
+                    g.es('exception in','setUndoRedoTypingParams',color='blue')
                     g.es_exception()
                     newBead = True
         #@-node:ekr.20050125220613:<< set newBead if we can't share the previous bead >>
@@ -1443,7 +1443,7 @@ class undoer:
             v.t.setDirty()
 
         if not g.unitTesting:
-            g.es("redo %d instances" % count)
+            g.es("redo",count,"instances")
 
         c.selectPosition(p)
         if newSel: c.frame.body.setSelectionRange(newSel)
@@ -1678,7 +1678,7 @@ class undoer:
             v.t.setDirty() # Bug fix: Leo 4.4.6.
 
         if not g.unitTesting:
-            g.es("undo %d instances" % count)
+            g.es("undo",count,"instances")
 
         c.selectPosition(p)
         if oldSel: c.frame.body.setSelectionRange(oldSel)

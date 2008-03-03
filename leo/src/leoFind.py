@@ -518,7 +518,7 @@ class leoFind:
                 # self.printLine(line,allFlag=True)
             p = c.currentPosition()
             u.afterChangeGroup(p,undoType,reportFlag=True)
-            g.es("changed: %d instances" % (count))
+            g.es("changed:",count,"instances")
         finally:
             c.endUpdate()
             self.restore(saveData)
@@ -719,7 +719,7 @@ class leoFind:
             c.setChanged(True)
 
         c.redraw_now()
-        g.es("found: %d matches" % (count))
+        g.es("found",count,"matches")
         self.restore(data)
     #@-node:ekr.20031218072017.3073:findAll
     #@+node:ekr.20031218072017.3074:findNext
@@ -742,7 +742,7 @@ class leoFind:
             if self.wrapping:
                 g.es("end of wrapped search")
             else:
-                g.es("not found: " + "'" + self.find_text + "'")
+                g.es("not found","'%s'" % (self.find_text))
             self.restore(data)
         else:
             self.showSuccess(pos,newpos)
@@ -868,7 +868,7 @@ class leoFind:
             if nocase: flags |= re.IGNORECASE
             re_obj = re.compile(pattern,flags)
         except Exception:
-            g.es('invalid regular expression: %s' % (pattern),color='blue')
+            g.es('invalid regular expression:',pattern,color='blue')
             self.errors += 1 # Abort the search.
             return -1, -1
 
@@ -1260,16 +1260,16 @@ class leoFind:
         context = self.batch # "batch" now indicates context
 
         if allFlag and both and context:
-            g.es('-' * 20,self.p.headString())
+            g.es('','-' * 20,'',self.p.headString())
             theType = g.choose(self.in_headline,"head: ","body: ")
-            g.es(theType + line)
+            g.es('',theType + line)
         elif allFlag and context and not self.p.isVisited():
             # We only need to print the context once.
-            g.es('-' * 20,self.p.headString())
-            g.es(line)
+            g.es('','-' * 20,'',self.p.headString())
+            g.es('',line)
             self.p.setVisited()
         else:
-            g.es(line)
+            g.es('',line)
     #@-node:ekr.20031218072017.3088:printLine
     #@+node:ekr.20031218072017.3089:restore
     # Restores the screen after a search fails

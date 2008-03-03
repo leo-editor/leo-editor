@@ -1560,7 +1560,7 @@ class leoGtkFrame (leoFrame.leoFrame):
                         os.chdir(g.app.loadDir)
                         webbrowser.open_new(url)
                 except:
-                    g.es("exception dowloading sbooks.chm")
+                    g.es("exception downloading","sbooks.chm")
                     g.es_exception()
     #@+node:ekr.20080112145409.146:showProgressBar
     def showProgressBar (self,count,size,total):
@@ -2763,7 +2763,7 @@ class leoGtkLog (leoFrame.leoLog):
     def renameTabFromMenu (self,tabName):
 
         if tabName in ('Log','Completions'):
-            g.es('can not rename %s tab' % (tabName),color='blue')
+            g.es('can not rename',tabName,'tab',color='blue')
         else:
             def renameTabCallback (newName):
                 return self.renameTab(tabName,newName)
@@ -3054,7 +3054,7 @@ class leoGtkLog (leoFrame.leoLog):
             return gtkFont.Font(family=family,size=size,slant=slant,weight=weight)
         except Exception:
             g.es("exception setting font")
-            g.es("family,size,slant,weight:",family,size,slant,weight)
+            g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@-node:ekr.20080112145409.260:getFont

@@ -1685,11 +1685,13 @@ def getTime():
     return time.clock()
 
 def esDiffTime(message, start):
-    g.es('',"%s %6.3f" % (message,(time.clock()-start)))
+    delta = time.clock()-start
+    g.es('',"%s %6.3f" % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
-    print "%s %6.3f" % (message,(time.clock()-start))
+    delta = time.clock()-start
+    print "%s %6.3f" % (message,delta)
     return time.clock()
 #@-node:ekr.20031218072017.3137:Timing
 #@-node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
@@ -2567,6 +2569,11 @@ def enl(tabName='Log'):
 #@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
 #@+node:ekr.20070626132332:es & minitest
 def es(s,*args,**keys):
+
+    '''Put all non-keyword args to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
     # print 'es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s)
     # print 'es',repr(s)
     log = app.log
@@ -2632,6 +2639,11 @@ def es(s,*args,**keys):
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def es_print(s,*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
 
     encoding = sys.getdefaultencoding()
 
@@ -2702,7 +2714,7 @@ def translateArgs (s,args,commas,spaces):
 
     return ''.join(result)
 #@-node:ekr.20080220111323:translateArgs
-#@+node:ekr.20060810095921:translateString
+#@+node:ekr.20060810095921:translateString & tr
 def translateString (s):
 
     '''Return the translated text of s.'''
@@ -2711,7 +2723,10 @@ def translateString (s):
         return s.upper()
     else:
         return gettext.gettext(s)
-#@-node:ekr.20060810095921:translateString
+
+tr = translateString
+#@nonl
+#@-node:ekr.20060810095921:translateString & tr
 #@+node:ekr.20031218072017.3148:top
 if 0: # An extremely dangerous function.
 
