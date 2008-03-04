@@ -506,7 +506,7 @@ class LeoApp:
                         g.es_print('',tag,'created in',theDir,color='red')
                         return
                 except IOError:
-                   pass
+                    pass
 
                 g.es('can not create',tag,'in',theDir,color='red')
         #@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>

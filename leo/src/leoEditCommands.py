@@ -8543,7 +8543,7 @@ class AspellClass:
             if 0:
                 print sc 
                 print aspell_config_replace(sc, "prefix", self.aspell_dir) #1/0 
-                print 'prefix', self.aspell_dir, `aspell_config_retrieve(sc, "prefix")`
+                print 'prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix"))
                 print aspell_config_retrieve(sc, "lang")
                 print aspell_config_replace(sc, "lang",self.local_language_code)
                 print aspell_config_retrieve(sc, "lang")
