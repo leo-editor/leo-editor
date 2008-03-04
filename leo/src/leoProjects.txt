@@ -4403,6 +4403,7 @@ def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
         'relPath': relPath,
         'where' : 'beforeHeadline',
         'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
+        'on' : 'tnode',
     }
     newEntry.update(kargs)
     aList.append (newEntry)
@@ -4412,28 +4413,52 @@ def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 #@+node:tbrown.20080119085249:getIconList
 def getIconList(self, p):
     """Return list of icons for position p, call setIconList to apply changes"""
-    if not hasattr(p.v.t,'unknownAttributes'):
-        return []
 
-    return list(p.v.t.unknownAttributes.get('icons',[]))
+    fromTnode = []
+    if hasattr(p.v.t,'unknownAttributes'):
+        fromTnode = [dict(i) for i in p.v.t.unknownAttributes.get('icons',[])]
+        for i in fromTnode: i['on'] = 'tnode'
+
+    fromVnode = []
+    if hasattr(p.v,'unknownAttributes'):
+        fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
+        for i in fromVnode: i['on'] = 'vnode'
+
+    fromTnode.extend(fromVnode)
+    return fromTnode
 #@-node:tbrown.20080119085249:getIconList
 #@+node:tbrown.20080119085249.1:setIconList
+def _setIconListHelper(self, p, subl, uaLoc):
+    """icon setting code common between v and t nodes
+
+    p - postion
+    subl - list of icons for the v or t node
+    uaLoc - the v or t node"""
+    if subl:
+        if not hasattr(uaLoc,'unknownAttributes'):
+            uaLoc.unknownAttributes = {}
+        uaLoc.unknownAttributes['icons'] = list(subl)
+        p.setDirty()
+    else:
+        if hasattr(uaLoc,'unknownAttributes'):
+            if 'icons' in uaLoc.unknownAttributes:
+                del uaLoc.unknownAttributes['icons']
+                p.setDirty()
+
 def setIconList(self, p, l):
     """Set list of icons for position p to l"""
-    if not hasattr(p.v.t,'unknownAttributes'):
-        if l:
-            p.v.t.unknownAttributes = {}
-        else:
-            return
 
-    p.v.t.unknownAttributes['icons'] = list(l)
-    p.setDirty()
+    subl = [i for i in l if i.get('on') == 'vnode']
+    self._setIconListHelper(p, subl, p.v)
 
+    subl = [i for i in l if i.get('on') != 'vnode']
+    self._setIconListHelper(p, subl, p.v.t)
+
+    # FIXME
     if len(l) == 0:
         p.v.t.unknownAttributes["lineYOffset"] = 0
     else:
         p.v.t.unknownAttributes["lineYOffset"] = 3
-#@nonl
 #@-node:tbrown.20080119085249.1:setIconList
 #@-node:ekr.20080108091349:appendImageDictToList
 #@+node:ekr.20071114083142:getImage
@@ -4501,30 +4526,29 @@ def deleteFirstIcon (self,event=None):
 #@-node:ekr.20071114082418:deleteFirstIcon
 #@+node:ekr.20071114092622:deleteIconByName
 def deleteIconByName (self,t,name,relPath):
-    # for use by the right-click remove icon callback
+    """for use by the right-click remove icon callback"""
     c = self.c ; p = c.currentPosition()
 
-    if not hasattr(t,'unknownAttributes'):
-        return
-
-    aList = t.unknownAttributes.get('icons',[])
+    aList = self.getIconList(p)
+    if not aList: return
 
     basePath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
     absRelPath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(basePath,relPath)))
     name = g.os_path_abspath(name)
 
+    newList = []
     for d in aList:
         name2 = d.get('file')
         name2 = g.os_path_abspath(name2)
         name2rel = d.get('relPath')
         # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
-        if name == name2 or absRelPath == name2 or relPath == name2rel:
-            aList.remove(d)
-            t.unknownAttributes ['icons'] = aList
-            p.setDirty()
+        if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+            newList.append(d)
+
+    if len(newList) != len(aList):
+            self.setIconList(p, newList)       
             c.setChanged(True)
             c.redraw()
-            break
     else:
         g.trace('not found',name)
 
@@ -4687,6 +4711,7 @@ def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
         'relPath': relPath,
         'where' : 'beforeHeadline',
         'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
+        'on' : 'tnode',
     }
     newEntry.update(kargs)
     aList.append (newEntry)
@@ -4696,28 +4721,52 @@ def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 #@+node:tbrown.20080119085249:getIconList
 def getIconList(self, p):
     """Return list of icons for position p, call setIconList to apply changes"""
-    if not hasattr(p.v.t,'unknownAttributes'):
-        return []
 
-    return list(p.v.t.unknownAttributes.get('icons',[]))
+    fromTnode = []
+    if hasattr(p.v.t,'unknownAttributes'):
+        fromTnode = [dict(i) for i in p.v.t.unknownAttributes.get('icons',[])]
+        for i in fromTnode: i['on'] = 'tnode'
+
+    fromVnode = []
+    if hasattr(p.v,'unknownAttributes'):
+        fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
+        for i in fromVnode: i['on'] = 'vnode'
+
+    fromTnode.extend(fromVnode)
+    return fromTnode
 #@-node:tbrown.20080119085249:getIconList
 #@+node:tbrown.20080119085249.1:setIconList
+def _setIconListHelper(self, p, subl, uaLoc):
+    """icon setting code common between v and t nodes
+
+    p - postion
+    subl - list of icons for the v or t node
+    uaLoc - the v or t node"""
+    if subl:
+        if not hasattr(uaLoc,'unknownAttributes'):
+            uaLoc.unknownAttributes = {}
+        uaLoc.unknownAttributes['icons'] = list(subl)
+        p.setDirty()
+    else:
+        if hasattr(uaLoc,'unknownAttributes'):
+            if 'icons' in uaLoc.unknownAttributes:
+                del uaLoc.unknownAttributes['icons']
+                p.setDirty()
+
 def setIconList(self, p, l):
     """Set list of icons for position p to l"""
-    if not hasattr(p.v.t,'unknownAttributes'):
-        if l:
-            p.v.t.unknownAttributes = {}
-        else:
-            return
 
-    p.v.t.unknownAttributes['icons'] = list(l)
-    p.setDirty()
+    subl = [i for i in l if i.get('on') == 'vnode']
+    self._setIconListHelper(p, subl, p.v)
 
+    subl = [i for i in l if i.get('on') != 'vnode']
+    self._setIconListHelper(p, subl, p.v.t)
+
+    # FIXME
     if len(l) == 0:
         p.v.t.unknownAttributes["lineYOffset"] = 0
     else:
         p.v.t.unknownAttributes["lineYOffset"] = 3
-#@nonl
 #@-node:tbrown.20080119085249.1:setIconList
 #@-node:ekr.20080108091349:appendImageDictToList
 #@+node:ekr.20071114083142:getImage
@@ -4785,30 +4834,29 @@ def deleteFirstIcon (self,event=None):
 #@-node:ekr.20071114082418:deleteFirstIcon
 #@+node:ekr.20071114092622:deleteIconByName
 def deleteIconByName (self,t,name,relPath):
-    # for use by the right-click remove icon callback
+    """for use by the right-click remove icon callback"""
     c = self.c ; p = c.currentPosition()
 
-    if not hasattr(t,'unknownAttributes'):
-        return
-
-    aList = t.unknownAttributes.get('icons',[])
+    aList = self.getIconList(p)
+    if not aList: return
 
     basePath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
     absRelPath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(basePath,relPath)))
     name = g.os_path_abspath(name)
 
+    newList = []
     for d in aList:
         name2 = d.get('file')
         name2 = g.os_path_abspath(name2)
         name2rel = d.get('relPath')
         # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
-        if name == name2 or absRelPath == name2 or relPath == name2rel:
-            aList.remove(d)
-            t.unknownAttributes ['icons'] = aList
-            p.setDirty()
+        if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+            newList.append(d)
+
+    if len(newList) != len(aList):
+            self.setIconList(p, newList)       
             c.setChanged(True)
             c.redraw()
-            break
     else:
         g.trace('not found',name)
 
