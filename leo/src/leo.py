@@ -39,8 +39,7 @@
 # Doing so would make g.app invalid in the imported files.
 import os
 import sys
-import Tkinter
-Tkinter.wantobjects = 0
+# import Tkinter ; Tkinter.wantobjects = 0
     # An ugly hack for Tk/Tkinter 8.5
     # See http://sourceforge.net/forum/message.php?msg_id=4078577
 
