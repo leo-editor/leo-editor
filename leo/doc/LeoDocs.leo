@@ -54,8 +54,8 @@
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
-<v t="ekr.20050831184021.2" a="E"><vh>Table of contents</vh>
-<v t="ekr.20040414162124" a="E"><vh>@rst html\leo_TOC.html</vh>
+<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
+<v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
 <v t="ekr.20040414163815"><vh>Table of Contents</vh></v>
 <v t="ekr.20050812134441.3"><vh>@rst-no-head end</vh></v>
@@ -104,7 +104,7 @@
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -739,7 +739,7 @@
 <v t="ekr.20061025065357.12"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20070317033759" a="E"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
+<v t="ekr.20070317033759"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
 <v t="ekr.20070317033759.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
@@ -760,7 +760,7 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507" a="TV"><vh>Chapter 21: ILeo - the IPython bridge</vh>
 <v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
@@ -771,11 +771,11 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
 <v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
-<v t="vivainio.20080302194307" a="TV"><vh>Magic functions	</vh></v>
+<v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
 <v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
-<v t="vivainio.20080302174957" a="E"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
-<v t="ekr.20080204100523.1" a="E"><vh>Commands</vh></v>
+<v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
+<v t="ekr.20080204100523.1"><vh>Commands</vh></v>
 <v t="ekr.20080204100523"><vh>Startup</vh></v>
 <v t="ekr.20080204100523.2"><vh>Scripting IPython from Leo</vh></v>
 <v t="ekr.20080205080801"><vh>Scripting Leo from IPython</vh></v>
@@ -34085,16 +34085,16 @@ You need to enable the 'ipython.py' plugin in Leo:
 
 - Restart Leo. Be sure that you have the console window open (start leo.py from console, or double-click leo.py on windows)
 
-- Press alt+shif+i OR alt-x ipython-start to launch IPython in the console that
+- Press alt+shif+i OR alt-x start-ipython to launch IPython in the console that
   started leo. You can start entering IPython commands normally, and Leo will keep
   running at the same time.
 
 - Note that you can just press alt-I (push-to-ipython) - it will start IPython
   if it has not been previously started. However, when you open a new leo
-  document, you have to execute ipython-start again to tell IPython that the new
-  commands should target the new document. IPython session will not be
-  restarted, only the leo commander object is updated in the existing
-  session.</t>
+  document, you have to execute start-ipython (alt+shift+I) again to tell
+  IPython that the new commands should target the new document. IPython session
+  will not be restarted, only the leo commander object is updated in the
+  existing session.</t>
 <t tx="vivainio.20080302174639.3">IPython code
 ------------
 

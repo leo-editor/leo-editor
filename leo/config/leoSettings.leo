@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.477886977887">
-	<global_window_position top="141" left="10" height="576" width="864"/>
+	<global_window_position top="225" left="419" height="576" width="864"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -332,8 +332,8 @@
 <v t="ekr.20060702100257"><vh>@font menu text font</vh></v>
 <v t="ekr.20041119051246.4"><vh>@font outline font</vh></v>
 </v>
-<v t="ekr.20071214132254" a="E"><vh>Import options</vh>
-<v t="ekr.20071214132254.1" a="TV"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20071214132254"><vh>Import options</vh>
+<v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
@@ -353,7 +353,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -538,11 +538,11 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4" a="E"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
-<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
 <v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
 <v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
 <v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
@@ -555,7 +555,7 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+<v t="ekr.20080204124255" a="TV"><vh>@shortcuts IPython commands</vh></v>
 </v>
 </v>
 <v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
@@ -8574,8 +8574,7 @@ TABLE
 Comments lines starting with '#' are ignored.</t>
 <t tx="ekr.20080204124255"># For testing only.
 
-start-ipython           = Alt-5
-get-ipython-results     = Alt-6
+start-ipython           = Alt-Shift-i
 push-to-ipython         = Alt-i
 </t>
 <t tx="ekr.20080212084020">The encoding used for files imported by @auto if no @encoding directive is in effect.
