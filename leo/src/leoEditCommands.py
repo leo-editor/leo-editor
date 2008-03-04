@@ -2314,6 +2314,7 @@ class editCommandsClass (baseEditCommandsClass):
         xoffset += 2
 
         return xoffset
+    #@-node:ekr.20080108091349:appendImageDictToList
     #@+node:tbrown.20080119085249:getIconList
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
@@ -2338,33 +2339,31 @@ class editCommandsClass (baseEditCommandsClass):
         p - postion
         subl - list of icons for the v or t node
         uaLoc - the v or t node"""
+
+        # FIXME lineYOffset is expected to be on a tnode in drawing code
+
         if subl:
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
+            uaLoc.unknownAttributes["lineYOffset"] = 3
             p.setDirty()
         else:
             if hasattr(uaLoc,'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
+                    uaLoc.unknownAttributes["lineYOffset"] = 0
                     p.setDirty()
 
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
 
-        subl = [i for i in l if i.get('on') == 'vnode']
-        self._setIconListHelper(p, subl, p.v)
-
         subl = [i for i in l if i.get('on') != 'vnode']
         self._setIconListHelper(p, subl, p.v.t)
 
-        # FIXME
-        if len(l) == 0:
-            p.v.t.unknownAttributes["lineYOffset"] = 0
-        else:
-            p.v.t.unknownAttributes["lineYOffset"] = 3
+        subl = [i for i in l if i.get('on') == 'vnode']
+        self._setIconListHelper(p, subl, p.v)
     #@-node:tbrown.20080119085249.1:setIconList
-    #@-node:ekr.20080108091349:appendImageDictToList
     #@+node:ekr.20071114083142:getImage
     def getImage (self,path):
 

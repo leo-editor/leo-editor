@@ -33,6 +33,7 @@ node's icon box (this also displays the cleo menu).
 import leoGlobals as g
 import leoPlugins
 import leoTkinterTree
+import leoEditCommands
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -270,7 +271,8 @@ class cleoController:
         ]
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
-    #@nonl
+
+        self.loadAllIcons()
     #@+node:tbrown.20060903121429.17:install_drawing_overrides
     def install_drawing_overrides (self):
 
@@ -283,6 +285,29 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20060903121429.17:install_drawing_overrides
     #@-node:tbrown.20060903121429.15:birth
+    #@+node:tbrown.20080303214305:loadAllIcons
+    def loadAllIcons(self):
+        """Load icons to represent cleo state"""
+
+        for p in self.c.allNodes_iter():
+            self.loadIcons(p)
+    #@-node:tbrown.20080303214305:loadAllIcons
+    #@+node:tbrown.20080303232514:loadIcons
+    def loadIcons(self, p):
+        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        com = self.c.editCommands
+        icons = [i for i in com.getIconList(p)
+                 if 'cleoIcon' not in i]
+        pri = self.getat(p.v, 'priority')
+        if pri >= 1 and pri <= 7:
+            com.appendImageDictToList(icons, iconDir,
+                'cleo/pri%d.png'%pri, 2, on='vnode', cleoIcon='1',
+                where = 'beforeIcon')
+                # beforeBox beforeIcon beforeHeadline afterheadline
+        if icons: g.es(icons)
+        com.setIconList(p, icons)
+    #@nonl
+    #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
     def close(self, tag, key):
         "unregister handlers on closing commander"
