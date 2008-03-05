@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="120" left="292" height="710" width="996"/>
+	<global_window_position top="120" left="10" height="670" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -53,7 +53,7 @@
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -760,7 +760,7 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="TV"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
 <v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
@@ -1124,7 +1124,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
@@ -3548,9 +3548,6 @@
 <v t="ekr.20080212221711.26"><vh>Improved handling of unicode for @auto files</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080218153931"><vh>leo 4.4.7 final</vh>
 <v t="ekr.20080218153931.1"><vh>Fixed bugs</vh>
 <v t="ekr.20080218153931.2"><vh>Fixed perl syntax coloring bug</vh></v>
@@ -3567,6 +3564,13 @@
 <v t="ekr.20080218153931.11"><vh>Added support for @bool open_with_save_on_update setting</vh></v>
 <v t="ekr.20080218153931.12"><vh>Improved handling of unicode for @auto files</vh></v>
 </v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080304112808" a="ETV"><vh>leo 4.4.8 b1</vh>
+<v t="ekr.20080304112802.1" a="E"><vh>Allow arguments to minibuffer commands</vh></v>
+<v t="ekr.20080304112802.25" a="E"><vh>Added translation services</vh></v>
 </v>
 </v>
 </v>
@@ -34044,6 +34048,60 @@ Python's # -*- coding line. This line must be the first line of the imported fil
 <t tx="ekr.20080218154129"></t>
 <t tx="ekr.20080218154129.1"></t>
 <t tx="ekr.20080301071818"></t>
+<t tx="ekr.20080304112802.1">http://mail.google.com/mail/#inbox/1184b70ea10f5aa3
+
+Leo now contains minimal support for arguments to minibuffer commands.
+
+- k.simulateCommand now puts arguments following the command name in k.givenArgs.
+  Whitespace separates arguments.
+
+- k.simulateCommand knows nothing about what the arguments mean. That is up to
+  the individual commands.
+
+- At present, only the following minibuffer commands now support k.givenArgs:
+  open-outline, open-outline-by-name, save-file, save-file-as,
+  save-file-as-unzipped and save-file-as-zipped.
+
+  These commands use ''.join(k.givenArgs) to get the file name,
+  which may cause problems if the file name contains whitespace.
+
+- At present, the repeat-complex-command command does not support arguments.</t>
+<t tx="ekr.20080304112802.25">- g.translateString does the actual translation.
+
+- g.es and g.es_print now support exactly the same arguments.
+
+  The methods translate only the first, third, etc arguments.
+  Keyword arguments, color &amp; newline, etc. are never translated.</t>
+<t tx="ekr.20080304112808">Leo 4.4.8 beta 1                           March 5, 2008
+
+Leo 4.4.7 beta 1 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr.
+  See the Bzr link below.
+- Leo's discussion is now hosted by Google Groups:
+  See the Forum link below.
+- The first, third, fifth etc. arguments to g.es and g.es_print
+  can now be translated using Python's gettext.gettext function.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Added support for arguments to minibuffer commands.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="vivainio.20080302173815">mod_scripting.py
 </t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
