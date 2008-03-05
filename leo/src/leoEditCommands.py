@@ -2299,17 +2299,18 @@ class editCommandsClass (baseEditCommandsClass):
         if image_height is None:
             yoffset = 0
         else:
-            yoffset = (c.frame.tree.line_height-image_height)/2
+            yoffset = 0 # (c.frame.tree.line_height-image_height)/2
+            # TNB: I suspect this is being done again in the drawing code
 
         newEntry = {
             'type' : 'file',
             'file' : path,
             'relPath': relPath,
             'where' : 'beforeHeadline',
-            'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
+            'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : 1, # -2,
             'on' : 'tnode',
         }
-        newEntry.update(kargs)
+        newEntry.update(kargs)  # may switch 'on' to 'vnode'
         aList.append (newEntry)
         xoffset += 2
 
@@ -2346,6 +2347,7 @@ class editCommandsClass (baseEditCommandsClass):
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
+            # g.es((p.headString(),uaLoc.unknownAttributes['icons']))
             uaLoc.unknownAttributes["lineYOffset"] = 3
             p.setDirty()
         else:
@@ -2355,8 +2357,20 @@ class editCommandsClass (baseEditCommandsClass):
                     uaLoc.unknownAttributes["lineYOffset"] = 0
                     p.setDirty()
 
+    def dHash(self, d):
+        """Hash a dictionary"""
+        l = d.keys()
+        l.sort()
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
+
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
+
+        #if str(map(self.dHash, l)) == str(map(self.dHash, self.getIconList(p))):
+        #    return
+
+        #g.es((1, str(self.getIconList(p))))
+        #g.es((2,str(l)))
 
         subl = [i for i in l if i.get('on') != 'vnode']
         self._setIconListHelper(p, subl, p.v.t)

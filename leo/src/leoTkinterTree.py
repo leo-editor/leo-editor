@@ -1042,9 +1042,6 @@ class leoTkinterTree (leoFrame.leoTree):
 
         h,w = 0,0 ; t = p.v.t
 
-        if not hasattr(t,"unknownAttributes"):
-            return h,w
-
         com = self.c.editCommands
         iconsList = com.getIconList(p)
         if not iconsList:

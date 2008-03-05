@@ -167,10 +167,28 @@ class cleoController:
     '''A per-commander class that recolors outlines.'''
 
     #@    @+others
+    #@+node:tbrown.20080304230028:priority table
+    priorities = {
+      1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
+      2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
+      3: {'long': 'High',      'short': '3', 'icon': 'pri3.png'},
+      4: {'long': 'Medium',    'short': '4', 'icon': 'pri4.png'},
+      5: {'long': 'Low',       'short': '5', 'icon': 'pri5.png'},
+      6: {'long': 'Very Low',  'short': '6', 'icon': 'pri6.png'},
+      7: {'long': 'Sometime',  'short': '7', 'icon': 'pri7.png'},
+     20: {'long': 'Bang',      'short': '!', 'icon': 'bngblk.png'},
+     21: {'long': 'Cross',     'short': 'X', 'icon': 'xblk.png'},
+     22: {'long': '(cross)',   'short': 'x', 'icon': 'xgry.png'},
+     23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
+    100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
+    }
+    #@nonl
+    #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
     def __init__ (self,c):
 
         self.c = c
+        c.cleo = self
         self.menu = None
         self.donePriority = 100
         self.smiley = None
@@ -294,19 +312,21 @@ class cleoController:
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
     def loadIcons(self, p):
-        iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
+        iconDir = g.os_path_abspath(
+          g.os_path_normpath(
+            g.os_path_join(g.app.loadDir,"..","Icons")))
         com = self.c.editCommands
         icons = [i for i in com.getIconList(p)
                  if 'cleoIcon' not in i]
         pri = self.getat(p.v, 'priority')
-        if pri >= 1 and pri <= 7:
+        if pri: pri = int(pri)
+        if pri in self.priorities:
             com.appendImageDictToList(icons, iconDir,
-                'cleo/pri%d.png'%pri, 2, on='vnode', cleoIcon='1',
-                where = 'beforeIcon')
-                # beforeBox beforeIcon beforeHeadline afterheadline
-        if icons: g.es(icons)
+                g.os_path_join('cleo',self.priorities[pri]['icon']),
+                2, on='vnode', cleoIcon='1', where = 'beforeIcon')
+                # beforeBox beforeIcon beforeHeadline afterHeadline
+
         com.setIconList(p, icons)
-    #@nonl
     #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
     def close(self, tag, key):
@@ -615,6 +635,8 @@ class cleoController:
         for ky, vl in self.pickles.iteritems():
             self.setat(self.pickleV, ky, vl.get())
 
+        self.loadIcons(self.pickleP)
+
         self.clear_marks(self.c.frame.tree.canvas)
         self.update_project(self.pickleP)
         c = self.c
@@ -664,19 +686,19 @@ class cleoController:
             # self.draw_tick(v)
             return None
 
-        priority = self.getat(v, 'priority')
-        colour = self.priority_colours.get(priority,False)
-        if colour:
-            self.draw_arrow(v,colour)
-        if priority==self.donePriority:
-            self.draw_tick(v)
+        # priority = self.getat(v, 'priority')
+        # colour = self.priority_colours.get(priority,False)
+        # if colour:
+        #     self.draw_arrow(v,colour)
+        # if priority==self.donePriority:
+        #     self.draw_tick(v)
 
         progress = self.getat(v, 'progress')
         if self.scaleProg != 0 and progress != '': 
             progWidth = self.progWidth
             if self.scaleProg == 2 and self.getat(v, 'time_req') != '':
                 progWidth += self.getat(v, 'time_req') * self.extraProg
-            self.draw_prog(v, progress/100., progWidth)
+            self.draw_prog(v, float(progress)/100., progWidth)
 
         # Archetype are not drawn here
         return None
@@ -964,14 +986,8 @@ class cleoController:
     #@+node:tbrown.20061020145804:left_priority_menu
     def left_priority_menu(self, menu, p):
         self.prep_pickle(p.v, 'priority', default=9999)
-        for value,label in (
-            (1,'1'),
-            (2,'2'),
-            (3,'3'),
-            (4,'4',),
-            (5,'5',),
-            (self.donePriority,'D'),
-        ):
+        for pri in self.priorities:
+            value,label = pri, self.priorities[pri]['short']
             s = '%s' % (label)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
@@ -989,14 +1005,8 @@ class cleoController:
         parent.add_cascade(label='Priority', menu=menu,underline=1)
 
         # Instead of just redraw, set changed too.
-        for value,label in (
-            (1,'Very High'),
-            (2,'High'),
-            (3,'Medium'),
-            (4,'Low',),
-            (5,'None',),
-            (self.donePriority,'Done'),
-        ):
+        for pri in self.priorities:
+            value,label = pri, self.priorities[pri]['long']
             s = '%d %s' % (value,label)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
@@ -1190,6 +1200,8 @@ class cleoController:
             if show:
                 tr = self.getat(nd.v, 'time_req')
                 pr = self.getat(nd.v, 'progress')
+                try: pr = float(pr)
+                except: pr = 0
                 if tr != '' or pr != '':
                     ans = ' <'
                     if tr != '':
