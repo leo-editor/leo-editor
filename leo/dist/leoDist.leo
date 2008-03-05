@@ -33,7 +33,7 @@
 <v t="ekr.20070620084858.1"><vh>@@button upload</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucnements</vh>
+<v t="EKR.20040519091259" a="E"><vh>Annoucnements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -45,24 +45,9 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080218154442"><vh>ANN: Leo 4.4.7 final</vh></v>
+<v t="ekr.20080305100429" a="TV"><vh>ANN: Leo 4.4.8 b1</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
-<v t="EKR.20040519091259.37"><vh>3.x</vh>
-<v t="EKR.20040519091259.38"><vh>ANN: Leo 3.3 outlining editor</vh></v>
-<v t="EKR.20040519091259.39"><vh>ANN: Leo 3.5 (and 3.4) outlining editor</vh></v>
-<v t="EKR.20040519091259.40"><vh>ANN: Leo 3.6 outlining editor</vh></v>
-<v t="EKR.20040519091259.41"><vh>ANN: Leo 3.7 outlining editor</vh></v>
-<v t="EKR.20040519091259.42"><vh>ANN: Leo 3.8 outlining editor</vh></v>
-<v t="EKR.20040519091259.43"><vh>ANN: Leo 3.9 outlining editor</vh></v>
-<v t="EKR.20040519091259.44"><vh>ANN: Leo 3.10 outlining editor</vh></v>
-<v t="EKR.20040519091259.45"><vh>ANN: Leo 3.11b1 outlining editor</vh></v>
-<v t="EKR.20040519091259.46"><vh>ANN: Leo 3.11b3 outlining editor</vh></v>
-<v t="EKR.20040519091259.47"><vh>ANN: Leo 3.11b4 outlining editor</vh></v>
-<v t="EKR.20040519091259.48"><vh>ANN: Leo 3.11 outlining editor</vh></v>
-<v t="EKR.20040519091259.49"><vh>ANN: Leo 3.11.1 outlining editor</vh></v>
-<v t="EKR.20040519091259.50"><vh>ANN: Leo 3.12 outlining editor</vh></v>
-<v t="EKR.20040519091259.51"><vh>ANN: Leo 3.12 outlining editor (c.l.py)</vh></v>
-</v>
+<v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
 <v t="EKR.20040519091259.35"><vh>ANN: Leo 4.0.4: An outlining editor</vh></v>
 <v t="EKR.20040519091259.36"><vh>ANN: Leo 4.0 final: An outlining editor</vh></v>
@@ -93,6 +78,23 @@
 <v t="ekr.20050224070230"><vh>ANN: Leo 4.3-a2</vh></v>
 <v t="ekr.20050124083006"><vh>ANN: Leo 4.3-a1</vh></v>
 <v t="EKR.20040519091259.5"><vh>FAQ for comp.prog.literate</vh></v>
+</v>
+</v>
+<v t="EKR.20040519091259.37"><vh>3.x</vh>
+<v t="EKR.20040519091259.38"><vh>ANN: Leo 3.3 outlining editor</vh></v>
+<v t="EKR.20040519091259.39"><vh>ANN: Leo 3.5 (and 3.4) outlining editor</vh></v>
+<v t="EKR.20040519091259.40"><vh>ANN: Leo 3.6 outlining editor</vh></v>
+<v t="EKR.20040519091259.41"><vh>ANN: Leo 3.7 outlining editor</vh></v>
+<v t="EKR.20040519091259.42"><vh>ANN: Leo 3.8 outlining editor</vh></v>
+<v t="EKR.20040519091259.43"><vh>ANN: Leo 3.9 outlining editor</vh></v>
+<v t="EKR.20040519091259.44"><vh>ANN: Leo 3.10 outlining editor</vh></v>
+<v t="EKR.20040519091259.45"><vh>ANN: Leo 3.11b1 outlining editor</vh></v>
+<v t="EKR.20040519091259.46"><vh>ANN: Leo 3.11b3 outlining editor</vh></v>
+<v t="EKR.20040519091259.47"><vh>ANN: Leo 3.11b4 outlining editor</vh></v>
+<v t="EKR.20040519091259.48"><vh>ANN: Leo 3.11 outlining editor</vh></v>
+<v t="EKR.20040519091259.49"><vh>ANN: Leo 3.11.1 outlining editor</vh></v>
+<v t="EKR.20040519091259.50"><vh>ANN: Leo 3.12 outlining editor</vh></v>
+<v t="EKR.20040519091259.51"><vh>ANN: Leo 3.12 outlining editor (c.l.py)</vh></v>
 </v>
 <v t="ekr.20060603080748.1"><vh>4.4</vh>
 <v t="ekr.20060511075451"><vh>ANN: Leo 4.4 final</vh></v>
@@ -152,6 +154,7 @@
 </v>
 <v t="ekr.20080218154442.1"><vh>4.4.7</vh>
 <v t="ekr.20080213095646"><vh>ANN: Leo 4.4.7-b1</vh></v>
+<v t="ekr.20080218154442"><vh>ANN: Leo 4.4.7 final</vh></v>
 </v>
 </v>
 </v>
@@ -172,7 +175,7 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20050118095021" a="E"><vh>Leo 4.x installer</vh>
+<v t="ekr.20050118095021"><vh>Leo 4.x installer</vh>
 <v t="ekr.20050118103207" a="E"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -5222,5 +5225,36 @@ Announcements
     - Announce to SourceForge itself.
 	- Announce to comp.lang.python
 	- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
+<t tx="ekr.20080305100429">Leo 4.4.8 beta 1                           March 5, 2008
+
+Leo 4.4.8 beta 1 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr.
+  See the Bzr link below.
+- Leo's discussion is now hosted by Google Groups:
+  See the Forum link below.
+- The first, third, fifth etc. arguments to g.es and g.es_print
+  can now be translated using Python's gettext.gettext function.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Added support for arguments to minibuffer commands.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080305100429.1"></t>
 </tnodes>
 </leo_file>

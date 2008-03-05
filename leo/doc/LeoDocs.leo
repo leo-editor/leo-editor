@@ -34074,7 +34074,7 @@ Leo now contains minimal support for arguments to minibuffer commands.
   Keyword arguments, color &amp; newline, etc. are never translated.</t>
 <t tx="ekr.20080304112808">Leo 4.4.8 beta 1                           March 5, 2008
 
-Leo 4.4.7 beta 1 is available at:
+Leo 4.4.8 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge

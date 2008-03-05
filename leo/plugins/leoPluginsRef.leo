@@ -342,8 +342,8 @@
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
 </v>
-<v t="ekr.20080203083146"><vh>IPython bridge</vh>
-<v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
+<v t="ekr.20080203083146" a="E"><vh>IPython bridge</vh>
+<v t="ekr.20080201143145" a="E"><vh>@thin ipython.py</vh></v>
 </v>
 <v t="ekr.20050402080206"><vh>LeoN</vh>
 <v t="ekr.20050402080206.1"><vh>Readme file.</vh></v>
