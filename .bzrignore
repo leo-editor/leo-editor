@@ -7,3 +7,4 @@ leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 leo/src/LeoPy.leo
 leo/src/Komodo.leo
+leo/dist/*.zip
