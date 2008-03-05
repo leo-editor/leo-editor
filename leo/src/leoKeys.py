@@ -376,7 +376,7 @@ class autoCompleterClass:
         '''Show the autocompleter status on the status line.'''
 
         k = self.k
-        s = 'autocompleter' % g.choose(k.enable_autocompleter,'On','Off')
+        s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
         g.es(s,color='red')
 
     def showCalltipsStatus (self):
