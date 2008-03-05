@@ -2465,6 +2465,42 @@ def createRootWindow(self):
 - IronPython has trouble with the pdb module, so some other way must be found to debug IronPython programs.
 #@nonl
 #@-node:ekr.20070215183046:IronPython notes
+#@+node:ekr.20080114142724:leoGtkNotes
+@nocolor
+
+@all
+#@nonl
+#@+node:ekr.20080112175736: gtk: to do
+gtkGui:
+
+** Rewrite leoKeyEventClass.
+   This should be done by EKR: it is an essential part of all key handline.
+- There is no root ivar in the gtk gui.  Rewrite all code that uses self.root.
+- Rewrite runOpenFileDialog
+- Rewrite runSaveFileDialog
+
+gtkFrame:
+- What is the correct way to close a window?
+- Should there be a separate minibuffer class?
+- Should there be separate files for the log, body, etc.?
+- Should there be smaller methods to create components and make bindings?
+
+gtkFind:
+- Create the find tab.
+
+gtkComparePanel:
+- At present this does not exist.  The compare window is optional.
+
+General:
+- Write unit tests for all new gui code.
+- Unit tests for showFindPanel and openCompareWindow.
+
+#@-node:ekr.20080112175736: gtk: to do
+#@+node:ekr.20080113061130: gtk: what I did
+- Added code to Leo's code to do nothing it the compare panel and stand-alone find panel do not exist.
+#@nonl
+#@-node:ekr.20080113061130: gtk: what I did
+#@-node:ekr.20080114142724:leoGtkNotes
 #@+node:ekr.20050214055018:Mac Notes
 #@+node:ekr.20050221054932:How to make monolithic Leo app on MacOS X
  @killcolor
