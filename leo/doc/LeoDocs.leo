@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="120" left="10" height="670" width="996"/>
+	<global_window_position top="120" left="10" height="650" width="996"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -51,6 +51,7 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt;</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
@@ -761,7 +762,7 @@
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation</vh></v>
@@ -3568,9 +3569,9 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080304112808" a="ETV"><vh>leo 4.4.8 b1</vh>
-<v t="ekr.20080304112802.1" a="E"><vh>Allow arguments to minibuffer commands</vh></v>
-<v t="ekr.20080304112802.25" a="E"><vh>Added translation services</vh></v>
+<v t="ekr.20080304112808" a="TV"><vh>leo 4.4.8 b1</vh>
+<v t="ekr.20080304112802.1"><vh>Allow arguments to minibuffer commands</vh></v>
+<v t="ekr.20080304112802.25"><vh>Added translation services</vh></v>
 </v>
 </v>
 </v>
@@ -34102,6 +34103,8 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+    Download Leo[4.4.8 beta 1]&lt;/a&gt;</t>
 <t tx="vivainio.20080302173815">mod_scripting.py
 </t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication

@@ -5187,16 +5187,17 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 # Run pylint
 # Run all unit tests.
 @nocolor
-Clean up .leo files
-    - leoPlugins.leo: Removed top-level clones.
-    - leoPy.leo: Remove top-level clones.
-    - LeoDocs.leo: select the read-me node.
-Documentation
-	- Update readme.txt
-	- Update LeoDocs.leo
-    - Update Announcement.
-Version numbers
-	- Update version number in Help menu.
+Prepare .leo files
+    - leoPlugins.leo: Remove top-level clones.
+    - leoPy.leo:
+        - Update the version number in the Help menu.
+        - Remove top-level clones.
+    - LeoDist.leo:
+        - Update announcement.
+        - Update readme.txt
+    - LeoDocs.leo:
+        Update the version number on the home page
+        select the read-me node.
 Create the distribution using the distribution scripts.
     - Do a cvs update, with a tag.
 Create and test leosetup.exe.
