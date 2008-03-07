@@ -45,7 +45,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080305100429" a="TV"><vh>ANN: Leo 4.4.8 b1</vh></v>
+<v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -228,7 +228,7 @@
 marks="ekr.20050118124408,ekr.20050118092706.4,"
 expanded="ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20070614105133.3" tnodeList="ekr.20070614105133.3,ekr.20070614110334,ekr.20070622084634"><vh>@nosent ../../setup.py</vh>
@@ -5213,17 +5213,13 @@ Create and test leosetup.exe.
 
 Create Release on SourceForge
 
-Uploads
-    - Upload leodocs.zip
-	- Upload leosetup.exe
-	- Upload leo-x-y.zip
-	- Upload sbook.chm if it has been changed.
 Announcements
     - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
         - Edit with the 'Edit this page' *tab* (not a link)
     - Update version number on web site.
 	- Announce to Leo's Open Forum.
     - Announce to SourceForge itself.
+    - Announce to leo-editor.
 	- Announce to comp.lang.python
 	- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20080305100429">Leo 4.4.8 beta 1                           March 5, 2008
