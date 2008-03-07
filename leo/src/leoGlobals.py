@@ -5234,25 +5234,24 @@ Official distributions contain this module in Leo's extensions folder,
 but this module may be missing if you get Leo from cvs.
 ''' % (pluginName,moduleName)
 
-    if 1: # Requires minimal further imports.
-        try:
-            import Tkinter as Tk
-            root = g.app.root or Tk.Tk()
-            title = 'Can not import %s' % moduleName
-            top = createDialogFrame(Tk,root,title,message)
-            root.wait_window(top)
-        except ImportError:
-            print 'Can not import %s' % moduleName
-            print 'Can not import Tkinter'
-            print 'Leo must now exit'
+    if g.app.killed:
+        return
 
-    else: # Can cause import problems during startup.
-        import leoTkinterDialog
+    if g.app.unitTesting:
+        print 'g.importExtension: can not import %s' % moduleName
+        return
 
-        d = leoTkinterDialog.tkinterAskOk(
-            c=None,title='Can not import %s' %(moduleName),
-            message=message)
-        d.run(modal=True)
+    # Requires minimal further imports.
+    try:
+        import Tkinter as Tk
+        root = g.app.root or Tk.Tk()
+        title = 'Can not import %s' % moduleName
+        top = createDialogFrame(Tk,root,title,message)
+        root.wait_window(top)
+    except ImportError:
+        print 'Can not import %s' % moduleName
+        print 'Can not import Tkinter'
+        print 'Leo must now exit'
 #@+node:ekr.20060329083310.1:createDialogFrame
 def createDialogFrame(Tk,root,title,message):
 
@@ -5282,10 +5281,10 @@ def createDialogFrame(Tk,root,title,message):
     top.lift()
     top.focus_force()
 
-    # Attach the icon at idle time.
-    def attachIconCallback(top=top):
-        g.app.gui.attachLeoIcon(top)
-    top.after_idle(attachIconCallback)
+    if not g.app.unitTesting: # Attach the icon at idle time.
+        def attachIconCallback(top=top):
+            g.app.gui.attachLeoIcon(top)
+        top.after_idle(attachIconCallback)
 
     return top
 #@-node:ekr.20060329083310.1:createDialogFrame
