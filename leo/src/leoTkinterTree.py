@@ -816,7 +816,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         # Do the actual redraw.
         self.expandAllAncestors(c.currentPosition())
-        if self.idle_redraw:
+        if self.idle_redraw and not g.app.unitTesting:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll)
             self.canvas.after_idle(idleRedrawCallback)
@@ -1393,7 +1393,7 @@ class leoTkinterTree (leoFrame.leoTree):
                         self.canvas.yview("moveto",frac2)
                         if trace: g.trace("frac2 %1.2f %3d %3d %1.2f %1.2f" % (frac2,h1,h2,lo,hi))
 
-            if self.allocateOnlyVisibleNodes:
+            if self.allocateOnlyVisibleNodes and not g.app.unitTesting:
                 self.canvas.after_idle(self.idle_second_redraw)
 
             c.setTopVnode(p) # 1/30/04: remember a pseudo "top" node.
