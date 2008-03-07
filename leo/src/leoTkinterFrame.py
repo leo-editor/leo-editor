@@ -899,6 +899,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20031218072017.1974:destroySelf (tkFrame)
     def destroySelf (self):
 
+        # g.trace(self)
+
         # Remember these: we are about to destroy all of our ivars!
         top = self.top 
         c = self.c
