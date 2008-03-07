@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.477886977887">
-	<global_window_position top="225" left="419" height="576" width="864"/>
+	<global_window_position top="210" left="445" height="576" width="864"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -84,7 +84,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Buttons</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -353,7 +353,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -555,7 +555,7 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-<v t="ekr.20080204124255" a="TV"><vh>@shortcuts IPython commands</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
 </v>
 </v>
 <v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
@@ -1074,6 +1074,9 @@
 </v>
 </v>
 <v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="vivainio.20080307190927" a="E"><vh>IPython</vh>
+<v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
+</v>
 <v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
@@ -6970,7 +6973,7 @@ plugins_menu.py
 # It doesn't understand @enabled-plugins nodes.
 # plugin_manager.py
 
-# cleo.py
+cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -7014,6 +7017,7 @@ threading_colorizer.py
 #hoist.py
 #image.py
 #import_cisco_config.py
+#ipython.py
 #keybindings.py
 #leoOPML.py
 #leo_to_html.py
@@ -8579,5 +8583,7 @@ push-to-ipython         = Alt-i
 </t>
 <t tx="ekr.20080212084020">The encoding used for files imported by @auto if no @encoding directive is in effect.
 Default is UTF-8 (case not important).</t>
+<t tx="vivainio.20080307185812"></t>
+<t tx="vivainio.20080307190927"></t>
 </tnodes>
 </leo_file>

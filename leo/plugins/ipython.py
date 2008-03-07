@@ -195,7 +195,12 @@ class ipythonController:
             return
 
         try:
-            sys.argv = ['leo.py']
+            args = c.config.getString('ipython_argv')
+            if args is None:
+                argv = ['leo.py']
+            else:
+                argv = args.split() 
+            sys.argv = argv
             api = IPython.ipapi
             self.message('creating IPython shell...')
             leox = leoInterface(c,g) # inject leox into the namespace.
