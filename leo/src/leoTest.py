@@ -625,6 +625,8 @@ def runLeoTest(c,path,verbose=False,full=False):
 
     # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
 
+    assert g.app.unitTesting
+
     try:
         ok, frame = g.openWithFileName(path,c,enableLog=False)
         assert(ok and frame)
@@ -636,8 +638,6 @@ def runLeoTest(c,path,verbose=False,full=False):
         if frame and frame.c != c:
             frame.c.setChanged(False)
             g.app.closeLeoWindow(frame.c.frame)
-        ### c.frame.update()
-#@nonl
 #@-node:ekr.20051104075904.42:runLeoTest
 #@+node:ekr.20070627135407:runTestsExternally & helper class
 def runTestsExternally (c,all):
