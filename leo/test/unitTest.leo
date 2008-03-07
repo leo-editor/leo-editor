@@ -55,6 +55,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070303143846.1" a="TV"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -783,7 +784,7 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070611105300"><vh>Longer tests (opens windows)</vh>
+<v t="ekr.20070611105300"><vh>Dubious tests</vh>
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
@@ -831,11 +832,35 @@
 <v t="ekr.20070301064408"><vh>@@test print All plugins tests complete</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
 </v>
+<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
+<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
+<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
+<v t="ekr.20061001124008.1"><vh>child</vh>
+<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
+<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
+<v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001091616"><vh>@test putDescendentUa</vh>
+<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
+<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
+</v>
+</v>
+<v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
+<v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
+<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
+<v t="ekr.20061008162912.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+</v>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
 <v t="ekr.20041012084201"><vh>removeFile</vh></v>
 </v>
-</v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh>Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -1738,30 +1763,6 @@
 <v t="ekr.20051109143831" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070306091949" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
-<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
-<v t="ekr.20061001124008"><vh>@test minimal test of putTnodeList</vh>
-<v t="ekr.20061001124008.1"><vh>child</vh>
-<v t="ekr.20061001124008.2"><vh>grandchild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
-<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
-<v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001091616"><vh>@test putDescendentUa</vh>
-<v t="ekr.20061001091647" unit_test_child="55046162636471002e"><vh>child</vh>
-<v t="ekr.20061001091647.1" unit_test_grandchild="55047778797a71002e"><vh>grandChild</vh></v>
-</v>
-</v>
-<v t="ekr.20061001114236" unit_test="55046162636471002e"><vh>@test putUa</vh></v>
-<v t="ekr.20051107115231.9" annotate="7d71002e"><vh>@test Select a node when file is first loaded</vh></v>
-<v t="ekr.20061008162912"><vh>@test write .leo file with @ignore node</vh>
-<v t="ekr.20061008162912.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29" annotate="7d71002e"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
@@ -16513,22 +16514,26 @@ after</t>
     return i,j</t>
 <t tx="ekr.20070301064408">print '\nAll plugins tests complete.'</t>
 <t tx="ekr.20070303143846.1"># Plugin_manager.py needs plugins_menu.py
+# Plugins_manager is not functional at present.
+# plugin_manager.py
 plugins_menu.py
-plugin_manager.py
+
+# Standard plugins...
 open_with.py
 mod_scripting.py
 rst3.py
 UNL.py
-
-# Enabled by default in Leo 4.4.3. (order is important)
 nav_buttons.py
 hoist.py
-# cleo.py
+
 image.py
 leo_to_html.py
 threading_colorizer.py
 
-#vim.py
+# Other plugins...
+
+# cleo.py
+# vim.py
 </t>
 <t tx="ekr.20070303143951"></t>
 <t tx="ekr.20070305095401">p = c.currentPosition().copy()
