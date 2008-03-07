@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20080214092357:@thin ekr_test.py
+#@+node:ekr.20080214092357:@thin test/ekr_test.py
 import leoGlobals as g
 import leoPlugins
 
@@ -28,5 +28,5 @@ def onMenu1 (tag,keys):
         g.funcToMethod(f=ekrCommand2, theClass=c, name=None)
         c.k.registerCommand('ekr-command1',shortcut=None,func=c.ekrCommand1,pane='all',verbose=False)
         c.k.registerCommand('ekr-command2',shortcut=None,func=c.ekrCommand2,pane='all',verbose=False)
-#@-node:ekr.20080214092357:@thin ekr_test.py
+#@-node:ekr.20080214092357:@thin test/ekr_test.py
 #@-leo
