@@ -2591,7 +2591,7 @@ class basePosition (object):
     #@+node:ekr.20031218072017.939:p.moveToThreadNext
     def moveToThreadNext (self):
 
-        """Move a position to the next a position in threading order."""
+        """Move a position to threadNext position."""
 
         p = self
 
