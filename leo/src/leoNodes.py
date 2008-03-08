@@ -964,20 +964,22 @@ class nodeIndices (object):
 
         theId = self.userId # Always use the user's id for new ids!
         if not self.timeString:
+            g.trace('should not happen: no timeString')
             self.setTimestamp()
-        t = self.timeString
-        assert(t)
+            self.lastIndex = None # New in Leo 4.4.8.
+        theTime = self.timeString
+        assert(theTime)
         n = None
 
         # Set n if id and time match the previous index.
         last = self.lastIndex
         if last:
             lastId,lastTime,lastN = last
-            if theId==lastId and t==lastTime:
+            if theId==lastId and theTime==lastTime:
                 if lastN == None: n = 1
                 else: n = lastN + 1
 
-        d = (theId,t,n)
+        d = (theId,theTime,n)
         self.lastIndex = d
         # g.trace(d)
         return d
@@ -1025,21 +1027,21 @@ class nodeIndices (object):
         self.timeString = time.strftime(
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
+
+        # g.trace(self.timeString,self.lastIndex,g.callers(4))
     #@-node:ekr.20031218072017.1998:setTimeStamp
     #@+node:ekr.20031218072017.1999:toString
-    def toString (self,index,removeDefaultId=False):
+    def toString (self,index):
 
         """Convert a gnx (a tuple) to its string representation"""
 
         try:
             theId,t,n = index
-            if removeDefaultId and theId == self.defaultId:
-                theId = ""
             if not n: # None or ""
                 return "%s.%s" % (theId,t)
             else:
                 return "%s.%s.%d" % (theId,t,n)
-        except TypeError:
+        except Exception:
             g.trace('unusual gnx',repr(index))
             return repr(index)
     #@nonl
