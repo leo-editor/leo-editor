@@ -93,9 +93,6 @@ class tnode (baseTnode):
         def __hash__(self):
 
             return hash(g.app.nodeIndices.toString(self.fileIndex))
-
-            # return sum([ord(ch) for ch in g.app.nodeIndices.toString(self.fileIndex)])
-    #@nonl
     #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
     #@+node:ekr.20031218072017.3325:Getters
     #@+node:EKR.20040625161602:getBody
@@ -2954,8 +2951,6 @@ class position (basePosition):
     pass
 #@nonl
 #@-node:ekr.20031218072017.889:class position
-#@+node:ekr.20070630070045:Unit tests
-#@-node:ekr.20070630070045:Unit tests
 #@-others
 #@nonl
 #@-node:ekr.20031218072017.3320:@thin leoNodes.py
