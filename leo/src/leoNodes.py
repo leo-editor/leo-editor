@@ -932,8 +932,10 @@ class nodeIndices (object):
 
         self.userId = id
         self.defaultId = id
-        self.lastIndex = None
-        self.timeString = None
+
+        # A Major simplification: Only assign the timestamp once.
+        self.setTimeStamp()
+        self.lastIndex = 0
     #@-node:ekr.20031218072017.1992:nodeIndices.__init__
     #@+node:ekr.20031218072017.1993:areEqual
     def areEqual (self,gnx1,gnx2):
@@ -960,27 +962,10 @@ class nodeIndices (object):
     #@+node:ekr.20031218072017.1995:getNewIndex
     def getNewIndex (self):
 
-        """Create a new gnx using self.timeString and self.lastIndex"""
+        '''Create a new gnx.'''
 
-        theId = self.userId # Always use the user's id for new ids!
-        if not self.timeString:
-            g.trace('should not happen: no timeString')
-            self.setTimestamp()
-            self.lastIndex = None # New in Leo 4.4.8.
-        theTime = self.timeString
-        assert(theTime)
-        n = None
-
-        # Set n if id and time match the previous index.
-        last = self.lastIndex
-        if last:
-            lastId,lastTime,lastN = last
-            if theId==lastId and theTime==lastTime:
-                if lastN == None: n = 1
-                else: n = lastN + 1
-
-        d = (theId,theTime,n)
-        self.lastIndex = d
+        self.lastIndex += 1
+        d = (self.userId,self.timeString,self.lastIndex)
         # g.trace(d)
         return d
     #@-node:ekr.20031218072017.1995:getNewIndex
@@ -1029,6 +1014,8 @@ class nodeIndices (object):
             time.localtime())
 
         # g.trace(self.timeString,self.lastIndex,g.callers(4))
+
+    setTimeStamp = setTimestamp
     #@-node:ekr.20031218072017.1998:setTimeStamp
     #@+node:ekr.20031218072017.1999:toString
     def toString (self,index):
@@ -1037,7 +1024,7 @@ class nodeIndices (object):
 
         try:
             theId,t,n = index
-            if not n: # None or ""
+            if n in (None,0,'',):
                 return "%s.%s" % (theId,t)
             else:
                 return "%s.%s.%d" % (theId,t,n)
