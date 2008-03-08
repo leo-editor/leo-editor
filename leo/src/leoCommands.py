@@ -3228,10 +3228,6 @@ class baseCommands:
         # Copying an outline has no undo consequences.
         c = self
         c.endEditing()
-
-        # Now done in putLeoOutline.
-        # c.fileCommands.assignFileIndices()
-
         s = c.fileCommands.putLeoOutline()
         g.app.gui.replaceClipboardWith(s)
     #@-node:ekr.20031218072017.1550:copyOutline
