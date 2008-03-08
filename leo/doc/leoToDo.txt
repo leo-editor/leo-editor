@@ -2,6 +2,1077 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080304101417:4.4.8 b2
+#@+node:ekr.20080306123857:Possible problems with Leo 4.4.6
+@nocolor
+
+- upgraded to PMW 1.3.
+- leoColor.py
+- changed unitTest.leo
+
+Strategies:
+
+Diff folders.
+(done) Revert to PMW 1.2.
+Revert to previous unitTest.leo.
+Put traces in idle handlers, in code that closes windows.
+
+
+Idle time:
+
+scheduleIdleTimeRoutine
+after_idle
+
+@color
+#@+node:ekr.20051104075904.42:runLeoTest
+def runLeoTest(c,path,verbose=False,full=False):
+
+    frame = None ; ok = False ; old_gui = g.app.gui
+
+    # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
+
+    assert g.app.unitTesting
+
+    try:
+        ok, frame = g.openWithFileName(path,c,enableLog=False)
+        assert(ok and frame)
+        errors = frame.c.checkOutline(verbose=verbose,unittest=True,full=full)
+        assert(errors == 0)
+        ok = True
+    finally:
+        g.app.gui = old_gui
+        if frame and frame.c != c:
+            frame.c.setChanged(False)
+            g.app.closeLeoWindow(frame.c.frame)
+#@-node:ekr.20051104075904.42:runLeoTest
+#@+node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
+def createTkTreeCanvas (self,parentFrame,scrolls,pack):
+
+    frame = self
+
+    canvas = Tk.Canvas(parentFrame,name="canvas",
+        bd=0,bg="white",relief="flat")
+
+    treeBar = Tk.Scrollbar(parentFrame,name="treeBar")
+
+    # New in Leo 4.4.3 b1: inject the ivar into the canvas.
+    canvas.leo_treeBar = treeBar
+
+    # Bind mouse wheel event to canvas
+    if sys.platform != "win32": # Works on 98, crashes on XP.
+        canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+        if 1: # New in 4.3.
+            << workaround for mouse-wheel problems >>
+
+    canvas['yscrollcommand'] = self.setCallback
+    treeBar['command']     = self.yviewCallback
+    treeBar.pack(side="right", fill="y")
+    if scrolls: 
+        treeXBar = Tk.Scrollbar( 
+            parentFrame,name='treeXBar',orient="horizontal") 
+        canvas['xscrollcommand'] = treeXBar.set 
+        treeXBar['command'] = canvas.xview 
+        treeXBar.pack(side="bottom", fill="x")
+
+    if pack:
+        canvas.pack(expand=1,fill="both")
+
+    canvas.bind("<Button-1>", frame.OnActivateTree)
+
+    # Handle mouse wheel in the outline pane.
+    if sys.platform == "linux2": # This crashes tcl83.dll
+        canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+
+    # g.print_bindings("canvas",canvas)
+    return canvas
+#@+node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
+# Handle mapping of mouse-wheel to buttons 4 and 5.
+
+def mapWheel(e):
+    if e.num == 4: # Button 4
+        e.delta = 120
+        return frame.OnMouseWheel(e)
+    elif e.num == 5: # Button 5
+        e.delta = -120
+        return frame.OnMouseWheel(e)
+
+canvas.bind("<ButtonPress>",mapWheel,add=1)
+#@-node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
+#@+node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
+def setCallback (self,*args,**keys):
+
+    """Callback to adjust the scrollbar.
+
+    Args is a tuple of two floats describing the fraction of the visible area."""
+
+    #g.trace(self.tree.redrawCount,args,g.callers())
+
+    apply(self.canvas.leo_treeBar.set,args,keys)
+
+    if self.tree.allocateOnlyVisibleNodes:
+        self.tree.setVisibleArea(args)
+
+def yviewCallback (self,*args,**keys):
+
+    """Tell the canvas to scroll"""
+
+    #g.trace(vyiewCallback,args,keys,g.callers())
+
+    if self.tree.allocateOnlyVisibleNodes:
+        self.tree.allocateNodesBeforeScrolling(args)
+
+    apply(self.canvas.yview,args,keys)
+#@nonl
+#@-node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
+#@-node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
+#@+node:ekr.20040803072955.35:Drawing... (tkTree)
+#@+node:ekr.20051216155728:tree.begin/endUpdate
+def beginUpdate (self):
+
+    self.updateCount += 1
+    # g.trace('tree',id(self),self.updateCount,g.callers())
+
+def endUpdate (self,flag,scroll=False):
+
+    self.updateCount -= 1
+    # g.trace(self.updateCount,'scroll',scroll,g.callers())
+
+    if self.updateCount <= 0:
+        if flag:
+            self.redraw_now(scroll=scroll)
+        if self.updateCount < 0:
+            g.trace("Can't happen: negative updateCount",g.callers())
+#@-node:ekr.20051216155728:tree.begin/endUpdate
+#@+node:ekr.20040803072955.58:tree.redraw_now & helper
+# New in 4.4b2: suppress scrolling by default.
+
+def redraw_now (self,scroll=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+        return
+
+    c = self.c
+
+    # g.trace('scroll',scroll,g.callers())
+
+    if not g.app.unitTesting:
+        if self.gc_before_redraw:
+            g.collectGarbage()
+        if g.app.trace_gc_verbose:
+            if (self.redrawCount % 5) == 0:
+                g.printGcSummary()
+        if self.trace_redraw or self.trace_alloc:
+            # g.trace(self.redrawCount,g.callers())
+            # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+            if self.trace_stats:
+                g.print_stats()
+                g.clear_stats()
+
+    # New in 4.4b2: Call endEditLabel, but suppress the redraw.
+    self.beginUpdate()
+    try:
+        self.endEditLabel()
+    finally:
+        self.endUpdate(False)
+
+    # Do the actual redraw.
+    self.expandAllAncestors(c.currentPosition())
+    if self.idle_redraw and not g.app.unitTesting:
+        def idleRedrawCallback(event=None,self=self,scroll=scroll):
+            self.redrawHelper(scroll=scroll)
+        self.canvas.after_idle(idleRedrawCallback)
+    else:
+        self.redrawHelper(scroll=scroll)
+    if g.app.unitTesting:
+        self.canvas.update_idletasks() # Important for unit tests.
+    c.masterFocusHandler()
+
+redraw = redraw_now # Compatibility
+#@+node:ekr.20040803072955.59:redrawHelper
+def redrawHelper (self,scroll=True):
+
+    c = self.c ; trace = False
+    oldcursor = self.canvas['cursor']
+    self.canvas['cursor'] = "watch"
+
+    if not g.doHook("redraw-entire-outline",c=c):
+
+        if trace: g.trace('scroll',scroll,g.callers())
+        c.setTopVnode(None)
+        self.setVisibleAreaToFullCanvas()
+        self.drawTopTree()
+        # Set up the scroll region after the tree has been redrawn.
+        bbox = self.canvas.bbox('all')
+        # g.trace('canvas',self.canvas,'bbox',bbox)
+        if bbox is None:
+            x0,y0,x1,y1 = 0,0,100,100
+        else:
+            x0, y0, x1, y1 = bbox
+        self.canvas.configure(scrollregion=(0, 0, x1, y1))
+        if scroll:
+            self.canvas.update_idletasks() # Essential.
+            self.scrollTo()
+
+    g.doHook("after-redraw-outline",c=c)
+
+    self.canvas['cursor'] = oldcursor
+#@-node:ekr.20040803072955.59:redrawHelper
+#@-node:ekr.20040803072955.58:tree.redraw_now & helper
+#@+node:ekr.20040803072955.61:idle_second_redraw
+def idle_second_redraw (self):
+
+    c = self.c
+
+    # Erase and redraw the entire tree the SECOND time.
+    # This ensures that all visible nodes are allocated.
+    c.setTopVnode(None)
+    args = self.canvas.yview()
+    self.setVisibleArea(args)
+
+    if 0:
+        self.canvas.delete("all")
+
+    self.drawTopTree()
+
+    if self.trace:
+        g.trace(self.redrawCount)
+#@-node:ekr.20040803072955.61:idle_second_redraw
+#@+node:ekr.20051105073850:drawX...
+#@+node:ekr.20040803072955.36:drawBox
+def drawBox (self,p,x,y):
+
+    tree = self ; c = self.c
+    y += 7 # draw the box at x, y+7
+
+    theId = g.doHook("draw-outline-box",tree=tree,c=c,p=p,v=p,x=x,y=y)
+
+    if theId is None:
+        # if self.trace_gc: g.printNewObjects(tag='box 1')
+        iconname = g.choose(p.isExpanded(),"minusnode.gif", "plusnode.gif")
+        image = self.getIconImage(iconname)
+        theId = self.newBox(p,x,y+self.lineyoffset,image)
+        # if self.trace_gc: g.printNewObjects(tag='box 2')
+        return theId
+    else:
+        return theId
+#@-node:ekr.20040803072955.36:drawBox
+#@+node:ekr.20040803072955.37:drawClickBox
+def drawClickBox (self,p,y):
+
+    h = self.line_height
+
+    # Define a slighly larger rect to catch clicks.
+    if self.expanded_click_area:
+        self.newClickBox(p,0,y,1000,y+h-2)
+#@-node:ekr.20040803072955.37:drawClickBox
+#@+node:ekr.20040803072955.39:drawIcon
+def drawIcon(self,p,x=None,y=None):
+
+    """Draws icon for position p at x,y, or at p.v.iconx,p.v.icony if x,y = None,None"""
+
+    # if self.trace_gc: g.printNewObjects(tag='icon 1')
+
+    c = self.c ; v = p.v
+    << compute x,y and iconVal >>
+    v.iconVal = val
+
+    if not g.doHook("draw-outline-icon",tree=self,c=c,p=p,v=p,x=x,y=y):
+
+        # Get the image.
+        imagename = "box%02d.GIF" % val
+        image = self.getIconImage(imagename)
+        self.newIcon(p,x,y+self.lineyoffset,image)
+
+    return 0,self.icon_width # dummy icon height,width
+#@+node:ekr.20040803072955.40:<< compute x,y and iconVal >>
+if x is None and y is None:
+    try:
+        x,y = v.iconx, v.icony
+    except:
+        # Inject the ivars.
+        x,y = v.iconx, v.icony = 0,0
+else:
+    # Inject the ivars.
+    v.iconx, v.icony = x,y
+
+y += 2 # draw icon at y + 2
+
+# Always recompute v.iconVal.
+# This is an important drawing optimization.
+val = v.computeIcon()
+assert(0 <= val <= 15)
+# g.trace(v,val)
+#@nonl
+#@-node:ekr.20040803072955.40:<< compute x,y and iconVal >>
+#@-node:ekr.20040803072955.39:drawIcon
+#@+node:ekr.20040803072955.41:drawLine
+def drawLine (self,p,x1,y1,x2,y2):
+
+    theId = self.newLine(p,x1,y1,x2,y2)
+
+    return theId
+#@-node:ekr.20040803072955.41:drawLine
+#@+node:ekr.20040803072955.42:drawNode & force_draw_node (good trace)
+def drawNode(self,p,x,y):
+
+    c = self.c
+
+    # g.trace(x,y,p,id(self.canvas))
+
+    data = g.doHook("draw-outline-node",tree=self,c=c,p=p,v=p,x=x,y=y)
+    if data is not None: return data
+
+    if 1:
+        self.lineyoffset = 0
+    else:
+        if hasattr(p.v.t,"unknownAttributes"):
+            self.lineyoffset = p.v.t.unknownAttributes.get("lineYOffset",0)
+        else:
+            self.lineyoffset = 0
+
+    # Draw the horizontal line.
+    self.drawLine(p,
+        x,y+7+self.lineyoffset,
+        x+self.box_width,y+7+self.lineyoffset)
+
+    if self.inVisibleArea(y):
+        return self.force_draw_node(p,x,y)
+    else:
+        return self.line_height,0
+#@+node:ekr.20040803072955.43:force_draw_node
+def force_draw_node(self,p,x,y):
+
+    h = 0 # The total height of the line.
+    indent = 0 # The amount to indent this line.
+
+    h2,w2 = self.drawUserIcons(p,"beforeBox",x,y)
+    h = max(h,h2) ; x += w2 ; indent += w2
+
+    if p.hasChildren():
+        self.drawBox(p,x,y)
+
+    indent += self.box_width
+    x += self.box_width # even if box isn't drawn.
+
+    h2,w2 = self.drawUserIcons(p,"beforeIcon",x,y)
+    h = max(h,h2) ; x += w2 ; indent += w2
+
+    h2,w2 = self.drawIcon(p,x,y)
+    h = max(h,h2) ; x += w2 ; indent += w2/2
+
+    # Nothing after here affects indentation.
+    h2,w2 = self.drawUserIcons(p,"beforeHeadline",x,y)
+    h = max(h,h2) ; x += w2
+
+    h2 = self.drawText(p,x,y)
+    h = max(h,h2)
+    x += self.widthInPixels(p.headString())
+
+    h2,w2 = self.drawUserIcons(p,"afterHeadline",x,y)
+    h = max(h,h2)
+
+    self.drawClickBox(p,y)
+
+    return h,indent
+#@-node:ekr.20040803072955.43:force_draw_node
+#@-node:ekr.20040803072955.42:drawNode & force_draw_node (good trace)
+#@+node:ekr.20040803072955.44:drawText
+def drawText(self,p,x,y):
+
+    """draw text for position p at nominal coordinates x,y."""
+
+    assert(p)
+
+    c = self.c
+    x += self.text_indent
+
+    data = g.doHook("draw-outline-text-box",tree=self,c=c,p=p,v=p,x=x,y=y)
+    if data is not None: return data
+
+    self.newText(p,x,y+self.lineyoffset)
+
+    self.configureTextState(p)
+
+    return self.line_height
+#@-node:ekr.20040803072955.44:drawText
+#@+node:ekr.20040803072955.46:drawUserIcons & helper
+def drawUserIcons(self,p,where,x,y):
+
+    """Draw any icons specified by p.v.t.unknownAttributes["icons"]."""
+
+    h,w = 0,0 ; t = p.v.t
+
+    if not hasattr(t,"unknownAttributes"):
+        return h,w
+
+    iconsList = t.unknownAttributes.get("icons")
+    if not iconsList:
+        return h,w
+
+    try:
+        for theDict in iconsList:
+            h2,w2 = self.drawUserIcon(p,where,x,y,w,theDict)
+            h = max(h,h2) ; w += w2
+    except:
+        g.es_exception()
+
+    # g.trace(where,h,w)
+
+    return h,w
+#@+node:ekr.20040803072955.47:drawUserIcon
+def drawUserIcon (self,p,where,x,y,w2,theDict):
+
+    c = self.c ; h,w = 0,0
+
+    if where != theDict.get("where","beforeHeadline"):
+        return h,w
+
+    # if self.trace_gc: g.printNewObjects(tag='userIcon 1')
+
+    # g.trace(where,x,y,theDict)
+
+    << set offsets and pads >>
+    theType = theDict.get("type")
+    if theType == "icon":
+        ### not ready yet.
+        # s = theDict.get("icon")
+        pass
+    elif theType == "file":
+        theFile = theDict.get("file")
+        relPath = theDict.get('relPath')
+        << draw the icon at file >>
+    elif theType == "url":
+        ## url = theDict.get("url")
+        << draw the icon at url >>
+
+    # Allow user to specify height, width explicitly.
+    h = theDict.get("height",h)
+    w = theDict.get("width",w)
+
+    # if self.trace_gc: g.printNewObjects(tag='userIcon 2')
+
+    return h,w
+#@+node:ekr.20040803072955.48:<< set offsets and pads >>
+xoffset = theDict.get("xoffset")
+try:    xoffset = int(xoffset)
+except: xoffset = 0
+
+yoffset = theDict.get("yoffset")
+try:    yoffset = int(yoffset)
+except: yoffset = 0
+
+xpad = theDict.get("xpad")
+try:    xpad = int(xpad)
+except: xpad = 0
+
+ypad = theDict.get("ypad")
+try:    ypad = int(ypad)
+except: ypad = 0
+#@-node:ekr.20040803072955.48:<< set offsets and pads >>
+#@+node:ekr.20040803072955.50:<< draw the icon at file >>
+if relPath:
+    fullname = g.os_path_join(g.app.loadDir,"..","Icons",relPath)
+else:
+    fullname = g.os_path_join(g.app.loadDir,"..","Icons",theFile)
+fullname = g.os_path_normpath(fullname)
+
+# Bug fix: the key must include distinguish nodes.
+key = (fullname,p.v.t)
+image = self.iconimages.get(key)
+
+if not image:
+    try:
+        from PIL import Image, ImageTk
+        image1 = Image.open(fullname)
+        image = ImageTk.PhotoImage(image1)
+        self.iconimages[key] = image
+    except Exception:
+        #g.es_exception()
+        image = None
+
+if not image:
+    try:
+        image = Tk.PhotoImage(master=self.canvas,file=fullname)
+        self.iconimages[key] = image
+    except Exception:
+        #g.es_exception()
+        image = None
+
+if image:
+    theId = self.canvas.create_image(
+        x+xoffset+w2,y+yoffset,
+        anchor="nw",image=image)
+
+    tag='userIcon-%s' % theId
+    self.canvas.itemconfigure(theId,tag=tag)
+    self.ids[theId] = p.copy()
+
+    def deleteButtonCallback(event=None,c=c,t=p.v.t,fullname=fullname,relPath=relPath):
+        c.editCommands.deleteIconByName(t,fullname,relPath)
+
+    self.canvas.tag_bind(tag,'<3>',deleteButtonCallback)
+
+    # assert(theId not in self.visibleIcons)
+    self.visibleUserIcons.append(theId)
+
+    h = image.height() + yoffset + ypad
+    w = image.width()  + xoffset + xpad
+#@-node:ekr.20040803072955.50:<< draw the icon at file >>
+#@+node:ekr.20040803072955.51:<< draw the icon at url >>
+pass
+#@-node:ekr.20040803072955.51:<< draw the icon at url >>
+#@-node:ekr.20040803072955.47:drawUserIcon
+#@-node:ekr.20040803072955.46:drawUserIcons & helper
+#@+node:ekr.20040803072955.52:drawTopTree
+def drawTopTree (self):
+
+    """Draws the top-level tree, taking into account the hoist state."""
+
+    c = self.c ; canvas = self.canvas
+    trace = False or self.trace or self.trace_redraw
+
+    self.redrawing = True
+
+    # Recycle all widgets and clear all widget lists.
+    self.recycleWidgets()
+    # Clear all ids so invisible id's don't confuse eventToPosition & findPositionWithIconId
+    self.ids = {}
+    self.iconIds = {}
+    self.generation += 1
+    self.redrawCount += 1
+    self.drag_p = None # Disable drags across redraws.
+    self.dragging = False
+    if trace:
+        g.trace('redrawCount',self.redrawCount,g.callers()) # 'len(c.hoistStack)',len(c.hoistStack))
+        if 0:
+            delta = g.app.positions - self.prevPositions
+            g.trace("**** gen: %-3d positions: %5d +%4d" % (
+                self.generation,g.app.positions,delta),g.callers())
+
+    self.prevPositions = g.app.positions
+    if self.trace_gc: g.printNewObjects(tag='top 1')
+
+    hoistFlag = c.hoistStack
+    if c.hoistStack:
+        bunch = c.hoistStack[-1] ; p = bunch.p
+        h = p.headString()
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            hoistFlag = False
+    else:
+        p = c.rootPosition()
+
+    self.drawTree(p,self.root_left,self.root_top,0,0,hoistFlag=hoistFlag)
+
+    if self.trace_gc: g.printNewObjects(tag='top 2')
+    if self.trace_stats: self.showStats()
+
+    canvas.lower("lines")  # Lowest.
+    canvas.lift("textBox") # Not the Tk.Text widget: it should be low.
+    canvas.lift("userIcon")
+    canvas.lift("plusBox")
+    canvas.lift("clickBox")
+    canvas.lift("clickExpandBox")
+    canvas.lift("iconBox") # Higest.
+
+    self.redrawing = False
+#@-node:ekr.20040803072955.52:drawTopTree
+#@+node:ekr.20040803072955.53:drawTree
+def drawTree(self,p,x,y,h,level,hoistFlag=False):
+
+    tree = self ; c = self.c
+    yfirst = ylast = y ; h1 = None
+    data = g.doHook("draw-sub-outline",tree=tree,
+        c=c,p=p,v=p,x=x,y=y,h=h,level=level,hoistFlag=hoistFlag)
+    if data is not None: return data
+
+    while p: # Do not use iterator.
+        # This is the ONLY copy of p that needs to be made;
+        # no other drawing routine calls any p.moveTo method.
+        const_p = p.copy()
+        h,indent = self.drawNode(const_p,x,y)
+        if h1 is None: h1 = h # Set h1 *after* calling drawNode.
+        y += h ; ylast = y
+        if p.isExpanded() and p.hasFirstChild():
+            # Must make an additional copy here by calling firstChild.
+            y = self.drawTree(p.firstChild(),x+indent,y,h,level+1)
+        if hoistFlag: break
+        else:         p = p.next()
+    # Draw the vertical line.
+    if h1 is None: h1 = h
+    y2 = g.choose(level==0,yfirst+(h1-1)/2,yfirst-h1/2-1)
+    self.drawLine(None,x,y2,x,ylast+self.hline_y-h)
+    return y
+#@-node:ekr.20040803072955.53:drawTree
+#@-node:ekr.20051105073850:drawX...
+#@+node:ekr.20040803072955.62:Helpers...
+#@+node:ekr.20040803072955.64:getIconImage
+def getIconImage (self, name):
+
+    # Return the image from the cache if possible.
+    if self.iconimages.has_key(name):
+        return self.iconimages[name]
+
+    # g.trace(name)
+
+    try:
+        fullname = g.os_path_join(g.app.loadDir,"..","Icons",name)
+        fullname = g.os_path_normpath(fullname)
+        image = Tk.PhotoImage(master=self.canvas,file=fullname)
+        self.iconimages[name] = image
+        return image
+    except:
+        g.es("exception loading:",fullname)
+        g.es_exception()
+        return None
+#@-node:ekr.20040803072955.64:getIconImage
+#@+node:ekr.20040803072955.63:inVisibleArea & inExpandedVisibleArea
+def inVisibleArea (self,y1):
+
+    if self.allocateOnlyVisibleNodes:
+        if self.visibleArea:
+            vis1,vis2 = self.visibleArea
+            y2 = y1 + self.line_height
+            return y2 >= vis1 and y1 <= vis2
+        else: return False
+    else:
+        return True # This forces all nodes to be allocated on all redraws.
+
+def inExpandedVisibleArea (self,y1):
+
+    if self.expandedVisibleArea:
+        vis1,vis2 = self.expandedVisibleArea
+        y2 = y1 + self.line_height
+        return y2 >= vis1 and y1 <= vis2
+    else:
+        return False
+#@-node:ekr.20040803072955.63:inVisibleArea & inExpandedVisibleArea
+#@+node:ekr.20040803072955.68:numberOfVisibleNodes
+def numberOfVisibleNodes(self):
+
+    c = self.c
+
+    n = 0 ; p = self.c.rootPosition()
+    while p:
+        n += 1
+        p.moveToVisNext(c)
+    return n
+#@-node:ekr.20040803072955.68:numberOfVisibleNodes
+#@+node:ekr.20040803072955.65:scrollTo
+def scrollTo(self,p=None):
+
+    """Scrolls the canvas so that p is in view."""
+
+    # __pychecker__ = '--no-argsused' # event not used.
+    # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
+
+    c = self.c ; frame = c.frame ; trace = False
+    if not p or not c.positionExists(p):
+        p = c.currentPosition()
+    if not p or not c.positionExists(p):
+        if trace: g.trace('current p does not exist',p)
+        p = c.rootPosition()
+    if not p or not c.positionExists(p):
+        if trace: g.trace('no position')
+        return
+    try:
+        h1 = self.yoffset(p)
+        if self.center_selected_tree_node: # New in Leo 4.4.3.
+            << compute frac0 >>
+            delta = abs(self.prevMoveToFrac-frac0)
+            # g.trace(delta)
+            if delta > 0.0:
+                self.prevMoveToFrac = frac0
+                self.canvas.yview("moveto",frac0)
+                if trace: g.trace("frac0 %1.2f %3d %3d %3d" % (frac0,h1,htot,wtot))
+        else:
+            last = c.lastVisible()
+            nextToLast = last.visBack(c)
+            h2 = self.yoffset(last)
+            << compute approximate line height >>
+            << Compute the fractions to scroll down/up >>
+            if frac <= lo: # frac is for scrolling down.
+                if self.prevMoveToFrac != frac:
+                    self.prevMoveToFrac = frac
+                    self.canvas.yview("moveto",frac)
+                    if trace: g.trace("frac  %1.2f %3d %3d %1.2f %1.2f" % (frac, h1,h2,lo,hi))
+            elif frac2 + (hi - lo) >= hi: # frac2 is for scrolling up.
+                if self.prevMoveToFrac != frac2:
+                    self.prevMoveToFrac = frac2
+                    self.canvas.yview("moveto",frac2)
+                    if trace: g.trace("frac2 %1.2f %3d %3d %1.2f %1.2f" % (frac2,h1,h2,lo,hi))
+
+        if self.allocateOnlyVisibleNodes and not g.app.unitTesting:
+            self.canvas.after_idle(self.idle_second_redraw)
+
+        c.setTopVnode(p) # 1/30/04: remember a pseudo "top" node.
+
+    except:
+        g.es_exception()
+
+idle_scrollTo = scrollTo # For compatibility.
+#@nonl
+#@+node:ekr.20061030091926:<< compute frac0 >>
+# frac0 attempt to put the 
+scrollRegion = self.canvas.cget('scrollregion')
+geom = self.canvas.winfo_geometry()
+
+if scrollRegion and geom:
+    scrollRegion = scrollRegion.split(' ')
+    # g.trace('scrollRegion',repr(scrollRegion))
+    htot = int(scrollRegion[3])
+    wh,junk,junk = geom.split('+')
+    junk,h = wh.split('x')
+    if h: wtot = int(h)
+    else: wtot = 500
+    # g.trace('geom',geom,'wtot',wtot)
+    if htot > 0.1:
+        frac0 = float(h1-wtot/2)/float(htot)
+        frac0 = max(min(frac0,1.0),0.0)
+    else:
+        frac0 = 0.0
+else:
+    frac0 = 0.0 ; htot = wtot = 0
+#@-node:ekr.20061030091926:<< compute frac0 >>
+#@+node:ekr.20040803072955.66:<< compute approximate line height >>
+if nextToLast: # 2/2/03: compute approximate line height.
+    lineHeight = h2 - self.yoffset(nextToLast)
+else:
+    lineHeight = 20 # A reasonable default.
+#@-node:ekr.20040803072955.66:<< compute approximate line height >>
+#@+node:ekr.20040803072955.67:<< Compute the fractions to scroll down/up >>
+data = frame.canvas.leo_treeBar.get() # Get the previous values of the scrollbar.
+try: lo, hi = data
+except: lo,hi = 0.0,1.0
+
+# h1 and h2 are the y offsets of the present and last nodes.
+if h2 > 0.1:
+    frac = float(h1)/float(h2) # For scrolling down.
+    frac2 = float(h1+lineHeight/2)/float(h2) # For scrolling up.
+    frac2 = frac2 - (hi - lo)
+else:
+    frac = frac2 = 0.0 # probably any value would work here.
+
+frac =  max(min(frac,1.0),0.0)
+frac2 = max(min(frac2,1.0),0.0)
+#@nonl
+#@-node:ekr.20040803072955.67:<< Compute the fractions to scroll down/up >>
+#@-node:ekr.20040803072955.65:scrollTo
+#@+node:ekr.20040803072955.70:yoffset (tkTree)
+@ We can't just return icony because the tree hasn't been redrawn yet.
+For the same reason we can't rely on any TK canvas methods here.
+@c
+
+def yoffset(self,p1):
+    # if not p1.isVisible(): print "yoffset not visible:",p1
+    if not p1: return 0
+    c = self.c
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        root = bunch.p.copy()
+    else:
+        root = self.c.rootPosition()
+    if root:
+        h,flag = self.yoffsetTree(root,p1,isTop=True)
+        # flag can be False during initialization.
+        # if not flag: print "yoffset fails:",h,v1
+        return h
+    else:
+        return 0
+
+def yoffsetTree(self,p,p1,isTop):
+    c = self.c ; h = 0 ; trace = False ; verbose = False
+    if not c.positionExists(p):
+        if trace: g.trace('does not exist',p.headString())
+        return h,False # An extra precaution.
+    p = p.copy()
+    if trace and verbose and isTop and c.hoistStack:
+        g.trace('c.hoistStack',c.hoistStack[-1].p.headString())
+    if isTop and c.hoistStack:
+        if p.firstChild():  theIter = [p.firstChild()]
+        else:               theIter = []
+    else: theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+    for p2 in theIter:
+        if p2 == p1:
+            if trace and verbose: g.trace(h,p1.headString())
+            return h, True
+        h += self.line_height
+        if p2.isExpanded() and p2.hasChildren():
+            child = p2.firstChild()
+            h2, flag = self.yoffsetTree(child,p1,isTop=False)
+            h += h2
+            if flag:
+                if trace and verbose: g.trace(h,p1.headString())
+                return h, True
+
+    if trace: g.trace('not found',p1.headString())
+    return h, False
+#@-node:ekr.20040803072955.70:yoffset (tkTree)
+#@-node:ekr.20040803072955.62:Helpers...
+#@-node:ekr.20040803072955.35:Drawing... (tkTree)
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by menu.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=frame.c,fileName=fileName)
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if frame.c.chapterController:
+            frame.c.chapterController.finishCreate()
+        k = c.k
+        if k: k.setInputState(k.unboundKeyAction)
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.2609:app.closeLeoWindow
+def closeLeoWindow (self,frame):
+
+    """Attempt to close a Leo window.
+
+    Return False if the user veto's the close."""
+
+    c = frame.c
+
+    if c.promptingForClose:
+        # There is already a dialog open asking what to do.
+        return False
+
+    g.app.config.writeRecentFilesFile(c) # Make sure .leoRecentFiles.txt is written.
+
+    if c.changed:
+        c.promptingForClose = True
+        veto = frame.promptForSave()
+        c.promptingForClose = False
+        if veto: return False
+
+    g.app.setLog(None) # no log until we reactive a window.
+
+    g.doHook("close-frame",c=c) # This may remove frame from the window list.
+
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+
+    if g.app.windowList:
+        # Pick a window to activate so we can set the log.
+        frame = g.app.windowList[0]
+        frame.deiconify()
+        frame.lift()
+        frame.c.setLog()
+        frame.c.bodyWantsFocusNow()
+    elif not g.app.unitTesting:
+        g.app.finishQuit()
+
+    return True # The window has been closed.
+#@-node:ekr.20031218072017.2609:app.closeLeoWindow
+#@+node:ekr.20031218072017.2615:app.destroyWindow
+def destroyWindow (self,frame):
+
+    # g.trace(frame in g.app.windowList,frame)
+
+    g.app.destroyOpenWithFilesForFrame(frame)
+
+    if frame in g.app.windowList:
+        g.app.windowList.remove(frame)
+        # g.trace(g.app.windowList)
+
+    # force the window to go away now.
+    # Important: this also destroys all the objects of the commander.
+    frame.destroySelf()
+#@-node:ekr.20031218072017.2615:app.destroyWindow
+#@+node:ekr.20031218072017.3964:Destroying the tkFrame
+#@+node:ekr.20031218072017.1975:destroyAllObjects
+def destroyAllObjects (self):
+
+    """Clear all links to objects in a Leo window."""
+
+    frame = self ; c = self.c ; tree = frame.tree ; body = self.body
+
+    # g.printGcAll()
+
+    # Do this first.
+    << clear all vnodes and tnodes in the tree >>
+
+    # Destroy all ivars in subcommanders.
+    g.clearAllIvars(c.atFileCommands)
+    if c.chapterController: # New in Leo 4.4.3 b1.
+        g.clearAllIvars(c.chapterController)
+    g.clearAllIvars(c.fileCommands)
+    g.clearAllIvars(c.keyHandler) # New in Leo 4.4.3 b1.
+    g.clearAllIvars(c.importCommands)
+    g.clearAllIvars(c.tangleCommands)
+    g.clearAllIvars(c.undoer)
+
+    g.clearAllIvars(c)
+    g.clearAllIvars(body.colorizer)
+    g.clearAllIvars(body)
+    g.clearAllIvars(tree)
+
+    # This must be done last.
+    frame.destroyAllPanels()
+    g.clearAllIvars(frame)
+
+#@+node:ekr.20031218072017.1976:<< clear all vnodes and tnodes in the tree>>
+# Using a dict here is essential for adequate speed.
+vList = [] ; tDict = {}
+
+for p in c.allNodes_iter():
+    vList.append(p.v)
+    if p.v.t:
+        key = id(p.v.t)
+        if not tDict.has_key(key):
+            tDict[key] = p.v.t
+
+for key in tDict.keys():
+    g.clearAllIvars(tDict[key])
+
+for v in vList:
+    g.clearAllIvars(v)
+
+vList = [] ; tDict = {} # Remove these references immediately.
+#@-node:ekr.20031218072017.1976:<< clear all vnodes and tnodes in the tree>>
+#@-node:ekr.20031218072017.1975:destroyAllObjects
+#@+node:ekr.20031218072017.3965:destroyAllPanels
+def destroyAllPanels (self):
+
+    """Destroy all panels attached to this frame."""
+
+    panels = (self.comparePanel, self.colorPanel, self.findPanel, self.fontPanel, self.prefsPanel)
+
+    for panel in panels:
+        if panel:
+            panel.top.destroy()
+#@-node:ekr.20031218072017.3965:destroyAllPanels
+#@+node:ekr.20031218072017.1974:destroySelf (tkFrame)
+def destroySelf (self):
+
+    # g.trace(self)
+
+    # Remember these: we are about to destroy all of our ivars!
+    top = self.top 
+    c = self.c
+
+    # Indicate that the commander is no longer valid.
+    c.exists = False 
+
+    # g.trace(self)
+
+    # Important: this destroys all the objects of the commander too.
+    self.destroyAllObjects()
+
+    c.exists = False # Make sure this one ivar has not been destroyed.
+
+    top.destroy()
+#@-node:ekr.20031218072017.1974:destroySelf (tkFrame)
+#@-node:ekr.20031218072017.3964:Destroying the tkFrame
+#@+node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
+def assignFileIndices (self):
+
+    """Assign a file index to all tnodes"""
+
+    pass # No longer needed: we assign indices as needed.
+
+    # c = self.c ; nodeIndices = g.app.nodeIndices
+
+    # nodeIndices.setTimestamp() # This call is fairly expensive.
+
+    # # Assign missing gnx's, converting ints to gnx's.
+    # # Always assign an (immutable) index, even if the tnode is empty.
+    # for p in c.allNodes_iter():
+        # try: # Will fail for None or any pre 4.1 file index.
+            # junk,junk,junk = p.v.t.fileIndex
+        # except Exception:
+            # # Don't convert to string until the actual write.
+            # p.v.t.fileIndex = nodeIndices.getNewIndex()
+
+# Indices are now immutable, so there is no longer any difference between these two routines.
+compactFileIndices = assignFileIndices
+#@-node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
+#@+node:ekr.20031218072017.1732:app.finishQuit
+def finishQuit(self):
+
+    # forceShutdown may already have fired the "end1" hook.
+    if not g.app.killed:
+        g.doHook("end1")
+
+    self.destroyAllOpenWithFiles()
+
+    if g.app.gui:
+        g.app.gui.destroySelf()
+
+    # Don't use g.trace!
+    # print 'app.finishQuit: setting g.app.killed',g.callers()
+
+    g.app.killed = True
+        # Disable all further hooks and events.
+        # Alas, "idle" events can still be called even after the following code.
+
+    if g.app.afterHandler:
+        # TK bug: This appears to have no effect, at least on Windows.
+        # print "finishQuit: cancelling",g.app.afterHandler
+        if g.app.gui and g.app.gui.guiName() == "tkinter":
+            self.root.after_cancel(g.app.afterHandler)
+        g.app.afterHandler = None
+#@-node:ekr.20031218072017.1732:app.finishQuit
+#@-node:ekr.20080306123857:Possible problems with Leo 4.4.6
 #@+node:ekr.20080218110223:Easy
 #@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process?
 # This would allow @menu items to refer to commands created by @button.
@@ -5136,9 +6207,6 @@ def getInsertNodeIntoShell( self, c, jd ):
         cp = c.currentPosition()
         at = c.atFileCommands
 
-        # Now done in at.write.
-        # c.fileCommands.assignFileIndices()
-
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
@@ -5174,9 +6242,6 @@ def getRunNodeInPdb( self, c, jd ):
         name = name.split()[ 0 ]
         at = c.atFileCommands
 
-        # Now done in at.write
-        # c.fileCommands.assignFileIndices()
-
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
@@ -5201,9 +6266,6 @@ def fireNodeAsScript( self, event, jd ):
     c = self.c        
     cp = c.currentPosition()    
     at = c.atFileCommands 
-
-    # Now done in at.write.
-    # c.fileCommands.assignFileIndices()
 
     at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
     data = at.stringOutput.split( '\n' ) 
