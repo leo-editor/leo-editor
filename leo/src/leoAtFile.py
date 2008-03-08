@@ -2646,10 +2646,16 @@ class atFile:
             at.outputFile = None
     #@-node:ekr.20041005105605.135:closeWriteFile
     #@+node:ekr.20041005105605.136:norefWrite
-    def norefWrite(self,root,toString=False):
+    def norefWrite(self,root,
+        toString=False,
+        assignFileIndices=True, # New in Leo 4.4.8.
+    ):
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
 
         try:
             targetFileName = root.atNorefFileNodeName()
@@ -2820,14 +2826,22 @@ class atFile:
     # This is the entry point to the write code.  root should be an @file vnode.
 
     def write(self,root,
-        nosentinels=False,thinFile=False,scriptWrite=False,
-        toString=False,write_strips_blank_lines=None
+        nosentinels=False,
+        thinFile=False,
+        scriptWrite=False,
+        toString=False,
+        write_strips_blank_lines=None,
+        assignFileIndices=True, # New in Leo 4.4.8
     ):
 
         """Write a 4.x derived file."""
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
+
         #@    << set at.targetFileName >>
         #@+node:ekr.20041005105605.145:<< set at.targetFileName >>
         if toString:
@@ -2881,13 +2895,20 @@ class atFile:
                 at.writeException() # Sets dirty and orphan bits.
     #@-node:ekr.20041005105605.144:write
     #@+node:ekr.20041005105605.147:writeAll (atFile)
-    def writeAll(self,writeAtFileNodesFlag=False,writeDirtyAtFileNodesFlag=False,toString=False):
+    def writeAll(self,
+        writeAtFileNodesFlag=False,
+        writeDirtyAtFileNodesFlag=False,
+        toString=False,assignFileIndices=True, # New in Leo 4.4.8.
+    ):
 
         """Write @file nodes in all or part of the outline"""
 
         at = self ; c = at.c
         writtenFiles = [] # Files that might be written again.
         mustAutoSave = False
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
 
         if writeAtFileNodesFlag:
             # Write all nodes in the selected tree.
@@ -2924,24 +2945,24 @@ class atFile:
 
                     # Tricky: @ignore not recognised in @silentfile nodes.
                     if p.isAtAsisFileNode():
-                        at.asisWrite(p,toString=toString)
+                        at.asisWrite(p,toString=toString,assignFileIndices=False)
                         writtenFiles.append(p.v.t) ; autoSave = True
                     elif p.isAtIgnoreNode():
                         pass
                     elif p.isAtAutoNode():
-                        at.writeOneAtAutoNode(p,toString=toString,force=False)
+                        at.writeOneAtAutoNode(p,toString=toString,force=False,assignFileIndices=False)
                         writtenFiles.append(p.v.t)
                     elif p.isAtNorefFileNode():
-                        at.norefWrite(p,toString=toString)
+                        at.norefWrite(p,toString=toString,assignFileIndices=False)
                         writtenFiles.append(p.v.t) ; autoSave = True
                     elif p.isAtNoSentFileNode():
-                        at.write(p,nosentinels=True,toString=toString)
+                        at.write(p,nosentinels=True,toString=toString,assignFileIndices=False)
                         writtenFiles.append(p.v.t) # No need for autosave
                     elif p.isAtThinFileNode():
-                        at.write(p,thinFile=True,toString=toString)
+                        at.write(p,thinFile=True,toString=toString,assignFileIndices=False)
                         writtenFiles.append(p.v.t) # No need for autosave.
                     elif p.isAtFileNode():
-                        at.write(p,toString=toString)
+                        at.write(p,toString=toString,assignFileIndices=False)
                         writtenFiles.append(p.v.t) ; autoSave = True
 
                     if at.fileChangedFlag and autoSave: # Set by replaceTargetFileIfDifferent.
@@ -2966,32 +2987,39 @@ class atFile:
         return mustAutoSave
     #@-node:ekr.20041005105605.147:writeAll (atFile)
     #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtFileNodes (atFile) & helpers
-    def writeAtAutoNodes (self,event=None):
+    def writeAtAutoNodes (self,event=None,assignFileIndices=True):
 
         '''Write all @auto nodes in the selected outline.'''
 
         at = self
-        at.writeAtAutoNodesHelper(writeDirtyOnly=False)
+        at.writeAtAutoNodesHelper(writeDirtyOnly=False,assignFileIndices=True)
 
-    def writeDirtyAtAutoNodes (self,event=None):
+    def writeDirtyAtAutoNodes (self,event=None,assignFileIndices=True):
 
         '''Write all dirty @auto nodes in the selected outline.'''
 
         at = self
-        at.writeAtAutoNodesHelper(writeDirtyOnly=True)
+        at.writeAtAutoNodesHelper(writeDirtyOnly=True,assignFileIndices=True)
     #@nonl
     #@+node:ekr.20070806140208:writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self,toString=False,writeDirtyOnly=True):
+    def writeAtAutoNodesHelper(self,
+        toString=False,
+        writeDirtyOnly=True,
+        assignFileIndices=True, # New in Leo 4.4.8.
+    ):
 
         """Write @auto nodes in the selected outline"""
 
         at = self ; c = at.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
         found = False
-        c.fileCommands.assignFileIndices()
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
+
         while p and p != after:
             if p.isAtAutoNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
-                ok = self.writeOneAtAutoNode(p,toString=toString,force=True)
+                ok = at.writeOneAtAutoNode(p,toString=toString,force=True,assignFileIndices=False)
                 if ok:
                     found = True
                     p.moveToNodeAfterTree()
@@ -3008,11 +3036,17 @@ class atFile:
             g.es("no @auto nodes in the selected tree")
     #@-node:ekr.20070806140208:writeAtAutoNodesHelper
     #@+node:ekr.20070806141607:writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self,p,toString,force):
+    def writeOneAtAutoNode(self,p,toString,force,assignFileIndices=True):
 
-        '''Write p, an @auto node.'''
+        '''Write p, an @auto node.
+
+        File indices *must* have already been assigned.'''
 
         at = self ; c = at.c ; root = p.copy()
+
+        if assignFileIndices:
+            g.trace('unexpectedly assigning file indices')
+            c.fileCommands.assignFileIndices()
 
         fileName = p.atAutoNodeName()
         if not fileName: return False
@@ -3112,7 +3146,11 @@ class atFile:
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
 
-    def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
+    def writeFromString(self,root,s,
+        forcePythonSentinels=True,
+        useSentinels=True,
+        assignFileIndices=False, # New in Leo 4.4.8.  Note the unusual default is False.
+    ):
 
         """Write a 4.x derived file from a string.
 
@@ -3120,6 +3158,9 @@ class atFile:
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline, but don't change the focus!
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
 
         at.initWriteIvars(root,"<string-file>",
             nosentinels=not useSentinels,thinFile=False,scriptWrite=True,toString=True,
@@ -3141,10 +3182,16 @@ class atFile:
         return at.stringOutput
     #@-node:ekr.20050506084734:writeFromString
     #@+node:ekr.20041005105605.151:writeMissing
-    def writeMissing(self,p,toString=False):
+    def writeMissing(self,p,
+        toString=False,
+        assignFileIndices=True, # New in Leo 4.4.8.
+    ):
 
-        at = self
+        at = self ; c = at.c
         writtenFiles = False ; changedFiles = False
+
+        if assignFileIndices:
+            c.fileCommands.assignFileIndices()
 
         p = p.copy()
         after = p.nodeAfterTree()
@@ -3202,7 +3249,10 @@ class atFile:
     # writeMissing methods.
     #@-at
     #@+node:ekr.20041005105605.154:asisWrite
-    def asisWrite(self,root,toString=False):
+    def asisWrite(self,root,
+        toString=False,
+        assignFileIndices=True, # New in Leo 4.4.8.
+    ):
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
