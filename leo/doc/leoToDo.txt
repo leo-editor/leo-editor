@@ -5134,16 +5134,17 @@ def getInsertNodeIntoShell( self, c, jd ):
     def writeNode( event ):
 
         cp = c.currentPosition()
-        at = c.atFileCommands 
-        c.fileCommands.assignFileIndices()
+        at = c.atFileCommands
+
+        # Now done in at.write.
+        # c.fileCommands.assignFileIndices()
+
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
         jtf = self._GetReferenceName( jd, data )
         jtf.rmv_spot = jd.insertWidget( jtf )
         jtf.requestFocusInWindow()
-
-
 
     jm.actionPerformed = writeNode
     return jm
@@ -5171,8 +5172,11 @@ def getRunNodeInPdb( self, c, jd ):
         cp = c.currentPosition()
         name = cp.headString()
         name = name.split()[ 0 ]
-        at = c.atFileCommands 
-        c.fileCommands.assignFileIndices()
+        at = c.atFileCommands
+
+        # Now done in at.write
+        # c.fileCommands.assignFileIndices()
+
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
@@ -5197,7 +5201,10 @@ def fireNodeAsScript( self, event, jd ):
     c = self.c        
     cp = c.currentPosition()    
     at = c.atFileCommands 
-    c.fileCommands.assignFileIndices()
+
+    # Now done in at.write.
+    # c.fileCommands.assignFileIndices()
+
     at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
     data = at.stringOutput.split( '\n' ) 
 

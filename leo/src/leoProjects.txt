@@ -6642,9 +6642,12 @@ def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
     c = self.c
     self.putCount = 0
     self.toString = toString
-    self.assignFileIndices()
     theActualFile = None
     toZip = False
+
+    # We assign indices here for both at.writeAll and self.putLeoFile.
+    self.assignFileIndices() # New in Leo 4.4.8.
+
     if not outlineOnlyFlag or toOPML:
         # Update .leoRecentFiles.txt if possible.
         g.app.config.writeRecentFilesFile(c)
@@ -6661,7 +6664,8 @@ def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
         if toOPML:
             self.putToOPML()
         else:
-            self.putLeoFile()
+            # An important optimization: we have already assign the file indices.
+            self.putLeoFile(assignFileIndices=False)
         # t2 = time.clock()
         s = self.outputFile.getvalue()
         # g.trace(self.leo_file_encoding)
@@ -6695,7 +6699,8 @@ write_LEO_file = write_Leo_file # For compatibility with old plugins.
 #@+node:ekr.20040324080359:<< write all @file nodes >>
 try:
     # Write all @file nodes and set orphan bits.
-    c.atFileCommands.writeAll()
+    # An important optimization: we have already assign the file indices.
+    c.atFileCommands.writeAll(assignFileIndices=False)
 except Exception:
     g.es_error("exception writing derived files")
     g.es_exception()
