@@ -549,8 +549,6 @@ class testUtils:
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices
 
-        # Assign input.v.t.fileIndex
-        nodeIndices.setTimestamp()
         for p in input.self_and_subtree_iter():
             try:
                 theId,time,n = p.v.t.fileIndex
