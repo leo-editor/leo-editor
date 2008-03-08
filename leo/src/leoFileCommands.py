@@ -650,6 +650,7 @@ class baseFileCommands:
             #@@c
 
             nodeIndices = g.app.nodeIndices
+            nodeIndices.setTimestamp() # Major bug fix: Leo 4.4.8, 2008-3-8.
 
             current.clearVisitedInTree()
 
@@ -996,7 +997,7 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; verbose = False 
+        c = self.c ; verbose = True 
 
         for resultDict in self.descendentUnknownAttributesDictList:
             for gnx in resultDict.keys():
@@ -2372,6 +2373,7 @@ class baseFileCommands:
 
         c = self.c ; nodeIndices = g.app.nodeIndices
 
+        g.trace(g.callers(4))
         nodeIndices.setTimestamp() # This call is fairly expensive.
 
         # Assign missing gnx's, converting ints to gnx's.
@@ -2379,7 +2381,7 @@ class baseFileCommands:
         for p in c.allNodes_iter():
             try: # Will fail for None or any pre 4.1 file index.
                 junk,junk,junk = p.v.t.fileIndex
-            except TypeError:
+            except Exception:
                 # Don't convert to string until the actual write.
                 p.v.t.fileIndex = nodeIndices.getNewIndex()
 
@@ -2445,7 +2447,13 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20031218072017.1470:put
     #@+node:ekr.20040324080819.1:putLeoFile & helpers
-    def putLeoFile (self):
+    def putLeoFile (self,assignFileIndices=True):
+
+        # An important optimization.
+        # By default, we assign indices, but write_Leo_file assigns
+        # indices for putLeoOutline and at.writeAll.
+        if assignFileIndices:
+            self.assignFileIndices() # Must do this for 3.x code.
 
         self.putProlog()
         self.putHeader()
@@ -2458,7 +2466,6 @@ class baseFileCommands:
         self.putTnodes()
         #start = g.printDiffTime("tnodes ",start)
         self.putPostlog()
-    #@nonl
     #@+node:ekr.20031218072017.3035:putFindSettings
     def putFindSettings (self):
 
@@ -2711,14 +2718,14 @@ class baseFileCommands:
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
         # New in Leo 4.4.3
         if not v.t.fileIndex:
-            if 0: # This is not necessarily an error.
-                # c.dumpOutline() # Can be called inside pdb.
-                # Print the @chapters tree
-                g.trace('*** missing t.fileIndex','v',repr(v))
-                c.chapterController.printChaptersTree()
+            # This is not necessarily an error.
+            # For example, c.dumpOutline() # Can be called inside pdb.
+            g.trace('*** missing t.fileIndex','v',repr(v)) # Restored message.
+            g.app.nodeIndices.setTimestamp() # Bug fix: Leo 4.4.8, 2008-3-8.
             v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
         gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
         if forceWrite or self.usingClipboard:
             v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
         #@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
@@ -2816,6 +2823,7 @@ class baseFileCommands:
         # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
         nodeIndices = g.app.nodeIndices
         tnodeList = v.t.tnodeList
+
         if tnodeList:
             # g.trace("%4d" % len(tnodeList),v)
             for t in tnodeList:
@@ -2823,6 +2831,7 @@ class baseFileCommands:
                     junk,junk,junk = t.fileIndex
                 except Exception:
                     g.trace("assigning gnx for ",v,t)
+                    nodeIndices.setTimestamp() # Bug fix: Leo 4.4.8, 2008-3-8.
                     gnx = nodeIndices.getNewIndex()
                     v.t.setFileIndex(gnx) # Don't convert to string until the actual write.
             s = ','.join([nodeIndices.toString(t.fileIndex) for t in tnodeList])
@@ -2962,11 +2971,17 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1573:putLeoOutline (to clipboard) & helper
     # Writes a Leo outline to s in a format suitable for pasting to the clipboard.
 
-    def putLeoOutline (self):
+    def putLeoOutline (self,assignFileIndices=True):
 
         self.outputFile = g.fileLikeObject()
         self.usingClipboard = True
-        self.assignFileIndices() # Must do this for 3.x code.
+
+        # An important optimization.
+        # By default, we assign indices, but write_Leo_file assigns
+        # indices for putLeoOutline and at.writeAll.
+        if assignFileIndices:
+            self.assignFileIndices() # Must do this for 3.x code.
+
         self.putProlog()
         self.putClipboardHeader()
         self.putVnodes()
@@ -3033,9 +3048,12 @@ class baseFileCommands:
         c = self.c
         self.putCount = 0
         self.toString = toString
-        self.assignFileIndices()
         theActualFile = None
         toZip = False
+
+        # We assign indices here for both at.writeAll and self.putLeoFile.
+        self.assignFileIndices() # New in Leo 4.4.8.
+
         if not outlineOnlyFlag or toOPML:
             # Update .leoRecentFiles.txt if possible.
             g.app.config.writeRecentFilesFile(c)
@@ -3043,7 +3061,8 @@ class baseFileCommands:
             #@+node:ekr.20040324080359:<< write all @file nodes >>
             try:
                 # Write all @file nodes and set orphan bits.
-                c.atFileCommands.writeAll()
+                # An important optimization: we have already assign the file indices.
+                c.atFileCommands.writeAll(assignFileIndices=False)
             except Exception:
                 g.es_error("exception writing derived files")
                 g.es_exception()
@@ -3109,7 +3128,8 @@ class baseFileCommands:
             if toOPML:
                 self.putToOPML()
             else:
-                self.putLeoFile()
+                # An important optimization: we have already assign the file indices.
+                self.putLeoFile(assignFileIndices=False)
             # t2 = time.clock()
             s = self.outputFile.getvalue()
             # g.trace(self.leo_file_encoding)
@@ -3157,7 +3177,6 @@ class baseFileCommands:
             return False
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@nonl
     #@+node:ekr.20070412095520:writeZipFile
     def writeZipFile (self,s):
 
@@ -3184,7 +3203,9 @@ class baseFileCommands:
 
         c = self.c
 
-        self.assignFileIndices()
+        # Now done by default in writeAll.
+        # self.assignFileIndices()
+
         changedFiles = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         assert(changedFiles != None)
         if changedFiles:
@@ -3198,7 +3219,9 @@ class baseFileCommands:
 
         c = self.c
 
-        self.assignFileIndices() # 4/3/04
+        # Now done in writeAll.
+        # self.assignFileIndices()
+
         changedFiles = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
         if changedFiles:
             g.es("auto-saving outline",color="blue")
@@ -3213,7 +3236,10 @@ class baseFileCommands:
 
         if v:
             at = c.atFileCommands
-            self.assignFileIndices() # 4/3/04
+
+            # Now done by writeMissing.
+            # self.assignFileIndices()
+
             changedFiles = at.writeMissing(v)
             assert(changedFiles != None)
             if changedFiles:
