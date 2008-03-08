@@ -3914,6 +3914,8 @@ class atFile:
         #@nl
 
         if at.thinFile:
+            if not p.v.t.fileIndex:
+                p.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
             gnx = g.app.nodeIndices.toString(p.v.t.fileIndex)
             return "%s:%s" % (gnx,h)
         else:
