@@ -42,7 +42,9 @@ def runLeoTest(c,path,verbose=False,full=False):
         g.app.gui = old_gui
         if frame and frame.c != c:
             frame.c.setChanged(False)
+            assert(frame.c.frame==frame)
             g.app.closeLeoWindow(frame.c.frame)
+        c.frame.update() # Restored in Leo 4.4.8.
 #@-node:ekr.20051104075904.42:runLeoTest
 #@+node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
 def createTkTreeCanvas (self,parentFrame,scrolls,pack):
@@ -1035,19 +1037,6 @@ def assignFileIndices (self):
     """Assign a file index to all tnodes"""
 
     pass # No longer needed: we assign indices as needed.
-
-    # c = self.c ; nodeIndices = g.app.nodeIndices
-
-    # nodeIndices.setTimestamp() # This call is fairly expensive.
-
-    # # Assign missing gnx's, converting ints to gnx's.
-    # # Always assign an (immutable) index, even if the tnode is empty.
-    # for p in c.allNodes_iter():
-        # try: # Will fail for None or any pre 4.1 file index.
-            # junk,junk,junk = p.v.t.fileIndex
-        # except Exception:
-            # # Don't convert to string until the actual write.
-            # p.v.t.fileIndex = nodeIndices.getNewIndex()
 
 # Indices are now immutable, so there is no longer any difference between these two routines.
 compactFileIndices = assignFileIndices
