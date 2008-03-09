@@ -784,6 +784,7 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
+<v t="ekr.20070114140212" a="ETV"><vh>All unit tests</vh>
 <v t="ekr.20070611105300"><vh>Dubious tests</vh>
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -840,7 +841,7 @@
 </v>
 </v>
 <v t="ekr.20061001114341" unit_test="55046162636471002e"><vh>@test putDescendentAttributes</vh>
-<v t="ekr.20061001114341.1" a="M"><vh>child</vh>
+<v t="ekr.20061001114341.1" a="EM"><vh>child</vh>
 <v t="ekr.20061001114341.2"><vh>grandChild</vh></v>
 </v>
 </v>
@@ -857,7 +858,6 @@
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
 <v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
 <v t="ekr.20041012084201"><vh>removeFile</vh></v>
 </v>
