@@ -906,12 +906,18 @@ class leoTkinterFrame (leoFrame.leoFrame):
         c = self.c
 
         # Indicate that the commander is no longer valid.
-        c.exists = False 
+        c.exists = False
+
+        # New in Leo 4.4.8: Finish all window tasks before killing the window.
+        top.update_idletasks()
 
         # g.trace(self)
 
         # Important: this destroys all the objects of the commander too.
         self.destroyAllObjects()
+
+        # New in Leo 4.4.8: Finish all window tasks before killing the window.
+        top.update_idletasks()
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 
