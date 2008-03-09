@@ -1434,8 +1434,11 @@ class atFile:
             tnodesDict = c.fileCommands.tnodesDict
             t = tnodesDict.get(gnxString)
             if t:
-                assert indices.areEqual(t.fileIndex,gnx), 't.fileIndex: %s gnx: %s' % (t.fileIndex,gnx)
-                # g.trace('not created, should already exist',gnxString)
+                if indices.areEqual(t.fileIndex,gnx):
+                    pass
+                else:
+                    g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+                    # g.trace('not created, should already exist',gnxString)
             else:
                 t = leoNodes.tnode(bodyString=None,headString=headline)
                 t.fileIndex = gnx
