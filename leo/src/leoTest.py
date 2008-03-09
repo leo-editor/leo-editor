@@ -635,7 +635,9 @@ def runLeoTest(c,path,verbose=False,full=False):
         g.app.gui = old_gui
         if frame and frame.c != c:
             frame.c.setChanged(False)
+            assert(frame.c.frame==frame)
             g.app.closeLeoWindow(frame.c.frame)
+        c.frame.update() # Restored in Leo 4.4.8.
 #@-node:ekr.20051104075904.42:runLeoTest
 #@+node:ekr.20070627135407:runTestsExternally & helper class
 def runTestsExternally (c,all):
