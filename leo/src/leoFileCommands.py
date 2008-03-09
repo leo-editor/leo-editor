@@ -2362,19 +2362,6 @@ class baseFileCommands:
 
         pass # No longer needed: we assign indices as needed.
 
-        # c = self.c ; nodeIndices = g.app.nodeIndices
-
-        # nodeIndices.setTimestamp() # This call is fairly expensive.
-
-        # # Assign missing gnx's, converting ints to gnx's.
-        # # Always assign an (immutable) index, even if the tnode is empty.
-        # for p in c.allNodes_iter():
-            # try: # Will fail for None or any pre 4.1 file index.
-                # junk,junk,junk = p.v.t.fileIndex
-            # except Exception:
-                # # Don't convert to string until the actual write.
-                # p.v.t.fileIndex = nodeIndices.getNewIndex()
-
     # Indices are now immutable, so there is no longer any difference between these two routines.
     compactFileIndices = assignFileIndices
     #@-node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
@@ -2561,7 +2548,7 @@ class baseFileCommands:
 
         # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not t.fileIndex:
-            g.trace('can not happen: not index for tnode',t)
+            g.trace('can not happen: no index for tnode',t)
             t.fileIndex = g.app.nodeIndices.getNewIndex()
 
         # New in Leo 4.4.2 b2: call put just once.
@@ -2600,7 +2587,8 @@ class baseFileCommands:
         for index in keys:
             # g.trace(index)
             t = tnodes.get(index)
-            assert(t)
+            if not t:
+                g.trace('can not happen: no tnode for',index)
             # Write only those tnodes whose vnodes were written.
             if t.isWriteBit():
                 self.putTnode(t)
@@ -2812,7 +2800,6 @@ class baseFileCommands:
                 try: # Will fail for None or any pre 4.1 file index.
                     junk,junk,junk = t.fileIndex
                 except Exception:
-                    # g.trace("assigning gnx for ",v,t)
                     gnx = nodeIndices.getNewIndex()
                     # Apparent bug fix: Leo 4.4.8, 2008-3-8: use t, not v.t here!
                     t.setFileIndex(gnx) # Don't convert to string until the actual write.
