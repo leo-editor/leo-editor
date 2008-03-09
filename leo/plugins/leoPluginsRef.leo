@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.381935483871">
-	<global_window_position top="115" left="320" height="735" width="841"/>
+<globals body_outline_ratio="0.583216783217">
+	<global_window_position top="115" left="320" height="635" width="841"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -107,11 +107,9 @@
 <v t="ekr.20041017035937"><vh>@thin table.py</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.729"><vh>Debugging &amp;  testing</vh>
+<v t="edream.110203113231.729"><vh>Debugging</vh>
 <v t="edream.110203113231.730"><vh>@thin dump_globals.py</vh></v>
-<v t="ekr.20080214092357"><vh>@thin ekr_test.py</vh></v>
 <v t="edream.110203113231.732"><vh>@thin enable_gc.py</vh></v>
-<v t="ekr.20050130120433"><vh>@thin failed_import.py</vh></v>
 <v t="edream.110203113231.734"><vh>@thin quit_leo.py</vh></v>
 <v t="ekr.20051016160700"><vh>@thin testRegisterCommand.py</vh></v>
 <v t="edream.110203113231.735"><vh>@thin trace_gc_plugin.py</vh></v>
@@ -292,14 +290,19 @@
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh>
 <v t="ekr.20060110125615"><vh>@url http://rclick.netfirms.com/dyna_menu.py.html  (dyna plugin)</vh></v>
 </v>
-<v t="ekr.20040722141148"><vh>Example code</vh>
-<v t="edream.110203113231.916"><vh>@thin __overrideClasses.py</vh></v>
-<v t="edream.110203113231.919"><vh>@thin override_commands.py</vh></v>
-<v t="edream.110203113231.921"><vh>@thin redefine_put.py</vh></v>
-<v t="ekr.20060621123339"><vh>@thin print_cp.py</vh></v>
+<v t="ekr.20040722141148"><vh>Examples</vh>
+<v t="edream.110203113231.916"><vh>@thin examples/__overrideClasses.py</vh></v>
+<v t="edream.110203113231.919"><vh>@thin examples/override_commands.py</vh></v>
+<v t="edream.110203113231.921"><vh>@thin examples/redefine_put.py</vh></v>
+<v t="ekr.20060621123339"><vh>@thin examples/print_cp.py</vh></v>
+<v t="ekr.20040828105233"><vh>@thin examples/chinese_menu.py</vh></v>
+<v t="EKR.20040517080202.3"><vh>@thin examples/french_fm.py</vh></v>
 </v>
-<v t="ekr.20040722134535"><vh>Experimental/unfinished/abandoned</vh>
+<v t="ekr.20040722134535"><vh>Experimental</vh>
 <v t="ekr.20040918165427.4"><vh>Autocompletion dictionary files</vh></v>
+<v t="edream.110203113231.302"><vh>@thin experimental/__wx_gui.py</vh></v>
+<v t="bob.20070910154126.2"><vh>@thin experimental/__wx_alt_gui.py</vh></v>
+<v t="ekr.20080112150934"><vh>@thin experimental/gtkGui.py</vh></v>
 </v>
 <v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
 <v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
@@ -326,11 +329,6 @@
 <v t="ekr.20070116074730"><vh>Gui plugins</vh>
 <v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
 <v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
-<v t="edream.110203113231.233"><vh>wxGui plugin (Use at your own risk)</vh>
-<v t="edream.110203113231.302"><vh>@thin __wx_gui.py</vh></v>
-</v>
-<v t="bob.20070910154126.2"><vh>@thin __wx_alt_gui.py</vh></v>
-<v t="ekr.20080112150934"><vh>@thin gtkGui.py</vh></v>
 </v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
@@ -342,8 +340,8 @@
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
 </v>
-<v t="ekr.20080203083146" a="E"><vh>IPython bridge</vh>
-<v t="ekr.20080201143145" a="E"><vh>@thin ipython.py</vh></v>
+<v t="ekr.20080203083146"><vh>IPython bridge</vh>
+<v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
 </v>
 <v t="ekr.20050402080206"><vh>LeoN</vh>
 <v t="ekr.20050402080206.1"><vh>Readme file.</vh></v>
@@ -359,19 +357,6 @@
 <v t="ekr.20050402080206.8"><vh>@thin LeoN.py</vh></v>
 </v>
 <v t="EKR.20040517080555"><vh>Menus &amp; translations</vh>
-<v t="ekr.20041019072632"><vh>Chinese:  Must use @file due to problems with cvs</vh>
-<v t="ekr.20040828105233" tnodeList="ekr.20040828105233,ekr.20040828105233.1,ekr.20040828105233.2,ekr.20040828105233.3,ekr.20040828105233.4,ekr.20040828105233.5,ekr.20040828105233.6,ekr.20040828105233.7"><vh>@file chinese_menu.py</vh>
-<v t="ekr.20040828105233.1"><vh>onMenu</vh>
-<v t="ekr.20040828105233.2"><vh>file menu</vh></v>
-<v t="ekr.20040828105233.3"><vh>edit menu</vh></v>
-<v t="ekr.20040828105233.4"><vh>outline menu</vh></v>
-<v t="ekr.20040828105233.5"><vh>plugins menu</vh></v>
-<v t="ekr.20040828105233.6"><vh>window menu</vh></v>
-<v t="ekr.20040828105233.7"><vh>help menu</vh></v>
-</v>
-</v>
-</v>
-<v t="EKR.20040517080202.3"><vh>@thin french_fm.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@thin scripts_menu.py</vh></v>
 <v t="ekr.20040828122150"><vh>@thin pie_menus.py</vh></v>
 </v>
@@ -750,8 +735,10 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20060715100156.52"><vh>@thin mod_shadow.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
-<v t="ekr.20071113084440.1"><vh>@thin syntax_error_plugin.py</vh></v>
-<v t="ekr.20071113085315"><vh>@thin failed_to_load_plugin.py</vh></v>
+<v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
+<v t="ekr.20071113085315"><vh>@thin test/failed_to_load_plugin.py</vh></v>
+<v t="ekr.20050130120433"><vh>@thin test/failed_import.py</vh></v>
+<v t="ekr.20080214092357"><vh>@thin test/ekr_test.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="mork.20041010095009"><vh>@thin xsltWithNodes.py</vh></v>
@@ -1436,7 +1423,6 @@ in LeoDocs.leo for full details.
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 
 @color</t>
-<t tx="edream.110203113231.233">@color</t>
 <t tx="edream.110203113231.618">@ It is usually best _not_ to catch exceptions in plugins:
 doHook catches all exceptions and disables further calls to plugins.
 
@@ -4847,219 +4833,6 @@ http://www.docbook.org[The official home page for DocBook: The Definitive Guide.
 You would typically not enable any of the following "plugins".
 
 These plugins contain example code only.</t>
-<t tx="ekr.20040828105233">@first # -*- coding: utf-8 -*-
-@language python
-@tabwidth -4
-
-"""
-Translate a few menu items into Simplified Chinese
-本插件将部分Leo菜单翻译成简体中文
-   By Zhang Le &lt;ejoy@xinhuanet.com&gt;
-
-"""
-
-# Chinese translation completed by Zhang Le, May 2004
-# based on the french_fm.py
-
-# NOTE: The accelerated key (&amp;) failed to work on Chinese text, probably because 
-# the width of one Chinese character is 2 not 1, which confuses Tk. I'm not sure 
-# whether this is a bug of Tk or a bug of Leo. Although I do not use &amp; in the 
-# Chinese menu, Tk places an underline below the first character of each menu
-# entry. Another bug in Tk?
-
-# Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
-# All the headlines appear as "??".
-
-import leoPlugins
-import leoGlobals as g
-
-@others
-
-if not g.app.unitTesting: # Unpleasant for unit testing.
-
-    # Register the handlers...
-    leoPlugins.registerHandler("menu1", onMenu)
-
-    __version__ = "1.1" # Set version for the plugin handler.
-    g.plugin_signon(__name__)</t>
-<t tx="ekr.20040828105233.1">def onMenu (tag,keywords):
-
-    c = keywords.get("c")
-    table = (
-        @others
-    )
-
-    # Call the convenience routine to do the work.
-    c.frame.menu.setRealMenuNamesFromTable(table)</t>
-<t tx="ekr.20040828105233.2">("File","File文件"),
-    ("New","新建"),
-    ("Open...","打开"),
-    ("Open With...","用程序打开..."),
-    ("Close","关闭"),
-    ("Save","保存"),
-    ("Save As","另存为..."),
-    ("Save To","另存到..."),
-    ("Revert To Saved","恢复到保存的文件"),
-    ("Recent Files...","最近访问的文件..."),
-        ("Clear Recent Files","清除最近访问文件列表"),
-    ("Read/Write...", "读取/写入..."),
-        ("Read Outline Only", "只读取大纲"),
-        ("Read @file Nodes", "读取 @file 结点"),
-        ("Write Dirty @file Nodes", "保存改动的 @file 结点"),
-        ("Write missing @file Nodes", "保存缺少的(missing) @file 结点"),
-        ("Write Outline Only", "仅保存大纲"),
-        ("Write @file Nodes", "保存 @file 结点"),
-        ("Write 4.x Derived Files", "保存 4.x 版本的文件"),
-        ("Write 3.x Derived Files", "保存 3.x 版本的文件"),
-    ("Tangle...", "Tangle 操作..."),
-        ("Tangle All", "全部 Tangle"),
-        ("Tangle Marked", "只 Tangle 书签结点"),
-        ("Tangle", "Tangle 当前结点"),
-    ("Untangle...", "Untangle 操作..."),
-        ("Untangle All", "全部 Untangle"),
-        ("Untangle Marked", "只 Untangle 书签结点"),
-        ("Untangle", "Untangle 当前结点"),
-    ("Import...", "导入..."),
-        ("Import Derived File", "导入生成的文件"),
-        ("Import To @file", "导入到 @file"),
-        ("Import To @root", "导入到 @root"),
-        ("Import CWEB Files", "导入 CWEB 文件"),
-        ("Import noweb Files", "导入 noweb 文件"),
-        ("Import Flattened Outline", "导入平坦 (Flattened) 大纲文件 (MORE 格式)"),
-    ("Export...", "导出..."),
-        ("Export Headlines", "导出标题 (Headlines)"),
-        ("Outline To CWEB", "导出大纲到 CWEB"),
-        ("Outline To Noweb", "导出大纲到 Noweb"),
-        ("Flatten Outline", "导出平坦 (Flattened) 大纲 (MORE 格式)"),
-        ("Remove Sentinels", "删除导出文件中的特殊大纲标记 (Sentinelles)"),
-        ("Weave", "导出为 Weave 格式 (Listing)"),
-        ("Export all to AsciiDoc", "全部导出为 AsciiDoc 文件"),
-        ("Export current tree to AsciiDoc", "将当前树导出为 AsciiDoc 文件"),
-    ("Exit","退出"),
-</t>
-<t tx="ekr.20040828105233.3">("Edit","Edit编辑"),
-    ("Undo Typing","撤销键入"),
-    ("Undo Cut Node","撤销剪切结点"),
-    ("Redo Typing","重做键入"),
-    ("Can't Undo", "无法撤销"),
-    ("Can't Redo", "无法重做"),
-    ("Cut", "剪切"),
-    ("Copy", "复制"),
-    ("Paste", "粘贴"),
-    ("Delete", "删除"),
-    ("Select All", "全选"),
-    ("Edit Body...", "编辑文本域..."),
-        ("Extract Section", "Extract Section"),
-        ("Extract Names", "Extract Names"),
-        ("Extract", "Extract"),
-        ("Convert All Blanks", "Convert All Blanks"),
-        ("Convert All Tabs", "Convert All Tabs"),
-        ("Convert Blanks", "Convert Blanks"),
-        ("Convert Tabs", "Convert Tabs"),
-        ("Insert Body Time/Date", "插入当前日期/时间"),
-        ("Reformat Paragraph", "重新格式化段落"),
-        ("Indent", "增加缩进"),
-        ("Unindent", "减少缩进"),
-        ("Match Brackets", "括号匹配"), #  &lt;({["), #EKR
-    ("Edit Headline...", "编辑标题..."),
-        ("Edit Headline", "编辑标题"),
-        ("End Edit Headline", "结束编辑标题"),
-        ("Abort Edit Headline", "放弃编辑标题"),
-        ("Insert Headline Time/Date", "插入当前日期/时间"),
-        ("Toggle Angle Brackets", "切换尖括号标记"),
-    ("Find...", "查找..."),
-        ("Find Panel", "查找对话框"),
-        ("Find Next", "查找下一个"),
-        ("Find Previous", "查找前一个"),
-        ("Replace", "替换"),
-        ("Replace, Then Find", "替换后查找"),
-    ("Go To Line Number", "跳转到行..."),
-    ("Execute Script", "执行Python脚本"),
-    ("Set Font...", "设置字体..."),
-    ("Set Colors...", "设置颜色..."),
-    ("Show Invisibles", "显示不可见域"),
-    ("Hide Invisibles", "隐藏不可见域"),
-    ("Preferences", "偏好设置"),
-</t>
-<t tx="ekr.20040828105233.4">("Outline", "Outline大纲"),
-    ("Cut Node", "剪切结点"),
-    ("Copy Node", "拷贝结点"),
-    ("Paste Node", "粘贴结点"),
-    ("Delete Node", "删除结点"),
-    ("Insert Node", "插入结点"),
-    ("Clone Node", "克隆结点"),
-    ("Sort Children", "排序孩子结点"),
-    ("Sort Siblings", "排序兄弟结点"),
-    ("Check Outline", "校验大纲"),
-    ("Dump Outline", "大纲转储 (Dump)"),
-    ("Hoist", "提升结点 (Hoist)"),
-    ("De-Hoist", "下降结点 (De-Hoist)"),
-    ("Expand/Contract...", "扩展/收缩"),
-        ("Contract All", "全部收缩"),
-        ("Contract Node", "收缩当前结点"),
-        ("Contract Parent", "收缩父结点"),
-        ("Expand Prev Level", "扩展到上一级"),
-        ("Expand Next Level", "扩展到下一级"),
-        ("Expand To Level 1", "扩展到第1级"),
-        ("Expand To Level 2", "扩展到第2级"),
-        ("Expand To Level 3", "扩展到第3级"),
-        ("Expand To Level 4", "扩展到第4级"),
-        ("Expand To Level 5", "扩展到第5级"),
-        ("Expand To Level 6", "扩展到第6级"),
-        ("Expand To Level 7", "扩展到第7级"),
-        ("Expand To Level 8", "扩展到第8级"),
-        ("Expand All", "扩展全部"),
-        ("Expand Node", "扩展当前结点"),
-    ("Move...", "移动..."),
-        ("Move Down", "下移"),
-        ("Move Left", "左移"),
-        ("Move Right", "右移"),
-        ("Move Up", "上移"),
-        ("Promote", "Promote"),
-        ("Demote", "Demote"),
-    ("Mark/Unmark...", "书签功能..."),
-        ("Mark", "标记书签"),
-        ("Unmark", "删除书签"),
-        ("Mark Subheads", "标记子标题"),
-        ("Mark Changed Items", "标记已修改的结点"),
-        ("Mark Changed Roots", "标记已修改的根结点 (Roots)"),
-        ("Mark Clones", "标记克隆"),
-        ("Unmark All", "删除所有书签"),
-    ("Go To...", "跳转到..."),
-        ("Go Back", "后退"),
-        ("Go Forward", "前进"),
-        ("Go To Next Marked", "跳转到下一个书签"),
-        ("Go To Next Changed", "跳转到下一个已修改结点"),
-        ("Go To Next Clone", "跳转到下一个克隆结点"),
-        ("Go To First Node", "跳转到第一个结点"),
-        ("Go To Last Node", "跳转到最后一个结点"),
-        ("Go To Parent", "跳转到父结点"),
-        ("Go To Prev Sibling", "跳转到上一个兄弟结点"),
-        ("Go To Next Sibling", "跳转到下一个兄弟结点"),
-        ("Go To Prev Visible", "跳转到上一个可见结点"),
-        ("Go To Next Visible", "跳转到下一个可见结点"),
-        ("Go To Prev Node", "跳转到上一结点"),
-        ("Go To Next Node", "跳转到下一结点"),</t>
-<t tx="ekr.20040828105233.5">("Plugins", "Plugins插件"),
-    ("chinese", "Chinese (汉化)"),
-</t>
-<t tx="ekr.20040828105233.6">("Window", "Window窗口"),
-    ("Equal Sized Panes", "使各面板大小相等"),
-    ("Toggle Active Pane", "切换激活面板"),
-    ("Toggle Split Direction", "切换面板分割方向"),
-    ("Cascade", "级联排列窗体"),
-    ("Minimize All", "全部最小化"),
-    ("Open Compare Window", "打开文件比较窗口..."),
-    ("Open Python Window", "打开Python集成环境(IDLE)..."),
-</t>
-<t tx="ekr.20040828105233.7">("Help", "Help帮助"),
-    ("About Leo...", "关于Leo..."),
-    ("Online Home Page", "访问在线主页"),
-    ("Open Online Tutorial", "访问在线教程"),
-    ("Open Offline Tutorial", "访问离线教程 (CHM文件)"),
-    ("Open LeoDocs.leo", "打开 LeoDocs.leo"),
-    ("Open LeoConfig.leo", "打开 LeoConfig.leo"),
-    ("Apply Settings", "应用设置")</t>
 <t tx="ekr.20040915073259"></t>
 <t tx="ekr.20040918165427.4">@nocolor
 
@@ -5121,7 +4894,6 @@ frame.pack(side="top", fill='both', expand=1, padx=5, pady=5)</t>
     self.remote_plugin_list.populateList() 
     self.messagebar.message("busy", text)
     self.top.update()</t>
-<t tx="ekr.20041019072632"></t>
 <t tx="ekr.20041030092101">@ Notes by EKR:  The dyna plugin is a remarkable body of work by 'e'.  Have fun with it.
 
 You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
