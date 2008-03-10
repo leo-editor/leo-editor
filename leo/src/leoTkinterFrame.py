@@ -909,7 +909,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         c.exists = False
 
         # New in Leo 4.4.8: Finish all window tasks before killing the window.
-        top.update_idletasks()
+        top.update()
 
         # g.trace(self)
 
@@ -917,7 +917,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         self.destroyAllObjects()
 
         # New in Leo 4.4.8: Finish all window tasks before killing the window.
-        top.update_idletasks()
+        top.update()
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 
