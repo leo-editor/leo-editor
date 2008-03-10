@@ -674,7 +674,8 @@ class baseFileCommands:
             self.tnodesDict = {}
 
             for t in self.c.all_unique_tnodes_iter():
-                if hasattr(t,'fileIndex'):
+                # Bug fix: Leo 4.4.8: all tnodes have a fileIndex field: make sure it is non-None.
+                if hasattr(t,'fileIndex') and t.fileIndex:
                     tref = t.fileIndex
                     if nodeIndices.isGnx(tref):
                         tref = nodeIndices.toString(tref)
@@ -816,7 +817,8 @@ class baseFileCommands:
             # Convert any pre-4.1 index to a gnx.
             junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
             if theTime != None:
-                t.setFileIndex(gnx)
+                # t.setFileIndex(gnx)
+                t.fileIndex = gnx
 
             return t
     #@-node:ekr.20031218072017.2009:newTnode
@@ -2574,13 +2576,12 @@ class baseFileCommands:
 
         # Populate tnodes
         tnodes = {}
-
+        nodeIndices = g.app.nodeIndices
         for p in theIter:
-            index = p.v.t.fileIndex
-            if index:
-                tnodes[index] = p.v.t
-            else:
-                g.trace('can not happen: no p.v.t.fileIndex for',p.headString())
+            # New in Leo 4.4.8: assign file indices here.
+            if not p.v.t.fileIndex:
+                p.v.t.fileIndex = nodeIndices.getNewIndex()
+            tnodes[p.v.t.fileIndex] = p.v.t
 
         # Put all tnodes in index order.
         keys = tnodes.keys() ; keys.sort()
@@ -2802,7 +2803,8 @@ class baseFileCommands:
                 except Exception:
                     gnx = nodeIndices.getNewIndex()
                     # Apparent bug fix: Leo 4.4.8, 2008-3-8: use t, not v.t here!
-                    t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                    # t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                    t.fileIndex = gnx
             s = ','.join([nodeIndices.toString(t.fileIndex) for t in tnodeList])
             return ' tnodeList="%s"' % (s)
         else:
