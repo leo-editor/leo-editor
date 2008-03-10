@@ -1220,7 +1220,7 @@ class cleoController:
                 tr = self.getat(nd.v, 'time_req')
                 pr = self.getat(nd.v, 'progress')
                 try: pr = float(pr)
-                except: pr = 0
+                except: pr = ''
                 if tr != '' or pr != '':
                     ans = ' <'
                     if tr != '':
