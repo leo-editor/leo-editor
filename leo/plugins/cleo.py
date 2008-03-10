@@ -995,6 +995,21 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20061020145804:left_priority_menu
     #@+node:tbrown.20060903121429.52:priority_menu
+    def pricmp(self, a, b):
+        """cmp function for sorting by priority, a and b a (headstring,p)"""
+        # getat returns 9999 for nodes without priority, so you'll only get -1
+        # if a[1] is not a node.  Or even an object.
+        try:
+            pa = int(self.getat(a[1].v, 'priority'))
+        except:
+            pa = -1
+        try:
+            pb = int(self.getat(b[1].v, 'priority'))
+        except:
+            pb = -1
+
+        return cmp(pa,pb)
+
     def priority_menu(self,parent,p):
 
         # done already in left_priority menu
@@ -1014,11 +1029,15 @@ class cleoController:
 
         menu.add_separator()
 
+        menu.add_command(label='Sort',
+            command=lambda: self.c.sortSiblings(cmp=self.pricmp),underline=0)
+
+        menu.add_separator()
+
         menu.add_command(label='Clear',
             command=lambda p=p:self.priority_clear(p.v),underline=0)
 
         return menu
-    #@nonl
     #@-node:tbrown.20060903121429.52:priority_menu
     #@+node:tbrown.20060912220630:progress_menu
     def progress_menu(self,parent,p):
