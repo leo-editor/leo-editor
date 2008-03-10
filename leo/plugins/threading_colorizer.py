@@ -959,8 +959,6 @@ class colorizer:
     #@nonl
     #@-node:ekr.20071010193720.35:isSameColorState
     #@+node:ekr.20071010193720.36:interrupt (does nothing)
-    # This is needed, even without threads.
-
     interrupt_count = 0
 
     def interrupt(self):
@@ -969,6 +967,13 @@ class colorizer:
 
         if self.trace and self.verbose: g.trace('thread',self.threadCount)
     #@-node:ekr.20071010193720.36:interrupt (does nothing)
+    #@+node:ekr.20080308151956.4:kill
+    def kill (self):
+
+        '''Kill all future coloring.'''
+
+        self.killFlag = True
+    #@-node:ekr.20080308151956.4:kill
     #@+node:ekr.20071010193720.37:useSyntaxColoring
     def useSyntaxColoring (self,p):
 
@@ -1158,6 +1163,9 @@ class colorizer:
     #@+node:ekr.20071010193720.42:idleHandler
     def idleHandler (self,n):
 
+        # This is called at idle time, so there are shutdown issues.
+        if not hasattr(self,'c') or not self.c.exists:
+            return
         if not self.c.frame in g.app.windowList:
             # print 'threading_colorizer.idleHandler: window killed %d' % n
             return
@@ -1187,7 +1195,6 @@ class colorizer:
             if verbose: g.trace('****** thread done %d' % n)
             # Call update_idletasks only at the very end.
             self.w.update_idletasks()
-    #@nonl
     #@-node:ekr.20071010193720.42:idleHandler
     #@+node:ekr.20071010193720.43:init
     def init (self,p):
