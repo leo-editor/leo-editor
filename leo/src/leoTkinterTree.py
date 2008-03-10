@@ -816,7 +816,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         # Do the actual redraw.
         self.expandAllAncestors(c.currentPosition())
-        if self.idle_redraw and not g.app.unitTesting:
+        if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll)
             self.canvas.after_idle(idleRedrawCallback)
@@ -829,6 +829,12 @@ class leoTkinterTree (leoFrame.leoTree):
     redraw = redraw_now # Compatibility
     #@+node:ekr.20040803072955.59:redrawHelper
     def redrawHelper (self,scroll=True):
+
+        # This can be called at idle time, so there are shutdown issues.
+        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+            return
+        if not hasattr(self,'c'):
+            return
 
         c = self.c ; trace = False
         oldcursor = self.canvas['cursor']
@@ -1306,6 +1312,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Scrolls the canvas so that p is in view."""
 
+        # This can be called at idle time, so there are shutdown issues.
+        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+            return
+        if not hasattr(self,'c'):
+            return
+
         # __pychecker__ = '--no-argsused' # event not used.
         # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
@@ -1393,7 +1405,7 @@ class leoTkinterTree (leoFrame.leoTree):
                         self.canvas.yview("moveto",frac2)
                         if trace: g.trace("frac2 %1.2f %3d %3d %1.2f %1.2f" % (frac2,h1,h2,lo,hi))
 
-            if self.allocateOnlyVisibleNodes and not g.app.unitTesting:
+            if self.allocateOnlyVisibleNodes:
                 self.canvas.after_idle(self.idle_second_redraw)
 
             c.setTopVnode(p) # 1/30/04: remember a pseudo "top" node.
@@ -1402,7 +1414,6 @@ class leoTkinterTree (leoFrame.leoTree):
             g.es_exception()
 
     idle_scrollTo = scrollTo # For compatibility.
-    #@nonl
     #@-node:ekr.20040803072955.65:scrollTo
     #@+node:ekr.20040803072955.70:yoffset (tkTree)
     #@+at 
