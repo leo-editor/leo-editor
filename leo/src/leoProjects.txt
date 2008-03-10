@@ -1983,6 +1983,7 @@ self.onlyPosition = None
 self.find_text = ""
 self.change_text = ""
 self.unstick = False
+self.re_obj = None
 
 @
 New in 4.3:
@@ -2557,6 +2558,18 @@ def findNextMatch(self):
     p = self.p ; self.errors = 0
     attempts = 0
     self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            self.re_obj = re.compile(self.find_text,flags)
+        except Exception:
+            g.es('invalid regular expression:',pattern,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
     while p:
         pos, newpos = self.search()
         if trace: g.trace('attempt','pos',pos,'p',p.headString())
@@ -2651,14 +2664,19 @@ def searchHelper (self,s,i,j,pattern,backwards,nocase,regexp,word,swapij=True):
 #@+node:ekr.20060526092203:regexHelper
 def regexHelper (self,s,i,j,pattern,backwards,nocase):
 
-    try:
-        flags = re.MULTILINE
-        if nocase: flags |= re.IGNORECASE
-        re_obj = re.compile(pattern,flags)
-    except Exception:
-        g.es('invalid regular expression:',pattern,color='blue')
-        self.errors += 1 # Abort the search.
-        return -1, -1
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    # try:
+        # flags = re.MULTILINE
+        # if nocase: flags |= re.IGNORECASE
+        # re_obj = re.compile(pattern,flags)
+    # except Exception:
+        # g.es('invalid regular expression:',pattern,color='blue')
+        # self.errors += 1 # Abort the search.
+        # return -1, -1
 
     if backwards: # Scan to the last match.  We must use search here.
         last_mo = None ; i = 0
@@ -3253,6 +3271,18 @@ def findNextMatch(self):
     p = self.p ; self.errors = 0
     attempts = 0
     self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            self.re_obj = re.compile(self.find_text,flags)
+        except Exception:
+            g.es('invalid regular expression:',pattern,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
     while p:
         pos, newpos = self.search()
         if trace: g.trace('attempt','pos',pos,'p',p.headString())
@@ -3341,14 +3371,19 @@ def searchHelper (self,s,i,j,pattern,backwards,nocase,regexp,word,swapij=True):
 #@+node:ekr.20060526092203:regexHelper
 def regexHelper (self,s,i,j,pattern,backwards,nocase):
 
-    try:
-        flags = re.MULTILINE
-        if nocase: flags |= re.IGNORECASE
-        re_obj = re.compile(pattern,flags)
-    except Exception:
-        g.es('invalid regular expression:',pattern,color='blue')
-        self.errors += 1 # Abort the search.
-        return -1, -1
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    # try:
+        # flags = re.MULTILINE
+        # if nocase: flags |= re.IGNORECASE
+        # re_obj = re.compile(pattern,flags)
+    # except Exception:
+        # g.es('invalid regular expression:',pattern,color='blue')
+        # self.errors += 1 # Abort the search.
+        # return -1, -1
 
     if backwards: # Scan to the last match.  We must use search here.
         last_mo = None ; i = 0
@@ -8305,6 +8340,7 @@ def openWithFileName(fileName,old_c,
         fileName=fileName,
         relativeFileName=relativeFileName,
         gui=gui)
+    assert frame.c == c and c.frame == frame
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
@@ -8318,17 +8354,23 @@ def openWithFileName(fileName,old_c,
                 readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
             app.unlockLog()
             for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by menu.updateRecentFiles.
+                # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
         # Bug fix in 4.4.
         frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=frame.c,fileName=fileName)
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
     finally:
         c.endUpdate()
+        assert frame.c == c and c.frame == frame
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if frame.c.chapterController:
-            frame.c.chapterController.finishCreate()
+        if c.chapterController:
+            c.chapterController.finishCreate()
         k = c.k
         if k: k.setInputState(k.unboundKeyAction)
         if c.config.getBool('outline_pane_has_initial_focus'):
@@ -10513,6 +10555,11 @@ def new (self,event=None,gui=None):
         v.moveToRoot(oldRoot=None)
         c.setRootVnode(v) # New in Leo 4.4.2.
         c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -13028,6 +13075,766 @@ def setToBeTranslated (self,s,n):
 #@-node:ekr.20080221110301:setToBeTranslated
 #@-node:ekr.20080220082617:@button print g.es stats
 #@-node:ekr.20070625091423:Added translation services
+#@+node:ekr.20071217032247:Compile regexp's once in findNextMatch
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4677335
+
+The regexHelper method does compile regexp's before searching for them.  Alas, this method is called once per searched node, which greatly increases the compilation overhead.  Presumably it would be much better to compile the regexp once, say in findNextMatch.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3075:findNextMatch
+# Resumes the search where it left off.
+# The caller must call set_first_incremental_search or set_first_batch_search.
+
+def findNextMatch(self):
+
+    c = self.c ; trace = self.trace
+
+    if trace: g.trace('entry',g.callers())
+
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+
+    p = self.p ; self.errors = 0
+    attempts = 0
+    self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            self.re_obj = re.compile(self.find_text,flags)
+        except Exception:
+            g.es('invalid regular expression:',pattern,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
+    while p:
+        pos, newpos = self.search()
+        if trace: g.trace('attempt','pos',pos,'p',p.headString())
+        if pos is not None:
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos)
+            return pos, newpos
+        elif self.errors:
+            g.trace('find errors')
+            return None,None # Abort the search.
+        elif self.node_only:
+            if trace: g.trace('fail: node only')
+            return None,None # We are only searching one node.
+        else:
+            if trace: g.trace('failed attempt',p)
+            attempts += 1
+            p = self.p = self.selectNextPosition()
+
+    if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+    return None, None
+#@-node:ekr.20031218072017.3075:findNextMatch
+#@+node:ekr.20060526092203:regexHelper
+def regexHelper (self,s,i,j,pattern,backwards,nocase):
+
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    # try:
+        # flags = re.MULTILINE
+        # if nocase: flags |= re.IGNORECASE
+        # re_obj = re.compile(pattern,flags)
+    # except Exception:
+        # g.es('invalid regular expression:',pattern,color='blue')
+        # self.errors += 1 # Abort the search.
+        # return -1, -1
+
+    if backwards: # Scan to the last match.  We must use search here.
+        last_mo = None ; i = 0
+        while i < len(s):
+            mo = re_obj.search(s,i,j)
+            if not mo: break
+            i += 1 ; last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s,i,j)
+
+    if 0:
+        g.trace('i',i,'j',j,'s[i:j]',repr(s[i:j]),
+            'mo.start',mo and mo.start(),'mo.end',mo and mo.end())
+
+    while mo and 0 <= i < len(s):
+        if mo.start() == mo.end():
+            if backwards:
+                # Search backward using match instead of search.
+                i -= 1
+                while 0 <= i < len(s):
+                    mo = re_obj.match(s,i,j)
+                    if mo: break
+                    i -= 1
+            else:
+                i += 1 ; mo = re_obj.search(s,i,j)
+        else:
+            self.match_obj = mo
+            return mo.start(),mo.end()
+    self.match_obj = None
+    return -1,-1
+#@-node:ekr.20060526092203:regexHelper
+#@+node:ekr.20031218072017.3077:search & helpers
+def search (self):
+
+    """Search s_ctrl for self.find_text under the control of the
+    whole_word, ignore_case, and pattern_match ivars.
+
+    Returns (pos, newpos) or (None,None)."""
+
+    c = self.c ; p = self.p ; w = self.s_ctrl ; trace = self.trace
+    index = w.getInsertPoint()
+    s = w.getAllText()
+
+    # g.trace(index,repr(s[index:index+20]))
+    stopindex = g.choose(self.reverse,0,len(s)) # 'end' doesn't work here.
+    pos,newpos = self.searchHelper(s,index,stopindex,self.find_text,
+        backwards=self.reverse,nocase=self.ignore_case,
+        regexp=self.pattern_match,word=self.whole_word)
+
+    # g.trace('pos,newpos',pos,newpos)
+    if pos == -1:
+        if trace: g.trace('** pos is -1',pos,newpos)
+        return None,None
+    << fail if we are passed the wrap point >>
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    w.setSelectionRange(pos,newpos,insert=insert)
+
+    if trace: g.trace('** returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526140328:<< fail if we are passed the wrap point >>
+if self.wrapping and self.wrapPos is not None and self.wrapPosition and p == self.wrapPosition:
+
+    if self.reverse and pos < self.wrapPos:
+        if trace: g.trace("** reverse wrap done",pos,newpos)
+        return None, None
+
+    if not self.reverse and newpos > self.wrapPos:
+        if trace: g.trace('** wrap done',pos,newpos)
+        return None, None
+#@-node:ekr.20060526140328:<< fail if we are passed the wrap point >>
+#@+node:ekr.20060526081931:searchHelper & allies
+def searchHelper (self,s,i,j,pattern,backwards,nocase,regexp,word,swapij=True):
+
+    trace = self.trace
+
+    if swapij and backwards: i,j = j,i
+
+    if trace: g.trace('back,nocase,regexp,word,',
+        backwards,nocase,regexp,word,i,j,repr(s[i:i+20]))
+
+    if not s[i:j] or not pattern:
+        if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
+        return -1,-1
+
+    if regexp:
+        pos,newpos = self.regexHelper(s,i,j,pattern,backwards,nocase)
+    elif backwards:
+        pos,newpos = self.backwardsHelper(s,i,j,pattern,nocase,word)
+    else:
+        pos,newpos = self.plainHelper(s,i,j,pattern,nocase,word)
+
+    if trace: g.trace('returns',pos,newpos)
+    return pos,newpos
+#@+node:ekr.20060526092203:regexHelper
+def regexHelper (self,s,i,j,pattern,backwards,nocase):
+
+    re_obj = self.re_obj # Use the pre-compiled object
+    if not re_obj:
+        g.trace('can not happen: no re_obj')
+        return -1,-1
+
+    # try:
+        # flags = re.MULTILINE
+        # if nocase: flags |= re.IGNORECASE
+        # re_obj = re.compile(pattern,flags)
+    # except Exception:
+        # g.es('invalid regular expression:',pattern,color='blue')
+        # self.errors += 1 # Abort the search.
+        # return -1, -1
+
+    if backwards: # Scan to the last match.  We must use search here.
+        last_mo = None ; i = 0
+        while i < len(s):
+            mo = re_obj.search(s,i,j)
+            if not mo: break
+            i += 1 ; last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s,i,j)
+
+    if 0:
+        g.trace('i',i,'j',j,'s[i:j]',repr(s[i:j]),
+            'mo.start',mo and mo.start(),'mo.end',mo and mo.end())
+
+    while mo and 0 <= i < len(s):
+        if mo.start() == mo.end():
+            if backwards:
+                # Search backward using match instead of search.
+                i -= 1
+                while 0 <= i < len(s):
+                    mo = re_obj.match(s,i,j)
+                    if mo: break
+                    i -= 1
+            else:
+                i += 1 ; mo = re_obj.search(s,i,j)
+        else:
+            self.match_obj = mo
+            return mo.start(),mo.end()
+    self.match_obj = None
+    return -1,-1
+#@-node:ekr.20060526092203:regexHelper
+#@+node:ekr.20060526140744:backwardsHelper
+debugIndices = []
+
+@
+rfind(sub [,start [,end]])
+
+Return the highest index in the string where substring sub is found, such that
+sub is contained within s[start,end]. Optional arguments start and end are
+interpreted as in slice notation. Return -1 on failure.
+@c
+
+def backwardsHelper (self,s,i,j,pattern,nocase,word):
+
+    debug = False
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower() # Bug fix: 10/5/06: At last the bug is found!
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+
+    if i < 0 or i > len(s) or j < 0 or j > len(s):
+        g.trace('bad index: i = %s, j = %s' % (i,j))
+        i = 0 ; j = len(s)
+
+    if debug and (s and i == 0 and j == 0):
+        g.trace('two zero indices')
+
+    self.backwardAttempts += 1
+
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        if debug:
+            self.debugCount += 1
+            if self.debugCount < 50:
+                g.trace(i,j,'len(s)',len(s),self.p.headString())
+        return -1,-1
+
+    if word:
+        while 1:
+            k = s.rfind(pattern,i,j)
+            if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.headString()))
+            if k == -1: return -1, -1
+            if self.matchWord(s,k,pattern):
+                return k,k+n
+            else:
+                j = max(0,k-1)
+    else:
+        k = s.rfind(pattern,i,j)
+        if debug: g.trace('%3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.headString()))
+        if k == -1:
+            return -1, -1
+        else:
+            return k,k+n
+#@-node:ekr.20060526140744:backwardsHelper
+#@+node:ekr.20060526093531:plainHelper
+def plainHelper (self,s,i,j,pattern,nocase,word):
+
+    trace = self.trace
+
+    # if trace: g.trace(i,j,repr(s[i:i+20]),'pattern',repr(pattern),'word',repr(word))
+    if trace: g.trace(i,j,repr(s[i:i+20]))
+
+    if nocase:
+        s = s.lower() ; pattern = pattern.lower()
+    pattern = self.replaceBackSlashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern,i,j)
+            # g.trace(k,n)
+            if k == -1:
+                if trace: g.trace('no match word',i)
+                return -1, -1
+            elif self.matchWord(s,k,pattern):
+                if trace: g.trace('match word',k)
+                return k, k + n
+            else: i = k + n
+    else:
+        k = s.find(pattern,i,j)
+        if k == -1:
+            if trace: g.trace('no match word',i)
+            return -1, -1
+        else:
+            if trace: g.trace('match', k)
+            return k, k + n
+#@-node:ekr.20060526093531:plainHelper
+#@+node:ekr.20060526140744.1:matchWord
+def matchWord(self,s,i,pattern):
+
+    trace = self.trace
+
+    pattern = self.replaceBackSlashes(pattern)
+    if not s or not pattern or not g.match(s,i,pattern):
+        if trace: g.trace('empty')
+        return False
+
+    pat1,pat2 = pattern[0],pattern[-1]
+    # n = self.patternLen(pattern)
+    n = len(pattern)
+    ch1 = 0 <= i-1 < len(s) and s[i-1] or '.'
+    ch2 = 0 <= i+n < len(s) and s[i+n] or '.'
+
+    isWordPat1 = g.isWordChar(pat1)
+    isWordPat2 = g.isWordChar(pat2)
+    isWordCh1 = g.isWordChar(ch1)
+    isWordCh2 = g.isWordChar(ch2)
+
+    # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
+
+    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
+    if trace: g.trace('returns',not inWord)
+    return not inWord
+
+#@-node:ekr.20060526140744.1:matchWord
+#@+node:ekr.20070105165924:replaceBackSlashes
+def replaceBackSlashes (self,s):
+
+    '''Carefully replace backslashes in a search pattern.'''
+
+    # This is NOT the same as s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+    # because there is no rescanning.
+
+    i = 0
+    while i + 1 < len(s):
+        if s[i] == '\\':
+            ch = s[i+1]
+            if ch == '\\':
+                s = s[:i] + s[i+1:] # replace \\ by \
+            elif ch == 'n':
+                s = s[:i] + '\n' + s[i+2:] # replace the \n by a newline
+            elif ch == 't':
+                s = s[:i] + '\t' + s[i+2:] # replace \t by a tab
+            else:
+                i += 1 # Skip the escaped character.
+        i += 1
+
+    if self.trace: g.trace(repr(s))
+    return s
+#@-node:ekr.20070105165924:replaceBackSlashes
+#@-node:ekr.20060526081931:searchHelper & allies
+#@-node:ekr.20031218072017.3077:search & helpers
+#@-node:ekr.20071217032247:Compile regexp's once in findNextMatch
+#@+node:ekr.20080218152956.2:Created menus very late in the creation process
+@
+
+This allows @menu items to refer to commands created by @button.
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    # print 'leo.py:run','fileName',fileName
+    if not jyLeo and not isValidPython(): return
+    << import leoGlobals and leoApp >>
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    if pymacs:
+        script = windowFlag = False
+    else:
+        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    verbose = script is None
+    g.app.batchMode = script is not None
+    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    << import leoNodes and leoConfig >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    c.bodyWantsFocus()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+
+    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+
+    ### This is a hack.
+    ### The jyleo script in test.leo sets the cwd to g.app.loadDir
+    ### Eventually, we will have to compute the equivalent here.
+
+    path = os.path.join(os.getcwd()) ### ,'..','src')
+    if path not in sys.path:
+        print 'appending %s to sys.path' % path
+        sys.path.append(path)
+    if 0:
+        print 'sys.path...'
+        for s in sys.path: print s
+
+# Import leoGlobals, but do NOT set g.
+import leoGlobals
+import leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+import leoNodes
+import leoConfig
+
+# try:
+    # import leoNodes
+# except ImportError:
+    # print "Error importing leoNodes.py"
+    # import traceback ; traceback.print_exc()
+
+# try:
+    # import leoConfig
+# except ImportError:
+    # print "Error importing leoConfig.py"
+    # import traceback ; traceback.print_exc()
+#@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20031218072017.1624:createFrame (leo.py)
+def createFrame (fileName,relativeFileName):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    import leoGlobals as g
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=frame.c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es("file not found:",fileName)
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (leo.py)
+#@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+def newLeoCommanderAndFrame(self,
+    fileName=None,
+    relativeFileName=None,
+    gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+    """Create a commander and its view frame for the Leo main window."""
+
+    app = self
+
+    import leoCommands
+
+    if not fileName: fileName = ''
+    if not relativeFileName: relativeFileName = ''
+    if not gui: gui = g.app.gui
+    << compute the window title >>
+
+    # g.trace(fileName,relativeFileName)
+
+    # Create an unfinished frame to pass to the commanders.
+    frame = gui.createLeoFrame(title)
+
+    # Create the commander and its subcommanders.
+    c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
+
+    if not app.initing:
+        g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+
+    frame.finishCreate(c)
+    c.finishCreate(initEditCommanders)
+
+    # Finish initing the subcommanders.
+    c.undoer.clearUndoState() # Menus must exist at this point.
+
+    # if updateRecentFiles:
+        # c.updateRecentFiles(relativeFileName or fileName)
+
+    if not g.app.initing:
+        g.doHook("after-create-leo-frame",c=c)
+
+    return c,frame
+#@+node:ekr.20031218072017.2189:<< compute the window title >>
+# Set the window title and fileName
+if fileName:
+    title = g.computeWindowTitle(fileName)
+else:
+    s = "untitled"
+    n = g.app.numberOfWindows
+    if n > 0:
+        s += str(n)
+    title = g.computeWindowTitle(s)
+    g.app.numberOfWindows = n+1
+#@-node:ekr.20031218072017.2189:<< compute the window title >>
+#@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+#@+node:ekr.20050920093543:c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.currentPosition()
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # g.trace('Commands',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+
+    c.frame.log.finishCreate()
+
+    # Create the menu last so that we can use the key handler for shortcuts.
+    # if not g.doHook("menu1",c=c,p=p,v=p):
+        # g.trace('commands',c,g.callers())
+        # c.frame.menu.createMenuBar(c.frame)
+
+    c.bodyWantsFocusNow()
+#@+node:ekr.20051007143620:printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print 'Commands...'
+    keys = c.commandsDict.keys()
+    keys.sort()
+    for key in keys:
+        command = c.commandsDict.get(key)
+        print '%30s = %s' % (key,g.choose(command,command.__name__,'<None>'))
+    print
+#@-node:ekr.20051007143620:printCommandsDict
+#@-node:ekr.20050920093543:c.finishCreate & helper
+#@+node:ekr.20031218072017.4115:createMenuBar (Tkmenu)
+def createMenuBar(self,frame):
+
+    top = frame.top
+
+    # Note: font setting has no effect here.
+    topMenu = Tk.Menu(top,postcommand=self.updateAllMenus)
+
+    # Do gui-independent stuff.
+    self.setMenu("top",topMenu)
+    self.createMenusFromTables()
+
+    top.config(menu=topMenu) # Display the menu.
+#@nonl
+#@-node:ekr.20031218072017.4115:createMenuBar (Tkmenu)
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k: k.setInputState(k.unboundKeyAction)
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        t = leoNodes.tnode()
+        v = leoNodes.vnode(t)
+        p = leoNodes.position(v,[])
+        v.initHeadString("NewHeadline")
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@-node:ekr.20080218152956.2:Created menus very late in the creation process
 #@-node:ekr.20080310093038.1:Features
 #@-node:ekr.20080227135412:4.4.8
 #@-all
