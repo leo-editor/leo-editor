@@ -1,6 +1,6 @@
 #!/bin/sh
 #@+leo-ver=4-thin
-#@+node:EKR.20040519082027.34:@file-thin ../uninstall
+#@+node:EKR.20040519082027.34:@file-thin ../../uninstall
 #@@first
 
 # This script uninstalls Leo on Linux.
@@ -23,5 +23,5 @@ echo "
 rm -fr $LEO_LIB_DIR
 rm -f  $LEO_RUN_SCRIPT_OUTPUT
 "
-#@-node:EKR.20040519082027.34:@file-thin ../uninstall
+#@-node:EKR.20040519082027.34:@file-thin ../../uninstall
 #@-leo

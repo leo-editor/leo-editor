@@ -55,6 +55,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -783,7 +784,14 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070611105300"><vh>Longer tests (opens windows)</vh>
+<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
+<v t="ekr.20071113203234"><vh> Test files</vh>
+<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
+<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
+</v>
+<v t="ekr.20060205165937"><vh>Doctests</vh>
+<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
+</v>
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
@@ -795,6 +803,7 @@
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
+<v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
 <v t="ekr.20050218015346.11"><vh>&lt;&lt; class testRoutineTestCase &gt;&gt;</vh>
@@ -810,7 +819,7 @@
 <v t="ekr.20050218015346.21"><vh>getAllPlugins</vh></v>
 <v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
 </v>
-<v t="ekr.20050120095423.11"><vh>@@suite plugins tests</vh>
+<v t="ekr.20050120095423.11"><vh>@suite plugins tests</vh>
 <v t="ekr.20050120095423.12"><vh>makePluginsTestSuite</vh></v>
 <v t="ekr.20050120095423.13"><vh>class pluginTestCase</vh>
 <v t="ekr.20050120095423.14"><vh>__init__</vh></v>
@@ -821,6 +830,8 @@
 </v>
 <v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
 </v>
+<v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
+</v>
 <v t="ekr.20050120095423.6"><vh>@suite test syntax of all plugins</vh>
 <v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
 <v t="ekr.20050120095423.8"><vh>__init__</vh></v>
@@ -828,17 +839,14 @@
 <v t="ekr.20050120095423.10"><vh>shortDescription</vh></v>
 </v>
 </v>
-<v t="ekr.20070301064408"><vh>@@test print All plugins tests complete</vh></v>
+<v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
+<v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
+<v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
+<v t="ekr.20061106201509.3"><vh>@test colorizerURLs</vh></v>
+</v>
+<v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
+<v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-</v>
-<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
-<v t="ekr.20041012084201"><vh>removeFile</vh></v>
-</v>
-</v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
-<v t="ekr.20071113203234"><vh>Test files</vh>
-<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
-<v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
 <v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
 <v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
@@ -850,24 +858,14 @@
 <v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
 <v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
 </v>
-<v t="ekr.20060205165937"><vh>Doctests</vh>
-<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests</vh></v>
-</v>
 <v t="ekr.20071113193438"><vh>General</vh>
+<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
+<v t="ekr.20041012084201"><vh>removeFile</vh></v>
+</v>
 <v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
 <v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20061106201509"><vh>Plugins</vh>
-<v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
-<v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
-<v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
-<v t="ekr.20061106201509.3"><vh>@test colorizerURLs</vh></v>
-</v>
-<v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
-<v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
-<v t="ekr.20061115081313" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
@@ -2016,6 +2014,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
+<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 <v t="ekr.20070611071101"><vh>@@test visback</vh>
 <v t="ekr.20070611071101.1"><vh>a</vh>
 <v t="ekr.20070611071101.2"><vh>b</vh>
@@ -2049,8 +2048,8 @@
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -4508,24 +4507,28 @@ import sys
 
 # DocTestSuite exists in Python 2.3 and above.
 
-version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-if g.CheckVersion(version, "2.3"):
+if sys.platform.lower().startswith('win'):
 
-    path = g.os_path_join(g.app.loadDir,"..","src")
-    modules = leoTest.importAllModulesInPath(path)
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+    if g.CheckVersion(version, "2.3"):
     
-    suite = leoTest.createUnitTestsFromDoctests(modules)
-                                
-    if suite:
-        g.app.scriptDict['suite'] = suite
+        path = g.os_path_join(g.app.loadDir,"..","src")
+        modules = leoTest.importAllModulesInPath(path)
+        suite = leoTest.createUnitTestsFromDoctests(modules)
+                                 
+        if suite:
+            g.app.scriptDict['suite'] = suite
+            
+    else:
+        # Create an empty suite to suppress a warning.
+        g.app.scriptDict['suite'] = unittest.TestSuite()
+        print
+        print "Can't create unit tests from doctests"
+        print "doctest.DocTestSuite requires Python 2.3 or above."
+        print
         
 else:
-    # Create an empty suite to suppress a warning.
-    g.app.scriptDict['suite'] = unittest.TestSuite()
-    print
-    print "Can't create unit tests from doctests"
-    print "doctest.DocTestSuite requires Python 2.3 or above."
-    print</t>
+    pass # There are problems on Linux.</t>
 <t tx="ekr.20040712101813">result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
 
 assert result=="ok", "checkPythonCode returns: %s" % result</t>
@@ -5412,25 +5415,32 @@ else:
 <t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
 import unittest
 import leoTest
+import sys
 
 @others
 
-print '@suite test syntax of all plugins'
+if sys.platform.lower().startswith('win'):
 
-suite = unittest.makeSuite(unittest.TestCase)
-
-for path in leoTest.getAllPluginFilenames():
-
-    f = file(path)
-    assert f, "File not found: %s" % path
-    # Do not test the syntax_error_plugin.
-    if path.find('syntax_error_plugin') == -1:
-        s = f.read() ; f.close()
-        test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
-        suite.addTest(test)
-
-if suite:
-    g.app.scriptDict['suite'] = suite</t>
+    print '@suite test syntax of all plugins'
+    
+    suite = unittest.makeSuite(unittest.TestCase)
+    
+    for path in leoTest.getAllPluginFilenames():
+    
+        f = file(path)
+        assert f, "File not found: %s" % path
+        # Do not test the syntax_error_plugin.
+        if path.find('syntax_error_plugin') == -1:
+            s = f.read() ; f.close()
+            test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
+            suite.addTest(test)
+    
+    if suite:
+        g.app.scriptDict['suite'] = suite
+        
+else:
+    
+    pass # Only test these on Windows.</t>
 <t tx="ekr.20050120095423.7">class parseFileTestCase (unittest.TestCase):
 
     @others</t>
@@ -13122,12 +13132,7 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after</t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -13238,8 +13243,10 @@ if p:
         g.app.unitTestDict['restoreSelectedNode']=False
         c.selectPosition(p)
     finally:
-        c.endUpdate()</t>
-<t tx="ekr.20060205165937"></t>
+        c.endUpdate()
+        
+print ; print 'End of plugins unit tests'</t>
+<t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -15732,7 +15739,6 @@ finally:
 # end:</t>
 <t tx="ekr.20061106184118">&lt;&lt; test defined &gt;&gt;</t>
 <t tx="ekr.20061106184118.1">pass</t>
-<t tx="ekr.20061106201509"></t>
 <t tx="ekr.20061106201509.1"></t>
 <t tx="ekr.20061106201509.2">import detect_urls
 
@@ -16024,20 +16030,6 @@ finally:
     c.endUpdate()
     
 print ; print 'End of general unit tests'</t>
-<t tx="ekr.20061115081313"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-import leoTest
-u = leoTest.testUtils(c)
-
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
-    
-print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 import leoTest ; u = leoTest.testUtils(c)
@@ -16513,22 +16505,26 @@ after</t>
     return i,j</t>
 <t tx="ekr.20070301064408">print '\nAll plugins tests complete.'</t>
 <t tx="ekr.20070303143846.1"># Plugin_manager.py needs plugins_menu.py
+# Plugins_manager is not functional at present.
+# plugin_manager.py
 plugins_menu.py
-plugin_manager.py
+
+# Standard plugins...
 open_with.py
 mod_scripting.py
 rst3.py
 UNL.py
-
-# Enabled by default in Leo 4.4.3. (order is important)
 nav_buttons.py
 hoist.py
-# cleo.py
+
 image.py
 leo_to_html.py
 threading_colorizer.py
 
-#vim.py
+# Other plugins...
+
+# cleo.py
+# vim.py
 </t>
 <t tx="ekr.20070303143951"></t>
 <t tx="ekr.20070305095401">p = c.currentPosition().copy()
@@ -16654,7 +16650,6 @@ finally:
 <t tx="ekr.20070611081718.1"></t>
 <t tx="ekr.20070611081718.2"></t>
 <t tx="ekr.20070611081718.4"></t>
-<t tx="ekr.20070611105300"></t>
 <t tx="ekr.20070611105423">c.contractAllHeadlines()
 p = c.rootPosition()
 while p.hasNext():
@@ -19273,7 +19268,7 @@ finally:
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
-# end5targettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
+# end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113145804.34">import string
 
 k = c.k
@@ -19966,5 +19961,9 @@ end.
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20080309193654.1"></t>
+<t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
+assert(gnx not in (None,'None'))
+assert(len(gnx) &gt; 1)</t>
 </tnodes>
 </leo_file>

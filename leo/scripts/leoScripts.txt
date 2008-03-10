@@ -5724,895 +5724,6 @@ _colors = {
 #@-node:NewHeadline
 #@-node:Code from Bill P
 #@-node:HTMLize scripts
-#@+node:Print missing docstrings
-# Print all commands that do not have a docstring.
-d = c.commandsDict
-keys = d.keys() ; keys.sort
-
-missing = []
-
-for key in keys:
-    f = d.get(key)
-    if (not f.__doc__ and
-        not key.endswith('-mode') and
-        not key.startswith('open-with-')
-    ):
-        missing.append((key,f.__name__),)
-
-missing.sort()
-print '-' * 20
-for data in missing:
-    a,b = data
-    print '%30s %s' % (a,b)
-#@nonl
-#@-node:Print missing docstrings
-#@+node:Recursive import script
-# An example of running this script:
-
-import os
-
-@others
-
-types = (".py",) #,".c",".html",".txt")
-
-dir = "c:/Zope-2.6.2-src/lib/python"
-dir = "c:/Zope-2.6.2-src/lib/Components"
-
-c.beginUpdate()
-try:
-    importFiles(dir,types,recursive=True)
-finally:
-    c.endUpdate()
-
-g.es("done",color="blue")
-#@+node:importFiles
-def importFiles (dir,type=None,kind="@file",recursive=False):
-
-    v = c.currentVnode()
-
-    # Check the params.
-    if kind != "@file" and kind != "@root":
-        g.es("kind must be @file or @root: " + kind)
-        return
-
-    if not g.os_path_exists(dir):
-        g.es("directory does not exist: " + dir)
-        return
-
-    c.beginUpdate()
-    try:
-        root = createLastChildOf(v,"imported files")
-        try:
-            importDir (dir,type,kind,recursive,root)
-            root.contract()
-        except:
-            g.es_exception()
-    finally:
-        c.endUpdate()
-#@nonl
-#@-node:importFiles
-#@+node:importDir
-def importDir (dir,types,kind,recursive,root):
-
-    g.es("dir: " + dir,color="blue")
-
-    try:
-        files = os.listdir(dir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(dir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) > 0 or len(dirs) > 0:
-            child = createLastChildOf(root,dir)
-            c.selectVnode(child)
-        if len(files2) > 0:
-            c.importCommands.importFilesCommand(files2,kind)
-        if len(dirs) > 0:
-            dirs.sort()
-            for dir in dirs:
-                importDir(dir,types,kind,recursive,child)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-#@-node:importDir
-#@+node:createLastChildOf
-def createLastChildOf (v,headline):
-
-    child = v.insertAsLastChild()
-    child.initHeadString(headline)
-    return child
-#@-node:createLastChildOf
-#@-node:Recursive import script
-#@+node:rst-to-leo
-'''A script to import rst files into Leo.
-
-This script parses a file containing Restructured text and creates node suitable for the rst3 plugin.
-
-To run, do the following:
-
-1. Create a call to the function ReSt2Leo below.
-   The argument to ReST2Leo should be the url (including a local file)
-   of a file containing restructure text.
-
-2. Run this node using the Execute Script command or the Run Script button.
-
-The script will create a sibling of this node for each call to ReST2Leo in this node.
-For example, this node will create a sibling called 'reStructuredText Demonstration'.
-The root headline of the created tree will be the top-level heading of the imported file.
-'''
-
-@language python
-@tabwidth -4
-
-__version__ = '0.1'
-<< version history >>
-
-<< define valid_underline_characters >>
-
-@others
-
-# files to test with:
-if 1:
-    ReST2Leo('http://docutils.sourceforge.net/docs/user/rst/demo.txt')
-if 0:
-    ReST2Leo('http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.txt')
-if 0:
-    ReST2Leo('http://springfed.com/ac/IssueNo0003Info/editform')
-#@nonl
-#@+node:<< define valid_underline_characters >>
-# all the allowable underline characters.
-
-valid_underline_characters = [
-    '!','"','#','$','%','&',"'",'(',')','*','+',
-    ',','-','.','/',':',';','<','=','>','?','@',
-    '[','\\',']','^','_','`','{','|','}','~',
-]
-#@nonl
-#@-node:<< define valid_underline_characters >>
-#@+node:<< version history >>
-@nocolor
-@
-
-v 0.1: Kent Tenney with minor mods by EKR.
-#@nonl
-#@-node:<< version history >>
-#@+node:class ParseReST
-class ParseReST:
-    """Processes a chunks of ReST, creating a list of nodes/sections
-    """
-    @others
-#@nonl
-#@+node:__init__
-def __init__(self, input):
-
-    """Initialize document level variables
-    """
-    if type(input) == type('string'):
-        self.lines = input.split("\n")
-    else:            
-        self.lines = input
-
-    self.index = 0 
-
-    # for each section gather title, contents and underline character
-    # over-under titles are indicated by 
-    # 2 character strings for underline_character
-    # the initial section is root
-    self.section = {'title':'root', 'contents':[], 'underline_character':'root'}
-    # the list of nodes
-    self.sections = []
-#@nonl
-#@-node:__init__
-#@+node:isCharacterLine
-def isCharacterLine(self):
-    """Determine if the current line consists of only 
-    valid underline characters
-    """
-    line = self.lines[self.index]
-    character_line_found = False
-    if len(line) > 0:
-        if line[0] in valid_underline_characters:
-            c = line[0]
-            for char in line:
-                if char == c:
-                    character_line_found = True
-                else:
-                    character_line_found = False
-                    #get out of the loop
-                    #otherwise error if 1st and last are characters
-                    break
-    else:
-        return False
-    return character_line_found
-#@nonl
-#@-node:isCharacterLine
-#@+node:isTransition
-def isTransition(self):
-    """self.index is pointing to a character line
-    if there are blank lines on either side, this is a transition
-    """
-
-    current = self.lines[self.index]
-    prev = self.lines[self.index - 1]
-    next = self.lines[self.index + 1]
-
-    return len(prev) == 0 and len(next) == 0
-#@nonl
-#@-node:isTransition
-#@+node:isUnderline
-def isUnderline(self):
-    """self.index is pointing to a character line 
-    if we are preceded by a blank line, then a line
-    not longer than this, we have an underline
-    """
-
-    current = self.lines[self.index].strip()
-    prev = self.lines[self.index - 1].strip()
-    prevprev = self.lines[self.index - 2].strip()
-
-
-    return len(prev) > 0 and \
-    len(prev) <= len(current) and \
-    len(prevprev) == 0
-#@nonl
-#@-node:isUnderline
-#@+node:isUnderOverline
-def isUnderOverline(self):
-    """self.index is pointing at a character line
-    if there is a line not longer than this
-    followed by a character line like this,
-    we have an UnderOverline
-    """
-
-    current = self.lines[self.index].strip()
-    next = self.lines[self.index + 1].strip()
-    #the last line may be a character line
-    try:
-        nextnext = self.lines[self.index + 2]
-    except IndexError:
-        return False
-
-    return (nextnext == current) and (len(next) > 0) \
-    and len(next) <= len(current)
-#@nonl
-#@-node:isUnderOverline
-#@+node:isSectionHead
-def isSectionHead(self):
-    """The current line is a character line,
-    is this a section heading?
-    http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#sections
-    """
-    # save typing with aliases
-    current = self.lines[self.index]
-    prev = self.lines[self.index - 1]
-    next = self.lines[self.index + 1]
-
-    # a transition has a blank line before and after
-    if  self.isTransition():
-        return False
-
-    # underline section heading    
-    if self.isUnderline():
-        # previous to discovering the underline, we appended
-        # the section title to the current section. 
-        # Remove it before closing the section
-        self.section['contents'].pop()
-        self.closeCurrentSection()
-        self.section['underline_character'] = current[0]
-        self.section['title'] = prev
-        # step index past this line
-        self.index += 1
-        return True
-
-    # over-under section heading
-    if self.isUnderOverline():
-        self.closeCurrentSection()
-        self.section['underline_character'] = current[0:2]
-        # leading whitespace is allowed in over under style, remove it
-        self.section['title'] = next.strip()
-        # step index past overline, section title, and underline
-        self.index += 3
-        return True
-
-        raise Exception ("Error in foundSectionHead()")
-#@nonl
-#@-node:isSectionHead
-#@+node:closeCurrentSection
-def closeCurrentSection(self):
-    """We have a section title, which ended the previous
-    section. Add this section to nodes, and start the next
-    """
-    self.sections.append(self.section)
-    self.section = {'title':'', 'contents':[], 'underline_character':''}
-#@nonl
-#@-node:closeCurrentSection
-#@+node:insertTitle
-def insertTitle(self, uc, isSubTitle = False):
-    """Inserting a title consists of merging section[1],
-    the first section, into section[0], the root.
-    This works the same for title and subtitle, since
-    merging title deletes section[1], making the subtitle
-    section[1]
-
-    The 'isSubTitle' parameter differentiates between title and subtitle
-    """    
-    title = self.sections[1]['title']
-
-    if not isSubTitle:
-        self.sections[0]['title'] = title
-
-    # extend the charline and pad the title
-    charline = (len(title) * uc[0]) + (4 * uc[0])
-    title = '  ' + title
-
-    self.sections[0]['contents'].append('')
-    self.sections[0]['contents'].append(charline)
-    self.sections[0]['contents'].append(title)
-    self.sections[0]['contents'].append(charline)
-    self.sections[0]['contents'].append('')
-
-    # append each line, not the list of lines
-    for line in self.sections[1]['contents']:
-        self.sections[0]['contents'].append(line)
-
-    del self.sections[1]
-#@nonl
-#@-node:insertTitle
-#@+node:fixupSections
-def fixupSections(self):
-    """Make corrections to the list of sections
-    to reflect the syntax for 'Title' and 'Subtitle'
-
-    If the first section heading is a unique over/under
-    it is a title, and should stay in the root section.
-
-    If the second section heading is a unique over/under
-    it is a subtitle and should remain in the root section.
-    """
-
-    def isUnique(uc, start):
-        index = start
-        while index < len(self.sections):
-            if self.sections[index]['underline_character'] == uc:
-                return False
-            index += 1
-        return True                
-
-    # self.sections[0] is root, a special case
-    underline_first = self.sections[1]['underline_character'] 
-    if len(underline_first) > 1:
-        if isUnique(underline_first, 2):
-            # the section head is the document title and must
-            # be added to the root section
-            self.insertTitle(underline_first)
-    if len(self.sections) > 2:
-        underline_second = self.sections[2]['underline_character'] 
-        if len(underline_second) > 1:
-            if isUnique(underline_second, 3):
-                # the section head is the document subtitle and must
-                # be added to the root section
-                self.insertTitle(underline_second, True)
-#@nonl
-#@-node:fixupSections
-#@+node:contents2String
-def contents2String(self):
-    """convert the list of strings in 
-    self.sections[index]['contents'] to a string
-    suitable for sticking into a Leo body
-    """
-
-    for section in self.sections:
-        section['contents'] = '\n'.join(section['contents'])
-#@nonl
-#@-node:contents2String
-#@+node:processLines
-def processLines(self):
-    """Loop through the lines of ReST input, building a list
-    of sectopms. A section consists of::
-        -title
-        -contents
-        -underline_character
-    """
-    line_count = len(self.lines)
-
-    while self.index < line_count:
-        if self.isCharacterLine() and self.isSectionHead():
-            # isCharacterLine() and isSectionHead() do all the housekeeping
-            # required. This doesn't look like good style, but I'm not
-            # sure how this should be written.
-            pass
-        else:        
-            self.section['contents'].append(self.lines[self.index])
-            self.index += 1
-
-    self.closeCurrentSection()
-    if len(self.sections) > 1:
-        if len(self.sections[0]['underline_character']) > 1:
-            self.fixupSections()
-    self.contents2String()
-    return self.sections
-#@nonl
-#@-node:processLines
-#@-node:class ParseReST
-#@+node:class BuildLeo
-class BuildLeo:
-    @others
-#@nonl
-#@+node:__init__
-def __init__(self, nodes):
-    """the nodes paramater is returned by ParseReST.processLines
-    It is a list of dictionaries consisting of 
-    underline_character, title, contents 
-    """
-    self.nodes = nodes
-
-    # self.levels is a dictionary, the keys
-    # are underline_character and the value is the
-    # last Leo node created at that level
-    self.levels = {}
-
-    # self.underline_characters is a list of the underline characters
-    # in the order of levels. The first is always 'root'
-    self.underline_characters = ['root',]
-
-
-
-
-#@-node:__init__
-#@+node:processNodes
-def processNodes(self):
-    """Step through the list of nodes created by
-    parseReST creating the appropriate Leo nodes
-    """
-
-    # Create root node as a sibling of current node
-    root = p.insertAfter()
-    self.levels['root'] = root
-
-    rootstring = self.nodes[0]['contents']
-    roottitle = self.nodes[0]['title']
-    root.setBodyString(rootstring)
-    root.setHeadString(roottitle)
-
-    # step through the rest of the nodes
-    index = 1
-    while index < len(self.nodes):
-        uc = self.nodes[index]['underline_character']
-        title = self.nodes[index]['title']
-        contents = self.nodes[index]['contents']
-
-        # this level exists, insert the node
-        if self.levels.has_key(uc):
-            # get parent of this node
-            parent_index = self.underline_characters.index(uc) - 1
-            parent_uc = self.underline_characters[parent_index]
-            current = self.levels[parent_uc].insertAsLastChild()
-            self.levels[uc] = current
-            current.setHeadString(title)
-            current.setBodyString(contents)
-
-        # if this is the first time this uc is encountered
-        # it means we are creating a new sublevel 
-        # create the level then insert the node
-        else:
-            # if we are descending to a new level, the parent 
-            # underline character is currently the last one
-            parent = self.levels[self.underline_characters[-1] ]
-            self.underline_characters.append(uc)
-            current = parent.insertAsLastChild()
-            self.levels[uc]  = current
-            current.setHeadString(title)
-            current.setBodyString(contents)
-
-        index += 1
-#@nonl
-#@-node:processNodes
-#@-node:class BuildLeo
-#@+node:ReST2Leo
-def ReST2Leo(input):
-    """ A wrapper for ParseReST and BuildLeo
-    """
-
-    if type(input) == type(""):
-        if input.startswith("http"):
-            from urllib import urlopen
-            try:
-                data = urlopen(input).read()
-            except HTTPError:
-                print 'Unable to open page %s' % input
-                return
-        else:
-            try:
-                data = open(input, 'r').read()
-            except IOError:
-                print 'Unable to open file %s' % input
-                return
-
-    parsed = ParseReST(data)
-    sections = parsed.processLines()
-    nodes = BuildLeo(sections)
-    nodes.processNodes()
-    c.redraw()    
-#@nonl
-#@-node:ReST2Leo
-#@-node:rst-to-leo
-#@+node:Run a Lua program
-# http://sourceforge.net/forum/message.php?msg_id=3581176
-# By: e
-
-"""
-run lua program
-work alike for perl too
-
-edit in path to lua if required
-make a script button
-
-
-no fallback for no subprocess
-download from eff.bot.org 
-if you are on python <2.4
-
-added option to pipe script to stdin
-
-todo:
-if your os can fork, use a fork.
-"""
-
-import subprocess as sub
-from dynacommon import stripSentinels
-import sys
-
-if sys.platform[:3] == 'win':
-    ex = 'c:/UTIL/lua.exe'
-else:
-    ex = '/usr/bin/lua'
-
-script = g.getScript(c, p, forcePythonSentinels= False)
-#print script
-
-source = stripSentinels(script)
-#print source
-
-def run_cmd(cmdlst, tostdin=None):
-    ps = sub.Popen(cmdlst, 
-        universal_newlines= True,
-        stdout= sub.PIPE, stderr= sub.PIPE,
-        stdin= sub.PIPE)
-    (outstd, outerr) = ps.communicate(tostdin)
-    return (ps.wait(), outstd, outerr)
-
-# send complete script on stdin
-# many comandline programs have this same option.
-ret,sto,sde = run_cmd([ex, '-'], source)
-
-if not ret:
-    print sto
-if sde: print sde
-#@nonl
-#@-node:Run a Lua program
-#@+node:Runniung tcl scripts from the body pane
-@language tcltk
-#@nonl
-#@+node:run tcl 
-# To use this script, you must make this a script button, either with the
-# 'Script Button' button or by making this an @button node.
-
-# Executes body text of selected node as a tcl script.
-# For more information, see http://wiki.tcl.tk/6878
-
-# This statement allows you to organize your scripts using noweb markup.
-s = g.getScript(c,p,forcePythonSentinels=False)
-g.es(g.app.root.tk.eval(s))
-#@nonl
-#@-node:run tcl 
-#@+node:My first tcl script
-# This is a comment
-set x 50
-return [expr $x*10]
-#@nonl
-#@-node:My first tcl script
-#@+node:My second tcl scrip, organized with noweb markup
-@others
-#@nonl
-#@+node:the actual script
-# This is a comment
-set x 50 +
-return [expr $x*10]
-#@nonl
-#@-node:the actual script
-#@-node:My second tcl scrip, organized with noweb markup
-#@-node:Runniung tcl scripts from the body pane
-#@+node:Script to import a file
-# Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
-
-@tabwidth 8
-@language python
-
-path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\lib\PmwPanedWidget.py"
-
-path = r"c:\prog\PmwPanedWidget.py" # The same file with tabs converted to 8 blanks.
-
-path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\demos\All.py"
-
-assert g.os_path_exists(path)
-
-c.importCommands.importFilesCommand([path],"@file")
-#@nonl
-#@-node:Script to import a file
-#@+node:Scripts demonstrating how to do anything with Leo menus
-#@+node:Test of createMenuItemsFromTable
-def callback(*args,**keys): g.trace()
-
-table = (("Test",None,callback),)
-
-c.frame.menu.createMenuItemsFromTable('File',table)
-#@nonl
-#@-node:Test of createMenuItemsFromTable
-#@+node:Add a menu item after Open With
-def callback(*args,**keys):
-    g.trace('after Open With')
-
-# Get the actual Tkinter menu.
-fileMenu = c.frame.menu.getMenu('File')
-
-# Now use raw Tkinter calls to insert the menu.
-fileMenu.insert(3,'command',label='Test',command=callback) 
-#@nonl
-#@-node:Add a menu item after Open With
-#@-node:Scripts demonstrating how to do anything with Leo menus
-#@+node:Scripts that make unit tests
-#@+node:@command make-test
-c.beginUpdate()
-try:
-    p1 = p.insertAfter()
-    c.setHeadString(p1,'@test ')
-    body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
-    c.setBodyString(p1,body)
-    for s in ('work','before','after'):
-        p2 = p1.insertAsLastChild()
-        c.setHeadString(p2,s)
-    p1.expand()
-finally:
-    c.endUpdate()
-    c.editPosition(p1)
-#@nonl
-#@-node:@command make-test
-#@+node:@command do-before
-@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. The work node should have body text. If all is as expected,
-copy the body text the work node to the before node, and represent the selection
-range of the work in the headline of the before node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top and work.bodyString():
-    c.beginUpdate()
-    try:
-        c.setBodyString(before,work.bodyString())
-        c.setBodyString(after,'')
-        putSelectionInHeadline(c,before,'before',sel)
-    finally:
-        c.endUpdate()
-else:
-    g.es_print('do-before: not in a proper @test tree')
-#@nonl
-#@+node:getSel
-def getSel(c):
-
-    w = c.frame.body.bodyCtrl
-    sel = g.app.gui.getSelectionRange(w)
-    if not sel:
-        i = g.app.gui.getInsertPoint(w)
-        sel = (i,i)
-    return sel
-#@nonl
-#@-node:getSel
-#@+node:findNodes
-def findNodes(p):
-
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-
-    for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild() 
-    before = work and work.next()     
-    after  = before and before.next()
-    if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None
-#@nonl
-#@-node:findNodes
-#@+node:putSelectionInHeadline
-def putSelectionInHeadline (c,p,prefix,sel):
-
-    # g.trace(p.headString(),repr(sel))
-
-    if not sel:
-        sel = ('1.0','1.0')
-
-    s = '%s sel=%s,%s' % (prefix,sel[0],sel[1])
-
-    c.setHeadString(p,s)
-
-#@-node:putSelectionInHeadline
-#@-node:@command do-before
-#@+node:@command do-after
-@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. If all is as expected, copy the work node to the after node,
-and represent the selection range of the work node in the headline of the after node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top:
-    c.beginUpdate()
-    try:
-        c.setBodyString(after,work.bodyString())
-        putSelectionInHeadline(c,after,'after',sel)
-    finally:
-        c.endUpdate()
-else:
-    g.es_print('do-after: not in @test tree')
-#@nonl
-#@+node:getSel
-def getSel(c):
-
-    w = c.frame.body.bodyCtrl
-    sel = g.app.gui.getSelectionRange(w)
-    if not sel:
-        i = g.app.gui.getInsertPoint(w)
-        sel = (i,i)
-    return sel
-#@nonl
-#@-node:getSel
-#@+node:findNodes
-def findNodes(p):
-
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-
-    for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild()
-    before = work and work.next()
-    after  = before and before.next()
-    if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None
-#@nonl
-#@-node:findNodes
-#@+node:putSelectionInHeadline
-def putSelectionInHeadline (c,p,prefix,sel):
-
-    # g.trace(p.headString(),repr(sel))
-
-    if not sel:
-        sel = ('1.0','1.0')
-
-    s = '%s sel=%s,%s' % (prefix,sel[0],sel[1])
-
-    c.setHeadString(p,s)
-
-#@-node:putSelectionInHeadline
-#@-node:@command do-after
-#@+node:@test kill-line
-import leoTest
-leoTest.runEditCommandTest(c,p)
-#@nonl
-#@+node:work
-line 1
-line 3
-#@nonl
-#@-node:work
-#@+node:before sel=2.0,2.6
-line 1
-line 2
-line 3
-#@nonl
-#@-node:before sel=2.0,2.6
-#@+node:after sel=2.0,2.0
-line 1
-line 3
-#@nonl
-#@-node:after sel=2.0,2.0
-#@-node:@test kill-line
-#@-node:Scripts that make unit tests
-#@+node:zodb get/put scripts
-#@+node:@@button zodb-get-tree
-name = c.config.getString('zodb_storage_file')
-db = g.init_zodb(name)
-connection = db.open()
-try:
-    fileName = c.fileName()
-    root = connection.root()
-    v = root.get(fileName)
-    if v:
-        g.es_print('get-tree: %s' % repr(v))
-    else:
-        g.es_print('get-tree failed: %s' % fileName)
-finally:
-    get_transaction().commit()
-    connection.close()
-#@nonl
-#@-node:@@button zodb-get-tree
-#@+node:@@button zodb-get-node
-name = c.config.getString('zodb_storage_file')
-db = g.init_zodb(name)
-connection = db.open()
-try:
-    fileName = c.fileName()
-    root = connection.root()
-    key = 'vnode: %s' % p.headString()
-    v = root.get(key)
-    if v:
-        g.es_print('get-node %s: %s' % (key,repr(v)))
-    else:
-        g.es_print('get-node %s failed.' % key)
-finally:
-    get_transaction().commit()
-    connection.close()
-#@nonl
-#@-node:@@button zodb-get-node
-#@+node:@@button zodb-put-tree
-name = c.config.getString('zodb_storage_file')
-db = g.init_zodb(name)
-connection = db.open()
-try:
-    fileName = c.fileName()
-    root = connection.root()
-    root[fileName] = c.rootPosition().v
-finally:
-    get_transaction().commit()
-    connection.close()
-#@nonl
-#@-node:@@button zodb-put-tree
-#@+node:@@button zodb-put-node
-name = c.config.getString('zodb_storage_file')
-db = g.init_zodb(name)
-connection = db.open()
-try:
-    fileName = c.fileName()
-    root = connection.root()
-    v = p.v.detach()
-    key = 'vnode: %s' % v.headString()
-    g.es_print('put-node %s :%s' % (v.headString(),repr(v)))
-    root[key] = v
-finally:
-    get_transaction().commit()
-    connection.close()
-#@nonl
-#@-node:@@button zodb-put-node
-#@-node:zodb get/put scripts
-#@-node:Important
 #@+node:jEdit2Py
 #@+node:Colorizing test scripts
 #@+node:@@button colorize
@@ -13411,6 +12522,895 @@ def getMode (self):
 #@-node:class contentHandler (xml.sax.saxutils.XMLGenerator)
 #@-node:@button jEdit2Py
 #@-node:jEdit2Py
+#@+node:Print missing docstrings
+# Print all commands that do not have a docstring.
+d = c.commandsDict
+keys = d.keys() ; keys.sort
+
+missing = []
+
+for key in keys:
+    f = d.get(key)
+    if (not f.__doc__ and
+        not key.endswith('-mode') and
+        not key.startswith('open-with-')
+    ):
+        missing.append((key,f.__name__),)
+
+missing.sort()
+print '-' * 20
+for data in missing:
+    a,b = data
+    print '%30s %s' % (a,b)
+#@nonl
+#@-node:Print missing docstrings
+#@+node:Recursive import script
+# An example of running this script:
+
+import os
+
+@others
+
+types = (".py",) #,".c",".html",".txt")
+
+dir = "c:/Zope-2.6.2-src/lib/python"
+dir = "c:/Zope-2.6.2-src/lib/Components"
+
+c.beginUpdate()
+try:
+    importFiles(dir,types,recursive=True)
+finally:
+    c.endUpdate()
+
+g.es("done",color="blue")
+#@+node:importFiles
+def importFiles (dir,type=None,kind="@file",recursive=False):
+
+    v = c.currentVnode()
+
+    # Check the params.
+    if kind != "@file" and kind != "@root":
+        g.es("kind must be @file or @root: " + kind)
+        return
+
+    if not g.os_path_exists(dir):
+        g.es("directory does not exist: " + dir)
+        return
+
+    c.beginUpdate()
+    try:
+        root = createLastChildOf(v,"imported files")
+        try:
+            importDir (dir,type,kind,recursive,root)
+            root.contract()
+        except:
+            g.es_exception()
+    finally:
+        c.endUpdate()
+#@nonl
+#@-node:importFiles
+#@+node:importDir
+def importDir (dir,types,kind,recursive,root):
+
+    g.es("dir: " + dir,color="blue")
+
+    try:
+        files = os.listdir(dir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(dir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) > 0 or len(dirs) > 0:
+            child = createLastChildOf(root,dir)
+            c.selectVnode(child)
+        if len(files2) > 0:
+            c.importCommands.importFilesCommand(files2,kind)
+        if len(dirs) > 0:
+            dirs.sort()
+            for dir in dirs:
+                importDir(dir,types,kind,recursive,child)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+#@-node:importDir
+#@+node:createLastChildOf
+def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline)
+    return child
+#@-node:createLastChildOf
+#@-node:Recursive import script
+#@+node:rst-to-leo
+'''A script to import rst files into Leo.
+
+This script parses a file containing Restructured text and creates node suitable for the rst3 plugin.
+
+To run, do the following:
+
+1. Create a call to the function ReSt2Leo below.
+   The argument to ReST2Leo should be the url (including a local file)
+   of a file containing restructure text.
+
+2. Run this node using the Execute Script command or the Run Script button.
+
+The script will create a sibling of this node for each call to ReST2Leo in this node.
+For example, this node will create a sibling called 'reStructuredText Demonstration'.
+The root headline of the created tree will be the top-level heading of the imported file.
+'''
+
+@language python
+@tabwidth -4
+
+__version__ = '0.1'
+<< version history >>
+
+<< define valid_underline_characters >>
+
+@others
+
+# files to test with:
+if 1:
+    ReST2Leo('http://docutils.sourceforge.net/docs/user/rst/demo.txt')
+if 0:
+    ReST2Leo('http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.txt')
+if 0:
+    ReST2Leo('http://springfed.com/ac/IssueNo0003Info/editform')
+#@nonl
+#@+node:<< define valid_underline_characters >>
+# all the allowable underline characters.
+
+valid_underline_characters = [
+    '!','"','#','$','%','&',"'",'(',')','*','+',
+    ',','-','.','/',':',';','<','=','>','?','@',
+    '[','\\',']','^','_','`','{','|','}','~',
+]
+#@nonl
+#@-node:<< define valid_underline_characters >>
+#@+node:<< version history >>
+@nocolor
+@
+
+v 0.1: Kent Tenney with minor mods by EKR.
+#@nonl
+#@-node:<< version history >>
+#@+node:class ParseReST
+class ParseReST:
+    """Processes a chunks of ReST, creating a list of nodes/sections
+    """
+    @others
+#@nonl
+#@+node:__init__
+def __init__(self, input):
+
+    """Initialize document level variables
+    """
+    if type(input) == type('string'):
+        self.lines = input.split("\n")
+    else:            
+        self.lines = input
+
+    self.index = 0 
+
+    # for each section gather title, contents and underline character
+    # over-under titles are indicated by 
+    # 2 character strings for underline_character
+    # the initial section is root
+    self.section = {'title':'root', 'contents':[], 'underline_character':'root'}
+    # the list of nodes
+    self.sections = []
+#@nonl
+#@-node:__init__
+#@+node:isCharacterLine
+def isCharacterLine(self):
+    """Determine if the current line consists of only 
+    valid underline characters
+    """
+    line = self.lines[self.index]
+    character_line_found = False
+    if len(line) > 0:
+        if line[0] in valid_underline_characters:
+            c = line[0]
+            for char in line:
+                if char == c:
+                    character_line_found = True
+                else:
+                    character_line_found = False
+                    #get out of the loop
+                    #otherwise error if 1st and last are characters
+                    break
+    else:
+        return False
+    return character_line_found
+#@nonl
+#@-node:isCharacterLine
+#@+node:isTransition
+def isTransition(self):
+    """self.index is pointing to a character line
+    if there are blank lines on either side, this is a transition
+    """
+
+    current = self.lines[self.index]
+    prev = self.lines[self.index - 1]
+    next = self.lines[self.index + 1]
+
+    return len(prev) == 0 and len(next) == 0
+#@nonl
+#@-node:isTransition
+#@+node:isUnderline
+def isUnderline(self):
+    """self.index is pointing to a character line 
+    if we are preceded by a blank line, then a line
+    not longer than this, we have an underline
+    """
+
+    current = self.lines[self.index].strip()
+    prev = self.lines[self.index - 1].strip()
+    prevprev = self.lines[self.index - 2].strip()
+
+
+    return len(prev) > 0 and \
+    len(prev) <= len(current) and \
+    len(prevprev) == 0
+#@nonl
+#@-node:isUnderline
+#@+node:isUnderOverline
+def isUnderOverline(self):
+    """self.index is pointing at a character line
+    if there is a line not longer than this
+    followed by a character line like this,
+    we have an UnderOverline
+    """
+
+    current = self.lines[self.index].strip()
+    next = self.lines[self.index + 1].strip()
+    #the last line may be a character line
+    try:
+        nextnext = self.lines[self.index + 2]
+    except IndexError:
+        return False
+
+    return (nextnext == current) and (len(next) > 0) \
+    and len(next) <= len(current)
+#@nonl
+#@-node:isUnderOverline
+#@+node:isSectionHead
+def isSectionHead(self):
+    """The current line is a character line,
+    is this a section heading?
+    http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#sections
+    """
+    # save typing with aliases
+    current = self.lines[self.index]
+    prev = self.lines[self.index - 1]
+    next = self.lines[self.index + 1]
+
+    # a transition has a blank line before and after
+    if  self.isTransition():
+        return False
+
+    # underline section heading    
+    if self.isUnderline():
+        # previous to discovering the underline, we appended
+        # the section title to the current section. 
+        # Remove it before closing the section
+        self.section['contents'].pop()
+        self.closeCurrentSection()
+        self.section['underline_character'] = current[0]
+        self.section['title'] = prev
+        # step index past this line
+        self.index += 1
+        return True
+
+    # over-under section heading
+    if self.isUnderOverline():
+        self.closeCurrentSection()
+        self.section['underline_character'] = current[0:2]
+        # leading whitespace is allowed in over under style, remove it
+        self.section['title'] = next.strip()
+        # step index past overline, section title, and underline
+        self.index += 3
+        return True
+
+        raise Exception ("Error in foundSectionHead()")
+#@nonl
+#@-node:isSectionHead
+#@+node:closeCurrentSection
+def closeCurrentSection(self):
+    """We have a section title, which ended the previous
+    section. Add this section to nodes, and start the next
+    """
+    self.sections.append(self.section)
+    self.section = {'title':'', 'contents':[], 'underline_character':''}
+#@nonl
+#@-node:closeCurrentSection
+#@+node:insertTitle
+def insertTitle(self, uc, isSubTitle = False):
+    """Inserting a title consists of merging section[1],
+    the first section, into section[0], the root.
+    This works the same for title and subtitle, since
+    merging title deletes section[1], making the subtitle
+    section[1]
+
+    The 'isSubTitle' parameter differentiates between title and subtitle
+    """    
+    title = self.sections[1]['title']
+
+    if not isSubTitle:
+        self.sections[0]['title'] = title
+
+    # extend the charline and pad the title
+    charline = (len(title) * uc[0]) + (4 * uc[0])
+    title = '  ' + title
+
+    self.sections[0]['contents'].append('')
+    self.sections[0]['contents'].append(charline)
+    self.sections[0]['contents'].append(title)
+    self.sections[0]['contents'].append(charline)
+    self.sections[0]['contents'].append('')
+
+    # append each line, not the list of lines
+    for line in self.sections[1]['contents']:
+        self.sections[0]['contents'].append(line)
+
+    del self.sections[1]
+#@nonl
+#@-node:insertTitle
+#@+node:fixupSections
+def fixupSections(self):
+    """Make corrections to the list of sections
+    to reflect the syntax for 'Title' and 'Subtitle'
+
+    If the first section heading is a unique over/under
+    it is a title, and should stay in the root section.
+
+    If the second section heading is a unique over/under
+    it is a subtitle and should remain in the root section.
+    """
+
+    def isUnique(uc, start):
+        index = start
+        while index < len(self.sections):
+            if self.sections[index]['underline_character'] == uc:
+                return False
+            index += 1
+        return True                
+
+    # self.sections[0] is root, a special case
+    underline_first = self.sections[1]['underline_character'] 
+    if len(underline_first) > 1:
+        if isUnique(underline_first, 2):
+            # the section head is the document title and must
+            # be added to the root section
+            self.insertTitle(underline_first)
+    if len(self.sections) > 2:
+        underline_second = self.sections[2]['underline_character'] 
+        if len(underline_second) > 1:
+            if isUnique(underline_second, 3):
+                # the section head is the document subtitle and must
+                # be added to the root section
+                self.insertTitle(underline_second, True)
+#@nonl
+#@-node:fixupSections
+#@+node:contents2String
+def contents2String(self):
+    """convert the list of strings in 
+    self.sections[index]['contents'] to a string
+    suitable for sticking into a Leo body
+    """
+
+    for section in self.sections:
+        section['contents'] = '\n'.join(section['contents'])
+#@nonl
+#@-node:contents2String
+#@+node:processLines
+def processLines(self):
+    """Loop through the lines of ReST input, building a list
+    of sectopms. A section consists of::
+        -title
+        -contents
+        -underline_character
+    """
+    line_count = len(self.lines)
+
+    while self.index < line_count:
+        if self.isCharacterLine() and self.isSectionHead():
+            # isCharacterLine() and isSectionHead() do all the housekeeping
+            # required. This doesn't look like good style, but I'm not
+            # sure how this should be written.
+            pass
+        else:        
+            self.section['contents'].append(self.lines[self.index])
+            self.index += 1
+
+    self.closeCurrentSection()
+    if len(self.sections) > 1:
+        if len(self.sections[0]['underline_character']) > 1:
+            self.fixupSections()
+    self.contents2String()
+    return self.sections
+#@nonl
+#@-node:processLines
+#@-node:class ParseReST
+#@+node:class BuildLeo
+class BuildLeo:
+    @others
+#@nonl
+#@+node:__init__
+def __init__(self, nodes):
+    """the nodes paramater is returned by ParseReST.processLines
+    It is a list of dictionaries consisting of 
+    underline_character, title, contents 
+    """
+    self.nodes = nodes
+
+    # self.levels is a dictionary, the keys
+    # are underline_character and the value is the
+    # last Leo node created at that level
+    self.levels = {}
+
+    # self.underline_characters is a list of the underline characters
+    # in the order of levels. The first is always 'root'
+    self.underline_characters = ['root',]
+
+
+
+
+#@-node:__init__
+#@+node:processNodes
+def processNodes(self):
+    """Step through the list of nodes created by
+    parseReST creating the appropriate Leo nodes
+    """
+
+    # Create root node as a sibling of current node
+    root = p.insertAfter()
+    self.levels['root'] = root
+
+    rootstring = self.nodes[0]['contents']
+    roottitle = self.nodes[0]['title']
+    root.setBodyString(rootstring)
+    root.setHeadString(roottitle)
+
+    # step through the rest of the nodes
+    index = 1
+    while index < len(self.nodes):
+        uc = self.nodes[index]['underline_character']
+        title = self.nodes[index]['title']
+        contents = self.nodes[index]['contents']
+
+        # this level exists, insert the node
+        if self.levels.has_key(uc):
+            # get parent of this node
+            parent_index = self.underline_characters.index(uc) - 1
+            parent_uc = self.underline_characters[parent_index]
+            current = self.levels[parent_uc].insertAsLastChild()
+            self.levels[uc] = current
+            current.setHeadString(title)
+            current.setBodyString(contents)
+
+        # if this is the first time this uc is encountered
+        # it means we are creating a new sublevel 
+        # create the level then insert the node
+        else:
+            # if we are descending to a new level, the parent 
+            # underline character is currently the last one
+            parent = self.levels[self.underline_characters[-1] ]
+            self.underline_characters.append(uc)
+            current = parent.insertAsLastChild()
+            self.levels[uc]  = current
+            current.setHeadString(title)
+            current.setBodyString(contents)
+
+        index += 1
+#@nonl
+#@-node:processNodes
+#@-node:class BuildLeo
+#@+node:ReST2Leo
+def ReST2Leo(input):
+    """ A wrapper for ParseReST and BuildLeo
+    """
+
+    if type(input) == type(""):
+        if input.startswith("http"):
+            from urllib import urlopen
+            try:
+                data = urlopen(input).read()
+            except HTTPError:
+                print 'Unable to open page %s' % input
+                return
+        else:
+            try:
+                data = open(input, 'r').read()
+            except IOError:
+                print 'Unable to open file %s' % input
+                return
+
+    parsed = ParseReST(data)
+    sections = parsed.processLines()
+    nodes = BuildLeo(sections)
+    nodes.processNodes()
+    c.redraw()    
+#@nonl
+#@-node:ReST2Leo
+#@-node:rst-to-leo
+#@+node:Run a Lua program
+# http://sourceforge.net/forum/message.php?msg_id=3581176
+# By: e
+
+"""
+run lua program
+work alike for perl too
+
+edit in path to lua if required
+make a script button
+
+
+no fallback for no subprocess
+download from eff.bot.org 
+if you are on python <2.4
+
+added option to pipe script to stdin
+
+todo:
+if your os can fork, use a fork.
+"""
+
+import subprocess as sub
+from dynacommon import stripSentinels
+import sys
+
+if sys.platform[:3] == 'win':
+    ex = 'c:/UTIL/lua.exe'
+else:
+    ex = '/usr/bin/lua'
+
+script = g.getScript(c, p, forcePythonSentinels= False)
+#print script
+
+source = stripSentinels(script)
+#print source
+
+def run_cmd(cmdlst, tostdin=None):
+    ps = sub.Popen(cmdlst, 
+        universal_newlines= True,
+        stdout= sub.PIPE, stderr= sub.PIPE,
+        stdin= sub.PIPE)
+    (outstd, outerr) = ps.communicate(tostdin)
+    return (ps.wait(), outstd, outerr)
+
+# send complete script on stdin
+# many comandline programs have this same option.
+ret,sto,sde = run_cmd([ex, '-'], source)
+
+if not ret:
+    print sto
+if sde: print sde
+#@nonl
+#@-node:Run a Lua program
+#@+node:Runniung tcl scripts from the body pane
+@language tcltk
+#@nonl
+#@+node:run tcl 
+# To use this script, you must make this a script button, either with the
+# 'Script Button' button or by making this an @button node.
+
+# Executes body text of selected node as a tcl script.
+# For more information, see http://wiki.tcl.tk/6878
+
+# This statement allows you to organize your scripts using noweb markup.
+s = g.getScript(c,p,forcePythonSentinels=False)
+g.es(g.app.root.tk.eval(s))
+#@nonl
+#@-node:run tcl 
+#@+node:My first tcl script
+# This is a comment
+set x 50
+return [expr $x*10]
+#@nonl
+#@-node:My first tcl script
+#@+node:My second tcl scrip, organized with noweb markup
+@others
+#@nonl
+#@+node:the actual script
+# This is a comment
+set x 50 +
+return [expr $x*10]
+#@nonl
+#@-node:the actual script
+#@-node:My second tcl scrip, organized with noweb markup
+#@-node:Runniung tcl scripts from the body pane
+#@+node:Script to import a file
+# Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
+
+@tabwidth 8
+@language python
+
+path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\lib\PmwPanedWidget.py"
+
+path = r"c:\prog\PmwPanedWidget.py" # The same file with tabs converted to 8 blanks.
+
+path = r"c:\Python23\Lib\site-packages\Pmw\Pmw_1_1\demos\All.py"
+
+assert g.os_path_exists(path)
+
+c.importCommands.importFilesCommand([path],"@file")
+#@nonl
+#@-node:Script to import a file
+#@+node:Scripts demonstrating how to do anything with Leo menus
+#@+node:Test of createMenuItemsFromTable
+def callback(*args,**keys): g.trace()
+
+table = (("Test",None,callback),)
+
+c.frame.menu.createMenuItemsFromTable('File',table)
+#@nonl
+#@-node:Test of createMenuItemsFromTable
+#@+node:Add a menu item after Open With
+def callback(*args,**keys):
+    g.trace('after Open With')
+
+# Get the actual Tkinter menu.
+fileMenu = c.frame.menu.getMenu('File')
+
+# Now use raw Tkinter calls to insert the menu.
+fileMenu.insert(3,'command',label='Test',command=callback) 
+#@nonl
+#@-node:Add a menu item after Open With
+#@-node:Scripts demonstrating how to do anything with Leo menus
+#@+node:Scripts that make unit tests
+#@+node:@command make-test
+c.beginUpdate()
+try:
+    p1 = p.insertAfter()
+    c.setHeadString(p1,'@test ')
+    body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
+    c.setBodyString(p1,body)
+    for s in ('work','before','after'):
+        p2 = p1.insertAsLastChild()
+        c.setHeadString(p2,s)
+    p1.expand()
+finally:
+    c.endUpdate()
+    c.editPosition(p1)
+#@nonl
+#@-node:@command make-test
+#@+node:@command do-before
+@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. The work node should have body text. If all is as expected,
+copy the body text the work node to the before node, and represent the selection
+range of the work in the headline of the before node.
+@c
+
+@others
+
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top and work.bodyString():
+    c.beginUpdate()
+    try:
+        c.setBodyString(before,work.bodyString())
+        c.setBodyString(after,'')
+        putSelectionInHeadline(c,before,'before',sel)
+    finally:
+        c.endUpdate()
+else:
+    g.es_print('do-before: not in a proper @test tree')
+#@nonl
+#@+node:getSel
+def getSel(c):
+
+    w = c.frame.body.bodyCtrl
+    sel = g.app.gui.getSelectionRange(w)
+    if not sel:
+        i = g.app.gui.getInsertPoint(w)
+        sel = (i,i)
+    return sel
+#@nonl
+#@-node:getSel
+#@+node:findNodes
+def findNodes(p):
+
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+
+    for p in p.self_and_parents_iter():
+        if p.headString().startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild() 
+    before = work and work.next()     
+    after  = before and before.next()
+    if (
+        work   and work.headString().startswith('work') and
+        before and before.headString().startswith('before') and
+        after  and after.headString().startswith('after')
+    ):
+        return top,work,before,after
+    else:
+        return None,None,None,None
+#@nonl
+#@-node:findNodes
+#@+node:putSelectionInHeadline
+def putSelectionInHeadline (c,p,prefix,sel):
+
+    # g.trace(p.headString(),repr(sel))
+
+    if not sel:
+        sel = ('1.0','1.0')
+
+    s = '%s sel=%s,%s' % (prefix,sel[0],sel[1])
+
+    c.setHeadString(p,s)
+
+#@-node:putSelectionInHeadline
+#@-node:@command do-before
+#@+node:@command do-after
+@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. If all is as expected, copy the work node to the after node,
+and represent the selection range of the work node in the headline of the after node.
+@c
+
+@others
+
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top:
+    c.beginUpdate()
+    try:
+        c.setBodyString(after,work.bodyString())
+        putSelectionInHeadline(c,after,'after',sel)
+    finally:
+        c.endUpdate()
+else:
+    g.es_print('do-after: not in @test tree')
+#@nonl
+#@+node:getSel
+def getSel(c):
+
+    w = c.frame.body.bodyCtrl
+    sel = g.app.gui.getSelectionRange(w)
+    if not sel:
+        i = g.app.gui.getInsertPoint(w)
+        sel = (i,i)
+    return sel
+#@nonl
+#@-node:getSel
+#@+node:findNodes
+def findNodes(p):
+
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+
+    for p in p.self_and_parents_iter():
+        if p.headString().startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild()
+    before = work and work.next()
+    after  = before and before.next()
+    if (
+        work   and work.headString().startswith('work') and
+        before and before.headString().startswith('before') and
+        after  and after.headString().startswith('after')
+    ):
+        return top,work,before,after
+    else:
+        return None,None,None,None
+#@nonl
+#@-node:findNodes
+#@+node:putSelectionInHeadline
+def putSelectionInHeadline (c,p,prefix,sel):
+
+    # g.trace(p.headString(),repr(sel))
+
+    if not sel:
+        sel = ('1.0','1.0')
+
+    s = '%s sel=%s,%s' % (prefix,sel[0],sel[1])
+
+    c.setHeadString(p,s)
+
+#@-node:putSelectionInHeadline
+#@-node:@command do-after
+#@+node:@test kill-line
+import leoTest
+leoTest.runEditCommandTest(c,p)
+#@nonl
+#@+node:work
+line 1
+line 3
+#@nonl
+#@-node:work
+#@+node:before sel=2.0,2.6
+line 1
+line 2
+line 3
+#@nonl
+#@-node:before sel=2.0,2.6
+#@+node:after sel=2.0,2.0
+line 1
+line 3
+#@nonl
+#@-node:after sel=2.0,2.0
+#@-node:@test kill-line
+#@-node:Scripts that make unit tests
+#@+node:zodb get/put scripts
+#@+node:@@button zodb-get-tree
+name = c.config.getString('zodb_storage_file')
+db = g.init_zodb(name)
+connection = db.open()
+try:
+    fileName = c.fileName()
+    root = connection.root()
+    v = root.get(fileName)
+    if v:
+        g.es_print('get-tree: %s' % repr(v))
+    else:
+        g.es_print('get-tree failed: %s' % fileName)
+finally:
+    get_transaction().commit()
+    connection.close()
+#@nonl
+#@-node:@@button zodb-get-tree
+#@+node:@@button zodb-get-node
+name = c.config.getString('zodb_storage_file')
+db = g.init_zodb(name)
+connection = db.open()
+try:
+    fileName = c.fileName()
+    root = connection.root()
+    key = 'vnode: %s' % p.headString()
+    v = root.get(key)
+    if v:
+        g.es_print('get-node %s: %s' % (key,repr(v)))
+    else:
+        g.es_print('get-node %s failed.' % key)
+finally:
+    get_transaction().commit()
+    connection.close()
+#@nonl
+#@-node:@@button zodb-get-node
+#@+node:@@button zodb-put-tree
+name = c.config.getString('zodb_storage_file')
+db = g.init_zodb(name)
+connection = db.open()
+try:
+    fileName = c.fileName()
+    root = connection.root()
+    root[fileName] = c.rootPosition().v
+finally:
+    get_transaction().commit()
+    connection.close()
+#@nonl
+#@-node:@@button zodb-put-tree
+#@+node:@@button zodb-put-node
+name = c.config.getString('zodb_storage_file')
+db = g.init_zodb(name)
+connection = db.open()
+try:
+    fileName = c.fileName()
+    root = connection.root()
+    v = p.v.detach()
+    key = 'vnode: %s' % v.headString()
+    g.es_print('put-node %s :%s' % (v.headString(),repr(v)))
+    root[key] = v
+finally:
+    get_transaction().commit()
+    connection.close()
+#@nonl
+#@-node:@@button zodb-put-node
+#@-node:zodb get/put scripts
+#@-node:Important
 #@+node:Others
 #@+node:AutoIt script from e
 @ http://sourceforge.net/forum/message.php?msg_id=3039793

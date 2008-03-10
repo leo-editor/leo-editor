@@ -830,6 +830,12 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20040803072955.59:redrawHelper
     def redrawHelper (self,scroll=True):
 
+        # This can be called at idle time, so there are shutdown issues.
+        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+            return
+        if not hasattr(self,'c'):
+            return
+
         c = self.c ; trace = False
         oldcursor = self.canvas['cursor']
         self.canvas['cursor'] = "watch"
@@ -1304,6 +1310,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Scrolls the canvas so that p is in view."""
 
+        # This can be called at idle time, so there are shutdown issues.
+        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+            return
+        if not hasattr(self,'c'):
+            return
+
         # __pychecker__ = '--no-argsused' # event not used.
         # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
 
@@ -1400,7 +1412,6 @@ class leoTkinterTree (leoFrame.leoTree):
             g.es_exception()
 
     idle_scrollTo = scrollTo # For compatibility.
-    #@nonl
     #@-node:ekr.20040803072955.65:scrollTo
     #@+node:ekr.20040803072955.70:yoffset (tkTree)
     #@+at 

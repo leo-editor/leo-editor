@@ -592,7 +592,7 @@ class baseFileCommands:
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.bodyString() ; tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
-        self.fileBuffer = s ; self.fileIndex = 0
+        self.fileBuffer = s ; self.fileBufferIndex = 0
 
         # Do a trial read.
         self.checking = True
@@ -640,14 +640,7 @@ class baseFileCommands:
         if reassignIndices:
             #@        << reassign tnode indices >>
             #@+node:ekr.20031218072017.1558:<< reassign tnode indices >>
-            #@+at 
-            #@nonl
-            # putLeoOutline calls assignFileIndices (when copying nodes) so 
-            # that vnode can be associated with tnodes.
-            # However, we must _reassign_ the indices here so that no "False 
-            # clones" are created.
-            #@-at
-            #@@c
+            # We must *reassign* indices here so no "False clones" are created.
 
             nodeIndices = g.app.nodeIndices
 
@@ -657,10 +650,7 @@ class baseFileCommands:
                 t = p.v.t
                 if not t.isVisited():
                     t.setVisited()
-                    # New in Leo 4.4.2 b2: use gnx's.  maxTnodeIndex is no longer used.
                     t.fileIndex = nodeIndices.getNewIndex()
-                    # g.trace(t.fileIndex)
-            #@nonl
             #@-node:ekr.20031218072017.1558:<< reassign tnode indices >>
             #@nl
         c.selectPosition(current)
@@ -671,7 +661,7 @@ class baseFileCommands:
 
         self.checking = checking
         self.usingClipboard = True
-        self.fileBuffer = s ; self.fileIndex = 0
+        self.fileBuffer = s ; self.fileBufferIndex = 0
         self.descendentUnknownAttributesDictList = []
         v = None
 
@@ -684,7 +674,8 @@ class baseFileCommands:
             self.tnodesDict = {}
 
             for t in self.c.all_unique_tnodes_iter():
-                if hasattr(t,'fileIndex'):
+                # Bug fix: Leo 4.4.8: all tnodes have a fileIndex field: make sure it is non-None.
+                if hasattr(t,'fileIndex') and t.fileIndex:
                     tref = t.fileIndex
                     if nodeIndices.isGnx(tref):
                         tref = nodeIndices.toString(tref)
@@ -708,7 +699,7 @@ class baseFileCommands:
             if not checking:
                 v = self.finishPaste(reassignIndices)
         finally:
-            self.fileBuffer = None ; self.fileIndex = 0
+            self.fileBuffer = None ; self.fileBufferIndex = 0
             self.usingClipboard = False
             self.tnodesDict = {}
         return v
@@ -826,7 +817,7 @@ class baseFileCommands:
             # Convert any pre-4.1 index to a gnx.
             junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
             if theTime != None:
-                t.setFileIndex(gnx)
+                t.fileIndex = gnx
 
             return t
     #@-node:ekr.20031218072017.2009:newTnode
@@ -863,7 +854,7 @@ class baseFileCommands:
             #@-node:ekr.20070412103240:<< read the entire file into the buffer >>
             #@nl
             theFile.close()
-            self.fileIndex = 0
+            self.fileBufferIndex = 0
         #@    << Set the default directory >>
         #@+node:ekr.20031218072017.2298:<< Set the default directory >>
         #@+at 
@@ -901,7 +892,7 @@ class baseFileCommands:
         c = self.c
         # Read the entire file into the buffer
         self.fileBuffer = theFile.read() ; theFile.close()
-        self.fileIndex = 0
+        self.fileBufferIndex = 0
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
         #@+at 
@@ -996,7 +987,7 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; verbose = False 
+        c = self.c ; verbose = True 
 
         for resultDict in self.descendentUnknownAttributesDictList:
             for gnx in resultDict.keys():
@@ -1063,11 +1054,11 @@ class baseFileCommands:
     def getBool (self):
 
         self.skipWs() # guarantees at least one more character.
-        ch = self.fileBuffer[self.fileIndex]
+        ch = self.fileBuffer[self.fileBufferIndex]
         if ch == '0':
-            self.fileIndex += 1 ; return False
+            self.fileBufferIndex += 1 ; return False
         elif ch == '1':
-            self.fileIndex += 1 ; return True
+            self.fileBufferIndex += 1 ; return True
         else:
             raise BadLeoFile("expecting bool constant")
     #@-node:EKR.20040526204706:getBool
@@ -1075,15 +1066,15 @@ class baseFileCommands:
     def getDouble (self):
 
         self.skipWs()
-        i = self.fileIndex ; buf = self.fileBuffer
+        i = self.fileBufferIndex ; buf = self.fileBuffer
         floatChars = 'eE.+-'
         n = len(buf)
         while i < n and (buf[i].isdigit() or buf[i] in floatChars):
             i += 1
-        if i == self.fileIndex:
+        if i == self.fileBufferIndex:
             raise BadLeoFile("expecting float constant")
-        val = float(buf[self.fileIndex:i])
-        self.fileIndex = i
+        val = float(buf[self.fileBufferIndex:i])
+        self.fileBufferIndex = i
         return val
     #@-node:EKR.20040526204706.1:getDouble
     #@+node:EKR.20040526204706.2:getDqBool
@@ -1098,8 +1089,8 @@ class baseFileCommands:
     def getDqString (self):
 
         self.getDquote()
-        i = self.fileIndex
-        self.fileIndex = j = string.find(self.fileBuffer,'"',i)
+        i = self.fileBufferIndex
+        self.fileBufferIndex = j = string.find(self.fileBuffer,'"',i)
         if j == -1: raise BadLeoFile("unterminated double quoted string")
         s = self.fileBuffer[i:j]
         self.getDquote()
@@ -1114,8 +1105,8 @@ class baseFileCommands:
     def getEscapedString (self):
 
         # The next '<' begins the ending tag.
-        i = self.fileIndex
-        self.fileIndex = j = string.find(self.fileBuffer,'<',i)
+        i = self.fileBufferIndex
+        self.fileBufferIndex = j = string.find(self.fileBuffer,'<',i)
         if j == -1:
             print self.fileBuffer[i:]
             raise BadLeoFile("unterminated escaped string")
@@ -1134,16 +1125,16 @@ class baseFileCommands:
     def getLong (self):
 
         self.skipWs() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         if self.fileBuffer[i] == u'-':
             i += 1
         n = len(self.fileBuffer)
         while i < n and self.fileBuffer[i].isdigit():
             i += 1
-        if i == self.fileIndex:
+        if i == self.fileBufferIndex:
             raise BadLeoFile("expecting int constant")
-        val = int(self.fileBuffer[self.fileIndex:i])
-        self.fileIndex = i
+        val = int(self.fileBuffer[self.fileBufferIndex:i])
+        self.fileBufferIndex = i
         return val
     #@-node:EKR.20040526204706.6:getLong
     #@+node:EKR.20040526204706.7:getOpenTag
@@ -1170,12 +1161,12 @@ class baseFileCommands:
         else:
             # The tag need not be followed by "/>"
             if self.matchTag(tag):
-                old_index = self.fileIndex
+                old_index = self.fileBufferIndex
                 self.skipWs()
                 if self.matchTag("/>"):
                     return True
                 else:
-                    self.fileIndex = old_index
+                    self.fileBufferIndex = old_index
                     return False
             else:
                 print "getOpenTag(", tag, ") failed:"
@@ -1186,10 +1177,10 @@ class baseFileCommands:
 
         buf = self.fileBuffer
         blen = len(buf) ; tlen = len(tag)
-        i = j = self.fileIndex
+        i = j = self.fileBufferIndex
         while i < blen:
             if tag == buf[i:i+tlen]:
-                self.fileIndex = i
+                self.fileBufferIndex = i
                 return buf[j:i]
             else: i += 1
 
@@ -1218,7 +1209,7 @@ class baseFileCommands:
             print "getUnknownTag failed"
             raise BadLeoFile("unknown tag not followed by '='")
 
-        self.fileIndex += 1
+        self.fileBufferIndex += 1
         val = self.getDqString()
         # g.trace(tag,val)
         return tag,val
@@ -1227,30 +1218,30 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1245:match routines
     def matchChar (self,ch):
         self.skipWs() # guarantees at least one more character.
-        if ch == self.fileBuffer[self.fileIndex]:
-            self.fileIndex += 1 ; return True
+        if ch == self.fileBuffer[self.fileBufferIndex]:
+            self.fileBufferIndex += 1 ; return True
         else: return False
 
     # Warning: does not check for end-of-word,
     # so caller must match prefixes first.
     def matchTag (self,tag):
         self.skipWsAndNl() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         if tag == self.fileBuffer[i:i+len(tag)]:
-            self.fileIndex += len(tag)
+            self.fileBufferIndex += len(tag)
             return True
         else:
             return False
 
     def matchTagWordIgnoringCase (self,tag):
         self.skipWsAndNl() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         tag = string.lower(tag)
         j = g.skip_c_id(self.fileBuffer,i)
         word = self.fileBuffer[i:j]
         word = string.lower(word)
         if tag == word:
-            self.fileIndex += len(tag)
+            self.fileBufferIndex += len(tag)
             return True
         else:
             return False
@@ -1258,27 +1249,27 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3027:skipWs
     def skipWs (self):
 
-        while self.fileIndex < len(self.fileBuffer):
-            ch = self.fileBuffer[self.fileIndex]
+        while self.fileBufferIndex < len(self.fileBuffer):
+            ch = self.fileBuffer[self.fileBufferIndex]
             if ch == ' ' or ch == '\t':
-                self.fileIndex += 1
+                self.fileBufferIndex += 1
             else: break
 
         # The caller is entitled to get the next character.
-        if  self.fileIndex >= len(self.fileBuffer):
+        if  self.fileBufferIndex >= len(self.fileBuffer):
             raise BadLeoFile("")
     #@-node:ekr.20031218072017.3027:skipWs
     #@+node:ekr.20031218072017.3028:skipWsAndNl
     def skipWsAndNl (self):
 
-        while self.fileIndex < len(self.fileBuffer):
-            ch = self.fileBuffer[self.fileIndex]
+        while self.fileBufferIndex < len(self.fileBuffer):
+            ch = self.fileBuffer[self.fileBufferIndex]
             if ch == ' ' or ch == '\t' or ch == '\r' or ch == '\n':
-                self.fileIndex += 1
+                self.fileBufferIndex += 1
             else: break
 
         # The caller is entitled to get the next character.
-        if  self.fileIndex >= len(self.fileBuffer):
+        if  self.fileBufferIndex >= len(self.fileBuffer):
             raise BadLeoFile("")
     #@-node:ekr.20031218072017.3028:skipWsAndNl
     #@+node:ekr.20031218072017.3031:xmlUnescape
@@ -2370,22 +2361,7 @@ class baseFileCommands:
 
         """Assign a file index to all tnodes"""
 
-        c = self.c ; nodeIndices = g.app.nodeIndices
-
-        nodeIndices.setTimestamp() # This call is fairly expensive.
-
-        # Assign missing gnx's, converting ints to gnx's.
-        # Always assign an (immutable) index, even if the tnode is empty.
-        for p in c.allNodes_iter():
-            try: # Will fail for None or any pre 4.1 file index.
-                junk,junk,junk = p.v.t.fileIndex
-            except TypeError:
-                # Don't convert to string until the actual write.
-                p.v.t.fileIndex = nodeIndices.getNewIndex()
-
-        if 0: # debugging:
-            for p in c.allNodes_iter():
-                g.trace(p.v.t.fileIndex)
+        pass # No longer needed: we assign indices as needed.
 
     # Indices are now immutable, so there is no longer any difference between these two routines.
     compactFileIndices = assignFileIndices
@@ -2458,7 +2434,6 @@ class baseFileCommands:
         self.putTnodes()
         #start = g.printDiffTime("tnodes ",start)
         self.putPostlog()
-    #@nonl
     #@+node:ekr.20031218072017.3035:putFindSettings
     def putFindSettings (self):
 
@@ -2572,12 +2547,16 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1577:putTnode
     def putTnode (self,t):
 
+        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+        if not t.fileIndex:
+            g.trace('can not happen: no index for tnode',t)
+            t.fileIndex = g.app.nodeIndices.getNewIndex()
+
         # New in Leo 4.4.2 b2: call put just once.
         gnx = g.app.nodeIndices.toString(t.fileIndex)
         ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
         body = t.bodyString and xml.sax.saxutils.escape(t.bodyString) or ''
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-    #@nonl
     #@-node:ekr.20031218072017.1577:putTnode
     #@+node:ekr.20031218072017.1575:putTnodes
     def putTnodes (self):
@@ -2596,20 +2575,22 @@ class baseFileCommands:
 
         # Populate tnodes
         tnodes = {}
-
+        nodeIndices = g.app.nodeIndices
         for p in theIter:
-            index = p.v.t.fileIndex
-            assert(index)
-            tnodes[index] = p.v.t
+            # New in Leo 4.4.8: assign file indices here.
+            if not p.v.t.fileIndex:
+                p.v.t.fileIndex = nodeIndices.getNewIndex()
+            tnodes[p.v.t.fileIndex] = p.v.t
 
         # Put all tnodes in index order.
         keys = tnodes.keys() ; keys.sort()
         for index in keys:
             # g.trace(index)
             t = tnodes.get(index)
-            assert(t)
+            if not t:
+                g.trace('can not happen: no tnode for',index)
             # Write only those tnodes whose vnodes were written.
-            if t.isWriteBit(): # 5/3/04
+            if t.isWriteBit():
                 self.putTnode(t)
         #@nonl
         #@-node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
@@ -2709,16 +2690,12 @@ class baseFileCommands:
 
         #@    << Set gnx = tnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-        # New in Leo 4.4.3
+        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not v.t.fileIndex:
-            if 0: # This is not necessarily an error.
-                # c.dumpOutline() # Can be called inside pdb.
-                # Print the @chapters tree
-                g.trace('*** missing t.fileIndex','v',repr(v))
-                c.chapterController.printChaptersTree()
             v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
         gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
         if forceWrite or self.usingClipboard:
             v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
         #@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
@@ -2816,15 +2793,17 @@ class baseFileCommands:
         # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
         nodeIndices = g.app.nodeIndices
         tnodeList = v.t.tnodeList
+
         if tnodeList:
             # g.trace("%4d" % len(tnodeList),v)
             for t in tnodeList:
                 try: # Will fail for None or any pre 4.1 file index.
                     junk,junk,junk = t.fileIndex
                 except Exception:
-                    g.trace("assigning gnx for ",v,t)
                     gnx = nodeIndices.getNewIndex()
-                    v.t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                    # Apparent bug fix: Leo 4.4.8, 2008-3-8: use t, not v.t here!
+                    # t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                    t.fileIndex = gnx
             s = ','.join([nodeIndices.toString(t.fileIndex) for t in tnodeList])
             return ' tnodeList="%s"' % (s)
         else:
@@ -2836,49 +2815,30 @@ class baseFileCommands:
 
         nodeIndices = g.app.nodeIndices
 
-        # Create a list of all tnodes whose vnodes are marked or expanded
-        if 1: # New in Leo 4.4.2 b2.
-            # Put each tnode in the list only once.
-            # This should have been done long ago.
-            marks = [] ; expanded = []
-            for p in p.subtree_iter():
-                t = p.v.t
-                if p.isMarked() and p.v.t not in marks:
-                    marks.append(t)
-                if p.hasChildren() and p.isExpanded() and t not in expanded:
-                    expanded.append(t)
+        # Create lists of all tnodes whose vnodes are marked or expanded.
+        marks = [] ; expanded = []
+        for p in p.subtree_iter():
+            t = p.v.t
+            if p.isMarked() and p.v.t not in marks:
+                marks.append(t)
+            if p.hasChildren() and p.isExpanded() and t not in expanded:
+                expanded.append(t)
 
-            result = []
-            for theList,tag in ((marks,"marks"),(expanded,"expanded")):
-                if theList:
-                    sList = []
-                    for t in theList:
-                        gnx = t.fileIndex
-                        sList.append("%s," % nodeIndices.toString(gnx))
-                    s = string.join(sList,'')
-                    # g.trace(tag,[str(p.headString()) for p in theList])
-                    result.append('\n%s="%s"' % (tag,s))
-        else:
-            marks = [] ; expanded = []
-            for p in p.subtree_iter():
-                if p.isMarked() and not p in marks:
-                    marks.append(p.copy())
-                if p.hasChildren() and p.isExpanded() and not p in expanded:
-                    expanded.append(p.copy())
-
-            result = []
-            for theList,tag in ((marks,"marks"),(expanded,"expanded")):
-                if theList:
-                    sList = []
-                    for p in theList:
-                        gnx = p.v.t.fileIndex
-                        sList.append("%s," % nodeIndices.toString(gnx))
-                    s = string.join(sList,'')
-                    # g.trace(tag,[str(p.headString()) for p in theList])
-                    result.append('\n%s="%s"' % (tag,s))
+        result = []
+        for theList,tag in ((marks,"marks"),(expanded,"expanded")):
+            if theList:
+                sList = []
+                for t in theList:
+                    # New in Leo 4.4.8.  Assign t.fileIndex here as needed.
+                    if not t.fileIndex:
+                        t.fileIndex = g.app.nodeIndices.getNewIndex()
+                    gnx = t.fileIndex
+                    sList.append("%s," % nodeIndices.toString(gnx))
+                s = string.join(sList,'')
+                # g.trace(tag,[str(p.headString()) for p in theList])
+                result.append('\n%s="%s"' % (tag,s))
 
         return ''.join(result)
-    #@nonl
     #@-node:ekr.20040701065235.2:putDescendentAttributes
     #@+node:EKR.20040627113418:putDescendentUnknownAttributes
     def putDescendentUnknownAttributes (self,p):
@@ -2930,6 +2890,9 @@ class baseFileCommands:
         resultDict = {}
         nodeIndices = g.app.nodeIndices
         for t,d in data:
+            # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+            if not t.fileIndex:
+                t.fileIndex = g.app.nodeIndices.getNewIndex()
             gnx = nodeIndices.toString(t.fileIndex)
             resultDict[gnx]=d
 
@@ -2966,12 +2929,13 @@ class baseFileCommands:
 
         self.outputFile = g.fileLikeObject()
         self.usingClipboard = True
-        self.assignFileIndices() # Must do this for 3.x code.
+
         self.putProlog()
         self.putClipboardHeader()
         self.putVnodes()
         self.putTnodes()
         self.putPostlog()
+
         s = self.outputFile.getvalue()
         self.outputFile = None
         self.usingClipboard = False
@@ -3033,9 +2997,9 @@ class baseFileCommands:
         c = self.c
         self.putCount = 0
         self.toString = toString
-        self.assignFileIndices()
         theActualFile = None
         toZip = False
+
         if not outlineOnlyFlag or toOPML:
             # Update .leoRecentFiles.txt if possible.
             g.app.config.writeRecentFilesFile(c)
@@ -3043,6 +3007,7 @@ class baseFileCommands:
             #@+node:ekr.20040324080359:<< write all @file nodes >>
             try:
                 # Write all @file nodes and set orphan bits.
+                # An important optimization: we have already assign the file indices.
                 c.atFileCommands.writeAll()
             except Exception:
                 g.es_error("exception writing derived files")
@@ -3109,6 +3074,7 @@ class baseFileCommands:
             if toOPML:
                 self.putToOPML()
             else:
+                # An important optimization: we have already assign the file indices.
                 self.putLeoFile()
             # t2 = time.clock()
             s = self.outputFile.getvalue()
@@ -3157,7 +3123,6 @@ class baseFileCommands:
             return False
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@nonl
     #@+node:ekr.20070412095520:writeZipFile
     def writeZipFile (self,s):
 
@@ -3184,9 +3149,8 @@ class baseFileCommands:
 
         c = self.c
 
-        self.assignFileIndices()
         changedFiles = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
-        assert(changedFiles != None)
+
         if changedFiles:
             g.es("auto-saving outline",color="blue")
             c.save() # Must be done to set or clear tnodeList.
@@ -3198,8 +3162,8 @@ class baseFileCommands:
 
         c = self.c
 
-        self.assignFileIndices() # 4/3/04
         changedFiles = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+
         if changedFiles:
             g.es("auto-saving outline",color="blue")
             c.save() # Must be done to set or clear tnodeList.
@@ -3209,13 +3173,10 @@ class baseFileCommands:
 
         '''Write all missing @file nodes.'''
 
-        c = self.c ; v = c.currentVnode()
+        c = self.c ; at = c.atFileCommands ; p = c.currentPosition()
 
-        if v:
-            at = c.atFileCommands
-            self.assignFileIndices() # 4/3/04
-            changedFiles = at.writeMissing(v)
-            assert(changedFiles != None)
+        if p:
+            changedFiles = at.writeMissing(p)
             if changedFiles:
                 g.es("auto-saving outline",color="blue")
                 c.save() # Must be done to set or clear tnodeList.

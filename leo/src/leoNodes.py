@@ -93,9 +93,6 @@ class tnode (baseTnode):
         def __hash__(self):
 
             return hash(g.app.nodeIndices.toString(self.fileIndex))
-
-            # return sum([ord(ch) for ch in g.app.nodeIndices.toString(self.fileIndex)])
-    #@nonl
     #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
     #@+node:ekr.20031218072017.3325:Getters
     #@+node:EKR.20040625161602:getBody
@@ -932,8 +929,10 @@ class nodeIndices (object):
 
         self.userId = id
         self.defaultId = id
-        self.lastIndex = None
-        self.timeString = None
+
+        # A Major simplification: Only assign the timestamp once.
+        self.setTimeStamp()
+        self.lastIndex = 0
     #@-node:ekr.20031218072017.1992:nodeIndices.__init__
     #@+node:ekr.20031218072017.1993:areEqual
     def areEqual (self,gnx1,gnx2):
@@ -960,25 +959,10 @@ class nodeIndices (object):
     #@+node:ekr.20031218072017.1995:getNewIndex
     def getNewIndex (self):
 
-        """Create a new gnx using self.timeString and self.lastIndex"""
+        '''Create a new gnx.'''
 
-        theId = self.userId # Always use the user's id for new ids!
-        if not self.timeString:
-            self.setTimestamp()
-        t = self.timeString
-        assert(t)
-        n = None
-
-        # Set n if id and time match the previous index.
-        last = self.lastIndex
-        if last:
-            lastId,lastTime,lastN = last
-            if theId==lastId and t==lastTime:
-                if lastN == None: n = 1
-                else: n = lastN + 1
-
-        d = (theId,t,n)
-        self.lastIndex = d
+        self.lastIndex += 1
+        d = (self.userId,self.timeString,self.lastIndex)
         # g.trace(d)
         return d
     #@-node:ekr.20031218072017.1995:getNewIndex
@@ -1025,23 +1009,34 @@ class nodeIndices (object):
         self.timeString = time.strftime(
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
+
+        # g.trace(self.timeString,self.lastIndex,g.callers(4))
+
+    setTimeStamp = setTimestamp
     #@-node:ekr.20031218072017.1998:setTimeStamp
     #@+node:ekr.20031218072017.1999:toString
-    def toString (self,index,removeDefaultId=False):
+    def toString (self,index):
 
         """Convert a gnx (a tuple) to its string representation"""
 
         try:
             theId,t,n = index
-            if removeDefaultId and theId == self.defaultId:
-                theId = ""
-            if not n: # None or ""
+            if n in (None,0,'',):
                 return "%s.%s" % (theId,t)
             else:
                 return "%s.%s.%d" % (theId,t,n)
-        except TypeError:
-            g.trace('unusual gnx',repr(index))
-            return repr(index)
+        except Exception:
+            if not g.app.unitTesting:
+                g.trace('unusual gnx',repr(index),g.callers()) 
+            try:
+                theId,t,n = self.getNewIndex()
+                if n in (None,0,'',):
+                    return "%s.%s" % (theId,t)
+                else:
+                    return "%s.%s.%d" % (theId,t,n)
+            except Exception:
+                g.trace('double exception: returning original index')
+                return repr(index)
     #@nonl
     #@-node:ekr.20031218072017.1999:toString
     #@-others
@@ -2591,7 +2586,7 @@ class basePosition (object):
     #@+node:ekr.20031218072017.939:p.moveToThreadNext
     def moveToThreadNext (self):
 
-        """Move a position to the next a position in threading order."""
+        """Move a position to threadNext position."""
 
         p = self
 
@@ -2965,8 +2960,6 @@ class position (basePosition):
     pass
 #@nonl
 #@-node:ekr.20031218072017.889:class position
-#@+node:ekr.20070630070045:Unit tests
-#@-node:ekr.20070630070045:Unit tests
 #@-others
 #@nonl
 #@-node:ekr.20031218072017.3320:@thin leoNodes.py

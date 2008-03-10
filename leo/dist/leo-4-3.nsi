@@ -18,7 +18,7 @@
 ;@+node:ekr.20050118092706.1:<< defines >>
 ;@<< 4.3 nsi installer version >>
 ;@+node:ekr.20050118124408:<< 4.3 nsi installer version >>
-!define PRODUCT_VERSION "4.4.7-beta-1"
+!define PRODUCT_VERSION "4.4.8-beta-1"
 ;@nonl
 ;@-node:ekr.20050118124408:<< 4.3 nsi installer version >>
 ;@nl
@@ -73,7 +73,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-7-beta-1.exe"
+OutFile "LeoSetup-4-4-8-beta-1.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -225,11 +225,11 @@ Section "Leo" SEC01
   ;@  << install top-level files >>
   ;@+node:ekr.20050118103207.1:<< install top-level files >>
   File "..\__init__.py"
-  File "..\install"
-  File "..\manifest.in"
-  File "..\MANIFEST"
-  File "..\setup.py"
-  File "..\uninstall"
+  File "..\..\install"
+  File "..\..\manifest.in"
+  File "..\..\MANIFEST"
+  File "..\..\setup.py"
+  File "..\..\uninstall"
   ;@nonl
   ;@-node:ekr.20050118103207.1:<< install top-level files >>
   ;@nl
@@ -528,15 +528,10 @@ SectionEnd
 ;@nl
 ;@<< Uninstall-related Settings >>
 ;@+node:ekr.20050118092706.18:<< Uninstall-related Settings >>
-; from Leo installer Version 1.0
-;
 ; UninstallText "This will uninstall Leo from your system"
-; UninstallCaption "Uninstall Leo"
-; UninstallIcon c:\prog\tigris-cvs\leo\Icons\uninst.ico
 
-; UninstallText "This will uninstall Leo from your system"
 UninstallCaption "Uninstall Leo"
-UninstallIcon c:\prog\tigris-cvs\leo\Icons\uninst.ico
+UninstallIcon c:\leo-editor\trunk\leo\Icons\uninst.ico
 ;@nonl
 ;@-node:ekr.20050118092706.18:<< Uninstall-related Settings >>
 ;@nl
@@ -716,7 +711,7 @@ Section Uninstall
   Delete "$INSTDIR\src\oldLeoProjects.leo"
   Delete "$INSTDIR\src\unitTests.txt"
 
-  ; Delete "$INSTDIR\src\__init__.p*"
+  Delete "$INSTDIR\src\__init__.p*"
 
   Delete "$INSTDIR\src\leo*.p*"
   ;@nonl
@@ -745,7 +740,9 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
 
   ; Should match installed files.
-  Delete "$INSTDIR\__init__.py"
+  ; Delete "$INSTDIR\__init__.py"
+
+  ; Done later...
   Delete "$INSTDIR\install"
   Delete "$INSTDIR\manifest.in"
   Delete "$INSTDIR\MANIFEST"
@@ -798,7 +795,9 @@ Section Uninstall
   RMDir "$INSTDIR\test\unittest"
   RMDir "$INSTDIR\test"
 
-  ; Delete top-level folder.
+  ; Delete top-level folder and its contents
+  Delete "$INSTDIR\*.*"
+
   RMDir "$INSTDIR"
   ;@nonl
   ;@-node:ekr.20050119082907.1:<< delete folders >>

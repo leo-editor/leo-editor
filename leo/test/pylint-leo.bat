@@ -11,7 +11,7 @@ cd c:\leo-editor\trunk\leo
 
 REM tests that fail with dangerous settings enabled...
 
-goto passed
+REM goto passed
 
 echo leoEditCommands.py  Dangerous: E0602,E1101
 call pylint.bat src\leoEditCommands.py  --disable-msg=W0221 --rcfile=test\pylint-leo-rc.txt

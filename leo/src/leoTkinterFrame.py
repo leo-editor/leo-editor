@@ -29,7 +29,6 @@ tkColorChooser = g.importExtension('tkColorChooser',pluginName=None,verbose=Fals
 
 # The following imports _are_ used.
 # __pychecker__ = '--no-import'
-import threading
 import time
 #@-node:ekr.20041221070525:<< imports >>
 #@nl
@@ -297,7 +296,8 @@ class leoTkinterBody (leoFrame.leoBody):
     #@+node:ekr.20031218072017.4005:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
 
-        self.bodyCtrl.after_idle(function,*args,**keys)
+        if not g.app.unitTesting:
+            self.bodyCtrl.after_idle(function,*args,**keys)
     #@-node:ekr.20031218072017.4005:Idle time...
     #@+node:ekr.20031218072017.4017:Menus
     def bind (self,*args,**keys):
@@ -624,51 +624,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         # Handle mouse wheel in the outline pane.
         if sys.platform == "linux2": # This crashes tcl83.dll
             canvas.bind("<MouseWheel>", frame.OnMouseWheel)
-        if 0:
-            #@        << do scrolling by hand in a separate thread >>
-            #@+node:ekr.20040709081208:<< do scrolling by hand in a separate thread >>
-            # New in 4.3: replaced global way with scrollWay ivar.
-            ev = threading.Event()
-
-            def run(self=self,canvas=canvas,ev=ev):
-
-                while 1:
-                    ev.wait()
-                    if self.scrollWay =='Down': canvas.yview("scroll", 1,"units")
-                    else:                       canvas.yview("scroll",-1,"units")
-                    time.sleep(.1)
-
-            t = threading.Thread(target = run)
-            t.setDaemon(True)
-            t.start()
-
-            def scrollUp(event): scrollUpOrDown(event,'Down')
-            def scrollDn(event): scrollUpOrDown(event,'Up')
-
-            def scrollUpOrDown(event,theWay):
-                if event.widget!=canvas: return
-                if 0: # This seems to interfere with scrolling.
-                    if canvas.find_overlapping(event.x,event.y,event.x,event.y): return
-                ev.set()
-                self.scrollWay = theWay
-
-            def off(event,ev=ev,canvas=canvas):
-                if event.widget!=canvas: return
-                ev.clear()
-
-            if 1: # Use shift-click
-                # Shift-button-1 scrolls up, Shift-button-2 scrolls down
-                canvas.bind_all('<Shift Button-3>',scrollDn)
-                canvas.bind_all('<Shift Button-1>',scrollUp)
-                canvas.bind_all('<Shift ButtonRelease-1>',off)
-                canvas.bind_all('<Shift ButtonRelease-3>',off)
-            else: # Use plain click.
-                canvas.bind_all( '<Button-3>',scrollDn)
-                canvas.bind_all( '<Button-1>',scrollUp)
-                canvas.bind_all( '<ButtonRelease-1>',off)
-                canvas.bind_all( '<ButtonRelease-3>',off)
-            #@-node:ekr.20040709081208:<< do scrolling by hand in a separate thread >>
-            #@nl
 
         # g.print_bindings("canvas",canvas)
         return canvas
@@ -944,17 +899,25 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20031218072017.1974:destroySelf (tkFrame)
     def destroySelf (self):
 
+        # g.trace(self)
+
         # Remember these: we are about to destroy all of our ivars!
         top = self.top 
         c = self.c
 
         # Indicate that the commander is no longer valid.
-        c.exists = False 
+        c.exists = False
+
+        # New in Leo 4.4.8: Finish all window tasks before killing the window.
+        top.update()
 
         # g.trace(self)
 
         # Important: this destroys all the objects of the commander too.
         self.destroyAllObjects()
+
+        # New in Leo 4.4.8: Finish all window tasks before killing the window.
+        top.update()
 
         c.exists = False # Make sure this one ivar has not been destroyed.
 

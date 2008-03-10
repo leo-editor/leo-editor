@@ -1,6 +1,6 @@
 #!/bin/sh
 #@+leo-ver=4-thin
-#@+node:EKR.20040519082027.33:@file-thin ../install
+#@+node:EKR.20040519082027.33:@file-thin ../../install
 #@@first
 
 # This script installs Leo on *nix.
@@ -71,5 +71,5 @@ echo "type 'leo filename.leo' to use it."
 echo ""
 
 exit 0;
-#@-node:EKR.20040519082027.33:@file-thin ../install
+#@-node:EKR.20040519082027.33:@file-thin ../../install
 #@-leo

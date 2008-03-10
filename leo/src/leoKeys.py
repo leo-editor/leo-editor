@@ -376,7 +376,7 @@ class autoCompleterClass:
         '''Show the autocompleter status on the status line.'''
 
         k = self.k
-        s = 'autocompleter' % g.choose(k.enable_autocompleter,'On','Off')
+        s = 'autocompleter %s' % g.choose(k.enable_autocompleter,'On','Off')
         g.es(s,color='red')
 
     def showCalltipsStatus (self):
@@ -1061,218 +1061,220 @@ class autoCompleterClass:
             self.abort()
     #@-node:ekr.20061031131434.46:start
     #@-node:ekr.20061031131434.16:Helpers
-    #@+node:ekr.20061031131434.47:Scanning
-    # Not used at present.
-    #@+node:ekr.20061031131434.48:initialScan
-    # Don't call this finishCreate: the startup logic would call it too soon.
+    #@+node:ekr.20061031131434.47:Scanning (not used)
+    if 0: # Not used at present.
+        #@    @+others
+        #@+node:ekr.20061031131434.48:initialScan
+        # Don't call this finishCreate: the startup logic would call it too soon.
 
-    def initialScan (self):
+        def initialScan (self):
 
-        g.trace(g.callers())
+            g.trace(g.callers())
 
-        self.scan(thread=True)
-    #@-node:ekr.20061031131434.48:initialScan
-    #@+node:ekr.20061031131434.49:scan
-    def scan (self,event=None,verbose=True,thread=True):
+            self.scan(thread=True)
+        #@-node:ekr.20061031131434.48:initialScan
+        #@+node:ekr.20061031131434.49:scan
+        def scan (self,event=None,verbose=True,thread=True):
 
-        # __pychecker__ = '--no-argsused' # thread arg not used at present.
+            # __pychecker__ = '--no-argsused' # thread arg not used at present.
 
-        c = self.c
-        if not c or not c.exists or c.frame.isNullFrame: return
-        if g.app.unitTesting: return
+            c = self.c
+            if not c or not c.exists or c.frame.isNullFrame: return
+            if g.app.unitTesting: return
 
-        # g.trace('autocompleter')
+            # g.trace('autocompleter')
 
-        if 0: # thread:
-            # Use a thread to do the initial scan so as not to interfere with the user.            
-            def scan ():
-                #g.es("This is for testing if g.es blocks in a thread", color = 'pink' )
-                # During unit testing c gets destroyed before the scan finishes.
-                if not g.app.unitTesting:
-                    self.scanOutline(verbose=True)
+            if 0: # thread:
+                # Use a thread to do the initial scan so as not to interfere with the user.            
+                def scan ():
+                    #g.es("This is for testing if g.es blocks in a thread", color = 'pink' )
+                    # During unit testing c gets destroyed before the scan finishes.
+                    if not g.app.unitTesting:
+                        self.scanOutline(verbose=True)
 
-            t = threading.Thread(target=scan)
-            t.setDaemon(True)
-            t.start()
-        else:
-            self.scanOutline(verbose=verbose)
-    #@-node:ekr.20061031131434.49:scan
-    #@+node:ekr.20061031131434.50:definePatterns
-    def definePatterns (self):
-
-        self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
-        self.end = r'\w+\s*\([^)]*\)' # word (\w) ws ( any ) (can cross lines)
-
-        # Define re patterns for various languages.
-        # These patterns match method/function definitions.
-        self.pats = {}
-        self.pats ['python'] = re.compile(r'def\s+%s' % self.end)  # def ws word ( any ) # Can cross line boundaries.
-        self.pats ['java'] = re.compile(
-            r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
-                self.space,self.space,self.end))
-        self.pats ['perl'] = re.compile(r'sub\s+%s' % self.end)
-        self.pats ['c++'] = re.compile(r'((virtual\s+)?\w+%s%s)' % (self.space,self.end))
-        self.pats ['c'] = re.compile(r'\w+%s%s' % (self.space,self.end))
-
-        # Define self.okchars for getCleaString.
-        okchars = {}
-        for z in string.ascii_letters:
-            okchars [z] = z
-        okchars ['_'] = '_'
-        self.okchars = okchars 
-    #@nonl
-    #@-node:ekr.20061031131434.50:definePatterns
-    #@+node:ekr.20061031131434.51:scanOutline
-    def scanOutline (self,verbose=True):
-
-        '''Traverse an outline and build the autocommander database.'''
-
-        if verbose: g.es_print('scanning for auto-completer...')
-
-        c = self.c ; k = self.k ; count = 0
-        for p in c.allNodes_iter():
-            if verbose:
-                count += 1 ;
-                if (count % 200) == 0: g.es('','.',newline=False)
-            language = g.scanForAtLanguage(c,p)
-            # g.trace('language',language,p.headString())
-            s = p.bodyString()
-            if k.enable_autocompleter:
-                self.scanForAutoCompleter(s)
-            if k.enable_calltips:
-                self.scanForCallTip(s,language)
-
-        if 0:
-            g.trace('watchwords...\n\n')
-            keys = self.watchwords.keys() ; keys.sort()
-            for key in keys:
-                aList = self.watchwords.get(key)
-                g.trace('%s:\n\n' % (key), g.listToString(aList))
-        if 0:
-            g.trace('calltips...\n\n')
-            keys = self.calltips.keys() ; keys.sort()
-            for key in keys:
-                d = self.calltips.get(key)
-                if d:
-                    g.trace('%s:\n\n' % (key), g.dictToString(d))
-
-        if verbose:        
-            g.es_print('\nauto-completer scan complete',color='blue')
-    #@-node:ekr.20061031131434.51:scanOutline
-    #@+node:ekr.20061031131434.52:scanForCallTip
-    def scanForCallTip (self,s,language):
-
-        '''this function scans text for calltip info'''
-
-        d = self.calltips.get(language,{})
-        pat = self.pats.get(language or 'python')
-
-        # Set results to a list of all the function/method defintions in s.
-        results = pat and pat.findall(s) or []
-
-        for z in results:
-            if isinstance(z,tuple): z = z [0]
-            pieces2 = z.split('(')
-            # g.trace(pieces2)
-            pieces2 [0] = pieces2 [0].split() [-1]
-            a, junk = pieces2 [0], pieces2 [1]
-            aList = d.get(a,[])
-            if str(z) not in aList:
-                aList.append(str(z))
-                d [a] = aList
-
-        self.calltips [language] = d
-    #@-node:ekr.20061031131434.52:scanForCallTip
-    #@+node:ekr.20061031131434.53:scanForAutoCompleter
-    def scanForAutoCompleter (self,s):
-
-        '''This function scans text for the autocompleter database.'''
-
-        aList = [] ; t1 = s.split('.')
-
-        if 1: # Slightly faster.
-            t1 = s.split('.') ; 
-            i = 0 ; n = len(t1)-1
-            while i < n:
-                self.makeAutocompletionList(t1[i],t1[i+1],aList)
-                i += 1
-        else:
-            reduce(lambda a,b: self.makeAutocompletionList(a,b,aList),t1)
-
-        if aList:
-            for a, b in aList:
-                z = self.watchwords.get(a,[])
-                if str(b) not in z:
-                    z.append(str(b))
-                    self.watchwords [a] = z
-    #@+node:ekr.20061031131434.54:makeAutocompletionList
-    def makeAutocompletionList (self,a,b,glist):
-
-        '''We have seen a.b, where a and b are arbitrary strings.
-        Append (a1.b1) to glist.
-        To compute a1, scan backwards in a until finding whitespace.
-        To compute b1, scan forwards in b until finding a char not in okchars.
-        '''
-
-        if 1: # Do everything inline.  It's a few percent faster.
-
-            # Compute reverseFindWhitespace inline.
-            i = len(a) -1
-            while i >= 0:
-                if a[i].isspace() or a [i] == '.':
-                    a1 = a [i+1:] ; break
-                i -= 1
+                t = threading.Thread(target=scan)
+                t.setDaemon(True)
+                t.start()
             else:
-                a1 = a
+                self.scanOutline(verbose=verbose)
+        #@-node:ekr.20061031131434.49:scan
+        #@+node:ekr.20061031131434.50:definePatterns
+        def definePatterns (self):
 
-            # Compute getCleanString inline.
-            i = 0
-            for ch in b:
-                if ch not in self.okchars:
-                    b1 = b[:i] ; break
-                i += 1
+            self.space = r'[ \t\r\f\v ]+' # one or more whitespace characters.
+            self.end = r'\w+\s*\([^)]*\)' # word (\w) ws ( any ) (can cross lines)
+
+            # Define re patterns for various languages.
+            # These patterns match method/function definitions.
+            self.pats = {}
+            self.pats ['python'] = re.compile(r'def\s+%s' % self.end)  # def ws word ( any ) # Can cross line boundaries.
+            self.pats ['java'] = re.compile(
+                r'((public\s+|private\s+|protected\s+)?(static%s|\w+%s){1,2}%s)' % (
+                    self.space,self.space,self.end))
+            self.pats ['perl'] = re.compile(r'sub\s+%s' % self.end)
+            self.pats ['c++'] = re.compile(r'((virtual\s+)?\w+%s%s)' % (self.space,self.end))
+            self.pats ['c'] = re.compile(r'\w+%s%s' % (self.space,self.end))
+
+            # Define self.okchars for getCleaString.
+            okchars = {}
+            for z in string.ascii_letters:
+                okchars [z] = z
+            okchars ['_'] = '_'
+            self.okchars = okchars 
+        #@nonl
+        #@-node:ekr.20061031131434.50:definePatterns
+        #@+node:ekr.20061031131434.51:scanOutline
+        def scanOutline (self,verbose=True):
+
+            '''Traverse an outline and build the autocommander database.'''
+
+            if verbose: g.es_print('scanning for auto-completer...')
+
+            c = self.c ; k = self.k ; count = 0
+            for p in c.allNodes_iter():
+                if verbose:
+                    count += 1 ;
+                    if (count % 200) == 0: g.es('','.',newline=False)
+                language = g.scanForAtLanguage(c,p)
+                # g.trace('language',language,p.headString())
+                s = p.bodyString()
+                if k.enable_autocompleter:
+                    self.scanForAutoCompleter(s)
+                if k.enable_calltips:
+                    self.scanForCallTip(s,language)
+
+            if 0:
+                g.trace('watchwords...\n\n')
+                keys = self.watchwords.keys() ; keys.sort()
+                for key in keys:
+                    aList = self.watchwords.get(key)
+                    g.trace('%s:\n\n' % (key), g.listToString(aList))
+            if 0:
+                g.trace('calltips...\n\n')
+                keys = self.calltips.keys() ; keys.sort()
+                for key in keys:
+                    d = self.calltips.get(key)
+                    if d:
+                        g.trace('%s:\n\n' % (key), g.dictToString(d))
+
+            if verbose:        
+                g.es_print('\nauto-completer scan complete',color='blue')
+        #@-node:ekr.20061031131434.51:scanOutline
+        #@+node:ekr.20061031131434.52:scanForCallTip
+        def scanForCallTip (self,s,language):
+
+            '''this function scans text for calltip info'''
+
+            d = self.calltips.get(language,{})
+            pat = self.pats.get(language or 'python')
+
+            # Set results to a list of all the function/method defintions in s.
+            results = pat and pat.findall(s) or []
+
+            for z in results:
+                if isinstance(z,tuple): z = z [0]
+                pieces2 = z.split('(')
+                # g.trace(pieces2)
+                pieces2 [0] = pieces2 [0].split() [-1]
+                a, junk = pieces2 [0], pieces2 [1]
+                aList = d.get(a,[])
+                if str(z) not in aList:
+                    aList.append(str(z))
+                    d [a] = aList
+
+            self.calltips [language] = d
+        #@-node:ekr.20061031131434.52:scanForCallTip
+        #@+node:ekr.20061031131434.53:scanForAutoCompleter
+        def scanForAutoCompleter (self,s):
+
+            '''This function scans text for the autocompleter database.'''
+
+            aList = [] ; t1 = s.split('.')
+
+            if 1: # Slightly faster.
+                t1 = s.split('.') ; 
+                i = 0 ; n = len(t1)-1
+                while i < n:
+                    self.makeAutocompletionList(t1[i],t1[i+1],aList)
+                    i += 1
             else:
-                b1 = b
+                reduce(lambda a,b: self.makeAutocompletionList(a,b,aList),t1)
 
-            if b1:
-                glist.append((a1,b1),)
+            if aList:
+                for a, b in aList:
+                    z = self.watchwords.get(a,[])
+                    if str(b) not in z:
+                        z.append(str(b))
+                        self.watchwords [a] = z
+        #@+node:ekr.20061031131434.54:makeAutocompletionList
+        def makeAutocompletionList (self,a,b,glist):
 
-            return b # Not needed unless we are using reduce.
-        else:
-            a1 = self.reverseFindWhitespace(a)
-            if a1:
-                b1 = self.getCleanString(b)
+            '''We have seen a.b, where a and b are arbitrary strings.
+            Append (a1.b1) to glist.
+            To compute a1, scan backwards in a until finding whitespace.
+            To compute b1, scan forwards in b until finding a char not in okchars.
+            '''
+
+            if 1: # Do everything inline.  It's a few percent faster.
+
+                # Compute reverseFindWhitespace inline.
+                i = len(a) -1
+                while i >= 0:
+                    if a[i].isspace() or a [i] == '.':
+                        a1 = a [i+1:] ; break
+                    i -= 1
+                else:
+                    a1 = a
+
+                # Compute getCleanString inline.
+                i = 0
+                for ch in b:
+                    if ch not in self.okchars:
+                        b1 = b[:i] ; break
+                    i += 1
+                else:
+                    b1 = b
+
                 if b1:
-                    glist.append((a1,b1))
-            return b
-    #@+node:ekr.20061031131434.55:reverseFindWhitespace
-    def reverseFindWhitespace (self,s):
+                    glist.append((a1,b1),)
 
-        '''Return the longest tail of s containing no whitespace or period.'''
+                return b # Not needed unless we are using reduce.
+            else:
+                a1 = self.reverseFindWhitespace(a)
+                if a1:
+                    b1 = self.getCleanString(b)
+                    if b1:
+                        glist.append((a1,b1))
+                return b
+        #@+node:ekr.20061031131434.55:reverseFindWhitespace
+        def reverseFindWhitespace (self,s):
 
-        i = len(s) -1
-        while i >= 0:
-            if s[i].isspace() or s [i] == '.': return s [i+1:]
-            i -= 1
+            '''Return the longest tail of s containing no whitespace or period.'''
 
-        return s
-    #@-node:ekr.20061031131434.55:reverseFindWhitespace
-    #@+node:ekr.20061031131434.56:getCleanString
-    def getCleanString (self,s):
+            i = len(s) -1
+            while i >= 0:
+                if s[i].isspace() or s [i] == '.': return s [i+1:]
+                i -= 1
 
-        '''Return the prefix of s containing only chars in okchars.'''
+            return s
+        #@-node:ekr.20061031131434.55:reverseFindWhitespace
+        #@+node:ekr.20061031131434.56:getCleanString
+        def getCleanString (self,s):
 
-        i = 0
-        for ch in s:
-            if ch not in self.okchars:
-                return s[:i]
-            i += 1
+            '''Return the prefix of s containing only chars in okchars.'''
 
-        return s
-    #@-node:ekr.20061031131434.56:getCleanString
-    #@-node:ekr.20061031131434.54:makeAutocompletionList
-    #@-node:ekr.20061031131434.53:scanForAutoCompleter
-    #@-node:ekr.20061031131434.47:Scanning
+            i = 0
+            for ch in s:
+                if ch not in self.okchars:
+                    return s[:i]
+                i += 1
+
+            return s
+        #@-node:ekr.20061031131434.56:getCleanString
+        #@-node:ekr.20061031131434.54:makeAutocompletionList
+        #@-node:ekr.20061031131434.53:scanForAutoCompleter
+        #@-others
+    #@-node:ekr.20061031131434.47:Scanning (not used)
     #@+node:ekr.20061031131434.57:Proxy classes and objects
     #@+node:ekr.20061031131434.58:createProxyObjectFromClass
     def createProxyObjectFromClass (self,className,theClass):

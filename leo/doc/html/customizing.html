@@ -271,6 +271,7 @@ See <a class="reference" href="commands.html#specifying-settings">Specifying set
 <li><a class="reference" href="#input-modes" id="id8" name="id8">Input modes</a></li>
 <li><a class="reference" href="#adding-extensible-attributes-to-nodes-and-leo-files" id="id9" name="id9">Adding extensible attributes to nodes and .leo files</a></li>
 <li><a class="reference" href="#specifying-tk-options-using-leo-xresources" id="id10" name="id10">Specifying Tk options using .leo_xresources</a></li>
+<li><a class="reference" href="#translating-leo-s-menus-and-messages" id="id11" name="id11">Translating Leo's menus and messages</a></li>
 </ul>
 </li>
 </ul>
@@ -606,6 +607,25 @@ if the corresponding  vnode or tnode contains an <tt class="docutils literal"><s
 <p>Leo looks for a file called <tt class="docutils literal"><span class="pre">.leo_xresources</span></tt> in the users home directory. If
 found, Leo will pass that file to Tk's <tt class="docutils literal"><span class="pre">option_readfile</span></tt> method for the top
 widget. This allows users to set Tk options.</p>
+</div>
+<div class="section" id="translating-leo-s-menus-and-messages">
+<h2><a class="toc-backref" href="#id11">Translating Leo's menus and messages</a></h2>
+<p>It is easy to translate Leo's menu strings: simply create an &#64;menus tree in
+leoSettings.leo or myLeoSettings.leo that contains the tranlated menu names.</p>
+<p><strong>New in Leo 4.4.8</strong>:
+Leo now contains support for translating messages sent to Leo's log:</p>
+<ul class="simple">
+<li>Rather than using an '_' function to denote strings to be translated, Leo's
+g.es and g.es_print functions translate &quot;odd&quot; (first, third, fifth) arguments,
+leaving &quot;even&quot; arguments untranslated. Keyword arguments, color, newline, etc.
+are never translated.</li>
+<li>All calls to g.es and g.es_print in Leo's core follow this convention.</li>
+<li>g.translateString does the actual translation using Python's <a class="reference" href="http://docs.python.org/lib/module-gettext.html">gettext</a> module.</li>
+<li>You can use the script in the node &quot;&#64;button print g.es stats&quot; in scripts.leo
+to create catalogs of all scripts that need to be translated. Such catalogs
+are used by Python's gettext module. (This script was also used to check that
+the proper arguments to g.es and g.es_print were translated.)</li>
+</ul>
 <hr class="docutils" />
 <p><a class="reference" href="scripting.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="history.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>

@@ -314,7 +314,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 alpha 1, build %s, February 18, 2008" % c.getBuildNumber()
+        return "Leo 4.4.8 alpha 1, build %s, March 5, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -3228,7 +3228,6 @@ class baseCommands:
         # Copying an outline has no undo consequences.
         c = self
         c.endEditing()
-        c.fileCommands.assignFileIndices()
         s = c.fileCommands.putLeoOutline()
         g.app.gui.replaceClipboardWith(s)
     #@-node:ekr.20031218072017.1550:copyOutline

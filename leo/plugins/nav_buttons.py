@@ -39,7 +39,7 @@ __version__ = "1.7"
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
 #@+at
-#
+# 
 # 1.3 EKR:
 #     - Rewritten to use:
 #         - init and onCreate functions.

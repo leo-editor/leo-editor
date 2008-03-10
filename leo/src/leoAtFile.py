@@ -1401,7 +1401,7 @@ class atFile:
 
         # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
         if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
-            last.fileIndex = lastIndex=  gnx
+            last.fileIndex = lastIndex =  gnx
             self._forcedGnxPositionList.remove(last)
 
         if 0:
@@ -1434,8 +1434,11 @@ class atFile:
             tnodesDict = c.fileCommands.tnodesDict
             t = tnodesDict.get(gnxString)
             if t:
-                assert indices.areEqual(t.fileIndex,gnx), 't.fileIndex: %s gnx: %s' % (t.fileIndex,gnx)
-                # g.trace('not created, should already exist',gnxString)
+                if indices.areEqual(t.fileIndex,gnx):
+                    pass
+                else:
+                    g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+                    # g.trace('not created, should already exist',gnxString)
             else:
                 t = leoNodes.tnode(bodyString=None,headString=headline)
                 t.fileIndex = gnx
@@ -2820,14 +2823,18 @@ class atFile:
     # This is the entry point to the write code.  root should be an @file vnode.
 
     def write(self,root,
-        nosentinels=False,thinFile=False,scriptWrite=False,
-        toString=False,write_strips_blank_lines=None
+        nosentinels=False,
+        thinFile=False,
+        scriptWrite=False,
+        toString=False,
+        write_strips_blank_lines=None,
     ):
 
         """Write a 4.x derived file."""
 
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
+
         #@    << set at.targetFileName >>
         #@+node:ekr.20041005105605.145:<< set at.targetFileName >>
         if toString:
@@ -2881,7 +2888,11 @@ class atFile:
                 at.writeException() # Sets dirty and orphan bits.
     #@-node:ekr.20041005105605.144:write
     #@+node:ekr.20041005105605.147:writeAll (atFile)
-    def writeAll(self,writeAtFileNodesFlag=False,writeDirtyAtFileNodesFlag=False,toString=False):
+    def writeAll(self,
+        writeAtFileNodesFlag=False,
+        writeDirtyAtFileNodesFlag=False,
+        toString=False,
+    ):
 
         """Write @file nodes in all or part of the outline"""
 
@@ -2988,10 +2999,10 @@ class atFile:
         at = self ; c = at.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
         found = False
-        c.fileCommands.assignFileIndices()
+
         while p and p != after:
             if p.isAtAutoNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
-                ok = self.writeOneAtAutoNode(p,toString=toString,force=True)
+                ok = at.writeOneAtAutoNode(p,toString=toString,force=True)
                 if ok:
                     found = True
                     p.moveToNodeAfterTree()
@@ -3010,7 +3021,9 @@ class atFile:
     #@+node:ekr.20070806141607:writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self,p,toString,force):
 
-        '''Write p, an @auto node.'''
+        '''Write p, an @auto node.
+
+        File indices *must* have already been assigned.'''
 
         at = self ; c = at.c ; root = p.copy()
 
@@ -3143,7 +3156,7 @@ class atFile:
     #@+node:ekr.20041005105605.151:writeMissing
     def writeMissing(self,p,toString=False):
 
-        at = self
+        at = self ; c = at.c
         writtenFiles = False ; changedFiles = False
 
         p = p.copy()
@@ -3904,6 +3917,8 @@ class atFile:
         #@nl
 
         if at.thinFile:
+            if not p.v.t.fileIndex:
+                p.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
             gnx = g.app.nodeIndices.toString(p.v.t.fileIndex)
             return "%s:%s" % (gnx,h)
         else:

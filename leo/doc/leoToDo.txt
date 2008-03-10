@@ -1,198 +1,12 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080303060023:pyLint
-@nocolor
-
-pylint did not pick up error in number of args to at.readError.
-
-Add pylint tests for leo.py and leoApp.leo (and others?)
-
-#@+node:ekr.20080302155758:Fix lint problems
-@nocolor
-
-C:\leo-editor\trunk\leo\test>echo off
-leoAtFile.py
-leoChapters.py
-leoCommands.py
-leoEditCommands.py
-************* Module leoEditCommands
-E1101:114:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'name' member
-E1101:115:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'undoType' member
-E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldSel' member
-E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldText' member
-E1101:8091:spellCommandsClass.openSpellTab: Instance of 'spellTabHandler' has no 'bringToFront' member
-E1101:8121:spellCommandsClass.changeAll: Instance of 'spellTabHandler' has no 'changeAll' member
-E1101:8129:spellCommandsClass.changeThenFind: Instance of 'spellTabHandler' has no 'changeThenFind' member
-leoFileCommands.py
-leoFind.py
-leoFrame.py
-leoGlobals.py
-************* Module leoGlobals
-E1101:137:computeGlobalConfigDir: Module 'sys' has no 'leo_config_directory' member
-W0104:3902: Statement seems to have no effect
-E0602:3918:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E0602:3919:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E1101:3920:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
-E0602:3920:getpreferredencoding: Undefined variable 'CODESET'
-E0602:3921:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E1101:3924:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
-E0602:3924:getpreferredencoding: Undefined variable 'CODESET'
-E1101:4419:mulderUpdateAlgorithm.copy_time: Module 'os' has no 'mtime' member
-leoGui.py
-leoImport.py
-leoMenu.py
-leoNodes.py
-leoPlugins.py
-leoTangle.py
-leoUndo.py
-leoTkinterDialog.py
-leoTkinterFind.py
-************* Module leoTkinterFind
-E1101: 95:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'title' member
-E1101:101:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'intKeys' member
-E1101:104:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'newStringKeys' member
-E1101:113:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'createTopFrame' member
-E1101:115:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
-E1101:116:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
-E1101:123:leoTkinterFind.init: Instance of 'leoTkinterFind' has no 'intKeys' member
-E1101:177:leoTkinterFind.destroySelf: Instance of 'leoTkinterFind' has no 'top' member
-E1101:185:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'frame' member
-E1101:213:leoTkinterFind.createFrame.setFocus: Instance of 'leoTkinterFind' has no 'c' member
-E1101:298:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:305:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1103:325:leoTkinterFind.createFrame.findButtonCallback: Instance of 'leoTkinterFind' has no 'findButton' member (but some types c
-ould not be inferred)
-E1101:341:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'findAllButton' member
-E1101:348:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeButton' member
-E1101:354:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeThenFindButton' member
-E1101:360:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeAllButton' member
-E1101:367:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
-E1101:368:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
-E1103:378:leoTkinterFind.createBindings.findButtonCallback2: Instance of 'leoTkinterFind' has no 'findButton' member (but some typ
-es could not be inferred)
-E1101:382:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:383:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:384:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'selectAllFindText' member
-E1101:396:leoTkinterFind.onCloseWindow: Instance of 'leoTkinterFind' has no 'top' member
-E1101:401:leoTkinterFind.dismiss: Instance of 'leoTkinterFind' has no 'top' member
-E1101:408:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'c' member
-E1101:410:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:411:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:412:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:438:tkFindTab.initGui: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:441:tkFindTab.initGui: Instance of 'tkFindTab' has no 'newStringKeys' member
-E1101:448:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'c' member
-E1101:489:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:504:tkFindTab.createFrame.setFocus: Instance of 'tkFindTab' has no 'c' member
-E1101:538:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:591:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:599:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:606:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:623:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findButtonCallback' member
-E1101:624:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findAllButton' member
-E1101:626:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeButton' member
-E1101:627:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeThenFindButton' member
-E1101:628:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeAllButton' member
-E1101:647:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'c' member
-E1103:650:tkFindTab.createBindings.resetWrapCallback: Instance of 'tkFindTab' has no 'resetWrap' member (but some types could not
-be inferred)
-E1103:654:tkFindTab.createBindings.findButtonBindingCallback: Instance of 'tkFindTab' has no 'findButton' member (but some types c
-ould not be inferred)
-E1101:664:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'hideTab' member
-E1101:677:tkFindTab.init: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:746:tkFindTab.setOption: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:758:tkFindTab.toggleOption: Instance of 'tkFindTab' has no 'intKeys' member
-leoTkinterGui.py
-************* Module leoTkinterGui
-E1101:179:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
-E1101:183:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
-leoTkinterFrame.py
-************* Module leoTkinterFrame
-E1101: 53:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
-E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 88:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
-E1101:102:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:109:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
-E1101:176:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:224:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:241:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
-E1101:245:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
-E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
-E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:379:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
-E1101:437:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:439:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
-E1101:442:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
-E1101:1347:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
-E1101:1901:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:2111:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2138:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2140:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2303:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
-E1101:2423:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2424:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2431:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2432:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2433:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2462:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2463:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2464:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2475:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2476:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2477:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2489:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2514:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2515:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2516:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2556:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2573:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2574:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2587:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2589:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2787:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2788:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2845:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2846:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:3018:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3065:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
-leoTkinterKeys.py
-************* Module leoTkinterKeys
-E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'useTextWidget' member
-E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
-E1101: 29:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
-leoTkinterMenu.py
-************* Module leoTkinterMenu
-E1101: 62:leoTkinterMenu.computeMenuPositions: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:136:leoTkinterMenu.insert: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:172:leoTkinterMenu.clearAccel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:183:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'updateAllMenus' member
-E1101:186:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'setMenu' member
-E1101:187:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'createMenusFromTables' member
-E1101:208:leoTkinterMenu.disableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:225:leoTkinterMenu.enableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:255:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:258:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:297:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'createMenuEntries' member
-leoTkinterTree.py
-"*****done*****"
-#@nonl
-#@-node:ekr.20080302155758:Fix lint problems
-#@-node:ekr.20080303060023:pyLint
+#@+node:ekr.20080304101417:4.4.8 b2
 #@+node:ekr.20080218110223:Easy
-#@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process
+#@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process?
 # This would allow @menu items to refer to commands created by @button.
 #@nonl
-#@-node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process
+#@-node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process?
 #@+node:ekr.20071217032247:Compile regexp's once in findNextMatch
 @nocolor
 
@@ -205,6 +19,41 @@ See createMenusFromTables.
 #@nonl
 #@-node:ekr.20071115111719.2:Remove hard-coded menu tables
 #@-node:ekr.20080218110223:Easy
+#@-node:ekr.20080304101417:4.4.8 b2
+#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080218110223.1:Files
+#@+node:ekr.20080225104355:Add 'fixed' attribute to .leo files
+@nocolor
+
+http://mail.google.com/mail/#inbox/118504bef91bb8ce
+
+I think it might be handy to have a 'fixed' flag in .leo file, to
+minimize cvs conflicts. When a leo document has that flag, nothing
+about frame positions etc. will ever be written to the .leo file on
+save.
+
+Most leo documents where people are supposed to collaborate should
+have this flag (e.g. the .leo documents in Leo cvs).
+
+The user interface for this feature would be simple:
+
+alt-x toggle-fixed
+
+es "myfile.leo will be written in 'fixed' mode"
+
+ctrl+s <== saves it in fixed mode
+#@nonl
+#@-node:ekr.20080225104355:Add 'fixed' attribute to .leo files
+#@+node:ekr.20071031113657:Always use sax parser to read .leo files
+# Are there proper unit tests?
+# Do global settings and find-panel settings get set properly.
+#@nonl
+#@-node:ekr.20071031113657:Always use sax parser to read .leo files
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@-node:ekr.20080218110223.1:Files
 #@+node:ekr.20071211091037.1:Code cleanup
 #@+node:ekr.20071215101531:Reorg drawing/focus code
 @nocolor
@@ -338,39 +187,6 @@ Regards, Roger
 #@nonl
 #@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20071211142600.2:Config stuff
-#@+node:ekr.20080218110223.1:Files
-#@+node:ekr.20080225104355:Add 'fixed' attribute to .leo files
-@nocolor
-
-http://mail.google.com/mail/#inbox/118504bef91bb8ce
-
-I think it might be handy to have a 'fixed' flag in .leo file, to
-minimize cvs conflicts. When a leo document has that flag, nothing
-about frame positions etc. will ever be written to the .leo file on
-save.
-
-Most leo documents where people are supposed to collaborate should
-have this flag (e.g. the .leo documents in Leo cvs).
-
-The user interface for this feature would be simple:
-
-alt-x toggle-fixed
-
-es "myfile.leo will be written in 'fixed' mode"
-
-ctrl+s <== saves it in fixed mode
-#@nonl
-#@-node:ekr.20080225104355:Add 'fixed' attribute to .leo files
-#@+node:ekr.20071031113657:Always use sax parser to read .leo files
-# Are there proper unit tests?
-# Do global settings and find-panel settings get set properly.
-#@nonl
-#@-node:ekr.20071031113657:Always use sax parser to read .leo files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@-node:ekr.20080218110223.1:Files
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 [quote]
@@ -526,17 +342,8 @@ EKR
 #@-node:ekr.20070613103409:Improve marks/recent buttons
 #@-node:ekr.20080218110223.2:Plugins
 #@+node:ekr.20071029082025:Improve distribution
-* Enable sax option.
-* Proper xml namespace in .leo files.  Is this Leo 5.0??
-#@nonl
-#@+node:ekr.20080218152956:Better home page
 #@+node:ekr.20071211093323:more screen shots on Leo's web site
 #@-node:ekr.20071211093323:more screen shots on Leo's web site
-#@+node:ekr.20080218152956.1:move obsolete links to "links" page
-#@-node:ekr.20080218152956.1:move obsolete links to "links" page
-#@-node:ekr.20080218152956:Better home page
-#@+node:ekr.20080226042409:Add html files to the distro
-#@-node:ekr.20080226042409:Add html files to the distro
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor
 
@@ -5327,16 +5134,14 @@ def getInsertNodeIntoShell( self, c, jd ):
     def writeNode( event ):
 
         cp = c.currentPosition()
-        at = c.atFileCommands 
-        c.fileCommands.assignFileIndices()
+        at = c.atFileCommands
+
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
         jtf = self._GetReferenceName( jd, data )
         jtf.rmv_spot = jd.insertWidget( jtf )
         jtf.requestFocusInWindow()
-
-
 
     jm.actionPerformed = writeNode
     return jm
@@ -5364,8 +5169,8 @@ def getRunNodeInPdb( self, c, jd ):
         cp = c.currentPosition()
         name = cp.headString()
         name = name.split()[ 0 ]
-        at = c.atFileCommands 
-        c.fileCommands.assignFileIndices()
+        at = c.atFileCommands
+
         at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
         data = at.stringOutput
 
@@ -5390,7 +5195,7 @@ def fireNodeAsScript( self, event, jd ):
     c = self.c        
     cp = c.currentPosition()    
     at = c.atFileCommands 
-    c.fileCommands.assignFileIndices()
+
     at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
     data = at.stringOutput.split( '\n' ) 
 
