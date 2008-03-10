@@ -2,8 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080304101417:4.4.8 b2
-#@+node:ekr.20080308151956.2:To do: use readBufferIndex instead of fileIndex (!)
-#@-node:ekr.20080308151956.2:To do: use readBufferIndex instead of fileIndex (!)
 #@+node:ekr.20080218110223:Easy
 #@+node:ekr.20080218152956.2:Is it possible to create menus very late in the creation process?
 # This would allow @menu items to refer to commands created by @button.
