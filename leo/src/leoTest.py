@@ -78,19 +78,38 @@ def doTests(c,all,verbosity=1):
         g.app.unitTestDict['c'] = c
         g.app.unitTestDict['g'] = g
         g.app.unitTestDict['p'] = p and p.copy()
-        if all: theIter = c.all_positions_iter()
-        else:   theIter = p.self_and_subtree_iter()
 
         # c.undoer.clearUndoState() # New in 4.3.1.
         changed = c.isChanged()
         suite = unittest.makeSuite(unittest.TestCase)
-        for p in theIter:
-            if isTestNode(p): # @test
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        while p and not p.isEqual(last):
+            h = p.headString()
+            if g.match_word(h,0,'@ignore'):
+                p.moveToNext()
+            elif isTestNode(p): # @test
                 test = makeTestCase(c,p)
                 if test: suite.addTest(test)
+                p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
                 test = makeTestSuite(c,p)
                 if test: suite.addTest(test)
+                p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+
+        # if all: theIter = c.all_positions_iter()
+        # else:   theIter = p.self_and_subtree_iter()
+        # for p in theIter:
+            # if isTestNode(p): # @test
+                # test = makeTestCase(c,p)
+                # if test: suite.addTest(test)
+            # elif isSuiteNode(p): # @suite
+                # test = makeTestSuite(c,p)
+                # if test: suite.addTest(test)
         # Verbosity: 1: print just dots.
         unittest.TextTestRunner(verbosity=verbosity).run(suite)
     finally:
@@ -635,8 +654,7 @@ def runLeoTest(c,path,verbose=False,full=False):
         g.app.gui = old_gui
         if frame and frame.c != c:
             frame.c.setChanged(False)
-            assert(frame.c.frame==frame)
-            g.app.closeLeoWindow(frame.c.frame)
+            g.app.closeLeoWindow(frame)
         c.frame.update() # Restored in Leo 4.4.8.
 #@-node:ekr.20051104075904.42:runLeoTest
 #@+node:ekr.20070627135407:runTestsExternally & helper class
@@ -904,273 +922,28 @@ def runAtFileTest(c,p):
         #@nl
         raise
 #@-node:ekr.20051104075904.44:at-File test code (leoTest.py)
-#@+node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
-# DTHEIN 2004.01.11: Added unit tests for reformatParagraph
-#@+node:ekr.20051104075904.47:class reformatParagraphTest
-class reformatParagraphTest:
+#@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
+def createUnitTestsFromDoctests (modules,verbose=True):
 
-    '''A class to work around stupidities of the Unittest classes.'''
+    created = False # True if suite is non-empty.
 
-    #@    @+others
-    #@+node:ekr.20051104075904.48:__init__
-    def __init__ (self,c,p):
+    suite = unittest.makeSuite(unittest.TestCase)
 
-        self.c = c
-        self.p = p.copy()
-
-        self.go()
-    #@-node:ekr.20051104075904.48:__init__
-    #@+node:ekr.20051104075904.49:go
-    def go (self):
-
+    for module in list(modules):
+        # New in Python 4.2: n may be zero.
         try:
-            self.setUp()
-            self.runTest()
-        finally:
-            self.tearDown()
-    #@-node:ekr.20051104075904.49:go
-    #@+node:ekr.20051104075904.50:checkPosition
-    def checkPosition(self,expRow,expCol):
+            test = doctest.DocTestSuite(module)
+            n = test.countTestCases()
+            if n > 0:
+                suite.addTest(test)
+                created = True
+                if verbose:
+                    print "found %2d doctests for %s" % (n,module.__name__)
+        except ValueError:
+            pass # No tests found.
 
-        row,col = self.getRowCol()
-
-        assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
-
-        assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-    #@-node:ekr.20051104075904.50:checkPosition
-    #@+node:ekr.20051104075904.51:checkText
-    def checkText(self):
-
-        new_text = self.tempChild.bodyString()
-        ref_text = self.after.bodyString()
-        newLines = new_text.splitlines(1)
-        refLines = ref_text.splitlines(1)
-        newLinesCount = len(newLines)
-        refLinesCount = len(refLines)
-        for i in range(min(newLinesCount,refLinesCount)):
-            assert newLines[i] == refLines[i], \
-                "Mismatch on line " + str(i) + "." \
-                + "\nExpected text: " + `refLines[i]` \
-                + "\n  Actual text: " + `newLines[i]`
-
-        assert newLinesCount == refLinesCount, \
-            "Expected " + str(refLinesCount) + " lines, but " \
-            + "received " + str(newLinesCount) + " lines."
-    #@-node:ekr.20051104075904.51:checkText
-    #@+node:ekr.20051104075904.52:copyBeforeToTemp
-    def copyBeforeToTemp(self):
-
-        c = self.c ; tempNode = self.tempNode
-
-        # Delete all children of temp node.
-        while tempNode.firstChild():
-            tempNode.firstChild().doDelete()
-
-        # Copy the before node text to the temp node.
-        text = self.before.bodyString()
-        tempNode.setTnodeText(text,g.app.tkEncoding)
-
-        # create the child node that holds the text.
-        t = leoNodes.tnode(headString="tempChildNode")
-        self.tempChild = self.tempNode.insertAsNthChild(0,t)
-
-        # copy the before text to the temp text.
-        text = self.before.bodyString()
-        self.tempChild.setTnodeText(text,g.app.tkEncoding)
-
-        # Make the temp child node current, and put the cursor at the beginning.
-        c.selectPosition(self.tempChild)
-        w = c.frame.body.bodyCtrl
-        w.setSelectionRange(0,0)
-    #@-node:ekr.20051104075904.52:copyBeforeToTemp
-    #@+node:ekr.20051104075904.53:getRowCol
-    def getRowCol(self):
-
-        c = self.c ; w = c.frame.body.bodyCtrl
-        tab_width = c.frame.tab_width
-
-        # Get the Tkinter row col position of the insert cursor.
-        s = w.getAllText()
-        index = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,index)
-        row += 1
-        # g.trace(index,row,col)
-
-        # Adjust col position for tabs.
-        if col > 0:
-            s2 = s[index-col:index]
-            s2 = g.toUnicode(s2,g.app.tkEncoding)
-            col = g.computeWidth(s2,tab_width)
-
-        return row,col
-    #@-node:ekr.20051104075904.53:getRowCol
-    #@+node:ekr.20051104075904.54:runTest
-    def runTest(self):
-
-        g.trace('must be overridden in subclasses')
-    #@-node:ekr.20051104075904.54:runTest
-    #@+node:ekr.20051104075904.55:setUp
-    def setUp(self):
-
-        c = self.c ; p = self.p
-        u = self.u = testUtils(c)
-
-        # self.undoMark = c.undoer.getMark()
-        c.undoer.clearUndoState()
-
-        assert(c.positionExists(p))
-        self.before = u.findNodeInTree(p,"before")
-        self.after  = u.findNodeInTree(p,"after")
-        self.tempNode = u.findNodeInTree(p,"tempNode")
-
-        assert self.tempNode,'no tempNode: ' + p
-        assert c.positionExists(self.tempNode),'tempNode does not exist'
-        self.tempChild = None
-
-        self.copyBeforeToTemp()
-    #@-node:ekr.20051104075904.55:setUp
-    #@+node:ekr.20051104075904.56:tearDown
-    def tearDown(self):
-
-        c = self.c ; tempNode = self.tempNode
-
-        # clear the temp node and mark it unchanged
-        tempNode.setTnodeText("",g.app.tkEncoding)
-        tempNode.clearDirty()
-
-        if 1: # Disabling this is good for debugging.
-            # Delete all children of temp node.
-            while tempNode.firstChild():
-                tempNode.firstChild().doDelete()
-
-        # c.undoer.rollbackToMark(self.undoMark)
-        c.undoer.clearUndoState()
-    #@-node:ekr.20051104075904.56:tearDown
-    #@-others
-#@-node:ekr.20051104075904.47:class reformatParagraphTest
-#@+node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
-class singleParagraphTest (reformatParagraphTest):
-
-    '''A class to work around stupidities of the Unittest classes.'''
-
-    #@    @+others
-    #@+node:ekr.20051104075904.58:__init__
-    def __init__ (self,c,p,finalRow,finalCol):
-
-        self.finalCol = finalCol
-        self.finalRow = finalRow
-
-        # Call the base class.
-        reformatParagraphTest.__init__(self,c,p)
-    #@-node:ekr.20051104075904.58:__init__
-    #@+node:ekr.20051104075904.59:runTest
-    def runTest(self):
-
-        # Reformat the paragraph
-        self.c.reformatParagraph()
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-        self.checkPosition(self.finalRow,self.finalCol)
-    #@-node:ekr.20051104075904.59:runTest
-    #@-others
-#@-node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
-class multiParagraphTest (reformatParagraphTest):
-
-    #@    @+others
-    #@+node:ekr.20051104075904.61:runTest
-    def runTest(self):
-
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(25,0)
-        self.c.reformatParagraph()
-        self.checkPosition(32,11)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-node:ekr.20051104075904.61:runTest
-    #@-others
-#@-node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
-class multiParagraphWithListTest (reformatParagraphTest):
-
-    #@    @+others
-    #@+node:ekr.20051104075904.63:runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(4,0)
-
-        # Keep going, in the same manner.
-        self.c.reformatParagraph()
-        self.checkPosition(7,0)
-        self.c.reformatParagraph()
-        self.checkPosition(10,0)
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-        self.c.reformatParagraph()
-        self.checkPosition(14,18)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-node:ekr.20051104075904.63:runTest
-    #@-others
-#@-node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
-class leadingWSOnEmptyLinesTest (reformatParagraphTest):
-
-    #@    @+others
-    #@+node:ekr.20051104075904.65:runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(4,0)
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(7,0)
-        self.c.reformatParagraph()
-        self.checkPosition(10,0)
-        self.c.reformatParagraph()
-        self.checkPosition(13,0)
-        self.c.reformatParagraph()
-        self.checkPosition(14,18)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-node:ekr.20051104075904.65:runTest
-    #@-others
-#@-node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
-class directiveBreaksParagraphTest (reformatParagraphTest):
-
-    #@    @+others
-    #@+node:ekr.20051104075904.67:runTest
-    def runTest(self):
-
-        # reformat the paragraph and check insertion cursor position
-        self.c.reformatParagraph()
-        self.checkPosition(13,0) # at next paragraph
-
-        # Keep going, in the same manner
-        self.c.reformatParagraph()
-        self.checkPosition(25,0) # at next paragraph
-        self.c.reformatParagraph()
-        self.checkPosition(32,11)
-
-        # Compare the computed result to the reference result.
-        self.checkText()
-    #@-node:ekr.20051104075904.67:runTest
-    #@-others
-#@-node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
-#@-node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
+    return g.choose(created,suite,None)
+#@-node:ekr.20051104075904.99:createUnitTestsFromDoctests
 #@+node:ekr.20051104075904.68:Edit Body test code (leoTest.py)
 #@+node:ekr.20051104075904.69: makeEditBodySuite
 def makeEditBodySuite(c):
@@ -1634,11 +1407,273 @@ def checkFileTabs (fileName,s):
         assert 0, "test failed"
 #@-node:ekr.20051104075904.94:checkFileTabs
 #@-node:ekr.20051104075904.90:Plugin tests... (leoTest.py)
-#@+node:ekr.20051104075904.95:throwAssertionError
-def throwAssertionError():
+#@+node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
+# DTHEIN 2004.01.11: Added unit tests for reformatParagraph
+#@+node:ekr.20051104075904.47:class reformatParagraphTest
+class reformatParagraphTest:
 
-    assert 0, 'assert(0) as a test of catching assertions'
-#@-node:ekr.20051104075904.95:throwAssertionError
+    '''A class to work around stupidities of the Unittest classes.'''
+
+    #@    @+others
+    #@+node:ekr.20051104075904.48:__init__
+    def __init__ (self,c,p):
+
+        self.c = c
+        self.p = p.copy()
+
+        self.go()
+    #@-node:ekr.20051104075904.48:__init__
+    #@+node:ekr.20051104075904.49:go
+    def go (self):
+
+        try:
+            self.setUp()
+            self.runTest()
+        finally:
+            self.tearDown()
+    #@-node:ekr.20051104075904.49:go
+    #@+node:ekr.20051104075904.50:checkPosition
+    def checkPosition(self,expRow,expCol):
+
+        row,col = self.getRowCol()
+
+        assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
+
+        assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+    #@-node:ekr.20051104075904.50:checkPosition
+    #@+node:ekr.20051104075904.51:checkText
+    def checkText(self):
+
+        new_text = self.tempChild.bodyString()
+        ref_text = self.after.bodyString()
+        newLines = new_text.splitlines(1)
+        refLines = ref_text.splitlines(1)
+        newLinesCount = len(newLines)
+        refLinesCount = len(refLines)
+        for i in range(min(newLinesCount,refLinesCount)):
+            assert newLines[i] == refLines[i], \
+                "Mismatch on line " + str(i) + "." \
+                + "\nExpected text: " + `refLines[i]` \
+                + "\n  Actual text: " + `newLines[i]`
+
+        assert newLinesCount == refLinesCount, \
+            "Expected " + str(refLinesCount) + " lines, but " \
+            + "received " + str(newLinesCount) + " lines."
+    #@-node:ekr.20051104075904.51:checkText
+    #@+node:ekr.20051104075904.52:copyBeforeToTemp
+    def copyBeforeToTemp(self):
+
+        c = self.c ; tempNode = self.tempNode
+
+        # Delete all children of temp node.
+        while tempNode.firstChild():
+            tempNode.firstChild().doDelete()
+
+        # Copy the before node text to the temp node.
+        text = self.before.bodyString()
+        tempNode.setTnodeText(text,g.app.tkEncoding)
+
+        # create the child node that holds the text.
+        t = leoNodes.tnode(headString="tempChildNode")
+        self.tempChild = self.tempNode.insertAsNthChild(0,t)
+
+        # copy the before text to the temp text.
+        text = self.before.bodyString()
+        self.tempChild.setTnodeText(text,g.app.tkEncoding)
+
+        # Make the temp child node current, and put the cursor at the beginning.
+        c.selectPosition(self.tempChild)
+        w = c.frame.body.bodyCtrl
+        w.setSelectionRange(0,0)
+    #@-node:ekr.20051104075904.52:copyBeforeToTemp
+    #@+node:ekr.20051104075904.53:getRowCol
+    def getRowCol(self):
+
+        c = self.c ; w = c.frame.body.bodyCtrl
+        tab_width = c.frame.tab_width
+
+        # Get the Tkinter row col position of the insert cursor.
+        s = w.getAllText()
+        index = w.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,index)
+        row += 1
+        # g.trace(index,row,col)
+
+        # Adjust col position for tabs.
+        if col > 0:
+            s2 = s[index-col:index]
+            s2 = g.toUnicode(s2,g.app.tkEncoding)
+            col = g.computeWidth(s2,tab_width)
+
+        return row,col
+    #@-node:ekr.20051104075904.53:getRowCol
+    #@+node:ekr.20051104075904.54:runTest
+    def runTest(self):
+
+        g.trace('must be overridden in subclasses')
+    #@-node:ekr.20051104075904.54:runTest
+    #@+node:ekr.20051104075904.55:setUp
+    def setUp(self):
+
+        c = self.c ; p = self.p
+        u = self.u = testUtils(c)
+
+        # self.undoMark = c.undoer.getMark()
+        c.undoer.clearUndoState()
+
+        assert(c.positionExists(p))
+        self.before = u.findNodeInTree(p,"before")
+        self.after  = u.findNodeInTree(p,"after")
+        self.tempNode = u.findNodeInTree(p,"tempNode")
+
+        assert self.tempNode,'no tempNode: ' + p
+        assert c.positionExists(self.tempNode),'tempNode does not exist'
+        self.tempChild = None
+
+        self.copyBeforeToTemp()
+    #@-node:ekr.20051104075904.55:setUp
+    #@+node:ekr.20051104075904.56:tearDown
+    def tearDown(self):
+
+        c = self.c ; tempNode = self.tempNode
+
+        # clear the temp node and mark it unchanged
+        tempNode.setTnodeText("",g.app.tkEncoding)
+        tempNode.clearDirty()
+
+        if 1: # Disabling this is good for debugging.
+            # Delete all children of temp node.
+            while tempNode.firstChild():
+                tempNode.firstChild().doDelete()
+
+        # c.undoer.rollbackToMark(self.undoMark)
+        c.undoer.clearUndoState()
+    #@-node:ekr.20051104075904.56:tearDown
+    #@-others
+#@-node:ekr.20051104075904.47:class reformatParagraphTest
+#@+node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
+class singleParagraphTest (reformatParagraphTest):
+
+    '''A class to work around stupidities of the Unittest classes.'''
+
+    #@    @+others
+    #@+node:ekr.20051104075904.58:__init__
+    def __init__ (self,c,p,finalRow,finalCol):
+
+        self.finalCol = finalCol
+        self.finalRow = finalRow
+
+        # Call the base class.
+        reformatParagraphTest.__init__(self,c,p)
+    #@-node:ekr.20051104075904.58:__init__
+    #@+node:ekr.20051104075904.59:runTest
+    def runTest(self):
+
+        # Reformat the paragraph
+        self.c.reformatParagraph()
+
+        # Compare the computed result to the reference result.
+        self.checkText()
+        self.checkPosition(self.finalRow,self.finalCol)
+    #@-node:ekr.20051104075904.59:runTest
+    #@-others
+#@-node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
+#@+node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
+class multiParagraphTest (reformatParagraphTest):
+
+    #@    @+others
+    #@+node:ekr.20051104075904.61:runTest
+    def runTest(self):
+
+        self.c.reformatParagraph()
+        self.checkPosition(13,0)
+
+        # Keep going, in the same manner
+        self.c.reformatParagraph()
+        self.checkPosition(25,0)
+        self.c.reformatParagraph()
+        self.checkPosition(32,11)
+
+        # Compare the computed result to the reference result.
+        self.checkText()
+    #@-node:ekr.20051104075904.61:runTest
+    #@-others
+#@-node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
+#@+node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
+class multiParagraphWithListTest (reformatParagraphTest):
+
+    #@    @+others
+    #@+node:ekr.20051104075904.63:runTest
+    def runTest(self):
+
+        # reformat the paragraph and check insertion cursor position
+        self.c.reformatParagraph()
+        self.checkPosition(4,0)
+
+        # Keep going, in the same manner.
+        self.c.reformatParagraph()
+        self.checkPosition(7,0)
+        self.c.reformatParagraph()
+        self.checkPosition(10,0)
+        self.c.reformatParagraph()
+        self.checkPosition(13,0)
+        self.c.reformatParagraph()
+        self.checkPosition(14,18)
+
+        # Compare the computed result to the reference result.
+        self.checkText()
+    #@-node:ekr.20051104075904.63:runTest
+    #@-others
+#@-node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
+#@+node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
+class leadingWSOnEmptyLinesTest (reformatParagraphTest):
+
+    #@    @+others
+    #@+node:ekr.20051104075904.65:runTest
+    def runTest(self):
+
+        # reformat the paragraph and check insertion cursor position
+        self.c.reformatParagraph()
+        self.checkPosition(4,0)
+
+        # Keep going, in the same manner
+        self.c.reformatParagraph()
+        self.checkPosition(7,0)
+        self.c.reformatParagraph()
+        self.checkPosition(10,0)
+        self.c.reformatParagraph()
+        self.checkPosition(13,0)
+        self.c.reformatParagraph()
+        self.checkPosition(14,18)
+
+        # Compare the computed result to the reference result.
+        self.checkText()
+    #@-node:ekr.20051104075904.65:runTest
+    #@-others
+#@-node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
+#@+node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
+class directiveBreaksParagraphTest (reformatParagraphTest):
+
+    #@    @+others
+    #@+node:ekr.20051104075904.67:runTest
+    def runTest(self):
+
+        # reformat the paragraph and check insertion cursor position
+        self.c.reformatParagraph()
+        self.checkPosition(13,0) # at next paragraph
+
+        # Keep going, in the same manner
+        self.c.reformatParagraph()
+        self.checkPosition(25,0) # at next paragraph
+        self.c.reformatParagraph()
+        self.checkPosition(32,11)
+
+        # Compare the computed result to the reference result.
+        self.checkText()
+    #@-node:ekr.20051104075904.67:runTest
+    #@-others
+#@-node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
+#@-node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
 #@+node:ekr.20061008140603:runEditCommandTest
 def runEditCommandTest (c,p):
 
@@ -1696,6 +1731,11 @@ def runEditCommandTest (c,p):
         c.endUpdate(False) # Don't redraw.
 #@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
+#@+node:ekr.20051104075904.95:throwAssertionError
+def throwAssertionError():
+
+    assert 0, 'assert(0) as a test of catching assertions'
+#@-node:ekr.20051104075904.95:throwAssertionError
 #@-node:ekr.20051104075904.43:Specific to particular unit tests...
 #@+node:ekr.20051104075904.96:Test of doctest
 #@+node:ekr.20051104075904.97:factorial
@@ -1751,29 +1791,7 @@ def factorial(n):
     return result
 #@-node:ekr.20051104075904.97:factorial
 #@-node:ekr.20051104075904.96:Test of doctest
-#@+node:ekr.20051104075904.98:Docutils stuff
-#@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
-def createUnitTestsFromDoctests (modules,verbose=True):
-
-    created = False # True if suite is non-empty.
-
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for module in list(modules):
-        # New in Python 4.2: n may be zero.
-        try:
-            test = doctest.DocTestSuite(module)
-            n = test.countTestCases()
-            if n > 0:
-                suite.addTest(test)
-                created = True
-                if verbose:
-                    print "found %2d doctests for %s" % (n,module.__name__)
-        except ValueError:
-            pass # No tests found.
-
-    return g.choose(created,suite,None)
-#@-node:ekr.20051104075904.99:createUnitTestsFromDoctests
+#@+node:ekr.20051104075904.98:Utils
 #@+node:ekr.20051104075904.100:findAllAtFileNodes
 def findAllAtFileNodes(c):
 
@@ -1851,7 +1869,7 @@ def safeImportModule (fileName):
         print "Not a .py file:",fileName
         return None
 #@-node:ekr.20051104075904.103:safeImportModule
-#@-node:ekr.20051104075904.98:Docutils stuff
+#@-node:ekr.20051104075904.98:Utils
 #@-others
 #@-node:ekr.20051104075904:@thin leoTest.py
 #@-leo
