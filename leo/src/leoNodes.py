@@ -1026,8 +1026,17 @@ class nodeIndices (object):
             else:
                 return "%s.%s.%d" % (theId,t,n)
         except Exception:
-            g.trace('unusual gnx',repr(index))
-            return repr(index)
+            if not g.app.unitTesting:
+                g.trace('unusual gnx',repr(index),g.callers()) 
+            try:
+                theId,t,n = self.getNewIndex()
+                if n in (None,0,'',):
+                    return "%s.%s" % (theId,t)
+                else:
+                    return "%s.%s.%d" % (theId,t,n)
+            except Exception:
+                g.trace('double exception: returning original index')
+                return repr(index)
     #@nonl
     #@-node:ekr.20031218072017.1999:toString
     #@-others
