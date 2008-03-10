@@ -592,7 +592,7 @@ class baseFileCommands:
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.bodyString() ; tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
-        self.fileBuffer = s ; self.fileIndex = 0
+        self.fileBuffer = s ; self.fileBufferIndex = 0
 
         # Do a trial read.
         self.checking = True
@@ -661,7 +661,7 @@ class baseFileCommands:
 
         self.checking = checking
         self.usingClipboard = True
-        self.fileBuffer = s ; self.fileIndex = 0
+        self.fileBuffer = s ; self.fileBufferIndex = 0
         self.descendentUnknownAttributesDictList = []
         v = None
 
@@ -699,7 +699,7 @@ class baseFileCommands:
             if not checking:
                 v = self.finishPaste(reassignIndices)
         finally:
-            self.fileBuffer = None ; self.fileIndex = 0
+            self.fileBuffer = None ; self.fileBufferIndex = 0
             self.usingClipboard = False
             self.tnodesDict = {}
         return v
@@ -817,7 +817,6 @@ class baseFileCommands:
             # Convert any pre-4.1 index to a gnx.
             junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
             if theTime != None:
-                # t.setFileIndex(gnx)
                 t.fileIndex = gnx
 
             return t
@@ -855,7 +854,7 @@ class baseFileCommands:
             #@-node:ekr.20070412103240:<< read the entire file into the buffer >>
             #@nl
             theFile.close()
-            self.fileIndex = 0
+            self.fileBufferIndex = 0
         #@    << Set the default directory >>
         #@+node:ekr.20031218072017.2298:<< Set the default directory >>
         #@+at 
@@ -893,7 +892,7 @@ class baseFileCommands:
         c = self.c
         # Read the entire file into the buffer
         self.fileBuffer = theFile.read() ; theFile.close()
-        self.fileIndex = 0
+        self.fileBufferIndex = 0
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
         #@+at 
@@ -1055,11 +1054,11 @@ class baseFileCommands:
     def getBool (self):
 
         self.skipWs() # guarantees at least one more character.
-        ch = self.fileBuffer[self.fileIndex]
+        ch = self.fileBuffer[self.fileBufferIndex]
         if ch == '0':
-            self.fileIndex += 1 ; return False
+            self.fileBufferIndex += 1 ; return False
         elif ch == '1':
-            self.fileIndex += 1 ; return True
+            self.fileBufferIndex += 1 ; return True
         else:
             raise BadLeoFile("expecting bool constant")
     #@-node:EKR.20040526204706:getBool
@@ -1067,15 +1066,15 @@ class baseFileCommands:
     def getDouble (self):
 
         self.skipWs()
-        i = self.fileIndex ; buf = self.fileBuffer
+        i = self.fileBufferIndex ; buf = self.fileBuffer
         floatChars = 'eE.+-'
         n = len(buf)
         while i < n and (buf[i].isdigit() or buf[i] in floatChars):
             i += 1
-        if i == self.fileIndex:
+        if i == self.fileBufferIndex:
             raise BadLeoFile("expecting float constant")
-        val = float(buf[self.fileIndex:i])
-        self.fileIndex = i
+        val = float(buf[self.fileBufferIndex:i])
+        self.fileBufferIndex = i
         return val
     #@-node:EKR.20040526204706.1:getDouble
     #@+node:EKR.20040526204706.2:getDqBool
@@ -1090,8 +1089,8 @@ class baseFileCommands:
     def getDqString (self):
 
         self.getDquote()
-        i = self.fileIndex
-        self.fileIndex = j = string.find(self.fileBuffer,'"',i)
+        i = self.fileBufferIndex
+        self.fileBufferIndex = j = string.find(self.fileBuffer,'"',i)
         if j == -1: raise BadLeoFile("unterminated double quoted string")
         s = self.fileBuffer[i:j]
         self.getDquote()
@@ -1106,8 +1105,8 @@ class baseFileCommands:
     def getEscapedString (self):
 
         # The next '<' begins the ending tag.
-        i = self.fileIndex
-        self.fileIndex = j = string.find(self.fileBuffer,'<',i)
+        i = self.fileBufferIndex
+        self.fileBufferIndex = j = string.find(self.fileBuffer,'<',i)
         if j == -1:
             print self.fileBuffer[i:]
             raise BadLeoFile("unterminated escaped string")
@@ -1126,16 +1125,16 @@ class baseFileCommands:
     def getLong (self):
 
         self.skipWs() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         if self.fileBuffer[i] == u'-':
             i += 1
         n = len(self.fileBuffer)
         while i < n and self.fileBuffer[i].isdigit():
             i += 1
-        if i == self.fileIndex:
+        if i == self.fileBufferIndex:
             raise BadLeoFile("expecting int constant")
-        val = int(self.fileBuffer[self.fileIndex:i])
-        self.fileIndex = i
+        val = int(self.fileBuffer[self.fileBufferIndex:i])
+        self.fileBufferIndex = i
         return val
     #@-node:EKR.20040526204706.6:getLong
     #@+node:EKR.20040526204706.7:getOpenTag
@@ -1162,12 +1161,12 @@ class baseFileCommands:
         else:
             # The tag need not be followed by "/>"
             if self.matchTag(tag):
-                old_index = self.fileIndex
+                old_index = self.fileBufferIndex
                 self.skipWs()
                 if self.matchTag("/>"):
                     return True
                 else:
-                    self.fileIndex = old_index
+                    self.fileBufferIndex = old_index
                     return False
             else:
                 print "getOpenTag(", tag, ") failed:"
@@ -1178,10 +1177,10 @@ class baseFileCommands:
 
         buf = self.fileBuffer
         blen = len(buf) ; tlen = len(tag)
-        i = j = self.fileIndex
+        i = j = self.fileBufferIndex
         while i < blen:
             if tag == buf[i:i+tlen]:
-                self.fileIndex = i
+                self.fileBufferIndex = i
                 return buf[j:i]
             else: i += 1
 
@@ -1210,7 +1209,7 @@ class baseFileCommands:
             print "getUnknownTag failed"
             raise BadLeoFile("unknown tag not followed by '='")
 
-        self.fileIndex += 1
+        self.fileBufferIndex += 1
         val = self.getDqString()
         # g.trace(tag,val)
         return tag,val
@@ -1219,30 +1218,30 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1245:match routines
     def matchChar (self,ch):
         self.skipWs() # guarantees at least one more character.
-        if ch == self.fileBuffer[self.fileIndex]:
-            self.fileIndex += 1 ; return True
+        if ch == self.fileBuffer[self.fileBufferIndex]:
+            self.fileBufferIndex += 1 ; return True
         else: return False
 
     # Warning: does not check for end-of-word,
     # so caller must match prefixes first.
     def matchTag (self,tag):
         self.skipWsAndNl() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         if tag == self.fileBuffer[i:i+len(tag)]:
-            self.fileIndex += len(tag)
+            self.fileBufferIndex += len(tag)
             return True
         else:
             return False
 
     def matchTagWordIgnoringCase (self,tag):
         self.skipWsAndNl() # guarantees at least one more character.
-        i = self.fileIndex
+        i = self.fileBufferIndex
         tag = string.lower(tag)
         j = g.skip_c_id(self.fileBuffer,i)
         word = self.fileBuffer[i:j]
         word = string.lower(word)
         if tag == word:
-            self.fileIndex += len(tag)
+            self.fileBufferIndex += len(tag)
             return True
         else:
             return False
@@ -1250,27 +1249,27 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3027:skipWs
     def skipWs (self):
 
-        while self.fileIndex < len(self.fileBuffer):
-            ch = self.fileBuffer[self.fileIndex]
+        while self.fileBufferIndex < len(self.fileBuffer):
+            ch = self.fileBuffer[self.fileBufferIndex]
             if ch == ' ' or ch == '\t':
-                self.fileIndex += 1
+                self.fileBufferIndex += 1
             else: break
 
         # The caller is entitled to get the next character.
-        if  self.fileIndex >= len(self.fileBuffer):
+        if  self.fileBufferIndex >= len(self.fileBuffer):
             raise BadLeoFile("")
     #@-node:ekr.20031218072017.3027:skipWs
     #@+node:ekr.20031218072017.3028:skipWsAndNl
     def skipWsAndNl (self):
 
-        while self.fileIndex < len(self.fileBuffer):
-            ch = self.fileBuffer[self.fileIndex]
+        while self.fileBufferIndex < len(self.fileBuffer):
+            ch = self.fileBuffer[self.fileBufferIndex]
             if ch == ' ' or ch == '\t' or ch == '\r' or ch == '\n':
-                self.fileIndex += 1
+                self.fileBufferIndex += 1
             else: break
 
         # The caller is entitled to get the next character.
-        if  self.fileIndex >= len(self.fileBuffer):
+        if  self.fileBufferIndex >= len(self.fileBuffer):
             raise BadLeoFile("")
     #@-node:ekr.20031218072017.3028:skipWsAndNl
     #@+node:ekr.20031218072017.3031:xmlUnescape
