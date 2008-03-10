@@ -2366,8 +2366,10 @@ class editCommandsClass (baseEditCommandsClass):
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
 
-        #if str(map(self.dHash, l)) == str(map(self.dHash, self.getIconList(p))):
-        #    return
+        if not set(map(self.dHash, l)).difference(
+            set(map(self.dHash, self.getIconList(p)))):
+            # no difference between original and current set of dictionaries
+            return
 
         #g.es((1, str(self.getIconList(p))))
         #g.es((2,str(l)))
