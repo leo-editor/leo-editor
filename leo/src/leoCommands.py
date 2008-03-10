@@ -221,8 +221,9 @@ class baseCommands:
         c.frame.log.finishCreate()
 
         # Create the menu last so that we can use the key handler for shortcuts.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            c.frame.menu.createMenuBar(c.frame)
+        # if not g.doHook("menu1",c=c,p=p,v=p):
+            # g.trace('commands',c,g.callers())
+            # c.frame.menu.createMenuBar(c.frame)
 
         c.bodyWantsFocusNow()
     #@+node:ekr.20051007143620:printCommandsDict
@@ -638,6 +639,11 @@ class baseCommands:
             v.moveToRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
             c.editPosition(p)
+            # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+            p = c.currentPosition()
+            if not g.doHook("menu1",c=c,p=p,v=p):
+                frame.menu.createMenuBar(frame)
+                c.updateRecentFiles(fileName=None)
         finally:
             c.endUpdate()
             # chapterController.finishCreate must be called after the first real redraw

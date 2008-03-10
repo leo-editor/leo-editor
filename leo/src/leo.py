@@ -222,14 +222,21 @@ def createFrame (fileName,relativeFileName):
         fileName=fileName,
         relativeFileName=relativeFileName,
         initEditCommanders=True)
+    assert frame.c == c and c.frame == frame
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
     frame.startupWindow = True
-    if frame.c.chapterController:
-        frame.c.chapterController.finishCreate()
-        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
     # Call the 'new' hook for compatibility with plugins.
     g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=frame.c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
 
     # Report the failure to open the file.
     if fileName:

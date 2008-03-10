@@ -1899,6 +1899,7 @@ def openWithFileName(fileName,old_c,
         fileName=fileName,
         relativeFileName=relativeFileName,
         gui=gui)
+    assert frame.c == c and c.frame == frame
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
@@ -1912,17 +1913,23 @@ def openWithFileName(fileName,old_c,
                 readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
             app.unlockLog()
             for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by menu.updateRecentFiles.
+                # The recent files list has been updated by c.updateRecentFiles.
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
         # Bug fix in 4.4.
         frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=frame.c,fileName=fileName)
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
     finally:
         c.endUpdate()
+        assert frame.c == c and c.frame == frame
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if frame.c.chapterController:
-            frame.c.chapterController.finishCreate()
+        if c.chapterController:
+            c.chapterController.finishCreate()
         k = c.k
         if k: k.setInputState(k.unboundKeyAction)
         if c.config.getBool('outline_pane_has_initial_focus'):

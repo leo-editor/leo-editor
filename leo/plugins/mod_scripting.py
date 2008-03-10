@@ -165,6 +165,7 @@ def onCreate (tag, keys):
     c = keys.get('c')
 
     if c:
+        # g.trace('mod_scripting',c)
         sc = scriptingController(c)
         sc.createAllButtons()
 #@nonl
