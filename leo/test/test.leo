@@ -276,7 +276,7 @@
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
-<v t="ekr.20071105085941" a="TV"><vh>Tests</vh>
+<v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 <v t="ekr.20071027111751"><vh>@test javaScript import</vh>
 <v t="ekr.20071027111751.1"><vh>functions</vh></v>
@@ -401,6 +401,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
+<v t="ekr.20080310111916.1" a="TV"><vh>@button Translate "can not" to "can't"</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -21195,6 +21196,17 @@ elif 0: # passed
 else: # passed
     fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','doc','LeoDocs.leo'))
     c.k.simulateCommand('open-outline-by-name %s' % fileName)</t>
+<t tx="ekr.20080310111916.1">def myTranslateString (s):
+
+    i = s.lower().find('can not')
+    if i == -1:
+        return s
+    else:
+        return s[:i+1] + "an't" + s[i+7:]
+
+g.translateString = myTranslateString
+
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
