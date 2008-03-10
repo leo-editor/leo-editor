@@ -1573,7 +1573,7 @@ class leoMenu:
         c = self.c
         recentFilesMenu = self.getMenu("Recent Files...")
         if not recentFilesMenu:
-            g.trace('Recent Files Menu does not exist')
+            g.trace('Recent Files Menu does not exist',g.callers())
             return
 
         # Delete all previous entries.
