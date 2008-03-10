@@ -784,7 +784,7 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -802,8 +802,8 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
-<v t="ekr.20080309193654.1" a="E"><vh>@ignore</vh>
+<v t="ekr.20050120095423" a="E" annotate="7d71002e"><vh>Unit tests for plugins</vh>
+<v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
 <v t="ekr.20050218015346.11"><vh>&lt;&lt; class testRoutineTestCase &gt;&gt;</vh>
@@ -832,14 +832,13 @@
 </v>
 <v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
 </v>
-<v t="ekr.20050120095423.6" a="E"><vh>@suite test syntax of all plugins</vh>
+<v t="ekr.20050120095423.6" a="TV"><vh>@suite test syntax of all plugins</vh>
 <v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
 <v t="ekr.20050120095423.8"><vh>__init__</vh></v>
 <v t="ekr.20050120095423.9"><vh>runTest</vh></v>
 <v t="ekr.20050120095423.10"><vh>shortDescription</vh></v>
 </v>
 </v>
-<v t="ekr.20061106201509"><vh>Plugins</vh></v>
 <v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
 <v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
 <v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
@@ -5415,25 +5414,32 @@ else:
 <t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
 import unittest
 import leoTest
+import sys
 
 @others
 
-print '@suite test syntax of all plugins'
+if sys.platform.lower().startswith('win'):
 
-suite = unittest.makeSuite(unittest.TestCase)
-
-for path in leoTest.getAllPluginFilenames():
-
-    f = file(path)
-    assert f, "File not found: %s" % path
-    # Do not test the syntax_error_plugin.
-    if path.find('syntax_error_plugin') == -1:
-        s = f.read() ; f.close()
-        test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
-        suite.addTest(test)
-
-if suite:
-    g.app.scriptDict['suite'] = suite</t>
+    print '@suite test syntax of all plugins'
+    
+    suite = unittest.makeSuite(unittest.TestCase)
+    
+    for path in leoTest.getAllPluginFilenames():
+    
+        f = file(path)
+        assert f, "File not found: %s" % path
+        # Do not test the syntax_error_plugin.
+        if path.find('syntax_error_plugin') == -1:
+            s = f.read() ; f.close()
+            test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
+            suite.addTest(test)
+    
+    if suite:
+        g.app.scriptDict['suite'] = suite
+        
+else:
+    
+    pass # Only test these on Windows.</t>
 <t tx="ekr.20050120095423.7">class parseFileTestCase (unittest.TestCase):
 
     @others</t>
@@ -15732,7 +15738,6 @@ finally:
 # end:</t>
 <t tx="ekr.20061106184118">&lt;&lt; test defined &gt;&gt;</t>
 <t tx="ekr.20061106184118.1">pass</t>
-<t tx="ekr.20061106201509"></t>
 <t tx="ekr.20061106201509.1"></t>
 <t tx="ekr.20061106201509.2">import detect_urls
 
