@@ -657,10 +657,6 @@ class unitTestGui(nullGui):
     #@-node:ekr.20071128094234.1:createSpellTab
     #@-others
 #@-node:ekr.20031218072017.3742:class unitTestGui (nullGui)
-#@+node:ekr.20070629065104:Unit tests
-#@+node:ekr.20070627082044.823:g.app.gui & leoTextWidget
-#@-node:ekr.20070627082044.823:g.app.gui & leoTextWidget
-#@-node:ekr.20070629065104:Unit tests
 #@-others
 #@-node:ekr.20031218072017.3719:@thin leoGui.py
 #@-leo
