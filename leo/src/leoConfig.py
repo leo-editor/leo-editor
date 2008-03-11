@@ -1888,26 +1888,6 @@ class settingsTreeParser (parserBaseClass):
     #@-node:ekr.20041119204714:visitNode (settingsTreeParser)
     #@-others
 #@-node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
-#@+node:ekr.20070627082044.906:Unit tests
-#@+node:ekr.20070627082044.903:@@test ifgui
-if g.unitTesting:
-    guiname = g.app.gui.guiName()
-
-    tkinter = c.config.getBool('test_tkinter_setting')
-    wx      = c.config.getBool('test_wxWindows_setting')
-
-    print guiname
-
-    if guiname == 'tkinter':
-        assert(tkinter)
-        assert(not wx)
-
-    if guiname == 'wxWindows':
-        assert(not tkinter)
-        assert(wx)
-#@nonl
-#@-node:ekr.20070627082044.903:@@test ifgui
-#@-node:ekr.20070627082044.906:Unit tests
 #@-others
 #@-node:ekr.20041117062700:@thin leoConfig.py
 #@-leo
