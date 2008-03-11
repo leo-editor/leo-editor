@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.571052631579">
-	<global_window_position top="10" left="149" height="950" width="1047"/>
+	<global_window_position top="10" left="289" height="950" width="907"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E"><vh>Startup</vh>
+<v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -53,6 +53,7 @@
 <v t="ekr.20060904111037" a="M"><vh>@@button opml-read</vh></v>
 </v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
+<v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
 </v>
 <v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
@@ -64,7 +65,7 @@
 <v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20070410063214" a="E"><vh>Commands, scripts</vh>
+<v t="ekr.20070410063214"><vh>Commands, scripts</vh>
 <v t="ekr.20060924180049"><vh>@command clones-tab</vh>
 <v t="ekr.20060924180049.1"><vh>class cloneNavigator</vh>
 <v t="ekr.20060924180049.2"><vh>init</vh></v>
@@ -86,7 +87,7 @@
 </v>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
 </v>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070305085403"><vh>vim plugin</vh>
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
@@ -103,7 +104,7 @@
 <v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
-<v t="ekr.20080310164329.2" a="E"><vh>@menus</vh>
+<v t="ekr.20080310164329.2"><vh>@menus</vh>
 <v t="ekr.20080310164329.3"><vh>@menu &amp;File</vh>
 <v t="ekr.20080310164329.4"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20080310164329.5"><vh>@item open-outline</vh></v>
@@ -232,7 +233,7 @@
 <v t="ekr.20080310164329.119"><vh>@item toggle-invisibles</vh></v>
 <v t="ekr.20080310164329.120"><vh>@item open-leoSettings-leo</vh></v>
 </v>
-<v t="ekr.20080310164329.121" a="E"><vh>@menu &amp;Outline</vh>
+<v t="ekr.20080310164329.121"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20080310164329.122"><vh>@item *c&amp;ut-node</vh></v>
 <v t="ekr.20080310164329.123"><vh>@item *c&amp;opy-node</vh></v>
 <v t="ekr.20080310164329.124"><vh>@item *&amp;paste-node</vh></v>
@@ -605,10 +606,10 @@
 <v t="ekr.20080310164329.460"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20080310164329.461"><vh>@item *print-c&amp;ommands</vh></v>
 </v>
-<v t="ekr.20080310164329.465" a="E"><vh>@menu &amp;IPython</vh>
+<v t="ekr.20080310164329.465"><vh>@menu &amp;IPython</vh>
 <v t="ekr.20080310164329.466"><vh>@item start-ipython</vh></v>
 <v t="ekr.20080310164329.467"><vh>@item push-to-ipython</vh></v>
-<v t="ekr.20080310164713.2" a="V"><vh>@item clones-tab</vh></v>
+<v t="ekr.20080310164713.2"><vh>@item clones-tab</vh></v>
 </v>
 </v>
 </v>
@@ -620,7 +621,7 @@
 </v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080214091706.2"><vh>@command ekr-command</vh></v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1" a="TV"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
 <v t="ekr.20070504131950"><vh>getNewObjects</vh>
@@ -909,7 +910,6 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080310111916.1"><vh>@button Translate "can not" to "can't"</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
