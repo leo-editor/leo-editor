@@ -1171,9 +1171,6 @@ class leoBody:
         # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.headString())
     #@-node:ekr.20070424092855:updateInjectedIvars
     #@-node:ekr.20070424053629.1:utils
-    #@+node:ekr.20070627082044.931:unit tests
-    # Crashes on wx
-    #@-node:ekr.20070627082044.931:unit tests
     #@-node:ekr.20060528100747:Editors (leoBody)
     #@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
     # This is the only key handler for the body pane.
