@@ -34,34 +34,36 @@ import os
 #@nonl
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.7"
+__version__ = "1.8"
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
 #@+at
 # 
 # 1.3 EKR:
-#     - Rewritten to use:
-#         - init and onCreate functions.
-#         - Common imageClass.
-#         - per-commander dialogs.
-#         - positions rather than vnodes.
-#     - Fixed numerous bugs.
-#     - The code is _much_ simpler than before.
-#     - Added marksInitiallyVisible and recentInitiallyVisible config
+# - Rewritten to use:
+#     - init and onCreate functions.
+#     - Common imageClass.
+#     - per-commander dialogs.
+#     - positions rather than vnodes.
+# - Fixed numerous bugs.
+# - The code is _much_ simpler than before.
+# - Added marksInitiallyVisible and recentInitiallyVisible config
 # constants.
 # 1.4 EKR: 2 bug fixes
-#     - Allways fill the box when clicking on the 'Recent' button.
-#     - Use keywords.get('c') NOT self.c in hook handlers.  They may not be
-# the same!
-#         - This is actually a bug in leoPlugins.registerHandler, but it can't
-# be
-#           fixed because there is no way to associate commanders with hook
-# handlers.
+# - Allways fill the box when clicking on the 'Recent' button.
+# - Use keywords.get('c') NOT self.c in hook handlers.  They may not be the 
+# same!
+# - This is actually a bug in leoPlugins.registerHandler, but it can't be
+# fixed because there is no way to associate commanders with hook handlers.
 # 1.5 EKR: Fixed crasher in tkinterListBoxDialog.go().
-#     updateMarks must set positionList ivar in the base class.
+# updateMarks must set positionList ivar in the base class.
 # 1.6 EKR: Use c.nodeHistory methods instead of raw ivars of the commander.
 # 1.7 plumloco: Modified to be gui-independant.
+# 1.8 EKR:
+# - Added show-marks-dialog and show-recent-sections-dialog commands.
+# - Select an item initially.
+# - Added bindings for up and down arrows.
 #@-at
 #@-node:ekr.20050219114353.1:<< version history >>
 #@nl
@@ -158,11 +160,16 @@ def init ():
                 # Init the base class and call self.createFrame.
                 tkinterListBoxDialog.__init__(self,c,self.title,self.label)
 
+                # Create the show-marks-dialog command.
+                self.addCommand()
+
                 if not marksInitiallyVisible:
                     self.top.withdraw()
 
                 self.addButtons()
-            #@nonl
+
+                self.top.bind("<Up>",self.up)
+                self.top.bind("<Down>",self.down)
             #@-node:edream.110203113231.776: marksDialog.__init__
             #@+node:ekr.20050219131752:addButtons
             def addButtons (self):
@@ -176,6 +183,20 @@ def init ():
                     text="Marks",command=marksButtonCallback)
             #@nonl
             #@-node:ekr.20050219131752:addButtons
+            #@+node:ekr.20080311065442.2:addCommand
+            def addCommand (self):
+
+                '''Create the show-marks-dialog command.'''
+
+                c = self.c
+
+                # The event arg is required to keep a unit test happy.
+                def showMarksDialogCallback(event,*args,**keys):
+                    self.top.deiconify()
+
+                c.k.registerCommand('show-marks-dialog',
+                    shortcut=None,func=showMarksDialogCallback)
+            #@-node:ekr.20080311065442.2:addCommand
             #@+node:edream.110203113231.777:createFrame
             def createFrame(self):
 
@@ -189,6 +210,34 @@ def init ():
                 self.addStdButtons(f)
             #@nonl
             #@-node:edream.110203113231.777:createFrame
+            #@+node:ekr.20080311065442.3:down/up
+            def down (self,event):
+
+                # Work around an old Python bug.  Convert strings to ints.
+                items = self.box.curselection()
+                try: items = map(int, items)
+                except ValueError: pass
+
+                if items:
+                    n = items[0]
+                    if n + 1 < len(self.positionList):
+                        self.box.selection_clear(n)
+                        self.box.selection_set(n+1)
+                else:
+                    self.box.selection_set(0)
+
+            def up (self,event):
+
+                # Work around an old Python bug.  Convert strings to ints.
+                items = self.box.curselection()
+                try: items = map(int, items)
+                except ValueError: pass
+
+                if items: n = items[0]
+                else:     n = 0
+                self.box.selection_clear(n)
+                self.box.selection_set(max(0,n-1))
+            #@-node:ekr.20080311065442.3:down/up
             #@+node:edream.110203113231.779:updateMarks
             def updateMarks(self,tag,keywords):
 
@@ -209,7 +258,8 @@ def init ():
                         tnodeList.append(p.v.t)
                         self.positionList.append(p.copy())
                         i += 1
-            #@nonl
+
+                self.box.selection_set(max(0,len(self.positionList)-1))
             #@-node:edream.110203113231.779:updateMarks
             #@-others
         #@nonl
@@ -231,6 +281,10 @@ def init ():
                 self.title = "Recent nodes for %s" % g.shortFileName(c.mFileName)
                 self.lt_nav_button = self.rt_nav_button = None # Created by createFrame.
 
+                # Create the show-recent-sections-dialog command.
+                self.addCommand()
+
+                # Add 'Recent' button to icon bar.
                 self.addIconBarButtons()
 
                 # Init the base class. (calls createFrame)
@@ -243,44 +297,25 @@ def init ():
                     self.top.withdraw()
 
                 self.updateButtons()
-            #@nonl
+
+                self.top.bind("<Up>",self.up)
+                self.top.bind("<Down>",self.down)
             #@-node:edream.110203113231.781:__init__  recentSectionsDialog
-            #@+node:ekr.20050219131336:addIconBarButtons
-            def addIconBarButtons (self):
+            #@+node:ekr.20080311065442.1:addCommand
+            def addCommand (self):
 
-                c = self.c ; images = self.images
+                '''Create the show-recent-sections-dialog command.'''
 
-                # Add 'Recent' button to icon bar.
-                def recentButtonCallback(*args,**keys):
+                c = self.c
+
+                # The event arg is required to keep a unit test happy.
+                def recentSectionsCommandCallback(event,*args,**keys):
                     self.fillbox(forceUpdate=True)
                     self.top.deiconify()
 
-                self.sections_button = c.frame.addIconButton(
-                    text="Recent",command=recentButtonCallback)
-
-                # Add left and right arrows to icon bar.
-                self.lt_nav_disabled_image = images.lt_nav_disabled_image
-                self.lt_nav_enabled_image  = images.lt_nav_enabled_image
-                self.rt_nav_disabled_image = images.rt_nav_disabled_image
-                self.rt_nav_enabled_image  = images.rt_nav_enabled_image
-
-                self.lt_nav_iconFrame_button = c.frame.addIconButton(
-                    image=self.lt_nav_disabled_image,
-                    command=c.goPrevVisitedNode)
-
-                self.rt_nav_iconFrame_button = c.frame.addIconButton(
-                    image=self.rt_nav_disabled_image,
-                    command=c.goNextVisitedNode)
-
-                # Don't dim the button when it is inactive.
-                for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):
-                    fg = b.cget("foreground")
-                    b.configure(disabledforeground=fg)
-
-                # Package these buttons for the recentSectionsDialog class in leoTkinterDialog.py
-                self.nav_buttons = (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button)
-            #@nonl
-            #@-node:ekr.20050219131336:addIconBarButtons
+                c.k.registerCommand('show-recent-sections-dialog',
+                    shortcut=None,func=recentSectionsCommandCallback)
+            #@-node:ekr.20080311065442.1:addCommand
             #@+node:edream.110203113231.782:addFrameButtons
             def addFrameButtons (self):
 
@@ -320,6 +355,42 @@ def init ():
                     width=6,command=self.deleteEntry)
                 b.pack(side="left",pady=2,padx=5)
             #@-node:edream.110203113231.782:addFrameButtons
+            #@+node:ekr.20050219131336:addIconBarButtons
+            def addIconBarButtons (self):
+
+                c = self.c ; images = self.images
+
+                # Add 'Recent' button to icon bar.
+                def recentButtonCallback(*args,**keys):
+                    self.fillbox(forceUpdate=True)
+                    self.top.deiconify()
+
+                self.sections_button = c.frame.addIconButton(
+                    text="Recent",command=recentButtonCallback)
+
+                # Add left and right arrows to icon bar.
+                self.lt_nav_disabled_image = images.lt_nav_disabled_image
+                self.lt_nav_enabled_image  = images.lt_nav_enabled_image
+                self.rt_nav_disabled_image = images.rt_nav_disabled_image
+                self.rt_nav_enabled_image  = images.rt_nav_enabled_image
+
+                self.lt_nav_iconFrame_button = c.frame.addIconButton(
+                    image=self.lt_nav_disabled_image,
+                    command=c.goPrevVisitedNode)
+
+                self.rt_nav_iconFrame_button = c.frame.addIconButton(
+                    image=self.rt_nav_disabled_image,
+                    command=c.goNextVisitedNode)
+
+                # Don't dim the button when it is inactive.
+                for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):
+                    fg = b.cget("foreground")
+                    b.configure(disabledforeground=fg)
+
+                # Package these buttons for the recentSectionsDialog class in leoTkinterDialog.py
+                self.nav_buttons = (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button)
+            #@nonl
+            #@-node:ekr.20050219131336:addIconBarButtons
             #@+node:edream.110203113231.783:clearAll
             def clearAll (self,event=None):
 
@@ -372,6 +443,34 @@ def init ():
                 # This is enough to disable fillbox.
                 self.top.withdraw()
             #@-node:edream.110203113231.786:destroy
+            #@+node:ekr.20080311065442.4:down/up
+            def down (self,event):
+
+                # Work around an old Python bug.  Convert strings to ints.
+                items = self.box.curselection()
+                try: items = map(int, items)
+                except ValueError: pass
+
+                if items:
+                    n = items[0]
+                    if n + 1 < len(self.positionList):
+                        self.box.selection_clear(n)
+                        self.box.selection_set(n+1)
+                else:
+                    self.box.selection_set(0)
+
+            def up (self,event):
+
+                # Work around an old Python bug.  Convert strings to ints.
+                items = self.box.curselection()
+                try: items = map(int, items)
+                except ValueError: pass
+
+                if items: n = items[0]
+                else:     n = 0
+                self.box.selection_clear(n)
+                self.box.selection_set(max(0,n-1))
+            #@-node:ekr.20080311065442.4:down/up
             #@+node:edream.110203113231.787:fillbox
             def fillbox(self,forceUpdate=False):
 
@@ -391,6 +490,9 @@ def init ():
                         tnodeList.append(p.v.t)
                         self.positionList.append(p.copy())
                         i += 1
+
+                self.box.selection_set(max(0,len(self.positionList)-1))
+            #@nonl
             #@-node:edream.110203113231.787:fillbox
             #@+node:ekr.20050508104217:testxxx.py
             import unittest
