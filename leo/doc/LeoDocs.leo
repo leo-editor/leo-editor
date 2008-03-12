@@ -1126,7 +1126,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="TV"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
@@ -1219,7 +1219,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.117"><vh>Previous versions...</vh>
+<v t="edream.110203163054.117" a="E"><vh>Previous versions...</vh>
 <v t="ekr.20060206111717"><vh>Ancient...</vh>
 <v t="edream.110203163054.646"><vh>Borland PC versions...</vh>
 <v t="edream.110203163054.647"><vh>Borland 2.7 Major bug fix: please upgrade</vh></v>
@@ -3334,7 +3334,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070806090235"><vh>4.4.4 @auto, @menus, threading syntax colorer, the Great Graph Aha</vh>
+<v t="ekr.20070806090235" a="E"><vh>4.4.4 @auto, @menus, threading syntax colorer, the Great Graph Aha</vh>
 <v t="ekr.20070806090235.1"><vh>4.4.4 b1</vh>
 <v t="ekr.20070806090226.1"><vh>Added support for @mark-for-unit-tests node</vh></v>
 <v t="ekr.20070806090226.14"><vh>Created threading_colorizer</vh></v>
@@ -3579,8 +3579,8 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080311060457.1" a="TV"><vh>4.4.8 b2</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
 <v t="ekr.20080311060457.212"><vh>Added translation services</vh>
@@ -3876,9 +3876,9 @@
 </v>
 </v>
 <v t="ekr.20080311060457.128"><vh>Features</vh>
-<v t="ekr.20080311060457.188" a="E"><vh>Compile regexp's once in findNextMatch</vh></v>
+<v t="ekr.20080311060457.188"><vh>Compile regexp's once in findNextMatch</vh></v>
 <v t="ekr.20080311060457.198"><vh>Created menus very late in the creation process</vh>
-<v t="ekr.20080311082847.1" a="E"><vh>Improved marks/recent buttons plugin</vh></v>
+<v t="ekr.20080311082847.1"><vh>Improved marks/recent buttons plugin</vh></v>
 </v>
 </v>
 </v>
@@ -32278,7 +32278,10 @@ What's New in Leo 4.4.4
 Leo 4.4.4 contains many important features originally planned for later releases.
 The highlights of Leo 4.4.4:
     
-- **The Great Graph Aha**: simple scripts allow Leo outlines to represent arbitrary
+- **The Great Graph Aha**:
+  A Leo outline doesn't have to *be* an arbitrary graph in order to *represent* an arbitrary graph.
+  
+  That is, simple scripts allow Leo outlines to represent arbitrary
   directed graphs. There is no need for a separate 'graph world'. The graphed.py
   plugin is a direct result of this Aha. It allows you to create general graphs
   from Leo outlines.
@@ -32763,7 +32766,11 @@ if not w:
 
 log.selectTab(tag)
 </t>
-<t tx="ekr.20071004103659">**The graph world is unnecessary because we can use Leo nodes and trees as data
+<t tx="ekr.20071004103659">The Great Graph Aha is:
+
+A Leo outline doesn't have to *be* an arbitrary graph in order to *represent* an arbitrary graph.
+
+So the graph world is unnecessary because we can use Leo nodes and trees as data
 to other graphing packages.** That is, Python scripts can build arbitrary graphs
 using Leo's existing nodes and trees. And Python scripts can manipulate those
 graphs. And Python scripts could do the reverse: manipulate the Leo outline by
