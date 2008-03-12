@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="TV"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,74 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070531102813"><vh>Disabled buttons</vh>
-<v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
-<v t="ekr.20060918083159"><vh>@@button Clear uAs</vh></v>
-<v t="ekr.20071002150320"><vh>@@button create-canvas</vh></v>
-<v t="ekr.20060809084033"><vh>@@button cvt to g.et</vh>
-<v t="ekr.20060809104405"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
-<v t="ekr.20060809092023"><vh>test</vh>
-<v t="ekr.20060809103738"><vh>test1</vh></v>
-<v t="ekr.20060809103738.1"><vh>test2</vh></v>
-</v>
-<v t="ekr.20060809090508"><vh>replace</vh>
-<v t="ekr.20060809091749.72"><vh>&lt;&lt; handle string &gt;&gt;</vh></v>
-<v t="ekr.20060809091749.73"><vh>&lt;&lt; handle g.es &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
-<v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
-<v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
-<v t="ekr.20071006084354"><vh>@@button print tk line number</vh></v>
-<v t="ekr.20070515073111"><vh>@@button sep</vh></v>
-<v t="ekr.20060427103457"><vh>@@button settings.leo</vh></v>
-<v t="ekr.20070604095313"><vh>Chapter buttons</vh>
-<v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
-<v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
-<v t="ekr.20070603175054"><vh>@@button ch-abc</vh></v>
-<v t="ekr.20070603190713.1"><vh>@@button ch-xyz</vh></v>
-<v t="ekr.20070603190713"><vh>@@button ch-add-xyz</vh></v>
-</v>
-<v t="ekr.20060904110922"><vh>OPML buttons</vh>
-<v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
-<v t="ekr.20060904111037" a="M"><vh>@@button opml-read</vh></v>
-</v>
-<v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
-<v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
-</v>
-<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
-<v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
-<v t="ekr.20071025192258"><vh>@button local-tests @key=Alt+4</vh></v>
-<v t="ekr.20071101163934"><vh>@command rst3</vh></v>
-<v t="ekr.20080105115712"><vh>@button pylint</vh>
-<v t="ekr.20080115085447"><vh>harmless warnings, errors</vh></v>
-<v t="ekr.20080105130903"><vh>warnings</vh></v>
-<v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20070410063214"><vh>Commands, scripts</vh>
-<v t="ekr.20060924180049"><vh>@command clones-tab</vh>
-<v t="ekr.20060924180049.1"><vh>class cloneNavigator</vh>
-<v t="ekr.20060924180049.2"><vh>init</vh></v>
-<v t="ekr.20060924180049.3"><vh>getAllClones</vh></v>
-<v t="ekr.20060924180049.4"><vh>displayClones</vh>
-<v t="ekr.20060924180049.5"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
-<v t="ekr.20060924180049.6"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
-<v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
-<v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
-</v>
-<v t="ekr.20070223164126"><vh>Recursive import script</vh>
-<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
-<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
-<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
-</v>
-<v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
-</v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070305085403"><vh>vim plugin</vh>
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
@@ -104,7 +37,7 @@
 <v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
-<v t="ekr.20080310164329.2"><vh>@menus</vh>
+<v t="ekr.20080310164329.2"><vh>@@menus</vh>
 <v t="ekr.20080310164329.3"><vh>@menu &amp;File</vh>
 <v t="ekr.20080310164329.4"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20080310164329.5"><vh>@item open-outline</vh></v>
@@ -613,15 +546,82 @@
 </v>
 </v>
 </v>
+<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
+<v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
+<v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
+<v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
+<v t="ekr.20080105115712"><vh>@@button pylint</vh>
+<v t="ekr.20080115085447"><vh>harmless warnings, errors</vh></v>
+<v t="ekr.20080105130903"><vh>warnings</vh></v>
+<v t="ekr.20080105120559"><vh>&lt;&lt; define data &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
+<v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
+<v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
+</v>
+</v>
+<v t="ekr.20070410063214"><vh>Commands</vh>
+<v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
+<v t="ekr.20060924180049.1"><vh>class cloneNavigator</vh>
+<v t="ekr.20060924180049.2"><vh>init</vh></v>
+<v t="ekr.20060924180049.3"><vh>getAllClones</vh></v>
+<v t="ekr.20060924180049.4"><vh>displayClones</vh>
+<v t="ekr.20060924180049.5"><vh>&lt;&lt;Fill listbox with clone parent headlines&gt;&gt;</vh></v>
+<v t="ekr.20060924180049.6"><vh>&lt;&lt;Goto selected position when listbox selection changes&gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080214091706.2"><vh>@@command ekr-command</vh></v>
+</v>
+<v t="ekr.20070531102813"><vh>Disabled buttons</vh>
+<v t="ekr.20060814111542"><vh>@@button add-e</vh></v>
+<v t="ekr.20060918083159"><vh>@@button Clear uAs</vh></v>
+<v t="ekr.20071002150320"><vh>@@button create-canvas</vh></v>
+<v t="ekr.20060809084033"><vh>@@button cvt to g.et</vh>
+<v t="ekr.20060809104405"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20060809092023"><vh>test</vh>
+<v t="ekr.20060809103738"><vh>test1</vh></v>
+<v t="ekr.20060809103738.1"><vh>test2</vh></v>
+</v>
+<v t="ekr.20060809090508"><vh>replace</vh>
+<v t="ekr.20060809091749.72"><vh>&lt;&lt; handle string &gt;&gt;</vh></v>
+<v t="ekr.20060809091749.73"><vh>&lt;&lt; handle g.es &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
+<v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
+<v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
+<v t="ekr.20071006084354"><vh>@@button print tk line number</vh></v>
+<v t="ekr.20070515073111"><vh>@@button sep</vh></v>
+<v t="ekr.20060427103457"><vh>@@button settings.leo</vh></v>
+<v t="ekr.20070604095313"><vh>Chapter buttons</vh>
+<v t="ekr.20070530072113.1"><vh>@@button show-ch</vh></v>
+<v t="ekr.20070603175054.1"><vh>@@button ch-main</vh></v>
+<v t="ekr.20070603175054"><vh>@@button ch-abc</vh></v>
+<v t="ekr.20070603190713.1"><vh>@@button ch-xyz</vh></v>
+<v t="ekr.20070603190713"><vh>@@button ch-add-xyz</vh></v>
+</v>
+<v t="ekr.20060904110922"><vh>OPML buttons</vh>
+<v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
+<v t="ekr.20060904111037" a="M"><vh>@@button opml-read</vh></v>
+</v>
+<v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
+<v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
+</v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
+<v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
+<v t="ekr.20070223164126"><vh>Recursive import script</vh>
+<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
+<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
+<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
+</v>
 <v t="ekr.20070517070854"><vh>run script in nullGui</vh></v>
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080214091706.2"><vh>@command ekr-command</vh></v>
-<v t="ekr.20070517160058.1" a="TV"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
 <v t="ekr.20070504131950"><vh>getNewObjects</vh>
@@ -752,7 +752,7 @@
 </v>
 <v t="ekr.20071124195608"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20071126145358"><vh>To do</vh></v>
-<v t="mcrowe.20060823083143.7"><vh>@button Leo2DHTML</vh>
+<v t="mcrowe.20060823083143.7"><vh>@@button Leo2DHTML</vh>
 <v t="ekr.20071205142535"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
 <v t="ekr.20071205152904"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
 <v t="ekr.20071205160026"><vh>escape</vh></v>

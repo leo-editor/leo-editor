@@ -2,20 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20071025160653.1:Support @command nodes in @buttons tree
-@nocolor
-
-Notes:
-
-The mod_scripting plugin handles common @button nodes this way:
-- Calls c.config.getButtons.
-- Creates a button for each item in the list.
-
-Similarly, the mod_scripting plugin should handle common @command nodes.
-
-@color
-#@nonl
-#@-node:ekr.20071025160653.1:Support @command nodes in @buttons tree
 #@+node:ekr.20080311060457.219:** Fix distribution problems
 @nocolor
 
@@ -191,6 +177,8 @@ have this flag (e.g. the .leo documents in Leo cvs).
 #@-node:ekr.20080225104355:@bool fixed-leo-file
 #@-node:ekr.20080218110223.1:Files
 #@+node:ekr.20071211142600.2:Config stuff
+#@+node:ekr.20080311135649.5:List the special cases in the config code
+#@-node:ekr.20080311135649.5:List the special cases in the config code
 #@+node:ekr.20080225103954:Add 'else' clause to if-platform
 @nocolor
 
