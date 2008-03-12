@@ -257,20 +257,29 @@ hr { /* EKR */
 <h1><a class="toc-backref" href="#id1">What's New in Leo 4.4.4</a></h1>
 <p>Leo 4.4.4 contains many important features originally planned for later releases.
 The highlights of Leo 4.4.4:</p>
-<ul class="simple">
-<li><strong>The Great Graph Aha</strong>: simple scripts allow Leo outlines to represent arbitrary
+<ul>
+<li><p class="first"><strong>The Great Graph Aha</strong>:
+A Leo outline doesn't have to <em>be</em> an arbitrary graph in order to <em>represent</em> an arbitrary graph.</p>
+<p>That is, simple scripts allow Leo outlines to represent arbitrary
 directed graphs. There is no need for a separate 'graph world'. The graphed.py
 plugin is a direct result of this Aha. It allows you to create general graphs
-from Leo outlines.</li>
-<li>Support for <strong>&#64;auto nodes</strong>.  Such nodes allow people to collaborate using Leo
-without inserting Leo sentinels in the files Leo generates.</li>
-<li><strong>&#64;menus trees</strong> in settings files create all of Leo's menus.  It is now dead
-easy to make Leo's menus look the way you want.</li>
-<li><strong>&#64;buttons trees</strong> in settings files create common &#64;button nodes created in all
-Leo outlines.</li>
-<li>A new, faster, <strong>colorizer plugin</strong> replaces the __jEdit_colorizer__ plugin.</li>
-<li>New commands for <strong>resolving cvs conflicts</strong>.</li>
-<li>Leo's core is now compatible with jython.</li>
+from Leo outlines.</p>
+</li>
+<li><p class="first">Support for <strong>&#64;auto nodes</strong>.  Such nodes allow people to collaborate using Leo
+without inserting Leo sentinels in the files Leo generates.</p>
+</li>
+<li><p class="first"><strong>&#64;menus trees</strong> in settings files create all of Leo's menus.  It is now dead
+easy to make Leo's menus look the way you want.</p>
+</li>
+<li><p class="first"><strong>&#64;buttons trees</strong> in settings files create common &#64;button nodes created in all
+Leo outlines.</p>
+</li>
+<li><p class="first">A new, faster, <strong>colorizer plugin</strong> replaces the __jEdit_colorizer__ plugin.</p>
+</li>
+<li><p class="first">New commands for <strong>resolving cvs conflicts</strong>.</p>
+</li>
+<li><p class="first">Leo's core is now compatible with jython.</p>
+</li>
 </ul>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
@@ -303,8 +312,10 @@ Leo outlines.</li>
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="the-great-graph-aha">
 <h2><a class="toc-backref" href="#id2">The Great Graph Aha</a></h2>
-<p><strong>The graph world is unnecessary because we can use Leo nodes and trees as data
-to other graphing packages.</strong> That is, Python scripts can build arbitrary graphs
+<p>The Great Graph Aha is:</p>
+<p>A Leo outline doesn't have to <em>be</em> an arbitrary graph in order to <em>represent</em> an arbitrary graph.</p>
+<p>So the graph world is unnecessary because we can use Leo nodes and trees as data
+to other graphing packages.** That is, Python scripts can build arbitrary graphs
 using Leo's existing nodes and trees. And Python scripts can manipulate those
 graphs. And Python scripts could do the reverse: manipulate the Leo outline by
 traversing general graphs. So there is no need to complicate Leo's fundamental
