@@ -7252,8 +7252,9 @@ class configSettings:
 
     def getAbbrevDict(self):         return g.app.config.getAbbrevDict(self.c)
     def getBool      (self,setting): return g.app.config.getBool     (self.c,setting)
-    def getButtons   (self):         return g.app.config.buttonsList # unusual.
+    def getButtons   (self):         return g.app.config.atCommonButtonsList # unusual.
     def getColor     (self,setting): return g.app.config.getColor    (self.c,setting)
+    def getCommands  (self):         return g.app.config.atCommonCommandsList # unusual.
     def getData      (self,setting): return g.app.config.getData     (self.c,setting)
     def getDirectory (self,setting): return g.app.config.getDirectory(self.c,setting)
     def getInt       (self,setting): return g.app.config.getInt      (self.c,setting)
