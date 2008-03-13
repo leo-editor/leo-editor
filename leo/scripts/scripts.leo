@@ -230,8 +230,8 @@
 <v t="ekr.20071116114235"><vh>Print all Tango icons in wiki-markup format</vh></v>
 <v t="ekr.20080222103719"><vh>square problem</vh></v>
 </v>
-<v t="ekr.20051104082026" a="TV"><vh>Important</vh>
-<v t="ekr.20080221113205" a="E"><vh>@button print g.es stats</vh>
+<v t="ekr.20051104082026" a="E"><vh>Important</vh>
+<v t="ekr.20080221113205"><vh>@button print g.es stats</vh>
 <v t="ekr.20080221113205.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20080221113205.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20080221113205.3"><vh> ctor</vh></v>
@@ -341,7 +341,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080229094736"><vh>Catch mixed newlines in distribution files</vh>
+<v t="ekr.20080229094736" a="ETV"><vh>Catch mixed newlines in distribution files</vh>
 <v t="ekr.20080229094736.1"><vh>check</vh></v>
 </v>
 <v t="ekr.20060603132419"><vh>Catch mixed tab &amp; space in derived files</vh>
@@ -16150,27 +16150,28 @@ print 'tested all numbers &lt;',i
 
 verbose = True
 
-extraFiles = ('..\\install','..\\uninstall',)
-extraFiles = ()
+extraFiles = ('..\\install','..\\uninstall','test\\unittest\\perfectImport\\formatter.py',)
 
 baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
 n = 0
 dirs = ('','src','scripts','plugins',)
 dirs = ('src',)
-for dir2 in dirs:
-    theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
-    print theDir
-    files1 = glob.glob('%s\*.py' % theDir)
-    files2 = glob.glob('%s\*.leo' % theDir)
-    files = files1
-    files.extend(files2)
-    for name in files:
-        f = file(name)
-        lines = f.readlines()
-        # print '%5d %s' % (len(lines),name)
-        f.close()
-        check(name,lines)
-        n += 1
+
+if 0:
+    for dir2 in dirs:
+        theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
+        print theDir
+        files1 = glob.glob('%s\*.py' % theDir)
+        files2 = glob.glob('%s\*.leo' % theDir)
+        files = files1
+        files.extend(files2)
+        for name in files:
+            f = file(name)
+            lines = f.readlines()
+            # print '%5d %s' % (len(lines),name)
+            f.close()
+            check(name,lines)
+            n += 1
 
 for z in extraFiles:
     name = g.os_path_abspath(g.os_path_join(baseDir,z))
