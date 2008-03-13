@@ -174,7 +174,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
 
         menu.entryconfig(realName,accelerator='')
     #@-node:ekr.20041228063406:clearAccel
-    #@+node:ekr.20031218072017.4115:createMenuBar
+    #@+node:ekr.20031218072017.4115:createMenuBar (Tkmenu)
     def createMenuBar(self,frame):
 
         top = frame.top
@@ -188,7 +188,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
 
         top.config(menu=topMenu) # Display the menu.
     #@nonl
-    #@-node:ekr.20031218072017.4115:createMenuBar
+    #@-node:ekr.20031218072017.4115:createMenuBar (Tkmenu)
     #@+node:ekr.20051022042645:createOpenWithMenu
     def createOpenWithMenu(self,parent,label,index,amp_index):
 

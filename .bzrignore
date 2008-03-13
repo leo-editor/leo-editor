@@ -9,3 +9,4 @@ leo/src/LeoPy.leo
 leo/src/Komodo.leo
 leo/dist/*.zip
 leo/dist/*.exe
+leo/test/dynamicUnitTest.leo

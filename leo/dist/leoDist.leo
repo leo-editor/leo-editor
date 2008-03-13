@@ -33,7 +33,7 @@
 <v t="ekr.20070620084858.1"><vh>@@button upload</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucnements</vh>
+<v t="EKR.20040519091259"><vh>Annoucnements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -176,7 +176,7 @@
 </v>
 </v>
 <v t="ekr.20050118095021"><vh>Leo 4.x installer</vh>
-<v t="ekr.20050118103207" a="E"><vh>Keeping installer/uninstallers in synch</vh>
+<v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
 <v t="ekr.20050118104149.2"><vh>&lt;&lt; uninstall config files &gt;&gt;</vh></v>
@@ -213,48 +213,53 @@
 <v t="ekr.20050118104901.10"><vh>&lt;&lt; install src files &gt;&gt;</vh></v>
 <v t="ekr.20050118104901.11"><vh>&lt;&lt; uninstall src files &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20050118122740.2" a="E"><vh>test files</vh>
+<v t="ekr.20050118122740.2"><vh>test files</vh>
 <v t="ekr.20050118122404.1"><vh>&lt;&lt; install test files &gt;&gt;</vh></v>
 <v t="ekr.20050830052109"><vh>&lt;&lt; install unittest files &gt;&gt;</vh></v>
 <v t="ekr.20050118122740.3"><vh>&lt;&lt; uninstall test files &gt;&gt;</vh></v>
 <v t="ekr.20050830052109.1"><vh>&lt;&lt; uninstall unittest files &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20050118103447" a="E"><vh>top-level</vh>
+<v t="ekr.20050118103447"><vh>top-level</vh>
 <v t="ekr.20050118103207.1"><vh>&lt;&lt; install top-level files &gt;&gt;</vh></v>
 <v t="ekr.20050118103447.1"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050118092706" a="E"
-marks="ekr.20050118124408,ekr.20050118092706.4,"
-expanded="ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
+<v t="ekr.20050118092706"
+marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
-<v t="ekr.20070614105133.3" tnodeList="ekr.20070614105133.3,ekr.20070614110334,ekr.20070622084634"><vh>@nosent ../../setup.py</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
+<v t="EKR.20040519090846.4" a="T"><vh>Linux installation</vh></v>
+<v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
+<v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
+<v t="EKR.20040519090846.7" a="V"><vh>Shell &amp; batch scripts</vh></v>
+</v>
+<v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
+<v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
+<v t="ekr.20070622074708"><vh>@asis../../manifest.in</vh></v>
+<v t="ekr.20080313073613.1" a="E" tnodeList="ekr.20080313073613.1,ekr.20080313073613.2,ekr.20080313073613.3,ekr.20080313080205.1,ekr.20080313080205.2"><vh>@nosent ../../createLeoDistribution.py</vh>
+<v t="ekr.20080313073613.2"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
+<v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
+<v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
+<v t="ekr.20080313080205.2"><vh>&lt;&lt; delete files from trunk folder &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20070614105133.3"><vh>@@nosent ../../setup.py (no longer used)</vh>
 <v t="ekr.20070614110334"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
 <v t="ekr.20070622084634"><vh>&lt;&lt; define version number in setup.py &gt;&gt;</vh></v>
 </v>
-<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
-<v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
-<v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
-<v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
-<v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
-<v t="EKR.20040519090846.7"><vh>Shell &amp; batch scripts</vh></v>
-</v>
-<v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
-<v t="ekr.20070622074708"><vh>@asis../../manifest.in</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20051205102401"><vh>Update these for each release</vh>
+<v t="ekr.20051205102401" a="E"><vh>Update these for each release</vh>
 <v t="ekr.20050118092706.4" a="M"><vh>&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;</vh></v>
 <v t="ekr.20050118124408" a="M"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
-<v t="ekr.20070622084634"><vh>&lt;&lt; define version number in setup.py &gt;&gt;</vh></v>
+<v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -296,7 +301,8 @@ leo.py requires Python 2.2.1 or above and tcl/tk 8.4 or above.
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 
 Warning: When building Tcl on Linux, do not specify "--enable-threads" .
-Only use Tcl with the default "threads not enabled" case.</t>
+Only use Tcl with the default "threads not enabled" case.
+</t>
 <t tx="EKR.20040519090846.4">
 Installing the leo.py on Linux
 ------------------------------
@@ -304,20 +310,20 @@ Installing the leo.py on Linux
 Download the latest version of Leo (a .zip file) from: http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Unzip the downloaded .zip file into a folder in your home directory.
-The folder will be called something like leo-4-4-5.
+The folder will be called something like leo-4-4-8.
 
 You now have two choices:
 
 1. You can run Leo from your home directory.
-Just add  ~/leo-4-4-5 to your path.
+Just add  ~/leo-4-4-8 to your path.
 
 2. You can install leo into \usr\local\lib and \usr\local\bin by running Leo's install script as follows::
 
-    cd ~/leo-4-4-5
+    cd ~/leo-4-4-8
     chmod u+x install
     sudo ./install
 
-The install script will instruct you to add \usr\loca\bin to your path.
+The install script will instruct you to add \usr\local\bin to your path.
 </t>
 <t tx="EKR.20040519090846.5">
 Installing the leo.py on Windows
@@ -429,7 +435,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.4.8-b1
+Version: 4.4.8-b2
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -448,9 +454,9 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.4.8 beta 1                           March 5, 2008
+<t tx="EKR.20040519090846.9">Leo 4.4.8 beta 2                           March 14, 2008
 
-Leo 4.4.8 beta 1 is available at:
+Leo 4.4.8 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
@@ -470,6 +476,8 @@ The highlights of Leo 4.4.8:
 - Completed ILeo: a bridge between IPython and Leo.
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
 - Added support for arguments to minibuffer commands.
+- @menu trees can now refer to commands created by
+  @commands and @button nodes
 
 Links:
 ------
@@ -2273,7 +2281,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-beta-1.exe"
+OutFile "LeoSetup-4-4-8-beta-2.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -2290,7 +2298,7 @@ ShowUnInstDetails show</t>
 File "..\..\install"
 File "..\..\manifest.in"
 File "..\..\MANIFEST"
-File "..\..\setup.py"
+; File "..\..\setup.py"
 File "..\..\uninstall"</t>
 <t tx="ekr.20050118103447"></t>
 <t tx="ekr.20050118103447.1">; Gets created automatically by installer.
@@ -2303,7 +2311,7 @@ Delete "$INSTDIR\uninst.exe"
 Delete "$INSTDIR\install"
 Delete "$INSTDIR\manifest.in"
 Delete "$INSTDIR\MANIFEST"
-Delete "$INSTDIR\setup.py"
+; Delete "$INSTDIR\setup.py"
 Delete "$INSTDIR\uninstall"
 </t>
 <t tx="ekr.20050118104149"></t>
@@ -2548,7 +2556,7 @@ Delete "$INSTDIR\test\test.leo"
 Delete "$INSTDIR\test\unitTest.leo"
 Delete "$INSTDIR\test\leoBridgeTest.py"
 Delete "$INSTDIR\test\leoDynamicTest.py"</t>
-<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-1"</t>
+<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-2"</t>
 <t tx="ekr.20050124083006">Leo 4.3 alpha 1 is now available at http://sourceforge.net/projects/leo/
 
 Leo 4.3 is the culmination of more than four months of work. In spite
@@ -4431,8 +4439,12 @@ trunkDir = g.os_path_abspath(g.os_path_join(loadDir,'..','..'))
 
 os.chdir(trunkDir)
 
-command = '%s setup.py sdist --force-manifest --formats=zip --dist-dir=%s' % (
-    sys.executable,distDir)
+script = 'createLeoDistribution.py' # was 'setup.py'
+
+command = '%s %s sdist --force-manifest --formats=zip --dist-dir=%s' % (
+    sys.executable,script,distDir)
+
+print command
 
 os.system(command)
 </t>
@@ -4463,8 +4475,12 @@ os.system(command)
 include manifest.in
 include MANIFEST
 include install
-include setup.py
+# include setup.py
+# include createLeoDistribution.py
 include uninstall
+# These are copied to the trunk folder by the createLeoDistribution script.
+include INSTALL.TXT
+include README.TXT
 
 include leo/__init__.py
 
@@ -4705,7 +4721,7 @@ print ; print '='*30,'setup.py complete','='*30 ; print
 </t>
 <t tx="ekr.20070622081640"># These can't be used at present.</t>
 <t tx="ekr.20070622084133"></t>
-<t tx="ekr.20070622084634">version='4.4.8-b1' # No spaces and no trailing comma.</t>
+<t tx="ekr.20070622084634">version='4.4.8-b2' # No spaces and no trailing comma.</t>
 <t tx="ekr.20070622091049">Leo 4.4.3 beta 3                                June 23, 2006
 
 Leo 4.4.3 beta 3 is available at:
@@ -5253,5 +5269,70 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080305100429.1"></t>
+<t tx="ekr.20080313073613.1">@color
+
+# Must be an @nosent file.
+
+import os
+
+print '=' * 30
+
+from distutils.core import setup
+
+&lt;&lt; define long_description &gt;&gt;
+&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;
+&lt;&lt; copy files to trunk folder &gt;&gt;
+
+setup (
+    name='leo',
+    version=version, # No spaces and no trailing comma.
+    author='Edward K. Ream',
+    author_email='edreamleo@gmail.com',
+    url='http://webpages.charter.net/edreamleo/front.html',
+    download_url='http://sourceforge.net/project/showfiles.php?group_id=3458',
+    py_modules=[], # The manifest specifies everything.
+    description = "Leo: A Programmer's Editor and More",
+    license='Python',
+    platforms=['all',],
+    long_description = long_description,
+)
+
+&lt;&lt; delete files from trunk folder &gt;&gt;
+
+print ; print 'createLeoDistribution.py done'</t>
+<t tx="ekr.20080313073613.2">long_description = \
+"""Leo is an IDE, an outliner, a scripting and unit testing framework based on Python,
+a literate programming tool, a data organizer and a project manager.
+
+Leo is written in 100% pure Python and works on any platform that supports
+Python 2.2.1 or above and the Tk Tk 8.4 or above.
+
+Download Python from http://python.org/
+Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
+"""</t>
+<t tx="ekr.20080313073613.3">version='4.4.8-b2' # No spaces and no trailing comma.</t>
+<t tx="ekr.20080313080205.1">def copy (fromPath,toPath,fileName):
+    f = file(os.path.abspath(os.path.join(fromPath,fileName)))
+    s = f.read()
+    f.close()
+    f = file(os.path.abspath(os.path.join(toPath,fileName)),'w')
+    f.write(s)
+    f.close()
+
+# The create-leo-zip script changes to Leo's trunk.
+trunkDir = os.path.abspath(os.curdir)
+# print 'trunkDir:',trunkDir
+docDir = os.path.abspath(os.path.join(trunkDir,'leo','doc'))
+# print 'docDir:',docDir
+
+copy(docDir,trunkDir,'README.TXT')
+copy(docDir,trunkDir,'INSTALL.TXT')
+
+</t>
+<t tx="ekr.20080313080205.2">readme = os.path.abspath(os.path.join(trunkDir,'README.TXT'))
+install = os.path.abspath(os.path.join(trunkDir,'INSTALL.TXT'))
+
+os.remove(readme)
+os.remove(install)</t>
 </tnodes>
 </leo_file>

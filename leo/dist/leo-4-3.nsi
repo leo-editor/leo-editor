@@ -18,7 +18,7 @@
 ;@+node:ekr.20050118092706.1:<< defines >>
 ;@<< 4.3 nsi installer version >>
 ;@+node:ekr.20050118124408:<< 4.3 nsi installer version >>
-!define PRODUCT_VERSION "4.4.8-beta-1"
+!define PRODUCT_VERSION "4.4.8-beta-2"
 ;@nonl
 ;@-node:ekr.20050118124408:<< 4.3 nsi installer version >>
 ;@nl
@@ -73,7 +73,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-beta-1.exe"
+OutFile "LeoSetup-4-4-8-beta-2.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -228,7 +228,7 @@ Section "Leo" SEC01
   File "..\..\install"
   File "..\..\manifest.in"
   File "..\..\MANIFEST"
-  File "..\..\setup.py"
+  ; File "..\..\setup.py"
   File "..\..\uninstall"
   ;@nonl
   ;@-node:ekr.20050118103207.1:<< install top-level files >>
@@ -746,7 +746,7 @@ Section Uninstall
   Delete "$INSTDIR\install"
   Delete "$INSTDIR\manifest.in"
   Delete "$INSTDIR\MANIFEST"
-  Delete "$INSTDIR\setup.py"
+  ; Delete "$INSTDIR\setup.py"
   Delete "$INSTDIR\uninstall"
   ;@-node:ekr.20050118103447.1:<< uninstall top-level files >>
   ;@nl

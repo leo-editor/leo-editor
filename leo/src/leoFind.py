@@ -166,6 +166,7 @@ class leoFind:
         self.find_text = ""
         self.change_text = ""
         self.unstick = False
+        self.re_obj = None
 
         #@+at
         # New in 4.3:
@@ -768,6 +769,18 @@ class leoFind:
         p = self.p ; self.errors = 0
         attempts = 0
         self.backwardAttempts = 0
+
+        # New in Leo 4.4.8: precompute the regexp for regexHelper.
+        if self.pattern_match:
+            try: # Precompile the regexp.
+                flags = re.MULTILINE
+                if self.ignore_case: flags |= re.IGNORECASE
+                self.re_obj = re.compile(self.find_text,flags)
+            except Exception:
+                g.es('invalid regular expression:',pattern,color='blue')
+                self.errors += 1 # Abort the search.
+                return None,None
+
         while p:
             pos, newpos = self.search()
             if trace: g.trace('attempt','pos',pos,'p',p.headString())
@@ -863,14 +876,19 @@ class leoFind:
     #@+node:ekr.20060526092203:regexHelper
     def regexHelper (self,s,i,j,pattern,backwards,nocase):
 
-        try:
-            flags = re.MULTILINE
-            if nocase: flags |= re.IGNORECASE
-            re_obj = re.compile(pattern,flags)
-        except Exception:
-            g.es('invalid regular expression:',pattern,color='blue')
-            self.errors += 1 # Abort the search.
-            return -1, -1
+        re_obj = self.re_obj # Use the pre-compiled object
+        if not re_obj:
+            g.trace('can not happen: no re_obj')
+            return -1,-1
+
+        # try:
+            # flags = re.MULTILINE
+            # if nocase: flags |= re.IGNORECASE
+            # re_obj = re.compile(pattern,flags)
+        # except Exception:
+            # g.es('invalid regular expression:',pattern,color='blue')
+            # self.errors += 1 # Abort the search.
+            # return -1, -1
 
         if backwards: # Scan to the last match.  We must use search here.
             last_mo = None ; i = 0

@@ -2910,6 +2910,8 @@ class keyHandlerClass:
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.'''
 
+        # g.trace(commandName,g.callers())
+
         k = self ; c = k.c
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting
@@ -4406,29 +4408,6 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.200:universalDispatcher & helpers
     #@-others
 #@-node:ekr.20061031131434.74:class keyHandlerClass
-#@+node:ekr.20070627082044.827:Unit tests
-#@+node:ekr.20070627082044.828:@@@test strokeFromEvent (no longer used)
-if g.unitTesting:
-
-    c,p = g.getTestVars()
-    alt = 0x20000 ; ctrl  = 4 ; shift = 1 ; key = 0
-    table = (
-        (key, 'a','a','a'),
-        (shift,'A','A','A'),
-        (alt,'','a','Alt+a'),
-        (alt+shift,'','A','Alt+A'),
-        (shift,'A','A','A',),
-        (key,'','Right','Right'),
-        (shift,'','Right','Shift+Right'),
-        (ctrl,'','Right','Ctrl+Right'),
-        (ctrl+shift,'','Right','Ctrl+Shift+Right'),
-    )
-    for state, ch, keysym, result in table:
-        val = c.k.strokeFromEvent(g.Bunch(state=state,char=ch,keysym=keysym))
-        assert val==result,'Expected %s, Got %s' % (result,val)
-#@nonl
-#@-node:ekr.20070627082044.828:@@@test strokeFromEvent (no longer used)
-#@-node:ekr.20070627082044.827:Unit tests
 #@-others
 #@-node:ekr.20061031131434:@thin leoKeys.py
 #@-leo

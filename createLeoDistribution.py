@@ -1,6 +1,8 @@
 
 # Must be an @nosent file.
 
+import os
+
 print '=' * 30
 
 from distutils.core import setup
@@ -15,7 +17,24 @@ Python 2.2.1 or above and the Tk Tk 8.4 or above.
 Download Python from http://python.org/
 Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 """
-version='4.4.8-b1' # No spaces and no trailing comma.
+version='4.4.8-b2' # No spaces and no trailing comma.
+def copy (fromPath,toPath,fileName):
+    f = file(os.path.abspath(os.path.join(fromPath,fileName)))
+    s = f.read()
+    f.close()
+    f = file(os.path.abspath(os.path.join(toPath,fileName)),'w')
+    f.write(s)
+    f.close()
+
+# The create-leo-zip script changes to Leo's trunk.
+trunkDir = os.path.abspath(os.curdir)
+# print 'trunkDir:',trunkDir
+docDir = os.path.abspath(os.path.join(trunkDir,'leo','doc'))
+# print 'docDir:',docDir
+
+copy(docDir,trunkDir,'README.TXT')
+copy(docDir,trunkDir,'INSTALL.TXT')
+
 
 setup (
     name='leo',
@@ -31,4 +50,10 @@ setup (
     long_description = long_description,
 )
 
-print ; print 'setup.py done'
+readme = os.path.abspath(os.path.join(trunkDir,'README.TXT'))
+install = os.path.abspath(os.path.join(trunkDir,'INSTALL.TXT'))
+
+os.remove(readme)
+os.remove(install)
+
+print ; print 'createLeoDistribution.py done'

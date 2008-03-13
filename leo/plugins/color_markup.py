@@ -130,7 +130,8 @@ def init ():
         ok = g.app.gui.guiName() == "tkinter"
 
         if ok:
-            print "wiki markup enabled"
+            if not g.app.unitTesting and not g.app.batchMode:
+                print "wiki markup enabled"
 
             # default value for color-tagged wiki text
             global wikiColoredText
