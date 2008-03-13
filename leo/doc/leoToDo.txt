@@ -2,80 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20080311060457.219:** Fix distribution problems
-@nocolor
-
-- line endings on install, uninstall scripts.
-- (done) rename setup.py to createLeoDistribution.py.
-- (done) do not distribute createLeoDistribution.py.
-- (done) copy readme and install files to trunk folder, and erase them after the install.
-
-On Tue, Mar 11, 2008 at 9:39 AM, John Griessen <john@cibolo.com> wrote:
-
-    I just used bzr to get rev 118, then to install, all I needed to do was make install executable
-    and change /usr/local to suit.
-
-    Adding a file such as INSTALL would still help newbies, since I had to discover that
-    the install script wants to be used this way:
-
-    cd to leo
-    edit script
-    make script executable
-    ../install
-
-On Mon, Mar 10, 2008 at 4:57 PM, John Griessen <john@cibolo.com> wrote:
-
-    maphew wrote:
-
-    > following another message regarding line endings I tried converting
-    > them for 'install', with this result:
-    >
-    >    $ dos2unix install
-    >    $ sudo ./install
-    >
-    >    Prefix directory set to "/usr/local"
-    >
-    >    Making directory structure /usr/local/lib/leo
-    >    cp: cannot stat `src': No such file or directory
-    >    cp: cannot stat `config': No such file or directory
-    >
-    >    Leo installed successfully
-    >    Make sure /usr/local/bin is in your path then
-    >    type 'leo filename.leo' to use it.
-
-
-    I looked at the install script and saw it wants you to be in
-    dir   leo-4.4.8-b1/leo
-
-    and then run ../install
-
-    I wrote this documentation file.  I release it under python license
-    to use by all.
-
-    It seems to be just a documentation problem...or maybe a dir structure change?
-    =================
-    #INSTALL
-    #
-    How to install leo on *NIX systems.
-    Method 1.  Install a startup script and the source python in a place on your filesystem
-           intended for user programs.
-    Use the install script.  change dir to the unpacked leo distribution dir, e.g. leo-4.4.8-b1, the to the subdir ./leo.
-    make the install file executable -- chmod 754 install.
-    edit the settings in the first few lines to suit you.  One place to install is in /usr/local,
-    others could be /opt/leo, etc.
-
-    execute the file
-
-    ../install
-
-    ==========
-
-
-Thanks for this.  It will be part of the new, improved Leo distribution.
-
-Edward
-
-#@-node:ekr.20080311060457.219:** Fix distribution problems
 #@-node:ekr.20080311135649.1:4.4.8 to-do
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20080124083629.1:Improve @path handling
@@ -198,6 +124,8 @@ open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 #@+node:ekr.20071211142600.3:Clean up config mess
+#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@+node:ekr.20080129103436:Solve Kent's @menu problem
 @nocolor
 
