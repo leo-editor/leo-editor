@@ -5012,7 +5012,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     is p is not the current node or if there is no text selection.'''
 
     at = c.atFileCommands ; w = c.frame.body.bodyCtrl
-    p1 = p.copy()
+    p1 = p and p.copy()
     if not p:
         p = c.currentPosition()
     try:
