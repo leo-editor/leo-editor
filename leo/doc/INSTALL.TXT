@@ -8,22 +8,23 @@ leo.py requires Python 2.2.1 or above and tcl/tk 8.4 or above.
 
 Warning: When building Tcl on Linux, do not specify "--enable-threads" .
 Only use Tcl with the default "threads not enabled" case.
+
 Installing the leo.py on Linux
 ------------------------------
 
 Download the latest version of Leo (a .zip file) from: http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Unzip the downloaded .zip file into a folder in your home directory.
-The folder will be called something like leo-4-4-5.
+The folder will be called something like leo-4-4-8.
 
 You now have two choices:
 
 1. You can run Leo from your home directory.
-Just add  ~/leo-4-4-5 to your path.
+Just add  ~/leo-4-4-8 to your path.
 
 2. You can install leo into \usr\local\lib and \usr\local\bin by running Leo's install script as follows::
 
-    cd ~/leo-4-4-5
+    cd ~/leo-4-4-8
     chmod u+x install
     sudo ./install
 

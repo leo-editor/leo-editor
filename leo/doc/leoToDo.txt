@@ -6,8 +6,9 @@
 @nocolor
 
 - line endings on install, uninstall scripts.
-- rename setup.py to something else.
-- put readme and install files in proper places.
+- (done) rename setup.py to createLeoDistribution.py.
+- (done) do not distribute createLeoDistribution.py.
+- (done) copy readme and install files to trunk folder, and erase them after the install.
 
 On Tue, Mar 11, 2008 at 9:39 AM, John Griessen <john@cibolo.com> wrote:
 

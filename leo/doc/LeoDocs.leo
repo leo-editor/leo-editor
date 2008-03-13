@@ -1126,7 +1126,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="TV"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
@@ -1219,7 +1219,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.117" a="E"><vh>Previous versions...</vh>
+<v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20060206111717"><vh>Ancient...</vh>
 <v t="edream.110203163054.646"><vh>Borland PC versions...</vh>
 <v t="edream.110203163054.647"><vh>Borland 2.7 Major bug fix: please upgrade</vh></v>
@@ -3579,8 +3579,8 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080311060457.1" a="TV"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
 <v t="ekr.20080311060457.212"><vh>Added translation services</vh>
@@ -34440,7 +34440,7 @@ Leo now contains support for translating messages sent to Leo's log:
   are used by Python's gettext module. (This script was also used to check that
   the proper arguments to g.es and g.es_print were translated.)
 </t>
-<t tx="ekr.20080311060457.1">Leo 4.4.8 beta 2                           March 11, 2008
+<t tx="ekr.20080311060457.1">Leo 4.4.8 beta 2                           March 14, 2008
 
 Leo 4.4.8 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
