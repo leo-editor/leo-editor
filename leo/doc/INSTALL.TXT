@@ -28,7 +28,7 @@ Just add  ~/leo-4-4-8 to your path.
     chmod u+x install
     sudo ./install
 
-The install script will instruct you to add \usr\loca\bin to your path.
+The install script will instruct you to add \usr\local\bin to your path.
 
 Installing the leo.py on Windows
 --------------------------------

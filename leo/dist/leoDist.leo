@@ -232,10 +232,10 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
-<v t="EKR.20040519090846.4" a="TV"><vh>Linux installation</vh></v>
+<v t="EKR.20040519090846.4" a="T"><vh>Linux installation</vh></v>
 <v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
 <v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
-<v t="EKR.20040519090846.7"><vh>Shell &amp; batch scripts</vh></v>
+<v t="EKR.20040519090846.7" a="V"><vh>Shell &amp; batch scripts</vh></v>
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
@@ -323,7 +323,7 @@ Just add  ~/leo-4-4-8 to your path.
     chmod u+x install
     sudo ./install
 
-The install script will instruct you to add \usr\loca\bin to your path.
+The install script will instruct you to add \usr\local\bin to your path.
 </t>
 <t tx="EKR.20040519090846.5">
 Installing the leo.py on Windows
