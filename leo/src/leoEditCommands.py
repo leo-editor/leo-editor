@@ -2366,13 +2366,14 @@ class editCommandsClass (baseEditCommandsClass):
     def setIconList(self, p, l):
         """Set list of icons for position p to l"""
 
-        if not set(map(self.dHash, l)).difference(
-            set(map(self.dHash, self.getIconList(p)))):
-            # no difference between original and current set of dictionaries
+        current = self.getIconList(p)
+        if not l and not current: return  # nothing to do
+        lHash = ''.join([self.dHash(i) for i in l])
+        cHash = ''.join([self.dHash(i) for i in current])
+        if lHash == cHash:
+            # no difference between original and current list of dictionaries
             return
 
-        #g.es((1, str(self.getIconList(p))))
-        #g.es((2,str(l)))
 
         subl = [i for i in l if i.get('on') != 'vnode']
         self._setIconListHelper(p, subl, p.v.t)
