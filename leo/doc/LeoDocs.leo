@@ -50,8 +50,9 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
-<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt;</vh></v>
-<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
+<v t="ekr.20080301071818.1"
+expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
@@ -34443,7 +34444,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 beta 1]&lt;/a&gt;</t>
+    Download Leo[4.4.8 beta 2]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34490,7 +34491,7 @@ The highlights of Leo 4.4.8:
 - Added support for arguments to minibuffer commands.
 - @menu trees can now refer to commands created by
   @command and @button nodes
-- Added support for common @commnads nodes in settings files.
+- Added support for common @commands nodes in settings files.
 
 Links:
 ------

@@ -46,7 +46,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
-<v t="ekr.20080314081033.1" a="TV"><vh>ANN: Leo 4.4.8 b2</vh></v>
+<v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -228,7 +228,7 @@
 <v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
@@ -5213,17 +5213,17 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 # Run pylint
 # Run all unit tests.
 @nocolor
-Prepare .leo files
-    - leoPlugins.leo: Remove top-level clones.
-    - leoPy.leo:
-        - Update the version number in the Help menu.
-        - Remove top-level clones.
-    - LeoDist.leo:
-        - Update announcement.
-        - Update readme.txt
-    - LeoDocs.leo:
-        Update the version number on the home page
-        select the read-me node.
+** LeoDocs.leo:
+    ** Update the version number on the home page
+    - select the read-me node.
+** LeoDist.leo:
+    - Update announcement.
+    - Update readme.txt
+- leoPlugins.leo: Remove top-level clones.
+- leoPy.leo:
+    - Update the version number in the Help menu.
+    - Remove top-level clones.
+
 Create the distribution using the distribution scripts.
     - Do a bzr push, with a tag.
 Create and test leosetup.exe.
