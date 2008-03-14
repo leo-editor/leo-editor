@@ -3334,7 +3334,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070806090235" a="E"><vh>4.4.4 @auto, @menus, threading syntax colorer, the Great Graph Aha</vh>
+<v t="ekr.20070806090235"><vh>4.4.4 @auto, @menus, threading syntax colorer, the Great Graph Aha</vh>
 <v t="ekr.20070806090235.1"><vh>4.4.4 b1</vh>
 <v t="ekr.20070806090226.1"><vh>Added support for @mark-for-unit-tests node</vh></v>
 <v t="ekr.20070806090226.14"><vh>Created threading_colorizer</vh></v>
