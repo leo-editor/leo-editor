@@ -46,6 +46,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
+<v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -229,13 +230,13 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
-<v t="EKR.20040519090846.2" a="E"><vh>@asis ../doc/INSTALL.TXT</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
-<v t="EKR.20040519090846.4" a="T"><vh>Linux installation</vh></v>
+<v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
 <v t="EKR.20040519090846.5"><vh>Windows installation</vh></v>
 <v t="EKR.20040519090846.6"><vh>MacOS installation</vh></v>
-<v t="EKR.20040519090846.7" a="V"><vh>Shell &amp; batch scripts</vh></v>
+<v t="EKR.20040519090846.7"><vh>Shell &amp; batch scripts</vh></v>
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
@@ -256,7 +257,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20051205102401" a="E"><vh>Update these for each release</vh>
+<v t="ekr.20051205102401" a="TV"><vh>Update these for each release</vh>
 <v t="ekr.20050118092706.4" a="M"><vh>&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;</vh></v>
 <v t="ekr.20050118124408" a="M"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
 <v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
@@ -5215,7 +5216,7 @@ Prepare .leo files
         Update the version number on the home page
         select the read-me node.
 Create the distribution using the distribution scripts.
-    - Do a cvs update, with a tag.
+    - Do a bzr push, with a tag.
 Create and test leosetup.exe.
 	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
 	- Test created leosetup.exe file.
@@ -5230,14 +5231,14 @@ Create and test leosetup.exe.
 Create Release on SourceForge
 
 Announcements
-    - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
-        - Edit with the 'Edit this page' *tab* (not a link)
-    - Update version number on web site.
-	- Announce to Leo's Open Forum.
-    - Announce to SourceForge itself.
-    - Announce to leo-editor.
-	- Announce to comp.lang.python
-	- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
+- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
+    - Edit with the 'Edit this page' *tab* (not a link)
+- Update version number on web site.
+- Announce to Leo's Open Forum.
+- Announce to SourceForge itself.
+- Announce to leo-editor.
+- Announce to comp.lang.python
+- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20080305100429">Leo 4.4.8 beta 1                           March 5, 2008
 
 Leo 4.4.8 beta 1 is available at:
@@ -5334,5 +5335,38 @@ install = os.path.abspath(os.path.join(trunkDir,'INSTALL.TXT'))
 
 os.remove(readme)
 os.remove(install)</t>
+<t tx="ekr.20080314081033.1">Leo 4.4.8 beta 2                           March 14, 2008
+
+Leo 4.4.8 beta 2 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr.
+  See the Bzr link below.
+- Leo's discussion is now hosted by Google Groups:
+  See the Forum link below.
+- The first, third, fifth etc. arguments to g.es and g.es_print
+  can now be translated using Python's gettext.gettext function.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Added support for arguments to minibuffer commands.
+- @menu trees can now refer to commands created by
+  @command and @button nodes
+- Added support for common @commnads nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>

@@ -29,7 +29,6 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
-<v t="vivainio.20080302173815"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -808,6 +807,15 @@
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
+<v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
+<v t="ekr.20080314081157.122"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080314081157.124"><vh>New features</vh></v>
+<v t="ekr.20080314081157.128"><vh>New and improved plugins</vh></v>
+<v t="ekr.20080314081157.125"><vh>New settings</vh></v>
+<v t="ekr.20080314081157.126"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
 <v t="ekr.20071217093444.2"><vh>@rst-no-head links</vh></v>
@@ -1128,6 +1136,15 @@
 </v>
 <v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
+<v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
+<v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
+<v t="ekr.20080314081157.122"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080314081157.124"><vh>New features</vh></v>
+<v t="ekr.20080314081157.128"><vh>New and improved plugins</vh></v>
+<v t="ekr.20080314081157.125"><vh>New settings</vh></v>
+<v t="ekr.20080314081157.126"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
 <v t="ekr.20071217093444.1"><vh>@rst html\new-4-4-6.html</vh>
 <v t="ekr.20071217093444.2"><vh>@rst-no-head links</vh></v>
@@ -3877,9 +3894,9 @@
 </v>
 <v t="ekr.20080311060457.128"><vh>Features</vh>
 <v t="ekr.20080311060457.188"><vh>Compile regexp's once in findNextMatch</vh></v>
-<v t="ekr.20080311060457.198"><vh>Created menus very late in the creation process</vh>
-<v t="ekr.20080311082847.1"><vh>Improved marks/recent buttons plugin</vh></v>
-</v>
+<v t="ekr.20080311060457.198"><vh>Created menus very late in the creation process</vh></v>
+<v t="ekr.20080314081157.1"><vh>Improved marks/recent buttons plugin</vh></v>
+<v t="ekr.20080314081157.2"><vh>Added support for @commands trees in settings files</vh></v>
 </v>
 </v>
 </v>
@@ -4253,7 +4270,7 @@ Notes:
     The ``Save As`` command changes the name of the outline being edited;
     the ``Save To`` command does not.
     
-    **New in Leo 4.4.3**: The ``Save File As Zipped`` command is the same as the
+    The ``Save File As Zipped`` command is the same as the
     ``Save As`` command except that the resulting .leo file is compressed with Python's zipfile module.
     Similarly, the ``Save File As Unzipped`` command is the same as the ``Save As`` command
     except that the resulting .leo file is not compressed.
@@ -4556,7 +4573,7 @@ arbitrarily complex user options with ``@settings`` trees. Leo settings outlines
 are, in fact, much more flexible and powerful than any scheme based on
 flat text.
 
-**New in Leo 4.4.2**: The ``myLeoSettings.leo`` file is a way of ensuring that your
+The ``myLeoSettings.leo`` file is a way of ensuring that your
 customized settings are not altered when updating Leo from cvs or while
 installing a new version of Leo. The myLeoSettings.leo acts much like Python's
 site-customize.py file. The ``myLeoSettings.leo`` file will never be part of any Leo
@@ -11437,6 +11454,8 @@ Appendices_
 
 Glossary_
 
+`What's new in Leo 4.4.7 and 4.4.8`_
+
 `What's new in Leo 4.4.6`_
 
 `What's new in Leo 4.4.5`_
@@ -15153,7 +15172,6 @@ The following sections discuss some relatively minor details.
 However, I recommend reading `Good style and bad`_;
 you might save yourself some extra work.
 
-**New in Leo 4.4.4**:
 `@auto trees`_ allow you to edit derived files that do not contain sentinels.
 Leo imports such derived files every time Leo reads the .leo file.
 </t>
@@ -15944,6 +15962,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
+.. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
 .. _`What's new in Leo 4.4.6`:                      new-4-4-6.html
 .. _`What's new in Leo 4.4.5`:                      new-4-4-5.html
 .. _`What's new in Leo 4.4.4`:                      new-4-4-4.html
@@ -16040,7 +16059,7 @@ Here are the six ways of creating derived files:
   You can use ``@thin`` for most work, then change ``@thin`` to ``@nosent``
   when showing your derived files to the world.
   
-  **New in Leo 4.4.3**: The @bool force_newlines_in_at_nosent_bodies setting
+  The @bool force_newlines_in_at_nosent_bodies setting
   controls whether Leo writes a trailing newline if non-empty body text does not
   end in a newline. The default is True. In effect, the default value of this
   setting was False in previous versions of Leo.
@@ -16086,7 +16105,7 @@ In ``@root`` and ``@unit`` trees, the headline must contain a valid section name
 <t tx="ekr.20050828174453.1">Leo writes ``@nosent`` trees just as for ``@thin`` trees,
 but Leo writes no sentinels at all.
 
-**New in Leo 4.4.3**: The @bool force_newlines_in_at_nosent_bodies setting
+The @bool force_newlines_in_at_nosent_bodies setting
 controls whether Leo writes a trailing newline if non-empty body text does not
 end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</t>
@@ -18406,7 +18425,7 @@ Glossary
 	:target: front.html
 
 .. |next| image:: arrow_rt.gif
-    :target: new-4-4-6.html
+    :target: new-4-4-8.html
 
 </t>
 <t tx="ekr.20050901071613">----------------------
@@ -18451,7 +18470,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     For more information, see the documentation for `@asis`_, `@auto`_, `@file`_, `@noref`_, `@nosent`_ and `@thin`_
     in Leo's `programming reference`_ chapter.
     
-    **New in Leo 4.4.4**: @auto trees allow you to edit derived files that contain no sentinels.
+    \@auto trees allow you to edit derived files that contain no sentinels.
     Leo will import the @auto files when reading .leo files.  Be careful when first creating the @auto node.
     *Before* saving the .leo file containing the new @auto node,
     use the read-at-auto-nodes command to do the initial import.
@@ -21087,7 +21106,6 @@ You can control the formatting of the HTML file by altering these .css files.
 
 For full details on this plugin, see http://webpages.charter.net/edreamleo/rstplugin3.html
 
-**New in Leo 4.4.1**:
 A new method has been added to the rst3 plugin to make it more easily to drive
 the plugin from scripts::
 
@@ -24197,7 +24215,7 @@ attempts to create a new node in the corresponding place in the path2 file. If
 this is not possible, say because the structures of the files are different, the
 script places the new node as the last child of the @settings node in the path2
 file.</t>
-<t tx="ekr.20060420094611">**New in Leo 4.4**:  The mini-buffer is a text area at the bottom of the body pane.
+<t tx="ekr.20060420094611">The mini-buffer is a text area at the bottom of the body pane.
 You use it like the Emacs mini-buffer to invoke commands by their so-called *long name*.
 The following commands affect the minibuffer:
 
@@ -25148,8 +25166,7 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20060527103630">**New in Leo 4.4.1**:
-A new method has been added to the rst3 plugin to make it more easily to drive
+<t tx="ekr.20060527103630">A new method has been added to the rst3 plugin to make it more easily to drive
 the plugin from scripts::
 
     def writeNodeToString (self,p=None,ext=None)
@@ -29006,7 +29023,7 @@ All these commands ignore @ignore trees.</t>
 <t tx="ekr.20060929040750">Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.
 
-**New in Leo 4.4.2**: When focus is in the outline Pane, you can move to from
+When focus is in the outline Pane, you can move to from
 node to node by typing the first letter of a headline. For example, typing 'a'
 will go to the next visible headline that starts with either 'a' or 'A',
 wrapping around to the start of the outline if needed. Typing an uppercase 'A'
@@ -29037,7 +29054,7 @@ tabName argument. The default for tabName is 'Log'. The put and putnl methods of
 the tkinterLog class also take an optional tabName argument which defaults to
 'Log'.
 
-**New in Leo 4.4.4**: plugins and scripts may call the
+Plugins and scripts may call the
 c.frame.canvas.createCanvas method to create a log tab containing a Tk.Canvas
 widget. Here is an example script::
     
@@ -30663,6 +30680,7 @@ The type may be one of the following:
 &lt;type&gt;              Valid values 
 ------------------- ---------------------------------------------------------------------
 \@buttons           Child @button nodes create global buttons
+\@commands          Child @command nodes create global buttons
 \@enabled-plugins   Body text contains a list of enabled plugins
 \@font              Body text contains a font description
 \@menus             Child @menu and @item nodes create menus and menu items.
@@ -30675,18 +30693,26 @@ The actual settings are specified in the body text.  At present, there are seven
     
 - ``@buttons``
 
-  **New in Leo 4.4.4**: All @buttons tree in a settings file defines global buttons that
+  An @buttons tree in a settings file defines global buttons that
   are created in the icon area of all .leo files.
-  You define @button nodes in the @buttons tree as usual.
+  All @button nodes in the @commands tree create global buttons.
+  All @button nodes outside the commands tree create buttons local to the settings file.
+ 
+  
+- ``@commands``
+
+  **New in Leo 4.4.8**: An @commands tree in a settings file defines global commands.
+  All @command nodes in the @commands tree create global commands.
+  All @command nodes outside the commands tree create commands local to the settings file.
   
 - ``@data``
 
-  **New in Leo 4.4.5**: The body text contains a list of strings, one per line.
+  The body text contains a list of strings, one per line.
   Lines starting with '#' are ignored.
     
 - ``@enabled-plugins``
 
-  **New in Leo 4.4.3**: The body text of the @enabled plugins node contains a list of enabled plugins.
+  The body text of the @enabled plugins node contains a list of enabled plugins.
   This body text is treated exactly as the contents of the pluginsManager.txt file.
   Notes:
 
@@ -30718,7 +30744,7 @@ The actual settings are specified in the body text.  At present, there are seven
   
 - ``@menus``
 
-  **New in Leo 4.4.4**: Leo creates its menus from the @menu and @item nodes in the @menus tree.
+  Leo creates its menus from the @menu and @item nodes in the @menus tree.
   Within @menus trees, @menu nodes create menus and @item nodes create menu items. 
  
   The menu name always follows @menu. If the menu name is 'Plugins', Leo will
@@ -32119,20 +32145,20 @@ continue working while the helper thread computes. This allows Tk (in the main
 thread) to respond to events. This in turn allows the colorizer code in the main
 thread to kill the helper thread if it is still working.
 
-**New in Leo 4.4.4**: the helper thread runs to completion before the main thread
+The helper thread runs to completion before the main thread
 uses any of its results. Thus, no thread locking is needed, an important
 simplification. Once the helper thread completes, the main thread computes the
 tags to be sent to Tk, and actually sends those tags. When the user is typing
 rapidly, the colorizer will ignore the results of all helper threads except the
 last.
 
-**New in Leo 4.4.4**: After the helper thread generates the list of all requested
+After the helper thread generates the list of all requested
 tags, the main thread uses a kind of sort-merge algorithm to compare the
 existing tags (obtained from Tk) with the requested tags. In many cases, the
 lists are the same and colorizer issues *no* calls to Tk. This is a sensational
 optimization.  It absolutely minimizes the load on Tk.
 
-**New in Leo 4.4.4**: When the 'interruptible' argument to the colorizer is False,
+When the 'interruptible' argument to the colorizer is False,
 no threading is used and the main thread completely colors the entire text. This
 must be done when multiple body editors are present.</t>
 <t tx="ekr.20070806090226.1">The run-unit-tests command now includes *all* @mark-for-unit-test trees.
@@ -33926,7 +33952,7 @@ Leo 4.4.6 fixes all known bugs and adds a few new features.
 .. WARNING: image targets may not have upper case letters!
 
 .. |prev| image:: arrow_lt.gif
-	:target: glossary.html
+	:target: new-4-4-8.html
 
 .. |leo|  image:: leo.gif
 	:target: front.html
@@ -34463,7 +34489,8 @@ The highlights of Leo 4.4.8:
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
 - Added support for arguments to minibuffer commands.
 - @menu trees can now refer to commands created by
-  @commands and @button nodes
+  @command and @button nodes
+- Added support for common @commnads nodes in settings files.
 
 Links:
 ------
@@ -36867,11 +36894,75 @@ Leo now contains support for translating messages sent to Leo's log:
 <t tx="ekr.20080311060457.214"></t>
 <t tx="ekr.20080311060457.215"></t>
 <t tx="ekr.20080311060457.216"></t>
-<t tx="ekr.20080311082847.1">- Added show-marks-dialog and show-recent-sections-dialog commands.
+<t tx="ekr.20080314081157.1">- Added show-marks-dialog and show-recent-sections-dialog commands.
 - Select an item initially.
 - Added bindings for up and down arrows.</t>
-<t tx="vivainio.20080302173815">mod_scripting.py
+<t tx="ekr.20080314081157.2"></t>
+<t tx="ekr.20080314081157.121">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+|prev| |leo| |next|
+
+#######################################
+What's New in Leo 4.4.7 and Leo 4.4.8
+#######################################
+
+.. contents::</t>
+<t tx="ekr.20080314081157.122">.. Links used in this document.
+
+.. _`leoBridge chapter`:    leoBridge.html
+.. _`debugging with Leo`:   debuggers.html
+.. _gettext: http://docs.python.org/lib/module-gettext.html
+
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |prev| image:: arrow_lt.gif
+	:target: glossary.html
+
+.. |leo|  image:: leo.gif
+	:target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: new-4-4-6.html
 </t>
+<t tx="ekr.20080314081157.124">- Better support for unicode in \@auto trees.
+
+- All import commands now honor \@path
+
+- Leo now supports arguments to minibuffer commands.
+
+- Leo can now translate messages sent to Leo's log. Rather than using an '_'
+  function to denote strings to be translated, Leo's g.es and g.es_print
+  functions translate "odd" (first, third, fifth) arguments, leaving "even"
+  arguments untranslated. Keyword arguments, color, newline, etc. are never
+  translated. g.translateString does the actual translation using Python's
+  `gettext`_ module.
+  
+- \@menu items may not refer to commands created by @button and @command nodes.</t>
+<t tx="ekr.20080314081157.125">- Added support for @commands trees in leoSettings files.
+
+- Added support for @bool open_with_save_on_update setting. If True, Leo will
+  automatically save the outline whenever an external editor changes the
+  outline.
+</t>
+<t tx="ekr.20080314081157.126">-----------------------
+
+|prev| |leo| |next|</t>
+<t tx="ekr.20080314081157.127">@language rest</t>
+<t tx="ekr.20080314081157.128">- The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+  
+- Improved marks/recent buttons plugin.</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
