@@ -103,7 +103,6 @@ include leo/src/LeoPy.leo
 include leo/src/leo*.py
 include leo/src/leoProjects.txt
 include leo/src/oldLeoProjects.leo
-include leo/src/unitTests.txt
 
 # include leo/test/__init__.py
 include leo/test/test.leo
@@ -111,5 +110,4 @@ include leo/test/unitTest.leo
 
 include leo/test/unittest/at-file-thin-test2.txt
 include leo/test/unittest/batchTest.py
-include leo/test/unittest/leoDynamicTest.py
 include leo/test/unittest/errorTest.py

@@ -229,7 +229,7 @@
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
+<v t="ekr.20070614165755" a="TV"><vh>@button create-leo-zip</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
@@ -242,7 +242,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
 <v t="ekr.20070622074708"><vh>@asis../../manifest.in</vh></v>
-<v t="ekr.20080313073613.1" a="E" tnodeList="ekr.20080313073613.1,ekr.20080313073613.2,ekr.20080313073613.3,ekr.20080313080205.1,ekr.20080313080205.2"><vh>@nosent ../../createLeoDistribution.py</vh>
+<v t="ekr.20080313073613.1" tnodeList="ekr.20080313073613.1,ekr.20080313073613.2,ekr.20080313073613.3,ekr.20080313080205.1,ekr.20080313080205.2"><vh>@nosent ../../createLeoDistribution.py</vh>
 <v t="ekr.20080313073613.2"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
 <v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
 <v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
@@ -257,7 +257,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20051205102401" a="TV"><vh>Update these for each release</vh>
+<v t="ekr.20051205102401"><vh>Update these for each release</vh>
 <v t="ekr.20050118092706.4" a="M"><vh>&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;</vh></v>
 <v t="ekr.20050118124408" a="M"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
 <v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
@@ -2463,8 +2463,6 @@ File "..\src\leoProjects.txt"
 File "..\src\LeoPy.leo"
 File "..\src\oldLeoProjects.leo"
 
-; File "..\src\unitTests.txt"
-
 ; File "..\src\__init__.py"
 File "..\src\leo*.py"
 </t>
@@ -2472,7 +2470,6 @@ File "..\src\leo*.py"
 Delete "$INSTDIR\src\leoProjects.txt"
 Delete "$INSTDIR\src\LeoPy.leo"
 Delete "$INSTDIR\src\oldLeoProjects.leo"
-Delete "$INSTDIR\src\unitTests.txt"
 
 Delete "$INSTDIR\src\__init__.p*"
 
@@ -2525,8 +2522,6 @@ File "..\extensions\Pmw\Pmw_1_3\tests\*.*"</t>
 File "..\test\test.leo"
 File "..\test\unitTest.leo"
 File "..\test\leoBridgeTest.py"
-File "..\test\leoDynamicTest.py"
-
 </t>
 <t tx="ekr.20050118122740"></t>
 <t tx="ekr.20050118122740.1">Delete "$INSTDIR\extensions\aspell23.pyd"
@@ -2556,7 +2551,7 @@ Delete "$INSTDIR\extensions\Pmw\Pmw_1_3\tests\*.*"</t>
 Delete "$INSTDIR\test\test.leo"
 Delete "$INSTDIR\test\unitTest.leo"
 Delete "$INSTDIR\test\leoBridgeTest.py"
-Delete "$INSTDIR\test\leoDynamicTest.py"</t>
+</t>
 <t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-2"</t>
 <t tx="ekr.20050124083006">Leo 4.3 alpha 1 is now available at http://sourceforge.net/projects/leo/
 
@@ -4572,7 +4567,6 @@ include leo/src/LeoPy.leo
 include leo/src/leo*.py
 include leo/src/leoProjects.txt
 include leo/src/oldLeoProjects.leo
-include leo/src/unitTests.txt
 
 # include leo/test/__init__.py
 include leo/test/test.leo
@@ -4580,7 +4574,6 @@ include leo/test/unitTest.leo
 
 include leo/test/unittest/at-file-thin-test2.txt
 include leo/test/unittest/batchTest.py
-include leo/test/unittest/leoDynamicTest.py
 include leo/test/unittest/errorTest.py</t>
 <t tx="ekr.20070622075820"># Main distribution script.  Creates leo-nn.zip using createLeoDist.py
 
