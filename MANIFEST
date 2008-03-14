@@ -2,7 +2,6 @@ INSTALL.TXT
 MANIFEST
 README.TXT
 README.txt
-createLeoDistribution.py
 install
 manifest.in
 uninstall

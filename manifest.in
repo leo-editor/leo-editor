@@ -7,13 +7,14 @@
 include manifest.in
 include MANIFEST
 include install
-# include setup.py
-# include createLeoDistribution.py
+
 include uninstall
 # These are copied to the trunk folder by the createLeoDistribution script.
 include INSTALL.TXT
 include README.TXT
 
+# This does not work.
+exclude createLeoDistribution.py
 include leo/__init__.py
 
 include leo/config/leoSettings.leo
@@ -88,6 +89,9 @@ include leo/plugins/*.ini
 include leo/plugins/*.txt
 include leo/plugins/*.py
 
+include leo/plugins/examples/*.py
+include leo/plugins/experimental/*.py
+include leo/plugins/test/*.py
 include leo/plugins/trees/*.py
 # trees/pluginsManager.txt is for the use of a plugin
 include leo/plugins/trees/pluginsManager.txt

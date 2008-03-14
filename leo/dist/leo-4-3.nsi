@@ -382,8 +382,16 @@ Section "Leo" SEC01
 
   File "..\plugins\*.py"
 
-  SetOutPath "$INSTDIR\plugins\trees"
+  SetOutPath "$INSTDIR\plugins\examples"
+  File "..\plugins\examples\*.py"
 
+  SetOutPath "$INSTDIR\plugins\experimental"
+  File "..\plugins\experimental\*.py"
+
+  SetOutPath "$INSTDIR\plugins\test"
+  File "..\plugins\test\*.py"
+
+  SetOutPath "$INSTDIR\plugins\trees"
   File "..\plugins\trees\*.py"
 
   # trees\pluginsManager.txt is a for use of a plugin.
@@ -683,8 +691,10 @@ Section Uninstall
   Delete "$INSTDIR\plugins\*.ini"
 
   Delete "$INSTDIR\plugins\*.p*"
-
-  Delete "$INSTDIR\plugins\trees\*.p*"
+  Delete "$INSTDIR\plugins\examples\*.*"
+  Delete "$INSTDIR\plugins\experimental\*.*"
+  Delete "$INSTDIR\plugins\test\*.*"
+  Delete "$INSTDIR\plugins\trees\*.*"
 
   Delete "$INSTDIR\plugins\trees\pluginsManager.txt"
   ;@nonl
@@ -779,6 +789,9 @@ Section Uninstall
 
   RMDir "$INSTDIR\modes"
 
+  RMDir "$INSTDIR\plugins\examples"
+  RMDir "$INSTDIR\plugins\experimental"
+  RMDir "$INSTDIR\plugins\test"
   RMDir "$INSTDIR\plugins\trees"
   RMDir "$INSTDIR\plugins"
 

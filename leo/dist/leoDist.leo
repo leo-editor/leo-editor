@@ -176,7 +176,7 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20050118095021"><vh>Leo 4.x installer</vh>
+<v t="ekr.20050118095021" a="TV"><vh>Leo 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -229,7 +229,7 @@
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20070614165755" a="TV"><vh>@button create-leo-zip</vh></v>
+<v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
@@ -355,7 +355,8 @@ One way to do this is adding something like the following to python/Lib/sitecust
     import sys
     sys.path.append(r'&lt;path-to-leo&gt;leo\src')
 
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.</t>
+Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
+</t>
 <t tx="EKR.20040519090846.6">
 Installing leo.py on MacOs
 --------------------------
@@ -417,7 +418,8 @@ Drag the downloaded gzip file into
 Double click on it to unzip and untar the file into a folder to make it
 available to Python
 
-Thanks to Randall Voth for these instructions.</t>
+Thanks to Randall Voth for these instructions.
+</t>
 <t tx="EKR.20040519090846.7">
 Using shell scripts and batch files to make using Leo easier
 ------------------------------------------------------------
@@ -2441,8 +2443,16 @@ File "..\plugins\*.txt"
 
 File "..\plugins\*.py"
 
-SetOutPath "$INSTDIR\plugins\trees"
+SetOutPath "$INSTDIR\plugins\examples"
+File "..\plugins\examples\*.py"
 
+SetOutPath "$INSTDIR\plugins\experimental"
+File "..\plugins\experimental\*.py"
+
+SetOutPath "$INSTDIR\plugins\test"
+File "..\plugins\test\*.py"
+
+SetOutPath "$INSTDIR\plugins\trees"
 File "..\plugins\trees\*.py"
 
 # trees\pluginsManager.txt is a for use of a plugin.
@@ -2453,8 +2463,10 @@ Delete "$INSTDIR\plugins\*.txt"
 Delete "$INSTDIR\plugins\*.ini"
 
 Delete "$INSTDIR\plugins\*.p*"
-
-Delete "$INSTDIR\plugins\trees\*.p*"
+Delete "$INSTDIR\plugins\examples\*.*"
+Delete "$INSTDIR\plugins\experimental\*.*"
+Delete "$INSTDIR\plugins\test\*.*"
+Delete "$INSTDIR\plugins\trees\*.*"
 
 Delete "$INSTDIR\plugins\trees\pluginsManager.txt"</t>
 <t tx="ekr.20050118104901.9"></t>
@@ -4435,7 +4447,7 @@ trunkDir = g.os_path_abspath(g.os_path_join(loadDir,'..','..'))
 
 os.chdir(trunkDir)
 
-script = 'createLeoDistribution.py' # was 'setup.py'
+script = 'createLeoDistribution.py'
 
 command = '%s %s sdist --force-manifest --formats=zip --dist-dir=%s' % (
     sys.executable,script,distDir)
@@ -4471,13 +4483,14 @@ os.system(command)
 include manifest.in
 include MANIFEST
 include install
-# include setup.py
-# include createLeoDistribution.py
+
 include uninstall
 # These are copied to the trunk folder by the createLeoDistribution script.
 include INSTALL.TXT
 include README.TXT
 
+# This does not work.
+exclude createLeoDistribution.py
 include leo/__init__.py
 
 include leo/config/leoSettings.leo
@@ -4552,6 +4565,9 @@ include leo/plugins/*.ini
 include leo/plugins/*.txt
 include leo/plugins/*.py
 
+include leo/plugins/examples/*.py
+include leo/plugins/experimental/*.py
+include leo/plugins/test/*.py
 include leo/plugins/trees/*.py
 # trees/pluginsManager.txt is for the use of a plugin
 include leo/plugins/trees/pluginsManager.txt
@@ -5265,7 +5281,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080305100429.1"></t>
 <t tx="ekr.20080313073613.1">@color
 
-# Must be an @nosent file.
+# This is the script used to create official Leo distributions.
+# It should *not* be used to install Leo.
 
 import os
 
@@ -5325,9 +5342,13 @@ copy(docDir,trunkDir,'INSTALL.TXT')
 </t>
 <t tx="ekr.20080313080205.2">readme = os.path.abspath(os.path.join(trunkDir,'README.TXT'))
 install = os.path.abspath(os.path.join(trunkDir,'INSTALL.TXT'))
+# thisScript = os.path.abspath(os.path.join(trunkDir,'createLeoDistribution.py'))
 
 os.remove(readme)
-os.remove(install)</t>
+os.remove(install)
+
+# This does not work.
+# os.remove(thisScript)</t>
 <t tx="ekr.20080314081033.1">Leo 4.4.8 beta 2                           March 14, 2008
 
 Leo 4.4.8 beta 2 is available at:
