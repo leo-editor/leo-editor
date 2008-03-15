@@ -905,7 +905,7 @@ two exceptions to this statement:</p>
 <p>1. Leo will never read (import) or write an &#64;auto tree if
 the root &#64;auto tree is under the influence of an &#64;ignore directive.</p>
 <p>2. Saving a .leo file does not save &#64;auto nodes if a) they haven't been changed
-or b) they do not contain a <strong>significant</strong> amount of informtion. An &#64;auto tree
+or b) they do not contain a <strong>significant</strong> amount of information. An &#64;auto tree
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</p>
 <p>Leo creates &#64;auto trees by parsing the corresponding derived file. Parsers
@@ -925,7 +925,7 @@ body, head, and div.</li>
 <div class="section" id="perfect-import-checks">
 <h4><a class="toc-backref" href="#id27">Perfect import checks</a></h4>
 <p>Leo performs several checks to ensure that the result of importing an external
-file will be equivlant to the file that writing the &#64;auto tree would produce.</p>
+file will be equivalent to the file that writing the &#64;auto tree would produce.</p>
 <p>These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a
 potentially serious problem. Leo inserts an &#64;ignore directive in the &#64;auto tree
 if any error is found. This &#64;ignore directive prevents the &#64;auto tree from
@@ -936,7 +936,7 @@ are no guarantees however.</p>
 of the original source file. That is, Leo converts blanks to tabs or tabs to
 blanks depending on the value of the &#64;tabwidth directive in effect for the &#64;auto
 node. Leo also checks that the indentation of any non-blank line is not a
-multiple of the indentation specified by the &#64;tabwidth dirctive in effect for
+multiple of the indentation specified by the &#64;tabwidth directive in effect for
 the &#64;auto node.</p>
 <p>Leo cannot guarantee to reproduce the original source file exactly if problems
 are discovered while regularizing leading whitespace. <strong>Strict languages</strong> are

@@ -16829,6 +16829,63 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
 #@-node:EKR.20040614071102.1:g.getScript
 #@-node:ekr.20080312100126.1:Added support for @commands trees in settings files
 #@-node:ekr.20080310093038.1:Features
+#@+node:ekr.20080315083057.10:b3
+#@+node:ekr.20080315083057.8:Added @bool collapse_nodes_while_spelling setting
+# This hugely speeds up spelling when there are lots of misspelled words.
+#@nonl
+#@+node:ekr.20051025071455.45:findNextMisspelledWord
+def findNextMisspelledWord(self):
+    """Find the next unknown word."""
+
+    c = self.c ; p = c.currentPosition()
+    w = c.frame.body.bodyCtrl
+    aspell = self.aspell ; alts = None ; word = None
+    sparseFind = c.config.getBool('collapse_nodes_while_spelling')
+    trace = False
+    try:
+        while 1:
+            i,j,p,word = self.findNextWord(p)
+            if not p or not word:
+                alts = None
+                break
+            << Skip word if ignored or in local dictionary >>
+            alts = aspell.processWord(word)
+            if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
+            if alts:
+                c.beginUpdate()
+                try:
+                    redraw = not p.isVisible(c)
+                    if sparseFind:
+                        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                        for p2 in c.allNodes_iter():
+                            if not p2.isAncestorOf(p):
+                                p2.contract()
+                                redraw = True
+                        for p2 in p.parents_iter():
+                            if not p2.isExpanded():
+                                p2.expand()
+                                redraw = True
+                    c.frame.tree.expandAllAncestors(p)
+                    c.selectPosition(p)
+                finally:
+                    c.endUpdate(redraw)
+                    w.setSelectionRange(i,j,insert=j)
+                break
+    except Exception:
+        g.es_exception()
+    return alts, word
+#@+node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
+@ We don't bother to call apell if the word is in our dictionary. The dictionary contains both locally 'allowed' words and 'ignored' words. We put the test before aspell rather than after aspell because the cost of checking aspell is higher than the cost of checking our local dictionary. For small local dictionaries this is probably not True and this code could easily be located after the aspell call
+@c
+
+if self.dictionary.has_key(word.lower()):
+    continue
+#@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
+#@-node:ekr.20051025071455.45:findNextMisspelledWord
+#@-node:ekr.20080315083057.8:Added @bool collapse_nodes_while_spelling setting
+#@+node:ekr.20080315083057.2:Corrected docs: unit tests are in test/unitTest.leo
+#@-node:ekr.20080315083057.2:Corrected docs: unit tests are in test/unitTest.leo
+#@-node:ekr.20080315083057.10:b3
 #@-node:ekr.20080227135412:4.4.8
 #@-all
 #@nonl
