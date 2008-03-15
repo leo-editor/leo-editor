@@ -2,10 +2,14 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20080315083057.1:Remove '.' from leoID !!!
-#@-node:ekr.20080315083057.1:Remove '.' from leoID !!!
-#@+node:ekr.20080315083057.3:Create *usable* setup.py
-#@-node:ekr.20080315083057.3:Create *usable* setup.py
+#@+node:ekr.20080315083057.3:Create usable setup.py
+#@-node:ekr.20080315083057.3:Create usable setup.py
+#@+node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@-node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@+node:ekr.20080315115427.2:Improve spell tab
+# Make changes as in nav_buttons: initial selection, arrow keys.
+#@nonl
+#@-node:ekr.20080315115427.2:Improve spell tab
 #@+node:ekr.20080313032655.1:One message during import test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
