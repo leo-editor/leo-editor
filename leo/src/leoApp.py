@@ -434,6 +434,8 @@ class LeoApp:
             g.app.leoID = getattr(sys,nonConstantAttr)
             if verbose and not g.app.unitTesting:
                 g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+            # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+            g.app.leoID = g.app.leoID.replace('.','-')
             return
         else:
             g.app.leoID = None
@@ -451,6 +453,8 @@ class LeoApp:
                     f.close()
                     if s and len(s) > 0:
                         g.app.leoID = s.strip()
+                        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                        g.app.leoID = g.app.leoID.replace('.','-')
                         if verbose and not g.app.unitTesting:
                             g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
                         return
@@ -472,6 +476,8 @@ class LeoApp:
                 if verbose and not g.app.unitTesting:
                     g.es("using os.getenv('USER'):",repr(theId),color='red')
                 g.app.leoID = theId
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
                 return
 
         except Exception:
@@ -487,6 +493,9 @@ class LeoApp:
 
         # Bug fix: 2/6/05: put result in g.app.leoID.
         g.app.leoID = g.app.gui.runAskLeoIDDialog()
+
+        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
 
         # g.trace(g.app.leoID)
         g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
