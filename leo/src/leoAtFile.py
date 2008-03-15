@@ -496,10 +496,10 @@ class atFile:
 
         #@    << delete all tempBodyStrings >>
         #@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
-        for p in c.allNodes_iter():
+        for t in c.all_unique_tnodes_iter():
 
-            if hasattr(p.v.t,"tempBodyString"):
-                delattr(p.v.t,"tempBodyString")
+            if hasattr(t,"tempBodyString"):
+                delattr(t,"tempBodyString")
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
         return at.errors == 0

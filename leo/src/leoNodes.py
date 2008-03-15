@@ -1892,16 +1892,61 @@ class basePosition (object):
                 self.p = self.first
                 self.first = None
 
-            while self.p:
-                self.p.moveToThreadNext()
-                if not self.p:
-                    break
-                elif not self.d.get(self.p.v.t):
-                    self.d [self.p.v.t] = True
-                    return self.p.v.t
+            elif self.p:
+                self.moveToThreadNextUnique()
 
-            else: raise StopIteration
+            if self.p:
+                return self.p.v.t
+
+            raise StopIteration
         #@-node:ekr.20070930192032.2:next
+        #@+node:sps.20080313154422.2:moveToThreadNextUnique
+        def moveToThreadNextUnique (self):
+
+            """Move a position to threadNext position."""
+
+            p = self.p
+
+            if p:
+                # We've been visited
+                self.d[p.v.t]=True
+
+                # First, try to find an unmarked child
+                if p.v.t._firstChild:
+                    p.moveToFirstChild()
+                    while p and self.d.get(p.v.t):
+                        if p.v._next:
+                            p.moveToNext()
+                        else:
+                            p.moveToParent()
+
+                # If we didn't find an unmarked child,
+                # try to find an unmarked sibling
+                if p and self.d.get(p.v.t):
+                    while p.v._next:
+                        p.moveToNext()
+                        if not self.d.get(p.v.t):
+                            break
+
+                # If we didn't find an unmarked sibling,
+                # find a parent with an unmarked sibling
+                if p and self.d.get(p.v.t):
+                    p.moveToParent()
+                    while p:
+                        while p.v._next:
+                            p.moveToNext()
+                            if not self.d.get(p.v.t):
+                                break
+                        # if we run out of siblings, go to parent
+                        if self.d.get(p.v.t):
+                            p.moveToParent()
+                        else:
+                            break # found
+                    # At this point, either (not p.mark[p.v.t]) and found
+                    # or (not p) and we're finished
+
+            return p 
+        #@-node:sps.20080313154422.2:moveToThreadNextUnique
         #@-others
 
     def unique_tnodes_iter (self):
@@ -1995,16 +2040,61 @@ class basePosition (object):
                 self.p = self.first
                 self.first = None
 
-            while self.p:
-                self.p.moveToThreadNext()
-                if not self.p:
-                    break
-                elif not self.d.get(self.p.v.t):
-                    self.d [self.p.v.t] = True
-                    return self.p.v
+            elif self.p:
+                self.moveToThreadNextUnique()
 
-            else: raise StopIteration
+            if self.p:
+                return self.p.v
+
+            raise StopIteration
         #@-node:ekr.20070930192441.2:next
+        #@+node:sps.20080313154422.2:moveToThreadNextUnique
+        def moveToThreadNextUnique (self):
+
+            """Move a position to threadNext position."""
+
+            p = self.p
+
+            if p:
+                # We've been visited
+                self.d[p.v.t]=True
+
+                # First, try to find an unmarked child
+                if p.v.t._firstChild:
+                    p.moveToFirstChild()
+                    while p and self.d.get(p.v.t):
+                        if p.v._next:
+                            p.moveToNext()
+                        else:
+                            p.moveToParent()
+
+                # If we didn't find an unmarked child,
+                # try to find an unmarked sibling
+                if p and self.d.get(p.v.t):
+                    while p.v._next:
+                        p.moveToNext()
+                        if not self.d.get(p.v.t):
+                            break
+
+                # If we didn't find an unmarked sibling,
+                # find a parent with an unmarked sibling
+                if p and self.d.get(p.v.t):
+                    p.moveToParent()
+                    while p:
+                        while p.v._next:
+                            p.moveToNext()
+                            if not self.d.get(p.v.t):
+                                break
+                        # if we run out of siblings, go to parent
+                        if self.d.get(p.v.t):
+                            p.moveToParent()
+                        else:
+                            break # found
+                    # At this point, either (not p.mark[p.v.t]) and found
+                    # or (not p) and we're finished
+
+            return p 
+        #@-node:sps.20080313154422.2:moveToThreadNextUnique
         #@-others
 
     def unique_vnodes_iter (self):

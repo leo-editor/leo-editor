@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.511160714286">
-	<global_window_position top="61" left="139" height="896" width="1045"/>
+<globals body_outline_ratio="0.555395683453">
+	<global_window_position top="25" left="10" height="938" width="1390"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -54,18 +54,20 @@ marks="ekr.20071217231348.4,ekr.20071217231348.5,ekr.20071217231501,ekr.20071217
 <v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" a="TV"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
-<v t="ekr.20031218072017.2604"><vh>Core classes...</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes...</vh>
 <v t="ekr.20031218072017.2605"><vh>@thin leo.py </vh></v>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"
-marks="ekr.20070909100252,"><vh>@thin leoAtFile.py</vh></v>
+marks="ekr.20070909100252,"
+expanded="ekr.20041005105605.17,ekr.20041005105605.18,ekr.20041005105605.21,ekr.20041005105605.116,ekr.20041005105605.219,"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"
-marks="ekr.20040629121554.1,"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810" a="E"
+marks="ekr.20040629121554.1,"
+expanded="ekr.20041118104831,ekr.20040312090934,EKR.20040529091232.2,EKR.20040529091232.4,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
@@ -139,7 +141,7 @@ z:  a local temp.</t>
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.4.8 alpha 1, build %s, February 18, 2008" % c.getBuildNumber()
+    return "Leo 4.4.8 alpha 1, build %s, March 5, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
