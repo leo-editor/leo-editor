@@ -205,7 +205,8 @@ class ipythonController:
             if args is None:
                 argv = ['leo.py']
             else:
-                argv = args.split() 
+                # force str instead of unicode
+                argv = [str(s) for s in args.split()] 
             sys.argv = argv
             api = IPython.ipapi
             self.message('creating IPython shell...')
