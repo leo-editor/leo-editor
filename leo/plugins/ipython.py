@@ -253,7 +253,6 @@ class ipythonController:
                 gIP.runlines(script)
                 return
             c = self.c ; p = c.currentPosition()
-            sys.argv = [] # Clear the argv vector.
             push = gIP.user_ns['_leo'].push
             c.inCommand = False # Disable the command lockout logic
             push(p)
