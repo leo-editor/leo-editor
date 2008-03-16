@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="119" left="286" height="630" width="861"/>
+	<global_window_position top="294" left="435" height="630" width="861"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -761,8 +761,8 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation</vh></v>
@@ -772,6 +772,7 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
 <v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080316145539.3" a="TV"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
 <v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
@@ -1134,7 +1135,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="TV"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -34698,6 +34699,8 @@ which means "current node") and moves focus to node number 5::
     for i in range(10):
         _p[i] = 'hello %d' % d
     _p[5].go()
+
+
 </t>
 <t tx="vivainio.20080302174639.9">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:
@@ -34751,5 +34754,60 @@ Opens the variable s for editing. Press alt+I to push the new value to IPython.
     
 Opens IPython interactive history (both input and output) in Leo.
 </t>
+<t tx="vivainio.20080316145539.3">If you install matplotlib and numpy, you can use ILeo to interactively edit and
+view your data. This is convenient for storing potentially valuable information
+in Leo document, and yields an interactive system that is comparable in
+convenience to various commercial mathematical packages (at least if you compare
+it agains plain IPython, that forgets the data on exit unless explicitly saved
+to data files or %store:d).
+
+Startup
+-------
+
+It's probably safest to rely on TkAgg backend, to avoid two event loops running
+in the same process. TkAgg is the default, so the only thing you need to do is
+to install numpy and matplotlib::
+
+    easy_install numpy
+    easy_install matplotlib
+    
+Finally, you need to start up IPython with '-pylab' option. You can accomplish
+this by having the following under some @settings node::
+
+    @string ipython_argv = ipython -pylab
+
+Then, you just need to press alt+I to launch IPython.
+
+Usage
+-----
+
+The simplest use case is probably pushing an existing array to Leo for editing.
+Let's generate a simple array and edit it::
+
+    [c:/ipython]|51&gt; a = arange(12).reshape(3,4)
+    [c:/ipython]|52&gt; a
+                &lt;52&gt;
+    array([[ 0,  1,  2,  3],
+           [ 4,  5,  6,  7],
+           [ 8,  9, 10, 11]])
+    [c:/ipython]|53&gt; %lee a
+
+This (the magic command %lee, or 'leo edit') will open variable 'a' for editing
+in Leo, in a convenient pretty-printed format. You can press alt+I on the node
+to push it back to IPython.
+    
+If you want to store the variable in a node with a different name (myarr), you can do::
+
+    [c:/ipython]|54&gt; wb.myarr.v = a
+        
+Then, you can always get the value of this array with wb.myarr.v. E.g. you could
+have a node that plots the array, with content::
+
+    # press alt+i here to plot testarr
+    
+    plot(wb.myarr.v)
+
+And, as per instructions, pressing alt+I will launch a new Tk window with the
+plotted representation of the array!    </t>
 </tnodes>
 </leo_file>
