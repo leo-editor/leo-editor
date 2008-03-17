@@ -543,8 +543,8 @@ class atFile:
                 p.moveToNodeAfterTree()
             else: p.moveToThreadNext()
         # Clear all orphan bits.
-        for p in c.allNodes_iter():
-            p.v.clearOrphan()
+        for v in c.all_unique_vnodes_iter():
+            v.clearOrphan()
 
         if partialFlag and not anyRead:
             g.es("no @file nodes in the selected tree")

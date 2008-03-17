@@ -3319,11 +3319,11 @@ class baseCommands:
             #@-at
             #@@c
 
-            for p in c.allNodes_iter():
-                t = p.v.t
+            for v in c.all_unique_vnodes_iter():
+                t = v.t
                 if t not in tnodeInfoDict.keys():
                     tnodeInfoDict[t] = g.Bunch(
-                        t=t,head=p.headString(),body=p.bodyString())
+                        t=t,head=v.headString(),body=v.bodyString())
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
 

@@ -54,7 +54,7 @@ class chapterController:
 
         tag = '@chapter'
         for p in c.allNodes_iter():
-            h = p.headString()
+            h = p.v.headString()
             if h.startswith(tag) and not h.startswith('@chapters'):
                 tabName = h[len(tag):].strip()
                 if tabName and tabName not in ('main',):
