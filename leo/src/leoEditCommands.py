@@ -8338,6 +8338,7 @@ class spellTabHandler (leoFind.leoFind):
         c = self.c ; p = c.currentPosition()
         w = c.frame.body.bodyCtrl
         aspell = self.aspell ; alts = None ; word = None
+        sparseFind = c.config.getBool('collapse_nodes_while_spelling')
         trace = False
         try:
             while 1:
@@ -8368,10 +8369,21 @@ class spellTabHandler (leoFind.leoFind):
                 if alts:
                     c.beginUpdate()
                     try:
+                        redraw = not p.isVisible(c)
+                        if sparseFind:
+                            # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                            for p2 in c.allNodes_iter():
+                                if not p2.isAncestorOf(p):
+                                    p2.contract()
+                                    redraw = True
+                            for p2 in p.parents_iter():
+                                if not p2.isExpanded():
+                                    p2.expand()
+                                    redraw = True
                         c.frame.tree.expandAllAncestors(p)
                         c.selectPosition(p)
                     finally:
-                        c.endUpdate()
+                        c.endUpdate(redraw)
                         w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

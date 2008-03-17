@@ -2910,6 +2910,8 @@ class keyHandlerClass:
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.'''
 
+        # g.trace(commandName,g.callers())
+
         k = self ; c = k.c
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting

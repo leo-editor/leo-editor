@@ -2,95 +2,245 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20071025160653.1:Support @command nodes in @buttons tree
-@nocolor
-
-Notes:
-
-The mod_scripting plugin handles common @button nodes this way:
-- Calls c.config.getButtons.
-- Creates a button for each item in the list.
-
-Similarly, the mod_scripting plugin should handle common @command nodes.
-
-@color
+#@+node:ekr.20080315083057.3:Create usable setup.py
+#@-node:ekr.20080315083057.3:Create usable setup.py
+#@+node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@-node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@+node:ekr.20080315115427.2:Improve spell tab
+# Make changes as in nav_buttons: initial selection, arrow keys.
 #@nonl
-#@-node:ekr.20071025160653.1:Support @command nodes in @buttons tree
-#@+node:ekr.20080311060457.219:** Fix distribution problems
-@nocolor
+#@-node:ekr.20080315115427.2:Improve spell tab
+#@+node:ekr.20080313032655.1:One message during import test on Linux
+#@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
+#@+node:ekr.20051104075904.78:makeImportExportSuite
+def makeImportExportSuite(c,parentHeadline,doImport):
 
-- line endings on install, uninstall scripts.
-- rename setup.py to something else.
-- put readme and install files in proper places.
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
 
-On Tue, Mar 11, 2008 at 9:39 AM, John Griessen <john@cibolo.com> wrote:
+    u = testUtils(c)
+    parent = u.findNodeAnywhere(parentHeadline)
+    assert(parent)
+    temp = u.findNodeInTree(parent,"tempNode")
+    assert(temp)
 
-    I just used bzr to get rev 118, then to install, all I needed to do was make install executable
-    and change /usr/local to suit.
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
 
-    Adding a file such as INSTALL would still help newbies, since I had to discover that
-    the install script wants to be used this way:
+    for p in parent.children_iter(copy=True):
+        if p == temp: continue
+        dialog = u.findNodeInTree(p,"dialog")
+        assert(dialog)
+        test = importExportTestCase(c,p,dialog,temp,doImport)
+        suite.addTest(test)
 
-    cd to leo
-    edit script
-    make script executable
-    ../install
+    return suite
+#@-node:ekr.20051104075904.78:makeImportExportSuite
+#@+node:ekr.20051104075904.79:class importExportTestCase
+class importExportTestCase(unittest.TestCase):
 
-On Mon, Mar 10, 2008 at 4:57 PM, John Griessen <john@cibolo.com> wrote:
+    """Data-driven unit tests for Leo's edit body commands."""
 
-    maphew wrote:
+    @others
+#@+node:ekr.20051104075904.80:__init__
+def __init__ (self,c,p,dialog,temp_p,doImport):
 
-    > following another message regarding line endings I tried converting
-    > them for 'install', with this result:
-    >
-    >    $ dos2unix install
-    >    $ sudo ./install
-    >
-    >    Prefix directory set to "/usr/local"
-    >
-    >    Making directory structure /usr/local/lib/leo
-    >    cp: cannot stat `src': No such file or directory
-    >    cp: cannot stat `config': No such file or directory
-    >
-    >    Leo installed successfully
-    >    Make sure /usr/local/bin is in your path then
-    >    type 'leo filename.leo' to use it.
+    # Init the base class.
+    unittest.TestCase.__init__(self)
 
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
 
-    I looked at the install script and saw it wants you to be in
-    dir   leo-4.4.8-b1/leo
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
 
-    and then run ../install
+    self.old_p = c.currentPosition()
+#@-node:ekr.20051104075904.80:__init__
+#@+node:ekr.20051104075904.81: fail
+def fail (self,msg=None):
 
-    I wrote this documentation file.  I release it under python license
-    to use by all.
+    """Mark a unit test as having failed."""
 
-    It seems to be just a documentation problem...or maybe a dir structure change?
-    =================
-    #INSTALL
-    #
-    How to install leo on *NIX systems.
-    Method 1.  Install a startup script and the source python in a place on your filesystem
-           intended for user programs.
-    Use the install script.  change dir to the unpacked leo distribution dir, e.g. leo-4.4.8-b1, the to the subdir ./leo.
-    make the install file executable -- chmod 754 install.
-    edit the settings in the first few lines to suit you.  One place to install is in /usr/local,
-    others could be /opt/leo, etc.
+    # __pychecker__ = '--no-argsused'
+        #  msg needed so signature matches base class.
 
-    execute the file
+    import leoGlobals as g
 
-    ../install
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.81: fail
+#@+node:ekr.20051104075904.82:importExport
+def importExport (self):
 
-    ==========
+    c = self.c ; p = self.p
 
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
-Thanks for this.  It will be part of the new, improved Leo distribution.
+    commandName = p.headString()
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
 
-Edward
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+#@-node:ekr.20051104075904.82:importExport
+#@+node:ekr.20051104075904.83:runTest
+def runTest(self):
 
-#@-node:ekr.20080311060457.219:** Fix distribution problems
+    # """Import Export Test Case"""
+
+    self.importExport()
+#@-node:ekr.20051104075904.83:runTest
+#@+node:ekr.20051104075904.84:setUp
+def setUp(self):
+
+    c = self.c ; temp_p = self.temp_p ; d = self.dialog
+
+    temp_p.setTnodeText('',g.app.tkEncoding)
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import test: " + self.p.headString())
+    c.selectVnode(child)
+
+    assert(d)
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+
+    self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
+
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+#@-node:ekr.20051104075904.84:setUp
+#@+node:ekr.20051104075904.85:shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
+    except:
+        return "ImportExportTestCase"
+#@-node:ekr.20051104075904.85:shortDescription
+#@+node:ekr.20051104075904.86:tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setTnodeText("",g.app.tkEncoding)
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+#@-node:ekr.20051104075904.86:tearDown
+#@-node:ekr.20051104075904.79:class importExportTestCase
+#@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
+#@+node:ekr.20031218072017.2853:importAtFile
+def importAtFile (self,event=None):
+
+    '''Import one or more external files, creating @file trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @file",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        c.importCommands.importFilesCommand(names,"@file")
+#@-node:ekr.20031218072017.2853:importAtFile
+#@+node:ekr.20031218072017.3212:importFilesCommand
+def importFilesCommand (self,files=None,treeType=None):
+    # Not a command.  It must *not* have an event arg.
+
+    c = self.c
+    if c == None: return
+    v = current = c.currentVnode()
+    if current == None: return
+    if len(files) < 1: return
+    self.tab_width = self.getTabWidth() # New in 4.3.
+    self.treeType = treeType
+    c.beginUpdate()
+    try: # range of update...
+        if len(files) == 2:
+            << Create a parent for two files having a common prefix >>
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            v = self.createOutline(fileName,current)
+            if v: # createOutline may fail.
+                if not g.unitTesting:
+                    g.es("imported",fileName,color="blue")
+                v.contract()
+                v.setDirty()
+                c.setChanged(True)
+        c.validateOutline()
+        current.expand()
+    finally:
+        c.endUpdate()
+    c.selectVnode(current)
+#@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+@ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
+@c
+
+name0 = files[0]
+name1 = files[1]
+prefix0, junk = g.os_path_splitext(name0)
+prefix1, junk = g.os_path_splitext(name1)
+if len(prefix0) > 0 and prefix0 == prefix1:
+    current = current.insertAsLastChild()
+    # junk, nameExt = g.os_path_split(prefix1)
+    name,junk = g.os_path_splitext(prefix1)
+    current.initHeadString(name)
+#@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+#@-node:ekr.20031218072017.3212:importFilesCommand
+#@-node:ekr.20080313032655.1:One message during import test on Linux
+#@+node:ekr.20080315083057.5:update acknowledgements
+#@-node:ekr.20080315083057.5:update acknowledgements
 #@-node:ekr.20080311135649.1:4.4.8 to-do
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
@@ -191,6 +341,8 @@ have this flag (e.g. the .leo documents in Leo cvs).
 #@-node:ekr.20080225104355:@bool fixed-leo-file
 #@-node:ekr.20080218110223.1:Files
 #@+node:ekr.20071211142600.2:Config stuff
+#@+node:ekr.20080311135649.5:List the special cases in the config code
+#@-node:ekr.20080311135649.5:List the special cases in the config code
 #@+node:ekr.20080225103954:Add 'else' clause to if-platform
 @nocolor
 
@@ -209,6 +361,8 @@ open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 #@+node:ekr.20071211142600.3:Clean up config mess
+#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@+node:ekr.20080129103436:Solve Kent's @menu problem
 @nocolor
 

@@ -17,7 +17,7 @@ see: LeoDocs.leo or http://webpages.charter.net/edreamleo/IPythonBridge.html
 #@-node:ekr.20080201151802:<< docstring >>
 #@nl
 
-__version__ = '0.8'
+__version__ = '0.9'
 #@<< version history >>
 #@+node:ekr.20080201143145.2:<< version history >>
 #@@killcolor
@@ -54,6 +54,8 @@ __version__ = '0.8'
 # - This version is based on mods made by VMV.
 # - EKR: set sys.argv = [] in startIPython before calling any IPython api.
 #   This prevents IPython from trying to load the .leo file.
+# 
+# v 0.9 EKR: tell where the commands are coming from.
 #@-at
 #@nonl
 #@-node:ekr.20080201143145.2:<< version history >>
@@ -169,6 +171,10 @@ class ipythonController:
         )
 
         shortcut = None
+
+        if not g.app.unitTesting:
+            g.es('ipython plugin...',color='purple')
+
         for commandName,func in table:
             k.registerCommand (commandName,shortcut,func,pane='all',verbose=True)
     #@-node:ekr.20080204080848:createCommands
@@ -199,7 +205,8 @@ class ipythonController:
             if args is None:
                 argv = ['leo.py']
             else:
-                argv = args.split() 
+                # force str instead of unicode
+                argv = [str(s) for s in args.split()] 
             sys.argv = argv
             api = IPython.ipapi
             self.message('creating IPython shell...')
@@ -246,7 +253,6 @@ class ipythonController:
                 gIP.runlines(script)
                 return
             c = self.c ; p = c.currentPosition()
-            sys.argv = [] # Clear the argv vector.
             push = gIP.user_ns['_leo'].push
             c.inCommand = False # Disable the command lockout logic
             push(p)

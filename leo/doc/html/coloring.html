@@ -928,18 +928,18 @@ through its main loop. Using a separate helper thread allows the main thread to
 continue working while the helper thread computes. This allows Tk (in the main
 thread) to respond to events. This in turn allows the colorizer code in the main
 thread to kill the helper thread if it is still working.</p>
-<p><strong>New in Leo 4.4.4</strong>: the helper thread runs to completion before the main thread
+<p>The helper thread runs to completion before the main thread
 uses any of its results. Thus, no thread locking is needed, an important
 simplification. Once the helper thread completes, the main thread computes the
 tags to be sent to Tk, and actually sends those tags. When the user is typing
 rapidly, the colorizer will ignore the results of all helper threads except the
 last.</p>
-<p><strong>New in Leo 4.4.4</strong>: After the helper thread generates the list of all requested
+<p>After the helper thread generates the list of all requested
 tags, the main thread uses a kind of sort-merge algorithm to compare the
 existing tags (obtained from Tk) with the requested tags. In many cases, the
 lists are the same and colorizer issues <em>no</em> calls to Tk. This is a sensational
 optimization.  It absolutely minimizes the load on Tk.</p>
-<p><strong>New in Leo 4.4.4</strong>: When the 'interruptible' argument to the colorizer is False,
+<p>When the 'interruptible' argument to the colorizer is False,
 no threading is used and the main thread completely colors the entire text. This
 must be done when multiple body editors are present.</p>
 <hr class="docutils" />

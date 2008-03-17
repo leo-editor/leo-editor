@@ -2,24 +2,25 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.555395683453">
-	<global_window_position top="25" left="10" height="938" width="1390"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="32" left="10" height="896" width="1045"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="9"><vh>Startup</vh>
-<v t="ekr.20080121091513"><vh>@button parse2tree</vh></v>
-<v t="ekr.20070629073827"><vh>Disabled buttons</vh>
-<v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
+<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20080312060129.5"><vh>Buttons</vh>
+<v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
+<v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
+<v t="ekr.20080121091513"><vh>@button parse2tree</vh></v>
 <v t="ekr.20060910141935"><vh>ZODB plugin buttons</vh>
 <v t="ekr.20060910141935.1"><vh>@@button zodb-read</vh></v>
 <v t="ekr.20060910141935.2"><vh>@@button zodb-write</vh></v>
 </v>
-<v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 </v>
+<v t="ekr.20080312060129.6"><vh>Commands</vh>
 <v t="ekr.20060531093331"><vh>@@command clones-tab</vh>
 <v t="ekr.20060531093331.1"><vh>class cloneNavigator</vh>
 <v t="ekr.20060531093331.2"><vh>init</vh></v>
@@ -30,11 +31,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071024171346"><vh>@command unit-test @key=Alt+4</vh></v>
-<v t="ekr.20071024180738"><vh>@command ext-unit-test @key=Alt+6</vh></v>
-<v t="ekr.20070603183100"><vh>@settings</vh>
-<v t="ekr.20070603183100.1"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070605104326"><vh>@bool use_chapter_tabs = True</vh></v>
+<v t="ekr.20071024180738"><vh>@@command ext-unit-test @key=Alt+6</vh></v>
+<v t="ekr.20071024171346"><vh>@@command unit-test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20070605104410"><vh>@chapters</vh></v>
 <v t="ekr.20080121092503"><vh>Scripts</vh>
@@ -51,24 +49,22 @@
 marks="ekr.20071217231348.4,ekr.20071217231348.5,ekr.20071217231501,ekr.20071217231501.1,ekr.20071217231501.2,ekr.20071217231828.4,ekr.20031218072017.1473,ekr.20071024101611,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"
+marks="ekr.20071215101531,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
-<v t="ekr.20031218072017.2604" a="E"><vh>Core classes...</vh>
+<v t="ekr.20031218072017.2604"><vh>Core classes...</vh>
 <v t="ekr.20031218072017.2605"><vh>@thin leo.py </vh></v>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"
-marks="ekr.20070909100252,"
-expanded="ekr.20041005105605.17,ekr.20041005105605.18,ekr.20041005105605.21,ekr.20041005105605.116,ekr.20041005105605.219,"><vh>@thin leoAtFile.py</vh></v>
+marks="ekr.20070909100252,"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810" a="E"
-marks="ekr.20040629121554.1,"
-expanded="ekr.20041118104831,ekr.20040312090934,EKR.20040529091232.2,EKR.20040529091232.4,"><vh>@thin leoCommands.py</vh></v>
-<v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20040629121554.1,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093"
@@ -141,7 +137,7 @@ z:  a local temp.</t>
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.4.8 alpha 1, build %s, March 5, 2008" % c.getBuildNumber()
+    return "Leo 4.4.8 alpha 2, build %s, March 14, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -314,10 +310,6 @@ if g.os_path_exists(path):
     c.zodbCommands.writeFile()
 else:
     g.es_print('not found: %s' % path)</t>
-<t tx="ekr.20070603183100"></t>
-<t tx="ekr.20070603183100.1"></t>
-<t tx="ekr.20070605104326">True:  Chapter tabs appear in the outline pane.
-False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070605104410"></t>
 <t tx="ekr.20070628175250">@color
 
@@ -332,7 +324,6 @@ c.setBodyString(p,s)
 
 u.afterChangeNodeContents(p,'add-if-g-unitTesting',b)
 </t>
-<t tx="ekr.20070629073827"></t>
 <t tx="ekr.20071001054335"># script to split node containing multiple def's into child nodes
 
 def createChild (parent,body,line):
@@ -418,5 +409,7 @@ finally:
 
 </t>
 <t tx="ekr.20080121092503"></t>
+<t tx="ekr.20080312060129.5"></t>
+<t tx="ekr.20080312060129.6"></t>
 </tnodes>
 </leo_file>

@@ -4820,27 +4820,28 @@ import glob
 
 verbose = True
 
-extraFiles = ('..\\install','..\\uninstall',)
-extraFiles = ()
+extraFiles = ('..\\install','..\\uninstall','test\\unittest\\perfectImport\\formatter.py',)
 
 baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
 n = 0
 dirs = ('','src','scripts','plugins',)
 dirs = ('src',)
-for dir2 in dirs:
-    theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
-    print theDir
-    files1 = glob.glob('%s\*.py' % theDir)
-    files2 = glob.glob('%s\*.leo' % theDir)
-    files = files1
-    files.extend(files2)
-    for name in files:
-        f = file(name)
-        lines = f.readlines()
-        # print '%5d %s' % (len(lines),name)
-        f.close()
-        check(name,lines)
-        n += 1
+
+if 0:
+    for dir2 in dirs:
+        theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
+        print theDir
+        files1 = glob.glob('%s\*.py' % theDir)
+        files2 = glob.glob('%s\*.leo' % theDir)
+        files = files1
+        files.extend(files2)
+        for name in files:
+            f = file(name)
+            lines = f.readlines()
+            # print '%5d %s' % (len(lines),name)
+            f.close()
+            check(name,lines)
+            n += 1
 
 for z in extraFiles:
     name = g.os_path_abspath(g.os_path_join(baseDir,z))

@@ -10,7 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons &amp; commands</vh>
+<v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 <v t="ekr.20070626153940"><vh>@@button dynamic-tests @key=Alt-5</vh>
@@ -22,9 +22,16 @@
 <v t="ekr.20070201065053"><vh>@@button goto tk index</vh></v>
 <v t="ekr.20070807104632"><vh>@@button local-tests @key=Alt+6</vh></v>
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
-</v>
-<v t="ekr.20041001194357"><vh>@command Unit Test @key=Alt+4</vh></v>
+<v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
 <v t="ekr.20050911112310"><vh>@@button Save</vh></v>
+</v>
+</v>
+<v t="ekr.20080312090030.1"><vh>Commands</vh>
+<v t="ekr.20051104081502.552"><vh>@@command my-command @key = alt-shift-ctrl-z</vh></v>
+<v t="ekr.20051107115231.1" annotate="7d71002e"><vh>@@command unit-test-command1</vh></v>
+<v t="ekr.20051104081502.553"><vh>@@command my-command2</vh></v>
+<v t="ekr.20051104081502.555"><vh>@@command rebind ctrl-e @key=shift-alt-e</vh></v>
+<v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
@@ -336,13 +343,7 @@
 <v t="ekr.20051104081502.215"><vh>node that throws exception</vh></v>
 </v>
 <v t="ekr.20051104081502.547"><vh>Test of warnings of conflicting shortcuts</vh></v>
-<v t="ekr.20051104081502.550"><vh>Tests of @command and @button/@key</vh>
 <v t="ekr.20051104081502.551"><vh>test k.registerCommand</vh></v>
-<v t="ekr.20051104081502.552"><vh>@@command my-command @key = alt-shift-ctrl-z</vh></v>
-<v t="ekr.20051104081502.553"><vh>@@command my-command2</vh></v>
-<v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
-<v t="ekr.20051104081502.555"><vh>@@command rebind ctrl-e @key=shift-alt-e</vh></v>
-</v>
 <v t="ekr.20051104081502.170"><vh>Tests of @root</vh>
 <v t="ekr.20051104081502.171"><vh>atRootTest1.txt</vh></v>
 <v t="ekr.20051104081502.172"><vh>atRootTest2.txt</vh></v>
@@ -1709,7 +1710,6 @@
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
-<v t="ekr.20051107115231.1" annotate="7d71002e"><vh>@command unit-test-command1</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
 <v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
@@ -2048,8 +2048,8 @@
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -12651,7 +12651,6 @@ print 'shortcut:showMinibuffer',val</t>
 g.es('Test',color='red',tabName='Test')</t>
 <t tx="ekr.20051104081502.549">c.frame.log.selectTab('Log')
 g.es('Test',color='blue')</t>
-<t tx="ekr.20051104081502.550"></t>
 <t tx="ekr.20051104081502.551">k = c.keyHandler
 
 def f (event):
@@ -12673,7 +12672,8 @@ k.registerCommand('print-hello2',None,f2)</t>
 ab</t>
 <t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
 </t>
-<t tx="ekr.20051107115231.1">g.es_print('Test of @command')
+<t tx="ekr.20051107115231.1"># This is used by a unit test.
+g.es_print('Test of @command')
 g.app.unitTestDict ['unit-test-command1'] = True</t>
 <t tx="ekr.20051107115231.9">c.redraw_now() # To make node visible
 
@@ -13393,7 +13393,7 @@ for p in c.allNodes_iter():
             if key not in buttonKeys:
                 buttonKeys.append(key)
                 
-for z in g.app.config.buttonsList:
+for z in g.app.config.atCommonButtonsList:
     h,junk = z
     key = mungeKey(h,'@button')
     # g.trace(key)
@@ -19965,5 +19965,6 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>
+<t tx="ekr.20080312090030.1"></t>
 </tnodes>
 </leo_file>

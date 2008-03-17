@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.477886977887">
-	<global_window_position top="210" left="445" height="576" width="864"/>
+	<global_window_position top="210" left="10" height="576" width="864"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -39,6 +39,10 @@
 </v>
 <v t="ekr.20041119035704.1"><vh> Organizer nodes</vh></v>
 <v t="ekr.20071217093419"><vh>\@data</vh></v>
+<v t="ekr.20080312071248.25"><vh>\@buttons</vh></v>
+<v t="ekr.20080312071248.19"><vh>\@button name [@key=value]</vh></v>
+<v t="ekr.20080312071248.26"><vh>\@commands</vh></v>
+<v t="ekr.20080312071248.20"><vh>\@command name [@key=value]</vh></v>
 <v t="ekr.20070224073109"><vh>\@enabled-plugins</vh></v>
 <v t="ekr.20060913144412"><vh>\@keys keyset-name</vh></v>
 <v t="ekr.20041119035931"><vh>\@if expression</vh></v>
@@ -84,12 +88,15 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070926132045"><vh>Buttons</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
 </v>
+</v>
+<v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
+<v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
 <v t="ekr.20041213105007.1" annotate="7d71002e"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
@@ -180,11 +187,13 @@
 </v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 </v>
-<v t="ekr.20041119034357.10" annotate="7d71002e"><vh>Command options</vh>
+<v t="ekr.20041119034357.10" a="E" annotate="7d71002e"><vh>Command options</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
+<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
+<v t="ekr.20080315083057.7" a="TV"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -538,11 +547,11 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20060603215208.4" a="E"><vh>Modes</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
-<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
 <v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
 <v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
 <v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
@@ -1074,7 +1083,7 @@
 </v>
 </v>
 <v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
-<v t="vivainio.20080307190927" a="E"><vh>IPython</vh>
+<v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
 <v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
@@ -4239,6 +4248,7 @@ resize-to-screen                    = None
 reverse-region                      = None
 revert                              = None
 run-unit-tests                      = None
+run-unit-tests-locally              = None
 save-buffers-kill-leo               = None
 save-file                           = None
 save-file-as                        = None
@@ -6694,6 +6704,7 @@ help-for-command            = F1
 open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
 run-unit-tests              = None
+run-unit-tests-locally      = Alt-4
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -6973,7 +6984,7 @@ plugins_menu.py
 # It doesn't understand @enabled-plugins nodes.
 # plugin_manager.py
 
-cleo.py
+# cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -8439,7 +8450,9 @@ the following character is underlined in the name.
 - If the command name in an @item node is just a hyphen (-), the item represents
 a menu separator.</t>
 <t tx="ekr.20070926082256.1">c.prettyPrintPythonNode()</t>
-<t tx="ekr.20070926082407">@color</t>
+<t tx="ekr.20070926082407">@color
+
+# @button nodes outside this tree are ignored.</t>
 <t tx="ekr.20070926132045">All @button nodes in this tree define **global buttons** that appear in all Leo outlines.
 
 At present, all @button nodes in this tree are disabled because they start with
@@ -8583,6 +8596,22 @@ push-to-ipython         = Alt-i
 </t>
 <t tx="ekr.20080212084020">The encoding used for files imported by @auto if no @encoding directive is in effect.
 Default is UTF-8 (case not important).</t>
+<t tx="ekr.20080312071248.19">The headline contains the button name, optionally followed by an @key=val field indicating a shortcut.
+
+The body text contains the script associated with the button.</t>
+<t tx="ekr.20080312071248.20">The headline contains the command name, optionally followed by an @key=val field indicating a shortcut.
+
+The body text contains the script associated with the command.</t>
+<t tx="ekr.20080312071248.25">Denotes the tree containing active @button nodes.
+@button nodes outside this tree are ignored.</t>
+<t tx="ekr.20080312071248.26">Denotes the tree containing active @command nodes.
+@command nodes outside this tree are ignored.</t>
+<t tx="ekr.20080312075451.1"></t>
+<t tx="ekr.20080312075451.2">@color
+
+# @command nodes outside this tree are ignored.</t>
+<t tx="ekr.20080315083057.7">True: (Recommended) The spell commands collapse all nodes that are not ancestors of the node containing the match.
+False: The spell commands do not collapse any nodes.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

@@ -257,20 +257,29 @@ hr { /* EKR */
 <h1><a class="toc-backref" href="#id1">What's New in Leo 4.4.4</a></h1>
 <p>Leo 4.4.4 contains many important features originally planned for later releases.
 The highlights of Leo 4.4.4:</p>
-<ul class="simple">
-<li><strong>The Great Graph Aha</strong>: simple scripts allow Leo outlines to represent arbitrary
+<ul>
+<li><p class="first"><strong>The Great Graph Aha</strong>:
+A Leo outline doesn't have to <em>be</em> an arbitrary graph in order to <em>represent</em> an arbitrary graph.</p>
+<p>That is, simple scripts allow Leo outlines to represent arbitrary
 directed graphs. There is no need for a separate 'graph world'. The graphed.py
 plugin is a direct result of this Aha. It allows you to create general graphs
-from Leo outlines.</li>
-<li>Support for <strong>&#64;auto nodes</strong>.  Such nodes allow people to collaborate using Leo
-without inserting Leo sentinels in the files Leo generates.</li>
-<li><strong>&#64;menus trees</strong> in settings files create all of Leo's menus.  It is now dead
-easy to make Leo's menus look the way you want.</li>
-<li><strong>&#64;buttons trees</strong> in settings files create common &#64;button nodes created in all
-Leo outlines.</li>
-<li>A new, faster, <strong>colorizer plugin</strong> replaces the __jEdit_colorizer__ plugin.</li>
-<li>New commands for <strong>resolving cvs conflicts</strong>.</li>
-<li>Leo's core is now compatible with jython.</li>
+from Leo outlines.</p>
+</li>
+<li><p class="first">Support for <strong>&#64;auto nodes</strong>.  Such nodes allow people to collaborate using Leo
+without inserting Leo sentinels in the files Leo generates.</p>
+</li>
+<li><p class="first"><strong>&#64;menus trees</strong> in settings files create all of Leo's menus.  It is now dead
+easy to make Leo's menus look the way you want.</p>
+</li>
+<li><p class="first"><strong>&#64;buttons trees</strong> in settings files create common &#64;button nodes created in all
+Leo outlines.</p>
+</li>
+<li><p class="first">A new, faster, <strong>colorizer plugin</strong> replaces the __jEdit_colorizer__ plugin.</p>
+</li>
+<li><p class="first">New commands for <strong>resolving cvs conflicts</strong>.</p>
+</li>
+<li><p class="first">Leo's core is now compatible with jython.</p>
+</li>
 </ul>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
@@ -303,8 +312,10 @@ Leo outlines.</li>
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="the-great-graph-aha">
 <h2><a class="toc-backref" href="#id2">The Great Graph Aha</a></h2>
-<p><strong>The graph world is unnecessary because we can use Leo nodes and trees as data
-to other graphing packages.</strong> That is, Python scripts can build arbitrary graphs
+<p>The Great Graph Aha is:</p>
+<p>A Leo outline doesn't have to <em>be</em> an arbitrary graph in order to <em>represent</em> an arbitrary graph.</p>
+<p>So the graph world is unnecessary because we can use Leo nodes and trees as data
+to other graphing packages.** That is, Python scripts can build arbitrary graphs
 using Leo's existing nodes and trees. And Python scripts can manipulate those
 graphs. And Python scripts could do the reverse: manipulate the Leo outline by
 traversing general graphs. So there is no need to complicate Leo's fundamental
@@ -339,7 +350,7 @@ two exceptions to this statement:</p>
 <p>1. Leo will never read (import) or write an &#64;auto tree if
 the root &#64;auto tree is under the influence of an &#64;ignore directive.</p>
 <p>2. Saving a .leo file does not save &#64;auto nodes if a) they haven't been changed
-or b) they do not contain a <strong>significant</strong> amount of informtion. An &#64;auto tree
+or b) they do not contain a <strong>significant</strong> amount of information. An &#64;auto tree
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</p>
 <p>Leo creates &#64;auto trees by parsing the corresponding derived file. Parsers
@@ -347,7 +358,7 @@ create descendant nodes of the &#64;auto tree: one node for each class, method a
 function in the derived file.</p>
 <p>Parsers presently exist for C, elisp, Java, Pascal, PHP and Python. Leo
 determines the language using the file's extension. If no parser exists for a
-language, the entire body ofAn &#64;auto tree contains a significant amount of information if it has any children or if the root node contains more than 10 non-blank lines. the derived file is copied to the body of the &#64;auto
+language, the entire body of an &#64;auto tree contains a significant amount of information if it has any children or if the root node contains more than 10 non-blank lines. the derived file is copied to the body of the &#64;auto
 node.</p>
 <p>Leo does not write the contents of &#64;auto trees to .leo files. In this respect,
 &#64;auto trees work much like &#64;thin trees. &#64;auto trees whose root node is under the
@@ -357,7 +368,7 @@ trees.</p>
 <div class="section" id="perfect-import-checks">
 <h3><a class="toc-backref" href="#id5">Perfect import checks</a></h3>
 <p>Leo performs several checks to ensure that the result of importing an external
-file will be equivlant to the file that writing the &#64;auto tree would produce.</p>
+file will be equivalent to the file that writing the &#64;auto tree would produce.</p>
 <p>These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a
 potentially serious problem. Leo inserts an &#64;ignore directive in the &#64;auto tree
 if any error is found. This &#64;ignore directive prevents the &#64;auto tree from
@@ -439,7 +450,7 @@ commands check the contents of a node: The <strong>check-derived-file</strong> a
 node can be done successfully. The check-derived-file command assumes the body
 text is a derived file; the check-leo-file command assumes the body text is an
 entire .leo file.</p>
-<p>The <strong>compare-leo-outlines</strong> command prompts for another (presubably similar)
+<p>The <strong>compare-leo-outlines</strong> command prompts for another (presumably similar)
 .leo file that will be compared with the presently selected outline file (main
 window). It then creates clones of all inserted, deleted and changed nodes.</p>
 </div>

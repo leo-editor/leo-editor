@@ -1132,15 +1132,15 @@ class importExportTestCase(unittest.TestCase):
 
     #@    @+others
     #@+node:ekr.20051104075904.80:__init__
-    def __init__ (self,c,v,dialog,temp_v,doImport):
+    def __init__ (self,c,p,dialog,temp_p,doImport):
 
         # Init the base class.
         unittest.TestCase.__init__(self)
 
         self.c = c
         self.dialog = dialog
-        self.v = v
-        self.temp_v = temp_v
+        self.p = p.copy()
+        self.temp_p = temp_p.copy()
 
         self.gui = None
         self.oldGui = None
@@ -1148,7 +1148,7 @@ class importExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
 
-        self.old_v = c.currentVnode()
+        self.old_p = c.currentPosition()
     #@-node:ekr.20051104075904.80:__init__
     #@+node:ekr.20051104075904.81: fail
     def fail (self,msg=None):
@@ -1165,7 +1165,7 @@ class importExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.82:importExport
     def importExport (self):
 
-        c = self.c ; p = self.v ###
+        c = self.c ; p = self.p
 
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
@@ -1186,14 +1186,14 @@ class importExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.84:setUp
     def setUp(self):
 
-        c = self.c ; temp_v = self.temp_v ; d = self.dialog
+        c = self.c ; temp_p = self.temp_p ; d = self.dialog
 
-        temp_v.setTnodeText('',g.app.tkEncoding)
+        temp_p.setTnodeText('',g.app.tkEncoding)
 
-        # Create a node under temp_v.
-        child = temp_v.insertAsLastChild()
+        # Create a node under temp_p.
+        child = temp_p.insertAsLastChild()
         assert(child)
-        c.setHeadString(child,"import test: " + self.v.headString())
+        c.setHeadString(child,"import test: " + self.p.headString())
         c.selectVnode(child)
 
         assert(d)
@@ -1224,31 +1224,31 @@ class importExportTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "ImportExportTestCase: %s %s" % (self.v.headString(),self.fileName)
+            return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
         except:
             return "ImportExportTestCase"
     #@-node:ekr.20051104075904.85:shortDescription
     #@+node:ekr.20051104075904.86:tearDown
     def tearDown (self):
 
-        c = self.c ; temp_v = self.temp_v
+        c = self.c ; temp_p = self.temp_p
 
         if self.gui:
             self.gui.destroySelf()
             self.gui = None
 
-        temp_v.setTnodeText("",g.app.tkEncoding)
-        temp_v.clearDirty()
+        temp_p.setTnodeText("",g.app.tkEncoding)
+        temp_p.clearDirty()
 
         if not self.wasChanged:
             c.setChanged (False)
 
         if 1: # Delete all children of temp node.
-            while temp_v.firstChild():
-                temp_v.firstChild().doDelete()
+            while temp_p.firstChild():
+                temp_p.firstChild().doDelete()
 
         g.app.gui = self.oldGui
-        c.selectVnode(self.old_v)
+        c.selectPosition(self.old_p)
     #@-node:ekr.20051104075904.86:tearDown
     #@-others
 #@-node:ekr.20051104075904.79:class importExportTestCase

@@ -1,6 +1,6 @@
-Leo 4.4.8 beta 1                           March 5, 2008
+Leo 4.4.8 beta 2                           March 14, 2008
 
-Leo 4.4.8 beta 1 is available at:
+Leo 4.4.8 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
@@ -20,6 +20,8 @@ The highlights of Leo 4.4.8:
 - Completed ILeo: a bridge between IPython and Leo.
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
 - Added support for arguments to minibuffer commands.
+- @menu trees can now refer to commands created by
+  @commands and @button nodes
 
 Links:
 ------

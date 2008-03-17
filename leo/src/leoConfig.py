@@ -29,7 +29,7 @@ class parserBaseClass:
         'float','path','ratio','shortcut','string','strings']
 
     control_types = [
-        'abbrev','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
+        'abbrev','buttons','commands','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
         ]
@@ -56,6 +56,7 @@ class parserBaseClass:
             'bool':         self.doBool,
             'buttons':      self.doButtons, # New in 4.4.4
             'color':        self.doColor,
+            'commands':     self.doCommands, # New in 4.4.8.
             'data':         self.doData, # New in 4.4.6
             'directory':    self.doDirectory,
             'enabledplugins': self.doEnabledPlugins,
@@ -129,6 +130,8 @@ class parserBaseClass:
     #@+node:ekr.20070925144337:doButtons
     def doButtons (self,p,kind,name,val):
 
+        '''Handle an @buttons tree.'''
+
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
         aList = [] ; c = self.c ; tag = '@button'
@@ -143,10 +146,33 @@ class parserBaseClass:
 
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
-        g.app.config.buttonsList = aList
+        g.app.config.atCommonButtonsList = aList
         g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
 
     #@-node:ekr.20070925144337:doButtons
+    #@+node:ekr.20080312071248.6:doCommands
+    def doCommands (self,p,kind,name,val):
+
+        '''Handle an @commands tree.'''
+
+        # __pychecker__ = '--no-argsused' # kind,name,val not used.
+
+        aList = [] ; c = self.c ; tag = '@command'
+        for p in p.subtree_iter():
+            h = p.headString()
+            if g.match_word(h,0,tag):
+                # We can not assume that p will be valid when it is used.
+                script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
+                aList.append((p.headString(),script),)
+
+        # g.trace(g.listToString(aList))
+
+        # This setting is handled differently from most other settings,
+        # because the last setting must be retrieved before any commander exists.
+        g.app.config.atCommonCommandsList = aList
+
+
+    #@-node:ekr.20080312071248.6:doCommands
     #@+node:ekr.20041120094940.2:doColor
     def doColor (self,p,kind,name,val):
 
@@ -956,7 +982,8 @@ class configClass:
     #@+node:ekr.20041117062717.2:ctor (configClass)
     def __init__ (self):
 
-        self.buttonsList = []
+        self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+        self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.buttonsFileName = ''
         self.configsExist = False # True when we successfully open a setting file.
         self.defaultFont = None # Set in gui.getDefaultConfigFont.
@@ -1263,8 +1290,13 @@ class configClass:
     #@+node:ekr.20070926082018:getButtons
     def getButtons (self):
 
-        return g.app.config.buttonsList
+        return g.app.config.atCommonButtonsList
     #@-node:ekr.20070926082018:getButtons
+    #@+node:ekr.20080312071248.7:getCommonCommands
+    def getCommonAtCommands (self):
+
+        return g.app.config.atCommonCommandsList
+    #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20041122070339:getColor
     def getColor (self,c,setting):
 
@@ -1878,10 +1910,12 @@ class settingsTreeParser (parserBaseClass):
             self.set(p,kind,name,None)
         elif kind in self.control_types or kind in self.basic_types:
             f = self.dispatchDict.get(kind)
-            try:
-                return f(p,kind,name,val)
-            except TypeError:
-                g.es_exception()
+            if f:
+                try:
+                    return f(p,kind,name,val)
+                except Exception:
+                    g.es_exception()
+            else:
                 print "*** no handler",kind
 
         return None

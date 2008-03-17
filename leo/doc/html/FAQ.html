@@ -1171,7 +1171,7 @@ be used to install Leo because Leo is not a Python package.</p>
 <div class="section" id="i-can-t-run-the-leobridge-module-outside-of-leo-src-what-should-i-do">
 <h3><a class="toc-backref" href="#id56">I can't run the LeoBridge module outside of leo/src.  What should I do?</a></h3>
 <p>Question and answer from plumloco.</p>
-<p>Add the equivelent of:</p>
+<p>Add the equivalent of:</p>
 <pre class="literal-block">
 import sys
 leosrc = &quot;path/to/leo/src&quot;
@@ -1187,9 +1187,9 @@ g.app etc, and so do not work if they rely on dynamic values in g.etc.</p>
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
-version, but both /src dirs can't be exposed at the same time.</p>
+version, but both /src directories can't be exposed at the same time.</p>
 <p>&gt; Do you need plugins while running from the leoBridge?</p>
-<p>'Fraid so, at least the rst3 plugin. The solution I am using now is to place:</p>
+<p>Afraid so, at least the rst3 plugin. The solution I am using now is to place:</p>
 <pre class="literal-block">
 sys.modules['leoGlobals'] = leoGlobals
 </pre>
