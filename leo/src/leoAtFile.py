@@ -2857,6 +2857,7 @@ class atFile:
             scriptWrite=scriptWrite,toString=toString,
             write_strips_blank_lines=write_strips_blank_lines)
         if not at.openFileForWriting(root,at.targetFileName,toString):
+            if root: root.setDirty() # Make _sure_ we try to rewrite this file.
             return
 
         try:
