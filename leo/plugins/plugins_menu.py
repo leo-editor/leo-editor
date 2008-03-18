@@ -2,7 +2,9 @@
 #@+node:EKR.20040517080555.2:@thin plugins_menu.py
 #@<< docstring >>
 #@+node:ekr.20050101090207.9:<< docstring >>
-'''Create a Plugins menu
+'''
+Create a Plugins menu
+=====================
 
 Adds an item to the plugin menu for each active plugin. Selecting
 this menu item will bring up a short About dialog with the details of the
@@ -691,16 +693,24 @@ class TkScrolledMessageDialog:
         if buttons is None:
             buttons = []
 
+        self.callback = callback
+        self.title = title
+        self.label = label
+        self.msg = msg
+
+        self.buttons = buttons or []
+
         self.result = ('Cancel', None)
 
         root = g.app.root
         self.top = top = Tk.Toplevel(root)
         g.app.gui.attachLeoIcon(self.top)
+
         top.title(title)
-        top.resizable(0,0) # neither height or width is resizable.
+        top.resizable(1,1) # height and width is resizable.
 
         frame = Tk.Frame(top)
-        frame.pack(side="top")
+        frame.pack(side="top", expand=True, fill='both')
         #@    << Create the contents of the about box >>
         #@+node:EKR.20040517080555.21:<< Create the contents of the about box >>
         #Tk.Label(frame,text="Version " + version).pack()
@@ -740,7 +750,7 @@ class TkScrolledMessageDialog:
         box = Tk.Frame(top, borderwidth=5)
         box.pack(side="bottom")
 
-        buttons.append("Close")
+        buttons.extend(["HTML", "Close"])
 
         for name in buttons:
             Tk.Button(box,
@@ -757,21 +767,27 @@ class TkScrolledMessageDialog:
         top.focus_force() # Get all keystrokes.
 
         root.wait_window(top)
-    #@nonl
     #@-node:EKR.20040517080555.20:__init__
     #@+node:bob.20071209110304.1:Event Handlers
 
     def onButton(self, name):
         """Event handler for all button clicks."""
 
-
         if name in ('Close'):
-
             self.top.destroy()
             return
 
+        if name == 'HTML':
+            try:
+                self.show_message_as_html()
+                self.top.destroy()
+            except:
+                self.result = ('Cancel', None)
+                return
+
         if self.callback:
-            retval = self.callback(name, data)
+            retval = self.callback(name)#, data)
+
             if retval == 'close':
                 self.top.destroy()
             else:
@@ -779,6 +795,33 @@ class TkScrolledMessageDialog:
 
 
     #@-node:bob.20071209110304.1:Event Handlers
+    #@+node:bobjack.20080317174956.3:show_message_as_html
+    def show_message_as_html(self):
+
+        from docutils import core
+
+        import leo_to_html
+
+        overrides = {
+            'doctitle_xform': False,
+            'initial_header_level': 1
+        }
+
+        parts = core.publish_parts(
+            source=self.msg,
+            writer_name='html',
+            settings_overrides=overrides
+        )
+
+        o = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
+        o.loadConfig()
+        o.silent = True  
+
+        o.xhtml = parts['whole']
+
+        o.myFileName = 'test-file'
+        o.show()
+    #@-node:bobjack.20080317174956.3:show_message_as_html
     #@-others
 #@-node:EKR.20040517080555.19:class TkScrolledMessageDialog
 #@+node:bob.20071208211442.1:runPropertiesDialog

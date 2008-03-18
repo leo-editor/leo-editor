@@ -5,7 +5,13 @@
 
 #@<< docstring >>
 #@+node:danr7.20060902215215.2:<< docstring >>
-'''leo_to_html converts a leo outline to an html web page.
+'''
+leo_to_html
+===========
+
+**Converts a leo outline to an html web page.**
+
+.. contents::
 
 Introduction
 ~~~~~~~~~~~~
@@ -31,12 +37,12 @@ Menu items
 ~~~~~~~~~~
 
 If this plugin loads properly, the following menu items should appear in
-your File > Export... menu in Leo.
+your File > Export... menu in Leo::
 
-	Save Outline as HTML  (equivalent to export-html)
-	Save Node as HTML     (equivalent to export-html-node)
-	Show Outline as HTML  (equivalent to show-html)
-	Show Node as HTML     (equivalent to show-html-node)
+    Save Outline as HTML  (equivalent to export-html)
+    Save Node as HTML     (equivalent to export-html-node)
+    Show Outline as HTML  (equivalent to show-html)
+    Show Node as HTML     (equivalent to show-html-node)
 
 
 Commands
@@ -44,24 +50,29 @@ Commands
 
 Several commands will also be made available
 
-    + 'export-html' will export to a file according to current settings.
-    + 'export-html-*' will export to a file using bullet type '*' which can be 'number', 'bullet' or 'head'.
+export-html
+  will export to a file according to current settings.
+export-html-*
+  will export to a file using bullet type '*' which can be **number**, **bullet** or **head**.
 
 The following commands will start a browser showing the html.
 
-    +'show-html' will show the outline according to current settings.
-    +'show-html-*' will show the outline using bullet type '*' which can be 'number', 'bullet' or 'head'.
+show-html
+  will show the outline according to current settings.
 
-The following commands are the same as above except only the current node is converted.
+show-html-*
+  will show the outline using bullet type '*' which can be **number**, **bullet** or **head**.
 
-    +'export-html-node'
-    +'export-html-node-*'
-    +'show-html-node'
-    +'show-html-node-*
+The following commands are the same as above except only the current node is converted::
+
+    export-html-node
+    export-html-node-*
+    show-html-node
+    show-html-node-*
 
 
 Properties
-~~~~~~~~~
+~~~~~~~~~~
 
 There are several settings that can appear in the leo_to_html.ini properties
 file in leo's plugins folder or be set via the Plugins > leo_to_html >
@@ -99,7 +110,8 @@ bullet_type:
 browser_command:
     Set this to the command needed to launch a browser on your system.
 
-    Default:  c:\Program Files\Internet Explorer\IEXPLORE.EXE
+    Default:
+        c:\\Program Files\\Internet Explorer\\IEXPLORE.EXE
 
 '''
 #@-node:danr7.20060902215215.2:<< docstring >>
@@ -147,6 +159,7 @@ import leoPlugins
 import ConfigParser
 import re
 import tempfile
+import os
 
 #@-node:danr7.20060902215215.4:<< imports >>
 #@nl
@@ -311,7 +324,7 @@ class Leo_to_HTML(object):
     #@    @+others
     #@+node:bob.20080107154746.1:__init__
 
-    def __init__(self, c):
+    def __init__(self, c=None):
 
         self.c = c
         self.basedir = ''
@@ -608,15 +621,17 @@ class Leo_to_HTML(object):
 
     def show(self):
 
-        filepath = abspath(self.basedir, self.path, self.myFileName)
 
-        filename = 'leo_show_' + re.sub('[/\\:]', '_', filepath)
+        tempdir = g.os_path_join(g.os_path_abspath(tempfile.gettempdir()), 'leo_show')
 
-        filepath = abspath(tempfile.gettempdir(), filename)
+        if not g.os_path_exists(tempdir):
+            import os
+            os.mkdir(tempdir)
+
+        filename = g.sanitize_filename(self.myFileName)  
+        filepath = g.os_path_join(tempdir, filename + '.html')
 
         self.write(filepath, self.xhtml, basedir='', path='')
-
-
 
         try:
             import subprocess
