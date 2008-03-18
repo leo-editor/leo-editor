@@ -4417,7 +4417,7 @@ class atFile:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self):
 
         '''Create target file as follows:
@@ -4472,7 +4472,7 @@ class atFile:
                 g.es('created:  ',self.targetFileName)
                 self.fileChangedFlag = True
             return False
-    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
