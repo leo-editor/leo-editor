@@ -442,6 +442,14 @@
 <v t="ekr.20050902105852.11"><vh>Leo 4.2: Complete at last</vh></v>
 <v t="ekr.20050902105852.12"><vh>Leo 4.3 Settings</vh></v>
 <v t="ekr.20060629083935"><vh>Leo 4.4 The minibuffer and key bindings</vh></v>
+<v t="ekr.20080315115427.568" a="M"><vh>Leo 4.4.4 Improvements</vh>
+<v t="ekr.20080315115427.569"><vh>Leo 4.4.1</vh></v>
+<v t="ekr.20080315115427.570"><vh>Leo 4.4.2</vh></v>
+<v t="ekr.20080315115427.571"><vh>Leo 4.4.3</vh></v>
+<v t="ekr.20080315115427.572"><vh>Leo 4.4.4</vh></v>
+<v t="ekr.20080315115427.573"><vh>Leo 4.4.5</vh></v>
+<v t="ekr.20080315115427.574"><vh>Leo 4.4.7 and Leo 4.4.8</vh></v>
+</v>
 <v t="ekr.20050902100834"><vh>@rst-ignore-tree Details</vh>
 <v t="EKR.20040524104904.247"><vh>Versions</vh></v>
 <v t="EKR.20040524104904.248"><vh>Designing @file trees</vh>
@@ -1134,7 +1142,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="TV"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3596,8 +3604,8 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080311060457.1" a="TV"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
 <v t="ekr.20080311060457.212"><vh>Added translation services</vh>
@@ -19007,6 +19015,13 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _`Chapter 8\: Customizing Leo`:              customizing.html
 .. _`Chapter 10\: Theory of Operation`:         theory.html
 
+.. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
+.. _`Chapter 16\: Debugging with Leo`:              debuggers.html
+.. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
+.. _`Chapter 18\: Leo and Emacs`:                   emacs.html
+.. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
+.. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
+.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
 .. Absolute links..
 
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
@@ -34381,6 +34396,43 @@ What's New in Leo 4.4.7 and Leo 4.4.8
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
   
 - Improved marks/recent buttons plugin.</t>
+<t tx="ekr.20080315115427.568">Leo 4.4.1 through 4.4.8 contained many incremental improvements,
+as documented in Chapters 15 through 21 of this Users Guide.
+</t>
+<t tx="ekr.20080315115427.569">- Supported multiple editors in body pane.
+- Added the jEdit_colorizer plugin. See `Chapter 15: Controlling Syntax Coloring`_.
+- Added the slideshow plugin.</t>
+<t tx="ekr.20080315115427.570">- Added support for myLeoSettings.leo
+- The 'Big Reorg' made Leo's vnodes and tnode classes independent of the rest of Leo.
+- Added support for ZODB. See `Chapter 17: Using ZODB with Leo`_.
+- Added leoPymacs module. See `Chapter 18: Leo and Emacs`_.
+- Added the leoOPML, leo_to_rtf and leo_to_html plugins.
+- Added outline navigation: typing a letter selects the next outline node that starts with that letter.
+- Added autocontract during finds.
+- Added new commands and options to make Leo usable without a mouse.
+- Added an option sax parser for reading .leo files.</t>
+<t tx="ekr.20080315115427.571">- Added support for chapters in Leo's core.
+- Added support for zipped .leo files.
+- Added the leoBridge module. See `Chapter 19: Embedding Leo with the leoBridge Module`_.
+- Removed all gui-dependent code from Leo's core.
+- Added better support for the winpdb debugger.
+- Added support for @enabled-plugins and @open-with nodes in settings files.
+</t>
+<t tx="ekr.20080315115427.572">- The Great Graph Aha: Outlines don't have to *be* graphs to *represent* graphs.
+  This Aha meant that there is no need for a separate 'graph world'.  
+- Added support for @menus and @buttons trees in settings files.
+- Added perfect import of foreign files with @auto nodes.
+- Added new commands for resolving cvs conflicts.
+- Replaced the jEdit_colorizer plugin with the threading_colorizer plugin.
+- Made Leo compatible with jython.
+- Added better support for icons in headlines.
+</t>
+<t tx="ekr.20080315115427.573">- Leo now recognizes directives in headlines.
+- Added support for @rst-preformat nodes to the rst3 plugin.
+</t>
+<t tx="ekr.20080315115427.574">- Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
+- Added support for translating messages to Leo's log.
+</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and

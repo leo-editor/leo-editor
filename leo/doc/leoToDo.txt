@@ -2,14 +2,141 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20080315083057.3:Create usable setup.py
-#@-node:ekr.20080315083057.3:Create usable setup.py
-#@+node:ekr.20080315115427.1:give line numbers when errors reading derived files
-#@-node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@+node:ekr.20080317054817.1:b2
+#@+node:ekr.20080315115427.3:unit tests for getLeoId and at.readError
+#@+node:ekr.20031218072017.1978:app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeDir = g.app.homeDir
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+#@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+#@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+#@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+
+# Create an emergency gui and a Tk root window.
+g.app.createTkGui("startup")
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@-node:ekr.20031218072017.1978:app.setLeoID
+#@+node:ekr.20041005105605.127:readError
+def readError(self,message):
+
+    # This is useful now that we don't print the actual messages.
+    if self.errors == 0:
+        self.printError("----- read error. line: %s, file: %s" % (
+            self.lineNumber,self.targetFileName,))
+
+    # g.trace(self.root,g.callers())
+    self.error(message)
+
+    # Bug fix: 12/10/05: Delete all of root's tree.
+    self.root.v.t._firstChild = None
+    self.root.setOrphan()
+    self.root.setDirty()
+#@-node:ekr.20041005105605.127:readError
+#@-node:ekr.20080315115427.3:unit tests for getLeoId and at.readError
 #@+node:ekr.20080315115427.2:Improve spell tab
 # Make changes as in nav_buttons: initial selection, arrow keys.
 #@nonl
 #@-node:ekr.20080315115427.2:Improve spell tab
+#@+node:ekr.20080315083057.3:Create usable setup.py
+#@-node:ekr.20080315083057.3:Create usable setup.py
+#@+node:ekr.20080315115427.578:Check out cleo branch
+#@-node:ekr.20080315115427.578:Check out cleo branch
+#@-node:ekr.20080317054817.1:b2
+#@+node:ekr.20080317054817.2:Final
+#@+node:ekr.20080315083057.5:update acknowledgements
+#@-node:ekr.20080315083057.5:update acknowledgements
 #@+node:ekr.20080313032655.1:One message during import test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -235,10 +362,300 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:One message during import test on Linux
-#@+node:ekr.20080315083057.5:update acknowledgements
-#@-node:ekr.20080315083057.5:update acknowledgements
+#@-node:ekr.20080317054817.2:Final
 #@-node:ekr.20080311135649.1:4.4.8 to-do
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080315115427.596:new iterators
+#@+node:ekr.20080315115427.579:c.iterators
+#@+node:ekr.20080315115427.580:c.all_positions_iter == allNodes_iter
+class allNodes_iter_class:
+
+    """Returns a list of positions in the entire outline."""
+
+    @others
+
+def allNodes_iter (self,copy=False):
+
+    c = self
+    return self.allNodes_iter_class(c,copy)
+
+all_positions_iter = allNodes_iter
+#@nonl
+#@+node:ekr.20080315115427.581:__init__ & __iter__ (c.all_positions_iter)
+def __init__(self,c,copy):
+
+    # g.trace('c.allNodes_iter.__init','p',p,'c',c)
+
+    self.c = c
+    self.first = c.rootPosition()
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20080315115427.581:__init__ & __iter__ (c.all_positions_iter)
+#@+node:ekr.20080315115427.582:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+
+    else: raise StopIteration
+#@-node:ekr.20080315115427.582:next
+#@-node:ekr.20080315115427.580:c.all_positions_iter == allNodes_iter
+#@+node:ekr.20080315115427.583:c.all_tnodes_iter
+# def all_tnodes_iter(self):
+
+    # c = self
+    # for p in c.all_positions_iter():
+        # yield p.v.t
+
+    # # return c.rootPosition().all_tnodes_iter(all=True)
+
+class all_tnodes_iter_class:
+
+    """Returns a list of all tnodes in the entire outline."""
+
+    @others
+
+def all_tnodes_iter (self):
+
+    c = self
+    return self.all_tnodes_iter_class(c)
+#@+node:ekr.20080315115427.584:__init__ & __iter__ (c.all_tnodes_iter)
+def __init__(self,c):
+
+    # g.trace('c.all_tnodes_iter.__init','p',p,'c',c)
+
+    self.c = c
+    self.first = c.rootPosition()
+    self.p = None
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20080315115427.584:__init__ & __iter__ (c.all_tnodes_iter)
+#@+node:ekr.20080315115427.585:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        return self.p.v.t
+
+    else:
+        raise StopIteration
+#@-node:ekr.20080315115427.585:next
+#@-node:ekr.20080315115427.583:c.all_tnodes_iter
+#@+node:ekr.20080315115427.586:c.all_unique_tnodes_iter
+# def all_unique_tnodes_iter(self):
+
+    # c = self ; marks = {}
+
+    # for p in c.all_positions_iter():
+        # if not p.v.t in marks:
+            # marks[p.v.t] = p.v.t
+            # yield p.v.t
+
+class all_unique_tnodes_iter_class:
+
+    """Returns a list of all tnodes in the entire outline."""
+
+    @others
+
+def all_unique_tnodes_iter (self):
+
+    c = self
+    return self.all_unique_tnodes_iter_class(c)
+#@+node:ekr.20080315115427.587:__init__ & __iter__ (c.all_unique_tnodes_iter)
+def __init__(self,c):
+
+    # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
+
+    self.d = {}
+    self.first = c.rootPosition()
+    self.p = None
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20080315115427.587:__init__ & __iter__ (c.all_unique_tnodes_iter)
+#@+node:ekr.20080315115427.588:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.moveToThreadNextUnique()
+
+    if self.p:
+        return self.p.v.t
+
+    raise StopIteration
+#@-node:ekr.20080315115427.588:next
+#@+node:ekr.20080315115427.589:moveToThreadNextUnique
+def moveToThreadNextUnique (self):
+
+    """Move a position to threadNext position."""
+
+    p = self.p
+
+    if p:
+        # We've been visited
+        self.d[p.v.t]=True
+
+        # First, try to find an unmarked child
+        if p.v.t._firstChild:
+            p.moveToFirstChild()
+            while p and self.d.get(p.v.t):
+                if p.v._next:
+                    p.moveToNext()
+                else:
+                    p.moveToParent()
+
+        # If we didn't find an unmarked child,
+        # try to find an unmarked sibling
+        if p and self.d.get(p.v.t):
+            while p.v._next:
+                p.moveToNext()
+                if not self.d.get(p.v.t):
+                    break
+
+        # If we didn't find an unmarked sibling,
+        # find a parent with an unmarked sibling
+        if p and self.d.get(p.v.t):
+            p.moveToParent()
+            while p:
+                while p.v._next:
+                    p.moveToNext()
+                    if not self.d.get(p.v.t):
+                        break
+                # if we run out of siblings, go to parent
+                if self.d.get(p.v.t):
+                    p.moveToParent()
+                else:
+                    break # found
+            # At this point, either (not p.mark[p.v.t]) and found
+            # or (not p) and we're finished
+
+    return p 
+#@-node:ekr.20080315115427.589:moveToThreadNextUnique
+#@-node:ekr.20080315115427.586:c.all_unique_tnodes_iter
+#@+node:ekr.20080315115427.590:c.all_vnodes_iter
+# def all_vnodes_iter(self):
+
+    # c = self
+    # for p in c.all_positions_iter():
+        # yield p.v
+
+class all_vnodes_iter_class:
+
+    """Returns a list of all tnodes in the entire outline."""
+
+    @others
+
+def all_vnodes_iter (self):
+
+    c = self
+    return self.all_vnodes_iter_class(c)
+#@+node:ekr.20080315115427.591:__init__ & __iter__ (c.all_vnodes_iter)
+def __init__(self,c):
+
+    # g.trace('c.all_tnodes_iter.__init','p',p,'c',c)
+
+    self.c = c
+    self.first = c.rootPosition()
+    self.p = None
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20080315115427.591:__init__ & __iter__ (c.all_vnodes_iter)
+#@+node:ekr.20080315115427.592:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        return self.p.v
+
+    else: raise StopIteration
+#@-node:ekr.20080315115427.592:next
+#@-node:ekr.20080315115427.590:c.all_vnodes_iter
+#@+node:ekr.20080315115427.593:c.all_unique_vnodes_iter
+# def all_unique_vnodes_iter(self):
+
+    # c = self ; marks = {}
+    # for p in c.all_positions_iter():
+        # if not p.v in marks:
+            # marks[p.v] = p.v
+            # yield p.v
+
+class all_unique_vnodes_iter_class:
+
+    """Returns a list of all tnodes in the entire outline."""
+
+    @others
+
+def all_unique_vnodes_iter (self):
+
+    c = self
+    return self.all_unique_vnodes_iter_class(c)
+#@+node:ekr.20080315115427.594:__init__ & __iter__ (c.all_unique_nodes_iter)
+def __init__(self,c):
+
+    # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
+
+    self.c = c
+    self.d = {}
+    self.first = c.rootPosition()
+    self.p = None
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20080315115427.594:__init__ & __iter__ (c.all_unique_nodes_iter)
+#@+node:ekr.20080315115427.595:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    while self.p:
+        self.p.moveToThreadNext()
+        if not self.p:
+            break
+        elif not self.d.get(self.p.v.t):
+            self.d [self.p.v.t] = True
+            return self.p.v
+
+    raise StopIteration
+#@-node:ekr.20080315115427.595:next
+#@-node:ekr.20080315115427.593:c.all_unique_vnodes_iter
+#@-node:ekr.20080315115427.579:c.iterators
+#@-node:ekr.20080315115427.596:new iterators
 #@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@+node:ekr.20080124083629.1:Improve @path handling
