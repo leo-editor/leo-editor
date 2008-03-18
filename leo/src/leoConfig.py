@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20041117062700:@thin leoConfig.py
+#@+node:sps.20080317155519.1:@thin leoConfig.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
@@ -1476,7 +1476,7 @@ class configClass:
 
         # g.trace(c,c.rootPosition())
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
             if p.headString().rstrip() == "@settings":
                 return p.copy()
         else:
@@ -1923,5 +1923,5 @@ class settingsTreeParser (parserBaseClass):
     #@-others
 #@-node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
 #@-others
-#@-node:ekr.20041117062700:@thin leoConfig.py
+#@-node:sps.20080317155519.1:@thin leoConfig.py
 #@-leo

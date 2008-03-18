@@ -1942,7 +1942,7 @@ class basePosition (object):
                             p.moveToParent()
                         else:
                             break # found
-                    # At this point, either (not p.mark[p.v.t]) and found
+                    # At this point, either (not p.d[p.v.t]) and found
                     # or (not p) and we're finished
 
             return p 
@@ -2090,7 +2090,7 @@ class basePosition (object):
                             p.moveToParent()
                         else:
                             break # found
-                    # At this point, either (not p.mark[p.v.t]) and found
+                    # At this point, either (not p.d[p.v.t]) and found
                     # or (not p) and we're finished
 
             return p 
