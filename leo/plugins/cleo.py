@@ -169,18 +169,19 @@ class cleoController:
     #@    @+others
     #@+node:tbrown.20080304230028:priority table
     priorities = {
-      1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
-      2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
-      3: {'long': 'High',      'short': '3', 'icon': 'pri3.png'},
-      4: {'long': 'Medium',    'short': '4', 'icon': 'pri4.png'},
-      5: {'long': 'Low',       'short': '5', 'icon': 'pri5.png'},
-      6: {'long': 'Very Low',  'short': '6', 'icon': 'pri6.png'},
-      7: {'long': 'Sometime',  'short': '7', 'icon': 'pri7.png'},
-     20: {'long': 'Bang',      'short': '!', 'icon': 'bngblk.png'},
-     21: {'long': 'Cross',     'short': 'X', 'icon': 'xblk.png'},
-     22: {'long': '(cross)',   'short': 'x', 'icon': 'xgry.png'},
-     23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
-    100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
+      1: {'long': 'Urgent',    'short': '1',  'icon': 'pri1.png'},
+      2: {'long': 'Very High', 'short': '2',  'icon': 'pri2.png'},
+      3: {'long': 'High',      'short': '3',  'icon': 'pri3.png'},
+      4: {'long': 'Medium',    'short': '4',  'icon': 'pri4.png'},
+      5: {'long': 'Low',       'short': '5',  'icon': 'pri5.png'},
+      6: {'long': 'Very Low',  'short': '6',  'icon': 'pri6.png'},
+      7: {'long': 'Sometime',  'short': '7',  'icon': 'pri7.png'},
+     20: {'long': 'Bang',      'short': '!',  'icon': 'bngblk.png'},
+     21: {'long': 'Cross',     'short': 'X',  'icon': 'xblk.png'},
+     22: {'long': '(cross)',   'short': 'x',  'icon': 'xgry.png'},
+     23: {'long': 'Query',     'short': '?',  'icon': 'qryblk.png'},
+     99: {'long': 'To do',     'short': '[]', 'icon': 'chkboxblk.png'},
+    100: {'long': 'Done',      'short': 'D',  'icon': 'chkblk.png'},
     }
     #@nonl
     #@-node:tbrown.20080304230028:priority table

@@ -15,11 +15,25 @@
    sodipodi:version="0.32"
    inkscape:version="0.45+devel"
    sodipodi:docbase="J:\tbrown\Misc\Buttons\Priority"
-   sodipodi:docname="1-7.svg"
+   sodipodi:docname="cleo_icons.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-50 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:persp3d-origin="300 : 400 : 1"
+       id="perspective2482" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-50 : 600 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="700 : 600 : 1"
+       inkscape:persp3d-origin="300 : 400 : 1"
+       id="perspective88" />
     <linearGradient
        id="linearGradient2235">
       <stop
@@ -223,6 +237,26 @@
            x="135.20708"
            y="134.34662">?</tspan></text>
     </clipPath>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2235"
+       id="radialGradient2472"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.9646981,1.0020151,-0.5979569,1.1724436,-64.161546,-149.44548)"
+       cx="128.90877"
+       cy="100.67019"
+       fx="140.33589"
+       fy="59.719212"
+       r="38.512882" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3263">
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path3265"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="M 92.438767,705.64519 L 177.73249,705.64519 L 177.73249,790.93892 L 92.438767,790.93892 L 92.438767,705.64519 z" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -237,16 +271,25 @@
      inkscape:document-units="px"
      inkscape:current-layer="g3366"
      showgrid="true"
-     gridspacingy="1in"
-     gridspacingx="1in"
-     gridoriginy="0in"
-     gridoriginx="0in"
      inkscape:window-width="954"
      inkscape:window-height="822"
      inkscape:window-x="1405"
      inkscape:window-y="84"
      width="765px"
-     height="1260px" />
+     height="1260px">
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0px"
+       originy="0in"
+       spacingx="1in"
+       spacingy="1in"
+       color="#0000ff"
+       empcolor="#0000ff"
+       opacity="0.2"
+       empopacity="0.4"
+       empspacing="5" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -620,6 +663,31 @@
          id="path3372"
          sodipodi:nodetypes="ccsscc"
          transform="translate(-0.7366912,950.83528)" />
+    </g>
+    <g
+       inkscape:export-ydpi="16.882835"
+       inkscape:export-xdpi="16.882835"
+       inkscape:export-filename="/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/leo.tb/leo/Icons/cleo/chkboxblk.png"
+       clip-path="url(#clipPath3263)"
+       id="g2466"
+       transform="translate(0,535.06038)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path3260"
+         style="fill:#ffffff;fill-opacity:0;fill-rule:evenodd;stroke:none;stroke-width:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="M 92.438767,705.64519 L 177.73249,705.64519 L 177.73249,790.93892 L 92.438767,790.93892 L 92.438767,705.64519 z" />
+      <path
+         id="path2468"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="M 95.447106,708.65353 L 174.72415,708.65353 L 174.72415,787.93058 L 95.447106,787.93058 L 95.447106,708.65353 z M 104.98614,718.68997 L 165.18512,718.68997 L 165.18512,777.89414 L 104.98614,777.89414 L 104.98614,718.68997 z"
+         transform="matrix(0.6636107,0,0,0.6648187,45.441362,250.81347)"
+         sodipodi:nodetypes="cccccccccc" />
+      <path
+         transform="translate(-0.7366912,634.04309)"
+         sodipodi:nodetypes="ccsscc"
+         id="path2470"
+         d="M 92.500332,64.63429 L 178.77318,66.970282 L 178.69073,94.810575 C 178.68119,98.030777 148.12645,104.93864 138.74861,94.667663 C 129.37076,84.39669 96.482768,123.04287 93.333105,126.94133 L 92.500332,64.63429 z"
+         style="opacity:0.85000006;fill:url(#radialGradient2472);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
   </g>
 </svg>
