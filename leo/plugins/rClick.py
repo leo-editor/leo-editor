@@ -86,34 +86,44 @@ def rClicker(tag,keywords):
     if not c or not c.exists or not e: return
     w = c.frame.body.bodyCtrl
 
+    try:
+        w.setSelectionRange(*c.k.previousSelection)
+    except TypeError:
+        pass
+
     e.widget.focus()
 
     #@    << define callbacks >>
     #@+node:ekr.20060110123700:<< define callbacks >>
+    def cb(cmd):
+        return lambda c=c, cmd=cmd : c.executeMinibufferCommand(cmd)
+
     def rc_helpCallback(c=c):       rc_help(c)
-    def rc_dbodyCallback(c=c):      rc_dbody(c)
+
     def rc_nlCallback(c=c):         rc_nl(c)
     def rc_selectAllCallback(c=c):  rc_selectAll(c)
-    #@nonl
+
     #@-node:ekr.20060110123700:<< define callbacks >>
     #@nl
     if e.widget._name.startswith('body'):
         #@        << define commandList for body >>
         #@+node:ekr.20040422072343.7:<< define commandList for body >>
+
+
         commandList = [
             #('-||-|-||-',None),   #
             #('U',c.undoer.undo),  #no c.undoer
             #('R',undoer.redo),
             # ('-',None),
-            ('Cut', c.frame.OnCutFromMenu), 
-            ('Copy',c.frame.OnCopyFromMenu),
-            ('Paste', c.frame.OnPasteFromMenu),
-            ('Delete',rc_dbodyCallback),
+            ('Cut', cb('cut-text')), 
+            ('Copy', cb('copy-text')),
+            ('Paste', cb('paste-text')),
+            #('Delete',rc_dbodyCallback),
             ('-',None),
-            ('SelectAll',c.frame.body.selectAllText),
-            ('Indent',c.indentBody),
-            ('Dedent',c.dedentBody),  
-            ('Find Bracket',c.findMatchingBracket),
+            ('Select All', cb('select-all')),
+            ('Indent', cb('indent-region')),
+            ('Dedent', cb('unindent-region')),  
+            ('Find Bracket', cb('match-brackets')),
             ('Insert newline', rc_nlCallback),
 
             # this option seems not working, at least in win32
@@ -253,8 +263,8 @@ def rClicker(tag,keywords):
         #@        << define commandList for log pane >>
         #@+node:ekr.20040422072343.16:<< define commandList for log pane >>
         commandList=[
-            ('Cut', c.frame.OnCutFromMenu), 
-            ('Copy',c.frame.OnCopyFromMenu),
+            ('Cut', lambda c=c : rc_log_cut_copy(c, cut=True)), 
+            ('Copy', lambda c=c : rc_log_cut_copy(c)),
             ('Paste', c.frame.OnPasteFromMenu),
             ('Select All', rc_selectAllCallback)]
         #@nonl
@@ -296,14 +306,6 @@ def rc_help(c):
         # Print what was written to fo.
         s = fo.get() ; g.es(s) ; print s
 #@-node:ekr.20040422072343.1:rc_help
-#@+node:ekr.20040422072343.2:rc_dbody
-def rc_dbody(c):
-
-    if c.frame.body.hasTextSelection():
-        c.frame.body.deleteTextSelection()
-        c.frame.body.onBodyChanged("Delete")
-#@nonl
-#@-node:ekr.20040422072343.2:rc_dbody
 #@+node:ekr.20040422072343.3:rc_nl
 def rc_nl(c):
 
@@ -323,6 +325,45 @@ def rc_selectAll(c):
 
     c.frame.log.logCtrl.selectAllText()
 #@-node:ekr.20040422072343.4:rc_selectAll
+#@+node:bobjack.20080319083646.2:rc_log_cut_copy
+def rc_log_cut_copy(c, cut=False):
+
+    """Select the entire log pane."""
+
+    w = c.frame.log.logCtrl
+
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    text = w.getSelectedText()
+    if not text:
+        return
+
+    if cut:
+        w.deleteTextSelection()
+
+    g.app.gui.replaceClipboardWith(text)
+
+
+#@-node:bobjack.20080319083646.2:rc_log_cut_copy
+#@+node:bobjack.20080319093153.2:rc_paste
+def rc_log_paste(c):
+
+    """Paste into log pane."""
+
+    w = c.frame.log.logCtrl
+
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    text = g.app.gui.getTextFromClipboard(text)
+    if not text:
+        return
+
+    w.insert(text)
+
+
+
+
+#@-node:bobjack.20080319093153.2:rc_paste
 #@+node:ekr.20040422072343.9:Utils for context sensitive commands
 #@+node:ekr.20040422072343.10:crop
 def crop(s,n=20,end="..."):
