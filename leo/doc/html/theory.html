@@ -425,7 +425,7 @@ a vnode does not represent unique location on the screen. As a result, the
 now return <em>positions</em> instead of vnodes. The position class was designed to
 allow compatibility with old scripts. Old code can use positions just like they
 used to use vnodes.</p>
-<p>Earlier versions of Leo duplicated all the descendents of vnode v when cloning
+<p>Earlier versions of Leo duplicated all the descendants of vnode v when cloning
 v. This created many complications that no longer exist. In particular, in the
 new scheme a vnode v is cloned if and only if <tt class="docutils literal"><span class="pre">len(v.t.vnodeList)</span> <span class="pre">&gt;</span> <span class="pre">1</span></tt>.</p>
 </div>

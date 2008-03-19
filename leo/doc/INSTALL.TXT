@@ -59,6 +59,7 @@ One way to do this is adding something like the following to python/Lib/sitecust
     sys.path.append(r'<path-to-leo>leo\src')
 
 Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
 Installing leo.py on MacOs
 --------------------------
 
@@ -120,6 +121,7 @@ Double click on it to unzip and untar the file into a folder to make it
 available to Python
 
 Thanks to Randall Voth for these instructions.
+
 Using shell scripts and batch files to make using Leo easier
 ------------------------------------------------------------
 

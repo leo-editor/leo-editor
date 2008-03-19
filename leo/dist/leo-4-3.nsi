@@ -382,8 +382,16 @@ Section "Leo" SEC01
 
   File "..\plugins\*.py"
 
-  SetOutPath "$INSTDIR\plugins\trees"
+  SetOutPath "$INSTDIR\plugins\examples"
+  File "..\plugins\examples\*.py"
 
+  SetOutPath "$INSTDIR\plugins\experimental"
+  File "..\plugins\experimental\*.py"
+
+  SetOutPath "$INSTDIR\plugins\test"
+  File "..\plugins\test\*.py"
+
+  SetOutPath "$INSTDIR\plugins\trees"
   File "..\plugins\trees\*.py"
 
   # trees\pluginsManager.txt is a for use of a plugin.
@@ -409,8 +417,6 @@ Section "Leo" SEC01
   File "..\src\LeoPy.leo"
   File "..\src\oldLeoProjects.leo"
 
-  ; File "..\src\unitTests.txt"
-
   ; File "..\src\__init__.py"
   File "..\src\leo*.py"
   ;@-node:ekr.20050118104901.10:<< install src files >>
@@ -422,8 +428,6 @@ Section "Leo" SEC01
   File "..\test\test.leo"
   File "..\test\unitTest.leo"
   File "..\test\leoBridgeTest.py"
-  File "..\test\leoDynamicTest.py"
-
   ;@-node:ekr.20050118122404.1:<< install test files >>
   ;@nl
   SetOutPath "$INSTDIR\test\unittest"
@@ -687,8 +691,10 @@ Section Uninstall
   Delete "$INSTDIR\plugins\*.ini"
 
   Delete "$INSTDIR\plugins\*.p*"
-
-  Delete "$INSTDIR\plugins\trees\*.p*"
+  Delete "$INSTDIR\plugins\examples\*.*"
+  Delete "$INSTDIR\plugins\experimental\*.*"
+  Delete "$INSTDIR\plugins\test\*.*"
+  Delete "$INSTDIR\plugins\trees\*.*"
 
   Delete "$INSTDIR\plugins\trees\pluginsManager.txt"
   ;@nonl
@@ -709,7 +715,6 @@ Section Uninstall
   Delete "$INSTDIR\src\leoProjects.txt"
   Delete "$INSTDIR\src\LeoPy.leo"
   Delete "$INSTDIR\src\oldLeoProjects.leo"
-  Delete "$INSTDIR\src\unitTests.txt"
 
   Delete "$INSTDIR\src\__init__.p*"
 
@@ -723,8 +728,6 @@ Section Uninstall
   Delete "$INSTDIR\test\test.leo"
   Delete "$INSTDIR\test\unitTest.leo"
   Delete "$INSTDIR\test\leoBridgeTest.py"
-  Delete "$INSTDIR\test\leoDynamicTest.py"
-  ;@nonl
   ;@-node:ekr.20050118122740.3:<< uninstall test files >>
   ;@nl
   ;@  << uninstall unittest files >>
@@ -786,6 +789,9 @@ Section Uninstall
 
   RMDir "$INSTDIR\modes"
 
+  RMDir "$INSTDIR\plugins\examples"
+  RMDir "$INSTDIR\plugins\experimental"
+  RMDir "$INSTDIR\plugins\test"
   RMDir "$INSTDIR\plugins\trees"
   RMDir "$INSTDIR\plugins"
 

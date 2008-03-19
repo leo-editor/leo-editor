@@ -264,10 +264,7 @@ hr { /* EKR */
 <li><a class="reference" href="#overview" id="id2" name="id2">Overview</a></li>
 <li><a class="reference" href="#using-test-nodes" id="id3" name="id3">Using &#64;test nodes</a></li>
 <li><a class="reference" href="#using-suite-nodes" id="id4" name="id4">Using &#64;suite nodes</a></li>
-<li><a class="reference" href="#how-unit-tests-commands-find-tests" id="id5" name="id5">How unit tests commands find tests</a></li>
-<li><a class="reference" href="#including-other-nodes-in-unit-tests" id="id6" name="id6">Including other nodes in unit tests</a></li>
-<li><a class="reference" href="#unit-test-buttons" id="id7" name="id7">Unit test buttons</a></li>
-<li><a class="reference" href="#how-the-unit-test-commands-work" id="id8" name="id8">How the unit test commands work</a></li>
+<li><a class="reference" href="#how-the-unit-test-commands-work" id="id5" name="id5">How the unit test commands work</a></li>
 </ul>
 </li>
 </ul>
@@ -276,17 +273,15 @@ hr { /* EKR */
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="overview">
 <h2><a class="toc-backref" href="#id2">Overview</a></h2>
-<p>Leo's <strong>unit test commands</strong>, run-unit-tests and run-all-unit-tests, run the unit
-tests created &#64;test and &#64;suite nodes. The run-unit-tests command runs all unit
-tests in the presently selected part of the Leo outline; the run-all-unit-tests
-command runs all unit tests in the entire Leo outline.</p>
+<p>Leo's <strong>unit test commands</strong> run the unit tests
+created by &#64;test and &#64;suite nodes. run-unit-tests and run-unit-tests-locally
+run all unit tests in the presently selected part of the Leo outline;
+run-all-unit-tests and run-all-unit-tests-locally run all unit
+tests in the entire Leo outline.</p>
 <p><strong>You must be running Leo from a console to see the output the unit tests</strong>. Leo's
 unit test commands run all the unit tests using the standard unittest text test
 runner, and the output of the unit tests appears in the console.</p>
-<p>Leo's unit test commands run all tests in a separate process, so unit tests can
-never have any side effects. Running unit tests never changes the outline from
-which the tests were run.</p>
-<p>leoPy.leo, Leo's main source-code file, contains many examples of using &#64;test and &#64;suite nodes.</p>
+<p>test/unitTest.leo contains many examples of using &#64;test and &#64;suite nodes.</p>
 </div>
 <div class="section" id="using-test-nodes">
 <h2><a class="toc-backref" href="#id3">Using &#64;test nodes</a></h2>
@@ -381,61 +376,15 @@ if g.unitTesting:
     g.app.scriptDict['suite'] = suite
 </pre>
 </div>
-<div class="section" id="how-unit-tests-commands-find-tests">
-<h2><a class="toc-backref" href="#id5">How unit tests commands find tests</a></h2>
-<p>As described later, Leo's unit tests commands copy various nodes to
-test/dynamicUnitTest.leo, and then run these unit tests in a separate process.</p>
-<p>The run-all-unit-tests command copies all &#64;test, &#64;suite nodes &#64;unit-tests trees
-and their descendants to test/dynamicUnitTest.leo.</p>
-<p>The run-unit-tests command searchs for copies nodes to test/dynamicUnitTest.leo
-as follows:</p>
-<ol class="arabic simple">
-<li>The run-unit-test command copies all &#64;test and &#64;suite nodes in all
-&#64;mark-for-unit-tests trees.</li>
-<li>The run-unit-test command copies all &#64;test and &#64;suite nodes in the presently
-selected tree. If the presently selected tree contains no such tree, it looks
-up the tree looking for &#64;test, &#64;suite and &#64;unit-test nodes. If such a node is
-found, the run-unit-test command copies all &#64;test and &#64;suite nodes in the
-nodes tree.</li>
-</ol>
-<p>In practice, these rules usually run the intended unit tests, namely all tests
-in &#64;mark-for-unit-tests trees and all unit tests 'near' the presently selected
-node.</p>
-</div>
-<div class="section" id="including-other-nodes-in-unit-tests">
-<h2><a class="toc-backref" href="#id6">Including other nodes in unit tests</a></h2>
-<p>Sometimes the code in an &#64;test or &#64;suite node requires other nodes. The
-&#64;unit-test node groups nodes so that all nodes are available when running unit
-tests. That is, all nodes in an &#64;unit-test are copied to
-test/DynamicUnitTest.leo. (See <a class="reference" href="#how-the-unit-test-commands-work">How the unit test commands work</a> for full details.)</p>
-</div>
-<div class="section" id="unit-test-buttons">
-<h2><a class="toc-backref" href="#id7">Unit test buttons</a></h2>
-<p>test.leo and leoPy.leo contain two unit testing buttons:</p>
-<pre class="literal-block">
-&#64;button unit-tests &#64;key=Alt+4
-&#64;button all-unit-tests &#64;key=Alt+5
-</pre>
-<p>The script in the unit-tests button is:</p>
-<pre class="literal-block">
-import leoTest
-leoTest.runTestsExternally (c,all=False)
-</pre>
-<p>The script in the all-unit-tests button is:</p>
-<pre class="literal-block">
-import leoTest
-leoTest.runTestsExternally (c,all=True)
-</pre>
-<p>As you can see, each button writes a message, and calls runTestsExternally.
-The only difference in these scripts is the 'all' argument.</p>
-<p>These buttons create bindings for the 'unit-tests' and 'all-unit-tests' commands.
-Alternatively, you can dispense with these buttons and instead use the
-run-unit-tests and run-all-unit-tests commands directly.
-As always, you can create bindings for these commands in leoSettings.leo or myLeoSettings.leo.</p>
-</div>
 <div class="section" id="how-the-unit-test-commands-work">
-<h2><a class="toc-backref" href="#id8">How the unit test commands work</a></h2>
-<p>Leo's unit tests commands do the following:</p>
+<h2><a class="toc-backref" href="#id5">How the unit test commands work</a></h2>
+<p>The run-all-unit-tests-locally and run-unit-tests-locally commands run unit
+tests in the process that is running Leo. These commands <em>can</em> change the
+outline containing the unit tests.</p>
+<p>The run-all-unit-tests and run-unit-tests commands run all tests in a separate
+process, so unit tests can never have any side effects. These commands never
+changes the outline from which the tests were run. These commands do the
+following:</p>
 <ol class="arabic simple">
 <li>Copy all &#64;test, &#64;suite and &#64;unit-test nodes (including their descendants) to the
 file test/dynamicUnitTest.leo.</li>
@@ -451,7 +400,6 @@ care, see the source code for leoTests.doTests.</li>
 </ul>
 </li>
 </ol>
-<p>That's all.</p>
 <hr class="docutils" />
 <p><a class="reference" href="leoBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="IPythonBridge.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>

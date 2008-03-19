@@ -2,7 +2,6 @@ INSTALL.TXT
 MANIFEST
 README.TXT
 README.txt
-createLeoDistribution.py
 install
 manifest.in
 uninstall
@@ -985,6 +984,7 @@ leo\doc\html\new-4-4-3.html
 leo\doc\html\new-4-4-4.html
 leo\doc\html\new-4-4-5.html
 leo\doc\html\new-4-4-6.html
+leo\doc\html\new-4-4-8.html
 leo\doc\html\new-4-4.html
 leo\doc\html\outlines.html
 leo\doc\html\plugins.html

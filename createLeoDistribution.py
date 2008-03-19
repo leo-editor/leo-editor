@@ -1,5 +1,6 @@
 
-# Must be an @nosent file.
+# This is the script used to create official Leo distributions.
+# It should *not* be used to install Leo.
 
 import os
 
@@ -52,8 +53,12 @@ setup (
 
 readme = os.path.abspath(os.path.join(trunkDir,'README.TXT'))
 install = os.path.abspath(os.path.join(trunkDir,'INSTALL.TXT'))
+# thisScript = os.path.abspath(os.path.join(trunkDir,'createLeoDistribution.py'))
 
 os.remove(readme)
 os.remove(install)
+
+# This does not work.
+# os.remove(thisScript)
 
 print ; print 'createLeoDistribution.py done'

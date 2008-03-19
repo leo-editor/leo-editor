@@ -257,7 +257,7 @@ hr { /* EKR */
 <div class="section" id="chapter-19-embedding-leo-with-the-leobridge-module">
 <h1><a class="toc-backref" href="#id1">Chapter 19: Embedding Leo with the leoBridge module</a></h1>
 <p>The leoBridge module allows complete access to all aspects of Leo from programs
-running independently of Leo. Let us call such a program a <strong>host</strong> prgram.
+running independently of Leo. Let us call such a program a <strong>host</strong> program.
 Using the leoBridge module, host programs can get access to:</p>
 <ul class="simple">
 <li>all of Leo's source code,</li>
@@ -285,7 +285,7 @@ controller = leoBridge.controller(gui='nullGui')
 g = controller.globals()
 c = controller.openLeoFile(path)
 </pre>
-<p>Let us look at these statments in detail.  The statements:</p>
+<p>Let us look at these statements in detail.  The statements:</p>
 <pre class="literal-block">
 import leoBridge
 controller = leoBridge.controller(gui='nullGui')
@@ -320,7 +320,7 @@ path = g.os_path_abspath(
 
 os.system('%s %s' % (sys.executable,path))
 </pre>
-<p>The file leo/test/test.leo contains the source code for leoBridgeText.py.
+<p>The file leo/test/test.leo contains the source code for leoBridgeTest.py.
 Here it is, stripped of its sentinel lines:</p>
 <pre class="literal-block">
 '''A program to run unit tests with the leoBridge module.'''
