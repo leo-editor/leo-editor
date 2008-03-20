@@ -304,7 +304,7 @@ def rClicker(tag,keywords):
         #@+node:ekr.20040422072343.16:<< define commandList for log pane >>
         commandList=[
             ('Cut', lambda c=c, e=e: c.frame.OnCutFromMenu(e)), 
-            ('Copy', lambda c=c, e=e: c.frame.onCopyFromMenu(e)),
+            ('Copy', lambda c=c, e=e: c.frame.OnCopyFromMenu(e)),
             ('Paste', lambda c=c, e=e: c.frame.OnPasteFromMenu(e)),
             ('Select All', lambda c=c, w=w: rc_selectAll(c, w))]
         #@nonl
