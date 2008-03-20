@@ -6,36 +6,67 @@
 Create a Plugins menu
 =====================
 
-Adds an item to the plugin menu for each active plugin. Selecting
-this menu item will bring up a short About dialog with the details of the
-plugin.
+This plugin creates a **Plugins** menu and adds an item to it for each active
+plugin. Selecting these menu items will bring up a short **About Plugin** dialog
+with the details of the plugin. In some circumstances a submenu will be created
+instead and an 'About' menu entry will be created in this.
 
-Plugins can create additional menu items by defining functions named
-"cmd_XZY". These will apear in a sub menu. 
 
-If the plugin requires an INI file then a configure menu item will be
-created which will show an INI file editor. the plugin can define an
-"applyConfiguration" function, which will be called when the configuration 
-changes.
+INI files and the Properties Dialog.
+------------------------------------
 
-Plugins can also define a top level function to be called instead of
-the default "About" dialog by defining a "topLevelMenu" function in
-the plugin. This function will be called when the user clicks on the
-plugin name in the plugins menu, but only if the plugin was loaded
-properly and registered with g.plugin_signon.
+If a file exists in the plugins directory with the same file name as the plugin
+but with a .ini extension instead of .py, then a **Properties** item will be
+created in a submenu. Selecting this item will pop up a Properties Dialog which
+will allow the contents of this file to be edited.
 
-Plugins can define their name by setting the __plugin_name__ property.
+The .ini file should be formated for use by the python ConfigParser class.
 
-Plugins can also attempt to select the order they will apear in the menu
-by defining a __plugin_prioriy__. The menu will be created with the
-highest priority items first. This behaviour is not guaranteed since
-other plugins can define any priority. This priority does not affect
-the order of calling handlers.
 
-To change the order select a number outside the range 0-200 since this
-range is used internally for sorting alphabetically.
+Special Methods
+---------------
+
+Certain methods defined at the top level are considered special.
+
+**cmd_XZY**
+
+    If a method is defined at the module level with a name of the form
+    **cmd_XZY** then a menu item **XZY** will be created which will invoke
+    **cmd_XZY** when it is selected. These menus will appear in a sub menu.
+
+**applyConfiguration**
+
+    If this method exists then it will be called whenever
+
+**topLevelMenu**
+
+    This method, if it exists, will be called when the user clicks on the plugin
+    name in the plugins menu (or the **About** item in its submenu), but only if
+    the plugin was loaded properly and registered with g.plugin_signon.
+
+
+Special Variable Names
+----------------------
+
+Some names defined at the top level have special significance.
+
+**__plugin_name__**
+
+    This will be used to define the name of the plugin and will be used
+    as a label for its menu entry.
+
+**__plugin_priority__**
+
+    Plugins can also attempt to select the order they will appear in the menu by
+    defining a __plugin_prioriy__. The menu will be created with the highest
+    priority items first. This behavior is not guaranteed since other plugins
+    can define any priority. This priority does not affect the order of calling
+    handlers.
+
+    To change the order select a number outside the range 0-200 since this range
+    is used internally for sorting alphabetically. Properties and INI files.
+
 '''
-#@nonl
 #@-node:ekr.20050101090207.9:<< docstring >>
 #@nl
 
@@ -59,7 +90,7 @@ import sys
 #@nonl
 #@-node:ekr.20050101090207.10:<< imports >>
 #@nl
-__version__ = "1.15"
+__version__ = "1.16"
 #@<< version history >>
 #@+node:ekr.20050101100033:<< version history >>
 #@@nocolor
@@ -97,6 +128,9 @@ __version__ = "1.15"
 # 1.14 EKR: Added init function.
 # 1.15 plumloco: Separated out the gui elements of the 'properties' and 
 # 'about' dialogs to make the plugin gui independant.
+# 1.16 bobjack:
+# - Added 'Text to HTML' and 'RST to HTML' buttons to TkScrolledMessageDialog.
+# - Converted docstring to RST.
 #@-at
 #@nonl
 #@-node:ekr.20050101100033:<< version history >>
@@ -684,6 +718,8 @@ class TkScrolledMessageDialog:
 
     """A class to create and run a Scrolled Message dialog for Tk"""
 
+    default_buttons = ["Text to HTML", "RST to HTML", "Close"]
+
     #@    @+others
     #@+node:EKR.20040517080555.20:__init__
     def __init__(self, title='Message', label= '', msg='', callback=None, buttons=None):
@@ -700,6 +736,8 @@ class TkScrolledMessageDialog:
 
         self.buttons = buttons or []
 
+        self.buttons.extend(self.default_buttons)
+
         self.result = ('Cancel', None)
 
         root = g.app.root
@@ -711,6 +749,7 @@ class TkScrolledMessageDialog:
 
         frame = Tk.Frame(top)
         frame.pack(side="top", expand=True, fill='both')
+
         #@    << Create the contents of the about box >>
         #@+node:EKR.20040517080555.21:<< Create the contents of the about box >>
         #Tk.Label(frame,text="Version " + version).pack()
@@ -744,23 +783,8 @@ class TkScrolledMessageDialog:
         #@nonl
         #@-node:EKR.20040517080555.21:<< Create the contents of the about box >>
         #@nl
-        #@    << Create the buttons >>
-        #@+node:EKR.20040517080555.22:<< Create the buttons >>
 
-        box = Tk.Frame(top, borderwidth=5)
-        box.pack(side="bottom")
-
-        buttons.extend(["HTML", "Close"])
-
-        for name in buttons:
-            Tk.Button(box,
-                text=name,
-                width=6,
-                command=lambda self=self, name=name: self.onButton(name)
-            ).pack(side="left",padx=5)
-        #@nonl
-        #@-node:EKR.20040517080555.22:<< Create the buttons >>
-        #@nl
+        self.create_the_buttons(top, self.buttons)
 
         g.app.gui.center_dialog(top) # Do this after packing.
         top.grab_set() # Make the dialog a modal dialog.
@@ -768,39 +792,83 @@ class TkScrolledMessageDialog:
 
         root.wait_window(top)
     #@-node:EKR.20040517080555.20:__init__
+    #@+node:bobjack.20080320174907.4:create_the_buttons
+    def create_the_buttons(self, parent, buttons):
+
+        """
+        Create the TK buttons and pack them in a button box.
+        """
+
+        box = Tk.Frame(parent, borderwidth=5)
+        box.pack(side="bottom")
+
+        for name in buttons:
+            Tk.Button(box,
+                text=name,
+                command=lambda self=self, name=name: self.onButton(name)
+            ).pack(side="left",padx=5)
+    #@-node:bobjack.20080320174907.4:create_the_buttons
+    #@+node:bobjack.20080320193548.2:get_default_buttons
+    #@-node:bobjack.20080320193548.2:get_default_buttons
     #@+node:bob.20071209110304.1:Event Handlers
 
     def onButton(self, name):
         """Event handler for all button clicks."""
 
-        if name in ('Close'):
-            self.top.destroy()
-            return
+        retval = ''
 
-        if name == 'HTML':
-            try:
-                self.show_message_as_html()
+        if name in self.default_buttons:
+
+            if name in ('Close'):
                 self.top.destroy()
-            except:
-                self.result = ('Cancel', None)
                 return
 
-        if self.callback:
+            retval = self.show_message_as_html(name)
+
+        elif self.callback:
+
             retval = self.callback(name)#, data)
 
-            if retval == 'close':
-                self.top.destroy()
-            else:
-                self.result = ('Cancel', None)
+        if retval.lower() == 'close':
+            self.top.destroy()
+        else:
+            self.result = ('Cancel', None)
 
 
     #@-node:bob.20071209110304.1:Event Handlers
     #@+node:bobjack.20080317174956.3:show_message_as_html
-    def show_message_as_html(self):
+    def show_message_as_html(self, name):
 
-        from docutils import core
+        try:
+            import leo_to_html
+        except ImportError:
+            g.es('Can not import leo_to_html', color='red')
+            return
 
-        import leo_to_html
+        oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
+
+        oHTML.loadConfig()
+        oHTML.silent = True 
+        oHTML.myFileName = 'test-file'    
+
+        if name.lower().startswith('text'):
+            retval = self.show_text_message(oHTML)
+        elif name.lower().startswith('rst'):
+            retval = self.show_rst_message(oHTML)
+        else:
+            return
+
+        return retval
+    #@nonl
+    #@-node:bobjack.20080317174956.3:show_message_as_html
+    #@+node:bobjack.20080320174907.2:show_rst_message
+    def show_rst_message(self, oHTML):
+
+        try:
+            from docutils import core
+        except ImportError:
+            g.es('Can not import docutils', color='red')
+            return
 
         overrides = {
             'doctitle_xform': False,
@@ -813,15 +881,19 @@ class TkScrolledMessageDialog:
             settings_overrides=overrides
         )
 
-        o = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
-        o.loadConfig()
-        o.silent = True  
+        oHTML.xhtml = parts['whole']
+        oHTML.show()
 
-        o.xhtml = parts['whole']
+        return 'close'
+    #@-node:bobjack.20080320174907.2:show_rst_message
+    #@+node:bobjack.20080320174907.3:show_text_message
+    def show_text_message(self, oHTML):
 
-        o.myFileName = 'test-file'
-        o.show()
-    #@-node:bobjack.20080317174956.3:show_message_as_html
+        oHTML.xhtml = '<pre>' + self.msg + '</pre>'
+        oHTML.show()
+
+        return 'close'
+    #@-node:bobjack.20080320174907.3:show_text_message
     #@-others
 #@-node:EKR.20040517080555.19:class TkScrolledMessageDialog
 #@+node:bob.20071208211442.1:runPropertiesDialog
