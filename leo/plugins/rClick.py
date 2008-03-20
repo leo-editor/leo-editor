@@ -67,7 +67,7 @@ import re
 import sys
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
-__version__ = "0.12"
+__version__ = "0.13"
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
