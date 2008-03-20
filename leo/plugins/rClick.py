@@ -52,6 +52,8 @@ Manage right-click context menus for:
 # 0.13 bobjack:
 # - Fixed various bugs
 # - Allow menus for find/change edit boxes
+# 
+# 
 #@-at
 #@nonl
 #@-node:ekr.20040422081253:<< version history >>
