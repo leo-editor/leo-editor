@@ -102,7 +102,7 @@ def rClickbinder(tag,keywords):
             return
 
         for w in (h.find_ctrl, h.change_ctrl):
-            g.trace(w)
+            #g.trace(w)
             w.bind('<Button-3>',c.frame.OnBodyRClick)
 #@-node:ekr.20040422072343.5:rClickbinder
 #@+node:ekr.20040422072343.6:rClicker
