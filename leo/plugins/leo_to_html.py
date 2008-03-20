@@ -145,6 +145,10 @@ browser_command:
 #     - fixed to use tempdir to get a temp dir
 #     - improved (and spellchecked :) docstring.
 #     - added abspath module level method
+# 2.2 bobjack:
+#     - fixed tempdir bug
+#     - converted docstring to rst
+#     - removed trace
 # 
 # 
 # 
@@ -165,7 +169,7 @@ import os
 #@nl
 
 
-__version__ = '2.1'
+__version__ = '2.2'
 
 
 pluginController = None
@@ -532,7 +536,7 @@ class Leo_to_HTML(object):
              if ss:
                  return ss.lower()[0] in ('y', 't', '1')
 
-        g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
+        #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
         configParser.read(fileName)
