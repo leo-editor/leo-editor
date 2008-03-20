@@ -1,10 +1,27 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040422072343:@thin rClick.py
-"""Create a context menu when right-clicking in the body pane."""
-
 # Send bug reports to
 # http://sourceforge.net/forum/forum.php?thread_id=980723&forum_id=10228
 
+#@@first
+
+#@@language python
+#@@tabwidth -4
+
+#@<< docstring >>
+#@+node:bobjack.20080320084644.2:<< docstring >>
+"""
+Right Click Menus (rClick.py)
+=============================
+
+Manage right-click context menus for:
+    - the body pane
+    - the log pane
+    - find and change edit boxes
+
+"""
+#@-node:bobjack.20080320084644.2:<< docstring >>
+#@nl
 #@<< version history >>
 #@+node:ekr.20040422081253:<< version history >>
 #@+at
@@ -32,6 +49,9 @@
 # 0.10 EKR: Removed call to str that was causing a unicode error.
 # 0.11 EKR: init returns False if the gui is not tkinter.
 # 0.12 EKR: Fixed various bugs related to the new reorg.
+# 0.13 bobjack:
+# - Fixed various bugs
+# - Allow menus for find/change edit boxes
 #@-at
 #@nonl
 #@-node:ekr.20040422081253:<< version history >>
@@ -74,7 +94,16 @@ def rClickbinder(tag,keywords):
     c = keywords.get('c')
 
     if c and c.exists:
+
         c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
+
+        h = c.searchCommands.findTabHandler
+        if not h:
+            return
+
+        for w in (h.find_ctrl, h.change_ctrl):
+            g.trace(w)
+            w.bind('<Button-3>',c.frame.OnBodyRClick)
 #@-node:ekr.20040422072343.5:rClickbinder
 #@+node:ekr.20040422072343.6:rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
@@ -83,15 +112,23 @@ def rClicker(tag,keywords):
 
     c = keywords.get("c")
     e = keywords.get("event")
-    if not c or not c.exists or not e: return
-    w = c.frame.body.bodyCtrl
+
+    if not c or not c.exists or not e:
+        return
+
+    w = e.widget
+
+    if not w or not g.app.gui.isTextWidget(w):
+        return
 
     try:
         w.setSelectionRange(*c.k.previousSelection)
     except TypeError:
         pass
 
-    e.widget.focus()
+    w.focus()
+
+    name = w._name
 
     #@    << define callbacks >>
     #@+node:ekr.20060110123700:<< define callbacks >>
@@ -105,7 +142,8 @@ def rClicker(tag,keywords):
 
     #@-node:ekr.20060110123700:<< define callbacks >>
     #@nl
-    if e.widget._name.startswith('body'):
+    #g.trace('name', name)
+    if name.startswith('body'):
         #@        << define commandList for body >>
         #@+node:ekr.20040422072343.7:<< define commandList for body >>
 
@@ -259,14 +297,16 @@ def rClicker(tag,keywords):
         #@nonl
         #@-node:ekr.20040422072343.8:<< add entries for context sensitive commands in body >>
         #@nl
+    #if name in ('find-text', 'change-text'):
+    #    g.trace('found:', name)
     else:
         #@        << define commandList for log pane >>
         #@+node:ekr.20040422072343.16:<< define commandList for log pane >>
         commandList=[
-            ('Cut', lambda c=c : rc_log_cut_copy(c, cut=True)), 
-            ('Copy', lambda c=c : rc_log_cut_copy(c)),
-            ('Paste', c.frame.OnPasteFromMenu),
-            ('Select All', rc_selectAllCallback)]
+            ('Cut', lambda c=c, e=e: c.frame.OnCutFromMenu(e)), 
+            ('Copy', lambda c=c, e=e: c.frame.onCopyFromMenu(e)),
+            ('Paste', lambda c=c, e=e: c.frame.OnPasteFromMenu(e)),
+            ('Select All', lambda c=c, w=w: rc_selectAll(c, w))]
         #@nonl
         #@-node:ekr.20040422072343.16:<< define commandList for log pane >>
         #@nl
@@ -319,51 +359,12 @@ def rc_nl(c):
         c.frame.body.onBodyChanged("Typing")
 #@-node:ekr.20040422072343.3:rc_nl
 #@+node:ekr.20040422072343.4:rc_selectAll
-def rc_selectAll(c):
+def rc_selectAll(c, w):
 
     """Select the entire log pane."""
 
-    c.frame.log.logCtrl.selectAllText()
+    w.selectAllText()
 #@-node:ekr.20040422072343.4:rc_selectAll
-#@+node:bobjack.20080319083646.2:rc_log_cut_copy
-def rc_log_cut_copy(c, cut=False):
-
-    """Select the entire log pane."""
-
-    w = c.frame.log.logCtrl
-
-    if not w or not g.app.gui.isTextWidget(w): return
-
-    text = w.getSelectedText()
-    if not text:
-        return
-
-    if cut:
-        w.deleteTextSelection()
-
-    g.app.gui.replaceClipboardWith(text)
-
-
-#@-node:bobjack.20080319083646.2:rc_log_cut_copy
-#@+node:bobjack.20080319093153.2:rc_paste
-def rc_log_paste(c):
-
-    """Paste into log pane."""
-
-    w = c.frame.log.logCtrl
-
-    if not w or not g.app.gui.isTextWidget(w): return
-
-    text = g.app.gui.getTextFromClipboard(text)
-    if not text:
-        return
-
-    w.insert(text)
-
-
-
-
-#@-node:bobjack.20080319093153.2:rc_paste
 #@+node:ekr.20040422072343.9:Utils for context sensitive commands
 #@+node:ekr.20040422072343.10:crop
 def crop(s,n=20,end="..."):
