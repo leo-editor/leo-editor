@@ -1148,6 +1148,8 @@ These fixes now allow right clicks on highlighted text which can then
 be cut/copy/pasted.
 #@nonl
 #@-node:ekr.20080321081209.2:Fix rclick plugin
+#@+node:ekr.20080315115427.578:Check out cleo branch
+#@-node:ekr.20080315115427.578:Check out cleo branch
 #@+node:ekr.20080321081209.3:Fix undo problem with mutliple editors
 @nocolor
 
@@ -1170,8 +1172,11 @@ you follow that with a key stroke or some other action in the body editor. If
 you instead middle button paste to the editor and then click on another node in
 the tree, the text's forgotten.
 #@-node:ekr.20080321081209.4:Fix middle-button paste problem on Linux
-#@+node:ekr.20080315115427.578:Check out cleo branch
-#@-node:ekr.20080315115427.578:Check out cleo branch
+#@+node:ekr.20080322060140.1:does @lineending work?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
+#@-node:ekr.20080322060140.1:does @lineending work?
 #@-node:ekr.20080321081209.5:Fix bugs
 #@+node:ekr.20080321081209.7:Improvements
 #@+node:ekr.20080315115427.2:Improve spell tab
