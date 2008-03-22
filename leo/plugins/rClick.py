@@ -235,7 +235,7 @@ def init_default_menus():
         ('Find Bracket', 'match-brackets'),
         ('Insert newline', rc_nl),
 
-        ('Execute Script',rc_executeScript),
+        ('Execute Script', 'execute-script'),
 
         ('', 'users menu items'),
 
@@ -406,11 +406,6 @@ def rc_selectAll(c, event, widget):
 
     widget.selectAllText()
 #@-node:ekr.20040422072343.4:rc_selectAll
-#@+node:bobjack.20080321133958.9:rc_executeScript
-def rc_executeScript(c, event, widget):
-
-   c.executeScript()
-#@-node:bobjack.20080321133958.9:rc_executeScript
 #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
 def rc_OnCutFromMenu(c, event, widget):
 
