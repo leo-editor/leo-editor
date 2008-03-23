@@ -48,50 +48,12 @@
 <v t="EKR.20040429143933"
 marks="ekr.20071217231348.4,ekr.20071217231348.5,ekr.20071217231501,ekr.20071217231501.1,ekr.20071217231501.2,ekr.20071217231828.4,ekr.20031218072017.1473,ekr.20071024101611,"><vh>@thin leoProjects.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.2"><vh>To do</vh>
+<v t="EKR.20040519090151.2" a="TV"><vh>To do</vh>
 <v t="ekr.20040117181936"
 marks="ekr.20071215101531,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
-<v t="ekr.20080311135649.1"><vh>4.4.8 to-do</vh>
-<v t="ekr.20080317054817.1"><vh>b2</vh>
-<v t="ekr.20080315115427.3"><vh>unit tests for getLeoId and at.readError</vh>
-<v t="ekr.20031218072017.1978"><vh>app.setLeoID</vh>
-<v t="ekr.20031218072017.1979"><vh>&lt;&lt; return if we can set leoID from sys.leoID&gt;&gt;</vh></v>
-<v t="ekr.20031218072017.1980"><vh>&lt;&lt; return if we can set leoID from "leoID.txt" &gt;&gt;</vh></v>
-<v t="ekr.20060211140947.1"><vh>&lt;&lt; return if we can set leoID from os.getenv('USER') &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.1981"><vh>&lt;&lt; put up a dialog requiring a valid id &gt;&gt;</vh></v>
-<v t="ekr.20031218072017.1982"><vh>&lt;&lt; attempt to create leoID.txt &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20041005105605.127"><vh>readError</vh></v>
-</v>
-<v t="ekr.20080315115427.2"><vh>Improve spell tab</vh></v>
-<v t="ekr.20080315083057.3"><vh>Create usable setup.py</vh></v>
-<v t="ekr.20080315115427.578"><vh>Check out cleo branch</vh></v>
-</v>
-<v t="ekr.20080317054817.2"><vh>Final</vh>
-<v t="ekr.20080315083057.5"><vh>update acknowledgements</vh></v>
-<v t="ekr.20080313032655.1"><vh>One message during import test on Linux</vh>
-<v t="ekr.20051104075904.77"><vh>Import/Export test code (leoTest.py)</vh>
-<v t="ekr.20051104075904.78"><vh>makeImportExportSuite</vh></v>
-<v t="ekr.20051104075904.79"><vh>class importExportTestCase</vh>
-<v t="ekr.20051104075904.80"><vh>__init__</vh></v>
-<v t="ekr.20051104075904.81"><vh> fail</vh></v>
-<v t="ekr.20051104075904.82"><vh>importExport</vh></v>
-<v t="ekr.20051104075904.83"><vh>runTest</vh></v>
-<v t="ekr.20051104075904.84"><vh>setUp</vh></v>
-<v t="ekr.20051104075904.85"><vh>shortDescription</vh></v>
-<v t="ekr.20051104075904.86"><vh>tearDown</vh></v>
-</v>
-</v>
-<v t="ekr.20031218072017.2853"><vh>importAtFile</vh></v>
-<v t="ekr.20031218072017.3212"><vh>importFilesCommand</vh>
-<v t="ekr.20031218072017.3213"><vh>&lt;&lt; Create a parent for two files having a common prefix &gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20031218072017.2406" a="TV"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes...</vh>
 <v t="ekr.20031218072017.2605"><vh>@thin leo.py </vh></v>
@@ -152,91 +114,6 @@ marks="ekr.20031218072017.1473,"><vh>@thin leoTkinterFrame.py</vh></v>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
 <t tx="EKR.20040519090151.3"></t>
-<t tx="ekr.20031218072017.1978">def setLeoID (self,verbose=True):
-
-    tag = ".leoID.txt"
-    homeDir = g.app.homeDir
-    globalConfigDir = g.app.globalConfigDir
-    loadDir = g.app.loadDir
-
-    verbose = not g.app.unitTesting
-    &lt;&lt; return if we can set leoID from sys.leoID &gt;&gt;
-    &lt;&lt; return if we can set leoID from "leoID.txt" &gt;&gt;
-    &lt;&lt; return if we can set leoID from os.getenv('USER') &gt;&gt;
-    &lt;&lt; put up a dialog requiring a valid id &gt;&gt;
-    &lt;&lt; attempt to create leoID.txt &gt;&gt;
-</t>
-<t tx="ekr.20031218072017.1979"># This would be set by in Python's sitecustomize.py file.
-
-# 7/2/04: Use hasattr &amp; getattr to suppress pychecker warning.
-# We also have to use a "non-constant" attribute to suppress another warning!
-
-nonConstantAttr = "leoID"
-
-if hasattr(sys,nonConstantAttr):
-    g.app.leoID = getattr(sys,nonConstantAttr)
-    if verbose and not g.app.unitTesting:
-        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
-    # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
-    g.app.leoID = g.app.leoID.replace('.','-')
-    return
-else:
-    g.app.leoID = None
-</t>
-<t tx="ekr.20031218072017.1980">for theDir in (homeDir,globalConfigDir,loadDir):
-    # N.B. We would use the _working_ directory if theDir is None!
-    if theDir:
-        try:
-            fn = g.os_path_join(theDir,tag)
-            f = open(fn,'r')
-            s = f.readline()
-            f.close()
-            if s and len(s) &gt; 0:
-                g.app.leoID = s.strip()
-                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
-                g.app.leoID = g.app.leoID.replace('.','-')
-                if verbose and not g.app.unitTesting:
-                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
-                return
-            elif verbose and not g.app.unitTesting:
-                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
-        except IOError:
-            g.app.leoID = None
-        except Exception:
-            g.app.leoID = None
-            g.es_print('unexpected exception in app.setLeoID',color='red')
-            g.es_exception()
-</t>
-<t tx="ekr.20031218072017.1981"># New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-
-# Create an emergency gui and a Tk root window.
-g.app.createTkGui("startup")
-
-# Bug fix: 2/6/05: put result in g.app.leoID.
-g.app.leoID = g.app.gui.runAskLeoIDDialog()
-
-# Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
-g.app.leoID = g.app.leoID.replace('.','-')
-
-# g.trace(g.app.leoID)
-g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
-</t>
-<t tx="ekr.20031218072017.1982">for theDir in (homeDir,globalConfigDir,loadDir):
-    # N.B. We would use the _working_ directory if theDir is None!
-    if theDir:
-        try:
-            fn = g.os_path_join(theDir,tag)
-            f = open(fn,'w')
-            f.write(g.app.leoID)
-            f.close()
-            if g.os_path_exists(fn):
-                g.es_print('',tag,'created in',theDir,color='red')
-                return
-        except IOError:
-            pass
-
-        g.es('can not create',tag,'in',theDir,color='red')
-</t>
 <t tx="ekr.20031218072017.2406">@tabwidth -4
 @pagewidth 80
 
@@ -256,96 +133,12 @@ u:  an undoer
 v:  a vnode
 z:  a local temp.</t>
 <t tx="ekr.20031218072017.2604"></t>
-<t tx="ekr.20031218072017.2853">def importAtFile (self,event=None):
-
-    '''Import one or more external files, creating @file trees.'''
-
-    c = self
-
-    types = [
-        ("All files","*"),
-        ("C/C++ files","*.c"),
-        ("C/C++ files","*.cpp"),
-        ("C/C++ files","*.h"),
-        ("C/C++ files","*.hpp"),
-        ("Java files","*.java"),
-        ("Lua files", "*.lua"),
-        ("Pascal files","*.pas"),
-        ("Python files","*.py") ]
-
-    names = g.app.gui.runOpenFileDialog(
-        title="Import To @file",
-        filetypes=types,
-        defaultextension=".py",
-        multiple=True)
-    c.bringToFront()
-
-    if names:
-        c.importCommands.importFilesCommand(names,"@file")
-</t>
-<t tx="ekr.20031218072017.3212">def importFilesCommand (self,files=None,treeType=None):
-    # Not a command.  It must *not* have an event arg.
-
-    c = self.c
-    if c == None: return
-    v = current = c.currentVnode()
-    if current == None: return
-    if len(files) &lt; 1: return
-    self.tab_width = self.getTabWidth() # New in 4.3.
-    self.treeType = treeType
-    c.beginUpdate()
-    try: # range of update...
-        if len(files) == 2:
-            &lt;&lt; Create a parent for two files having a common prefix &gt;&gt;
-        for fileName in files:
-            g.setGlobalOpenDir(fileName)
-            v = self.createOutline(fileName,current)
-            if v: # createOutline may fail.
-                if not g.unitTesting:
-                    g.es("imported",fileName,color="blue")
-                v.contract()
-                v.setDirty()
-                c.setChanged(True)
-        c.validateOutline()
-        current.expand()
-    finally:
-        c.endUpdate()
-    c.selectVnode(current)
-</t>
-<t tx="ekr.20031218072017.3213">@ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
-@c
-
-name0 = files[0]
-name1 = files[1]
-prefix0, junk = g.os_path_splitext(name0)
-prefix1, junk = g.os_path_splitext(name1)
-if len(prefix0) &gt; 0 and prefix0 == prefix1:
-    current = current.insertAsLastChild()
-    # junk, nameExt = g.os_path_split(prefix1)
-    name,junk = g.os_path_splitext(prefix1)
-    current.initHeadString(name)
-</t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.4.8 alpha 2, build %s, March 14, 2008" % c.getBuildNumber()
-</t>
-<t tx="ekr.20041005105605.127">def readError(self,message):
-
-    # This is useful now that we don't print the actual messages.
-    if self.errors == 0:
-        self.printError("----- read error. line: %s, file: %s" % (
-            self.lineNumber,self.targetFileName,))
-
-    # g.trace(self.root,g.callers())
-    self.error(message)
-
-    # Bug fix: 12/10/05: Delete all of root's tree.
-    self.root.v.t._firstChild = None
-    self.root.setOrphan()
-    self.root.setDirty()
+    return "Leo 4.4.8 beta 3, build %s, March 24, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -389,160 +182,6 @@ Two (recently written) functions in leoGlobals.py support conversions from Pytho
 Important:  the first Tkinter index is '1.0', not '0.0', but the row returned by g.convertPythonIndexToRowCol is zero based, so the code that actually creates Tkinter indices from row/col must add 1 to the row.  Similar remarks apply when going in the reverse direction.
 </t>
 <t tx="ekr.20051031040240"></t>
-<t tx="ekr.20051104075904.77"></t>
-<t tx="ekr.20051104075904.78">def makeImportExportSuite(c,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    u = testUtils(c)
-    parent = u.findNodeAnywhere(parentHeadline)
-    assert(parent)
-    temp = u.findNodeInTree(parent,"tempNode")
-    assert(temp)
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-
-    for p in parent.children_iter(copy=True):
-        if p == temp: continue
-        dialog = u.findNodeInTree(p,"dialog")
-        assert(dialog)
-        test = importExportTestCase(c,p,dialog,temp,doImport)
-        suite.addTest(test)
-
-    return suite
-</t>
-<t tx="ekr.20051104075904.79">class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-</t>
-<t tx="ekr.20051104075904.80">def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.currentPosition()
-</t>
-<t tx="ekr.20051104075904.81">def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    # __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
-
-    import leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-</t>
-<t tx="ekr.20051104075904.82">def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.headString()
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-</t>
-<t tx="ekr.20051104075904.83">def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-</t>
-<t tx="ekr.20051104075904.84">def setUp(self):
-
-    c = self.c ; temp_p = self.temp_p ; d = self.dialog
-
-    temp_p.setTnodeText('',g.app.tkEncoding)
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import test: " + self.p.headString())
-    c.selectVnode(child)
-
-    assert(d)
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-
-    self.fileName = fileName = g.os_path_join(g.app.loadDir,"..",fileName)
-
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-</t>
-<t tx="ekr.20051104075904.85">def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
-    except:
-        return "ImportExportTestCase"
-</t>
-<t tx="ekr.20051104075904.86">def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setTnodeText("",g.app.tkEncoding)
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-</t>
-<t tx="ekr.20060211140947.1">try:
-    theId = os.getenv('USER')
-    if theId:
-        if verbose and not g.app.unitTesting:
-            g.es("using os.getenv('USER'):",repr(theId),color='red')
-        g.app.leoID = theId
-        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
-        g.app.leoID = g.app.leoID.replace('.','-')
-        return
-
-except Exception:
-    pass
-</t>
 <t tx="ekr.20060217111834">@nocolor
 
 .  any char
@@ -771,16 +410,7 @@ finally:
 
 </t>
 <t tx="ekr.20080121092503"></t>
-<t tx="ekr.20080311135649.1"></t>
 <t tx="ekr.20080312060129.5"></t>
 <t tx="ekr.20080312060129.6"></t>
-<t tx="ekr.20080313032655.1"></t>
-<t tx="ekr.20080315083057.3"></t>
-<t tx="ekr.20080315083057.5"></t>
-<t tx="ekr.20080315115427.2"># Make changes as in nav_buttons: initial selection, arrow keys.</t>
-<t tx="ekr.20080315115427.3"></t>
-<t tx="ekr.20080315115427.578"></t>
-<t tx="ekr.20080317054817.1"></t>
-<t tx="ekr.20080317054817.2"></t>
 </tnodes>
 </leo_file>

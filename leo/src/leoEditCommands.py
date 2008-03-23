@@ -2285,7 +2285,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@-at
     #@+node:ekr.20080108092811: Helpers
     #@+node:ekr.20080108091349:appendImageDictToList
-    def appendImageDictToList(self,aList,iconDir,path,xoffset):
+    def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
         c = self.c
         path = g.os_path_abspath(g.os_path_join(iconDir,path))
@@ -2299,19 +2299,88 @@ class editCommandsClass (baseEditCommandsClass):
         if image_height is None:
             yoffset = 0
         else:
-            yoffset = (c.frame.tree.line_height-image_height)/2
+            yoffset = 0 # (c.frame.tree.line_height-image_height)/2
+            # TNB: I suspect this is being done again in the drawing code
 
-        aList.append ({
+        newEntry = {
             'type' : 'file',
             'file' : path,
             'relPath': relPath,
             'where' : 'beforeHeadline',
-            'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
-        })
+            'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : 1, # -2,
+            'on' : 'tnode',
+        }
+        newEntry.update(kargs)  # may switch 'on' to 'vnode'
+        aList.append (newEntry)
         xoffset += 2
 
         return xoffset
     #@-node:ekr.20080108091349:appendImageDictToList
+    #@+node:tbrown.20080119085249:getIconList
+    def getIconList(self, p):
+        """Return list of icons for position p, call setIconList to apply changes"""
+
+        fromTnode = []
+        if hasattr(p.v.t,'unknownAttributes'):
+            fromTnode = [dict(i) for i in p.v.t.unknownAttributes.get('icons',[])]
+            for i in fromTnode: i['on'] = 'tnode'
+
+        fromVnode = []
+        if hasattr(p.v,'unknownAttributes'):
+            fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
+            for i in fromVnode: i['on'] = 'vnode'
+
+        fromTnode.extend(fromVnode)
+        return fromTnode
+    #@-node:tbrown.20080119085249:getIconList
+    #@+node:tbrown.20080119085249.1:setIconList
+    def _setIconListHelper(self, p, subl, uaLoc):
+        """icon setting code common between v and t nodes
+
+        p - postion
+        subl - list of icons for the v or t node
+        uaLoc - the v or t node"""
+
+        # FIXME lineYOffset is expected to be on a tnode in drawing code
+
+        if subl:
+            if not hasattr(uaLoc,'unknownAttributes'):
+                uaLoc.unknownAttributes = {}
+            uaLoc.unknownAttributes['icons'] = list(subl)
+            # g.es((p.headString(),uaLoc.unknownAttributes['icons']))
+            uaLoc.unknownAttributes["lineYOffset"] = 3
+            p.setDirty()
+        else:
+            if hasattr(uaLoc,'unknownAttributes'):
+                if 'icons' in uaLoc.unknownAttributes:
+                    del uaLoc.unknownAttributes['icons']
+                    uaLoc.unknownAttributes["lineYOffset"] = 0
+                    p.setDirty()
+
+    def dHash(self, d):
+        """Hash a dictionary"""
+        l = d.keys()
+        l.sort()
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in l])
+
+    def setIconList(self, p, l):
+        """Set list of icons for position p to l"""
+
+        current = self.getIconList(p)
+        if not l and not current: return  # nothing to do
+        lHash = ''.join([self.dHash(i) for i in l])
+        cHash = ''.join([self.dHash(i) for i in current])
+        if lHash == cHash:
+            # no difference between original and current list of dictionaries
+            return
+
+
+        subl = [i for i in l if i.get('on') != 'vnode']
+        self._setIconListHelper(p, subl, p.v.t)
+
+        subl = [i for i in l if i.get('on') == 'vnode']
+        self._setIconListHelper(p, subl, p.v)
+    #@-node:tbrown.20080119085249.1:setIconList
     #@+node:ekr.20071114083142:getImage
     def getImage (self,path):
 
@@ -2367,44 +2436,39 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = c.currentPosition()
 
-        if not hasattr(p.v.t,'unknownAttributes'):
-            return
-
-        aList = p.v.t.unknownAttributes.get('icons',[])
+        aList = self.getIconList(p)
 
         if aList:
-            p.v.t.unknownAttributes ['icons'] = aList[1:]
-            p.setDirty()
+            self.setIconList(p, aList[1:])
             c.setChanged(True)
             c.redraw()
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
     def deleteIconByName (self,t,name,relPath):
-
+        """for use by the right-click remove icon callback"""
         c = self.c ; p = c.currentPosition()
 
-        if not hasattr(t,'unknownAttributes'):
-            return
-
-        aList = t.unknownAttributes.get('icons',[])
+        aList = self.getIconList(p)
+        if not aList: return
 
         basePath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
         absRelPath = g.os_path_abspath(g.os_path_normpath(g.os_path_join(basePath,relPath)))
         name = g.os_path_abspath(name)
 
+        newList = []
         for d in aList:
             name2 = d.get('file')
             name2 = g.os_path_abspath(name2)
             name2rel = d.get('relPath')
             # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
-            if name == name2 or absRelPath == name2 or relPath == name2rel:
-                aList.remove(d)
-                t.unknownAttributes ['icons'] = aList
-                p.setDirty()
+            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+                newList.append(d)
+
+        if len(newList) != len(aList):
+                self.setIconList(p, newList)       
                 c.setChanged(True)
                 c.redraw()
-                break
         else:
             g.trace('not found',name)
 
@@ -2416,16 +2480,15 @@ class editCommandsClass (baseEditCommandsClass):
 
         c = self.c ;  p = c.currentPosition()
 
-        if not hasattr(p.v.t,'unknownAttributes'):
-            return
+        c = self.c ; p = c.currentPosition()
 
-        aList = p.v.t.unknownAttributes.get('icons',[])
+        aList = self.getIconList(p)
 
         if aList:
-            p.v.t.unknownAttributes ['icons'] = aList[:-1]
-            p.setDirty()
+            self.setIconList(p, aList[:-1])
             c.setChanged(True)
             c.redraw()
+    #@nonl
     #@-node:ekr.20071114085054:deleteLastIcon
     #@+node:ekr.20071114082418.1:deleteNodeIcons
     def deleteNodeIcons (self,event=None):
@@ -2434,9 +2497,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         if hasattr(p.v.t,"unknownAttributes"):
             a = p.v.t.unknownAttributes
-            iconsList = a.get("icons")
-            if dict:
-                a["icons"] = []
+            if dict:  # ???
+                self.setIconList(p,[])
                 a["lineYOffset"] = 0
                 p.setDirty()
                 c.setChanged(True)
@@ -2462,36 +2524,28 @@ class editCommandsClass (baseEditCommandsClass):
         for path in paths:
             xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
 
-        if not hasattr(p.v.t,'unknownAttributes'):
-            p.v.t.unknownAttributes = {}
-
-        aList2 = p.v.t.unknownAttributes.get('icons',[])
+        aList2 = self.getIconList(p)
         aList2.extend(aList)
-        p.v.t.unknownAttributes ['icons'] = aList2
-        p.v.t.unknownAttributes ['lineYOffset'] = 3
-        p.setDirty()
+        self.setIconList(p, aList2)
         c.setChanged(True)
         c.redraw()
     #@-node:ekr.20071114081313.1:insertIcon
     #@+node:ekr.20080108090719:insertIconFromFile
-    def insertIconFromFile (self,path):
+    def insertIconFromFile (self,path,p=None,pos=None,**kargs):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c
+        if p is None: p = c.currentPosition()
 
         iconDir = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
         os.chdir(iconDir)
 
         aList = [] ; xoffset = 2
-        xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset)
+        xoffset = self.appendImageDictToList(aList,iconDir,path,xoffset,**kargs)
 
-        if not hasattr(p.v.t,'unknownAttributes'):
-            p.v.t.unknownAttributes = {}
-
-        aList2 = p.v.t.unknownAttributes.get('icons',[])
-        aList2.extend(aList)
-        p.v.t.unknownAttributes ['icons'] = aList2
-        p.v.t.unknownAttributes ['lineYOffset'] = 3
-        p.setDirty()
+        aList2 = self.getIconList(p)
+        if pos is None: pos = len(aList2)
+        aList2.insert(pos,aList[0])
+        self.setIconList(p, aList2)
         c.setChanged(True)
         c.redraw()
     #@-node:ekr.20080108090719:insertIconFromFile

@@ -315,7 +315,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 alpha 2, build %s, March 14, 2008" % c.getBuildNumber()
+        return "Leo 4.4.8 beta 3, build %s, March 24, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -3562,7 +3562,7 @@ class baseCommands:
     #@-node:ekr.20031218072017.1765:c.validateOutline
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
     #@+node:ekr.20050415134809:c.sortChildren
-    def sortChildren (self,event=None):
+    def sortChildren (self,event=None,cmp=None):
 
         '''Sort the children of a node.'''
 
@@ -3574,7 +3574,7 @@ class baseCommands:
         try: # In update
             c.endEditing()
             u.beforeChangeGroup(p,undoType)
-            c.sortChildrenHelper(p)
+            c.sortChildrenHelper(p, cmp=cmp)
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             c.setChanged(True)
             u.afterChangeGroup(p,undoType,dirtyVnodeList=dirtyVnodeList)
@@ -3582,13 +3582,16 @@ class baseCommands:
             c.endUpdate()
     #@-node:ekr.20050415134809:c.sortChildren
     #@+node:ekr.20040303175026.12:c.sortChildrenHelper
-    def sortChildrenHelper (self,p):
+    def sortChildrenHelper (self,p,cmp=None):
 
         c = self ; u = c.undoer
 
         # Create a list of tuples sorted on headlines.
         pairs = [(child.headString().lower(),child.copy()) for child in p.children_iter()]
-        pairs.sort()
+        if cmp:
+            pairs.sort(cmp)
+        else:
+            pairs.sort()
 
         # Move the children.
         index = 0
@@ -3600,7 +3603,7 @@ class baseCommands:
     #@nonl
     #@-node:ekr.20040303175026.12:c.sortChildrenHelper
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None):
+    def sortSiblings (self,event=None,cmp=None):
 
         '''Sort the siblings of a node.'''
 
@@ -3610,13 +3613,13 @@ class baseCommands:
 
         parent = p.parent()
         if not parent:
-            c.sortTopLevel()
+            c.sortTopLevel(cmp=cmp)
         else:
             c.beginUpdate()
             try: # In update...
                 c.endEditing()
                 u.beforeChangeGroup(p,undoType)
-                c.sortChildrenHelper(parent)
+                c.sortChildrenHelper(parent, cmp=cmp)
                 dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
                 c.setChanged(True)
                 u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
@@ -3624,7 +3627,7 @@ class baseCommands:
                 c.endUpdate()
     #@-node:ekr.20050415134809.1:c.sortSiblings
     #@+node:ekr.20031218072017.2896:c.sortTopLevel
-    def sortTopLevel (self,event=None):
+    def sortTopLevel (self,event=None, cmp=None):
 
         '''Sort the top-level nodes of an outline.'''
 
@@ -3635,7 +3638,10 @@ class baseCommands:
         # Create a list of tuples sorted by headlines.
         pairs = [(p.headString().lower(),p.copy())
             for p in root.self_and_siblings_iter()]
-        pairs.sort()
+        if cmp:
+            pairs.sort(cmp)
+        else:
+            pairs.sort()
 
         c.beginUpdate()
         try: # In update...
