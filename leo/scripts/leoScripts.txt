@@ -4820,7 +4820,8 @@ import glob
 
 verbose = True
 
-extraFiles = ('..\\install','..\\uninstall','test\\unittest\\perfectImport\\formatter.py',)
+# extraFiles = ('..\\install','..\\uninstall','test\\unittest\\perfectImport\\formatter.py',)
+extraFiles = ('test\\test-line-ending.py',)
 
 baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
 n = 0
