@@ -1308,6 +1308,7 @@ class undoer:
             if u.redoHelper: u.redoHelper()
             else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
         finally:
+            c.frame.body.updateEditors() # New in Leo 4.4.8.
             if 0: # Don't do this: it interferes with selection ranges.
                 # This strange code forces a recomputation of the root position.
                 c.selectPosition(c.currentPosition())
@@ -1581,6 +1582,7 @@ class undoer:
             if u.undoHelper: u.undoHelper()
             else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
         finally:
+            c.frame.body.updateEditors() # New in Leo 4.4.8.
             if 0: # Don't do this: it interferes with selection ranges.
                 # This strange code forces a recomputation of the root position.
                 c.selectPosition(c.currentPosition())
