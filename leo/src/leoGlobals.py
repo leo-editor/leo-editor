@@ -520,7 +520,7 @@ def scanAtLineendingDirective(theDict):
     Returns the actual lineending or None if the name of the lineending is invalid.
     """
 
-    e = theDict.get('encoding')
+    e = theDict.get('lineending')
 
     if e in ("cr","crlf","lf","nl","platform"):
         lineending = g.getOutputNewline(name=e)
@@ -815,7 +815,6 @@ def getOutputNewline (c=None,name=None):
     - Use c.config.output_newline if c given,
     - Otherwise use g.app.config.output_newline.'''
 
-    # g.trace(c,name,c.config.output_newline)
     if name: s = name
     elif c:  s = c.config.output_newline
     else:    s = app.config.output_newline
@@ -827,6 +826,7 @@ def getOutputNewline (c=None,name=None):
     elif s == "platform": s = os.linesep  # 12/2/03: emakital
     elif s == "crlf": s = "\r\n"
     else: s = '\n' # Default for erroneous values.
+    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
     return s
 #@-node:ekr.20031218072017.1386:getOutputNewline
 #@-node:ekr.20031218072017.1380:Directive utils...
