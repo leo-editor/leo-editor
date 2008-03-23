@@ -362,6 +362,11 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20080313032655.1:One message during import test on Linux
 #@-node:ekr.20080317054817.2:Final
 #@+node:ekr.20080321081209.5:Fix bugs
+#@+node:ekr.20080322060140.1:does @lineending work?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
+#@-node:ekr.20080322060140.1:does @lineending work?
 #@+node:ekr.20080318081653.2:Write dirty bit if write fails
 #@+node:ekr.20080318081653.3:Report
 @nocolor
@@ -1346,45 +1351,6 @@ if (
 #@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
 #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
 #@-node:ekr.20080318081653.2:Write dirty bit if write fails
-#@+node:ekr.20080318153052.1:Fix Open With menu
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
-
-The open_with menu is always empty.
-
-I usually use windows vista but I tried it on XP  and it is the same.
-
-This is the result of running from a new install from the windows
-installer on the XP.
-=======================
-Leo Log Window...
-Leo 4.4.8 alpha 2, build  1.244 , March 14, 2008
-python 2.5.1, Tk 8.4.14, Pmw 1.3
-Windows 5, 1, 2600, 2, Service Pack 2
-
-Can not load c:\aspell\bin\aspell-15.dll
-leoID= 'bobjack'
-.leoID.txt created in C:\Program Files\Leo\config
-global config dir: C:\Program Files\Leo\config
-home dir: None
-reading settings in C:\Program Files\Leo\config\leoSettings.leo
-#@nonl
-#@-node:ekr.20080318153052.1:Fix Open With menu
-#@+node:ekr.20080321081209.2:Fix rclick plugin
-@nocolor
-
-http://mail.google.com/mail/#inbox/118c6d9a326e0729
-
-The rClick plugin seems to be broken.
-
-I have done a temporary fix which is on my experimental branch
-( leo_bj ).
-
-These fixes now allow right clicks on highlighted text which can then
-be cut/copy/pasted.
-#@nonl
-#@-node:ekr.20080321081209.2:Fix rclick plugin
 #@+node:ekr.20080321081209.3:Fix undo problem with mutliple editors
 @nocolor
 
@@ -1407,11 +1373,6 @@ you follow that with a key stroke or some other action in the body editor. If
 you instead middle button paste to the editor and then click on another node in
 the tree, the text's forgotten.
 #@-node:ekr.20080321081209.4:Fix middle-button paste problem on Linux
-#@+node:ekr.20080322060140.1:does @lineending work?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
-#@-node:ekr.20080322060140.1:does @lineending work?
 #@-node:ekr.20080321081209.5:Fix bugs
 #@+node:ekr.20080321081209.7:Improvements
 #@+node:ekr.20080315115427.2:Improve spell tab
@@ -3061,6 +3022,7 @@ def new (self,event=None,gui=None):
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw

@@ -11633,6 +11633,7 @@ def new (self,event=None,gui=None):
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -14665,6 +14666,7 @@ def createFrame (fileName,relativeFileName):
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
 
     # Report the failure to open the file.
     if fileName:
@@ -14751,12 +14753,6 @@ def finishCreate (self,initEditCommanders=True):  # New in 4.4.
         c.commandsDict = {}
 
     c.frame.log.finishCreate()
-
-    # Create the menu last so that we can use the key handler for shortcuts.
-    # if not g.doHook("menu1",c=c,p=p,v=p):
-        # g.trace('commands',c,g.callers())
-        # c.frame.menu.createMenuBar(c.frame)
-
     c.bodyWantsFocusNow()
 #@+node:ekr.20051007143620:printCommandsDict
 def printCommandsDict (self):
@@ -14850,6 +14846,7 @@ def openWithFileName(fileName,old_c,
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
     finally:
         c.endUpdate()
         assert frame.c == c and c.frame == frame
@@ -14894,6 +14891,7 @@ def new (self,event=None,gui=None):
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -15135,6 +15133,498 @@ for theDir in (homeDir,globalConfigDir,loadDir):
 #@-node:ekr.20080315083057.1:Removed '.' from leoID
 #@+node:ekr.20080315115427.4:Updated history chapter
 #@-node:ekr.20080315115427.4:Updated history chapter
+#@+node:ekr.20080318153052.1:Fixed Open With menu
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
+
+The open_with menu is always empty.
+
+What I did:
+
+- The open with plugin now uses the new 'menu2' event handler.
+
+@color
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # print language,ext
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# print "ext",ext
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+def createOpenWithMenuFromTable (self,table):
+
+    '''Entries in the table passed to createOpenWithMenuFromTable are
+tuples of the form (commandName,shortcut,data).
+
+- command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+- shortcut is a string describing a shortcut, just as for createMenuItemsFromTable.
+- data is a tuple of the form (command,arg,ext).
+
+Leo executes command(arg+path) where path is the full path to the temp file.
+If ext is not None, the temp file has the given extension.
+Otherwise, Leo computes an extension based on the @language directive in effect.'''
+
+    c = self.c
+    g.app.openWithTable = table # Override any previous table.
+    # Delete the previous entry.
+    parent = self.getMenu("File")
+    if not parent:
+        if not g.app.batchMode:
+            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+        return
+
+    label = self.getRealMenuName("Open &With...")
+    amp_index = label.find("&")
+    label = label.replace("&","")
+    try:
+        index = parent.index(label)
+        parent.delete(index)
+    except:
+        try:
+            index = parent.index("Open With...")
+            parent.delete(index)
+        except: return
+    # Create the Open With menu.
+    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+    self.setMenu("Open With...",openWithMenu)
+    # Create the menu items in of the Open With menu.
+    for entry in table:
+        if len(entry) != 3: # 6/22/03
+            g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
+            return
+    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+    for entry in table:
+        name,shortcut,data = entry
+        c.k.bindOpenWith (shortcut,name,data)
+#@+node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    c = self.c ; k = c.k
+
+    if g.app.unitTesting: return
+
+    for data in table:
+        << get label, accelerator & command or continue >>
+        # g.trace(label,accelerator)
+        realLabel = self.getRealMenuName(label)
+        underline=realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        callback = self.defineOpenWithMenuCallback(openWithData)
+
+        self.add_command(menu,label=realLabel,
+            accelerator=accelerator or '',
+            command=callback,underline=underline)
+#@+node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accelerator = None
+    else:
+        label,accelerator,openWithData = data
+        accelerator = k.shortcutFromSetting(accelerator)
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@-node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+#@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+#@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+#@+node:ekr.20080323093939.1:Found: menu1
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        t = leoNodes.tnode()
+        v = leoNodes.vnode(t)
+        p = leoNodes.position(v,[])
+        v.initHeadString("NewHeadline")
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.1624:createFrame (leo.py)
+def createFrame (fileName,relativeFileName):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    import leoGlobals as g
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=frame.c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es("file not found:",fileName)
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (leo.py)
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k: k.setInputState(k.unboundKeyAction)
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@-node:ekr.20080323093939.1:Found: menu1
+#@-node:ekr.20080318153052.1:Fixed Open With menu
 #@-node:ekr.20080315115427.575:Fixed bugs
 #@+node:ekr.20080315115427.576:Features
 #@+node:ekr.20080315083057.8:Added @bool collapse_nodes_while_spelling setting
