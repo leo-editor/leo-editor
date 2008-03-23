@@ -1923,6 +1923,7 @@ def openWithFileName(fileName,old_c,
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
     finally:
         c.endUpdate()
         assert frame.c == c and c.frame == frame

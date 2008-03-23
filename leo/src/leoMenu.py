@@ -1502,6 +1502,11 @@ class leoMenu:
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
+        if not parent:
+            if not g.app.batchMode:
+                g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+            return
+
         label = self.getRealMenuName("Open &With...")
         amp_index = label.find("&")
         label = label.replace("&","")
