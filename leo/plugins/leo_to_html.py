@@ -483,10 +483,6 @@ class Leo_to_HTML(object):
 
         self.setup()
 
-        if self.use_xhtml:
-            self.template = self.getXHTMLTemplate()
-        else:
-            self.template = self.getPlainTemplate()
 
         self.do_xhtml(node)
         self.applyTemplate()
@@ -548,6 +544,11 @@ class Leo_to_HTML(object):
 
         self.browser_command = config("browser_command")
         self.use_xhtml =  flag("use_xhtml")
+
+        if self.use_xhtml:
+            self.template = self.getXHTMLTemplate()
+        else:
+            self.template = self.getPlainTemplate()
 
         self.bullet_type = config( "bullet_type").lower()
         if self.bullet_type not in ('bullet', 'number', 'head'):
