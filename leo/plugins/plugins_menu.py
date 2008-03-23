@@ -849,7 +849,7 @@ class TkScrolledMessageDialog:
 
         oHTML.loadConfig()
         oHTML.silent = True 
-        oHTML.myFileName = 'test-file'    
+        oHTML.myFileName = oHTML.title = self.title + ' ' + self.label
 
         if name.lower().startswith('text'):
             retval = self.show_text_message(oHTML)
@@ -890,6 +890,7 @@ class TkScrolledMessageDialog:
     def show_text_message(self, oHTML):
 
         oHTML.xhtml = '<pre>' + self.msg + '</pre>'
+        oHTML.applyTemplate()
         oHTML.show()
 
         return 'close'
