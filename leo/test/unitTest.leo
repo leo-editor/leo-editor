@@ -5043,7 +5043,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns False'
+root = at.root
+assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5077,7 +5078,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5113,7 +5115,8 @@ for p in (at.outputFileName,):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
