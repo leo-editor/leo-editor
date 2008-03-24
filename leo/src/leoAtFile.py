@@ -2758,10 +2758,9 @@ class atFile:
             #@-node:ekr.20041005105605.137:<< write root's tree >>
             #@nl
             at.closeWriteFile()
-            at.replaceTargetFileIfDifferent()
-            root.clearOrphan() ; root.clearDirty()
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
         except Exception:
-            at.writeException(root)
+            at.writeException(root) # Sets dirty and orphan bits.
 
     rawWrite = norefWrite
     #@-node:ekr.20041005105605.136:norefWrite
@@ -2888,12 +2887,11 @@ class atFile:
                 if at.errors > 0 or at.root.isOrphan():
                     root.setOrphan()
                     root.setDirty() # Make _sure_ we try to rewrite this file.
-                    os.remove(at.outputFileName) # Delete the temp file.
+                    ### os.remove(at.outputFileName) # Delete the temp file.
+                    self.remove(at.outputFileName) # Delete the temp file.
                     g.es("not written:",at.outputFileName)
                 else:
-                    root.clearOrphan()
-                    root.clearDirty()
-                    at.replaceTargetFileIfDifferent()
+                    at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
                 #@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
                 #@nl
         except Exception:
@@ -3066,9 +3064,11 @@ class atFile:
             at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=True)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
-                at.replaceTargetFileIfDifferent()
+                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
             else:
                 g.es("not written:",at.outputFileName)
+                root.setDirty() # New in Leo 4.4.8.
+
         elif not toString:
             root.setDirty() # Make _sure_ we try to rewrite this file.
             g.es("not written:",at.outputFileName)
@@ -3271,10 +3271,9 @@ class atFile:
                 #@-node:ekr.20041005105605.156:<< Write p's body >>
                 #@nl
             at.closeWriteFile()
-            at.replaceTargetFileIfDifferent()
-            root.clearOrphan() ; root.clearDirty()
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
         except Exception:
-            at.writeException(root)
+            at.writeException(root) # Sets dirty and orphan bits.
 
     silentWrite = asisWrite # Compatibility with old scripts.
     #@-node:ekr.20041005105605.154:asisWrite
@@ -4433,27 +4432,41 @@ class atFile:
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
-    def replaceTargetFileIfDifferent (self):
+    def replaceTargetFileIfDifferent (self,root):
 
         '''Create target file as follows:
         1. If target file does not exist, rename output file to target file.
         2. If target file is identical to output file, remove the output file.
         3. If target file is different from output file,
-           remove target file, then rename output file to be target file.'''
+           remove target file, then rename output file to be target file.
+
+        Return True if the original file was changed.
+        '''
 
         assert(self.outputFile is None)
 
-        self.fileChangedFlag = False
-
         if self.toString:
-            # Do *not* set any dirty flag.
-            return self.fileChangedFlag
+            # Do *not* change the actual file or set any dirty flag.
+            self.fileChangedFlag = False
+            return False
+
+        if root:
+            # The default: may be changed later.
+            root.clearOrphan()
+            root.clearDirty()
 
         if g.os_path_exists(self.targetFileName):
             if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
                 # Files are identical.
                 ok = self.remove(self.outputFileName)
+                if not ok:
+                    # self.remove gives the error.
+                    # g.es('error removing temp file',color='red')
+                    g.es('unchanged:',self.shortFileName)
+                    if root: root.setDirty() # New in 4.4.8.
                 g.es('unchanged:',self.shortFileName)
+
+                self.fileChangedFlag = False
                 return False
             else:
                 #@            << report if the files differ only in line endings >>
@@ -4472,14 +4485,27 @@ class atFile:
                 ok = self.rename(self.outputFileName,self.targetFileName,mode)
                 if ok:
                     g.es('wrote:    ',self.shortFileName)
-                    self.fileChangedFlag = True
-                return True
+                else:
+                    # self.rename gives the error.
+                    # g.es('error removing temp file',color='red')
+                    g.es('unchanged:',self.shortFileName)
+                    if root: root.setDirty() # New in 4.4.8.
+
+                self.fileChangedFlag = ok
+                return ok
         else:
             # Rename the output file.
             ok = self.rename(self.outputFileName,self.targetFileName)
             if ok:
                 g.es('created:  ',self.targetFileName)
-                self.fileChangedFlag = True
+            else:
+                # self.rename gives the error.
+                # g.es('error renaming temp file',color='red')
+                # g.es('unchanged:',self.targetFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            # No original file to change. Return value tested by a unit test.
+            self.fileChangedFlag = False 
             return False
     #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
@@ -4530,12 +4556,13 @@ class atFile:
             self.outputFile.close()
             self.outputFile = None
 
-        if self.outputFileName != None:
-            try: # Just delete the temp file.
-                os.remove(self.outputFileName)
-            except Exception:
-                g.es("exception deleting:",self.outputFileName,color="red")
-                g.es_exception()
+        if self.outputFileName:
+            # try: # Just delete the temp file.
+                # os.remove(self.outputFileName)
+            # except Exception:
+                # g.es("exception deleting:",self.outputFileName,color="red")
+                # g.es_exception()
+            self.remove(self.outputFileName)
 
         if root:
             # Make sure we try to rewrite this file.
@@ -4992,7 +5019,7 @@ class atFile:
                 g.es_exception()
             return False
     #@-node:ekr.20050104131929.1:atFile.rename
-    #@+node:ekr.20050104132018:remove
+    #@+node:ekr.20050104132018:atFile.remove
     def remove (self,fileName,verbose=True):
 
         try:
@@ -5003,7 +5030,7 @@ class atFile:
                 self.error("exception removing: %s" % fileName)
                 g.es_exception()
             return False
-    #@-node:ekr.20050104132018:remove
+    #@-node:ekr.20050104132018:atFile.remove
     #@+node:ekr.20050104132026:stat
     def stat (self,fileName):
 
