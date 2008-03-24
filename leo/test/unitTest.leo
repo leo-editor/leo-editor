@@ -63,8 +63,8 @@
 </v>
 </v>
 <v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20051012104957"><vh>Docs</vh>
-<v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
+<v t="ekr.20051012104957" a="E"><vh>Docs</vh>
+<v t="bwmulder.20050108100437.1" a="TV"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
 <v t="ekr.20050618061835.1"><vh>Intro</vh>
 <v t="ekr.20050618061835.2"><vh>@url http://www.onlamp.com/pub/a/python/2005/02/03/tdd_pyunit2.html</vh></v>
@@ -785,7 +785,7 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -2130,19 +2130,15 @@ Scripting plugin. When this plugin is enabled Leo will create a blue 'script
 button' in the icon bar called 'unit test'. 
  
 - To run all unit tests, select the node in test.leo called 'Unit tests...',
-then click the 'unit test' button. 
+then do &lt;alt-4&gt; 
  
-- To run a single test, select an @test node and click the 'unit test' button. 
+- To run a single test, select an @test node and do &lt;alt-4&gt;.
  
-- To run a suite of tests, select an @suite node and click the 'unit test' button. 
+- To run a suite of tests, select an @suite node and do &lt;alt-4&gt;.
  
 - To run any other collection of tests, create an outline containing those @test
-or @suite nodes, select the root of that tree and click the 'unit test' button.
+or @suite nodes, select the root of that tree and do &lt;alt-4&gt; .
 
-That's all. See the docstring the Scripting plugin for more details about script
-buttons. You can see this docstring using the plugin_manager plugin if you have
-it installed. 
- 
 Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
