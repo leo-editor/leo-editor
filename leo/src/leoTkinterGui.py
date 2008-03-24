@@ -693,7 +693,7 @@ class tkinterGui(leoGui.leoGui):
         #@-node:ekr.20060621164312.2:<< define the callbacks for b >>
         #@nl
         b.configure(command=executeScriptCallback)
-        b.bind('<3>',deleteButtonCallback)
+        b.bind('<Button-3>',deleteButtonCallback)
         if shortcut:
             #@        << bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>
