@@ -34,15 +34,16 @@
 <v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20070303143951"><vh>unused</vh>
 <v t="ekr.20051018071924"><vh>@@color log_pane_Completion_tab_background_color = yellow</vh></v>
 <v t="ekr.20060325072919"><vh>@@ifgui tkinter</vh>
@@ -62,9 +63,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20051012104957" a="E"><vh>Docs</vh>
-<v t="bwmulder.20050108100437.1" a="TV"><vh>How to run unit tests</vh></v>
+<v t="ekr.20051012104957"><vh>Docs</vh>
+<v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
 <v t="ekr.20050618061835.1"><vh>Intro</vh>
 <v t="ekr.20050618061835.2"><vh>@url http://www.onlamp.com/pub/a/python/2005/02/03/tdd_pyunit2.html</vh></v>
@@ -785,7 +785,7 @@
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -20016,5 +20016,8 @@ if sys.platform.startswith('win'):
 else:
     assert d.get('lineending') == '\n'
 </t>
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.</t>
 </tnodes>
 </leo_file>
