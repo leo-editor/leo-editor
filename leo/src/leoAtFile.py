@@ -2664,6 +2664,7 @@ class atFile:
             at.initWriteIvars(root,targetFileName,nosentinels=False,toString=toString)
             if at.errors: return
             if not at.openFileForWriting(root,targetFileName,toString):
+                # openFileForWriting calls root.setDirty() if there are errors.
                 return
             #@        << write root's tree >>
             #@+node:ekr.20041005105605.137:<< write root's tree >>
@@ -2775,7 +2776,10 @@ class atFile:
             at.outputFileName = "<string: %s>" % at.shortFileName
             at.outputFile = g.fileLikeObject()
         else:
-            at.openFileForWritingHelper(fileName)
+            ok = at.openFileForWritingHelper(fileName)
+
+            # New in Leo 4.4.8: set dirty bit if there are errors.
+            if not ok: at.outputFile = None
 
         # New in 4.3 b2: root may be none when writing from a string.
         if root:
@@ -2788,6 +2792,8 @@ class atFile:
         return at.outputFile is not None
     #@+node:ekr.20041005105605.143:openFileForWritingHelper
     def openFileForWritingHelper (self,fileName):
+
+        '''Open the file and return True if all went well.'''
 
         at = self ; c = at.c
 
@@ -2802,26 +2808,31 @@ class atFile:
                 if not path or not g.os_path_exists(path):
                     path = g.os_path_dirname(at.targetFileName)
                     at.writeError("path does not exist: " + path)
-                    return
+                    return False
         except Exception:
             at.exception("exception creating path: %s" % repr(path))
             g.es_exception()
-            return
+            return False
 
         if g.os_path_exists(at.targetFileName):
             try:
                 if not os.access(at.targetFileName,os.W_OK):
                     at.writeError("can not create: read only: " + at.targetFileName)
-                    return
-            except AttributeError: pass # os.access() may not exist on all platforms.
+                    return False
+            except AttributeError:
+                pass # os.access() may not exist on all platforms.
 
         try:
             at.outputFileName = at.targetFileName + ".tmp"
             at.outputFile = self.openForWrite(at.outputFileName,'wb') # bwm
             if not at.outputFile:
                 at.writeError("can not create " + at.outputFileName)
+                return False
         except Exception:
             at.exception("exception creating:" + at.outputFileName)
+            return False
+
+        return True
     #@-node:ekr.20041005105605.143:openFileForWritingHelper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
     #@+node:ekr.20041005105605.144:write
@@ -2857,7 +2868,7 @@ class atFile:
             scriptWrite=scriptWrite,toString=toString,
             write_strips_blank_lines=write_strips_blank_lines)
         if not at.openFileForWriting(root,at.targetFileName,toString):
-            if root: root.setDirty() # Make _sure_ we try to rewrite this file.
+            # openFileForWriting calls root.setDirty() if there are errors.
             return
 
         try:
@@ -3145,7 +3156,8 @@ class atFile:
             forcePythonSentinels=forcePythonSentinels)
 
         try:
-            at.openFileForWriting(root,at.targetFileName,toString=True)
+            ok = at.openFileForWriting(root,at.targetFileName,toString=True)
+            if g.app.unitTesting: assert ok # string writes never fail.
             # Simulate writing the entire file so error recovery works.
             at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
             at.closeWriteFile()
@@ -3174,8 +3186,9 @@ class atFile:
                     at.targetFileName = g.os_path_join(self.default_directory,at.targetFileName)
                     at.targetFileName = g.os_path_normpath(at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
-                        at.openFileForWriting(p,at.targetFileName,toString)
-                        if at.outputFile:
+                        ok = at.openFileForWriting(p,at.targetFileName,toString)
+                        # openFileForWriting calls p.setDirty() if there are errors.
+                        if ok:
                             #@                        << write the @file node >>
                             #@+node:ekr.20041005105605.152:<< write the @file node >>
                             if p.isAtAsisFileNode():
@@ -3230,7 +3243,9 @@ class atFile:
             targetFileName = root.atAsisFileNodeName()
             at.initWriteIvars(root,targetFileName,toString=toString)
             if at.errors: return
-            if not at.openFileForWriting(root,targetFileName,toString): return
+            if not at.openFileForWriting(root,targetFileName,toString):
+                # openFileForWriting calls root.setDirty() if there are errors.
+                return
             for p in root.self_and_subtree_iter():
                 #@            << Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
@@ -4430,20 +4445,14 @@ class atFile:
 
         self.fileChangedFlag = False
 
-        if self.toString: return self.fileChangedFlag
+        if self.toString:
+            # Do *not* set any dirty flag.
+            return self.fileChangedFlag
 
         if g.os_path_exists(self.targetFileName):
-            if (
-                #@            << files are identical >>
-                #@+node:ekr.20050104131343:<< files are identical >>
-                self.compareFiles(
-                    self.outputFileName,
-                    self.targetFileName,
-                    not self.explicitLineEnding)
-                #@-node:ekr.20050104131343:<< files are identical >>
-                #@nl
-            ):
-                self.remove(self.outputFileName)
+            if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
+                # Files are identical.
+                ok = self.remove(self.outputFileName)
                 g.es('unchanged:',self.shortFileName)
                 return False
             else:
@@ -4464,7 +4473,7 @@ class atFile:
                 if ok:
                     g.es('wrote:    ',self.shortFileName)
                     self.fileChangedFlag = True
-                return True # bwm
+                return True
         else:
             # Rename the output file.
             ok = self.rename(self.outputFileName,self.targetFileName)
