@@ -21,7 +21,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943" a="E"><vh>@settings</vh>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20070305085403"><vh>vim plugin</vh>
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
@@ -620,7 +620,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -785,7 +785,7 @@
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
-<v t="ekr.20071105085941" a="TV"><vh>Tests</vh>
+<v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 <v t="ekr.20071027111751"><vh>@test javaScript import</vh>
 <v t="ekr.20071027111751.1"><vh>functions</vh></v>
@@ -910,6 +910,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
+<v t="ekr.20080323165112.1" a="TV"><vh>My test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2318,6 +2319,7 @@ leoTest.doTests (c,all=False)</t>
 # if you enable the cursesGui plugin it here
 
 # ipython.py
+# cleo.py
 
 add_directives.py
 color_markup.py
@@ -22180,6 +22182,9 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
+<t tx="ekr.20080323165112.1"># line 1
+# line 2
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

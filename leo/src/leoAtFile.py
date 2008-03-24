@@ -4711,6 +4711,7 @@ class atFile:
                 if lineending:
                     self.explicitLineEnding = True
                     self.output_newline = lineending
+                    # g.trace(p.headString(),'lineending',repr(lineending))
             #@-node:ekr.20041005105605.231:<< Test for @lineending >>
             #@nl
             #@        << Test for @pagewidth >>

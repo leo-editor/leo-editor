@@ -125,6 +125,7 @@ Ficko
 FileActions
 FilterHoist
 Fitzwater
+Flyer
 FrameMaker
 Français
 François
@@ -394,6 +395,7 @@ Réglages
 SECTION000310000000000000000
 SProvide
 SQL
+SR71
 STL
 SWEB
 SWT

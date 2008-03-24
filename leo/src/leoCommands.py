@@ -219,12 +219,6 @@ class baseCommands:
             c.commandsDict = {}
 
         c.frame.log.finishCreate()
-
-        # Create the menu last so that we can use the key handler for shortcuts.
-        # if not g.doHook("menu1",c=c,p=p,v=p):
-            # g.trace('commands',c,g.callers())
-            # c.frame.menu.createMenuBar(c.frame)
-
         c.bodyWantsFocusNow()
     #@+node:ekr.20051007143620:printCommandsDict
     def printCommandsDict (self):
@@ -315,7 +309,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 alpha 2, build %s, March 14, 2008" % c.getBuildNumber()
+        return "Leo 4.4.8 beta 3, build %s, March 24, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -644,6 +638,7 @@ class baseCommands:
             if not g.doHook("menu1",c=c,p=p,v=p):
                 frame.menu.createMenuBar(frame)
                 c.updateRecentFiles(fileName=None)
+                g.doHook("menu2",c=frame.c,p=p,v=p)
         finally:
             c.endUpdate()
             # chapterController.finishCreate must be called after the first real redraw

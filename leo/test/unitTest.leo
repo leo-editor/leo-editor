@@ -1806,6 +1806,11 @@
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
 <v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
+<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
@@ -17731,12 +17736,18 @@ assert language == 'python','got:%s' % language
 <t tx="ekr.20071113090055.3"># This will work regardless of where this method is.
 @language python
 @tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@comment a b c
 # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
 
 d = g.scanDirectives(c,p)
 
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
+assert d.get('pagewidth') == 72
+assert d.get('encoding') == 'utf-8'
+assert d.get('delims') == ('a','b','c',)
 # assert d.get('path').endswith('xyzzy')
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
@@ -19966,5 +19977,45 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>
 <t tx="ekr.20080312090030.1"></t>
+<t tx="ekr.20080323161613.10"># This will work regardless of where this method is.
+@lineending crlf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r\n'
+</t>
+<t tx="ekr.20080323161613.11"># This will work regardless of where this method is.
+@lineending cr
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r'
+</t>
+<t tx="ekr.20080323161613.12"># This will work regardless of where this method is.
+@lineending lf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080323161613.13"># This will work regardless of where this method is.
+@lineending nl
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080323161613.14"># This will work regardless of where this method is.
+@lineending platform
+
+d = g.scanDirectives(c,p)
+
+import sys
+
+if sys.platform.startswith('win'):
+    assert d.get('lineending') == '\r\n'
+else:
+    assert d.get('lineending') == '\n'
+</t>
 </tnodes>
 </leo_file>

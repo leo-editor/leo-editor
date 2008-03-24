@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.477886977887">
-	<global_window_position top="210" left="10" height="576" width="864"/>
+	<global_window_position top="77" left="158" height="749" width="930"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -83,7 +83,7 @@
 <v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
 <v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = False</vh></v>
+<v t="ekr.20041119050105.15"><vh>@bool search_headline = True</vh></v>
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
@@ -187,13 +187,13 @@
 </v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 </v>
-<v t="ekr.20041119034357.10" a="E" annotate="7d71002e"><vh>Command options</vh>
+<v t="ekr.20041119034357.10" annotate="7d71002e"><vh>Command options</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
-<v t="ekr.20080315083057.7" a="TV"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
+<v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -311,13 +311,13 @@
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.20" annotate="7d71002e"><vh>Find/Change panel</vh>
+<v t="ekr.20041119034357.20" a="E" annotate="7d71002e"><vh>Find/Change panel</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
-<v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
+<v t="ekr.20041119050105.3" a="E"><vh>Checkboxes in the Find panel</vh>
 <v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
 <v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
 <v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
@@ -327,7 +327,7 @@
 <v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
 <v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
 <v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = False</vh></v>
+<v t="ekr.20041119050105.15" a="V"><vh>@bool search_headline = True</vh></v>
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
