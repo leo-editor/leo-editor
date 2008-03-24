@@ -18407,6 +18407,853 @@ def readError(self,message):
     self.root.setDirty()
 #@-node:ekr.20041005105605.127:readError
 #@-node:ekr.20080315115427.1:give line numbers when errors reading derived files
+#@+node:ekr.20080321081209.4:Added support for @bool allow_middle_button_paste
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
+
+And, while you're looking at the editor code :-) - in linux when you paste in
+text to a body editor with a middle mouse button click, it's not stored unless
+you follow that with a key stroke or some other action in the body editor. If
+you instead middle button paste to the editor and then click on another node in
+the tree, the text's forgotten.
+
+To do-->@thin ../doc/leoToDoLater.txt-->Can't or won't-->Known Bugs: can't be fixed or can wait-->Bug: can't be fixed-->Cut/paste bug on X windows (waiting for help)
+
+@color
+#@nonl
+#@+node:ekr.20080324105006.2:Found: Button-
+#@+node:ekr.20080324105006.3:No changes needed
+#@+node:ekr.20031218072017.3869:tkinterAboutLeo.createFrame
+def createFrame (self):
+
+    """Create the frame for an About Leo dialog."""
+
+    if g.app.unitTesting: return
+
+    frame = self.frame
+    theCopyright = self.copyright ; email = self.email
+    url = self.url ; version = self.version
+
+    # Calculate the approximate height & width. (There are bugs in Tk here.)
+    lines = string.split(theCopyright,'\n')
+    height = len(lines) + 8 # Add lines for version,url,email,spacing.
+    width = 0
+    for line in lines:
+        width = max(width,len(line))
+    width = max(width,len(url))
+    width += 10 # 9/9/02
+
+    frame.pack(padx=6,pady=4)
+
+    self.text = w = g.app.gui.plainTextWidget(
+        frame,height=height,width=width,bd=0,bg=frame.cget("background"))
+    w.pack(pady=10)
+
+    try:
+        bitmap_name = g.os_path_join(g.app.loadDir,"..","Icons","Leoapp.GIF") # 5/12/03
+        image = Tk.PhotoImage(file=bitmap_name)
+        w.image_create("1.0",image=image,padx=10)
+    except Exception:
+        pass # This can sometimes happen for mysterious reasons.
+
+    w.insert("end",version) #,tag="version")
+    w.tag_add('version','end-%dc' %(len(version)+1),'end-1c')
+    w.insert("end",theCopyright) #,tag="copyright")
+    w.tag_add('copyright','end-%dc' %(len(theCopyright)+1),'end-1c')
+    w.insert("end",'\n')
+    w.insert("end",url)
+    w.tag_add('url','end-%dc' %(len(url)+1),'end-1c')
+    w.insert("end",'\n')
+    w.insert("end",email)
+    w.tag_add('url','end-%dc' %(len(email)+1),'end-1c')
+
+    w.tag_config("version",justify="center")
+    w.tag_config("copyright",justify="center",spacing1="3")
+    w.tag_config("url",underline=1,justify="center",spacing1="10")
+
+    w.tag_bind("url","<Button-1>",self.onAboutLeoUrl)
+    w.tag_bind("url","<Enter>",self.setArrowCursor)
+    w.tag_bind("url","<Leave>",self.setDefaultCursor)
+
+    w.tag_config("email",underline=1,justify="center",spacing1="10")
+    w.tag_bind("email","<Button-1>",self.onAboutLeoEmail)
+    w.tag_bind("email","<Enter>",self.setArrowCursor)
+    w.tag_bind("email","<Leave>",self.setDefaultCursor)
+
+    w.configure(state="disabled")
+#@-node:ekr.20031218072017.3869:tkinterAboutLeo.createFrame
+#@+node:ekr.20031218072017.3890:tkinterListboxDialog.__init__
+def __init__ (self,c,title,label):
+
+    """Constructor for the base listboxDialog class."""
+
+    leoTkinterDialog.__init__(self,c,title,resizeable=True) # Initialize the base class.
+
+    if g.app.unitTesting: return
+
+    self.createTopFrame()
+    self.top.protocol("WM_DELETE_WINDOW", self.destroy)
+
+    # Initialize common ivars.
+    self.label = label
+    self.positionList = []
+    self.buttonFrame = None
+
+    # Fill in the frame.
+    self.createFrame()
+    self.fillbox()
+
+    # Make the common bindings after creating self.box.
+
+    self.box.bind("<Double-Button-1>",self.go)
+#@-node:ekr.20031218072017.3890:tkinterListboxDialog.__init__
+#@+node:ekr.20031218072017.3903:<< Create four columns of radio and checkboxes >>
+columnsFrame = Tk.Frame(outer,relief="groove",bd=2)
+columnsFrame.pack(anchor="e",expand=1,padx="7p",pady="2p") # Don't fill.
+
+numberOfColumns = 4 # Number of columns
+columns = [] ; radioLists = [] ; checkLists = []
+for i in xrange(numberOfColumns):
+    columns.append(Tk.Frame(columnsFrame,bd=1))
+    radioLists.append([])
+    checkLists.append([])
+
+for i in xrange(numberOfColumns):
+    columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
+
+# HotKeys used for check/radio buttons:  a,b,c,e,h,i,l,m,n,o,p,r,s,t,w
+
+radioLists[0] = [
+    (self.svarDict["radio-find-type"],"P&Lain Search","plain-search"),  
+    (self.svarDict["radio-find-type"],"&Pattern Match Search","pattern-search"),
+    (self.svarDict["radio-find-type"],"&Script Search","script-search")]
+checkLists[0] = [
+    ("Scrip&t Change",self.svarDict["script_change"])]
+checkLists[1] = [
+    ("&Whole Word",  self.svarDict["whole_word"]),
+    ("&Ignore Case", self.svarDict["ignore_case"]),
+    ("Wrap &Around", self.svarDict["wrap"]),
+    ("&Reverse",     self.svarDict["reverse"])]
+radioLists[2] = [
+    (self.svarDict["radio-search-scope"],"&Entire Outline","entire-outline"),
+    (self.svarDict["radio-search-scope"],"Suboutline &Only","suboutline-only"),  
+    (self.svarDict["radio-search-scope"],"&Node Only","node-only"),
+    # I don't know what selection-only is supposed to do.
+    (self.svarDict["radio-search-scope"],"Selection Only",None)] #,"selection-only")]
+checkLists[2] = []
+checkLists[3] = [
+    ("Search &Headline Text", self.svarDict["search_headline"]),
+    ("Search &Body Text",     self.svarDict["search_body"]),
+    ("&Mark Finds",           self.svarDict["mark_finds"]),
+    ("Mark &Changes",         self.svarDict["mark_changes"])]
+
+for i in xrange(numberOfColumns):
+    for var,name,val in radioLists[i]:
+        box = underlinedTkButton("radio",columns[i],anchor="w",text=name,variable=var,value=val)
+        box.button.pack(fill="x")
+        box.button.bind("<Button-1>", self.resetWrap)
+        if val == None: box.button.configure(state="disabled")
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+    for name,var in checkLists[i]:
+        box = underlinedTkButton("check",columns[i],anchor="w",text=name,variable=var)
+        box.button.pack(fill="x")
+        box.button.bind("<Button-1>", self.resetWrap)
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+        if var is None: box.button.configure(state="disabled")
+#@nonl
+#@-node:ekr.20031218072017.3903:<< Create four columns of radio and checkboxes >>
+#@+node:ekr.20060207080537:find.createBindings
+def createBindings (self):
+
+    # Legacy bindings.  Can be overwritten in subclasses.
+
+    # g.trace('legacy')
+
+    def findButtonCallback2(event,self=self):
+        self.findButton()
+        return 'break'
+
+    for widget in (self.find_ctrl, self.change_ctrl):
+        widget.bind ("<Button-1>",  self.resetWrap)
+        widget.bind("<Key>",        self.resetWrap)
+        widget.bind("<Control-a>",  self.selectAllFindText)
+
+    for widget in (self.find_ctrl, self.change_ctrl):
+        widget.bind("<Key-Return>", findButtonCallback2)
+        widget.bind("<Key-Escape>", self.onCloseWindow)
+#@-node:ekr.20060207080537:find.createBindings
+#@+node:ekr.20051020120306.17:<< Create two columns of radio and checkboxes >>
+columnsFrame = Tk.Frame(outer,relief="groove",bd=2,background=bg)
+
+columnsFrame.pack(expand=0,padx="7p",pady="2p")
+
+numberOfColumns = 2 # Number of columns
+columns = [] ; radioLists = [] ; checkLists = []
+for i in xrange(numberOfColumns):
+    columns.append(Tk.Frame(columnsFrame,bd=1))
+    radioLists.append([])
+    checkLists.append([])
+
+for i in xrange(numberOfColumns):
+    columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
+
+radioLists[0] = []
+
+checkLists[0] = [
+    # ("Scrip&t Change",self.svarDict["script_change"]),
+    ("Whole &Word", self.svarDict["whole_word"]),
+    ("&Ignore Case",self.svarDict["ignore_case"]),
+    ("Wrap &Around",self.svarDict["wrap"]),
+    ("&Reverse",    self.svarDict["reverse"]),
+    ('Rege&xp',     self.svarDict['pattern_match']),
+    ("Mark &Finds", self.svarDict["mark_finds"]),
+]
+
+radioLists[1] = [
+    (self.svarDict["radio-search-scope"],"&Entire Outline","entire-outline"),
+    (self.svarDict["radio-search-scope"],"&Suboutline Only","suboutline-only"),  
+    (self.svarDict["radio-search-scope"],"&Node Only","node-only"),
+]
+
+checkLists[1] = [
+    ("Search &Headline", self.svarDict["search_headline"]),
+    ("Search &Body",     self.svarDict["search_body"]),
+    ("Mark &Changes",    self.svarDict["mark_changes"]),
+]
+
+for i in xrange(numberOfColumns):
+    for var,name,val in radioLists[i]:
+        box = underlinedTkButton(
+            "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
+        box.button.pack(fill="x")
+        box.button.bind("<Button-1>", self.resetWrap)
+        if val == None: box.button.configure(state="disabled")
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+    for name,var in checkLists[i]:
+        box = underlinedTkButton(
+            "check",columns[i],anchor="w",text=name,variable=var,background=bg)
+        box.button.pack(fill="x")
+        box.button.bind("<Button-1>", self.resetWrap)
+        box.bindHotKey(ftxt)
+        box.bindHotKey(ctxt)
+        if var is None: box.button.configure(state="disabled")
+#@-node:ekr.20051020120306.17:<< Create two columns of radio and checkboxes >>
+#@+node:ekr.20051023181449:createBindings (tkFindTab)
+def createBindings (self):
+
+    c = self.c ; k = c.k
+
+    def resetWrapCallback(event,self=self,k=k):
+        self.resetWrap(event)
+        return k.masterKeyHandler(event)
+
+    def findButtonBindingCallback(event=None,self=self):
+        self.findButton()
+        return 'break'
+
+    table = [
+        ('<Button-1>',  k.masterClickHandler),
+        ('<Double-1>',  k.masterClickHandler),
+        ('<Button-3>',  k.masterClickHandler),
+        ('<Double-3>',  k.masterClickHandler),
+        ('<Key>',       resetWrapCallback),
+        ('<Return>',    findButtonBindingCallback),
+        ("<Escape>",    self.hideTab),
+    ]
+
+    # table2 = (
+        # ('<Button-2>',  self.frame.OnPaste,  k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    for w in (self.find_ctrl,self.change_ctrl):
+        for event, callback in table:
+            w.bind(event,callback)
+#@-node:ekr.20051023181449:createBindings (tkFindTab)
+#@+node:ekr.20051025120920:createBindings
+def createBindings (self):
+
+    c = self.c ; k = c.k
+    widgets = (self.listBox, self.outerFrame)
+
+    for w in widgets:
+
+        # Bind shortcuts for the following commands...
+        for commandName,func in (
+            ('full-command',            k.fullCommand),
+            ('hide-spell-tab',          self.handler.hide),
+            ('spell-add',               self.handler.add),
+            ('spell-find',              self.handler.find),
+            ('spell-ignore',            self.handler.ignore),
+            ('spell-change-then-find',  self.handler.changeThenFind),
+        ):
+            junk, bunchList = c.config.getShortcut(commandName)
+            for bunch in bunchList:
+                accel = bunch.val
+                shortcut = k.shortcutFromSetting(accel)
+                if shortcut:
+                    # g.trace(shortcut,commandName)
+                    w.bind(shortcut,func)
+
+    self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
+    self.listBox.bind("<Button-1>",self.onSelectListBox)
+    self.listBox.bind("<Map>",self.onMap)
+#@nonl
+#@-node:ekr.20051025120920:createBindings
+#@+node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
+def createTkTreeCanvas (self,parentFrame,scrolls,pack):
+
+    frame = self
+
+    canvas = Tk.Canvas(parentFrame,name="canvas",
+        bd=0,bg="white",relief="flat")
+
+    treeBar = Tk.Scrollbar(parentFrame,name="treeBar")
+
+    # New in Leo 4.4.3 b1: inject the ivar into the canvas.
+    canvas.leo_treeBar = treeBar
+
+    # Bind mouse wheel event to canvas
+    if sys.platform != "win32": # Works on 98, crashes on XP.
+        canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+        if 1: # New in 4.3.
+            << workaround for mouse-wheel problems >>
+
+    canvas['yscrollcommand'] = self.setCallback
+    treeBar['command']     = self.yviewCallback
+    treeBar.pack(side="right", fill="y")
+    if scrolls: 
+        treeXBar = Tk.Scrollbar( 
+            parentFrame,name='treeXBar',orient="horizontal") 
+        canvas['xscrollcommand'] = treeXBar.set 
+        treeXBar['command'] = canvas.xview 
+        treeXBar.pack(side="bottom", fill="x")
+
+    if pack:
+        canvas.pack(expand=1,fill="both")
+
+    canvas.bind("<Button-1>", frame.OnActivateTree)
+
+    # Handle mouse wheel in the outline pane.
+    if sys.platform == "linux2": # This crashes tcl83.dll
+        canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+
+    # g.print_bindings("canvas",canvas)
+    return canvas
+#@+node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
+# Handle mapping of mouse-wheel to buttons 4 and 5.
+
+def mapWheel(e):
+    if e.num == 4: # Button 4
+        e.delta = 120
+        return frame.OnMouseWheel(e)
+    elif e.num == 5: # Button 5
+        e.delta = -120
+        return frame.OnMouseWheel(e)
+
+canvas.bind("<ButtonPress>",mapWheel,add=1)
+#@-node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
+#@+node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
+def setCallback (self,*args,**keys):
+
+    """Callback to adjust the scrollbar.
+
+    Args is a tuple of two floats describing the fraction of the visible area."""
+
+    #g.trace(self.tree.redrawCount,args,g.callers())
+
+    apply(self.canvas.leo_treeBar.set,args,keys)
+
+    if self.tree.allocateOnlyVisibleNodes:
+        self.tree.setVisibleArea(args)
+
+def yviewCallback (self,*args,**keys):
+
+    """Tell the canvas to scroll"""
+
+    #g.trace(vyiewCallback,args,keys,g.callers())
+
+    if self.tree.allocateOnlyVisibleNodes:
+        self.tree.allocateNodesBeforeScrolling(args)
+
+    apply(self.canvas.yview,args,keys)
+#@nonl
+#@-node:ekr.20031218072017.998:Scrolling callbacks (tkFrame)
+#@-node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
+#@+node:ekr.20031218072017.3961: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+    self.colorTags = [] # list of color names used as tags.
+    self.enabled = False
+    self.isVisible = False
+    self.lastRow = self.lastCol = 0
+    self.log = c.frame.log
+    #if 'black' not in self.log.colorTags:
+    #    self.log.colorTags.append("black")
+    self.parentFrame = parentFrame
+    self.statusFrame = Tk.Frame(parentFrame,bd=2)
+    text = "line 0, col 0"
+    width = len(text) + 4
+    self.labelWidget = Tk.Label(self.statusFrame,text=text,width=width,anchor="w")
+    self.labelWidget.pack(side="left",padx=1)
+
+    bg = self.statusFrame.cget("background")
+    self.textWidget = w = g.app.gui.bodyTextWidget(
+        self.statusFrame,
+        height=1,state="disabled",bg=bg,relief="groove",name='status-line')
+    self.textWidget.pack(side="left",expand=1,fill="x")
+    w.bind("<Button-1>", self.onActivate)
+    self.show()
+
+    c.frame.statusFrame = self.statusFrame
+    c.frame.statusLabel = self.labelWidget
+    c.frame.statusText  = self.textWidget
+#@-node:ekr.20031218072017.3961: ctor
+#@+node:ekr.20051009044751:createOuterFrames
+def createOuterFrames (self):
+
+    f = self ; c = f.c
+    f.top = top = Tk.Toplevel()
+    g.app.gui.attachLeoIcon(top)
+    top.title(f.title)
+    top.minsize(30,10) # In grid units.
+
+    if g.os_path_exists(g.app.user_xresources_path):
+        f.top.option_readfile(g.app.user_xresources_path)
+
+    f.top.protocol("WM_DELETE_WINDOW", f.OnCloseLeoEvent)
+    f.top.bind("<Button-1>", f.OnActivateLeoEvent)
+
+    f.top.bind("<Control-KeyPress>",f.OnControlKeyDown)
+    f.top.bind("<Control-KeyRelease>",f.OnControlKeyUp)
+
+    # These don't work on Windows. Because of bugs in window managers,
+    # there is NO WAY to know which window is on top!
+    # f.top.bind("<Activate>",f.OnActivateLeoEvent)
+    # f.top.bind("<Deactivate>",f.OnDeactivateLeoEvent)
+
+    # Create the outer frame, the 'hull' component.
+    f.outerFrame = Tk.Frame(top)
+    f.outerFrame.pack(expand=1,fill="both")
+#@nonl
+#@-node:ekr.20051009044751:createOuterFrames
+#@+node:ekr.20031218072017.4042:tkLog.createControl
+def createControl (self,parentFrame):
+
+    c = self.c
+
+    self.nb = Pmw.NoteBook(parentFrame,
+        borderwidth = 1, pagemargin = 0,
+        raisecommand = self.raiseTab,
+        lowercommand = self.lowerTab,
+        arrownavigation = 0,
+    )
+
+    menu = self.makeTabMenu(tabName=None)
+
+    def hullMenuCallback(event):
+        return self.onRightClick(event,menu)
+
+    self.nb.bind('<Button-3>',hullMenuCallback)
+
+    self.nb.pack(fill='both',expand=1)
+    self.selectTab('Log') # Create and activate the default tabs.
+
+    return self.logCtrl
+#@-node:ekr.20031218072017.4042:tkLog.createControl
+#@+node:ekr.20051022162730:setTabBindings
+def setTabBindings (self,tabName):
+
+    c = self.c ; k = c.k
+    tab = self.nb.tab(tabName)
+    w = self.textDict.get(tabName) or self.frameDict.get(tabName)
+
+    # Send all event in the text area to the master handlers.
+    for kind,handler in (
+        ('<Key>',       k.masterKeyHandler),
+        ('<Button-1>',  k.masterClickHandler),
+        ('<Button-3>',  k.masterClick3Handler),
+    ):
+        w.bind(kind,handler)
+
+    # Clicks in the tab area are harmless: use the old code.
+    def tabMenuRightClickCallback(event,menu=self.menu):
+        return self.onRightClick(event,menu)
+
+    def tabMenuClickCallback(event,tabName=tabName):
+        return self.onClick(event,tabName)
+
+    tab.bind('<Button-1>',tabMenuClickCallback)
+    tab.bind('<Button-3>',tabMenuRightClickCallback)
+
+    k.completeAllBindingsForWidget(w)
+#@-node:ekr.20051022162730:setTabBindings
+#@+node:ekr.20071003090546:setCanvasTabBindings
+def setCanvasTabBindings (self,tabName,menu):
+
+    c = self.c ; tab = self.nb.tab(tabName)
+
+    def tabMenuRightClickCallback(event,menu=menu):
+        return self.onRightClick(event,menu)
+
+    def tabMenuClickCallback(event,tabName=tabName):
+        return self.onClick(event,tabName)
+
+    tab.bind('<Button-1>',tabMenuClickCallback)
+    tab.bind('<Button-3>',tabMenuRightClickCallback)
+
+#@-node:ekr.20071003090546:setCanvasTabBindings
+#@+node:ekr.20060726133852:createBindings (fontPicker)
+def createBindings (self):
+
+    c = self.c ; k = c.k
+
+    table = (
+        ('<Button-1>',  k.masterClickHandler),
+        ('<Double-1>',  k.masterClickHandler),
+        ('<Button-3>',  k.masterClickHandler),
+        ('<Double-3>',  k.masterClickHandler),
+        ('<Key>',       k.masterKeyHandler),
+        ("<Escape>",    self.hideFontTab),
+    )
+
+    w = self.sampleWidget
+    for event, callback in table:
+        w.bind(event,callback)
+
+    k.completeAllBindingsForWidget(w)
+#@-node:ekr.20060726133852:createBindings (fontPicker)
+#@+node:ekr.20060621164312:makeScriptButton
+def makeScriptButton (self,c,
+    p=None, # A node containing the script.
+    script=None, # The script itself.
+    buttonText=None,
+    balloonText='Script Button',
+    shortcut=None,bg='LightSteelBlue1',
+    define_g=True,define_name='__main__',silent=False, # Passed on to c.executeScript.
+):
+
+    '''Create a script button for the script in node p.
+    The button's text defaults to p.headString'''
+
+    k = c.k
+    if p and not buttonText: buttonText = p.headString().strip()
+    if not buttonText: buttonText = 'Unnamed Script Button'
+    << create the button b >>
+    << define the callbacks for b >>
+    b.configure(command=executeScriptCallback)
+    b.bind('<Button-3>',deleteButtonCallback)
+    if shortcut:
+        << bind the shortcut to executeScriptCallback >>
+    << create press-buttonText-button command >>
+#@+node:ekr.20060621164312.1:<< create the button b >>
+iconBar = c.frame.getIconBarObject()
+b = iconBar.add(text=buttonText)
+
+if balloonText and balloonText != buttonText:
+    Pmw = g.importExtension('Pmw',pluginName='gui.makeScriptButton',verbose=False)
+    if Pmw:
+        balloon = Pmw.Balloon(b,initwait=100)
+        balloon.bind(b,balloonText)
+
+if sys.platform == "win32":
+    width = int(len(buttonText) * 0.9)
+    b.configure(width=width,font=('verdana',7,'bold'),bg=bg)
+#@-node:ekr.20060621164312.1:<< create the button b >>
+#@+node:ekr.20060621164312.2:<< define the callbacks for b >>
+def deleteButtonCallback(event=None,b=b,c=c):
+    if b: b.pack_forget()
+    c.bodyWantsFocus()
+
+def executeScriptCallback (event=None,
+    b=b,c=c,buttonText=buttonText,p=p and p.copy(),script=script):
+
+    if c.disableCommandsMessage:
+        g.es('',c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        c.executeScript(p=p,script=script,
+        define_g= define_g,define_name=define_name,silent=silent)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("removing","'%s'" % (buttonText),"button at its request")
+            b.pack_forget()
+    # Do not assume the script will want to remain in this commander.
+#@-node:ekr.20060621164312.2:<< define the callbacks for b >>
+#@+node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>
+func = executeScriptCallback
+shortcut = k.canonicalizeShortcut(shortcut)
+ok = k.bindKey ('button', shortcut,func,buttonText)
+if ok:
+    g.es_print('bound @button',buttonText,'to',shortcut,color='blue')
+#@-node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>
+#@+node:ekr.20060621164312.4:<< create press-buttonText-button command >>
+aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+
+buttonCommandName = ''.join(aList)
+buttonCommandName = buttonCommandName.replace('--','-')
+buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
+
+# This will use any shortcut defined in an @shortcuts node.
+k.registerCommand(buttonCommandName,None,executeScriptCallback,pane='button',verbose=False)
+#@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
+#@-node:ekr.20060621164312:makeScriptButton
+#@+node:ekr.20070327103016:tkTree.setCanvasBindings
+def setCanvasBindings (self,canvas):
+
+    k = self.c.k
+
+    canvas.bind('<Key>',k.masterKeyHandler)
+    canvas.bind('<Button-1>',self.onTreeClick)
+
+    << make bindings for tagged items on the canvas >>
+    << create baloon bindings for tagged items on the canvas >>
+#@nonl
+#@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+where = g.choose(self.expanded_click_area,'clickBox','plusBox')
+
+table = (
+    (where,    '<Button-1>',self.onClickBoxClick),
+    ('iconBox','<Button-1>',self.onIconBoxClick),
+    ('iconBox','<Double-1>',self.onIconBoxDoubleClick),
+    ('iconBox','<Button-3>',self.onIconBoxRightClick),
+    ('iconBox','<Double-3>',self.onIconBoxRightClick),
+    ('iconBox','<B1-Motion>',self.onDrag),
+    ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
+)
+for tag,event,callback in table:
+    canvas.tag_bind(tag,event,callback)
+#@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+#@+node:ekr.20060307080642:<< create baloon bindings for tagged items on the canvas >>
+if 0: # I find these very irritating.
+    for tag,text in (
+        # ('plusBox','plusBox'),
+        ('iconBox','Icon Box'),
+        ('selectBox','Click to select'),
+        ('clickBox','Click to expand or contract'),
+        # ('textBox','Headline'),
+    ):
+        # A fairly long wait is best.
+        balloon = Pmw.Balloon(self.canvas,initwait=700)
+        balloon.tagbind(self.canvas,tag,balloonHelp=text)
+#@-node:ekr.20060307080642:<< create baloon bindings for tagged items on the canvas >>
+#@-node:ekr.20070327103016:tkTree.setCanvasBindings
+#@+node:ekr.20050618045715:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
+def PropagateButton4(e):
+    canvas.event_generate("<Button-4>")
+    return "break"
+
+def PropagateButton5(e):
+    canvas.event_generate("<Button-5>")
+    return "break"
+
+def PropagateMouseWheel(e):
+    canvas.event_generate("<MouseWheel>")
+    return "break"
+
+instance_tag = w.bindtags()[0]
+w.bind_class(instance_tag, "<Button-4>", PropagateButton4)
+w.bind_class(instance_tag, "<Button-5>", PropagateButton5)
+w.bind_class(instance_tag, "<MouseWheel>",PropagateMouseWheel)
+#@-node:ekr.20050618045715:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
+#@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+where = g.choose(self.expanded_click_area,'clickBox','plusBox')
+
+table = (
+    (where,    '<Button-1>',self.onClickBoxClick),
+    ('iconBox','<Button-1>',self.onIconBoxClick),
+    ('iconBox','<Double-1>',self.onIconBoxDoubleClick),
+    ('iconBox','<Button-3>',self.onIconBoxRightClick),
+    ('iconBox','<Double-3>',self.onIconBoxRightClick),
+    ('iconBox','<B1-Motion>',self.onDrag),
+    ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
+)
+for tag,event,callback in table:
+    canvas.tag_bind(tag,event,callback)
+#@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+#@-node:ekr.20080324105006.3:No changes needed
+#@+node:ekr.20080324105006.4:Changed  B1-ButtonRelease to Button-1-ButtonRelease
+#@+node:ekr.20040803072955.18:<< old ivars >>
+# Miscellaneous info.
+self.iconimages = {} # Image cache set by getIconImage().
+self.active = False # True if present headline is active
+self._editPosition = None # Returned by leoTree.editPosition()
+self.lineyoffset = 0 # y offset for this headline.
+self.lastClickFrameId = None # id of last entered clickBox.
+self.lastColoredText = None # last colored text widget.
+
+# Set self.font and self.fontName.
+self.setFontFromConfig()
+
+# Drag and drop
+self.drag_p = None
+self.controlDrag = False # True: control was down when drag started.
+
+# Keep track of popup menu so we can handle behavior better on Linux Context menu
+self.popupMenu = None
+
+# Incremental redraws:
+self.allocateOnlyVisibleNodes = False # True: enable incremental redraws.
+self.prevMoveToFrac = 0.0
+self.visibleArea = None
+self.expandedVisibleArea = None
+
+if self.allocateOnlyVisibleNodes:
+    self.frame.bar1.bind("<Button-1-ButtonRelease>", self.redraw_now)
+#@-node:ekr.20040803072955.18:<< old ivars >>
+#@-node:ekr.20080324105006.4:Changed  B1-ButtonRelease to Button-1-ButtonRelease
+#@+node:ekr.20080324105006.7:Changed
+#@+node:ekr.20031218072017.838:tkBody.createBindings
+def createBindings (self,w=None):
+
+    '''(tkBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    frame = self.frame ; c = self.c ; k = c.k
+    if not w: w = self.bodyCtrl
+
+    w.bind('<Key>', k.masterKeyHandler)
+
+    table = [
+        ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    ]
+
+    table2 = (
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,func,handler in table:
+        def bodyClickCallback(event,handler=handler,func=func):
+            return handler(event,func)
+
+        w.bind(kind,bodyClickCallback)
+#@-node:ekr.20031218072017.838:tkBody.createBindings
+#@+node:ekr.20051024102724:tkTtree.setBindings & helper
+def setBindings (self,):
+
+    '''Create master bindings for all headlines.'''
+
+    tree = self ; k = self.c.k
+
+    # g.trace('self',self,'canvas',self.canvas)
+
+    tree.setBindingsHelper()
+
+    tree.setCanvasBindings(self.canvas)
+
+    k.completeAllBindingsForWidget(self.canvas)
+
+    k.completeAllBindingsForWidget(self.bindingWidget)
+
+#@+node:ekr.20060131173440:tkTree.setBindingsHelper
+def setBindingsHelper (self):
+
+    tree = self ; k = self.c.k
+
+    self.bindingWidget = w = g.app.gui.plainTextWidget(
+        self.canvas,name='bindingWidget')
+
+    w.bind('<Key>',k.masterKeyHandler)
+
+    table = [
+        ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
+        ('<Button-3>',       k.masterClick3Handler,         tree.onHeadlineRightClick),
+        ('<Double-Button-1>',k.masterDoubleClickHandler,    tree.onHeadlineClick),
+        ('<Double-Button-3>',k.masterDoubleClick3Handler,   tree.onHeadlineRightClick),
+    ]
+
+    for a,handler,func in table:
+        def treeBindingCallback(event,handler=handler,func=func):
+            # g.trace('func',func)
+            return handler(event,func)
+        w.bind(a,treeBindingCallback)
+
+    self.textBindings = w.bindtags()
+#@-node:ekr.20060131173440:tkTree.setBindingsHelper
+#@-node:ekr.20051024102724:tkTtree.setBindings & helper
+#@+node:ekr.20060203114017:f.setMinibufferBindings
+def setMinibufferBindings (self):
+
+    '''Create bindings for the minibuffer..'''
+
+    f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
+
+    if not c.useTextMinibuffer: return
+
+    table = [
+        ('<Key>',           k.masterKeyHandler),
+        ('<Button-1>',      k.masterClickHandler),
+        ('<Button-3>',      k.masterClick3Handler),
+        ('<Double-1>',      k.masterDoubleClickHandler),
+        ('<Double-3>',      k.masterDoubleClick3Handler),
+    ]
+
+    table2 = (
+        ('<Button-2>',      k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,callback in table:
+        w.bind(kind,callback)
+
+    if 0:
+        if sys.platform.startswith('win'):
+            # Support Linux middle-button paste easter egg.
+            w.bind("<Button-2>",f.OnPaste)
+#@-node:ekr.20060203114017:f.setMinibufferBindings
+#@+node:ekr.20051023181449:createBindings (tkFindTab)
+def createBindings (self):
+
+    c = self.c ; k = c.k
+
+    def resetWrapCallback(event,self=self,k=k):
+        self.resetWrap(event)
+        return k.masterKeyHandler(event)
+
+    def findButtonBindingCallback(event=None,self=self):
+        self.findButton()
+        return 'break'
+
+    table = [
+        ('<Button-1>',  k.masterClickHandler),
+        ('<Double-1>',  k.masterClickHandler),
+        ('<Button-3>',  k.masterClickHandler),
+        ('<Double-3>',  k.masterClickHandler),
+        ('<Key>',       resetWrapCallback),
+        ('<Return>',    findButtonBindingCallback),
+        ("<Escape>",    self.hideTab),
+    ]
+
+    # table2 = (
+        # ('<Button-2>',  self.frame.OnPaste,  k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    for w in (self.find_ctrl,self.change_ctrl):
+        for event, callback in table:
+            w.bind(event,callback)
+#@-node:ekr.20051023181449:createBindings (tkFindTab)
+#@-node:ekr.20080324105006.7:Changed
+#@-node:ekr.20080324105006.2:Found: Button-
+#@-node:ekr.20080321081209.4:Added support for @bool allow_middle_button_paste
 #@-node:ekr.20080315115427.576:Features
 #@-node:ekr.20080315083057.10:b3
 #@-node:ekr.20080227135412:4.4.8
