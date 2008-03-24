@@ -781,9 +781,9 @@
 <v t="ekr.20080128143841"><vh>test of ekrProj</vh></v>
 <v t="ekr.20080127215337"><vh>package-script</vh></v>
 </v>
-<v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
+<v t="ekr.20070315071830" a="E"><vh>Test files (do not delete)</vh>
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
-<v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
+<v t="ekr.20070626153912" a="TV"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
@@ -910,7 +910,6 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080323165112.1" a="TV"><vh>My test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -22182,9 +22181,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
-<t tx="ekr.20080323165112.1"># line 1
-# line 2
-</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
