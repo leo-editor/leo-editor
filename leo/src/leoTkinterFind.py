@@ -295,14 +295,14 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
             for var,name,val in radioLists[i]:
                 box = underlinedTkButton("radio",columns[i],anchor="w",text=name,variable=var,value=val)
                 box.button.pack(fill="x")
-                box.button.bind("<1>", self.resetWrap)
+                box.button.bind("<Button-1>", self.resetWrap)
                 if val == None: box.button.configure(state="disabled")
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
             for name,var in checkLists[i]:
                 box = underlinedTkButton("check",columns[i],anchor="w",text=name,variable=var)
                 box.button.pack(fill="x")
-                box.button.bind("<1>", self.resetWrap)
+                box.button.bind("<Button-1>", self.resetWrap)
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
                 if var is None: box.button.configure(state="disabled")
@@ -654,7 +654,7 @@ class tkFindTab (leoFind.findTab):
             self.findButton()
             return 'break'
 
-        table = (
+        table = [
             ('<Button-1>',  k.masterClickHandler),
             ('<Double-1>',  k.masterClickHandler),
             ('<Button-3>',  k.masterClickHandler),
@@ -662,7 +662,14 @@ class tkFindTab (leoFind.findTab):
             ('<Key>',       resetWrapCallback),
             ('<Return>',    findButtonBindingCallback),
             ("<Escape>",    self.hideTab),
-        )
+        ]
+
+        # table2 = (
+            # ('<Button-2>',  self.frame.OnPaste,  k.masterClickHandler),
+        # )
+
+        # if c.config.getBool('allow_middle_button_paste'):
+            # table.extend(table2)
 
         for w in (self.find_ctrl,self.change_ctrl):
             for event, callback in table:
