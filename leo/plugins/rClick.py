@@ -14,16 +14,18 @@
 Right Click Menus (rClick.py)
 =============================
 
+.. contents::
+
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
+To start with it works out-of-the-box, providing default menus for the
+following:
 
-The following right-click context menus are initially supplied by this plugin.
-
-    - the body pane     ( rClick.context_menus['body'] )
-    - the log pane      ( rClick.context_menus['log'] )
-    - the find edit box ( rClick.context_menus['find-text'] )
-    - the change edit box ( rClick.context_menus['change-text'] )
+    - the body pane     ( c.context_menus['body'] )
+    - the log pane      ( c.context_menus['log'] )
+    - the find edit box ( c.context_menus['find-text'] )
+    - the change edit box ( c.context_menus['change-text'] )
 
 These menus can be altered at will by scripts and other plugins using basic list
 operators such as append etc.
@@ -33,16 +35,49 @@ is being created. The callback can then either manipulate the physical tk menu
 (as it has been generated so far) or manipulate and extend the list of items yet
 to be generated.
 
-Each entry in rClick.context_menus is a list of tuples with
-the form (txt, cmd).
+Adding support to other widgets.
+--------------------------------
 
-example
--------
+For widgets to use the rClick context menu system it need only bind <Button-3>
+to c.frame.OnBodyRClick, and provide a menu table to use or a reference to an
+existing menu table.
+
+The right click menu to be used is determined in one of two ways.
+
+The context_menu property:
+
+    If the widget has a context menu property::
+
+        w.context_menu = string | list  
+
+    then this will be used to determine what menu is used. If it contains a
+    list, that list will be used to construct the menu, if it is a string it
+    will be used as an index into c.context_menus.
+
+The widgets name:
+
+    If no context_menu property is defined then the widgets name, as determined
+    by c.widget_name(w), is used and each key in c.context_menus is tested
+    against it to see if the name starts with that key. If it does, the menu
+    table in c.context_menus[key] will be used.
+
+    eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
+
+    No attempt is made to resolve conflicts. The keys are in random order and
+    the first match found will be used. Better to use w.context_menu for anything
+    other than the default 'body', 'log', 'find-text' and 'change-text'.
+
+
+Format of menu tables.
+======================
+
+The menu tables are simply lists of tuples with the form::
+
+    (txt, cmd)
 
 eg::
 
-    import rClick
-    rClick.context_menus['body'] = [
+    c.context_menus['body'] = [
 
         ('Cut', 'cut-text'), 
         ('Copy', 'copy-text'),
@@ -59,7 +94,6 @@ eg::
         ('', 'users menu items'),
 
         (None, gen_context_sensitive_commands),
-
     ]
 
 Seperators and Markers
@@ -135,6 +169,61 @@ if `txt` is None:
 
     stored in `rClick.MENU_ARGS` for use by the handlers.
 
+    An example of how to do this is provided by the rclick-gen-context-sensitive-commands
+    minibuffer command described later.
+
+
+
+Example menu generator 
+======================
+
+An example of generating dynamic context sensitive menus is provided as the
+rclick-gen-context-sensitive-commands minibuffer command.
+
+If this command is placed in a 'body' menu table as::
+
+     (None, 'rclick-gen-context-sensitive-commands')
+
+the following happens.
+
+Create "Open URL: ..." menu items.
+
+    The selected text, or the line containing the cursor, is scaned for urls
+    of  the form (http|https|ftp):// etc and a menu item is created named
+    "Open URL:..." for each one found, which when invoked will launch a browser
+    and point it to that url.
+
+Create "Jump To: < <section>>"" menu items.
+
+    The selected text, or the line containing the cursor, is scaned for
+    sections markers of the form < < ... >> and a menu item is created for each
+    one found, which when invoked will jump to that section.
+
+Create a "Help on:" menu item.
+
+    The selected text, or the word under the cursor, is used to create a
+    "Help on: word"  menu item, which when invoked will call python's 'help'
+    command on the word and display the result in the log pane or a browser. 
+
+
+Settings
+--------
+
+This setting specifies where output from the help() utility is sent::
+
+    @string rclick_show_help = 'flags'
+
+`flags` is a string that can contain any combination of 'print', 'log', 'browser' or 'all'.
+
+eg::
+
+    @string rclick_show_help = 'print log'
+
+This will send output to stdout and the log pane but not the browser.
+
+If the setting is not present or does not contain valid data, output will be sent to
+all three destinations.
+
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
@@ -175,7 +264,11 @@ if `txt` is None:
 # - Provided docstring.
 # 0.15 bobjack:
 # - Provide support for submenus
-# - 'help on:' menu item now shows doc's in a browse
+# - 'help on:' menu item now shows doc's in a browser
+# 0.16 bobjack:
+# - add support for @string rclick_show_help =  'print? log? browser?' | 'all'
+# - introduce c.context_menus so all menus are per commander
+# - introduce widget.context_menu for widget specific menus
 # 
 # 
 #@-at
@@ -187,8 +280,6 @@ if `txt` is None:
 # TODO:
 # 
 # - initial menus to be set in leoSettings
-# - per commander menus
-# - setting to choose help output in browser or not
 # 
 # - include common menu chunks in line
 # 
@@ -207,11 +298,12 @@ Tk = g.importExtension('Tkinter')
 
 import re
 import sys
+import copy
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
 
-__version__ = "0.15"
+__version__ = "0.16"
 __plugin_name__ = 'Right Click Menus'
 
 context_menus = {}
@@ -225,7 +317,12 @@ MB_MENU_RETVAL = None
 #@+node:ekr.20060108122501:Module-level
 #@+node:ekr.20060108122501.1:init
 def init ():
+    """Initialize and register plugin.
 
+    Hooks bodyrclick1 and after-create-leo-frame.
+
+
+    """
     if not Tk: return False # OK for unit tests.
 
     if g.app.gui is None:
@@ -455,11 +552,20 @@ def rClicker(tag, keywords):
     #g.trace('name', name)
 
     top_menu_table = []
-    for key in context_menus.keys():
-        if name.startswith(key):
-            top_menu_table = context_menus[key][:]
-            top_menu_table = top_menu_table or []
-            break
+
+    if hasattr(widget, 'context_menu'):
+
+        key = widget.context_menu
+        if isinstance(key, list):
+            top_menu_table = widget_context_menu
+        elif isinstance(key, basestring):
+            top_menu_table = c.context_menus.get(key, [])[:]
+
+    else:
+        for key in c.context_menus.keys():
+            if name.startswith(key):
+                top_menu_table = c.context_menus.get(key, [])[:]
+                break
 
     top_menu = table_to_menu(top_menu_table)
 
@@ -532,7 +638,7 @@ def gen_context_sensitive_commands(c, event, widget, rmenu, commandList):
     contextCommands = get_urls(text) + get_sections(c, text)
 
     if word:
-        contextCommands += get_help(word)
+        contextCommands += get_help(c, word)
 
     if contextCommands:
         commandList += [("-",None)] + contextCommands
@@ -544,7 +650,6 @@ def get_urls(text):
     Extract URL's from the body text and create "Open URL:..." items
     for inclusion in a menu list.
     """
-
 
     contextCommands = []
     for match in re.finditer(SCAN_URL_RE, text):
@@ -593,7 +698,7 @@ def get_sections(c, text):
 
 #@-node:bobjack.20080322043011.11:get_sections
 #@+node:ekr.20040422072343.15:get_help
-def get_help(word):
+def get_help(c, word):
 
     def help_command(*k,**kk):
         #g.trace(k, kk)
@@ -605,15 +710,28 @@ def get_help(word):
             # since the text returned by pydoc can be several 
             # pages long
 
-            if not doc.startswith('no Python documentation found for'):
-                xdoc = doc.split('\n')
-                title = xdoc[0]
-                show_message_as_html(title, '\n'.join(xdoc[1:]))
+            flags = c.config.getString('rclick_show_help')
 
-            #g.es(doc,color="blue")
-            #print doc
+            if not flags or 'all' in flags:
+                flags = 'print log browser'
 
+            if 'browser' in flags:
+                if not doc.startswith('no Python documentation found for'):
+                    xdoc = doc.split('\n')
+                    title = xdoc[0]
+                    g.es('launching browser ...',  color='blue')
+                    show_message_as_html(title, '\n'.join(xdoc[1:]))
+                    g.es('done', color='blue')
+                else:
+                    g.es(doc, color='blue')
+                    print doc
+                    return
 
+            if 'log' in flags:
+                g.es(doc,color="blue")
+
+            if 'print' in flags:
+                print doc
 
         except Exception, value:
             g.es(str(value),color="red")
@@ -690,11 +808,9 @@ def getdoc(thing, title='Help on %s', forceload=0):
 #@+node:bobjack.20080323045434.25:show_message_as_html
 def show_message_as_html(title, msg):
 
-    try:
-        import leo_to_html
-    except ImportError:
-        g.es('Can not import leo_to_html', color='red')
-        return
+    """Show `msg` in an external browser using leo_to_html."""
+
+    import leo_to_html
 
     oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
 
@@ -702,7 +818,7 @@ def show_message_as_html(title, msg):
     oHTML.silent = True 
     oHTML.myFileName = oHTML.title = title    
 
-    oHTML.xhtml = '<pre>' + msg + '</pre>'
+    oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
     oHTML.applyTemplate()
     oHTML.show()
 #@-node:bobjack.20080323045434.25:show_message_as_html
@@ -722,7 +838,31 @@ class ContextMenuController(object):
         ):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
+
+        self.initialize_context_menus()
+
     #@-node:bobjack.20080323045434.15:__init__
+    #@+node:bobjack.20080324033549.3:initialize_context_menus
+    def initialize_context_menus(self):
+
+        """Set initial context menus for this commander.
+
+        If the commander already has a context_menus attribute then nothing is done otherwise
+        a **deep copy** of rClick.context_menu is made and assigned to c.context_menus.
+
+        Changes to rClick.context_menus will only effect new commanders.
+
+        """
+
+        c = self.c
+
+        if hasattr(c, 'context_menus'):
+            return
+
+        c.context_menus = copy.deepcopy(context_menus)
+
+
+    #@-node:bobjack.20080324033549.3:initialize_context_menus
     #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     def rclick_gen_context_sensitive_commands(self, event):
 
