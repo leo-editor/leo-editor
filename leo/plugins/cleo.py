@@ -135,7 +135,6 @@ if ok: # Don't define this if import Tkinter failed.
             p = Tk.Variable.get(self)
             # Beware of returning False!
             return p
-#@nonl
 #@-node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
 #@+node:tbrown.20060903121429.12:init
 def init():
@@ -195,8 +194,6 @@ class cleoController:
         self.smiley = None
 
         self.marks = []   # list of marks made on canvas
-
-        self.typePickle = type(TkPickleVar())  # for testing old files
 
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
@@ -413,7 +410,7 @@ class cleoController:
                 return ""
 
         x = node.unknownAttributes["annotate"][attrib]
-        if type(x) == self.typePickle:
+        if isinstance(x, TkPickleVar):
             node.unknownAttributes["annotate"][attrib] = x.get()
             return x.get()
         else:
@@ -483,7 +480,7 @@ class cleoController:
 
             isDefault = True
             for ky, vl in node.unknownAttributes["annotate"].iteritems():
-                if type(vl) == self.typePickle:
+                if isinstance(vl, TkPickleVar):
                     node.unknownAttributes["annotate"][ky] = vl = vl.get()
                 if not self.testDefault(ky, vl):
                     isDefault = False
