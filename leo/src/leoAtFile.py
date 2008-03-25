@@ -2816,7 +2816,7 @@ class atFile:
         if g.os_path_exists(at.targetFileName):
             try:
                 if not os.access(at.targetFileName,os.W_OK):
-                    at.writeError("can not create: read only: " + at.targetFileName)
+                    at.writeError("can not open: read only: " + at.targetFileName)
                     return False
             except AttributeError:
                 pass # os.access() may not exist on all platforms.
@@ -2913,7 +2913,7 @@ class atFile:
 
         at = self ; c = at.c
         writtenFiles = [] # Files that might be written again.
-        mustAutoSave = False
+        mustAutoSave = False ; atOk = True
 
         if writeAtFileNodesFlag:
             # Write all nodes in the selected tree.
@@ -2939,6 +2939,7 @@ class atFile:
             v2.clearOrphan()
         #@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
         #@nl
+        atOk = True
         while p and p != after:
             if p.isAnyAtFileNode() or p.isAtIgnoreNode():
                 #@            << handle v's tree >>
@@ -2970,6 +2971,8 @@ class atFile:
                         at.write(p,toString=toString)
                         writtenFiles.append(p.v.t) ; autoSave = True
 
+                    if at.errors: atOk = False
+
                     if at.fileChangedFlag and autoSave: # Set by replaceTargetFileIfDifferent.
                         mustAutoSave = True
                 #@-node:ekr.20041005105605.149:<< handle v's tree >>
@@ -2989,7 +2992,7 @@ class atFile:
                 g.es("no dirty @file nodes")
         #@-node:ekr.20041005105605.150:<< say the command is finished >>
         #@nl
-        return mustAutoSave
+        return mustAutoSave,atOk
     #@-node:ekr.20041005105605.147:writeAll (atFile)
     #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtFileNodes (atFile) & helpers
     def writeAtAutoNodes (self,event=None):
