@@ -21065,6 +21065,67 @@ def createBindings (self):
 #@-node:ekr.20080324105006.7:Changed
 #@-node:ekr.20080324105006.2:Found: Button-
 #@-node:ekr.20080321081209.4:Added support for @bool allow_middle_button_paste
+#@+node:ekr.20080326052859.1:Bobjack's changes
+#@+node:bobjack.20080324141020.4:doPopup & helper
+def doPopup (self,p,kind,name,val):
+
+    """
+    Handle @popup menu items in @settings trees.
+    """
+
+    # __pychecker__ = '--no-argsused' # kind, not used.
+
+    popupName = name
+    popupType = val
+
+    c = self.c ; aList = [] ; tag = '@menu'
+
+    #g.trace(p, kind, name, val, c)
+
+    aList = []
+    p = p.copy()
+    self.doPopupItems(p,aList)
+
+
+    if not hasattr(g.app.config, 'context_menus'):
+        g.app.config.context_menus = {}
+
+    if popupName in g.app.config.context_menus:
+        print '*** duplicate popup ***', popupName
+
+    g.app.config.context_menus[popupName] = aList
+#@+node:bobjack.20080324141020.5:doPopupItems
+def doPopupItems (self,p,aList):
+
+    p = p.copy() ; after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        h = p.headString()
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s' % itemName
+                        self.doPopupItems(p,aList2)
+                        aList.append((kind,aList2),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@nonl
+#@-node:bobjack.20080324141020.5:doPopupItems
+#@-node:bobjack.20080324141020.4:doPopup & helper
+#@-node:ekr.20080326052859.1:Bobjack's changes
 #@-node:ekr.20080315115427.576:Features
 #@-node:ekr.20080315083057.10:b3
 #@-node:ekr.20080227135412:4.4.8
