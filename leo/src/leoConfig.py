@@ -32,6 +32,7 @@ class parserBaseClass:
         'abbrev','buttons','commands','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
+        'popup', # New in Leo 4.4.8.
         ]
 
     # Keys are settings names, values are (type,value) tuples.
@@ -69,6 +70,9 @@ class parserBaseClass:
             'ints':         self.doInts,
             'float':        self.doFloat,
             'menus':        self.doMenus, # New in 4.4.4
+
+            'popup': self.doPopup, # New in 4.4.8
+
             'mode':         self.doMode, # New in 4.4b1.
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
             'path':         self.doPath,
@@ -418,6 +422,65 @@ class parserBaseClass:
     #@nonl
     #@-node:ekr.20070926142312:dumpMenuList
     #@-node:ekr.20070925144337.2:doMenus & helper
+    #@+node:bobjack.20080324141020.4:doPopup & helper
+    def doPopup (self,p,kind,name,val):
+
+        """
+        Handle @popup menu items in @settings trees.
+        """
+
+        # __pychecker__ = '--no-argsused' # kind, not used.
+
+        popupName = name
+        popupType = val
+
+        c = self.c ; aList = [] ; tag = '@menu'
+
+        #g.trace(p, kind, name, val, c)
+
+        aList = []
+        p = p.copy()
+        self.doPopupItems(p,aList)
+
+
+        if not hasattr(g.app.config, 'context_menus'):
+            g.app.config.context_menus = {}
+
+        if popupName in g.app.config.context_menus:
+            print '*** duplicate popup ***', popupName
+
+        g.app.config.context_menus[popupName] = aList
+    #@+node:bobjack.20080324141020.5:doPopupItems
+    def doPopupItems (self,p,aList):
+
+        p = p.copy() ; after = p.nodeAfterTree()
+        p.moveToThreadNext()
+        while p and p != after:
+            h = p.headString()
+            for tag in ('@menu','@item'):
+                if g.match_word(h,0,tag):
+                    itemName = h[len(tag):].strip()
+                    if itemName:
+                        if tag == '@menu':
+                            aList2 = []
+                            kind = '%s' % itemName
+                            self.doPopupItems(p,aList2)
+                            aList.append((kind,aList2),)
+                            p.moveToNodeAfterTree()
+                            break
+                        else:
+                            kind = tag
+                            head = itemName
+                            body = p.bodyString()
+                            aList.append((head,body),)
+                            p.moveToThreadNext()
+                            break
+            else:
+                # g.trace('***skipping***',p.headString())
+                p.moveToThreadNext()
+    #@nonl
+    #@-node:bobjack.20080324141020.5:doPopupItems
+    #@-node:bobjack.20080324141020.4:doPopup & helper
     #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
     def doMode(self,p,kind,name,val):
 

@@ -34,15 +34,16 @@
 <v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20070303143951"><vh>unused</vh>
 <v t="ekr.20051018071924"><vh>@@color log_pane_Completion_tab_background_color = yellow</vh></v>
 <v t="ekr.20060325072919"><vh>@@ifgui tkinter</vh>
@@ -62,7 +63,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -2130,19 +2130,15 @@ Scripting plugin. When this plugin is enabled Leo will create a blue 'script
 button' in the icon bar called 'unit test'. 
  
 - To run all unit tests, select the node in test.leo called 'Unit tests...',
-then click the 'unit test' button. 
+then do &lt;alt-4&gt; 
  
-- To run a single test, select an @test node and click the 'unit test' button. 
+- To run a single test, select an @test node and do &lt;alt-4&gt;.
  
-- To run a suite of tests, select an @suite node and click the 'unit test' button. 
+- To run a suite of tests, select an @suite node and do &lt;alt-4&gt;.
  
 - To run any other collection of tests, create an outline containing those @test
-or @suite nodes, select the root of that tree and click the 'unit test' button.
+or @suite nodes, select the root of that tree and do &lt;alt-4&gt; .
 
-That's all. See the docstring the Scripting plugin for more details about script
-buttons. You can see this docstring using the plugin_manager plugin if you have
-it installed. 
- 
 Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
@@ -5043,7 +5039,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns False'
+root = at.root
+assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5077,7 +5074,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5113,7 +5111,8 @@ for p in (at.outputFileName,):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -20017,5 +20016,8 @@ if sys.platform.startswith('win'):
 else:
     assert d.get('lineending') == '\n'
 </t>
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.</t>
 </tnodes>
 </leo_file>

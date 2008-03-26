@@ -910,7 +910,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080323165112.1" a="TV"><vh>My test</vh></v>
+<v t="ekr.20080325141304.1" a="TV"><vh>@@thin read-only-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -22182,9 +22182,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
-<t tx="ekr.20080323165112.1"># line 1
-# line 2
-</t>
+<t tx="ekr.20080325141304.1"># read-only-test.txt</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

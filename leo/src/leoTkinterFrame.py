@@ -68,18 +68,26 @@ class leoTkinterBody (leoFrame.leoBody):
 
         w.bind('<Key>', k.masterKeyHandler)
 
-        for kind,func,handler in (
+        table = [
             ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
             ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
             ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
             ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
             ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-        ):
+        ]
+
+        table2 = (
+            ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+        )
+
+        if c.config.getBool('allow_middle_button_paste'):
+            table.extend(table2)
+
+        for kind,func,handler in table:
             def bodyClickCallback(event,handler=handler,func=func):
                 return handler(event,func)
 
             w.bind(kind,bodyClickCallback)
-    #@nonl
     #@-node:ekr.20031218072017.838:tkBody.createBindings
     #@+node:ekr.20031218072017.3998:tkBody.createControl
     def createControl (self,parentFrame,p):
@@ -1295,13 +1303,22 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         if not c.useTextMinibuffer: return
 
-        for kind,callback in (
+        table = [
             ('<Key>',           k.masterKeyHandler),
             ('<Button-1>',      k.masterClickHandler),
             ('<Button-3>',      k.masterClick3Handler),
             ('<Double-1>',      k.masterDoubleClickHandler),
             ('<Double-3>',      k.masterDoubleClick3Handler),
-        ):
+        ]
+
+        table2 = (
+            ('<Button-2>',      k.masterClickHandler),
+        )
+
+        if c.config.getBool('allow_middle_button_paste'):
+            table.extend(table2)
+
+        for kind,callback in table:
             w.bind(kind,callback)
 
         if 0:
