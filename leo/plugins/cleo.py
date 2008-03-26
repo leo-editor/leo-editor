@@ -182,6 +182,8 @@ class cleoController:
      23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
     100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
     }
+
+    todo_priorities = 1,2,3,4,5,6,7,19
     #@nonl
     #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
@@ -251,6 +253,10 @@ class cleoController:
             'Sel. Feature' : 'PeachPuff4',
             'Sel. Comments': 'LightBlue4',
         }
+
+        self.file_nodes = ["@file", "@thin", "@nosen", "@asis", "@root"]
+        if isinstance(self.c.config.getString('cleo_color_file_nodes'), basestring):
+            self.file_nodes = self.c.config.getString('cleo_color_file_nodes').split()
 
         self.priority_colours = {
             1 : 'red',
@@ -558,7 +564,7 @@ class cleoController:
         # set bg of @file type of nodes
         h = v and v.headString() or ''
 
-        for f in ["@file", "@thin", "@nosen", "@asis", "@root"]:
+        for f in self.file_nodes:
             if h.find(f, 0, 5) == 0:
                 if node_is_selected:
                     bg = self.node_colours['Sel. File']
@@ -1343,22 +1349,17 @@ class cleoController:
 
         if not p: return True  # not required - safety net
 
-        # see if this node is a todo    
-        vn = p.v
-        if (stage != 0 and hasattr(vn,'unknownAttributes') and
-            vn.unknownAttributes.has_key('annotate') and
-            vn.unknownAttributes['annotate'].has_key('priority')):
-                pri = vn.unknownAttributes['annotate']['priority']
-                if pri <= 4 and pri >= 1:
-                    self.c.beginUpdate()
-                    try:
-                        if p.getParent(): 
-                            self.c.selectPosition(p.getParent())
-                            self.c.expandNode()
-                        self.c.selectPosition(p)
-                    finally:
-                        self.c.endUpdate()
-                    return True
+        # see if this node is a todo
+        if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
+            self.c.beginUpdate()
+            try:
+                if p.getParent(): 
+                    self.c.selectPosition(p.getParent())
+                    self.c.expandNode()
+                self.c.selectPosition(p)
+            finally:
+                self.c.endUpdate()
+            return True
 
         for nd in p.children_iter():
             if self.find_todo(nd, stage = 2): return True
