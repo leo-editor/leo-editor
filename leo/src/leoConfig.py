@@ -32,6 +32,7 @@ class parserBaseClass:
         'abbrev','buttons','commands','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
+        'popup', # New in Leo 4.4.8.
         ]
 
     # Keys are settings names, values are (type,value) tuples.
@@ -69,6 +70,9 @@ class parserBaseClass:
             'ints':         self.doInts,
             'float':        self.doFloat,
             'menus':        self.doMenus, # New in 4.4.4
+
+            'popup': self.doPopup, # New in 4.4.8
+
             'mode':         self.doMode, # New in 4.4b1.
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
             'path':         self.doPath,
@@ -557,6 +561,65 @@ class parserBaseClass:
             # At present no checking is done.
             self.set(p,kind,name,val)
     #@-node:ekr.20041120094940.8:doStrings
+    #@+node:bobjack.20080324141020.4:doPopup & helper
+    def doPopup (self,p,kind,name,val):
+
+        """
+        Handle @popup menu items in @settings trees.
+        """
+
+        # __pychecker__ = '--no-argsused' # kind, not used.
+
+        popupName = name
+        popupType = val
+
+        c = self.c ; aList = [] ; tag = '@menu'
+
+        #g.trace(p, kind, name, val, c)
+
+        aList = []
+        p = p.copy()
+        self.doPopupItems(p,aList)
+
+
+        if not hasattr(g.app.config, 'context_menus'):
+            g.app.config.context_menus = {}
+
+        if popupName in g.app.config.context_menus:
+            print '*** duplicate popup ***', popupName
+
+        g.app.config.context_menus[popupName] = aList
+    #@+node:bobjack.20080324141020.5:doPopupItems
+    def doPopupItems (self,p,aList):
+
+        p = p.copy() ; after = p.nodeAfterTree()
+        p.moveToThreadNext()
+        while p and p != after:
+            h = p.headString()
+            for tag in ('@menu','@item'):
+                if g.match_word(h,0,tag):
+                    itemName = h[len(tag):].strip()
+                    if itemName:
+                        if tag == '@menu':
+                            aList2 = []
+                            kind = '%s' % itemName
+                            self.doPopupItems(p,aList2)
+                            aList.append((kind,aList2),)
+                            p.moveToNodeAfterTree()
+                            break
+                        else:
+                            kind = tag
+                            head = itemName
+                            body = p.bodyString()
+                            aList.append((head,body),)
+                            p.moveToThreadNext()
+                            break
+            else:
+                # g.trace('***skipping***',p.headString())
+                p.moveToThreadNext()
+    #@nonl
+    #@-node:bobjack.20080324141020.5:doPopupItems
+    #@-node:bobjack.20080324141020.4:doPopup & helper
     #@-node:ekr.20041120094940:kind handlers (parserBaseClass)
     #@+node:ekr.20041124063257:munge
     def munge(self,s):
@@ -878,7 +941,7 @@ class configClass:
         ("search_body","bool",True),
         ("whole_word","bool",True),
         # Prefs panel.
-        ("default_target_language","language","python"),
+        # ("default_target_language","language","python"),
         ("target_language","language","python"), # Bug fix: 6/20,2005.
         ("tab_width","int",-4),
         ("page_width","int",132),
@@ -1176,21 +1239,24 @@ class configClass:
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
                 if val is not None:
-                    # g.trace(c.shortFileName(),setting,val)
+                    # if setting == 'targetlanguage':
+                        # g.trace(c.shortFileName(),setting,val,g.callers())
                     return val
 
         for d in self.localOptionsList:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 kind = d.get('_hash','<no hash>')
-                # g.trace(kind,setting,val)
+                # if setting == 'targetlanguage':
+                    # g.trace(kind,setting,val,g.callers())
                 return val
 
         for d in self.dictList:
             val,junk = self.getValFromDict(d,setting,kind)
             if val is not None:
                 kind = d.get('_hash','<no hash>')
-                # g.trace(kind,setting,val)
+                # if setting == 'targetlanguage':
+                    # g.trace(kind,setting,val,g.callers())
                 return val
 
         return None
@@ -1445,32 +1511,6 @@ class configClass:
 
         return self.get(c,setting,"string")
     #@-node:ekr.20041117081009.4:getString
-    #@+node:ekr.20041117062717.17:setCommandsIvars
-    # Sets ivars of c that can be overridden by leoConfig.txt
-
-    def setCommandsIvars (self,c):
-
-        data = (
-            ("default_tangle_directory","tangle_directory","directory"),
-            ("default_target_language","target_language","language"),
-            ("output_doc_chunks","output_doc_flag","bool"),
-            ("page_width","page_width","int"),
-            ("run_tangle_done.py","tangle_batch_flag","bool"),
-            ("run_untangle_done.py","untangle_batch_flag","bool"),
-            ("tab_width","tab_width","int"),
-            ("tangle_outputs_header","use_header_flag","bool"),
-        )
-
-        for setting,ivar,theType in data:
-            val = g.app.config.get(c,setting,theType)
-            if val is None:
-                if not hasattr(c,setting):
-                    setattr(c,setting,None)
-                    # g.trace(setting,None)
-            else:
-                setattr(c,setting,val)
-                # g.trace(setting,val)
-    #@-node:ekr.20041117062717.17:setCommandsIvars
     #@+node:ekr.20041120074536:settingsRoot
     def settingsRoot (self,c):
 
@@ -1484,6 +1524,25 @@ class configClass:
     #@-node:ekr.20041120074536:settingsRoot
     #@-node:ekr.20041117081009:Getters... (g.app.config)
     #@+node:ekr.20041118084146:Setters (g.app.config)
+    #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+    def appendToRecentFiles (self,files):
+
+        files = [theFile.strip() for theFile in files]
+
+        # g.trace(files)
+
+        def munge(name):
+            name = name or ''
+            return g.os_path_normpath(name).lower()
+
+        for name in files:
+            # Remove all variants of name.
+            for name2 in self.recentFiles:
+                if munge(name) == munge(name2):
+                    self.recentFiles.remove(name2)
+
+            self.recentFiles.append(name)
+    #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
     #@+node:ekr.20041118084146.1:set (g.app.config)
     def set (self,c,setting,kind,val):
 
@@ -1512,11 +1571,6 @@ class configClass:
             dkind = d.get('_hash','<no hash: %s>' % c.hash())
             g.trace(dkind,setting,kind,val)
     #@-node:ekr.20041118084146.1:set (g.app.config)
-    #@+node:ekr.20041118084241:setString
-    def setString (self,c,setting,val):
-
-        self.set(c,setting,"string",val)
-    #@-node:ekr.20041118084241:setString
     #@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
     def setIvarsFromSettings (self,c):
 
@@ -1544,25 +1598,11 @@ class configClass:
                         # g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
                         setattr(self,ivar,val)
     #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
-    #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-    def appendToRecentFiles (self,files):
+    #@+node:ekr.20041118084241:setString
+    def setString (self,c,setting,val):
 
-        files = [theFile.strip() for theFile in files]
-
-        # g.trace(files)
-
-        def munge(name):
-            name = name or ''
-            return g.os_path_normpath(name).lower()
-
-        for name in files:
-            # Remove all variants of name.
-            for name2 in self.recentFiles:
-                if munge(name) == munge(name2):
-                    self.recentFiles.remove(name2)
-
-            self.recentFiles.append(name)
-    #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+        self.set(c,setting,"string",val)
+    #@-node:ekr.20041118084241:setString
     #@-node:ekr.20041118084146:Setters (g.app.config)
     #@+node:ekr.20041117093246:Scanning @settings (g.app.config)
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers

@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -187,7 +187,7 @@
 </v>
 <v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
 </v>
-<v t="ekr.20041119034357.10" a="E" annotate="7d71002e"><vh>Command options</vh>
+<v t="ekr.20041119034357.10" annotate="7d71002e"><vh>Command options</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
@@ -1209,10 +1209,9 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.28" a="E" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
-<v t="ekr.20041119034357.30"><vh>@language default_target_language = python</vh></v>
-<v t="ekr.20050620083647"><vh>@language target_language = python</vh></v>
+<v t="ekr.20080326060254.3" a="TV"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 <v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
@@ -1357,12 +1356,6 @@ None  Compares all files when comparing directories.
 The default directory used if no directory specified in @path, @root or @file directives.
 
 </t>
-<t tx="ekr.20041119034357.30">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20041119034357.31">The width of tabs on the screen.  This setting is also used when writing doc parts.
 
 Valid values: Any nonzero integer.
@@ -1981,16 +1974,6 @@ Please do not change this; it would make a unit test fail.</t>
 
 Doing so would make unit tests fail.
 </t>
-<t tx="ekr.20050620083647">The following languages are presently supported:
-
-ada, actionscript, c, C++, objective C, c#,
-elisp, forth, fortran, fortran90, html, java, latex,
-pascal, perl, perlpod, php, plain, plsql, python,
-rapidq, rebol, shell, tcltk
-
-For instructions on how to add support for a new languages, see leoPy.leo:
-
-Notes--&gt;@thin ../doc/leoNotes.txt--&gt;How to...--&gt;How to add support for a new language</t>
 <t tx="ekr.20051006200015">Use a light selectbackground value so syntax coloring looks good.
 
 Default is Gray80.
@@ -8616,6 +8599,12 @@ False: The spell commands do not collapse any nodes.</t>
 <t tx="ekr.20080324105006.6">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.</t>
+<t tx="ekr.20080326060254.3">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

@@ -7180,7 +7180,7 @@ class configSettings:
     """A class to hold config settings for commanders."""
 
     #@    @+others
-    #@+node:ekr.20041118104831.2:configSettings.__init__
+    #@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     def __init__ (self,c):
 
         self.c = c
@@ -7239,7 +7239,7 @@ class configSettings:
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName,encoding))
     #@-node:ekr.20041118104414:initEncoding
-    #@-node:ekr.20041118104831.2:configSettings.__init__
+    #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     #@+node:ekr.20041118053731:Getters (c.configSettings)
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         return g.app.config.getFontFromParams(self.c,

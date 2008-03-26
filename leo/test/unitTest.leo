@@ -1490,7 +1490,7 @@
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
@@ -1711,7 +1711,7 @@
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
@@ -18942,7 +18942,9 @@ g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
-<t tx="ekr.20071113145804.4">c.beginUpdate()
+<t tx="ekr.20071113145804.4">@language python
+
+c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -18965,7 +18967,9 @@ finally:
     c.endUpdate(False)
 
 # end:</t>
-<t tx="ekr.20071113145804.5">c.beginUpdate()
+<t tx="ekr.20071113145804.5">@language python
+
+c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
