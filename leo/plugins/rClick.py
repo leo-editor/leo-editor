@@ -387,9 +387,10 @@ rclick menu tables and @popup trees.
 #     - '*' (context sensitive generators)
 # - modified (None, cmd) to be ('*', cmd)
 # - added minibuffer command rclick-gen-recent-files-list
-# 
-# 
+# 0.18 ekr:
+# - moved rClickBinder and rSetupMenus to ContextMenuController.
 #@-at
+#@nonl
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
 #@<< todo >>
@@ -427,8 +428,10 @@ import copy
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
+# To do: move top-level functions into ContextMenuController class.
+# Eliminate global vars.
 
-__version__ = "0.16"
+__version__ = "0.18"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -458,9 +461,8 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler("after-create-leo-frame",rClickbinder)
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         leoPlugins.registerHandler("bodyrclick1",rClicker)
-        leoPlugins.registerHandler("create-optional-menus",rSetupMenus)
         g.plugin_signon(__name__)
 
         init_default_menus()
@@ -484,51 +486,51 @@ def init_default_menus():
     #@    @+others
     #@+node:bobjack.20080325060741.6:edit-menu
     default_context_menus['edit-menu'] = [
-            ('Cut', rc_OnCutFromMenu),
-            ('Copy', rc_OnCopyFromMenu),
-            ('Paste', rc_OnPasteFromMenu),
-            ('-', None),
-            ('Select All', rc_selectAll),
-        ]
+        ('Cut', rc_OnCutFromMenu),
+        ('Copy', rc_OnCopyFromMenu),
+        ('Paste', rc_OnPasteFromMenu),
+        ('-', None),
+        ('Select All', rc_selectAll),
+    ]
     #@-node:bobjack.20080325060741.6:edit-menu
     #@+node:bobjack.20080325060741.4:body
     default_context_menus['body'] = [
 
-            ('Cut', 'cut-text'),
-            ('Copy', 'copy-text'),
-            ('Paste', 'paste-text'),
+        ('Cut', 'cut-text'),
+        ('Copy', 'copy-text'),
+        ('Paste', 'paste-text'),
+
+        ('-',None),
+
+        ('Select All', 'select-all'),
+
+        ('-',None),
+
+        ('Block Operations', [
+
+            ('Indent', 'indent-region'),
+            ('Dedent', 'unindent-region'),
 
             ('-',None),
 
-            ('Select All', 'select-all'),
+            ('Add Comments', 'add-comments'),
+            ('Remove Comments', 'delete-comments'),
+        ]),
 
-            ('-',None),
+        ('-',None),
 
-            ('Block Operations', [
+        ('&', 'recent-files-menu'),
 
-                ('Indent', 'indent-region'),
-                ('Dedent', 'unindent-region'),
+        ('Find Bracket', 'match-brackets'),
+        #('Insert newline', rc_nl),
 
-                ('-',None),
+        ('Execute Script', 'execute-script'),
 
-                ('Add Comments', 'add-comments'),
-                ('Remove Comments', 'delete-comments'),
-            ]),
+        ('', 'users menu items'),
 
-            ('-',None),
+        ('*', 'rclick-gen-context-sensitive-commands'),
 
-            ('&', 'recent-files-menu'),
-
-            ('Find Bracket', 'match-brackets'),
-            #('Insert newline', rc_nl),
-
-            ('Execute Script', 'execute-script'),
-
-            ('', 'users menu items'),
-
-            ('*', 'rclick-gen-context-sensitive-commands'),
-
-        ]
+    ]
     #@-node:bobjack.20080325060741.4:body
     #@+node:bobjack.20080325060741.5:log
     default_context_menus['log'] = [('&', 'edit-menu')]
@@ -552,123 +554,9 @@ def init_default_menus():
 
 
 #@-node:bobjack.20080321133958.7:init_default_menus
-#@+node:ekr.20040422072343.5:rClickbinder
-def rClickbinder(tag,keywords):
-
-    """Bind right click events.
-
-    This method is bound to the `after-create-leo-frame` event during `init`
-
-    All right click events are bound to `c.frame.OnBodyRClick` which emits leo's
-    `bodyrclick1` event which itself was bound to rClicker during `init`.
-
-    For editor body controls, right click is already bound to `c.frame.OnBodyRClick`.
-
-    Here we bind the log text widget and the find/change entry widgets.
-
-    """
-
-    c = keywords.get('c')
-
-    if c and c.exists:
-
-        theContextMenuController = cc = ContextMenuController(c)
-
-        c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
-        #c.frame.log.logCtrl.bind_class('Text', '<Button-3>', c.frame.OnBodyRClick)
-        #g.trace(c.frame.log.logCtrl)
-        h = c.searchCommands.findTabHandler
-        if not h:
-            return
-
-        for w in (h.find_ctrl, h.change_ctrl):
-            #g.trace(w._name)
-            w.bind('<Button-3>',c.frame.OnBodyRClick)
-            pass
-
-
-#@-node:ekr.20040422072343.5:rClickbinder
-#@+node:bobjack.20080324141020.477:rSetupMenus
-def rSetupMenus(tag, keywords):
-
-    """Set up c.context-menus with menus from @settengs or default_context_menu."""
-
-    c = keywords.get('c')
-    if not c or not c.exists:
-        return True
-
-    if not hasattr(c, 'context_menus'):
-
-        if hasattr(g.app.config, 'context_menus'):
-            menus = copy.deepcopy(g.app.config.context_menus)
-        else:
-            menus = {}
-
-        if not isinstance(menus, dict):
-            menus = {}
-
-        c.context_menus = menus
-
-        #@        << def config_to_rclick >>
-        #@+node:bobjack.20080324141020.476:<< def config_to_rclick >>
-        def config_to_rclick(menu_table):
-
-            """Convert from config to rClick format"""
-
-            out = []
-
-            if not menu_table:
-                return out
-
-            while menu_table:
-
-                s, cmd = menu_table.pop(0)
-
-                if isinstance(cmd, list):
-                    out.append((s.replace('&',''), config_to_rclick(cmd[:])))
-                    continue
-
-                s, cmd = s.strip(), cmd.strip()
-
-                if s in ('-', '&', '*'):
-                    out.append((s, cmd))
-                    continue
-
-                if cmd.strip():
-                    out.append((cmd.replace('&',''), s),)
-                    continue
-
-                removeHyphens = s and s[0]=='*'
-                if removeHyphens:
-                    s = s[1:]
-                label = c.frame.menu.capitalizeMinibufferMenuName(s,removeHyphens)
-                out.append((label.replace('&',''), s.replace('&','')),)
-
-            return out
-        #@-node:bobjack.20080324141020.476:<< def config_to_rclick >>
-        #@nl
-
-        for key in menus.keys():
-            #g.trace(key)
-            menus[key] = config_to_rclick(menus[key][:])
-
-        #g.app.config.context_menus = None
-
-    menus = c.context_menus
-
-    if not isinstance(menus, dict):
-        c.context_menus = menus = {}
-
-    for key, item in default_context_menus.iteritems():
-
-        if not key in menus:
-            menus[key] = copy.deepcopy(item)
-
-
-    return True
-
-#@-node:bobjack.20080324141020.477:rSetupMenus
-#@+node:ekr.20040422072343.6:rClicker
+#@-node:ekr.20060108122501:Module-level
+#@+node:ekr.20080327061021.229:Event handler
+#@+node:ekr.20080327061021.220:rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
 
 def rClicker(tag, keywords):
@@ -678,7 +566,7 @@ def rClicker(tag, keywords):
     global POPUP_MENU
 
     #@    << def table_to_menu >>
-    #@+node:bobjack.20080322224146.2:<< def table_to_menu >>
+    #@+node:ekr.20080327061021.221:<< def table_to_menu >>
     def table_to_menu(menu_table, level=0):
 
         """Generate a TK menu from a python list."""
@@ -707,7 +595,7 @@ def rClicker(tag, keywords):
 
             if txt == '*':
                 #@            << call a menu generator >>
-                #@+node:bobjack.20080325060741.8:<< call a menu generator >>
+                #@+node:ekr.20080327061021.222:<< call a menu generator >>
 
                 if isinstance(cmd, basestring):
 
@@ -727,15 +615,15 @@ def rClicker(tag, keywords):
 
                 elif cmd:
                     MB_MENU_RETVAL = cmd(*args)
-                #@-node:bobjack.20080325060741.8:<< call a menu generator >>
+                #@-node:ekr.20080327061021.222:<< call a menu generator >>
                 #@nl
 
             elif txt == '-':
                 #@            << add a separator >>
-                #@+node:bobjack.20080325060741.9:<< add a separator >>
+                #@+node:ekr.20080327061021.223:<< add a separator >>
                 rmenu.add_separator()
                 #@nonl
-                #@-node:bobjack.20080325060741.9:<< add a separator >>
+                #@-node:ekr.20080327061021.223:<< add a separator >>
                 #@nl
 
             elif txt == '':
@@ -743,41 +631,41 @@ def rClicker(tag, keywords):
 
             elif txt == '&':
                 #@            << include a menu chunk >>
-                #@+node:bobjack.20080325060741.7:<< include a menu chunk >>
+                #@+node:ekr.20080327061021.224:<< include a menu chunk >>
                 menu_table = copy.deepcopy(c.context_menus.get(cmd, [])) + menu_table
                 #@nonl
-                #@-node:bobjack.20080325060741.7:<< include a menu chunk >>
+                #@-node:ekr.20080327061021.224:<< include a menu chunk >>
                 #@nl
 
             elif isinstance(txt, basestring):
                 #@            << add a named item >>
-                #@+node:bobjack.20080325060741.10:<< add a named item >>
+                #@+node:ekr.20080327061021.225:<< add a named item >>
                 if isinstance(cmd, basestring):
                     #@    << minibuffer command item >>
-                    #@+node:bobjack.20080325060741.11:<< minibuffer command item >>
+                    #@+node:ekr.20080327061021.226:<< minibuffer command item >>
                     cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
                     rmenu.add_command(label=txt,command=cb)
-                    #@-node:bobjack.20080325060741.11:<< minibuffer command item >>
+                    #@-node:ekr.20080327061021.226:<< minibuffer command item >>
                     #@nl
 
                 elif isinstance(cmd, list):
                     #@    << cascade item >>
-                    #@+node:bobjack.20080325060741.12:<< cascade item >>
+                    #@+node:ekr.20080327061021.227:<< cascade item >>
                     submenu = table_to_menu(cmd[:], level+1)
                     if submenu:
                         rmenu.add_cascade(label=txt, menu=submenu)
-                    #@-node:bobjack.20080325060741.12:<< cascade item >>
+                    #@-node:ekr.20080327061021.227:<< cascade item >>
                     #@nl
 
                 else:
                     #@    << function command item >>
-                    #@+node:bobjack.20080325060741.13:<< function command item >>
+                    #@+node:ekr.20080327061021.228:<< function command item >>
                     cb = lambda c=c, event=event, widget=widget, cmd=cmd: cmd(c, event, widget)
                     rmenu.add_command(label=txt,command=cb)
                     #@nonl
-                    #@-node:bobjack.20080325060741.13:<< function command item >>
+                    #@-node:ekr.20080327061021.228:<< function command item >>
                     #@nl
-                #@-node:bobjack.20080325060741.10:<< add a named item >>
+                #@-node:ekr.20080327061021.225:<< add a named item >>
                 #@nl
 
         if MB_MENU_RETVAL is None:
@@ -785,23 +673,18 @@ def rClicker(tag, keywords):
 
         rmenu.destroy()
 
-    #@-node:bobjack.20080322224146.2:<< def table_to_menu >>
+    #@-node:ekr.20080327061021.221:<< def table_to_menu >>
     #@nl
 
     c = keywords.get("c")
-
     event = keywords.get("event")
-
     if not c or not c.exists or not event:
         return
 
     widget = event.widget
+    if not widget: return
 
     isText = g.app.gui.isTextWidget(widget)
-
-    if not widget:
-        return
-
     if isText:
         try:
             widget.setSelectionRange(*c.k.previousSelection)
@@ -809,13 +692,10 @@ def rClicker(tag, keywords):
             #g.trace('no previous selection')
             pass
 
-    #??? is this right
+    # Put the focus in the widget.
     widget.focus()
 
     name = c.widget_name(widget)
-
-    #g.trace('name', name)
-
     top_menu_table = []
 
     if hasattr(widget, 'context_menu'):
@@ -833,13 +713,11 @@ def rClicker(tag, keywords):
                 break
 
     top_menu = table_to_menu(top_menu_table)
-
     if top_menu:
         top_menu.tk_popup(event.x_root-23, event.y_root+13)
         POPUP_MENU = top_menu
-
-#@-node:ekr.20040422072343.6:rClicker
-#@-node:ekr.20060108122501:Module-level
+#@-node:ekr.20080327061021.220:rClicker
+#@-node:ekr.20080327061021.229:Event handler
 #@+node:bobjack.20080321133958.8:Callbacks
 #@+node:ekr.20040422072343.3:rc_nl
 def rc_nl(c, event, widget):
@@ -1117,6 +995,7 @@ class ContextMenuController(object):
     def __init__ (self,c):
 
         self.c = c
+
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
         for command in (
@@ -1126,7 +1005,8 @@ class ContextMenuController(object):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
 
-
+        self.rClickbinder()
+        self.rSetupMenus()
     #@-node:bobjack.20080323045434.15:__init__
     #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     def rclick_gen_context_sensitive_commands(self, event):
@@ -1149,6 +1029,96 @@ class ContextMenuController(object):
         MB_MENU_RETVAL = gen_recent_files_list(*MB_MENU_ARGS)
     #@nonl
     #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
+    #@+node:ekr.20080327061021.217:rClickbinder
+    def rClickbinder(self):
+
+        '''Bind right click events.'''
+
+        c = self.c
+        if not c.exists: return
+
+        c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
+
+        h = c.searchCommands.findTabHandler
+        if not h: return
+
+        for w in (h.find_ctrl, h.change_ctrl):
+            w.bind('<Button-3>',c.frame.OnBodyRClick)
+    #@-node:ekr.20080327061021.217:rClickbinder
+    #@+node:ekr.20080327061021.218:rSetupMenus
+    def rSetupMenus (self):
+
+        """Set up c.context-menus with menus from @settengs or default_context_menu."""
+
+        c = self.c
+
+        if not hasattr(c, 'context_menus'):
+
+            if hasattr(g.app.config, 'context_menus'):
+                menus = copy.deepcopy(g.app.config.context_menus)
+            else:
+                menus = {}
+
+            if not isinstance(menus, dict):
+                menus = {}
+
+            c.context_menus = menus
+
+            #@        << def config_to_rclick >>
+            #@+node:ekr.20080327061021.219:<< def config_to_rclick >>
+            def config_to_rclick(menu_table):
+
+                """Convert from config to rClick format"""
+
+                out = []
+
+                if not menu_table:
+                    return out
+
+                while menu_table:
+
+                    s, cmd = menu_table.pop(0)
+
+                    if isinstance(cmd, list):
+                        out.append((s.replace('&',''), config_to_rclick(cmd[:])))
+                        continue
+
+                    s, cmd = s.strip(), cmd.strip()
+
+                    if s in ('-', '&', '*'):
+                        out.append((s, cmd))
+                        continue
+
+                    if cmd.strip():
+                        out.append((cmd.replace('&',''), s),)
+                        continue
+
+                    removeHyphens = s and s[0]=='*'
+                    if removeHyphens:
+                        s = s[1:]
+                    label = c.frame.menu.capitalizeMinibufferMenuName(s,removeHyphens)
+                    out.append((label.replace('&',''), s.replace('&','')),)
+
+                return out
+            #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
+            #@nl
+
+            for key in menus.keys():
+                menus[key] = config_to_rclick(menus[key][:])
+
+        menus = c.context_menus
+
+        if not isinstance(menus, dict):
+            c.context_menus = menus = {}
+
+        for key, item in default_context_menus.iteritems():
+
+            if not key in menus:
+                menus[key] = copy.deepcopy(item)
+
+        return True
+    #@nonl
+    #@-node:ekr.20080327061021.218:rSetupMenus
     #@-others
 #@nonl
 #@-node:bobjack.20080323045434.14:class ContextMenuController
