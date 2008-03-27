@@ -53,7 +53,7 @@ class chapterController:
         cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
 
         tag = '@chapter'
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
             h = p.v.headString()
             if h.startswith(tag) and not h.startswith('@chapters'):
                 tabName = h[len(tag):].strip()
@@ -609,7 +609,7 @@ class chapterController:
 
         cc = self ; c = cc.c
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
             if p.headString() == '@chapters':
                 cc.chaptersNode = p.copy()
                 return p

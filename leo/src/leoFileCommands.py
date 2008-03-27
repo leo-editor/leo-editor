@@ -2587,7 +2587,7 @@ class baseFileCommands:
         if self.usingClipboard: # write the current tree.
             theIter = c.currentPosition().self_and_subtree_iter()
         else: # write everything
-            theIter = c.allNodes_iter()
+            theIter = c.all_positions_with_unique_tnodes_iter()
 
         # Populate tnodes
         tnodes = {}

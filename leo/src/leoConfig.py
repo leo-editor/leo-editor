@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:sps.20080317155519.1:@thin leoConfig.py
+#@+node:ekr.20041117062700:@thin leoConfig.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
@@ -1978,5 +1978,5 @@ class settingsTreeParser (parserBaseClass):
     #@-others
 #@-node:ekr.20041119203941.3:class settingsTreeParser (parserBaseClass)
 #@-others
-#@-node:sps.20080317155519.1:@thin leoConfig.py
+#@-node:ekr.20041117062700:@thin leoConfig.py
 #@-leo

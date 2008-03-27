@@ -515,7 +515,7 @@ class testUtils:
     def findNodeAnywhere(self,headline):
 
         c = self.c
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
             h = headline.strip().lower()
             if p.headString().strip().lower() == h:
                 return p.copy()
@@ -836,7 +836,7 @@ def runTestsExternally (c,all):
         def searchOutline (self,p):
 
             c = self.c ; p = c.currentPosition()
-            iter = g.choose(self.all,c.allNodes_iter,p.self_and_subtree_iter)
+            iter = g.choose(self.all,c.all_positions_with_unique_tnodes_iter,p.self_and_subtree_iter)
 
             # First, look down the tree.
             for p in iter():
@@ -857,7 +857,7 @@ def runTestsExternally (c,all):
                             return True
 
             # Finally, look for all @mark-for-unit-test nodes.
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_tnodes_iter():
                 if p.headString().startswith('@mark-for-unit-test'):
                     return True
 

@@ -911,34 +911,31 @@ class bufferCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051215121416:computeData
     def computeData (self):
 
-        counts = {} ; self.nameList = []
+        self.nameList = []
         self.names = {} ; self.tnodes = {}
 
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions_with_unique_tnodes_iter():
             h = p.headString().strip()
             t = p.v.t
-            n = counts.get(t,0) + 1
-            counts[t] = n
-            if n == 1: # Only make one entry per set of clones.
-                nameList = self.names.get(h,[])
-                if nameList:
-                    if p.parent():
-                        key = '%s, parent: %s' % (h,p.parent().headString())
-                    else:
-                        key = '%s, child index: %d' % (h,p.childIndex())
+            nameList = self.names.get(h,[])
+            if nameList:
+                if p.parent():
+                    key = '%s, parent: %s' % (h,p.parent().headString())
                 else:
-                    key = h
-                self.nameList.append(key)
-                self.tnodes[key] = t
-                nameList.append(key)
-                self.names[h] = nameList
+                    key = '%s, child index: %d' % (h,p.childIndex())
+            else:
+                key = h
+            self.nameList.append(key)
+            self.tnodes[key] = t
+            nameList.append(key)
+            self.names[h] = nameList
     #@-node:ekr.20051215121416:computeData
     #@+node:ekr.20051215164823:findBuffer
     def findBuffer (self,name):
 
         t = self.tnodes.get(name)
 
-        for p in self.c.allNodes_iter():
+        for p in self.c.all_positions_with_unique_tnodes_iter():
             if p.v.t == t:
                 return p
 
