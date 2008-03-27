@@ -1344,7 +1344,7 @@ class configClass:
     #@+node:ekr.20041117081009.3:getBool
     def getBool (self,c,setting,default=None):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @bool setting, or the default if the setting is not found.'''
 
         val = self.get(c,setting,"bool")
 
@@ -1356,29 +1356,35 @@ class configClass:
     #@+node:ekr.20070926082018:getButtons
     def getButtons (self):
 
+        '''Return a list of tuples (x,y) for common @button nodes.'''
+
         return g.app.config.atCommonButtonsList
     #@-node:ekr.20070926082018:getButtons
     #@+node:ekr.20080312071248.7:getCommonCommands
     def getCommonAtCommands (self):
+
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
 
         return g.app.config.atCommonCommandsList
     #@-node:ekr.20080312071248.7:getCommonCommands
     #@+node:ekr.20041122070339:getColor
     def getColor (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @color setting.'''
 
         return self.get(c,setting,"color")
     #@-node:ekr.20041122070339:getColor
     #@+node:ekr.20071214140900.1:getData
     def getData (self,c,setting):
 
+        '''Return a list of non-comment strings in the body text of @data setting.'''
+
         return self.get(c,setting,"data")
     #@-node:ekr.20071214140900.1:getData
     #@+node:ekr.20041117093009.1:getDirectory
     def getDirectory (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @directory setting, or None if the directory does not exist.'''
 
         theDir = self.getString(c,setting)
 
@@ -1390,12 +1396,14 @@ class configClass:
     #@+node:ekr.20070224075914.1:getEnabledPlugins
     def getEnabledPlugins (self):
 
+        '''Return the body text of the @enabled-plugins node.'''
+
         return g.app.config.enabledPluginsString
     #@-node:ekr.20070224075914.1:getEnabledPlugins
     #@+node:ekr.20041117082135:getFloat
     def getFloat (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @float setting.'''
 
         val = self.get(c,setting,"float")
         try:
@@ -1410,9 +1418,9 @@ class configClass:
         """Compute a font from font parameters.
 
         Arguments are the names of settings to be use.
-        We default to size=12, slant="roman", weight="normal".
+        Default to size=12, slant="roman", weight="normal".
 
-        We return None if there is no family setting so we can use system default fonts."""
+        Return None if there is no family setting so we can use system default fonts."""
 
         family = self.get(c,family,"family")
         if family in (None,""):
@@ -1434,7 +1442,7 @@ class configClass:
     #@+node:ekr.20041117081513:getInt
     def getInt (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @int setting.'''
 
         val = self.get(c,setting,"int")
         try:
@@ -1446,23 +1454,24 @@ class configClass:
     #@+node:ekr.20041117093009.2:getLanguage
     def getLanguage (self,c,setting):
 
-        """Return the setting whose value should be a language known to Leo."""
+        '''Return the setting whose value should be a language known to Leo.'''
 
         language = self.getString(c,setting)
         # g.trace(setting,language)
 
         return language
     #@-node:ekr.20041117093009.2:getLanguage
-    #@+node:ekr.20070926070412:getMenusDict
+    #@+node:ekr.20070926070412:getMenusList
     def getMenusList (self):
 
+        '''Return the list of entries for the @menus tree.'''
+
         return g.app.config.menusList
-    #@nonl
-    #@-node:ekr.20070926070412:getMenusDict
+    #@-node:ekr.20070926070412:getMenusList
     #@+node:ekr.20070411101643:getOpenWith
     def getOpenWith (self,c):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return a list of dictionaries corresponding to @openwith nodes.'''
 
         val = self.get(c,'openwithtable','openwithtable')
 
@@ -1471,7 +1480,9 @@ class configClass:
     #@+node:ekr.20041122070752:getRatio
     def getRatio (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @float setting.
+
+        Warn if the value is less than 0.0 or greater than 1.0.'''
 
         val = self.get(c,setting,"ratio")
         try:
@@ -1485,6 +1496,8 @@ class configClass:
     #@-node:ekr.20041122070752:getRatio
     #@+node:ekr.20041117062717.11:getRecentFiles
     def getRecentFiles (self):
+
+        '''Return the list of recently opened files.'''
 
         return self.recentFiles
     #@-node:ekr.20041117062717.11:getRecentFiles
@@ -1507,12 +1520,14 @@ class configClass:
     #@+node:ekr.20041117081009.4:getString
     def getString (self,c,setting):
 
-        """Search all dictionaries for the setting & check it's type"""
+        '''Return the value of @string setting.'''
 
         return self.get(c,setting,"string")
     #@-node:ekr.20041117081009.4:getString
     #@+node:ekr.20041120074536:settingsRoot
     def settingsRoot (self,c):
+
+        '''Return the position of the @settings tree.'''
 
         # g.trace(c,c.rootPosition())
 
