@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -409,14 +409,14 @@
 <v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20070317043727.1"><vh>@ignore nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
-<v t="ekr.20070317043727.3" a="TV"><vh>Complex settings nodes</vh></v>
+<v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh></v>
 </v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
@@ -1143,7 +1143,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="TV"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3605,7 +3605,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
@@ -3628,37 +3628,6 @@
 </v>
 </v>
 </v>
-</v>
-</v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
-<v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050816073412.1"><vh>Introduction</vh>
-<v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
-<v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
-</v>
-<v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
-<v t="ekr.20050822173420.1"><vh>Derived files</vh></v>
-<v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
-<v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
-</v>
-<v t="ekr.20050827102655"><vh>Leo for Programmers</vh>
-<v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
-<v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
-<v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
-<v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
-<v t="ekr.20050828205054"><vh>Directives for programming</vh></v>
-<v t="ekr.20050828161117"><vh>Orphan nodes</vh></v>
-<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
-<v t="ekr.20050827162537"><vh>Leo and literate programming</vh></v>
-</v>
-<v t="ekr.20050827094813"><vh>Good style and bad:  sections vs. @others</vh></v>
-<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
-<v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
-<v t="ekr.20050827090802"><vh>Further study</vh></v>
-</v>
-<v t="ekr.20050816073824"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 </vnodes>
@@ -19575,7 +19544,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'idle'                                 periodically (at idle time)         c
 'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
 'menu1'                        yes     before creating menus               c,p,v (note 3)
-'menu2'                        yes     before updating menus               c,p,v
+'menu2'                        yes     during creating menus               c,p,v (note 3)
+'menu-update'                  yes     before updating menus               c,p,v
 'new'                                  start of New command                c,old_c,new_c (note 9)
 'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
 'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
