@@ -639,6 +639,8 @@ class baseCommands:
                 frame.menu.createMenuBar(frame)
                 c.updateRecentFiles(fileName=None)
                 g.doHook("menu2",c=frame.c,p=p,v=p)
+                g.doHook("after-create-leo-frame",c=c)
+
         finally:
             c.endUpdate()
             # chapterController.finishCreate must be called after the first real redraw

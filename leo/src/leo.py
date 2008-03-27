@@ -238,6 +238,7 @@ def createFrame (fileName,relativeFileName):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
 
     # Report the failure to open the file.
     if fileName:
