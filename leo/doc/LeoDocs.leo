@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="294" left="435" height="630" width="861"/>
+	<global_window_position top="79" left="312" height="630" width="861"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -442,6 +442,14 @@
 <v t="ekr.20050902105852.11"><vh>Leo 4.2: Complete at last</vh></v>
 <v t="ekr.20050902105852.12"><vh>Leo 4.3 Settings</vh></v>
 <v t="ekr.20060629083935"><vh>Leo 4.4 The minibuffer and key bindings</vh></v>
+<v t="ekr.20080315115427.568" a="M"><vh>Leo 4.4.4 Improvements</vh>
+<v t="ekr.20080315115427.569"><vh>Leo 4.4.1</vh></v>
+<v t="ekr.20080315115427.570"><vh>Leo 4.4.2</vh></v>
+<v t="ekr.20080315115427.571"><vh>Leo 4.4.3</vh></v>
+<v t="ekr.20080315115427.572"><vh>Leo 4.4.4</vh></v>
+<v t="ekr.20080315115427.573"><vh>Leo 4.4.5</vh></v>
+<v t="ekr.20080315115427.574"><vh>Leo 4.4.7 and Leo 4.4.8</vh></v>
+</v>
 <v t="ekr.20050902100834"><vh>@rst-ignore-tree Details</vh>
 <v t="EKR.20040524104904.247"><vh>Versions</vh></v>
 <v t="EKR.20040524104904.248"><vh>Designing @file trees</vh>
@@ -765,14 +773,14 @@
 <v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
-<v t="vivainio.20080302174639.2"><vh>Installation</vh></v>
+<v t="vivainio.20080302174639.2" a="TV"><vh>Installation and startup</vh></v>
 <v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
 <v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
 <v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
 <v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
-<v t="vivainio.20080316145539.3" a="TV"><vh>Example use case: pylab</vh></v>
+<v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
 <v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
@@ -1135,7 +1143,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3597,7 +3605,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
@@ -19008,6 +19016,13 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _`Chapter 8\: Customizing Leo`:              customizing.html
 .. _`Chapter 10\: Theory of Operation`:         theory.html
 
+.. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
+.. _`Chapter 16\: Debugging with Leo`:              debuggers.html
+.. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
+.. _`Chapter 18\: Leo and Emacs`:                   emacs.html
+.. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
+.. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
+.. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
 .. Absolute links..
 
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
@@ -34382,6 +34397,43 @@ What's New in Leo 4.4.7 and Leo 4.4.8
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
   
 - Improved marks/recent buttons plugin.</t>
+<t tx="ekr.20080315115427.568">Leo 4.4.1 through 4.4.8 contained many incremental improvements,
+as documented in Chapters 15 through 21 of this Users Guide.
+</t>
+<t tx="ekr.20080315115427.569">- Supported multiple editors in body pane.
+- Added the jEdit_colorizer plugin. See `Chapter 15: Controlling Syntax Coloring`_.
+- Added the slideshow plugin.</t>
+<t tx="ekr.20080315115427.570">- Added support for myLeoSettings.leo
+- The 'Big Reorg' made Leo's vnodes and tnode classes independent of the rest of Leo.
+- Added support for ZODB. See `Chapter 17: Using ZODB with Leo`_.
+- Added leoPymacs module. See `Chapter 18: Leo and Emacs`_.
+- Added the leoOPML, leo_to_rtf and leo_to_html plugins.
+- Added outline navigation: typing a letter selects the next outline node that starts with that letter.
+- Added autocontract during finds.
+- Added new commands and options to make Leo usable without a mouse.
+- Added an option sax parser for reading .leo files.</t>
+<t tx="ekr.20080315115427.571">- Added support for chapters in Leo's core.
+- Added support for zipped .leo files.
+- Added the leoBridge module. See `Chapter 19: Embedding Leo with the leoBridge Module`_.
+- Removed all gui-dependent code from Leo's core.
+- Added better support for the winpdb debugger.
+- Added support for @enabled-plugins and @open-with nodes in settings files.
+</t>
+<t tx="ekr.20080315115427.572">- The Great Graph Aha: Outlines don't have to *be* graphs to *represent* graphs.
+  This Aha meant that there is no need for a separate 'graph world'.  
+- Added support for @menus and @buttons trees in settings files.
+- Added perfect import of foreign files with @auto nodes.
+- Added new commands for resolving cvs conflicts.
+- Replaced the jEdit_colorizer plugin with the threading_colorizer plugin.
+- Made Leo compatible with jython.
+- Added better support for icons in headlines.
+</t>
+<t tx="ekr.20080315115427.573">- Leo now recognizes directives in headlines.
+- Added support for @rst-preformat nodes to the rst3 plugin.
+</t>
+<t tx="ekr.20080315115427.574">- Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
+- Added support for translating messages to Leo's log.
+</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
@@ -34430,7 +34482,11 @@ You need to enable the 'ipython.py' plugin in Leo:
   document, you have to execute start-ipython (alt+shift+I) again to tell
   IPython that the new commands should target the new document. IPython session
   will not be restarted, only the leo commander object is updated in the
-  existing session.</t>
+  existing session.
+  
+- If you want to specify command line arguments to IPython (e.g. to choose a
+  profile, or to start in 'pylab' mode), add this to your @settings:
+  '@string ipython_argv = ipython -pylab' (where -pylab is the command line argument)</t>
 <t tx="vivainio.20080302174639.3">IPython code
 ------------
 
@@ -34699,8 +34755,6 @@ which means "current node") and moves focus to node number 5::
     for i in range(10):
         _p[i] = 'hello %d' % d
     _p[5].go()
-
-
 </t>
 <t tx="vivainio.20080302174639.9">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:
@@ -34754,7 +34808,7 @@ Opens the variable s for editing. Press alt+I to push the new value to IPython.
     
 Opens IPython interactive history (both input and output) in Leo.
 </t>
-<t tx="vivainio.20080316145539.3">If you install matplotlib and numpy, you can use ILeo to interactively edit and
+<t tx="vivainio.20080318125834.2">If you install matplotlib and numpy, you can use ILeo to interactively edit and
 view your data. This is convenient for storing potentially valuable information
 in Leo document, and yields an interactive system that is comparable in
 convenience to various commercial mathematical packages (at least if you compare
@@ -34784,13 +34838,13 @@ Usage
 The simplest use case is probably pushing an existing array to Leo for editing.
 Let's generate a simple array and edit it::
 
-    [c:/ipython]|51&gt; a = arange(12).reshape(3,4)
-    [c:/ipython]|52&gt; a
-                &lt;52&gt;
+    [c:/ipython]|51&amp;gt; a = arange(12).reshape(3,4)
+    [c:/ipython]|52&amp;gt; a
+                &amp;lt;52&amp;gt;
     array([[ 0,  1,  2,  3],
            [ 4,  5,  6,  7],
            [ 8,  9, 10, 11]])
-    [c:/ipython]|53&gt; %lee a
+    [c:/ipython]|53&amp;gt; %lee a
 
 This (the magic command %lee, or 'leo edit') will open variable 'a' for editing
 in Leo, in a convenient pretty-printed format. You can press alt+I on the node
@@ -34798,7 +34852,7 @@ to push it back to IPython.
     
 If you want to store the variable in a node with a different name (myarr), you can do::
 
-    [c:/ipython]|54&gt; wb.myarr.v = a
+    [c:/ipython]|54&amp;gt; wb.myarr.v = a
         
 Then, you can always get the value of this array with wb.myarr.v. E.g. you could
 have a node that plots the array, with content::
@@ -34808,6 +34862,6 @@ have a node that plots the array, with content::
     plot(wb.myarr.v)
 
 And, as per instructions, pressing alt+I will launch a new Tk window with the
-plotted representation of the array!    </t>
+plotted representation of the array!    &lt;/t&gt;</t>
 </tnodes>
 </leo_file>

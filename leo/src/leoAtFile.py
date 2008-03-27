@@ -262,6 +262,7 @@ class atFile:
         self.lastLines = [] # The lines after @-leo
         self.lastThinNode = None # Used by createThinChild4.
         self.leadingWs = ""
+        self.lineNumber = 0 # New in Leo 4.4.8.
         self.out = None
         self.outStack = []
         self.rootSeen = False
@@ -901,6 +902,7 @@ class atFile:
         at = self
         lastLines = [] # The lines after @-leo
         lineIndent = 0 ; linep = 0 # Changed only for sentinels.
+        self.lineNumber = 0
         while 1:
             #@        << put the next line into s >>
             #@+node:ekr.20041005105605.43:<< put the next line into s >>
@@ -911,6 +913,7 @@ class atFile:
                 if len(s) == 0: break
             #@-node:ekr.20041005105605.43:<< put the next line into s >>
             #@nl
+            self.lineNumber += 1
             #@        << set kind, nextKind >>
             #@+node:ekr.20041005105605.44:<< set kind, nextKind >>
             #@+at 
@@ -1508,6 +1511,7 @@ class atFile:
         at.indent = 0 # Changed only for sentinels.
         at.lastLines = [] # The lines after @-leo
         at.leadingWs = ""
+        at.lineNumber = 0
         at.root = p.copy() # Bug fix: 12/10/05
         at.rootSeen = False
         at.updateWarningGiven = False
@@ -1529,6 +1533,7 @@ class atFile:
         #@nl
         while at.errors == 0 and not at.done:
             s = at.readLine(theFile)
+            self.lineNumber += 1
             if len(s) == 0: break
             kind = at.sentinelKind4(s)
             # g.trace(at.sentinelName(kind),s.strip())
@@ -2542,10 +2547,10 @@ class atFile:
 
         # This is useful now that we don't print the actual messages.
         if self.errors == 0:
-            self.printError("----- error reading @file: %s" % self.targetFileName)
+            self.printError("----- read error. line: %s, file: %s" % (
+                self.lineNumber,self.targetFileName,))
 
         # g.trace(self.root,g.callers())
-
         self.error(message)
 
         # Bug fix: 12/10/05: Delete all of root's tree.
@@ -2852,6 +2857,7 @@ class atFile:
             scriptWrite=scriptWrite,toString=toString,
             write_strips_blank_lines=write_strips_blank_lines)
         if not at.openFileForWriting(root,at.targetFileName,toString):
+            if root: root.setDirty() # Make _sure_ we try to rewrite this file.
             return
 
         try:
@@ -4411,7 +4417,7 @@ class atFile:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+    #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self):
 
         '''Create target file as follows:
@@ -4466,7 +4472,7 @@ class atFile:
                 g.es('created:  ',self.targetFileName)
                 self.fileChangedFlag = True
             return False
-    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+    #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.

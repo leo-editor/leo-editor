@@ -821,6 +821,7 @@ autocalling
 autocomplete
 autocompleter
 autocompleter's
+autocontract
 autoindenting
 autoload
 autosave
