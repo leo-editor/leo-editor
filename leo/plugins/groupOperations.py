@@ -42,7 +42,7 @@ Tkinter = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 lassoers = {} # Keys are commanders. Values are instances of class Lassoer.
 
-__version__ = ".9"
+__version__ = ".10"
 #@<<version history>>
 #@+node:mork.20041021120027:<<version history>>
 #@@killcolor
@@ -78,6 +78,7 @@ __version__ = ".9"
 # - Also, warn that inter-outline clones transfer have no effect.  An 
 # oversight.
 # - Note: none of these operations are presently undoable.
+# .10 EKR: use menu2 hook to create menus.
 #@-at
 #@nonl
 #@-node:mork.20041021120027:<<version history>>
@@ -96,7 +97,7 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler(('open2',"new"),addMenu)
+        leoPlugins.registerHandler('menu2',addMenu)
         leoPlugins.registerHandler("after-redraw-outline",drawImages)
         initImages()
         g.plugin_signon(__name__)
