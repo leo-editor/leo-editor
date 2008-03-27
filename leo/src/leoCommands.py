@@ -7243,32 +7243,92 @@ class configSettings:
     #@-node:ekr.20041118104414:initEncoding
     #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     #@+node:ekr.20041118053731:Getters (c.configSettings)
-    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-        return g.app.config.getFontFromParams(self.c,
-            family,size,slant,weight,defaultSize=defaultSize)
-
-    def getRecentFiles (self):
-        return g.app.config.getRecentFiles()
-
-    def get(self,setting,theType):
+    def get (self,setting,theType):
+        '''A helper function: return the commander's setting, checking the type.'''
         return g.app.config.get(self.c,setting,theType)
 
-    def getAbbrevDict(self):         return g.app.config.getAbbrevDict(self.c)
-    def getBool      (self,setting): return g.app.config.getBool     (self.c,setting)
-    def getButtons   (self):         return g.app.config.atCommonButtonsList # unusual.
-    def getColor     (self,setting): return g.app.config.getColor    (self.c,setting)
-    def getCommands  (self):         return g.app.config.atCommonCommandsList # unusual.
-    def getData      (self,setting): return g.app.config.getData     (self.c,setting)
-    def getDirectory (self,setting): return g.app.config.getDirectory(self.c,setting)
-    def getInt       (self,setting): return g.app.config.getInt      (self.c,setting)
-    def getFloat     (self,setting): return g.app.config.getFloat    (self.c,setting)
-    def getFontDict  (self,setting): return g.app.config.getFontDict (self.c,setting)
-    def getMenusList (self):         return g.app.config.menusList # unusual.
-    def getLanguage  (self,setting): return g.app.config.getLanguage (self.c,setting)
-    def getOpenWith  (self):         return g.app.config.getOpenWith (self.c)
-    def getRatio     (self,setting): return g.app.config.getRatio    (self.c,setting)
-    def getShortcut  (self,setting,):return g.app.config.getShortcut (self.c,setting)
-    def getString    (self,setting): return g.app.config.getString   (self.c,setting)
+    def getAbbrevDict (self):
+        '''return the commander's abbreviation dictionary.'''
+        return g.app.config.getAbbrevDict(self.c)
+
+    def getBool (self,setting,default=None):
+        '''Return the value of @bool setting, or the default if the setting is not found.'''
+        return g.app.config.getBool(self.c,setting,default=default)
+
+    def getButtons (self):
+        '''Return a list of tuples (x,y) for common @button nodes.'''
+        return g.app.config.atCommonButtonsList # unusual.
+
+    def getColor (self,setting):
+        '''Return the value of @color setting.'''
+        return g.app.config.getColor(self.c,setting)
+
+    def getCommands (self):
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
+        return g.app.config.atCommonCommandsList # unusual.
+
+    def getData (self,setting):
+        '''Return a list of non-comment strings in the body text of @data setting.'''
+        return g.app.config.getData(self.c,setting)
+
+    def getDirectory (self,setting):
+        '''Return the value of @directory setting, or None if the directory does not exist.'''
+        return g.app.config.getDirectory(self.c,setting)
+
+    def getFloat (self,setting):
+        '''Return the value of @float setting.'''
+        return g.app.config.getFloat(self.c,setting)
+
+    def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+        '''Compute a font from font parameters.
+
+        Arguments are the names of settings to be use.
+        Default to size=12, slant="roman", weight="normal".
+
+        Return None if there is no family setting so we can use system default fonts.'''
+
+        return g.app.config.getFontFromParams(self.c,
+            family, size, slant, weight, defaultSize = defaultSize)
+
+    # def getFontDict (self,setting):
+        # '''Return the value of @font setting.'''
+        # return g.app.config.getFontDict(self.c,setting)
+
+    def getInt (self,setting):
+        '''Return the value of @int setting.'''
+        return g.app.config.getInt(self.c,setting)
+
+    def getLanguage (self,setting):
+        '''Return the value of @string setting.
+
+        The value of this setting should be a language known to Leo.'''
+        return g.app.config.getLanguage(self.c,setting)
+
+    def getMenusList (self):
+        '''Return the list of entries for the @menus tree.'''
+        return g.app.config.menusList # unusual.
+
+    def getOpenWith (self):
+        '''Return a list of dictionaries corresponding to @openwith nodes.'''
+        return g.app.config.getOpenWith(self.c)
+
+    def getRatio (self,setting):
+        '''Return the value of @float setting.
+        Warn if the value is less than 0.0 or greater than 1.0.'''
+        return g.app.config.getRatio(self.c,setting)
+
+    def getRecentFiles (self):
+        '''Return the list of recently opened files.'''
+        return g.app.config.getRecentFiles()
+
+    def getShortcut (self,shortcutName):
+        '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+        return g.app.config.getShortcut(self.c,shortcutName)
+
+    def getString (self,setting):
+        '''Return the value of @string setting.'''
+        return g.app.config.getString(self.c,setting)
     #@-node:ekr.20041118053731:Getters (c.configSettings)
     #@+node:ekr.20041118195812:Setters... (c.configSettings)
     #@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
