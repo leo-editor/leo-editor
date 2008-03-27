@@ -11638,6 +11638,8 @@ def new (self,event=None,gui=None):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -14671,6 +14673,7 @@ def createFrame (fileName,relativeFileName):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
 
     # Report the failure to open the file.
     if fileName:
@@ -14712,11 +14715,8 @@ def newLeoCommanderAndFrame(self,
     # Finish initing the subcommanders.
     c.undoer.clearUndoState() # Menus must exist at this point.
 
-    # if updateRecentFiles:
-        # c.updateRecentFiles(relativeFileName or fileName)
-
-    if not g.app.initing:
-        g.doHook("after-create-leo-frame",c=c)
+    # if not g.app.initing:
+        # g.doHook("after-create-leo-frame",c=c)
 
     return c,frame
 #@+node:ekr.20031218072017.2189:<< compute the window title >>
@@ -14851,6 +14851,8 @@ def openWithFileName(fileName,old_c,
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(relativeFileName or fileName)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         assert frame.c == c and c.frame == frame
@@ -14896,6 +14898,8 @@ def new (self,event=None,gui=None):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -15495,6 +15499,8 @@ def new (self,event=None,gui=None):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         # chapterController.finishCreate must be called after the first real redraw
@@ -15541,6 +15547,7 @@ def createFrame (fileName,relativeFileName):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
 
     # Report the failure to open the file.
     if fileName:
@@ -15612,6 +15619,8 @@ def openWithFileName(fileName,old_c,
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(relativeFileName or fileName)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         assert frame.c == c and c.frame == frame

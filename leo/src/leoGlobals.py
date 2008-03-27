@@ -1924,6 +1924,8 @@ def openWithFileName(fileName,old_c,
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(relativeFileName or fileName)
             g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
     finally:
         c.endUpdate()
         assert frame.c == c and c.frame == frame

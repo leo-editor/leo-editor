@@ -198,7 +198,7 @@ def init ():
     ok = docutils is not None # Ok for unit testing.
 
     if ok:
-        leoPlugins.registerHandler(("new","open2"), onCreate)
+        leoPlugins.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'
@@ -615,6 +615,8 @@ class rstClass:
 
         global SilverCity
 
+        # g.trace('rst3.py:rstClass',g.callers())
+
         self.c = c
         #@    << init ivars >>
         #@+node:ekr.20050805162550.11:<< init ivars >>
@@ -663,7 +665,6 @@ class rstClass:
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
         self.addMenu()
-    #@nonl
     #@-node:ekr.20050805162550.10: ctor (rstClass)
     #@+node:ekr.20050805162550.12:addMenu
     def addMenu (self):

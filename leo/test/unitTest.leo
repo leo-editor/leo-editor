@@ -63,6 +63,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -1490,7 +1491,7 @@
 <v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
 <v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
 </v>
-<v t="ekr.20061101121602.262" a="E"><vh>@test forward-word-extend-selection</vh>
+<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
 <v t="ekr.20061101121602.263"><vh>work</vh></v>
 <v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
 <v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
@@ -1711,7 +1712,7 @@
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
@@ -15769,11 +15770,7 @@ http://webpages.charter.net/edreamleo/front.html</t>
 <t tx="ekr.20061106201509.4">if g.app.gui.guiName() == 'tkinter':
 
     import rClick
-    
-    d = {'c':c}
     rClick.init()
-    rClick.rClickbinder(tag='test',keywords=d)
-    rClick.rClicker(tag='test',keywords=d)
 </t>
 <t tx="ekr.20061106201509.6"># line 1
 # line 2
@@ -16529,6 +16526,7 @@ threading_colorizer.py
 
 # cleo.py
 # vim.py
+rClick.py
 </t>
 <t tx="ekr.20070303143951"></t>
 <t tx="ekr.20070305095401">p = c.currentPosition().copy()

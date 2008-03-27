@@ -63,7 +63,7 @@ class leoMenu:
             c.setLog()
             p = c.currentPosition()
 
-            if not g.doHook("menu2",c=c,p=p,v=p):
+            if not g.doHook("menu-update",c=c,p=p,v=p):
                 self.updateFileMenu()
                 self.updateEditMenu()
                 self.updateOutlineMenu()
