@@ -6,7 +6,6 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080315083057.5:update acknowledgements
 #@-node:ekr.20080315083057.5:update acknowledgements
-#@+node:ekr.20080317054817.2:Final
 #@+node:ekr.20080313032655.1:One message during import test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -238,7 +237,6 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20080315115427.2:Improve spell tab
 #@+node:ekr.20080315083057.3:Create usable setup.py
 #@-node:ekr.20080315083057.3:Create usable setup.py
-#@-node:ekr.20080317054817.2:Final
 #@-node:ekr.20080311135649.1:4.4.8 to-do
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20080315115427.596:new iterators
