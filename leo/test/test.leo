@@ -21,7 +21,7 @@
 </v>
 </v>
 <v t="ekr.20070224123943" a="E"><vh>@settings</vh>
-<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070305085403"><vh>vim plugin</vh>
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
@@ -620,7 +620,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940" a="TV" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20071025193940" a="TV" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -2318,8 +2318,11 @@ leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
+plugins_menu.py
+
 # ipython.py
 # cleo.py
+rClick.py
 
 add_directives.py
 color_markup.py
@@ -2328,7 +2331,7 @@ rst3.py
 UNL.py
 open_with.py
 mod_scripting.py
-plugins_menu.py
+
 nav_buttons.py
 hoist.py
 image.py
