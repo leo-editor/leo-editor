@@ -8,18 +8,12 @@ Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a
 branch can display progress and time required with dynamic updates.
 
-See 
+Right click on a node's icon box to dislay the cleo menu.
 
-  http://leo.zwiki.org/Cleo 
-           and 
-  http://leo.zwiki.org/cleodoc.html
+For full documentation see:
 
-for full documentation.
-
-User colours that exist on a node but not on the colour list
-can be restored to the colour list by right clicking on the
-node's icon box (this also displays the cleo menu).
-
+  - http://leo.zwiki.org/Cleo 
+  - http://leo.zwiki.org/cleodoc.html
 '''
 #@nonl
 #@-node:tbrown.20060903211930:<< docstring >>
@@ -41,7 +35,7 @@ import sys
 #@nonl
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
-__version__ = "0.24"
+__version__ = "0.25"
 #@<< version history >>
 #@+node:tbrown.20060903121429.3:<< version history >>
 #@@killcolor
@@ -113,8 +107,10 @@ __version__ = "0.24"
 # 0.22 EKR: fixed crasher in custom_colours.
 # 0.23 EKR: added 'c' arg to p.isVisible (v.isVisible no longer exists).
 # 0.24 EKR: removed bugs section.
+# 0.25 TNB:
+# - added priority sort, tag all children 'todo'
+# - switched to leo icons for priority display
 #@-at
-#@nonl
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
@@ -255,8 +251,8 @@ class cleoController:
         }
 
         self.file_nodes = ["@file", "@thin", "@nosen", "@asis", "@root"]
-        if isinstance(self.c.config.getString('cleo_color_file_nodes'), basestring):
-            self.file_nodes = self.c.config.getString('cleo_color_file_nodes').split()
+        if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
+            self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
 
         self.priority_colours = {
             1 : 'red',
