@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="79" left="312" height="630" width="861"/>
+	<global_window_position top="10" left="275" height="931" width="861"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -409,14 +409,14 @@
 <v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
+<v t="EKR.20040524104904.211" a="E"><vh>Chapter 8: Customizing Leo</vh>
+<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20070317043727.1"><vh>@ignore nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
-<v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh></v>
+<v t="ekr.20070317043727.3" a="TV"><vh>Complex settings nodes</vh></v>
 </v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
@@ -769,11 +769,11 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
-<v t="vivainio.20080302174639.2" a="TV"><vh>Installation and startup</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
 <v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
 <v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
 <v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
@@ -1143,7 +1143,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3628,6 +3628,37 @@
 </v>
 </v>
 </v>
+</v>
+</v>
+<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20050816073412.1"><vh>Introduction</vh>
+<v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
+<v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
+</v>
+<v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
+<v t="ekr.20050822173420.1"><vh>Derived files</vh></v>
+<v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
+<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
+<v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
+</v>
+<v t="ekr.20050827102655"><vh>Leo for Programmers</vh>
+<v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
+<v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
+<v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
+<v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
+<v t="ekr.20050828205054"><vh>Directives for programming</vh></v>
+<v t="ekr.20050828161117"><vh>Orphan nodes</vh></v>
+<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
+<v t="ekr.20050827162537"><vh>Leo and literate programming</vh></v>
+</v>
+<v t="ekr.20050827094813"><vh>Good style and bad:  sections vs. @others</vh></v>
+<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
+<v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
+<v t="ekr.20050827090802"><vh>Further study</vh></v>
+</v>
+<v t="ekr.20050816073824"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 </vnodes>
@@ -30479,7 +30510,7 @@ The actual settings are specified in the body text.  At present, there are seven
   
 - ``@menus``
 
-  Leo creates its menus from the @menu and @item nodes in the @menus tree.
+  Leo creates its menus from the @menu, @item and @popup nodes in the @menus tree.
   Within @menus trees, @menu nodes create menus and @item nodes create menu items. 
  
   The menu name always follows @menu. If the menu name is 'Plugins', Leo will
@@ -30489,11 +30520,15 @@ The actual settings are specified in the body text.  At present, there are seven
  
   The command name follows @item. If the body text of an @item node exists, this
   body text is the menu name. Otherwise, the menu name is the command name.
-  However, if the command name starts with a '*', hyphens are removed from the
+  However, if the command name starts with a ``'*'``, hyphens are removed from the
   menu name. Menu names and command names may contain a single ampersand (&amp;). If
   present, the following character is underlined in the name. If the command
   name in an @item node is just a hyphen (-), the item represents a menu
   separator.
+  
+  ``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
+   The children of this node should be @menu and @item nodes, used as with
+   @menus.
 
 - ``@mode`` *&lt;mode name&gt;*
 

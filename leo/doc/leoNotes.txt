@@ -2955,6 +2955,32 @@ def scanDefaultAtAutoEncoding(self,p):
     # g.trace('returns',e)
     return e
 #@-node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
+#@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
+# Sets ivars of c that can be overridden by leoConfig.txt
+
+# def setCommandsIvars (self,c):
+
+    # data = (
+        # ("default_tangle_directory","tangle_directory","directory"),
+        # ("default_target_language","target_language","language"),
+        # ("output_doc_chunks","output_doc_flag","bool"),
+        # ("page_width","page_width","int"),
+        # ("run_tangle_done.py","tangle_batch_flag","bool"),
+        # ("run_untangle_done.py","untangle_batch_flag","bool"),
+        # ("tab_width","tab_width","int"),
+        # ("tangle_outputs_header","use_header_flag","bool"),
+    # )
+
+    # for setting,ivar,theType in data:
+        # val = g.app.config.get(c,setting,theType)
+        # if val is None:
+            # if not hasattr(c,setting):
+                # setattr(c,setting,None)
+                # # g.trace(setting,None)
+        # else:
+            # setattr(c,setting,val)
+            # # g.trace(setting,val)
+#@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

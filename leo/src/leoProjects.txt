@@ -17883,6 +17883,1517 @@ if (
 #@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
 #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
 #@-node:ekr.20080318081653.2:Write dirty bit if write fails
+#@+node:ekr.20080326060254.1:Fixed bug involving default_target_language
+@nocolor
+
+The new setting is @string target_language, not @language default_target_language.
+
+@color
+#@nonl
+#@+node:ekr.20041118104831.1:class configSettings (leoCommands)
+class configSettings:
+
+    """A class to hold config settings for commanders."""
+
+    @others
+#@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+def __init__ (self,c):
+
+    self.c = c
+
+    # Init these here to keep pylint happy.
+    self.default_derived_file_encoding = None
+    self.new_leo_file_encoding = None
+    self.redirect_execute_script_output_to_log_pane = None
+    self.tkEncoding = None
+
+    self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
+    self.defaultLogFontSize  = g.app.config.defaultLogFontSize
+    self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
+    self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
+
+    for key in g.app.config.encodingIvarsDict.keys():
+        if key != '_hash':
+            self.initEncoding(key)
+
+    for key in g.app.config.ivarsDict.keys():
+        if key != '_hash':
+            self.initIvar(key)
+#@+node:ekr.20041118104240:initIvar
+def initIvar(self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.ivarsDict.get(key)
+    ivarName = bunch.ivar
+    val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
+
+    if val or not hasattr(self,ivarName):
+        # g.trace('c.configSettings',c.shortFileName(),ivarName,val)
+        setattr(self,ivarName,val)
+#@-node:ekr.20041118104240:initIvar
+#@+node:ekr.20041118104414:initEncoding
+def initEncoding (self,key):
+
+    c = self.c
+
+    # N.B. The key is munged.
+    bunch = g.app.config.encodingIvarsDict.get(key)
+    encodingName = bunch.ivar
+    encoding = g.app.config.get(c,encodingName,kind='string')
+
+    # New in 4.4b3: use the global setting as a last resort.
+    if encoding:
+        # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+    else:
+        encoding = getattr(g.app.config,encodingName)
+        # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
+        setattr(self,encodingName,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("bad", "%s: %s" % (encodingName,encoding))
+#@-node:ekr.20041118104414:initEncoding
+#@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
+#@+node:ekr.20041118053731:Getters (c.configSettings)
+def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+    return g.app.config.getFontFromParams(self.c,
+        family,size,slant,weight,defaultSize=defaultSize)
+
+def getRecentFiles (self):
+    return g.app.config.getRecentFiles()
+
+def get(self,setting,theType):
+    return g.app.config.get(self.c,setting,theType)
+
+def getAbbrevDict(self):         return g.app.config.getAbbrevDict(self.c)
+def getBool      (self,setting): return g.app.config.getBool     (self.c,setting)
+def getButtons   (self):         return g.app.config.atCommonButtonsList # unusual.
+def getColor     (self,setting): return g.app.config.getColor    (self.c,setting)
+def getCommands  (self):         return g.app.config.atCommonCommandsList # unusual.
+def getData      (self,setting): return g.app.config.getData     (self.c,setting)
+def getDirectory (self,setting): return g.app.config.getDirectory(self.c,setting)
+def getInt       (self,setting): return g.app.config.getInt      (self.c,setting)
+def getFloat     (self,setting): return g.app.config.getFloat    (self.c,setting)
+def getFontDict  (self,setting): return g.app.config.getFontDict (self.c,setting)
+def getMenusList (self):         return g.app.config.menusList # unusual.
+def getLanguage  (self,setting): return g.app.config.getLanguage (self.c,setting)
+def getOpenWith  (self):         return g.app.config.getOpenWith (self.c)
+def getRatio     (self,setting): return g.app.config.getRatio    (self.c,setting)
+def getShortcut  (self,setting,):return g.app.config.getShortcut (self.c,setting)
+def getString    (self,setting): return g.app.config.getString   (self.c,setting)
+#@-node:ekr.20041118053731:Getters (c.configSettings)
+#@+node:ekr.20041118195812:Setters... (c.configSettings)
+#@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
+def setRecentFiles (self,files):
+
+    '''Update the recent files list.'''
+
+    # Append the files to the global list.
+    g.app.config.appendToRecentFiles(files)
+#@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
+#@+node:ekr.20041118195812.2:set & setString
+def set (self,p,setting,val):
+
+    # __pychecker__ = '--no-argsused' # p not used.
+
+    return g.app.config.setString(self.c,setting,val)
+
+setString = set
+#@-node:ekr.20041118195812.2:set & setString
+#@-node:ekr.20041118195812:Setters... (c.configSettings)
+#@-node:ekr.20041118104831.1:class configSettings (leoCommands)
+#@+node:ekr.20041119203941:class configClass
+class configClass:
+    """A class to manage configuration settings."""
+    << class data >>
+    @others
+#@+node:ekr.20041122094813:<<  class data >>
+@others
+
+# List of dictionaries to search.  Order not too important.
+dictList = [ivarsDict,encodingIvarsDict,defaultsDict]
+
+# Keys are commanders.  Values are optionsDicts.
+localOptionsDict = {}
+
+localOptionsList = []
+
+# Keys are setting names, values are type names.
+warningsDict = {} # Used by get() or allies.
+#@+node:ekr.20041117062717.1:defaultsDict
+@ This contains only the "interesting" defaults.
+Ints and bools default to 0, floats to 0.0 and strings to "".
+@c
+
+defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
+defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
+defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
+defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
+
+defaultsDict = {'_hash':'defaultsDict'}
+
+defaultsData = (
+    # compare options...
+    ("ignore_blank_lines","bool",True),
+    ("limit_count","int",9),
+    ("print_mismatching_lines","bool",True),
+    ("print_trailing_lines","bool",True),
+    # find/change options...
+    ("search_body","bool",True),
+    ("whole_word","bool",True),
+    # Prefs panel.
+    # ("default_target_language","language","python"),
+    ("target_language","language","python"), # Bug fix: 6/20,2005.
+    ("tab_width","int",-4),
+    ("page_width","int",132),
+    ("output_doc_chunks","bool",True),
+    ("tangle_outputs_header","bool",True),
+    # Syntax coloring options...
+    # Defaults for colors are handled by leoColor.py.
+    ("color_directives_in_plain_text","bool",True),
+    ("underline_undefined_section_names","bool",True),
+    # Window options...
+    ("allow_clone_drags","bool",True),
+    ("body_pane_wraps","bool",True),
+    ("body_text_font_family","family","Courier"),
+    ("body_text_font_size","size",defaultBodyFontSize),
+    ("body_text_font_slant","slant","roman"),
+    ("body_text_font_weight","weight","normal"),
+    ("enable_drag_messages","bool",True),
+    ("headline_text_font_family","string",None),
+    ("headline_text_font_size","size",defaultLogFontSize),
+    ("headline_text_font_slant","slant","roman"),
+    ("headline_text_font_weight","weight","normal"),
+    ("log_text_font_family","string",None),
+    ("log_text_font_size","size",defaultLogFontSize),
+    ("log_text_font_slant","slant","roman"),
+    ("log_text_font_weight","weight","normal"),
+    ("initial_window_height","int",600),
+    ("initial_window_width","int",800),
+    ("initial_window_left","int",10),
+    ("initial_window_top","int",10),
+    ("initial_splitter_orientation","string","vertical"),
+    ("initial_vertical_ratio","ratio",0.5),
+    ("initial_horizontal_ratio","ratio",0.3),
+    ("initial_horizontal_secondary_ratio","ratio",0.5),
+    ("initial_vertical_secondary_ratio","ratio",0.7),
+    ("outline_pane_scrolls_horizontally","bool",False),
+    ("split_bar_color","color","LightSteelBlue2"),
+    ("split_bar_relief","relief","groove"),
+    ("split_bar_width","int",7),
+)
+#@-node:ekr.20041117062717.1:defaultsDict
+#@+node:ekr.20041118062709:define encodingIvarsDict
+encodingIvarsDict = {'_hash':'encodingIvarsDict'}
+
+encodingIvarsData = (
+    ("default_at_auto_file_encoding","string","utf-8"),
+    ("default_derived_file_encoding","string","utf-8"),
+    ("new_leo_file_encoding","string","UTF-8"),
+        # Upper case for compatibility with previous versions.
+    ("tkEncoding","string",None),
+        # Defaults to None so it doesn't override better defaults.
+)
+#@-node:ekr.20041118062709:define encodingIvarsDict
+#@+node:ekr.20041117072055:ivarsDict
+# Each of these settings sets the corresponding ivar.
+# Also, the c.configSettings settings class inits the corresponding commander ivar.
+ivarsDict = {'_hash':'ivarsDict'}
+
+ivarsData = (
+    ("at_root_bodies_start_in_doc_mode","bool",True),
+        # For compatibility with previous versions.
+    ("create_nonexistent_directories","bool",False),
+    ("output_initial_comment","string",""),
+        # "" for compatibility with previous versions.
+    ("output_newline","string","nl"),
+    ("page_width","int","132"),
+    ("read_only","bool",True),
+        # Make sure we don't alter an illegal leoConfig.txt file!
+    ("redirect_execute_script_output_to_log_pane","bool",False),
+    ("relative_path_base_directory","string","!"),
+    ("remove_sentinels_extension","string",".txt"),
+    ("save_clears_undo_buffer","bool",False),
+    ("stylesheet","string",None),
+    ("tab_width","int",-4),
+    ("target_language","language","python"), # Bug fix: added: 6/20/2005.
+    ("trailing_body_newlines","string","asis"),
+    ("use_plugins","bool",True),
+        # New in 4.3: use_plugins = True by default.
+    # use_pysco can not be set by 4.3:  config processing happens too late.
+        # ("use_psyco","bool",False),
+    ("undo_granularity","string","word"),
+        # "char","word","line","node"
+    ("write_strips_blank_lines","bool",False),
+)
+#@-node:ekr.20041117072055:ivarsDict
+#@-node:ekr.20041122094813:<<  class data >>
+#@+node:ekr.20041117083202:Birth... (g.app.config)
+#@+node:ekr.20041117062717.2:ctor (configClass)
+def __init__ (self):
+
+    self.atCommonButtonsList = [] # List of info for common @buttons nodes.
+    self.atCommonCommandsList = [] # List of info for common @commands nodes.
+    self.buttonsFileName = ''
+    self.configsExist = False # True when we successfully open a setting file.
+    self.defaultFont = None # Set in gui.getDefaultConfigFont.
+    self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+    self.enabledPluginsFileName = None
+    self.enabledPluginsString = '' 
+    self.globalConfigFile = None # Set in initSettingsFiles
+    self.homeFile = None # Set in initSettingsFiles
+    self.inited = False
+    self.menusList = []
+    self.menusFileName = ''
+    self.modeCommandsDict = {} # For use by @mode logic. Keys are command names, values are g.Bunches.
+    self.myGlobalConfigFile = None
+    self.myHomeConfigFile = None
+    self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
+    self.write_recent_files_as_needed = False # Will be set later.
+    self.silent = g.app.silentMode
+    # g.trace('c.config.silent',self.silent)
+
+    # Inited later...
+    self.panes = None
+    self.sc = None
+    self.tree = None
+
+    self.initDicts()
+    self.initIvarsFromSettings()
+    self.initSettingsFiles()
+    self.initRecentFiles()
+#@-node:ekr.20041117062717.2:ctor (configClass)
+#@+node:ekr.20041227063801.2:initDicts
+def initDicts (self):
+
+    # Only the settings parser needs to search all dicts.
+    self.dictList = [self.defaultsDict]
+
+    for key,kind,val in self.defaultsData:
+        self.defaultsDict[self.munge(key)] = g.Bunch(
+            setting=key,kind=kind,val=val,tag='defaults')
+
+    for key,kind,val in self.ivarsData:
+        self.ivarsDict[self.munge(key)] = g.Bunch(
+            ivar=key,kind=kind,val=val,tag='ivars')
+
+    for key,kind,val in self.encodingIvarsData:
+        self.encodingIvarsDict[self.munge(key)] = g.Bunch(
+            ivar=key,kind=kind,encoding=val,tag='encodings')
+#@-node:ekr.20041227063801.2:initDicts
+#@+node:ekr.20041117065611.2:initIvarsFromSettings & helpers
+def initIvarsFromSettings (self):
+
+    for ivar in self.encodingIvarsDict.keys():
+        if ivar != '_hash':
+            self.initEncoding(ivar)
+
+    for ivar in self.ivarsDict.keys():
+        if ivar != '_hash':
+            self.initIvar(ivar)
+#@+node:ekr.20041117065611.1:initEncoding
+def initEncoding (self,key):
+
+    '''Init g.app.config encoding ivars during initialization.'''
+
+    # N.B. The key is munged.
+    bunch = self.encodingIvarsDict.get(key)
+    encoding = bunch.encoding
+    ivar = bunch.ivar
+    # g.trace('g.app.config',ivar,encoding)
+    setattr(self,ivar,encoding)
+
+    if encoding and not g.isValidEncoding(encoding):
+        g.es("g.app.config: bad encoding:","%s: %s" % (ivar,encoding))
+#@-node:ekr.20041117065611.1:initEncoding
+#@+node:ekr.20041117065611:initIvar
+def initIvar(self,key):
+
+    '''Init g.app.config ivars during initialization.
+
+    This does NOT init the corresponding commander ivars.
+
+    Such initing must be done in setIvarsFromSettings.'''
+
+    # N.B. The key is munged.
+    bunch = self.ivarsDict.get(key)
+    ivar = bunch.ivar # The actual name of the ivar.
+    val = bunch.val
+
+    # g.trace('g.app.config',ivar,key,val)
+    setattr(self,ivar,val)
+#@-node:ekr.20041117065611:initIvar
+#@-node:ekr.20041117065611.2:initIvarsFromSettings & helpers
+#@+node:ekr.20041117083202.2:initRecentFiles
+def initRecentFiles (self):
+
+    self.recentFiles = []
+#@-node:ekr.20041117083202.2:initRecentFiles
+#@+node:ekr.20041117083857:initSettingsFiles
+def initSettingsFiles (self):
+
+    """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
+
+    settingsFile = 'leoSettings.leo'
+    mySettingsFile = 'myLeoSettings.leo'
+    machineConfigFile = self.getMachineName()
+
+    for ivar,theDir,fileName in (
+        ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
+        ('homeFile',            g.app.homeDir,          settingsFile),
+        ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+        ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+        ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
+    ):
+        # The same file may be assigned to multiple ivars:
+        # readSettingsFiles checks for such duplications.
+        path = g.os_path_join(theDir,fileName)
+        if g.os_path_exists(path):
+            setattr(self,ivar,path)
+        else:
+            setattr(self,ivar,None)
+    if 0:
+        g.trace('global file:',self.globalConfigFile)
+        g.trace('home file:',self.homeFile)
+        g.trace('myGlobal file:',self.myGlobalConfigFile)
+        g.trace('myHome file:',self.myHomeConfigFile)
+#@nonl
+#@+node:ekr.20071211112804:getMachineName
+def getMachineName (self):
+
+    try:
+        import os
+        name = os.getenv('HOSTNAME')
+        if not name:
+            name = os.getenv('COMPUTERNAME')
+        if not name:
+            import socket
+            name = socket.gethostname()
+    except Exception:
+        name = ''
+
+    if name:
+        name +='LeoSettings.leo'
+
+    # g.trace(name)
+
+    return name
+#@-node:ekr.20071211112804:getMachineName
+#@-node:ekr.20041117083857:initSettingsFiles
+#@-node:ekr.20041117083202:Birth... (g.app.config)
+#@+node:ekr.20041117081009:Getters... (g.app.config)
+#@+node:ekr.20041123070429:canonicalizeSettingName (munge)
+def canonicalizeSettingName (self,name):
+
+    if name is None:
+        return None
+
+    name = name.lower()
+    for ch in ('-','_',' ','\n'):
+        name = name.replace(ch,'')
+
+    return g.choose(name,name,None)
+
+munge = canonicalizeSettingName
+#@-node:ekr.20041123070429:canonicalizeSettingName (munge)
+#@+node:ekr.20041123092357:config.findSettingsPosition
+def findSettingsPosition (self,c,setting):
+
+    """Return the position for the setting in the @settings tree for c."""
+
+    munge = self.munge
+
+    root = self.settingsRoot(c)
+    if not root:
+        return c.nullPosition()
+
+    setting = munge(setting)
+
+    for p in root.subtree_iter():
+        h = munge(p.headString())
+        if h == setting:
+            return p.copy()
+
+    return c.nullPosition()
+#@-node:ekr.20041123092357:config.findSettingsPosition
+#@+node:ekr.20041117083141:get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    return None
+#@+node:ekr.20041121143823:getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    elif val in (u'None',u'none','None','none','',None):
+        return None, True # Exists, but is None
+    else:
+        # g.trace(setting,val)
+        return val, True
+#@-node:ekr.20041121143823:getValFromDict
+#@+node:ekr.20051015093141:typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@-node:ekr.20051015093141:typesMatch
+#@-node:ekr.20041117083141:get & allies (g.app.config)
+#@+node:ekr.20051011105014:exists (g.app.config)
+def exists (self,c,setting,kind):
+
+    '''Return true if a setting of the given kind exists, even if it is None.'''
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            junk,found = self.getValFromDict(d,setting,kind)
+            if found: return True
+
+    for d in self.localOptionsList:
+        junk,found = self.getValFromDict(d,setting,kind)
+        if found: return True
+
+    for d in self.dictList:
+        junk,found = self.getValFromDict(d,setting,kind)
+        if found: return True
+
+    # g.trace('does not exist',setting,kind)
+    return False
+#@-node:ekr.20051011105014:exists (g.app.config)
+#@+node:ekr.20060608224112:getAbbrevDict
+def getAbbrevDict (self,c):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    d = self.get(c,'abbrev','abbrev')
+    return d or {}
+#@-node:ekr.20060608224112:getAbbrevDict
+#@+node:ekr.20041117081009.3:getBool
+def getBool (self,c,setting,default=None):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    val = self.get(c,setting,"bool")
+
+    if val in (True,False):
+        return val
+    else:
+        return default
+#@-node:ekr.20041117081009.3:getBool
+#@+node:ekr.20070926082018:getButtons
+def getButtons (self):
+
+    return g.app.config.atCommonButtonsList
+#@-node:ekr.20070926082018:getButtons
+#@+node:ekr.20080312071248.7:getCommonCommands
+def getCommonAtCommands (self):
+
+    return g.app.config.atCommonCommandsList
+#@-node:ekr.20080312071248.7:getCommonCommands
+#@+node:ekr.20041122070339:getColor
+def getColor (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    return self.get(c,setting,"color")
+#@-node:ekr.20041122070339:getColor
+#@+node:ekr.20071214140900.1:getData
+def getData (self,c,setting):
+
+    return self.get(c,setting,"data")
+#@-node:ekr.20071214140900.1:getData
+#@+node:ekr.20041117093009.1:getDirectory
+def getDirectory (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    theDir = self.getString(c,setting)
+
+    if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
+         return theDir
+    else:
+        return None
+#@-node:ekr.20041117093009.1:getDirectory
+#@+node:ekr.20070224075914.1:getEnabledPlugins
+def getEnabledPlugins (self):
+
+    return g.app.config.enabledPluginsString
+#@-node:ekr.20070224075914.1:getEnabledPlugins
+#@+node:ekr.20041117082135:getFloat
+def getFloat (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    val = self.get(c,setting,"float")
+    try:
+        val = float(val)
+        return val
+    except TypeError:
+        return None
+#@-node:ekr.20041117082135:getFloat
+#@+node:ekr.20041117062717.13:getFontFromParams (config)
+def getFontFromParams(self,c,family,size,slant,weight,defaultSize=12):
+
+    """Compute a font from font parameters.
+
+    Arguments are the names of settings to be use.
+    We default to size=12, slant="roman", weight="normal".
+
+    We return None if there is no family setting so we can use system default fonts."""
+
+    family = self.get(c,family,"family")
+    if family in (None,""):
+        family = self.defaultFontFamily
+
+    size = self.get(c,size,"size")
+    if size in (None,0): size = defaultSize
+
+    slant = self.get(c,slant,"slant")
+    if slant in (None,""): slant = "roman"
+
+    weight = self.get(c,weight,"weight")
+    if weight in (None,""): weight = "normal"
+
+    # g.trace(g.callers(3),family,size,slant,weight,g.shortFileName(c.mFileName))
+
+    return g.app.gui.getFontFromParams(family,size,slant,weight)
+#@-node:ekr.20041117062717.13:getFontFromParams (config)
+#@+node:ekr.20041117081513:getInt
+def getInt (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    val = self.get(c,setting,"int")
+    try:
+        val = int(val)
+        return val
+    except TypeError:
+        return None
+#@-node:ekr.20041117081513:getInt
+#@+node:ekr.20041117093009.2:getLanguage
+def getLanguage (self,c,setting):
+
+    """Return the setting whose value should be a language known to Leo."""
+
+    language = self.getString(c,setting)
+    # g.trace(setting,language)
+
+    return language
+#@-node:ekr.20041117093009.2:getLanguage
+#@+node:ekr.20070926070412:getMenusDict
+def getMenusList (self):
+
+    return g.app.config.menusList
+#@nonl
+#@-node:ekr.20070926070412:getMenusDict
+#@+node:ekr.20070411101643:getOpenWith
+def getOpenWith (self,c):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    val = self.get(c,'openwithtable','openwithtable')
+
+    return val
+#@-node:ekr.20070411101643:getOpenWith
+#@+node:ekr.20041122070752:getRatio
+def getRatio (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    val = self.get(c,setting,"ratio")
+    try:
+        val = float(val)
+        if 0.0 <= val <= 1.0:
+            return val
+        else:
+            return None
+    except TypeError:
+        return None
+#@-node:ekr.20041122070752:getRatio
+#@+node:ekr.20041117062717.11:getRecentFiles
+def getRecentFiles (self):
+
+    return self.recentFiles
+#@-node:ekr.20041117062717.11:getRecentFiles
+#@+node:ekr.20041117062717.14:getShortcut (config)
+def getShortcut (self,c,shortcutName):
+
+    '''Return rawKey,accel for shortcutName'''
+
+    key = c.frame.menu.canonicalizeMenuName(shortcutName)
+    key = key.replace('&','') # Allow '&' in names.
+
+    bunchList = self.get(c,key,"shortcut")
+    if bunchList:
+        bunchList = [bunch for bunch in bunchList
+            if bunch.val and bunch.val.lower() != 'none']
+        return key,bunchList
+    else:
+        return key,[]
+#@-node:ekr.20041117062717.14:getShortcut (config)
+#@+node:ekr.20041117081009.4:getString
+def getString (self,c,setting):
+
+    """Search all dictionaries for the setting & check it's type"""
+
+    return self.get(c,setting,"string")
+#@-node:ekr.20041117081009.4:getString
+#@+node:ekr.20041120074536:settingsRoot
+def settingsRoot (self,c):
+
+    # g.trace(c,c.rootPosition())
+
+    for p in c.allNodes_iter():
+        if p.headString().rstrip() == "@settings":
+            return p.copy()
+    else:
+        return c.nullPosition()
+#@-node:ekr.20041120074536:settingsRoot
+#@-node:ekr.20041117081009:Getters... (g.app.config)
+#@+node:ekr.20041118084146:Setters (g.app.config)
+#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+def appendToRecentFiles (self,files):
+
+    files = [theFile.strip() for theFile in files]
+
+    # g.trace(files)
+
+    def munge(name):
+        name = name or ''
+        return g.os_path_normpath(name).lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in self.recentFiles:
+            if munge(name) == munge(name2):
+                self.recentFiles.remove(name2)
+
+        self.recentFiles.append(name)
+#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+#@+node:ekr.20041118084146.1:set (g.app.config)
+def set (self,c,setting,kind,val):
+
+    '''Set the setting.  Not called during initialization.'''
+
+    # if kind.startswith('setting'): g.trace(val)
+
+    found = False ;  key = self.munge(setting)
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d: found = True
+
+    if not found:
+        theHash = c.hash()
+        for d in self.localOptionsList:
+            hash2 = d.get('_hash')
+            if theHash == hash2:
+                found = True ; break
+
+    if not found:
+        d = self.dictList [0]
+
+    d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
+
+    if 0:
+        dkind = d.get('_hash','<no hash: %s>' % c.hash())
+        g.trace(dkind,setting,kind,val)
+#@-node:ekr.20041118084146.1:set (g.app.config)
+#@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+def setIvarsFromSettings (self,c):
+
+    '''Init g.app.config ivars or c's ivars from settings.
+
+    - Called from readSettingsFiles with c = None to init g.app.config ivars.
+    - Called from c.__init__ to init corresponding commmander ivars.'''
+
+    # Ingore temporary commanders created by readSettingsFiles.
+    if not self.inited: return
+
+    # g.trace(c)
+    d = self.ivarsDict
+    for key in d:
+        if key != '_hash':
+            bunch = d.get(key)
+            if bunch:
+                ivar = bunch.ivar # The actual name of the ivar.
+                kind = bunch.kind
+                val = self.get(c,key,kind) # Don't use bunch.val!
+                if c:
+                    # g.trace("%20s %s = %s" % (g.shortFileName(c.mFileName),ivar,val))
+                    setattr(c,ivar,val)
+                else:
+                    # g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
+                    setattr(self,ivar,val)
+#@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
+#@+node:ekr.20041118084241:setString
+def setString (self,c,setting,val):
+
+    self.set(c,setting,"string",val)
+#@-node:ekr.20041118084241:setString
+#@-node:ekr.20041118084146:Setters (g.app.config)
+#@+node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        (fileName,True),
+    ):
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                s = g.toEncodedString(s,'ascii')
+                print s
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20041117083857.1:g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c):
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    # g.trace(c.fileName())
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c)
+    d = parser.traverse()
+
+    return d
+#@-node:ekr.20041117083857.1:g.app.config.readSettings
+#@-node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@+node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)
+#@+node:ekr.20070224115832:readRecentFiles & helpers
+def readRecentFiles (self,localConfigFile):
+
+    '''Read all .leoRecentFiles.txt files.'''
+
+    # The order of files in this list affects the order of the recent files list.
+    seen = [] 
+    localConfigPath = g.os_path_dirname(localConfigFile)
+    for path in (
+        g.app.homeDir,
+        g.app.globalConfigDir,
+        localConfigPath,
+    ):
+        if path and path not in seen:
+            ok = self.readRecentFilesFile(path)
+            if ok: seen.append(path)
+    if not seen and self.write_recent_files_as_needed:
+        self.createRecentFiles()
+#@nonl
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeDir,g.app.globalConfigDir):
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20050424115658:readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        if not g.unitTesting and not self.silent:
+            print ('reading %s' % fileName)
+        lines = file(fileName).readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line),'utf-8') for line in lines]
+            self.appendToRecentFiles(lines)
+
+    return ok
+#@nonl
+#@-node:ekr.20050424115658:readRecentFilesFile
+#@-node:ekr.20070224115832:readRecentFiles & helpers
+#@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+recentFileMessageWritten = False
+
+def writeRecentFilesFile (self,c):
+
+    '''Write the appropriate .leoRecentFiles.txt file.'''
+
+    tag = '.leoRecentFiles.txt'
+
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    for path in (localPath,g.app.globalConfigDir,g.app.homeDir):
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName):
+                if not self.recentFileMessageWritten:
+                    print ('wrote recent file: %s' % fileName)
+                    written = True
+                self.writeRecentFilesFileHelper(fileName)
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        self.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+    # g.trace(fileName)
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = file(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        # g.trace('writing',fileName)
+        theFile = file(fileName,'w')
+        if self.recentFiles:
+            lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
+            theFile.write('\n'.join(lines))
+            # g.trace(fileName,'lines\n%s' % lines)
+        else:
+            theFile.write('\n')
+
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        pass
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
+#@-node:ekr.20050424114937.1:Reading and writing .leoRecentFiles.txt (g.app.config)
+#@+node:ekr.20070418073400:g.app.config.printSettings & helper
+def printSettings (self,c):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following letters indicate where the active setting came from:
+
+    - D indicates default settings.
+    - F indicates the file being loaded,
+    - L indicates leoSettings.leo,
+    - M indicates myLeoSettings.leo,
+    '''
+
+    settings = {} # Keys are setting names, values are (letter,val)
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        self.printSettingsHelper(settings,d,letter='[F]')
+
+    for d in self.localOptionsList:
+        self.printSettingsHelper(settings,d)
+
+    for d in self.dictList:
+        self.printSettingsHelper(settings,d)
+
+    keys = settings.keys() ; keys.sort()
+    for key in keys:
+        data = settings.get(key)
+        letter,val = data
+        print '%45s = %s %s' % (key,letter,val)
+        g.es('','%s %s = %s' % (letter,key,val))
+#@nonl
+#@+node:ekr.20070418075804:printSettingsHelper
+def printSettingsHelper(self,settings,d,letter=None):
+
+    suppressKind = ('shortcut','shortcuts','openwithtable')
+    suppressKeys = (None,'_hash','shortcut')
+
+    if d:
+        << set letter >>
+        for key in d.keys():
+            if key not in suppressKeys and key not in settings.keys():
+                bunch = d.get(key)
+                if bunch.kind not in suppressKind:
+                    settings[key] = (letter,bunch.val)
+#@nonl
+#@+node:ekr.20070418084502:<< set letter >>
+theHash = d.get('_hash').lower()
+
+if letter:
+    pass
+elif theHash.endswith('myleosettings.leo'):
+    letter = '[M]'
+elif theHash.endswith('leosettings.leo'):
+    letter = ' ' * 3
+else:
+    letter = '[D]'
+
+# g.trace(letter,theHash)
+#@nonl
+#@-node:ekr.20070418084502:<< set letter >>
+#@-node:ekr.20070418075804:printSettingsHelper
+#@-node:ekr.20070418073400:g.app.config.printSettings & helper
+#@-node:ekr.20041119203941:class configClass
+#@+node:ekr.20041117083141:get & allies (g.app.config)
+def get (self,c,setting,kind):
+
+    """Get the setting and make sure its type matches the expected type."""
+
+    if c:
+        d = self.localOptionsDict.get(c.hash())
+        if d:
+            val,junk = self.getValFromDict(d,setting,kind)
+            if val is not None:
+                # if setting == 'targetlanguage':
+                    # g.trace(c.shortFileName(),setting,val,g.callers())
+                return val
+
+    for d in self.localOptionsList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    for d in self.dictList:
+        val,junk = self.getValFromDict(d,setting,kind)
+        if val is not None:
+            kind = d.get('_hash','<no hash>')
+            # if setting == 'targetlanguage':
+                # g.trace(kind,setting,val,g.callers())
+            return val
+
+    return None
+#@+node:ekr.20041121143823:getValFromDict
+def getValFromDict (self,d,setting,requestedType,warn=True):
+
+    '''Look up the setting in d. If warn is True, warn if the requested type
+    does not (loosely) match the actual type.
+    returns (val,exists)'''
+
+    bunch = d.get(self.munge(setting))
+    if not bunch: return None,False
+
+    # g.trace(setting,requestedType,bunch.toString())
+    val = bunch.val
+    if not self.typesMatch(bunch.kind,requestedType):
+        # New in 4.4: make sure the types match.
+        # A serious warning: one setting may have destroyed another!
+        # Important: this is not a complete test of conflicting settings:
+        # The warning is given only if the code tries to access the setting.
+        if warn:
+            g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+            g.es_print('there may be conflicting settings!',color='red')
+        return None, False
+    elif val in (u'None',u'none','None','none','',None):
+        return None, True # Exists, but is None
+    else:
+        # g.trace(setting,val)
+        return val, True
+#@-node:ekr.20041121143823:getValFromDict
+#@+node:ekr.20051015093141:typesMatch
+def typesMatch (self,type1,type2):
+
+    '''
+    Return True if type1, the actual type, matches type2, the requeseted type.
+
+    The following equivalences are allowed:
+
+    - None matches anything.
+    - An actual type of string or strings matches anything.
+    - Shortcut matches shortcuts.
+    '''
+
+    shortcuts = ('shortcut','shortcuts',)
+
+    return (
+        type1 == None or type2 == None or
+        type1.startswith('string') or
+        type1 == 'int' and type2 == 'size' or
+        (type1 in shortcuts and type2 in shortcuts) or
+        type1 == type2
+    )
+#@-node:ekr.20051015093141:typesMatch
+#@-node:ekr.20041117083141:get & allies (g.app.config)
+#@+node:ekr.20031218072017.2062:getPrefs
+# Note: Leo 4.3 does not write these settings to local .leo files.
+# Instead, corresponding settings are contained in leoConfig.leo files.
+
+def getPrefs (self):
+
+    c = self.c
+
+    if self.getOpenTag("<preferences"):
+        return # <preferences/> seen
+
+    table = (
+        ("allow_rich_text",None,None), # Ignored.
+        ("tab_width","tab_width",self.getLong),
+        ("page_width","page_width",self.getLong),
+        ("tangle_bat","tangle_batch_flag",self.getBool),
+        ("untangle_bat","untangle_batch_flag",self.getBool),
+        ("output_doc_chunks","output_doc_flag",self.getBool),
+        ("noweb_flag",None,None), # Ignored.
+        ("extended_noweb_flag",None,None), # Ignored.
+        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
+        ("use_header_flag","use_header_flag",self.getBool))
+
+    done = False
+    while 1:
+        found = False
+        for tag,var,f in table:
+            if self.matchTag("%s=" % tag):
+                if var:
+                    self.getDquote() ; val = f() ; self.getDquote()
+                    setattr(c,var,val)
+                    # g.trace(var,val)
+                else:
+                    self.getDqString()
+                found = True ; break
+        if not found:
+            if self.matchTag("/>"):
+                done = True ; break
+            if self.matchTag(">"):
+                break
+            else: # New in 4.1: ignore all other tags.
+                self.getUnknownTag()
+
+    if not done:
+        while 1:
+            if self.matchTag("<defaultDirectory>"):
+                # New in version 0.16.
+                c.tangle_directory = self.getEscapedString()
+                self.getTag("</defaultDirectory>")
+                if not g.os_path_exists(c.tangle_directory):
+                    g.es("default tangle directory not found:",c.tangle_directory)
+            elif self.matchTag("<TSyntaxMemo_options>"):
+                self.getEscapedString() # ignored
+                self.getTag("</TSyntaxMemo_options>")
+            else: break
+        self.getTag("</preferences>")
+#@+node:ekr.20031218072017.2063:getTargetLanguage
+def getTargetLanguage (self):
+
+    # Must match longer tags before short prefixes.
+    for name in g.app.language_delims_dict.keys():
+        if self.matchTagWordIgnoringCase(name):
+            language = name.replace("/","")
+            # self.getDquote()
+            return language
+
+    return "c" # default
+#@-node:ekr.20031218072017.2063:getTargetLanguage
+#@-node:ekr.20031218072017.2062:getPrefs
+#@+node:ekr.20051125080855:selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    w = self.editWidget(event)
+    if not w: return 'break'
+    << set local vars >>
+    #g.trace('ch',repr(ch))
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+        if inBrackets and self.flashMatchingBrackets:
+
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    # g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return 'break'
+#@+node:ekr.20061103114242:<< set local vars >>
+c = self.c
+p = c.currentPosition()
+gui = g.app.gui
+ch = gui.eventChar(event)
+keysym = gui.eventKeysym(event)
+if keysym == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if keysym == 'Tab': # Support for wx_alt_gui plugin.
+    ch = '\t'
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.bodyString() or ''
+undoType = 'Typing'
+trace = c.config.getBool('trace_masterCommand')
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
+if trace: g.trace(name,repr(ch),ch and ch in brackets)
+#@nonl
+#@-node:ekr.20061103114242:<< set local vars >>
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    c = self.c ; p = c.currentPosition()
+    i,j = oldSel ; ch = '\n'
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+        if (
+            (allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p)) and
+            undoType != "Change"
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@nonl
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@+node:ekr.20060804095512:initBracketMatcher
+def initBracketMatcher (self,c):
+
+    self.openBracketsList  = c.config.getString('open_flash_brackets')  or '([{'
+    self.closeBracketsList = c.config.getString('close_flash_brackets') or ')]}'
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+#@-node:ekr.20060804095512:initBracketMatcher
+#@+node:ekr.20060627083506:flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in xrange(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in xrange(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+#@-node:ekr.20060627083506:flashMatchingBracketsHelper
+#@+node:ekr.20060627091557:flashCharacter
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 2
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+#@-node:ekr.20060627091557:flashCharacter
+#@+node:ekr.20051027172949:updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = g.scanDirectives(c,p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@-node:ekr.20051027172949:updateAutomatchBracket
+#@+node:ekr.20051026171121.1:udpateAutoIndent
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = g.scanDirectives(c,p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.scanColorDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@-node:ekr.20051026171121.1:udpateAutoIndent
+#@+node:ekr.20051026092433:updateTab
+def updateTab (self,p,w):
+
+    c = self.c
+    d = g.scanDirectives(c,p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        w.delete(i,j)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start = g.skip_to_start_of_line(s,i)
+        s2 = s[start:i]
+
+        # Compute n, the number of spaces to insert.
+        width = g.computeWidth(s2,tab_width)
+        n = abs(tab_width) - (width % abs(tab_width))
+        # g.trace('n',n)
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+#@nonl
+#@-node:ekr.20051026092433:updateTab
+#@-node:ekr.20051125080855:selfInsertCommand, helpers
+#@-node:ekr.20080326060254.1:Fixed bug involving default_target_language
 #@-node:ekr.20080315115427.575:Fixed bugs
 #@+node:ekr.20080315115427.576:Features
 #@+node:ekr.20080315083057.8:Added @bool collapse_nodes_while_spelling setting
@@ -19554,6 +21065,67 @@ def createBindings (self):
 #@-node:ekr.20080324105006.7:Changed
 #@-node:ekr.20080324105006.2:Found: Button-
 #@-node:ekr.20080321081209.4:Added support for @bool allow_middle_button_paste
+#@+node:ekr.20080326052859.1:Bobjack's changes
+#@+node:bobjack.20080324141020.4:doPopup & helper
+def doPopup (self,p,kind,name,val):
+
+    """
+    Handle @popup menu items in @settings trees.
+    """
+
+    # __pychecker__ = '--no-argsused' # kind, not used.
+
+    popupName = name
+    popupType = val
+
+    c = self.c ; aList = [] ; tag = '@menu'
+
+    #g.trace(p, kind, name, val, c)
+
+    aList = []
+    p = p.copy()
+    self.doPopupItems(p,aList)
+
+
+    if not hasattr(g.app.config, 'context_menus'):
+        g.app.config.context_menus = {}
+
+    if popupName in g.app.config.context_menus:
+        print '*** duplicate popup ***', popupName
+
+    g.app.config.context_menus[popupName] = aList
+#@+node:bobjack.20080324141020.5:doPopupItems
+def doPopupItems (self,p,aList):
+
+    p = p.copy() ; after = p.nodeAfterTree()
+    p.moveToThreadNext()
+    while p and p != after:
+        h = p.headString()
+        for tag in ('@menu','@item'):
+            if g.match_word(h,0,tag):
+                itemName = h[len(tag):].strip()
+                if itemName:
+                    if tag == '@menu':
+                        aList2 = []
+                        kind = '%s' % itemName
+                        self.doPopupItems(p,aList2)
+                        aList.append((kind,aList2),)
+                        p.moveToNodeAfterTree()
+                        break
+                    else:
+                        kind = tag
+                        head = itemName
+                        body = p.bodyString()
+                        aList.append((head,body),)
+                        p.moveToThreadNext()
+                        break
+        else:
+            # g.trace('***skipping***',p.headString())
+            p.moveToThreadNext()
+#@nonl
+#@-node:bobjack.20080324141020.5:doPopupItems
+#@-node:bobjack.20080324141020.4:doPopup & helper
+#@-node:ekr.20080326052859.1:Bobjack's changes
 #@-node:ekr.20080315115427.576:Features
 #@-node:ekr.20080315083057.10:b3
 #@-node:ekr.20080227135412:4.4.8
