@@ -598,11 +598,8 @@ class LeoApp:
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.
 
-        # if updateRecentFiles:
-            # c.updateRecentFiles(relativeFileName or fileName)
-
-        if not g.app.initing:
-            g.doHook("after-create-leo-frame",c=c)
+        # if not g.app.initing:
+            # g.doHook("after-create-leo-frame",c=c)
 
         return c,frame
     #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame

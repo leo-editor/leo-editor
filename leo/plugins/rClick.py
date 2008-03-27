@@ -1,10 +1,342 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20040422072343:@thin rClick.py
-"""Create a context menu when right-clicking in the body pane."""
-
+#@+node:bobjack.20080321133958.6:@thin rClick.py
 # Send bug reports to
 # http://sourceforge.net/forum/forum.php?thread_id=980723&forum_id=10228
 
+#@@first
+
+#@@language python
+#@@tabwidth -4
+
+#@<< docstring >>
+#@+node:bobjack.20080320084644.2:<< docstring >>
+"""
+Right Click Menus (rClick.py)
+=============================
+
+.. contents::
+
+This plugin provides a simple but powerful and flexible system of managing
+scriptable context menus.
+
+To start with it works out-of-the-box, providing default menus for the
+following:
+
+    - the body pane     ( c.context_menus['body'] )
+    - the log pane      ( c.context_menus['log'] )
+    - the find edit box ( c.context_menus['find-text'] )
+    - the change edit box ( c.context_menus['change-text'] )
+
+and also the following fragments:
+
+    - 'edit-menu' fragment (c.context_menus['edit-menu'])
+
+            This gives basic 'cut/copy/paste/select all' menu items for plain
+            text widgets, (not body widgets).
+
+    - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
+
+        This gives a single cascade menu item which opens to reveal a list of
+        recently opened files.
+
+    These fragments are meant to be included in other popup menu's via::
+
+        ('&', 'recent-files-menu')
+
+        or
+
+        ('&', 'edit-menu')
+
+
+These menus can be altered at will by scripts and other plugins using basic list
+operators such as append etc.
+
+In addition, callbacks can be embedded in the list to be called when the popup
+is being created. The callback can then either manipulate the physical tk menu
+(as it has been generated so far) or manipulate and extend the list of items yet
+to be generated.
+
+Adding support to other widgets.
+--------------------------------
+
+For widgets to use the rClick context menu system it need only bind <Button-3>
+to c.frame.OnBodyRClick, and provide a menu table to use or a reference to an
+existing menu table.
+
+The right click menu to be used is determined in one of two ways.
+
+    The context_menu property:
+
+        If the widget has a context menu property::
+
+            w.context_menu = string | list
+
+        then this will be used to determine what menu is used. If it contains a
+        list, that list will be used to construct the menu, if it is a string it
+        will be used as an index into c.context_menus.
+
+    The widgets name:
+
+        If no context_menu property is defined then the widgets name, as determined
+        by c.widget_name(w), is used and each key in c.context_menus is tested
+        against it to see if the name starts with that key. If it does, the menu
+        table in c.context_menus[key] will be used.
+
+        eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
+
+        No attempt is made to resolve conflicts. The keys are in random order and
+        the first match found will be used. Better to use w.context_menu for anything
+        other than the default 'body', 'log', 'find-text' and 'change-text'.
+
+
+Format of menu tables.
+======================
+
+The menu tables are simply lists of tuples with the form::
+
+    (txt, cmd)
+
+eg::
+
+    default_context_menus['body'] = [
+
+        ('Cut', 'cut-text'),
+        ('Copy', 'copy-text'),
+        ('Paste', 'paste-text'),
+
+        ('-',None),
+
+        ('Select All', 'select-all'),
+
+        ('-',None),
+
+        ('Block Operations', [
+
+            ('Indent', 'indent-region'),
+            ('Dedent', 'unindent-region'),
+
+            ('-',None),
+
+            ('Add Comments', 'add-comments'),
+            ('Remove Comments', 'delete-comments'),
+        ]),
+
+        ('-',None),
+
+        ('&', 'recent-files-menu'),
+
+        ('Find Bracket', 'match-brackets'),
+        ('Insert newline', rc_nl),
+
+        ('Execute Script', 'execute-script'),
+
+        ('', 'users menu items'),
+
+        ('*', 'rclick-gen-context-sensitive-commands'),
+
+    ]
+
+Separators, Comments and Data
+-----------------------------
+
+if `txt` is '-' then a separator item will be inserted into the menu.
+
+    In this case `cmd` can have any value as it is not used.
+
+if `txt` is ''  or '"' (single  double-quote) then nothing is done.
+
+    This is a noop or comment. Again `cmd` can have any value as it is not used.
+
+
+`cmd` can be set to a string value for these items so that scripts which
+manipulate the menu tables can use these items as position markers, so that
+similar items may be grouped together for example.
+
+`cmd` can, however, take on any value and these items, especially comments, can
+be used to pass extra information to generator functions. eg::
+
+    ...
+    ( '*', interesting_function ),
+    ( '"', ('data', 4, 'intersting', function)),
+    ...
+
+The comment tuple can either be removed by interesting_function or just left as
+it will be ignored anyway.
+
+Includes and generators
+-----------------------
+
+if `txt` is '&' then the menu named `cmd` will be included inline.
+
+    In @popup trees '\@item &' would appear in the headline and the name of the
+    menu to be included in the body text.
+
+if `txt` is '*' then a minibuffer command will be used to generate or modify
+menus.
+
+    In @popup trees "\@item \*" would appear in the headline and the name of the
+    minibuffer command in the body.
+
+
+Other menu items
+------------------
+
+if `txt` is a string then a menu item will be generated using that string as a
+label.
+
+    - **Mini buffer Command**
+
+        If `cmd` is a string it is assumed to be a minibuffer command and
+        invoking the menu item runs this command.
+
+    - **Submenus**
+
+        If `cmd` is a list it is assumed to be a definition of a submenu and a
+        cascade menu item will be inserted into the menu.
+
+    - **Function call**
+
+        If `cmd` is not a list or string it is assumed to be a function or other
+        callable object and on invocation the object will be called as::
+
+            cmd(c, event, widget)
+
+        where `event` is the right click event that we are responding to, and
+        `widget` is the widget that received the event.
+
+
+Generating context sensitive items dynamically
+----------------------------------------------
+
+if `txt` is '*':
+
+    In this case `cmd` is used to generate menu items, or perform other tasks,
+    when the popup menu is being constructed. When it comes to this item, the
+    menu generator will call `cmd` as::
+
+        cmd(c, event, widget, rmenu, menu_table)
+
+    where
+
+        :c: is the commander of the widget that received the event.
+
+        :event: is the event object produced by the right click.
+
+        :widget: is the widget that received the event.
+
+        :rmenu: is the physical tkMenu containing the items constructed so far.
+
+        :menu_table: is the list of tuples representing items not yet
+        constructed.
+
+    `cmd` may either manipulate the physical tkMenu directly or add (txt, cmd)
+    tuples to the front of (or anywhere else in) menu_table. See the code in
+    rClick.py for an example.
+
+    If `cmd` is a string then it is assumed to be a **minibuffer** command and
+    will be run as such with the tuple::
+
+         (c, event, widget, rmenu, menu_table)
+
+    stored in `rClick.MENU_ARGS` for use by the handlers.
+
+    An example of how to do this is provided by the
+    rclick-gen-context-sensitive-commands minibuffer command described later.
+
+Including other menus and fragments.
+------------------------------------
+
+If `txt` is '&':
+
+    In this case `cmd` is used as the name of a menu which appears in
+    c.context_menus. If a menu exists with that name its contents are included
+    inline, (not as a submenu).
+
+Example menu generator
+======================
+
+An example of generating dynamic context sensitive menus is provided as the
+**rclick-gen-context-sensitive-commands** minibuffer command.
+
+If this command is placed in a 'body' menu table as::
+
+     ('*', 'rclick-gen-context-sensitive-commands')
+
+the following happens.
+
+Create "Open URL: ..." menu items.
+
+    The selected text, or the line containing the cursor, is scanned for urls of
+    the form (http|https|ftp):// etc and a menu item is created named "Open
+    URL:..." for each one found, which when invoked will launch a browser and
+    point it to that url.
+
+Create "Jump To: < <section>>"" menu items.
+
+    The selected text, or the line containing the cursor, is scanned for
+    sections markers of the form < < ... >> and a menu item is created for each
+    one found, which when invoked will jump to that section.
+
+Create a "Help on:" menu item.
+
+    The selected text, or the word under the cursor, is used to create a "Help
+    on: word" menu item, which when invoked will call python's 'help' command on
+    the word and display the result in the log pane or a browser.
+
+
+@Settings
+=========
+
+    **\@popup**
+
+        Context menus can be described in @settings trees using::
+
+            @popup name
+
+        where `name` can be any string. If `name` has already been defined then
+        that menu is replaced with this one. Last in wins.
+
+        @menu and @item nodes are used as with @menus. The syntax is slightly
+        expanded to enable additional features which are described here.
+
+
+    **\@rclick_show_help**
+
+        This setting specifies where output from the help() utility is sent::
+
+            @string rclick_show_help = 'flags'
+
+        `flags` is a string that can contain any combination of 'print', 'log',
+        'browser' or 'all'.
+
+        eg::
+
+            @string rclick_show_help = 'print log'
+
+        This will send output to stdout and the log pane but not the browser.
+
+        If the setting is not present or does not contain valid data, output
+        will be sent to all three destinations.
+
+
+Minibuffer Commands
+===================
+
+These are provided for use with ('*', ... ) items. They are of use **only** in
+rclick menu tables and @popup trees.
+
+    **rclick-gen-context-sensitive-commands**
+
+        It's use is described elsewhere.
+
+
+    **rclick-gen-recent-files-list**
+
+        Used to generate a list of items from the recent files list.
+
+"""
+#@-node:bobjack.20080320084644.2:<< docstring >>
+#@nl
 #@<< version history >>
 #@+node:ekr.20040422081253:<< version history >>
 #@+at
@@ -32,9 +364,56 @@
 # 0.10 EKR: Removed call to str that was causing a unicode error.
 # 0.11 EKR: init returns False if the gui is not tkinter.
 # 0.12 EKR: Fixed various bugs related to the new reorg.
+# 0.13 bobjack:
+# - Fixed various bugs
+# - Allow menus for find/change edit boxes
+# 0.14 bobjack:
+# - Reorganized code.
+# - Made context menu tables public and editable.
+# - Added functionality to menu tables.
+# - Provided docstring.
+# 0.15 bobjack:
+# - Provide support for submenus
+# - 'help on:' menu item now shows doc's in a browser
+# 0.16 bobjack:
+# - add support for @string rclick_show_help =  'print? log? browser?' | 'all'
+# - introduce c.context_menus so all menus are per commander
+# - introduce widget.context_menu for widget specific menus
+# 0.17 bobjack:
+# - initial menus can now be set in @popup trees in @settings
+# - allow popup menus to be included, by name, inline in other popup menus.
+# - extend config @item to include support for
+#     - '&' (includes)
+#     - '*' (context sensitive generators)
+# - modified (None, cmd) to be ('*', cmd)
+# - added minibuffer command rclick-gen-recent-files-list
+# 0.18 ekr:
+# - moved rClickBinder and rSetupMenus to ContextMenuController.
 #@-at
 #@nonl
 #@-node:ekr.20040422081253:<< version history >>
+#@nl
+#@<< todo >>
+#@+node:bobjack.20080323095208.2:<< todo >>
+#@+at
+# TODO:
+# 
+# add @settings:
+# 
+#     - @bool rclick-provide-tree-popup
+# 
+#         Allow rclick to manage the tree popup.
+# 
+#     - @bool rclick-provide-log-tab-menus
+# 
+#         Allow rclick to manage the popups for the tabs in the log panel
+# 
+# support checkbox and radio buttons
+# 
+# provide rclick-gen-open-with-list and @popup open-with-menu
+#@-at
+#@nonl
+#@-node:bobjack.20080323095208.2:<< todo >>
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090207.2:<< imports >>
@@ -45,15 +424,35 @@ Tk = g.importExtension('Tkinter')
 
 import re
 import sys
+import copy
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
-__version__ = "0.12"
+
+# To do: move top-level functions into ContextMenuController class.
+# Eliminate global vars.
+
+__version__ = "0.18"
+__plugin_name__ = 'Right Click Menus'
+
+default_context_menus = {}
+
+SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
+
+MB_MENU_ARGS = None
+MB_MENU_RETVAL = None
+
+POPUP_MENU = None
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
 #@+node:ekr.20060108122501.1:init
 def init ():
+    """Initialize and register plugin.
 
+    Hooks bodyrclick1 and after-create-leo-frame.
+
+
+    """
     if not Tk: return False # OK for unit tests.
 
     if g.app.gui is None:
@@ -62,252 +461,268 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-        leoPlugins.registerHandler("after-create-leo-frame",rClickbinder)
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         leoPlugins.registerHandler("bodyrclick1",rClicker)
         g.plugin_signon(__name__)
 
+        init_default_menus()
+
     return ok
 #@-node:ekr.20060108122501.1:init
-#@+node:ekr.20040422072343.5:rClickbinder
-def rClickbinder(tag,keywords):
+#@+node:bobjack.20080323045434.18:onCreate
+def onCreate (tag, keys):
 
-    c = keywords.get('c')
+    c = keys.get('c')
+    if not c: return
 
-    if c and c.exists:
-        c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
-#@-node:ekr.20040422072343.5:rClickbinder
-#@+node:ekr.20040422072343.6:rClicker
+    theContextMenuController = ContextMenuController(c)
+#@nonl
+#@-node:bobjack.20080323045434.18:onCreate
+#@+node:bobjack.20080321133958.7:init_default_menus
+def init_default_menus():
+
+    """Initialize all default context menus"""
+
+    #@    @+others
+    #@+node:bobjack.20080325060741.6:edit-menu
+    default_context_menus['edit-menu'] = [
+        ('Cut', rc_OnCutFromMenu),
+        ('Copy', rc_OnCopyFromMenu),
+        ('Paste', rc_OnPasteFromMenu),
+        ('-', None),
+        ('Select All', rc_selectAll),
+    ]
+    #@-node:bobjack.20080325060741.6:edit-menu
+    #@+node:bobjack.20080325060741.4:body
+    default_context_menus['body'] = [
+
+        ('Cut', 'cut-text'),
+        ('Copy', 'copy-text'),
+        ('Paste', 'paste-text'),
+
+        ('-',None),
+
+        ('Select All', 'select-all'),
+
+        ('-',None),
+
+        ('Block Operations', [
+
+            ('Indent', 'indent-region'),
+            ('Dedent', 'unindent-region'),
+
+            ('-',None),
+
+            ('Add Comments', 'add-comments'),
+            ('Remove Comments', 'delete-comments'),
+        ]),
+
+        ('-',None),
+
+        ('&', 'recent-files-menu'),
+
+        ('Find Bracket', 'match-brackets'),
+        #('Insert newline', rc_nl),
+
+        ('Execute Script', 'execute-script'),
+
+        ('', 'users menu items'),
+
+        ('*', 'rclick-gen-context-sensitive-commands'),
+
+    ]
+    #@-node:bobjack.20080325060741.4:body
+    #@+node:bobjack.20080325060741.5:log
+    default_context_menus['log'] = [('&', 'edit-menu')]
+    #@nonl
+    #@-node:bobjack.20080325060741.5:log
+    #@+node:bobjack.20080325060741.2:find-text
+    default_context_menus['find-text'] = [('&', 'edit-menu')]
+    #@-node:bobjack.20080325060741.2:find-text
+    #@+node:bobjack.20080325060741.3:change-text
+    default_context_menus['change-text'] = [('&', 'edit-menu')]
+    #@-node:bobjack.20080325060741.3:change-text
+    #@+node:bobjack.20080325162505.3:recent-files
+    default_context_menus['recent-files-menu'] = [
+        ('Recent Files', [
+            ('*', 'rclick-gen-recent-files-list'),
+        ])
+    ]
+    #@-node:bobjack.20080325162505.3:recent-files
+    #@-others
+
+
+
+#@-node:bobjack.20080321133958.7:init_default_menus
+#@-node:ekr.20060108122501:Module-level
+#@+node:ekr.20080327061021.229:Event handler
+#@+node:ekr.20080327061021.220:rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
 
-def rClicker(tag,keywords):
+def rClicker(tag, keywords):
+
+    """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
+
+    global POPUP_MENU
+
+    #@    << def table_to_menu >>
+    #@+node:ekr.20080327061021.221:<< def table_to_menu >>
+    def table_to_menu(menu_table, level=0):
+
+        """Generate a TK menu from a python list."""
+
+        global MB_MENU_ARGS, MB_MENU_RETVAL
+
+        if level > 4 or not menu_table:
+            return
+
+        if level == 0:
+            rmenu = POPUP_MENU
+            try:
+                rmenu.destroy()
+            except:
+                pass
+
+        rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
+
+        while menu_table:
+
+            txt, cmd = menu_table.pop(0)
+            #g.trace(txt, cmd)
+
+            args = (c, event, widget, rmenu, menu_table)
+
+
+            if txt == '*':
+                #@            << call a menu generator >>
+                #@+node:ekr.20080327061021.222:<< call a menu generator >>
+
+                if isinstance(cmd, basestring):
+
+                    MB_MENU_ARGS = args
+                    MB_MENU_RETVAL = None
+
+                    #g.trace(cmd)
+
+                    try:
+                        try:
+                            c.executeMinibufferCommand(cmd)
+                        except:
+                            g.es_exception()
+                            MB_MENU_RETVAL = None
+                    finally:
+                        MB_MENU_ARGS = None
+
+                elif cmd:
+                    MB_MENU_RETVAL = cmd(*args)
+                #@-node:ekr.20080327061021.222:<< call a menu generator >>
+                #@nl
+
+            elif txt == '-':
+                #@            << add a separator >>
+                #@+node:ekr.20080327061021.223:<< add a separator >>
+                rmenu.add_separator()
+                #@nonl
+                #@-node:ekr.20080327061021.223:<< add a separator >>
+                #@nl
+
+            elif txt == '':
+                pass
+
+            elif txt == '&':
+                #@            << include a menu chunk >>
+                #@+node:ekr.20080327061021.224:<< include a menu chunk >>
+                menu_table = copy.deepcopy(c.context_menus.get(cmd, [])) + menu_table
+                #@nonl
+                #@-node:ekr.20080327061021.224:<< include a menu chunk >>
+                #@nl
+
+            elif isinstance(txt, basestring):
+                #@            << add a named item >>
+                #@+node:ekr.20080327061021.225:<< add a named item >>
+                if isinstance(cmd, basestring):
+                    #@    << minibuffer command item >>
+                    #@+node:ekr.20080327061021.226:<< minibuffer command item >>
+                    cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
+                    rmenu.add_command(label=txt,command=cb)
+                    #@-node:ekr.20080327061021.226:<< minibuffer command item >>
+                    #@nl
+
+                elif isinstance(cmd, list):
+                    #@    << cascade item >>
+                    #@+node:ekr.20080327061021.227:<< cascade item >>
+                    submenu = table_to_menu(cmd[:], level+1)
+                    if submenu:
+                        rmenu.add_cascade(label=txt, menu=submenu)
+                    #@-node:ekr.20080327061021.227:<< cascade item >>
+                    #@nl
+
+                else:
+                    #@    << function command item >>
+                    #@+node:ekr.20080327061021.228:<< function command item >>
+                    cb = lambda c=c, event=event, widget=widget, cmd=cmd: cmd(c, event, widget)
+                    rmenu.add_command(label=txt,command=cb)
+                    #@nonl
+                    #@-node:ekr.20080327061021.228:<< function command item >>
+                    #@nl
+                #@-node:ekr.20080327061021.225:<< add a named item >>
+                #@nl
+
+        if MB_MENU_RETVAL is None:
+            return rmenu
+
+        rmenu.destroy()
+
+    #@-node:ekr.20080327061021.221:<< def table_to_menu >>
+    #@nl
 
     c = keywords.get("c")
-    e = keywords.get("event")
-    if not c or not c.exists or not e: return
-    w = c.frame.body.bodyCtrl
+    event = keywords.get("event")
+    if not c or not c.exists or not event:
+        return
 
-    e.widget.focus()
+    widget = event.widget
+    if not widget: return
 
-    #@    << define callbacks >>
-    #@+node:ekr.20060110123700:<< define callbacks >>
-    def rc_helpCallback(c=c):       rc_help(c)
-    def rc_dbodyCallback(c=c):      rc_dbody(c)
-    def rc_nlCallback(c=c):         rc_nl(c)
-    def rc_selectAllCallback(c=c):  rc_selectAll(c)
-    #@nonl
-    #@-node:ekr.20060110123700:<< define callbacks >>
-    #@nl
-    if e.widget._name.startswith('body'):
-        #@        << define commandList for body >>
-        #@+node:ekr.20040422072343.7:<< define commandList for body >>
-        commandList = [
-            #('-||-|-||-',None),   #
-            #('U',c.undoer.undo),  #no c.undoer
-            #('R',undoer.redo),
-            # ('-',None),
-            ('Cut', c.frame.OnCutFromMenu), 
-            ('Copy',c.frame.OnCopyFromMenu),
-            ('Paste', c.frame.OnPasteFromMenu),
-            ('Delete',rc_dbodyCallback),
-            ('-',None),
-            ('SelectAll',c.frame.body.selectAllText),
-            ('Indent',c.indentBody),
-            ('Dedent',c.dedentBody),  
-            ('Find Bracket',c.findMatchingBracket),
-            ('Insert newline', rc_nlCallback),
+    isText = g.app.gui.isTextWidget(widget)
+    if isText:
+        try:
+            widget.setSelectionRange(*c.k.previousSelection)
+        except TypeError:
+            #g.trace('no previous selection')
+            pass
 
-            # this option seems not working, at least in win32
-            # replaced with context-sensitive "pydoc help"  --Maxim Krikun
-            # ('Help(txt)',rc_helpCallback),   #how to highlight 'txt' in the menu?
+    # Put the focus in the widget.
+    widget.focus()
 
-            ('Execute Script',c.executeScript)
-            # ('-||-|-||-',None),   # 1st & last needed because of freaky sticky finger
-            ]
-        #@-node:ekr.20040422072343.7:<< define commandList for body >>
-        #@nl
-        #@        << add entries for context sensitive commands in body >>
-        #@+node:ekr.20040422072343.8:<< add entries for context sensitive commands in body >>
-        #@+at 
-        #@nonl
-        # Context-sensitive rclick commands.
-        # 
-        # On right-click get the selected text, or the whole line containing 
-        # cursor if no selection.
-        # Scan this text for certain regexp pattern. For each occurrence of a 
-        # pattern add a command,
-        # which name and action depend on the text matched.
-        # 
-        # Example below extracts URL's from the text and puts "Open URL:..." 
-        # th menu.
-        # 
-        #@-at
-        #@@c
+    name = c.widget_name(widget)
+    top_menu_table = []
 
-        #@<< get text and word from the body text >>
-        #@+node:ekr.20040422073911:<< get text and word from the body text >>
-        text = c.frame.body.getSelectedText()
-        if text:
-            word = text.strip()
-        else:
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            #ind0,ind1 = w.getSelectionRange()
-            # n0,p0=ind0.split('.',2)
-            # n1,p1=ind1.split('.',2)
-            # assert n0==n1
-            # assert p0==p1
-            #index = w.index(n0+".0")
-            #index = w.toPythonIndex(index)
-            # i,j = g.getLine(s,index)
-            #word=getword(text,int(p0))
-            #row,col = g.convertPythonIndexToRowCol(s,ins)
+    if hasattr(widget, 'context_menu'):
 
-            i,j = g.getLine(s,ins)
-            text = s[i:j]
-            i,j = g.getWord(s,ins)
-            word = s[i:j]
+        key = widget.context_menu
+        if isinstance(key, list):
+            top_menu_table = widget_context_menu
+        elif isinstance(key, basestring):
+            top_menu_table = c.context_menus.get(key, [])[:]
 
-        #@-node:ekr.20040422073911:<< get text and word from the body text >>
-        #@nl
-
-        if 0:
-            g.es("selected text: "+text)
-            g.es("selected word: "+repr(word))
-
-        contextCommands=[]
-
-        #@<< add entry for open url >>
-        #@+node:ekr.20040422072343.13:<< add entry for open url >>
-        scan_url_re="""(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
-
-        for match in re.finditer(scan_url_re, text):
-
-            #get the underlying text
-            url=match.group()
-
-            #create new command callback
-            def url_open_command(*k,**kk):
-                import webbrowser
-                try:
-                    webbrowser.open_new(url)
-                except:
-                    g.es("not found: " + url,color='red')
-
-            #add to menu
-            menu_item=( 'Open URL: '+crop(url,30), url_open_command)
-            contextCommands.append( menu_item )
-        #@-node:ekr.20040422072343.13:<< add entry for open url >>
-        #@nl
-        #@<< add entry for jump to section >>
-        #@+node:ekr.20040422072343.14:<< add entry for jump to section >>
-        scan_jump_re="<"+"<[^<>]+>"+">"
-
-        p=c.currentPosition()
-        for match in re.finditer(scan_jump_re,text):
-            name=match.group()
-            ref=g.findReference(c,name,p)
-            if ref:
-                # Bug fix 1/8/06: bind c here.
-                # This is safe because we only get called from the proper commander.
-                def jump_command(c=c,*k,**kk):
-                    c.beginUpdate()
-                    c.selectPosition(ref)
-                    c.endUpdate()
-                menu_item=( 'Jump to: '+crop(name,30), jump_command)
-                contextCommands.append( menu_item )
-            else:
-                # could add "create section" here?
-                pass
-        #@nonl
-        #@-node:ekr.20040422072343.14:<< add entry for jump to section >>
-        #@nl
-        if word:
-            #@    << add epydoc help >>
-            #@+node:ekr.20040422072343.15:<< add epydoc help >>
-            def help_command(*k,**kk):
-                # g.trace(word)
-                try:
-                    doc=getdoc(word,"="*60+"\nHelp on %s")
-                    # It would be nice to save log pane position
-                    # and roll log back to make this position visible,
-                    # since the text returned by pydoc can be several 
-                    # pages long
-                    g.es(doc,color="blue")
-                    print doc
-                except Exception, value:
-                    g.es(str(value),color="red")
-
-            menu_item=('Help on: '+crop(word,30), help_command)
-            contextCommands.append( menu_item )
-            #@nonl
-            #@-node:ekr.20040422072343.15:<< add epydoc help >>
-            #@nl
-
-        if contextCommands:
-            commandList.append(("-",None))
-            commandList.extend(contextCommands)
-        #@nonl
-        #@-node:ekr.20040422072343.8:<< add entries for context sensitive commands in body >>
-        #@nl
     else:
-        #@        << define commandList for log pane >>
-        #@+node:ekr.20040422072343.16:<< define commandList for log pane >>
-        commandList=[
-            ('Cut', c.frame.OnCutFromMenu), 
-            ('Copy',c.frame.OnCopyFromMenu),
-            ('Paste', c.frame.OnPasteFromMenu),
-            ('Select All', rc_selectAllCallback)]
-        #@nonl
-        #@-node:ekr.20040422072343.16:<< define commandList for log pane >>
-        #@nl
+        for key in c.context_menus.keys():
+            if name.startswith(key):
+                top_menu_table = c.context_menus.get(key, [])[:]
+                break
 
-    rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
-    for (txt,cmd) in commandList:
-        if txt == '-':
-            rmenu.add_separator()
-        else:
-            rmenu.add_command(label=txt,command=cmd)
-
-    rmenu.tk_popup(e.x_root-23,e.y_root+13)
-#@-node:ekr.20040422072343.6:rClicker
-#@-node:ekr.20060108122501:Module-level
-#@+node:ekr.20040422072343.1:rc_help
-def rc_help(c):
-
-    """Highlight txt then rclick for python help() builtin."""
-
-    if c.frame.body.hasTextSelection():
-
-        newSel = c.frame.body.getSelectedText()
-
-        # EKR: nothing bad happens if the status line does not exist.
-        c.frame.clearStatusLine()
-        c.frame.putStatusLine(' Help for '+newSel) 
-
-        # Redirect stdout to a "file like object".
-        sys.stdout = fo = g.fileLikeObject()
-
-        # Python's builtin help function writes to stdout.
-        help(str(newSel))
-
-        # Restore original stdout.
-        sys.stdout = sys.__stdout__
-
-        # Print what was written to fo.
-        s = fo.get() ; g.es(s) ; print s
-#@-node:ekr.20040422072343.1:rc_help
-#@+node:ekr.20040422072343.2:rc_dbody
-def rc_dbody(c):
-
-    if c.frame.body.hasTextSelection():
-        c.frame.body.deleteTextSelection()
-        c.frame.body.onBodyChanged("Delete")
-#@nonl
-#@-node:ekr.20040422072343.2:rc_dbody
+    top_menu = table_to_menu(top_menu_table)
+    if top_menu:
+        top_menu.tk_popup(event.x_root-23, event.y_root+13)
+        POPUP_MENU = top_menu
+#@-node:ekr.20080327061021.220:rClicker
+#@-node:ekr.20080327061021.229:Event handler
+#@+node:bobjack.20080321133958.8:Callbacks
 #@+node:ekr.20040422072343.3:rc_nl
-def rc_nl(c):
+def rc_nl(c, event, widget):
 
-    """Insert a newline at the current curser position."""
+    """Insert a newline at the current curser position of selected body editor."""
 
     w = c.frame.body.bodyCtrl
 
@@ -317,13 +732,186 @@ def rc_nl(c):
         c.frame.body.onBodyChanged("Typing")
 #@-node:ekr.20040422072343.3:rc_nl
 #@+node:ekr.20040422072343.4:rc_selectAll
-def rc_selectAll(c):
+def rc_selectAll(c, event, widget):
 
-    """Select the entire log pane."""
+    """Select the entire contents of the text widget."""
 
-    c.frame.log.logCtrl.selectAllText()
+    widget.selectAllText()
 #@-node:ekr.20040422072343.4:rc_selectAll
+#@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
+def rc_OnCutFromMenu(c, event, widget):
+
+    """Cut text from currently focused text widget."""
+
+    c.frame.OnCutFromMenu(event)
+#@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
+#@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
+def rc_OnCopyFromMenu(c, event, widget):
+    """Copy text from currently focused text widget."""
+    c.frame.OnCopyFromMenu(event)
+#@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
+#@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
+def rc_OnPasteFromMenu(c, event, widget):
+    """Paste text into currently focused text widget."""
+
+    c.frame.OnPasteFromMenu(event)
+#@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
+#@-node:bobjack.20080321133958.8:Callbacks
+#@+node:bobjack.20080322043011.12:Context sensitive generators
+#@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
+def gen_context_sensitive_commands(c, event, widget, rmenu, commandList):
+
+    """Generate context-sensitive rclick items.
+
+    On right-click get the selected text, or the whole line containing cursor if
+    no selection. Scan this text for certain regexp patterns. For each occurrence
+    of a pattern add a command, which name and action depend on the text
+    matched.
+
+    Example below extracts URL's from the text and puts "Open URL:..." in the menu.
+
+    """
+
+    contextCommands = []
+
+    text, word = get_text_and_word_from_body_text(widget)
+
+    if 0:
+        g.es("selected text: "+text)
+        g.es("selected word: "+repr(word))
+
+    contextCommands = get_urls(text) + get_sections(c, text)
+
+    if word:
+        contextCommands += get_help(c, word)
+
+    if contextCommands:
+        commandList += [("-",None)] + contextCommands
+#@-node:bobjack.20080321133958.13:gen_context_sensitive_commands
+#@+node:bobjack.20080322043011.13:get_urls
+def get_urls(text):
+
+    """
+    Extract URL's from the body text and create "Open URL:..." items
+    for inclusion in a menu list.
+    """
+
+    contextCommands = []
+    for match in re.finditer(SCAN_URL_RE, text):
+
+        #get the underlying text
+        url=match.group()
+
+        #create new command callback
+        def url_open_command(*k,**kk):
+            import webbrowser
+            try:
+                webbrowser.open_new(url)
+            except:
+                g.es("not found: " + url,color='red')
+
+        #add to menu
+        menu_item=( 'Open URL: '+crop(url,30), url_open_command)
+        contextCommands.append( menu_item )
+
+    return contextCommands
+#@-node:bobjack.20080322043011.13:get_urls
+#@+node:bobjack.20080322043011.11:get_sections
+def get_sections(c, text):
+
+    scan_jump_re="<"+"<[^<>]+>"+">"
+
+    contextCommands = []
+    p=c.currentPosition()
+    for match in re.finditer(scan_jump_re,text):
+        name=match.group()
+        ref=g.findReference(c,name,p)
+        if ref:
+            # Bug fix 1/8/06: bind c here.
+            # This is safe because we only get called from the proper commander.
+            def jump_command(c=c,*k,**kk):
+                c.beginUpdate()
+                c.selectPosition(ref)
+                c.endUpdate()
+            menu_item=( 'Jump to: '+crop(name,30), jump_command)
+            contextCommands.append( menu_item )
+        else:
+            # could add "create section" here?
+            pass
+
+    return contextCommands
+
+#@-node:bobjack.20080322043011.11:get_sections
+#@+node:ekr.20040422072343.15:get_help
+def get_help(c, word):
+
+    def help_command(*k,**kk):
+        #g.trace(k, kk)
+        try:
+            doc=getdoc(word,"="*60+"\nHelp on %s")
+
+            # It would be nice to save log pane position
+            # and roll log back to make this position visible,
+            # since the text returned by pydoc can be several
+            # pages long
+
+            flags = c.config.getString('rclick_show_help')
+
+            if not flags or 'all' in flags:
+                flags = 'print log browser'
+
+            if 'browser' in flags:
+                if not doc.startswith('no Python documentation found for'):
+                    xdoc = doc.split('\n')
+                    title = xdoc[0]
+                    g.es('launching browser ...',  color='blue')
+                    show_message_as_html(title, '\n'.join(xdoc[1:]))
+                    g.es('done', color='blue')
+                else:
+                    g.es(doc, color='blue')
+                    print doc
+                    return
+
+            if 'log' in flags:
+                g.es(doc,color="blue")
+
+            if 'print' in flags:
+                print doc
+
+        except Exception, value:
+            g.es(str(value),color="red")
+
+
+    menu_item=('Help on: '+crop(word,30), help_command)
+    return [ menu_item ]
+#@-node:ekr.20040422072343.15:get_help
+#@-node:bobjack.20080322043011.12:Context sensitive generators
 #@+node:ekr.20040422072343.9:Utils for context sensitive commands
+#@+node:bobjack.20080322043011.14:get_text_and_word_from_body_text
+def get_text_and_word_from_body_text(widget):
+
+    """Get text and word from text control.
+
+    If any text is selected this is returned as `text` and `word` is returned as
+    a copy of the text with leading and trailing whitespace stripped.
+
+    If no text is selected, `text` and `word are set to the contents of the line
+    and word containing the current insertion point. """
+
+    text = widget.getSelectedText()
+
+    if text:
+        word = text.strip()
+    else:
+        s = widget.getAllText()
+        ins = widget.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        text = s[i:j]
+        i,j = g.getWord(s,ins)
+        word = s[i:j]
+
+    return text, word
+#@-node:bobjack.20080322043011.14:get_text_and_word_from_body_text
 #@+node:ekr.20040422072343.10:crop
 def crop(s,n=20,end="..."):
 
@@ -342,40 +930,199 @@ def getword(s,pos):
     for m in re.finditer("\w+",s):
         if m.start()<=pos and m.end()>=pos:
             return m.group()
-    return None			
+    return None
 #@-node:ekr.20040422072343.11:getword
 #@+node:ekr.20040422072343.12:getdoc
 def getdoc(thing, title='Help on %s', forceload=0):
 
     #g.trace(thing)
 
-    if 1: # Both seem to work.
+    # Redirect stdout to a "file like object".
+    old_stdout = sys.stdout
+    sys.stdout = fo = g.fileLikeObject()
 
-        # Redirect stdout to a "file like object".
-        old_stdout = sys.stdout
-        sys.stdout = fo = g.fileLikeObject()
-        # Python's builtin help function writes to stdout.
-        help(str(thing))
-        # Restore original stdout.
-        sys.stdout = old_stdout
-        # Return what was written to fo.
-        return fo.get()
+    # Python's builtin help function writes to stdout.
+    help(str(thing))
 
-    else:
-        # Similar to doc function from pydoc module.
-        from pydoc import resolve, describe, inspect, text, plain
-        object, name = resolve(thing, forceload)
-        desc = describe(object)
-        module = inspect.getmodule(object)
-        if name and '.' in name:
-            desc += ' in ' + name[:name.rfind('.')]
-        elif module and module is not object:
-            desc += ' in module ' + module.__name__
-        doc = title % desc + '\n\n' + text.document(object, name)
-        return plain(doc)
+    # Restore original stdout.
+    sys.stdout = old_stdout
+
+    # Return what was written to fo.
+    return fo.get()
 #@-node:ekr.20040422072343.12:getdoc
+#@+node:bobjack.20080323045434.25:show_message_as_html
+def show_message_as_html(title, msg):
+
+    """Show `msg` in an external browser using leo_to_html."""
+
+    import leo_to_html
+
+    oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
+
+    oHTML.loadConfig()
+    oHTML.silent = True
+    oHTML.myFileName = oHTML.title = title
+
+    oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
+    oHTML.applyTemplate()
+    oHTML.show()
+#@-node:bobjack.20080323045434.25:show_message_as_html
 #@-node:ekr.20040422072343.9:Utils for context sensitive commands
+#@+node:bobjack.20080325162505.6:Special Menu Generators
+#@+node:bobjack.20080325162505.4:gen_recent_files_list
+def gen_recent_files_list(c, event, widget, rmenu, commandList):
+
+    """Generate menu items for recent files list."""
+
+    lst = []
+    for name in c.recentFiles[:]:
+
+        def recentFilesCallback (c, event, widget, name=name):
+            c.openRecentFile(name)
+
+        label = "%s" % (g.computeWindowTitle(name),)
+        lst.append((label, recentFilesCallback))
+
+    commandList[:0] = lst
+
+#@-node:bobjack.20080325162505.4:gen_recent_files_list
+#@-node:bobjack.20080325162505.6:Special Menu Generators
+#@+node:bobjack.20080323045434.14:class ContextMenuController
+class ContextMenuController(object):
+
+    #@    @+others
+    #@+node:bobjack.20080323045434.15:__init__
+    def __init__ (self,c):
+
+        self.c = c
+
+        # Warning: hook handlers must use keywords.get('c'), NOT self.c.
+
+        for command in (
+            'rclick-gen-context-sensitive-commands',
+            'rclick-gen-recent-files-list',
+        ):
+            method = getattr(self, command.replace('-','_'))
+            c.k.registerCommand(command, shortcut=None, func=method)
+
+        self.rClickbinder()
+        self.rSetupMenus()
+    #@-node:bobjack.20080323045434.15:__init__
+    #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
+    def rclick_gen_context_sensitive_commands(self, event):
+
+        """Minibuffer command wrapper."""
+
+        global MB_MENU_RETVAL
+
+        MB_MENU_RETVAL = gen_context_sensitive_commands(*MB_MENU_ARGS)
+
+
+    #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
+    #@+node:bobjack.20080325162505.5:rclick_gen_recent_files_list
+    def rclick_gen_recent_files_list(self, event):
+
+        """Minibuffer command wrapper."""
+
+        global MB_MENU_RETVAL
+
+        MB_MENU_RETVAL = gen_recent_files_list(*MB_MENU_ARGS)
+    #@nonl
+    #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
+    #@+node:ekr.20080327061021.217:rClickbinder
+    def rClickbinder(self):
+
+        '''Bind right click events.'''
+
+        c = self.c
+        if not c.exists: return
+
+        c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
+
+        h = c.searchCommands.findTabHandler
+        if not h: return
+
+        for w in (h.find_ctrl, h.change_ctrl):
+            w.bind('<Button-3>',c.frame.OnBodyRClick)
+    #@-node:ekr.20080327061021.217:rClickbinder
+    #@+node:ekr.20080327061021.218:rSetupMenus
+    def rSetupMenus (self):
+
+        """Set up c.context-menus with menus from @settengs or default_context_menu."""
+
+        c = self.c
+
+        if not hasattr(c, 'context_menus'):
+
+            if hasattr(g.app.config, 'context_menus'):
+                menus = copy.deepcopy(g.app.config.context_menus)
+            else:
+                menus = {}
+
+            if not isinstance(menus, dict):
+                menus = {}
+
+            c.context_menus = menus
+
+            #@        << def config_to_rclick >>
+            #@+node:ekr.20080327061021.219:<< def config_to_rclick >>
+            def config_to_rclick(menu_table):
+
+                """Convert from config to rClick format"""
+
+                out = []
+
+                if not menu_table:
+                    return out
+
+                while menu_table:
+
+                    s, cmd = menu_table.pop(0)
+
+                    if isinstance(cmd, list):
+                        out.append((s.replace('&',''), config_to_rclick(cmd[:])))
+                        continue
+
+                    s, cmd = s.strip(), cmd.strip()
+
+                    if s in ('-', '&', '*'):
+                        out.append((s, cmd))
+                        continue
+
+                    if cmd.strip():
+                        out.append((cmd.replace('&',''), s),)
+                        continue
+
+                    removeHyphens = s and s[0]=='*'
+                    if removeHyphens:
+                        s = s[1:]
+                    label = c.frame.menu.capitalizeMinibufferMenuName(s,removeHyphens)
+                    out.append((label.replace('&',''), s.replace('&','')),)
+
+                return out
+            #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
+            #@nl
+
+            for key in menus.keys():
+                menus[key] = config_to_rclick(menus[key][:])
+
+        menus = c.context_menus
+
+        if not isinstance(menus, dict):
+            c.context_menus = menus = {}
+
+        for key, item in default_context_menus.iteritems():
+
+            if not key in menus:
+                menus[key] = copy.deepcopy(item)
+
+        return True
+    #@nonl
+    #@-node:ekr.20080327061021.218:rSetupMenus
+    #@-others
+#@nonl
+#@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
 #@nonl
-#@-node:ekr.20040422072343:@thin rClick.py
+#@-node:bobjack.20080321133958.6:@thin rClick.py
 #@-leo

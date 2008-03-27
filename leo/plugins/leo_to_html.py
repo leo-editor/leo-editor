@@ -5,7 +5,13 @@
 
 #@<< docstring >>
 #@+node:danr7.20060902215215.2:<< docstring >>
-'''leo_to_html converts a leo outline to an html web page.
+'''
+leo_to_html
+===========
+
+**Converts a leo outline to an html web page.**
+
+.. contents::
 
 Introduction
 ~~~~~~~~~~~~
@@ -27,16 +33,23 @@ The plugin is fully scriptable as all its functionality is available through a
 Leo_to_HTML object which can be imported and used in scripts.
 
 
-Menu items
-~~~~~~~~~~
+Menu items and @settings
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 If this plugin loads properly, the following menu items should appear in
-your File > Export... menu in Leo.
+your File > Export... menu in Leo::
 
-	Save Outline as HTML  (equivalent to export-html)
-	Save Node as HTML     (equivalent to export-html-node)
-	Show Outline as HTML  (equivalent to show-html)
-	Show Node as HTML     (equivalent to show-html-node)
+    Save Outline as HTML  (equivalent to export-html)
+    Save Node as HTML     (equivalent to export-html-node)
+    Show Outline as HTML  (equivalent to show-html)
+    Show Node as HTML     (equivalent to show-html-node)
+
+*Unless* the following appears in an @setting tree::
+
+    @bool leo_to_html_no_menus = True
+
+in which case the menus will **not** be created. This is so that the user can
+use @menu and @item to decide which commands will appear in the menu and where.
 
 
 Commands
@@ -44,41 +57,49 @@ Commands
 
 Several commands will also be made available
 
-    + 'export-html' will export to a file according to current settings.
-    + 'export-html-*' will export to a file using bullet type '*' which can be 'number', 'bullet' or 'head'.
+export-html
+  will export to a file according to current settings.
+export-html-*
+  will export to a file using bullet type '*' which can be **number**, **bullet** or **head**.
 
 The following commands will start a browser showing the html.
 
-    +'show-html' will show the outline according to current settings.
-    +'show-html-*' will show the outline using bullet type '*' which can be 'number', 'bullet' or 'head'.
+show-html
+  will show the outline according to current settings.
 
-The following commands are the same as above except only the current node is converted.
+show-html-*
+  will show the outline using bullet type '*' which can be **number**, **bullet** or **head**.
 
-    +'export-html-node'
-    +'export-html-node-*'
-    +'show-html-node'
-    +'show-html-node-*
+The following commands are the same as above except only the current node is converted::
+
+    export-html-node
+    export-html-node-*
+    show-html-node
+    show-html-node-*
 
 
 Properties
-~~~~~~~~~
+~~~~~~~~~~
 
 There are several settings that can appear in the leo_to_html.ini properties
 file in leo's plugins folder or be set via the Plugins > leo_to_html >
 Properties... menu. These are:
 
 exportpath:
-    The path to the folder where you want to store the generate html file.
+    The path to the folder where you want to store the generated html file.
 
-    Default: c:\
+    Default: c:\\
 
 flagjustheadlines:
+
     Default: 'Yes' to include only headlines in the output.
 
 flagignorefiles:
+
     Default: 'Yes' to ignore @file nodes.
 
 use_xhtml:
+
     Yes to include xhtml doctype declarations and make the file valid XHTML 1.0 Strict.
     Otherwise only a simple <html> tag is used although the output will be xhtml
     compliant otherwise.
@@ -86,6 +107,7 @@ use_xhtml:
     Default: Yes
 
 bullet_type:
+
     If this is 'bullet' then the output will be in the form of a bulleted list.
     If this is 'number' then the output will be in the form of a numbered list.
     If this is 'heading' then the output will use <h?> style headers.
@@ -97,9 +119,16 @@ bullet_type:
     Default: number
 
 browser_command:
-    Set this to the command needed to launch a browser on your system.
 
-    Default:  c:\Program Files\Internet Explorer\IEXPLORE.EXE
+    Set this to the command needed to launch a browser on your system or leave it blank
+    to use your systems default browser.
+
+    If this is an empty string or the browser can not be launched using this command then
+    python's `webbrowser` module will be tried. Using a bad command here will slow down the
+    launch of the default browser, better to leave it blank.
+
+    Default:
+        empty string
 
 '''
 #@-node:danr7.20060902215215.2:<< docstring >>
@@ -133,6 +162,16 @@ browser_command:
 #     - fixed to use tempdir to get a temp dir
 #     - improved (and spellchecked :) docstring.
 #     - added abspath module level method
+# 2.2 bobjack:
+#     - fixed tempdir bug
+#     - converted docstring to rst
+#     - removed trace
+# 2.3 bobjack:
+#     - adopt 'every method must have a docstring' ( however inane :) ) rule
+#     - added support for @string leo_to_html_no_menus setting.
+#     - changed browser_command property default to empty string
+#     - use webbrowser module if browser_command property is empty or does not 
+# work.
 # 
 # 
 # 
@@ -145,14 +184,16 @@ browser_command:
 import leoGlobals as g
 import leoPlugins
 import ConfigParser
+import webbrowser
 import re
 import tempfile
+import os
 
 #@-node:danr7.20060902215215.4:<< imports >>
 #@nl
 
 
-__version__ = '2.1'
+__version__ = '2.3'
 
 
 pluginController = None
@@ -163,6 +204,11 @@ pluginController = None
 #@+node:bob.20080107154936.1:init
 
 def init ():
+    """Initialize and register plugin.
+
+    Hooks create-optional-menus and after-create-leo-frame.
+
+    """
     leoPlugins.registerHandler("create-optional-menus",createExportMenus)
     leoPlugins.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
@@ -172,27 +218,47 @@ def init ():
 #@-node:bob.20080107154936.1:init
 #@+node:bob.20080107154936.2:safe
 def safe(s):
+    """Convert special characters to html entities."""
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 #@-node:bob.20080107154936.2:safe
 #@+node:bob.20080110210953:abspath
 def abspath(*args):
+    """Join the arguments and convert to an absolute file path."""
     return g.os_path_abspath(g.os_path_join(*args))
 #@nonl
 #@-node:bob.20080110210953:abspath
 #@+node:bob.20080107154936.3:onCreate
 def onCreate (tag, keys):
 
+    """
+    Handle 'after-create-leo-frame' hooks by creating a plugin
+    controller for the commander issuing the hook.
+    """
     c = keys.get('c')
     if not c: return
 
     thePluginController = pluginController(c)
-#@nonl
 #@-node:bob.20080107154936.3:onCreate
 #@+node:bob.20080107154936.4:createExportMenus
 def createExportMenus (tag,keywords):
 
+    """Create menu items in File -> Export menu.
+
+    Menu's will not be created if the following appears in an @setting tree::
+
+        @bool leo_to_html_no_menus = True
+
+    This is so that the user can use @menu to decide which commands will
+    appear in the menu and where.
+
+    """
+
     c = keywords.get("c")
+
+    if c.config.getBool('leo_to_html_no_menus'):
+        return
+
 
     for item, cmd in (
         ('Show Node as HTML', 'show-html-node'),
@@ -208,11 +274,17 @@ def createExportMenus (tag,keywords):
 #@-node:bob.20080107154936:module level functions
 #@+node:bob.20080107154757:class pluginController
 class pluginController:
+    """A per commander plugin controller to create and handle
+    minibuffer commands that control the plugins functions.
+    """
 
     #@    @+others
     #@+node:bob.20080107154757.1:__init__
     def __init__ (self,c):
 
+        """
+        Initialze pluginController by registering minibuffer commands.
+        """
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
@@ -244,31 +316,39 @@ class pluginController:
     # EXPORT ALL
 
     def export_html(self, event=None, bullet=None, show=False, node=False):
+        """Command handler for leo_to_html. See modules docstring for details."""
         html = Leo_to_HTML(self.c)
         html.main(bullet=bullet, show=show, node=node)
 
     def export_html_bullet(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet='bullet')
 
     def export_html_number(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet='number')
 
     def export_html_head(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet='head')
 
     # EXPORT NODE
 
 
     def export_html_node(self,event=None, bullet=None,):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet=bullet, node=True)
 
     def export_html_node_bullet(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html_node(bullet='bullet')
 
     def export_html_node_number(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html_node(bullet='number')
 
     def export_html_node_head(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html_node(bullet='head')
 
 
@@ -276,30 +356,38 @@ class pluginController:
 
 
     def show_html(self, event=None, bullet=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet=bullet, show=True)
 
     def show_html_bullet(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html(bullet='bullet')
 
     def show_html_number(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html(bullet='number')
 
     def show_html_head(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html(bullet='head')
 
 
     ## SHOW NODE
 
     def show_html_node(self, event=None, bullet=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet=bullet, show=True, node=True)
 
     def show_html_node_bullet(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html_node(bullet='bullet')
 
     def show_html_node_number(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html_node(bullet='number')
 
     def show_html_node_head(self, event=None):
+        """Command handler for leo_to_html. See modules docstring for details."""
         self.show_html_node(bullet='head')
     #@-node:bob.20080107154757.3:export_html
     #@-others
@@ -308,10 +396,18 @@ class pluginController:
 #@+node:bob.20080107154746:class Leo_to_HTML
 class Leo_to_HTML(object):
 
+    """
+    This class provides all the functionality of the leo_to_html plugin.
+
+    See the docstring for the leo_to_html module for details.
+    """
+
     #@    @+others
     #@+node:bob.20080107154746.1:__init__
 
-    def __init__(self, c):
+    def __init__(self, c=None):
+
+        """Constructor."""
 
         self.c = c
         self.basedir = ''
@@ -466,10 +562,6 @@ class Leo_to_HTML(object):
 
         self.setup()
 
-        if self.use_xhtml:
-            self.template = self.getXHTMLTemplate()
-        else:
-            self.template = self.getPlainTemplate()
 
         self.do_xhtml(node)
         self.applyTemplate()
@@ -486,6 +578,8 @@ class Leo_to_HTML(object):
     #@-node:bob.20080107154746.9:main
     #@+node:bob.20080109063110.7:announce
     def announce(self, msg, prefix=None, color=None, silent=None):
+
+        """Print a message if flags allow."""    
 
         if silent is None:
             silent = self.silent
@@ -507,6 +601,8 @@ class Leo_to_HTML(object):
     #@+node:bob.20080107154746.11:loadConfig
     def loadConfig(self):
 
+        """Load configuration from a .ini file."""
+
         def config(s):
             s = configParser.get("Main", s)
             #g.trace(s)
@@ -519,7 +615,7 @@ class Leo_to_HTML(object):
              if ss:
                  return ss.lower()[0] in ('y', 't', '1')
 
-        g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
+        #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
         configParser.read(fileName)
@@ -529,8 +625,13 @@ class Leo_to_HTML(object):
 
         self.basedir = config("exportPath") # "/"
 
-        self.browser_command = config("browser_command")
+        self.browser_command = config("browser_command").strip()
+
         self.use_xhtml =  flag("use_xhtml")
+        if self.use_xhtml:
+            self.template = self.getXHTMLTemplate()
+        else:
+            self.template = self.getPlainTemplate()
 
         self.bullet_type = config( "bullet_type").lower()
         if self.bullet_type not in ('bullet', 'number', 'head'):
@@ -544,6 +645,8 @@ class Leo_to_HTML(object):
     #@-node:bob.20080107154746.11:loadConfig
     #@+node:bob.20080109063110.8:setup
     def setup(self):
+
+        """Set various parameters."""
 
         self.openItemString = '<li>'
         self.closeItemString = '</li>'
@@ -594,6 +697,16 @@ class Leo_to_HTML(object):
     #@+node:bob.20080107154746.10:applyTemplate
     def applyTemplate(self, template=None):
 
+        """
+        Fit self.xhtml and self.title into an (x)html template.
+
+        Plaace the result in self.xhtml.
+
+        The template string in self.template should have too %s place
+        holders.  The first for the title the second for the body.
+
+        """
+
         xhtml = self.xhtml
 
         if template is None:
@@ -608,27 +721,49 @@ class Leo_to_HTML(object):
 
     def show(self):
 
-        filepath = abspath(self.basedir, self.path, self.myFileName)
+        """
+        Convert the outline to xhtml and display the results in a browser.
 
-        filename = 'leo_show_' + re.sub('[/\\:]', '_', filepath)
+        If browser_command is set, this command will be used to launch the browser.
+        If it is not set, or if the command fails, the default browser will be used.
+        Setting browser_command to a bad command will slow down browser launch.
 
-        filepath = abspath(tempfile.gettempdir(), filename)
+        """
+
+        tempdir = g.os_path_join(g.os_path_abspath(tempfile.gettempdir()), 'leo_show')
+
+        if not g.os_path_exists(tempdir):
+            os.mkdir(tempdir)
+
+        filename = g.sanitize_filename(self.myFileName)  
+        filepath = g.os_path_join(tempdir, filename + '.html')
 
         self.write(filepath, self.xhtml, basedir='', path='')
 
+        url = "file://%s" % filepath
 
+        msg = ''
+        if self.browser_command:
 
-        try:
-            import subprocess
-        except:
-            subprocess = None
-            self.announce_fail('Show failed - cant import subprocess')
+            g.trace(self.browser_command)
 
-        if subprocess:
             try:
-                subprocess.Popen([self.browser_command,  "file://%s" % filepath])
+                import subprocess
             except:
-                self.announce_fail('Show failed - cant open browser')
+                msg = 'cant import subprocess'
+
+            if subprocess:
+                try:
+                    subprocess.Popen([self.browser_command, url])
+                    return True
+                except:
+                    msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
+                    'Using default browser instead.'
+
+        if msg:
+            self.announce_fail(msg)
+
+        webbrowser.open(url)
     #@-node:bob.20080109063110.9:show
     #@+node:bob.20080107171331:writeall
     def writeall(self):

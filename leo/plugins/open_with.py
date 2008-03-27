@@ -66,11 +66,11 @@ def init():
         g.app.hasOpenWithMenu = True
         g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
         leoPlugins.registerHandler("idle", on_idle)
-        leoPlugins.registerHandler(('new','open2'), create_open_with_menu)
+        # leoPlugins.registerHandler(('new','open2'), create_open_with_menu)
+        leoPlugins.registerHandler('menu2', create_open_with_menu)
         g.plugin_signon(__name__)
 
     return True
-#@nonl
 #@-node:ekr.20050311090939.8:init
 #@+node:EKR.20040517075715.5:on_idle
 # frame.OnOpenWith creates the dict with the following entries:
@@ -179,7 +179,6 @@ def create_open_with_menu (tag,keywords):
             table = doDefaultTable()
 
     c.frame.menu.createOpenWithMenuFromTable(table)
-#@nonl
 #@+node:ekr.20070411165142:doDefaultTable
 def doDefaultTable ():
 

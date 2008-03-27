@@ -39,7 +39,7 @@
 # Doing so would make g.app invalid in the imported files.
 import os
 import sys
-# import Tkinter ; Tkinter.wantobjects = 0
+import Tkinter ; Tkinter.wantobjects = 0
     # An ugly hack for Tk/Tkinter 8.5
     # See http://sourceforge.net/forum/message.php?msg_id=4078577
 
@@ -237,6 +237,8 @@ def createFrame (fileName,relativeFileName):
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
 
     # Report the failure to open the file.
     if fileName:

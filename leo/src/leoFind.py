@@ -1718,25 +1718,11 @@ class nullFindTab (findTab):
         for label,ivar in data:
             if label.startswith('*'):
                 label = label[1:]
-                # style = g.choose(inGroup,0,wx.RB_GROUP)
-                # inGroup = True
-                # w = wx.RadioButton(f,label=label,style=style)
                 w = self.buttonWidget(label)
                 self.widgetsDict[ivar] = w
-                # def radioButtonCallback(event=None,ivar=ivar):
-                    # svar = self.svarDict["radio-search-scope"]
-                    # svar.set(ivar)
-                # w.Bind(wx.EVT_RADIOBUTTON,radioButtonCallback)
             else:
-                #w = wx.CheckBox(f,label=label)
                 w = self.buttonWidget(label)
                 self.widgetsDict[ivar] = w
-                # def checkBoxCallback(event=None,ivar=ivar):
-                    # svar = self.svarDict.get(ivar)
-                    # val = svar.get()
-                    # svar.set(g.choose(val,False,True))
-                    # # g.trace(ivar,val)
-                # w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
             self.boxes.append(w)
     #@nonl
     #@-node:ekr.20070302090616.12:createBoxes

@@ -8,18 +8,12 @@ Cleo adds time required, progress and priority settings for nodes.
 It also allows you to colour nodes.  With the @project tag a
 branch can display progress and time required with dynamic updates.
 
-See 
+Right click on a node's icon box to dislay the cleo menu.
 
-  http://leo.zwiki.org/Cleo 
-           and 
-  http://leo.zwiki.org/cleodoc.html
+For full documentation see:
 
-for full documentation.
-
-User colours that exist on a node but not on the colour list
-can be restored to the colour list by right clicking on the
-node's icon box (this also displays the cleo menu).
-
+  - http://leo.zwiki.org/Cleo 
+  - http://leo.zwiki.org/cleodoc.html
 '''
 #@nonl
 #@-node:tbrown.20060903211930:<< docstring >>
@@ -33,6 +27,7 @@ node's icon box (this also displays the cleo menu).
 import leoGlobals as g
 import leoPlugins
 import leoTkinterTree
+import leoEditCommands
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -40,7 +35,7 @@ import sys
 #@nonl
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
-__version__ = "0.24"
+__version__ = "0.25"
 #@<< version history >>
 #@+node:tbrown.20060903121429.3:<< version history >>
 #@@killcolor
@@ -112,8 +107,10 @@ __version__ = "0.24"
 # 0.22 EKR: fixed crasher in custom_colours.
 # 0.23 EKR: added 'c' arg to p.isVisible (v.isVisible no longer exists).
 # 0.24 EKR: removed bugs section.
+# 0.25 TNB:
+# - added priority sort, tag all children 'todo'
+# - switched to leo icons for priority display
 #@-at
-#@nonl
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
@@ -134,7 +131,6 @@ if ok: # Don't define this if import Tkinter failed.
             p = Tk.Variable.get(self)
             # Beware of returning False!
             return p
-#@nonl
 #@-node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
 #@+node:tbrown.20060903121429.12:init
 def init():
@@ -166,17 +162,36 @@ class cleoController:
     '''A per-commander class that recolors outlines.'''
 
     #@    @+others
+    #@+node:tbrown.20080304230028:priority table
+    priorities = {
+      1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
+      2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
+      3: {'long': 'High',      'short': '3', 'icon': 'pri3.png'},
+      4: {'long': 'Medium',    'short': '4', 'icon': 'pri4.png'},
+      5: {'long': 'Low',       'short': '5', 'icon': 'pri5.png'},
+      6: {'long': 'Very Low',  'short': '6', 'icon': 'pri6.png'},
+      7: {'long': 'Sometime',  'short': '7', 'icon': 'pri7.png'},
+     19: {'long': 'To do',     'short': 'o', 'icon': 'chkboxblk.png'},
+     20: {'long': 'Bang',      'short': '!', 'icon': 'bngblk.png'},
+     21: {'long': 'Cross',     'short': 'X', 'icon': 'xblk.png'},
+     22: {'long': '(cross)',   'short': 'x', 'icon': 'xgry.png'},
+     23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
+    100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
+    }
+
+    todo_priorities = 1,2,3,4,5,6,7,19
+    #@nonl
+    #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
     def __init__ (self,c):
 
         self.c = c
+        c.cleo = self
         self.menu = None
         self.donePriority = 100
         self.smiley = None
 
         self.marks = []   # list of marks made on canvas
-
-        self.typePickle = type(TkPickleVar())  # for testing old files
 
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
@@ -235,6 +250,10 @@ class cleoController:
             'Sel. Comments': 'LightBlue4',
         }
 
+        self.file_nodes = ["@file", "@thin", "@nosen", "@asis", "@root"]
+        if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
+            self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
+
         self.priority_colours = {
             1 : 'red',
             2 : 'orange',
@@ -270,7 +289,8 @@ class cleoController:
         ]
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
-    #@nonl
+
+        self.loadAllIcons()
     #@+node:tbrown.20060903121429.17:install_drawing_overrides
     def install_drawing_overrides (self):
 
@@ -283,6 +303,31 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20060903121429.17:install_drawing_overrides
     #@-node:tbrown.20060903121429.15:birth
+    #@+node:tbrown.20080303214305:loadAllIcons
+    def loadAllIcons(self):
+        """Load icons to represent cleo state"""
+
+        for p in self.c.allNodes_iter():
+            self.loadIcons(p)
+    #@-node:tbrown.20080303214305:loadAllIcons
+    #@+node:tbrown.20080303232514:loadIcons
+    def loadIcons(self, p):
+        iconDir = g.os_path_abspath(
+          g.os_path_normpath(
+            g.os_path_join(g.app.loadDir,"..","Icons")))
+        com = self.c.editCommands
+        icons = [i for i in com.getIconList(p)
+                 if 'cleoIcon' not in i]
+        pri = self.getat(p.v, 'priority')
+        if pri: pri = int(pri)
+        if pri in self.priorities:
+            com.appendImageDictToList(icons, iconDir,
+                g.os_path_join('cleo',self.priorities[pri]['icon']),
+                2, on='vnode', cleoIcon='1', where = 'beforeIcon')
+                # beforeBox beforeIcon beforeHeadline afterHeadline
+
+        com.setIconList(p, icons)
+    #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
     def close(self, tag, key):
         "unregister handlers on closing commander"
@@ -367,7 +412,7 @@ class cleoController:
                 return ""
 
         x = node.unknownAttributes["annotate"][attrib]
-        if type(x) == self.typePickle:
+        if isinstance(x, TkPickleVar):
             node.unknownAttributes["annotate"][attrib] = x.get()
             return x.get()
         else:
@@ -437,7 +482,7 @@ class cleoController:
 
             isDefault = True
             for ky, vl in node.unknownAttributes["annotate"].iteritems():
-                if type(vl) == self.typePickle:
+                if isinstance(vl, TkPickleVar):
                     node.unknownAttributes["annotate"][ky] = vl = vl.get()
                 if not self.testDefault(ky, vl):
                     isDefault = False
@@ -515,7 +560,7 @@ class cleoController:
         # set bg of @file type of nodes
         h = v and v.headString() or ''
 
-        for f in ["@file", "@thin", "@nosen", "@asis", "@root"]:
+        for f in self.file_nodes:
             if h.find(f, 0, 5) == 0:
                 if node_is_selected:
                     bg = self.node_colours['Sel. File']
@@ -590,6 +635,8 @@ class cleoController:
         for ky, vl in self.pickles.iteritems():
             self.setat(self.pickleV, ky, vl.get())
 
+        self.loadIcons(self.pickleP)
+
         self.clear_marks(self.c.frame.tree.canvas)
         self.update_project(self.pickleP)
         c = self.c
@@ -639,19 +686,19 @@ class cleoController:
             # self.draw_tick(v)
             return None
 
-        priority = self.getat(v, 'priority')
-        colour = self.priority_colours.get(priority,False)
-        if colour:
-            self.draw_arrow(v,colour)
-        if priority==self.donePriority:
-            self.draw_tick(v)
+        # priority = self.getat(v, 'priority')
+        # colour = self.priority_colours.get(priority,False)
+        # if colour:
+        #     self.draw_arrow(v,colour)
+        # if priority==self.donePriority:
+        #     self.draw_tick(v)
 
         progress = self.getat(v, 'progress')
         if self.scaleProg != 0 and progress != '': 
             progWidth = self.progWidth
             if self.scaleProg == 2 and self.getat(v, 'time_req') != '':
                 progWidth += self.getat(v, 'time_req') * self.extraProg
-            self.draw_prog(v, progress/100., progWidth)
+            self.draw_prog(v, float(progress)/100., progWidth)
 
         # Archetype are not drawn here
         return None
@@ -939,14 +986,8 @@ class cleoController:
     #@+node:tbrown.20061020145804:left_priority_menu
     def left_priority_menu(self, menu, p):
         self.prep_pickle(p.v, 'priority', default=9999)
-        for value,label in (
-            (1,'1'),
-            (2,'2'),
-            (3,'3'),
-            (4,'4',),
-            (5,'5',),
-            (self.donePriority,'D'),
-        ):
+        for pri in self.priorities:
+            value,label = pri, self.priorities[pri]['short']
             s = '%s' % (label)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
@@ -954,6 +995,35 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20061020145804:left_priority_menu
     #@+node:tbrown.20060903121429.52:priority_menu
+    def pricmp(self, a, b):
+        """cmp function for sorting by priority, a and b a (headstring,p)"""
+        # getat returns 9999 for nodes without priority, so you'll only get -1
+        # if a[1] is not a node.  Or even an object.
+        try:
+            pa = int(self.getat(a[1].v, 'priority'))
+        except:
+            pa = -1
+        try:
+            pb = int(self.getat(b[1].v, 'priority'))
+        except:
+            pb = -1
+
+        return cmp(pa,pb)
+
+    def priSort(self):
+        self.c.selectPosition(self.pickleP)
+        self.c.sortSiblings(cmp=self.pricmp)
+
+    def childrenTodo(self):
+        self.c.beginUpdate()
+        try:
+            for p in self.pickleP.children_iter():
+                if self.getat(p.v, 'priority') != 9999: continue
+                self.setat(p.v, 'priority', 19)
+                self.loadIcons(p)
+        finally:
+            self.c.endUpdate()
+
     def priority_menu(self,parent,p):
 
         # done already in left_priority menu
@@ -964,14 +1034,8 @@ class cleoController:
         parent.add_cascade(label='Priority', menu=menu,underline=1)
 
         # Instead of just redraw, set changed too.
-        for value,label in (
-            (1,'Very High'),
-            (2,'High'),
-            (3,'Medium'),
-            (4,'Low',),
-            (5,'None',),
-            (self.donePriority,'Done'),
-        ):
+        for pri in self.priorities:
+            value,label = pri, self.priorities[pri]['long']
             s = '%d %s' % (value,label)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
@@ -979,11 +1043,17 @@ class cleoController:
 
         menu.add_separator()
 
+        menu.add_command(label='Sort',
+            command=self.priSort, underline=0)
+        menu.add_command(label='Children -> To do',
+            command=self.childrenTodo, underline=0)
+
+        menu.add_separator()
+
         menu.add_command(label='Clear',
             command=lambda p=p:self.priority_clear(p.v),underline=0)
 
         return menu
-    #@nonl
     #@-node:tbrown.20060903121429.52:priority_menu
     #@+node:tbrown.20060912220630:progress_menu
     def progress_menu(self,parent,p):
@@ -1165,6 +1235,8 @@ class cleoController:
             if show:
                 tr = self.getat(nd.v, 'time_req')
                 pr = self.getat(nd.v, 'progress')
+                try: pr = float(pr)
+                except: pr = ''
                 if tr != '' or pr != '':
                     ans = ' <'
                     if tr != '':
@@ -1273,22 +1345,17 @@ class cleoController:
 
         if not p: return True  # not required - safety net
 
-        # see if this node is a todo    
-        vn = p.v
-        if (stage != 0 and hasattr(vn,'unknownAttributes') and
-            vn.unknownAttributes.has_key('annotate') and
-            vn.unknownAttributes['annotate'].has_key('priority')):
-                pri = vn.unknownAttributes['annotate']['priority']
-                if pri <= 4 and pri >= 1:
-                    self.c.beginUpdate()
-                    try:
-                        if p.getParent(): 
-                            self.c.selectPosition(p.getParent())
-                            self.c.expandNode()
-                        self.c.selectPosition(p)
-                    finally:
-                        self.c.endUpdate()
-                    return True
+        # see if this node is a todo
+        if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
+            self.c.beginUpdate()
+            try:
+                if p.getParent(): 
+                    self.c.selectPosition(p.getParent())
+                    self.c.expandNode()
+                self.c.selectPosition(p)
+            finally:
+                self.c.endUpdate()
+            return True
 
         for nd in p.children_iter():
             if self.find_todo(nd, stage = 2): return True

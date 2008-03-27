@@ -2317,9 +2317,9 @@ class baseFileCommands:
                 c.endEditing()# Set the current headline text.
                 self.setDefaultDirectoryForNewFiles(fileName)
                 ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+                self.putSavedMessage(fileName)
                 if ok:
                     c.setChanged(False) # Clears all dirty bits.
-                    self.putSavedMessage(fileName)
                     if c.config.save_clears_undo_buffer:
                         g.es("clearing undo")
                         c.undoer.clearUndoState()
@@ -3015,6 +3015,7 @@ class baseFileCommands:
         self.toString = toString
         theActualFile = None
         toZip = False
+        atOk = True
 
         if not outlineOnlyFlag or toOPML:
             # Update .leoRecentFiles.txt if possible.
@@ -3024,7 +3025,7 @@ class baseFileCommands:
             try:
                 # Write all @file nodes and set orphan bits.
                 # An important optimization: we have already assign the file indices.
-                c.atFileCommands.writeAll()
+                changedFiles,atOk = c.atFileCommands.writeAll()
             except Exception:
                 g.es_error("exception writing derived files")
                 g.es_exception()
@@ -3038,7 +3039,7 @@ class baseFileCommands:
         if g.os_path_exists(fileName):
             try:
                 if not os.access(fileName,os.W_OK):
-                    g.es("can not create: read only:",fileName,color="red")
+                    g.es("can not write: read only:",fileName,color="red")
                     return False
             except Exception:
                 pass # os.access() may not exist on all platforms.
@@ -3114,7 +3115,7 @@ class baseFileCommands:
                 # g.es_print('len',len(s),'putCount',self.putCount) # 'put',t2-t1,'write&close',t3-t2)
             self.outputFile = None
             self.toString = False
-            return True
+            return atOk
         except Exception:
             g.es("exception writing:",fileName)
             g.es_exception(full=True)
@@ -3165,7 +3166,7 @@ class baseFileCommands:
 
         c = self.c
 
-        changedFiles = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+        changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
 
         if changedFiles:
             g.es("auto-saving outline",color="blue")
@@ -3178,7 +3179,7 @@ class baseFileCommands:
 
         c = self.c
 
-        changedFiles = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+        changedFiles,atOk = c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
 
         if changedFiles:
             g.es("auto-saving outline",color="blue")

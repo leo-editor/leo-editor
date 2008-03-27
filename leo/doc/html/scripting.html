@@ -712,16 +712,18 @@ g.es('format_headlines',format_headlines)
 <p>The <tt class="docutils literal"><span class="pre">c.config</span></tt> class has the following getters.
 See the <tt class="docutils literal"><span class="pre">configSettings</span></tt> in <tt class="docutils literal"><span class="pre">leoCommands.py</span></tt> for details:</p>
 <pre class="literal-block">
-getBool
-getColor
-getDirectory
-getFloat
-getInt
-getLanguage
-getRatio
-getShortcut
-getString
+c.config.getBool(settingName,default=None)
+c.config.getColor(settingName)
+c.config.getDirectory(settingName)
+c.config.getFloat(settingName)
+c.config.getInt(settingName)
+c.config.getLanguage(settingName)
+c.config.getRatio(settingName)
+c.config.getShortcut(settingName)
+c.config.getString(settingName)
 </pre>
+<p>These methods return None if no setting exists.
+The getBool 'default' argument to getBool gives the value to be returned if the setting does not exist.</p>
 <p>You can set any <em>existing</em> item in an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree with <tt class="docutils literal"><span class="pre">c.config.set(p,setting,val)</span></tt>.
 For example:</p>
 <pre class="literal-block">
@@ -1138,6 +1140,11 @@ deprecated. The <tt class="docutils literal"><span class="pre">new_c</span></tt>
 <td>c,p,v (note 3)</td>
 </tr>
 <tr><td>'menu2'</td>
+<td>yes</td>
+<td>during creating menus</td>
+<td>c,p,v (note 3)</td>
+</tr>
+<tr><td>'menu-update'</td>
 <td>yes</td>
 <td>before updating menus</td>
 <td>c,p,v</td>

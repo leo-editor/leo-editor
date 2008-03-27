@@ -275,7 +275,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.expandedVisibleArea = None
 
         if self.allocateOnlyVisibleNodes:
-            self.frame.bar1.bind("<B1-ButtonRelease>", self.redraw_now)
+            self.frame.bar1.bind("<Button-1-ButtonRelease>", self.redraw_now)
         #@-node:ekr.20040803072955.18:<< old ivars >>
         #@nl
         #@    << inject callbacks into the position class >>
@@ -326,28 +326,39 @@ class leoTkinterTree (leoFrame.leoTree):
 
         self.freeUserIcons = []
     #@-node:ekr.20040803072955.16:__init__ (tkTree)
-    #@+node:ekr.20051024102724:tkTtree.setBindings
+    #@+node:ekr.20051024102724:tkTtree.setBindings & helper
     def setBindings (self,):
 
         '''Create master bindings for all headlines.'''
 
-        tree = self ; k = self.c.k ; canvas = self.canvas
+        tree = self ; k = self.c.k
 
-        # g.trace('self',self,'canvas',canvas)
+        # g.trace('self',self,'canvas',self.canvas)
 
-        #@    << make bindings for a common binding widget >>
-        #@+node:ekr.20060131173440:<< make bindings for a common binding widget >>
+        tree.setBindingsHelper()
+
+        tree.setCanvasBindings(self.canvas)
+
+        k.completeAllBindingsForWidget(self.canvas)
+
+        k.completeAllBindingsForWidget(self.bindingWidget)
+
+    #@+node:ekr.20060131173440:tkTree.setBindingsHelper
+    def setBindingsHelper (self):
+
+        tree = self ; k = self.c.k
+
         self.bindingWidget = w = g.app.gui.plainTextWidget(
             self.canvas,name='bindingWidget')
 
         w.bind('<Key>',k.masterKeyHandler)
 
-        table = (
+        table = [
             ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
             ('<Button-3>',       k.masterClick3Handler,         tree.onHeadlineRightClick),
             ('<Double-Button-1>',k.masterDoubleClickHandler,    tree.onHeadlineClick),
             ('<Double-Button-3>',k.masterDoubleClick3Handler,   tree.onHeadlineRightClick),
-        )
+        ]
 
         for a,handler,func in table:
             def treeBindingCallback(event,handler=handler,func=func):
@@ -356,16 +367,8 @@ class leoTkinterTree (leoFrame.leoTree):
             w.bind(a,treeBindingCallback)
 
         self.textBindings = w.bindtags()
-        #@-node:ekr.20060131173440:<< make bindings for a common binding widget >>
-        #@nl
-
-        tree.setCanvasBindings(canvas)
-
-        k.completeAllBindingsForWidget(canvas)
-
-        k.completeAllBindingsForWidget(self.bindingWidget)
-
-    #@-node:ekr.20051024102724:tkTtree.setBindings
+    #@-node:ekr.20060131173440:tkTree.setBindingsHelper
+    #@-node:ekr.20051024102724:tkTtree.setBindings & helper
     #@+node:ekr.20070327103016:tkTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
@@ -1048,10 +1051,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         h,w = 0,0 ; t = p.v.t
 
-        if not hasattr(t,"unknownAttributes"):
-            return h,w
-
-        iconsList = t.unknownAttributes.get("icons")
+        com = self.c.editCommands
+        iconsList = com.getIconList(p)
         if not iconsList:
             return h,w
 

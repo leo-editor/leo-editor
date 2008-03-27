@@ -34,15 +34,16 @@
 <v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
 <v t="ekr.20070303143951"><vh>unused</vh>
 <v t="ekr.20051018071924"><vh>@@color log_pane_Completion_tab_background_color = yellow</vh></v>
 <v t="ekr.20060325072919"><vh>@@ifgui tkinter</vh>
@@ -62,7 +63,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -1806,6 +1807,11 @@
 <v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
 <v t="ekr.20071113145804.23"><vh>@test g.reportBadChars</vh></v>
 <v t="ekr.20071113090055.3"><vh>@test g.scanDirectives</vh></v>
+<v t="ekr.20080323161613.10"><vh>@test g.scanAtLineendingDirective crlf</vh></v>
+<v t="ekr.20080323161613.11"><vh>@test g.scanAtLineendingDirective cr</vh></v>
+<v t="ekr.20080323161613.12"><vh>@test g.scanAtLineendingDirective lf</vh></v>
+<v t="ekr.20080323161613.13"><vh>@test g.scanAtLineendingDirective nl</vh></v>
+<v t="ekr.20080323161613.14"><vh>@test g.scanAtLineendingDirective platform</vh></v>
 <v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
 <v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
 <v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
@@ -2125,19 +2131,15 @@ Scripting plugin. When this plugin is enabled Leo will create a blue 'script
 button' in the icon bar called 'unit test'. 
  
 - To run all unit tests, select the node in test.leo called 'Unit tests...',
-then click the 'unit test' button. 
+then do &lt;alt-4&gt; 
  
-- To run a single test, select an @test node and click the 'unit test' button. 
+- To run a single test, select an @test node and do &lt;alt-4&gt;.
  
-- To run a suite of tests, select an @suite node and click the 'unit test' button. 
+- To run a suite of tests, select an @suite node and do &lt;alt-4&gt;.
  
 - To run any other collection of tests, create an outline containing those @test
-or @suite nodes, select the root of that tree and click the 'unit test' button.
+or @suite nodes, select the root of that tree and do &lt;alt-4&gt; .
 
-That's all. See the docstring the Scripting plugin for more details about script
-buttons. You can see this docstring using the plugin_manager plugin if you have
-it installed. 
- 
 Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
@@ -5038,7 +5040,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns False'
+root = at.root
+assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5072,7 +5075,8 @@ for p in (at.outputFileName,at.targetFileName):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -5108,7 +5112,8 @@ for p in (at.outputFileName,):
 
 at.toString = False # Set by execute script stuff.
 at.shortFileName = at.targetFileName
-assert not at.replaceTargetFileIfDifferent(), 'replaceTargetFileIfDifferent returns True'
+root = at.root
+assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
     print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
     print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
@@ -15765,11 +15770,7 @@ http://webpages.charter.net/edreamleo/front.html</t>
 <t tx="ekr.20061106201509.4">if g.app.gui.guiName() == 'tkinter':
 
     import rClick
-    
-    d = {'c':c}
     rClick.init()
-    rClick.rClickbinder(tag='test',keywords=d)
-    rClick.rClicker(tag='test',keywords=d)
 </t>
 <t tx="ekr.20061106201509.6"># line 1
 # line 2
@@ -16525,6 +16526,7 @@ threading_colorizer.py
 
 # cleo.py
 # vim.py
+rClick.py
 </t>
 <t tx="ekr.20070303143951"></t>
 <t tx="ekr.20070305095401">p = c.currentPosition().copy()
@@ -17731,12 +17733,18 @@ assert language == 'python','got:%s' % language
 <t tx="ekr.20071113090055.3"># This will work regardless of where this method is.
 @language python
 @tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@comment a b c
 # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
 
 d = g.scanDirectives(c,p)
 
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
+assert d.get('pagewidth') == 72
+assert d.get('encoding') == 'utf-8'
+assert d.get('delims') == ('a','b','c',)
 # assert d.get('path').endswith('xyzzy')
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
@@ -18932,7 +18940,9 @@ g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
-<t tx="ekr.20071113145804.4">c.beginUpdate()
+<t tx="ekr.20071113145804.4">@language python
+
+c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -18955,7 +18965,9 @@ finally:
     c.endUpdate(False)
 
 # end:</t>
-<t tx="ekr.20071113145804.5">c.beginUpdate()
+<t tx="ekr.20071113145804.5">@language python
+
+c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -19966,5 +19978,48 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)</t>
 <t tx="ekr.20080312090030.1"></t>
+<t tx="ekr.20080323161613.10"># This will work regardless of where this method is.
+@lineending crlf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r\n'
+</t>
+<t tx="ekr.20080323161613.11"># This will work regardless of where this method is.
+@lineending cr
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\r'
+</t>
+<t tx="ekr.20080323161613.12"># This will work regardless of where this method is.
+@lineending lf
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080323161613.13"># This will work regardless of where this method is.
+@lineending nl
+
+d = g.scanDirectives(c,p)
+
+assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080323161613.14"># This will work regardless of where this method is.
+@lineending platform
+
+d = g.scanDirectives(c,p)
+
+import sys
+
+if sys.platform.startswith('win'):
+    assert d.get('lineending') == '\r\n'
+else:
+    assert d.get('lineending') == '\n'
+</t>
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.</t>
 </tnodes>
 </leo_file>

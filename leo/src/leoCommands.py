@@ -219,12 +219,6 @@ class baseCommands:
             c.commandsDict = {}
 
         c.frame.log.finishCreate()
-
-        # Create the menu last so that we can use the key handler for shortcuts.
-        # if not g.doHook("menu1",c=c,p=p,v=p):
-            # g.trace('commands',c,g.callers())
-            # c.frame.menu.createMenuBar(c.frame)
-
         c.bodyWantsFocusNow()
     #@+node:ekr.20051007143620:printCommandsDict
     def printCommandsDict (self):
@@ -315,7 +309,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 alpha 2, build %s, March 14, 2008" % c.getBuildNumber()
+        return "Leo 4.4.8 beta 3, build %s, March 24, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -821,6 +815,9 @@ class baseCommands:
             if not g.doHook("menu1",c=c,p=p,v=p):
                 frame.menu.createMenuBar(frame)
                 c.updateRecentFiles(fileName=None)
+                g.doHook("menu2",c=frame.c,p=p,v=p)
+                g.doHook("after-create-leo-frame",c=c)
+
         finally:
             c.endUpdate()
             # chapterController.finishCreate must be called after the first real redraw
@@ -3739,7 +3736,7 @@ class baseCommands:
     #@-node:ekr.20031218072017.1765:c.validateOutline
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
     #@+node:ekr.20050415134809:c.sortChildren
-    def sortChildren (self,event=None):
+    def sortChildren (self,event=None,cmp=None):
 
         '''Sort the children of a node.'''
 
@@ -3751,7 +3748,7 @@ class baseCommands:
         try: # In update
             c.endEditing()
             u.beforeChangeGroup(p,undoType)
-            c.sortChildrenHelper(p)
+            c.sortChildrenHelper(p, cmp=cmp)
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             c.setChanged(True)
             u.afterChangeGroup(p,undoType,dirtyVnodeList=dirtyVnodeList)
@@ -3759,13 +3756,16 @@ class baseCommands:
             c.endUpdate()
     #@-node:ekr.20050415134809:c.sortChildren
     #@+node:ekr.20040303175026.12:c.sortChildrenHelper
-    def sortChildrenHelper (self,p):
+    def sortChildrenHelper (self,p,cmp=None):
 
         c = self ; u = c.undoer
 
         # Create a list of tuples sorted on headlines.
         pairs = [(child.headString().lower(),child.copy()) for child in p.children_iter()]
-        pairs.sort()
+        if cmp:
+            pairs.sort(cmp)
+        else:
+            pairs.sort()
 
         # Move the children.
         index = 0
@@ -3777,7 +3777,7 @@ class baseCommands:
     #@nonl
     #@-node:ekr.20040303175026.12:c.sortChildrenHelper
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None):
+    def sortSiblings (self,event=None,cmp=None):
 
         '''Sort the siblings of a node.'''
 
@@ -3787,13 +3787,13 @@ class baseCommands:
 
         parent = p.parent()
         if not parent:
-            c.sortTopLevel()
+            c.sortTopLevel(cmp=cmp)
         else:
             c.beginUpdate()
             try: # In update...
                 c.endEditing()
                 u.beforeChangeGroup(p,undoType)
-                c.sortChildrenHelper(parent)
+                c.sortChildrenHelper(parent, cmp=cmp)
                 dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
                 c.setChanged(True)
                 u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
@@ -3801,7 +3801,7 @@ class baseCommands:
                 c.endUpdate()
     #@-node:ekr.20050415134809.1:c.sortSiblings
     #@+node:ekr.20031218072017.2896:c.sortTopLevel
-    def sortTopLevel (self,event=None):
+    def sortTopLevel (self,event=None, cmp=None):
 
         '''Sort the top-level nodes of an outline.'''
 
@@ -3812,7 +3812,10 @@ class baseCommands:
         # Create a list of tuples sorted by headlines.
         pairs = [(p.headString().lower(),p.copy())
             for p in root.self_and_siblings_iter()]
-        pairs.sort()
+        if cmp:
+            pairs.sort(cmp)
+        else:
+            pairs.sort()
 
         c.beginUpdate()
         try: # In update...
@@ -7356,7 +7359,7 @@ class configSettings:
     """A class to hold config settings for commanders."""
 
     #@    @+others
-    #@+node:ekr.20041118104831.2:configSettings.__init__
+    #@+node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     def __init__ (self,c):
 
         self.c = c
@@ -7415,34 +7418,94 @@ class configSettings:
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName,encoding))
     #@-node:ekr.20041118104414:initEncoding
-    #@-node:ekr.20041118104831.2:configSettings.__init__
+    #@-node:ekr.20041118104831.2:configSettings.__init__ (c.configSettings)
     #@+node:ekr.20041118053731:Getters (c.configSettings)
-    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-        return g.app.config.getFontFromParams(self.c,
-            family,size,slant,weight,defaultSize=defaultSize)
-
-    def getRecentFiles (self):
-        return g.app.config.getRecentFiles()
-
-    def get(self,setting,theType):
+    def get (self,setting,theType):
+        '''A helper function: return the commander's setting, checking the type.'''
         return g.app.config.get(self.c,setting,theType)
 
-    def getAbbrevDict(self):         return g.app.config.getAbbrevDict(self.c)
-    def getBool      (self,setting): return g.app.config.getBool     (self.c,setting)
-    def getButtons   (self):         return g.app.config.atCommonButtonsList # unusual.
-    def getColor     (self,setting): return g.app.config.getColor    (self.c,setting)
-    def getCommands  (self):         return g.app.config.atCommonCommandsList # unusual.
-    def getData      (self,setting): return g.app.config.getData     (self.c,setting)
-    def getDirectory (self,setting): return g.app.config.getDirectory(self.c,setting)
-    def getInt       (self,setting): return g.app.config.getInt      (self.c,setting)
-    def getFloat     (self,setting): return g.app.config.getFloat    (self.c,setting)
-    def getFontDict  (self,setting): return g.app.config.getFontDict (self.c,setting)
-    def getMenusList (self):         return g.app.config.menusList # unusual.
-    def getLanguage  (self,setting): return g.app.config.getLanguage (self.c,setting)
-    def getOpenWith  (self):         return g.app.config.getOpenWith (self.c)
-    def getRatio     (self,setting): return g.app.config.getRatio    (self.c,setting)
-    def getShortcut  (self,setting,):return g.app.config.getShortcut (self.c,setting)
-    def getString    (self,setting): return g.app.config.getString   (self.c,setting)
+    def getAbbrevDict (self):
+        '''return the commander's abbreviation dictionary.'''
+        return g.app.config.getAbbrevDict(self.c)
+
+    def getBool (self,setting,default=None):
+        '''Return the value of @bool setting, or the default if the setting is not found.'''
+        return g.app.config.getBool(self.c,setting,default=default)
+
+    def getButtons (self):
+        '''Return a list of tuples (x,y) for common @button nodes.'''
+        return g.app.config.atCommonButtonsList # unusual.
+
+    def getColor (self,setting):
+        '''Return the value of @color setting.'''
+        return g.app.config.getColor(self.c,setting)
+
+    def getCommands (self):
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
+        return g.app.config.atCommonCommandsList # unusual.
+
+    def getData (self,setting):
+        '''Return a list of non-comment strings in the body text of @data setting.'''
+        return g.app.config.getData(self.c,setting)
+
+    def getDirectory (self,setting):
+        '''Return the value of @directory setting, or None if the directory does not exist.'''
+        return g.app.config.getDirectory(self.c,setting)
+
+    def getFloat (self,setting):
+        '''Return the value of @float setting.'''
+        return g.app.config.getFloat(self.c,setting)
+
+    def getFontFromParams (self,family,size,slant,weight,defaultSize=12):
+
+        '''Compute a font from font parameters.
+
+        Arguments are the names of settings to be use.
+        Default to size=12, slant="roman", weight="normal".
+
+        Return None if there is no family setting so we can use system default fonts.'''
+
+        return g.app.config.getFontFromParams(self.c,
+            family, size, slant, weight, defaultSize = defaultSize)
+
+    # def getFontDict (self,setting):
+        # '''Return the value of @font setting.'''
+        # return g.app.config.getFontDict(self.c,setting)
+
+    def getInt (self,setting):
+        '''Return the value of @int setting.'''
+        return g.app.config.getInt(self.c,setting)
+
+    def getLanguage (self,setting):
+        '''Return the value of @string setting.
+
+        The value of this setting should be a language known to Leo.'''
+        return g.app.config.getLanguage(self.c,setting)
+
+    def getMenusList (self):
+        '''Return the list of entries for the @menus tree.'''
+        return g.app.config.menusList # unusual.
+
+    def getOpenWith (self):
+        '''Return a list of dictionaries corresponding to @openwith nodes.'''
+        return g.app.config.getOpenWith(self.c)
+
+    def getRatio (self,setting):
+        '''Return the value of @float setting.
+        Warn if the value is less than 0.0 or greater than 1.0.'''
+        return g.app.config.getRatio(self.c,setting)
+
+    def getRecentFiles (self):
+        '''Return the list of recently opened files.'''
+        return g.app.config.getRecentFiles()
+
+    def getShortcut (self,shortcutName):
+        '''Return the tuple (rawKey,accel) for shortcutName in @shortcuts tree.'''
+        return g.app.config.getShortcut(self.c,shortcutName)
+
+    def getString (self,setting):
+        '''Return the value of @string setting.'''
+        return g.app.config.getString(self.c,setting)
     #@-node:ekr.20041118053731:Getters (c.configSettings)
     #@+node:ekr.20041118195812:Setters... (c.configSettings)
     #@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
