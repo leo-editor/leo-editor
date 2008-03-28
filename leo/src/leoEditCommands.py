@@ -2466,9 +2466,9 @@ class editCommandsClass (baseEditCommandsClass):
                 newList.append(d)
 
         if len(newList) != len(aList):
-                self.setIconList(p, newList)       
-                c.setChanged(True)
-                c.redraw()
+            self.setIconList(p, newList)       
+            c.setChanged(True)
+            c.redraw()
         else:
             g.trace('not found',name)
 
