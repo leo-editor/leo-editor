@@ -535,7 +535,7 @@ SectionEnd
 ; UninstallText "This will uninstall Leo from your system"
 
 UninstallCaption "Uninstall Leo"
-UninstallIcon c:\leo-editor\trunk\leo\Icons\uninst.ico
+UninstallIcon c:\leo.repo\leo-editor\trunk\leo\Icons\uninst.ico
 ;@nonl
 ;@-node:ekr.20050118092706.18:<< Uninstall-related Settings >>
 ;@nl
