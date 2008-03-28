@@ -54,7 +54,7 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
@@ -70,7 +70,7 @@
 <v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070224073109.1" a="TV"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 <v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1091,6 +1091,16 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
+<v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
+<v t="ekr.20080328105334.4"><vh>@data cleo_color_file_node_list</vh></v>
+<v t="ekr.20080328105334.5"><vh>@int cleo_prog_width = 18</vh></v>
+<v t="ekr.20080328105334.6"><vh>@float cleo_time_init = 1.0</vh></v>
+<v t="ekr.20080328105334.7"><vh>@int cleo_prog_scale = 1</vh></v>
+<v t="ekr.20080328105334.8"><vh>@float cleo_prog_extra = 4</vh></v>
+<v t="ekr.20080328105334.9"><vh>@string cleo_time_name = 'days'</vh></v>
+</v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
@@ -1209,9 +1219,9 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28" a="E" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
-<v t="ekr.20080326060254.3" a="TV"><vh>@string target_language = python</vh></v>
+<v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 <v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
@@ -6968,7 +6978,7 @@ plugins_menu.py
 # It doesn't understand @enabled-plugins nodes.
 # plugin_manager.py
 
-# cleo.py
+cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -8605,6 +8615,23 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20080328105334.1"></t>
+<t tx="ekr.20080328105334.2">The colour used instead of green in progress bars</t>
+<t tx="ekr.20080328105334.3">The colour used instead of red in progress bars</t>
+<t tx="ekr.20080328105334.4"># list of @file node types to color.
+# Uncomment these to enable coloring for these kinds of nodes.
+# @asis
+# @file
+# @auto
+# @thin
+# @auto</t>
+<t tx="ekr.20080328105334.5">The base width of progress bars, in pixels.</t>
+<t tx="ekr.20080328105334.6">The default number of time units.</t>
+<t tx="ekr.20080328105334.7">0: no progress bars
+1: unscaled progress bars
+2: scaled progress bars</t>
+<t tx="ekr.20080328105334.8">pixels per time unit to add to width of scaled progress bars</t>
+<t tx="ekr.20080328105334.9">The name of time unit (e.g. days, weeks, hours)</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
