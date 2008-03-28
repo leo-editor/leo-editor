@@ -2,19 +2,43 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="32" left="132" height="896" width="1045"/>
+<globals body_outline_ratio="0.511160714286">
+	<global_window_position top="34" left="130" height="896" width="1045"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20051031040240" a="TV" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
 <v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
-<v t="ekr.20080121091513"><vh>@button parse2tree</vh></v>
+<v t="ekr.20080121091513"><vh>@@button parse2tree</vh></v>
+<v t="ekr.20080220082617"><vh>@@button print g.es stats</vh>
+<v t="ekr.20080220082617.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20080220082617.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20080220082617.3"><vh> ctor</vh></v>
+<v t="ekr.20080220082617.4"><vh>error &amp; trace</vh></v>
+<v t="ekr.20080220082617.5"><vh>main</vh></v>
+<v t="ekr.20080221101728"><vh>munging...</vh>
+<v t="ekr.20080221071308"><vh>mungeString</vh></v>
+<v t="ekr.20080220093930"><vh>mungeHeadline</vh></v>
+<v t="ekr.20080221073909"><vh>mungeStatements</vh></v>
+<v t="ekr.20080221101728.1"><vh>stringize</vh></v>
+</v>
+<v t="ekr.20080220082617.6"><vh>scan &amp; helpers</vh>
+<v t="ekr.20080220182141"><vh>scanIdChain</vh></v>
+<v t="ekr.20080220082617.9"><vh>scanNode</vh>
+<v t="ekr.20080221071734"><vh>&lt;&lt; insert statements highlighting the @thin node &gt;&gt;</vh></v>
+<v t="ekr.20080221071734.1"><vh>&lt;&lt; Insert a comment containing the headline &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080220082617.8"><vh>scanParens</vh></v>
+<v t="ekr.20080220183819"><vh>scanStringArg</vh></v>
+</v>
+<v t="ekr.20080220082617.10"><vh>setDecl</vh></v>
+<v t="ekr.20080221110301"><vh>setToBeTranslated</vh></v>
+</v>
 <v t="ekr.20060910141935"><vh>ZODB plugin buttons</vh>
 <v t="ekr.20060910141935.1"><vh>@@button zodb-read</vh></v>
 <v t="ekr.20060910141935.2"><vh>@@button zodb-write</vh></v>
@@ -45,10 +69,10 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933"
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
 marks="ekr.20071217231348.4,ekr.20071217231348.5,ekr.20071217231501,ekr.20071217231501.1,ekr.20071217231501.2,ekr.20071217231828.4,ekr.20031218072017.1473,ekr.20071024101611,"><vh>@thin leoProjects.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.2" a="TV"><vh>To do</vh>
+<v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
 marks="ekr.20071215101531,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
@@ -65,7 +89,8 @@ marks="ekr.20070909100252,"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"
 marks="ekr.20040629121554.1,"><vh>@thin leoCommands.py</vh></v>
-<v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
+<v t="ekr.20041117062700"
+marks="ekr.20041121130043,ekr.20041119204700,"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093"
@@ -138,7 +163,7 @@ z:  a local temp.</t>
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.4.8 beta 3, build %s, March 24, 2008" % c.getBuildNumber()
+    return "Leo 4.4.8 beta 3, build %s, March 28, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -410,6 +435,333 @@ finally:
 
 </t>
 <t tx="ekr.20080121092503"></t>
+<t tx="ekr.20080220082617">@first # -*- coding: utf-8 -*-
+
+# To do: put list of to-be-translated strings in a doc part.
+
+&lt;&lt; docstring &gt;&gt;
+&lt;&lt; version history &gt;&gt;
+
+class controllerClass:
+    @others
+
+x = controllerClass(c,p)
+x.main()
+</t>
+<t tx="ekr.20080220082617.1">'''Here is a cute Leo script. It discovers all g.es statements and the unbound
+variables in those statements in a single pass over the selected outline. It
+then puts the decls followed by the statements in the body text of the @scan_g.es_results node.
+
+Thus, after this script, you can **execute** the body text of the @scan_g.es_results node.
+In particular, assuming that g.translateString converts all translated text to upper case,
+it is easy to tell which strings have been translated.
+'''</t>
+<t tx="ekr.20080220082617.2">@nocolor
+@
+
+2008/2/19 EKR: Initial 2-pass version.
+2008/2/20 EKR:
+- Convert to single-pass using decls and statements arrays.
+- Add 'tabName' to list of keyword arguments.
+- Fixed various bugs.
+2008/2/20 EKR 2:
+- Generate g.es statements to inicate beginnings of files.
+  This allows us to execute all generated statements at once.
+- Convert between '.' and '__' as needed to avoid using real ivars.
+2008/2/21 EKR:
+- Added mungeString.
+- Rewrote mungeStatements, scanParens and scanIdChain.
+These changes now properly handle all arguments.
+2008/2/21 EKR 2:
+- Added stringize and related logic.
+- Added setToBeTranslated to put list of to-be-translated strings into leading docstring.</t>
+<t tx="ekr.20080220082617.3">def __init__ (self,c,p):
+
+    self.c = c
+    self.p = p
+
+    self.decls = {}
+    self.keywordArgs = ('color','commas','newline','spaces','tabName',)
+    self.nodeName = '@scan_g.es_results'
+    self.statements = []
+    self.printStatements = ('g.es','g.es_print',)
+    self.suppressTranslation = False # True: keyword arg to g.es seen.
+    self.toBeTranslated = []
+    self.traceFlag = False
+
+    self.root = g.findNodeAnywhere(c,self.nodeName)
+</t>
+<t tx="ekr.20080220082617.4">def error (self,s):
+
+    self.statements.append('***error: %s' % s)
+
+def trace(self,s):
+
+    if self.traceFlag:
+        self.statements.append(s)
+</t>
+<t tx="ekr.20080220082617.5">def main (self):
+
+    '''The main line.'''
+
+    c = self.c
+    self.scan()
+    self.mungeStatements()
+    keys = self.decls.keys()
+    keys.sort()
+    # This is such a great hack :-)
+    decls = ["%s = '%s'" % (self.mungeString(z),self.stringize(z,delim="'")) for z in keys]
+
+    # Put to-be-translated.
+    results = ['@ To be translated...',]
+    self.toBeTranslated.sort()
+    results.extend(self.toBeTranslated)
+    results.extend(['@c',])
+    # Put decls.
+    results.extend(['# Decls...',])
+    results.extend(["color='red'","newline=True","tabName='Log'"])
+    results.extend(decls)
+    # Put statements
+    results.extend(["g.app.translateToUpperCase=True",])
+    results.extend(self.statements)
+    results.extend(["g.app.translateToUpperCase=False",])
+
+    results = '\n'.join(results)
+
+    # Put the results in the root node, or print them.
+    if self.root:
+        c.setBodyString(self.root,results)
+        c.beginUpdate()
+        try:
+            c.selectPosition(self.root)
+        finally:
+            c.endUpdate()
+    else:
+        print 'node not found',self.rootName
+        print results
+
+    g.es('done')
+</t>
+<t tx="ekr.20080220082617.6">def scan(self):
+
+
+    for p in self.p.self_and_subtree_iter():
+
+        self.scanNode(p)</t>
+<t tx="ekr.20080220082617.8">def scanParens(self,s,i,outer):
+
+    '''Scan a parenthesized list of args.'''
+
+    assert g.match(s,i,'(')
+    j = g.skip_matching_python_parens(s,i)
+    if j == -1:
+        self.error('**incomplete paren at: %s' % s[i:])
+        return i+1 # Just skip the paren
+
+    assert g.match(s,j,')')
+    n = 1
+    while i &lt; j:
+        progress = i ; ch = s[i]
+
+        if ch in ("'",'"',):
+            i = self.scanStringArg(s,i,n,outer)
+            n += 1
+
+        elif g.is_c_id(ch):
+            i = self.scanIdChain(s,i,outer)
+            n += 1
+
+        i = max(i,progress+1)
+
+    return j + 1 # return the character after the paren.
+</t>
+<t tx="ekr.20080220082617.9">def scanNode(self,p):
+
+    tags = ('g.es','g.es_print',)
+    s,h = p.bodyString(), p.headString()
+    print_h = True
+
+    if h.startswith('@thin'):
+        &lt;&lt; insert statements highlighting the @thin node &gt;&gt;
+
+    i = 0
+    while i &lt; len(s):
+        progress = i
+        for tag in tags:
+            if g.match_word(s,i,tag):
+                start = i ; i += len(tag)
+                self.suppressTranslation = False
+                i = g.skip_ws(s,i)
+                if g.match(s,i,'('):
+                    &lt;&lt; Insert a comment containing the headline &gt;&gt;
+                    i = self.scanParens(s,i,outer=True)
+                    statement = s[start:i]
+                    if statement.find('*arg') == -1 and statement.find('**key') == -1:
+                        self.statements.append(statement)
+                break
+        i = max(i,progress+1)
+</t>
+<t tx="ekr.20080220082617.10">def setDecl (self,s):
+
+    s = s.strip()
+
+    if s in ('c','g','p','len','str','repr','and','or','not','is',):
+        return # Don't need a binding for these.
+
+    if s in ('color','newline','tabName',):
+        return # Special binding will be used for these.
+
+    if s.isdigit():
+        return # Don't bind integers.
+
+    self.decls[s] = True
+</t>
+<t tx="ekr.20080220093930">def mungeHeadline (self,s):
+
+    s = s.strip()
+    s = s.replace('&lt;&lt;','&lt; &lt;')
+    s = s.replace('&gt;&gt;','&gt; &gt;')
+    return s
+</t>
+<t tx="ekr.20080220182141">def scanIdChain (self,s,i,outer):
+
+    assert g.is_c_id(s[i])
+    start = i 
+
+    while i &lt; len(s):
+        progress = i
+        # Skip a.b.c...
+        if not g.is_c_id(s[i]): break
+        i = g.skip_id(s,i,chars='.')
+        i = g.skip_ws(s,i)
+        word = s[start:i].strip()
+        if outer and g.match(s,i,'=') and word in (self.keywordArgs):
+            # g.trace('***','=',word)
+            self.suppressTranslation = True
+        # Only a paren is valid now.
+        if not g.match(s,i,'('): break
+        # We shall munge the entire paren expression.
+        i = g.skip_matching_python_parens(s,i)
+        if g.match(s,i,')'): i += 1
+        # Only a dot is valid now.
+        if not g.match(s,i,'.'): break
+        i += 1
+        assert i &gt; progress
+
+    self.setDecl(s[start:i])
+    return i
+</t>
+<t tx="ekr.20080220183819">def scanStringArg(self,s,i,n,outer):
+
+    '''Skip a string, and possible %'''
+
+    j = g.skip_python_string(s,i)
+    if j &lt;= i: return i
+
+    # g.trace(n,s[i:j])
+
+    if outer:
+        self.setToBeTranslated(s[i:j],n)
+
+    i = g.skip_ws(s,j)
+    if not g.match(s,i,'%'):
+        return i
+
+    # Handle what follows the '%'
+    i = g.skip_ws(s,i+1)
+
+    if g.match(s,i,'('):
+        i = self.scanParens(s,i,outer=False)
+    elif i &lt; len(s) and g.is_c_id(s[i]):
+        i = self.scanIdChain(s,i,outer)
+
+    return i
+</t>
+<t tx="ekr.20080221071308">def mungeString (self,s):
+
+    '''Convert string s so that it is a valid Python name.'''
+
+    s = s.strip()
+    # s = s.replace('@','_AT_')
+    # s = s.replace('&lt;','_LT_')
+    # s = s.replace('&gt;','_GT_')
+    s = s.replace(',','_COMMA_')
+    s = s.replace('.','_DOT_')
+    s = s.replace('()','_PARENS_')
+    s = s.replace('(','_LP_')
+    s = s.replace(')','_RP_')
+    s = s.replace('"','_DQ_')
+    s = s.replace("'",'_SQ_')
+    s = ''.join([g.choose(z == '_' or z.isalnum(),z,'_') for z in s])
+    return s
+</t>
+<t tx="ekr.20080221071734">self.statements.append('# ---- %s' % (h))
+self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
+<t tx="ekr.20080221071734.1">if print_h:
+    print_h = False
+    if not h.startswith('@thin'):
+        self.statements.append('# -- node %s' % (self.mungeHeadline(h)))</t>
+<t tx="ekr.20080221073909">def mungeStatements (self):
+
+    '''Convert a references to an known id chain by the corresponding decl.'''
+
+    keys = self.decls.keys()
+    for tag in self.printStatements:
+        if tag in keys: keys.remove(tag)
+
+    results = []
+    for s in self.statements:
+        i = 0 ; inner_result = []
+        while i &lt; len(s):
+            progress = i
+            for key in keys:
+                if g.match_word(s,i,key):
+                    inner_result.append(self.mungeString(key))
+                    i += len(key)
+                    break
+            else:
+                inner_result.append(s[i])
+            i = max(i,progress+1)
+        new_statement = ''.join(inner_result)
+        if new_statement != s:
+            # Add the original lines as comments.
+            for z in g.splitLines(s):
+                results.append ('# %s' % (z.rstrip()))
+        results.append(new_statement) # Add the munged line.
+
+    self.statements = results
+
+</t>
+<t tx="ekr.20080221101728"></t>
+<t tx="ekr.20080221101728.1">def stringize (self,s,delim):
+
+    s = s.strip()
+    s = s.replace(delim,'\\%s' % (delim))
+    return s
+</t>
+<t tx="ekr.20080221110301">def setToBeTranslated (self,s,n):
+
+
+    s = s.strip()
+
+    if s.startswith('"') or s.startswith("'"):
+        s = s[1:]
+    if s.endswith('"') or s.endswith("'"):
+        s = s[:-1]
+
+    s = s.strip()
+
+    # Suppress translation when a keyword is seen, regardless of position.
+    if s in self.keywordArgs:
+        self.suppressTranslation = True
+
+    if self.suppressTranslation:
+        # g.trace('not added',s)
+        return
+
+    if (n % 2) == 1 and s not in self.toBeTranslated:
+        self.toBeTranslated.append(s)
+</t>
 <t tx="ekr.20080312060129.5"></t>
 <t tx="ekr.20080312060129.6"></t>
 </tnodes>

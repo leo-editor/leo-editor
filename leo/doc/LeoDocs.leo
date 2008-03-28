@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -357,8 +357,8 @@
 <v t="ekr.20050901102400.2"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.4" a="E"><vh>Chapter 7: Scripting Leo with Python</vh>
-<v t="ekr.20040403171740" a="E"><vh>@rst html\scripting.html</vh>
+<v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
+<v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20050901184158"><vh>@rst-ignore Important: you can run these examples!</vh></v>
 <v t="ekr.20040403183229" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes</vh></v>
@@ -379,7 +379,7 @@
 </v>
 <v t="ekr.20040403173920.17" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323522206e616d653d22687474702d6e6f64652d6d61726b65722d3235223e710155043c2f613e71025d710328553e3c64697620636c6173733d2273656374696f6e222069643d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e710455063c2f6469763e71055d710628552e3c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a7113552f3c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e0a711455603c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313322206e616d653d227570646174696e672d7468652d73637265656e223e5570646174696e67207468652073637265656e3c2f613e3c2f68313e0a7115652e"><vh>Updating the screen</vh></v>
 <v t="ekr.20040403173920.18" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710155043c2f613e71025d710328552e3c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f553a3c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711055763c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e"><vh>Invoking commands from scripts</vh></v>
-<v t="ekr.20050907094633" a="TV"><vh>Getting settings from @settings trees</vh></v>
+<v t="ekr.20050907094633"><vh>Getting settings from @settings trees</vh></v>
 <v t="ekr.20040403173920.19" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e710155043c2f613e71025d71032855393c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f553b3c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a711055783c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a7111652e"><vh>Getting and setting preferences</vh></v>
 <v t="ekr.20040403173920.21" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333122206e616d653d22687474702d6e6f64652d6d61726b65722d3331223e710155043c2f613e71025d710328553a3c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f55503c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e0a711055a23c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313622206e616d653d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e46756e6374696f6e7320666f722066696e64696e6720616e64206368616e67696e6720746578742066726f6d20736372697074733c2f613e3c2f68313e0a7111652e"><vh>Functions for finding and changing text from scripts</vh></v>
 <v t="ekr.20040403173920.25" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710155043c2f613e71025d71032855343c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f553e3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7110557e3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a7111652e"><vh>Functions defined in leoGlobals.py</vh></v>
@@ -1143,7 +1143,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3596,16 +3596,12 @@
 </v>
 </v>
 <v t="ekr.20080311060457.215"><vh>4.4.8 translating args to g.es and g.es_print</vh>
-<v t="ekr.20080304112808"><vh>leo 4.4.8 b1</vh>
+<v t="ekr.20080304112808"><vh>4.4.8 b1</vh>
 <v t="ekr.20080304112802.1"><vh>Allow arguments to minibuffer commands</vh></v>
 <v t="ekr.20080304112802.25"><vh>Added translation services</vh>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
 </v>
 </v>
-</v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080311060457.1"><vh>4.4.8 b2</vh>
 <v t="ekr.20080311060457.210"><vh>b1</vh>
 <v t="ekr.20080311060457.211"><vh>Allow arguments to minibuffer commands</vh></v>
@@ -3626,6 +3622,28 @@
 <v t="ekr.20080314081157.1"><vh>Improved marks/recent buttons plugin</vh></v>
 <v t="ekr.20080314081157.2"><vh>Added support for @commands trees in settings files</vh></v>
 </v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080328074117.340" a="ETV"><vh>4.4.8 b3</vh>
+<v t="ekr.20080328074117.2"><vh>Fixed bugs</vh>
+<v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
+<v t="ekr.20080328074117.4" a="E"><vh>Removed '.' from leoID</vh></v>
+<v t="ekr.20080328074117.12" a="E"><vh>Fixed Open With menu</vh></v>
+<v t="ekr.20080328074117.30" a="E"><vh>Fixed @lineending botch</vh></v>
+<v t="ekr.20080328074117.76"><vh>Fixed undo problem with mutliple editors</vh></v>
+<v t="ekr.20080328074117.77" a="E"><vh>Write dirty bit if write fails</vh></v>
+<v t="ekr.20080328074117.135" a="E"><vh>Fixed bug involving default_target_language</vh></v>
+<v t="ekr.20080328074117.215"><vh>Fixed plugins that create new menu items</vh></v>
+</v>
+<v t="ekr.20080328074117.216"><vh>Features</vh>
+<v t="ekr.20080328074117.217" a="E"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
+<v t="ekr.20080328074117.220" a="E"><vh>Errors reading derived files give line numbers</vh></v>
+<v t="ekr.20080328074117.262" a="E"><vh>Added @bool allow_middle_button_paste</vh></v>
+<v t="ekr.20080328074117.297" a="E"><vh>Added support for @popup settings</vh></v>
 </v>
 </v>
 </v>
@@ -34188,7 +34206,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 beta 2]&lt;/a&gt;</t>
+    Download Leo[4.4.8 beta 3]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34442,6 +34460,75 @@ as documented in Chapters 15 through 21 of this Users Guide.
 <t tx="ekr.20080315115427.574">- Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
 - Added support for translating messages to Leo's log.
 </t>
+<t tx="ekr.20080328074117.2"></t>
+<t tx="ekr.20080328074117.3"></t>
+<t tx="ekr.20080328074117.4">This fixes a bug that can corrupt .leo files.</t>
+<t tx="ekr.20080328074117.12">http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3</t>
+<t tx="ekr.20080328074117.30">http://groups.google.com/group/leo-editor/browse_thread/thread/f802b083dee96312
+</t>
+<t tx="ekr.20080328074117.76">http://mail.google.com/mail/#inbox/11899019a43f74ca
+
+When you have two editors open on the same node most actions show up in both
+editors, however, if you do an undo the change only show up in the selected
+editor. (The change shows up in the other editor when you select it).
+</t>
+<t tx="ekr.20080328074117.77">http://groups.google.com/group/leo-editor/browse_thread/thread/71822f48720e71bc/6e0fd1c72fa39817#6e0fd1c72fa39817
+</t>
+<t tx="ekr.20080328074117.135">The new setting is @string target_language, not @language default_target_language.</t>
+<t tx="ekr.20080328074117.215">@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6a5087a59d6d23
+
+- Changed menu1 to menu2 in several plugins.
+- Changed menu2 to menu-update.
+- Moved after-create-leo-frame to after menu2.</t>
+<t tx="ekr.20080328074117.216"></t>
+<t tx="ekr.20080328074117.217">This hugely speeds up spelling when there are lots of misspelled words.</t>
+<t tx="ekr.20080328074117.220"></t>
+<t tx="ekr.20080328074117.262">@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/62fe73901d14f6c3
+
+And, while you're looking at the editor code :-) - in linux when you paste in
+text to a body editor with a middle mouse button click, it's not stored unless
+you follow that with a key stroke or some other action in the body editor. If
+you instead middle button paste to the editor and then click on another node in
+the tree, the text's forgotten.
+
+To do--&gt;@thin ../doc/leoToDoLater.txt--&gt;Can't or won't--&gt;Known Bugs: can't be fixed or can wait--&gt;Bug: can't be fixed--&gt;Cut/paste bug on X windows (waiting for help)
+
+@color</t>
+<t tx="ekr.20080328074117.297"></t>
+<t tx="ekr.20080328074117.340">Leo 4.4.8 beta 3                           March 28, 2008
+
+Leo 4.4.8 beta 3 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and

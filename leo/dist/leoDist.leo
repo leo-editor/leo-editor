@@ -45,8 +45,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
-<v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
+<v t="ekr.20080328075132.1"><vh>ANN: Leo 4.4.8 b3</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -156,6 +155,10 @@
 <v t="ekr.20080218154442.1"><vh>4.4.7</vh>
 <v t="ekr.20080213095646"><vh>ANN: Leo 4.4.7-b1</vh></v>
 <v t="ekr.20080218154442"><vh>ANN: Leo 4.4.7 final</vh></v>
+</v>
+<v t="ekr.20080328075132.2"><vh>4.4.8</vh>
+<v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
+<v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
 </v>
 </v>
 </v>
@@ -438,7 +441,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.4.8-b2
+Version: 4.4.8-beta-3
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -457,9 +460,7 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.4.8 beta 2                           March 14, 2008
-
-Leo 4.4.8 beta 2 is available at:
+<t tx="EKR.20040519090846.9">Leo 4.4.8 beta 3 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
@@ -470,17 +471,15 @@ http://webpages.charter.net/edreamleo/intro.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
-- Leo's source code is now managed by bzr.
-  See the Bzr link below.
-- Leo's discussion is now hosted by Google Groups:
-  See the Forum link below.
-- The first, third, fifth etc. arguments to g.es and g.es_print
-  can now be translated using Python's gettext.gettext function.
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
 - Completed ILeo: a bridge between IPython and Leo.
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
-- Added support for arguments to minibuffer commands.
+- Minibuffer commands may have arguments.
 - @menu trees can now refer to commands created by
-  @commands and @button nodes
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
 
 Links:
 ------
@@ -2284,7 +2283,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-beta-2.exe"
+OutFile "LeoSetup-4-4-8-beta-3.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -2564,7 +2563,7 @@ Delete "$INSTDIR\test\test.leo"
 Delete "$INSTDIR\test\unitTest.leo"
 Delete "$INSTDIR\test\leoBridgeTest.py"
 </t>
-<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-2"</t>
+<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-3"</t>
 <t tx="ekr.20050124083006">Leo 4.3 alpha 1 is now available at http://sourceforge.net/projects/leo/
 
 Leo 4.3 is the culmination of more than four months of work. In spite
@@ -4731,7 +4730,7 @@ print ; print '='*30,'setup.py complete','='*30 ; print
 </t>
 <t tx="ekr.20070622081640"># These can't be used at present.</t>
 <t tx="ekr.20070622084133"></t>
-<t tx="ekr.20070622084634">version='4.4.8-b2' # No spaces and no trailing comma.</t>
+<t tx="ekr.20070622084634">version='4.4.8-beta-3' # No spaces and no trailing comma.</t>
 <t tx="ekr.20070622091049">Leo 4.4.3 beta 3                                June 23, 2006
 
 Leo 4.4.3 beta 3 is available at:
@@ -5243,7 +5242,6 @@ Announcements
 - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
     - Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
-- Announce to Leo's Open Forum.
 - Announce to SourceForge itself.
 - Announce to leo-editor.
 - Announce to comp.lang.python
@@ -5321,7 +5319,7 @@ Python 2.2.1 or above and the Tk Tk 8.4 or above.
 Download Python from http://python.org/
 Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 """</t>
-<t tx="ekr.20080313073613.3">version='4.4.8-b2' # No spaces and no trailing comma.</t>
+<t tx="ekr.20080313073613.3">version='4.4.8-beta-3' # No spaces and no trailing comma.</t>
 <t tx="ekr.20080313080205.1">def copy (fromPath,toPath,fileName):
     f = file(os.path.abspath(os.path.join(fromPath,fileName)))
     s = f.read()
@@ -5382,5 +5380,34 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080328075132.1">Leo 4.4.8 beta 3 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080328075132.2"></t>
 </tnodes>
 </leo_file>

@@ -18,7 +18,7 @@
 ;@+node:ekr.20050118092706.1:<< defines >>
 ;@<< 4.3 nsi installer version >>
 ;@+node:ekr.20050118124408:<< 4.3 nsi installer version >>
-!define PRODUCT_VERSION "4.4.8-beta-2"
+!define PRODUCT_VERSION "4.4.8-beta-3"
 ;@nonl
 ;@-node:ekr.20050118124408:<< 4.3 nsi installer version >>
 ;@nl
@@ -73,7 +73,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-beta-2.exe"
+OutFile "LeoSetup-4-4-8-beta-3.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -535,7 +535,7 @@ SectionEnd
 ; UninstallText "This will uninstall Leo from your system"
 
 UninstallCaption "Uninstall Leo"
-UninstallIcon c:\leo-editor\trunk\leo\Icons\uninst.ico
+UninstallIcon c:\leo.repo\leo-editor\trunk\leo\Icons\uninst.ico
 ;@nonl
 ;@-node:ekr.20050118092706.18:<< Uninstall-related Settings >>
 ;@nl
