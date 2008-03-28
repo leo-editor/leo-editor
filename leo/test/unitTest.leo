@@ -16511,6 +16511,7 @@ after</t>
 plugins_menu.py
 
 # Standard plugins...
+cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -16524,7 +16525,6 @@ threading_colorizer.py
 
 # Other plugins...
 
-# cleo.py
 # vim.py
 rClick.py
 </t>

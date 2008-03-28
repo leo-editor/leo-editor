@@ -2321,7 +2321,7 @@ leoTest.doTests (c,all=False)</t>
 plugins_menu.py
 
 # ipython.py
-# cleo.py
+cleo.py
 rClick.py
 
 add_directives.py
