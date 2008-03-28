@@ -3,15 +3,15 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.583216783217">
-	<global_window_position top="115" left="320" height="635" width="841"/>
+	<global_window_position top="115" left="320" height="762" width="841"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" a="E"><vh>Startup</vh>
+<v t="ekr.20041211035618"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
-<v t="ekr.20050217093214" a="TV"><vh>@settings</vh>
+<v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
 <v t="ekr.20050328101812.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101812.2"><vh>@int  port = 8080</vh></v>
@@ -26,7 +26,7 @@
 <v t="ekr.20050819055746"><vh>@@button Save</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="TV"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -55,11 +55,11 @@
 </v>
 </v>
 <v t="ekr.20040722135402.1"><vh>Body pane</vh>
+<v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
 <v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
-<v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
@@ -508,7 +508,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 </v>
 <v t="ekr.20041009112303"><vh>Plugins manager, updater &amp; menu</vh>
 <v t="EKR.20040517080555.1"><vh> Plugins menu</vh>
-<v t="bob.20071208012538"><vh>@thin plugins_menu.py</vh></v>
+<v t="EKR.20040517080555.2"><vh>@thin plugins_menu.py</vh></v>
 <v t="EKR.20040517080555.25"><vh>@thin pluginsTest.py</vh></v>
 <v t="EKR.20040517080555.32"><vh>Notes re plugins menu</vh>
 <v t="EKR.20040517080555.33"><vh> Changes made by E.K.Ream</vh></v>
@@ -11524,6 +11524,7 @@ hook_list = [
         'select2',
         'select3',
         'menu1',
+        'menu2',
         'create-optional-menus',
         'after-create-leo-frame',
         'new',
