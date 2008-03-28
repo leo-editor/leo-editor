@@ -33,7 +33,7 @@
 <v t="ekr.20070620084858.1"><vh>@@button upload</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucnements</vh>
+<v t="EKR.20040519091259" a="E"><vh>Annoucnements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -231,9 +231,9 @@
 <v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
-<v t="EKR.20040519090846" a="TV"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -5242,7 +5242,6 @@ Announcements
 - Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
     - Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
-- Announce to Leo's Open Forum.
 - Announce to SourceForge itself.
 - Announce to leo-editor.
 - Announce to comp.lang.python
