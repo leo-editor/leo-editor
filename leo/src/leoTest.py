@@ -1797,7 +1797,7 @@ def findAllAtFileNodes(c):
 
     paths = []
 
-    for p in c.all_positions_iter():
+    for p in c.all_positions_with_unique_tnodes_iter():
         name = p.anyAtFileNodeName()
         if name:
             head,tail = g.os_path_split(name)

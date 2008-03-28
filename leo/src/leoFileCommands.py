@@ -2240,7 +2240,7 @@ class baseFileCommands:
 
         c = self.c
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if hasattr(p.v,'tempTnodeList'):
                 # g.trace(p.v.headString())
                 result = []

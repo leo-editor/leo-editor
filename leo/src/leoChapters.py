@@ -970,7 +970,7 @@ class chapter:
             return p1
 
         if name == 'main':
-            for p in self.c.allNodes_iter():
+            for p in self.c.all_positions_with_unique_vnodes_iter():
                 if p.v == p1.v:
                     # g.trace('*** found in main chapter',p)
                     self.p = p.copy()

@@ -8423,7 +8423,7 @@ class spellTabHandler (leoFind.leoFind):
                         redraw = not p.isVisible(c)
                         if sparseFind:
                             # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                            for p2 in c.allNodes_iter():
+                            for p2 in c.all_positions_with_unique_vnodes_iter():
                                 if not p2.isAncestorOf(p):
                                     p2.contract()
                                     redraw = True

@@ -4105,7 +4105,7 @@ class baseCommands:
 
         c = self ; count = 0 ; result = "ok"
 
-        for p in c.all_positions_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
 
             count += 1
             if not unittest:
@@ -4262,7 +4262,7 @@ class baseCommands:
 
         c = self ; pp = c.prettyPrinter(c)
 
-        for p in c.all_positions_iter():
+        for p in c.all_positions_with_unique_tnodes_iter():
 
             # Unlike scanDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
@@ -4728,7 +4728,7 @@ class baseCommands:
 
         c.beginUpdate()
         try: # update...
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 p.contract()
             # Select the topmost ancestor of the presently selected node.
             p = c.currentPosition()
@@ -4945,7 +4945,7 @@ class baseCommands:
 
         c.beginUpdate()
         try:
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 p.contract()
             for p in c.currentPosition().parents_iter():
                 p.expand()
@@ -5025,7 +5025,7 @@ class baseCommands:
         c.beginUpdate()
         try:
             u.beforeChangeGroup(current,undoType)
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if p.isDirty()and not p.isMarked():
                     bunch = u.beforeMark(p,undoType)
                     c.setMarked(p)
@@ -5048,7 +5048,7 @@ class baseCommands:
         c.beginUpdate()
         try:
             u.beforeChangeGroup(current,undoType)
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if p.isDirty()and not p.isMarked():
                     s = p.bodyString()
                     flag, i = g.is_special(s,0,"@root")
@@ -5119,7 +5119,7 @@ class baseCommands:
         u.beforeChangeGroup(current,undoType)
         try: # In update...
             dirtyVnodeList = []
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if p.v.t == current.v.t:
                     bunch = u.beforeMark(p,undoType)
                     c.setMarked(p)
@@ -5191,14 +5191,14 @@ class baseCommands:
         u.beforeChangeGroup(current,undoType)
         try: # In update...
             changed = False
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if p.isMarked():
                     bunch = u.beforeMark(p,undoType)
                     # c.clearMarked(p) # Very slow: calls a hook.
                     p.v.clearMarked()
                     p.v.t.setDirty()
                     u.afterMark(p,undoType,bunch)
-            dirtyVnodeList = [p.v for p in c.allNodes_iter() if p.v.isDirty()]
+            dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
             if changed:
                 g.doHook("clear-all-marks",c=c,p=p,v=p)
                 c.setChanged(True)
@@ -6456,7 +6456,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition()
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p != current and p.isDirty():
                 return True
 
@@ -6467,7 +6467,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition()
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p != current and p.isMarked():
                 return True
 
@@ -6478,7 +6478,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty():
                 return True
 
@@ -6489,7 +6489,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty and p.isAnyAtFileNode():
                 return True
 
@@ -6513,7 +6513,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p.isExpanded():
                 return True
 
@@ -6571,7 +6571,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if not p.isExpanded():
                 return True
 
@@ -6799,7 +6799,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if p.isMarked():
                 return True
 
@@ -7045,7 +7045,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             p.v.clearMarked()
     #@-node:ekr.20031218072017.2984:c.clearAllMarked
     #@+node:ekr.20031218072017.2985:c.clearAllVisited
@@ -7053,7 +7053,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             p.v.clearVisited()
             p.v.t.clearVisited()
             p.v.t.clearWriteBit()

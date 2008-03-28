@@ -1351,7 +1351,7 @@ class leoFind:
         try:
             if sparseFind:
                 # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-                for p in c.allNodes_iter():
+                for p in c.all_positions_with_unique_vnodes_iter():
                     if not p.isAncestorOf(self.p):
                         p.contract()
                         redraw = True

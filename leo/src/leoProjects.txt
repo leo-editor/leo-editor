@@ -3138,7 +3138,7 @@ def showSuccess(self,pos,newpos):
     try:
         if sparseFind:
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-            for p in c.allNodes_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if not p.isAncestorOf(self.p):
                     p.contract()
                     redraw = True
@@ -9467,7 +9467,7 @@ def resolveTnodeLists (self):
 
     c = self.c
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_vnodes_iter():
         if hasattr(p.v,'tempTnodeList'):
             # g.trace(p.v.headString())
             result = []
@@ -11455,7 +11455,7 @@ def resolveTnodeLists (self):
 
     c = self.c
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_vnodes_iter():
         if hasattr(p.v,'tempTnodeList'):
             # g.trace(p.v.headString())
             result = []
@@ -21144,7 +21144,7 @@ def findNextMisspelledWord(self):
                     redraw = not p.isVisible(c)
                     if sparseFind:
                         # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                        for p2 in c.allNodes_iter():
+                        for p2 in c.all_positions_with_unique_vnodes_iter():
                             if not p2.isAncestorOf(p):
                                 p2.contract()
                                 redraw = True
