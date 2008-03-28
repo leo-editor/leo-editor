@@ -1027,7 +1027,7 @@ class baseFileCommands:
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
-            for p in c.all_positions_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if marks.get(p.v.t):
                     p.v.initMarkedBit()
                         # This was the problem: was p.setMark.
@@ -1296,6 +1296,7 @@ class baseFileCommands:
     #@-node:ekr.20031218072017.3031:xmlUnescape
     #@-node:ekr.20031218072017.1243:get, match & skip (basic)
     #@+node:ekr.20031218072017.1555:getAllLeoElements
+
     def getAllLeoElements (self,fileName,silent):
         c = self.c
 
@@ -1317,7 +1318,6 @@ class baseFileCommands:
         self.getTnodes()
         self.getCloneWindows()
         self.getTag("</leo_file>")
-    #@nonl
     #@-node:ekr.20031218072017.1555:getAllLeoElements
     #@+node:ekr.20031218072017.3023:getCloneWindows
     # For compatibility with old file formats.
