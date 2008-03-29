@@ -758,135 +758,6 @@ def rc_OnPasteFromMenu(c, event, widget):
     c.frame.OnPasteFromMenu(event)
 #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
 #@-node:bobjack.20080321133958.8:Callbacks
-#@+node:bobjack.20080322043011.12:Context sensitive generators
-#@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
-def gen_context_sensitive_commands(c, event, widget, rmenu, commandList):
-
-    """Generate context-sensitive rclick items.
-
-    On right-click get the selected text, or the whole line containing cursor if
-    no selection. Scan this text for certain regexp patterns. For each occurrence
-    of a pattern add a command, which name and action depend on the text
-    matched.
-
-    Example below extracts URL's from the text and puts "Open URL:..." in the menu.
-
-    """
-
-    contextCommands = []
-
-    text, word = get_text_and_word_from_body_text(widget)
-
-    if 0:
-        g.es("selected text: "+text)
-        g.es("selected word: "+repr(word))
-
-    contextCommands = get_urls(text) + get_sections(c, text)
-
-    if word:
-        contextCommands += get_help(c, word)
-
-    if contextCommands:
-        commandList += [("-",None)] + contextCommands
-#@-node:bobjack.20080321133958.13:gen_context_sensitive_commands
-#@+node:bobjack.20080322043011.13:get_urls
-def get_urls(text):
-
-    """
-    Extract URL's from the body text and create "Open URL:..." items
-    for inclusion in a menu list.
-    """
-
-    contextCommands = []
-    for match in re.finditer(SCAN_URL_RE, text):
-
-        #get the underlying text
-        url=match.group()
-
-        #create new command callback
-        def url_open_command(*k,**kk):
-            import webbrowser
-            try:
-                webbrowser.open_new(url)
-            except:
-                g.es("not found: " + url,color='red')
-
-        #add to menu
-        menu_item=( 'Open URL: '+crop(url,30), url_open_command)
-        contextCommands.append( menu_item )
-
-    return contextCommands
-#@-node:bobjack.20080322043011.13:get_urls
-#@+node:bobjack.20080322043011.11:get_sections
-def get_sections(c, text):
-
-    scan_jump_re="<"+"<[^<>]+>"+">"
-
-    contextCommands = []
-    p=c.currentPosition()
-    for match in re.finditer(scan_jump_re,text):
-        name=match.group()
-        ref=g.findReference(c,name,p)
-        if ref:
-            # Bug fix 1/8/06: bind c here.
-            # This is safe because we only get called from the proper commander.
-            def jump_command(c=c,*k,**kk):
-                c.beginUpdate()
-                c.selectPosition(ref)
-                c.endUpdate()
-            menu_item=( 'Jump to: '+crop(name,30), jump_command)
-            contextCommands.append( menu_item )
-        else:
-            # could add "create section" here?
-            pass
-
-    return contextCommands
-
-#@-node:bobjack.20080322043011.11:get_sections
-#@+node:ekr.20040422072343.15:get_help
-def get_help(c, word):
-
-    def help_command(*k,**kk):
-        #g.trace(k, kk)
-        try:
-            doc=getdoc(word,"="*60+"\nHelp on %s")
-
-            # It would be nice to save log pane position
-            # and roll log back to make this position visible,
-            # since the text returned by pydoc can be several
-            # pages long
-
-            flags = c.config.getString('rclick_show_help')
-
-            if not flags or 'all' in flags:
-                flags = 'print log browser'
-
-            if 'browser' in flags:
-                if not doc.startswith('no Python documentation found for'):
-                    xdoc = doc.split('\n')
-                    title = xdoc[0]
-                    g.es('launching browser ...',  color='blue')
-                    show_message_as_html(title, '\n'.join(xdoc[1:]))
-                    g.es('done', color='blue')
-                else:
-                    g.es(doc, color='blue')
-                    print doc
-                    return
-
-            if 'log' in flags:
-                g.es(doc,color="blue")
-
-            if 'print' in flags:
-                print doc
-
-        except Exception, value:
-            g.es(str(value),color="red")
-
-
-    menu_item=('Help on: '+crop(word,30), help_command)
-    return [ menu_item ]
-#@-node:ekr.20040422072343.15:get_help
-#@-node:bobjack.20080322043011.12:Context sensitive generators
 #@+node:ekr.20040422072343.9:Utils for context sensitive commands
 #@+node:bobjack.20080322043011.14:get_text_and_word_from_body_text
 def get_text_and_word_from_body_text(widget):
@@ -991,9 +862,13 @@ def gen_recent_files_list(c, event, widget, rmenu, commandList):
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
+    """A per commander contoller for right click menu functionality."""
+
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
     def __init__ (self,c):
+
+        """Initialize rclick functionality for this commander."""
 
         self.c = c
 
@@ -1008,28 +883,6 @@ class ContextMenuController(object):
 
         self.rClickbinder()
         self.rSetupMenus()
-    #@-node:bobjack.20080323045434.15:__init__
-    #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
-    def rclick_gen_context_sensitive_commands(self, event):
-
-        """Minibuffer command wrapper."""
-
-        global MB_MENU_RETVAL
-
-        MB_MENU_RETVAL = gen_context_sensitive_commands(*MB_MENU_ARGS)
-
-
-    #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
-    #@+node:bobjack.20080325162505.5:rclick_gen_recent_files_list
-    def rclick_gen_recent_files_list(self, event):
-
-        """Minibuffer command wrapper."""
-
-        global MB_MENU_RETVAL
-
-        MB_MENU_RETVAL = gen_recent_files_list(*MB_MENU_ARGS)
-    #@nonl
-    #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
     #@+node:ekr.20080327061021.217:rClickbinder
     def rClickbinder(self):
 
@@ -1120,8 +973,179 @@ class ContextMenuController(object):
         return True
     #@nonl
     #@-node:ekr.20080327061021.218:rSetupMenus
+    #@-node:bobjack.20080323045434.15:__init__
+    #@+node:bobjack.20080329153415.3:Generator Minibuffer Commands
+    #@+node:bobjack.20080325162505.5:rclick_gen_recent_files_list
+    def rclick_gen_recent_files_list(self, event):
+
+        """Minibuffer command wrapper."""
+
+        global MB_MENU_RETVAL
+
+        MB_MENU_RETVAL = gen_recent_files_list(*MB_MENU_ARGS)
+    #@nonl
+    #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
+    #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
+    def rclick_gen_context_sensitive_commands(self, event):
+
+        """Minibuffer command wrapper."""
+
+        global MB_MENU_RETVAL
+
+        MB_MENU_RETVAL = self.gen_context_sensitive_commands(*MB_MENU_ARGS)
+
+
+    #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
+    def gen_context_sensitive_commands(self, xc, event, widget, rmenu, commandList):
+
+        """Generate context-sensitive rclick items.
+
+        event: the event provided by the original right click.
+
+        widget: the widget on which the right click occured
+
+        rmenu: the menu or submenu that is currently being built
+
+        commandList: the list of menu items waiting to be built.
+
+        On right-click get the selected text, or the whole line containing cursor if
+        no selection. Scan this text for certain regexp patterns. For each occurrence
+        of a pattern add a command, which name and action depend on the text
+        matched.
+
+        Examples provided:
+            - extracts URL's from the text and puts "Open URL:..." in the menu.
+            - 
+
+        """
+
+        g.trace(self.c, xc)
+
+        contextCommands = []
+
+        text, word = get_text_and_word_from_body_text(widget)
+
+        if 0:
+            g.es("selected text: "+text)
+            g.es("selected word: "+repr(word))
+
+        contextCommands = self.get_urls(text) + self.get_sections(text)
+
+        if word:
+            contextCommands += self.get_help(word)
+
+        if contextCommands:
+            commandList += [("-",None)] + contextCommands
+    #@+node:bobjack.20080322043011.13:get_urls
+    def get_urls(self, text):
+
+        """
+        Extract URL's from the body text and create "Open URL:..." items
+        for inclusion in a menu list.
+        """
+
+        contextCommands = []
+        for match in re.finditer(SCAN_URL_RE, text):
+
+            #get the underlying text
+            url=match.group()
+
+            #create new command callback
+            def url_open_command(*k,**kk):
+                import webbrowser
+                try:
+                    webbrowser.open_new(url)
+                except:
+                    pass #Ignore false errors 
+                    #g.es("not found: " + url,color='red')
+
+            #add to menu
+            menu_item=( 'Open URL: '+crop(url,30), url_open_command)
+            contextCommands.append( menu_item )
+
+        return contextCommands
+    #@-node:bobjack.20080322043011.13:get_urls
+    #@+node:bobjack.20080322043011.11:get_sections
+    def get_sections(self, text):
+
+        """
+        Extract section from the text and create 'Jump to: ...' menu items for inclusion in a menu list.
+        """
+
+        scan_jump_re="<"+"<[^<>]+>"+">"
+
+        c = self.c
+
+        contextCommands = []
+        p=c.currentPosition()
+        for match in re.finditer(scan_jump_re,text):
+            name=match.group()
+            ref=g.findReference(c,name,p)
+            if ref:
+                # Bug fix 1/8/06: bind c here.
+                # This is safe because we only get called from the proper commander.
+                def jump_command(c=c,*k,**kk):
+                    c.beginUpdate()
+                    c.selectPosition(ref)
+                    c.endUpdate()
+                menu_item=( 'Jump to: '+crop(name,30), jump_command)
+                contextCommands.append( menu_item )
+            else:
+                # could add "create section" here?
+                pass
+
+        return contextCommands
+
+    #@-node:bobjack.20080322043011.11:get_sections
+    #@+node:ekr.20040422072343.15:get_help
+    def get_help(self, word):
+
+        c = self.c
+
+        def help_command(*k,**kk):
+            #g.trace(k, kk)
+            try:
+                doc=getdoc(word,"="*60+"\nHelp on %s")
+
+                # It would be nice to save log pane position
+                # and roll log back to make this position visible,
+                # since the text returned by pydoc can be several
+                # pages long
+
+                flags = c.config.getString('rclick_show_help')
+
+                if not flags or 'all' in flags:
+                    flags = 'print log browser'
+
+                if 'browser' in flags:
+                    if not doc.startswith('no Python documentation found for'):
+                        xdoc = doc.split('\n')
+                        title = xdoc[0]
+                        g.es('launching browser ...',  color='blue')
+                        show_message_as_html(title, '\n'.join(xdoc[1:]))
+                        g.es('done', color='blue')
+                    else:
+                        g.es(doc, color='blue')
+                        print doc
+                        return
+
+                if 'log' in flags:
+                    g.es(doc,color="blue")
+
+                if 'print' in flags:
+                    print doc
+
+            except Exception, value:
+                g.es(str(value),color="red")
+
+
+        menu_item=('Help on: '+crop(word,30), help_command)
+        return [ menu_item ]
+    #@-node:ekr.20040422072343.15:get_help
+    #@-node:bobjack.20080321133958.13:gen_context_sensitive_commands
+    #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
+    #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
     #@-others
-#@nonl
 #@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
 #@nonl
