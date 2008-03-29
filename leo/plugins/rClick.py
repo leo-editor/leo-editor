@@ -490,14 +490,22 @@ def init_default_menus():
 
     """Initialize all default context menus"""
 
+    def invoke(method_name):
+
+        def invoke_callback(c, event, method_name=method_name):
+            cb = getattr(c.theContextMenuController, method_name)
+            return cb(event)
+
+        return invoke_callback
+
     #@    @+others
     #@+node:bobjack.20080325060741.6:edit-menu
     default_context_menus['edit-menu'] = [
-        ('Cut', rc_OnCutFromMenu),
-        ('Copy', rc_OnCopyFromMenu),
-        ('Paste', rc_OnPasteFromMenu),
+        ('Cut', invoke('rc_OnCutFromMenu')),
+        ('Copy', invoke('rc_OnCopyFromMenu')),
+        ('Paste', invoke('rc_OnPasteFromMenu')),
         ('-', None),
-        ('Select All', rc_selectAll),
+        ('Select All', invoke('rc_selectAll')),
     ]
     #@-node:bobjack.20080325060741.6:edit-menu
     #@+node:bobjack.20080325060741.4:body
@@ -529,7 +537,7 @@ def init_default_menus():
         ('&', 'recent-files-menu'),
 
             ('Find Bracket', 'match-brackets'),
-            ('Insert newline', rc_nl),
+            ('Insert newline', invoke('rc_nl')),
 
         ('Execute Script', 'execute-script'),
 
@@ -562,45 +570,6 @@ def init_default_menus():
 
 #@-node:bobjack.20080321133958.7:init_default_menus
 #@-node:ekr.20060108122501:Module-level
-#@+node:bobjack.20080321133958.8:Invocation Callbacks
-#@+node:ekr.20040422072343.3:rc_nl
-def rc_nl(c, event):
-
-    """Insert a newline at the current curser position of selected body editor."""
-
-    w = c.frame.body.bodyCtrl
-
-    if w:
-        ins = w.getInsertPoint()
-        w.insert(ins,'\n')
-        c.frame.body.onBodyChanged("Typing")
-#@-node:ekr.20040422072343.3:rc_nl
-#@+node:ekr.20040422072343.4:rc_selectAll
-def rc_selectAll(c, event):
-
-    """Select the entire contents of the text widget."""
-
-    event.widget.selectAllText()
-#@-node:ekr.20040422072343.4:rc_selectAll
-#@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
-def rc_OnCutFromMenu(c, event):
-
-    """Cut text from currently focused text widget."""
-
-    c.frame.OnCutFromMenu(event)
-#@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
-#@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-def rc_OnCopyFromMenu(c, event):
-    """Copy text from currently focused text widget."""
-    c.frame.OnCopyFromMenu(event)
-#@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-#@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-def rc_OnPasteFromMenu(c, event):
-    """Paste text into currently focused text widget."""
-
-    c.frame.OnPasteFromMenu(event)
-#@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-#@-node:bobjack.20080321133958.8:Invocation Callbacks
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
@@ -1208,6 +1177,48 @@ class ContextMenuController(object):
             POPUP_MENU = top_menu
     #@-node:bobjack.20080329153415.5:rClicker
     #@-node:bobjack.20080329153415.14:Event Handler
+    #@+node:bobjack.20080321133958.8:Invocation Callbacks
+    #@+node:ekr.20040422072343.3:rc_nl
+    def rc_nl(self, event):
+
+        """Insert a newline at the current curser position of selected body editor."""
+
+        c = self.c
+
+        w = c.frame.body.bodyCtrl
+
+        if w:
+            ins = w.getInsertPoint()
+            w.insert(ins,'\n')
+            c.frame.body.onBodyChanged("Typing")
+    #@-node:ekr.20040422072343.3:rc_nl
+    #@+node:ekr.20040422072343.4:rc_selectAll
+    def rc_selectAll(self, event):
+
+        """Select the entire contents of the text widget."""
+
+        event.widget.selectAllText()
+    #@-node:ekr.20040422072343.4:rc_selectAll
+    #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
+    def rc_OnCutFromMenu(self, event):
+
+        """Cut text from currently focused text widget."""
+
+        self.c.frame.OnCutFromMenu(event)
+    #@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
+    #@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
+    def rc_OnCopyFromMenu(self, event):
+        """Copy text from currently focused text widget."""
+
+        self.c.frame.OnCopyFromMenu(event)
+    #@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
+    #@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
+    def rc_OnPasteFromMenu(self, event):
+        """Paste text into currently focused text widget."""
+
+        self.c.frame.OnPasteFromMenu(event)
+    #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
+    #@-node:bobjack.20080321133958.8:Invocation Callbacks
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
