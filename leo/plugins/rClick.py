@@ -759,88 +759,6 @@ def rc_OnPasteFromMenu(c, event, widget):
     c.frame.OnPasteFromMenu(event)
 #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
 #@-node:bobjack.20080321133958.8:Callbacks
-#@+node:ekr.20040422072343.9:Utils for context sensitive commands
-#@+node:bobjack.20080322043011.14:get_text_and_word_from_body_text
-def get_text_and_word_from_body_text(widget):
-
-    """Get text and word from text control.
-
-    If any text is selected this is returned as `text` and `word` is returned as
-    a copy of the text with leading and trailing whitespace stripped.
-
-    If no text is selected, `text` and `word are set to the contents of the line
-    and word containing the current insertion point. """
-
-    text = widget.getSelectedText()
-
-    if text:
-        word = text.strip()
-    else:
-        s = widget.getAllText()
-        ins = widget.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        text = s[i:j]
-        i,j = g.getWord(s,ins)
-        word = s[i:j]
-
-    return text, word
-#@-node:bobjack.20080322043011.14:get_text_and_word_from_body_text
-#@+node:ekr.20040422072343.10:crop
-def crop(s,n=20,end="..."):
-
-    """return a part of string s, no more than n characters; optionally add ... at the end"""
-
-    if len(s)<=n:
-        return s
-    else:
-        return s[:n]+end # EKR
-#@-node:ekr.20040422072343.10:crop
-#@+node:ekr.20040422072343.11:getword
-def getword(s,pos):
-
-    """returns a word in string s around position pos"""
-
-    for m in re.finditer("\w+",s):
-        if m.start()<=pos and m.end()>=pos:
-            return m.group()
-    return None
-#@-node:ekr.20040422072343.11:getword
-#@+node:ekr.20040422072343.12:getdoc
-def getdoc(thing, title='Help on %s', forceload=0):
-
-    #g.trace(thing)
-
-    # Redirect stdout to a "file like object".
-    old_stdout = sys.stdout
-    sys.stdout = fo = g.fileLikeObject()
-
-    # Python's builtin help function writes to stdout.
-    help(str(thing))
-
-    # Restore original stdout.
-    sys.stdout = old_stdout
-
-    # Return what was written to fo.
-    return fo.get()
-#@-node:ekr.20040422072343.12:getdoc
-#@+node:bobjack.20080323045434.25:show_message_as_html
-def show_message_as_html(title, msg):
-
-    """Show `msg` in an external browser using leo_to_html."""
-
-    import leo_to_html
-
-    oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
-
-    oHTML.loadConfig()
-    oHTML.silent = True
-    oHTML.myFileName = oHTML.title = title
-
-    oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
-    oHTML.applyTemplate()
-    oHTML.show()
-#@-node:bobjack.20080323045434.25:show_message_as_html
-#@-node:ekr.20040422072343.9:Utils for context sensitive commands
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
@@ -1044,7 +962,7 @@ class ContextMenuController(object):
 
         contextCommands = []
 
-        text, word = get_text_and_word_from_body_text(widget)
+        text, word = self.get_text_and_word_from_body_text(widget)
 
         if 0:
             g.es("selected text: "+text)
@@ -1081,7 +999,7 @@ class ContextMenuController(object):
                     #g.es("not found: " + url,color='red')
 
             #add to menu
-            menu_item=( 'Open URL: '+crop(url,30), url_open_command)
+            menu_item=( 'Open URL: '+self.crop(url,30), url_open_command)
             contextCommands.append( menu_item )
 
         return contextCommands
@@ -1110,7 +1028,7 @@ class ContextMenuController(object):
                     c.beginUpdate()
                     c.selectPosition(ref)
                     c.endUpdate()
-                menu_item=( 'Jump to: '+crop(name,30), jump_command)
+                menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
                 contextCommands.append( menu_item )
             else:
                 # could add "create section" here?
@@ -1150,7 +1068,7 @@ class ContextMenuController(object):
         def help_command(*k,**kk):
             #g.trace(k, kk)
             try:
-                doc=getdoc(word,"="*60+"\nHelp on %s")
+                doc = self.getdoc(word,"="*60+"\nHelp on %s")
 
                 # It would be nice to save log pane position
                 # and roll log back to make this position visible,
@@ -1167,7 +1085,7 @@ class ContextMenuController(object):
                         xdoc = doc.split('\n')
                         title = xdoc[0]
                         g.es('launching browser ...',  color='blue')
-                        show_message_as_html(title, '\n'.join(xdoc[1:]))
+                        self.show_message_as_html(title, '\n'.join(xdoc[1:]))
                         g.es('done', color='blue')
                     else:
                         g.es(doc, color='blue')
@@ -1184,10 +1102,92 @@ class ContextMenuController(object):
                 g.es(str(value),color="red")
 
 
-        menu_item=('Help on: '+crop(word,30), help_command)
+        menu_item=('Help on: '+ self.crop(word,30), help_command)
         return [ menu_item ]
     #@-node:ekr.20040422072343.15:get_help
     #@-node:bobjack.20080321133958.13:gen_context_sensitive_commands
+    #@+node:ekr.20040422072343.9:Utils for context sensitive commands
+    #@+node:bobjack.20080322043011.14:get_text_and_word_from_body_text
+    def get_text_and_word_from_body_text(self, widget):
+
+        """Get text and word from text control.
+
+        If any text is selected this is returned as `text` and `word` is returned as
+        a copy of the text with leading and trailing whitespace stripped.
+
+        If no text is selected, `text` and `word are set to the contents of the line
+        and word containing the current insertion point. """
+
+        text = widget.getSelectedText()
+
+        if text:
+            word = text.strip()
+        else:
+            s = widget.getAllText()
+            ins = widget.getInsertPoint()
+            i,j = g.getLine(s,ins)
+            text = s[i:j]
+            i,j = g.getWord(s,ins)
+            word = s[i:j]
+
+        return text, word
+    #@-node:bobjack.20080322043011.14:get_text_and_word_from_body_text
+    #@+node:ekr.20040422072343.10:crop
+    def crop(self, s,n=20,end="..."):
+
+        """return a part of string s, no more than n characters; optionally add ... at the end"""
+
+        if len(s)<=n:
+            return s
+        else:
+            return s[:n]+end # EKR
+    #@-node:ekr.20040422072343.10:crop
+    #@+node:ekr.20040422072343.11:getword
+    def getword(self, s,pos):
+
+        """returns a word in string s around position pos"""
+
+        for m in re.finditer("\w+",s):
+            if m.start()<=pos and m.end()>=pos:
+                return m.group()
+        return None
+    #@-node:ekr.20040422072343.11:getword
+    #@+node:ekr.20040422072343.12:getdoc
+    def getdoc(self, thing, title='Help on %s', forceload=0):
+
+        #g.trace(thing)
+
+        # Redirect stdout to a "file like object".
+        old_stdout = sys.stdout
+        sys.stdout = fo = g.fileLikeObject()
+
+        # Python's builtin help function writes to stdout.
+        help(str(thing))
+
+        # Restore original stdout.
+        sys.stdout = old_stdout
+
+        # Return what was written to fo.
+        return fo.get()
+    #@-node:ekr.20040422072343.12:getdoc
+    #@+node:bobjack.20080323045434.25:show_message_as_html
+    def show_message_as_html(self, title, msg):
+
+        """Show `msg` in an external browser using leo_to_html."""
+
+        import leo_to_html
+
+        oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
+
+        oHTML.loadConfig()
+        oHTML.silent = True
+        oHTML.myFileName = oHTML.title = title
+
+        oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
+        oHTML.applyTemplate()
+        oHTML.show()
+    #@-node:bobjack.20080323045434.25:show_message_as_html
+    #@-node:ekr.20040422072343.9:Utils for context sensitive commands
     #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
     #@-others

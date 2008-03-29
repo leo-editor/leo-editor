@@ -13,10 +13,10 @@
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080329075629.3" a="TV"><vh>Notes</vh></v>
+<v t="bobjack.20080329075629.3" a="T"><vh>Notes</vh></v>
 <v t="bobjack.20080329075629.4"><vh>experiments</vh></v>
 <v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
-<v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
+<v t="bobjack.20080329070612.2" a="V"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
