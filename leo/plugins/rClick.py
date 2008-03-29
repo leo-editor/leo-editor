@@ -660,7 +660,7 @@ def rClicker(tag, keywords):
                 else:
                     #@    << function command item >>
                     #@+node:ekr.20080327061021.228:<< function command item >>
-                    cb = lambda c=c, event=event, widget=widget, cmd=cmd: cmd(c, event, widget)
+                    cb = lambda c=c, event=event, cmd=cmd: cmd(c, event)
                     rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
                     #@nonl
                     #@-node:ekr.20080327061021.228:<< function command item >>
@@ -722,7 +722,7 @@ def rClicker(tag, keywords):
 #@-node:ekr.20080327061021.229:Event handler
 #@+node:bobjack.20080321133958.8:Callbacks
 #@+node:ekr.20040422072343.3:rc_nl
-def rc_nl(c, event, widget):
+def rc_nl(c, event):
 
     """Insert a newline at the current curser position of selected body editor."""
 
@@ -734,26 +734,26 @@ def rc_nl(c, event, widget):
         c.frame.body.onBodyChanged("Typing")
 #@-node:ekr.20040422072343.3:rc_nl
 #@+node:ekr.20040422072343.4:rc_selectAll
-def rc_selectAll(c, event, widget):
+def rc_selectAll(c, event):
 
     """Select the entire contents of the text widget."""
 
-    widget.selectAllText()
+    event.widget.selectAllText()
 #@-node:ekr.20040422072343.4:rc_selectAll
 #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
-def rc_OnCutFromMenu(c, event, widget):
+def rc_OnCutFromMenu(c, event):
 
     """Cut text from currently focused text widget."""
 
     c.frame.OnCutFromMenu(event)
 #@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
 #@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-def rc_OnCopyFromMenu(c, event, widget):
+def rc_OnCopyFromMenu(c, event):
     """Copy text from currently focused text widget."""
     c.frame.OnCopyFromMenu(event)
 #@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
 #@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-def rc_OnPasteFromMenu(c, event, widget):
+def rc_OnPasteFromMenu(c, event):
     """Paste text into currently focused text widget."""
 
     c.frame.OnPasteFromMenu(event)
