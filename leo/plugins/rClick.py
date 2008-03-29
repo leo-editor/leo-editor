@@ -840,25 +840,6 @@ def show_message_as_html(title, msg):
     oHTML.show()
 #@-node:bobjack.20080323045434.25:show_message_as_html
 #@-node:ekr.20040422072343.9:Utils for context sensitive commands
-#@+node:bobjack.20080325162505.6:Special Menu Generators
-#@+node:bobjack.20080325162505.4:gen_recent_files_list
-def gen_recent_files_list(c, event, widget, rmenu, commandList):
-
-    """Generate menu items for recent files list."""
-
-    lst = []
-    for name in c.recentFiles[:]:
-
-        def recentFilesCallback (c, event, widget, name=name):
-            c.openRecentFile(name)
-
-        label = "%s" % (g.computeWindowTitle(name),)
-        lst.append((label, recentFilesCallback))
-
-    commandList[:0] = lst
-
-#@-node:bobjack.20080325162505.4:gen_recent_files_list
-#@-node:bobjack.20080325162505.6:Special Menu Generators
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
@@ -982,8 +963,27 @@ class ContextMenuController(object):
 
         global MB_MENU_RETVAL
 
-        MB_MENU_RETVAL = gen_recent_files_list(*MB_MENU_ARGS)
+        MB_MENU_RETVAL = self.gen_recent_files_list(*MB_MENU_ARGS)
     #@nonl
+    #@+node:bobjack.20080325162505.4:gen_recent_files_list
+    def gen_recent_files_list(self, xc, event, widget, rmenu, commandList):
+
+        """Generate menu items for recent files list."""
+
+        c = self.c
+
+        lst = []
+        for name in c.recentFiles[:]:
+
+            def recentFilesCallback (c, event, widget, name=name):
+                c.openRecentFile(name)
+
+            label = "%s" % (g.computeWindowTitle(name),)
+            lst.append((label, recentFilesCallback))
+
+        commandList[:0] = lst
+
+    #@-node:bobjack.20080325162505.4:gen_recent_files_list
     #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
     #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     def rclick_gen_context_sensitive_commands(self, event):
@@ -1013,9 +1013,10 @@ class ContextMenuController(object):
         of a pattern add a command, which name and action depend on the text
         matched.
 
-        Examples provided:
+        Example provided:
             - extracts URL's from the text and puts "Open URL:..." in the menu.
-            - 
+            - extracts section headers and puts "Jump To:..." in the menu.
+            - applys python help() to the word or selected text.
 
         """
 
@@ -1069,7 +1070,8 @@ class ContextMenuController(object):
     def get_sections(self, text):
 
         """
-        Extract section from the text and create 'Jump to: ...' menu items for inclusion in a menu list.
+        Extract section from the text and create 'Jump to: ...' menu items for
+        inclusion in a menu list.
         """
 
         scan_jump_re="<"+"<[^<>]+>"+">"
@@ -1099,6 +1101,29 @@ class ContextMenuController(object):
     #@-node:bobjack.20080322043011.11:get_sections
     #@+node:ekr.20040422072343.15:get_help
     def get_help(self, word):
+        """Create a menu item to apply python's help() to `word`.
+
+        Uses @string rclick_show_help setting.
+
+        This setting specifies where output from the help() utility is sent when the
+        menu item created here is invoked::
+
+            @string rclick_show_help = 'flags'
+
+        `flags` is a string that can contain any combination of 'print', 'log',
+        'browser' or 'all'.
+
+        eg::
+
+            @string rclick_show_help = 'print log'
+
+        This will send output to stdout and the log pane but not the browser.
+
+        If the setting is not present or does not contain valid data, output
+        will be sent to all three destinations.
+
+        """
+
 
         c = self.c
 
