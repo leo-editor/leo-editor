@@ -465,9 +465,26 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if not c: return
 
-    theContextMenuController = ContextMenuController(c)
+    c.theContextMenuController = ContextMenuController(c)
 #@nonl
 #@-node:bobjack.20080323045434.18:onCreate
+#@+node:ekr.20080327061021.229:Event handler
+#@+node:ekr.20080327061021.220:rClicker
+# EKR: it is not necessary to catch exceptions or to return "break".
+
+def rClicker(tag, keywords):
+
+    """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
+
+    c = keywords.get("c")
+    event = keywords.get("event")
+    if not c or not c.exists or not event:
+        return
+
+    return c.theContextMenuController.rClicker(event)
+
+#@-node:ekr.20080327061021.220:rClicker
+#@-node:ekr.20080327061021.229:Event handler
 #@+node:bobjack.20080321133958.7:init_default_menus
 def init_default_menus():
 
@@ -545,182 +562,7 @@ def init_default_menus():
 
 #@-node:bobjack.20080321133958.7:init_default_menus
 #@-node:ekr.20060108122501:Module-level
-#@+node:ekr.20080327061021.229:Event handler
-#@+node:ekr.20080327061021.220:rClicker
-# EKR: it is not necessary to catch exceptions or to return "break".
-
-def rClicker(tag, keywords):
-
-    """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
-
-    global POPUP_MENU
-
-    #@    << def table_to_menu >>
-    #@+node:ekr.20080327061021.221:<< def table_to_menu >>
-    def table_to_menu(menu_table, level=0):
-
-        """Generate a TK menu from a python list."""
-
-        global MB_MENU_ARGS, MB_MENU_RETVAL
-
-        if level > 4 or not menu_table:
-            return
-
-        if level == 0:
-            rmenu = POPUP_MENU
-            try:
-                rmenu.destroy()
-            except:
-                pass
-
-        rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
-        rmenu.rc_columnbreak = 0
-
-        while menu_table:
-
-            txt, cmd = menu_table.pop(0)
-            #g.trace(txt, cmd)
-
-
-            event.rc_rmenu = rmenu
-            event.rc_commandList = menu_table
-
-            if txt == '*':
-                #@            << call a menu generator >>
-                #@+node:ekr.20080327061021.222:<< call a menu generator >>
-
-                if isinstance(cmd, basestring):
-
-                    MB_MENU_ARGS = event
-                    MB_MENU_RETVAL = None
-
-                    #g.trace(cmd)
-
-                    try:
-                        try:
-                            c.executeMinibufferCommand(cmd)
-                        except:
-                            g.es_exception()
-                            MB_MENU_RETVAL = None
-                    finally:
-                        MB_MENU_ARGS = None
-
-                elif cmd:
-                    MB_MENU_RETVAL = cmd(event)
-                #@-node:ekr.20080327061021.222:<< call a menu generator >>
-                #@nl
-                continue
-
-            elif txt == '-':
-                #@            << add a separator >>
-                #@+node:ekr.20080327061021.223:<< add a separator >>
-                rmenu.add_separator()
-                #@nonl
-                #@-node:ekr.20080327061021.223:<< add a separator >>
-                #@nl
-
-            elif txt in ('', '"'):
-                continue
-
-            elif txt == '&':
-                #@            << include a menu chunk >>
-                #@+node:ekr.20080327061021.224:<< include a menu chunk >>
-                menu_table = copy.deepcopy(c.context_menus.get(cmd, [])) + menu_table
-                #@nonl
-                #@-node:ekr.20080327061021.224:<< include a menu chunk >>
-                #@nl
-                continue
-
-            elif txt == '|':
-                rmenu.rc_columnbreak = 1
-                continue
-
-            elif isinstance(txt, basestring):
-                #@            << add a named item >>
-                #@+node:ekr.20080327061021.225:<< add a named item >>
-                if isinstance(cmd, basestring):
-                    #@    << minibuffer command item >>
-                    #@+node:ekr.20080327061021.226:<< minibuffer command item >>
-                    cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
-                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
-                    #@-node:ekr.20080327061021.226:<< minibuffer command item >>
-                    #@nl
-
-                elif isinstance(cmd, list):
-                    #@    << cascade item >>
-                    #@+node:ekr.20080327061021.227:<< cascade item >>
-                    submenu = table_to_menu(cmd[:], level+1)
-                    if submenu:
-                        rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
-                    continue # to avoid reseting columnbreak
-                    #@nonl
-                    #@-node:ekr.20080327061021.227:<< cascade item >>
-                    #@nl
-
-                else:
-                    #@    << function command item >>
-                    #@+node:ekr.20080327061021.228:<< function command item >>
-                    cb = lambda c=c, event=event, cmd=cmd: cmd(c, event)
-                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
-                    #@nonl
-                    #@-node:ekr.20080327061021.228:<< function command item >>
-                    #@nl
-                #@-node:ekr.20080327061021.225:<< add a named item >>
-                #@nl
-
-            rmenu.rc_columnbreak = 0
-
-        if MB_MENU_RETVAL is None:
-            return rmenu
-
-        rmenu.destroy()
-
-    #@-node:ekr.20080327061021.221:<< def table_to_menu >>
-    #@nl
-
-    c = keywords.get("c")
-    event = keywords.get("event")
-    if not c or not c.exists or not event:
-        return
-
-    widget = event.widget
-    if not widget: return
-
-    isText = g.app.gui.isTextWidget(widget)
-    if isText:
-        try:
-            widget.setSelectionRange(*c.k.previousSelection)
-        except TypeError:
-            #g.trace('no previous selection')
-            pass
-
-    # Put the focus in the widget.
-    widget.focus()
-
-    name = c.widget_name(widget)
-    top_menu_table = []
-
-    if hasattr(widget, 'context_menu'):
-
-        key = widget.context_menu
-        if isinstance(key, list):
-            top_menu_table = widget_context_menu
-        elif isinstance(key, basestring):
-            top_menu_table = c.context_menus.get(key, [])[:]
-
-    else:
-        for key in c.context_menus.keys():
-            if name.startswith(key):
-                top_menu_table = c.context_menus.get(key, [])[:]
-                break
-
-    top_menu = table_to_menu(top_menu_table)
-    if top_menu:
-        top_menu.tk_popup(event.x_root-23, event.y_root+13)
-        POPUP_MENU = top_menu
-#@-node:ekr.20080327061021.220:rClicker
-#@-node:ekr.20080327061021.229:Event handler
-#@+node:bobjack.20080321133958.8:Callbacks
+#@+node:bobjack.20080321133958.8:Invocation Callbacks
 #@+node:ekr.20040422072343.3:rc_nl
 def rc_nl(c, event):
 
@@ -758,7 +600,7 @@ def rc_OnPasteFromMenu(c, event):
 
     c.frame.OnPasteFromMenu(event)
 #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-#@-node:bobjack.20080321133958.8:Callbacks
+#@-node:bobjack.20080321133958.8:Invocation Callbacks
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
@@ -791,13 +633,20 @@ class ContextMenuController(object):
         c = self.c
         if not c.exists: return
 
-        c.frame.log.logCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
+        def rClickbinderCallback(event,
+            handler=c.k.masterClick3Handler,
+            func=c.frame.OnBodyRClick
+        ):
+            g.trace()
+            return handler(event,func)
+
+        c.frame.log.logCtrl.bind('<Button-3>', rClickbinderCallback)
 
         h = c.searchCommands.findTabHandler
         if not h: return
 
         for w in (h.find_ctrl, h.change_ctrl):
-            w.bind('<Button-3>',c.frame.OnBodyRClick)
+            w.bind('<Button-3>', rClickbinderCallback)
     #@-node:ekr.20080327061021.217:rClickbinder
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
@@ -906,8 +755,6 @@ class ContextMenuController(object):
         rmenu = event.rc_rmenu
         commandList = event.rc_commandList
 
-        g.trace(widget)
-
         lst = []
         for name in c.recentFiles[:]:
 
@@ -957,8 +804,6 @@ class ContextMenuController(object):
         widget = event.widget
         rmenu = event.rc_rmenu
         commandList = event.rc_commandList
-
-        g.trace()
 
         contextCommands = []
 
@@ -1190,6 +1035,179 @@ class ContextMenuController(object):
     #@-node:ekr.20040422072343.9:Utils for context sensitive commands
     #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
+    #@+node:bobjack.20080329153415.14:Event Handler
+    #@+node:bobjack.20080329153415.5:rClicker
+    # EKR: it is not necessary to catch exceptions or to return "break".
+
+    def rClicker(self, event):
+
+        """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
+
+        global POPUP_MENU
+
+        c = self.c
+
+        #@    << def table_to_menu >>
+        #@+node:bobjack.20080329153415.6:<< def table_to_menu >>
+        def table_to_menu(menu_table, level=0):
+
+            """Generate a TK menu from a python list."""
+
+            global MB_MENU_ARGS, MB_MENU_RETVAL
+
+            if level > 4 or not menu_table:
+                return
+
+            if level == 0:
+                rmenu = POPUP_MENU
+                try:
+                    rmenu.destroy()
+                except:
+                    pass
+
+            rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
+            rmenu.rc_columnbreak = 0
+
+            while menu_table:
+
+                txt, cmd = menu_table.pop(0)
+                #g.trace(txt, cmd)
+
+
+                event.rc_rmenu = rmenu
+                event.rc_commandList = menu_table
+
+                if txt == '*':
+                    #@            << call a menu generator >>
+                    #@+node:bobjack.20080329153415.7:<< call a menu generator >>
+
+                    if isinstance(cmd, basestring):
+
+                        MB_MENU_ARGS = event
+                        MB_MENU_RETVAL = None
+
+                        #g.trace(cmd)
+
+                        try:
+                            try:
+                                c.executeMinibufferCommand(cmd)
+                            except:
+                                g.es_exception()
+                                MB_MENU_RETVAL = None
+                        finally:
+                            MB_MENU_ARGS = None
+
+                    elif cmd:
+                        MB_MENU_RETVAL = cmd(event)
+                    #@-node:bobjack.20080329153415.7:<< call a menu generator >>
+                    #@nl
+                    continue
+
+                elif txt == '-':
+                    #@            << add a separator >>
+                    #@+node:bobjack.20080329153415.8:<< add a separator >>
+                    rmenu.add_separator()
+                    #@nonl
+                    #@-node:bobjack.20080329153415.8:<< add a separator >>
+                    #@nl
+
+                elif txt in ('', '"'):
+                    continue
+
+                elif txt == '&':
+                    #@            << include a menu chunk >>
+                    #@+node:bobjack.20080329153415.9:<< include a menu chunk >>
+                    menu_table = copy.deepcopy(c.context_menus.get(cmd, [])) + menu_table
+                    #@nonl
+                    #@-node:bobjack.20080329153415.9:<< include a menu chunk >>
+                    #@nl
+                    continue
+
+                elif txt == '|':
+                    rmenu.rc_columnbreak = 1
+                    continue
+
+                elif isinstance(txt, basestring):
+                    #@            << add a named item >>
+                    #@+node:bobjack.20080329153415.10:<< add a named item >>
+                    if isinstance(cmd, basestring):
+                        #@    << minibuffer command item >>
+                        #@+node:bobjack.20080329153415.11:<< minibuffer command item >>
+                        cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
+                        rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
+                        #@-node:bobjack.20080329153415.11:<< minibuffer command item >>
+                        #@nl
+
+                    elif isinstance(cmd, list):
+                        #@    << cascade item >>
+                        #@+node:bobjack.20080329153415.12:<< cascade item >>
+                        submenu = table_to_menu(cmd[:], level+1)
+                        if submenu:
+                            rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
+                        continue # to avoid reseting columnbreak
+                        #@nonl
+                        #@-node:bobjack.20080329153415.12:<< cascade item >>
+                        #@nl
+
+                    else:
+                        #@    << function command item >>
+                        #@+node:bobjack.20080329153415.13:<< function command item >>
+                        cb = lambda c=c, event=event, cmd=cmd: cmd(c, event)
+                        rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
+                        #@nonl
+                        #@-node:bobjack.20080329153415.13:<< function command item >>
+                        #@nl
+                    #@-node:bobjack.20080329153415.10:<< add a named item >>
+                    #@nl
+
+                rmenu.rc_columnbreak = 0
+
+            if MB_MENU_RETVAL is None:
+                return rmenu
+
+            rmenu.destroy()
+
+        #@-node:bobjack.20080329153415.6:<< def table_to_menu >>
+        #@nl
+
+        widget = event.widget
+        if not widget: return
+
+        # Put the focus in the widget.
+        widget.focus()
+
+        isText = g.app.gui.isTextWidget(widget)
+        if isText:
+            try:
+                widget.setSelectionRange(*c.k.previousSelection)
+            except TypeError:
+                #g.trace('no previous selection')
+                pass
+
+
+        name = c.widget_name(widget)
+        top_menu_table = []
+
+        if hasattr(widget, 'context_menu'):
+
+            key = widget.context_menu
+            if isinstance(key, list):
+                top_menu_table = widget_context_menu
+            elif isinstance(key, basestring):
+                top_menu_table = c.context_menus.get(key, [])[:]
+
+        else:
+            for key in c.context_menus.keys():
+                if name.startswith(key):
+                    top_menu_table = c.context_menus.get(key, [])[:]
+                    break
+
+        top_menu = table_to_menu(top_menu_table)
+        if top_menu:
+            top_menu.tk_popup(event.x_root-23, event.y_root+13)
+            POPUP_MENU = top_menu
+    #@-node:bobjack.20080329153415.5:rClicker
+    #@-node:bobjack.20080329153415.14:Event Handler
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
