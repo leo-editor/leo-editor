@@ -455,7 +455,7 @@ def init ():
         leoPlugins.registerHandler("bodyrclick1",rClicker)
         g.plugin_signon(__name__)
 
-        init_default_menus()
+        #init_default_menus()
 
     return ok
 #@-node:ekr.20060108122501.1:init
@@ -485,90 +485,6 @@ def rClicker(tag, keywords):
 
 #@-node:ekr.20080327061021.220:rClicker
 #@-node:ekr.20080327061021.229:Event handler
-#@+node:bobjack.20080321133958.7:init_default_menus
-def init_default_menus():
-
-    """Initialize all default context menus"""
-
-    def invoke(method_name):
-
-        def invoke_callback(c, event, method_name=method_name):
-            cb = getattr(c.theContextMenuController, method_name)
-            return cb(event)
-
-        return invoke_callback
-
-    #@    @+others
-    #@+node:bobjack.20080325060741.6:edit-menu
-    default_context_menus['edit-menu'] = [
-        ('Cut', invoke('rc_OnCutFromMenu')),
-        ('Copy', invoke('rc_OnCopyFromMenu')),
-        ('Paste', invoke('rc_OnPasteFromMenu')),
-        ('-', None),
-        ('Select All', invoke('rc_selectAll')),
-    ]
-    #@-node:bobjack.20080325060741.6:edit-menu
-    #@+node:bobjack.20080325060741.4:body
-    default_context_menus['body'] = [
-
-        ('Cut', 'cut-text'),
-        ('Copy', 'copy-text'),
-        ('Paste', 'paste-text'),
-
-        ('-',None),
-
-        ('Select All', 'select-all'),
-
-        ('-',None),
-
-        ('Block Operations', [
-
-            ('Indent', 'indent-region'),
-            ('Dedent', 'unindent-region'),
-
-            ('-',None),
-
-            ('Add Comments', 'add-comments'),
-            ('Remove Comments', 'delete-comments'),
-        ]),
-
-        ('-',None),
-
-        ('&', 'recent-files-menu'),
-
-            ('Find Bracket', 'match-brackets'),
-            ('Insert newline', invoke('rc_nl')),
-
-        ('Execute Script', 'execute-script'),
-
-            ('"', 'users menu items'),
-
-        ('*', 'rclick-gen-context-sensitive-commands'),
-
-    ]
-    #@-node:bobjack.20080325060741.4:body
-    #@+node:bobjack.20080325060741.5:log
-    default_context_menus['log'] = [('&', 'edit-menu')]
-    #@nonl
-    #@-node:bobjack.20080325060741.5:log
-    #@+node:bobjack.20080325060741.2:find-text
-    default_context_menus['find-text'] = [('&', 'edit-menu')]
-    #@-node:bobjack.20080325060741.2:find-text
-    #@+node:bobjack.20080325060741.3:change-text
-    default_context_menus['change-text'] = [('&', 'edit-menu')]
-    #@-node:bobjack.20080325060741.3:change-text
-    #@+node:bobjack.20080325162505.3:recent-files
-    default_context_menus['recent-files-menu'] = [
-        ('Recent Files', [
-            ('*', 'rclick-gen-recent-files-list'),
-        ])
-    ]
-    #@-node:bobjack.20080325162505.3:recent-files
-    #@-others
-
-
-
-#@-node:bobjack.20080321133958.7:init_default_menus
 #@-node:ekr.20060108122501:Module-level
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
@@ -591,6 +507,10 @@ class ContextMenuController(object):
         ):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
+
+
+        self.default_context_menus = {}
+        self.init_default_menus()
 
         self.rClickbinder()
         self.rSetupMenus()
@@ -683,7 +603,7 @@ class ContextMenuController(object):
         if not isinstance(menus, dict):
             c.context_menus = menus = {}
 
-        for key, item in default_context_menus.iteritems():
+        for key, item in self.default_context_menus.iteritems():
 
             if not key in menus:
                 menus[key] = copy.deepcopy(item)
@@ -1219,6 +1139,92 @@ class ContextMenuController(object):
         self.c.frame.OnPasteFromMenu(event)
     #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
     #@-node:bobjack.20080321133958.8:Invocation Callbacks
+    #@+node:bobjack.20080321133958.7:init_default_menus
+    def init_default_menus(self):
+
+        """Initialize all default context menus"""
+
+        c = self.c
+
+        def invoke(method_name):
+
+            def invoke_callback(c, event, method_name=method_name):
+                cb = getattr(c.theContextMenuController, method_name)
+                return cb(event)
+
+            return invoke_callback
+
+        #@    @+others
+        #@+node:bobjack.20080325060741.6:edit-menu
+        self.default_context_menus['edit-menu'] = [
+            ('Cut', invoke('rc_OnCutFromMenu')),
+            ('Copy', invoke('rc_OnCopyFromMenu')),
+            ('Paste', invoke('rc_OnPasteFromMenu')),
+            ('-', None),
+            ('Select All', invoke('rc_selectAll')),
+        ]
+        #@-node:bobjack.20080325060741.6:edit-menu
+        #@+node:bobjack.20080325060741.4:body
+        self.default_context_menus['body'] = [
+
+            ('Cut', 'cut-text'),
+            ('Copy', 'copy-text'),
+            ('Paste', 'paste-text'),
+
+            ('-',None),
+
+            ('Select All', 'select-all'),
+
+            ('-',None),
+
+            ('Block Operations', [
+
+                ('Indent', 'indent-region'),
+                ('Dedent', 'unindent-region'),
+
+                ('-',None),
+
+                ('Add Comments', 'add-comments'),
+                ('Remove Comments', 'delete-comments'),
+            ]),
+
+            ('-',None),
+
+            ('&', 'recent-files-menu'),
+
+                ('Find Bracket', 'match-brackets'),
+                ('Insert newline', invoke('rc_nl')),
+
+            ('Execute Script', 'execute-script'),
+
+                ('"', 'users menu items'),
+
+            ('*', 'rclick-gen-context-sensitive-commands'),
+
+        ]
+        #@-node:bobjack.20080325060741.4:body
+        #@+node:bobjack.20080325060741.5:log
+        self.default_context_menus['log'] = [('&', 'edit-menu')]
+        #@nonl
+        #@-node:bobjack.20080325060741.5:log
+        #@+node:bobjack.20080325060741.2:find-text
+        self.default_context_menus['find-text'] = [('&', 'edit-menu')]
+        #@-node:bobjack.20080325060741.2:find-text
+        #@+node:bobjack.20080325060741.3:change-text
+        self.default_context_menus['change-text'] = [('&', 'edit-menu')]
+        #@-node:bobjack.20080325060741.3:change-text
+        #@+node:bobjack.20080325162505.3:recent-files
+        self.default_context_menus['recent-files-menu'] = [
+            ('Recent Files', [
+                ('*', 'rclick-gen-recent-files-list'),
+            ])
+        ]
+        #@-node:bobjack.20080325162505.3:recent-files
+        #@-others
+
+
+
+    #@-node:bobjack.20080321133958.7:init_default_menus
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
