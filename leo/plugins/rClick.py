@@ -574,15 +574,16 @@ def rClicker(tag, keywords):
                 pass
 
         rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
-        rmenu.rclick_columnbreak = 0
+        rmenu.rc_columnbreak = 0
 
         while menu_table:
 
             txt, cmd = menu_table.pop(0)
             #g.trace(txt, cmd)
 
-            args = (c, event, widget, rmenu, menu_table)
 
+            event.rc_rmenu = rmenu
+            event.rc_commandList = menu_table
 
             if txt == '*':
                 #@            << call a menu generator >>
@@ -590,7 +591,7 @@ def rClicker(tag, keywords):
 
                 if isinstance(cmd, basestring):
 
-                    MB_MENU_ARGS = args
+                    MB_MENU_ARGS = event
                     MB_MENU_RETVAL = None
 
                     #g.trace(cmd)
@@ -605,7 +606,7 @@ def rClicker(tag, keywords):
                         MB_MENU_ARGS = None
 
                 elif cmd:
-                    MB_MENU_RETVAL = cmd(*args)
+                    MB_MENU_RETVAL = cmd(event)
                 #@-node:ekr.20080327061021.222:<< call a menu generator >>
                 #@nl
                 continue
@@ -631,7 +632,7 @@ def rClicker(tag, keywords):
                 continue
 
             elif txt == '|':
-                rmenu.rclick_columnbreak = 1
+                rmenu.rc_columnbreak = 1
                 continue
 
             elif isinstance(txt, basestring):
@@ -641,7 +642,7 @@ def rClicker(tag, keywords):
                     #@    << minibuffer command item >>
                     #@+node:ekr.20080327061021.226:<< minibuffer command item >>
                     cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
-                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rclick_columnbreak)
+                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
                     #@-node:ekr.20080327061021.226:<< minibuffer command item >>
                     #@nl
 
@@ -650,7 +651,7 @@ def rClicker(tag, keywords):
                     #@+node:ekr.20080327061021.227:<< cascade item >>
                     submenu = table_to_menu(cmd[:], level+1)
                     if submenu:
-                        rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rclick_columnbreak)
+                        rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
                     continue # to avoid reseting columnbreak
                     #@nonl
                     #@-node:ekr.20080327061021.227:<< cascade item >>
@@ -660,14 +661,14 @@ def rClicker(tag, keywords):
                     #@    << function command item >>
                     #@+node:ekr.20080327061021.228:<< function command item >>
                     cb = lambda c=c, event=event, widget=widget, cmd=cmd: cmd(c, event, widget)
-                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rclick_columnbreak)
+                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
                     #@nonl
                     #@-node:ekr.20080327061021.228:<< function command item >>
                     #@nl
                 #@-node:ekr.20080327061021.225:<< add a named item >>
                 #@nl
 
-            rmenu.rclick_columnbreak = 0
+            rmenu.rc_columnbreak = 0
 
         if MB_MENU_RETVAL is None:
             return rmenu
@@ -963,14 +964,31 @@ class ContextMenuController(object):
 
         global MB_MENU_RETVAL
 
-        MB_MENU_RETVAL = self.gen_recent_files_list(*MB_MENU_ARGS)
+        MB_MENU_RETVAL = self.gen_recent_files_list(MB_MENU_ARGS)
     #@nonl
     #@+node:bobjack.20080325162505.4:gen_recent_files_list
-    def gen_recent_files_list(self, xc, event, widget, rmenu, commandList):
+    def gen_recent_files_list(self, event):
 
-        """Generate menu items for recent files list."""
+        """Generate menu items that will open files from the recent files list.
+
+        event: the event object obtain from the right click.
+
+        event.widget: the widget in which the right click was detected.
+
+        event.rc_rmenu: the gui menu that has been genereated from previous items
+
+        event.rc_commandList: the list of menu items that have yet to be
+            converted into gui menu items. It may be manipulated or extended at will
+            or even replaced entirely.
+
+        """
 
         c = self.c
+        widget = event.widget
+        rmenu = event.rc_rmenu
+        commandList = event.rc_commandList
+
+        g.trace(widget)
 
         lst = []
         for name in c.recentFiles[:]:
@@ -992,21 +1010,18 @@ class ContextMenuController(object):
 
         global MB_MENU_RETVAL
 
-        MB_MENU_RETVAL = self.gen_context_sensitive_commands(*MB_MENU_ARGS)
+        MB_MENU_RETVAL = self.gen_context_sensitive_commands(MB_MENU_ARGS)
 
 
     #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
-    def gen_context_sensitive_commands(self, xc, event, widget, rmenu, commandList):
+    def gen_context_sensitive_commands(self, event):
 
         """Generate context-sensitive rclick items.
 
         event: the event provided by the original right click.
-
-        widget: the widget on which the right click occured
-
-        rmenu: the menu or submenu that is currently being built
-
-        commandList: the list of menu items waiting to be built.
+        event.widget: the widget on which the right click occured
+        event.rc_rmenu: the menu or submenu that is currently being built
+        event.rc_commandList: the list of menu items waiting to be built.
 
         On right-click get the selected text, or the whole line containing cursor if
         no selection. Scan this text for certain regexp patterns. For each occurrence
@@ -1020,7 +1035,12 @@ class ContextMenuController(object):
 
         """
 
-        g.trace(self.c, xc)
+        c = self.c
+        widget = event.widget
+        rmenu = event.rc_rmenu
+        commandList = event.rc_commandList
+
+        g.trace()
 
         contextCommands = []
 
