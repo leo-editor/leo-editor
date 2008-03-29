@@ -428,9 +428,6 @@ default_context_menus = {}
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
 
-MB_MENU_ARGS = None
-MB_MENU_RETVAL = None
-
 POPUP_MENU = None
 
 #@+others
@@ -499,6 +496,10 @@ class ContextMenuController(object):
 
         self.c = c
 
+        self.POPUP_MENU = None
+        self.MB_MENU_RETVAL = None
+        self.MB_MENU_ARGS = None
+
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
         for command in (
@@ -526,7 +527,6 @@ class ContextMenuController(object):
             handler=c.k.masterClick3Handler,
             func=c.frame.OnBodyRClick
         ):
-            g.trace()
             return handler(event,func)
 
         c.frame.log.logCtrl.bind('<Button-3>', rClickbinderCallback)
@@ -618,9 +618,7 @@ class ContextMenuController(object):
 
         """Minibuffer command wrapper."""
 
-        global MB_MENU_RETVAL
-
-        MB_MENU_RETVAL = self.gen_recent_files_list(MB_MENU_ARGS)
+        self.MB_MENU_RETVAL = self.gen_recent_files_list(self.MB_MENU_ARGS)
     #@nonl
     #@+node:bobjack.20080325162505.4:gen_recent_files_list
     def gen_recent_files_list(self, event):
@@ -647,7 +645,7 @@ class ContextMenuController(object):
         lst = []
         for name in c.recentFiles[:]:
 
-            def recentFilesCallback (c, event, widget, name=name):
+            def recentFilesCallback (c, event, name=name):
                 c.openRecentFile(name)
 
             label = "%s" % (g.computeWindowTitle(name),)
@@ -662,9 +660,8 @@ class ContextMenuController(object):
 
         """Minibuffer command wrapper."""
 
-        global MB_MENU_RETVAL
 
-        MB_MENU_RETVAL = self.gen_context_sensitive_commands(MB_MENU_ARGS)
+        self.MB_MENU_RETVAL = self.gen_context_sensitive_commands(self.MB_MENU_ARGS)
 
 
     #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
@@ -724,7 +721,7 @@ class ContextMenuController(object):
             url=match.group()
 
             #create new command callback
-            def url_open_command(*k,**kk):
+            def url_open_command(c, event, url=url):
                 import webbrowser
                 try:
                     webbrowser.open_new(url)
@@ -758,7 +755,7 @@ class ContextMenuController(object):
             if ref:
                 # Bug fix 1/8/06: bind c here.
                 # This is safe because we only get called from the proper commander.
-                def jump_command(c=c,*k,**kk):
+                def jump_command(c,event, ref=ref):
                     c.beginUpdate()
                     c.selectPosition(ref)
                     c.endUpdate()
@@ -799,8 +796,8 @@ class ContextMenuController(object):
 
         c = self.c
 
-        def help_command(*k,**kk):
-            #g.trace(k, kk)
+        def help_command(c, event, word=word):
+
             try:
                 doc = self.getdoc(word,"="*60+"\nHelp on %s")
 
@@ -932,8 +929,6 @@ class ContextMenuController(object):
 
         """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
 
-        global POPUP_MENU
-
         c = self.c
 
         #@    << def table_to_menu >>
@@ -942,13 +937,11 @@ class ContextMenuController(object):
 
             """Generate a TK menu from a python list."""
 
-            global MB_MENU_ARGS, MB_MENU_RETVAL
-
             if level > 4 or not menu_table:
                 return
 
             if level == 0:
-                rmenu = POPUP_MENU
+                rmenu = self.POPUP_MENU
                 try:
                     rmenu.destroy()
                 except:
@@ -972,8 +965,8 @@ class ContextMenuController(object):
 
                     if isinstance(cmd, basestring):
 
-                        MB_MENU_ARGS = event
-                        MB_MENU_RETVAL = None
+                        self.MB_MENU_ARGS = event
+                        self.MB_MENU_RETVAL = None
 
                         #g.trace(cmd)
 
@@ -982,12 +975,12 @@ class ContextMenuController(object):
                                 c.executeMinibufferCommand(cmd)
                             except:
                                 g.es_exception()
-                                MB_MENU_RETVAL = None
+                                self.MB_MENU_RETVAL = None
                         finally:
-                            MB_MENU_ARGS = None
+                            self.MB_MENU_ARGS = None
 
                     elif cmd:
-                        MB_MENU_RETVAL = cmd(event)
+                        self.MB_MENU_RETVAL = cmd(event)
                     #@-node:bobjack.20080329153415.7:<< call a menu generator >>
                     #@nl
                     continue
@@ -1051,7 +1044,7 @@ class ContextMenuController(object):
 
                 rmenu.rc_columnbreak = 0
 
-            if MB_MENU_RETVAL is None:
+            if self.MB_MENU_RETVAL is None:
                 return rmenu
 
             rmenu.destroy()
@@ -1094,7 +1087,7 @@ class ContextMenuController(object):
         top_menu = table_to_menu(top_menu_table)
         if top_menu:
             top_menu.tk_popup(event.x_root-23, event.y_root+13)
-            POPUP_MENU = top_menu
+            self.POPUP_MENU = top_menu
     #@-node:bobjack.20080329153415.5:rClicker
     #@-node:bobjack.20080329153415.14:Event Handler
     #@+node:bobjack.20080321133958.8:Invocation Callbacks

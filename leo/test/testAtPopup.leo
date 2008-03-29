@@ -13,11 +13,11 @@
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080329075629.3" a="T"><vh>Notes</vh></v>
+<v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
 <v t="bobjack.20080329075629.4"><vh>experiments</vh></v>
 <v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
-<v t="bobjack.20080329070612.2" a="V"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
-<v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
+<v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
+<v t="bobjack.20080329070612.3" a="TV"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
 <v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
@@ -164,7 +164,9 @@ leoGlobals
 then click on 'Help on: leoGlobals'</t>
 <t tx="bobjack.20080329070612.3">Place the cursor in the url below, then right click.
 
-    http://code.launchpad.net/leo-editor/</t>
+    http://code.launchpad.net/leo-editor/
+    
+    http://localhost/</t>
 <t tx="bobjack.20080329075629.2"></t>
 <t tx="bobjack.20080329075629.3">@popup &lt;name&gt; menus are converted to a list of tuples and stored in::
     
