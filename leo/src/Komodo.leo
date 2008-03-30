@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="98" left="371" height="729" width="865"/>
+	<global_window_position top="90" left="248" height="729" width="865"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -14,33 +14,9 @@
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
 <v t="ekr.20080121122039"><vh>@button remove license</vh></v>
-<v t="ekr.20080121143612"><vh>Komodo test script</vh>
-<v t="ekr.20080121151821.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
-<v t="ekr.20080121150435"><vh>openManager</vh></v>
-<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
-</v>
-<v t="ekr.20080121105837"><vh>Komodo autocompleter code</vh>
-<v t="ekr.20080121152156"><vh>Diary</vh></v>
-<v t="ekr.20080121105837.1"><vh>Komodo notes</vh>
-<v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
-</v>
-<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
-<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
-<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
-<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
-<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
-<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
-<v t="ekr.20080329224906.5"><vh>To do</vh></v>
-</v>
-<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
-<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
-</v>
 <v t="ekr.20080121105837.3"><vh>Komodo code</vh>
 <v t="ekr.20080121105837.4"><vh>license</vh></v>
-<v t="ekr.20080121105837.1815"><vh>lib/sdk</vh>
+<v t="ekr.20080121105837.1815"><vh>lib/sdk directory (contains command-line programs)</vh>
 <v t="ekr.20080121105837.1816"><vh>sdk/bin</vh>
 <v t="ekr.20080121105837.1817"><vh>codeintel.py</vh>
 <v t="ekr.20080121105837.1818"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -630,10 +606,12 @@
 </v>
 </v>
 <v t="ekr.20080121105837.7"><vh>lib/mozilla/python/komodo/codeintel2</vh>
-<v t="ekr.20080121105837.1855"><vh>codeintel2/stdlibs/*.cix</vh>
+<v t="ekr.20080330093404.1"><vh>catelogs directory (contains only .cix files)</vh></v>
+<v t="ekr.20080121105837.1855"><vh>stdlibs directory (contains only .cix files)</vh>
 <v t="ekr.20080121123437"><vh>pywin32.cix (TRUNCATED)</vh></v>
 </v>
-<v t="ekr.20080121105837.1768"><vh>codeintel2/database</vh>
+<v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
+<v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
 <v t="ekr.20080121121728.9"><vh> __init__.py (database)</vh></v>
 <v t="ekr.20080121121728.1"><vh>catalog.py</vh>
 <v t="ekr.20080121121842"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -899,7 +877,6 @@
 <v t="ekr.20080121121842.177"><vh>run_in_dir</vh></v>
 </v>
 </v>
-<v t="ekr.20080121105837.8"><vh>codeintel2</vh>
 <v t="ekr.20080121105837.9"><vh>accessor.py</vh>
 <v t="ekr.20080121105837.10"><vh>accessor declarations</vh></v>
 <v t="ekr.20080121105837.11"><vh>class Accessor</vh>
@@ -2893,12 +2870,30 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080121105837"><vh>Notes</vh>
+<v t="ekr.20080121152156"><vh>Diary</vh></v>
+<v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
+<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
 </v>
-<v t="ekr.20080121105837.7" a="TV"><vh>lib/mozilla/python/komodo/codeintel2</vh>
-<v t="ekr.20080121105837.1855"><vh>codeintel2/stdlibs/*.cix</vh>
+<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
+<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.7"><vh>lib/mozilla/python/komodo/codeintel2</vh>
+<v t="ekr.20080330093404.1"><vh>catelogs directory (contains only .cix files)</vh></v>
+<v t="ekr.20080121105837.1855"><vh>stdlibs directory (contains only .cix files)</vh>
 <v t="ekr.20080121123437"><vh>pywin32.cix (TRUNCATED)</vh></v>
 </v>
-<v t="ekr.20080121105837.1768"><vh>codeintel2/database</vh>
+<v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
+<v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
 <v t="ekr.20080121121728.9"><vh> __init__.py (database)</vh></v>
 <v t="ekr.20080121121728.1"><vh>catalog.py</vh>
 <v t="ekr.20080121121842"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -3164,7 +3159,6 @@
 <v t="ekr.20080121121842.177"><vh>run_in_dir</vh></v>
 </v>
 </v>
-<v t="ekr.20080121105837.8"><vh>codeintel2</vh>
 <v t="ekr.20080121105837.9"><vh>accessor.py</vh>
 <v t="ekr.20080121105837.10"><vh>accessor declarations</vh></v>
 <v t="ekr.20080121105837.11"><vh>class Accessor</vh>
@@ -5157,7 +5151,6 @@
 <v t="ekr.20080121105837.1767"><vh>__init__.py (codeintel2)</vh></v>
 </v>
 </v>
-<v t="ekr.20080121105837.1767"><vh>__init__.py (codeintel2)</vh></v>
 <v t="ekr.20080121105837.299"><vh>indexer.py (underindented comments) (threaded scans of files)</vh>
 <v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
 <v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
@@ -5242,6 +5235,12 @@
 <v t="ekr.20080121105837.369"><vh>_handle_directory_request</vh></v>
 </v>
 <v t="ekr.20080121105837.370"><vh>_indent</vh></v>
+</v>
+<v t="ekr.20080121143612" a="ETV"><vh>Komodo test script</vh>
+<v t="ekr.20080121151821.1"><vh>&lt;&lt; imports &gt;&gt; (not used)</vh></v>
+<v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
+<v t="ekr.20080121150435"><vh>openManager</vh></v>
+<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5276,8 +5275,7 @@ try:
 finally:
     c.endUpdate()
 </t>
-<t tx="ekr.20080121105837"></t>
-<t tx="ekr.20080121105837.1">@language rest
+<t tx="ekr.20080121105837">@language rest
 
 Most important files:
 
@@ -58770,20 +58768,24 @@ def parse(*args,**kwargs):
 
     # Do not import sys: we must use the global
     import os
-    baseDir = r'C:\Program Files\Komodo Edit 4.3'
+    baseDir = r'C:\Program Files\Komodo Edit 4.3\lib\mozilla\python'
     paths = (
-        r'lib\mozilla\python\komodo', # For ciElementree.pyd
-        r'lib\mozilla\python\komodo\codeintel2',
-        r'lib\mozilla\python\komodo\codeintel2\catalogs',
-        r'lib\mozilla\python\komodo\codeintel2\database',
-        r'lib\mozilla\python\komodo\codeintel2\stdlibs',
+        r'komodo', # For ciElementree.pyd
+        r'komodo\codeintel2',
+        r'komodo\codeintel2\catalogs',
+        r'komodo\codeintel2\database',
+        r'komodo\codeintel2\stdlibs',
+        # r'C:\Python25\Lib\site-packages\SilverCity',
+        r'komodo\SilverCity',
     )
     for path in paths:
         path = os.path.join(baseDir,path)
-        if path in sys.path:
-            pass
-        elif os.path.exists(path):
-            sys.path.append(path)
+        if os.path.exists(path):
+            if path in sys.path:
+                g.es_print('in sys.path',path)
+            else:
+                g.es_print('added',path)
+                sys.path.append(path)
         else:
             g.es_print('Does not exist: %s' % path)
 </t>
@@ -58795,10 +58797,41 @@ addKomodoPaths()
 
 &lt;&lt; imports &gt;&gt;
 
-m = openManager()
-print 'm',m
-db = openDatabase(m)
-print 'db',db
+if 1:
+    import SilverCity.ScintillaConstants as constants
+    print constants # Must use Komodo version.
+    print 'SCE_UDL_CSS_COMMENT' in dir(constants)
+    #g.printList(dir(constants),sort=True)
+
+if 0: # works
+    m = openManager()
+    print 'm',m
+    db = openDatabase(m)
+    print 'db',db
+
+if 1: # From example code in codeintel2.__init__.py
+
+    g.pdb()
+
+    from codeintel2.manager import Manager
+    mgr = Manager()
+    # Alternatively use Database upgrade methods directly for finer control.
+    mgr.upgrade()
+    mgr.initialize()
+    try:
+        if 0: # not yet
+            # Get a Buffer object from a scimoz/path/content.
+            buf = mgr.buf_from_xxx(args)
+
+            # Use the buffer's API to do codeintel-y stuff. For example:
+            # - See if you are at a trigger point.
+            trg = buf.trg_from_pos(args)
+
+            # - Get completions at that trigger. See also
+            #   Buffer.async_eval_at_trg(), Buffer.calltips_from_trg().
+            cplns = buf.cplns_from_trg(trg,args)
+    finally:
+        mgr.finalize() # make sure this gets run or you could get hangs
 </t>
 <t tx="ekr.20080121150435">def openManager():
 
@@ -58884,10 +58917,10 @@ Dev Notes:
 """</t>
 <t tx="ekr.20080121151821.1">
 # import database
-import codeintel2.database.database as database
-# print database
-import manager
-# print manager
+# import codeintel2.database.database as database
+
+# import codeintel2
+# import manager
 
 if 0: # These work
 
@@ -59105,5 +59138,6 @@ class).
   These should be cleaned out.
 - check for collisions in catalog: same lang, same blobname provided by
   two CIX files</t>
+<t tx="ekr.20080330093404.1"></t>
 </tnodes>
 </leo_file>
