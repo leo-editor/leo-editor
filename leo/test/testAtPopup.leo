@@ -2,24 +2,27 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.517106549365">
-	<global_window_position top="10" left="10" height="834" width="1430"/>
+<globals body_outline_ratio="0.43829787234">
+	<global_window_position top="47" left="147" height="672" width="1175"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080329075629.2" a="E"><vh>@startup</vh>
-<v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
+<v t="bobjack.20080329075629.2"><vh>@startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
-<v t="bobjack.20080329075629.4"><vh>experiments</vh></v>
-<v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
-<v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
-<v t="bobjack.20080329070612.3" a="TV"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
+<v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
+<v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
+<v t="bobjack.20080330095006.2"><vh>Replacing the log menu</vh></v>
+<v t="bobjack.20080330095006.3" a="TV"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
-<v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
+<v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
+<v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
+<v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
+</v>
+<v t="bobjack.20080324164314.1"><vh>@settings</vh>
 <v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
@@ -121,7 +124,7 @@ in other menus.</t>
 <t tx="bobjack.20080329054053.7">Paste</t>
 <t tx="bobjack.20080329054053.8"></t>
 <t tx="bobjack.20080329054053.9"></t>
-<t tx="bobjack.20080329054053.10">leoGlobals</t>
+<t tx="bobjack.20080329054053.10">this is an optional label</t>
 <t tx="bobjack.20080329054053.11"></t>
 <t tx="bobjack.20080329054053.12">Indent</t>
 <t tx="bobjack.20080329054053.13">Dedent</t>
@@ -172,7 +175,7 @@ then click on 'Help on: leoGlobals'</t>
     
      c.context_menus[&lt;name&gt;]
 
-Some of these name are special, like 'body', 'log', 'find-text', 'change-text'.
+Some of these names are special, like 'body', 'log', 'find-text', 'change-text'.
 The menus with these names are used for any widget whose name starts with those
 names, eg a widget with a name 'body3' will, by default, get a menu from
 c.context_menus['body'] when it is right clicked.
@@ -189,8 +192,8 @@ Widgets may be given a context_menu attribute, eg
 in which case the menu table in c.context_menus['my special menu'] will be used
 as the popup.
 
-Widgets must have &lt;Button-3&gt; bound to a callback that raises a 'bodyrclick1'
-hook, such as c.frame.OnBodyRClick.
+Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises a
+'bodyrclick1' hook, such as c.frame.OnBodyRClick.
 
 Problems with log.
 
@@ -203,28 +206,60 @@ Problems with log.
     You must bind newly created log text widgets &lt;Button-3&gt; as above.
     
 Menu tables in c.context_menus are live, they can be manipulated by scripts and
-the changes will show up immediately. Changes to a fragment that is included in
-other menus will likewise show up immediately in all those menus.
+the changes will show up immediately.  See @button experiments.
+
+
+Changes to a fragment that is included in other menus will likewise show up
+immediately in all those menus.
+
+
 
 There is no support for tree or canvas widgets yet, I am experiencing problems
 working with these.
 
 
 </t>
-<t tx="bobjack.20080329075629.4">def cb( x):
-    return lambda c, evt, widget, x=x: g.es(x, color='blue')
+<t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
+
+def cb( x=None):
+
+    def testMenuCallback(c, event, x=x):
+
+        if x is None:
+            x = event.rc_label
+        g.es('%s in %s' %(x,c.widget_name(event.widget)), color='blue')
+
+    return testMenuCallback
+
+xx=1
+
+if xx==1:
 
 
-c.context_menus['log'] = [
-('11', cb('11')),
-('12', cb('12')),
-('13', cb('13')),
-('14', cb('14')),
-('|', cb('bar')),
-('xone', cb('one')),
-('xtwo', cb('two')),
-('xthree', cb('three')),
-('xfour', cb('four'))
-]</t>
+elif xx==2:
+
+
+</t>
+<t tx="bobjack.20080330095006.2">c.context_menus['log'] = [
+
+    ('11', cb()),
+    ('12', cb('12')),
+    ('13', cb('13')),
+    ('14', cb('14')),
+    ('|', None),
+    ('xone', cb('one')),
+    ('xtwo', cb()),
+    ('xthree', cb('three')),
+    ('xfour', cb('four')),
+    ('|', None),    
+    ('&amp;', 'edit-menu'),
+]
+g.es('replaced log menu', color='blue')</t>
+<t tx="bobjack.20080330095006.3">"""This change will be reflected in all menus that use the 'edit-menu'
+fragment. Check before and after in the log and find and change text boxes. """
+
+et = c.context_menus['edit-menu'] 
+c.context_menus['edit-menu'] = et[:-2]
+g.es('removed select-all from ALL edit-menus', color='blue')</t>
 </tnodes>
 </leo_file>
