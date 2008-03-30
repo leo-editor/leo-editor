@@ -201,24 +201,43 @@ class ipythonController:
             return
 
         try:
-            args = c.config.getString('ipython_argv')
-            if args is None:
-                argv = ['leo.py']
-            else:
-                # force str instead of unicode
-                argv = [str(s) for s in args.split()] 
-            sys.argv = argv
             api = IPython.ipapi
-            self.message('creating IPython shell...')
             leox = leoInterface(c,g) # inject leox into the namespace.
-            my_ns = { '_leo': leox }
-            ses = api.make_session(my_ns)
-            gIP = ses.IP.getapi()
+            
+            existing_ip = api.get()
+            if existing_ip is None:
+                args = c.config.getString('ipython_argv')
+                if args is None:
+                    argv = ['leo.py']
+                else:
+                    # force str instead of unicode
+                    argv = [str(s) for s in args.split()] 
+                sys.argv = argv
+                
+                self.message('Creating IPython shell.')
+                ses = api.make_session()
+                gIP = ses.IP.getapi()
+            else:
+                # To reuse an old IPython session, you need to launch Leo from IPython by doing:
+                #
+                # import IPython.Shell
+                # IPython.Shell.hijack_tk()
+                # %run leo.py  (in leo/leo/src)              
+                #
+                # Obviously you still need to run launch-ipython (Alt-Shift-I) to make 
+                # the document visible for ILeo
+ 
+                self.message('Reusing existing IPython shell')
+                gIP = existing_ip                
+                
             ipy_leo_m = gIP.load('ipy_leo')
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
-            ses.mainloop()
+            # start mainloop only if it's not running already
+            if existing_ip is None:
                 # Does not return until IPython closes!
+                ses.mainloop()
+                
         except Exception:
             self.error('exception creating IPython shell')
             g.es_exception()
