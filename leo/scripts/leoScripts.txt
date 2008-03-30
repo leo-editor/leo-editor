@@ -13377,9 +13377,10 @@ def clean_file(p):
     if has_list:
         p.v.t.tnodeList = old_list
 
-    fileName = g.os_path_normpath(
-        g.os_path_join(
-            at.default_directory,'clean',p.anyAtFileNodeName()))
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
 
     # g.trace(p.headString(),len(at.stringOutput),fileName)
 

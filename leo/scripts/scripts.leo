@@ -757,8 +757,8 @@
 <v t="ekr.20061029095517.13"><vh>after sel=2.0,2.0</vh></v>
 </v>
 </v>
-<v t="ekr.20080329083943.1" a="ETV"><vh>Write cleaned files to 'clean' directory</vh>
-<v t="ekr.20080329083943.2"><vh>clean_file</vh></v>
+<v t="ekr.20080329083943.1" a="E"><vh>Write cleaned files to 'clean' directory</vh>
+<v t="ekr.20080329083943.2" a="TV"><vh>clean_file</vh></v>
 </v>
 <v t="ekr.20060928193919"><vh>zodb get/put scripts</vh>
 <v t="ekr.20060928193919.1"><vh>@@button zodb-get-tree</vh></v>
@@ -16230,9 +16230,10 @@ for p in c.allNodes_iter():
     if has_list:
         p.v.t.tnodeList = old_list
 
-    fileName = g.os_path_normpath(
-        g.os_path_join(
-            at.default_directory,'clean',p.anyAtFileNodeName()))
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
 
     # g.trace(p.headString(),len(at.stringOutput),fileName)
 
