@@ -13,3 +13,4 @@ leo/dist/*.exe
 leo/test/dynamicUnitTest.leo
 leo/test/clean
 leo/test/clean/*.*
+dist/setup.py
