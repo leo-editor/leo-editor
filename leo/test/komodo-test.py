@@ -1,2 +1,8 @@
-import leoGlobals as g
-g.os_path_join(g.app.loadDir,'xyzzy.py')
+
+import os
+print os.path
+print os.path.join
+os.path.join('abc')
+
+#import leoGlobals as g
+# g.openWithFileName
