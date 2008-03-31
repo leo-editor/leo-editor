@@ -5533,10 +5533,11 @@
 </v>
 </v>
 <v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
-<v t="ekr.20080121143612" a="ETV"><vh>Komodo test script</vh>
-<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
-<v t="ekr.20080331170945.2"><vh>doLog</vh></v>
+<v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
+<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
+<v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080331170945.2" a="TV"><vh>doLog</vh></v>
 <v t="ekr.20080121150435"><vh>openManager</vh></v>
 <v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
@@ -59091,16 +59092,12 @@ def parse(*args,**kwargs):
         else:
             g.es_print('Does not exist: %s' % path)
 </t>
-<t tx="ekr.20080121143612"># Don't change this order...
-import sys
+<t tx="ekr.20080121143612">&lt;&lt; imports &gt;&gt;
+
 @others
-addKomodoPaths()
-&lt;&lt; imports &gt;&gt;
 
 print '-' * 40
 
-log_level = logging.ERROR # DEBUG, NOTE, WARNING, ERROR, NOTSET
-log = logging.getLogger('codeintel')
 doLog()
 
 mgr = Manager(on_scan_complete=scanComplete)
@@ -59538,12 +59535,25 @@ if 0: # works
 </t>
 <t tx="ekr.20080331151954.1"></t>
 <t tx="ekr.20080331151954.2"></t>
-<t tx="ekr.20080331170945.1">import logging
+<t tx="ekr.20080331170945.1"># Don't change this order
+
+import sys
+
+&lt;&lt; define addKomodePaths &gt;&gt;
+
+addKomodoPaths()
+
+import logging
 
 from codeintel2.indexer import BatchUpdater
 from codeintel2.manager import Manager
 from codeintel2.common import EvalController</t>
 <t tx="ekr.20080331170945.2">def doLog():
+
+    log_level = logging.ERROR
+        # DEBUG, INFO, WARN, ERROR, NOTSET
+
+    log = logging.getLogger('codeintel')
 
     rootLogger = logging.getLogger('')
     rootLogger.setLevel(log_level)
