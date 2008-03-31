@@ -14,6 +14,108 @@
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
 <v t="ekr.20080121122039"><vh>@button remove license</vh></v>
+<v t="ekr.20080121105837"><vh>Notes</vh>
+<v t="ekr.20080121152156"><vh>Diary</vh></v>
+<v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
+</v>
+<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
+<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080121105837.299"><vh>indexer.py (underindented comments) (threaded scans of files)</vh>
+<v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
+<v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
+<v t="ekr.20080121105837.302"><vh>_put</vh></v>
+<v t="ekr.20080121105837.303"><vh>_init</vh></v>
+<v t="ekr.20080121105837.304"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.305"><vh>class _Request</vh>
+<v t="ekr.20080121105837.306"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.307"><vh>class _UniqueRequestPriorityQueue</vh>
+<v t="ekr.20080121105837.308"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.309"><vh>_put</vh></v>
+<v t="ekr.20080121105837.310"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.311"><vh>class _StagingRequestQueue</vh>
+<v t="ekr.20080121105837.312"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.313"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.314"><vh>stage</vh></v>
+<v t="ekr.20080121105837.315"><vh>_stagingThread</vh></v>
+</v>
+<v t="ekr.20080121105837.316"><vh>class XMLParseRequest</vh>
+<v t="ekr.20080121105837.317"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.318"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.319"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.320"><vh>class ScanRequest</vh>
+<v t="ekr.20080121105837.321"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.322"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.323"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.324"><vh>complete</vh></v>
+<v t="ekr.20080121105837.325"><vh>wait</vh></v>
+</v>
+<v t="ekr.20080121105837.326"><vh>class PreloadBufLibsRequest</vh>
+<v t="ekr.20080121105837.327"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.328"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.329"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.330"><vh>class PreloadLibRequest</vh>
+<v t="ekr.20080121105837.331"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.332"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.333"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.334"><vh>class IndexerStopRequest</vh>
+<v t="ekr.20080121105837.335"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.336"><vh>class IndexerPauseRequest</vh>
+<v t="ekr.20080121105837.337"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.338"><vh>class Indexer</vh>
+<v t="ekr.20080121105837.339"><vh>class StopIndexing</vh></v>
+<v t="ekr.20080121105837.340"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.341"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.342"><vh>pause</vh></v>
+<v t="ekr.20080121105837.343"><vh>resume</vh></v>
+<v t="ekr.20080121105837.344"><vh>stage_request</vh></v>
+<v t="ekr.20080121105837.345"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.346"><vh>run</vh></v>
+<v t="ekr.20080121105837.347"><vh>_iteration</vh></v>
+</v>
+<v t="ekr.20080121105837.348"><vh>class BatchUpdater</vh>
+<v t="ekr.20080121105837.349"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.350"><vh>start</vh></v>
+<v t="ekr.20080121105837.351"><vh>abort</vh></v>
+<v t="ekr.20080121105837.352"><vh>is_aborted</vh></v>
+<v t="ekr.20080121105837.353"><vh>done</vh></v>
+<v t="ekr.20080121105837.354"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.355"><vh>num_files_to_process</vh></v>
+<v t="ekr.20080121105837.356"><vh>progress</vh></v>
+<v t="ekr.20080121105837.357"><vh>debug</vh></v>
+<v t="ekr.20080121105837.358"><vh>info</vh></v>
+<v t="ekr.20080121105837.359"><vh>warn</vh></v>
+<v t="ekr.20080121105837.360"><vh>error</vh></v>
+<v t="ekr.20080121105837.361"><vh>_subscheduler_request_started</vh></v>
+<v t="ekr.20080121105837.362"><vh>_subscheduler_completed</vh></v>
+<v t="ekr.20080121105837.363"><vh>_get_scheduler</vh></v>
+<v t="ekr.20080121105837.364"><vh>run</vh></v>
+<v t="ekr.20080121105837.365"><vh>_cidb_upgrade_progress_callback</vh></v>
+<v t="ekr.20080121105837.366"><vh>_handle_upgrade_request</vh></v>
+<v t="ekr.20080121105837.367"><vh>_handle_cix_request</vh></v>
+<v t="ekr.20080121105837.368"><vh>_handle_lang_request</vh></v>
+<v t="ekr.20080121105837.369"><vh>_handle_directory_request</vh></v>
+</v>
+<v t="ekr.20080121105837.370"><vh>_indent</vh></v>
+</v>
 <v t="ekr.20080121105837.3"><vh>Komodo code</vh>
 <v t="ekr.20080121105837.4"><vh>license</vh></v>
 <v t="ekr.20080121105837.1815"><vh>lib/sdk directory (contains command-line programs)</vh>
@@ -640,12 +742,13 @@
 <v t="ekr.20080121121842.22"><vh>__init__</vh></v>
 <v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
-<v t="ekr.20080121121842.25"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.26"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.27"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
 <v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
-<v t="ekr.20080121121842.29"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.30"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.31"><vh>_elem_from_scoperef</vh></v>
 </v>
@@ -659,7 +762,7 @@
 </v>
 <v t="ekr.20080121105837.1771"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1772"><vh>&lt;&lt; version stuff &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1773"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
 <v t="ekr.20080121105837.1774"><vh>__del__</vh></v>
 <v t="ekr.20080121105837.1775"><vh>Locks</vh>
 <v t="ekr.20080121105837.1776"><vh>acquire_lock</vh></v>
@@ -689,17 +792,20 @@
 <v t="ekr.20080121105837.1797"><vh>get_catalogs_zone</vh></v>
 <v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
 <v t="ekr.20080121105837.1799"><vh>get_stdlibs_zone</vh></v>
-<v t="ekr.20080121105837.1800"><vh>get_stdlib</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
 <v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
 <v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
 <v t="ekr.20080121105837.1803"><vh>get_proj_zone</vh></v>
 <v t="ekr.20080121105837.1804"><vh>get_proj_lib</vh></v>
 <v t="ekr.20080121105837.1805"><vh>load_blob</vh></v>
 <v t="ekr.20080121105837.1806"><vh>load_pickle</vh></v>
 <v t="ekr.20080121105837.1807"><vh>save_pickle</vh></v>
-<v t="ekr.20080121105837.1808"><vh>Convenience methods</vh>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
 <v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
 <v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
 <v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
 <v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
 <v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
@@ -713,14 +819,15 @@
 <v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
 <v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
-<v t="ekr.20080121121842.38"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
 <v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
-<v t="ekr.20080121121842.40"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.41"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.42"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.43"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
 <v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
 <v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
 <v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
 </v>
 <v t="ekr.20080121121842.47"><vh>class LangTopLevelNameIndex</vh>
@@ -841,13 +948,13 @@
 <v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
 <v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
-<v t="ekr.20080121121842.148"><vh>toplevelname_index</vh></v>
-<v t="ekr.20080121121842.149"><vh>toplevelprefix_index</vh></v>
-<v t="ekr.20080121121842.150"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.151"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.152"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.153"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.154"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.155"><vh>class StdLibsZone</vh>
 <v t="ekr.20080121121842.156"><vh>__init__</vh></v>
@@ -2870,27 +2977,70 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080121105837"><vh>Notes</vh>
-<v t="ekr.20080121152156"><vh>Diary</vh></v>
-<v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
-<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
-<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
-<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
-<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
-<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
-<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
-<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+<v t="ekr.20080330201829.1"><vh>Usage</vh>
+<v t="ekr.20080330201829.3"><vh>1. Getting info for a particular buffer</vh>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
+<v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
+<v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
 </v>
-<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
-<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
+<v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121105837.1814"><vh>update_buf_data</vh></v>
 </v>
 </v>
-<v t="ekr.20080121105837.7"><vh>lib/mozilla/python/komodo/codeintel2</vh>
-<v t="ekr.20080330093404.1"><vh>catelogs directory (contains only .cix files)</vh></v>
-<v t="ekr.20080121105837.1855"><vh>stdlibs directory (contains only .cix files)</vh>
-<v t="ekr.20080121123437"><vh>pywin32.cix (TRUNCATED)</vh></v>
+<v t="ekr.20080330201829.4"><vh>2. Working with a blob (a.k.a. module) given a list of libs</vh>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
+<v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
+<v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
+<v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
+</v>
+<v t="ekr.20080330201829.5"><vh>lib methods</vh>
+<v t="ekr.20080121121842.33"><vh>class LangDirsLib</vh>
+<v t="ekr.20080121121842.34"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
+<v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
+<v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
+<v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
+<v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
+</v>
+<v t="ekr.20080121121842.21"><vh>class CatalogLib</vh>
+<v t="ekr.20080121121842.22"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
+<v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.143"><vh>class StdLib</vh>
+<v t="ekr.20080121121842.144"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
 <v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
@@ -2922,12 +3072,13 @@
 <v t="ekr.20080121121842.22"><vh>__init__</vh></v>
 <v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
-<v t="ekr.20080121121842.25"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.26"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.27"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
 <v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
-<v t="ekr.20080121121842.29"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.30"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.31"><vh>_elem_from_scoperef</vh></v>
 </v>
@@ -2941,7 +3092,7 @@
 </v>
 <v t="ekr.20080121105837.1771"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1772"><vh>&lt;&lt; version stuff &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1773"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
 <v t="ekr.20080121105837.1774"><vh>__del__</vh></v>
 <v t="ekr.20080121105837.1775"><vh>Locks</vh>
 <v t="ekr.20080121105837.1776"><vh>acquire_lock</vh></v>
@@ -2971,17 +3122,20 @@
 <v t="ekr.20080121105837.1797"><vh>get_catalogs_zone</vh></v>
 <v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
 <v t="ekr.20080121105837.1799"><vh>get_stdlibs_zone</vh></v>
-<v t="ekr.20080121105837.1800"><vh>get_stdlib</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
 <v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
 <v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
 <v t="ekr.20080121105837.1803"><vh>get_proj_zone</vh></v>
 <v t="ekr.20080121105837.1804"><vh>get_proj_lib</vh></v>
 <v t="ekr.20080121105837.1805"><vh>load_blob</vh></v>
 <v t="ekr.20080121105837.1806"><vh>load_pickle</vh></v>
 <v t="ekr.20080121105837.1807"><vh>save_pickle</vh></v>
-<v t="ekr.20080121105837.1808"><vh>Convenience methods</vh>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
 <v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
 <v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
 <v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
 <v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
 <v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
@@ -2995,14 +3149,15 @@
 <v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
 <v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
-<v t="ekr.20080121121842.38"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
 <v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
-<v t="ekr.20080121121842.40"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.41"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.42"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.43"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
 <v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
 <v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
 <v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
 </v>
 <v t="ekr.20080121121842.47"><vh>class LangTopLevelNameIndex</vh>
@@ -3123,13 +3278,13 @@
 <v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
 <v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
-<v t="ekr.20080121121842.148"><vh>toplevelname_index</vh></v>
-<v t="ekr.20080121121842.149"><vh>toplevelprefix_index</vh></v>
-<v t="ekr.20080121121842.150"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.151"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.152"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.153"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.154"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.155"><vh>class StdLibsZone</vh>
 <v t="ekr.20080121121842.156"><vh>__init__</vh></v>
@@ -5150,94 +5305,9 @@
 </v>
 <v t="ekr.20080121105837.1767"><vh>__init__.py (codeintel2)</vh></v>
 </v>
-</v>
-<v t="ekr.20080121105837.299"><vh>indexer.py (underindented comments) (threaded scans of files)</vh>
-<v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
-<v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
-<v t="ekr.20080121105837.302"><vh>_put</vh></v>
-<v t="ekr.20080121105837.303"><vh>_init</vh></v>
-<v t="ekr.20080121105837.304"><vh>_get</vh></v>
-</v>
-<v t="ekr.20080121105837.305"><vh>class _Request</vh>
-<v t="ekr.20080121105837.306"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080121105837.307"><vh>class _UniqueRequestPriorityQueue</vh>
-<v t="ekr.20080121105837.308"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.309"><vh>_put</vh></v>
-<v t="ekr.20080121105837.310"><vh>_get</vh></v>
-</v>
-<v t="ekr.20080121105837.311"><vh>class _StagingRequestQueue</vh>
-<v t="ekr.20080121105837.312"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.313"><vh>finalize</vh></v>
-<v t="ekr.20080121105837.314"><vh>stage</vh></v>
-<v t="ekr.20080121105837.315"><vh>_stagingThread</vh></v>
-</v>
-<v t="ekr.20080121105837.316"><vh>class XMLParseRequest</vh>
-<v t="ekr.20080121105837.317"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.318"><vh>__repr__</vh></v>
-<v t="ekr.20080121105837.319"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080121105837.320"><vh>class ScanRequest</vh>
-<v t="ekr.20080121105837.321"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.322"><vh>__repr__</vh></v>
-<v t="ekr.20080121105837.323"><vh>__str__</vh></v>
-<v t="ekr.20080121105837.324"><vh>complete</vh></v>
-<v t="ekr.20080121105837.325"><vh>wait</vh></v>
-</v>
-<v t="ekr.20080121105837.326"><vh>class PreloadBufLibsRequest</vh>
-<v t="ekr.20080121105837.327"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.328"><vh>__repr__</vh></v>
-<v t="ekr.20080121105837.329"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080121105837.330"><vh>class PreloadLibRequest</vh>
-<v t="ekr.20080121105837.331"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.332"><vh>__repr__</vh></v>
-<v t="ekr.20080121105837.333"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080121105837.334"><vh>class IndexerStopRequest</vh>
-<v t="ekr.20080121105837.335"><vh>__repr__</vh></v>
-</v>
-<v t="ekr.20080121105837.336"><vh>class IndexerPauseRequest</vh>
-<v t="ekr.20080121105837.337"><vh>__repr__</vh></v>
-</v>
-<v t="ekr.20080121105837.338"><vh>class Indexer</vh>
-<v t="ekr.20080121105837.339"><vh>class StopIndexing</vh></v>
-<v t="ekr.20080121105837.340"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.341"><vh>finalize</vh></v>
-<v t="ekr.20080121105837.342"><vh>pause</vh></v>
-<v t="ekr.20080121105837.343"><vh>resume</vh></v>
-<v t="ekr.20080121105837.344"><vh>stage_request</vh></v>
-<v t="ekr.20080121105837.345"><vh>add_request</vh></v>
-<v t="ekr.20080121105837.346"><vh>run</vh></v>
-<v t="ekr.20080121105837.347"><vh>_iteration</vh></v>
-</v>
-<v t="ekr.20080121105837.348"><vh>class BatchUpdater</vh>
-<v t="ekr.20080121105837.349"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.350"><vh>start</vh></v>
-<v t="ekr.20080121105837.351"><vh>abort</vh></v>
-<v t="ekr.20080121105837.352"><vh>is_aborted</vh></v>
-<v t="ekr.20080121105837.353"><vh>done</vh></v>
-<v t="ekr.20080121105837.354"><vh>add_request</vh></v>
-<v t="ekr.20080121105837.355"><vh>num_files_to_process</vh></v>
-<v t="ekr.20080121105837.356"><vh>progress</vh></v>
-<v t="ekr.20080121105837.357"><vh>debug</vh></v>
-<v t="ekr.20080121105837.358"><vh>info</vh></v>
-<v t="ekr.20080121105837.359"><vh>warn</vh></v>
-<v t="ekr.20080121105837.360"><vh>error</vh></v>
-<v t="ekr.20080121105837.361"><vh>_subscheduler_request_started</vh></v>
-<v t="ekr.20080121105837.362"><vh>_subscheduler_completed</vh></v>
-<v t="ekr.20080121105837.363"><vh>_get_scheduler</vh></v>
-<v t="ekr.20080121105837.364"><vh>run</vh></v>
-<v t="ekr.20080121105837.365"><vh>_cidb_upgrade_progress_callback</vh></v>
-<v t="ekr.20080121105837.366"><vh>_handle_upgrade_request</vh></v>
-<v t="ekr.20080121105837.367"><vh>_handle_cix_request</vh></v>
-<v t="ekr.20080121105837.368"><vh>_handle_lang_request</vh></v>
-<v t="ekr.20080121105837.369"><vh>_handle_directory_request</vh></v>
-</v>
-<v t="ekr.20080121105837.370"><vh>_indent</vh></v>
-</v>
+<v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
 <v t="ekr.20080121143612" a="ETV"><vh>Komodo test script</vh>
-<v t="ekr.20080121151821.1"><vh>&lt;&lt; imports &gt;&gt; (not used)</vh></v>
+<v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 <v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
 <v t="ekr.20080121150435"><vh>openManager</vh></v>
 <v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
@@ -41264,7 +41334,6 @@ def _gen_langs_in_db(self):
         return lang_zone.get_lib(name, dirs, sublang)
     else:
         return lang_zone.get_lib(name, dirs)
-
 </t>
 <t tx="ekr.20080121105837.1803">def get_proj_zone(self, proj):
     """Get a project zone handler for the given project.
@@ -41344,10 +41413,7 @@ def _gen_langs_in_db(self):
 
 
 </t>
-<t tx="ekr.20080121105837.1808">#---- Convenience methods for getting database hash keys.
-# MD5 hexdigests are used to generate keys into the db (typically
-# file paths).
-</t>
+<t tx="ekr.20080121105837.1808"></t>
 <t tx="ekr.20080121105837.1809">
 #TODO:PERF: evaluate perf improvement with caching of this
 def bhash_from_blob_info(self, res_path, lang, blobname):
@@ -47674,7 +47740,8 @@ for p in p.self_and_subtree_iter():
 </t>
 <t tx="ekr.20080121131522"></t>
 <t tx="ekr.20080121131751"></t>
-<t tx="ekr.20080121133057"></t>
+<t tx="ekr.20080121133057">@nocolor
+</t>
 <t tx="ekr.20080121133057.1">
 r"""Handling for citadel parts of CodeIntel.
 
@@ -47692,6 +47759,7 @@ umbrella term for CIDB/CITDL-based stuff in the codeintel system. """</t>
 is based on CIDB/CITDL/CIX.
 
 CitadelBuffers have the following additional API:
+    
     .defns_from_pos(..) Returns a list of citdl expressions for position.
     .scan(...)          Force a scan of the buffer.
     .scan_time          Time of the last scan (or None if not in the db)
@@ -58789,49 +58857,38 @@ def parse(*args,**kwargs):
         else:
             g.es_print('Does not exist: %s' % path)
 </t>
-<t tx="ekr.20080121143612">import sys
-
+<t tx="ekr.20080121143612">import sys # We *must* import sys at the top level.
 @others
-
 addKomodoPaths()
 
-&lt;&lt; imports &gt;&gt;
+if 0:
+    &lt;&lt; old experiments &gt;&gt;
 
-if 1:
-    import SilverCity.ScintillaConstants as constants
-    print constants # Must use Komodo version.
-    print 'SCE_UDL_CSS_COMMENT' in dir(constants)
-    #g.printList(dir(constants),sort=True)
+# From example code in codeintel2.__init__.py
+print '-' * 40
+from codeintel2.manager import Manager
+mgr = Manager()
+mgr.upgrade() # Can use Database upgrade methods for finer control.
+mgr.initialize()
+try:
+    path = g.os_path_normpath(g.os_path_join(g.app.loadDir,'..','test','komodo-test.py'))
+    buf = mgr.buf_from_path(path)  # Can also get Buffer from content.
 
-if 0: # works
-    m = openManager()
-    print 'm',m
-    db = openDatabase(m)
-    print 'db',db
+    # Print the data.
+    s = file(path).read()
+    print ; print s ; print
 
-if 1: # From example code in codeintel2.__init__.py
-
-    g.pdb()
-
-    from codeintel2.manager import Manager
-    mgr = Manager()
-    # Alternatively use Database upgrade methods directly for finer control.
-    mgr.upgrade()
-    mgr.initialize()
-    try:
-        if 0: # not yet
-            # Get a Buffer object from a scimoz/path/content.
-            buf = mgr.buf_from_xxx(args)
-
-            # Use the buffer's API to do codeintel-y stuff. For example:
-            # - See if you are at a trigger point.
-            trg = buf.trg_from_pos(args)
-
-            # - Get completions at that trigger. See also
-            #   Buffer.async_eval_at_trg(), Buffer.calltips_from_trg().
-            cplns = buf.cplns_from_trg(trg,args)
-    finally:
-        mgr.finalize() # make sure this gets run or you could get hangs
+    # Find all trigger points.
+    for i in xrange(1,len(s)):
+        trigger = buf.trg_from_pos(i,implicit=False) # implicit=True is much slower.
+        if trigger:
+            # See also Buffer.async_eval_at_trg(), Buffer.calltips_from_trg().
+            print 'found %3d' % (i),trigger,repr(s[i]),
+            completions = buf.cplns_from_trg(trigger)
+            print 'completions',completions and len(completions) or 0
+finally:
+    mgr.finalize() # make sure this gets run or you could get hangs
+    print 'done'
 </t>
 <t tx="ekr.20080121150435">def openManager():
 
@@ -58915,22 +58972,6 @@ TODO:
 Dev Notes:
 - Usage of LangIntel objects in code should always use 'langintel'.
 """</t>
-<t tx="ekr.20080121151821.1">
-# import database
-# import codeintel2.database.database as database
-
-# import codeintel2
-# import manager
-
-if 0: # These work
-
-    import ciElementTree as ET
-    import codeintel2
-    from codeintel2.buffer import Buffer
-    from codeintel2.common import *
-    from codeintel2.indexer import ScanRequest
-    # print ET
-    # print codeintel2</t>
 <t tx="ekr.20080121152156">@nocolor
 @
 
@@ -58942,7 +58983,9 @@ Jan 21:
 - Wrote addKomoPaths, openManager and openDatabase.
 ** First major milestone: the ability to execute Komodo code from Leo scripts.
 Jan 23: Work on full build of OpenKomodo.  Problems remain.</t>
-<t tx="ekr.20080329224906.1">There is a single Database instance on the codeintel Manager (mgr.db).
+<t tx="ekr.20080329224906.1">@nocolor
+
+There is a single Database instance on the codeintel Manager (mgr.db).
 All entry points to the database are via this instance.
 
 There are two common modes of interaction:
@@ -58984,8 +59027,8 @@ There are two common modes of interaction:
         Note that prefix has to be a tuple (rather than a list) because
         the method is automatically cached.
         
-        Items in the returned set a 2-tuples, (&lt;import-name&gt;,
-        &lt;is-dir-import&gt;), where &lt;is-dir-import&gt; is a boolean indicating
+        Items in the returned set a 2-tuples, (&lt;import-name&gt;,&lt;is-dir-import&gt;),
+        where &lt;is-dir-import&gt; is a boolean indicating
         if this is a prefix for a multidir import. For example, in
         Perl's stdlib there is an "HTTP::Request" module, but no "HTTP"
         module. One of returned items would be:
@@ -59139,5 +59182,129 @@ class).
 - check for collisions in catalog: same lang, same blobname provided by
   two CIX files</t>
 <t tx="ekr.20080330093404.1"></t>
+<t tx="ekr.20080330201829.1">@nocolor
+
+There is a single Database instance on the codeintel Manager (mgr.db).
+All entry points to the database are via this instance.
+
+There are two common modes of interaction:
+
+1. Getting info for a particular buffer. E.g., for a code browser or for
+   information on a current file. Here all interaction can be done via a
+   few methods on the main Database class.
+
+    Database.get_buf_data(buf)
+    Database.get_buf_scan_time(buf)
+    Database.update_buf_data(buf, ...)
+    Database.remove_buf_data(buf)
+
+2. Working with a blob (a.k.a. module) given a list of libs.
+   Typically this is done during completion evaluation (i.e. detemining
+   what completions to show for "foo."). Here a particular environment
+   will have a list of "libs", all of them from the main Database
+   instance, via, e.g.:
+   
+    Database.get_stdlib(...)
+    Database.get_catalog_lib(...)
+    Database.get_lang_lib(...)
+    etc.
+
+   A "lib" instance has the following standard interface:
+
+    .has_blob(blobname)
+        Returns True iff a so-named blob is provided by this lib.
+
+    .get_blob(blobname)
+        Returns the so-named blob (the importable section of a CIX
+        element tree) provided by this lib, or None if it isn't.
+
+    .get_blob_imports(prefix)
+        Returns a set of blobnames to complete the given import prefix.
+        This is generally used for completion on import statements, e.g.
+            import &lt;|&gt;      # lib.get_blob_imports(prefix=())
+            import foo.&lt;|&gt;  # lib.get_blob_imports(prefix=('foo',))
+        Note that prefix has to be a tuple (rather than a list) because
+        the method is automatically cached.
+        
+        Items in the returned set a 2-tuples, (&lt;import-name&gt;,&lt;is-dir-import&gt;),
+        where &lt;is-dir-import&gt; is a boolean indicating
+        if this is a prefix for a multidir import. For example, in
+        Perl's stdlib there is an "HTTP::Request" module, but no "HTTP"
+        module. One of returned items would be:
+            ("HTTP", True)
+        The set can have both (e.g. Perl's LWP.pm and LWP/UserAgent.pm):
+            ("LWP", False)   # for "use LWP;"
+            ("LWP", True)     # prefix for "use LWP::UserAgent;"
+
+    .hits_from_lpath(lpath, ctlr=None, curr_buf=None)
+        Returns all "hits" for the given lookup path in all blobs in
+        this lib.  This is to support "import-everything" semantics
+        necessary for langs like JavaScript (no explicit local import
+        statements) and PHP (with auto-loading anything can happen). It
+        is possible that other langs may not support this.
+
+    .toplevel_cplns(prefix=None, ilk=None, ctlr=None):
+        Find all toplevel names starting with the given prefix in all
+        blobs in this lib and return a list of completions:
+            (&lt;ilk&gt;, &lt;name&gt;)
+        where &lt;ilk&gt; is, e.g., "class" or "function" or "variable", etc.
+        'ilk' can be specified to restrict the results to names of that
+        ilk. If prefix is None then *all* toplevel names are returned.
+    
+   where "blob" is the generic internal name used for "the token with
+   which you import", e.g.:
+  
+        LANGUAGE    IMPORT STATEMENT        BLOBNAME
+        --------    ----------------        --------
+        Python      import foo              foo
+        Perl        use Foo;                Foo
+        PHP         include("foo.php");     foo.php
+
+@color</t>
+<t tx="ekr.20080330201829.2">#---- Convenience methods for getting database hash keys.
+# MD5 hexdigests are used to generate keys into the db (typically
+# file paths).
+</t>
+<t tx="ekr.20080330201829.3"></t>
+<t tx="ekr.20080330201829.4"></t>
+<t tx="ekr.20080330201829.5">.has_blob(blobname)
+    
+.get_blob(blobname)
+      
+.get_blob_imports(prefix)
+    
+.hits_from_lpath(lpath, ctlr=None, curr_buf=None)
+
+.toplevel_cplns(prefix=None, ilk=None, ctlr=None):</t>
+<t tx="ekr.20080331081556.1">import leoGlobals as g
+g.os_path_join(g.app.loadDir,'xyzzy.py')</t>
+<t tx="ekr.20080331081556.2"># import database
+# import codeintel2.database.database as database
+
+# import codeintel2
+# import manager
+
+if 0: # These work
+
+    import ciElementTree as ET
+    import codeintel2
+    from codeintel2.buffer import Buffer
+    from codeintel2.common import *
+    from codeintel2.indexer import ScanRequest
+    # print ET
+    # print codeintel2
+
+if 0:
+    import SilverCity.ScintillaConstants as constants
+    print constants # Must use Komodo version.
+    print 'SCE_UDL_CSS_COMMENT' in dir(constants)
+    #g.printList(dir(constants),sort=True)
+
+if 0: # works
+    m = openManager()
+    print 'm',m
+    db = openDatabase(m)
+    print 'db',db
+</t>
 </tnodes>
 </leo_file>
