@@ -17,6 +17,7 @@
 <v t="ekr.20080121105837"><vh>Notes</vh>
 <v t="ekr.20080121152156"><vh>Diary</vh></v>
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
+<v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20080121133057"><vh>Important doc nodes</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
@@ -5532,9 +5533,8 @@
 </v>
 </v>
 <v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
-<v t="ekr.20080121143612" a="TV"><vh>Komodo test script</vh>
+<v t="ekr.20080121143612" a="ETV"><vh>Komodo test script</vh>
 <v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 <v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
 <v t="ekr.20080331170945.2"><vh>doLog</vh></v>
 <v t="ekr.20080121150435"><vh>openManager</vh></v>
@@ -59097,20 +59097,19 @@ import sys
 addKomodoPaths()
 &lt;&lt; imports &gt;&gt;
 
-if 0:
-    &lt;&lt; old experiments &gt;&gt;
-
 print '-' * 40
+
+log_level = logging.ERROR # DEBUG, NOTE, WARNING, ERROR, NOTSET
+log = logging.getLogger('codeintel')
 doLog()
+
 mgr = Manager(on_scan_complete=scanComplete)
 mgr.upgrade() # Can use Database upgrade methods for finer control.
 mgr.initialize()
-
 try:
-    doLog()
     scan()
 finally:
-    mgr.finalize() # make sure this gets run or you could get hangs
+    mgr.finalize()
     print 'done'
 </t>
 <t tx="ekr.20080121150435">def openManager():
@@ -59507,7 +59506,9 @@ os.path.join('abc')
 
 #import leoGlobals as g
 # g.openWithFileName</t>
-<t tx="ekr.20080331081556.2"># import database
+<t tx="ekr.20080331081556.2">@color
+
+# import database
 # import codeintel2.database.database as database
 
 # import codeintel2
@@ -59544,13 +59545,23 @@ from codeintel2.manager import Manager
 from codeintel2.common import EvalController</t>
 <t tx="ekr.20080331170945.2">def doLog():
 
-    log = logging.getLogger('codeintel') # The manager log.
-    log.setLevel(logging.INFO)
+    rootLogger = logging.getLogger('')
+    rootLogger.setLevel(log_level)
 
-    log.debug('Quick zephyrs blow, vexing daft Jim.')
-    log.info('How quickly daft jumping zebras vex.')
-    log.warning('Jail zesty vixen who grabbed pay from quack.')
-    log.error('The five boxing wizards jump quickly.')
+    if not log.handlers:
+
+        # Create handler for codeintel logger.
+        formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+        console = logging.StreamHandler()
+        console.setLevel(log_level)
+        console.setFormatter(formatter)
+        log.addHandler(console)
+
+    if 0:
+        log.debug('debug msg.')
+        log.info('info msg.')
+        log.warning('warning msg.')
+        log.error('error msg.')
 </t>
 <t tx="ekr.20080331170945.3"># From example code in codeintel2.__init__.py
 
