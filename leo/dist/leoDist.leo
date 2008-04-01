@@ -251,7 +251,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
 <v t="ekr.20080313080205.2"><vh>&lt;&lt; delete files from trunk folder &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20070614105133.3" a="ETV"><vh>@@nosent ../../setup.py</vh>
+<v t="ekr.20070614105133.3" a="ETV" tnodeList="ekr.20070614105133.3,ekr.20070614110334,ekr.20070622084634"><vh>@nosent ../../setup.py</vh>
 <v t="ekr.20070614110334"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
 <v t="ekr.20070622084634"><vh>&lt;&lt; define version number in setup.py &gt;&gt;</vh></v>
 </v>
@@ -4414,7 +4414,7 @@ setup (
     author_email='edreamleo@gmail.com',
     url='http://webpages.charter.net/edreamleo/front.html',
     download_url='http://sourceforge.net/project/showfiles.php?group_id=3458',
-    py_modules=['leo'], # The manifest specifies everything.
+    packages=['leo'], # The manifest specifies everything.
     description = "Leo: A Programmer's Editor and More",
     license='Python',
     platforms=['all',],
