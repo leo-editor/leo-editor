@@ -19,7 +19,7 @@
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
 <v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057" a="E"><vh>Important doc nodes</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
@@ -1053,9 +1053,9 @@
 <v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
 <v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
 <v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
-<v t="ekr.20080121105837.91"><vh>async_eval_at_trg</vh></v>
-<v t="ekr.20080121105837.92"><vh>cplns_from_trg</vh></v>
-<v t="ekr.20080121105837.93"><vh>calltips_from_trg</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
 <v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
 <v t="ekr.20080121105837.95"><vh>libs</vh></v>
 <v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
@@ -1546,7 +1546,7 @@
 </v>
 <v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
 <v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
 <v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
 <v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
 <v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
@@ -1557,9 +1557,9 @@
 <v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
 <v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
 </v>
-<v t="ekr.20080121105837.1406"><vh>class PythonBuffer</vh>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
 <v t="ekr.20080121105837.1407"><vh>libs</vh></v>
-<v t="ekr.20080121105837.1408"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
 <v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
 </v>
 <v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
@@ -3318,9 +3318,9 @@
 <v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
 <v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
 <v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
-<v t="ekr.20080121105837.91"><vh>async_eval_at_trg</vh></v>
-<v t="ekr.20080121105837.92"><vh>cplns_from_trg</vh></v>
-<v t="ekr.20080121105837.93"><vh>calltips_from_trg</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
 <v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
 <v t="ekr.20080121105837.95"><vh>libs</vh></v>
 <v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
@@ -3811,7 +3811,7 @@
 </v>
 <v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
 <v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
 <v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
 <v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
 <v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
@@ -3822,9 +3822,9 @@
 <v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
 <v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
 </v>
-<v t="ekr.20080121105837.1406"><vh>class PythonBuffer</vh>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
 <v t="ekr.20080121105837.1407"><vh>libs</vh></v>
-<v t="ekr.20080121105837.1408"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
 <v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
 </v>
 <v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
@@ -5232,9 +5232,9 @@
 <v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
 <v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
 <v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
-<v t="ekr.20080121105837.91"><vh>async_eval_at_trg</vh></v>
-<v t="ekr.20080121105837.92"><vh>cplns_from_trg</vh></v>
-<v t="ekr.20080121105837.93"><vh>calltips_from_trg</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
 <v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
 <v t="ekr.20080121105837.95"><vh>libs</vh></v>
 <v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
@@ -5453,6 +5453,49 @@
 </v>
 <v t="ekr.20080121105837.370"><vh>_indent</vh></v>
 </v>
+<v t="ekr.20080121105837.1387"><vh>lang_python.py</vh>
+<v t="ekr.20080121105837.1388"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1389"><vh>class PythonLexer</vh>
+<v t="ekr.20080121105837.1390"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1391"><vh>class PythonImportsEvaluator</vh>
+<v t="ekr.20080121105837.1392"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1393"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
+<v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
+<v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
+<v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
+<v t="ekr.20080121105837.1400"><vh>_gen_python_import_paths_from_pth_path</vh></v>
+<v t="ekr.20080121105837.1401"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1402"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1403"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+</v>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
+<v t="ekr.20080121105837.1407"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
+</v>
+<v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
+<v t="ekr.20080121105837.1411"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1412"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1413"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1414"><vh>_getStdCIXScanId</vh></v>
+<v t="ekr.20080121105837.1415"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.1416"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.1417"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1418"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1419"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1420"><vh>class PythonCILEDriver</vh>
+<v t="ekr.20080121105837.1421"><vh>scan_purelang</vh></v>
+</v>
+<v t="ekr.20080121105837.1422"><vh>register</vh></v>
+</v>
 <v t="ekr.20080121105837.1608"><vh>manager.py</vh>
 <v t="ekr.20080121105837.1609"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1610"><vh>__init__</vh></v>
@@ -5484,6 +5527,27 @@
 </v>
 </v>
 <v t="ekr.20080331151954.2"><vh>Important classes</vh>
+<v t="ekr.20080121105837.83"><vh>class Buffer</vh>
+<v t="ekr.20080121105837.84"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.85"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.86"><vh>env</vh></v>
+<v t="ekr.20080121105837.87"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
+<v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
+<v t="ekr.20080121105837.95"><vh>libs</vh></v>
+<v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
+<v t="ekr.20080121105837.97"><vh>_html_from_trg_error</vh></v>
+<v t="ekr.20080121105837.98"><vh>_html_from_trg</vh></v>
+<v t="ekr.20080121105837.99"><vh>style_names_from_style_num</vh></v>
+<v t="ekr.20080121105837.100"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.101"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.102"><vh>number_styles</vh></v>
+</v>
 <v t="ekr.20080121105837.148"><vh>class Citadel</vh>
 <v t="ekr.20080121105837.149"><vh>__init__</vh></v>
 <v t="ekr.20080121105837.150"><vh>set_lang_info</vh></v>
@@ -5531,18 +5595,44 @@
 <v t="ekr.20080121105837.223"><vh>set_calltips</vh></v>
 <v t="ekr.20080121105837.224"><vh>set_defns</vh></v>
 </v>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
+<v t="ekr.20080121105837.1407"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
 </v>
+</v>
+<v t="ekr.20080331182810.1"><vh>Recent</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.91"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080331182810.5"><vh>not used</vh>
+<v t="ekr.20080121150435"><vh>openManager</vh></v>
+<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
+</v>
+</v>
+<v t="ekr.20080331182810.3"><vh>other tests</vh></v>
 <v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
 <v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
 <v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
 <v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080331170945.2" a="TV"><vh>doLog</vh></v>
-<v t="ekr.20080121150435"><vh>openManager</vh></v>
-<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
+<v t="ekr.20080331170945.2"><vh>doLog</vh></v>
+<v t="ekr.20080331182810.4" a="TV"><vh>doTrigger</vh></v>
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
 <v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
 </v>
+<v t="ekr.20080331170945.3"><vh>scan</vh></v>
+<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20080121105230.3"></t>
@@ -33650,6 +33740,8 @@ class PythonLexer(Lexer):
 
 </t>
 <t tx="ekr.20080121105837.1396"># Used by ProgLangTriggerIntelMixin.preceding_trg_from_pos().
+
+
 trg_chars = tuple(" (.")
 
 def async_eval_at_trg(self, buf, trg, ctlr):
@@ -42716,7 +42808,6 @@ def register(mgr):
         # Dev Note: set to false if this language does not support
         # autocomplete/calltips.
         is_cpln_lang=True)
-
 </t>
 <t tx="ekr.20080121105837.1854">@language html
 
@@ -59101,8 +59192,9 @@ print '-' * 40
 doLog()
 
 mgr = Manager(on_scan_complete=scanComplete)
-mgr.upgrade() # Can use Database upgrade methods for finer control.
+mgr.upgrade() # Can use mgr.db.upgrade methods for finer control.
 mgr.initialize()
+
 try:
     scan()
 finally:
@@ -59495,14 +59587,9 @@ There are two common modes of interaction:
 .hits_from_lpath(lpath, ctlr=None, curr_buf=None)
 
 .toplevel_cplns(prefix=None, ilk=None, ctlr=None):</t>
-<t tx="ekr.20080331081556.1">
-import os
+<t tx="ekr.20080331081556.1">import os
 print os.path
-print os.path.join
-os.path.join('abc')
-
-#import leoGlobals as g
-# g.openWithFileName</t>
+</t>
 <t tx="ekr.20080331081556.2">@color
 
 # import database
@@ -59577,50 +59664,60 @@ from codeintel2.common import EvalController</t>
 
 def scan():
 
-    trace = False
+    trace = True
+    path = g.os_path_normpath(g.os_path_join(g.app.loadDir,'..','test','komodo-test.py'))
 
-    path = g.os_path_normpath(g.os_path_join(g.app.loadDir,
-        '..','test','komodo-test.py'))
     buf = mgr.buf_from_path(path) # Can also get Buffer from content.
         # Buf is a PythonBuffer (see lang_python), a subclass of CitadelBuffer: see citadel.py
-
-    # print mgr.citadel
-    # print mgr.idxr
-
-    # updater = BatchUpdater()
-    # updater.add_request(...)  # Make one or more requests.
-    # mgr.batch_update(updater=updater)  # This will start the updater.
+    buf.scan()
+    buf.load()
 
     ctlr = EvalController() # Use a common controller.
-    # mgr.citadel.batch_update()
-    tree = buf.tree # A property: scans if necessary.
+    ### tree = buf.tree # A property: scans if necessary.
 
     # Print the data.
     s = file(path).read()
-    if trace:
-        print ; print s ; print
+    if trace: print '\n%s\n' % s
 
     # Find all trigger points.
     for i in xrange(1,len(s)):
         trigger = buf.trg_from_pos(i,implicit=False)
         if trigger:
-            # See also Buffer.async_eval_at_trg()
-            print 'trigger at %3d' % (i),'%33s' % (trigger.name),'%9s' % (repr(s[i: i+5])),
-            completions = buf.cplns_from_trg(trigger,timeout=None,ctlr=ctlr)
-            print 'completions %3s' % (completions and len(completions) or 0),
-            calltips = buf.calltips_from_trg(trigger,timeout=None,ctlr=ctlr)
-            print 'calltips %s' % (calltips and len(calltips) or 0),
-
-            if completions:
-                # g.printList(completions)
-                modules = [b for (a,b) in completions if a == 'module']
-                print 'modules',len(modules),
-                # for z in modules: print z
-                directories = [b for (a,b) in completions if a == 'directory']
-                print 'directories',len(directories)
-                # for z in directories: print z
-</t>
+            doTrigger(s,i,trigger,buf,ctlr)</t>
 <t tx="ekr.20080331171758.1">def scanComplete(request):
     g.trace('*'*10,request)</t>
+<t tx="ekr.20080331182810.1"></t>
+<t tx="ekr.20080331182810.3">print os.path.join
+os.path.join('abc')</t>
+<t tx="ekr.20080331182810.4">prev_trigger = None
+
+def doTrigger (s,i,trigger,buf,ctlr):
+
+    # See also Buffer.async_eval_at_trg()
+    print 'trigger at %3d' % (i),'%33s' % (
+        trigger.name),'%9s' % (repr(s[i: i+5])),
+
+    completions = buf.cplns_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'completions %3s' % (completions and len(completions) or 0),
+
+    calltips = buf.calltips_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'calltips %s' % (calltips and len(calltips) or 0),
+
+    if completions:
+        modules = [b for (a,b) in completions if a == 'module']
+        print 'modules',len(modules),
+
+        directories = [b for (a,b) in completions if a == 'directory']
+        print 'directories',len(directories)
+
+    global prev_trigger
+    if prev_trigger is None:
+        prev_trigger = trigger
+        print '\n***** modules...'
+        for z in modules: print z
+        print '\n***** directories...'
+        for z in directories: print z
+</t>
+<t tx="ekr.20080331182810.5"></t>
 </tnodes>
 </leo_file>
