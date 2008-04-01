@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.524731182796">
-	<global_window_position top="10" left="275" height="931" width="861"/>
+	<global_window_position top="19" left="372" height="931" width="861"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="T"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -778,6 +778,7 @@
 <v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
 <v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
+<v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
 <v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
@@ -3628,7 +3629,7 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080328074117.340" a="ETV"><vh>4.4.8 b3</vh>
+<v t="ekr.20080328074117.340" a="EV"><vh>4.4.8 b3</vh>
 <v t="ekr.20080328074117.2"><vh>Fixed bugs</vh>
 <v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
 <v t="ekr.20080328074117.4" a="E"><vh>Removed '.' from leoID</vh></v>
@@ -34958,5 +34959,35 @@ have a node that plots the array, with content::
 
 And, as per instructions, pressing alt+I will launch a new Tk window with the
 plotted representation of the array!    &lt;/t&gt;</t>
+<t tx="vivainio.20080401152121.2">Sometimes you may decide to launch Leo when an IPython session is already
+running. This is typically the case when IPython is launched from/as another
+application (Turbogears/Django shell, Sage, etc.), or you only decide later on
+that you might want to roll up some scripts or edit your variables in Leo.
+
+Luckily, this is quite easy, if not automatic (yet) using IPython's %run command
+that runs python code in the IPython process. The only special consideration is
+that we need to run IPython.Shell.hijack_tk() to prevent Leo Tk mainloop from
+blocking IPython in %run. Here we launch an embedded Leo instance, and create a
+macro 'embleo' for later use (so that we don't have to repeat these steps)::
+
+    IPython 0.8.3.bzr.r57   [on Py 2.5.1]
+    [C:opt/Console2]|2&gt; import IPython.Shell
+    [C:opt/Console2]|3&gt; IPython.Shell.hijack_tk()
+    [C:opt/Console2]|4&gt; cd c:/leo/leo/src
+    [c:leo/src]|5&gt; %run leo.py
+
+    reading settings in C:\leo\leo\config\leoSettings.leo
+
+    ... Leo is starting at this point, but IPython prompt returns ...
+
+    [c:leo/src]|6&gt; macro embleo 2-5
+   
+    [c:leo/src]|7&gt; store embleo
+    Stored 'embleo' (Macro)
+
+Now, in Leo, you only need to press Alt+Shift+I (launch-ipython) to actually
+make the document visible in IPython. Despite the name, launch-ipython will not
+create a new instance of IPython; if an IPython session already exists, it will
+be automatically used by ILeo.</t>
 </tnodes>
 </leo_file>
