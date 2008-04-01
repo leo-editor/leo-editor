@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.43829787234">
-	<global_window_position top="47" left="147" height="672" width="1175"/>
+	<global_window_position top="47" left="346" height="809" width="1440"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -12,19 +12,19 @@
 <v t="bobjack.20080329075629.2"><vh>@startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
+<v t="bobjack.20080329075629.3" a="TV"><vh>Notes</vh></v>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
-<v t="bobjack.20080330095006.2"><vh>Replacing the log menu</vh></v>
-<v t="bobjack.20080330095006.3" a="TV"><vh>Editing the 'edit-menu' fragment</vh></v>
+<v t="bobjack.20080330095006.2" annotate="7d71002855087072696f7269747971015501317102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269312e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269312e706e67710f75612e"><vh>Replacing the log menu</vh></v>
+<v t="bobjack.20080330095006.3" annotate="7d71002855087072696f7269747971015501327102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269322e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269322e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
-<v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
+<v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080324164314.1"><vh>@settings</vh>
-<v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
-<v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
+<v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
+<v t="bobjack.20080329054053.1" a="E"><vh>provide a fragment for use in other menus</vh>
+<v t="bobjack.20080329053100.1" a="E"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
 <v t="bobjack.20080326150321.8"><vh>@item *change</vh></v>
@@ -89,6 +89,21 @@
 <v t="bobjack.20080329062304.15"><vh>... the change-text entry</vh>
 <v t="bobjack.20080329062956.1"><vh>@popup change-text</vh>
 <v t="bobjack.20080329062304.16"><vh>@item &amp;</vh></v>
+</v>
+</v>
+<v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
+<v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
+<v t="bobjack.20080401113850.3"><vh>@item canvas menu</vh></v>
+</v>
+</v>
+<v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
+<v t="bobjack.20080401143954.3"><vh>@popup plusbox</vh>
+<v t="bobjack.20080401143954.4"><vh>@item plus box menu</vh></v>
+</v>
+</v>
+<v t="bobjack.20080401143613.3" a="E"><vh>... headlines</vh>
+<v t="bobjack.20080401143613.4" a="E"><vh>@popup headline</vh>
+<v t="bobjack.20080401143613.5"><vh>@item headline menu</vh></v>
 </v>
 </v>
 </v>
@@ -175,15 +190,14 @@ then click on 'Help on: leoGlobals'</t>
     
      c.context_menus[&lt;name&gt;]
 
-Some of these names are special, like 'body', 'log', 'find-text', 'change-text'.
-The menus with these names are used for any widget whose name starts with those
-names, eg a widget with a name 'body3' will, by default, get a menu from
-c.context_menus['body'] when it is right clicked.
+Some of these names are special, like 'body', 'log', 'find-text', 'change-text'
+'headline', 'canvas'.
+
 
 Other names are not special, menus with these names are 'fragments', that is
-they are there to be included in other menus. This can be done using the '@item
-&amp;' node with the name of the fragment to be included as the body text of the
-node.
+they are there to be included in other menus. This can be done using the
+'@item &amp;' node with the name of the fragment to be included as the body text of
+the node.
 
 Widgets may be given a context_menu attribute, eg
 
@@ -195,15 +209,6 @@ as the popup.
 Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises a
 'bodyrclick1' hook, such as c.frame.OnBodyRClick.
 
-Problems with log.
-
-    1 There are no minibuffer commands for cut/copy/past in text regions other
-    than the body, so rclick provides an 'edit-text' fragment for inclusion in
-    @popup menus.
-    
-    2 Only the first Log pane will have a right click menu. rclick has no way of
-    knowing when new log tabs are created or if they want a right click menu.
-    You must bind newly created log text widgets &lt;Button-3&gt; as above.
     
 Menu tables in c.context_menus are live, they can be manipulated by scripts and
 the changes will show up immediately.  See @button experiments.
@@ -214,11 +219,12 @@ immediately in all those menus.
 
 
 
-There is no support for tree or canvas widgets yet, I am experiencing problems
-working with these.
+To get a right click menu for a widget use::
+    
+    g.doHook('rclick-popup', c=c, event=event, context_menu='&lt;default menu name&gt;', &lt;any key=value pairs...&gt;)
 
 
-</t>
+Make sure the event has passed through the master rclick handler before using the hook.</t>
 <t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
 
 def cb( x=None):
@@ -231,12 +237,6 @@ def cb( x=None):
 
     return testMenuCallback
 
-xx=1
-
-if xx==1:
-
-
-elif xx==2:
 
 
 </t>
@@ -261,5 +261,15 @@ fragment. Check before and after in the log and find and change text boxes. """
 et = c.context_menus['edit-menu'] 
 c.context_menus['edit-menu'] = et[:-2]
 g.es('removed select-all from ALL edit-menus', color='blue')</t>
+<t tx="bobjack.20080401113850.2"></t>
+<t tx="bobjack.20080401113850.3"></t>
+<t tx="bobjack.20080401143613.2"></t>
+<t tx="bobjack.20080401143613.3"></t>
+<t tx="bobjack.20080401143613.4">Remvoe the '@item headline menu' node to restore the standard
+tree popup menu</t>
+<t tx="bobjack.20080401143613.5"></t>
+<t tx="bobjack.20080401143954.2"></t>
+<t tx="bobjack.20080401143954.3"></t>
+<t tx="bobjack.20080401143954.4"></t>
 </tnodes>
 </leo_file>

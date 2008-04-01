@@ -29,6 +29,13 @@ following:
     - the log pane      ( c.context_menus['log'] )
     - the find edit box ( c.context_menus['find-text'] )
     - the change edit box ( c.context_menus['change-text'] )
+    - headline (c.context_menus['headlines']) (empty)
+    - iconbox (c.context_menus['iconbox']) (empty)
+    - plusbox (c.context_menus['plusbox']) (empty)
+    - canvas (c.context_menus['plusbox']) (empty)
+
+    ( if the headline or iconbox is empty, the standard leo popupmenu will be used,
+    for other items an empty list will simply not produce a popup at all.)
 
 and also the following fragments:
 
@@ -62,21 +69,23 @@ to be generated.
 Adding support to other widgets.
 --------------------------------
 
-For widgets to use the rClick context menu system it need only bind <Button-3>
-to c.frame.OnBodyRClick, and provide a menu table to use or a reference to an
-existing menu table.
+For widgets to use the rClick context menu system it needs to use::
 
-The right click menu to be used is determined in one of two ways.
+    g.doHook('rclick-popup', c=c, event=event, context_menu='<a menu name>', <any other key=value pairs> ...)
 
-    The context_menu property:
+context_menu is optional but provides the name of a menu to be used if an explicit menu
+has not been set with::
 
-        If the widget has a context menu property::
+    widget.context_menu = <name> | <list>
 
-            w.context_menu = string | list
 
-        then this will be used to determine what menu is used. If it contains a
-        list, that list will be used to construct the menu, if it is a string it
-        will be used as an index into c.context_menus.
+The right click menu to be used is determined in one of three ways.
+
+    The explicitly set context_menu property:
+
+        If widget.context_menu exist it is used allways.
+
+    The context_menu supplied the doHook call if any.   
 
     The widgets name:
 
@@ -400,6 +409,10 @@ rclick menu tables and @popup trees.
 # 0.19 bobjack:
 # - Refactored code to be all in the ContextMenuController
 # - changed the invoke and generator callback signatures
+# 0.20 bobjack:
+# - fixed problems with tree binding
+# - extended menus to cover canvas, headline, iconbox, plusbox
+# - introduced 'rclick-popup' hook.
 #@-at
 #@nonl
 #@-node:ekr.20040422081253:<< version history >>
@@ -409,15 +422,8 @@ rclick menu tables and @popup trees.
 #@+at
 # TODO:
 # 
-# add @settings:
+# extend support to other leo widgets
 # 
-#     - @bool rclick-provide-tree-popup
-# 
-#         Allow rclick to manage the tree popup.
-# 
-#     - @bool rclick-provide-log-tab-menus
-# 
-#         Allow rclick to manage the popups for the tabs in the log panel
 # 
 # support checkbox and radio buttons
 # 
@@ -442,7 +448,7 @@ import copy
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "0.19"
+__version__ = "0.20"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -469,6 +475,8 @@ def init ():
     if ok:
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         leoPlugins.registerHandler("bodyrclick1",rClicker)
+
+        leoPlugins.registerHandler("rclick-popup",rClicker)
         g.plugin_signon(__name__)
 
         #init_default_menus()
@@ -490,14 +498,22 @@ def onCreate (tag, keys):
 
 def rClicker(tag, keywords):
 
-    """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
+    """Construct and display a popup context menu in response to the `bodyrclick1` and `rclick-popup` hooks."""
 
     c = keywords.get("c")
     event = keywords.get("event")
     if not c or not c.exists or not event:
         return
 
-    return c.theContextMenuController.rClicker(event)
+    #if widget does not have an explicit context_menu set then
+    # set it to the default value if one is supplied.
+
+    context_menu = keywords.get('context_menu')
+    g.trace(context_menu)
+    if context_menu and not hasattr(event, 'context_menu'):
+        event.widget.context_menu = context_menu
+
+    return c.theContextMenuController.rClicker(keywords)
 
 #@-node:ekr.20080327061021.220:rClicker
 #@-node:ekr.20080327061021.229:Event handler
@@ -548,13 +564,15 @@ class ContextMenuController(object):
         ):
             return handler(event,func)
 
-        c.frame.log.logCtrl.bind('<Button-3>', rClickbinderCallback)
+        #c.frame.log.logCtrl.bind('<Button-3>', rClickbinderCallback)
 
         h = c.searchCommands.findTabHandler
         if not h: return
 
         for w in (h.find_ctrl, h.change_ctrl):
             w.bind('<Button-3>', rClickbinderCallback)
+
+
     #@-node:ekr.20080327061021.217:rClickbinder
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
@@ -944,12 +962,55 @@ class ContextMenuController(object):
     #@+node:bobjack.20080329153415.5:rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
 
-    def rClicker(self, event):
+    def rClicker(self, keywords):
 
-        """Construct and display a popup context menu in response to the `bodyrclick1` hook."""
+        """Construct and display a popup context menu in response to the `bodyrclick1` and `rclick-popup` hooks."""
 
         c = self.c
         k = c.k 
+
+        event = keywords.get('event')
+        if not event:
+            return
+
+        widget = event.widget
+        if not widget:
+            return
+
+        name = c.widget_name(widget)
+
+        c.widgetWantsFocusNow(widget)
+
+        isText = g.app.gui.isTextWidget(widget)
+        if isText:
+            try:
+                widget.setSelectionRange(*c.k.previousSelection)
+            except TypeError:
+                #g.trace('no previous selection')
+                pass
+
+            if not name.startswith('body'):
+                k.previousSelection = (s1,s2) = widget.getSelectionRange()
+                x,y = g.app.gui.eventXY(event)
+                i = widget.xyToPythonIndex(x,y)
+
+                widget.setSelectionRange(s1,s2,insert=i)
+
+        top_menu_table = []
+
+        if hasattr(widget, 'context_menu'):
+
+            key = widget.context_menu
+            if isinstance(key, list):
+                top_menu_table = widget_context_menu
+            elif isinstance(key, basestring):
+                top_menu_table = c.context_menus.get(key, [])[:]
+
+        else:
+            for key in c.context_menus.keys():
+                if name.startswith(key):
+                    top_menu_table = c.context_menus.get(key, [])[:]
+                    break
 
         #@    << def table_to_menu >>
         #@+node:bobjack.20080329153415.6:<< def table_to_menu >>
@@ -1078,48 +1139,11 @@ class ContextMenuController(object):
         #@-node:bobjack.20080329153415.6:<< def table_to_menu >>
         #@nl
 
-        widget = event.widget
-        if not widget:
-            return
-        name = c.widget_name(widget)
-
-        c.widgetWantsFocusNow(widget)
-
-        isText = g.app.gui.isTextWidget(widget)
-        if isText:
-            try:
-                widget.setSelectionRange(*c.k.previousSelection)
-            except TypeError:
-                #g.trace('no previous selection')
-                pass
-
-            if not name.startswith('body'):
-                k.previousSelection = (s1,s2) = widget.getSelectionRange()
-                x,y = g.app.gui.eventXY(event)
-                i = widget.xyToPythonIndex(x,y)
-
-                widget.setSelectionRange(s1,s2,insert=i)
-
-        top_menu_table = []
-
-        if hasattr(widget, 'context_menu'):
-
-            key = widget.context_menu
-            if isinstance(key, list):
-                top_menu_table = widget_context_menu
-            elif isinstance(key, basestring):
-                top_menu_table = c.context_menus.get(key, [])[:]
-
-        else:
-            for key in c.context_menus.keys():
-                if name.startswith(key):
-                    top_menu_table = c.context_menus.get(key, [])[:]
-                    break
-
         top_menu = table_to_menu(top_menu_table)
         if top_menu:
             top_menu.tk_popup(event.x_root-23, event.y_root+13)
             self.popup_menu = top_menu
+            return 'break'
     #@-node:bobjack.20080329153415.5:rClicker
     #@-node:bobjack.20080329153415.14:Event Handler
     #@+node:bobjack.20080321133958.8:Invocation Callbacks
