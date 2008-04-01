@@ -33,9 +33,9 @@
 <v t="ekr.20070620084858.1"><vh>@@button upload</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259" a="E"><vh>Annoucnements</vh>
+<v t="EKR.20040519091259"><vh>Annoucnements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
-<v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
+<v t="EKR.20040519091259.2" a="E"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
 <v t="ekr.20070101093904"><vh>January 2007</vh></v>
 <v t="ekr.20060823090437"><vh>August 2006</vh></v>
@@ -231,9 +231,9 @@
 <v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -251,9 +251,8 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
 <v t="ekr.20080313080205.2"><vh>&lt;&lt; delete files from trunk folder &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20070614105133.3"><vh>@@nosent ../../setup.py (no longer used)</vh>
+<v t="ekr.20070614105133.3" a="ETV" tnodeList="ekr.20070614105133.3,ekr.20070614110334"><vh>@nosent ../../setup.py</vh>
 <v t="ekr.20070614110334"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
-<v t="ekr.20070622084634"><vh>&lt;&lt; define version number in setup.py &gt;&gt;</vh></v>
 </v>
 <v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
@@ -4402,21 +4401,21 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 
 # Must be an @nosent file.
 
-print '=' * 30
-
 from distutils.core import setup
+from pdb import set_trace as pdb # pdb() will drop into the debugger.
+
+pdb()
 
 &lt;&lt; define long_description &gt;&gt;
-&lt;&lt; define version number in setup.py &gt;&gt;
 
 setup (
     name='leo',
-    version=version, # No spaces and no trailing comma.
+    version='4.4.8-beta-3-test', # No spaces and no trailing comma., # No spaces and no trailing comma.
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://webpages.charter.net/edreamleo/front.html',
     download_url='http://sourceforge.net/project/showfiles.php?group_id=3458',
-    py_modules=[], # The manifest specifies everything.
+    packages=['leo'], # The manifest specifies everything.
     description = "Leo: A Programmer's Editor and More",
     license='Python',
     platforms=['all',],
@@ -4730,7 +4729,6 @@ print ; print '='*30,'setup.py complete','='*30 ; print
 </t>
 <t tx="ekr.20070622081640"># These can't be used at present.</t>
 <t tx="ekr.20070622084133"></t>
-<t tx="ekr.20070622084634">version='4.4.8-beta-3' # No spaces and no trailing comma.</t>
 <t tx="ekr.20070622091049">Leo 4.4.3 beta 3                                June 23, 2006
 
 Leo 4.4.3 beta 3 is available at:

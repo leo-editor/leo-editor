@@ -785,7 +785,7 @@
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20071105085941" a="TV"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 <v t="ekr.20071027111751"><vh>@test javaScript import</vh>
 <v t="ekr.20071027111751.1"><vh>functions</vh></v>
@@ -909,10 +909,6 @@
 </v>
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
-</v>
-<v t="ekr.20080325141304.1"><vh>@@thin read-only-test.txt</vh></v>
-<v t="ekr.20080329082836.1" a="ETV"><vh>@button write-cleaned-files</vh>
-<v t="ekr.20080329082836.2"><vh>clean_file</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -22188,58 +22184,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
-<t tx="ekr.20080325141304.1"># read-only-test.txt</t>
-<t tx="ekr.20080329082836.1"># Writes all derived files in the outline to 'clean' directories.
-# For example, writes test/foo.py to test/clean/foo.py.
-
-@others
-
-for p in c.allNodes_iter():
-    if p.isAnyAtFileNode():
-        clean_file(p)
-
-</t>
-<t tx="ekr.20080329082836.2">def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(
-        g.os_path_join(
-            at.default_directory,'clean',p.anyAtFileNodeName()))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

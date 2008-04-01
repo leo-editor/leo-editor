@@ -1,9 +1,7 @@
-INSTALL.TXT
 MANIFEST
-README.TXT
-README.txt
 install
 manifest.in
+setup.py
 uninstall
 leo\__init__.py
 leo\Icons\LeoApp.ico
