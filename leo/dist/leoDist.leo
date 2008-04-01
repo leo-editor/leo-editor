@@ -251,9 +251,8 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
 <v t="ekr.20080313080205.2"><vh>&lt;&lt; delete files from trunk folder &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20070614105133.3" a="ETV" tnodeList="ekr.20070614105133.3,ekr.20070614110334,ekr.20070622084634"><vh>@nosent ../../setup.py</vh>
+<v t="ekr.20070614105133.3" a="ETV" tnodeList="ekr.20070614105133.3,ekr.20070614110334"><vh>@nosent ../../setup.py</vh>
 <v t="ekr.20070614110334"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
-<v t="ekr.20070622084634"><vh>&lt;&lt; define version number in setup.py &gt;&gt;</vh></v>
 </v>
 <v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
@@ -4403,13 +4402,15 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 # Must be an @nosent file.
 
 from distutils.core import setup
+from pdb import set_trace as pdb # pdb() will drop into the debugger.
+
+pdb()
 
 &lt;&lt; define long_description &gt;&gt;
-&lt;&lt; define version number in setup.py &gt;&gt;
 
 setup (
     name='leo',
-    version=version, # No spaces and no trailing comma.
+    version='4.4.8-beta-3-test', # No spaces and no trailing comma., # No spaces and no trailing comma.
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://webpages.charter.net/edreamleo/front.html',
@@ -4728,7 +4729,6 @@ print ; print '='*30,'setup.py complete','='*30 ; print
 </t>
 <t tx="ekr.20070622081640"># These can't be used at present.</t>
 <t tx="ekr.20070622084133"></t>
-<t tx="ekr.20070622084634">version='4.4.8-beta-3' # No spaces and no trailing comma.</t>
 <t tx="ekr.20070622091049">Leo 4.4.3 beta 3                                June 23, 2006
 
 Leo 4.4.3 beta 3 is available at:

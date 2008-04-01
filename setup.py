@@ -2,6 +2,9 @@
 # Must be an @nosent file.
 
 from distutils.core import setup
+from pdb import set_trace as pdb # pdb() will drop into the debugger.
+
+pdb()
 
 long_description = \
 """Leo is an IDE, an outliner, a scripting and unit testing framework based on Python,
@@ -13,11 +16,10 @@ Python 2.2.1 or above and the Tk Tk 8.4 or above.
 Download Python from http://python.org/
 Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 """
-version='4.4.8-beta-3' # No spaces and no trailing comma.
 
 setup (
     name='leo',
-    version=version, # No spaces and no trailing comma.
+    version='4.4.8-beta-3-test', # No spaces and no trailing comma., # No spaces and no trailing comma.
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://webpages.charter.net/edreamleo/front.html',
