@@ -14772,7 +14772,7 @@ def doButtons (self,p,kind,name,val):
     # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
     aList = [] ; c = self.c ; tag = '@button'
-    for p in p.subtree_iter():
+    for p in p.subtree_with_unique_tnodes_iter():
         h = p.headString()
         if g.match_word(h,0,tag):
             # We can not assume that p will be valid when it is used.
@@ -22889,7 +22889,7 @@ def doButtons (self,p,kind,name,val):
     # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
     aList = [] ; c = self.c ; tag = '@button'
-    for p in p.subtree_iter():
+    for p in p.subtree_with_unique_tnodes_iter():
         h = p.headString()
         if g.match_word(h,0,tag):
             # We can not assume that p will be valid when it is used.

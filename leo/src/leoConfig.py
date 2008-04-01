@@ -139,7 +139,7 @@ class parserBaseClass:
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
         aList = [] ; c = self.c ; tag = '@button'
-        for p in p.subtree_iter():
+        for p in p.subtree_with_unique_tnodes_iter():
             h = p.headString()
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
@@ -1461,13 +1461,13 @@ class configClass:
 
         return language
     #@-node:ekr.20041117093009.2:getLanguage
-    #@+node:ekr.20070926070412:getMenusList
+    #@+node:ekr.20070926070412:getMenusDict
     def getMenusList (self):
 
         '''Return the list of entries for the @menus tree.'''
 
         return g.app.config.menusList
-    #@-node:ekr.20070926070412:getMenusList
+    #@-node:ekr.20070926070412:getMenusDict
     #@+node:ekr.20070411101643:getOpenWith
     def getOpenWith (self,c):
 
@@ -1524,6 +1524,8 @@ class configClass:
 
         return self.get(c,setting,"string")
     #@-node:ekr.20041117081009.4:getString
+    #@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
+    #@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
     #@+node:ekr.20041120074536:settingsRoot
     def settingsRoot (self,c):
 
@@ -1539,25 +1541,6 @@ class configClass:
     #@-node:ekr.20041120074536:settingsRoot
     #@-node:ekr.20041117081009:Getters... (g.app.config)
     #@+node:ekr.20041118084146:Setters (g.app.config)
-    #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-    def appendToRecentFiles (self,files):
-
-        files = [theFile.strip() for theFile in files]
-
-        # g.trace(files)
-
-        def munge(name):
-            name = name or ''
-            return g.os_path_normpath(name).lower()
-
-        for name in files:
-            # Remove all variants of name.
-            for name2 in self.recentFiles:
-                if munge(name) == munge(name2):
-                    self.recentFiles.remove(name2)
-
-            self.recentFiles.append(name)
-    #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
     #@+node:ekr.20041118084146.1:set (g.app.config)
     def set (self,c,setting,kind,val):
 
@@ -1586,6 +1569,11 @@ class configClass:
             dkind = d.get('_hash','<no hash: %s>' % c.hash())
             g.trace(dkind,setting,kind,val)
     #@-node:ekr.20041118084146.1:set (g.app.config)
+    #@+node:ekr.20041118084241:setString
+    def setString (self,c,setting,val):
+
+        self.set(c,setting,"string",val)
+    #@-node:ekr.20041118084241:setString
     #@+node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
     def setIvarsFromSettings (self,c):
 
@@ -1613,11 +1601,25 @@ class configClass:
                         # g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
                         setattr(self,ivar,val)
     #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
-    #@+node:ekr.20041118084241:setString
-    def setString (self,c,setting,val):
+    #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+    def appendToRecentFiles (self,files):
 
-        self.set(c,setting,"string",val)
-    #@-node:ekr.20041118084241:setString
+        files = [theFile.strip() for theFile in files]
+
+        # g.trace(files)
+
+        def munge(name):
+            name = name or ''
+            return g.os_path_normpath(name).lower()
+
+        for name in files:
+            # Remove all variants of name.
+            for name2 in self.recentFiles:
+                if munge(name) == munge(name2):
+                    self.recentFiles.remove(name2)
+
+            self.recentFiles.append(name)
+    #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
     #@-node:ekr.20041118084146:Setters (g.app.config)
     #@+node:ekr.20041117093246:Scanning @settings (g.app.config)
     #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers

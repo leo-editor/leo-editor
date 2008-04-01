@@ -343,517 +343,48 @@ class baseCommands:
     #@-node:ekr.20031218072017.2582: version & signon stuff
     #@+node:ekr.20040312090934:c.iterators
     #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-    class allNodes_iter_class:
-
-        """Returns a list of positions in the entire outline."""
-
-        #@    @+others
-        #@+node:ekr.20060907085906.1:__init__ & __iter__ (c.all_positions_iter)
-        def __init__(self,c,copy):
-
-            # g.trace('c.allNodes_iter.__init','p',p,'c',c)
-
-            self.c = c
-            self.first = c.rootPosition()
-            self.p = None
-            self.copy = copy
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20060907085906.1:__init__ & __iter__ (c.all_positions_iter)
-        #@+node:ekr.20060907085906.2:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.p.moveToThreadNext()
-
-            if self.p:
-                if self.copy: return self.p.copy()
-                else:         return self.p
-
-            else: raise StopIteration
-        #@-node:ekr.20060907085906.2:next
-        #@-others
-
     def allNodes_iter (self,copy=False):
 
-        c = self
-        return self.allNodes_iter_class(c,copy)
+        r = self.rootPosition()
+        if copy:
+            cp = lambda p: p.copy()
+        else:
+            cp = lambda p: p
+        return r.iter_class(r, cp)
 
     all_positions_iter = allNodes_iter
     #@nonl
     #@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
     #@+node:EKR.20040529091232.1:c.all_tnodes_iter
-    # def all_tnodes_iter(self):
-
-        # c = self
-        # for p in c.all_positions_iter():
-            # yield p.v.t
-
-        # # return c.rootPosition().all_tnodes_iter(all=True)
-
-    class all_tnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:ekr.20070930185552:__init__ & __iter__ (c.all_tnodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_tnodes_iter.__init','p',p,'c',c)
-
-            self.c = c
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20070930185552:__init__ & __iter__ (c.all_tnodes_iter)
-        #@+node:ekr.20070930185603:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.p.moveToThreadNext()
-
-            if self.p:
-                return self.p.v.t
-
-            else:
-                raise StopIteration
-        #@-node:ekr.20070930185603:next
-        #@-others
-
     def all_tnodes_iter (self):
 
-        c = self
-        return self.all_tnodes_iter_class(c)
+        return self.rootPosition().tnodes_iter()
     #@-node:EKR.20040529091232.1:c.all_tnodes_iter
     #@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-    # def all_unique_tnodes_iter(self):
-
-        # c = self ; marks = {}
-
-        # for p in c.all_positions_iter():
-            # if not p.v.t in marks:
-                # marks[p.v.t] = p.v.t
-                # yield p.v.t
-
-    class all_unique_tnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:ekr.20070930190218:__init__ & __iter__ (c.all_unique_tnodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
-
-            self.d = {}
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20070930190218:__init__ & __iter__ (c.all_unique_tnodes_iter)
-        #@+node:ekr.20070930190229:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.moveToThreadNextUnique()
-
-            if self.p:
-                return self.p.v.t
-
-            raise StopIteration
-        #@-node:ekr.20070930190229:next
-        #@+node:sps.20080313154422.2:moveToThreadNextUnique
-        def moveToThreadNextUnique (self):
-
-            """Move a position to threadNext position."""
-
-            p = self.p
-
-            if p:
-                # We've been visited
-                self.d[p.v.t]=True
-
-                # First, try to find an unmarked child
-                if p.v.t._firstChild:
-                    p.moveToFirstChild()
-                    while p and self.d.get(p.v.t):
-                        if p.v._next:
-                            p.moveToNext()
-                        else:
-                            p.moveToParent()
-
-                # If we didn't find an unmarked child,
-                # try to find an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    while p.v._next:
-                        p.moveToNext()
-                        if not self.d.get(p.v.t):
-                            break
-
-                # If we didn't find an unmarked sibling,
-                # find a parent with an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    p.moveToParent()
-                    while p:
-                        while p.v._next:
-                            p.moveToNext()
-                            if not self.d.get(p.v.t):
-                                break
-                        # if we run out of siblings, go to parent
-                        if self.d.get(p.v.t):
-                            p.moveToParent()
-                        else:
-                            break # found
-                    # At this point, either (not p.d[p.v.t]) and found
-                    # or (not p) and we're finished
-
-            return p 
-        #@-node:sps.20080313154422.2:moveToThreadNextUnique
-        #@-others
-
     def all_unique_tnodes_iter (self):
 
-        c = self
-        return self.all_unique_tnodes_iter_class(c)
+        return self.rootPosition().unique_tnodes_iter()
     #@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
     #@+node:EKR.20040529091232.3:c.all_vnodes_iter
-    # def all_vnodes_iter(self):
-
-        # c = self
-        # for p in c.all_positions_iter():
-            # yield p.v
-
-    class all_vnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:ekr.20070930190711:__init__ & __iter__ (c.all_vnodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_tnodes_iter.__init','p',p,'c',c)
-
-            self.c = c
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20070930190711:__init__ & __iter__ (c.all_vnodes_iter)
-        #@+node:ekr.20070930190729:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.p.moveToThreadNext()
-
-            if self.p:
-                return self.p.v
-
-            else: raise StopIteration
-        #@-node:ekr.20070930190729:next
-        #@-others
-
     def all_vnodes_iter (self):
-
-        c = self
-        return self.all_vnodes_iter_class(c)
+        return self.rootPosition().vnodes_iter()
     #@-node:EKR.20040529091232.3:c.all_vnodes_iter
     #@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-    # def all_unique_vnodes_iter(self):
-
-        # c = self ; marks = {}
-        # for p in c.all_positions_iter():
-            # if not p.v in marks:
-                # marks[p.v] = p.v
-                # yield p.v
-
-    class all_unique_vnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:ekr.20070930190755:__init__ & __iter__ (c.all_unique_nodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
-
-            self.d = {}
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:ekr.20070930190755:__init__ & __iter__ (c.all_unique_nodes_iter)
-        #@+node:ekr.20070930190835:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.moveToThreadNextUnique()
-
-            if self.p:
-                return self.p.v
-
-            raise StopIteration
-        #@-node:ekr.20070930190835:next
-        #@+node:sps.20080313154422.2:moveToThreadNextUnique
-        def moveToThreadNextUnique (self):
-
-            """Move a position to threadNext position."""
-
-            p = self.p
-
-            if p:
-                # We've been visited
-                self.d[p.v.t]=True
-
-                # First, try to find an unmarked child
-                if p.v.t._firstChild:
-                    p.moveToFirstChild()
-                    while p and self.d.get(p.v.t):
-                        if p.v._next:
-                            p.moveToNext()
-                        else:
-                            p.moveToParent()
-
-                # If we didn't find an unmarked child,
-                # try to find an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    while p.v._next:
-                        p.moveToNext()
-                        if not self.d.get(p.v.t):
-                            break
-
-                # If we didn't find an unmarked sibling,
-                # find a parent with an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    p.moveToParent()
-                    while p:
-                        while p.v._next:
-                            p.moveToNext()
-                            if not self.d.get(p.v.t):
-                                break
-                        # if we run out of siblings, go to parent
-                        if self.d.get(p.v.t):
-                            p.moveToParent()
-                        else:
-                            break # found
-                    # At this point, either (not p.d[p.v.t]) and found
-                    # or (not p) and we're finished
-
-            return p 
-        #@-node:sps.20080313154422.2:moveToThreadNextUnique
-        #@-others
-
     def all_unique_vnodes_iter (self):
 
-        c = self
-        return self.all_unique_vnodes_iter_class(c)
+        return self.rootPosition().unique_vnodes_iter()
     #@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
     #@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
-
-    class all_positions_with_unique_tnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:sps.20080317144948.1:__init__ & __iter__ (c.all_unique_nodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
-
-            self.d = {}
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:sps.20080317144948.1:__init__ & __iter__ (c.all_unique_nodes_iter)
-        #@+node:sps.20080317144948.2:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.moveToThreadNextUnique()
-
-            if self.p:
-                return self.p
-
-            raise StopIteration
-        #@-node:sps.20080317144948.2:next
-        #@+node:sps.20080313154422.2:moveToThreadNextUnique
-        def moveToThreadNextUnique (self):
-
-            """Move a position to threadNext position."""
-
-            p = self.p
-
-            if p:
-                # We've been visited
-                self.d[p.v.t]=True
-
-                # First, try to find an unmarked child
-                if p.v.t._firstChild:
-                    p.moveToFirstChild()
-                    while p and self.d.get(p.v.t):
-                        if p.v._next:
-                            p.moveToNext()
-                        else:
-                            p.moveToParent()
-
-                # If we didn't find an unmarked child,
-                # try to find an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    while p.v._next:
-                        p.moveToNext()
-                        if not self.d.get(p.v.t):
-                            break
-
-                # If we didn't find an unmarked sibling,
-                # find a parent with an unmarked sibling
-                if p and self.d.get(p.v.t):
-                    p.moveToParent()
-                    while p:
-                        while p.v._next:
-                            p.moveToNext()
-                            if not self.d.get(p.v.t):
-                                break
-                        # if we run out of siblings, go to parent
-                        if self.d.get(p.v.t):
-                            p.moveToParent()
-                        else:
-                            break # found
-                    # At this point, either (not p.d[p.v.t]) and found
-                    # or (not p) and we're finished
-
-            return p 
-        #@-node:sps.20080313154422.2:moveToThreadNextUnique
-        #@-others
-
     def all_positions_with_unique_tnodes_iter (self):
 
-        c = self
-        return self.all_positions_with_unique_tnodes_iter_class(c)
+        r = self.rootPosition()
+        return r.unique_iter_class(r, lambda p: p)
     #@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
     #@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
-    class all_positions_with_unique_vnodes_iter_class:
-
-        """Returns a list of all tnodes in the entire outline."""
-
-        #@    @+others
-        #@+node:sps.20080327174748.1:__init__ & __iter__ (c.all_unique_nodes_iter)
-        def __init__(self,c):
-
-            # g.trace('c.all_uniquetnodes_iter.__init','p',p,'c',c)
-
-            self.d = {}
-            self.first = c.rootPosition()
-            self.p = None
-
-        def __iter__(self):
-
-            return self
-        #@-node:sps.20080327174748.1:__init__ & __iter__ (c.all_unique_nodes_iter)
-        #@+node:sps.20080327174748.2:next
-        def next(self):
-
-            if self.first:
-                self.p = self.first
-                self.first = None
-
-            elif self.p:
-                self.moveToThreadNextUnique()
-
-            if self.p:
-                return self.p
-
-            raise StopIteration
-        #@-node:sps.20080327174748.2:next
-        #@+node:sps.20080327174748.3:moveToThreadNextUnique
-        def moveToThreadNextUnique (self):
-
-            """Move a position to threadNext position."""
-
-            p = self.p
-
-            if p:
-                # We've been visited
-                self.d[p.v]=True
-
-                # First, try to find an unmarked child
-                if p.v.t._firstChild:
-                    p.moveToFirstChild()
-                    while p and self.d.get(p.v):
-                        if p.v._next:
-                            p.moveToNext()
-                        else:
-                            p.moveToParent()
-
-                # If we didn't find an unmarked child,
-                # try to find an unmarked sibling
-                if p and self.d.get(p.v):
-                    while p.v._next:
-                        p.moveToNext()
-                        if not self.d.get(p.v):
-                            break
-
-                # If we didn't find an unmarked sibling,
-                # find a parent with an unmarked sibling
-                if p and self.d.get(p.v):
-                    p.moveToParent()
-                    while p:
-                        while p.v._next:
-                            p.moveToNext()
-                            if not self.d.get(p.v):
-                                break
-                        # if we run out of siblings, go to parent
-                        if self.d.get(p.v):
-                            p.moveToParent()
-                        else:
-                            break # found
-                    # At this point, either (not p.d[p.v.t]) and found
-                    # or (not p) and we're finished
-
-            return p 
-        #@-node:sps.20080327174748.3:moveToThreadNextUnique
-        #@-others
-
     def all_positions_with_unique_vnodes_iter (self):
 
-        c = self
-        return self.all_positions_with_unique_vnodes_iter_class(c)
+        r = self.rootPosition()
+        return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
     #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
     #@-node:ekr.20040312090934:c.iterators
     #@+node:ekr.20051106040126:c.executeMinibufferCommand
@@ -2049,7 +1580,7 @@ class baseCommands:
             # New in 4.2: Search the entire tree for joined nodes.
             if not fileName:
                 p1 = c.currentPosition()
-                for p in c.all_positions_iter():
+                for p in c.all_positions_with_unique_tnodes_iter():
                     if p.v.t == p1.v.t and p != p1:
                         # Found a joined position.
                         for p in p.self_and_parents_iter():
