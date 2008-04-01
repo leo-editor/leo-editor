@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.43829787234">
-	<global_window_position top="47" left="346" height="809" width="1440"/>
+<globals body_outline_ratio="0.332404828227">
+	<global_window_position top="90" left="363" height="766" width="1077"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -12,19 +12,19 @@
 <v t="bobjack.20080329075629.2"><vh>@startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080329075629.3" a="TV"><vh>Notes</vh></v>
+<v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
-<v t="bobjack.20080330095006.2" annotate="7d71002855087072696f7269747971015501317102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269312e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269312e706e67710f75612e"><vh>Replacing the log menu</vh></v>
-<v t="bobjack.20080330095006.3" annotate="7d71002855087072696f7269747971015501327102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269322e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269322e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
+<v t="bobjack.20080330095006.2" a="V" annotate="7d71002855046e6f64657101550466696c6571025502626771035500710455087072696f72697479710555013471065502666771076804550870726f677265737371086804550961726368657479706571096804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Replacing the log menu</vh></v>
+<v t="bobjack.20080330095006.3" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455013471055502666771066802550870726f677265737371076802550961726368657479706571086802752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
-<v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
+<v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
+<v t="bobjack.20080324164314.1"><vh>@settings</vh>
 <v t="bobjack.20080329054053.1" a="E"><vh>provide a fragment for use in other menus</vh>
-<v t="bobjack.20080329053100.1" a="E"><vh>@popup find change fragment</vh>
+<v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
 <v t="bobjack.20080326150321.8"><vh>@item *change</vh></v>
@@ -44,7 +44,7 @@
 <v t="bobjack.20080326150321.3"><vh>@item 3</vh></v>
 <v t="bobjack.20080326150321.4"><vh>@item 4</vh></v>
 </v>
-<v t="bobjack.20080329051459.4"><vh>column three</vh>
+<v t="bobjack.20080329051459.4" a="E"><vh>column three</vh>
 <v t="bobjack.20080329052834.1"><vh>@item |</vh></v>
 <v t="bobjack.20080329053100.2"><vh>@item &amp;</vh></v>
 </v>
@@ -91,18 +91,18 @@
 <v t="bobjack.20080329062304.16"><vh>@item &amp;</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
-<v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
+<v t="bobjack.20080401143613.2" a="E"><vh>... the tree canvas</vh>
+<v t="bobjack.20080401113850.2" a="E"><vh>@popup canvas</vh>
 <v t="bobjack.20080401113850.3"><vh>@item canvas menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
-<v t="bobjack.20080401143954.3"><vh>@popup plusbox</vh>
+<v t="bobjack.20080401143954.2" a="E"><vh>... the plus box</vh>
+<v t="bobjack.20080401143954.3" a="E"><vh>@popup plusbox</vh>
 <v t="bobjack.20080401143954.4"><vh>@item plus box menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.3" a="E"><vh>... headlines</vh>
-<v t="bobjack.20080401143613.4" a="E"><vh>@popup headline</vh>
+<v t="bobjack.20080401143613.3"><vh>... headlines</vh>
+<v t="bobjack.20080401143613.4"><vh>@popup headline</vh>
 <v t="bobjack.20080401143613.5"><vh>@item headline menu</vh></v>
 </v>
 </v>
@@ -185,7 +185,33 @@ then click on 'Help on: leoGlobals'</t>
     http://code.launchpad.net/leo-editor/
     
     http://localhost/</t>
-<t tx="bobjack.20080329075629.2"></t>
+<t tx="bobjack.20080329075629.2">Leo Log Window...
+Leo 4.4.8 beta 3, build  1.244 , March 28, 2008
+python 2.5.1, Tk 8.4.14, Pmw 1.3
+Windows 6, 0, 6000, 2, 
+
+leoID= bobjack  (in  C:\Leo\mod_rclick\leo\config )
+global config dir: C:\Leo\mod_rclick\leo\config
+home dir: None
+reading settings in C:\Leo\mod_rclick\leo\config\leoSettings.leo
+reading settings in C:\Leo\mod_rclick\leo\config\myLeoSettings.leo
+reading settings in C:\Leo\mod_rclick\leo\test\testAtPopup.leo
+reading: C:\Leo\mod_rclick\leo\test\testAtPopup.leo
+local @command show-menu-tables
+Leo Log Window...
+Leo 4.4.8 beta 3, build  1.244 , March 28, 2008
+python 2.5.1, Tk 8.4.14, Pmw 1.3
+Windows 6, 0, 6000, 2, 
+
+leoID= bobjack  (in  C:\Leo\mod_rclick\leo\config )
+global config dir: C:\Leo\mod_rclick\leo\config
+home dir: None
+reading settings in C:\Leo\mod_rclick\leo\config\leoSettings.leo
+reading settings in C:\Leo\mod_rclick\leo\config\myLeoSettings.leo
+reading settings in C:\Leo\mod_rclick\leo\test\testAtPopup.leo
+reading: C:\Leo\mod_rclick\leo\test\testAtPopup.leo
+local @command show-menu-tables
+</t>
 <t tx="bobjack.20080329075629.3">@popup &lt;name&gt; menus are converted to a list of tuples and stored in::
     
      c.context_menus[&lt;name&gt;]
@@ -194,29 +220,34 @@ Some of these names are special, like 'body', 'log', 'find-text', 'change-text'
 'headline', 'canvas'.
 
 
-Other names are not special, menus with these names are 'fragments', that is
-they are there to be included in other menus. This can be done using the
-'@item &amp;' node with the name of the fragment to be included as the body text of
-the node.
+Other names are not special. Menus with these names are 'fragments', that is
+they are not meant to be full menus (although they could be used as such) but
+are there to be included in other menus.
+
+These fragments can be included in other menus by using ('&amp;','&lt;name&gt;') tuples in
+a menu list or an '@item &amp;' node with the name of the fragment to be included as
+the body text of the node.
 
 Widgets may be given a context_menu attribute, eg
 
-    w.context_menu = 'my special menu'
+    w.context_menu = 'my special menu' | [&lt;menu list&gt;]
 
 in which case the menu table in c.context_menus['my special menu'] will be used
-as the popup.
+as the popup if a string is provided, or if a list is provided that list will
+be used as the menu table.  So each widget can have an individual menu.
 
-Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises a
-'bodyrclick1' hook, such as c.frame.OnBodyRClick.
 
+Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises either
+a 'bodyrclick1' hook, such as c.frame.OnBodyRClick or a 'rclick-popup' hook.
+
+Any keyword arguments included in the doHook call will be passed to generator
+callbacks and invocation callbacks.
     
 Menu tables in c.context_menus are live, they can be manipulated by scripts and
-the changes will show up immediately.  See @button experiments.
-
+the changes will show up immediately.  See 'experiments'.
 
 Changes to a fragment that is included in other menus will likewise show up
 immediately in all those menus.
-
 
 
 To get a right click menu for a widget use::
@@ -227,20 +258,23 @@ To get a right click menu for a widget use::
 Make sure the event has passed through the master rclick handler before using the hook.</t>
 <t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
 
-def cb( x=None):
 
-    def testMenuCallback(c, event, x=x):
-
-        if x is None:
-            x = event.rc_label
-        g.es('%s in %s' %(x,c.widget_name(event.widget)), color='blue')
-
-    return testMenuCallback
 
 
 
 </t>
-<t tx="bobjack.20080330095006.2">c.context_menus['log'] = [
+<t tx="bobjack.20080330095006.2">def cb( x=None):
+
+    def testMenuCallback(c, keywords, x=x):
+
+        event = keywords.get('event')
+        if x is None:
+            x = keywords.get('rc_label')
+        g.es('%s in %s' %(x,c.widget_name(event.widget)), color='blue')
+
+    return testMenuCallback
+
+c.context_menus['log'] = [
 
     ('11', cb()),
     ('12', cb('12')),
@@ -254,7 +288,8 @@ def cb( x=None):
     ('|', None),    
     ('&amp;', 'edit-menu'),
 ]
-g.es('replaced log menu', color='blue')</t>
+g.es('replaced log menu', color='blue')
+</t>
 <t tx="bobjack.20080330095006.3">"""This change will be reflected in all menus that use the 'edit-menu'
 fragment. Check before and after in the log and find and change text boxes. """
 

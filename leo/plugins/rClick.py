@@ -73,17 +73,20 @@ For widgets to use the rClick context menu system it needs to use::
 
     g.doHook('rclick-popup', c=c, event=event, context_menu='<a menu name>', <any other key=value pairs> ...)
 
-context_menu is optional but provides the name of a menu to be used if an explicit menu
-has not been set with::
+context_menu is optional but provides the name of a menu to be used if an
+explicit menu has not been set with::
 
     widget.context_menu = <name> | <list>
+
+Any number of keyword pairs can be included and all these will be passed to any
+generator or invocation callbacks used in the menu.
 
 
 The right click menu to be used is determined in one of three ways.
 
     The explicitly set context_menu property:
 
-        If widget.context_menu exist it is used allways.
+        If widget.context_menu exists it is always used.
 
     The context_menu supplied the doHook call if any.   
 
@@ -199,11 +202,14 @@ label.
         If `cmd` is not a list or string it is assumed to be a function or other
         callable object and on invocation the object will be called as::
 
-            cmd(c, event)
+            cmd(keywords)
 
-        where `event` is the right click event that we are responding to.
+        where `keywords` is a dictionary that contains data supplied by the
+        right click event that we are responding to.
 
-        event.rc_label will be set to the value of `txt`
+        `keywords` will contain at least 'c' and 'event'
+
+        keywords.rc_label will be set to the value of `txt`
 
 
 Generating context sensitive items dynamically
@@ -224,11 +230,11 @@ if `txt` is '*':
 
         Handlers for minibuffer commands will find all the data they need in::
 
-            c.theContextMenuController.mb_event
+            c.theContextMenuController.mb_keywords
 
         and should place there returnvalue in
 
-            c.theContextMenuController.mb_event
+            c.theContextMenuController.mb_retval
 
         otherwise the handlers should be the same as if the function reference
         had been placed directly in the table.
@@ -238,26 +244,27 @@ if `txt` is '*':
 
         the function is called as ::
 
-            cmd(c, event)
+            cmd(keywords)
 
         where
 
-            :c: is the commander of the widget that received the event.
+            :keywords['c']: is the commander of the widget that received the event.
 
-            :event: is the event object produced by the right click.
+            :keywords['event']: is the event object produced by the right click.
 
-            :event.widget: is the widget that received the event.
+            :keywords['event'].widget: is the widget that received the event.
 
-            :event.rc_rmenu: is the physical tkMenu containing the items constructed so far.
+            :keywords['rc_rmenu']: is the physical tkMenu containing the items constructed so far.
 
-            :event.rc_menu_table: is the list of tuples representing items not yet constructed.
+            :keywords['rc_menu_table']: is the list of tuples representing items not yet constructed.
 
         `cmd` may either manipulate the physical tkMenu directly or add (txt, cmd)
-        tuples to the front of (or anywhere else in) event.rc_menu_table. See the code in
+        tuples to the front of (or anywhere else in) keywords.rc_menu_table. See the code in
         rClick.py for an example.
 
         An example of how to do this is provided by the
-        rclick-gen-context-sensitive-commands minibuffer command described later.
+        rclick-gen-context-sensitive-commands minibuffer command described
+        later.
 
 
 Including other menus and fragments.
@@ -413,8 +420,13 @@ rclick menu tables and @popup trees.
 # - fixed problems with tree binding
 # - extended menus to cover canvas, headline, iconbox, plusbox
 # - introduced 'rclick-popup' hook.
+# 0.21 bobjack:
+# - converted api so that all data is passed around in the keywords object
+#   originally provided by 'rclick-popup' or 'bodyrclick1' hooks.
+# 
+#   this should be the last api change as this allows complete flexibility,
+#   and future enhancements can be made without changing the api.
 #@-at
-#@nonl
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
 #@<< todo >>
@@ -448,7 +460,7 @@ import copy
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "0.20"
+__version__ = "0.21"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -505,16 +517,15 @@ def rClicker(tag, keywords):
     if not c or not c.exists or not event:
         return
 
-    #if widget does not have an explicit context_menu set then
-    # set it to the default value if one is supplied.
+    # If widget does not have already have an explicit context_menu set,
+    # then set it to the default value if one is supplied.
 
     context_menu = keywords.get('context_menu')
-    g.trace(context_menu)
+    #g.trace(context_menu)
     if context_menu and not hasattr(event, 'context_menu'):
         event.widget.context_menu = context_menu
 
     return c.theContextMenuController.rClicker(keywords)
-
 #@-node:ekr.20080327061021.220:rClicker
 #@-node:ekr.20080327061021.229:Event handler
 #@-node:ekr.20060108122501:Module-level
@@ -655,29 +666,27 @@ class ContextMenuController(object):
 
         """Minibuffer command wrapper."""
 
-        self.mb_retval = self.gen_recent_files_list(self.mb_event)
+        self.mb_retval = self.gen_recent_files_list(self.mb_keywords)
     #@nonl
     #@+node:bobjack.20080325162505.4:gen_recent_files_list
-    def gen_recent_files_list(self, event):
+    def gen_recent_files_list(self, keywords):
 
         """Generate menu items that will open files from the recent files list.
 
-        event: the event object obtain from the right click.
-
-        event.widget: the widget in which the right click was detected.
-
-        event.rc_rmenu: the gui menu that has been genereated from previous items
-
-        event.rc_menu_table: the list of menu items that have yet to be
+        keywords['event']: the event object obtain from the right click.
+        keywords['event'].widget: the widget in which the right click was detected.
+        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
 
         """
 
         c = self.c
+        event = keywords.get('event')
         widget = event.widget
-        rmenu = event.rc_rmenu
-        commandList = event.rc_menu_table
+        rmenu = keywords.get('rc_rmenu')
+        menu_table = keywords.get('rc_menu_table')
 
         lst = []
         for name in c.recentFiles[:]:
@@ -688,7 +697,8 @@ class ContextMenuController(object):
             label = "%s" % (g.computeWindowTitle(name),)
             lst.append((label, recentFilesCallback))
 
-        commandList[:0] = lst
+        # Must change menu table in situ.
+        menu_table[:0] = lst
 
     #@-node:bobjack.20080325162505.4:gen_recent_files_list
     #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
@@ -698,21 +708,23 @@ class ContextMenuController(object):
         """Minibuffer command wrapper."""
 
 
-        self.mb_retval = self.gen_context_sensitive_commands(self.mb_event)
+        self.mb_retval = self.gen_context_sensitive_commands(self.mb_keywords)
 
 
     #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
-    def gen_context_sensitive_commands(self, event):
+    def gen_context_sensitive_commands(self, keywords):
 
         """Generate context-sensitive rclick items.
 
-        event: the event provided by the original right click.
-        event.widget: the widget on which the right click occured
-        event.rc_rmenu: the menu or submenu that is currently being built
-        event.rc_menu_table: the list of menu items waiting to be built.
+        keywords['event']: the event object obtain from the right click.
+        keywords['event'].widget: the widget in which the right click was detected.
+        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_menu_table']: the list of menu items that have yet to be
+            converted into gui menu items. It may be manipulated or extended at will
+            or even replaced entirely.
 
-        On right-click get the selected text, or the whole line containing cursor if
-        no selection. Scan this text for certain regexp patterns. For each occurrence
+        On right-click get the selected text, or the whole line containing cursor, from the
+        currently selected body. Scan this text for certain regexp patterns. For each occurrence
         of a pattern add a command, which name and action depend on the text
         matched.
 
@@ -724,9 +736,10 @@ class ContextMenuController(object):
         """
 
         c = self.c
+        event = keywords.get('event')
         widget = event.widget
-        rmenu = event.rc_rmenu
-        commandList = event.rc_menu_table
+        rmenu = keywords.get('rc_rmenu')
+        menu_table = keywords.get('rc_menu_table')
 
         contextCommands = []
 
@@ -742,7 +755,8 @@ class ContextMenuController(object):
             contextCommands += self.get_help(word)
 
         if contextCommands:
-            commandList += [("-",None)] + contextCommands
+            # Must change table is situ. 
+            menu_table += [("-",None)] + contextCommands
     #@+node:bobjack.20080322043011.13:get_urls
     def get_urls(self, text):
 
@@ -964,14 +978,19 @@ class ContextMenuController(object):
 
     def rClicker(self, keywords):
 
-        """Construct and display a popup context menu in response to the `bodyrclick1` and `rclick-popup` hooks."""
+        """Construct and display a popup context menu.
+
+        This method responds to the `bodyrclick1` and `rclick-popup` hooks.
+
+        It must only be called from the module level rClicker dispatcher which
+        makes sure we only get clicks from our own commander.
+
+        """
 
         c = self.c
         k = c.k 
 
         event = keywords.get('event')
-        if not event:
-            return
 
         widget = event.widget
         if not widget:
@@ -1002,7 +1021,7 @@ class ContextMenuController(object):
 
             key = widget.context_menu
             if isinstance(key, list):
-                top_menu_table = widget_context_menu
+                top_menu_table = widget_context_menu[:]
             elif isinstance(key, basestring):
                 top_menu_table = c.context_menus.get(key, [])[:]
 
@@ -1036,17 +1055,26 @@ class ContextMenuController(object):
                 txt, cmd = menu_table.pop(0)
                 #g.trace(txt, cmd)
 
-
-                event.rc_rmenu = rmenu
-                event.rc_menu_table = menu_table
+                keywords['rc_rmenu'] = rmenu
+                keywords['rc_menu_table'] = menu_table
 
                 if txt == '*':
                     #@            << call a menu generator >>
                     #@+node:bobjack.20080329153415.7:<< call a menu generator >>
+                    #@+at
+                    # All the data for the minibuffer command generator 
+                    # handler is in::
+                    # 
+                    #     c.theContextMenuController.mb_keywords
+                    # 
+                    # The handler should place any return data in 
+                    # self.mb_retval
+                    #@-at
+                    #@@c
 
                     if isinstance(cmd, basestring):
 
-                        self.mb_event = event
+                        self.mb_keywords = keywords
                         self.mb_retval = None
 
                         #g.trace(cmd)
@@ -1061,7 +1089,7 @@ class ContextMenuController(object):
                             self.mb_event = None
 
                     elif cmd:
-                        self.mb_retval = cmd(event)
+                        self.mb_retval = cmd(keywords)
                     #@-node:bobjack.20080329153415.7:<< call a menu generator >>
                     #@nl
                     continue
@@ -1096,8 +1124,23 @@ class ContextMenuController(object):
                     if isinstance(cmd, basestring):
                         #@    << minibuffer command item >>
                         #@+node:bobjack.20080329153415.11:<< minibuffer command item >>
-                        cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
-                        rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rc_columnbreak)
+                        def invokeMinibufferMenuCommand(c=c, event=event, txt=txt, cmd=cmd):
+                            """Prepare for and execute a minibuffer command in response to a menu item being selected.
+
+                            All the data for the minibuffer command handler is in::
+
+                                c.theContextMenuController.mb_keywords 
+
+                            The handler should place any return data in self.mb_retval
+
+                            """
+                            self.retval = None
+                            keywords['rc_lable'] = txt
+                            c.executeMinibufferCommand(cmd)
+
+
+                        rmenu.add_command(label=txt, command=invokeMinibufferMenuCommand, columnbreak=rmenu.rc_columnbreak)
+
                         #@-node:bobjack.20080329153415.11:<< minibuffer command item >>
                         #@nl
 
@@ -1107,7 +1150,8 @@ class ContextMenuController(object):
                         submenu = table_to_menu(cmd[:], level+1)
                         if submenu:
                             rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
-                        continue # to avoid reseting columnbreak
+                        else:
+                            continue # to avoid reseting columnbreak
                         #@nonl
                         #@-node:bobjack.20080329153415.12:<< cascade item >>
                         #@nl
@@ -1115,15 +1159,16 @@ class ContextMenuController(object):
                     else:
                         #@    << function command item >>
                         #@+node:bobjack.20080329153415.13:<< function command item >>
-                        def invokeMenuCallback(c=c, event=event, cmd=cmd, label=txt):
+                        def invokeMenuCallback(c=c, event=event, txt=txt, cmd=cmd):
+                            """Prepare for and execute a function in response to a menu item being selected.
 
-                            event.rc_label = label
-                            return cmd(c, event)
+                            """
+                            keywords['rc_label'] = txt
+                            self.retval = cmd(c, keywords)
 
-                        rmenu.add_command(label=txt,
-                            command=invokeMenuCallback,
-                            columnbreak=rmenu.rc_columnbreak
-                        )
+
+                        rmenu.add_command(label=txt, command=invokeMenuCallback, columnbreak=rmenu.rc_columnbreak)
+
                         #@-node:bobjack.20080329153415.13:<< function command item >>
                         #@nl
                     #@-node:bobjack.20080329153415.10:<< add a named item >>
@@ -1148,7 +1193,7 @@ class ContextMenuController(object):
     #@-node:bobjack.20080329153415.14:Event Handler
     #@+node:bobjack.20080321133958.8:Invocation Callbacks
     #@+node:ekr.20040422072343.3:rc_nl
-    def rc_nl(self, event):
+    def rc_nl(self, keywords):
 
         """Insert a newline at the current curser position of selected body editor."""
 
@@ -1162,10 +1207,11 @@ class ContextMenuController(object):
             c.frame.body.onBodyChanged("Typing")
     #@-node:ekr.20040422072343.3:rc_nl
     #@+node:ekr.20040422072343.4:rc_selectAll
-    def rc_selectAll(self, event):
+    def rc_selectAll(self, keywords):
 
         """Select the entire contents of the text widget."""
 
+        event = keywords.get('event')
         w = event.widget
 
         insert = w.getInsertPoint()
@@ -1174,22 +1220,25 @@ class ContextMenuController(object):
 
     #@-node:ekr.20040422072343.4:rc_selectAll
     #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
-    def rc_OnCutFromMenu(self, event):
+    def rc_OnCutFromMenu(self, keywords):
 
         """Cut text from currently focused text widget."""
 
+        event = keywords.get('event')
         self.c.frame.OnCutFromMenu(event)
     #@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
     #@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-    def rc_OnCopyFromMenu(self, event):
+    def rc_OnCopyFromMenu(self, keywords):
         """Copy text from currently focused text widget."""
 
+        event = keywords.get('event')
         self.c.frame.OnCopyFromMenu(event)
     #@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
     #@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-    def rc_OnPasteFromMenu(self, event):
+    def rc_OnPasteFromMenu(self, keywords):
         """Paste text into currently focused text widget."""
 
+        event = keywords.get('event')
         self.c.frame.OnPasteFromMenu(event)
     #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
     #@-node:bobjack.20080321133958.8:Invocation Callbacks
