@@ -3083,6 +3083,34 @@ print 'tested all numbers <',i
 #@-node:square problem
 #@-node:Fun...
 #@+node:Important
+#@+node:create-at-auto-nodes
+# A script to create @auto nodes from all .py files in a directory.
+
+import glob,os
+
+reallyCreate = False
+
+baseDir = r'c:\Python25\Lib\distutils'
+
+dirs = ('','command',) # '' represents the base dir.
+print '-' * 40
+
+c.beginUpdate()
+try:
+    for theDir in dirs:
+        pattern = g.os_path_join(baseDir,theDir,'*.py')
+        files = glob.glob(pattern)
+        print ; print 'pattern:', pattern ; print
+        # print g.listToString(files)
+        for name in files:
+            h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+            print 'creating',h
+            if reallyCreate:
+                child = p.insertAsLastChild()
+                child.initHeadString(h)
+finally:
+    c.endUpdate()
+#@-node:create-at-auto-nodes
 #@+node:@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
