@@ -1660,9 +1660,15 @@ class leoTkinterTree (leoFrame.leoTree):
     def onPlusBoxRightClick(self, event, p=None):
         #g.trace()
         self._block_canvas_menu = True
+
+        if not p: p = self.eventToPosition(event)
+        if not p: return
+
+        self.OnActivateHeadline(p)
+        self.endEditLabel()
+
         g.doHook('rclick-popup', c=self.c, p=p, event=event, context_menu='plusbox')
         return 'break'
-    #@nonl
     #@-node:bobjack.20080401090801.4:onPlusBoxRightClick
     #@-node:ekr.20040803072955.78:Click Box...
     #@+node:ekr.20040803072955.99:Dragging (tkTree)
