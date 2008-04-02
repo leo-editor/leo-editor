@@ -32,9 +32,9 @@ following:
     - headline (c.context_menus['headlines']) (empty)
     - iconbox (c.context_menus['iconbox']) (empty)
     - plusbox (c.context_menus['plusbox']) (empty)
-    - canvas (c.context_menus['plusbox']) (empty)
+    - canvas (c.context_menus['canvas']) (empty)
 
-    ( if the headline or iconbox is empty, the standard leo popupmenu will be used,
+    ( if the headline or iconbox list is empty, the standard leo popupmenu will be used,
     for other items an empty list will simply not produce a popup at all.)
 
 and also the following fragments:
@@ -577,11 +577,11 @@ class ContextMenuController(object):
 
         #c.frame.log.logCtrl.bind('<Button-3>', rClickbinderCallback)
 
-        h = c.searchCommands.findTabHandler
-        if not h: return
+        # h = c.searchCommands.findTabHandler
+        # if not h: return
 
-        for w in (h.find_ctrl, h.change_ctrl):
-            w.bind('<Button-3>', rClickbinderCallback)
+        # for w in (h.find_ctrl, h.change_ctrl):
+            # w.bind('<Button-3>', rClickbinderCallback)
 
 
     #@-node:ekr.20080327061021.217:rClickbinder

@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.332404828227">
-	<global_window_position top="90" left="363" height="766" width="1077"/>
+<globals body_outline_ratio="0.512037037037">
+	<global_window_position top="10" left="154" height="781" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -14,17 +14,18 @@
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
-<v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
-<v t="bobjack.20080330095006.2" a="V" annotate="7d71002855046e6f64657101550466696c6571025502626771035500710455087072696f72697479710555013471065502666771076804550870726f677265737371086804550961726368657479706571096804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Replacing the log menu</vh></v>
+<v t="bobjack.20080329075629.4"><vh>Experiments</vh>
+<v t="bobjack.20080330095006.2" annotate="7d71002855046e6f64657101550466696c6571025502626771035500710455087072696f72697479710555013471065502666771076804550870726f677265737371086804550961726368657479706571096804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Replacing the log menu</vh></v>
 <v t="bobjack.20080330095006.3" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455013471055502666771066802550870726f677265737371076802550961726368657479706571086802752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
-<v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
+<v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080324164314.1"><vh>@settings</vh>
+<v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
+<v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  </vh></v>
 <v t="bobjack.20080329054053.1" a="E"><vh>provide a fragment for use in other menus</vh>
-<v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
+<v t="bobjack.20080329053100.1" a="E"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
 <v t="bobjack.20080326150321.8"><vh>@item *change</vh></v>
@@ -44,7 +45,7 @@
 <v t="bobjack.20080326150321.3"><vh>@item 3</vh></v>
 <v t="bobjack.20080326150321.4"><vh>@item 4</vh></v>
 </v>
-<v t="bobjack.20080329051459.4" a="E"><vh>column three</vh>
+<v t="bobjack.20080329051459.4"><vh>column three</vh>
 <v t="bobjack.20080329052834.1"><vh>@item |</vh></v>
 <v t="bobjack.20080329053100.2"><vh>@item &amp;</vh></v>
 </v>
@@ -76,7 +77,7 @@
 </v>
 </v>
 <v t="bobjack.20080329062304.14"><vh>... the find-text entry</vh>
-<v t="bobjack.20080329062304.1"><vh>@popup find-text</vh>
+<v t="bobjack.20080401213500.1"><vh>@popup find-change-fragment</vh>
 <v t="bobjack.20080329062304.2"><vh>column one</vh>
 <v t="bobjack.20080329062304.3"><vh>@item &amp;</vh></v>
 </v>
@@ -85,25 +86,37 @@
 <v t="bobjack.20080329062304.12"><vh>@item &amp;</vh></v>
 </v>
 </v>
+<v t="bobjack.20080329062304.1"><vh>@popup find-text</vh>
+<v t="bobjack.20080401213339.1"><vh>@item find-text-menu</vh></v>
+<v t="bobjack.20080401213339.2"><vh>@item -</vh></v>
+<v t="bobjack.20080401213500.2"><vh>@item &amp;</vh></v>
+</v>
 </v>
 <v t="bobjack.20080329062304.15"><vh>... the change-text entry</vh>
 <v t="bobjack.20080329062956.1"><vh>@popup change-text</vh>
+<v t="bobjack.20080401213023.1"><vh>@item change-text-menu</vh></v>
+<v t="bobjack.20080401213339.3"><vh>@item -</vh></v>
 <v t="bobjack.20080329062304.16"><vh>@item &amp;</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.2" a="E"><vh>... the tree canvas</vh>
-<v t="bobjack.20080401113850.2" a="E"><vh>@popup canvas</vh>
+<v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
+<v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
 <v t="bobjack.20080401113850.3"><vh>@item canvas menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143954.2" a="E"><vh>... the plus box</vh>
-<v t="bobjack.20080401143954.3" a="E"><vh>@popup plusbox</vh>
+<v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
+<v t="bobjack.20080401143954.3"><vh>@popup plusbox</vh>
 <v t="bobjack.20080401143954.4"><vh>@item plus box menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.3"><vh>... headlines</vh>
+<v t="bobjack.20080401143613.3" a="ETV"><vh>... headlines</vh>
 <v t="bobjack.20080401143613.4"><vh>@popup headline</vh>
 <v t="bobjack.20080401143613.5"><vh>@item headline menu</vh></v>
+</v>
+</v>
+<v t="bobjack.20080401214039.1" a="E"><vh>... the icon box</vh>
+<v t="bobjack.20080401214039.2" a="E"><vh>@popup iconbox</vh>
+<v t="bobjack.20080401214039.3"><vh>@item iconbox menu</vh></v>
 </v>
 </v>
 </v>
@@ -161,7 +174,7 @@ in other menus.</t>
 <t tx="bobjack.20080329062304.13"></t>
 <t tx="bobjack.20080329062304.14"></t>
 <t tx="bobjack.20080329062304.15">Set this to use the same menu as the find-text entry</t>
-<t tx="bobjack.20080329062304.16">find-text</t>
+<t tx="bobjack.20080329062304.16">find-change-fragment</t>
 <t tx="bobjack.20080329062956.1"></t>
 <t tx="bobjack.20080329063457.1">from pprint import pformat
 
@@ -175,43 +188,19 @@ g.es_print(pformat(c.context_menus))</t>
     http://localhost/
     
 Select all the text above then right click.</t>
-<t tx="bobjack.20080329070612.2">Hello,why dont you right click on
+<t tx="bobjack.20080329070612.2">@
+Hello,why don't you right click on
 
 leoGlobals
 
 then click on 'Help on: leoGlobals'</t>
-<t tx="bobjack.20080329070612.3">Place the cursor in the url below, then right click.
+<t tx="bobjack.20080329070612.3">@
+Place the cursor in the url below, then right click.
 
     http://code.launchpad.net/leo-editor/
     
     http://localhost/</t>
-<t tx="bobjack.20080329075629.2">Leo Log Window...
-Leo 4.4.8 beta 3, build  1.244 , March 28, 2008
-python 2.5.1, Tk 8.4.14, Pmw 1.3
-Windows 6, 0, 6000, 2, 
-
-leoID= bobjack  (in  C:\Leo\mod_rclick\leo\config )
-global config dir: C:\Leo\mod_rclick\leo\config
-home dir: None
-reading settings in C:\Leo\mod_rclick\leo\config\leoSettings.leo
-reading settings in C:\Leo\mod_rclick\leo\config\myLeoSettings.leo
-reading settings in C:\Leo\mod_rclick\leo\test\testAtPopup.leo
-reading: C:\Leo\mod_rclick\leo\test\testAtPopup.leo
-local @command show-menu-tables
-Leo Log Window...
-Leo 4.4.8 beta 3, build  1.244 , March 28, 2008
-python 2.5.1, Tk 8.4.14, Pmw 1.3
-Windows 6, 0, 6000, 2, 
-
-leoID= bobjack  (in  C:\Leo\mod_rclick\leo\config )
-global config dir: C:\Leo\mod_rclick\leo\config
-home dir: None
-reading settings in C:\Leo\mod_rclick\leo\config\leoSettings.leo
-reading settings in C:\Leo\mod_rclick\leo\config\myLeoSettings.leo
-reading settings in C:\Leo\mod_rclick\leo\test\testAtPopup.leo
-reading: C:\Leo\mod_rclick\leo\test\testAtPopup.leo
-local @command show-menu-tables
-</t>
+<t tx="bobjack.20080329075629.2"></t>
 <t tx="bobjack.20080329075629.3">@popup &lt;name&gt; menus are converted to a list of tuples and stored in::
     
      c.context_menus[&lt;name&gt;]
@@ -255,7 +244,8 @@ To get a right click menu for a widget use::
     g.doHook('rclick-popup', c=c, event=event, context_menu='&lt;default menu name&gt;', &lt;any key=value pairs...&gt;)
 
 
-Make sure the event has passed through the master rclick handler before using the hook.</t>
+Make sure the event has passed through the master rclick handler before using the hook.
+</t>
 <t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
 
 
@@ -300,11 +290,53 @@ g.es('removed select-all from ALL edit-menus', color='blue')</t>
 <t tx="bobjack.20080401113850.3"></t>
 <t tx="bobjack.20080401143613.2"></t>
 <t tx="bobjack.20080401143613.3"></t>
-<t tx="bobjack.20080401143613.4">Remvoe the '@item headline menu' node to restore the standard
-tree popup menu</t>
+<t tx="bobjack.20080401143613.4">@
+Remove the '@item headline menu' node to leave an '@popup headline' node with no childeren to restore the standard tree popup menu.
+ 
+Alternativly, setting
+
+    c.context_menus['headline'] = []
+    
+will also restore the leo standard popup menu. Highlight the code above and execute it to see the effect.</t>
 <t tx="bobjack.20080401143613.5"></t>
 <t tx="bobjack.20080401143954.2"></t>
 <t tx="bobjack.20080401143954.3"></t>
 <t tx="bobjack.20080401143954.4"></t>
+<t tx="bobjack.20080401213023.1"></t>
+<t tx="bobjack.20080401213339.1"></t>
+<t tx="bobjack.20080401213339.2"></t>
+<t tx="bobjack.20080401213339.3"></t>
+<t tx="bobjack.20080401213500.1"></t>
+<t tx="bobjack.20080401213500.2">find-change-fragment</t>
+<t tx="bobjack.20080401214039.1"></t>
+<t tx="bobjack.20080401214039.2">@
+Icon box menus will be disabled by cleo or other plugind using the same hook.
+
+Remove the '@item iconbox menu' node to leave an '@popup iconbox' node with no childeren to restore the standard tree popup menu.
+ 
+Alternativly, setting
+
+    c.context_menus['iconbox'] = []
+    
+will also restore the leo standard popup menu. Highlight the code above and execute it to see the effect.</t>
+<t tx="bobjack.20080401214039.3"></t>
+<t tx="bobjack.20080402071100.2">@
+This setting determines where the output of rclick's "Help on: ...""
+menu item goes.
+
+The setting can contain a list of words which may include 'print', 'log', 'browser' or 'all'.
+
+if 'log' appears in the list, output will go to the log pane.
+if 'print' appears in the list, output will be sent to standard out.
+
+if 'browser' appears in the list then a browser will be launched and the output will be displayed as a web page.
+
+If 'all' appears in the list, output will go to all these destinations
+regardless of what else is in the list.
+
+Example::
+    
+    @string rclick-show-help = print log
+    </t>
 </tnodes>
 </leo_file>
