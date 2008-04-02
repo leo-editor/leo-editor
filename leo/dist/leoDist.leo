@@ -16,6 +16,8 @@
 </v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 <v t="ekr.20051015172713"><vh>@button Save</vh></v>
+<v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
+<v t="ekr.20080401093229.1"><vh>@button setup-sdist</vh></v>
 </v>
 <v t="ekr.20070622084133"><vh>Unused</vh>
 <v t="ekr.20070622075820"><vh>@@button Create Leo-4.x.zip</vh>
@@ -35,7 +37,7 @@
 </v>
 <v t="EKR.20040519091259"><vh>Annoucnements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
-<v t="EKR.20040519091259.2" a="E"><vh>Quotes of the month</vh>
+<v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
 <v t="ekr.20070101093904"><vh>January 2007</vh></v>
 <v t="ekr.20060823090437"><vh>August 2006</vh></v>
@@ -232,8 +234,7 @@
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20070614165755"><vh>@button create-leo-zip</vh></v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -251,7 +252,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="ekr.20080313080205.1"><vh>&lt;&lt; copy files to trunk folder &gt;&gt;</vh></v>
 <v t="ekr.20080313080205.2"><vh>&lt;&lt; delete files from trunk folder &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20070614105133.3" a="ETV" tnodeList="ekr.20070614105133.3,ekr.20070614110334"><vh>@nosent ../../setup.py</vh>
+<v t="ekr.20070614105133.3"><vh>@@nosent ../../setup.py (Do not use distutils!)</vh>
 <v t="ekr.20070614110334"><vh>&lt;&lt; define long_description &gt;&gt;</vh></v>
 </v>
 <v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
@@ -259,9 +260,9 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20051205102401"><vh>Update these for each release</vh>
+<v t="ekr.20051205102401" a="EV"><vh>Update these (and others) for each release</vh>
 <v t="ekr.20050118092706.4" a="M"><vh>&lt;&lt; Settings for leo-4.3.nsi &gt;&gt;</vh></v>
-<v t="ekr.20050118124408" a="M"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
+<v t="ekr.20050118124408" a="MT"><vh>&lt;&lt; 4.3 nsi installer version &gt;&gt;</vh></v>
 <v t="ekr.20080313073613.3"><vh>&lt;&lt; define version number in createLeoDistribution.py &gt;&gt;</vh></v>
 </v>
 </vnodes>
@@ -440,7 +441,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.4.8-beta-3
+Version: 4.4.8-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -2282,7 +2283,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-beta-3.exe"
+OutFile "LeoSetup-4-4-8-final.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -2562,7 +2563,7 @@ Delete "$INSTDIR\test\test.leo"
 Delete "$INSTDIR\test\unitTest.leo"
 Delete "$INSTDIR\test\leoBridgeTest.py"
 </t>
-<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-beta-3"</t>
+<t tx="ekr.20050118124408">!define PRODUCT_VERSION "4.4.8-final"</t>
 <t tx="ekr.20050124083006">Leo 4.3 alpha 1 is now available at http://sourceforge.net/projects/leo/
 
 Leo 4.3 is the culmination of more than four months of work. In spite
@@ -3522,7 +3523,8 @@ Coming in later releases of Leo 4.4:
 
 - Support for Vim and other 'plain-key' input modes.</t>
 <t tx="ekr.20051205102401">@nocolor
-</t>
+
+# Latest suffix:  -final</t>
 <t tx="ekr.20051208095832">File "..\modes\*.xml"
 File "..\modes\*.py"</t>
 <t tx="ekr.20051208100413"></t>
@@ -4399,18 +4401,22 @@ CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20070614105133.3">@color
 
+# **** Use setuptools, **not** distutils.
+
 # Must be an @nosent file.
+
+# Do not run this with Leo's execute-script command:
+# sys.argv will not be correct!
+# Instead, use @button setup-sdist.
 
 from distutils.core import setup
 from pdb import set_trace as pdb # pdb() will drop into the debugger.
-
-pdb()
 
 &lt;&lt; define long_description &gt;&gt;
 
 setup (
     name='leo',
-    version='4.4.8-beta-3-test', # No spaces and no trailing comma., # No spaces and no trailing comma.
+    version='4.4.8-final', # No spaces and no trailing comma., # No spaces and no trailing comma.
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://webpages.charter.net/edreamleo/front.html',
@@ -4422,7 +4428,8 @@ setup (
     long_description = long_description,
 )
 
-print ; print 'setup.py done'</t>
+print ; print 'setup.py done'
+</t>
 <t tx="ekr.20070614110334">long_description = \
 """Leo is an IDE, an outliner, a scripting and unit testing framework based on Python,
 a literate programming tool, a data organizer and a project manager.
@@ -5277,10 +5284,15 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080305100429.1"></t>
 <t tx="ekr.20080313073613.1">@color
 
+# Do not run this with Leo's execute-script command:
+# sys.argv will not be correct!
+# Instead, use @button create-leo-zip.
+
 # This is the script used to create official Leo distributions.
 # It should *not* be used to install Leo.
 
 import os
+from pdb import set_trace as pdb # pdb() will drop into the debugger.
 
 print '=' * 30
 
@@ -5317,7 +5329,7 @@ Python 2.2.1 or above and the Tk Tk 8.4 or above.
 Download Python from http://python.org/
 Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 """</t>
-<t tx="ekr.20080313073613.3">version='4.4.8-beta-3' # No spaces and no trailing comma.</t>
+<t tx="ekr.20080313073613.3">version='4.4.8-final' # No spaces and no trailing comma.</t>
 <t tx="ekr.20080313080205.1">def copy (fromPath,toPath,fileName):
     f = file(os.path.abspath(os.path.join(fromPath,fileName)))
     s = f.read()
@@ -5407,5 +5419,22 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080328075132.2"></t>
+<t tx="ekr.20080401093229.1">import os,sys
+
+loadDir = g.app.loadDir
+distDir = g.os_path_abspath(g.os_path_join(loadDir,'..','dist'))
+trunkDir = g.os_path_abspath(g.os_path_join(loadDir,'..','..'))
+
+os.chdir(trunkDir)
+
+script = 'setup.py'
+
+command = '%s %s sdist --force-manifest --formats=zip --dist-dir=%s' % (
+    sys.executable,script,distDir)
+
+print command
+
+os.system(command)
+</t>
 </tnodes>
 </leo_file>

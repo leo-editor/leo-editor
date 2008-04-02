@@ -124,7 +124,7 @@
 </v>
 <v t="ekr.20080401090200.11"><vh>@@auto build_py.py</vh>
 <v t="ekr.20080401090728.77"><vh>build_py declarations</vh></v>
-<v t="ekr.20080401090728.78"><vh>class build_py</vh>
+<v t="ekr.20080401090728.78" a="E"><vh>class build_py</vh>
 <v t="ekr.20080401090728.79"><vh>initialize_options</vh></v>
 <v t="ekr.20080401090728.80"><vh>finalize_options</vh></v>
 <v t="ekr.20080401090728.81"><vh>run</vh></v>
@@ -189,7 +189,7 @@
 </v>
 <v t="ekr.20080401090200.15"><vh>@@auto install.py</vh>
 <v t="ekr.20080401090728.130"><vh>install declarations</vh></v>
-<v t="ekr.20080401090728.131" a="E"><vh>class install</vh>
+<v t="ekr.20080401090728.131"><vh>class install</vh>
 <v t="ekr.20080401090728.132"><vh>initialize_options</vh></v>
 <v t="ekr.20080401090728.133"><vh>finalize_options</vh></v>
 <v t="ekr.20080401090728.134"><vh>dump_dirs</vh></v>
@@ -790,7 +790,13 @@
 <v t="ekr.20080401090728.521"><vh>__init__ declarations</vh></v>
 </v>
 </v>
-<v t="ekr.20080401090728.522" a="ETV"><vh>Important files</vh>
+<v t="ekr.20080401090728.522" a="E"><vh>Important files</vh>
+<v t="ekr.20080401090200.30"><vh>@@auto core.py</vh>
+<v t="ekr.20080401090728.268"><vh>core declarations</vh></v>
+<v t="ekr.20080401090728.269"><vh>gen_usage</vh></v>
+<v t="ekr.20080401090728.270"><vh>setup</vh></v>
+<v t="ekr.20080401090728.271"><vh>run_setup</vh></v>
+</v>
 <v t="ekr.20080401090200.29"><vh>@@auto cmd.py</vh>
 <v t="ekr.20080401090728.231"><vh>cmd declarations</vh></v>
 <v t="ekr.20080401090728.232"><vh>class Command</vh>
@@ -832,9 +838,28 @@
 <v t="ekr.20080401090728.267"><vh>get_outputs</vh></v>
 </v>
 </v>
+<v t="ekr.20080401090200.22"><vh>@@auto sdist.py</vh>
+<v t="ekr.20080401090728.194"><vh>sdist declarations</vh></v>
+<v t="ekr.20080401090728.195"><vh>show_formats</vh></v>
+<v t="ekr.20080401090728.196"><vh>class sdist (Command)</vh>
+<v t="ekr.20080401090728.197"><vh>initialize_options</vh></v>
+<v t="ekr.20080401090728.198"><vh>finalize_options</vh></v>
+<v t="ekr.20080401090728.199"><vh>run</vh></v>
+<v t="ekr.20080401090728.200"><vh>check_metadata</vh></v>
+<v t="ekr.20080401090728.201"><vh>get_file_list</vh></v>
+<v t="ekr.20080401090728.202"><vh>add_defaults</vh></v>
+<v t="ekr.20080401090728.203"><vh>read_template</vh></v>
+<v t="ekr.20080401090728.204"><vh>prune_file_list</vh></v>
+<v t="ekr.20080401090728.205"><vh>write_manifest</vh></v>
+<v t="ekr.20080401090728.206"><vh>read_manifest</vh></v>
+<v t="ekr.20080401090728.207"><vh>make_release_tree</vh></v>
+<v t="ekr.20080401090728.208"><vh>make_distribution</vh></v>
+<v t="ekr.20080401090728.209"><vh>get_archive_files</vh></v>
+</v>
+</v>
 <v t="ekr.20080401090200.15"><vh>@@auto install.py</vh>
 <v t="ekr.20080401090728.130"><vh>install declarations</vh></v>
-<v t="ekr.20080401090728.131" a="E"><vh>class install</vh>
+<v t="ekr.20080401090728.131"><vh>class install</vh>
 <v t="ekr.20080401090728.132"><vh>initialize_options</vh></v>
 <v t="ekr.20080401090728.133"><vh>finalize_options</vh></v>
 <v t="ekr.20080401090728.134"><vh>dump_dirs</vh></v>
@@ -857,23 +882,28 @@
 <v t="ekr.20080401090728.151"><vh>has_data</vh></v>
 </v>
 </v>
-<v t="ekr.20080401090200.22"><vh>@@auto sdist.py</vh>
-<v t="ekr.20080401090728.194"><vh>sdist declarations</vh></v>
-<v t="ekr.20080401090728.195"><vh>show_formats</vh></v>
-<v t="ekr.20080401090728.196"><vh>class sdist (Command)</vh>
-<v t="ekr.20080401090728.197"><vh>initialize_options</vh></v>
-<v t="ekr.20080401090728.198"><vh>finalize_options</vh></v>
-<v t="ekr.20080401090728.199"><vh>run</vh></v>
-<v t="ekr.20080401090728.200"><vh>check_metadata</vh></v>
-<v t="ekr.20080401090728.201"><vh>get_file_list</vh></v>
-<v t="ekr.20080401090728.202"><vh>add_defaults</vh></v>
-<v t="ekr.20080401090728.203"><vh>read_template</vh></v>
-<v t="ekr.20080401090728.204"><vh>prune_file_list</vh></v>
-<v t="ekr.20080401090728.205"><vh>write_manifest</vh></v>
-<v t="ekr.20080401090728.206"><vh>read_manifest</vh></v>
-<v t="ekr.20080401090728.207"><vh>make_release_tree</vh></v>
-<v t="ekr.20080401090728.208"><vh>make_distribution</vh></v>
-<v t="ekr.20080401090728.209"><vh>get_archive_files</vh></v>
+<v t="ekr.20080401090200.11" a="E"><vh>@@auto build_py.py</vh>
+<v t="ekr.20080401090728.77"><vh>build_py declarations</vh></v>
+<v t="ekr.20080401090728.78" a="E"><vh>class build_py</vh>
+<v t="ekr.20080401090728.79"><vh>initialize_options</vh></v>
+<v t="ekr.20080401090728.80"><vh>finalize_options</vh></v>
+<v t="ekr.20080401090728.81" a="T"><vh>run</vh></v>
+<v t="ekr.20080401090728.82"><vh>get_data_files</vh></v>
+<v t="ekr.20080401090728.83"><vh>find_data_files</vh></v>
+<v t="ekr.20080401090728.84"><vh>build_package_data</vh></v>
+<v t="ekr.20080401090728.85"><vh>get_package_dir</vh></v>
+<v t="ekr.20080401090728.86" a="V"><vh>check_package</vh></v>
+<v t="ekr.20080401090728.87"><vh>check_module</vh></v>
+<v t="ekr.20080401090728.88"><vh>find_package_modules</vh></v>
+<v t="ekr.20080401090728.89"><vh>find_modules</vh></v>
+<v t="ekr.20080401090728.90"><vh>find_all_modules</vh></v>
+<v t="ekr.20080401090728.91"><vh>get_source_files</vh></v>
+<v t="ekr.20080401090728.92"><vh>get_module_outfile</vh></v>
+<v t="ekr.20080401090728.93"><vh>get_outputs</vh></v>
+<v t="ekr.20080401090728.94"><vh>build_module</vh></v>
+<v t="ekr.20080401090728.95"><vh>build_modules</vh></v>
+<v t="ekr.20080401090728.96"><vh>build_packages</vh></v>
+<v t="ekr.20080401090728.97"><vh>byte_compile</vh></v>
 </v>
 </v>
 </v>
