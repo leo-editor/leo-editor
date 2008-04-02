@@ -1,8 +1,13 @@
 
+# Do not run this with Leo's execute-script command:
+# sys.argv will not be correct!
+# Instead, use @button create-leo-zip.
+
 # This is the script used to create official Leo distributions.
 # It should *not* be used to install Leo.
 
 import os
+from pdb import set_trace as pdb # pdb() will drop into the debugger.
 
 print '=' * 30
 
@@ -18,7 +23,7 @@ Python 2.2.1 or above and the Tk Tk 8.4 or above.
 Download Python from http://python.org/
 Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
 """
-version='4.4.8-beta-3' # No spaces and no trailing comma.
+version='4.4.8-final' # No spaces and no trailing comma.
 def copy (fromPath,toPath,fileName):
     f = file(os.path.abspath(os.path.join(fromPath,fileName)))
     s = f.read()

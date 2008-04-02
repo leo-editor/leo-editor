@@ -11,3 +11,7 @@ leo/src/Komodo.leo
 leo/dist/*.zip
 leo/dist/*.exe
 leo/test/dynamicUnitTest.leo
+leo/test/clean
+leo/test/clean/*.*
+dist/*.*
+dist

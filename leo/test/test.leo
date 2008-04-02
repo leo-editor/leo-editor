@@ -620,7 +620,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940" a="TV" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -785,7 +785,7 @@
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20071105085941" a="TV"><vh>Tests</vh>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 <v t="ekr.20071027111751"><vh>@test javaScript import</vh>
 <v t="ekr.20071027111751.1"><vh>functions</vh></v>
@@ -910,7 +910,6 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080325141304.1"><vh>@@thin read-only-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -22185,7 +22184,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
-<t tx="ekr.20080325141304.1"># read-only-test.txt</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

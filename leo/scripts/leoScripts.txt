@@ -3083,6 +3083,34 @@ print 'tested all numbers <',i
 #@-node:square problem
 #@-node:Fun...
 #@+node:Important
+#@+node:create-at-auto-nodes
+# A script to create @auto nodes from all .py files in a directory.
+
+import glob,os
+
+reallyCreate = False
+
+baseDir = r'c:\Python25\Lib\distutils'
+
+dirs = ('','command',) # '' represents the base dir.
+print '-' * 40
+
+c.beginUpdate()
+try:
+    for theDir in dirs:
+        pattern = g.os_path_join(baseDir,theDir,'*.py')
+        files = glob.glob(pattern)
+        print ; print 'pattern:', pattern ; print
+        # print g.listToString(files)
+        for name in files:
+            h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+            print 'creating',h
+            if reallyCreate:
+                child = p.insertAsLastChild()
+                child.initHeadString(h)
+finally:
+    c.endUpdate()
+#@-node:create-at-auto-nodes
 #@+node:@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
@@ -13346,6 +13374,60 @@ line 3
 #@-node:after sel=2.0,2.0
 #@-node:@test kill-line
 #@-node:Scripts that make unit tests
+#@+node:Write cleaned files to 'clean' directory
+# Writes all derived files in the outline to 'clean' directories.
+# For example, writes test/foo.py to test/clean/foo.py.
+
+@others
+
+for p in c.allNodes_iter():
+    if p.isAnyAtFileNode():
+        clean_file(p)
+
+#@+node:clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.t.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:clean_file
+#@-node:Write cleaned files to 'clean' directory
 #@+node:zodb get/put scripts
 #@+node:@@button zodb-get-tree
 name = c.config.getString('zodb_storage_file')

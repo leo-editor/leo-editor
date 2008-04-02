@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="98" left="371" height="729" width="865"/>
+	<global_window_position top="10" left="248" height="967" width="865"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -14,27 +14,92 @@
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
 <v t="ekr.20080121122039"><vh>@button remove license</vh></v>
-<v t="ekr.20080121143612"><vh>Komodo test script</vh>
-<v t="ekr.20080121151821.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080121142959.1"><vh>addKomodoPaths</vh></v>
-<v t="ekr.20080121150435"><vh>openManager</vh></v>
-<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
-</v>
-<v t="ekr.20080121105837" a="E"><vh>Komodo autocompleter code</vh>
-<v t="ekr.20080121152156" a="TV"><vh>Diary</vh></v>
-<v t="ekr.20080121105837.1"><vh>Komodo notes</vh>
+<v t="ekr.20080121105837"><vh>Notes</vh>
+<v t="ekr.20080121152156"><vh>Diary</vh></v>
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
+<v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057" a="E"><vh>Important doc nodes</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
 <v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
 <v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20080330201829.1"><vh>Usage</vh>
+<v t="ekr.20080330201829.3"><vh>1. Getting info for a particular buffer</vh>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
+<v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
+<v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
+<v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121105837.1814"><vh>update_buf_data</vh></v>
+</v>
+</v>
+<v t="ekr.20080330201829.4"><vh>2. Working with a blob (a.k.a. module) given a list of libs</vh>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
+<v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
+<v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
+<v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
+</v>
+<v t="ekr.20080330201829.5"><vh>lib methods</vh>
+<v t="ekr.20080121121842.33"><vh>class LangDirsLib</vh>
+<v t="ekr.20080121121842.34"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
+<v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
+<v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
+<v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
+<v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
+</v>
+<v t="ekr.20080121121842.21"><vh>class CatalogLib</vh>
+<v t="ekr.20080121121842.22"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
+<v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.143"><vh>class StdLib</vh>
+<v t="ekr.20080121121842.144"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20080121105837.3"><vh>Komodo code</vh>
 <v t="ekr.20080121105837.4"><vh>license</vh></v>
-<v t="ekr.20080121105837.1815"><vh>lib/sdk</vh>
+<v t="ekr.20080121105837.1815"><vh>lib/sdk directory (contains command-line programs)</vh>
 <v t="ekr.20080121105837.1816"><vh>sdk/bin</vh>
 <v t="ekr.20080121105837.1817"><vh>codeintel.py</vh>
 <v t="ekr.20080121105837.1818"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -624,10 +689,282 @@
 </v>
 </v>
 <v t="ekr.20080121105837.7"><vh>lib/mozilla/python/komodo/codeintel2</vh>
-<v t="ekr.20080121105837.1855"><vh>codeintel2/stdlibs/*.cix</vh>
+<v t="ekr.20080330093404.1"><vh>catelogs directory (contains only .cix files)</vh></v>
+<v t="ekr.20080121105837.1855"><vh>stdlibs directory (contains only .cix files)</vh>
 <v t="ekr.20080121123437"><vh>pywin32.cix (TRUNCATED)</vh></v>
 </v>
-<v t="ekr.20080121105837.8"><vh>codeintel2</vh>
+<v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
+<v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
+<v t="ekr.20080121121728.9"><vh> __init__.py (database)</vh></v>
+<v t="ekr.20080121121728.1"><vh>database/catalog.py</vh>
+<v t="ekr.20080121121842"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121121842.1"><vh>class CatalogsZone</vh>
+<v t="ekr.20080121121842.2"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.3"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.4"><vh>_selection_from_selector</vh></v>
+<v t="ekr.20080121121842.5"><vh>_res_ids_from_selections</vh></v>
+<v t="ekr.20080121121842.6"><vh>get_lib</vh></v>
+<v t="ekr.20080121121842.7"><vh>res_index</vh></v>
+<v t="ekr.20080121121842.8"><vh>blob_index</vh></v>
+<v t="ekr.20080121121842.9"><vh>toplevelname_index</vh></v>
+<v t="ekr.20080121121842.10"><vh>toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.11"><vh>save</vh></v>
+<v t="ekr.20080121121842.12"><vh>cull_mem</vh></v>
+<v t="ekr.20080121121842.13"><vh>avail_catalogs</vh></v>
+<v t="ekr.20080121121842.14"><vh>update</vh></v>
+<v t="ekr.20080121121842.15"><vh>_new_res_id</vh></v>
+<v t="ekr.20080121121842.16"><vh>_remove_res</vh></v>
+<v t="ekr.20080121121842.17"><vh>_add_res</vh></v>
+<v t="ekr.20080121121842.18"><vh>res_id_from_lang_and_blobname</vh></v>
+<v t="ekr.20080121121842.19"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.20"><vh>lpaths_from_lang_and_blobname</vh></v>
+</v>
+<v t="ekr.20080121121842.21"><vh>class CatalogLib</vh>
+<v t="ekr.20080121121842.22"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
+<v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.31"><vh>_elem_from_scoperef</vh></v>
+</v>
+<v t="ekr.20080121105837.1769"><vh>database/database.py</vh>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121105837.1771"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1772"><vh>&lt;&lt; version stuff &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
+<v t="ekr.20080121105837.1774"><vh>__del__</vh></v>
+<v t="ekr.20080121105837.1775"><vh>Locks</vh>
+<v t="ekr.20080121105837.1776"><vh>acquire_lock</vh></v>
+<v t="ekr.20080121105837.1777"><vh>release_lock</vh></v>
+</v>
+<v t="ekr.20080121105837.1778"><vh>version</vh></v>
+<v t="ekr.20080121105837.1779"><vh>upgrade_info</vh></v>
+<v t="ekr.20080121105837.1780"><vh>create</vh></v>
+<v t="ekr.20080121105837.1781"><vh>reset</vh></v>
+<v t="ekr.20080121105837.1782"><vh>upgrade &amp; helpers</vh>
+<v t="ekr.20080121105837.1783"><vh>_upgrade_wipe_db</vh></v>
+<v t="ekr.20080121105837.1784"><vh>_upgrade_wipe_db_catalogs</vh></v>
+<v t="ekr.20080121105837.1785"><vh>_upgrade_wipe_db_langzones</vh></v>
+<v t="ekr.20080121105837.1786"><vh>_upgrade_wipe_db_langs</vh></v>
+</v>
+<v t="ekr.20080121105837.1787"><vh>report_event</vh></v>
+<v t="ekr.20080121105837.1788"><vh>save</vh></v>
+<v t="ekr.20080121105837.1789"><vh>cull_mem</vh></v>
+<v t="ekr.20080121105837.1790"><vh>_gen_langs_in_db</vh></v>
+<v t="ekr.20080121105837.1791"><vh>check &amp; helpers</vh>
+<v t="ekr.20080121105837.1792"><vh>_check_catalogszone</vh></v>
+<v t="ekr.20080121105837.1793"><vh>_check_proj_dir</vh></v>
+<v t="ekr.20080121105837.1794"><vh>_check_langzone</vh></v>
+<v t="ekr.20080121105837.1795"><vh>_check_multilangzone</vh></v>
+</v>
+<v t="ekr.20080121105837.1796"><vh>corruption</vh></v>
+<v t="ekr.20080121105837.1797"><vh>get_catalogs_zone</vh></v>
+<v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
+<v t="ekr.20080121105837.1799"><vh>get_stdlibs_zone</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
+<v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
+<v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
+<v t="ekr.20080121105837.1803"><vh>get_proj_zone</vh></v>
+<v t="ekr.20080121105837.1804"><vh>get_proj_lib</vh></v>
+<v t="ekr.20080121105837.1805"><vh>load_blob</vh></v>
+<v t="ekr.20080121105837.1806"><vh>load_pickle</vh></v>
+<v t="ekr.20080121105837.1807"><vh>save_pickle</vh></v>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
+<v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
+<v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
+<v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121105837.1814"><vh>update_buf_data</vh></v>
+</v>
+</v>
+<v t="ekr.20080121121728.3"><vh>database/langlib.py</vh>
+<v t="ekr.20080121121842.32"><vh>langlib declarations</vh></v>
+<v t="ekr.20080121121842.33"><vh>class LangDirsLib</vh>
+<v t="ekr.20080121121842.34"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
+<v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
+<v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
+<v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
+<v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
+</v>
+<v t="ekr.20080121121842.47"><vh>class LangTopLevelNameIndex</vh>
+<v t="ekr.20080121121842.48"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.49"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.50"><vh>merge</vh></v>
+<v t="ekr.20080121121842.51"><vh>merge_expired</vh></v>
+<v t="ekr.20080121121842.52"><vh>data</vh></v>
+<v t="ekr.20080121121842.53"><vh>update</vh></v>
+<v t="ekr.20080121121842.54"><vh>remove</vh></v>
+<v t="ekr.20080121121842.55"><vh>_pivot_res_data</vh></v>
+<v t="ekr.20080121121842.56"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.57"><vh>get_blobnames</vh></v>
+</v>
+<v t="ekr.20080121121842.58"><vh>class LangZone</vh>
+<v t="ekr.20080121121842.59"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.60"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.61"><vh>__del__</vh></v>
+<v t="ekr.20080121121842.62"><vh>_acquire_lock</vh></v>
+<v t="ekr.20080121121842.63"><vh>_release_lock</vh></v>
+<v t="ekr.20080121121842.64"><vh>_check_lang</vh></v>
+<v t="ekr.20080121121842.65"><vh>dhash_from_dir</vh></v>
+<v t="ekr.20080121121842.66"><vh>dfb_from_dir</vh></v>
+<v t="ekr.20080121121842.67"><vh>get_buf_scan_time</vh></v>
+<v t="ekr.20080121121842.68"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121121842.69"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121121842.70"><vh>update_buf_data</vh></v>
+<v t="ekr.20080121121842.71"><vh>_mk_zone_skel</vh></v>
+<v t="ekr.20080121121842.72"><vh>_mk_dbdir</vh></v>
+<v t="ekr.20080121121842.73"><vh>load_blob</vh></v>
+<v t="ekr.20080121121842.74"><vh>load_index</vh></v>
+<v t="ekr.20080121121842.75"><vh>changed_index</vh></v>
+<v t="ekr.20080121121842.76"><vh>save_index</vh></v>
+<v t="ekr.20080121121842.77"><vh>save</vh></v>
+<v t="ekr.20080121121842.78"><vh>cull_mem</vh></v>
+<v t="ekr.20080121121842.79"><vh>get_lib</vh></v>
+</v>
+</v>
+<v t="ekr.20080121121728.4"><vh>database/multilanglib.py</vh>
+<v t="ekr.20080121121842.80"><vh>multilanglib declarations</vh></v>
+<v t="ekr.20080121121842.81"><vh>class MultiLangTopLevelNameIndex</vh>
+<v t="ekr.20080121121842.82"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.83"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.84"><vh>merge</vh></v>
+<v t="ekr.20080121121842.85"><vh>merge_expired</vh></v>
+<v t="ekr.20080121121842.86"><vh>data</vh></v>
+<v t="ekr.20080121121842.87"><vh>update</vh></v>
+<v t="ekr.20080121121842.88"><vh>remove</vh></v>
+<v t="ekr.20080121121842.89"><vh>_pivot_res_data</vh></v>
+<v t="ekr.20080121121842.90"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.91"><vh>get_blobnames</vh></v>
+</v>
+<v t="ekr.20080121121842.92"><vh>class MultiLangZone</vh>
+<v t="ekr.20080121121842.93"><vh>get_lib</vh></v>
+<v t="ekr.20080121121842.94"><vh>dfb_from_dir</vh></v>
+<v t="ekr.20080121121842.95"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121121842.96"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121121842.97"><vh>update_buf_data</vh></v>
+</v>
+<v t="ekr.20080121121842.98"><vh>class MultiLangDirsLib</vh>
+<v t="ekr.20080121121842.99"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.100"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.101"><vh>_acquire_lock</vh></v>
+<v t="ekr.20080121121842.102"><vh>_release_lock</vh></v>
+<v t="ekr.20080121121842.103"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.104"><vh>has_blob_in_db</vh></v>
+<v t="ekr.20080121121842.105"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.106"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.107"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.108"><vh>ensure_dir_scanned</vh></v>
+<v t="ekr.20080121121842.109"><vh>_importables_from_dir</vh></v>
+<v t="ekr.20080121121842.110"><vh>_dbsubpath_from_blobname</vh></v>
+</v>
+</v>
+<v t="ekr.20080121121728.5"><vh>database/projlib.py</vh>
+<v t="ekr.20080121121842.111"><vh>projlib declarations</vh></v>
+<v t="ekr.20080121121842.112"><vh>class ProjectZone</vh>
+<v t="ekr.20080121121842.113"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.114"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.115"><vh>__del__</vh></v>
+<v t="ekr.20080121121842.116"><vh>get_dirs_from_basename</vh></v>
+<v t="ekr.20080121121842.117"><vh>set_dirs_from_basename</vh></v>
+<v t="ekr.20080121121842.118"><vh>_mk_dbdir</vh></v>
+<v t="ekr.20080121121842.119"><vh>save</vh></v>
+<v t="ekr.20080121121842.120"><vh>update</vh></v>
+<v t="ekr.20080121121842.121"><vh>_likely_filename_from_lang_and_blobname</vh></v>
+<v t="ekr.20080121121842.122"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.123"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.124"><vh>_lang_lib_for_blob</vh></v>
+<v t="ekr.20080121121842.125"><vh>get_lib</vh></v>
+</v>
+<v t="ekr.20080121121842.126"><vh>class ProjectLib</vh>
+<v t="ekr.20080121121842.127"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.128"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.129"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.130"><vh>get_blob</vh></v>
+</v>
+</v>
+<v t="ekr.20080121121728.6"><vh>database/resource.py</vh>
+<v t="ekr.20080121121842.131"><vh>resource declarations</vh></v>
+<v t="ekr.20080121121842.132"><vh>class Resource</vh>
+<v t="ekr.20080121121842.133"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.134"><vh>canon_path</vh></v>
+</v>
+<v t="ekr.20080121121842.135"><vh>class AreaResource</vh>
+<v t="ekr.20080121121842.136"><vh>area_and_subpath_from_path</vh></v>
+<v t="ekr.20080121121842.137"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.138"><vh>__str__</vh></v>
+<v t="ekr.20080121121842.139"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.140"><vh>area_path</vh></v>
+<v t="ekr.20080121121842.141"><vh>path</vh></v>
+</v>
+</v>
+<v t="ekr.20080121121728.7"><vh>database/stdlib.py</vh>
+<v t="ekr.20080121121842.142"><vh>stdlib declarations</vh></v>
+<v t="ekr.20080121121842.143"><vh>class StdLib</vh>
+<v t="ekr.20080121121842.144"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
+<v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
+<v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.155"><vh>class StdLibsZone</vh>
+<v t="ekr.20080121121842.156"><vh>__init__</vh></v>
+<v t="ekr.20080121121842.157"><vh>__del__</vh></v>
+<v t="ekr.20080121121842.158"><vh>vers_and_names_from_lang</vh></v>
+<v t="ekr.20080121121842.159"><vh>res_index</vh></v>
+<v t="ekr.20080121121842.160"><vh>save</vh></v>
+<v t="ekr.20080121121842.161"><vh>get_lib</vh></v>
+<v t="ekr.20080121121842.162"><vh>_get_preload_zip</vh></v>
+<v t="ekr.20080121121842.163"><vh>can_preload</vh></v>
+<v t="ekr.20080121121842.164"><vh>preload</vh></v>
+<v t="ekr.20080121121842.165"><vh>remove_lang</vh></v>
+<v t="ekr.20080121121842.166"><vh>update_lang</vh></v>
+<v t="ekr.20080121121842.167"><vh>_handle_res_todos</vh></v>
+<v t="ekr.20080121121842.168"><vh>_remove_res</vh></v>
+<v t="ekr.20080121121842.169"><vh>_add_res</vh></v>
+</v>
+<v t="ekr.20080121121842.170"><vh>_ver_from_ver_str</vh></v>
+</v>
+<v t="ekr.20080121121728.8"><vh>database/util.py</vh>
+<v t="ekr.20080121121842.171"><vh>util declarations</vh></v>
+<v t="ekr.20080121121842.172"><vh>filter_blobnames_for_prefix</vh></v>
+<v t="ekr.20080121121842.173"><vh>rmdir</vh></v>
+<v t="ekr.20080121121842.174"><vh>_rmtree_onerror</vh></v>
+<v t="ekr.20080121121842.175"><vh>__run_log</vh></v>
+<v t="ekr.20080121121842.176"><vh>run</vh></v>
+<v t="ekr.20080121121842.177"><vh>run_in_dir</vh></v>
+</v>
+</v>
 <v t="ekr.20080121105837.9"><vh>accessor.py</vh>
 <v t="ekr.20080121105837.10"><vh>accessor declarations</vh></v>
 <v t="ekr.20080121105837.11"><vh>class Accessor</vh>
@@ -706,7 +1043,7 @@
 </v>
 <v t="ekr.20080121105837.80"><vh>_test</vh></v>
 </v>
-<v t="ekr.20080121105837.81"><vh>buffer.py (error)</vh>
+<v t="ekr.20080121105837.81"><vh>buffer.py</vh>
 <v t="ekr.20080121105837.82"><vh>buffer declarations</vh></v>
 <v t="ekr.20080121105837.83"><vh>class Buffer</vh>
 <v t="ekr.20080121105837.84"><vh>__init__</vh></v>
@@ -716,9 +1053,9 @@
 <v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
 <v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
 <v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
-<v t="ekr.20080121105837.91"><vh>async_eval_at_trg</vh></v>
-<v t="ekr.20080121105837.92"><vh>cplns_from_trg</vh></v>
-<v t="ekr.20080121105837.93"><vh>calltips_from_trg</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
 <v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
 <v t="ekr.20080121105837.95"><vh>libs</vh></v>
 <v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
@@ -732,10 +1069,10 @@
 <v t="ekr.20080121105837.103"><vh>_htmlescape</vh></v>
 <v t="ekr.20080121105837.104"><vh>_doctest</vh></v>
 </v>
-<v t="ekr.20080121105837.105"><vh>citadel.py (Important)</vh>
+<v t="ekr.20080121105837.105"><vh>citadel.py</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.106"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.107"><vh>class CitadelBuffer</vh>
+<v t="ekr.20080121105837.107"><vh>class CitadelBuffer (Buffer)</vh>
 <v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.108"><vh>__init__</vh></v>
 <v t="ekr.20080121105837.109"><vh>acquire_lock</vh></v>
@@ -746,8 +1083,8 @@
 <v t="ekr.20080121105837.114"><vh>scan_time</vh></v>
 <v t="ekr.20080121105837.115"><vh>scan_error</vh></v>
 <v t="ekr.20080121105837.116"><vh>blob_from_lang</vh></v>
-<v t="ekr.20080121105837.117"><vh>tree</vh></v>
-<v t="ekr.20080121105837.118"><vh>cix</vh></v>
+<v t="ekr.20080121105837.117"><vh>tree (property)</vh></v>
+<v t="ekr.20080121105837.118"><vh>cix (property)</vh></v>
 <v t="ekr.20080121105837.119"><vh>scan</vh></v>
 <v t="ekr.20080121105837.120"><vh>scoperef_from_pos</vh></v>
 <v t="ekr.20080121105837.121"><vh>scoperef_from_blob_and_line</vh></v>
@@ -953,7 +1290,7 @@
 <v t="ekr.20080121105837.297"><vh>get_cix_string</vh></v>
 <v t="ekr.20080121105837.298"><vh>remove_cix_line_numbers_from_tree</vh></v>
 </v>
-<v t="ekr.20080121105837.299"><vh>indexer.py (underindented comments)</vh>
+<v t="ekr.20080121105837.299"><vh>indexer.py (threaded scans of files)</vh>
 <v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
 <v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
 <v t="ekr.20080121105837.302"><vh>_put</vh></v>
@@ -1209,7 +1546,7 @@
 </v>
 <v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
 <v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
-<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
 <v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
 <v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
 <v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
@@ -1220,9 +1557,9 @@
 <v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
 <v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
 </v>
-<v t="ekr.20080121105837.1406"><vh>class PythonBuffer</vh>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
 <v t="ekr.20080121105837.1407"><vh>libs</vh></v>
-<v t="ekr.20080121105837.1408"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
 <v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
 </v>
 <v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
@@ -2562,7 +2899,7 @@
 <v t="ekr.20080121105837.1715"><vh>scan</vh></v>
 </v>
 </v>
-<v t="ekr.20080121105837.1716"><vh>tree.py (Important)</vh>
+<v t="ekr.20080121105837.1716"><vh>tree.py</vh>
 <v t="ekr.20080121105837.1717"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1718"><vh>tree_2_0_from_tree_0_1</vh></v>
 <v t="ekr.20080121105837.1719"><vh>tree_from_cix_path</vh></v>
@@ -2619,9 +2956,12 @@
 </v>
 <v t="ekr.20080121105837.1767"><vh>__init__.py (codeintel2)</vh></v>
 </v>
-<v t="ekr.20080121105837.1768"><vh>codeintel2/database</vh>
+</v>
+</v>
+<v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
+<v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
 <v t="ekr.20080121121728.9"><vh> __init__.py (database)</vh></v>
-<v t="ekr.20080121121728.1"><vh>catalog.py</vh>
+<v t="ekr.20080121121728.1"><vh>database/catalog.py</vh>
 <v t="ekr.20080121121842"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121121842.1"><vh>class CatalogsZone</vh>
 <v t="ekr.20080121121842.2"><vh>__init__</vh></v>
@@ -2648,20 +2988,27 @@
 <v t="ekr.20080121121842.22"><vh>__init__</vh></v>
 <v t="ekr.20080121121842.23"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.24"><vh>import_handler</vh></v>
-<v t="ekr.20080121121842.25"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.26"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.27"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.25" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.26" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.27" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.29" a="M"><vh>hits_from_lpath &amp; helper</vh>
 <v t="ekr.20080121121842.28"><vh>_blobnames_from_toplevelname</vh></v>
-<v t="ekr.20080121121842.29"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.30"><vh>toplevel_cplns</vh></v>
+</v>
+<v t="ekr.20080121121842.30" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.31"><vh>_elem_from_scoperef</vh></v>
 </v>
-<v t="ekr.20080121105837.1769"><vh>database.py (Important)</vh>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh></v>
+<v t="ekr.20080121105837.1769"><vh>database/database.py</vh>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
 <v t="ekr.20080121105837.1771"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1772"><vh>&lt;&lt; version stuff &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1773"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
 <v t="ekr.20080121105837.1774"><vh>__del__</vh></v>
 <v t="ekr.20080121105837.1775"><vh>Locks</vh>
 <v t="ekr.20080121105837.1776"><vh>acquire_lock</vh></v>
@@ -2691,38 +3038,42 @@
 <v t="ekr.20080121105837.1797"><vh>get_catalogs_zone</vh></v>
 <v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
 <v t="ekr.20080121105837.1799"><vh>get_stdlibs_zone</vh></v>
-<v t="ekr.20080121105837.1800"><vh>get_stdlib</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
 <v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
 <v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
 <v t="ekr.20080121105837.1803"><vh>get_proj_zone</vh></v>
 <v t="ekr.20080121105837.1804"><vh>get_proj_lib</vh></v>
 <v t="ekr.20080121105837.1805"><vh>load_blob</vh></v>
 <v t="ekr.20080121105837.1806"><vh>load_pickle</vh></v>
 <v t="ekr.20080121105837.1807"><vh>save_pickle</vh></v>
-<v t="ekr.20080121105837.1808"><vh>Convenience methods</vh>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
 <v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
 <v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
 <v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
 <v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
 <v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
 <v t="ekr.20080121105837.1814"><vh>update_buf_data</vh></v>
 </v>
 </v>
-<v t="ekr.20080121121728.3"><vh>langlib.py</vh>
+<v t="ekr.20080121121728.3"><vh>database/langlib.py</vh>
 <v t="ekr.20080121121842.32"><vh>langlib declarations</vh></v>
 <v t="ekr.20080121121842.33"><vh>class LangDirsLib</vh>
 <v t="ekr.20080121121842.34"><vh>__init__</vh></v>
 <v t="ekr.20080121121842.35"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.36"><vh>_acquire_lock</vh></v>
 <v t="ekr.20080121121842.37"><vh>_release_lock</vh></v>
-<v t="ekr.20080121121842.38"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.38" a="M"><vh>has_blob</vh></v>
 <v t="ekr.20080121121842.39"><vh>has_blob_in_db</vh></v>
-<v t="ekr.20080121121842.40"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.41"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.42"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.43"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.40" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.41" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.42" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.43" a="M"><vh>toplevel_cplns &amp; helpers</vh>
 <v t="ekr.20080121121842.44"><vh>ensure_dir_scanned</vh></v>
 <v t="ekr.20080121121842.45"><vh>_importables_from_dir</vh></v>
+</v>
 <v t="ekr.20080121121842.46"><vh>_dbsubpath_from_blobname</vh></v>
 </v>
 <v t="ekr.20080121121842.47"><vh>class LangTopLevelNameIndex</vh>
@@ -2761,7 +3112,7 @@
 <v t="ekr.20080121121842.79"><vh>get_lib</vh></v>
 </v>
 </v>
-<v t="ekr.20080121121728.4"><vh>multilanglib.py</vh>
+<v t="ekr.20080121121728.4"><vh>database/multilanglib.py</vh>
 <v t="ekr.20080121121842.80"><vh>multilanglib declarations</vh></v>
 <v t="ekr.20080121121842.81"><vh>class MultiLangTopLevelNameIndex</vh>
 <v t="ekr.20080121121842.82"><vh>__init__</vh></v>
@@ -2797,7 +3148,7 @@
 <v t="ekr.20080121121842.110"><vh>_dbsubpath_from_blobname</vh></v>
 </v>
 </v>
-<v t="ekr.20080121121728.5"><vh>projlib.py</vh>
+<v t="ekr.20080121121728.5"><vh>database/projlib.py</vh>
 <v t="ekr.20080121121842.111"><vh>projlib declarations</vh></v>
 <v t="ekr.20080121121842.112"><vh>class ProjectZone</vh>
 <v t="ekr.20080121121842.113"><vh>__init__</vh></v>
@@ -2821,7 +3172,7 @@
 <v t="ekr.20080121121842.130"><vh>get_blob</vh></v>
 </v>
 </v>
-<v t="ekr.20080121121728.6"><vh>resource.py</vh>
+<v t="ekr.20080121121728.6"><vh>database/resource.py</vh>
 <v t="ekr.20080121121842.131"><vh>resource declarations</vh></v>
 <v t="ekr.20080121121842.132"><vh>class Resource</vh>
 <v t="ekr.20080121121842.133"><vh>__init__</vh></v>
@@ -2836,20 +3187,20 @@
 <v t="ekr.20080121121842.141"><vh>path</vh></v>
 </v>
 </v>
-<v t="ekr.20080121121728.7"><vh>stdlib.py</vh>
+<v t="ekr.20080121121728.7"><vh>database/stdlib.py</vh>
 <v t="ekr.20080121121842.142"><vh>stdlib declarations</vh></v>
 <v t="ekr.20080121121842.143"><vh>class StdLib</vh>
 <v t="ekr.20080121121842.144"><vh>__init__</vh></v>
 <v t="ekr.20080121121842.145"><vh>__repr__</vh></v>
 <v t="ekr.20080121121842.146"><vh>import_handler</vh></v>
 <v t="ekr.20080121121842.147"><vh>blob_index</vh></v>
-<v t="ekr.20080121121842.148"><vh>toplevelname_index</vh></v>
-<v t="ekr.20080121121842.149"><vh>toplevelprefix_index</vh></v>
-<v t="ekr.20080121121842.150"><vh>has_blob</vh></v>
-<v t="ekr.20080121121842.151"><vh>get_blob</vh></v>
-<v t="ekr.20080121121842.152"><vh>get_blob_imports</vh></v>
-<v t="ekr.20080121121842.153"><vh>hits_from_lpath</vh></v>
-<v t="ekr.20080121121842.154"><vh>toplevel_cplns</vh></v>
+<v t="ekr.20080121121842.148"><vh>@property toplevelname_index</vh></v>
+<v t="ekr.20080121121842.149"><vh>@property toplevelprefix_index</vh></v>
+<v t="ekr.20080121121842.150" a="M"><vh>has_blob</vh></v>
+<v t="ekr.20080121121842.151" a="M"><vh>get_blob</vh></v>
+<v t="ekr.20080121121842.152" a="M"><vh>get_blob_imports</vh></v>
+<v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
+<v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
 </v>
 <v t="ekr.20080121121842.155"><vh>class StdLibsZone</vh>
 <v t="ekr.20080121121842.156"><vh>__init__</vh></v>
@@ -2869,7 +3220,7 @@
 </v>
 <v t="ekr.20080121121842.170"><vh>_ver_from_ver_str</vh></v>
 </v>
-<v t="ekr.20080121121728.8"><vh>util.py</vh>
+<v t="ekr.20080121121728.8"><vh>database/util.py</vh>
 <v t="ekr.20080121121842.171"><vh>util declarations</vh></v>
 <v t="ekr.20080121121842.172"><vh>filter_blobnames_for_prefix</vh></v>
 <v t="ekr.20080121121842.173"><vh>rmdir</vh></v>
@@ -2879,9 +3230,2409 @@
 <v t="ekr.20080121121842.177"><vh>run_in_dir</vh></v>
 </v>
 </v>
+<v t="ekr.20080121105837.9"><vh>accessor.py</vh>
+<v t="ekr.20080121105837.10"><vh>accessor declarations</vh></v>
+<v t="ekr.20080121105837.11"><vh>class Accessor</vh>
+<v t="ekr.20080121105837.12"><vh>char_at_pos</vh></v>
+<v t="ekr.20080121105837.13"><vh>style_at_pos</vh></v>
+<v t="ekr.20080121105837.14"><vh>line_and_col_at_pos</vh></v>
+<v t="ekr.20080121105837.15"><vh>gen_char_and_style_back</vh></v>
+<v t="ekr.20080121105837.16"><vh>gen_char_and_style</vh></v>
+<v t="ekr.20080121105837.17"><vh>match_at_pos</vh></v>
+<v t="ekr.20080121105837.18"><vh>line_from_pos</vh></v>
+<v t="ekr.20080121105837.19"><vh>line_start_pos_from_pos</vh></v>
+<v t="ekr.20080121105837.20"><vh>pos_from_line_and_col</vh></v>
+<v t="ekr.20080121105837.21"><vh>text</vh></v>
+<v t="ekr.20080121105837.22"><vh>text_range</vh></v>
+<v t="ekr.20080121105837.23"><vh>length</vh></v>
+<v t="ekr.20080121105837.24"><vh>gen_tokens</vh></v>
+<v t="ekr.20080121105837.25"><vh>contiguous_style_range_from_pos</vh></v>
+</v>
+<v t="ekr.20080121105837.26"><vh>class SilverCityAccessor</vh>
+<v t="ekr.20080121105837.27"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.28"><vh>reset_content</vh></v>
+<v t="ekr.20080121105837.29"><vh>tokens</vh></v>
+<v t="ekr.20080121105837.30"><vh>char_at_pos</vh></v>
+<v t="ekr.20080121105837.31"><vh>_token_at_pos</vh></v>
+<v t="ekr.20080121105837.32"><vh>style_at_pos</vh></v>
+<v t="ekr.20080121105837.33"><vh>line_and_col_at_pos</vh></v>
+<v t="ekr.20080121105837.34"><vh>gen_char_and_style_back</vh></v>
+<v t="ekr.20080121105837.35"><vh>gen_char_and_style</vh></v>
+<v t="ekr.20080121105837.36"><vh>match_at_pos</vh></v>
+<v t="ekr.20080121105837.37"><vh>line_from_pos</vh></v>
+<v t="ekr.20080121105837.38"><vh>line_start_pos_from_pos</vh></v>
+<v t="ekr.20080121105837.39"><vh>pos_from_line_and_col</vh></v>
+<v t="ekr.20080121105837.40"><vh>text</vh></v>
+<v t="ekr.20080121105837.41"><vh>text_range</vh></v>
+<v t="ekr.20080121105837.42"><vh>length</vh></v>
+<v t="ekr.20080121105837.43"><vh>gen_tokens</vh></v>
+<v t="ekr.20080121105837.44"><vh>contiguous_style_range_from_pos</vh></v>
+</v>
+<v t="ekr.20080121105837.45"><vh>class SciMozAccessor</vh>
+<v t="ekr.20080121105837.46"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.47"><vh>char_at_pos</vh></v>
+<v t="ekr.20080121105837.48"><vh>style_at_pos</vh></v>
+<v t="ekr.20080121105837.49"><vh>line_and_col_at_pos</vh></v>
+<v t="ekr.20080121105837.50"><vh>gen_char_and_style_back</vh></v>
+<v t="ekr.20080121105837.51"><vh>gen_char_and_style</vh></v>
+<v t="ekr.20080121105837.52"><vh>line_from_pos</vh></v>
+<v t="ekr.20080121105837.53"><vh>line_start_pos_from_pos</vh></v>
+<v t="ekr.20080121105837.54"><vh>pos_from_line_and_col</vh></v>
+<v t="ekr.20080121105837.55"><vh>text</vh></v>
+<v t="ekr.20080121105837.56"><vh>text_range</vh></v>
+<v t="ekr.20080121105837.57"><vh>length</vh></v>
+<v t="ekr.20080121105837.58"><vh>gen_tokens</vh></v>
+<v t="ekr.20080121105837.59"><vh>contiguous_style_range_from_pos</vh></v>
+</v>
+<v t="ekr.20080121105837.60"><vh>class KoDocumentAccessor</vh>
+<v t="ekr.20080121105837.61"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.62"><vh>_scimoz_proxy_from_scimoz</vh></v>
+<v t="ekr.20080121105837.63"><vh>scimoz</vh></v>
+</v>
+<v t="ekr.20080121105837.64"><vh>class AccessorCache</vh>
+<v t="ekr.20080121105837.65"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.66"><vh>_reset</vh></v>
+<v t="ekr.20080121105837.67"><vh>_extendCacheBackwards</vh></v>
+<v t="ekr.20080121105837.68"><vh>_extendCacheForwards</vh></v>
+<v t="ekr.20080121105837.69"><vh>dump</vh></v>
+<v t="ekr.20080121105837.70"><vh>setCacheFetchSize</vh></v>
+<v t="ekr.20080121105837.71"><vh>resetToPosition</vh></v>
+<v t="ekr.20080121105837.72"><vh>getCurrentPosCharStyle</vh></v>
+<v t="ekr.20080121105837.73"><vh>getPrevPosCharStyle</vh></v>
+<v t="ekr.20080121105837.74"><vh>getPrecedingPosCharStyle</vh></v>
+<v t="ekr.20080121105837.75"><vh>getTextBackWithStyle</vh></v>
+<v t="ekr.20080121105837.76"><vh>getNextPosCharStyle</vh></v>
+<v t="ekr.20080121105837.77"><vh>getSucceedingPosCharStyle</vh></v>
+<v t="ekr.20080121105837.78"><vh>getTextForwardWithStyle</vh></v>
+<v t="ekr.20080121105837.79"><vh>text_range</vh></v>
+</v>
+<v t="ekr.20080121105837.80"><vh>_test</vh></v>
+</v>
+<v t="ekr.20080121105837.81"><vh>buffer.py</vh>
+<v t="ekr.20080121105837.82"><vh>buffer declarations</vh></v>
+<v t="ekr.20080121105837.83"><vh>class Buffer</vh>
+<v t="ekr.20080121105837.84"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.85"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.86"><vh>env</vh></v>
+<v t="ekr.20080121105837.87"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
+<v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
+<v t="ekr.20080121105837.95"><vh>libs</vh></v>
+<v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
+<v t="ekr.20080121105837.97"><vh>_html_from_trg_error</vh></v>
+<v t="ekr.20080121105837.98"><vh>_html_from_trg</vh></v>
+<v t="ekr.20080121105837.99"><vh>style_names_from_style_num</vh></v>
+<v t="ekr.20080121105837.100"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.101"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.102"><vh>number_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.103"><vh>_htmlescape</vh></v>
+<v t="ekr.20080121105837.104"><vh>_doctest</vh></v>
+</v>
+<v t="ekr.20080121105837.105"><vh>citadel.py</vh>
+<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.106"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.107"><vh>class CitadelBuffer (Buffer)</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.108"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.109"><vh>acquire_lock</vh></v>
+<v t="ekr.20080121105837.110"><vh>release_lock</vh></v>
+<v t="ekr.20080121105837.111"><vh>_load_buf_data_once</vh></v>
+<v t="ekr.20080121105837.112"><vh>defn_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.113"><vh>defns_from_trg</vh></v>
+<v t="ekr.20080121105837.114"><vh>scan_time</vh></v>
+<v t="ekr.20080121105837.115"><vh>scan_error</vh></v>
+<v t="ekr.20080121105837.116"><vh>blob_from_lang</vh></v>
+<v t="ekr.20080121105837.117"><vh>tree (property)</vh></v>
+<v t="ekr.20080121105837.118"><vh>cix (property)</vh></v>
+<v t="ekr.20080121105837.119"><vh>scan</vh></v>
+<v t="ekr.20080121105837.120"><vh>scoperef_from_pos</vh></v>
+<v t="ekr.20080121105837.121"><vh>scoperef_from_blob_and_line</vh></v>
+<v t="ekr.20080121105837.122"><vh>load</vh></v>
+<v t="ekr.20080121105837.123"><vh>unload</vh></v>
+</v>
+<v t="ekr.20080121105837.124"><vh>class ImportHandler</vh>
+<v t="ekr.20080121105837.125"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.126"><vh>setCustomPath</vh></v>
+<v t="ekr.20080121105837.127"><vh>setEnvPath</vh></v>
+<v t="ekr.20080121105837.128"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.129"><vh>_getPath</vh></v>
+<v t="ekr.20080121105837.130"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.131"><vh>findSubImportsOnDisk</vh></v>
+<v t="ekr.20080121105837.132"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.133"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.134"><vh>find_importables_in_dir</vh></v>
+<v t="ekr.20080121105837.135"><vh>import_blob_name</vh></v>
+</v>
+<v t="ekr.20080121105837.136"><vh>class CitadelEvaluator</vh>
+<v t="ekr.20080121105837.137"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.138"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.139"><vh>post_process_cplns</vh></v>
+<v t="ekr.20080121105837.140"><vh>post_process_calltips</vh></v>
+<v t="ekr.20080121105837.141"><vh>post_process_defns</vh></v>
+<v t="ekr.20080121105837.142"><vh>request_reeval</vh></v>
+<v t="ekr.20080121105837.143"><vh>import_resolution_failure</vh></v>
+<v t="ekr.20080121105837.144"><vh>debug</vh></v>
+<v t="ekr.20080121105837.145"><vh>info</vh></v>
+<v t="ekr.20080121105837.146"><vh>warn</vh></v>
+<v t="ekr.20080121105837.147"><vh>error</vh></v>
+</v>
+<v t="ekr.20080121105837.148"><vh>class Citadel</vh>
+<v t="ekr.20080121105837.149"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.150"><vh>set_lang_info</vh></v>
+<v t="ekr.20080121105837.151"><vh>cile_driver_from_lang</vh></v>
+<v t="ekr.20080121105837.152"><vh>is_citadel_cpln_lang</vh></v>
+<v t="ekr.20080121105837.153"><vh>get_citadel_cpln_langs</vh></v>
+<v t="ekr.20080121105837.154"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.155"><vh>batch_update</vh></v>
+<v t="ekr.20080121105837.156"><vh>_batch_update_completed</vh></v>
+<v t="ekr.20080121105837.157"><vh>import_handler_from_lang</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.158"><vh>citadel_common.py</vh>
+<v t="ekr.20080121105837.159"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.160"><vh>class ScanRequest</vh>
+<v t="ekr.20080121105837.161"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.162"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.163"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.164"><vh>complete</vh></v>
+<v t="ekr.20080121105837.165"><vh>wait</vh></v>
+<v t="ekr.20080121105837.166"><vh>loadContent</vh></v>
+<v t="ekr.20080121105837.167"><vh>calculateMD5</vh></v>
+<v t="ekr.20080121105837.168"><vh>getCanonicalPath</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.169"><vh>common.py</vh>
+<v t="ekr.20080121105837.170"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.171"><vh>&lt;&lt; globals &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.172"><vh>Error classes</vh>
+<v t="ekr.20080121105837.173"><vh>class CodeIntelError</vh></v>
+<v t="ekr.20080121105837.174"><vh>class NotATriggerError</vh></v>
+<v t="ekr.20080121105837.175"><vh>class EvalError</vh></v>
+<v t="ekr.20080121105837.176"><vh>class EvalTimeout</vh></v>
+<v t="ekr.20080121105837.177"><vh>class VirtualMethodError</vh></v>
+<v t="ekr.20080121105837.178"><vh>class CitadelError</vh></v>
+<v t="ekr.20080121105837.179"><vh>class NoBufferAccessorError</vh></v>
+<v t="ekr.20080121105837.180"><vh>class CILEError</vh></v>
+<v t="ekr.20080121105837.181"><vh>class CIXError</vh></v>
+<v t="ekr.20080121105837.182"><vh>class CIDBError</vh></v>
+<v t="ekr.20080121105837.183"><vh>class DatabaseError</vh></v>
+<v t="ekr.20080121105837.184"><vh>class CorruptDatabase</vh></v>
+<v t="ekr.20080121105837.185"><vh>class NotFoundInDatabase</vh></v>
+<v t="ekr.20080121105837.186"><vh>class CITDLError</vh></v>
+<v t="ekr.20080121105837.187"><vh>class NoModuleEntry</vh>
+<v t="ekr.20080121105837.188"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.189"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.190"><vh>class NoCIDBModuleEntry</vh>
+<v t="ekr.20080121105837.191"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.192"><vh>__str__</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.193"><vh>Common base classes</vh>
+<v t="ekr.20080121105837.194"><vh>class Trigger</vh>
+<v t="ekr.20080121105837.195"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.196"><vh>id</vh></v>
+<v t="ekr.20080121105837.197"><vh>name</vh></v>
+<v t="ekr.20080121105837.198"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.199"><vh>is_same</vh></v>
+</v>
+<v t="ekr.20080121105837.200"><vh>class Definition</vh>
+<v t="ekr.20080121105837.201"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.202"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.203"><vh>class CILEDriver</vh>
+<v t="ekr.20080121105837.204"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.205"><vh>scan</vh></v>
+<v t="ekr.20080121105837.206"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.207"><vh>scan_multilang</vh></v>
+<v t="ekr.20080121105837.208"><vh>scan_csl_tokens</vh></v>
+</v>
+<v t="ekr.20080121105837.209"><vh>class EvalController</vh>
+<v t="ekr.20080121105837.210"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.211"><vh>start</vh></v>
+<v t="ekr.20080121105837.212"><vh>set_desc</vh></v>
+<v t="ekr.20080121105837.213"><vh>done</vh></v>
+<v t="ekr.20080121105837.214"><vh>is_done</vh></v>
+<v t="ekr.20080121105837.215"><vh>abort</vh></v>
+<v t="ekr.20080121105837.216"><vh>is_aborted</vh></v>
+<v t="ekr.20080121105837.217"><vh>wait</vh></v>
+<v t="ekr.20080121105837.218"><vh>debug</vh></v>
+<v t="ekr.20080121105837.219"><vh>info</vh></v>
+<v t="ekr.20080121105837.220"><vh>warn</vh></v>
+<v t="ekr.20080121105837.221"><vh>error</vh></v>
+<v t="ekr.20080121105837.222"><vh>set_cplns</vh></v>
+<v t="ekr.20080121105837.223"><vh>set_calltips</vh></v>
+<v t="ekr.20080121105837.224"><vh>set_defns</vh></v>
+</v>
+<v t="ekr.20080121105837.225"><vh>class LogEvalController</vh>
+<v t="ekr.20080121105837.226"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.227"><vh>debug</vh></v>
+<v t="ekr.20080121105837.228"><vh>info</vh></v>
+<v t="ekr.20080121105837.229"><vh>warn</vh></v>
+<v t="ekr.20080121105837.230"><vh>error</vh></v>
+</v>
+<v t="ekr.20080121105837.231"><vh>class Evaluator</vh>
+<v t="ekr.20080121105837.232"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.233"><vh>eval</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.234"><vh>Helper methods</vh>
+<v t="ekr.20080121105837.235"><vh>symbolType2Name</vh></v>
+<v t="ekr.20080121105837.236"><vh>xmlencode</vh></v>
+<v t="ekr.20080121105837.237"><vh>xmlattrstr</vh></v>
+<v t="ekr.20080121105837.238"><vh>isUnsavedPath</vh></v>
+<v t="ekr.20080121105837.239"><vh>canonicalizePath</vh></v>
+<v t="ekr.20080121105837.240"><vh>parseAttributes</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.241"><vh>constants_css.py</vh>
+<v t="ekr.20080121105837.242"><vh>constants_css declarations</vh></v>
+</v>
+<v t="ekr.20080121105837.243"><vh>environment.py</vh>
+<v t="ekr.20080121105837.244"><vh>environment declarations</vh></v>
+<v t="ekr.20080121105837.245"><vh>class Environment</vh>
+<v t="ekr.20080121105837.246"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.247"><vh>__del__</vh></v>
+<v t="ekr.20080121105837.248"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.249"><vh>has_envvar</vh></v>
+<v t="ekr.20080121105837.250"><vh>get_envvar</vh></v>
+<v t="ekr.20080121105837.251"><vh>get_all_envvars</vh></v>
+<v t="ekr.20080121105837.252"><vh>has_pref</vh></v>
+<v t="ekr.20080121105837.253"><vh>get_pref</vh></v>
+<v t="ekr.20080121105837.254"><vh>get_all_prefs</vh></v>
+<v t="ekr.20080121105837.255"><vh>add_pref_observer</vh></v>
+<v t="ekr.20080121105837.256"><vh>remove_pref_observer</vh></v>
+<v t="ekr.20080121105837.257"><vh>remove_all_pref_observers</vh></v>
+<v t="ekr.20080121105837.258"><vh>assoc_patterns_from_lang</vh></v>
+<v t="ekr.20080121105837.259"><vh>get_proj_base_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.260"><vh>class SimplePrefsEnvironment</vh>
+<v t="ekr.20080121105837.261"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.262"><vh>set_pref</vh></v>
+<v t="ekr.20080121105837.263"><vh>has_pref</vh></v>
+<v t="ekr.20080121105837.264"><vh>get_pref</vh></v>
+<v t="ekr.20080121105837.265"><vh>get_all_prefs</vh></v>
+<v t="ekr.20080121105837.266"><vh>add_pref_observer</vh></v>
+<v t="ekr.20080121105837.267"><vh>remove_pref_observer</vh></v>
+<v t="ekr.20080121105837.268"><vh>remove_all_pref_observers</vh></v>
+<v t="ekr.20080121105837.269"><vh>_notify_pref_observers</vh></v>
+</v>
+<v t="ekr.20080121105837.270"><vh>class DefaultEnvironment</vh>
+<v t="ekr.20080121105837.271"><vh>__init__</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.272"><vh>gencix_utils.py</vh>
+<v t="ekr.20080121105837.273"><vh>gencix_utils declarations</vh></v>
+<v t="ekr.20080121105837.274"><vh>standardizeJSType</vh></v>
+<v t="ekr.20080121105837.275"><vh>condenseSpaces</vh></v>
+<v t="ekr.20080121105837.276"><vh>remove_directory</vh></v>
+<v t="ekr.20080121105837.277"><vh>getText</vh></v>
+<v t="ekr.20080121105837.278"><vh>getAllTextFromSubElements</vh></v>
+<v t="ekr.20080121105837.279"><vh>setCixDoc</vh></v>
+<v t="ekr.20080121105837.280"><vh>setCixDocFromNodeChildren</vh></v>
+<v t="ekr.20080121105837.281"><vh>addCixArgument</vh></v>
+<v t="ekr.20080121105837.282"><vh>addCixReturns</vh></v>
+<v t="ekr.20080121105837.283"><vh>addCixType</vh></v>
+<v t="ekr.20080121105837.284"><vh>addCixAttribute</vh></v>
+<v t="ekr.20080121105837.285"><vh>addClassRef</vh></v>
+<v t="ekr.20080121105837.286"><vh>addInterfaceRef</vh></v>
+<v t="ekr.20080121105837.287"><vh>setCixSignature</vh></v>
+<v t="ekr.20080121105837.288"><vh>createCixVariable</vh></v>
+<v t="ekr.20080121105837.289"><vh>createCixFunction</vh></v>
+<v t="ekr.20080121105837.290"><vh>createCixInterface</vh></v>
+<v t="ekr.20080121105837.291"><vh>createCixClass</vh></v>
+<v t="ekr.20080121105837.292"><vh>createCixModule</vh></v>
+<v t="ekr.20080121105837.293"><vh>createOrFindCixModule</vh></v>
+<v t="ekr.20080121105837.294"><vh>createCixFile</vh></v>
+<v t="ekr.20080121105837.295"><vh>createCixRoot</vh></v>
+<v t="ekr.20080121105837.296"><vh>prettify</vh></v>
+<v t="ekr.20080121105837.297"><vh>get_cix_string</vh></v>
+<v t="ekr.20080121105837.298"><vh>remove_cix_line_numbers_from_tree</vh></v>
+</v>
+<v t="ekr.20080121105837.299"><vh>indexer.py (threaded scans of files)</vh>
+<v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
+<v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
+<v t="ekr.20080121105837.302"><vh>_put</vh></v>
+<v t="ekr.20080121105837.303"><vh>_init</vh></v>
+<v t="ekr.20080121105837.304"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.305"><vh>class _Request</vh>
+<v t="ekr.20080121105837.306"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.307"><vh>class _UniqueRequestPriorityQueue</vh>
+<v t="ekr.20080121105837.308"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.309"><vh>_put</vh></v>
+<v t="ekr.20080121105837.310"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.311"><vh>class _StagingRequestQueue</vh>
+<v t="ekr.20080121105837.312"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.313"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.314"><vh>stage</vh></v>
+<v t="ekr.20080121105837.315"><vh>_stagingThread</vh></v>
+</v>
+<v t="ekr.20080121105837.316"><vh>class XMLParseRequest</vh>
+<v t="ekr.20080121105837.317"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.318"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.319"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.320"><vh>class ScanRequest</vh>
+<v t="ekr.20080121105837.321"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.322"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.323"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.324"><vh>complete</vh></v>
+<v t="ekr.20080121105837.325"><vh>wait</vh></v>
+</v>
+<v t="ekr.20080121105837.326"><vh>class PreloadBufLibsRequest</vh>
+<v t="ekr.20080121105837.327"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.328"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.329"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.330"><vh>class PreloadLibRequest</vh>
+<v t="ekr.20080121105837.331"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.332"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.333"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.334"><vh>class IndexerStopRequest</vh>
+<v t="ekr.20080121105837.335"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.336"><vh>class IndexerPauseRequest</vh>
+<v t="ekr.20080121105837.337"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.338"><vh>class Indexer</vh>
+<v t="ekr.20080121105837.339"><vh>class StopIndexing</vh></v>
+<v t="ekr.20080121105837.340"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.341"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.342"><vh>pause</vh></v>
+<v t="ekr.20080121105837.343"><vh>resume</vh></v>
+<v t="ekr.20080121105837.344"><vh>stage_request</vh></v>
+<v t="ekr.20080121105837.345"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.346"><vh>run</vh></v>
+<v t="ekr.20080121105837.347"><vh>_iteration</vh></v>
+</v>
+<v t="ekr.20080121105837.348"><vh>class BatchUpdater</vh>
+<v t="ekr.20080121105837.349"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.350"><vh>start</vh></v>
+<v t="ekr.20080121105837.351"><vh>abort</vh></v>
+<v t="ekr.20080121105837.352"><vh>is_aborted</vh></v>
+<v t="ekr.20080121105837.353"><vh>done</vh></v>
+<v t="ekr.20080121105837.354"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.355"><vh>num_files_to_process</vh></v>
+<v t="ekr.20080121105837.356"><vh>progress</vh></v>
+<v t="ekr.20080121105837.357"><vh>debug</vh></v>
+<v t="ekr.20080121105837.358"><vh>info</vh></v>
+<v t="ekr.20080121105837.359"><vh>warn</vh></v>
+<v t="ekr.20080121105837.360"><vh>error</vh></v>
+<v t="ekr.20080121105837.361"><vh>_subscheduler_request_started</vh></v>
+<v t="ekr.20080121105837.362"><vh>_subscheduler_completed</vh></v>
+<v t="ekr.20080121105837.363"><vh>_get_scheduler</vh></v>
+<v t="ekr.20080121105837.364"><vh>run</vh></v>
+<v t="ekr.20080121105837.365"><vh>_cidb_upgrade_progress_callback</vh></v>
+<v t="ekr.20080121105837.366"><vh>_handle_upgrade_request</vh></v>
+<v t="ekr.20080121105837.367"><vh>_handle_cix_request</vh></v>
+<v t="ekr.20080121105837.368"><vh>_handle_lang_request</vh></v>
+<v t="ekr.20080121105837.369"><vh>_handle_directory_request</vh></v>
+</v>
+<v t="ekr.20080121105837.370"><vh>_indent</vh></v>
+</v>
+<v t="ekr.20080121105837.371"><vh>jsdoc.py</vh>
+<v t="ekr.20080121105837.372"><vh>jsdoc declarations</vh></v>
+<v t="ekr.20080121105837.373"><vh>class JSDocParameter</vh>
+<v t="ekr.20080121105837.374"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.375"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.376"><vh>class JSDoc</vh>
+<v t="ekr.20080121105837.377"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.378"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.379"><vh>_reset</vh></v>
+<v t="ekr.20080121105837.380"><vh>_getTypeField</vh></v>
+<v t="ekr.20080121105837.381"><vh>_getTypeFieldFromString</vh></v>
+<v t="ekr.20080121105837.382"><vh>_handle_base</vh></v>
+<v t="ekr.20080121105837.383"><vh>_handle_extends</vh></v>
+<v t="ekr.20080121105837.384"><vh>_handle_class</vh></v>
+<v t="ekr.20080121105837.385"><vh>_handle_constructor</vh></v>
+<v t="ekr.20080121105837.386"><vh>_handle_namespace</vh></v>
+<v t="ekr.20080121105837.387"><vh>_handle_private</vh></v>
+<v t="ekr.20080121105837.388"><vh>_handle_static</vh></v>
+<v t="ekr.20080121105837.389"><vh>_handle_final</vh></v>
+<v t="ekr.20080121105837.390"><vh>_handle_deprecated</vh></v>
+<v t="ekr.20080121105837.391"><vh>_handle_param</vh></v>
+<v t="ekr.20080121105837.392"><vh>_handle_tags</vh></v>
+<v t="ekr.20080121105837.393"><vh>_handle_type</vh></v>
+<v t="ekr.20080121105837.394"><vh>_handle_return</vh></v>
+<v t="ekr.20080121105837.395"><vh>_handle_returns</vh></v>
+<v t="ekr.20080121105837.396"><vh>parse</vh></v>
+<v t="ekr.20080121105837.397"><vh>isClass</vh></v>
+<v t="ekr.20080121105837.398"><vh>isConstructor</vh></v>
+<v t="ekr.20080121105837.399"><vh>isPrivate</vh></v>
+<v t="ekr.20080121105837.400"><vh>isStatic</vh></v>
+<v t="ekr.20080121105837.401"><vh>isConstant</vh></v>
+<v t="ekr.20080121105837.402"><vh>isDeprecated</vh></v>
+</v>
+<v t="ekr.20080121105837.403"><vh>_test</vh></v>
+<v t="ekr.20080121105837.404"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.405"><vh>langintel.py</vh>
+<v t="ekr.20080121105837.406"><vh>langintel declarations</vh>
+<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080121105837.407"><vh>class LangIntel</vh>
+<v t="ekr.20080121105837.408"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.409"><vh>cb_blob_detail_from_elem_and_buf</vh></v>
+<v t="ekr.20080121105837.410"><vh>cb_import_data_from_elem</vh></v>
+<v t="ekr.20080121105837.411"><vh>cb_variable_data_from_elem</vh></v>
+<v t="ekr.20080121105837.412"><vh>cb_function_detail_from_elem</vh></v>
+<v t="ekr.20080121105837.413"><vh>cb_class_detail_from_elem</vh></v>
+<v t="ekr.20080121105837.414"><vh>cb_interface_detail_from_elem</vh></v>
+<v t="ekr.20080121105837.415"><vh>cb_namespace_detail_from_elem</vh></v>
+<v t="ekr.20080121105837.416"><vh>cb_data_from_elem_and_buf</vh></v>
+</v>
+<v t="ekr.20080121105837.417"><vh>class ParenStyleCalltipIntelMixin</vh>
+<v t="ekr.20080121105837.418"><vh>calltip_verify_termination</vh></v>
+<v t="ekr.20080121105837.419"><vh>curr_calltip_arg_range</vh></v>
+</v>
+<v t="ekr.20080121105837.420"><vh>class ProgLangTriggerIntelMixin</vh>
+<v t="ekr.20080121105837.421"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.422"><vh>_is_terminating_char</vh></v>
+</v>
+<v t="ekr.20080121105837.423"><vh>class PythonCITDLExtractorMixin</vh>
+<v t="ekr.20080121105837.424"><vh>_citdl_expr_from_pos</vh></v>
+<v t="ekr.20080121105837.425"><vh>citdl_expr_from_trg</vh></v>
+</v>
+<v t="ekr.20080121105837.426"><vh>class Arg</vh>
+<v t="ekr.20080121105837.427"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.428"><vh>done</vh></v>
+<v t="ekr.20080121105837.429"><vh>append_ch</vh></v>
+<v t="ekr.20080121105837.430"><vh>append_default_ch</vh></v>
+<v t="ekr.20080121105837.431"><vh>__nonzero__</vh></v>
+<v t="ekr.20080121105837.432"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.433"><vh>name</vh></v>
+<v t="ekr.20080121105837.434"><vh>default</vh></v>
+<v t="ekr.20080121105837.435"><vh>span</vh></v>
+</v>
+<v t="ekr.20080121105837.436"><vh>_parse_calltip</vh></v>
+</v>
+<v t="ekr.20080121105837.437"><vh>Language-specific...</vh>
+<v t="ekr.20080121105837.733"><vh>shared_lexer.py</vh>
+<v t="ekr.20080121105837.734"><vh>shared_lexer declarations</vh></v>
+<v t="ekr.20080121105837.735"><vh>class Token</vh>
+<v t="ekr.20080121105837.736"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.737"><vh>clone</vh></v>
+<v t="ekr.20080121105837.738"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.739"><vh>class Signature</vh>
+<v t="ekr.20080121105837.740"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.741"><vh>open</vh></v>
+<v t="ekr.20080121105837.742"><vh>close</vh></v>
+<v t="ekr.20080121105837.743"><vh>text</vh></v>
+<v t="ekr.20080121105837.744"><vh>append</vh></v>
+<v t="ekr.20080121105837.745"><vh>replace</vh></v>
+<v t="ekr.20080121105837.746"><vh>is_gathering</vh></v>
+</v>
+<v t="ekr.20080121105837.747"><vh>class Lexer</vh>
+<v t="ekr.20080121105837.748"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.749"><vh>build_dict</vh></v>
+<v t="ekr.20080121105837.750"><vh>is_string_token</vh></v>
+<v t="ekr.20080121105837.751"><vh>contains_nl</vh></v>
+<v t="ekr.20080121105837.752"><vh>_adapt_line</vh></v>
+<v t="ekr.20080121105837.753"><vh>_get_next_token</vh></v>
+<v t="ekr.20080121105837.754"><vh>_get_eof_token</vh></v>
+<v t="ekr.20080121105837.755"><vh>matches_whitespace</vh></v>
+<v t="ekr.20080121105837.756"><vh>get_curr_indentation</vh></v>
+<v t="ekr.20080121105837.757"><vh>curr_comment</vh></v>
+<v t="ekr.20080121105837.758"><vh>clear_comments</vh></v>
+<v t="ekr.20080121105837.759"><vh>has_comment</vh></v>
+<v t="ekr.20080121105837.760"><vh>is_udl_markup_family</vh></v>
+<v t="ekr.20080121105837.761"><vh>is_udl_css_family</vh></v>
+<v t="ekr.20080121105837.762"><vh>is_udl_csl_family</vh></v>
+<v t="ekr.20080121105837.763"><vh>is_udl_ssl_family</vh></v>
+<v t="ekr.20080121105837.764"><vh>is_udl_tpl_family</vh></v>
+<v t="ekr.20080121105837.765"><vh>start_sig</vh></v>
+<v t="ekr.20080121105837.766"><vh>stop_sig</vh></v>
+<v t="ekr.20080121105837.767"><vh>trim_ws</vh></v>
+<v t="ekr.20080121105837.768"><vh>get_sig</vh></v>
+<v t="ekr.20080121105837.769"><vh>put_back</vh></v>
+<v t="ekr.20080121105837.770"><vh>curr_line_no</vh></v>
+<v t="ekr.20080121105837.771"><vh>append_split_tokens</vh></v>
+<v t="ekr.20080121105837.772"><vh>get_next_token</vh></v>
+</v>
+<v t="ekr.20080121105837.773"><vh>class UDLLexerClassifier</vh>
+<v t="ekr.20080121105837.774"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.775"><vh>style_comment</vh></v>
+<v t="ekr.20080121105837.776"><vh>style_default</vh></v>
+<v t="ekr.20080121105837.777"><vh>style_operator</vh></v>
+</v>
+<v t="ekr.20080121105837.778"><vh>read_and_detab</vh></v>
+<v t="ekr.20080121105837.779"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.780"><vh>shared_parser.py</vh>
+<v t="ekr.20080121105837.781"><vh>shared_parser declarations</vh></v>
+<v t="ekr.20080121105837.782"><vh>class CommonClassifier</vh>
+<v t="ekr.20080121105837.783"><vh>get_quote_patterns</vh></v>
+<v t="ekr.20080121105837.784"><vh>is_identifier_or_keyword</vh></v>
+</v>
+<v t="ekr.20080121105837.785"><vh>class UDLClassifier</vh>
+<v t="ekr.20080121105837.786"><vh>get_builtin_type</vh></v>
+<v t="ekr.20080121105837.787"><vh>is_any_operator</vh></v>
+<v t="ekr.20080121105837.788"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.789"><vh>is_comment_structured</vh></v>
+<v t="ekr.20080121105837.790"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.791"><vh>is_index_op</vh></v>
+<v t="ekr.20080121105837.792"><vh>is_interpolating_string</vh></v>
+<v t="ekr.20080121105837.793"><vh>is_keyword</vh></v>
+<v t="ekr.20080121105837.794"><vh>is_number</vh></v>
+<v t="ekr.20080121105837.795"><vh>is_operator</vh></v>
+<v t="ekr.20080121105837.796"><vh>is_string</vh></v>
+<v t="ekr.20080121105837.797"><vh>is_string_qw</vh></v>
+<v t="ekr.20080121105837.798"><vh>is_symbol</vh></v>
+<v t="ekr.20080121105837.799"><vh>is_variable</vh></v>
+<v t="ekr.20080121105837.800"><vh>is_variable_array</vh></v>
+<v t="ekr.20080121105837.801"><vh>is_variable_scalar</vh></v>
+<v t="ekr.20080121105837.802"><vh>tokenStyleToContainerStyle</vh></v>
+<v t="ekr.20080121105837.803"><vh>style_identifier</vh></v>
+<v t="ekr.20080121105837.804"><vh>style_operator</vh></v>
+<v t="ekr.20080121105837.805"><vh>style_word</vh></v>
+</v>
+</v>
+<v t="ekr.20080121131522"><vh>Python stuff...</vh>
+<v t="ekr.20080121105837.1387"><vh>lang_python.py</vh>
+<v t="ekr.20080121105837.1388"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1389"><vh>class PythonLexer</vh>
+<v t="ekr.20080121105837.1390"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1391"><vh>class PythonImportsEvaluator</vh>
+<v t="ekr.20080121105837.1392"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1393"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
+<v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
+<v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
+<v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
+<v t="ekr.20080121105837.1400"><vh>_gen_python_import_paths_from_pth_path</vh></v>
+<v t="ekr.20080121105837.1401"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1402"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1403"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+</v>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
+<v t="ekr.20080121105837.1407"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
+</v>
+<v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
+<v t="ekr.20080121105837.1411"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1412"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1413"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1414"><vh>_getStdCIXScanId</vh></v>
+<v t="ekr.20080121105837.1415"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.1416"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.1417"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1418"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1419"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1420"><vh>class PythonCILEDriver</vh>
+<v t="ekr.20080121105837.1421"><vh>scan_purelang</vh></v>
+</v>
+<v t="ekr.20080121105837.1422"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.445"><vh>pythoncile.py</vh>
+<v t="ekr.20080121105837.446"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.447"><vh>&lt;&lt; dev notes &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.448"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.449"><vh>&lt;&lt; globals &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.450"><vh>class PythonCILEError</vh></v>
+<v t="ekr.20080121105837.451"><vh>_isclass</vh></v>
+<v t="ekr.20080121105837.452"><vh>_isfunction</vh></v>
+<v t="ekr.20080121105837.453"><vh>class AST2CIXVisitor</vh>
+<v t="ekr.20080121105837.454"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.455"><vh>emit</vh></v>
+<v t="ekr.20080121105837.456"><vh>cix_module</vh></v>
+<v t="ekr.20080121105837.457"><vh>cix_import</vh></v>
+<v t="ekr.20080121105837.458"><vh>cix_symbols</vh></v>
+<v t="ekr.20080121105837.459"><vh>cix_symbol</vh></v>
+<v t="ekr.20080121105837.460"><vh>cix_types</vh></v>
+<v t="ekr.20080121105837.461"><vh>cix_variable</vh></v>
+<v t="ekr.20080121105837.462"><vh>cix_classref</vh></v>
+<v t="ekr.20080121105837.463"><vh>cix_class</vh></v>
+<v t="ekr.20080121105837.464"><vh>cix_argument</vh></v>
+<v t="ekr.20080121105837.465"><vh>cix_function</vh></v>
+<v t="ekr.20080121105837.466"><vh>getCIX</vh></v>
+<v t="ekr.20080121105837.467"><vh>visitModule</vh></v>
+<v t="ekr.20080121105837.468"><vh>visitReturn</vh></v>
+<v t="ekr.20080121105837.469"><vh>visitClass</vh></v>
+<v t="ekr.20080121105837.470"><vh>visitFunction</vh></v>
+<v t="ekr.20080121105837.471"><vh>visitImport</vh></v>
+<v t="ekr.20080121105837.472"><vh>visitFrom</vh></v>
+<v t="ekr.20080121105837.473"><vh>_assignVariable</vh></v>
+<v t="ekr.20080121105837.474"><vh>_visitSimpleAssign</vh></v>
+<v t="ekr.20080121105837.475"><vh>visitAssign</vh></v>
+<v t="ekr.20080121105837.476"><vh>_resolveObjectRef</vh></v>
+<v t="ekr.20080121105837.477"><vh>_guessTypes</vh></v>
+<v t="ekr.20080121105837.478"><vh>_getExprRepr</vh></v>
+<v t="ekr.20080121105837.479"><vh>_getCITDLExprRepr</vh></v>
+</v>
+<v t="ekr.20080121105837.480"><vh>_quietCompilerParse</vh></v>
+<v t="ekr.20080121105837.481"><vh>_quietCompile</vh></v>
+<v t="ekr.20080121105837.482"><vh>_getAST</vh></v>
+<v t="ekr.20080121105837.483"><vh>scan</vh></v>
+<v t="ekr.20080121105837.484"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.964"><vh>tree_python.py</vh>
+<v t="ekr.20080121105837.967"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.968"><vh>eval_calltips</vh></v>
+<v t="ekr.20080121105837.969"><vh>eval_defns</vh></v>
+<v t="ekr.20080121105837.970"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.971"><vh>_join_citdl_expr</vh></v>
+<v t="ekr.20080121105837.972"><vh>_calltip_from_func</vh></v>
+<v t="ekr.20080121105837.973"><vh>_calltip_from_class</vh></v>
+<v t="ekr.20080121105837.974"><vh>_ctor_hit_from_class</vh></v>
+<v t="ekr.20080121105837.975"><vh>_calltip_from_hit</vh></v>
+<v t="ekr.20080121105837.976"><vh>_members_from_elem</vh></v>
+<v t="ekr.20080121105837.977"><vh>_members_from_hit</vh></v>
+<v t="ekr.20080121105837.978"><vh>_hit_from_citdl</vh></v>
+<v t="ekr.20080121105837.979"><vh>_hit_from_first_part</vh></v>
+<v t="ekr.20080121105837.980"><vh>_hit_from_elem_imports</vh></v>
+<v t="ekr.20080121105837.981"><vh>_hit_from_call</vh></v>
+<v t="ekr.20080121105837.982"><vh>_hit_from_getattr</vh></v>
+<v t="ekr.20080121105837.983"><vh>_hit_from_variable_type_inference</vh></v>
+<v t="ekr.20080121105837.984"><vh>_hit_from_type_inference</vh></v>
+<v t="ekr.20080121105837.985"><vh>built_in_blob</vh></v>
+<v t="ekr.20080121105837.986"><vh>parent_scoperef_from_scoperef</vh></v>
+<v t="ekr.20080121105837.987"><vh>_elem_from_scoperef</vh></v>
+</v>
+</v>
+<v t="ekr.20080121131751"><vh>Other languages</vh>
+<v t="ekr.20080121105837.438"><vh>xxx cile.py (Code Inteligence Language Engine)</vh>
+<v t="ekr.20080121105837.439"><vh>perlcile.py</vh>
+<v t="ekr.20080121105837.440"><vh>perlcile declarations</vh></v>
+<v t="ekr.20080121105837.441"><vh>scan</vh></v>
+<v t="ekr.20080121105837.442"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.443"><vh>scan_multilang</vh></v>
+<v t="ekr.20080121105837.444"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.485"><vh>rubycile.py</vh>
+<v t="ekr.20080121105837.486"><vh>rubycile declarations</vh></v>
+<v t="ekr.20080121105837.487"><vh>class RubyCILEError</vh></v>
+<v t="ekr.20080121105837.488"><vh>class _DirInfo</vh>
+<v t="ekr.20080121105837.489"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.490"><vh>get_files</vh></v>
+<v t="ekr.20080121105837.491"><vh>_changed</vh></v>
+<v t="ekr.20080121105837.492"><vh>_create</vh></v>
+<v t="ekr.20080121105837.493"><vh>_files</vh></v>
+<v t="ekr.20080121105837.494"><vh>_mtime</vh></v>
+<v t="ekr.20080121105837.495"><vh>_update</vh></v>
+</v>
+<v t="ekr.20080121105837.496"><vh>rails_role_from_path</vh></v>
+<v t="ekr.20080121105837.497"><vh>check_insert_rails_env</vh></v>
+<v t="ekr.20080121105837.498"><vh>scan</vh></v>
+<v t="ekr.20080121105837.499"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.500"><vh>scan_multilang</vh></v>
+<v t="ekr.20080121105837.501"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.502"><vh>tclcile.py</vh>
+<v t="ekr.20080121105837.503"><vh>tclcile declarations</vh></v>
+<v t="ekr.20080121105837.504"><vh>class TclCILEError</vh></v>
+<v t="ekr.20080121105837.505"><vh>scan</vh></v>
+<v t="ekr.20080121105837.506"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.507"><vh>scan_multilang</vh></v>
+<v t="ekr.20080121105837.508"><vh>main</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.509"><vh>Lexers and parsers</vh>
+<v t="ekr.20080121105837.510"><vh>perl_lexer.py (error)</vh>
+<v t="ekr.20080121105837.511"><vh>perl_lexer declarations</vh></v>
+<v t="ekr.20080121105837.512"><vh>class PerlLexerClassifier</vh>
+<v t="ekr.20080121105837.513"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.514"><vh>style_comment</vh></v>
+<v t="ekr.20080121105837.515"><vh>style_default</vh></v>
+<v t="ekr.20080121105837.516"><vh>style_operator</vh></v>
+</v>
+<v t="ekr.20080121105837.517"><vh>class _CommonLexer</vh>
+<v t="ekr.20080121105837.518"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.519"><vh>class PerlLexer</vh>
+<v t="ekr.20080121105837.520"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.521"><vh>_fix_token_list</vh></v>
+</v>
+<v t="ekr.20080121105837.522"><vh>class PerlMultiLangLexer</vh>
+<v t="ekr.20080121105837.523"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.524"><vh>_build_tokens</vh></v>
+<v t="ekr.20080121105837.525"><vh>_fix_token_list</vh></v>
+<v t="ekr.20080121105837.526"><vh>get_csl_tokens</vh></v>
+<v t="ekr.20080121105837.527"><vh>has_perl_code</vh></v>
+</v>
+<v t="ekr.20080121105837.528"><vh>provide_sample_code</vh></v>
+</v>
+<v t="ekr.20080121105837.529"><vh>perl_parser.py (underindented comment)</vh>
+<v t="ekr.20080121105837.530"><vh>perl_parser declarations</vh></v>
+<v t="ekr.20080121105837.531"><vh>memoize</vh></v>
+<v t="ekr.20080121105837.532"><vh>class TimingRe</vh>
+<v t="ekr.20080121105837.533"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.534"><vh>sub</vh></v>
+<v t="ekr.20080121105837.535"><vh>match</vh></v>
+<v t="ekr.20080121105837.536"><vh>search</vh></v>
+<v t="ekr.20080121105837.537"><vh>split</vh></v>
+<v t="ekr.20080121105837.538"><vh>findall</vh></v>
+<v t="ekr.20080121105837.539"><vh>_timing_operation</vh></v>
+</v>
+<v t="ekr.20080121105837.540"><vh>re_compile</vh></v>
+<v t="ekr.20080121105837.541"><vh>re_sub</vh></v>
+<v t="ekr.20080121105837.542"><vh>class PerlCommonClassifier</vh>
+<v t="ekr.20080121105837.543"><vh>is_array_cb</vh></v>
+<v t="ekr.20080121105837.544"><vh>is_scalar_cb</vh></v>
+<v t="ekr.20080121105837.545"><vh>is_pod_cb</vh></v>
+<v t="ekr.20080121105837.546"><vh>is_string_qw_cb</vh></v>
+<v t="ekr.20080121105837.547"><vh>quote_patterns_cb</vh></v>
+<v t="ekr.20080121105837.548"><vh>quote_patterns_cb_aux</vh></v>
+</v>
+<v t="ekr.20080121105837.549"><vh>class UDLClassifier</vh></v>
+<v t="ekr.20080121105837.550"><vh>class PerlClassifier</vh>
+<v t="ekr.20080121105837.551"><vh>get_builtin_type</vh></v>
+<v t="ekr.20080121105837.552"><vh>is_any_operator</vh></v>
+<v t="ekr.20080121105837.553"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.554"><vh>is_comment_structured</vh></v>
+<v t="ekr.20080121105837.555"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.556"><vh>is_index_op</vh></v>
+<v t="ekr.20080121105837.557"><vh>is_interpolating_string</vh></v>
+<v t="ekr.20080121105837.558"><vh>is_keyword</vh></v>
+<v t="ekr.20080121105837.559"><vh>is_number</vh></v>
+<v t="ekr.20080121105837.560"><vh>is_operator</vh></v>
+<v t="ekr.20080121105837.561"><vh>is_string</vh></v>
+<v t="ekr.20080121105837.562"><vh>is_string_qw</vh></v>
+<v t="ekr.20080121105837.563"><vh>is_symbol</vh></v>
+<v t="ekr.20080121105837.564"><vh>is_variable</vh></v>
+<v t="ekr.20080121105837.565"><vh>is_variable_array</vh></v>
+<v t="ekr.20080121105837.566"><vh>is_variable_scalar</vh></v>
+<v t="ekr.20080121105837.567"><vh>style_identifier</vh></v>
+<v t="ekr.20080121105837.568"><vh>style_word</vh></v>
+</v>
+<v t="ekr.20080121105837.569"><vh>_get_classifier</vh></v>
+<v t="ekr.20080121105837.570"><vh>class ModuleInfo</vh>
+<v t="ekr.20080121105837.571"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.572"><vh>doStartNS</vh></v>
+<v t="ekr.20080121105837.573"><vh>doEndNS</vh></v>
+<v t="ekr.20080121105837.574"><vh>getNS</vh></v>
+<v t="ekr.20080121105837.575"><vh>doSetArg</vh></v>
+<v t="ekr.20080121105837.576"><vh>doSetParent</vh></v>
+<v t="ekr.20080121105837.577"><vh>doStartFn</vh></v>
+<v t="ekr.20080121105837.578"><vh>doEndFn</vh></v>
+<v t="ekr.20080121105837.579"><vh>doStartVar</vh></v>
+<v t="ekr.20080121105837.580"><vh>doEndVar</vh></v>
+<v t="ekr.20080121105837.581"><vh>set_or_append</vh></v>
+<v t="ekr.20080121105837.582"><vh>doSetVar</vh></v>
+<v t="ekr.20080121105837.583"><vh>add_imported_module</vh></v>
+<v t="ekr.20080121105837.584"><vh>printDocInfo</vh></v>
+<v t="ekr.20080121105837.585"><vh>_get_first_sentence</vh></v>
+<v t="ekr.20080121105837.586"><vh>printDocString</vh></v>
+<v t="ekr.20080121105837.587"><vh>_process_e_pod</vh></v>
+<v t="ekr.20080121105837.588"><vh>_wrap_process_e_pod</vh></v>
+<v t="ekr.20080121105837.589"><vh>_simple_depod</vh></v>
+<v t="ekr.20080121105837.590"><vh>_depod</vh></v>
+<v t="ekr.20080121105837.591"><vh>trim_ws</vh></v>
+<v t="ekr.20080121105837.592"><vh>printClassParents</vh></v>
+<v t="ekr.20080121105837.593"><vh>printImports</vh></v>
+<v t="ekr.20080121105837.594"><vh>printTypeInfo</vh></v>
+<v t="ekr.20080121105837.595"><vh>printVariables</vh></v>
+<v t="ekr.20080121105837.596"><vh>printFunctions</vh></v>
+<v t="ekr.20080121105837.597"><vh>tryGettingDoc_Sig</vh></v>
+</v>
+<v t="ekr.20080121105837.598"><vh>class NamespaceInfo</vh>
+<v t="ekr.20080121105837.599"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.600"><vh>isProbablyClass</vh></v>
+</v>
+<v t="ekr.20080121105837.601"><vh>class FunctionInfo</vh>
+<v t="ekr.20080121105837.602"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.603"><vh>class Parser</vh>
+<v t="ekr.20080121105837.604"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.605"><vh>_is_stmt_end_op</vh></v>
+<v t="ekr.20080121105837.606"><vh>_is_string</vh></v>
+<v t="ekr.20080121105837.607"><vh>printHeader</vh></v>
+<v t="ekr.20080121105837.608"><vh>printContents</vh></v>
+<v t="ekr.20080121105837.609"><vh>printTrailer</vh></v>
+<v t="ekr.20080121105837.610"><vh>at_end_expression</vh></v>
+<v t="ekr.20080121105837.611"><vh>collect_multiple_args</vh></v>
+<v t="ekr.20080121105837.612"><vh>collect_single_arg</vh></v>
+<v t="ekr.20080121105837.613"><vh>de_quote_string</vh></v>
+<v t="ekr.20080121105837.614"><vh>finish_var_assignment</vh></v>
+<v t="ekr.20080121105837.615"><vh>get_exported_names</vh></v>
+<v t="ekr.20080121105837.616"><vh>get_for_vars</vh></v>
+<v t="ekr.20080121105837.617"><vh>get_list_of_var_names</vh></v>
+<v t="ekr.20080121105837.618"><vh>get_list_of_strings</vh></v>
+<v t="ekr.20080121105837.619"><vh>get_our_vars</vh></v>
+<v t="ekr.20080121105837.620"><vh>get_parent_namespaces</vh></v>
+<v t="ekr.20080121105837.621"><vh>_get_property_token</vh></v>
+<v t="ekr.20080121105837.622"><vh>get_rest_of_subpath</vh></v>
+<v t="ekr.20080121105837.623"><vh>get_string_array</vh></v>
+<v t="ekr.20080121105837.624"><vh>get_used_vars</vh></v>
+<v t="ekr.20080121105837.625"><vh>look_for_object_var_assignment</vh></v>
+<v t="ekr.20080121105837.626"><vh>look_for_var_assignment</vh></v>
+<v t="ekr.20080121105837.627"><vh>process_import</vh></v>
+<v t="ekr.20080121105837.628"><vh>process_module</vh></v>
+<v t="ekr.20080121105837.629"><vh>get_CIX</vh></v>
+<v t="ekr.20080121105837.630"><vh>produce_CIX</vh></v>
+<v t="ekr.20080121105837.631"><vh>produce_CIX_NoHeader</vh></v>
+<v t="ekr.20080121105837.632"><vh>parse</vh></v>
+<v t="ekr.20080121105837.633"><vh>process_package_inner_contents</vh></v>
+<v t="ekr.20080121105837.634"><vh>process_sub_contents</vh></v>
+<v t="ekr.20080121105837.635"><vh>process_use</vh></v>
+<v t="ekr.20080121105837.636"><vh>skip_anon_sub_contents</vh></v>
+<v t="ekr.20080121105837.637"><vh>skip_to_close_match</vh></v>
+<v t="ekr.20080121105837.638"><vh>skip_to_close_paren</vh></v>
+<v t="ekr.20080121105837.639"><vh>skip_to_end_of_stmt</vh></v>
+<v t="ekr.20080121105837.640"><vh>start_process_sub_definition</vh></v>
+</v>
+<v t="ekr.20080121105837.641"><vh>pp</vh></v>
+<v t="ekr.20080121105837.642"><vh>main</vh></v>
+</v>
+<v t="ekr.20080121105837.643"><vh>ruby_lexer.py (error)</vh>
+<v t="ekr.20080121105837.644"><vh>ruby_lexer declarations</vh></v>
+<v t="ekr.20080121105837.645"><vh>class RubyLexerClassifier</vh>
+<v t="ekr.20080121105837.646"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.647"><vh>style_comment</vh></v>
+<v t="ekr.20080121105837.648"><vh>style_default</vh></v>
+<v t="ekr.20080121105837.649"><vh>style_operator</vh></v>
+</v>
+<v t="ekr.20080121105837.650"><vh>class _CommonLexer</vh>
+<v t="ekr.20080121105837.651"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.652"><vh>class RubyLexer</vh>
+<v t="ekr.20080121105837.653"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.654"><vh>_fix_token_list</vh></v>
+</v>
+<v t="ekr.20080121105837.655"><vh>class RubyMultiLangLexer</vh>
+<v t="ekr.20080121105837.656"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.657"><vh>_build_tokens</vh></v>
+<v t="ekr.20080121105837.658"><vh>_fix_token_list</vh></v>
+<v t="ekr.20080121105837.659"><vh>get_csl_tokens</vh></v>
+<v t="ekr.20080121105837.660"><vh>has_ruby_code</vh></v>
+</v>
+<v t="ekr.20080121105837.661"><vh>provide_sample_code</vh></v>
+</v>
+<v t="ekr.20080121105837.662"><vh>ruby_parser.py (intermixed tabs &amp; blanks)</vh>
+<v t="ekr.20080121105837.663"><vh>ruby_parser declarations</vh></v>
+<v t="ekr.20080121105837.664"><vh>class RubyCommonClassifier</vh>
+<v t="ekr.20080121105837.665"><vh>is_array_cb</vh></v>
+<v t="ekr.20080121105837.666"><vh>is_scalar_cb</vh></v>
+<v t="ekr.20080121105837.667"><vh>is_pod_cb</vh></v>
+<v t="ekr.20080121105837.668"><vh>is_string_qw_cb</vh></v>
+<v t="ekr.20080121105837.669"><vh>is_symbol_cb</vh></v>
+<v t="ekr.20080121105837.670"><vh>quote_patterns_cb</vh></v>
+<v t="ekr.20080121105837.671"><vh>quote_patterns_cb_aux</vh></v>
+</v>
+<v t="ekr.20080121105837.672"><vh>class UDLClassifier</vh></v>
+<v t="ekr.20080121105837.673"><vh>class RubyClassifier</vh>
+<v t="ekr.20080121105837.674"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.675"><vh>get_builtin_type</vh></v>
+<v t="ekr.20080121105837.676"><vh>is_any_operator</vh></v>
+<v t="ekr.20080121105837.677"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.678"><vh>is_comment_structured</vh></v>
+<v t="ekr.20080121105837.679"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.680"><vh>is_interpolating_string</vh></v>
+<v t="ekr.20080121105837.681"><vh>is_keyword</vh></v>
+<v t="ekr.20080121105837.682"><vh>is_number</vh></v>
+<v t="ekr.20080121105837.683"><vh>is_operator</vh></v>
+<v t="ekr.20080121105837.684"><vh>is_string</vh></v>
+<v t="ekr.20080121105837.685"><vh>is_symbol</vh></v>
+<v t="ekr.20080121105837.686"><vh>tokenStyleToContainerStyle</vh></v>
+<v t="ekr.20080121105837.687"><vh>style_identifier</vh></v>
+<v t="ekr.20080121105837.688"><vh>style_operator</vh></v>
+<v t="ekr.20080121105837.689"><vh>style_word</vh></v>
+</v>
+<v t="ekr.20080121105837.690"><vh>remove_hashes</vh></v>
+<v t="ekr.20080121105837.691"><vh>class RailsMigrationData</vh>
+<v t="ekr.20080121105837.692"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.693"><vh>class RailsMigrationBlock</vh>
+<v t="ekr.20080121105837.694"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.695"><vh>get_inflector</vh></v>
+<v t="ekr.20080121105837.696"><vh>class Parser</vh>
+<v t="ekr.20080121105837.697"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.698"><vh>class_has_method</vh></v>
+<v t="ekr.20080121105837.699"><vh>curr_block_start_indentation</vh></v>
+<v t="ekr.20080121105837.700"><vh>compare_curr_ind</vh></v>
+<v t="ekr.20080121105837.701"><vh>dump</vh></v>
+<v t="ekr.20080121105837.702"><vh>rails_migration_class_tree</vh></v>
+<v t="ekr.20080121105837.703"><vh>parse</vh></v>
+<v t="ekr.20080121105837.704"><vh>get_parsing_objects</vh></v>
+<v t="ekr.20080121105837.705"><vh>parse_open_parens</vh></v>
+<v t="ekr.20080121105837.706"><vh>parse_attr_stmt_capture_info</vh></v>
+<v t="ekr.20080121105837.707"><vh>parse_attr_stmts</vh></v>
+<v t="ekr.20080121105837.708"><vh>parse_assignment</vh></v>
+<v t="ekr.20080121105837.709"><vh>_actual_string_from_string_or_symbol</vh></v>
+<v t="ekr.20080121105837.710"><vh>_parse_migration_create_table_block</vh></v>
+<v t="ekr.20080121105837.711"><vh>_parse_migration_add_column_stmt</vh></v>
+<v t="ekr.20080121105837.712"><vh>_finish_interpolating_string</vh></v>
+<v t="ekr.20080121105837.713"><vh>_at_end_expression</vh></v>
+<v t="ekr.20080121105837.714"><vh>skip_to_op</vh></v>
+<v t="ekr.20080121105837.715"><vh>de_quote_string</vh></v>
+<v t="ekr.20080121105837.716"><vh>_finishVarAssignment</vh></v>
+<v t="ekr.20080121105837.717"><vh>_finish_list</vh></v>
+<v t="ekr.20080121105837.718"><vh>_set_basename_method</vh></v>
+<v t="ekr.20080121105837.719"><vh>_test_interpolate_string</vh></v>
+<v t="ekr.20080121105837.720"><vh>_test_for_builtin_type</vh></v>
+<v t="ekr.20080121105837.721"><vh>_test_token_style</vh></v>
+<v t="ekr.20080121105837.722"><vh>_try_loading_relative_library</vh></v>
+<v t="ekr.20080121105837.723"><vh>_create_relative_libname</vh></v>
+<v t="ekr.20080121105837.724"><vh>_extract_alias_name</vh></v>
+<v t="ekr.20080121105837.725"><vh>parse_aux</vh></v>
+<v t="ekr.20080121105837.726"><vh>parse_nested_expn</vh></v>
+<v t="ekr.20080121105837.727"><vh>parse_simple_expn</vh></v>
+<v t="ekr.20080121105837.728"><vh>parse_method_args</vh></v>
+<v t="ekr.20080121105837.729"><vh>parse_method</vh></v>
+<v t="ekr.20080121105837.730"><vh>parse_classref</vh></v>
+<v t="ekr.20080121105837.731"><vh>get_fully_qualified_name</vh></v>
+<v t="ekr.20080121105837.732"><vh>get_fully_qualified_name_as_list</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.806"><vh>tcl_lexer.py (intermixed tabs &amp; blanks)</vh>
+<v t="ekr.20080121105837.807"><vh>tcl_lexer declarations</vh></v>
+<v t="ekr.20080121105837.808"><vh>class TclLexerClassifier</vh>
+<v t="ekr.20080121105837.809"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.810"><vh>style_comment</vh></v>
+<v t="ekr.20080121105837.811"><vh>style_default</vh></v>
+<v t="ekr.20080121105837.812"><vh>style_operator</vh></v>
+</v>
+<v t="ekr.20080121105837.813"><vh>class TclLexer</vh>
+<v t="ekr.20080121105837.814"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.815"><vh>_fix_token_list</vh></v>
+</v>
+<v t="ekr.20080121105837.816"><vh>provide_sample_code</vh></v>
+</v>
+<v t="ekr.20080121105837.817"><vh>tcl_parser.py</vh>
+<v t="ekr.20080121105837.818"><vh>tcl_parser declarations</vh></v>
+<v t="ekr.20080121105837.819"><vh>class TclClassifier</vh>
+<v t="ekr.20080121105837.820"><vh>get_builtin_type</vh></v>
+<v t="ekr.20080121105837.821"><vh>is_any_operator</vh></v>
+<v t="ekr.20080121105837.822"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.823"><vh>is_comment_structured</vh></v>
+<v t="ekr.20080121105837.824"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.825"><vh>is_interpolating_string</vh></v>
+<v t="ekr.20080121105837.826"><vh>is_keyword</vh></v>
+<v t="ekr.20080121105837.827"><vh>is_number</vh></v>
+<v t="ekr.20080121105837.828"><vh>is_operator</vh></v>
+<v t="ekr.20080121105837.829"><vh>is_string</vh></v>
+<v t="ekr.20080121105837.830"><vh>is_symbol</vh></v>
+<v t="ekr.20080121105837.831"><vh>quote_patterns_cb</vh></v>
+<v t="ekr.20080121105837.832"><vh>style_identifier</vh></v>
+<v t="ekr.20080121105837.833"><vh>style_operator</vh></v>
+<v t="ekr.20080121105837.834"><vh>style_word</vh></v>
+</v>
+<v t="ekr.20080121105837.835"><vh>remove_hashes</vh></v>
+<v t="ekr.20080121105837.836"><vh>class Parser</vh>
+<v t="ekr.20080121105837.837"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.838"><vh>get_fully_qualified_name</vh></v>
+<v t="ekr.20080121105837.839"><vh>parse</vh></v>
+<v t="ekr.20080121105837.840"><vh>get_parsing_objects</vh></v>
+<v t="ekr.20080121105837.841"><vh>parse_method</vh></v>
+<v t="ekr.20080121105837.842"><vh>parse_assignment</vh></v>
+<v t="ekr.20080121105837.843"><vh>_finishVarAssignment</vh></v>
+<v t="ekr.20080121105837.844"><vh>parse_aux</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20080121105837.845"><vh>tree_*.py</vh>
+<v t="ekr.20080121105837.846"><vh>tree_javascript.py</vh>
+<v t="ekr.20080121105837.847"><vh>tree_javascript declarations</vh></v>
+<v t="ekr.20080121105837.848"><vh>class CandidatesForTreeEvaluator</vh>
+<v t="ekr.20080121105837.849"><vh>_elem_from_scoperef</vh></v>
+<v t="ekr.20080121105837.850"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.851"><vh>_join_citdl_expr</vh></v>
+</v>
+<v t="ekr.20080121105837.852"><vh>class JavaScriptTreeEvaluator</vh>
+<v t="ekr.20080121105837.853"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.854"><vh>eval_calltips</vh></v>
+<v t="ekr.20080121105837.855"><vh>eval_defns</vh></v>
+<v t="ekr.20080121105837.856"><vh>parent_scoperef_from_scoperef</vh></v>
+<v t="ekr.20080121105837.857"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.858"><vh>libs</vh></v>
+<v t="ekr.20080121105837.859"><vh>built_in_blob</vh></v>
+<v t="ekr.20080121105837.860"><vh>_hit_from_first_token</vh></v>
+<v t="ekr.20080121105837.861"><vh>_members_from_hits</vh></v>
+<v t="ekr.20080121105837.862"><vh>_calltip_from_func</vh></v>
+<v t="ekr.20080121105837.863"><vh>_calltip_from_class</vh></v>
+<v t="ekr.20080121105837.864"><vh>_calltips_from_hits</vh></v>
+<v t="ekr.20080121105837.865"><vh>_hits_from_citdl</vh></v>
+<v t="ekr.20080121105837.866"><vh>_hits_from_call</vh></v>
+<v t="ekr.20080121105837.867"><vh>_hit_from_getattr</vh></v>
+<v t="ekr.20080121105837.868"><vh>_hits_from_variable_type_inference</vh></v>
+<v t="ekr.20080121105837.869"><vh>_hits_from_type_inference</vh></v>
+<v t="ekr.20080121105837.870"><vh>_hits_from_first_part</vh></v>
+</v>
+<v t="ekr.20080121105837.871"><vh>_add_xpcom_blob</vh></v>
+<v t="ekr.20080121105837.872"><vh>_xpcom_iid_to_cix</vh></v>
+</v>
+<v t="ekr.20080121105837.873"><vh>tree_perl.py</vh>
+<v t="ekr.20080121105837.874"><vh>tree_perl declarations</vh></v>
+<v t="ekr.20080121105837.875"><vh>class _PerlPkgTable</vh>
+<v t="ekr.20080121105837.876"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.877"><vh>_generator</vh></v>
+<v t="ekr.20080121105837.878"><vh>pkg_from_pkg_name</vh></v>
+<v t="ekr.20080121105837.879"><vh>mod_and_pkg_from_pkg_name</vh></v>
+<v t="ekr.20080121105837.880"><vh>gen_loaded_pkgs</vh></v>
+<v t="ekr.20080121105837.881"><vh>_gen_loaded_pkgs</vh></v>
+<v t="ekr.20080121105837.882"><vh>_imported_mod_names_from_mod</vh></v>
+<v t="ekr.20080121105837.883"><vh>_pkg_info_from_mod</vh></v>
+</v>
+<v t="ekr.20080121105837.884"><vh>class CandidatesForTreeEvaluator</vh>
+<v t="ekr.20080121105837.885"><vh>built_in_blob</vh></v>
+<v t="ekr.20080121105837.886"><vh>parent_scoperef_from_scoperef</vh></v>
+<v t="ekr.20080121105837.887"><vh>_elem_from_scoperef</vh></v>
+<v t="ekr.20080121105837.888"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.889"><vh>_join_citdl_expr</vh></v>
+<v t="ekr.20080121105837.890"><vh>_check_infinite_recursion</vh></v>
+</v>
+<v t="ekr.20080121105837.891"><vh>class PerlTreeEvaluatorBase</vh>
+<v t="ekr.20080121105837.892"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.893"><vh>pre_eval</vh></v>
+<v t="ekr.20080121105837.894"><vh>_func_members_from_pkg</vh></v>
+<v t="ekr.20080121105837.895"><vh>post_process_cplns</vh></v>
+</v>
+<v t="ekr.20080121105837.896"><vh>class PerlPackageMembersTreeEvaluator</vh>
+<v t="ekr.20080121105837.897"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.898"><vh>_members_from_pkg</vh></v>
+</v>
+<v t="ekr.20080121105837.899"><vh>class PerlPackageSubsTreeEvaluator</vh>
+<v t="ekr.20080121105837.900"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.901"><vh>_func_members_from_pkg</vh></v>
+</v>
+<v t="ekr.20080121105837.902"><vh>class PerlTreeEvaluator</vh>
+<v t="ekr.20080121105837.903"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.904"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.905"><vh>eval_calltips</vh></v>
+<v t="ekr.20080121105837.906"><vh>eval_defns</vh></v>
+<v t="ekr.20080121105837.907"><vh>_perl_type_from_elem</vh></v>
+<v t="ekr.20080121105837.908"><vh>_calltip_from_func</vh></v>
+<v t="ekr.20080121105837.909"><vh>_hit_from_citdl</vh></v>
+<v t="ekr.20080121105837.910"><vh>_hit_from_first_part</vh></v>
+<v t="ekr.20080121105837.911"><vh>_hit_from_getattr</vh></v>
+<v t="ekr.20080121105837.912"><vh>_inherited_mods_and_pkgs_from_pkg</vh></v>
+<v t="ekr.20080121105837.913"><vh>_hit_from_elem_imports</vh></v>
+<v t="ekr.20080121105837.914"><vh>_hit_from_variable_type_inference</vh></v>
+<v t="ekr.20080121105837.915"><vh>_hit_from_type_inference</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.916"><vh>tree_php.py</vh>
+<v t="ekr.20080121105837.917"><vh>tree_php declarations</vh></v>
+<v t="ekr.20080121105837.918"><vh>class PHPTreeEvaluator</vh>
+<v t="ekr.20080121105837.919"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.920"><vh>libs</vh></v>
+<v t="ekr.20080121105837.921"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.922"><vh>eval_calltips</vh></v>
+<v t="ekr.20080121105837.923"><vh>eval_defns</vh></v>
+<v t="ekr.20080121105837.924"><vh>_return_with_hit</vh></v>
+<v t="ekr.20080121105837.925"><vh>_element_names_from_scope_starting_with_expr</vh></v>
+<v t="ekr.20080121105837.926"><vh>_variables_from_scope</vh></v>
+<v t="ekr.20080121105837.927"><vh>_constants_from_scope</vh></v>
+<v t="ekr.20080121105837.928"><vh>_functions_from_scope</vh></v>
+<v t="ekr.20080121105837.929"><vh>_classes_from_scope</vh></v>
+<v t="ekr.20080121105837.930"><vh>_interfaces_from_scope</vh></v>
+<v t="ekr.20080121105837.931"><vh>_calltips_from_hit</vh></v>
+<v t="ekr.20080121105837.932"><vh>_calltip_from_class</vh></v>
+<v t="ekr.20080121105837.933"><vh>_members_from_elem</vh></v>
+<v t="ekr.20080121105837.934"><vh>_isElemInsideScoperef</vh></v>
+<v t="ekr.20080121105837.935"><vh>_members_from_hit</vh></v>
+<v t="ekr.20080121105837.936"><vh>_hit_from_citdl</vh></v>
+<v t="ekr.20080121105837.937"><vh>_elem_from_scoperef</vh></v>
+<v t="ekr.20080121105837.938"><vh>_hit_from_first_part</vh></v>
+<v t="ekr.20080121105837.939"><vh>_hit_from_elem_imports</vh></v>
+<v t="ekr.20080121105837.940"><vh>_hit_from_getattr</vh></v>
+<v t="ekr.20080121105837.941"><vh>_hit_from_call</vh></v>
+<v t="ekr.20080121105837.942"><vh>_hit_from_variable_type_inference</vh></v>
+<v t="ekr.20080121105837.943"><vh>parent_scoperef_from_scoperef</vh></v>
+<v t="ekr.20080121105837.944"><vh>built_in_blob</vh></v>
+<v t="ekr.20080121105837.945"><vh>built_in_cache</vh></v>
+<v t="ekr.20080121105837.946"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.947"><vh>_join_citdl_expr</vh></v>
+<v t="ekr.20080121105837.948"><vh>_calltip_from_func</vh></v>
+<v t="ekr.20080121105837.949"><vh>_get_global_scoperef</vh></v>
+<v t="ekr.20080121105837.950"><vh>_convertListToCitdl</vh></v>
+<v t="ekr.20080121105837.951"><vh>_make_shortname_lookup_citdl_dict</vh></v>
+<v t="ekr.20080121105837.952"><vh>_get_all_children_with_details</vh></v>
+<v t="ekr.20080121105837.953"><vh>_get_import_blob_with_module_name</vh></v>
+<v t="ekr.20080121105837.954"><vh>_get_all_import_blobs_dict_for_elem</vh></v>
+<v t="ekr.20080121105837.955"><vh>_get_all_import_blobs_for_elem</vh></v>
+<v t="ekr.20080121105837.956"><vh>_php_cache_from_elem</vh></v>
+<v t="ekr.20080121105837.957"><vh>variable_names_from_elem</vh></v>
+<v t="ekr.20080121105837.958"><vh>constant_names_from_elem</vh></v>
+<v t="ekr.20080121105837.959"><vh>constant_shortnames_from_elem</vh></v>
+<v t="ekr.20080121105837.960"><vh>function_names_from_elem</vh></v>
+<v t="ekr.20080121105837.961"><vh>function_shortnames_from_elem</vh></v>
+<v t="ekr.20080121105837.962"><vh>class_names_from_elem</vh></v>
+<v t="ekr.20080121105837.963"><vh>interface_names_from_elem</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.988"><vh>tree_ruby.py</vh>
+<v t="ekr.20080121105837.989"><vh>tree_ruby declarations</vh></v>
+<v t="ekr.20080121105837.990"><vh>class HitHelper</vh>
+<v t="ekr.20080121105837.991"><vh>get_name</vh></v>
+<v t="ekr.20080121105837.992"><vh>get_type</vh></v>
+<v t="ekr.20080121105837.993"><vh>is_class</vh></v>
+<v t="ekr.20080121105837.994"><vh>is_compound</vh></v>
+<v t="ekr.20080121105837.995"><vh>is_function</vh></v>
+<v t="ekr.20080121105837.996"><vh>is_namespace</vh></v>
+<v t="ekr.20080121105837.997"><vh>is_variable</vh></v>
+</v>
+<v t="ekr.20080121105837.998"><vh>class TreeEvaluatorHelper</vh>
+<v t="ekr.20080121105837.999"><vh>_elem_from_scoperef</vh></v>
+<v t="ekr.20080121105837.1000"><vh>_calltip_from_func</vh></v>
+<v t="ekr.20080121105837.1001"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.1002"><vh>libs</vh></v>
+</v>
+<v t="ekr.20080121105837.1003"><vh>class RubyTreeEvaluator</vh>
+<v t="ekr.20080121105837.1004"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1005"><vh>_rec_check_inc_getattr</vh></v>
+<v t="ekr.20080121105837.1006"><vh>_rec_check_dec_getattr</vh></v>
+<v t="ekr.20080121105837.1007"><vh>_skip_common_ref</vh></v>
+<v t="ekr.20080121105837.1008"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.1009"><vh>eval_cplns</vh></v>
+<v t="ekr.20080121105837.1010"><vh>_filter_by_prefix</vh></v>
+<v t="ekr.20080121105837.1011"><vh>eval_calltips</vh></v>
+<v t="ekr.20080121105837.1012"><vh>eval_defns</vh></v>
+<v t="ekr.20080121105837.1013"><vh>_flatten</vh></v>
+<v t="ekr.20080121105837.1014"><vh>_calc_base_scoperefs</vh></v>
+<v t="ekr.20080121105837.1015"><vh>_is_rails_application_controller</vh></v>
+<v t="ekr.20080121105837.1016"><vh>_is_alias</vh></v>
+<v t="ekr.20080121105837.1017"><vh>_calltips_from_hits</vh></v>
+<v t="ekr.20080121105837.1018"><vh>_uniqify</vh></v>
+<v t="ekr.20080121105837.1019"><vh>_find_first_scoperef</vh></v>
+<v t="ekr.20080121105837.1020"><vh>_elem_classification</vh></v>
+<v t="ekr.20080121105837.1021"><vh>_cplns_from_hits</vh></v>
+<v t="ekr.20080121105837.1022"><vh>_members_from_elem</vh></v>
+<v t="ekr.20080121105837.1023"><vh>_hits_from_classref</vh></v>
+<v t="ekr.20080121105837.1024"><vh>_hits_from_citdl</vh></v>
+<v t="ekr.20080121105837.1025"><vh>_hits_from_getattr</vh></v>
+<v t="ekr.20080121105837.1026"><vh>_hits_from_getattr_aux</vh></v>
+<v t="ekr.20080121105837.1027"><vh>_hit_from_elem_imports</vh></v>
+<v t="ekr.20080121105837.1028"><vh>_hit_from_type_inference</vh></v>
+<v t="ekr.20080121105837.1029"><vh>_get_kernel_hit</vh></v>
+<v t="ekr.20080121105837.1030"><vh>_hits_from_first_part</vh></v>
+<v t="ekr.20080121105837.1031"><vh>_append_hits_from_name</vh></v>
+<v t="ekr.20080121105837.1032"><vh>_get_imported_blob</vh></v>
+<v t="ekr.20080121105837.1033"><vh>_get_imported_blob_from_name</vh></v>
+<v t="ekr.20080121105837.1034"><vh>_get_included_modules</vh></v>
+<v t="ekr.20080121105837.1035"><vh>_get_required_modules</vh></v>
+<v t="ekr.20080121105837.1036"><vh>_hits_from_variable_type_inference</vh></v>
+<v t="ekr.20080121105837.1037"><vh>built_in_blob</vh></v>
+<v t="ekr.20080121105837.1038"><vh>parent_scoperef_from_scoperef</vh></v>
+<v t="ekr.20080121105837.1039"><vh>post_process_cplns</vh></v>
+<v t="ekr.20080121105837.1040"><vh>post_process_calltips</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080121105837.1041"><vh>lang_xxx.py</vh>
+<v t="ekr.20080121105837.1042"><vh>lang_css.py</vh>
+<v t="ekr.20080121105837.1043"><vh>lang_css declarations</vh></v>
+<v t="ekr.20080121105837.1044"><vh>class CSSLexer</vh>
+<v t="ekr.20080121105837.1045"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1046"><vh>class _StraightCSSStyleClassifier</vh>
+<v t="ekr.20080121105837.1047"><vh>is_css_style</vh></v>
+<v t="ekr.20080121105837.1048"><vh>is_default</vh></v>
+<v t="ekr.20080121105837.1049"><vh>is_comment</vh></v>
+<v t="ekr.20080121105837.1050"><vh>is_string</vh></v>
+<v t="ekr.20080121105837.1051"><vh>is_operator</vh></v>
+<v t="ekr.20080121105837.1052"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.1053"><vh>is_value</vh></v>
+<v t="ekr.20080121105837.1054"><vh>is_tag</vh></v>
+<v t="ekr.20080121105837.1055"><vh>is_class</vh></v>
+<v t="ekr.20080121105837.1056"><vh>is_number</vh></v>
+<v t="ekr.20080121105837.1057"><vh>default_styles</vh></v>
+<v t="ekr.20080121105837.1058"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.1059"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.1060"><vh>operator_styles</vh></v>
+<v t="ekr.20080121105837.1061"><vh>identifier_styles</vh></v>
+<v t="ekr.20080121105837.1062"><vh>value_styles</vh></v>
+<v t="ekr.20080121105837.1063"><vh>tag_styles</vh></v>
+<v t="ekr.20080121105837.1064"><vh>class_styles</vh></v>
+<v t="ekr.20080121105837.1065"><vh>number_styles</vh></v>
+<v t="ekr.20080121105837.1066"><vh>ignore_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.1067"><vh>class _UDLCSSStyleClassifier</vh>
+<v t="ekr.20080121105837.1068"><vh>is_css_style</vh></v>
+<v t="ekr.20080121105837.1069"><vh>_is_html_style_attribute</vh></v>
+<v t="ekr.20080121105837.1070"><vh>is_identifier</vh></v>
+<v t="ekr.20080121105837.1071"><vh>is_class</vh></v>
+<v t="ekr.20080121105837.1072"><vh>is_tag</vh></v>
+<v t="ekr.20080121105837.1073"><vh>default_styles</vh></v>
+<v t="ekr.20080121105837.1074"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.1075"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.1076"><vh>operator_styles</vh></v>
+<v t="ekr.20080121105837.1077"><vh>identifier_styles</vh></v>
+<v t="ekr.20080121105837.1078"><vh>value_styles</vh></v>
+<v t="ekr.20080121105837.1079"><vh>tag_styles</vh></v>
+<v t="ekr.20080121105837.1080"><vh>number_styles</vh></v>
+<v t="ekr.20080121105837.1081"><vh>ignore_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.1082"><vh>class CSSLangIntel</vh>
+<v t="ekr.20080121105837.1083"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1084"><vh>_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1085"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1086"><vh>_async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1087"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1088"><vh>_get_all_anchors_names_in_project</vh></v>
+<v t="ekr.20080121105837.1089"><vh>_is_ident_of_length</vh></v>
+<v t="ekr.20080121105837.1090"><vh>_extract_css_declaration</vh></v>
+</v>
+<v t="ekr.20080121105837.1091"><vh>class CSSBuffer</vh></v>
+<v t="ekr.20080121105837.1092"><vh>_isident_first_char</vh></v>
+<v t="ekr.20080121105837.1093"><vh>_isident</vh></v>
+<v t="ekr.20080121105837.1094"><vh>_isdigit</vh></v>
+<v t="ekr.20080121105837.1095"><vh>_is_udl_css_ident</vh></v>
+<v t="ekr.20080121105837.1096"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1097"><vh>lang_django.py</vh>
+<v t="ekr.20080121105837.1098"><vh>lang_django declarations</vh></v>
+<v t="ekr.20080121105837.1099"><vh>class DjangoLexer</vh></v>
+<v t="ekr.20080121105837.1100"><vh>class DjangoBuffer</vh></v>
+<v t="ekr.20080121105837.1101"><vh>class DjangoCILEDriver</vh></v>
+<v t="ekr.20080121105837.1102"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1103"><vh>lang_html.py</vh>
+<v t="ekr.20080121105837.1104"><vh>lang_html declarations</vh></v>
+<v t="ekr.20080121105837.1105"><vh>class HTMLLexer</vh></v>
+<v t="ekr.20080121105837.1106"><vh>class HTMLLangIntel</vh></v>
+<v t="ekr.20080121105837.1107"><vh>class HTMLBuffer</vh></v>
+<v t="ekr.20080121105837.1108"><vh>class HTMLCILEDriver</vh></v>
+<v t="ekr.20080121105837.1109"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1110"><vh>lang_javascript.py</vh>
+<v t="ekr.20080121105837.1111"><vh>lang_javascript declarations</vh></v>
+<v t="ekr.20080121105837.1112"><vh>class JavaScriptLexer</vh>
+<v t="ekr.20080121105837.1113"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1114"><vh>class PureJavaScriptStyleClassifier</vh>
+<v t="ekr.20080121105837.1115"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1116"><vh>class UDLJavaScriptStyleClassifier</vh>
+<v t="ekr.20080121105837.1117"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1118"><vh>class JavaScriptLangIntel</vh>
+<v t="ekr.20080121105837.1119"><vh>cb_variable_data_from_elem</vh></v>
+<v t="ekr.20080121105837.1120"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1121"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1122"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1123"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1124"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1125"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+<v t="ekr.20080121105837.1126"><vh>lpaths_from_blob</vh></v>
+</v>
+<v t="ekr.20080121105837.1127"><vh>class JavaScriptBuffer</vh>
+<v t="ekr.20080121105837.1128"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1129"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1130"><vh>stdlib</vh></v>
+<v t="ekr.20080121105837.1131"><vh>scoperef_from_blob_and_line</vh></v>
+</v>
+<v t="ekr.20080121105837.1132"><vh>class JavaScriptImportHandler</vh>
+<v t="ekr.20080121105837.1133"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1134"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1135"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1136"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1137"><vh>class JavaScriptCILEDriver</vh>
+<v t="ekr.20080121105837.1138"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.1139"><vh>scan_multilang</vh></v>
+<v t="ekr.20080121105837.1140"><vh>scan_csl_tokens</vh></v>
+</v>
+<v t="ekr.20080121105837.1141"><vh>_sortByLineCmp</vh></v>
+<v t="ekr.20080121105837.1142"><vh>sortByLine</vh></v>
+<v t="ekr.20080121105837.1143"><vh>class JSArgs</vh>
+<v t="ekr.20080121105837.1144"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1145"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1146"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1147"><vh>class JSObject</vh>
+<v t="ekr.20080121105837.1148"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1149"><vh>addVariable</vh></v>
+<v t="ekr.20080121105837.1150"><vh>addMemberVariable</vh></v>
+<v t="ekr.20080121105837.1151"><vh>getReturnType</vh></v>
+<v t="ekr.20080121105837.1152"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1153"><vh>outline</vh></v>
+<v t="ekr.20080121105837.1154"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1155"><vh>class JSVariable</vh>
+<v t="ekr.20080121105837.1156"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1157"><vh>class JSFunction</vh>
+<v t="ekr.20080121105837.1158"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1159"><vh>addReturnType</vh></v>
+</v>
+<v t="ekr.20080121105837.1160"><vh>class JSClass</vh>
+<v t="ekr.20080121105837.1161"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1162"><vh>class JSFile</vh>
+<v t="ekr.20080121105837.1163"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1164"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1165"><vh>outline</vh></v>
+<v t="ekr.20080121105837.1166"><vh>_findScopeWithName</vh></v>
+<v t="ekr.20080121105837.1167"><vh>_lookupVariableType</vh></v>
+<v t="ekr.20080121105837.1168"><vh>_lookupVariableTypes</vh></v>
+<v t="ekr.20080121105837.1169"><vh>_updateClassConstructors</vh></v>
+<v t="ekr.20080121105837.1170"><vh>updateAllScopeNames</vh></v>
+<v t="ekr.20080121105837.1171"><vh>addVariable</vh></v>
+<v t="ekr.20080121105837.1172"><vh>convertToElementTreeModule</vh></v>
+<v t="ekr.20080121105837.1173"><vh>convertToElementTreeFile</vh></v>
+</v>
+<v t="ekr.20080121105837.1174"><vh>class JavaScriptCiler</vh>
+<v t="ekr.20080121105837.1175"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1176"><vh>setStyleValues</vh></v>
+<v t="ekr.20080121105837.1177"><vh>_logVariables</vh></v>
+<v t="ekr.20080121105837.1178"><vh>incBlock</vh></v>
+<v t="ekr.20080121105837.1179"><vh>decBlock</vh></v>
+<v t="ekr.20080121105837.1180"><vh>_findInScope</vh></v>
+<v t="ekr.20080121105837.1181"><vh>_locateScopeForName</vh></v>
+<v t="ekr.20080121105837.1182"><vh>_lookupVariableTypeFromScope</vh></v>
+<v t="ekr.20080121105837.1183"><vh>addFunction</vh></v>
+<v t="ekr.20080121105837.1184"><vh>addClassFunction</vh></v>
+<v t="ekr.20080121105837.1185"><vh>_addClassPart</vh></v>
+<v t="ekr.20080121105837.1186"><vh>addClass</vh></v>
+<v t="ekr.20080121105837.1187"><vh>addAnonymousClass</vh></v>
+<v t="ekr.20080121105837.1188"><vh>addClassOrVariableMember</vh></v>
+<v t="ekr.20080121105837.1189"><vh>addClassParent</vh></v>
+<v t="ekr.20080121105837.1190"><vh>addGetter</vh></v>
+<v t="ekr.20080121105837.1191"><vh>addSetter</vh></v>
+<v t="ekr.20080121105837.1192"><vh>_convertFunctionToClassContructor</vh></v>
+<v t="ekr.20080121105837.1193"><vh>_convertFunctionToClass</vh></v>
+<v t="ekr.20080121105837.1194"><vh>_convertFunctionToClosureVariable</vh></v>
+<v t="ekr.20080121105837.1195"><vh>_findOrCreateScope</vh></v>
+<v t="ekr.20080121105837.1196"><vh>addVariable</vh></v>
+<v t="ekr.20080121105837.1197"><vh>addObjectVariable</vh></v>
+<v t="ekr.20080121105837.1198"><vh>addReturnObject</vh></v>
+<v t="ekr.20080121105837.1199"><vh>addFunctionReturnType</vh></v>
+<v t="ekr.20080121105837.1200"><vh>_getParenArguments</vh></v>
+<v t="ekr.20080121105837.1201"><vh>_skipOverParenArguments</vh></v>
+<v t="ekr.20080121105837.1202"><vh>_skipToEndOfVariableAssignment</vh></v>
+<v t="ekr.20080121105837.1203"><vh>_getArgumentsFromPos</vh></v>
+<v t="ekr.20080121105837.1204"><vh>_getIdentifiersFromPos</vh></v>
+<v t="ekr.20080121105837.1205"><vh>_getCitdlTypeInfo</vh></v>
+<v t="ekr.20080121105837.1206"><vh>_getVariableType</vh></v>
+<v t="ekr.20080121105837.1207"><vh>_unquoteJsString</vh></v>
+<v t="ekr.20080121105837.1208"><vh>_getVariableDetail</vh></v>
+<v t="ekr.20080121105837.1209"><vh>_variableHandler</vh></v>
+<v t="ekr.20080121105837.1210"><vh>createObjectArgument</vh></v>
+<v t="ekr.20080121105837.1211"><vh>createFunctionArgument</vh></v>
+<v t="ekr.20080121105837.1212"><vh>_addCodePiece</vh></v>
+<v t="ekr.20080121105837.1213"><vh>_chooseBestVariable</vh></v>
+<v t="ekr.20080121105837.1214"><vh>_copyObjectToAnother</vh></v>
+<v t="ekr.20080121105837.1215"><vh>_handleYAHOOExtension</vh></v>
+<v t="ekr.20080121105837.1216"><vh>_removeObjectFromScope</vh></v>
+<v t="ekr.20080121105837.1217"><vh>_handleFunctionApply</vh></v>
+<v t="ekr.20080121105837.1218"><vh>_handleFunctionWithArguments</vh></v>
+<v t="ekr.20080121105837.1219"><vh>_resetState</vh></v>
+<v t="ekr.20080121105837.1220"><vh>_popPreviousState</vh></v>
+<v t="ekr.20080121105837.1221"><vh>_pushAndSetState</vh></v>
+<v t="ekr.20080121105837.1222"><vh>_endOfScanReached</vh></v>
+<v t="ekr.20080121105837.1223"><vh>token_next</vh></v>
+<v t="ekr.20080121105837.1224"><vh>scan_puretext</vh></v>
+<v t="ekr.20080121105837.1225"><vh>convertToElementTreeFile</vh></v>
+<v t="ekr.20080121105837.1226"><vh>convertToElementTreeModule</vh></v>
+</v>
+<v t="ekr.20080121105837.1227"><vh>_isident</vh></v>
+<v t="ekr.20080121105837.1228"><vh>_isdigit</vh></v>
+<v t="ekr.20080121105837.1229"><vh>_walk_js_scopes</vh></v>
+<v t="ekr.20080121105837.1230"><vh>_walk_js_symbols</vh></v>
+<v t="ekr.20080121105837.1231"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1232"><vh>lang_mason.py</vh>
+<v t="ekr.20080121105837.1233"><vh>lang_mason declarations</vh></v>
+<v t="ekr.20080121105837.1234"><vh>class MasonLexer</vh></v>
+<v t="ekr.20080121105837.1235"><vh>class MasonBuffer</vh></v>
+<v t="ekr.20080121105837.1236"><vh>class MasonCILEDriver</vh></v>
+<v t="ekr.20080121105837.1237"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1238"><vh>lang_perl.py</vh>
+<v t="ekr.20080121105837.1239"><vh>lang_perl declarations</vh></v>
+<v t="ekr.20080121105837.1240"><vh>class PerlLexer</vh>
+<v t="ekr.20080121105837.1241"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1242"><vh>class PerlImportsEvaluator</vh>
+<v t="ekr.20080121105837.1243"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1244"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.1245"><vh>class PerlLangIntel</vh>
+<v t="ekr.20080121105837.1246"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1247"><vh>citdl_expr_and_prefix_filter_from_trg</vh></v>
+<v t="ekr.20080121105837.1248"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1249"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1250"><vh>_perl_from_env</vh></v>
+<v t="ekr.20080121105837.1251"><vh>_perl_info_from_perl</vh></v>
+<v t="ekr.20080121105837.1252"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1253"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1254"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1255"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+<v t="ekr.20080121105837.1256"><vh>cb_import_data_from_elem</vh></v>
+</v>
+<v t="ekr.20080121105837.1257"><vh>class PerlBuffer</vh>
+<v t="ekr.20080121105837.1258"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1259"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1260"><vh>stdlib</vh></v>
+</v>
+<v t="ekr.20080121105837.1261"><vh>class PerlImportHandler</vh>
+<v t="ekr.20080121105837.1262"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1263"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1264"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1265"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.1266"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.1267"><vh>findSubImportsOnDisk</vh></v>
+<v t="ekr.20080121105837.1268"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1269"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1270"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1271"><vh>class PerlCILEDriver</vh>
+<v t="ekr.20080121105837.1272"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1273"><vh>scan</vh></v>
+<v t="ekr.20080121105837.1274"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.1275"><vh>scan_multilang</vh></v>
+</v>
+<v t="ekr.20080121105837.1276"><vh>_is_perl_var_char</vh></v>
+<v t="ekr.20080121105837.1277"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1278"><vh>lang_php.py (error)</vh>
+<v t="ekr.20080121105837.1279"><vh>lang_php declarations</vh></v>
+<v t="ekr.20080121105837.1280"><vh>class PHPLexer</vh></v>
+<v t="ekr.20080121105837.1281"><vh>class PHPLangIntel</vh>
+<v t="ekr.20080121105837.1282"><vh>cb_variable_data_from_elem</vh></v>
+<v t="ekr.20080121105837.1283"><vh>_functionCalltipTrigger</vh></v>
+<v t="ekr.20080121105837.1284"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1285"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1286"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1287"><vh>_citdl_expr_from_pos</vh></v>
+<v t="ekr.20080121105837.1288"><vh>citdl_expr_from_trg</vh></v>
+<v t="ekr.20080121105837.1289"><vh>citdl_expr_under_pos</vh></v>
+<v t="ekr.20080121105837.1290"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1291"><vh>_php_from_env</vh></v>
+<v t="ekr.20080121105837.1292"><vh>_php_info_from_php</vh></v>
+<v t="ekr.20080121105837.1293"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1294"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1295"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1296"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+<v t="ekr.20080121105837.1297"><vh>cb_import_data_from_elem</vh></v>
+</v>
+<v t="ekr.20080121105837.1298"><vh>class PHPBuffer</vh>
+<v t="ekr.20080121105837.1299"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1300"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1301"><vh>stdlib</vh></v>
+</v>
+<v t="ekr.20080121105837.1302"><vh>class PHPImportHandler</vh>
+<v t="ekr.20080121105837.1303"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1304"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1305"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1306"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1307"><vh>class PHPCILEDriver</vh>
+<v t="ekr.20080121105837.1308"><vh>XXXscan_purelang</vh></v>
+<v t="ekr.20080121105837.1309"><vh>scan_multilang</vh></v>
+</v>
+<v t="ekr.20080121105837.1310"><vh>_sortByLineCmp</vh></v>
+<v t="ekr.20080121105837.1311"><vh>sortByLine</vh></v>
+<v t="ekr.20080121105837.1312"><vh>class PHPArgs</vh>
+<v t="ekr.20080121105837.1313"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1314"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1315"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1316"><vh>class PHPVariable</vh>
+<v t="ekr.20080121105837.1317"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1318"><vh>addType</vh></v>
+<v t="ekr.20080121105837.1319"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1320"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1321"><vh>class PHPConstant</vh>
+<v t="ekr.20080121105837.1322"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1323"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1324"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1325"><vh>class PHPFunction</vh>
+<v t="ekr.20080121105837.1326"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1327"><vh>addReturnType</vh></v>
+<v t="ekr.20080121105837.1328"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1329"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1330"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1331"><vh>class PHPInterface</vh>
+<v t="ekr.20080121105837.1332"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1333"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1334"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1335"><vh>class PHPClass</vh>
+<v t="ekr.20080121105837.1336"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1337"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1338"><vh>toElementTree</vh></v>
+</v>
+<v t="ekr.20080121105837.1339"><vh>class PHPFile</vh>
+<v t="ekr.20080121105837.1340"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1341"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1342"><vh>convertToElementTreeModule</vh></v>
+<v t="ekr.20080121105837.1343"><vh>convertToElementTreeFile</vh></v>
+</v>
+<v t="ekr.20080121105837.1344"><vh>class PHPcile</vh>
+<v t="ekr.20080121105837.1345"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1346"><vh>_clearindex</vh></v>
+<v t="ekr.20080121105837.1347"><vh>clear</vh></v>
+<v t="ekr.20080121105837.1348"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.1349"><vh>convertToElementTreeModule</vh></v>
+<v t="ekr.20080121105837.1350"><vh>convertToElementTreeFile</vh></v>
+</v>
+<v t="ekr.20080121105837.1351"><vh>class PHPParser</vh>
+<v t="ekr.20080121105837.1352"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1353"><vh>idfunc</vh></v>
+<v t="ekr.20080121105837.1354"><vh>include_file</vh></v>
+<v t="ekr.20080121105837.1355"><vh>incBlock</vh></v>
+<v t="ekr.20080121105837.1356"><vh>decBlock</vh></v>
+<v t="ekr.20080121105837.1357"><vh>addFunction</vh></v>
+<v t="ekr.20080121105837.1358"><vh>addReturnType</vh></v>
+<v t="ekr.20080121105837.1359"><vh>addClass</vh></v>
+<v t="ekr.20080121105837.1360"><vh>addClassMember</vh></v>
+<v t="ekr.20080121105837.1361"><vh>addClassConstant</vh></v>
+<v t="ekr.20080121105837.1362"><vh>addInterface</vh></v>
+<v t="ekr.20080121105837.1363"><vh>addVariable</vh></v>
+<v t="ekr.20080121105837.1364"><vh>addConstant</vh></v>
+<v t="ekr.20080121105837.1365"><vh>_getArgumentsFromPos</vh></v>
+<v t="ekr.20080121105837.1366"><vh>_getIdentifiersFromPos</vh></v>
+<v t="ekr.20080121105837.1367"><vh>_skipPastParenArguments</vh></v>
+<v t="ekr.20080121105837.1368"><vh>_getVariableType</vh></v>
+<v t="ekr.20080121105837.1369"><vh>_getKeywordArguments</vh></v>
+<v t="ekr.20080121105837.1370"><vh>_getExtendsArgument</vh></v>
+<v t="ekr.20080121105837.1371"><vh>_getImplementsArgument</vh></v>
+<v t="ekr.20080121105837.1372"><vh>_unquoteString</vh></v>
+<v t="ekr.20080121105837.1373"><vh>_removeDollarSymbolFromVariableName</vh></v>
+<v t="ekr.20080121105837.1374"><vh>_getIncludePath</vh></v>
+<v t="ekr.20080121105837.1375"><vh>_getConstantNameAndType</vh></v>
+<v t="ekr.20080121105837.1376"><vh>_addAllVariables</vh></v>
+<v t="ekr.20080121105837.1377"><vh>_variableHandler</vh></v>
+<v t="ekr.20080121105837.1378"><vh>_addCodePiece</vh></v>
+<v t="ekr.20080121105837.1379"><vh>_resetState</vh></v>
+<v t="ekr.20080121105837.1380"><vh>token_next</vh></v>
+<v t="ekr.20080121105837.1381"><vh>scan_multilang_content</vh></v>
+<v t="ekr.20080121105837.1382"><vh>convertToElementTreeFile</vh></v>
+<v t="ekr.20080121105837.1383"><vh>convertToElementTreeModule</vh></v>
+</v>
+<v t="ekr.20080121105837.1384"><vh>_isident</vh></v>
+<v t="ekr.20080121105837.1385"><vh>_isdigit</vh></v>
+<v t="ekr.20080121105837.1386"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1423"><vh>lang_rhtml.py</vh>
+<v t="ekr.20080121105837.1424"><vh>lang_rhtml declarations</vh></v>
+<v t="ekr.20080121105837.1425"><vh>class RHTMLLexer</vh></v>
+<v t="ekr.20080121105837.1426"><vh>class RHTMLBuffer</vh>
+<v t="ekr.20080121105837.1427"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1428"><vh>class RHTMLCILEDriver</vh></v>
+<v t="ekr.20080121105837.1429"><vh>_isident</vh></v>
+<v t="ekr.20080121105837.1430"><vh>_isdigit</vh></v>
+<v t="ekr.20080121105837.1431"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1432"><vh>lang_ruby.py (error)</vh>
+<v t="ekr.20080121105837.1433"><vh>lang_ruby declarations</vh></v>
+<v t="ekr.20080121105837.1434"><vh>class RubyLexer</vh>
+<v t="ekr.20080121105837.1435"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1436"><vh>class RubyCitadelEvaluator</vh>
+<v t="ekr.20080121105837.1437"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1438"><vh>post_process_calltips</vh></v>
+<v t="ekr.20080121105837.1439"><vh>post_process_cplns</vh></v>
+</v>
+<v t="ekr.20080121105837.1440"><vh>class RubyImportsEvaluator</vh>
+<v t="ekr.20080121105837.1441"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1442"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1443"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.1444"><vh>class RubyBuffer</vh>
+<v t="ekr.20080121105837.1445"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1446"><vh>libs</vh></v>
+</v>
+<v t="ekr.20080121105837.1447"><vh>class _CommonStyleClassifier</vh>
+<v t="ekr.20080121105837.1448"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1449"><vh>ignore_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.1450"><vh>class _RubyStyleClassifier</vh>
+<v t="ekr.20080121105837.1451"><vh>is_ruby_style_at_pos</vh></v>
+<v t="ekr.20080121105837.1452"><vh>is_identifier_or_word_style</vh></v>
+<v t="ekr.20080121105837.1453"><vh>is_identifier_style</vh></v>
+<v t="ekr.20080121105837.1454"><vh>is_operator_style</vh></v>
+<v t="ekr.20080121105837.1455"><vh>is_default_style</vh></v>
+<v t="ekr.20080121105837.1456"><vh>__getattr__</vh></v>
+</v>
+<v t="ekr.20080121105837.1457"><vh>class _UDLStyleClassifier</vh>
+<v t="ekr.20080121105837.1458"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1459"><vh>is_ruby_style_at_pos</vh></v>
+<v t="ekr.20080121105837.1460"><vh>implicit_completion_skip_styles</vh></v>
+<v t="ekr.20080121105837.1461"><vh>completion_skip_styles</vh></v>
+<v t="ekr.20080121105837.1462"><vh>is_identifier_or_word_style</vh></v>
+<v t="ekr.20080121105837.1463"><vh>is_identifier_style</vh></v>
+<v t="ekr.20080121105837.1464"><vh>is_operator_style</vh></v>
+<v t="ekr.20080121105837.1465"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.1466"><vh>number_styles</vh></v>
+<v t="ekr.20080121105837.1467"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.1468"><vh>is_default_style</vh></v>
+</v>
+<v t="ekr.20080121105837.1469"><vh>class RubyLangIntel</vh>
+<v t="ekr.20080121105837.1470"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1471"><vh>_ruby_from_env</vh></v>
+<v t="ekr.20080121105837.1472"><vh>_ruby_info_from_ruby</vh></v>
+<v t="ekr.20080121105837.1473"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1474"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1475"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1476"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+<v t="ekr.20080121105837.1477"><vh>_get_prev_token_skip_ws</vh></v>
+<v t="ekr.20080121105837.1478"><vh>_get_token_before_namelist</vh></v>
+<v t="ekr.20080121105837.1479"><vh>_is_completable_name</vh></v>
+<v t="ekr.20080121105837.1480"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1481"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1482"><vh>citdl_expr_from_trg</vh></v>
+<v t="ekr.20080121105837.1483"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1484"><vh>cb_import_data_from_elem</vh></v>
+<v t="ekr.20080121105837.1485"><vh>calltip_verify_termination</vh></v>
+</v>
+<v t="ekr.20080121105837.1486"><vh>class RubyImportHandler</vh>
+<v t="ekr.20080121105837.1487"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1488"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1489"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1490"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.1491"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.1492"><vh>findSubImportsOnDisk</vh></v>
+<v t="ekr.20080121105837.1493"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1494"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1495"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1496"><vh>_blob_scope_from_codeintel_tree</vh></v>
+<v t="ekr.20080121105837.1497"><vh>class RubyCILEDriver</vh>
+<v t="ekr.20080121105837.1498"><vh>scan</vh></v>
+<v t="ekr.20080121105837.1499"><vh>scan_purelang</vh></v>
+<v t="ekr.20080121105837.1500"><vh>scan_multilang</vh></v>
+</v>
+<v t="ekr.20080121105837.1501"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1502"><vh>lang_ruby_common.py</vh>
+<v t="ekr.20080121105837.1503"><vh>lang_ruby_common declarations</vh></v>
+<v t="ekr.20080121105837.1504"><vh>class RubyCommonBufferMixin</vh>
+<v t="ekr.20080121105837.1505"><vh>check_for_rails_app_path</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1506"><vh>lang_smarty.py</vh>
+<v t="ekr.20080121105837.1507"><vh>lang_smarty declarations</vh></v>
+<v t="ekr.20080121105837.1508"><vh>class SmartyLexer</vh></v>
+<v t="ekr.20080121105837.1509"><vh>class SmartyBuffer</vh></v>
+<v t="ekr.20080121105837.1510"><vh>class SmartyCILEDriver</vh></v>
+<v t="ekr.20080121105837.1511"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1512"><vh>lang_tcl.py</vh>
+<v t="ekr.20080121105837.1513"><vh>lang_tcl declarations</vh></v>
+<v t="ekr.20080121105837.1514"><vh>class TclLexer</vh>
+<v t="ekr.20080121105837.1515"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1516"><vh>class TclBuffer</vh></v>
+<v t="ekr.20080121105837.1517"><vh>class TclLangIntel</vh>
+<v t="ekr.20080121105837.1518"><vh>cb_import_data_from_elem</vh></v>
+</v>
+<v t="ekr.20080121105837.1519"><vh>class TclImportHandler</vh>
+<v t="ekr.20080121105837.1520"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1521"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1522"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1523"><vh>genScannableFiles</vh></v>
+</v>
+<v t="ekr.20080121105837.1524"><vh>class TclCILEDriverOld</vh>
+<v t="ekr.20080121105837.1525"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1526"><vh>scan</vh></v>
+<v t="ekr.20080121105837.1527"><vh>scan_purelang</vh></v>
+</v>
+<v t="ekr.20080121105837.1528"><vh>class TclCILEDriverNew</vh>
+<v t="ekr.20080121105837.1529"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1530"><vh>scan</vh></v>
+<v t="ekr.20080121105837.1531"><vh>scan_purelang</vh></v>
+</v>
+<v t="ekr.20080121105837.1532"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1533"><vh>lang_templatetoolkit.py</vh>
+<v t="ekr.20080121105837.1534"><vh>lang_templatetoolkit declarations</vh></v>
+<v t="ekr.20080121105837.1535"><vh>class TemplateToolkitLexer</vh></v>
+<v t="ekr.20080121105837.1536"><vh>class TemplateToolkitBuffer</vh></v>
+<v t="ekr.20080121105837.1537"><vh>class TemplateToolkitCILEDriver</vh></v>
+<v t="ekr.20080121105837.1538"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1539"><vh>lang_xbl.py</vh>
+<v t="ekr.20080121105837.1540"><vh>lang_xbl declarations</vh></v>
+<v t="ekr.20080121105837.1541"><vh>class XBLLexer</vh></v>
+<v t="ekr.20080121105837.1542"><vh>class XBLBuffer</vh></v>
+<v t="ekr.20080121105837.1543"><vh>class XBLCILEDriver</vh></v>
+<v t="ekr.20080121105837.1544"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1545"><vh>lang_xml.py (error)</vh>
+<v t="ekr.20080121105837.1546"><vh>lang_xml declarations</vh></v>
+<v t="ekr.20080121105837.1547"><vh>class XMLLexer</vh></v>
+<v t="ekr.20080121105837.1548"><vh>class XMLLangIntel</vh>
+<v t="ekr.20080121105837.1549"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1550"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1551"><vh>async_eval_at_trg</vh></v>
+</v>
+<v t="ekr.20080121105837.1552"><vh>class XMLBuffer</vh></v>
+<v t="ekr.20080121105837.1553"><vh>register</vh></v>
+<v t="ekr.20080121105837.1554"><vh>getTreeForDocument</vh></v>
+<v t="ekr.20080121105837.1555"><vh>getNodeForPosition</vh></v>
+<v t="ekr.20080121105837.1556"><vh>getDefaultCompletion</vh></v>
+<v t="ekr.20080121105837.1557"><vh>getValidTagNames</vh></v>
+<v t="ekr.20080121105837.1558"><vh>getValidAttributes</vh></v>
+<v t="ekr.20080121105837.1559"><vh>getValidAttributeValues</vh></v>
+<v t="ekr.20080121105837.1560"><vh>_StartTagNameAutoComplete</vh></v>
+<v t="ekr.20080121105837.1561"><vh>_StartLocalTagNameAutoComplete</vh></v>
+<v t="ekr.20080121105837.1562"><vh>_EndTagAutoComplete</vh></v>
+<v t="ekr.20080121105837.1563"><vh>_StartAttrValueAutoComplete</vh></v>
+<v t="ekr.20080121105837.1564"><vh>_StartAttrAutoComplete</vh></v>
+</v>
+<v t="ekr.20080121105837.1565"><vh>lang_xslt.py</vh>
+<v t="ekr.20080121105837.1566"><vh>lang_xslt declarations</vh></v>
+<v t="ekr.20080121105837.1567"><vh>class XSLTLexer</vh></v>
+<v t="ekr.20080121105837.1568"><vh>class XSLTBuffer</vh></v>
+<v t="ekr.20080121105837.1569"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1570"><vh>lang_xul.py</vh>
+<v t="ekr.20080121105837.1571"><vh>lang_xul declarations</vh></v>
+<v t="ekr.20080121105837.1572"><vh>class XULLexer</vh></v>
+<v t="ekr.20080121105837.1573"><vh>class XULBuffer</vh></v>
+<v t="ekr.20080121105837.1574"><vh>class XULCILEDriver</vh></v>
+<v t="ekr.20080121105837.1575"><vh>register</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1576"><vh>udl.py (user defined language)</vh>
+<v t="ekr.20080121105837.1577"><vh>udl declarations</vh></v>
+<v t="ekr.20080121105837.1578"><vh>is_udl_m_style</vh></v>
+<v t="ekr.20080121105837.1579"><vh>is_udl_css_style</vh></v>
+<v t="ekr.20080121105837.1580"><vh>is_udl_csl_style</vh></v>
+<v t="ekr.20080121105837.1581"><vh>is_udl_ssl_style</vh></v>
+<v t="ekr.20080121105837.1582"><vh>is_udl_tpl_style</vh></v>
+<v t="ekr.20080121105837.1583"><vh>_lexudl_path_escape</vh></v>
+<v t="ekr.20080121105837.1584"><vh>_urlescape</vh></v>
+<v t="ekr.20080121105837.1585"><vh>class UDLLexer</vh>
+<v t="ekr.20080121105837.1586"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1587"><vh>class UDLBuffer</vh>
+<v t="ekr.20080121105837.1588"><vh>lang_from_style</vh></v>
+<v t="ekr.20080121105837.1589"><vh>lang_from_pos</vh></v>
+<v t="ekr.20080121105837.1590"><vh>scoperef_from_pos</vh></v>
+<v t="ekr.20080121105837.1591"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1592"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1593"><vh>curr_calltip_arg_range</vh></v>
+<v t="ekr.20080121105837.1594"><vh>async_eval_at_trg</vh></v>
+<v t="ekr.20080121105837.1595"><vh>defn_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.1596"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1597"><vh>style_names_from_style_num</vh></v>
+<v t="ekr.20080121105837.1598"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.1599"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.1600"><vh>number_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.1601"><vh>class XMLParsingBufferMixin</vh>
+<v t="ekr.20080121105837.1602"><vh>xml_tree</vh></v>
+<v t="ekr.20080121105837.1603"><vh>xml_parse</vh></v>
+</v>
+<v t="ekr.20080121105837.1604"><vh>class _NotYetSet</vh></v>
+<v t="ekr.20080121105837.1605"><vh>class UDLCILEDriver</vh>
+<v t="ekr.20080121105837.1606"><vh>master_cile_driver</vh></v>
+<v t="ekr.20080121105837.1607"><vh>scan_purelang</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20080121105837.1608"><vh>manager.py</vh>
+<v t="ekr.20080121105837.1609"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1610"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1611"><vh>upgrade</vh></v>
+<v t="ekr.20080121105837.1612"><vh>initialize</vh></v>
+<v t="ekr.20080121105837.1613"><vh>register_langs</vh></v>
+<v t="ekr.20080121105837.1614"><vh>register_lang</vh></v>
+<v t="ekr.20080121105837.1615"><vh>set_lang_info</vh></v>
+<v t="ekr.20080121105837.1616"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.1617"><vh>batch_update</vh></v>
+<v t="ekr.20080121105837.1618"><vh>is_registered_lang</vh></v>
+<v t="ekr.20080121105837.1619"><vh>is_multilang</vh></v>
+<v t="ekr.20080121105837.1620"><vh>is_xml_lang</vh></v>
+<v t="ekr.20080121105837.1621"><vh>is_cpln_lang</vh></v>
+<v t="ekr.20080121105837.1622"><vh>get_cpln_langs</vh></v>
+<v t="ekr.20080121105837.1623"><vh>is_citadel_lang</vh></v>
+<v t="ekr.20080121105837.1624"><vh>get_citadel_langs</vh></v>
+<v t="ekr.20080121105837.1625"><vh>langintel_from_lang</vh></v>
+<v t="ekr.20080121105837.1626"><vh>buf_from_koIDocument</vh></v>
+<v t="ekr.20080121105837.1627"><vh>buf_from_content</vh></v>
+<v t="ekr.20080121105837.1628"><vh>buf_from_path</vh></v>
+<v t="ekr.20080121105837.1629"><vh>request_eval</vh></v>
+<v t="ekr.20080121105837.1630"><vh>request_reeval</vh></v>
+<v t="ekr.20080121105837.1631"><vh>stop</vh></v>
+<v t="ekr.20080121105837.1632"><vh>run</vh></v>
+<v t="ekr.20080121105837.1633"><vh>_handle_eval_sess</vh></v>
+<v t="ekr.20080121105837.1634"><vh>_put</vh></v>
+<v t="ekr.20080121105837.1635"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.1636"><vh>parser_cix.py</vh>
+<v t="ekr.20080121105837.1637"><vh>parser_cix declarations</vh></v>
+<v t="ekr.20080121105837.1638"><vh>get_common_attrs</vh></v>
+<v t="ekr.20080121105837.1639"><vh>sort_by_lines</vh></v>
+<v t="ekr.20080121105837.1640"><vh>get_arguments_cix</vh></v>
+<v t="ekr.20080121105837.1641"><vh>get_docstring_cix</vh></v>
+<v t="ekr.20080121105837.1642"><vh>get_imports_cix</vh></v>
+<v t="ekr.20080121105837.1643"><vh>get_includes_cix</vh></v>
+<v t="ekr.20080121105837.1644"><vh>get_signature_cix</vh></v>
+<v t="ekr.20080121105837.1645"><vh>get_var_cix</vh></v>
+<v t="ekr.20080121105837.1646"><vh>_local_varname_test</vh></v>
+<v t="ekr.20080121105837.1647"><vh>_local_varname_test_true</vh></v>
+<v t="ekr.20080121105837.1648"><vh>_get_vars_helper</vh></v>
+<v t="ekr.20080121105837.1649"><vh>get_globals_cix</vh></v>
+<v t="ekr.20080121105837.1650"><vh>get_vars_cix</vh></v>
+<v t="ekr.20080121105837.1651"><vh>common_module_class_cix</vh></v>
+<v t="ekr.20080121105837.1652"><vh>classref_etree_cix</vh></v>
+<v t="ekr.20080121105837.1653"><vh>class_etree_cix</vh></v>
+<v t="ekr.20080121105837.1654"><vh>method_etree_cix</vh></v>
+<v t="ekr.20080121105837.1655"><vh>module_etree_cix</vh></v>
+<v t="ekr.20080121105837.1656"><vh>visit_children_get_cix</vh></v>
+<v t="ekr.20080121105837.1657"><vh>produce_elementTree_cix</vh></v>
+<v t="ekr.20080121105837.1658"><vh>produce_elementTree_contents_cix</vh></v>
+</v>
+<v t="ekr.20080121105837.1659"><vh>parser_data.py</vh>
+<v t="ekr.20080121105837.1660"><vh>parser_data declarations</vh></v>
+<v t="ekr.20080121105837.1661"><vh>class Name_LineNum</vh>
+<v t="ekr.20080121105837.1662"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1663"><vh>class VarInfo</vh>
+<v t="ekr.20080121105837.1664"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1665"><vh>update_collection</vh></v>
+<v t="ekr.20080121105837.1666"><vh>class Node</vh>
+<v t="ekr.20080121105837.1667"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1668"><vh>append_node</vh></v>
+<v t="ekr.20080121105837.1669"><vh>set_line_end_num</vh></v>
+<v t="ekr.20080121105837.1670"><vh>dump_kids</vh></v>
+<v t="ekr.20080121105837.1671"><vh>dump2</vh></v>
+<v t="ekr.20080121105837.1672"><vh>dump_collection</vh></v>
+</v>
+<v t="ekr.20080121105837.1673"><vh>class ClassNode</vh>
+<v t="ekr.20080121105837.1674"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1675"><vh>add_classrefs</vh></v>
+<v t="ekr.20080121105837.1676"><vh>has_classref</vh></v>
+<v t="ekr.20080121105837.1677"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.1678"><vh>class FileNode</vh>
+<v t="ekr.20080121105837.1679"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1680"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.1681"><vh>class ArgNode</vh>
+<v t="ekr.20080121105837.1682"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1683"><vh>get_full_name</vh></v>
+</v>
+<v t="ekr.20080121105837.1684"><vh>class MethodNode</vh>
+<v t="ekr.20080121105837.1685"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1686"><vh>add_arg</vh></v>
+<v t="ekr.20080121105837.1687"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.1688"><vh>class ModuleNode</vh>
+<v t="ekr.20080121105837.1689"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1690"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.1691"><vh>class VariableNode</vh>
+<v t="ekr.20080121105837.1692"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1693"><vh>dump</vh></v>
+</v>
+<v t="ekr.20080121105837.1694"><vh>class BlockNode</vh>
+<v t="ekr.20080121105837.1695"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1696"><vh>dump</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1697"><vh>parseutil.py</vh>
+<v t="ekr.20080121105837.1698"><vh>parseutil declarations</vh></v>
+<v t="ekr.20080121105837.1699"><vh>tryEncoding</vh></v>
+<v t="ekr.20080121105837.1700"><vh>getEncodedBuffer</vh></v>
+<v t="ekr.20080121105837.1701"><vh>getAttrStr</vh></v>
+<v t="ekr.20080121105837.1702"><vh>xmlencode</vh></v>
+<v t="ekr.20080121105837.1703"><vh>cdataescape</vh></v>
+<v t="ekr.20080121105837.1704"><vh>urlencode_path</vh></v>
+<v t="ekr.20080121105837.1705"><vh>uncommentDocString</vh></v>
+<v t="ekr.20080121105837.1706"><vh>parseDocString</vh></v>
+<v t="ekr.20080121105837.1707"><vh>class recollector</vh>
+<v t="ekr.20080121105837.1708"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1709"><vh>add</vh></v>
+</v>
+<v t="ekr.20080121105837.1710"><vh>class Lexer</vh>
+<v t="ekr.20080121105837.1711"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1712"><vh>nexttok</vh></v>
+<v t="ekr.20080121105837.1713"><vh>settext</vh></v>
+<v t="ekr.20080121105837.1714"><vh>addmatch</vh></v>
+<v t="ekr.20080121105837.1715"><vh>scan</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1716"><vh>tree.py</vh>
+<v t="ekr.20080121105837.1717"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1718"><vh>tree_2_0_from_tree_0_1</vh></v>
+<v t="ekr.20080121105837.1719"><vh>tree_from_cix_path</vh></v>
+<v t="ekr.20080121105837.1720"><vh>tree_from_cix</vh></v>
+<v t="ekr.20080121105837.1721"><vh>pretty_tree_from_tree</vh></v>
+<v t="ekr.20080121105837.1722"><vh>check_tree</vh></v>
+<v t="ekr.20080121105837.1723"><vh>class TreeEvaluator</vh>
+<v t="ekr.20080121105837.1724"><vh>get_start_scoperef</vh></v>
+<v t="ekr.20080121105837.1725"><vh>eval</vh></v>
+<v t="ekr.20080121105837.1726"><vh>scope_stack_from_tree_and_linenum</vh></v>
+<v t="ekr.20080121105837.1727"><vh>_tokenize_citdl_expr</vh></v>
+<v t="ekr.20080121105837.1728"><vh>_join_citdl_expr</vh></v>
+<v t="ekr.20080121105837.1729"><vh>str_elem</vh></v>
+<v t="ekr.20080121105837.1730"><vh>str_elem_and_children</vh></v>
+<v t="ekr.20080121105837.1731"><vh>str_import</vh></v>
+<v t="ekr.20080121105837.1732"><vh>log_start</vh></v>
+<v t="ekr.20080121105837.1733"><vh>log</vh></v>
+<v t="ekr.20080121105837.1734"><vh>pre_eval</vh></v>
+<v t="ekr.20080121105837.1735"><vh>_eval_citdl_expr</vh></v>
+<v t="ekr.20080121105837.1736"><vh>_resolve_import</vh></v>
+<v t="ekr.20080121105837.1737"><vh>_eval_import</vh></v>
+<v t="ekr.20080121105837.1738"><vh>_eval_citdl_token</vh></v>
+<v t="ekr.20080121105837.1739"><vh>_defn_from_hit</vh></v>
+<v t="ekr.20080121105837.1740"><vh>_check_infinite_recursion</vh></v>
+</v>
+<v t="ekr.20080121105837.1741"><vh>_dump_element</vh></v>
+</v>
+<v t="ekr.20080121105837.1742"><vh>util.py</vh>
+<v t="ekr.20080121105837.1743"><vh>util declarations</vh></v>
+<v t="ekr.20080121105837.1744"><vh>isident</vh></v>
+<v t="ekr.20080121105837.1745"><vh>isdigit</vh></v>
+<v t="ekr.20080121105837.1746"><vh>safe_lang_from_lang</vh></v>
+<v t="ekr.20080121105837.1747"><vh>guess_lang_from_path</vh></v>
+<v t="ekr.20080121105837.1748"><vh>gen_dirs_under_dirs</vh></v>
+<v t="ekr.20080121105837.1749"><vh>parseDocSummary</vh></v>
+<v t="ekr.20080121105837.1750"><vh>parsePyFuncDoc</vh></v>
+<v t="ekr.20080121105837.1751"><vh>unmark_text</vh></v>
+<v t="ekr.20080121105837.1752"><vh>markup_text</vh></v>
+<v t="ekr.20080121105837.1753"><vh>banner</vh></v>
+<v t="ekr.20080121105837.1754"><vh>_dedentlines</vh></v>
+<v t="ekr.20080121105837.1755"><vh>dedent</vh></v>
+<v t="ekr.20080121105837.1756"><vh>indent</vh></v>
+<v t="ekr.20080121105837.1757"><vh>timeit</vh></v>
+<v t="ekr.20080121105837.1758"><vh>hotshotit</vh></v>
+<v t="ekr.20080121105837.1759"><vh>OrdPunctLast</vh></v>
+<v t="ekr.20080121105837.1760"><vh>CompareNPunctLast</vh></v>
+<v t="ekr.20080121105837.1761"><vh>make_short_name_dict</vh></v>
+<v t="ekr.20080121105837.1762"><vh>cachedmethod</vh></v>
+<v t="ekr.20080121105837.1763"><vh>class Memoize</vh>
+<v t="ekr.20080121105837.1764"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1765"><vh>__call__</vh></v>
+<v t="ekr.20080121105837.1766"><vh>_getKey</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1767"><vh>__init__.py (codeintel2)</vh></v>
+</v>
+<v t="ekr.20080331151954.1"><vh>Important files</vh>
+<v t="ekr.20080121105837.81"><vh>buffer.py</vh>
+<v t="ekr.20080121105837.82"><vh>buffer declarations</vh></v>
+<v t="ekr.20080121105837.83"><vh>class Buffer</vh>
+<v t="ekr.20080121105837.84"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.85"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.86"><vh>env</vh></v>
+<v t="ekr.20080121105837.87"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
+<v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
+<v t="ekr.20080121105837.95"><vh>libs</vh></v>
+<v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
+<v t="ekr.20080121105837.97"><vh>_html_from_trg_error</vh></v>
+<v t="ekr.20080121105837.98"><vh>_html_from_trg</vh></v>
+<v t="ekr.20080121105837.99"><vh>style_names_from_style_num</vh></v>
+<v t="ekr.20080121105837.100"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.101"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.102"><vh>number_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.103"><vh>_htmlescape</vh></v>
+<v t="ekr.20080121105837.104"><vh>_doctest</vh></v>
+</v>
+<v t="ekr.20080121105837.105"><vh>citadel.py</vh>
+<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.106"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.107"><vh>class CitadelBuffer (Buffer)</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.108"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.109"><vh>acquire_lock</vh></v>
+<v t="ekr.20080121105837.110"><vh>release_lock</vh></v>
+<v t="ekr.20080121105837.111"><vh>_load_buf_data_once</vh></v>
+<v t="ekr.20080121105837.112"><vh>defn_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.113"><vh>defns_from_trg</vh></v>
+<v t="ekr.20080121105837.114"><vh>scan_time</vh></v>
+<v t="ekr.20080121105837.115"><vh>scan_error</vh></v>
+<v t="ekr.20080121105837.116"><vh>blob_from_lang</vh></v>
+<v t="ekr.20080121105837.117"><vh>tree (property)</vh></v>
+<v t="ekr.20080121105837.118"><vh>cix (property)</vh></v>
+<v t="ekr.20080121105837.119"><vh>scan</vh></v>
+<v t="ekr.20080121105837.120"><vh>scoperef_from_pos</vh></v>
+<v t="ekr.20080121105837.121"><vh>scoperef_from_blob_and_line</vh></v>
+<v t="ekr.20080121105837.122"><vh>load</vh></v>
+<v t="ekr.20080121105837.123"><vh>unload</vh></v>
+</v>
+<v t="ekr.20080121105837.124"><vh>class ImportHandler</vh>
+<v t="ekr.20080121105837.125"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.126"><vh>setCustomPath</vh></v>
+<v t="ekr.20080121105837.127"><vh>setEnvPath</vh></v>
+<v t="ekr.20080121105837.128"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.129"><vh>_getPath</vh></v>
+<v t="ekr.20080121105837.130"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.131"><vh>findSubImportsOnDisk</vh></v>
+<v t="ekr.20080121105837.132"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.133"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.134"><vh>find_importables_in_dir</vh></v>
+<v t="ekr.20080121105837.135"><vh>import_blob_name</vh></v>
+</v>
+<v t="ekr.20080121105837.136"><vh>class CitadelEvaluator</vh>
+<v t="ekr.20080121105837.137"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.138"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.139"><vh>post_process_cplns</vh></v>
+<v t="ekr.20080121105837.140"><vh>post_process_calltips</vh></v>
+<v t="ekr.20080121105837.141"><vh>post_process_defns</vh></v>
+<v t="ekr.20080121105837.142"><vh>request_reeval</vh></v>
+<v t="ekr.20080121105837.143"><vh>import_resolution_failure</vh></v>
+<v t="ekr.20080121105837.144"><vh>debug</vh></v>
+<v t="ekr.20080121105837.145"><vh>info</vh></v>
+<v t="ekr.20080121105837.146"><vh>warn</vh></v>
+<v t="ekr.20080121105837.147"><vh>error</vh></v>
+</v>
+<v t="ekr.20080121105837.148"><vh>class Citadel</vh>
+<v t="ekr.20080121105837.149"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.150"><vh>set_lang_info</vh></v>
+<v t="ekr.20080121105837.151"><vh>cile_driver_from_lang</vh></v>
+<v t="ekr.20080121105837.152"><vh>is_citadel_cpln_lang</vh></v>
+<v t="ekr.20080121105837.153"><vh>get_citadel_cpln_langs</vh></v>
+<v t="ekr.20080121105837.154"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.155"><vh>batch_update</vh></v>
+<v t="ekr.20080121105837.156"><vh>_batch_update_completed</vh></v>
+<v t="ekr.20080121105837.157"><vh>import_handler_from_lang</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.1769"><vh>database/database.py</vh>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121105837.1771"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1772"><vh>&lt;&lt; version stuff &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1773"><vh>Database.__init__</vh></v>
+<v t="ekr.20080121105837.1774"><vh>__del__</vh></v>
+<v t="ekr.20080121105837.1775"><vh>Locks</vh>
+<v t="ekr.20080121105837.1776"><vh>acquire_lock</vh></v>
+<v t="ekr.20080121105837.1777"><vh>release_lock</vh></v>
+</v>
+<v t="ekr.20080121105837.1778"><vh>version</vh></v>
+<v t="ekr.20080121105837.1779"><vh>upgrade_info</vh></v>
+<v t="ekr.20080121105837.1780"><vh>create</vh></v>
+<v t="ekr.20080121105837.1781"><vh>reset</vh></v>
+<v t="ekr.20080121105837.1782"><vh>upgrade &amp; helpers</vh>
+<v t="ekr.20080121105837.1783"><vh>_upgrade_wipe_db</vh></v>
+<v t="ekr.20080121105837.1784"><vh>_upgrade_wipe_db_catalogs</vh></v>
+<v t="ekr.20080121105837.1785"><vh>_upgrade_wipe_db_langzones</vh></v>
+<v t="ekr.20080121105837.1786"><vh>_upgrade_wipe_db_langs</vh></v>
+</v>
+<v t="ekr.20080121105837.1787"><vh>report_event</vh></v>
+<v t="ekr.20080121105837.1788"><vh>save</vh></v>
+<v t="ekr.20080121105837.1789"><vh>cull_mem</vh></v>
+<v t="ekr.20080121105837.1790"><vh>_gen_langs_in_db</vh></v>
+<v t="ekr.20080121105837.1791"><vh>check &amp; helpers</vh>
+<v t="ekr.20080121105837.1792"><vh>_check_catalogszone</vh></v>
+<v t="ekr.20080121105837.1793"><vh>_check_proj_dir</vh></v>
+<v t="ekr.20080121105837.1794"><vh>_check_langzone</vh></v>
+<v t="ekr.20080121105837.1795"><vh>_check_multilangzone</vh></v>
+</v>
+<v t="ekr.20080121105837.1796"><vh>corruption</vh></v>
+<v t="ekr.20080121105837.1797"><vh>get_catalogs_zone</vh></v>
+<v t="ekr.20080121105837.1798"><vh>get_catalog_lib</vh></v>
+<v t="ekr.20080121105837.1799"><vh>get_stdlibs_zone</vh></v>
+<v t="ekr.20080121105837.1800"><vh>get_stdlib &amp; helper</vh>
+<v t="ekr.20080121105837.1801"><vh>_get_lang_zone</vh></v>
+</v>
+<v t="ekr.20080121105837.1802"><vh>get_lang_lib</vh></v>
+<v t="ekr.20080121105837.1803"><vh>get_proj_zone</vh></v>
+<v t="ekr.20080121105837.1804"><vh>get_proj_lib</vh></v>
+<v t="ekr.20080121105837.1805"><vh>load_blob</vh></v>
+<v t="ekr.20080121105837.1806"><vh>load_pickle</vh></v>
+<v t="ekr.20080121105837.1807"><vh>save_pickle</vh></v>
+<v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
+<v t="ekr.20080330201829.2"><vh>hash keys...</vh>
+<v t="ekr.20080121105837.1809"><vh>bhash_from_blob_info</vh></v>
+<v t="ekr.20080121105837.1810"><vh>dhash_from_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1811"><vh>get_buf_scan_time</vh></v>
+<v t="ekr.20080121105837.1812"><vh>get_buf_data</vh></v>
+<v t="ekr.20080121105837.1813"><vh>remove_buf_data</vh></v>
+<v t="ekr.20080121105837.1814"><vh>update_buf_data</vh></v>
+</v>
+</v>
+<v t="ekr.20080121105837.299"><vh>indexer.py (threaded scans of files)</vh>
+<v t="ekr.20080121105837.300"><vh>indexer declarations</vh></v>
+<v t="ekr.20080121105837.301"><vh>class _PriorityQueue</vh>
+<v t="ekr.20080121105837.302"><vh>_put</vh></v>
+<v t="ekr.20080121105837.303"><vh>_init</vh></v>
+<v t="ekr.20080121105837.304"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.305"><vh>class _Request</vh>
+<v t="ekr.20080121105837.306"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.307"><vh>class _UniqueRequestPriorityQueue</vh>
+<v t="ekr.20080121105837.308"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.309"><vh>_put</vh></v>
+<v t="ekr.20080121105837.310"><vh>_get</vh></v>
+</v>
+<v t="ekr.20080121105837.311"><vh>class _StagingRequestQueue</vh>
+<v t="ekr.20080121105837.312"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.313"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.314"><vh>stage</vh></v>
+<v t="ekr.20080121105837.315"><vh>_stagingThread</vh></v>
+</v>
+<v t="ekr.20080121105837.316"><vh>class XMLParseRequest</vh>
+<v t="ekr.20080121105837.317"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.318"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.319"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.320"><vh>class ScanRequest</vh>
+<v t="ekr.20080121105837.321"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.322"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.323"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.324"><vh>complete</vh></v>
+<v t="ekr.20080121105837.325"><vh>wait</vh></v>
+</v>
+<v t="ekr.20080121105837.326"><vh>class PreloadBufLibsRequest</vh>
+<v t="ekr.20080121105837.327"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.328"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.329"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.330"><vh>class PreloadLibRequest</vh>
+<v t="ekr.20080121105837.331"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.332"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.333"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080121105837.334"><vh>class IndexerStopRequest</vh>
+<v t="ekr.20080121105837.335"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.336"><vh>class IndexerPauseRequest</vh>
+<v t="ekr.20080121105837.337"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080121105837.338"><vh>class Indexer</vh>
+<v t="ekr.20080121105837.339"><vh>class StopIndexing</vh></v>
+<v t="ekr.20080121105837.340"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.341"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.342"><vh>pause</vh></v>
+<v t="ekr.20080121105837.343"><vh>resume</vh></v>
+<v t="ekr.20080121105837.344"><vh>stage_request</vh></v>
+<v t="ekr.20080121105837.345"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.346"><vh>run</vh></v>
+<v t="ekr.20080121105837.347"><vh>_iteration</vh></v>
+</v>
+<v t="ekr.20080121105837.348"><vh>class BatchUpdater</vh>
+<v t="ekr.20080121105837.349"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.350"><vh>start</vh></v>
+<v t="ekr.20080121105837.351"><vh>abort</vh></v>
+<v t="ekr.20080121105837.352"><vh>is_aborted</vh></v>
+<v t="ekr.20080121105837.353"><vh>done</vh></v>
+<v t="ekr.20080121105837.354"><vh>add_request</vh></v>
+<v t="ekr.20080121105837.355"><vh>num_files_to_process</vh></v>
+<v t="ekr.20080121105837.356"><vh>progress</vh></v>
+<v t="ekr.20080121105837.357"><vh>debug</vh></v>
+<v t="ekr.20080121105837.358"><vh>info</vh></v>
+<v t="ekr.20080121105837.359"><vh>warn</vh></v>
+<v t="ekr.20080121105837.360"><vh>error</vh></v>
+<v t="ekr.20080121105837.361"><vh>_subscheduler_request_started</vh></v>
+<v t="ekr.20080121105837.362"><vh>_subscheduler_completed</vh></v>
+<v t="ekr.20080121105837.363"><vh>_get_scheduler</vh></v>
+<v t="ekr.20080121105837.364"><vh>run</vh></v>
+<v t="ekr.20080121105837.365"><vh>_cidb_upgrade_progress_callback</vh></v>
+<v t="ekr.20080121105837.366"><vh>_handle_upgrade_request</vh></v>
+<v t="ekr.20080121105837.367"><vh>_handle_cix_request</vh></v>
+<v t="ekr.20080121105837.368"><vh>_handle_lang_request</vh></v>
+<v t="ekr.20080121105837.369"><vh>_handle_directory_request</vh></v>
+</v>
+<v t="ekr.20080121105837.370"><vh>_indent</vh></v>
+</v>
+<v t="ekr.20080121105837.1387"><vh>lang_python.py</vh>
+<v t="ekr.20080121105837.1388"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1389"><vh>class PythonLexer</vh>
+<v t="ekr.20080121105837.1390"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080121105837.1391"><vh>class PythonImportsEvaluator</vh>
+<v t="ekr.20080121105837.1392"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1393"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.1394"><vh>class PythonLangIntel</vh>
+<v t="ekr.20080121105837.1395"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080121105837.1397"><vh>_python_from_env</vh></v>
+<v t="ekr.20080121105837.1398"><vh>_python_info_from_python</vh></v>
+<v t="ekr.20080121105837.1399"><vh>_gen_python_import_paths_from_dirs</vh></v>
+<v t="ekr.20080121105837.1400"><vh>_gen_python_import_paths_from_pth_path</vh></v>
+<v t="ekr.20080121105837.1401"><vh>_extra_dirs_from_env</vh></v>
+<v t="ekr.20080121105837.1402"><vh>_buf_indep_libs_from_env</vh></v>
+<v t="ekr.20080121105837.1403"><vh>libs_from_buf</vh></v>
+<v t="ekr.20080121105837.1404"><vh>_invalidate_cache</vh></v>
+<v t="ekr.20080121105837.1405"><vh>_invalidate_cache_and_rescan_extra_dirs</vh></v>
+</v>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
+<v t="ekr.20080121105837.1407"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
+</v>
+<v t="ekr.20080121105837.1410"><vh>class PythonImportHandler</vh>
+<v t="ekr.20080121105837.1411"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1412"><vh>_shellOutForPath</vh></v>
+<v t="ekr.20080121105837.1413"><vh>setCorePath</vh></v>
+<v t="ekr.20080121105837.1414"><vh>_getStdCIXScanId</vh></v>
+<v t="ekr.20080121105837.1415"><vh>findModule</vh></v>
+<v t="ekr.20080121105837.1416"><vh>findModuleOnDisk</vh></v>
+<v t="ekr.20080121105837.1417"><vh>_findScannableFiles</vh></v>
+<v t="ekr.20080121105837.1418"><vh>genScannableFiles</vh></v>
+<v t="ekr.20080121105837.1419"><vh>find_importables_in_dir</vh></v>
+</v>
+<v t="ekr.20080121105837.1420"><vh>class PythonCILEDriver</vh>
+<v t="ekr.20080121105837.1421"><vh>scan_purelang</vh></v>
+</v>
+<v t="ekr.20080121105837.1422"><vh>register</vh></v>
+</v>
+<v t="ekr.20080121105837.1608"><vh>manager.py</vh>
+<v t="ekr.20080121105837.1609"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1610"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.1611"><vh>upgrade</vh></v>
+<v t="ekr.20080121105837.1612"><vh>initialize</vh></v>
+<v t="ekr.20080121105837.1613"><vh>register_langs</vh></v>
+<v t="ekr.20080121105837.1614"><vh>register_lang</vh></v>
+<v t="ekr.20080121105837.1615"><vh>set_lang_info</vh></v>
+<v t="ekr.20080121105837.1616"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.1617"><vh>batch_update</vh></v>
+<v t="ekr.20080121105837.1618"><vh>is_registered_lang</vh></v>
+<v t="ekr.20080121105837.1619"><vh>is_multilang</vh></v>
+<v t="ekr.20080121105837.1620"><vh>is_xml_lang</vh></v>
+<v t="ekr.20080121105837.1621"><vh>is_cpln_lang</vh></v>
+<v t="ekr.20080121105837.1622"><vh>get_cpln_langs</vh></v>
+<v t="ekr.20080121105837.1623"><vh>is_citadel_lang</vh></v>
+<v t="ekr.20080121105837.1624"><vh>get_citadel_langs</vh></v>
+<v t="ekr.20080121105837.1625"><vh>langintel_from_lang</vh></v>
+<v t="ekr.20080121105837.1626"><vh>buf_from_koIDocument</vh></v>
+<v t="ekr.20080121105837.1627"><vh>buf_from_content</vh></v>
+<v t="ekr.20080121105837.1628"><vh>buf_from_path</vh></v>
+<v t="ekr.20080121105837.1629"><vh>request_eval</vh></v>
+<v t="ekr.20080121105837.1630"><vh>request_reeval</vh></v>
+<v t="ekr.20080121105837.1631"><vh>stop</vh></v>
+<v t="ekr.20080121105837.1632"><vh>run</vh></v>
+<v t="ekr.20080121105837.1633"><vh>_handle_eval_sess</vh></v>
+<v t="ekr.20080121105837.1634"><vh>_put</vh></v>
+<v t="ekr.20080121105837.1635"><vh>_get</vh></v>
+</v>
+</v>
+<v t="ekr.20080331151954.2"><vh>Important classes</vh>
+<v t="ekr.20080121105837.83"><vh>class Buffer</vh>
+<v t="ekr.20080121105837.84"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.85"><vh>__repr__</vh></v>
+<v t="ekr.20080121105837.86"><vh>env</vh></v>
+<v t="ekr.20080121105837.87"><vh>langintel</vh></v>
+<v t="ekr.20080121105837.88"><vh>lang_from_pos</vh></v>
+<v t="ekr.20080121105837.89"><vh>trg_from_pos</vh></v>
+<v t="ekr.20080121105837.90"><vh>preceding_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.91" a="M"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.94"><vh>curr_calltip_arg_range</vh></v>
+<v t="ekr.20080121105837.95"><vh>libs</vh></v>
+<v t="ekr.20080121105837.96"><vh>to_html (error: underindented docstring)</vh></v>
+<v t="ekr.20080121105837.97"><vh>_html_from_trg_error</vh></v>
+<v t="ekr.20080121105837.98"><vh>_html_from_trg</vh></v>
+<v t="ekr.20080121105837.99"><vh>style_names_from_style_num</vh></v>
+<v t="ekr.20080121105837.100"><vh>string_styles</vh></v>
+<v t="ekr.20080121105837.101"><vh>comment_styles</vh></v>
+<v t="ekr.20080121105837.102"><vh>number_styles</vh></v>
+</v>
+<v t="ekr.20080121105837.148"><vh>class Citadel</vh>
+<v t="ekr.20080121105837.149"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.150"><vh>set_lang_info</vh></v>
+<v t="ekr.20080121105837.151"><vh>cile_driver_from_lang</vh></v>
+<v t="ekr.20080121105837.152"><vh>is_citadel_cpln_lang</vh></v>
+<v t="ekr.20080121105837.153"><vh>get_citadel_cpln_langs</vh></v>
+<v t="ekr.20080121105837.154"><vh>finalize</vh></v>
+<v t="ekr.20080121105837.155"><vh>batch_update</vh></v>
+<v t="ekr.20080121105837.156"><vh>_batch_update_completed</vh></v>
+<v t="ekr.20080121105837.157"><vh>import_handler_from_lang</vh></v>
+</v>
+<v t="ekr.20080121105837.107"><vh>class CitadelBuffer (Buffer)</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.108"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.109"><vh>acquire_lock</vh></v>
+<v t="ekr.20080121105837.110"><vh>release_lock</vh></v>
+<v t="ekr.20080121105837.111"><vh>_load_buf_data_once</vh></v>
+<v t="ekr.20080121105837.112"><vh>defn_trg_from_pos</vh></v>
+<v t="ekr.20080121105837.113"><vh>defns_from_trg</vh></v>
+<v t="ekr.20080121105837.114"><vh>scan_time</vh></v>
+<v t="ekr.20080121105837.115"><vh>scan_error</vh></v>
+<v t="ekr.20080121105837.116"><vh>blob_from_lang</vh></v>
+<v t="ekr.20080121105837.117"><vh>tree (property)</vh></v>
+<v t="ekr.20080121105837.118"><vh>cix (property)</vh></v>
+<v t="ekr.20080121105837.119"><vh>scan</vh></v>
+<v t="ekr.20080121105837.120"><vh>scoperef_from_pos</vh></v>
+<v t="ekr.20080121105837.121"><vh>scoperef_from_blob_and_line</vh></v>
+<v t="ekr.20080121105837.122"><vh>load</vh></v>
+<v t="ekr.20080121105837.123"><vh>unload</vh></v>
+</v>
+<v t="ekr.20080121105837.209"><vh>class EvalController</vh>
+<v t="ekr.20080121105837.210"><vh>__init__</vh></v>
+<v t="ekr.20080121105837.211"><vh>start</vh></v>
+<v t="ekr.20080121105837.212"><vh>set_desc</vh></v>
+<v t="ekr.20080121105837.213"><vh>done</vh></v>
+<v t="ekr.20080121105837.214"><vh>is_done</vh></v>
+<v t="ekr.20080121105837.215"><vh>abort</vh></v>
+<v t="ekr.20080121105837.216"><vh>is_aborted</vh></v>
+<v t="ekr.20080121105837.217"><vh>wait</vh></v>
+<v t="ekr.20080121105837.218"><vh>debug</vh></v>
+<v t="ekr.20080121105837.219"><vh>info</vh></v>
+<v t="ekr.20080121105837.220"><vh>warn</vh></v>
+<v t="ekr.20080121105837.221"><vh>error</vh></v>
+<v t="ekr.20080121105837.222"><vh>set_cplns</vh></v>
+<v t="ekr.20080121105837.223"><vh>set_calltips</vh></v>
+<v t="ekr.20080121105837.224"><vh>set_defns</vh></v>
+</v>
+<v t="ekr.20080121105837.1406"><vh>class PythonBuffer (CitadelBuffer)</vh>
+<v t="ekr.20080121105837.1407"><vh>libs</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
+</v>
+</v>
+<v t="ekr.20080331182810.1"><vh>Recent</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.91"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080331182810.5"><vh>not used</vh>
+<v t="ekr.20080121150435"><vh>openManager</vh></v>
+<v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
+</v>
+</v>
+<v t="ekr.20080331182810.3"><vh>other tests</vh></v>
+<v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
+<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
+<v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080331170945.2"><vh>doLog</vh></v>
+<v t="ekr.20080331182810.4" a="TV"><vh>doTrigger</vh></v>
+<v t="ekr.20080331170945.3"><vh>scan</vh></v>
+<v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
+</v>
+<v t="ekr.20080331170945.3"><vh>scan</vh></v>
+<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20080121105230.3"></t>
@@ -2915,8 +5666,7 @@ try:
 finally:
     c.endUpdate()
 </t>
-<t tx="ekr.20080121105837"></t>
-<t tx="ekr.20080121105837.1">@language rest
+<t tx="ekr.20080121105837">@language rest
 
 Most important files:
 
@@ -3746,10 +6496,7 @@ def _test():
     ac.resetToPosition(3)
     assert(ac.getTextBackWithStyle(1)[1] == "This")
     ac.resetToPosition(len(content) - 2)
-    assert(ac.getTextForwardWithStyle(2)[1] == "\r\n")
-
-
-</t>
+    assert(ac.getTextForwardWithStyle(2)[1] == "\r\n")</t>
 <t tx="ekr.20080121105837.81">@language python
 @tabwidth -4
 @others
@@ -7901,8 +10648,6 @@ try:
     _xpcom_ = True
 except ImportError:
     _xpcom_ = False
-
-
 
 #---- globals
 
@@ -30995,6 +33740,8 @@ class PythonLexer(Lexer):
 
 </t>
 <t tx="ekr.20080121105837.1396"># Used by ProgLangTriggerIntelMixin.preceding_trg_from_pos().
+
+
 trg_chars = tuple(" (.")
 
 def async_eval_at_trg(self, buf, trg, ctlr):
@@ -38910,7 +41657,6 @@ def _gen_langs_in_db(self):
         return lang_zone.get_lib(name, dirs, sublang)
     else:
         return lang_zone.get_lib(name, dirs)
-
 </t>
 <t tx="ekr.20080121105837.1803">def get_proj_zone(self, proj):
     """Get a project zone handler for the given project.
@@ -38991,10 +41737,7 @@ def _gen_langs_in_db(self):
 
 </t>
 <t tx="ekr.20080121105837.1808"></t>
-<t tx="ekr.20080121105837.1809">#---- Convenience methods for getting database hash keys.
-# MD5 hexdigests are used to generate keys into the db (typically
-# file paths).
-
+<t tx="ekr.20080121105837.1809">
 #TODO:PERF: evaluate perf improvement with caching of this
 def bhash_from_blob_info(self, res_path, lang, blobname):
     """Return a unique name for a blob dbfile.
@@ -39043,7 +41786,7 @@ def get_buf_scan_time(self, buf):
 
 </t>
 <t tx="ekr.20080121105837.1815"></t>
-<t tx="ekr.20080121105837.1816"></t>
+<t tx="ekr.20080121105837.1816"># EKR: command-line tools (maybe like jEdit2py)</t>
 <t tx="ekr.20080121105837.1817">#!/usr/bin/env python2.5
 # *****LICENSE BLOCK *****
 
@@ -40065,7 +42808,6 @@ def register(mgr):
         # Dev Note: set to false if this language does not support
         # autocomplete/calltips.
         is_cpln_lang=True)
-
 </t>
 <t tx="ekr.20080121105837.1854">@language html
 
@@ -40532,15 +43274,21 @@ log = logging.getLogger("codeintel.db")
 <t tx="ekr.20080121121728.3">@language python
 @tabwidth -4
 @others
+
+# The langzone of the codeintel database.
+# See the database/database.py module docstring for an overview.
 </t>
 <t tx="ekr.20080121121728.4">@language python
 @tabwidth -4
 @others
-</t>
+
+# The multilang-zone of the codeintel database.
+# See the database/database.py module docstring for an overview.</t>
 <t tx="ekr.20080121121728.5">@language python
 @tabwidth -4
 @others
-</t>
+
+# EKR: the project zone: obsolete.</t>
 <t tx="ekr.20080121121728.6">@language python
 @tabwidth -4
 @others
@@ -40548,7 +43296,9 @@ log = logging.getLogger("codeintel.db")
 <t tx="ekr.20080121121728.7">@language python
 @tabwidth -4
 @others
-</t>
+
+# The stdlib zone of the codeintel database.
+# See the database/database.py module docstring for an overview.</t>
 <t tx="ekr.20080121121728.8">@language python
 @tabwidth -4
 @others
@@ -45312,7 +48062,8 @@ for p in p.self_and_subtree_iter():
 </t>
 <t tx="ekr.20080121131522"></t>
 <t tx="ekr.20080121131751"></t>
-<t tx="ekr.20080121133057"></t>
+<t tx="ekr.20080121133057">@nocolor
+</t>
 <t tx="ekr.20080121133057.1">
 r"""Handling for citadel parts of CodeIntel.
 
@@ -45330,6 +48081,7 @@ umbrella term for CIDB/CITDL-based stuff in the codeintel system. """</t>
 is based on CIDB/CITDL/CIX.
 
 CitadelBuffers have the following additional API:
+    
     .defns_from_pos(..) Returns a list of citdl expressions for position.
     .scan(...)          Force a scan of the buffer.
     .scan_time          Time of the last scan (or None if not in the db)
@@ -45359,10 +48111,13 @@ CitadelBuffers have the following additional API:
 <t tx="ekr.20080121134650">@language python
 @tabwidth -4
 @others
-</t>
+
+# An improvement on Python's standard cmd.py module</t>
 <t tx="ekr.20080121134650.1">@language python
 @tabwidth -4
 @others
+
+# Tools for building Komodo extensions.
 </t>
 <t tx="ekr.20080121134847">#!/usr/bin/env python
 # Copyright (c) 2002-2007 ActiveState Software Inc.
@@ -48087,14 +50842,21 @@ def __run_log(logstream, msg, *args, **kwargs):
 <t tx="ekr.20080121134949.6">@language python
 @tabwidth -4
 @others
-@ignore # &lt;&lt;keyword_style CSS_IDENTIFIER =&gt; CSS_WORD&gt;&gt; causes problems.</t>
+@ignore # &lt;&lt;keyword_style CSS_IDENTIFIER =&gt; CSS_WORD&gt;&gt; causes problems.
+
+# Luddite output file generation code</t>
 <t tx="ekr.20080121134949.7">@language python
 @tabwidth -4
 @others
-@ignore</t>
+@ignore
+
+# This module builds lex-like scanners based on regular expression rules</t>
 <t tx="ekr.20080121134949.8">@language python
 @tabwidth -4
 @others
+
+# lexer for Luddite, using PLY
+
 if __name__ == "__main__":
     import sys
     sys.exit(main(sys.argv))
@@ -48102,10 +50864,15 @@ if __name__ == "__main__":
 <t tx="ekr.20080121134949.9">@language python
 @tabwidth -4
 @others
+
+# parser for Luddite, using PLY.
 </t>
 <t tx="ekr.20080121134949.10">@language python
 @tabwidth -4
 @others
+
+# UUID (universally unique identifiers) as specified in RFC 4122
+
 NAMESPACE_DNS = UUID('{6ba7b810-9dad-11d1-80b4-00c04fd430c8}')
 NAMESPACE_URL = UUID('{6ba7b811-9dad-11d1-80b4-00c04fd430c8}')
 NAMESPACE_OID = UUID('{6ba7b812-9dad-11d1-80b4-00c04fd430c8}')
@@ -56391,35 +59158,48 @@ def parse(*args,**kwargs):
 
     # Do not import sys: we must use the global
     import os
-    baseDir = r'C:\Program Files\Komodo Edit 4.3'
+    baseDir = r'C:\Program Files\Komodo Edit 4.3\lib\mozilla\python'
     paths = (
-        r'lib\mozilla\python\komodo', # For ciElementree.pyd
-        r'lib\mozilla\python\komodo\codeintel2',
-        r'lib\mozilla\python\komodo\codeintel2\catalogs',
-        r'lib\mozilla\python\komodo\codeintel2\database',
-        r'lib\mozilla\python\komodo\codeintel2\stdlibs',
+        r'komodo', # For ciElementree.pyd
+        r'komodo\codeintel2',
+        r'komodo\codeintel2\catalogs',
+        r'komodo\codeintel2\database',
+        r'komodo\codeintel2\stdlibs',
+        # r'C:\Python25\Lib\site-packages\SilverCity',
+        r'komodo\SilverCity',
     )
+
+    trace = False
+
+    if trace: print 'sys.path...'
     for path in paths:
         path = os.path.join(baseDir,path)
-        if path in sys.path:
-            pass
-        elif os.path.exists(path):
-            sys.path.append(path)
+        if os.path.exists(path):
+            if path in sys.path:
+                if trace: g.es_print('in sys.path',path)
+            else:
+                if trace: g.es_print('added',path)
+                sys.path.append(path)
         else:
             g.es_print('Does not exist: %s' % path)
 </t>
-<t tx="ekr.20080121143612">import sys
+<t tx="ekr.20080121143612">&lt;&lt; imports &gt;&gt;
 
 @others
 
-addKomodoPaths()
+print '-' * 40
 
-&lt;&lt; imports &gt;&gt;
+doLog()
 
-m = openManager()
-print 'm',m
-db = openDatabase(m)
-print 'db',db
+mgr = Manager(on_scan_complete=scanComplete)
+mgr.upgrade() # Can use mgr.db.upgrade methods for finer control.
+mgr.initialize()
+
+try:
+    scan()
+finally:
+    mgr.finalize()
+    print 'done'
 </t>
 <t tx="ekr.20080121150435">def openManager():
 
@@ -56503,22 +59283,6 @@ TODO:
 Dev Notes:
 - Usage of LangIntel objects in code should always use 'langintel'.
 """</t>
-<t tx="ekr.20080121151821.1">
-# import database
-import codeintel2.database.database as database
-# print database
-import manager
-# print manager
-
-if 0: # These work
-
-    import ciElementTree as ET
-    import codeintel2
-    from codeintel2.buffer import Buffer
-    from codeintel2.common import *
-    from codeintel2.indexer import ScanRequest
-    # print ET
-    # print codeintel2</t>
 <t tx="ekr.20080121152156">@nocolor
 @
 
@@ -56530,5 +59294,430 @@ Jan 21:
 - Wrote addKomoPaths, openManager and openDatabase.
 ** First major milestone: the ability to execute Komodo code from Leo scripts.
 Jan 23: Work on full build of OpenKomodo.  Problems remain.</t>
+<t tx="ekr.20080329224906.1">@nocolor
+
+There is a single Database instance on the codeintel Manager (mgr.db).
+All entry points to the database are via this instance.
+
+There are two common modes of interaction:
+
+1. Getting info for a particular buffer. E.g., for a code browser or for
+   information on a current file. Here all interaction can be done via a
+   few methods on the main Database class.
+
+    Database.get_buf_data(buf)
+    Database.get_buf_scan_time(buf)
+    Database.update_buf_data(buf, ...)
+    Database.remove_buf_data(buf)
+
+2. Working with a blob (a.k.a. module) given a list of libs.
+   Typically this is done during completion evaluation (i.e. detemining
+   what completions to show for "foo."). Here a particular environment
+   will have a list of "libs", all of them from the main Database
+   instance, via, e.g.:
+   
+    Database.get_stdlib(...)
+    Database.get_catalog_lib(...)
+    Database.get_lang_lib(...)
+    etc.
+
+   A "lib" instance has the following standard interface:
+
+    .has_blob(blobname)
+        Returns True iff a so-named blob is provided by this lib.
+
+    .get_blob(blobname)
+        Returns the so-named blob (the importable section of a CIX
+        element tree) provided by this lib, or None if it isn't.
+
+    .get_blob_imports(prefix)
+        Returns a set of blobnames to complete the given import prefix.
+        This is generally used for completion on import statements, e.g.
+            import &lt;|&gt;      # lib.get_blob_imports(prefix=())
+            import foo.&lt;|&gt;  # lib.get_blob_imports(prefix=('foo',))
+        Note that prefix has to be a tuple (rather than a list) because
+        the method is automatically cached.
+        
+        Items in the returned set a 2-tuples, (&lt;import-name&gt;,&lt;is-dir-import&gt;),
+        where &lt;is-dir-import&gt; is a boolean indicating
+        if this is a prefix for a multidir import. For example, in
+        Perl's stdlib there is an "HTTP::Request" module, but no "HTTP"
+        module. One of returned items would be:
+            ("HTTP", True)
+        The set can have both (e.g. Perl's LWP.pm and LWP/UserAgent.pm):
+            ("LWP", False)   # for "use LWP;"
+            ("LWP", True)     # prefix for "use LWP::UserAgent;"
+
+    .hits_from_lpath(lpath, ctlr=None, curr_buf=None)
+        Returns all "hits" for the given lookup path in all blobs in
+        this lib.  This is to support "import-everything" semantics
+        necessary for langs like JavaScript (no explicit local import
+        statements) and PHP (with auto-loading anything can happen). It
+        is possible that other langs may not support this.
+
+    .toplevel_cplns(prefix=None, ilk=None, ctlr=None):
+        Find all toplevel names starting with the given prefix in all
+        blobs in this lib and return a list of completions:
+            (&lt;ilk&gt;, &lt;name&gt;)
+        where &lt;ilk&gt; is, e.g., "class" or "function" or "variable", etc.
+        'ilk' can be specified to restrict the results to names of that
+        ilk. If prefix is None then *all* toplevel names are returned.
+    
+   where "blob" is the generic internal name used for "the token with
+   which you import", e.g.:
+  
+        LANGUAGE    IMPORT STATEMENT        BLOBNAME
+        --------    ----------------        --------
+        Python      import foo              foo
+        Perl        use Foo;                Foo
+        PHP         include("foo.php");     foo.php
+
+</t>
+<t tx="ekr.20080329224906.2">The database is divided into *zones*, primarily along
+common-implementation lines. E.g. dir under "db" is a zone.
+
+
+&lt;base-dir&gt;/                 # E.g. ~/.komodo/4.0/host-$HOSTNAME/codeintel
+    README.txt
+    VERSION
+    db/
+        # Any dir at this level is an independent database for a
+        # single DB "zone".
+
+        # API Catalogs zone -- codeintel API data loaded from .cix files
+        # in one of the db_catalog_dirs.
+
+        catalogs/
+            res_index               # cix-path -&gt; (res_id, last-updated, name, 
+                                    #   {lang -&gt; blobname -&gt; ilk -&gt; toplevelnames})
+            blob_index              # {lang -&gt; blobname -&gt; (dbfile, res_id)}
+            toplevelname_index      # {lang -&gt; ilk -&gt; toplevelname -&gt; res_id -&gt; blobnames}
+            toplevelprefix_index    # {lang -&gt; ilk -&gt; prefix -&gt; res_id -&gt; toplevelnames}
+            &lt;safe-lang&gt;/
+                &lt;dbfiles&gt;
+
+        # Codeintel includes .cix files for a number of language stdlibs
+        # (all in "codeintel2/stdlibs/&lt;lang&gt;[-&lt;ver&gt;].cix"). These are
+        # loaded here (as needed). 
+
+        stdlibs/
+            res_index                   # cix-path -&gt; last-updated
+            vers_and_names_from_lang    # lang -&gt; ordered list of (ver, name)
+            &lt;stdlib-name&gt;/
+                blob_index              # {blobname -&gt; dbfile}
+                toplevelname_index      # {ilk -&gt; toplevelname -&gt; blobnames}
+                toplevelprefix_index    # {ilk -&gt; prefix -&gt; toplevelnames}
+                &lt;dbfiles&gt;
+
+        # Language-specific zones (data for all scanned resources that
+        # don't belong to a project).  Sub-separation is done by source
+        # dir to not have too many dbfiles in a directory and to match
+        # the fact the import lookup is generally by dir.
+        # Note: the 'toplevelname_index' is to support
+        # "import-everything" semantics (i.e. lib.hits_from_lpath()).
+
+        &lt;safe-lang-name&gt;/
+            lang
+            &lt;dir-hash&gt;/                 # md5 of dir path
+                path
+                res_index               # basename -&gt; scan_time, scan_error,
+                                        #             {blobname -&gt; ilk -&gt; toplevelnames}
+                blob_index              # {blobname -&gt; dbfile}
+                toplevelname_index      # {ilk -&gt; toplevelname -&gt; blobnames}
+                &lt;dbfiles&gt;
+            ...
+
+        # Multi-lang zones (e.g. RHTML has Ruby and JavaScript) differ a
+        # little bit but are mostly the same as single-lang zones.
+
+        &lt;safe-multi-lang-name&gt;/
+            lang
+            &lt;dir-hash&gt;/                 # md5 of dir path
+                path
+                res_index               # basename
+                                        #   -&gt; scan_time, scan_error,
+                                        #      {lang -&gt; blobname -&gt; ilk -&gt; toplevelnames}
+                blob_index              # {lang -&gt; blobname -&gt; dbfile}
+                toplevelname_index      # {lang -&gt; ilk -&gt; toplevelname -&gt; blobnames}
+                &lt;dbfiles&gt;
+
+        # Project-support
+        # (OBSOLETE, not used)
+
+        projs/
+            &lt;proj-path-hash&gt;/
+                path                # project file path
+                dirs_from_basename  # index of basenames in project
+                update_time         #XXX time 'dirs_from_basename' last updated
+
+                TODO: Eventually could have a project catalog made up
+                      from '.cix' files in the project tree.
+</t>
+<t tx="ekr.20080329224906.3">Optimizing the following actions on the database determines the db
+structure.
+
+1. Add resource.    [done by database updating: various places]
+2. Remove resource. [done by database updating: various places]
+3. Update resource. [done by database updating: various places]
+4. Has blob (for a given lang). [done by import handling during completion eval]
+5. Load blob.       [done by import handling during completion eval]
+6. Where is given top-level name defined.
+7. What are the top-level names matching the given prefix and ilk.
+</t>
+<t tx="ekr.20080329224906.4">There are some logging rules for this module to support the test suite.
+
+- All writes to the filesystem should have a log message that begins
+  with "fs-write: ".
+  
+- All reads from the filesystem should have a log message that begins
+  with "fs-read: ". (TODO)
+
+Note: Currently only doing this for LangZone stuff. This will be easier
+if/when add fs interaction is moved to one place (on the Database
+class).
+</t>
+<t tx="ekr.20080329224906.5">- bullet proof all db interaction for fs failure, corruption, etc.
+  (see notes in test2/test_db.py)
+- add search_index for object browser functionality
+- add torture tests for this
+- investigate (1) removing 'lang' redundancy in DB where possible (shouldn't
+  be necessary for single-lang libraries), (2) using lang-id's instead of
+  the language name to improve perf.
+
+
+# Database.clean() and .check() TODO
+
+- dbfiles for paths viewed as another language will persist in the DB
+  (although I think the index entries will have been removed). 
+  These should be cleaned out.
+- check for collisions in catalog: same lang, same blobname provided by
+  two CIX files</t>
+<t tx="ekr.20080330093404.1"></t>
+<t tx="ekr.20080330201829.1">@nocolor
+
+There is a single Database instance on the codeintel Manager (mgr.db).
+All entry points to the database are via this instance.
+
+There are two common modes of interaction:
+
+1. Getting info for a particular buffer. E.g., for a code browser or for
+   information on a current file. Here all interaction can be done via a
+   few methods on the main Database class.
+
+    Database.get_buf_data(buf)
+    Database.get_buf_scan_time(buf)
+    Database.update_buf_data(buf, ...)
+    Database.remove_buf_data(buf)
+
+2. Working with a blob (a.k.a. module) given a list of libs.
+   Typically this is done during completion evaluation (i.e. detemining
+   what completions to show for "foo."). Here a particular environment
+   will have a list of "libs", all of them from the main Database
+   instance, via, e.g.:
+   
+    Database.get_stdlib(...)
+    Database.get_catalog_lib(...)
+    Database.get_lang_lib(...)
+    etc.
+
+   A "lib" instance has the following standard interface:
+
+    .has_blob(blobname)
+        Returns True iff a so-named blob is provided by this lib.
+
+    .get_blob(blobname)
+        Returns the so-named blob (the importable section of a CIX
+        element tree) provided by this lib, or None if it isn't.
+
+    .get_blob_imports(prefix)
+        Returns a set of blobnames to complete the given import prefix.
+        This is generally used for completion on import statements, e.g.
+            import &lt;|&gt;      # lib.get_blob_imports(prefix=())
+            import foo.&lt;|&gt;  # lib.get_blob_imports(prefix=('foo',))
+        Note that prefix has to be a tuple (rather than a list) because
+        the method is automatically cached.
+        
+        Items in the returned set a 2-tuples, (&lt;import-name&gt;,&lt;is-dir-import&gt;),
+        where &lt;is-dir-import&gt; is a boolean indicating
+        if this is a prefix for a multidir import. For example, in
+        Perl's stdlib there is an "HTTP::Request" module, but no "HTTP"
+        module. One of returned items would be:
+            ("HTTP", True)
+        The set can have both (e.g. Perl's LWP.pm and LWP/UserAgent.pm):
+            ("LWP", False)   # for "use LWP;"
+            ("LWP", True)     # prefix for "use LWP::UserAgent;"
+
+    .hits_from_lpath(lpath, ctlr=None, curr_buf=None)
+        Returns all "hits" for the given lookup path in all blobs in
+        this lib.  This is to support "import-everything" semantics
+        necessary for langs like JavaScript (no explicit local import
+        statements) and PHP (with auto-loading anything can happen). It
+        is possible that other langs may not support this.
+
+    .toplevel_cplns(prefix=None, ilk=None, ctlr=None):
+        Find all toplevel names starting with the given prefix in all
+        blobs in this lib and return a list of completions:
+            (&lt;ilk&gt;, &lt;name&gt;)
+        where &lt;ilk&gt; is, e.g., "class" or "function" or "variable", etc.
+        'ilk' can be specified to restrict the results to names of that
+        ilk. If prefix is None then *all* toplevel names are returned.
+    
+   where "blob" is the generic internal name used for "the token with
+   which you import", e.g.:
+  
+        LANGUAGE    IMPORT STATEMENT        BLOBNAME
+        --------    ----------------        --------
+        Python      import foo              foo
+        Perl        use Foo;                Foo
+        PHP         include("foo.php");     foo.php
+
+@color</t>
+<t tx="ekr.20080330201829.2">#---- Convenience methods for getting database hash keys.
+# MD5 hexdigests are used to generate keys into the db (typically
+# file paths).
+</t>
+<t tx="ekr.20080330201829.3"></t>
+<t tx="ekr.20080330201829.4"></t>
+<t tx="ekr.20080330201829.5">.has_blob(blobname)
+    
+.get_blob(blobname)
+      
+.get_blob_imports(prefix)
+    
+.hits_from_lpath(lpath, ctlr=None, curr_buf=None)
+
+.toplevel_cplns(prefix=None, ilk=None, ctlr=None):</t>
+<t tx="ekr.20080331081556.1">import os
+print os.path
+</t>
+<t tx="ekr.20080331081556.2">@color
+
+# import database
+# import codeintel2.database.database as database
+
+# import codeintel2
+# import manager
+
+if 0: # These work
+
+    import ciElementTree as ET
+    import codeintel2
+    from codeintel2.buffer import Buffer
+    from codeintel2.common import *
+    from codeintel2.indexer import ScanRequest
+    # print ET
+    # print codeintel2
+
+if 0:
+    import SilverCity.ScintillaConstants as constants
+    print constants # Must use Komodo version.
+    print 'SCE_UDL_CSS_COMMENT' in dir(constants)
+    #g.printList(dir(constants),sort=True)
+
+if 0: # works
+    m = openManager()
+    print 'm',m
+    db = openDatabase(m)
+    print 'db',db
+</t>
+<t tx="ekr.20080331151954.1"></t>
+<t tx="ekr.20080331151954.2"></t>
+<t tx="ekr.20080331170945.1"># Don't change this order
+
+import sys
+
+&lt;&lt; define addKomodePaths &gt;&gt;
+
+addKomodoPaths()
+
+import logging
+
+from codeintel2.indexer import BatchUpdater
+from codeintel2.manager import Manager
+from codeintel2.common import EvalController</t>
+<t tx="ekr.20080331170945.2">def doLog():
+
+    log_level = logging.ERROR
+        # DEBUG, INFO, WARN, ERROR, NOTSET
+
+    log = logging.getLogger('codeintel')
+
+    rootLogger = logging.getLogger('')
+    rootLogger.setLevel(log_level)
+
+    if not log.handlers:
+
+        # Create handler for codeintel logger.
+        formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+        console = logging.StreamHandler()
+        console.setLevel(log_level)
+        console.setFormatter(formatter)
+        log.addHandler(console)
+
+    if 0:
+        log.debug('debug msg.')
+        log.info('info msg.')
+        log.warning('warning msg.')
+        log.error('error msg.')
+</t>
+<t tx="ekr.20080331170945.3"># From example code in codeintel2.__init__.py
+
+def scan():
+
+    trace = True
+    path = g.os_path_normpath(g.os_path_join(g.app.loadDir,'..','test','komodo-test.py'))
+
+    buf = mgr.buf_from_path(path) # Can also get Buffer from content.
+        # Buf is a PythonBuffer (see lang_python), a subclass of CitadelBuffer: see citadel.py
+    buf.scan()
+    buf.load()
+
+    ctlr = EvalController() # Use a common controller.
+    ### tree = buf.tree # A property: scans if necessary.
+
+    # Print the data.
+    s = file(path).read()
+    if trace: print '\n%s\n' % s
+
+    # Find all trigger points.
+    for i in xrange(1,len(s)):
+        trigger = buf.trg_from_pos(i,implicit=False)
+        if trigger:
+            doTrigger(s,i,trigger,buf,ctlr)</t>
+<t tx="ekr.20080331171758.1">def scanComplete(request):
+    g.trace('*'*10,request)</t>
+<t tx="ekr.20080331182810.1"></t>
+<t tx="ekr.20080331182810.3">print os.path.join
+os.path.join('abc')</t>
+<t tx="ekr.20080331182810.4">prev_trigger = None
+
+def doTrigger (s,i,trigger,buf,ctlr):
+
+    # See also Buffer.async_eval_at_trg()
+    print 'trigger at %3d' % (i),'%33s' % (
+        trigger.name),'%9s' % (repr(s[i: i+5])),
+
+    completions = buf.cplns_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'completions %3s' % (completions and len(completions) or 0),
+
+    calltips = buf.calltips_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'calltips %s' % (calltips and len(calltips) or 0),
+
+    if completions:
+        modules = [b for (a,b) in completions if a == 'module']
+        print 'modules',len(modules),
+
+        directories = [b for (a,b) in completions if a == 'directory']
+        print 'directories',len(directories)
+
+    global prev_trigger
+    if prev_trigger is None:
+        prev_trigger = trigger
+        print '\n***** modules...'
+        for z in modules: print z
+        print '\n***** directories...'
+        for z in directories: print z
+</t>
+<t tx="ekr.20080331182810.5"></t>
 </tnodes>
 </leo_file>

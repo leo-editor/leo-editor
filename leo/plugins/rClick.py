@@ -19,6 +19,9 @@ Right Click Menus (rClick.py)
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
+    **At the momenu the api is in flux**
+    When it is settled, the __version__ will be bumped up to 1.xx
+
 To start with it works out-of-the-box, providing default menus for the
 following:
 
@@ -130,7 +133,7 @@ eg::
 
         ('Execute Script', 'execute-script'),
 
-        ('', 'users menu items'),
+        ('"', 'users menu items'),
 
         ('*', 'rclick-gen-context-sensitive-commands'),
 
@@ -143,9 +146,11 @@ if `txt` is '-' then a separator item will be inserted into the menu.
 
     In this case `cmd` can have any value as it is not used.
 
-if `txt` is ''  or '"' (single  double-quote) then nothing is done.
+if `txt` is '' (empty string) or '"' (single  double-quote) then nothing is done.
 
     This is a noop or comment. Again `cmd` can have any value as it is not used.
+
+if `txt` is '|' (bar) then a columnbreak will be introduced.
 
 
 `cmd` can be set to a string value for these items so that scripts which
@@ -162,20 +167,6 @@ be used to pass extra information to generator functions. eg::
 
 The comment tuple can either be removed by interesting_function or just left as
 it will be ignored anyway.
-
-Includes and generators
------------------------
-
-if `txt` is '&' then the menu named `cmd` will be included inline.
-
-    In @popup trees '\@item &' would appear in the headline and the name of the
-    menu to be included in the body text.
-
-if `txt` is '*' then a minibuffer command will be used to generate or modify
-menus.
-
-    In @popup trees "\@item \*" would appear in the headline and the name of the
-    minibuffer command in the body.
 
 
 Other menu items
@@ -226,8 +217,7 @@ if `txt` is '*':
 
         :rmenu: is the physical tkMenu containing the items constructed so far.
 
-        :menu_table: is the list of tuples representing items not yet
-        constructed.
+        :menu_table: is the list of tuples representing items not yet constructed.
 
     `cmd` may either manipulate the physical tkMenu directly or add (txt, cmd)
     tuples to the front of (or anywhere else in) menu_table. See the code in
@@ -300,7 +290,7 @@ Create a "Help on:" menu item.
         expanded to enable additional features which are described here.
 
 
-    **\@rclick_show_help**
+    **rclick_show_help**
 
         This setting specifies where output from the help() utility is sent::
 
@@ -521,12 +511,12 @@ def init_default_menus():
 
         ('&', 'recent-files-menu'),
 
-        ('Find Bracket', 'match-brackets'),
-        #('Insert newline', rc_nl),
+            ('Find Bracket', 'match-brackets'),
+            ('Insert newline', rc_nl),
 
         ('Execute Script', 'execute-script'),
 
-        ('', 'users menu items'),
+            ('"', 'users menu items'),
 
         ('*', 'rclick-gen-context-sensitive-commands'),
 
@@ -584,6 +574,7 @@ def rClicker(tag, keywords):
                 pass
 
         rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
+        rmenu.rclick_columnbreak = 0
 
         while menu_table:
 
@@ -617,6 +608,7 @@ def rClicker(tag, keywords):
                     MB_MENU_RETVAL = cmd(*args)
                 #@-node:ekr.20080327061021.222:<< call a menu generator >>
                 #@nl
+                continue
 
             elif txt == '-':
                 #@            << add a separator >>
@@ -626,8 +618,8 @@ def rClicker(tag, keywords):
                 #@-node:ekr.20080327061021.223:<< add a separator >>
                 #@nl
 
-            elif txt == '':
-                pass
+            elif txt in ('', '"'):
+                continue
 
             elif txt == '&':
                 #@            << include a menu chunk >>
@@ -636,6 +628,11 @@ def rClicker(tag, keywords):
                 #@nonl
                 #@-node:ekr.20080327061021.224:<< include a menu chunk >>
                 #@nl
+                continue
+
+            elif txt == '|':
+                rmenu.rclick_columnbreak = 1
+                continue
 
             elif isinstance(txt, basestring):
                 #@            << add a named item >>
@@ -644,7 +641,7 @@ def rClicker(tag, keywords):
                     #@    << minibuffer command item >>
                     #@+node:ekr.20080327061021.226:<< minibuffer command item >>
                     cb = lambda c=c, txt=txt, cmd=cmd: c.executeMinibufferCommand(cmd)
-                    rmenu.add_command(label=txt,command=cb)
+                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rclick_columnbreak)
                     #@-node:ekr.20080327061021.226:<< minibuffer command item >>
                     #@nl
 
@@ -653,7 +650,9 @@ def rClicker(tag, keywords):
                     #@+node:ekr.20080327061021.227:<< cascade item >>
                     submenu = table_to_menu(cmd[:], level+1)
                     if submenu:
-                        rmenu.add_cascade(label=txt, menu=submenu)
+                        rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rclick_columnbreak)
+                    continue # to avoid reseting columnbreak
+                    #@nonl
                     #@-node:ekr.20080327061021.227:<< cascade item >>
                     #@nl
 
@@ -661,12 +660,14 @@ def rClicker(tag, keywords):
                     #@    << function command item >>
                     #@+node:ekr.20080327061021.228:<< function command item >>
                     cb = lambda c=c, event=event, widget=widget, cmd=cmd: cmd(c, event, widget)
-                    rmenu.add_command(label=txt,command=cb)
+                    rmenu.add_command(label=txt,command=cb,columnbreak=rmenu.rclick_columnbreak)
                     #@nonl
                     #@-node:ekr.20080327061021.228:<< function command item >>
                     #@nl
                 #@-node:ekr.20080327061021.225:<< add a named item >>
                 #@nl
+
+            rmenu.rclick_columnbreak = 0
 
         if MB_MENU_RETVAL is None:
             return rmenu
