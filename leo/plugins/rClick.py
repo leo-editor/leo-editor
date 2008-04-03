@@ -541,6 +541,7 @@ class ContextMenuController(object):
         """Initialize rclick functionality for this commander."""
 
         self.c = c
+        g.trace('='*60)
 
         self.popup_menu = None
         self.mb_retval = None
@@ -551,9 +552,16 @@ class ContextMenuController(object):
         for command in (
             'rclick-gen-context-sensitive-commands',
             'rclick-gen-recent-files-list',
+
+            'clone-node-to-chapter-menu',
+            'copy-node-to-chapter-menu',
+            'move-node-to-chapter-menu',
+
+
         ):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
+            print command, method
 
 
         self.default_context_menus = {}
@@ -685,20 +693,37 @@ class ContextMenuController(object):
         c = self.c
         event = keywords.get('event')
         widget = event.widget
-        rmenu = keywords.get('rc_rmenu')
+        #rmenu = keywords.get('rc_rmenu')
         menu_table = keywords.get('rc_menu_table')
 
-        lst = []
+        def computeLabels (fileName):
+
+            if fileName == None:
+                return "untitled", "untitled"
+            else:
+                path,fn = g.os_path_split(fileName)
+                if path:
+                    return fn, path
+
+        fnList = []
+        pathList = []
         for name in c.recentFiles[:]:
+
+            fn, path = computeLabels(name)
 
             def recentFilesCallback (c, event, name=name):
                 c.openRecentFile(name)
 
+            def recentFoldersCallback(c, event, path=path):
+                g.app.globalOpenDir = path
+                c.executeMinibufferCommand('open-outline')
+
             label = "%s" % (g.computeWindowTitle(name),)
-            lst.append((label, recentFilesCallback))
+            fnList.append((fn, recentFilesCallback))
+            pathList.append((path, recentFoldersCallback))
 
         # Must change menu table in situ.
-        menu_table[:0] = lst
+        menu_table[:0] = fnList + [('|', '')] + pathList
 
     #@-node:bobjack.20080325162505.4:gen_recent_files_list
     #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
@@ -738,7 +763,7 @@ class ContextMenuController(object):
         c = self.c
         event = keywords.get('event')
         widget = event.widget
-        rmenu = keywords.get('rc_rmenu')
+        #rmenu = keywords.get('rc_rmenu')
         menu_table = keywords.get('rc_menu_table')
 
         contextCommands = []
@@ -971,6 +996,47 @@ class ContextMenuController(object):
     #@-node:bobjack.20080323045434.25:show_message_as_html
     #@-node:ekr.20040422072343.9:Utils for context sensitive commands
     #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
+    #@+node:bobjack.20080402160713.3:Chapter Menus
+    #@+node:bobjack.20080402160713.4:rclick_gen_*_node_to_chapter_menu
+    def clone_node_to_chapter_menu(self, event):
+        """Minibuffer command wrapper."""
+
+        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='clone')
+
+    def copy_node_to_chapter_menu(self, event):
+        """Minibuffer command wrapper."""
+
+        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='copy')
+
+    def move_node_to_chapter_menu(self, event):
+        """Minibuffer command wrapper."""
+
+        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='move')
+
+
+    #@+node:bobjack.20080402160713.5:chapter_menu_helper
+    def chapter_menu_helper(self, keywords, action):
+
+        c = self.c
+
+        cc = c.chapterController
+
+        def getChapterCallback(name):
+
+            def toChapterCallback(c, event, name=name):
+                getattr(cc, action + 'NodeToChapterHelper')(name)
+
+            return toChapterCallback
+
+        commandList = []
+        for chap in sorted(cc.chaptersDict.keys()):
+            if chap != cc.selectedChapter.name:
+                commandList.append( (chap, getChapterCallback(chap)) )
+
+        keywords['rc_menu_table'][:0] = commandList
+    #@-node:bobjack.20080402160713.5:chapter_menu_helper
+    #@-node:bobjack.20080402160713.4:rclick_gen_*_node_to_chapter_menu
+    #@-node:bobjack.20080402160713.3:Chapter Menus
     #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
     #@+node:bobjack.20080329153415.14:Event Handler
     #@+node:bobjack.20080329153415.5:rClicker

@@ -3,28 +3,35 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.512037037037">
-	<global_window_position top="10" left="154" height="781" width="1080"/>
+	<global_window_position top="15" left="169" height="781" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080329075629.2"><vh>@startup</vh>
-<v t="bobjack.20080324163716.1"><vh>@chapters</vh></v>
+<v t="bobjack.20080329075629.2" a="E"><vh>@startup</vh>
+<v t="bobjack.20080324163716.1"><vh>@chapters</vh>
+<v t="bobjack.20080402160713.6"><vh>@chapter two</vh>
+<v t="bobjack.20080402160713.7"><vh>two node 1</vh></v>
+</v>
+<v t="bobjack.20080402160713.8"><vh>@chapter one</vh>
+<v t="bobjack.20080402160713.9"><vh>one node 1</vh></v>
+</v>
+</v>
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080329075629.4"><vh>Experiments</vh>
-<v t="bobjack.20080330095006.2" annotate="7d71002855046e6f64657101550466696c6571025502626771035500710455087072696f72697479710555013471065502666771076804550870726f677265737371086804550961726368657479706571096804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Replacing the log menu</vh></v>
-<v t="bobjack.20080330095006.3" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455013471055502666771066802550870726f677265737371076802550961726368657479706571086802752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055829000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
+<v t="bobjack.20080330095006.2" annotate="7d71002855046e6f64657101550466696c6571025502626771035500710455087072696f72697479710555013471065502666771076804550870726f677265737371086804550961726368657479706571096804752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055824000000433a5c4c656f5c7472756e6b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Replacing the log menu</vh></v>
+<v t="bobjack.20080330095006.3" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455013471055502666771066802550870726f677265737371076802550961726368657479706571086802752e" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505766e6f646571035504747970657104550466696c6571055507796f666673657471064b005508636c656f49636f6e7107550131710868055824000000433a5c4c656f5c7472756e6b5c6c656f5c49636f6e735c636c656f5c707269342e706e677109550478706164710a4b0155057768657265710b550a6265666f726549636f6e710c5507786f6666736574710d4b02550772656c50617468710e580d000000636c656f5c707269342e706e67710f75612e"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
-<v t="bobjack.20080329070612.1" a="E"><vh>Test context sesitive items</vh>
+<v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
 <v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  </vh></v>
-<v t="bobjack.20080329054053.1" a="E"><vh>provide a fragment for use in other menus</vh>
+<v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
 <v t="bobjack.20080329053100.1" a="E"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
@@ -51,8 +58,8 @@
 </v>
 </v>
 </v>
-<v t="bobjack.20080329054053.3"><vh>... the body pane</vh>
-<v t="bobjack.20080329054053.4"><vh>@popup body</vh>
+<v t="bobjack.20080329054053.3" a="E"><vh>... the body pane</vh>
+<v t="bobjack.20080329054053.4" a="E"><vh>@popup body</vh>
 <v t="bobjack.20080329061920.1"><vh>@item *undo</vh></v>
 <v t="bobjack.20080329061920.2"><vh>@item -</vh></v>
 <v t="bobjack.20080329054053.5"><vh>@item cut-text</vh></v>
@@ -68,10 +75,12 @@
 <v t="bobjack.20080329054053.15"><vh>@menu Find Change</vh>
 <v t="bobjack.20080329054053.16"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080329061442.1"><vh>another pre-defined fragment</vh>
+<v t="bobjack.20080329061442.1" a="E"><vh>another pre-defined fragment</vh>
 <v t="bobjack.20080329061442.2"><vh>@item &amp;</vh></v>
 </v>
 <v t="bobjack.20080329054053.17"><vh>@item -</vh></v>
+<v t="bobjack.20080402175002.5"><vh>@item *add-editor</vh></v>
+<v t="bobjack.20080402175002.6" a="TV"><vh>@item *delete-editor</vh></v>
 <v t="bobjack.20080329054053.18"><vh>@item *execute-script</vh></v>
 <v t="bobjack.20080329054053.19"><vh>@item *</vh></v>
 </v>
@@ -93,28 +102,41 @@
 </v>
 </v>
 <v t="bobjack.20080329062304.15"><vh>... the change-text entry</vh>
-<v t="bobjack.20080329062956.1"><vh>@popup change-text</vh>
+<v t="bobjack.20080329062956.1" a="E"><vh>@popup change-text</vh>
 <v t="bobjack.20080401213023.1"><vh>@item change-text-menu</vh></v>
 <v t="bobjack.20080401213339.3"><vh>@item -</vh></v>
-<v t="bobjack.20080329062304.16"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080402160713.11"><vh>@item &amp;</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
 <v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
 <v t="bobjack.20080401113850.3"><vh>@item canvas menu</vh></v>
+<v t="bobjack.20080402154726.5"><vh>@item -</vh></v>
+<v t="bobjack.20080402172239.2" a="E"><vh>@menu Clone To Chapter</vh>
+<v t="bobjack.20080402160713.10"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080402172239.3" a="E"><vh>@menu Copy To Chapter</vh>
+<v t="bobjack.20080402172239.4"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080402172239.5"><vh>@menu Move To Chapter</vh>
+<v t="bobjack.20080402172239.6"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080402175002.3"><vh>@item -</vh></v>
+<v t="bobjack.20080402175002.2"><vh>@item *create-chapter</vh></v>
+<v t="bobjack.20080402175002.4"><vh>@item *remove-chapter</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
-<v t="bobjack.20080401143954.3"><vh>@popup plusbox</vh>
+<v t="bobjack.20080401143954.3" a="E"><vh>@popup plusbox</vh>
 <v t="bobjack.20080401143954.4"><vh>@item plus box menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.3" a="ETV"><vh>... headlines</vh>
-<v t="bobjack.20080401143613.4"><vh>@popup headline</vh>
+<v t="bobjack.20080401143613.3"><vh>... headlines</vh>
+<v t="bobjack.20080401143613.4" a="E"><vh>@popup headline</vh>
 <v t="bobjack.20080401143613.5"><vh>@item headline menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401214039.1" a="E"><vh>... the icon box</vh>
+<v t="bobjack.20080401214039.1"><vh>... the icon box</vh>
 <v t="bobjack.20080401214039.2" a="E"><vh>@popup iconbox</vh>
 <v t="bobjack.20080401214039.3"><vh>@item iconbox menu</vh></v>
 </v>
@@ -174,7 +196,6 @@ in other menus.</t>
 <t tx="bobjack.20080329062304.13"></t>
 <t tx="bobjack.20080329062304.14"></t>
 <t tx="bobjack.20080329062304.15">Set this to use the same menu as the find-text entry</t>
-<t tx="bobjack.20080329062304.16">find-change-fragment</t>
 <t tx="bobjack.20080329062956.1"></t>
 <t tx="bobjack.20080329063457.1">from pprint import pformat
 
@@ -338,5 +359,22 @@ Example::
     
     @string rclick-show-help = print log
     </t>
+<t tx="bobjack.20080402154726.5"></t>
+<t tx="bobjack.20080402160713.6"></t>
+<t tx="bobjack.20080402160713.7"></t>
+<t tx="bobjack.20080402160713.8"></t>
+<t tx="bobjack.20080402160713.9"></t>
+<t tx="bobjack.20080402160713.10">clone-node-to-chapter-menu</t>
+<t tx="bobjack.20080402160713.11">find-text</t>
+<t tx="bobjack.20080402172239.2"></t>
+<t tx="bobjack.20080402172239.3"></t>
+<t tx="bobjack.20080402172239.4">copy-node-to-chapter-menu</t>
+<t tx="bobjack.20080402172239.5"></t>
+<t tx="bobjack.20080402172239.6">move-node-to-chapter-menu</t>
+<t tx="bobjack.20080402175002.2"></t>
+<t tx="bobjack.20080402175002.3"></t>
+<t tx="bobjack.20080402175002.4"></t>
+<t tx="bobjack.20080402175002.5"></t>
+<t tx="bobjack.20080402175002.6"></t>
 </tnodes>
 </leo_file>
