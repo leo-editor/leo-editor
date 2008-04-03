@@ -537,7 +537,6 @@ class ContextMenuController(object):
         """Initialize rclick functionality for this commander."""
 
         self.c = c
-        g.trace('='*60)
 
         self.popup_menu = None
         self.mb_retval = None
@@ -558,8 +557,6 @@ class ContextMenuController(object):
         ):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
-            print command, method
-
 
         self.default_context_menus = {}
         self.init_default_menus()
