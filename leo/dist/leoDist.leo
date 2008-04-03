@@ -180,7 +180,7 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20080218154442.2" a="V"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
@@ -250,7 +250,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080402082107.1" a="T"><vh>How to use bzr export</vh></v>
+<v t="ekr.20080402082107.1"><vh>How to use bzr export</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5086,8 +5086,10 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     - Update the version number in the Help menu.
     - Remove top-level clones.
 Create leo-x.zip:
+    - bzr commit
     - bzr tag
     - bzr push
+    ** cd trunk
     - bzr export &lt;release-name&gt;.zip
 Create and test leosetup.exe.
 	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
