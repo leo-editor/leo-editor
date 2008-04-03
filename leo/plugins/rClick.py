@@ -449,8 +449,6 @@ rclick menu tables and @popup trees.
 import leoGlobals as g
 import leoPlugins
 
-Tk = g.importExtension('Tkinter')
-
 import re
 import sys
 import copy
@@ -477,21 +475,15 @@ def init ():
 
 
     """
-    if not Tk: return False # OK for unit tests.
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
-
+    ok = bool(g.app.gui)
     if ok:
+
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         leoPlugins.registerHandler("bodyrclick1",rClicker)
 
         leoPlugins.registerHandler("rclick-popup",rClicker)
         g.plugin_signon(__name__)
-
-        #init_default_menus()
 
     return ok
 #@-node:ekr.20060108122501.1:init
@@ -1113,7 +1105,7 @@ class ContextMenuController(object):
                 except:
                     pass
 
-            rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
+            rmenu = c.frame.menu.new_menu(None) #Tk.Menu(None,tearoff=0,takefocus=0)
             rmenu.rc_columnbreak = 0
 
             while menu_table:
