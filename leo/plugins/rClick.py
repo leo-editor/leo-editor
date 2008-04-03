@@ -426,6 +426,10 @@ rclick menu tables and @popup trees.
 # 
 #   this should be the last api change as this allows complete flexibility,
 #   and future enhancements can be made without changing the api.
+# 0.22 bobjack:
+# - added (copy|clone|move)-node-to-chapter-menu menu generator commands
+# - removed dependence on TK
+# - added default 'canvas' menu
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -458,7 +462,7 @@ import copy
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "0.21"
+__version__ = "0.22"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -548,6 +552,7 @@ class ContextMenuController(object):
             'clone-node-to-chapter-menu',
             'copy-node-to-chapter-menu',
             'move-node-to-chapter-menu',
+            'select-chapter-menu',
 
 
         ):
@@ -1005,9 +1010,17 @@ class ContextMenuController(object):
 
         self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='move')
 
+    def select_chapter_menu(self, event):
+        """Minibuffer command wrapper."""
+
+        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='select')
+
 
     #@+node:bobjack.20080402160713.5:chapter_menu_helper
     def chapter_menu_helper(self, keywords, action):
+
+        """Create a menu item for each chapter that will perform the `action` for
+        that chapter when invoked."""
 
         c = self.c
 
@@ -1015,8 +1028,15 @@ class ContextMenuController(object):
 
         def getChapterCallback(name):
 
-            def toChapterCallback(c, event, name=name):
-                getattr(cc, action + 'NodeToChapterHelper')(name)
+            if action == 'select':
+
+                def toChapterCallback(c, event, name=name):
+                    cc.selectChapterByName(name)
+
+            else:
+
+                def toChapterCallback(c, event, name=name):
+                    getattr(cc, action + 'NodeToChapterHelper')(name)
 
             return toChapterCallback
 
@@ -1325,6 +1345,26 @@ class ContextMenuController(object):
             ('Select All', invoke('rc_selectAll')),
         ]
         #@-node:bobjack.20080325060741.6:edit-menu
+        #@+node:bobjack.20080403074002.8:to-chapter-fragment
+        self.default_context_menus['to-chapter-fragment'] = [
+
+            ('Clone to Chapter', [
+                ('*', 'clone-node-to-chapter-menu'),
+            ]),
+
+            ('Copy to Chapter', [
+                ('*', 'copy-node-to-chapter-menu'),
+            ]),
+
+            ('Move to Chapter', [
+                ('*', 'move-node-to-chapter-menu'),
+            ]),
+
+            ('Go to Chapter', [
+                ('*', 'select-chapter-menu'),
+            ]),
+        ]
+        #@-node:bobjack.20080403074002.8:to-chapter-fragment
         #@+node:bobjack.20080325060741.4:body
         self.default_context_menus['body'] = [
 
@@ -1381,6 +1421,17 @@ class ContextMenuController(object):
             ])
         ]
         #@-node:bobjack.20080325162505.3:recent-files
+        #@+node:bobjack.20080403074002.9:canvas
+        self.default_context_menus['canvas'] = [
+            ('Canvas Menu', ''),   
+            ('-', None),
+            ('&', 'to-chapter-fragment'),
+            ('-', None),
+            ('Create Chapter', 'create-chapter'),
+            ('Remove Chapter', 'remove-chapter'),
+        ]
+        #@nonl
+        #@-node:bobjack.20080403074002.9:canvas
         #@-others
 
 
