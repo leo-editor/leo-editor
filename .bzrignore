@@ -17,3 +17,4 @@ dist/*.*
 dist
 ./*.zip
 leo/*.zip
+leo/doc/leoTechReport.*
