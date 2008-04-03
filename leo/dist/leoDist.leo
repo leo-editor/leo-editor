@@ -180,8 +180,8 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
+<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080402154207.1" a="TV"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
@@ -2262,8 +2262,8 @@ Leo: http://webpages.charter.net/edreamleo/front.html
 <t tx="ekr.20050118103207">@comment ;</t>
 <t tx="ekr.20050118103207.1">File "..\__init__.py"
 File "..\..\install"
-File "..\..\manifest.in"
-File "..\..\MANIFEST"
+;File "..\..\manifest.in"
+;File "..\..\MANIFEST"
 ; File "..\..\setup.py"
 File "..\..\uninstall"</t>
 <t tx="ekr.20050118103447"></t>
@@ -2275,8 +2275,8 @@ Delete "$INSTDIR\uninst.exe"
 
 ; Done later...
 Delete "$INSTDIR\install"
-Delete "$INSTDIR\manifest.in"
-Delete "$INSTDIR\MANIFEST"
+; Delete "$INSTDIR\manifest.in"
+; Delete "$INSTDIR\MANIFEST"
 ; Delete "$INSTDIR\setup.py"
 Delete "$INSTDIR\uninstall"
 </t>
@@ -2308,18 +2308,18 @@ File "..\doc\Pkg-info.txt"
 File "..\doc\Install.txt"
 File "..\doc\License.txt"
 
-File "..\doc\LeoTechReport.pdf"
+; File "..\doc\LeoTechReport.pdf"
 
 File "..\doc\default.css"
 File "..\doc\leo_rst.css"
 File "..\doc\silver_city.css"
 
-SetOutPath "$INSTDIR\doc\LeoN"
+; SetOutPath "$INSTDIR\doc\LeoN"
 
-File "..\doc\LeoN\sun98achieving.pdf"
-File "..\doc\LeoN\sun97generic.pdf"
-File "..\doc\LeoN\sun98operational.pdf"
-File "..\doc\LeoN\sun98reversible.pdf"
+; File "..\doc\LeoN\sun98achieving.pdf"
+; File "..\doc\LeoN\sun97generic.pdf"
+; File "..\doc\LeoN\sun98operational.pdf"
+; File "..\doc\LeoN\sun98reversible.pdf"
 
 SetOutPath "$INSTDIR\doc\html"
 
@@ -2337,16 +2337,16 @@ Delete "$INSTDIR\doc\Install.txt"
 Delete "$INSTDIR\doc\Pkg-info.txt"
 Delete "$INSTDIR\doc\Readme.txt"
 
-Delete "$INSTDIR\doc\LeoTechReport.pdf"
+; Delete "$INSTDIR\doc\LeoTechReport.pdf"
 
 Delete "$INSTDIR\doc\silver_city.css"
 Delete "$INSTDIR\doc\leo_rst.css"
 Delete "$INSTDIR\doc\default.css"
 
-Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
-Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
-Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
-Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
 
 Delete "$INSTDIR\doc\html\*.*"</t>
 <t tx="ekr.20050118104901.3"></t>
