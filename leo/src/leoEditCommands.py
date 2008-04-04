@@ -2445,9 +2445,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
-    def deleteIconByName (self,p,name,relPath):
+    def deleteIconByName (self,t,name,relPath):
         """for use by the right-click remove icon callback"""
-        c = self.c
+        c = self.c ; p = c.currentPosition()
 
         aList = self.getIconList(p)
         if not aList: return
@@ -8397,6 +8397,7 @@ class spellTabHandler (leoFind.leoFind):
         try:
             while 1:
                 i,j,p,word = self.findNextWord(p)
+                # g.trace(i,j,p and p.headString() or '<no p>')
                 if not p or not word:
                     alts = None
                     break
@@ -8424,17 +8425,16 @@ class spellTabHandler (leoFind.leoFind):
                     c.beginUpdate()
                     try:
                         redraw = not p.isVisible(c)
-                        if sparseFind:
-                            # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                            for p2 in c.allNodes_iter():
-                                if not p2.isAncestorOf(p):
-                                    p2.contract()
-                                    redraw = True
-                            for p2 in p.parents_iter():
-                                if not p2.isExpanded():
-                                    p2.expand()
-                                    redraw = True
-                        c.frame.tree.expandAllAncestors(p)
+                        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                        if sparseFind and not c.currentPosition().isAncestorOf(p):
+                            for p2 in c.currentPosition().self_and_parents_iter():
+                                p2.contract()
+                                redraw = True
+                        for p2 in p.parents_iter():
+                            if not p2.isExpanded():
+                                p2.expand()
+                                redraw = True
+                        # c.frame.tree.expandAllAncestors(p)
                         c.selectPosition(p)
                     finally:
                         c.endUpdate(redraw)
