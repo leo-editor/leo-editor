@@ -2442,9 +2442,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
-    def deleteIconByName (self,t,name,relPath):
+    def deleteIconByName (self,p,name,relPath):
         """for use by the right-click remove icon callback"""
-        c = self.c ; p = c.currentPosition()
+        c = self.c
 
         aList = self.getIconList(p)
         if not aList: return

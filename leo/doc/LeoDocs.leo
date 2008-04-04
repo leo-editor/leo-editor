@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="T"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -3625,11 +3625,7 @@
 </v>
 </v>
 </v>
-</v>
-</v>
-</v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080328074117.340" a="EV"><vh>4.4.8 b3</vh>
+<v t="ekr.20080328074117.340"><vh>4.4.8 b3</vh>
 <v t="ekr.20080328074117.2"><vh>Fixed bugs</vh>
 <v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
 <v t="ekr.20080328074117.4" a="E"><vh>Removed '.' from leoID</vh></v>
@@ -3646,6 +3642,13 @@
 <v t="ekr.20080328074117.262" a="E"><vh>Added @bool allow_middle_button_paste</vh></v>
 <v t="ekr.20080328074117.297" a="E"><vh>Added support for @popup settings</vh></v>
 </v>
+</v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20080403065258.10" a="TV"><vh>4.4.8 rc1</vh>
+<v t="ekr.20080403065258.6" a="E"><vh>Fixed delete-editor problem</vh></v>
 </v>
 </v>
 </v>
@@ -34207,7 +34210,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 beta 3]&lt;/a&gt;</t>
+    Download Leo[4.4.8 rc1]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34503,6 +34506,46 @@ To do--&gt;@thin ../doc/leoToDoLater.txt--&gt;Can't or won't--&gt;Known Bugs: ca
 <t tx="ekr.20080328074117.340">Leo 4.4.8 beta 3                           March 28, 2008
 
 Leo 4.4.8 beta 3 is available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080403065258.6">http://groups.google.com/group/leo-editor/browse_thread/thread/ed5d82429e1ec821
+
+The following sequence of commands caused problems:
+
+add-editor
+add-editor
+delete-editor
+delete-editor
+add-editor
+</t>
+<t tx="ekr.20080403065258.10">Leo 4.4.8 rc1                        April 3, 2008
+
+Leo 4.4.8 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge

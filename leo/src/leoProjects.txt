@@ -24003,6 +24003,107 @@ def settingsRoot (self,c):
 #@-node:ekr.20080327061021.230:Improved scripting docs & docstrings
 #@-node:ekr.20080315115427.576:Features
 #@-node:ekr.20080315083057.10:b3
+#@+node:ekr.20080403065258.11:rc1
+#@+node:ekr.20080403065258.2:Fixed delete-editor crash
+@nocolor
+
+If you do the following sequence of commands
+
+add-editor
+add-editor
+delete-editor
+delete-editor
+add-editor
+
+You get an error message. If you continue to use leo the title bar at the top of
+the editor comes on permanantly even if there is only one editor, so this could
+be a crash rather than a spurious error.
+
+exception executing command
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\trunk\leo\src\leoCommands.py", line 275, in doCommand
+    val = command(event)
+
+  File "c:\leo.repo\leo-editor\trunk\leo\src\leoFrame.py", line 802, in addEditor
+    self.updateInjectedIvars(w_old,p)
+
+  File "c:\leo.repo\leo-editor\trunk\leo\src\leoFrame.py", line 1163, in updateInjectedIvars
+    w.leo_chapter = cc.getSelectedChapter()
+
+AttributeError: 'NoneType' object has no attribute 'leo_chapter'
+
+EKR: The fix was a bad assumption in addEditor: the name of the last editor need not be '1'
+
+
+
+@color
+#@nonl
+#@+node:ekr.20070318122708:cc.getSelectedChapter
+def getSelectedChapter (self):
+
+    cc = self
+
+    return cc.selectedChapter
+#@-node:ekr.20070318122708:cc.getSelectedChapter
+#@+node:ekr.20060528100747.1:addEditor
+def addEditor (self,event=None):
+
+    '''Add another editor to the body pane.'''
+
+    c = self.c ; p = c.currentPosition()
+
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
+        d = self.editorWidgets ; keys = d.keys()
+        if len(keys) == 1:
+            w_old = d.get(keys[0])
+            self.updateInjectedIvars(w_old,p)
+            self.selectLabel(w_old) # Immediately create the label in the old editor.
+        else:
+            g.trace('can not happen: unexpected editorWidgets',d)
+
+    name = '%d' % self.totalNumberOfEditors
+    pane = self.pb.add(name)
+    panes = self.pb.panes()
+    minSize = float(1.0/float(len(panes)))
+
+    f = self.createEditorFrame(pane)
+    << create text widget w >>
+    self.editorWidgets[name] = w
+
+    for pane in panes:
+        self.pb.configurepane(pane,size=minSize)
+
+    self.pb.updatelayout()
+    c.frame.body.bodyCtrl = w
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(w)
+    self.selectEditor(w)
+    self.updateEditors()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20060528110922:<< create text widget w >>
+w = self.createTextWidget(f,name=name,p=p)
+w.delete(0,'end')
+w.insert('end',p.bodyString())
+w.see(0)
+
+self.setFontFromConfig(w=w)
+self.setColorFromConfig(w=w)
+self.createBindings(w=w)
+c.k.completeAllBindingsForWidget(w)
+
+self.recolorWidget(p,w)
+#@nonl
+#@-node:ekr.20060528110922:<< create text widget w >>
+#@-node:ekr.20060528100747.1:addEditor
+#@-node:ekr.20080403065258.2:Fixed delete-editor crash
+#@-node:ekr.20080403065258.11:rc1
 #@-node:ekr.20080227135412:4.4.8
 #@-all
 #@nonl

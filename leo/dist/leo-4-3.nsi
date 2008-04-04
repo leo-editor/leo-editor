@@ -18,7 +18,7 @@
 ;@+node:ekr.20050118092706.1:<< defines >>
 ;@<< 4.3 nsi installer version >>
 ;@+node:ekr.20050118124408:<< 4.3 nsi installer version >>
-!define PRODUCT_VERSION "4.4.8-final"
+!define PRODUCT_VERSION "4.4.8-rc1"
 ;@nonl
 ;@-node:ekr.20050118124408:<< 4.3 nsi installer version >>
 ;@nl
@@ -73,7 +73,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-final.exe"
+OutFile "LeoSetup-4-4-8-rc1.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -226,8 +226,8 @@ Section "Leo" SEC01
   ;@+node:ekr.20050118103207.1:<< install top-level files >>
   File "..\__init__.py"
   File "..\..\install"
-  File "..\..\manifest.in"
-  File "..\..\MANIFEST"
+  ;File "..\..\manifest.in"
+  ;File "..\..\MANIFEST"
   ; File "..\..\setup.py"
   File "..\..\uninstall"
   ;@nonl
@@ -266,18 +266,18 @@ Section "Leo" SEC01
   File "..\doc\Install.txt"
   File "..\doc\License.txt"
 
-  File "..\doc\LeoTechReport.pdf"
+  ; File "..\doc\LeoTechReport.pdf"
 
   File "..\doc\default.css"
   File "..\doc\leo_rst.css"
   File "..\doc\silver_city.css"
 
-  SetOutPath "$INSTDIR\doc\LeoN"
+  ; SetOutPath "$INSTDIR\doc\LeoN"
 
-  File "..\doc\LeoN\sun98achieving.pdf"
-  File "..\doc\LeoN\sun97generic.pdf"
-  File "..\doc\LeoN\sun98operational.pdf"
-  File "..\doc\LeoN\sun98reversible.pdf"
+  ; File "..\doc\LeoN\sun98achieving.pdf"
+  ; File "..\doc\LeoN\sun97generic.pdf"
+  ; File "..\doc\LeoN\sun98operational.pdf"
+  ; File "..\doc\LeoN\sun98reversible.pdf"
 
   SetOutPath "$INSTDIR\doc\html"
 
@@ -616,16 +616,16 @@ Section Uninstall
   Delete "$INSTDIR\doc\Pkg-info.txt"
   Delete "$INSTDIR\doc\Readme.txt"
 
-  Delete "$INSTDIR\doc\LeoTechReport.pdf"
+  ; Delete "$INSTDIR\doc\LeoTechReport.pdf"
 
   Delete "$INSTDIR\doc\silver_city.css"
   Delete "$INSTDIR\doc\leo_rst.css"
   Delete "$INSTDIR\doc\default.css"
 
-  Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
 
   Delete "$INSTDIR\doc\html\*.*"
   ;@nonl
@@ -747,8 +747,8 @@ Section Uninstall
 
   ; Done later...
   Delete "$INSTDIR\install"
-  Delete "$INSTDIR\manifest.in"
-  Delete "$INSTDIR\MANIFEST"
+  ; Delete "$INSTDIR\manifest.in"
+  ; Delete "$INSTDIR\MANIFEST"
   ; Delete "$INSTDIR\setup.py"
   Delete "$INSTDIR\uninstall"
   ;@-node:ekr.20050118103447.1:<< uninstall top-level files >>
@@ -759,7 +759,7 @@ Section Uninstall
   RMDir "$INSTDIR\config"
   RMDir "$INSTDIR\dist"
   RmDir "$INSTDIR\doc\html"
-  RmDir "$INSTDIR\doc\LeoN"
+  ; RmDir "$INSTDIR\doc\LeoN"
   RMDir "$INSTDIR\doc"
 
   RMDir "$INSTDIR\extensions\Gato"

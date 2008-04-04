@@ -798,9 +798,14 @@ class leoBody:
 
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
-            w_old = self.editorWidgets.get('1')
-            self.updateInjectedIvars(w_old,p)
-            self.selectLabel(w_old) # Immediately create the label in the old editor.
+            # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
+            d = self.editorWidgets ; keys = d.keys()
+            if len(keys) == 1:
+                w_old = d.get(keys[0])
+                self.updateInjectedIvars(w_old,p)
+                self.selectLabel(w_old) # Immediately create the label in the old editor.
+            else:
+                g.trace('can not happen: unexpected editorWidgets',d)
 
         name = '%d' % self.totalNumberOfEditors
         pane = self.pb.add(name)

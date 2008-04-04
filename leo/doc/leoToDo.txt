@@ -235,10 +235,16 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 # Make changes as in nav_buttons: initial selection, arrow keys.
 #@nonl
 #@-node:ekr.20080315115427.2:Improve spell tab
-#@+node:ekr.20080315083057.3:Create usable setup.py
-#@-node:ekr.20080315083057.3:Create usable setup.py
 #@-node:ekr.20080311135649.1:4.4.8 to-do
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080402153826.1:First
+#@+node:ekr.20080402153826.2:Make Leo a package
+# The start of this project is in leo.repo/leo-working.
+#@nonl
+#@-node:ekr.20080402153826.2:Make Leo a package
+#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@-node:ekr.20080402153826.1:First
 #@+node:ekr.20080330085343.2:Bugs
 #@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
@@ -290,8 +296,6 @@ def clean_file(p):
 #@-node:ekr.20080330085343.1:clean_file
 #@-node:ekr.20080330085343.3:Fix bug in atFile.write
 #@-node:ekr.20080330085343.2:Bugs
-#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
