@@ -3628,19 +3628,19 @@
 <v t="ekr.20080328074117.340"><vh>4.4.8 b3</vh>
 <v t="ekr.20080328074117.2"><vh>Fixed bugs</vh>
 <v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
-<v t="ekr.20080328074117.4" a="E"><vh>Removed '.' from leoID</vh></v>
-<v t="ekr.20080328074117.12" a="E"><vh>Fixed Open With menu</vh></v>
-<v t="ekr.20080328074117.30" a="E"><vh>Fixed @lineending botch</vh></v>
+<v t="ekr.20080328074117.4"><vh>Removed '.' from leoID</vh></v>
+<v t="ekr.20080328074117.12"><vh>Fixed Open With menu</vh></v>
+<v t="ekr.20080328074117.30"><vh>Fixed @lineending botch</vh></v>
 <v t="ekr.20080328074117.76"><vh>Fixed undo problem with mutliple editors</vh></v>
-<v t="ekr.20080328074117.77" a="E"><vh>Write dirty bit if write fails</vh></v>
-<v t="ekr.20080328074117.135" a="E"><vh>Fixed bug involving default_target_language</vh></v>
+<v t="ekr.20080328074117.77"><vh>Write dirty bit if write fails</vh></v>
+<v t="ekr.20080328074117.135"><vh>Fixed bug involving default_target_language</vh></v>
 <v t="ekr.20080328074117.215"><vh>Fixed plugins that create new menu items</vh></v>
 </v>
 <v t="ekr.20080328074117.216"><vh>Features</vh>
-<v t="ekr.20080328074117.217" a="E"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
-<v t="ekr.20080328074117.220" a="E"><vh>Errors reading derived files give line numbers</vh></v>
-<v t="ekr.20080328074117.262" a="E"><vh>Added @bool allow_middle_button_paste</vh></v>
-<v t="ekr.20080328074117.297" a="E"><vh>Added support for @popup settings</vh></v>
+<v t="ekr.20080328074117.217"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
+<v t="ekr.20080328074117.220"><vh>Errors reading derived files give line numbers</vh></v>
+<v t="ekr.20080328074117.262"><vh>Added @bool allow_middle_button_paste</vh></v>
+<v t="ekr.20080328074117.297"><vh>Added support for @popup settings</vh></v>
 </v>
 </v>
 </v>
@@ -3648,7 +3648,7 @@
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080403065258.10" a="TV"><vh>4.4.8 rc1</vh>
-<v t="ekr.20080403065258.6" a="E"><vh>Fixed delete-editor problem</vh></v>
+<v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
 </v>
 </v>
 </v>
@@ -11313,6 +11313,7 @@ Alexis Gendron Paquette, Paul Paterson,
 Dan Rahmel,
 Davide Salomoni,
 Ed Taekema, Kent Tenney, Brian Theado,
+Ville M. Vainio,
 Steve Zatz.
 </t>
 <t tx="ekr.20040414172218.5">All parts of Leo are distributed under the following copyright. This is intended
@@ -11350,6 +11351,7 @@ Gil Shwartz helped with unicode support.
 Phil Straus has been a great friend and constant support.
 Guido van Rossum created Python, Tkinter and the Python License.
 Dave Winer created ``MORE``.
+Ville M. Vainio created ILeo.
 Dan Winkler helped support Leo on the Mac.
 
 Special thanks to my family.

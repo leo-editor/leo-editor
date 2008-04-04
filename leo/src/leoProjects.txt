@@ -22129,6 +22129,26 @@ self.recolorWidget(p,w)
 #@-node:ekr.20060528100747.1:addEditor
 #@-node:ekr.20080403065258.2:Fixed delete-editor crash
 #@-node:ekr.20080403065258.11:rc1
+#@+node:ekr.20080404074921.4:final
+#@+node:ekr.20080404074921.1:Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist
+#@+node:ekr.20050130152008:leoPlugins
+def openLeoPlugins (self,event=None):
+
+    '''Open leoPlugins.leo in a new Leo window.'''
+
+    names =  ('leoPlugins.leo','leoPluginsRef.leo')
+
+    c = self ; name = "leoPlugins.leo"
+
+    for name in names:
+        fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
+        ok,frame = g.openWithFileName(fileName,c)
+        if ok: return
+
+    g.es('not found:', ', '.join(names))
+#@-node:ekr.20050130152008:leoPlugins
+#@-node:ekr.20080404074921.1:Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist
+#@-node:ekr.20080404074921.4:final
 #@-node:ekr.20080227135412:4.4.8
 #@-all
 #@nonl
