@@ -3651,8 +3651,9 @@
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20080405074410.4" a="TV"><vh>4.4.8 final</vh>
-<v t="ekr.20080405074410.7" a="E"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
-<v t="ekr.20080405074410.9" a="E"><vh>Fixed big performance bug in find/spell commands.</vh></v>
+<v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
+<v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
+<v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
 </v>
 </v>
 </v>
@@ -34216,7 +34217,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 rc1]&lt;/a&gt;</t>
+    Download Leo[4.4.8 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34611,6 +34612,7 @@ Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080405074410.7"></t>
 <t tx="ekr.20080405074410.9"></t>
+<t tx="ekr.20080405074410.38"></t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
