@@ -21,9 +21,10 @@
 </v>
 <v t="ekr.20070201065053"><vh>@@button goto tk index</vh></v>
 <v t="ekr.20070807104632"><vh>@@button local-tests @key=Alt+6</vh></v>
+<v t="ekr.20080405082101.1"><vh>@@button run-all-tests</vh></v>
+<v t="ekr.20050911112310"><vh>@@button Save</vh></v>
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
 <v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
-<v t="ekr.20050911112310"><vh>@@button Save</vh></v>
 </v>
 </v>
 <v t="ekr.20080312090030.1"><vh>Commands</vh>
@@ -78,16 +79,16 @@
 <v t="ekr.20050618061835.7"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.8"><vh>Bravo</vh>
-<v t="ekr.20050618061835.9"><vh>@test my second Leo test</vh></v>
+<v t="ekr.20050618061835.9"><vh>@@test my second Leo test</vh></v>
 <v t="ekr.20050618061835.10"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.11"><vh>It takes two to tango</vh>
 <v t="ekr.20050618061835.6"><vh>@test my first Leo test</vh></v>
-<v t="ekr.20050618061835.9"><vh>@test my second Leo test</vh></v>
+<v t="ekr.20050618061835.9"><vh>@@test my second Leo test</vh></v>
 <v t="ekr.20050618061835.12"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.13"><vh>Life gets more interesting</vh>
-<v t="ekr.20050618061835.14"><vh>@test koekiemonster.wants()</vh>
+<v t="ekr.20050618061835.14"><vh>@@test koekiemonster.wants()</vh>
 <v t="ekr.20050618061835.15"><vh>input data</vh></v>
 <v t="ekr.20050618061835.16"><vh>expected result</vh></v>
 </v>
@@ -99,6 +100,7 @@
 </v>
 </v>
 <v t="ekr.20051104080236" annotate="7d71002e"><vh>Other</vh>
+<v t="ekr.20080405085247.1"><vh>@ignore</vh>
 <v t="ekr.20051104081502" annotate="7d71002e"><vh>Other tests</vh>
 <v t="ekr.20051104081502.542"><vh>@@nosent test-niceNosent</vh>
 <v t="ekr.20051104081502.543"><vh>part 1</vh></v>
@@ -207,7 +209,7 @@
 <v t="ekr.20051104081502.31"><vh>Test print</vh></v>
 <v t="ekr.20051104081502.32"><vh>String-based imports...</vh>
 <v t="ekr.20051104081502.33"><vh>import from string</vh>
-<v t="ekr.20051104081502.34"><vh>@test import from string</vh></v>
+<v t="ekr.20051104081502.34"><vh>@@test import from string</vh></v>
 </v>
 <v t="ekr.20051104081502.35"><vh>Subclass the file type for use with imp module</vh></v>
 <v t="ekr.20051104081502.36"><vh>Use parser module to simulate import from string</vh>
@@ -664,7 +666,7 @@
 </v>
 </v>
 <v t="ekr.20040712101754.253"><vh>Find Command tests...(Not finished)</vh>
-<v t="ekr.20040712101754.254"><vh>@suite Find sommands tests</vh>
+<v t="ekr.20040712101754.254"><vh>@suite Find commands tests</vh>
 <v t="ekr.20040712101754.255"><vh>class findCommandTestCase</vh>
 <v t="ekr.20040712101754.256"><vh>setUp</vh></v>
 <v t="ekr.20040712101754.257"><vh>testFindCommand</vh></v>
@@ -764,7 +766,9 @@
 <v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
 </v>
 </v>
+</v>
 <v t="ekr.20070417092935.1"><vh>Scripts</vh>
+<v t="ekr.20080405085247.2"><vh>@ignore</vh>
 <v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
 <v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
 <v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
@@ -779,12 +783,13 @@
 </v>
 <v t="ekr.20070217065840.10"><vh>@test kill-line</vh>
 <v t="ekr.20070217065840.11"><vh>work</vh></v>
-<v t="ekr.20070217065840.12"><vh>before sel=2.0,2.6</vh></v>
+<v t="ekr.20070217065840.12"><vh>before sel=2.0,2.0</vh></v>
 <v t="ekr.20070217065840.13"><vh>after sel=2.0,2.0</vh></v>
 </v>
 </v>
 <v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
+</v>
 </v>
 <v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
@@ -2248,7 +2253,7 @@ import leoTest
 
 g.app.enableUnitTest = True
 
-suite = leoTest.makeEditBodySuite(c)
+suite = leoTest.makeEditBodySuite(c,p)
 
 g.app.scriptDict['suite'] = suite</t>
 <t tx="ekr.20040712101754.38">@language plain
@@ -16350,11 +16355,13 @@ else:
 <t tx="ekr.20070217065840.10">import leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217065840.11">line 1
+
 line 3</t>
 <t tx="ekr.20070217065840.12">line 1
 line 2
 line 3</t>
 <t tx="ekr.20070217065840.13">line 1
+
 line 3</t>
 <t tx="ekr.20070217071121.1">import leoTest
 leoTest.runEditCommandTest(c,p)</t>
@@ -18380,7 +18387,7 @@ if g.unitTesting:
         # g.trace(repr(s))
         c.recolor()
         c.endUpdate(False)
-# end5targettargettarget</t>
+# end5targettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113143523.24">creating: dynamicUnitTest.leo
 
 found  3 doctests for leoGlobals
@@ -19280,7 +19287,7 @@ finally:
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
-# end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
+# end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113145804.34">import string
 
 k = c.k
@@ -20021,5 +20028,9 @@ else:
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.</t>
+<t tx="ekr.20080405082101.1">import leoTest
+leoTest.doTests(c, all=True)</t>
+<t tx="ekr.20080405085247.1"></t>
+<t tx="ekr.20080405085247.2"></t>
 </tnodes>
 </leo_file>
