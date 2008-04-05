@@ -3643,12 +3643,16 @@
 <v t="ekr.20080328074117.297"><vh>Added support for @popup settings</vh></v>
 </v>
 </v>
+<v t="ekr.20080403065258.10"><vh>4.4.8 rc1</vh>
+<v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
+</v>
 </v>
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080403065258.10" a="TV"><vh>4.4.8 rc1</vh>
-<v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
+<v t="ekr.20080405074410.4" a="TV"><vh>4.4.8 final</vh>
+<v t="ekr.20080405074410.7" a="E"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
+<v t="ekr.20080405074410.9" a="E"><vh>Fixed big performance bug in find/spell commands.</vh></v>
 </v>
 </v>
 </v>
@@ -3884,7 +3888,7 @@ behaviors have been changed because they conflict with other Leo features.
 -   ``F16``  (``Copy`` on many Sun workstations) or ``Control-c`` copies the
     selection in the widget to the clipboard, if there is a selection.
     
--   ``F20` (``Cut`` on many Sun workstations) or ``Control-x`` copies the
+-   ``F20`` (``Cut`` on many Sun workstations) or ``Control-x`` copies the
     selection in the widget to the clipboard and deletes the selection.
     These keys have no effect if no text is selected.
     
@@ -34575,6 +34579,38 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080405074410.4">Leo 4.4.8 final                        April 6, 2008
+
+Leo 4.4.8 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080405074410.7"></t>
+<t tx="ekr.20080405074410.9"></t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
