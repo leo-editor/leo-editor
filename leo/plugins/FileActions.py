@@ -43,7 +43,7 @@ files.
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.3"
+__version__ = "0.4"
 #@<< version history >>
 #@+node:ekr.20040915110738:<< version history >>
 #@@nocolor
@@ -58,6 +58,7 @@ __version__ = "0.3"
 #   This may change existing scripts.
 # - Added c arg to g.findNodeAnywhere.
 # - Execute scripts with 'c' and 'g' predefined.
+# 0.4 TL: Double-click does nothing for non @file/@thin etc. nodes.
 #@-at
 #@nonl
 #@-node:ekr.20040915110738:<< version history >>
@@ -116,6 +117,8 @@ def onIconDoubleClick(tag, keywords):
 
     if not c or not p:
         return
+    if not p.isAnyAtFileNode():
+       return
 
     h = p.headString()
     words = h.split()

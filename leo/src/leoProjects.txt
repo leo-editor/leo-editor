@@ -3136,16 +3136,15 @@ def showSuccess(self,pos,newpos):
     redraw = not p.isVisible(c)
     c.beginUpdate()
     try:
-        if sparseFind:
+        if sparseFind and not c.currentPosition().isAncestorOf(p):
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if not p.isAncestorOf(self.p):
-                    p.contract()
+            for p2 in c.currentPosition().self_and_parents_iter():
+                    p2.contract()
                     redraw = True
-            for p in self.p.parents_iter():
-                if not p.isExpanded():
-                    p.expand()
-                    redraw = True
+        for p in self.p.parents_iter():
+            if not p.isExpanded():
+                p.expand()
+                redraw = True
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
         c.selectPosition(p)
@@ -21132,6 +21131,7 @@ def findNextMisspelledWord(self):
     try:
         while 1:
             i,j,p,word = self.findNextWord(p)
+            # g.trace(i,j,p and p.headString() or '<no p>')
             if not p or not word:
                 alts = None
                 break
@@ -21142,17 +21142,16 @@ def findNextMisspelledWord(self):
                 c.beginUpdate()
                 try:
                     redraw = not p.isVisible(c)
-                    if sparseFind:
-                        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                        for p2 in c.all_positions_with_unique_vnodes_iter():
-                            if not p2.isAncestorOf(p):
-                                p2.contract()
-                                redraw = True
-                        for p2 in p.parents_iter():
-                            if not p2.isExpanded():
-                                p2.expand()
-                                redraw = True
-                    c.frame.tree.expandAllAncestors(p)
+                    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                    if sparseFind and not c.currentPosition().isAncestorOf(p):
+                        for p2 in c.currentPosition().self_and_parents_iter():
+                            p2.contract()
+                            redraw = True
+                    for p2 in p.parents_iter():
+                        if not p2.isExpanded():
+                            p2.expand()
+                            redraw = True
+                    # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
                 finally:
                     c.endUpdate(redraw)
@@ -22233,10 +22232,15 @@ def createBindings (self):
                     # g.trace(shortcut,commandName)
                     w.bind(shortcut,func)
 
-    self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-    self.listBox.bind("<Button-1>",self.onSelectListBox)
-    self.listBox.bind("<Map>",self.onMap)
-#@nonl
+    for binding,func in (
+        ("<Double-1>",  self.onChangeThenFindButton),
+        ("<Button-1>",  self.onSelectListBox),
+        ("<Map>",       self.onMap),
+        # These never get called because focus is always in the body pane!
+        # ("<Up>",        self.up),
+        # ("<Down>",      self.down),
+    ):
+        self.listBox.bind(binding,func)
 #@-node:ekr.20051025120920:createBindings
 #@+node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
 def createTkTreeCanvas (self,parentFrame,scrolls,pack):
@@ -24104,6 +24108,838 @@ self.recolorWidget(p,w)
 #@-node:ekr.20060528100747.1:addEditor
 #@-node:ekr.20080403065258.2:Fixed delete-editor crash
 #@-node:ekr.20080403065258.11:rc1
+#@+node:ekr.20080404074921.4:final
+#@+node:ekr.20080404074921.1:Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist
+#@+node:ekr.20050130152008:leoPlugins
+def openLeoPlugins (self,event=None):
+
+    '''Open leoPlugins.leo in a new Leo window.'''
+
+    names =  ('leoPlugins.leo','leoPluginsRef.leo')
+
+    c = self ; name = "leoPlugins.leo"
+
+    for name in names:
+        fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
+        ok,frame = g.openWithFileName(fileName,c)
+        if ok: return
+
+    g.es('not found:', ', '.join(names))
+#@-node:ekr.20050130152008:leoPlugins
+#@-node:ekr.20080404074921.1:Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist
+#@+node:ekr.20080315115427.2:Fixed big performance bug in find/spell commands.
+@nocolor
+
+Fixed huge performance bug.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3091:showSuccess
+def showSuccess(self,pos,newpos):
+
+    """Displays the final result.
+
+    Returns self.dummy_vnode, c.edit_widget(p) or c.frame.body.bodyCtrl with
+    "insert" and "sel" points set properly."""
+
+    c = self.c ; p = self.p
+    sparseFind = c.config.getBool('collapse_nodes_during_finds')
+    c.frame.bringToFront() # Needed on the Mac
+    redraw = not p.isVisible(c)
+    c.beginUpdate()
+    try:
+        if sparseFind and not c.currentPosition().isAncestorOf(p):
+            # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
+            for p2 in c.currentPosition().self_and_parents_iter():
+                    p2.contract()
+                    redraw = True
+        for p in self.p.parents_iter():
+            if not p.isExpanded():
+                p.expand()
+                redraw = True
+        p = self.p
+        if not p: g.trace('can not happen: self.p is None')
+        c.selectPosition(p)
+    finally:
+        c.endUpdate(redraw)
+    if self.in_headline:
+        c.editPosition(p)
+    # Set the focus and selection after the redraw.
+    w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
+    c.widgetWantsFocusNow(w)
+    # New in 4.4a3: a much better way to ensure progress in backward searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    #g.trace('reverse,pos,newpos,insert',self.reverse,pos,newpos,insert)
+    w.setSelectionRange(pos,newpos,insert=insert)
+    w.seeInsertPoint()
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+#@nonl
+#@-node:ekr.20031218072017.3091:showSuccess
+#@+node:ekr.20051025071455.40:find & helpers
+def find (self,event=None):
+    """Find the next unknown word."""
+
+    c = self.c ; body = c.frame.body ; w = body.bodyCtrl
+
+    # Reload the work pane from the present node.
+    s = w.getAllText().rstrip()
+    self.workCtrl.delete(0,"end")
+    self.workCtrl.insert("end",s)
+
+    # Reset the insertion point of the work widget.
+    ins = w.getInsertPoint()
+    self.workCtrl.setInsertPoint(ins)
+
+    alts, word = self.findNextMisspelledWord()
+    self.currentWord = word # Need to remember this for 'add' and 'ignore'
+
+    if alts:
+        # Save the selection range.
+        ins = w.getInsertPoint()
+        i,j = w.getSelectionRange()
+        self.tab.fillbox(alts,word)
+        c.invalidateFocus()
+        c.bodyWantsFocusNow()
+        # Restore the selection range.
+        w.setSelectionRange(i,j,insert=ins)
+        w.see(ins)
+        ### w.update() ###
+    else:
+        g.es("no more misspellings")
+        self.tab.fillbox([])
+        c.invalidateFocus()
+        c.bodyWantsFocusNow()
+#@+node:ekr.20051025071455.45:findNextMisspelledWord
+def findNextMisspelledWord(self):
+    """Find the next unknown word."""
+
+    c = self.c ; p = c.currentPosition()
+    w = c.frame.body.bodyCtrl
+    aspell = self.aspell ; alts = None ; word = None
+    sparseFind = c.config.getBool('collapse_nodes_while_spelling')
+    trace = False
+    try:
+        while 1:
+            i,j,p,word = self.findNextWord(p)
+            # g.trace(i,j,p and p.headString() or '<no p>')
+            if not p or not word:
+                alts = None
+                break
+            << Skip word if ignored or in local dictionary >>
+            alts = aspell.processWord(word)
+            if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
+            if alts:
+                c.beginUpdate()
+                try:
+                    redraw = not p.isVisible(c)
+                    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                    if sparseFind and not c.currentPosition().isAncestorOf(p):
+                        for p2 in c.currentPosition().self_and_parents_iter():
+                            p2.contract()
+                            redraw = True
+                    for p2 in p.parents_iter():
+                        if not p2.isExpanded():
+                            p2.expand()
+                            redraw = True
+                    # c.frame.tree.expandAllAncestors(p)
+                    c.selectPosition(p)
+                finally:
+                    c.endUpdate(redraw)
+                    w.setSelectionRange(i,j,insert=j)
+                break
+    except Exception:
+        g.es_exception()
+    return alts, word
+#@+node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
+@ We don't bother to call apell if the word is in our dictionary. The dictionary contains both locally 'allowed' words and 'ignored' words. We put the test before aspell rather than after aspell because the cost of checking aspell is higher than the cost of checking our local dictionary. For small local dictionaries this is probably not True and this code could easily be located after the aspell call
+@c
+
+if self.dictionary.has_key(word.lower()):
+    continue
+#@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
+#@-node:ekr.20051025071455.45:findNextMisspelledWord
+#@+node:ekr.20051025071455.47:findNextWord (tkSpell)
+def findNextWord(self,p):
+    """Scan for the next word, leaving the result in the work widget"""
+
+    c = self.c ; p = p.copy() ; trace = False
+    while 1:
+        s = self.workCtrl.getAllText()
+        i = self.workCtrl.getInsertPoint()
+        while i < len(s) and not g.isWordChar1(s[i]):
+            i += 1
+        # g.trace('p',p and p.headString(),'i',i,'len(s)',len(s))
+        if i < len(s):
+            # A non-empty word has been found.
+            j = i
+            while j < len(s) and g.isWordChar(s[j]):
+                j += 1
+            word = s[i:j]
+            # This trace verifies that all words have been checked.
+            # g.trace(repr(word))
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(i,j,insert=j)
+            if trace: g.trace(i,j,word,p.headString())
+            return i,j,p,word
+        else:
+            # End of the body text.
+            p.moveToThreadNext()
+            if not p: break
+            self.workCtrl.delete(0,'end')
+            self.workCtrl.insert(0,p.bodyString())
+            for w in (self.workCtrl,c.frame.body.bodyCtrl):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(0,0,insert=0)
+            if trace: g.trace(0,0,'-->',p.headString())
+
+    return None,None,None,None
+#@nonl
+#@-node:ekr.20051025071455.47:findNextWord (tkSpell)
+#@-node:ekr.20051025071455.40:find & helpers
+#@+node:ekr.20051025071455.22:class tkSpellTab
+class tkSpellTab:
+
+    @others
+#@+node:ekr.20070212132230.1:tkSpellTab.__init__
+def __init__ (self,c,handler,tabName):
+
+    self.c = c
+    self.handler = handler
+    self.tabName = tabName
+    self.change_i, change_j = None,None
+    self.createFrame()
+    self.createBindings()
+    self.fillbox([])
+#@-node:ekr.20070212132230.1:tkSpellTab.__init__
+#@+node:ekr.20051025120920:createBindings
+def createBindings (self):
+
+    c = self.c ; k = c.k
+    widgets = (self.listBox, self.outerFrame)
+
+    for w in widgets:
+
+        # Bind shortcuts for the following commands...
+        for commandName,func in (
+            ('full-command',            k.fullCommand),
+            ('hide-spell-tab',          self.handler.hide),
+            ('spell-add',               self.handler.add),
+            ('spell-find',              self.handler.find),
+            ('spell-ignore',            self.handler.ignore),
+            ('spell-change-then-find',  self.handler.changeThenFind),
+        ):
+            junk, bunchList = c.config.getShortcut(commandName)
+            for bunch in bunchList:
+                accel = bunch.val
+                shortcut = k.shortcutFromSetting(accel)
+                if shortcut:
+                    # g.trace(shortcut,commandName)
+                    w.bind(shortcut,func)
+
+    for binding,func in (
+        ("<Double-1>",  self.onChangeThenFindButton),
+        ("<Button-1>",  self.onSelectListBox),
+        ("<Map>",       self.onMap),
+        # These never get called because focus is always in the body pane!
+        # ("<Up>",        self.up),
+        # ("<Down>",      self.down),
+    ):
+        self.listBox.bind(binding,func)
+#@-node:ekr.20051025120920:createBindings
+#@+node:ekr.20070212132230.2:createFrame
+def createFrame (self):
+
+    c = self.c ; log = c.frame.log ; tabName = self.tabName
+    setFont = False
+
+    parentFrame = log.frameDict.get(tabName)
+    w = log.textDict.get(tabName)
+    w.pack_forget()
+
+    # Set the common background color.
+    bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
+
+    if setFont:
+        fontSize = g.choose(sys.platform.startswith('win'),9,14)
+
+    << Create the outer frames >>
+    << Create the text and suggestion panes >>
+    << Create the spelling buttons >>
+
+    # Pack last so buttons don't get squished.
+    self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
+#@+node:ekr.20051113090322:<< Create the outer frames >>
+self.outerScrolledFrame = Pmw.ScrolledFrame(
+    parentFrame,usehullsize = 1)
+
+self.outerFrame = outer = self.outerScrolledFrame.component('frame')
+self.outerFrame.configure(background=bg)
+
+for z in ('borderframe','clipper','frame','hull'):
+    self.outerScrolledFrame.component(z).configure(
+        relief='flat',background=bg)
+#@-node:ekr.20051113090322:<< Create the outer frames >>
+#@+node:ekr.20051025071455.23:<< Create the text and suggestion panes >>
+f2 = Tk.Frame(outer,bg=bg)
+f2.pack(side='top',expand=0,fill='x')
+
+self.wordLabel = Tk.Label(f2,text="Suggestions for:")
+self.wordLabel.pack(side='left')
+
+if setFont:
+    self.wordLabel.configure(font=('verdana',fontSize,'bold'))
+
+fpane = Tk.Frame(outer,bg=bg,bd=2)
+fpane.pack(side='top',expand=1,fill='both')
+
+self.listBox = Tk.Listbox(fpane,height=6,width=10,selectmode="single")
+self.listBox.pack(side='left',expand=1,fill='both')
+if setFont:
+    self.listBox.configure(font=('verdana',fontSize,'normal'))
+
+listBoxBar = Tk.Scrollbar(fpane,name='listBoxBar')
+
+bar, txt = listBoxBar, self.listBox
+txt ['yscrollcommand'] = bar.set
+bar ['command'] = txt.yview
+bar.pack(side='right',fill='y')
+#@-node:ekr.20051025071455.23:<< Create the text and suggestion panes >>
+#@+node:ekr.20051025071455.24:<< Create the spelling buttons >>
+# Create the alignment panes
+buttons1 = Tk.Frame(outer,bd=1,bg=bg)
+buttons2 = Tk.Frame(outer,bd=1,bg=bg)
+buttons3 = Tk.Frame(outer,bd=1,bg=bg)
+for w in (buttons1,buttons2,buttons3):
+    w.pack(side='top',expand=0,fill='x')
+
+buttonList = []
+if setFont:
+    font = ('verdana',fontSize,'normal')
+width = 12
+for frame, text, command in (
+    (buttons1,"Find",self.onFindButton),
+    (buttons1,"Add",self.onAddButton),
+    (buttons2,"Change",self.onChangeButton),
+    (buttons2,"Change, Find",self.onChangeThenFindButton),
+    (buttons3,"Ignore",self.onIgnoreButton),
+    (buttons3,"Hide",self.onHideButton),
+):
+    if setFont:
+        b = Tk.Button(frame,font=font,width=width,text=text,command=command)
+    else:
+        b = Tk.Button(frame,width=width,text=text,command=command)
+    b.pack(side='left',expand=0,fill='none')
+    buttonList.append(b)
+
+# Used to enable or disable buttons.
+(self.findButton,self.addButton,
+ self.changeButton, self.changeFindButton,
+ self.ignoreButton, self.hideButton) = buttonList
+#@-node:ekr.20051025071455.24:<< Create the spelling buttons >>
+#@-node:ekr.20070212132230.2:createFrame
+#@+node:ekr.20051025071455.29:Event handlers
+#@+node:ekr.20051025071455.30:onAddButton
+def onAddButton(self):
+    """Handle a click in the Add button in the Check Spelling dialog."""
+
+    self.handler.add()
+    self.change_i, self.change_j = None,None
+#@-node:ekr.20051025071455.30:onAddButton
+#@+node:ekr.20051025071455.32:onChangeButton & onChangeThenFindButton
+def onChangeButton(self,event=None):
+
+    """Handle a click in the Change button in the Spell tab."""
+
+    self.handler.change()
+    self.updateButtons()
+    self.change_i, self.change_j = None,None
+
+
+def onChangeThenFindButton(self,event=None):
+
+    """Handle a click in the "Change, Find" button in the Spell tab."""
+
+    if self.handler.change():
+        self.handler.find()
+    self.updateButtons()
+    self.change_i, self.change_j = None,None
+#@-node:ekr.20051025071455.32:onChangeButton & onChangeThenFindButton
+#@+node:ekr.20051025071455.33:onFindButton
+def onFindButton(self):
+
+    """Handle a click in the Find button in the Spell tab."""
+
+    c = self.c
+    self.handler.find()
+    self.updateButtons()
+    c.invalidateFocus()
+    c.bodyWantsFocusNow()
+    self.change_i, self.change_j = None,None
+#@-node:ekr.20051025071455.33:onFindButton
+#@+node:ekr.20051025071455.34:onHideButton
+def onHideButton(self):
+
+    """Handle a click in the Hide button in the Spell tab."""
+
+    self.handler.hide()
+    self.change_i, self.change_j = None,None
+#@-node:ekr.20051025071455.34:onHideButton
+#@+node:ekr.20051025071455.31:onIgnoreButton
+def onIgnoreButton(self,event=None):
+
+    """Handle a click in the Ignore button in the Check Spelling dialog."""
+
+    self.handler.ignore()
+    self.change_i, self.change_j = None,None
+#@nonl
+#@-node:ekr.20051025071455.31:onIgnoreButton
+#@+node:ekr.20051025071455.49:onMap
+def onMap (self, event=None):
+    """Respond to a Tk <Map> event."""
+
+    # self.update(show= False, fill= False)
+    self.updateButtons()
+#@-node:ekr.20051025071455.49:onMap
+#@+node:ekr.20051025071455.50:onSelectListBox
+def onSelectListBox(self, event=None):
+    """Respond to a click in the selection listBox."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if self.change_i is None:
+        # A bad hack to get around the fact that only one selection
+        # exists at any one time on Linux.
+        i,j = w.getSelectionRange()
+        # g.trace('setting',i,j)
+        self.change_i,self.change_j = i,j
+
+    self.updateButtons()
+
+    return 'continue'
+#@-node:ekr.20051025071455.50:onSelectListBox
+#@+node:ekr.20080404095546.1:down/up
+def down (self,event):
+
+    # Work around an old Python bug.  Convert strings to ints.
+    w = self.listBox ; items = w.curselection()
+    try: items = map(int, items)
+    except ValueError: pass
+
+    if items:
+        n = items[0]
+        if n + 1 < len(self.positionList):
+            w.selection_clear(n)
+            w.selection_set(n+1)
+    else:
+        w.selection_set(0)
+    w.focus_force()
+    return 'break'
+
+
+def up (self,event):
+
+    # Work around an old Python bug.  Convert strings to ints.
+    w = self.listBox ; items = w.curselection()
+    try: items = map(int, items)
+    except ValueError: pass
+
+    if items: n = items[0]
+    else:     n = 0
+    w.selection_clear(n)
+    w.selection_set(max(0,n-1))
+    w.focus_force()
+    return 'break'
+#@-node:ekr.20080404095546.1:down/up
+#@-node:ekr.20051025071455.29:Event handlers
+#@+node:ekr.20051025071455.42:Helpers
+#@+node:ekr.20051025071455.43:bringToFront
+def bringToFront (self):
+
+    # g.trace('tkSpellTab',g.callers())
+    self.c.frame.log.selectTab('Spell')
+#@-node:ekr.20051025071455.43:bringToFront
+#@+node:ekr.20051025071455.44:fillbox
+def fillbox(self, alts, word=None):
+    """Update the suggestions listBox in the Check Spelling dialog."""
+
+    self.suggestions = alts
+
+    if not word:
+        word = ""
+
+    self.wordLabel.configure(text= "Suggestions for: " + word)
+    self.listBox.delete(0, "end")
+
+    for i in xrange(len(self.suggestions)):
+        self.listBox.insert(i, self.suggestions[i])
+
+    # This doesn't show up because we don't have focus.
+    if len(self.suggestions):
+        self.listBox.select_set(1)
+#@-node:ekr.20051025071455.44:fillbox
+#@+node:ekr.20051025071455.48:getSuggestion
+def getSuggestion(self):
+    """Return the selected suggestion from the listBox."""
+
+    # Work around an old Python bug.  Convert strings to ints.
+    items = self.listBox.curselection()
+    try:
+        items = map(int, items)
+    except ValueError: pass
+
+    if items:
+        n = items[0]
+        suggestion = self.suggestions[n]
+        return suggestion
+    else:
+        return None
+#@-node:ekr.20051025071455.48:getSuggestion
+#@+node:ekr.20051025071455.51:update (no longer used)
+# def update(self,show=True,fill=False):
+
+    # """Update the Spell Check dialog."""
+
+    # c = self.c
+
+    # if fill:
+        # self.fillbox([])
+
+    # self.updateButtons()
+
+    # if show:
+        # self.bringToFront()
+        # c.bodyWantsFocus()
+#@-node:ekr.20051025071455.51:update (no longer used)
+#@+node:ekr.20051025071455.52:updateButtons (spellTab)
+def updateButtons (self):
+
+    """Enable or disable buttons in the Check Spelling dialog."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    start, end = w.getSelectionRange()
+    state = g.choose(self.suggestions and start,"normal","disabled")
+
+    self.changeButton.configure(state=state)
+    self.changeFindButton.configure(state=state)
+
+    # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+    # self.redoButton.configure(state=state)
+    # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+    # self.undoButton.configure(state=state)
+
+    self.addButton.configure(state='normal')
+    self.ignoreButton.configure(state='normal')
+#@-node:ekr.20051025071455.52:updateButtons (spellTab)
+#@-node:ekr.20051025071455.42:Helpers
+#@-node:ekr.20051025071455.22:class tkSpellTab
+#@+node:ekr.20051025071455.50:onSelectListBox
+def onSelectListBox(self, event=None):
+    """Respond to a click in the selection listBox."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    if self.change_i is None:
+        # A bad hack to get around the fact that only one selection
+        # exists at any one time on Linux.
+        i,j = w.getSelectionRange()
+        # g.trace('setting',i,j)
+        self.change_i,self.change_j = i,j
+
+    self.updateButtons()
+
+    return 'continue'
+#@-node:ekr.20051025071455.50:onSelectListBox
+#@+node:ekr.20051025071455.52:updateButtons (spellTab)
+def updateButtons (self):
+
+    """Enable or disable buttons in the Check Spelling dialog."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    start, end = w.getSelectionRange()
+    state = g.choose(self.suggestions and start,"normal","disabled")
+
+    self.changeButton.configure(state=state)
+    self.changeFindButton.configure(state=state)
+
+    # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+    # self.redoButton.configure(state=state)
+    # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+    # self.undoButton.configure(state=state)
+
+    self.addButton.configure(state='normal')
+    self.ignoreButton.configure(state='normal')
+#@-node:ekr.20051025071455.52:updateButtons (spellTab)
+#@+node:ekr.20080404095546.1:down/up
+def down (self,event):
+
+    # Work around an old Python bug.  Convert strings to ints.
+    w = self.listBox ; items = w.curselection()
+    try: items = map(int, items)
+    except ValueError: pass
+
+    if items:
+        n = items[0]
+        if n + 1 < len(self.positionList):
+            w.selection_clear(n)
+            w.selection_set(n+1)
+    else:
+        w.selection_set(0)
+    w.focus_force()
+    return 'break'
+
+
+def up (self,event):
+
+    # Work around an old Python bug.  Convert strings to ints.
+    w = self.listBox ; items = w.curselection()
+    try: items = map(int, items)
+    except ValueError: pass
+
+    if items: n = items[0]
+    else:     n = 0
+    w.selection_clear(n)
+    w.selection_set(max(0,n-1))
+    w.focus_force()
+    return 'break'
+#@-node:ekr.20080404095546.1:down/up
+#@-node:ekr.20080315115427.2:Fixed big performance bug in find/spell commands.
+#@+node:ekr.20080405074410.1:Patched fileActions plugin
+@nocolor
+
+The only change I made was to add this code:
+
+   if not p.isAnyAtFileNode():
+       return
+
+after this code:
+
+   if not c or not p:
+       return
+
+in the method:
+
+   def onIconDoubleClick(tag, keywords):
+#@nonl
+#@-node:ekr.20080405074410.1:Patched fileActions plugin
+#@-node:ekr.20080404074921.4:final
+#@+node:ekr.20080405074410.2:Fixed several unit testing bugs relating to doTests(all=True)
+@nocolor
+
+I created two buttons: test and run-all-tests. The code is as follows:
+
+=== test ===
+import leoTest
+leoTest.doTests(c, all=False)
+=== end test ===
+
+=== run-all-tests ===
+import leoTest
+leoTest.doTests(c, all=True)
+=== end run-all-tests ===
+
+The "test" button works as expected, but run-all-tests produces
+the following output in the Log pane:
+
+exception executing script
+AttributeError: 'NoneType' object has no attribute 'v'
+--------------------
+ line 1270:         return (
+* line 1271:             p1.v == p2.v and
+ line 1272:             p1.stack == p2.stack and
+ line 1273:             p1.childIndex() == p2.childIndex())
+
+@color
+#@nonl
+#@+node:ekr.20051104075904.4:doTests...
+def doTests(c,all,verbosity=1):
+
+    if all:
+        p = c.rootPosition()
+    else:
+        p = c.currentPosition()
+    p1 = p.copy()
+
+    try:
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        while p and p != last: #  Don't use p.isEqual: it assumes last != None
+            h = p.headString()
+            if g.match_word(h,0,'@ignore'):
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test
+                test = makeTestCase(c,p)
+                if test: suite.addTest(test)
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                # g.trace(p.headString())
+                test = makeTestSuite(c,p)
+                if test: suite.addTest(test)
+                p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        unittest.TextTestRunner(verbosity=verbosity).run(suite)
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        c.selectPosition(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    # __pychecker__ = '--no-argsused'
+        #  msg needed so signature matches base class.
+
+    import leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # To do: restore the outline.
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p}
+    else:
+        d = {}
+
+    # Execute the script. Let unit test handle any errors!
+
+    if 0: # debug
+        import pdb
+        pdb.run(script+'\n',d)
+    else:
+        exec script + '\n' in d
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    return self.p.headString() + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@+node:ekr.20051104075904.12:makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    p = p.copy()
+
+    h = p.headString()
+    script = g.getScript(c,p).strip()
+    if not script:
+        print "no script in %s" % h
+        return None
+
+    try:
+        exec script + '\n' in {'c':c,'g':g,'p':p}
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print "%s script did not set g.app.scriptDict" % h
+        return suite
+    except:
+        g.trace('Exception creating test cases for %s' % p.headString())
+        g.es_exception()
+        return None
+#@-node:ekr.20051104075904.12:makeTestSuite
+#@+node:ekr.20051104075904.13:makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.bodyString().strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@-node:ekr.20051104075904.13:makeTestCase
+#@-node:ekr.20051104075904.4:doTests...
+#@+node:ekr.20051104075904.69: makeEditBodySuite
+def makeEditBodySuite(c,p):
+
+    """Create an Edit Body test for every descendant of testParentHeadline.."""
+
+    # p = c.currentPosition()
+    u = testUtils(c)
+    assert c.positionExists(p)
+    data_p = u.findNodeInTree(p,"editBodyTests")   
+    assert(data_p)
+    temp_p = u.findNodeInTree(data_p,"tempNode")
+    assert(temp_p)
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+
+    for p in data_p.children_iter():
+        if p.headString()=="tempNode": continue # TempNode now in data tree.
+        before = u.findNodeInTree(p,"before")
+        after  = u.findNodeInTree(p,"after")
+        sel    = u.findNodeInTree(p,"selection")
+        ins    = u.findNodeInTree(p,"insert")
+        if before and after:
+            test = editBodyTestCase(c,p,before,after,sel,ins,temp_p)
+            suite.addTest(test)
+        else:
+            print 'missing "before" or "after" for', p.headString()
+
+    return suite
+#@-node:ekr.20051104075904.69: makeEditBodySuite
+#@-node:ekr.20080405074410.2:Fixed several unit testing bugs relating to doTests(all=True)
 #@-node:ekr.20080227135412:4.4.8
 #@-all
 #@nonl

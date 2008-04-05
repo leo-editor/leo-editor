@@ -309,7 +309,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 rc1, build %s, April 3, 2008" % c.getBuildNumber()
+        return "Leo 4.4.8 final, build %s, April 6, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -5547,11 +5547,16 @@ class baseCommands:
 
         '''Open leoPlugins.leo in a new Leo window.'''
 
+        names =  ('leoPlugins.leo','leoPluginsRef.leo')
+
         c = self ; name = "leoPlugins.leo"
-        fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
-        ok,frame = g.openWithFileName(fileName,c)
-        if not ok:
-            g.es("not found:",name)
+
+        for name in names:
+            fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
+            ok,frame = g.openWithFileName(fileName,c)
+            if ok: return
+
+        g.es('not found:', ', '.join(names))
     #@-node:ekr.20050130152008:leoPlugins
     #@+node:ekr.20031218072017.2942:leoTutorial (version number)
     def leoTutorial (self,event=None):

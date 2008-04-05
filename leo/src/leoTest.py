@@ -71,7 +71,12 @@ def isTestNode (p):
 #@+node:ekr.20051104075904.4:doTests...
 def doTests(c,all,verbosity=1):
 
-    p = c.currentPosition() ; p1 = p.copy()
+    if all:
+        p = c.rootPosition()
+    else:
+        p = c.currentPosition()
+    p1 = p.copy()
+
     try:
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
@@ -86,30 +91,22 @@ def doTests(c,all,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        while p and not p.isEqual(last):
+        while p and p != last: #  Don't use p.isEqual: it assumes last != None
             h = p.headString()
             if g.match_word(h,0,'@ignore'):
-                p.moveToNext()
+                p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
                 test = makeTestCase(c,p)
                 if test: suite.addTest(test)
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
+                # g.trace(p.headString())
                 test = makeTestSuite(c,p)
                 if test: suite.addTest(test)
                 p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
 
-        # if all: theIter = c.all_positions_iter()
-        # else:   theIter = p.self_and_subtree_iter()
-        # for p in theIter:
-            # if isTestNode(p): # @test
-                # test = makeTestCase(c,p)
-                # if test: suite.addTest(test)
-            # elif isSuiteNode(p): # @suite
-                # test = makeTestSuite(c,p)
-                # if test: suite.addTest(test)
         # Verbosity: 1: print just dots.
         unittest.TextTestRunner(verbosity=verbosity).run(suite)
     finally:
@@ -946,14 +943,14 @@ def createUnitTestsFromDoctests (modules,verbose=True):
 #@-node:ekr.20051104075904.99:createUnitTestsFromDoctests
 #@+node:ekr.20051104075904.68:Edit Body test code (leoTest.py)
 #@+node:ekr.20051104075904.69: makeEditBodySuite
-def makeEditBodySuite(c):
+def makeEditBodySuite(c,p):
 
     """Create an Edit Body test for every descendant of testParentHeadline.."""
 
-    p = c.currentPosition()
+    # p = c.currentPosition()
     u = testUtils(c)
     assert c.positionExists(p)
-    data_p = u.findNodeInTree(p,"editBodyTests")
+    data_p = u.findNodeInTree(p,"editBodyTests")   
     assert(data_p)
     temp_p = u.findNodeInTree(data_p,"tempNode")
     assert(temp_p)

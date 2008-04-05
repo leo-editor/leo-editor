@@ -3628,27 +3628,32 @@
 <v t="ekr.20080328074117.340"><vh>4.4.8 b3</vh>
 <v t="ekr.20080328074117.2"><vh>Fixed bugs</vh>
 <v t="ekr.20080328074117.3"><vh>Corrected docs: unit tests are in test/unitTest.leo</vh></v>
-<v t="ekr.20080328074117.4" a="E"><vh>Removed '.' from leoID</vh></v>
-<v t="ekr.20080328074117.12" a="E"><vh>Fixed Open With menu</vh></v>
-<v t="ekr.20080328074117.30" a="E"><vh>Fixed @lineending botch</vh></v>
+<v t="ekr.20080328074117.4"><vh>Removed '.' from leoID</vh></v>
+<v t="ekr.20080328074117.12"><vh>Fixed Open With menu</vh></v>
+<v t="ekr.20080328074117.30"><vh>Fixed @lineending botch</vh></v>
 <v t="ekr.20080328074117.76"><vh>Fixed undo problem with mutliple editors</vh></v>
-<v t="ekr.20080328074117.77" a="E"><vh>Write dirty bit if write fails</vh></v>
-<v t="ekr.20080328074117.135" a="E"><vh>Fixed bug involving default_target_language</vh></v>
+<v t="ekr.20080328074117.77"><vh>Write dirty bit if write fails</vh></v>
+<v t="ekr.20080328074117.135"><vh>Fixed bug involving default_target_language</vh></v>
 <v t="ekr.20080328074117.215"><vh>Fixed plugins that create new menu items</vh></v>
 </v>
 <v t="ekr.20080328074117.216"><vh>Features</vh>
-<v t="ekr.20080328074117.217" a="E"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
-<v t="ekr.20080328074117.220" a="E"><vh>Errors reading derived files give line numbers</vh></v>
-<v t="ekr.20080328074117.262" a="E"><vh>Added @bool allow_middle_button_paste</vh></v>
-<v t="ekr.20080328074117.297" a="E"><vh>Added support for @popup settings</vh></v>
+<v t="ekr.20080328074117.217"><vh>Added @bool collapse_nodes_while_spelling setting</vh></v>
+<v t="ekr.20080328074117.220"><vh>Errors reading derived files give line numbers</vh></v>
+<v t="ekr.20080328074117.262"><vh>Added @bool allow_middle_button_paste</vh></v>
+<v t="ekr.20080328074117.297"><vh>Added support for @popup settings</vh></v>
 </v>
+</v>
+<v t="ekr.20080403065258.10"><vh>4.4.8 rc1</vh>
+<v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
 </v>
 </v>
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080403065258.10" a="TV"><vh>4.4.8 rc1</vh>
-<v t="ekr.20080403065258.6" a="E"><vh>Fixed delete-editor problem</vh></v>
+<v t="ekr.20080405074410.4" a="TV"><vh>4.4.8 final</vh>
+<v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
+<v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
+<v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
 </v>
 </v>
 </v>
@@ -3884,7 +3889,7 @@ behaviors have been changed because they conflict with other Leo features.
 -   ``F16``  (``Copy`` on many Sun workstations) or ``Control-c`` copies the
     selection in the widget to the clipboard, if there is a selection.
     
--   ``F20` (``Cut`` on many Sun workstations) or ``Control-x`` copies the
+-   ``F20`` (``Cut`` on many Sun workstations) or ``Control-x`` copies the
     selection in the widget to the clipboard and deletes the selection.
     These keys have no effect if no text is selected.
     
@@ -11313,6 +11318,7 @@ Alexis Gendron Paquette, Paul Paterson,
 Dan Rahmel,
 Davide Salomoni,
 Ed Taekema, Kent Tenney, Brian Theado,
+Ville M. Vainio,
 Steve Zatz.
 </t>
 <t tx="ekr.20040414172218.5">All parts of Leo are distributed under the following copyright. This is intended
@@ -11350,6 +11356,7 @@ Gil Shwartz helped with unicode support.
 Phil Straus has been a great friend and constant support.
 Guido van Rossum created Python, Tkinter and the Python License.
 Dave Winer created ``MORE``.
+Ville M. Vainio created ILeo.
 Dan Winkler helped support Leo on the Mac.
 
 Special thanks to my family.
@@ -34210,7 +34217,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 rc1]&lt;/a&gt;</t>
+    Download Leo[4.4.8 final]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -34573,6 +34580,39 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080405074410.4">Leo 4.4.8 final                        April 6, 2008
+
+Leo 4.4.8 final is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080405074410.7"></t>
+<t tx="ekr.20080405074410.9"></t>
+<t tx="ekr.20080405074410.38"></t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
