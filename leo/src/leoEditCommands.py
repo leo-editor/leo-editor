@@ -132,7 +132,7 @@ class baseEditCommandsClass:
 
         c = self.c ; w = event and event.widget
 
-        if w and g.app.gui.isTextWidget(w):
+        if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
@@ -2182,7 +2182,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20060417194232.1:findCharacterHelper
     #@-node:ekr.20060925151926:backward/findCharacter & helper
-    #@+node:ekr.20060417194232.2:findWord
+    #@+node:ekr.20060417194232.2:findWord (rewrite)
     def findWord (self,event):
 
         '''Put the cursor at the next word (on a line) that starts with a character.'''
@@ -2209,7 +2209,7 @@ class editCommandsClass (baseEditCommandsClass):
                         i += 1
             k.resetLabel()
             k.clearState()
-    #@-node:ekr.20060417194232.2:findWord
+    #@-node:ekr.20060417194232.2:findWord (rewrite)
     #@-node:ekr.20060417194232:find (quick)
     #@+node:ekr.20050920084036.72:goto...
     #@+node:ekr.20050929115226:gotoCharacter
