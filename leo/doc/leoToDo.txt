@@ -3,7 +3,2201 @@
 #@+all
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20080311135649.1:4.4.8 to-do
+#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080403100132.1:First
+#@+node:ekr.20080330085343.2:Fix easy bugs
+#@+node:ekr.20080406075855.1:Fix find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+#@nonl
+#@-node:ekr.20080406075855.1:Fix find completion bug
+#@+node:ekr.20080407090400.3:Better docs for Leo's home directory
+@nocolor
+
+Leo puts several files in the home directory: .leoID.txt,
+.leoRecentFiles.txt, and myLeoSettings.leo.  There are various fallback directories if there is no home directory.
+
+If you want more details, you can do what I did: do a clone-find-all for homeDir.
+
+As for how the home directory is set, the code to do this is g.computeHomeDir.  We get the home directory with
+
+home = os.getenv('HOME',default=None)
+
+There are some mind-numbing details to be handled if there os.getenv does, in fact, return a directory.
+
+@color
+#@nonl
+#@+node:ekr.20080407090400.4:Found: homeDir
+#@+node:ekr.20070224115832:readRecentFiles & helpers
+def readRecentFiles (self,localConfigFile):
+
+    '''Read all .leoRecentFiles.txt files.'''
+
+    # The order of files in this list affects the order of the recent files list.
+    seen = [] 
+    localConfigPath = g.os_path_dirname(localConfigFile)
+    for path in (
+        g.app.homeDir,
+        g.app.globalConfigDir,
+        localConfigPath,
+    ):
+        if path and path not in seen:
+            ok = self.readRecentFilesFile(path)
+            if ok: seen.append(path)
+    if not seen and self.write_recent_files_as_needed:
+        self.createRecentFiles()
+#@nonl
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeDir,g.app.globalConfigDir):
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20050424115658:readRecentFilesFile
+def readRecentFilesFile (self,path):
+
+    fileName = g.os_path_join(path,'.leoRecentFiles.txt')
+    ok = g.os_path_exists(fileName)
+    if ok:
+        if not g.unitTesting and not self.silent:
+            print ('reading %s' % fileName)
+        lines = file(fileName).readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line),'utf-8') for line in lines]
+            self.appendToRecentFiles(lines)
+
+    return ok
+#@nonl
+#@-node:ekr.20050424115658:readRecentFilesFile
+#@-node:ekr.20070224115832:readRecentFiles & helpers
+#@+node:ekr.20061010121944:createRecentFiles
+def createRecentFiles (self):
+
+    '''Trye to reate .leoRecentFiles.txt in
+    - the users home directory first,
+    - Leo's config directory second.'''
+
+    for theDir in (g.app.homeDir,g.app.globalConfigDir):
+        if theDir:
+            try:
+                fileName = g.os_path_join(theDir,'.leoRecentFiles.txt')
+                f = file(fileName,'w')
+                f.close()
+                g.es_print('created',fileName,color='red')
+                return
+            except Exception:
+                g.es_print('can not create',fileName,color='red')
+                g.es_exception()
+#@nonl
+#@-node:ekr.20061010121944:createRecentFiles
+#@+node:ekr.20050424114937.2:writeRecentFilesFile & helper
+recentFileMessageWritten = False
+
+def writeRecentFilesFile (self,c):
+
+    '''Write the appropriate .leoRecentFiles.txt file.'''
+
+    tag = '.leoRecentFiles.txt'
+
+    if g.app.unitTesting:
+        return
+
+    localFileName = c.fileName()
+    if localFileName:
+        localPath,junk = g.os_path_split(localFileName)
+    else:
+        localPath = None
+
+    written = False
+    for path in (localPath,g.app.globalConfigDir,g.app.homeDir):
+        if path:
+            fileName = g.os_path_join(path,tag)
+            if g.os_path_exists(fileName):
+                if not self.recentFileMessageWritten:
+                    print ('wrote recent file: %s' % fileName)
+                    written = True
+                self.writeRecentFilesFileHelper(fileName)
+                # Bug fix: Leo 4.4.6: write *all* recent files.
+
+    if written:
+        self.recentFileMessageWritten = True
+    else:
+        pass # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
+#@+node:ekr.20050424131051:writeRecentFilesFileHelper
+def writeRecentFilesFileHelper (self,fileName):
+    # g.trace(fileName)
+
+    # Don't update the file if it begins with read-only.
+    theFile = None
+    try:
+        theFile = file(fileName)
+        lines = theFile.readlines()
+        if lines and self.munge(lines[0])=='readonly':
+            # g.trace('read-only: %s' %fileName)
+            return
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        if theFile: theFile.close()
+
+    theFile = None
+    try:
+        # g.trace('writing',fileName)
+        theFile = file(fileName,'w')
+        if self.recentFiles:
+            lines = [g.toEncodedString(line,'utf-8') for line in self.recentFiles]
+            theFile.write('\n'.join(lines))
+            # g.trace(fileName,'lines\n%s' % lines)
+        else:
+            theFile.write('\n')
+
+    except IOError:
+        # The user may have erased a file.  Not an error.
+        pass
+
+    except Exception:
+        g.es('unexpected exception writing',fileName,color='red')
+        g.es_exception()
+
+    if theFile:
+        theFile.close()
+#@-node:ekr.20050424131051:writeRecentFilesFileHelper
+#@-node:ekr.20050424114937.2:writeRecentFilesFile & helper
+#@+node:ekr.20041117083857:initSettingsFiles
+def initSettingsFiles (self):
+
+    """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
+
+    settingsFile = 'leoSettings.leo'
+    mySettingsFile = 'myLeoSettings.leo'
+    machineConfigFile = self.getMachineName()
+
+    for ivar,theDir,fileName in (
+        ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
+        ('homeFile',            g.app.homeDir,          settingsFile),
+        ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+        ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+        ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
+    ):
+        # The same file may be assigned to multiple ivars:
+        # readSettingsFiles checks for such duplications.
+        path = g.os_path_join(theDir,fileName)
+        if g.os_path_exists(path):
+            setattr(self,ivar,path)
+        else:
+            setattr(self,ivar,None)
+    if 0:
+        g.trace('global file:',self.globalConfigFile)
+        g.trace('home file:',self.homeFile)
+        g.trace('myGlobal file:',self.myGlobalConfigFile)
+        g.trace('myHome file:',self.myHomeConfigFile)
+#@nonl
+#@+node:ekr.20071211112804:getMachineName
+def getMachineName (self):
+
+    try:
+        import os
+        name = os.getenv('HOSTNAME')
+        if not name:
+            name = os.getenv('COMPUTERNAME')
+        if not name:
+            import socket
+            name = socket.gethostname()
+    except Exception:
+        name = ''
+
+    if name:
+        name +='LeoSettings.leo'
+
+    # g.trace(name)
+
+    return name
+#@-node:ekr.20071211112804:getMachineName
+#@-node:ekr.20041117083857:initSettingsFiles
+#@+node:ekr.20080220082727:@scan_g.es_results
+@first # -*- coding: utf-8 -*-
+
+@ To be translated...
+
+#if and #else parts have different braces:
+%s dir:
+(in
+)
+*** Two exclusive handlers for
+***Updating:
+...
+:
+= requires @root in the headline
+@comment disables untangle for
+Indentation error in
+Leo Log Window...
+ParserError in
+Referenced from
+This is for testing if g.es blocks in a thread
+Token error in
+TokenError in
+\nauto-completer scan complete
+\ntest of es_print: Ă
+adding
+after
+all plugin handlers...
+all tests enabled: this may take awhile
+already loaded
+auto-saving outline
+bad
+bad @+leo sentinel
+bad @+node sentinel
+bad abbrev:
+bad encoding in derived file:
+bad open/close_flash_brackets setting: using defaults
+bad tnode index:
+blanks converted to tabs in
+buffers...
+c.target_language:
+can not add
+can not create
+can not create temp file
+can not create: read only:
+can not execute
+can not import
+can not import Image module from PIL
+can not import ImageTk module
+can not import gc module
+can not load enabled plugin:
+can not load image:
+can not open
+can not open Aspell
+can not open dictionary file:
+can not open local dictionary
+can not open script file:
+can not open:
+can not write %s
+can't happen: is_sentinel
+can't move node out of
+changed:
+check complete
+check-derived-file passed
+check-leo-file failed:
+check-leo-file passed
+checking Python code
+clearing undo
+collapse_nodes_during_finds
+command is not valid in batch mode
+command not ready yet
+conflicting @header and @noheader directives
+correcting hidden node: t=
+correcting line endings in:
+count:
+created
+created chapter
+created directory:
+created in
+created:
+creating menu from
+creating new window
+creating:
+current directory:
+debugger does not exist:
+default tangle directory not found:
+deleting tnode list for
+directory
+directory:
+disabling save commands
+done
+dubious brackets in
+dummy created
+empty
+enabled brief gc stats
+enabled plugins...
+enabled verbose gc stats
+end of script
+error handling:
+error parsing
+error pretty-printing
+error reading:
+error:
+errors
+errors inhibited read @auto
+event
+exception binding
+exception creating directory:
+exception creating temp file
+exception creating:
+exception deleting backup file:
+exception deleting:
+exception executing
+exception executing command
+exception executing script
+exception executing:
+exception handling
+exception in
+exception in g.importFromPath
+exception in os.chmod
+exception loading plugin
+exception opening:
+exception removing:
+exception renaming
+exception writing:
+extend mode
+file not found
+file not found:
+finished
+first mismatched line at line
+from
+g.app.config: bad encoding:
+g.init_zodb: can not import ZODB
+g.init_zodb: exception creating ZODB.DB instance
+generated line:
+get_focus:
+gui does not support a stand-alone find dialog
+gui does not support the compare window
+handlers for
+hasFocusWidget:
+head_lines:
+ignoring
+ignoring 3.x sentinel:
+ignoring bad @comment directive:
+ignoring bad @comment sentinel:
+ignoring bad @language directive:
+ignoring bad @language sentinel:
+ignoring bad unknownAttributes key
+ignoring command: already executing a command.
+ignoring invalid key binding:
+ignoring non-dictionary unknownAttributes for
+ignoring non-pickleable attribute
+ignoring non-string attribute
+ignoring redundant -noref in:
+ignoring redundant -nosent in:
+ignoring:
+ignoring: @comment
+imported
+in
+in file:
+indentation error in
+info string
+inhibits untangle for
+ins:
+inserting @ignore
+instances
+invalid @+leo sentinel in
+invalid @encoding:
+invalid @lineending directive:
+invalid Paste As Clone
+invalid encoding in .leo file:
+is a sentinel line
+is also a prefix of
+is bound to:
+is not
+is not in the outline
+len
+leoID=
+line
+line:
+lines
+load dir:
+loadOnePlugin: failed to load module
+loaded plugin:
+looking for a parent to tangle...
+lossage...
+may be read-only or in use
+minibuffer hidden
+missing lines
+missing vnode:
+modes conflict in:
+newTnode: unexpected index type:
+no @auto nodes in the selected tree
+no @file node in the selected tree
+no @file nodes in the selected tree
+no @test or @suite nodes in selected outline
+no Find script node
+no ancestor @file node: using script line numbers
+no bindings
+no child index for
+no children and less than 10 characters (excluding directives)
+no debugger found.
+no dirty @auto nodes in the selected tree
+no dirty @file nodes
+no docstring for
+no file name
+no matching #endif:
+no more clones
+no more misspellings
+no previous command
+no script selected
+no state function for
+no such command:
+no text selected
+no tnode with index:
+nodes
+nodes checked
+not a clone:
+not a valid MORE file
+not changed.
+not found
+not found in
+not found:
+not written:
+nothing follows section name
+offending line...
+offending line:\n
+only
+or
+original line:
+over-riding setting:
+parent node:
+path does not exist:
+plugin
+probably an outline topology error.
+psyco now logging to:
+psyco now running
+putCount
+putDescendentUnknownAttributes can't happen 2
+putDescendentUnknownAttributes: unexpected pickling exception
+putUaHelper: unexpected pickling exception
+read only
+read only:
+reading:
+recreating:
+redefining
+redo
+relative path in @path directive:
+relative_path_base_directory:
+rename failed: no file created!
+reopening:
+replacing
+requestedFocusWidget:
+restoring
+resurrected node:
+running
+save commands disabled
+saved:
+scanGnx: unexpected index type:
+scanning for auto-completer...
+seems to be mixed HTML and PHP:
+selected text should contain one or more section names
+selected text should start with a section name
+skipping settings in
+surprise in checkPythonNode
+swap-words command not ready yet
+syntax error in class node: can not continue
+syntax error in:
+syntax error: deleting
+tabs converted to blanks in
+tail_lines:
+tangle complete
+tangling parent
+tangling...
+the
+the clipboard is not valid
+the current node is not a clone
+the text will be discarded
+there may be conflicting settings!
+time.strftime not available on this platform
+time/count:
+time:
+to
+to dictionary
+unchanged:
+undo
+unexpected exception converting hexlified string to string
+unexpected exception in
+unexpected exception in app.setLeoID
+unexpected exception in c.openWith
+unexpected exception in g.create_temp_file
+unexpected exception in g.getScript
+unexpected exception in g.importFromPath(%s)
+unexpected exception parsing
+unexpected exception writing
+unit tests
+unknown attributes for
+unknown attributes for tnode
+unknown command name:
+unknown language: using Python comment delimiters
+unknown option:
+unmatched
+untangle complete
+untangling...
+using
+using -asis option in:
+using -thin option in:
+using a blank one instead
+using empty text.
+using os.getenv('USER'):
+warning:
+warning: conflicting values for
+warning: ignoring
+warning: possible duplicate definition of:
+warning: updating changed text in
+with
+write the @file node or use the Import Derived File command
+writing erroneous:
+wrote:
+you may want to delete ressurected nodes
+@c
+# Decls...
+color='red'
+newline=True
+tabName='Log'
+False = 'False'
+aList = 'aList'
+args = 'args'
+at_DOT_outputFileName = 'at.outputFileName'
+at_DOT_root_DOT_headString_PARENS_ = 'at.root.headString()'
+attrDict_DOT_get_LP_key_RP_ = 'attrDict.get(key)'
+b2_DOT_pane = 'b2.pane'
+backupName = 'backupName'
+badline = 'badline'
+base = 'base'
+bindStroke = 'bindStroke'
+bindings = 'bindings'
+bunch_DOT_kind = 'bunch.kind'
+c_DOT_config_DOT_getBool_LP__SQ_collapse_nodes_during_finds_SQ__RP_ = 'c.config.getBool(\'collapse_nodes_during_finds\')'
+c_DOT_disableCommandsMessage = 'c.disableCommandsMessage'
+c_DOT_shortFileName_PARENS_ = 'c.shortFileName()'
+c_DOT_tangle_directory = 'c.tangle_directory'
+c_DOT_target_language = 'c.target_language'
+c_DOT_widget_name_LP_c_DOT_get_focus_PARENS__RP_ = 'c.widget_name(c.get_focus())'
+c_DOT_widget_name_LP_c_DOT_hasFocusWidget_RP_ = 'c.widget_name(c.hasFocusWidget)'
+c_DOT_widget_name_LP_c_DOT_requestedFocusWidget_RP_ = 'c.widget_name(c.requestedFocusWidget)'
+c_DOT_widget_name_LP_w_RP_ = 'c.widget_name(w)'
+ch = 'ch'
+command = 'command'
+commandName = 'commandName'
+computeProxyObject = 'computeProxyObject'
+configDir = 'configDir'
+count = 'count'
+d_DOT_get_LP_ch_RP_ = 'd.get(ch)'
+d2 = 'd2'
+d3 = 'd3'
+data = 'data'
+debugger = 'debugger'
+delim1 = 'delim1'
+delim2 = 'delim2'
+delim3 = 'delim3'
+dictionaryFileName = 'dictionaryFileName'
+dir2 = 'dir2'
+doc = 'doc'
+dst = 'dst'
+e = 'e'
+encoding = 'encoding'
+encodingName = 'encodingName'
+errors = 'errors'
+eventName = 'eventName'
+exctype_DOT___name__ = 'exctype.__name__'
+fileName = 'fileName'
+file_name = 'file_name'
+filename = 'filename'
+fn = 'fn'
+g_DOT_angleBrackets_LP__DQ___DQ__RP_ = 'g.angleBrackets("*")'
+g_DOT_app_DOT_globalOpenDir = 'g.app.globalOpenDir'
+g_DOT_app_DOT_gui_DOT_getFullVersion_LP_c_RP_ = 'g.app.gui.getFullVersion(c)'
+g_DOT_app_DOT_gui_DOT_guiName_PARENS_ = 'g.app.gui.guiName()'
+g_DOT_app_DOT_leoID = 'g.app.leoID'
+g_DOT_choose_LP_val_COMMA__SQ_on_SQ__COMMA__SQ_off_SQ__RP_ = 'g.choose(val,\'on\',\'off\')'
+g_DOT_get_line_LP_s_COMMA_i_RP_ = 'g.get_line(s,i)'
+g_DOT_plugin_date_LP_m_RP_ = 'g.plugin_date(m)'
+g_DOT_shortFileName_LP_fileName_RP_ = 'g.shortFileName(fileName)'
+g_DOT_shortFileName_LP_path_RP_ = 'g.shortFileName(path)'
+h = 'h'
+head_lines = 'head_lines'
+headline = 'headline'
+homeDir = 'homeDir'
+i = 'i'
+index = 'index'
+inputFileName = 'inputFileName'
+ins = 'ins'
+ivar = 'ivar'
+k_DOT_prettyPrintKey_LP_stroke_RP_ = 'k.prettyPrintKey(stroke)'
+k_DOT_state_DOT_kind = 'k.state.kind'
+key = 'key'
+keys = 'keys'
+kind = 'kind'
+len_LP_lines_RP_ = 'len(lines)'
+len_LP_s_RP_ = 'len(s)'
+letter = 'letter'
+line = 'line'
+line1 = 'line1'
+line2 = 'line2'
+loadDir = 'loadDir'
+lp = 'lp'
+m = 'm'
+m_DOT___name__ = 'm.__name__'
+m_DOT___version__ = 'm.__version__'
+message = 'message'
+min_LP_12_COMMA_n2_RP_ = 'min(12,n2)'
+min_LP_20_COMMA_n1_RP_ = 'min(20,n1)'
+modeName = 'modeName'
+moduleName = 'moduleName'
+msg = 'msg'
+n = 'n'
+n1 = 'n1'
+n2 = 'n2'
+n3 = 'n3'
+name = 'name'
+newFileName = 'newFileName'
+p_DOT_headString_PARENS_ = 'p.headString()'
+p_DOT_parent_PARENS__DOT_headString_PARENS_ = 'p.parent().headString()'
+pane = 'pane'
+part_DOT_name = 'part.name'
+path = 'path'
+prefix = 'prefix'
+ratio = 'ratio'
+relative_path = 'relative_path'
+repr_LP_at_DOT_t_RP_ = 'repr(at.t)'
+repr_LP_ch_RP_ = 'repr(ch)'
+repr_LP_data_RP_ = 'repr(data)'
+repr_LP_g_DOT_app_DOT_leoID_RP_ = 'repr(g.app.leoID)'
+repr_LP_line_RP_ = 'repr(line)'
+repr_LP_theId_RP_ = 'repr(theId)'
+repr_LP_val_RP_ = 'repr(val)'
+requestedType = 'requestedType'
+root_DOT_headString_PARENS_ = 'root.headString()'
+rp = 'rp'
+s = 's'
+s_DOT_strip_PARENS_ = 's.strip()'
+s1 = 's1'
+s2 = 's2'
+s3 = 's3'
+section_DOT_name = 'section.name'
+self_DOT_currentWord = 'self.currentWord'
+self_DOT_fileName = 'self.fileName'
+self_DOT_outputFileName = 'self.outputFileName'
+self_DOT_print_mode = 'self.print_mode'
+self_DOT_putCount = 'self.putCount'
+self_DOT_shortFileName = 'self.shortFileName'
+self_DOT_tabName = 'self.tabName'
+self_DOT_targetFileName = 'self.targetFileName'
+sep = 'sep'
+setting = 'setting'
+shortcut = 'shortcut'
+signon = 'signon'
+spaces = 'spaces'
+sparseMove = 'sparseMove'
+src = 'src'
+start = 'start'
+start_line = 'start_line'
+str_LP_i_1_RP_ = 'str(i+1)'
+str_LP_index_RP_ = 'str(index)'
+str_LP_message_RP_ = 'str(message)'
+str_LP_msg_RP_ = 'str(msg)'
+str_LP_n_RP_ = 'str(n)'
+str_LP_time_RP_ = 'str(time)'
+stroke = 'stroke'
+tag = 'tag'
+tail_lines = 'tail_lines'
+target = 'target'
+theDir = 'theDir'
+theFile = 'theFile'
+time_DOT_clock_PARENS_ = 'time.clock()'
+title = 'title'
+torv = 'torv'
+type_LP_index_RP_ = 'type(index)'
+type_LP_s_RP_ = 'type(s)'
+url = 'url'
+v_DOT_headString_PARENS_ = 'v.headString()'
+val = 'val'
+value = 'value'
+version = 'version'
+vnodeName = 'vnodeName'
+word = 'word'
+z = 'z'
+z_line = 'z_line'
+z_opt = 'z_opt'
+zipMark = 'zipMark'
+g.app.translateToUpperCase=True
+# ---- @thin leo.py 
+g.es_print('','-------------------- @thin leo.py ',color='red')
+# -- node run
+g.es("disabling save commands",color="red")
+# -- node createFrame (leo.py)
+g.es("file not found:",fileName)
+# -- node getBatchScript
+g.es_print("can not open script file:",name, color="red")
+# -- node reportDirectories
+g.es("%s dir:" % (kind),theDir,color="blue")
+# -- node startPsyco
+g.es("psyco now logging to:",theFile,color="blue")
+g.es("psyco now running",color="blue")
+# ---- @thin leoApp.py
+g.es_print('','-------------------- @thin leoApp.py',color='red')
+# -- node < < return if we can set leoID from sys.leoID> >
+# g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+g.es_print("leoID=",g_DOT_app_DOT_leoID,spaces=False,color='red')
+# -- node < < return if we can set leoID from "leoID.txt" > >
+# g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+g.es('leoID=',g_DOT_app_DOT_leoID,' (in ',theDir,')',spaces=False,color="red")
+g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+g.es_print('unexpected exception in app.setLeoID',color='red')
+# -- node < < return if we can set leoID from os.getenv('USER') > >
+# g.es("using os.getenv('USER'):",repr(theId),color='red')
+g.es("using os.getenv('USER'):",repr_LP_theId_RP_,color='red')
+# -- node < < put up a dialog requiring a valid id > >
+# g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+g.es('leoID=',repr_LP_g_DOT_app_DOT_leoID_RP_,spaces=False,color="blue")
+# -- node < < attempt to create leoID.txt > >
+g.es_print('',tag,'created in',theDir,color='red')
+g.es('can not create',tag,'in',theDir,color='red')
+# -- node app.writeWaitingLog
+g.es('',s,color=color,newline=0)
+# ---- @thin leoAtFile.py
+g.es_print('','-------------------- @thin leoAtFile.py',color='red')
+# -- node checkDerivedFile (atFile)
+g.es_print('check-derived-file passed',color='blue')
+# -- node < < warn on read-only file > >
+g.es("read only:",fn,color="red")
+# -- node read
+# g.es("reading:",root.headString())
+g.es("reading:",root_DOT_headString_PARENS_)
+# -- node < < advise user to delete all unvisited nodes > >
+# g.es('resurrected node:',p.headString(),color='blue')
+g.es('resurrected node:',p_DOT_headString_PARENS_,color='blue')
+g.es('in file:',fileName,color='blue')
+g.es('you may want to delete ressurected nodes')
+# -- node readAll (atFile)
+g.es("no @file nodes in the selected tree")
+# -- node readOneAtAutoNode (atFile)
+# g.es("reading:",p.headString())
+g.es("reading:",p_DOT_headString_PARENS_)
+g.es_print('errors inhibited read @auto',fileName,color='red')
+# -- node createNthChild3
+g.es("dummy created")
+# -- node handleLinesFollowingSentinel
+g.es("using",s)
+# g.es('',len(lines), "lines",m)
+g.es('',len_LP_lines_RP_, "lines",m)
+# -- node findChild4
+g.es("write the @file node or use the Import Derived File command")
+# -- node < < indicate that the node has been changed > >
+# g.es("warning: updating changed text in",at.root.headString(),color="blue")
+g.es("warning: updating changed text in",at_DOT_root_DOT_headString_PARENS_,color="blue")
+# -- node < < bump at.correctedLines and tell about the correction > >
+# g.es("correcting hidden node: t=",repr(at.t),color="red")
+g.es("correcting hidden node: t=",repr_LP_at_DOT_t_RP_,color="red")
+# -- node ignoreOldSentinel
+g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+# -- node < < handle @language > >
+g.es("ignoring bad @language sentinel:",line,color="red")
+# -- node < < handle @comment > >
+g.es("ignoring bad @comment sentinel:",line,color="red")
+# -- node copyAllTempBodyStringsToTnodes
+# g.es("changed:",p.headString(),color="blue")
+g.es("changed:",p_DOT_headString_PARENS_,color="blue")
+# -- node < < read optional encoding param > >
+g.es_print("bad encoding in derived file:",encoding)
+# -- node < < set dirty and orphan bits on error > >
+# g.es("not written:",at.outputFileName)
+g.es("not written:",at_DOT_outputFileName)
+# -- node < < say the command is finished > >
+g.es("finished")
+g.es("no @file nodes in the selected tree")
+g.es("no dirty @file nodes")
+# -- node writeAtAutoNodesHelper
+g.es("finished")
+g.es("no dirty @auto nodes in the selected tree")
+g.es("no @auto nodes in the selected tree")
+# -- node writeOneAtAutoNode & helpers
+# g.es("not written:",at.outputFileName)
+g.es("not written:",at_DOT_outputFileName)
+# g.es("not written:",at.outputFileName)
+g.es("not written:",at_DOT_outputFileName)
+# -- node shouldWriteAtAutoNode
+# g.es_print(p.headString(),'not written:',color='red')
+g.es_print(p_DOT_headString_PARENS_,'not written:',color='red')
+g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+# -- node writeMissing
+g.es("finished")
+g.es("no @file node in the selected tree")
+# -- node hasSectionName
+g.es('dubious brackets in',line)
+# -- node < < handle @language > >
+g.es("ignoring bad @language directive:",line,color="blue")
+# -- node < < handle @comment > >
+g.es("ignoring bad @comment directive:",line,color="blue")
+# -- node replaceTargetFileIfDifferent
+# g.es('unchanged:',self.shortFileName)
+g.es('unchanged:',self_DOT_shortFileName)
+# g.es('wrote:    ',self.shortFileName)
+g.es('wrote:    ',self_DOT_shortFileName)
+# g.es('created:  ',self.targetFileName)
+g.es('created:  ',self_DOT_targetFileName)
+# -- node < < report if the files differ only in line endings > >
+# g.es("correcting line endings in:",self.targetFileName,color="blue")
+g.es("correcting line endings in:",self_DOT_targetFileName,color="blue")
+# -- node warnAboutOrpanAndIgnoredNodes
+# g.es("parent node:",p.parent().headString(),color="blue")
+g.es("parent node:",p_DOT_parent_PARENS__DOT_headString_PARENS_,color="blue")
+# -- node writeException
+# g.es("exception writing:",self.targetFileName,color="red")
+g.es("exception writing:",self_DOT_targetFileName,color="red")
+# g.es("exception deleting:",self.outputFileName,color="red")
+g.es("exception deleting:",self_DOT_outputFileName,color="red")
+# -- node < < Test for @header and @noheader > >
+g.es("conflicting @header and @noheader directives")
+# -- node < < Set comment strings from delims > >
+g.es("unknown language: using Python comment delimiters")
+# g.es("c.target_language:",c.target_language)
+g.es("c_DOT_target_language:",c_DOT_target_language)
+g.es('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+# ---- @thin leoBridge.py
+g.es_print('','-------------------- @thin leoBridge.py',color='red')
+# -- node < < try to get leoID from sys.leoID> >
+# g.es("leoID=",g.app.leoID,spaces=False,color='red')
+g.es("leoID=",g_DOT_app_DOT_leoID,spaces=False,color='red')
+# -- node < < try to get leoID from "leoID.txt" > >
+# g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+g.es('leoID=',g_DOT_app_DOT_leoID,' (in ',theDir,')',spaces=False,color="red")
+g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+g.es('unexpected exception in app.setLeoID',color='red')
+# -- node < < try to get leoID from os.getenv('USER') > >
+# g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+g.es_print("using os.getenv('USER'):",repr_LP_theId_RP_,color='red')
+# -- node reportDirectories
+g.es('',kind,'directory','',':',theDir,color='blue')
+# -- node createFrame (leoBridge)
+g.es('file not found', fileName,'creating new window')
+# ---- @thin leoChapters.py
+g.es_print('','-------------------- @thin leoChapters.py',color='red')
+# -- node cc.createChapterByName
+g.es('created chapter',name,color='blue')
+# -- node cc.error
+g.es_print(s,color='red')
+# ---- @thin leoColor.py
+g.es_print('','-------------------- @thin leoColor.py',color='red')
+# ---- @thin leoCommands.py
+g.es_print('','-------------------- @thin leoCommands.py',color='red')
+# -- node doCommand
+# g.es(c.disableCommandsMessage,color='blue')
+g.es(c_DOT_disableCommandsMessage,color='blue')
+g.es('ignoring command: already executing a command.',color='red')
+g.es("exception executing command")
+# -- node c.signOnWithVersion
+g.es("Leo Log Window...",color=color)
+g.es(signon)
+# g.es('',"python %s.%s.%s, %s\n%s" % (n1,n2,n3,g.app.gui.getFullVersion(c),version))
+g.es('',"python %s.%s.%s, %s\n%s" % (n1,n2,n3,g_DOT_app_DOT_gui_DOT_getFullVersion_LP_c_RP_,version))
+# -- node openWith and allies
+g.es("unexpected exception in c.openWith")
+# -- node < < create or recreate temp file as needed > >
+# g.es("reopening:",g.shortFileName(path),color="blue")
+g.es("reopening:",g_DOT_shortFileName_LP_path_RP_,color="blue")
+# -- node < < execute a command to open path in external editor > >
+g.es("exception executing:",command)
+# -- node createOpenWithTempFile
+# g.es("recreating:  ",g.shortFileName(path),color="red")
+g.es("recreating:  ",g_DOT_shortFileName_LP_path_RP_,color="red")
+# g.es("creating:  ",g.shortFileName(path),color="blue")
+g.es("creating:  ",g_DOT_shortFileName_LP_path_RP_,color="blue")
+# g.es("time: " + str(time))
+g.es("time: " + str_LP_time_RP_)
+g.es("exception creating temp file",color="red")
+# -- node save (commands)
+g.es("save commands disabled",color="purple")
+# -- node saveAs
+g.es("save commands disabled",color="purple")
+# -- node saveTo
+g.es("save commands disabled",color="purple")
+# -- node readOutlineOnly
+g.es("can not open:",fileName)
+# -- node readFileIntoFile
+g.es("can not open:",fileName)
+# -- node writeFileFromNode
+g.es_print('wrote:',fileName,color='blue')
+g.es('can not write %s',fileName,color='red')
+# -- node c.executeScript & helpers
+g.es("end of script",color="purple",tabName=tabName)
+g.es("no script selected",color="blue",tabName=tabName)
+# -- node goToLineNumber & allies
+# g.es("error handling:",root.headString())
+g.es("error handling:",root_DOT_headString_PARENS_)
+# -- node < < set root > >
+g.es("no ancestor @file node: using script line numbers", color="blue")
+# -- node < < read the file into lines > >
+g.es("not found:",fileName)
+# -- node < < 4.2: get node from gnx > >
+g.es("not found:",vnodeName,color="red")
+# -- node < < 4.x: scan for the node using tnodeList and n > >
+# g.es_print("no child index for",root.headString(),color="red")
+g.es_print("no child index for",root_DOT_headString_PARENS_,color="red")
+# -- node < < set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false > >
+g.es_print(s, color="red")
+g.es_print(s, color="red")
+g.es_print(s, color = "red")
+# -- node < < set p to the first node whose headline matches vnodeName > >
+g.es_print(s, color="red")
+# -- node < < 3.x: scan for the node with the given childIndex > >
+g.es("not found:",vnodeName, color="red")
+# -- node < < put the cursor on line n2 of the body text > >
+# g.es('only',len(lines),'lines',color="blue")
+g.es('only',len_LP_lines_RP_,'lines',color="blue")
+# -- node convertLineToVnodeNameIndexLine
+g.es("bad @+leo sentinel")
+# -- node < < handle delim while scanning backward > >
+# g.es("line",str(n),"is a sentinel line")
+g.es("line",str_LP_n_RP_,"is a sentinel line")
+# -- node < < set vnodeName and (childIndex or gnx) from s > >
+g.es("bad @+node sentinel")
+# -- node convertAllBlanks
+g.es("blanks converted to tabs in",count,"nodes")
+# -- node convertAllTabs
+g.es("tabs converted to blanks in",count,"nodes")
+# -- node extract (test)
+g.es("nothing follows section name",color="blue")
+# -- node extractSection
+g.es("nothing follows section name",color="blue")
+# -- node < < Set headline for extractSection > >
+g.es("selected text should start with a section name",color="blue")
+# -- node extractSectionNames
+g.es("selected text should contain one or more section names",color="blue")
+# -- node < < trace head_lines, ins, tail_lines > >
+g.es_print("head_lines: ",head_lines)
+g.es_print("ins: ",ins)
+g.es_print("tail_lines: ",tail_lines)
+# -- node c.findMatchingBracket, helper and test
+# g.es("unmatched",repr(ch))
+g.es("unmatched",repr_LP_ch_RP_)
+# -- node getTime
+g.es("time.strftime not available on this platform",color="blue")
+# -- node addComments (test)
+g.es('no text selected',color='blue')
+# -- node deleteComments (test)
+g.es('no text selected',color='blue')
+g.es('',"'%s'" % (d2),"not found",color='blue')
+g.es('',"'%s'" % (d3),"not found",color='blue')
+# -- node showFindPanel
+# g.es('the',g.app.gui.guiName(),
+#             'gui does not support a stand-alone find dialog',color='blue')
+g.es('the',g_DOT_app_DOT_gui_DOT_guiName_PARENS_,
+            'gui does not support a stand-alone find dialog',color='blue')
+# -- node notValidInBatchMode
+g.es('the',commandName,"command is not valid in batch mode")
+# -- node c.checkOutline
+g.es("all tests enabled: this may take awhile",color="blue")
+# -- node < < remove unused tnodeList > >
+g.es_print(s,color="blue")
+# -- node < < do full tests > >
+g.es('','.',newline=False)
+# -- node < < give test failed message > >
+g.es_print(s,color="red")
+# -- node < <print summary message > >
+g.es_print('',count,'nodes checked',errors,'errors',color=color)
+# -- node checkAllPythonCode
+g.es("check complete",color="blue")
+# -- node < < print dots > >
+g.es('','.',newline=False)
+# -- node checkPythonCode
+g.es("checking Python code   ")
+g.es("surprise in checkPythonNode")
+g.es("check complete",color="blue")
+# -- node < < print dots > >
+g.es('','.',newline=False)
+# -- node checkPythonNode
+g.es_print(s,color="blue")
+# -- node tabNannyNode
+g.es("ParserError in",headline,color="blue")
+# g.es('',str(msg))
+g.es('',str_LP_msg_RP_)
+g.es("TokenError in",headline,color="blue")
+# g.es('',str(msg))
+g.es('',str_LP_msg_RP_)
+g.es("indentation error in",headline,"line",badline,color="blue")
+g.es(message)
+g.es("offending line:\n",line2)
+# -- node prettyPrintNode
+g.es("error pretty-printing",h,"not changed.",color="blue")
+# -- node markChangedHeadlines
+g.es("done",color="blue")
+# -- node markChangedRoots
+g.es("done",color="blue")
+# -- node markClones
+g.es('the current node is not a clone',color='blue')
+# -- node cantMoveMessage
+g.es("can't move node out of",kind,color="blue")
+# -- node c.toggleSparseMove
+g.es(tag,'=',sparseMove,color='blue')
+# -- node goToNextClone
+# g.es('not a clone:',p.headString(),color='blue')
+g.es('not a clone:',p_DOT_headString_PARENS_,color='blue')
+g.es("done",color="blue")
+# -- node findNextClone
+g.es('no more clones',color='blue')
+# -- node goToNextDirtyHeadline
+g.es("done",color="blue")
+# -- node goToNextMarkedHeadline
+g.es("done",color="blue")
+# -- node openCompareWindow
+# g.es('the',g.app.gui.guiName(),
+#             'gui does not support the compare window',color='blue')
+g.es('the',g_DOT_app_DOT_gui_DOT_guiName_PARENS_,
+            'gui does not support the compare window',color='blue')
+# -- node openLeoSettings and openMyLeoSettings
+g.es('',name,"not found in",configDir)
+g.es('',name,"not found in",configDir,"or",homeDir)
+# -- node openLeoScripts
+g.es('not found:',fileName)
+# -- node leoDocumentation
+g.es("not found:",name)
+# -- node leoHome
+g.es("not found:",url)
+# -- node leoPlugins
+g.es("not found:",name)
+# -- node leoTutorial (version number)
+g.es("not found:",url)
+# -- node leoUsersGuide
+g.es("not found:",url)
+# -- node initEncoding
+g.es("bad", "%s: %s" % (encodingName,encoding))
+# ---- @thin leoConfig.py
+g.es_print('','-------------------- @thin leoConfig.py',color='red')
+# -- node error
+g.es(s,color="blue")
+# -- node doIfGui
+g.es_print(s,color='blue')
+# -- node doMenus & helper
+# g.es_print('creating menu from',c.shortFileName(),color='blue')
+g.es_print('creating menu from',c_DOT_shortFileName_PARENS_,color='blue')
+# -- node set (parseBaseClass)
+g.es("over-riding setting:",name,"from",path)
+# -- node traverse (parserBaseClass)
+# g.es_print('skipping settings in',p.headString(),color='blue')
+g.es_print('skipping settings in',p_DOT_headString_PARENS_,color='blue')
+# -- node initEncoding
+g.es("g.app.config: bad encoding:","%s: %s" % (ivar,encoding))
+# -- node getValFromDict
+# g.es_print('warning: ignoring',bunch.kind,'',setting,'is not',requestedType,color='red')
+g.es_print('warning: ignoring',bunch_DOT_kind,'',setting,'is not',requestedType,color='red')
+g.es_print('there may be conflicting settings!',color='red')
+# -- node createRecentFiles
+g.es_print('created',fileName,color='red')
+g.es_print('can not create',fileName,color='red')
+# -- node writeRecentFilesFileHelper
+g.es('unexpected exception writing',fileName,color='red')
+# -- node g.app.config.printSettings & helper
+g.es('','%s %s = %s' % (letter,key,val))
+# ---- @thin leoEditCommands.py
+g.es_print('','-------------------- @thin leoEditCommands.py',color='red')
+# -- node dynamicCompletion
+g.es('command not ready yet',color='blue')
+# -- node dynamicExpansion
+g.es('command not ready yet',color='blue')
+# -- node listAbbrevs
+g.es('','%s=%s' % (z,s))
+# -- node readAbbreviations
+g.es('can not open',fileName)
+# -- node writeAbbreviations
+g.es('can not create',fileName)
+# -- node listBuffers & listBuffersAlphabetically
+g.es('buffers...')
+g.es('',name)
+g.es('buffers...')
+g.es('',name)
+# -- node debug & helper
+g.es("info string")
+# -- node findDebugger
+g.es('debugger does not exist:',debugger,color='blue')
+g.es('no debugger found.')
+# -- node enable/disableGcTrace
+g.es('enabled verbose gc stats',color='blue')
+g.es('enabled brief gc stats',color='blue')
+# -- node printFocus
+# g.es_print('      hasFocusWidget:',c.widget_name(c.hasFocusWidget))
+g.es_print('      hasFocusWidget:',c_DOT_widget_name_LP_c_DOT_hasFocusWidget_RP_)
+# g.es_print('requestedFocusWidget:',c.widget_name(c.requestedFocusWidget))
+g.es_print('requestedFocusWidget:',c_DOT_widget_name_LP_c_DOT_requestedFocusWidget_RP_)
+# g.es_print('           get_focus:',c.widget_name(c.get_focus()))
+g.es_print('           get_focus:',c_DOT_widget_name_LP_c_DOT_get_focus_PARENS__RP_)
+# -- node appendImageDictToList
+g.es('can not load image:',path)
+# -- node getImage
+g.es('can not import Image module from PIL',color='blue')
+g.es('can not import ImageTk module',color='blue')
+# -- node initBracketMatcher
+g.es_print('bad open/close_flash_brackets setting: using defaults')
+# -- node viewLossage
+g.es('lossage...')
+# g.es('',stroke or d.get(ch) or ch or 'None')
+g.es('',stroke or d_DOT_get_LP_ch_RP_ or ch or 'None')
+# -- node clear/set/ToggleExtendMode
+# g.es('extend mode',g.choose(val,'on','off'),color='red')
+g.es('extend mode',g_DOT_choose_LP_val_COMMA__SQ_on_SQ__COMMA__SQ_off_SQ__RP_,color='red')
+# -- node swapWords
+g.es('swap-words command not ready yet',color='blue')
+# -- node getReadableTextFile
+g.es('can not open',fileName)
+# -- node saveFile
+g.es('can not create',fileName)
+# -- node helpForMinibuffer
+g.es_print('',s)
+# -- node helpForCommand
+g.es('','%s:%s\n%s\n' % (commandName,bindings,s),color='blue')
+# -- node aproposAutocompletion
+g.es_print('',s)
+# -- node aproposBindings
+g.es_print('',s)
+# -- node aproposDebuggingCommands
+g.es_print('',s)
+# -- node aproposFindCommands
+g.es_print('',s)
+# -- node loadFile & helpers
+g.es('can not open',fileName)
+# -- node saveMacros & helper
+g.es('can not create',fileName)
+# -- node findNextMatch (query-replace)
+g.es('command not ready yet',color='blue')
+# -- node Find options wrappers
+# g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
+g.es('collapse_nodes_during_finds',c_DOT_config_DOT_getBool_LP__SQ_collapse_nodes_during_finds_SQ__RP_)
+# -- node scolorizer LATER
+g.es('command not ready yet',color='blue')
+# -- node init_aspell
+g.es_print('can not open dictionary file:',dictionaryFileName, color='red')
+g.es_print('can not open Aspell',color='red')
+# -- node readDictionary
+g.es("can not open local dictionary",fileName,"using a blank one instead")
+# -- node add
+g.es("adding ", color= "blue", newline= False)
+# g.es('','%s' % self.currentWord)
+g.es('','%s' % self_DOT_currentWord)
+# g.es("can not add",self.currentWord,"to dictionary",color="red")
+g.es("can not add",self_DOT_currentWord,"to dictionary",color="red")
+# -- node find & helpers
+g.es("no more misspellings")
+# -- node hide
+g.es(message,color='blue')
+# -- node ignore
+g.es("ignoring ",color= "blue", newline= False)
+# g.es('','%s' % self.currentWord)
+g.es('','%s' % self_DOT_currentWord)
+# -- node report
+g.es_print(message,color='blue')
+# ---- @thin leoFileCommands.py
+g.es_print('','-------------------- @thin leoFileCommands.py',color='red')
+# -- node processingInstruction (stylesheet)
+g.es('','%s: %s' % (target,data),color='blue')
+# -- node startVnodes
+# g.es("reading:",self.fileName)
+g.es("reading:",self_DOT_fileName)
+# -- node checkLeoFile (fileCommands)
+g.es_print('check-leo-file passed',color='blue')
+# g.es_print('check-leo-file failed:',str(message),color='red')
+g.es_print('check-leo-file failed:',str_LP_message_RP_,color='red')
+# -- node getLeoOutlineFromClipboard & helpers
+g.es("invalid Paste As Clone",color="blue")
+g.es("the clipboard is not valid ",color="blue")
+# -- node < < warn on read-only files > >
+g.es("read only:",fileName,color="red")
+# -- node newTnode
+# g.es("bad tnode index:",str(index),"using empty text.")
+g.es("bad tnode index:",str_LP_index_RP_,"using empty text.")
+# g.es("newTnode: unexpected index type:",type(index),index,color="red")
+g.es("newTnode: unexpected index type:",type_LP_index_RP_,index,color="red")
+# -- node getAllLeoElements
+g.es("reading:",fileName)
+# -- node getPrefs
+# g.es("default tangle directory not found:",c.tangle_directory)
+g.es("default tangle directory not found:",c_DOT_tangle_directory)
+# -- node getTnode
+# g.es("no tnode with index:",str(index),"the text will be discarded")
+g.es("no tnode with index:",str_LP_index_RP_,"the text will be discarded")
+# -- node < < handle unknown attributes > >
+g.es_print("unknown attributes for tnode",color = "blue")
+# g.es_print('',"%s = %s" % (key,attrDict.get(key)))
+g.es_print('',"%s = %s" % (key,attrDict_DOT_get_LP_key_RP_))
+# -- node < < handle unknown vnode attributes > >
+# g.es_print("unknown attributes for",v.headString(),color="blue")
+g.es_print("unknown attributes for",v_DOT_headString_PARENS_,color="blue")
+# g.es_print('',"%s = %s" % (key,attrDict.get(key)))
+g.es_print('',"%s = %s" % (key,attrDict_DOT_get_LP_key_RP_))
+# -- node getExistingVnode
+g.es("missing vnode:",headline,color="red")
+g.es("probably an outline topology error.")
+# -- node getXmlVersionTag
+g.es("invalid encoding in .leo file:",encoding,color="red")
+# -- node getSaxUa
+g.es_print('unexpected exception converting hexlified string to string')
+# -- node parse_leo_file
+g.es_print('error parsing',inputFileName,color='red')
+g.es_print('unexpected exception parsing',inputFileName,color='red')
+# -- node save (fileCommands)
+g.es("clearing undo")
+# -- node putSavedMessage
+# g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
+g.es("saved:","%s%s" % (zipMark,g_DOT_shortFileName_LP_fileName_RP_))
+# -- node deleteFileWithMessage
+g.es("read only",color="red")
+g.es("exception deleting backup file:",fileName)
+# -- node putUnknownAttributes & helper
+g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+# -- node putUaHelper
+g.es("ignoring non-string attribute",key,"in",torv,color="blue")
+g.es('putUaHelper: unexpected pickling exception',color='red')
+g.es("ignoring non-pickleable attribute",key,"in",torv,color="blue")
+# -- node < < Append tnodeList and unKnownAttributes to attrs> >
+# g.es("deleting tnode list for",p.headString(),color="blue")
+g.es("deleting tnode list for",p_DOT_headString_PARENS_,color="blue")
+# -- node < < issue informational messages > >
+# g.es("writing erroneous:",p.headString(),color="blue")
+g.es("writing erroneous:",p_DOT_headString_PARENS_,color="blue")
+# -- node putDescendentUnknownAttributes
+g.es("ignoring non-dictionary unknownAttributes for",p,color="blue")
+g.es("ignoring bad unknownAttributes key",key,"in",p,color="blue")
+g.es('putDescendentUnknownAttributes: unexpected pickling exception',color='red')
+g.es("putDescendentUnknownAttributes can't happen 2",color='red')
+# -- node write_Leo_file
+# g.es_print('len',len(s),'putCount',self.putCount)
+g.es_print('len',len_LP_s_RP_,'putCount',self_DOT_putCount)
+g.es("exception writing:",fileName)
+# -- node < < return if the .leo file is read-only > >
+g.es("can not create: read only:",fileName,color="red")
+# -- node < < create backup file > >
+g.es("read only",color="red")
+# -- node < < rename backupName to fileName > >
+g.es("restoring",fileName,"from",backupName)
+# -- node writeAtFileNodes
+g.es("auto-saving outline",color="blue")
+# -- node writeDirtyAtFileNodes
+g.es("auto-saving outline",color="blue")
+# -- node writeMissingAtFileNodes
+g.es("auto-saving outline",color="blue")
+# -- node writeOutlineOnly
+g.es('done',color='blue')
+# ---- @thin leoGlobals.py
+g.es_print('','-------------------- @thin leoGlobals.py',color='red')
+# -- node computeLoadDir
+g.es("load dir:",loadDir,color="blue")
+# -- node set_language
+# g.es("ignoring:",g.get_line(s,i))
+g.es("ignoring:",g_DOT_get_line_LP_s_COMMA_i_RP_)
+# -- node < < set theDict for @ directives > >
+g.es("warning: conflicting values for",word,color="blue")
+# -- node < < set theDict["root"] for noweb * chunks > >
+# g.es('',g.angleBrackets("*") + "= requires @root in the headline")
+g.es('',g_DOT_angleBrackets_LP__DQ___DQ__RP_ + "= requires @root in the headline")
+# -- node g.scanAtEncodingDirective
+g.es("invalid @encoding:",encoding,color="red")
+# -- node g.scanAtLineendingDirective
+g.es("invalid @lineending directive:",e,color="red")
+# -- node g.scanAtPagewidthDirective
+g.es("ignoring",s,color="red")
+# -- node < < scan another @root option > >
+# g.es("modes conflict in:",g.get_line(s,i))
+g.es("modes conflict in:",g_DOT_get_line_LP_s_COMMA_i_RP_)
+# g.es("modes conflict in:",g.get_line(s,i))
+g.es("modes conflict in:",g_DOT_get_line_LP_s_COMMA_i_RP_)
+g.es("unknown option:",z_opt,"in",z_line)
+# -- node g.scanAtTabwidthDirective
+g.es("ignoring",s,color="red")
+# -- node alert
+g.es('',message)
+# -- node es_dump
+g.es_print('',title)
+g.es_print('',aList)
+# -- node es_error
+g.es(s,color=color)
+# -- node es_event_exception
+g.es("exception handling ",eventName,"event")
+g.es('',i)
+# -- node es_exception_type
+# g.es_print('','%s, %s' % (exctype.__name__, value),color=color)
+g.es_print('','%s, %s' % (exctype_DOT___name__, value),color=color)
+# -- node getLastTracebackFileAndLineNumber
+# g.es_print('',repr(val))
+g.es_print('',repr_LP_val_RP_)
+# g.es_print('',repr(data))
+g.es_print('',repr_LP_data_RP_)
+# -- node Timing
+# g.es('',"%s %6.3f" % (message,(time.clock()-start)))
+###g.es('',"%s %6.3f" % (message,(time_DOT_clock_PARENS_-start)))
+# -- node g.create_temp_file
+###g.es('unexpected exception in g.create_temp_file',color='red')
+# -- node g.is_sentinel
+g.es("can't happen: is_sentinel",color="red")
+# -- node g.makeAllNonExistentDirectories
+g.es("created directory:",path)
+g.es("exception creating directory:",path)
+# -- node g.openLeoOrZipFile
+g.es("can not open:",fileName,color="blue")
+# -- node g.setGlobalOpenDir
+# g.es('current directory:',g.app.globalOpenDir)
+g.es('current directory:',g_DOT_app_DOT_globalOpenDir)
+# -- node g.update_file_if_changed
+g.es('','%12s: %s' % (kind,file_name))
+g.es("rename failed: no file created!",color="red")
+g.es('',file_name," may be read-only or in use")
+# -- node g.utils_remove
+g.es("exception removing:",fileName)
+# -- node g.utils_rename
+g.es('exception renaming',src,'to',dst,color='red')
+# -- node g.utils_chmod
+g.es("exception in os.chmod",fileName)
+# -- node enable_gc_debug
+g.es('can not import gc module',color='blue')
+# -- node g.doHook
+g.es_print(s,color="blue")
+# -- node g.plugin_signon
+# g.es('',"...%s.py v%s: %s" % (
+#             m.__name__, m.__version__, g.plugin_date(m)))
+g.es('',"...%s.py v%s: %s" % (
+            m_DOT___name__, m_DOT___version__, g_DOT_plugin_date_LP_m_RP_))
+# -- node mini test of es
+g.es(s)
+g.es_print(s)
+# -- node es_print
+# -- node @@test g.es_print
+g.es_print('\ntest of es_print: Ă',color='red',newline=False)
+g.es_print('after')
+g.es_print('done')
+# -- node es_trace
+# -- node < < scan another @file option > >
+g.es("using -asis option in:",h)
+g.es("ignoring redundant -noref in:",h)
+g.es("ignoring redundant -nosent in:",h)
+g.es("using -thin option in:",h)
+g.es("unknown option:",z_opt,"in",h)
+# -- node scanError
+g.es('',s)
+# -- node skip_pp_if
+g.es("#if and #else parts have different braces:",start_line)
+g.es("no matching #endif:",start_line)
+# -- node g.initScriptFind (set up dialog)
+g.es("no Find script node",color="red")
+# -- node g.handleScriptException
+g.es("exception executing script",color='blue')
+# -- node < < dump the lines near the error > >
+g.es_print('',s)
+g.es('',s,newline=False)
+# -- node reportBadChars
+g.es(s2,color='red')
+g.es(s2,color='red')
+# -- node g.executeScript
+g.es("exception executing",name,color="red")
+# -- node g.getScript
+g.es_print("unexpected exception in g.getScript")
+# -- node g.cantImport
+g.es_print('',s,color="blue")
+# -- node g.importFromPath
+g.es_print("exception in g.importFromPath",color='blue')
+g.es_print("unexpected exception in g.importFromPath(%s)" %
+                    (name),color='blue')
+# -- node g.init_zodb
+g.es('g.init_zodb: can not import ZODB')
+g.es('g.init_zodb: exception creating ZODB.DB instance')
+# ---- @thin leoImport.py
+g.es_print('','-------------------- @thin leoImport.py',color='red')
+# -- node exportHeadlines
+g.es("can not open",fileName,color="blue")
+# -- node flattenOutline
+g.es("can not open",fileName,color="blue")
+# -- node outlineToWeb
+g.es("can not open",fileName,color="blue")
+# -- node < < Read file into s > >
+g.es("can not open",fileName, color="blue")
+# -- node < < set delims from the header line > >
+g.es("invalid @+leo sentinel in",fileName)
+# -- node < < Write s into newFileName > >
+g.es("created:",newFileName)
+g.es("exception creating:",newFileName)
+# -- node < < open filename to f, or return > >
+g.es("exception opening:",filename)
+# -- node error
+g.es('',s)
+# -- node < < Read file into s > >
+g.es("can not open", "%s%s" % (z,fileName),color='red')
+# -- node readAtAutoNodes (importCommands) & helper
+# g.es_print('ignoring',p.headString(),color='blue')
+g.es_print('ignoring',p_DOT_headString_PARENS_,color='blue')
+g.es(message,color='blue')
+# -- node importFilesCommand
+g.es("imported",fileName,color="blue")
+# -- node importFlattenedOutline
+g.es("not a valid MORE file",fileName)
+# -- node < < Read the file into array > >
+g.es("can not open",fileName, color="blue")
+# -- node scanWebFile (handles limbo)
+g.es("can not import",fileName, color="blue")
+# -- node cstLookup
+g.es('',"****** %s" % (target),"is also a prefix of",s)
+g.es("replacing",target,"with",s)
+# -- node scanPHPText
+g.es_print('seems to be mixed HTML and PHP:',fileName)
+# -- node compareHelper
+# g.es_print('first mismatched line at line',str(i+1))
+g.es_print('first mismatched line at line',str_LP_i_1_RP_)
+g.es_print('original line: ',line1)
+g.es_print('generated line:',line2)
+g.es_print('missing lines')
+# g.es_print('',repr(line))
+g.es_print('',repr_LP_line_RP_)
+# -- node checkLeadingWhitespace
+# g.es_print('line:',repr(line),color='red')
+g.es_print('line:',repr_LP_line_RP_,color='red')
+# -- node reportMismatch
+# -- node insertIgnoreDirective
+g.es_print('inserting @ignore',color='blue')
+# -- node error, oops, report and warning
+g.es_print('',s,color='red')
+g.es_print('error:',s,color='red')
+g.es_print('warning:',s,color='red')
+# ---- @thin leoKeys.py
+g.es_print('','-------------------- @thin leoKeys.py',color='red')
+# -- node showAutocompleter/CalltipsStatus
+g.es(s,color='red')
+g.es(s,color='red')
+# -- node computeCompletionList
+# g.es('',z,tabName=self.tabName)
+g.es('',z,tabName=self_DOT_tabName)
+# -- node info
+g.es('no docstring for',word,color='blue')
+g.es('',doc,tabName='Info')
+g.es('no docstring for',word,color='blue')
+# -- node scan
+g.es("This is for testing if g.es blocks in a thread", color = 'pink' )
+# -- node scanOutline
+g.es_print('scanning for auto-completer...')
+g.es('','.',newline=False)
+g.es_print('\nauto-completer scan complete',color='blue')
+# -- node createClassObjectFromString
+g.es_print('unexpected exception in',computeProxyObject)
+# -- node forgivingParser
+g.es_print('syntax error in class node: can not continue')
+# g.es_print('syntax error: deleting',p.headString())
+g.es_print('syntax error: deleting',p_DOT_headString_PARENS_)
+# -- node bindKey
+g.es_print('exception binding',shortcut,'to',commandName)
+# -- node < < give warning and return if we try to bind to Enter or Leave > >
+g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+# -- node < < remove previous conflicting definitions from bunchList > >
+# g.es_print('redefining',z,'in',b2.pane,'to',commandName,'in',pane,color='red')
+g.es_print('redefining',z,'in',b2_DOT_pane,'to',commandName,'in',pane,color='red')
+# -- node k.initAbbrev
+g.es_print('bad abbrev:',key,'unknown command name:',commandName,color='blue')
+# -- node k.makeMasterGuiBinding
+# g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+g.es_print('exception binding',bindStroke,'to',c_DOT_widget_name_LP_w_RP_,color='blue')
+# -- node callStateFunction
+# g.es_print('no state function for',k.state.kind,color='red')
+g.es_print('no state function for',k_DOT_state_DOT_kind,color='red')
+# -- node k.show/hide/toggleMinibuffer
+g.es('minibuffer hidden',color='red')
+g.es('',commandName,'is bound to:',shortcut)
+# -- node printBindings & helper
+g.es('no bindings')
+g.es('','%s %s' % (sep, prefix),tabName=tabName)
+g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
+# -- node printBindingsHelper
+# g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+# g.es('','%*s %*s %s' % (-n1,s1,-(min_LP_12_COMMA_n2_RP_),s2,s3),tabName='Bindings')
+# -- node printCommands
+# g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName=tabName)
+# g.es('','%*s %*s %s' % (-n1,s1,-(min_LP_12_COMMA_n2_RP_),s2,s3),tabName=tabName)
+# -- node repeatComplexCommand & helper
+g.es('no previous command',color='blue')
+# -- node k.registerCommand
+g.es_print('redefining',commandName, color='red')
+# g.es_print('','@command: %s = %s' % (
+#                 commandName,k.prettyPrintKey(stroke)),color='blue')
+g.es_print('','@command: %s = %s' % (
+                commandName,k_DOT_prettyPrintKey_LP_stroke_RP_),color='blue')
+g.es_print('','@command: %s' % (commandName),color='blue')
+# -- node createModeBindings
+g.es_print('no such command:',commandName,'Referenced from',modeName)
+# -- node modeHelpHelper
+g.es('','%s mode\n\n' % modeName,tabName=tabName)
+###g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
+# -- node k.computeCompletionList
+# g.es('','%*s %*s %s' % (-(min(20,n1)),s1,n2,s2,s3),tabName=tabName)
+# g.es('','%*s %*s %s' % (-(min_LP_20_COMMA_n1_RP_),s1,n2,s2,s3),tabName=tabName)
+# -- node k.showFileNameTabList
+g.es('',s,tabName=tabName)
+# ---- @thin leoNodes.py
+g.es_print('','-------------------- @thin leoNodes.py',color='red')
+# -- node v.bodyString
+g.es_print('',s,color="red")
+# -- node v.headString & v.cleanHeadString
+g.es_print('',s,color="red")
+# -- node scanGnx
+# g.es("scanGnx: unexpected index type:",type(s),'',s,color="red")
+g.es("scanGnx: unexpected index type:",type_LP_s_RP_,'',s,color="red")
+# ---- @thin leoPlugins.py
+g.es_print('','-------------------- @thin leoPlugins.py',color='red')
+# -- node loadHandlers & helper
+# -- node loadOnePlugin
+g.es_print('plugin',moduleName,'already loaded',color="blue")
+g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+g.es('exception loading plugin',color='red')
+g.es_print('can not load enabled plugin:',moduleName,color="red")
+g.es_print('loaded plugin:',moduleName,color="blue")
+# -- node printHandlers
+g.es_print('handlers for',moduleName,'...')
+g.es_print('all plugin handlers...')
+g.es_print('','%25s %s' % (tag,key))
+# -- node printPlugins
+g.es_print('enabled plugins...')
+g.es_print('',key)
+# -- node registerExclusiveHandler
+g.es("*** Two exclusive handlers for","'%s'" % (tag))
+# ---- @thin leoPymacs.py
+g.es_print('','-------------------- @thin leoPymacs.py',color='red')
+# -- node open
+g.es_print('','leoPymacs.open:','no file name')
+g.es_print('','leoPymacs.open:',c)
+g.es_print('','leoPymacs.open:','can not open',fileName)
+# ---- @thin leoTangle.py
+g.es_print('','-------------------- @thin leoTangle.py',color='red')
+# -- node < < call tangle_done.run() or untangle_done.run() > >
+g.es("can not execute","tangle_done.run()")
+g.es("can not execute","tangle_done.run()")
+# -- node initTangleCommand
+g.es("tangling...")
+# -- node initUntangleCommand
+g.es("untangling...")
+# -- node tangle
+g.es("looking for a parent to tangle...")
+g.es("tangling parent")
+g.es("tangle complete")
+# -- node tangleAll
+g.es("tangle complete")
+# -- node tangleMarked
+g.es("tangle complete")
+# -- node untangle
+g.es("untangle complete")
+# -- node untangleAll
+g.es("untangle complete")
+# -- node untangleMarked
+g.es("untangle complete")
+# -- node untangleRoot (calls cleanup)
+g.es('','@root ' + path)
+# -- node < < return if @silent or unknown language > >
+g.es("@comment disables untangle for",path, color="blue")
+# g.es('','@%s' % (self.print_mode),"inhibits untangle for",path, color="blue")
+g.es('','@%s' % (self_DOT_print_mode),"inhibits untangle for",path, color="blue")
+# -- node < < Read the file into file_buf  > > in untangleRoot
+g.es("error reading:",path)
+# -- node tangle.put_all_roots
+g.es("can not create temp file")
+g.es("unchanged:",file_name)
+# -- node st_check
+# g.es('',' ' * 4,'warning:',lp,'',section.name,'',rp,'has been defined but not used.')
+g.es('',' ' * 4,'warning:',lp,'',section_DOT_name,'',rp,'has been defined but not used.')
+# -- node < <check for duplicate code definitions > >
+g.es('warning: possible duplicate definition of:',s)
+# -- node ust_warn_about_orphans
+# g.es("warning:",'%s%s%s' % (lp,part.name,rp),"is not in the outline")
+g.es("warning:",'%s%s%s' % (lp,part_DOT_name,rp),"is not in the outline")
+# -- node update_def (pass 2)
+# g.es("***Updating:",p.headString())
+g.es("***Updating:",p_DOT_headString_PARENS_)
+# -- node < < Test for @comment and @language > >
+g.es("ignoring: @comment",z)
+# -- node < < handle absolute @path > >
+g.es("relative_path_base_directory:",base)
+g.es("relative path in @path directive:",relative_path)
+# -- node < < Test for @header and @noheader > >
+g.es("conflicting @header and @noheader directives")
+# -- node < < handle absolute path > >
+g.es("relative_path_base_directory:",base)
+g.es('',kind,"directory:",dir2)
+# ---- @thin leoTest.py
+g.es_print('','-------------------- @thin leoTest.py',color='red')
+# -- node runTimerOnNode
+# g.es_print("count:",count,"time/count:",ratio,'',p.headString())
+g.es_print("count:",count,"time/count:",ratio,'',p_DOT_headString_PARENS_)
+# -- node runTests
+g.es('running',kind,'unit tests',color='blue')
+g.es_print('no @test or @suite nodes in selected outline')
+# -- node checkFileSyntax
+g.es("syntax error in:",fileName,color="blue")
+# -- node checkFileTabs
+g.es_print("Token error in",fileName,color="blue")
+g.es_print('',msg)
+g.es_print("Indentation error in",fileName,"line",badline,color="blue")
+g.es_print('',message)
+g.es_print("offending line...")
+g.es_print('',line)
+# -- node importAllModulesInPath
+g.es("path does not exist:",path)
+# ---- @thin leoUndo.py
+g.es_print('','-------------------- @thin leoUndo.py',color='red')
+# -- node < < set newBead if we can't share the previous bead > >
+g.es('exception in','setUndoRedoTypingParams',color='blue')
+# -- node redoGroup
+g.es("redo",count,"instances")
+# -- node undoGroup
+g.es("undo",count,"instances")
+g.app.translateToUpperCase=False
+#@nonl
+#@-node:ekr.20080220082727:@scan_g.es_results
+#@+node:ekr.20031218072017.1978:app.setLeoID
+def setLeoID (self,verbose=True):
+
+    tag = ".leoID.txt"
+    homeDir = g.app.homeDir
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = not g.app.unitTesting
+    << return if we can set leoID from sys.leoID >>
+    << return if we can set leoID from "leoID.txt" >>
+    << return if we can set leoID from os.getenv('USER') >>
+    << put up a dialog requiring a valid id >>
+    << attempt to create leoID.txt >>
+#@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose and not g.app.unitTesting:
+        g.es_print("leoID=",g.app.leoID,spaces=False,color='red')
+    # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+    g.app.leoID = g.app.leoID.replace('.','-')
+    return
+else:
+    g.app.leoID = None
+#@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+#@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+#@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose and not g.app.unitTesting:
+            g.es("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+        # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+        g.app.leoID = g.app.leoID.replace('.','-')
+        return
+
+except Exception:
+    pass
+#@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+#@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+# New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
+
+# Create an emergency gui and a Tk root window.
+g.app.createTkGui("startup")
+
+# Bug fix: 2/6/05: put result in g.app.leoID.
+g.app.leoID = g.app.gui.runAskLeoIDDialog()
+
+# Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+g.app.leoID = g.app.leoID.replace('.','-')
+
+# g.trace(g.app.leoID)
+g.es('leoID=',repr(g.app.leoID),spaces=False,color="blue")
+#@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@-node:ekr.20031218072017.1978:app.setLeoID
+#@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
+                g.app.leoID = g.app.leoID.replace('.','-')
+                if verbose and not g.app.unitTesting:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                return
+            elif verbose and not g.app.unitTesting:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es_print('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+#@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'w')
+            f.write(g.app.leoID)
+            f.close()
+            if g.os_path_exists(fn):
+                g.es_print('',tag,'created in',theDir,color='red')
+                return
+        except IOError:
+            pass
+
+        g.es('can not create',tag,'in',theDir,color='red')
+#@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+#@+node:ekr.20070426092031:Consider another way to compute home directory
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4281562
+By: ktenney
+
+I don't know if this is a resolved issue, here's another approach,
+looks like a good one.
+
+email link
+http://murl.se/24201
+
+python.org os.path doc
+http://murl.se/24202
+
+>>> import os
+>>> lin_key, win_key = "home", "Documents"
+>>> homedir = os.path.expanduser('~')
+>>> if os.name == 'nt': os_key = win_key
+>>> if os.name == 'posix': os_key = lin_key
+>>> print homedir.find(os_key) > -1
+True
+
+#@-node:ekr.20070426092031:Consider another way to compute home directory
+#@+node:ekr.20070227094232:getLeoID
+def getLeoID (self):
+
+    import os
+    import sys
+
+    g = self.g ; tag = ".leoID.txt"
+    homeDir = g.app.homeDir
+    globalConfigDir = g.app.globalConfigDir
+    loadDir = g.app.loadDir
+
+    verbose = False and not g.app.unitTesting
+    << try to get leoID from sys.leoID >>
+    if not g.app.leoID:
+        << try to get leoID from "leoID.txt" >>
+    if not g.app.leoID:
+        << try to get leoID from os.getenv('USER') >>
+    return g.app.leoID
+#@+node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+# This would be set by in Python's sitecustomize.py file.
+
+# Use hasattr & getattr to suppress pychecker warning.
+# We also have to use a "non-constant" attribute to suppress another warning!
+
+nonConstantAttr = "leoID"
+
+if hasattr(sys,nonConstantAttr):
+    g.app.leoID = getattr(sys,nonConstantAttr)
+    if verbose: g.es("leoID=",g.app.leoID,spaces=False,color='red')
+#@nonl
+#@-node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
+#@+node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+for theDir in (homeDir,globalConfigDir,loadDir):
+    # N.B. We would use the _working_ directory if theDir is None!
+    if theDir:
+        try:
+            fn = g.os_path_join(theDir,tag)
+            f = open(fn,'r')
+            s = f.readline()
+            f.close()
+            if s and len(s) > 0:
+                g.app.leoID = s.strip()
+                if verbose:
+                    g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                break
+            elif verbose:
+                g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.es('unexpected exception in app.setLeoID',color='red')
+            g.es_exception()
+#@-node:ekr.20070227094232.2:<< try to get leoID from "leoID.txt" >>
+#@+node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+try:
+    theId = os.getenv('USER')
+    if theId:
+        if verbose: g.es_print("using os.getenv('USER'):",repr(theId),color='red')
+        g.app.leoID = theId
+
+except Exception:
+    pass
+#@-node:ekr.20070227094232.3:<< try to get leoID from os.getenv('USER') >>
+#@-node:ekr.20070227094232:getLeoID
+#@+node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+def openLeoSettings (self,event=None):
+    '''Open leoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('leoSettings.leo')
+
+def openMyLeoSettings (self,event=None):
+    '''Open myLeoSettings.leo in a new Leo window.'''
+    self.openSettingsHelper('myLeoSettings.leo')
+
+def openSettingsHelper(self,name):
+    c = self
+    homeDir = g.app.homeDir
+    loadDir = g.app.loadDir
+    configDir = g.app.globalConfigDir
+
+    # Look in configDir first.
+    fileName = g.os_path_join(configDir,name)
+    ok = g.os_path_exists(fileName)
+    if ok:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok: return
+
+    # Look in homeDir second.
+    if configDir == loadDir:
+        g.es('',name,"not found in",configDir)
+    else:
+        fileName = g.os_path_join(homeDir,name)
+        ok = g.os_path_exists(fileName)
+        if ok:
+            ok, frame = g.openWithFileName(fileName,c)
+        if not ok:
+            g.es('',name,"not found in",configDir,"or",homeDir)
+#@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+#@+node:ekr.20041117151301:computeHomeDir
+def computeHomeDir():
+
+    """Returns the user's home directory."""
+
+    import leoGlobals as g
+
+    encoding = g.startupEncoding()
+    # dotDir = g.os_path_abspath('./',encoding)
+    home = os.getenv('HOME',default=None)
+
+    if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
+        # Get the indirect reference to the true home.
+        home = os.getenv(home[1:-1],default=None)
+
+    if home:
+        # N.B. This returns the _working_ directory if home is None!
+        # This was the source of the 4.3 .leoID.txt problems.
+        home = g.os_path_abspath(home,encoding)
+        if (
+            not g.os_path_exists(home,encoding) or
+            not g.os_path_isdir(home,encoding)
+        ):
+            home = None
+
+    # g.trace(home)
+    return home
+#@-node:ekr.20041117151301:computeHomeDir
+#@-node:ekr.20080407090400.4:Found: homeDir
+#@-node:ekr.20080407090400.3:Better docs for Leo's home directory
+#@-node:ekr.20080330085343.2:Fix easy bugs
+#@+node:ekr.20080404074921.2:Start Komodo question
+#@-node:ekr.20080404074921.2:Start Komodo question
+#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@+node:ekr.20080407090400.5:Remove old fileCommands read code
+#@-node:ekr.20080407090400.5:Remove old fileCommands read code
+#@+node:ekr.20080402153826.2:Make Leo a package
+# The start of this project is in leo.repo/leo-working.
+#@nonl
+#@-node:ekr.20080402153826.2:Make Leo a package
+#@+node:ekr.20080407090400.6:Fix file bugs
+#@+node:ekr.20080330085343.3:Fix bug in atFile.write
+The code should save/restore, just as in the clean_file function (from scripts.leo)
+#@nonl
+#@+node:ekr.20080330085343.1:clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.t.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:ekr.20080330085343.1:clean_file
+#@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
+
+To duplicate:
+
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20080405074410.39:Fix new @auto bug
+@nocolor
+
+Leo's running, so I create a new outline with File->New
+
+Then I save as in a location where foo.py exists.
+
+The I create a node '@auto foo.py'
+
+Then I use File->Read/Write->Read @auto (with that node selected)
+
+Leo says it can't read it.
+
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.
+
+
+#@-node:ekr.20080405074410.39:Fix new @auto bug
+#@-node:ekr.20080407090400.6:Fix file bugs
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@-node:ekr.20080124083629.1:Improve @path handling
+#@+node:ekr.20080403102730.1:Explore ipython stuff
+@nocolor
+
+>  > %run leo.py  (in leo/leo/src)
+>  >
+>  > When leo is installable as a package, this will be much simpler
+>  > (because we don't need to know where leo.py is).
+>
+>  I'm having trouble with this because I don't know where leo.py is :-)
+>  What directory do I have to be in for this to work?
+
+leo/leo/src. See the documentation in leodocs.
+
+>  Also, I'd like to use ipython for all my Python work, but I'm not sure
+>  whether what I am doing makes sense.  Formerly, in the XP Folder
+
+I think it's better to request IPython explicitly (using ip.runlines
+if you want ipython input handling or ip.ex if you don't), rather than
+having ipython as default for everything.
+
+>  c:\python25\python.exe C:\Python25\scripts\ipython c:\leo.repo\leo-
+>  editor\trunk\leo\src\leo.py "%1"
+>
+>  This works, kind of.  The .leo file starts up, but I get the *python*
+>  version number in Leo's log.  When I quit Leo, I do indeed drop into
+
+Yes, IPython runs the startup script using normal python execfile.
+
+>  IPython. Is this how you set things up, Ville?
+
+Pretty normally; I start leo.py as normal python program.
+#@nonl
+#@-node:ekr.20080403102730.1:Explore ipython stuff
+#@-node:ekr.20080403100132.1:First
+#@+node:ekr.20080218110223.1:Files
+#@+node:ekr.20080318081653.1:Support 'fixed Leo file' option
+@nocolor
+
+We should avoid conflicts here in the first place. We really need that
+'toggle-fixed' thing (that would prevent writing window positions and node
+expansion statuses to .leo file) I suggested a while back, to make collaboration
+with .leo files possible...
+#@-node:ekr.20080318081653.1:Support 'fixed Leo file' option
+#@+node:ekr.20080311135649.2:Allow different .leo formats
+@nocolor
+
+On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
+
+> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
+
+> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
+> >  > It could also be argued that
+
+> >  > - Referring to previous cloned vnodes explicitly in XML does not
+> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
+> rule
+> >  > - It will speed up reading
+> >  > - Wouldn't it be better for preserving the integrity of the XML file?
+
+> > I would lean towards this line of argumentation. A couple of days I
+> >  had my Leo extension destroy the Leo ODM file (which was still valid
+> >  according to Leo, but unreadable wrt the extension and broken uAs). I
+> >  resorted to editing the Leo file with Emacs, and was quite surprised
+> >  to see that the headStrings were attributes of vnodes.
+
+> I'll chime in with my pet peeve re: .leo file structure::
+
+> I think that putting the headstrings on vnodes and body strings on tnodes
+> obscures the informational content of the .leo file, and makes the .leo
+> file
+> format less attractive as a generalized solution to the problem of how to
+> manage head/body pairs which live in a hierarchal structure.
+
+> Thanks,
+> Kent
+
+> >  I think that
+> >  editing the file might have been a bit easier if there had been no
+> >  such redundancy. But this is more a feeling rather than a qualified
+> >  opinion.
+
+Thanks for all these comments.  I'll respond to them all here.
+
+Clearly, we should be using a standard xml parser to read .leo files.
+
+My present thoughts:
+
+- I personally like human-readable headlines in <v> elements.
+
+- I am open to putting headlines in <t> elements, as an indication that
+tnodes do indeed contain headlines and body text.
+
+- I am willing to consider only writing shared subtrees once.
+
+Oh! (An Aha)  All these are preferences.  We can allow any combination of
+these provided that headlines appear somewhere.
+
+So that's clean.  This will happen in Leo 4.5. 
+#@nonl
+#@-node:ekr.20080311135649.2:Allow different .leo formats
+#@+node:ekr.20071031113657:Always use sax parser to read .leo files
+# Are there proper unit tests?
+# Do global settings and find-panel settings get set properly.
+#@nonl
+#@-node:ekr.20071031113657:Always use sax parser to read .leo files
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@+node:ekr.20080225104355:@bool fixed-leo-file
+@nocolor
+
+http://mail.google.com/mail/#inbox/118504bef91bb8ce
+
+I think it might be handy to have a 'fixed' flag in .leo file, to
+minimize cvs conflicts. When a leo document has that flag, nothing
+about frame positions etc. will ever be written to the .leo file on
+save.
+
+Most leo documents where people are supposed to collaborate should
+have this flag (e.g. the .leo documents in Leo cvs).
+
+@bool fixed-leo-file = True
+#@-node:ekr.20080225104355:@bool fixed-leo-file
+#@-node:ekr.20080218110223.1:Files
+#@+node:ekr.20080407090400.7:Fix minor bugs
+#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
+@nocolor
+
+I was playing around with this and I discovered that if I open
+unitTest.leo from the File->Open menu pick of another leo outline and
+then I run a unit test, then all the nodes from unitTest.leo appear in
+the original document.  If I execute a save on the original document
+(now with the unitTest.leo nodes), then the leo file gets overwritten
+with the contents unitTest.leo.
+
+#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
+#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@+node:ekr.20080313032655.1:One message during import test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -229,271 +2423,7 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:One message during import test on Linux
-#@-node:ekr.20080311135649.1:4.4.8 to-do
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080403100132.1:First
-#@+node:ekr.20080404074921.6:Create branch for "make leo a package" stuff
-#@-node:ekr.20080404074921.6:Create branch for "make leo a package" stuff
-#@+node:ekr.20080404074921.2:Start Komodo question
-#@-node:ekr.20080404074921.2:Start Komodo question
-#@+node:ekr.20080403102730.1:Explore ipython stuff
-@nocolor
-
->  > %run leo.py  (in leo/leo/src)
->  >
->  > When leo is installable as a package, this will be much simpler
->  > (because we don't need to know where leo.py is).
->
->  I'm having trouble with this because I don't know where leo.py is :-)
->  What directory do I have to be in for this to work?
-
-leo/leo/src. See the documentation in leodocs.
-
->  Also, I'd like to use ipython for all my Python work, but I'm not sure
->  whether what I am doing makes sense.  Formerly, in the XP Folder
-
-I think it's better to request IPython explicitly (using ip.runlines
-if you want ipython input handling or ip.ex if you don't), rather than
-having ipython as default for everything.
-
->  c:\python25\python.exe C:\Python25\scripts\ipython c:\leo.repo\leo-
->  editor\trunk\leo\src\leo.py "%1"
->
->  This works, kind of.  The .leo file starts up, but I get the *python*
->  version number in Leo's log.  When I quit Leo, I do indeed drop into
-
-Yes, IPython runs the startup script using normal python execfile.
-
->  IPython. Is this how you set things up, Ville?
-
-Pretty normally; I start leo.py as normal python program.
-#@nonl
-#@-node:ekr.20080403102730.1:Explore ipython stuff
-#@+node:ekr.20080402153826.2:Make Leo a package
-# The start of this project is in leo.repo/leo-working.
-#@nonl
-#@-node:ekr.20080402153826.2:Make Leo a package
-#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@-node:ekr.20080403100132.1:First
-#@+node:ekr.20080330085343.2:Bugs
-#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@+node:ekr.20080406075855.1:Fix find completion bug
-@nocolor
-
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@-node:ekr.20080406075855.1:Fix find completion bug
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080405074410.39:Fix new @auto bug
-@nocolor
-
-Leo's running, so I create a new outline with File->New
-
-Then I save as in a location where foo.py exists.
-
-The I create a node '@auto foo.py'
-
-Then I use File->Read/Write->Read @auto (with that node selected)
-
-Leo says it can't read it.
-
-I close the leo file, re-open in from the recent files menu of the
-outline that spawned it, and the @auto file is read no problems.
-
-
-#@-node:ekr.20080405074410.39:Fix new @auto bug
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-@nocolor
-
-I was playing around with this and I discovered that if I open
-unitTest.leo from the File->Open menu pick of another leo outline and
-then I run a unit test, then all the nodes from unitTest.leo appear in
-the original document.  If I execute a save on the original document
-(now with the unitTest.leo nodes), then the leo file gets overwritten
-with the contents unitTest.leo.
-
-#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-#@-node:ekr.20080330085343.2:Bugs
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@-node:ekr.20080124083629.1:Improve @path handling
-#@+node:ekr.20080218110223.1:Files
-#@+node:ekr.20080318081653.1:Support 'fixed Leo file' option
-@nocolor
-
-We should avoid conflicts here in the first place. We really need that
-'toggle-fixed' thing (that would prevent writing window positions and node
-expansion statuses to .leo file) I suggested a while back, to make collaboration
-with .leo files possible...
-#@-node:ekr.20080318081653.1:Support 'fixed Leo file' option
-#@+node:ekr.20080311135649.2:Allow different .leo formats
-@nocolor
-
-On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
-
-> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
-
-> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
-> >  > It could also be argued that
-
-> >  > - Referring to previous cloned vnodes explicitly in XML does not
-> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
-> rule
-> >  > - It will speed up reading
-> >  > - Wouldn't it be better for preserving the integrity of the XML file?
-
-> > I would lean towards this line of argumentation. A couple of days I
-> >  had my Leo extension destroy the Leo ODM file (which was still valid
-> >  according to Leo, but unreadable wrt the extension and broken uAs). I
-> >  resorted to editing the Leo file with Emacs, and was quite surprised
-> >  to see that the headStrings were attributes of vnodes.
-
-> I'll chime in with my pet peeve re: .leo file structure::
-
-> I think that putting the headstrings on vnodes and body strings on tnodes
-> obscures the informational content of the .leo file, and makes the .leo
-> file
-> format less attractive as a generalized solution to the problem of how to
-> manage head/body pairs which live in a hierarchal structure.
-
-> Thanks,
-> Kent
-
-> >  I think that
-> >  editing the file might have been a bit easier if there had been no
-> >  such redundancy. But this is more a feeling rather than a qualified
-> >  opinion.
-
-Thanks for all these comments.  I'll respond to them all here.
-
-Clearly, we should be using a standard xml parser to read .leo files.
-
-My present thoughts:
-
-- I personally like human-readable headlines in <v> elements.
-
-- I am open to putting headlines in <t> elements, as an indication that
-tnodes do indeed contain headlines and body text.
-
-- I am willing to consider only writing shared subtrees once.
-
-Oh! (An Aha)  All these are preferences.  We can allow any combination of
-these provided that headlines appear somewhere.
-
-So that's clean.  This will happen in Leo 4.5. 
-#@nonl
-#@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20071031113657:Always use sax parser to read .leo files
-# Are there proper unit tests?
-# Do global settings and find-panel settings get set properly.
-#@nonl
-#@-node:ekr.20071031113657:Always use sax parser to read .leo files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080225104355:@bool fixed-leo-file
-@nocolor
-
-http://mail.google.com/mail/#inbox/118504bef91bb8ce
-
-I think it might be handy to have a 'fixed' flag in .leo file, to
-minimize cvs conflicts. When a leo document has that flag, nothing
-about frame positions etc. will ever be written to the .leo file on
-save.
-
-Most leo documents where people are supposed to collaborate should
-have this flag (e.g. the .leo documents in Leo cvs).
-
-@bool fixed-leo-file = True
-#@-node:ekr.20080225104355:@bool fixed-leo-file
-#@-node:ekr.20080218110223.1:Files
+#@-node:ekr.20080407090400.7:Fix minor bugs
 #@+node:ekr.20071211142600.2:Config stuff
 #@+node:ekr.20080311135649.5:List the special cases in the config code
 #@-node:ekr.20080311135649.5:List the special cases in the config code

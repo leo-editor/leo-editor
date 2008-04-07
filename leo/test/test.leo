@@ -621,7 +621,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070517160058.1" a="TV"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
 <v t="ekr.20070504131950"><vh>getNewObjects</vh>
@@ -887,6 +887,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
+<v t="ekr.20080407102459.1" a="TV"><vh>Test how many</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5520,6 +5521,13 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.466"></t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
+<t tx="ekr.20080407102459.1">a b
+a
+c d a
+x
+a b c aa
+
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
