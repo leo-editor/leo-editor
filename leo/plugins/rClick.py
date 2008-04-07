@@ -19,7 +19,7 @@ Right Click Menus (rClick.py)
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
-    **At the momenu the api is in flux**
+    **At the moment the api is in flux**
     When it is settled, the __version__ will be bumped up to 1.xx
 
 
@@ -58,7 +58,7 @@ and also the following fragments:
 
     - 'to-chapter-fragment'
 
-        This gives a list of foru (copy/clone/move/goto) chapter menus
+        This gives a list of four (copy/clone/move/goto) chapter menus
 
     These fragments are meant to be included in other popup menu's via::
 
@@ -180,7 +180,7 @@ be used to pass extra information to generator functions. eg::
 
     ...
     ( '*', interesting_function ),
-    ( '"', ('data', 4, 'intersting', function)),
+    ( '"', ('data', 4, 'interesting', function)),
     ...
 
 The comment tuple can either be removed by interesting_function or just left as
@@ -224,7 +224,7 @@ Generating context sensitive items dynamically
 if `txt` is '*':
 
     This is a **generator item**. It indicates that `cmd` should be used to call
-    a function or mminibuffer command that will generate extra menu items, or
+    a function or minibuffer command that will generate extra menu items, or
     modify existing items, when the popup menu is being constructed.
 
 
@@ -238,7 +238,7 @@ if `txt` is '*':
 
             c.theContextMenuController.mb_keywords
 
-        and should place there returnvalue in
+        and should place their returnvalue in
 
             c.theContextMenuController.mb_retval
 
@@ -264,7 +264,7 @@ if `txt` is '*':
 
             :keywords['rc_menu_table']: is the list of tuples representing items not yet constructed.
 
-            :keywords['rc_item_data']: ia a dictionary providing extra information for radio/check button callbacks
+            :keywords['rc_item_data']: is a dictionary providing extra information for radio/check button callbacks
 
         `cmd` may either manipulate the physical tkMenu directly or add (txt, cmd) tuples
         to the front of (or anywhere else in) keywords.rc_menu_table. See the code in
@@ -391,7 +391,7 @@ of the node should have the following format::
 
     first line:  <item label>
     other lines: kind = <radio or check>
-                 name = <uniqe name for this item>
+                 name = <unique name for this item>
                  group = <name of group if kind is radio>
 
 From now on controller will refer to c.theContextMenuController
@@ -401,7 +401,7 @@ From now on controller will refer to c.theContextMenuController
     Is a dictionary with keys being the name of a radio group and values the
     name of the radio button currently selected for that group.
 
-    These may be initaialized by the user but will be initialized automatically if not.
+    These may be initialized by the user but will be initialized automatically if not.
 
     The selected value may be set by scripts at any time.
 
@@ -411,7 +411,7 @@ From now on controller will refer to c.theContextMenuController
     values being boolean values, True to indicate the button is checked,
     False otherwise.
 
-    The value may be initialzed by scripts but will be initialized automatically
+    The value may be initialized by scripts but will be initialized automatically
     otherwise.
 
     The value may be changed by scripts at any time.
@@ -510,6 +510,9 @@ command to handle check and radio items, using rclick-button as a template.
 # - remove rclickbinder as all binding is now done via hooks.
 # - added support for radio/checkbox items
 # - now dependant on Tk again :(
+# 0.24
+# - fix recent-menus bug
+# - fix canvas/plusbox menu bug
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -519,9 +522,6 @@ command to handle check and radio items, using rclick-button as a template.
 # TODO:
 # 
 # extend support to other leo widgets
-# 
-# 
-# support checkbox and radio buttons
 # 
 # provide rclick-gen-open-with-list and @popup open-with-menu
 #@-at
@@ -545,7 +545,7 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "0.23"
+__version__ = "0.24"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -698,10 +698,11 @@ class ContextMenuController(object):
                         out.append((s, cmd))
                         continue
 
-                    if cmd:
+                    if 0 and cmd:
                         print
                         g.trace(s)
                         g.trace('[[[' + str(cmd) + ']]]')
+                        pass
 
                     cmds = cmd.splitlines()
                     if not cmds:
@@ -781,7 +782,11 @@ class ContextMenuController(object):
         pathList = []
         for name in c.recentFiles[:]:
 
-            fn, path = computeLabels(name)
+            split = computeLabels(name)
+            if not split:
+                continue
+
+            fn, path = split
 
             def recentFilesCallback (c, event, name=name):
                 c.openRecentFile(name)
@@ -1384,21 +1389,29 @@ class ContextMenuController(object):
 
         #@    << context menu => top_menu_table >>
         #@+node:bobjack.20080405054059.3:<< context menu => top_menu_table >>
-
+        #@+at
+        # 
+        # 
         # If widget does not have already have an explicit context_menu set,
         # then set it to the default value if one is supplied.
+        # 
+        # Problem here with plus box as the event widget is the canvas!
+        # 
+        # the canvas should not have an explicit context menu set.
+        # 
+        #@-at
+        #@@c
 
         context_menu = keywords.get('context_menu')
 
-        if context_menu and not hasattr(widget, 'context_menu'):
-            widget.context_menu = context_menu
-
-
-        # If widget does not have an explicit context_menu then
-
+        # If widget has an explicit context_menu set then use it
         if hasattr(widget, 'context_menu'):
+            context_menu = widget.context_menu = context_menu
 
-            key = widget.context_menu
+
+        if context_menu:
+
+            key = context_menu
             if isinstance(key, list):
                 top_menu_table = widget_context_menu[:]
             elif isinstance(key, basestring):
@@ -1748,6 +1761,12 @@ class ContextMenuController(object):
         ]
         #@nonl
         #@-node:bobjack.20080403074002.9:canvas
+        #@+node:bobjack.20080407082242.2:headline
+        self.default_context_menus['headline'] = []
+        #@-node:bobjack.20080407082242.2:headline
+        #@+node:bobjack.20080407082242.4:plusbox
+        self.default_context_menus['plusbox'] = []
+        #@-node:bobjack.20080407082242.4:plusbox
         #@-others
 
 

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.455547391624">
-	<global_window_position top="44" left="37" height="645" width="1361"/>
+	<global_window_position top="31" left="20" height="724" width="1361"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -22,7 +22,7 @@
 <v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080404113810.1"><vh>@button show button events</vh></v>
-<v t="bobjack.20080405081601.2" a="TV"><vh>@button show-button-data</vh></v>
+<v t="bobjack.20080405081601.2"><vh>@button show-button-data</vh></v>
 <v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
 <v t="bobjack.20080330095006.2" lineYOffset="4b002e"><vh>Replacing the log menu</vh></v>
 <v t="bobjack.20080330095006.3" lineYOffset="4b002e"><vh>Editing the 'edit-menu' fragment</vh></v>
@@ -113,15 +113,15 @@
 <v t="bobjack.20080401213500.2"><vh>@item &amp;</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.15"><vh>... the change-text entry</vh>
+<v t="bobjack.20080329062304.15" a="E"><vh>... the change-text entry</vh>
 <v t="bobjack.20080329062956.1" a="E"><vh>@popup change-text</vh>
 <v t="bobjack.20080401213023.1"><vh>@item change-text-menu</vh></v>
 <v t="bobjack.20080401213339.3"><vh>@item -</vh></v>
 <v t="bobjack.20080402160713.11"><vh>@item &amp;</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.2" a="E"><vh>... the tree canvas</vh>
-<v t="bobjack.20080401113850.2" a="E"><vh>@popup canvas</vh>
+<v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
+<v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
 <v t="bobjack.20080401113850.3"><vh>@item *canvas menu</vh></v>
 <v t="bobjack.20080402154726.5"><vh>@item -</vh></v>
 <v t="bobjack.20080402172239.2" a="E"><vh>@menu Clone To Chapter</vh>
@@ -141,6 +141,7 @@
 <v t="bobjack.20080401143954.2" a="E"><vh>... the plus box</vh>
 <v t="bobjack.20080401143954.3" a="E"><vh>@popup plusbox</vh>
 <v t="bobjack.20080401143954.4"><vh>@item *plus box menu</vh></v>
+<v t="bobjack.20080407082242.6" a="TV"><vh>@item *test one</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401143613.3" a="E"><vh>... headlines</vh>
@@ -148,7 +149,7 @@
 <v t="bobjack.20080401143613.5"><vh>@item *headline menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401214039.1" a="E"><vh>... the icon box</vh>
+<v t="bobjack.20080401214039.1"><vh>... the icon box</vh>
 <v t="bobjack.20080401214039.2" a="E"><vh>@popup iconbox</vh>
 <v t="bobjack.20080401214039.3"><vh>@item *iconbox menu</vh></v>
 </v>
@@ -333,7 +334,7 @@ will also restore the leo standard popup menu. Highlight the code above and exec
 <t tx="bobjack.20080401143613.5"></t>
 <t tx="bobjack.20080401143954.2"></t>
 <t tx="bobjack.20080401143954.3"></t>
-<t tx="bobjack.20080401143954.4">#</t>
+<t tx="bobjack.20080401143954.4"></t>
 <t tx="bobjack.20080401213023.1"></t>
 <t tx="bobjack.20080401213339.1"></t>
 <t tx="bobjack.20080401213339.2"></t>
@@ -498,5 +499,6 @@ for check, selected in sorted(checks.iteritems()):
     g.es("'%s' -&gt; %s"%(check, selected), color='blue')
 
 </t>
+<t tx="bobjack.20080407082242.6"></t>
 </tnodes>
 </leo_file>

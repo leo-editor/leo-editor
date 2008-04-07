@@ -1232,12 +1232,11 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas.lower("lines")  # Lowest.
         canvas.lift("textBox") # Not the Tk.Text widget: it should be low.
 
-        canvas.lift("plusBox")
         canvas.lift("clickBox")
         canvas.lift("clickExpandBox")
         canvas.lift("iconBox") # Higest. BJ:Not now
         canvas.lift("plusBox")
-        canvas.tag_raise("userIcon", "iconBox")
+        canvas.lift("userIcon")
         self.redrawing = False
     #@-node:ekr.20040803072955.52:drawTopTree
     #@+node:ekr.20040803072955.53:drawTree
@@ -1658,7 +1657,9 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:bobjack.20080401090801.2:onClickBoxRightClick
     #@+node:bobjack.20080401090801.4:onPlusBoxRightClick
     def onPlusBoxRightClick(self, event, p=None):
+
         #g.trace()
+
         self._block_canvas_menu = True
 
         if not p: p = self.eventToPosition(event)
@@ -1667,7 +1668,9 @@ class leoTkinterTree (leoFrame.leoTree):
         self.OnActivateHeadline(p)
         self.endEditLabel()
 
-        g.doHook('rclick-popup', c=self.c, p=p, event=event, context_menu='plusbox')
+        g.doHook('rclick-popup',
+            c=self.c, p=p, event=event, context_menu='plusbox')
+
         return 'break'
     #@-node:bobjack.20080401090801.4:onPlusBoxRightClick
     #@-node:ekr.20040803072955.78:Click Box...
@@ -2244,6 +2247,8 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20051022141020:onTreeClick
     #@+node:bobjack.20080401090801.3:onTreeRightClick
     def onTreeRightClick(self, event=None):
+
+        #g.trace()
 
         if self._block_canvas_menu:
             self._block_canvas_menu = False
