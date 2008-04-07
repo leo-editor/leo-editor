@@ -1431,17 +1431,21 @@ def writeRecentFilesFileHelper (self,fileName):
 #@+node:ekr.20041117083857:initSettingsFiles
 def initSettingsFiles (self):
 
-    """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
+    """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
+    self.myHomeConfigFile, and self.machineConfigFile."""
 
     settingsFile = 'leoSettings.leo'
     mySettingsFile = 'myLeoSettings.leo'
-    machineConfigFile = self.getMachineName()
+    machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
 
     for ivar,theDir,fileName in (
         ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
         ('homeFile',            g.app.homeDir,          settingsFile),
         ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+        #non-prefixed names take priority over prefixed names
+        ('myHomeConfigFile',    g.app.homeDir,          g.app.homeSettingsPrefix + mySettingsFile),
         ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+        ('machineConfigFile',   g.app.homeDir,          g.app.homeSettingsPrefix + machineConfigFile),
         ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
     ):
         # The same file may be assigned to multiple ivars:
@@ -1449,35 +1453,17 @@ def initSettingsFiles (self):
         path = g.os_path_join(theDir,fileName)
         if g.os_path_exists(path):
             setattr(self,ivar,path)
-        else:
-            setattr(self,ivar,None)
+        #else:
+            #if the path does not exist, only set to None if the ivar isn't already set.
+            #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+            #     This avoids the creation of ivars in odd (non __init__) places.
+            #setattr(self,ivar, getattr(self,ivar,None))
     if 0:
         g.trace('global file:',self.globalConfigFile)
         g.trace('home file:',self.homeFile)
         g.trace('myGlobal file:',self.myGlobalConfigFile)
         g.trace('myHome file:',self.myHomeConfigFile)
 #@nonl
-#@+node:ekr.20071211112804:getMachineName
-def getMachineName (self):
-
-    try:
-        import os
-        name = os.getenv('HOSTNAME')
-        if not name:
-            name = os.getenv('COMPUTERNAME')
-        if not name:
-            import socket
-            name = socket.gethostname()
-    except Exception:
-        name = ''
-
-    if name:
-        name +='LeoSettings.leo'
-
-    # g.trace(name)
-
-    return name
-#@-node:ekr.20071211112804:getMachineName
 #@-node:ekr.20041117083857:initSettingsFiles
 #@+node:ekr.20080220082727:@scan_g.es_results
 @first # -*- coding: utf-8 -*-

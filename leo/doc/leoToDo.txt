@@ -1,16 +1,22 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
+#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080411091507.10: First
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080403100132.1:First
+#@+node:ekr.20080411091507.11:sax: fix paste node code
+#@-node:ekr.20080411091507.11:sax: fix paste node code
 #@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
 #@+node:ekr.20080404074921.2:Start Komodo question
 #@-node:ekr.20080404074921.2:Start Komodo question
+#@-node:ekr.20080411091507.10: First
+#@+node:ekr.20080411091507.1: Non-branch
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080403102730.1:Explore ipython stuff
 @nocolor
 
@@ -44,10 +50,56 @@ Yes, IPython runs the startup script using normal python execfile.
 Pretty normally; I start leo.py as normal python program.
 #@nonl
 #@-node:ekr.20080403102730.1:Explore ipython stuff
-#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
+#@+node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+@nocolor
+
+The idea: if a key binding is only in effect for one pane, and we get the
+binding, maybe we should change to the pane first!
+
+Examples:
+
+copy-node: auto-select tree pane.
+copy_text (when not editing a headline): auto-select body text.
+
+
+Unified body/tree panes
+
+Up/down arrows move between headline and body panes.
+#@nonl
+#@-node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+#@+node:ekr.20071211093323:more screen shots on Leo's web site
+#@-node:ekr.20071211093323:more screen shots on Leo's web site
+#@+node:ekr.20071029082025:Improve distribution
+#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4543089
+By: billp9619
+
+from the download page:
+
+If it's the first time you hear about Python, this is the installation for you.
+The packages includes complete Orange, Python, Windows Extensions for Python
+(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
+
+Leo should copy this download philosophy.
+
+
+
+#@-node:ekr.20070929125944:Emulate Orange's download philosophy
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20071029082025:Improve distribution
+#@-node:ekr.20080411091507.1: Non-branch
+#@+node:ekr.20080411091507.2:leo-as-a-package branch
+#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
+# The start of this project is in leo.repo/leo-working.
+#@nonl
+#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
+#@-node:ekr.20080411091507.2:leo-as-a-package branch
+#@+node:ekr.20080411091507.3:sax
+#@+node:ekr.20080411091507.11:sax: fix paste node code
+#@-node:ekr.20080411091507.11:sax: fix paste node code
 #@+node:ekr.20080407090400.6:Fix file bugs
 #@+node:ekr.20080330085343.3:Fix bug in atFile.write
 The code should save/restore, just as in the clean_file function (from scripts.leo)
@@ -138,25 +190,6 @@ outline that spawned it, and the @auto file is read no problems.
 
 #@-node:ekr.20080405074410.39:Fix new @auto bug
 #@-node:ekr.20080407090400.6:Fix file bugs
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@-node:ekr.20080124083629.1:Improve @path handling
-#@+node:ekr.20080407090400.5:Remove old fileCommands read code (wait a few days)
-#@-node:ekr.20080407090400.5:Remove old fileCommands read code (wait a few days)
-#@-node:ekr.20080403100132.1:First
 #@+node:ekr.20080218110223.1:Files
 #@+node:ekr.20080318081653.1:Support 'fixed Leo file' option
 @nocolor
@@ -248,6 +281,28 @@ have this flag (e.g. the .leo documents in Leo cvs).
 @bool fixed-leo-file = True
 #@-node:ekr.20080225104355:@bool fixed-leo-file
 #@-node:ekr.20080218110223.1:Files
+#@-node:ekr.20080411091507.3:sax
+#@+node:ekr.20080411091507.4:ekr-devel
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@-node:ekr.20080124083629.1:Improve @path handling
+#@-node:ekr.20080411091507.4:ekr-devel
+#@+node:ekr.20080411091507.5:trunk
+#@+node:ekr.20080411091507.6:merge thyrsus branch to trunk
+#@-node:ekr.20080411091507.6:merge thyrsus branch to trunk
 #@+node:ekr.20080407090400.7:Fix minor bugs
 #@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
 @nocolor
@@ -533,33 +588,9 @@ redefined menu.
 #@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20071211142600.3:Clean up config mess
-#@+node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4562648
-By: rogererens
-
-Maybe I may use this thread to make another suggestion for Leo 4.4.5, related
-to @menus: have the menu-options for right-clicking in the various panes also
-in the @settings-tree.
-
-Regards, Roger
-#@nonl
-#@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20071211142600.2:Config stuff
-#@+node:ekr.20070623144302:vim-like bindings
-#@+node:ekr.20071105160956:*** auto-change panes
-@nocolor
-
-The idea: if a key binding is only in effect for one pane, and we get the
-binding, maybe we should change to the pane first!
-
-Examples:
-
-copy-node: auto-select tree pane.
-copy_text (when not editing a headline): auto-select body text.
-#@nonl
-#@-node:ekr.20071105160956:*** auto-change panes
+#@-node:ekr.20080411091507.5:trunk
+#@+node:ekr.20080411091507.7:key-handling
 #@+node:ekr.20070824094005:Requests
 @nocolor
 
@@ -675,30 +706,23 @@ EKR
                 a = getattr(event,z)
                 print z,repr(a)
 #@-node:ekr.20070613181147:(maybe) Improve key handling
-#@-node:ekr.20070623144302:vim-like bindings
-#@+node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20071211093323:more screen shots on Leo's web site
-#@-node:ekr.20071211093323:more screen shots on Leo's web site
-#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+#@-node:ekr.20080411091507.7:key-handling
+#@+node:ekr.20080411091507.8:Pluings
+#@+node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 @nocolor
 
-http://sourceforge.net/forum/message.php?msg_id=4543089
-By: billp9619
+http://sourceforge.net/forum/message.php?msg_id=4562648
+By: rogererens
 
-from the download page:
+Maybe I may use this thread to make another suggestion for Leo 4.4.5, related
+to @menus: have the menu-options for right-clicking in the various panes also
+in the @settings-tree.
 
-If it's the first time you hear about Python, this is the installation for you.
-The packages includes complete Orange, Python, Windows Extensions for Python
-(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
-
-Leo should copy this download philosophy.
-
-
-
-#@-node:ekr.20070929125944:Emulate Orange's download philosophy
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20071029082025:Improve distribution
+Regards, Roger
+#@nonl
+#@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
+#@-node:ekr.20080411091507.8:Pluings
+#@+node:ekr.20080411091507.9:drawing branch
 #@+node:ekr.20071215101531:Reorg drawing/focus code?
 @nocolor
 
@@ -780,6 +804,7 @@ set_focus_now = actual_set_focus
 #@nonl
 #@-node:ekr.20071215114036:Possible code
 #@-node:ekr.20071215101531:Reorg drawing/focus code?
+#@-node:ekr.20080411091507.9:drawing branch
 #@-node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion

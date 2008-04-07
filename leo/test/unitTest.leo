@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5,2"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -791,7 +791,7 @@
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>

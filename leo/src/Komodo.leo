@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080121105857"><vh>Startup</vh>
+<v t="ekr.20080121105857" str_leo_pos="16"><vh>Startup</vh>
 <v t="ekr.20080121105230.3"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
@@ -19,7 +19,7 @@
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
 <v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080121133057" a="E"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
@@ -5622,12 +5622,12 @@
 <v t="ekr.20080329224906.4"><vh>Logging</vh></v>
 <v t="ekr.20080329224906.5"><vh>To do</vh></v>
 </v>
-<v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
+<v t="ekr.20080121143612"><vh>Komodo test script</vh>
 <v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
 <v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20080331170945.2"><vh>doLog</vh></v>
-<v t="ekr.20080331182810.4" a="TV"><vh>doTrigger</vh></v>
+<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
 <v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
 </v>
@@ -59710,13 +59710,14 @@ def doTrigger (s,i,trigger,buf,ctlr):
         directories = [b for (a,b) in completions if a == 'directory']
         print 'directories',len(directories)
 
-    global prev_trigger
-    if prev_trigger is None:
-        prev_trigger = trigger
-        print '\n***** modules...'
-        for z in modules: print z
-        print '\n***** directories...'
-        for z in directories: print z
+    if 0: # print all modules and directories.
+        global prev_trigger
+        if prev_trigger is None:
+            prev_trigger = trigger
+            print '\n***** %s modules...' % len(modules)
+            for z in modules: print z
+            print '\n***** %s directories...' % len(directories)
+            for z in directories: print z
 </t>
 <t tx="ekr.20080331182810.5"></t>
 </tnodes>
