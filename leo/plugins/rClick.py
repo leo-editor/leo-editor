@@ -19,10 +19,6 @@ Right Click Menus (rClick.py)
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
-    **At the moment the api is in flux**
-    When it is settled, the __version__ will be bumped up to 1.xx
-
-
 Examples of the use of this plugin can be found in::
 
     leo/tests/testAtPopup.leo
@@ -506,13 +502,16 @@ command to handle check and radio items, using rclick-button as a template.
 # - added (copy|clone|move)-node-to-chapter-menu menu generator commands
 # - removed dependence on TK
 # - added default 'canvas' menu
-# 0.23
+# 0.23 bobjack:
 # - remove rclickbinder as all binding is now done via hooks.
 # - added support for radio/checkbox items
 # - now dependant on Tk again :(
-# 0.24
+# 0.24 bobjack:
 # - fix recent-menus bug
 # - fix canvas/plusbox menu bug
+# 1.25 bobjack:
+# - bug fixes
+# - make version 1.25 to show the new api is stable
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -521,9 +520,11 @@ command to handle check and radio items, using rclick-button as a template.
 #@+at
 # TODO:
 # 
-# extend support to other leo widgets
+# - extend support to other leo widgets
 # 
-# provide rclick-gen-open-with-list and @popup open-with-menu
+# - provide rclick-gen-open-with-list and @popup open-with-menu
+# 
+# - remove dependence on Tk.
 #@-at
 #@nonl
 #@-node:bobjack.20080323095208.2:<< todo >>
@@ -545,7 +546,7 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "0.24"
+__version__ = "1.25"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -1390,13 +1391,6 @@ class ContextMenuController(object):
         #@    << context menu => top_menu_table >>
         #@+node:bobjack.20080405054059.3:<< context menu => top_menu_table >>
         #@+at
-        # 
-        # 
-        # If widget does not have already have an explicit context_menu set,
-        # then set it to the default value if one is supplied.
-        # 
-        # Problem here with plus box as the event widget is the canvas!
-        # 
         # the canvas should not have an explicit context menu set.
         # 
         #@-at
@@ -1408,12 +1402,11 @@ class ContextMenuController(object):
         if hasattr(widget, 'context_menu'):
             context_menu = widget.context_menu = context_menu
 
-
         if context_menu:
 
             key = context_menu
             if isinstance(key, list):
-                top_menu_table = widget_context_menu[:]
+                top_menu_table = context_menu[:]
             elif isinstance(key, basestring):
                 top_menu_table = c.context_menus.get(key, [])[:]
 
@@ -1456,6 +1449,8 @@ class ContextMenuController(object):
 
                 if isinstance(cmd, basestring):
                     cmd, item_data = self.split_cmd(cmd)
+                else:
+                    item_data = {}
 
                 for k, v in (
                     ('rc_rmenu', rmenu),
@@ -1567,11 +1562,13 @@ class ContextMenuController(object):
                     else:
                         #@    << function command item >>
                         #@+node:bobjack.20080329153415.13:<< function command item >>
-                        def invokeMenuCallback(c=c, event=event, txt=txt, cmd=cmd):
+                        def invokeMenuCallback(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
                             """Prepare for and execute a function in response to a menu item being selected.
 
                             """
+                            keywords['rc_phase'] = phase
                             keywords['rc_label'] = txt
+                            keywords['rc_item_data'] = item_data
                             self.retval = cmd(c, keywords)
 
                         self.add_menu_item(rmenu, txt, invokeMenuCallback, keywords)
