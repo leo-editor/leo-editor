@@ -887,7 +887,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080407102459.1" a="TV"><vh>Test how many</vh></v>
+<v t="ekr.20080407102459.1" a="TV"><vh>Test how-many, find-character, goto-character commands</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5525,7 +5525,8 @@ Leo's init code populates this menu as a special case.</t>
 a
 c d a
 x
-a b c aa
+a b cat hat aa
+end
 
 </t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-

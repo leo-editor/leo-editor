@@ -6,8 +6,8 @@ rem *** Most warnings are disabled in the .rc file.
 rem E0602 Undefined variable
 rem E1101 Instance of <class> has no x member
 
-echo cd c:\leo.repo\leo-editor\trunk\leo
-cd c:\leo.repo\leo-editor\trunk\leo
+echo cd c:\leo.repo\trunk\leo
+cd c:\leo.repo\trunk\leo
 
 REM tests that fail with dangerous settings enabled...
 
