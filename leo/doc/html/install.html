@@ -264,19 +264,20 @@ please ask for help on Leo's help forum:</p>
 <ul class="simple">
 <li><a class="reference" href="#chapter-1-installing-leo" id="id1" name="id1">Chapter 1: Installing Leo</a><ul>
 <li><a class="reference" href="#system-requirements" id="id2" name="id2">System requirements</a></li>
-<li><a class="reference" href="#how-to-install-leo-on-linux" id="id3" name="id3">How to install Leo on Linux</a></li>
-<li><a class="reference" href="#installing-leo-on-windows" id="id4" name="id4">Installing Leo on Windows</a><ul>
-<li><a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows" id="id5" name="id5">How to associate Leo with .leo files on Windows</a></li>
+<li><a class="reference" href="#leo-s-home-directory" id="id3" name="id3">Leo's HOME directory</a></li>
+<li><a class="reference" href="#how-to-install-leo-on-linux" id="id4" name="id4">How to install Leo on Linux</a></li>
+<li><a class="reference" href="#installing-leo-on-windows" id="id5" name="id5">Installing Leo on Windows</a><ul>
+<li><a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows" id="id6" name="id6">How to associate Leo with .leo files on Windows</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#installing-leo-on-macos-x" id="id6" name="id6">Installing Leo on MacOS X</a><ul>
-<li><a class="reference" href="#how-to-use-platypus-to-create-a-mac-launcher-for-leo" id="id7" name="id7">How to use Platypus to create a Mac launcher for Leo</a></li>
-<li><a class="reference" href="#how-to-create-macos-x-pkg-files" id="id8" name="id8">How to create MacOS X .pkg files</a></li>
+<li><a class="reference" href="#installing-leo-on-macos-x" id="id7" name="id7">Installing Leo on MacOS X</a><ul>
+<li><a class="reference" href="#how-to-use-platypus-to-create-a-mac-launcher-for-leo" id="id8" name="id8">How to use Platypus to create a Mac launcher for Leo</a></li>
+<li><a class="reference" href="#how-to-create-macos-x-pkg-files" id="id9" name="id9">How to create MacOS X .pkg files</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#running-leo" id="id9" name="id9">Running Leo</a></li>
-<li><a class="reference" href="#running-leo-in-batch-mode" id="id10" name="id10">Running Leo in batch mode</a></li>
-<li><a class="reference" href="#how-to-install-the-aspell-spell-checker" id="id11" name="id11">How to install the Aspell spell checker</a></li>
+<li><a class="reference" href="#running-leo" id="id10" name="id10">Running Leo</a></li>
+<li><a class="reference" href="#running-leo-in-batch-mode" id="id11" name="id11">Running Leo in batch mode</a></li>
+<li><a class="reference" href="#how-to-install-the-aspell-spell-checker" id="id12" name="id12">How to install the Aspell spell checker</a></li>
 </ul>
 </li>
 </ul>
@@ -303,8 +304,16 @@ fails, Leo will use the version of Pmw in the extensions folder.</p>
 </li>
 </ul>
 </div>
+<div class="section" id="leo-s-home-directory">
+<h2><a class="toc-backref" href="#id3">Leo's HOME directory</a></h2>
+<p>Python's HOME environment variable specifies Leo's HOME directory.
+See <a class="reference" href="http://docs.python.org/lib/os-procinfo.html">http://docs.python.org/lib/os-procinfo.html</a> for details.</p>
+<p>Leo puts several files in your HOME directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.</p>
+</div>
 <div class="section" id="how-to-install-leo-on-linux">
-<h2><a class="toc-backref" href="#id3">How to install Leo on Linux</a></h2>
+<h2><a class="toc-backref" href="#id4">How to install Leo on Linux</a></h2>
 <p>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
 <p>Unzip the downloaded .zip file into a folder in your home directory.
 The folder will be called something like leo-4-4-3-final.</p>
@@ -325,7 +334,7 @@ sudo ./install
 <p>Now you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
 </div>
 <div class="section" id="installing-leo-on-windows">
-<h2><a class="toc-backref" href="#id4">Installing Leo on Windows</a></h2>
+<h2><a class="toc-backref" href="#id5">Installing Leo on Windows</a></h2>
 <p>Leo is distributed either as an executable installer (.exe) file or as a .zip file.</p>
 <p>To install Leo using the executable installer:</p>
 <blockquote>
@@ -358,7 +367,7 @@ If you haven't already created a HOME environment variable, it would be good to
 define home to be &quot;%USERPROFILE%My Documents&quot;.  You can check whether HOME exists
 by typing 'echo %HOME%' (without the quotes) in a console window.</p>
 <div class="section" id="how-to-associate-leo-with-leo-files-on-windows">
-<h3><a class="toc-backref" href="#id5">How to associate Leo with .leo files on Windows</a></h3>
+<h3><a class="toc-backref" href="#id6">How to associate Leo with .leo files on Windows</a></h3>
 <p>Leo will open .leo files automatically provided that you associate leo.py with .leo files.
 Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:</p>
 <ul class="simple">
@@ -389,7 +398,7 @@ You should now be able to double click on a leo file in explorer with Leo.</p>
 </div>
 </div>
 <div class="section" id="installing-leo-on-macos-x">
-<h2><a class="toc-backref" href="#id6">Installing Leo on MacOS X</a></h2>
+<h2><a class="toc-backref" href="#id7">Installing Leo on MacOS X</a></h2>
 <p>By Randall Voth:
 Leo works reliably only on MacOS X 10.3 (Panther) and above.
 To run Leo on Macintosh OS X 10:</p>
@@ -418,7 +427,7 @@ Drag the downloaded gzip file into
 Double click on it to unzip and untar the file into a folder to make it available to Python</li>
 </ol>
 <div class="section" id="how-to-use-platypus-to-create-a-mac-launcher-for-leo">
-<h3><a class="toc-backref" href="#id7">How to use Platypus to create a Mac launcher for Leo</a></h3>
+<h3><a class="toc-backref" href="#id8">How to use Platypus to create a Mac launcher for Leo</a></h3>
 <p>This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
 for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
 <em>create</em> MacLeo. You may download Platypus 3.0 from <a class="reference" href="http://sveinbjorn.vefsyn.is/platypus">http://sveinbjorn.vefsyn.is/platypus</a>
@@ -452,7 +461,7 @@ for the shell script called openLeoScript.sh.</p>
 </ol>
 </div>
 <div class="section" id="how-to-create-macos-x-pkg-files">
-<h3><a class="toc-backref" href="#id8">How to create MacOS X .pkg files</a></h3>
+<h3><a class="toc-backref" href="#id9">How to create MacOS X .pkg files</a></h3>
 <p>This tells how I created <tt class="docutils literal"><span class="pre">leo-4-3-a3.pkg</span></tt> using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.</p>
 <p><tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is included in the <tt class="docutils literal"><span class="pre">Xtools</span></tt> disk that comes with MacOS X. Installing
 <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> was easy, but I don't remember the details.</p>
@@ -476,7 +485,7 @@ If necessary, set the file name to <tt class="docutils literal"><span class="pre
 </div>
 </div>
 <div class="section" id="running-leo">
-<h2><a class="toc-backref" href="#id9">Running Leo</a></h2>
+<h2><a class="toc-backref" href="#id10">Running Leo</a></h2>
 <p>You can run Leo from a Python interpreter as follows:</p>
 <pre class="literal-block">
 import leo
@@ -513,7 +522,7 @@ finally in Leo's src directory. You can change this identifier at any time by
 editing <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>.</p>
 </div>
 <div class="section" id="running-leo-in-batch-mode">
-<h2><a class="toc-backref" href="#id10">Running Leo in batch mode</a></h2>
+<h2><a class="toc-backref" href="#id11">Running Leo in batch mode</a></h2>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <pre class="literal-block">
 --script scriptFile
@@ -539,7 +548,7 @@ for p in newFrame.c.allNodes_iter():
 </pre>
 </div>
 <div class="section" id="how-to-install-the-aspell-spell-checker">
-<h2><a class="toc-backref" href="#id11">How to install the Aspell spell checker</a></h2>
+<h2><a class="toc-backref" href="#id12">How to install the Aspell spell checker</a></h2>
 <p>You must install the Aspell package if you want to use Leo's Spell tab.</p>
 <ol class="arabic simple">
 <li>Download and install the Aspell package from <a class="reference" href="http://aspell.sourceforge.net/">http://aspell.sourceforge.net/</a>

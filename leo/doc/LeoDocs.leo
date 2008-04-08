@@ -180,6 +180,7 @@
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
+<v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
 <v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
 <v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh>
 <v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
@@ -34613,6 +34614,13 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080405074410.7"></t>
 <t tx="ekr.20080405074410.9"></t>
 <t tx="ekr.20080405074410.38"></t>
+<t tx="ekr.20080408060320.784">Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
