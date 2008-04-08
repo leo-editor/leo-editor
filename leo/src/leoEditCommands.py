@@ -1490,6 +1490,7 @@ class editCommandsClass (baseEditCommandsClass):
             'find-character':                       self.findCharacter,
             'find-character-extend-selection':      self.findCharacterExtendSelection,
             'find-word':                            self.findWord,
+            'find-word-in-line':                    self.findWordInLine,
             'flush-lines':                          self.flushLines,
             'focus-to-body':                        self.focusToBody,
             'focus-to-log':                         self.focusToLog,
@@ -2154,11 +2155,10 @@ class editCommandsClass (baseEditCommandsClass):
             self.event = event
             self.backward = backward ; self.extend = extend
             self.insert = w.getInsertPoint()
-            s = '%s character %s' % (
+            s = '%s character%s: ' % (
                 g.choose(backward,'Backward find','Find'),
                 g.choose(extend,' & extend',''))
-            c.frame.clearStatusLine()
-            c.frame.putStatusLine(s,color='blue')
+            k.setLabelBlue(s,protect=True)
             # Get the arg without touching the focus.
             k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
         else:
@@ -2177,39 +2177,59 @@ class editCommandsClass (baseEditCommandsClass):
                 if end == -1: end = len(s)
                 j = s.find(ch,min(i,end),end) # Skip the character at the cursor.
                 if j > -1: self.moveToHelper(event,j,extend)
-            c.frame.clearStatusLine()
+            k.resetLabel()
             k.clearState()
     #@nonl
     #@-node:ekr.20060417194232.1:findCharacterHelper
     #@-node:ekr.20060925151926:backward/findCharacter & helper
-    #@+node:ekr.20060417194232.2:findWord (rewrite)
-    def findWord (self,event):
+    #@+node:ekr.20060417194232.2:findWord and FindWordOnLine & helper
+    def findWord(self,event):
+
+        '''Put the cursor at the next word that starts with a character.'''
+
+        return self.findWordHelper(event,oneLine=True)
+
+    def findWordInLine(self,event):
 
         '''Put the cursor at the next word (on a line) that starts with a character.'''
 
-        k = self.k ; tag = 'find-word-on-line' ; state = k.getState(tag)
+        return self.findWordHelper(event,oneLine=True)
+
+    #@+node:ekr.20080408060320.1:findWordHelper
+    def findWordHelper (self,event,oneLine):
+
+        k = self.k ; tag = 'find-word' ; state = k.getState(tag)
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Find word: ')
-            k.getArg(event,tag,1,self.findWord)
+            self.oneLineFlag = oneLine
+            k.setLabelBlue('Find word %sstarting with: ' % (
+                g.choose(oneLine,'in line ','')))
+            k.getArg(event,tag,1,self.findWord,oneCharacter=True)
         else:        
-            word = k.arg ; w = self.w ; c = k.c
-            if word:
+            ch = k.arg ; w = self.w ; c = k.c
+            if ch:
                 i = w.getInsertPoint()
                 s = w.getAllText()
-                j = s.find('\n',i) # Limit to this line.
-                if j > -1: s = s[:j]
-                while i < len(s):
-                    if g.match_word(s,i,word) and (i == 0 or not g.isWordChar(s[i-1])):
-                        w.setSelectionRange(i,i+len(word))
+                if self.oneLineFlag:
+                    end = s.find('\n',i) # Limit searches to this line.
+                    if end == -1: end = len(s)
+                else:
+                    end = len(s)
+
+                while i < end:
+                    i = s.find(ch,i+1,end) # Ensure progress and i > 0.
+                    if i == -1:
                         break
-                    else:
-                        i += 1
+                    elif not g.isWordChar(s[i-1]):
+                        w.setSelectionRange(i,i,insert=i)
+                        break
+
             k.resetLabel()
             k.clearState()
-    #@-node:ekr.20060417194232.2:findWord (rewrite)
+    #@-node:ekr.20080408060320.1:findWordHelper
+    #@-node:ekr.20060417194232.2:findWord and FindWordOnLine & helper
     #@-node:ekr.20060417194232:find (quick)
     #@+node:ekr.20050920084036.72:goto...
     #@+node:ekr.20050929115226:gotoCharacter
@@ -2222,13 +2242,18 @@ class editCommandsClass (baseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # Sets self.w
             if not w: return
-            k.setLabelBlue('Goto character: ')
+            k.setLabelBlue("Goto n'th character: ")
             k.getArg(event,'goto-char',1,self.gotoCharacter)
         else:
-            n = k.arg ; w = self.w
+            n = k.arg ; w = self.w ; ok = False
             if n.isdigit():
-                w.setInsertPoint(n)
-                w.seeInsertPoint()
+                n = int(n)
+                if n >= 0:
+                    w.setInsertPoint(n)
+                    w.seeInsertPoint()
+                    ok = True
+            if not ok:
+                g.es('goto-char takes non-negative integer argument',color='blue')
             k.resetLabel()
             k.clearState()
     #@-node:ekr.20050929115226:gotoCharacter
