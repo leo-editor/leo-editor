@@ -791,7 +791,7 @@
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20070114140212" a="TV"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
@@ -874,7 +874,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="TV"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -1705,7 +1705,8 @@
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
 <v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
-<v t="ekr.20061104172236.2"><vh>@test findWord</vh></v>
+<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
+<v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
@@ -15495,15 +15496,19 @@ last line
 <t tx="ekr.20061104172236.2"># targetWord
 c.beginUpdate()
 try:
+    e = c.editCommands
     k = c.k ; w = c.frame.body.bodyCtrl
     w.setInsertPoint(0)
-    k.arg = 'targetWord'
-    k.setState('find-word-on-line',1)
-    f = c.editCommands.findWord(event=None)
-    i,j = w.getSelectionRange()
-    s = w.getAllText()
-    word = s[i:j]
-    assert word == 'targetWord', 'got: %s' % word
+    k.arg = 't' # 'targetWord'
+    k.setState('find-word',1)
+    for val in (True,False):
+        e.oneLineFlag = val
+        f = e.findWordInLine(event=None)
+        i,j = w.getSelectionRange()
+        assert i == 2, 'expected 2, got' % (i)
+        # s = w.getAllText()
+        # ch = s[i]
+        # assert word == 'targetWord', 'got: %s' % word
 finally:
     c.endUpdate(False)
     </t>
@@ -20032,5 +20037,20 @@ Important: this may cause crashes on some platforms.</t>
 leoTest.doTests(c, all=True)</t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080405085247.2"></t>
+<t tx="ekr.20080408094623.1"># targetWord
+c.beginUpdate()
+try:
+    e = c.editCommands
+    k = c.k ; w = c.frame.body.bodyCtrl
+    w.setInsertPoint(0)
+    k.arg = 'b' # 'beginUpdate'
+    k.setState('find-word',1)
+    e.oneLineFlag = False
+    f = e.findWord(event=None)
+    i,j = w.getSelectionRange()
+    assert i == 15, 'expected 15, got %s' % (i)
+finally:
+    c.endUpdate(False)
+</t>
 </tnodes>
 </leo_file>
