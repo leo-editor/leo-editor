@@ -611,6 +611,7 @@ E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'cr
 #@-node:ekr.20071220081732:pylint report
 #@-node:ekr.20071217134533:Pylint
 #@+node:ekr.20080408060320.4:4.5 a1
+#@+node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
 @nocolor
 
@@ -1066,6 +1067,25 @@ def gotoCharacter (self,event):
         k.clearState()
 #@-node:ekr.20050929115226:gotoCharacter
 #@-node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
+#@+node:ekr.20080408060320.2:Fixed bug in install script
+@nocolor
+
+On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.
+#@nonl
+#@-node:ekr.20080408060320.2:Fixed bug in install script
+#@-node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080408060320.783:Features
+#@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@-all
 #@nonl

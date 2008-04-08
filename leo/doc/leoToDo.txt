@@ -14,22 +14,6 @@ press delete the cursor moves to the end of the buffer and deletes the
 last character instead.
 #@nonl
 #@-node:ekr.20080406075855.1:Fix find completion bug
-#@+node:ekr.20080408060320.2:Fix bug in install script
-@nocolor
-
-On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
-
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-With the change the installation worked.
-#@nonl
-#@-node:ekr.20080408060320.2:Fix bug in install script
 #@+node:ekr.20080407090400.3:Better docs for Leo's home directory
 @nocolor
 
