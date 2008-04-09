@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1299,6 +1299,27 @@
 </v>
 </v>
 </v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
+</v>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+</v>
+</v>
+<v t="ekr.20060603215208.20" a="TV"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20041119034357.1">@nocolor
