@@ -621,7 +621,7 @@ class autoCompleterClass:
 
         '''Cut back to previous prefix.'''
 
-        g.trace('(autocompleter)',self.prefix,self.object,self.prevObjects)
+        # g.trace('(autocompleter)',self.prefix,self.object,self.prevObjects)
 
         c = self.c
         if self.prefix:
