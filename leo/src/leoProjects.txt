@@ -1155,6 +1155,110 @@ def doBackSpace (self,defaultCompletionList,completion=True):
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@+node:ekr.20080409111805.2:Set use_sax = True always
+#@+node:ekr.20031218072017.3019:leoFileCommands._init_
+def __init__(self,c):
+
+    # g.trace("__init__", "fileCommands.__init__")
+    self.c = c
+    self.frame = c.frame
+
+    self.use_new_positions = False
+
+    self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
+
+    self.nativeTnodeAttributes = ('tx',)
+    self.nativeVnodeAttributes = (
+        'a','descendentTnodeUnknownAttributes',
+        'expanded','marks','t','tnodeList',
+        # 'vtag',
+    )
+    self.initIvars()
+
+def initIvars(self):
+
+    # General
+    c = self.c
+    self.mFileName = ""
+    self.fileDate = -1
+    self.leo_file_encoding = c.config.new_leo_file_encoding
+    # For reading
+    self.checking = False # True: checking only: do *not* alter the outline.
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.forbiddenTnodes = []
+    self.descendentUnknownAttributesDictList = []
+    self.ratio = 0.5
+    if self.use_sax:
+        self.currentVnode = None
+        self.rootVnode = None
+    else:
+        self.fileBuffer = None
+        self.fileIndex = 0
+        self.currentVnodeStack = [] # A stack of vnodes giving the current position.
+        self.topVnodeStack     = [] # A stack of vnodes giving the top position.
+        self.topPosition = None
+    # For writing
+    self.read_only = False
+    self.rootPosition = None
+    self.outputFile = None
+    self.openDirectory = None
+    self.putCount = 0
+    self.topVnode = None
+    self.toString = False
+    self.usingClipboard = False
+    self.currentPosition = None
+    # New in 3.12
+    self.copiedTree = None
+    self.tnodesDict = {}
+        # keys are gnx strings as returned by canonicalTnodeIndex.
+        # Values are gnx's.
+#@nonl
+#@-node:ekr.20031218072017.3019:leoFileCommands._init_
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    c = self.c ; p = c.rootPosition()
+
+    current = None
+    d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+    if d:
+        s = d.get('str_leo_pos')
+        if s:
+            current = self.archivedPositionToPosition(s)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@nonl
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.headString(),c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.headString())
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@-node:ekr.20080409111805.2:Set use_sax = True always
 #@-node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
