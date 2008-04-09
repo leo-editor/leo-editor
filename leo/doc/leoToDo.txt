@@ -5,22 +5,16 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20080403100132.1:First
-#@+node:ekr.20080330085343.2:Fix easy bugs
-#@+node:ekr.20080406075855.1:Fix find completion bug
-@nocolor
-
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@-node:ekr.20080406075855.1:Fix find completion bug
-#@-node:ekr.20080330085343.2:Fix easy bugs
 #@+node:ekr.20080404074921.2:Start Komodo question
 #@-node:ekr.20080404074921.2:Start Komodo question
+#@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
 #@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
 #@+node:ekr.20080407090400.5:Remove old fileCommands read code
 #@-node:ekr.20080407090400.5:Remove old fileCommands read code
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080402153826.2:Make Leo a package
 # The start of this project is in leo.repo/leo-working.
 #@nonl

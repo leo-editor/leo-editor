@@ -997,7 +997,7 @@ def findWord(self,event):
 
     '''Put the cursor at the next word that starts with a character.'''
 
-    return self.findWordHelper(event,oneLine=True)
+    return self.findWordHelper(event,oneLine=False)
 
 def findWordInLine(self,event):
 
@@ -1083,6 +1083,74 @@ LEO_LIB_DIR="${LEO_PREFIX}/lib"
 With the change the installation worked.
 #@nonl
 #@-node:ekr.20080408060320.2:Fixed bug in install script
+#@+node:ekr.20080406075855.1:Fixed find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+#@nonl
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.177:k.doBackSpace
+# Used by getArg and fullCommand.
+
+def doBackSpace (self,defaultCompletionList,completion=True):
+
+    '''Cut back to previous prefix and update prefix.'''
+
+    k = self ; c = k.c ; w = self.widget
+
+    if 0:
+        g.trace('(keyHandler)',g.callers(4))
+        g.trace('completion',completion,
+            len(k.mb_tabListPrefix) > len(k.mb_prefix),
+            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+
+    # Step 1: actually delete the character.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    if ins <= len(k.mb_prefix):
+        # g.trace('at start')
+        return
+    i,j = w.getSelectionRange()
+    if i == j:
+        ins -= 1
+        w.delete(ins)
+        w.setSelectionRange(ins,ins,insert=ins)
+    else:
+        ins = i
+        w.delete(i,j)
+        w.setSelectionRange(i,i,insert=ins)
+
+    # Step 2: compute completions.
+    if not completion: return
+    k.mb_tabListPrefix = w.getAllText()
+    k.computeCompletionList(defaultCompletionList,backspace=True)
+#@-node:ekr.20061031131434.177:k.doBackSpace
+#@-node:ekr.20080406075855.1:Fixed find completion bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
