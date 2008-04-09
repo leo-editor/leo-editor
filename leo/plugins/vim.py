@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:EKR.20040517075715.10:@thin vim.py
+#@+node:TL.20080221123824.1:@thin vim.py
 #@<< docstring >>
 #@+node:ekr.20050226184411:<< docstring >>
 '''A plugin that communicates with VIM.
@@ -95,6 +95,9 @@ __version__ = "1.13"
 # 1.14 EKR: Emphasized that the open_with plugin must be enabled.
 # 1.15 EKR: Don't open @url nodes in vim if @bool vim_plugin_opens_url_nodes 
 # setting is False.
+# 1.16 TL: open_in_vim modifications
+#     - support file open in gVim at same line number as Leo cursor location
+#     - support file open in a gVim tab (see also mod_tempfname.py)
 #@-at
 #@nonl
 #@-node:ekr.20050226184411.1:<< version history >>
@@ -237,7 +240,6 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
 #@-node:ekr.20050226184624:init
 #@+node:EKR.20040517075715.11:open_in_vim
 def open_in_vim (tag,keywords,val=None):
@@ -246,7 +248,14 @@ def open_in_vim (tag,keywords,val=None):
     c = keywords.get('c')
     p = keywords.get("p")
     if not c or not p: return
+    #
+    #Avoid @file node types
+    if p.isAnyAtFileNode():
+       return
+    if p.headString().find('file-ref') == 1: #Must be at 2nd position
+       return
 
+    #URL nodes
     openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
     if not openURLNodes and p.headString().startswith('@url'):
         return # Avoid conflicts with @url nodes.
@@ -254,6 +263,16 @@ def open_in_vim (tag,keywords,val=None):
 
     vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
     vim_exe = c.config.getString('vim_exe') or _vim_exe
+
+    #Line number - start at same line as Leo cursor
+    #  get node's body text
+    bodyCtrl = c.frame.body.bodyCtrl
+    s = bodyCtrl.getAllText()    
+    #  Get cursors row & column number
+    index = bodyCtrl.getInsertPoint()
+    row,col = g.convertPythonIndexToRowCol(s,index)
+    #  Build gVim command line parameter for setting cursor row
+    Lnum = "+" + str(row + 1)
 
     # Search g.app.openWithFiles for a file corresponding to v.
     for d in g.app.openWithFiles:
@@ -273,11 +292,11 @@ def open_in_vim (tag,keywords,val=None):
             # Remove the old file and the entry in g.app.openWithFiles.
             os.remove(path)
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
-            os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd! "+path+"<CR>'")
+            os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
         v.OpenWithOldBody=v.bodyString() # Remember the previous contents.
         if subprocess:
-            # New code by Jim Sizemore.
-            data = "subprocess.Popen",[vim_exe, "--servername", "LEO", "--remote-silent"], None
+            # New code by Jim Sizemore (TL: added support for gVim tabs).
+            data = "subprocess.Popen",[vim_exe, "--servername", "LEO","--remote-tab-silent", Lnum], None
             c.openWith(data=data)
         else:
             # Works, but gives weird error message on first open of Vim.
@@ -289,9 +308,8 @@ def open_in_vim (tag,keywords,val=None):
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
 
     return val
-#@nonl
 #@-node:EKR.20040517075715.11:open_in_vim
 #@-others
 #@nonl
-#@-node:EKR.20040517075715.10:@thin vim.py
+#@-node:TL.20080221123824.1:@thin vim.py
 #@-leo
