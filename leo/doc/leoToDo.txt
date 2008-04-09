@@ -279,6 +279,14 @@ Pretty normally; I start leo.py as normal python program.
 #@+node:ekr.20080330085343.2:Bugs
 #@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20080406075855.1:Fix find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+#@nonl
+#@-node:ekr.20080406075855.1:Fix find completion bug
 #@+node:ekr.20080330085343.3:Fix bug in atFile.write
 The code should save/restore, just as in the clean_file function (from scripts.leo)
 #@nonl
@@ -326,6 +334,58 @@ def clean_file(p):
         g.es_exception()
 #@-node:ekr.20080330085343.1:clean_file
 #@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080405074410.39:Fix new @auto bug
+@nocolor
+
+Leo's running, so I create a new outline with File->New
+
+Then I save as in a location where foo.py exists.
+
+The I create a node '@auto foo.py'
+
+Then I use File->Read/Write->Read @auto (with that node selected)
+
+Leo says it can't read it.
+
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.
+
+
+#@-node:ekr.20080405074410.39:Fix new @auto bug
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
+
+To duplicate:
+
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
+@nocolor
+
+I was playing around with this and I discovered that if I open
+unitTest.leo from the File->Open menu pick of another leo outline and
+then I run a unit test, then all the nodes from unitTest.leo appear in
+the original document.  If I execute a save on the original document
+(now with the unitTest.leo nodes), then the leo file gets overwritten
+with the contents unitTest.leo.
+
+#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
 #@-node:ekr.20080330085343.2:Bugs
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
