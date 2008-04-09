@@ -3111,7 +3111,7 @@ try:
 finally:
     c.endUpdate()
 #@-node:create-at-auto-nodes
-#@+node:@button print g.es stats
+#@+node:@@button print g.es stats
 @first # -*- coding: utf-8 -*-
 
 # To do: put list of to-be-translated strings in a doc part.
@@ -3466,7 +3466,37 @@ def setToBeTranslated (self,s,n):
     if (n % 2) == 1 and s not in self.toBeTranslated:
         self.toBeTranslated.append(s)
 #@-node:setToBeTranslated
-#@-node:@button print g.es stats
+#@-node:@@button print g.es stats
+#@+node:@@button change leo imports
+change = True # True: actually make the changes.
+trace = True
+
+print '-' * 40
+
+tag = 'import leo' ; n = len(tag)
+
+for p in p.self_and_subtree_iter():
+    result = []
+    for s in g.splitlines(p.bodyString()):
+        i = s.find(tag,0)
+        if i > -1:
+            # Do nothing if we have already done the translation.
+            i2 = s.find('<<') ; i3 = s.find('import leo.core')
+            if i2 == -1 and i3 == -1:
+                ch = s[i+n:i+n+1]
+                ch = g.choose(ch.isspace(),'leo',ch.lower()) # special case: import leo.
+                s = s[:i] + 'import leo.core.' + ch + s[i+n+1:]
+                if trace:
+                    print p.headString()
+                    j,k=g.getLine(s,i) ; print s[j:k]
+        result.append(s)
+    result = ''.join(result)
+
+    if change and result != p.bodyString():
+        c.setBodyString(p,result)
+
+
+#@-node:@@button change leo imports
 #@+node:c2py  Convert C code to Python syntax
 @first
 @language python
@@ -11181,7 +11211,7 @@ Traceback (most recent call last):
 TypeError: int argument required
 #@nonl
 #@-node:errors
-#@+node:@button jEdit2Py
+#@+node:@@button jEdit2Py
 '''Convert jEdit language description file to an equivalent .py file.'''
 
 @language python
@@ -12550,7 +12580,7 @@ def getMode (self):
 #@nonl
 #@-node:getMode
 #@-node:class contentHandler (xml.sax.saxutils.XMLGenerator)
-#@-node:@button jEdit2Py
+#@-node:@@button jEdit2Py
 #@-node:jEdit2Py
 #@+node:Print missing docstrings
 # Print all commands that do not have a docstring.

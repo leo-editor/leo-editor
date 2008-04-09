@@ -1,4 +1,6 @@
-Leo 4.4.8 beta 3 is available at:
+Leo 4.4.8 final                        April 6, 2008
+
+Leo 4.4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge

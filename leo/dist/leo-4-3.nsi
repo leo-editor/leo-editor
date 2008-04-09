@@ -226,8 +226,8 @@ Section "Leo" SEC01
   ;@+node:ekr.20050118103207.1:<< install top-level files >>
   File "..\__init__.py"
   File "..\..\install"
-  File "..\..\manifest.in"
-  File "..\..\MANIFEST"
+  ;File "..\..\manifest.in"
+  ;File "..\..\MANIFEST"
   ; File "..\..\setup.py"
   File "..\..\uninstall"
   ;@nonl
@@ -266,18 +266,18 @@ Section "Leo" SEC01
   File "..\doc\Install.txt"
   File "..\doc\License.txt"
 
-  File "..\doc\LeoTechReport.pdf"
+  ; File "..\doc\LeoTechReport.pdf"
 
   File "..\doc\default.css"
   File "..\doc\leo_rst.css"
   File "..\doc\silver_city.css"
 
-  SetOutPath "$INSTDIR\doc\LeoN"
+  ; SetOutPath "$INSTDIR\doc\LeoN"
 
-  File "..\doc\LeoN\sun98achieving.pdf"
-  File "..\doc\LeoN\sun97generic.pdf"
-  File "..\doc\LeoN\sun98operational.pdf"
-  File "..\doc\LeoN\sun98reversible.pdf"
+  ; File "..\doc\LeoN\sun98achieving.pdf"
+  ; File "..\doc\LeoN\sun97generic.pdf"
+  ; File "..\doc\LeoN\sun98operational.pdf"
+  ; File "..\doc\LeoN\sun98reversible.pdf"
 
   SetOutPath "$INSTDIR\doc\html"
 
@@ -616,16 +616,16 @@ Section Uninstall
   Delete "$INSTDIR\doc\Pkg-info.txt"
   Delete "$INSTDIR\doc\Readme.txt"
 
-  Delete "$INSTDIR\doc\LeoTechReport.pdf"
+  ; Delete "$INSTDIR\doc\LeoTechReport.pdf"
 
   Delete "$INSTDIR\doc\silver_city.css"
   Delete "$INSTDIR\doc\leo_rst.css"
   Delete "$INSTDIR\doc\default.css"
 
-  Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
-  Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
+  ; Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
 
   Delete "$INSTDIR\doc\html\*.*"
   ;@nonl
@@ -747,8 +747,8 @@ Section Uninstall
 
   ; Done later...
   Delete "$INSTDIR\install"
-  Delete "$INSTDIR\manifest.in"
-  Delete "$INSTDIR\MANIFEST"
+  ; Delete "$INSTDIR\manifest.in"
+  ; Delete "$INSTDIR\MANIFEST"
   ; Delete "$INSTDIR\setup.py"
   Delete "$INSTDIR\uninstall"
   ;@-node:ekr.20050118103447.1:<< uninstall top-level files >>
@@ -759,7 +759,7 @@ Section Uninstall
   RMDir "$INSTDIR\config"
   RMDir "$INSTDIR\dist"
   RmDir "$INSTDIR\doc\html"
-  RmDir "$INSTDIR\doc\LeoN"
+  ; RmDir "$INSTDIR\doc\LeoN"
   RMDir "$INSTDIR\doc"
 
   RMDir "$INSTDIR\extensions\Gato"

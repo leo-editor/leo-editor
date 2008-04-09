@@ -15,3 +15,6 @@ leo/test/clean
 leo/test/clean/*.*
 dist/*.*
 dist
+./*.zip
+leo/*.zip
+leo/doc/leoTechReport.*
