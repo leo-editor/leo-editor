@@ -456,7 +456,8 @@ class leoGui:
 
         def __repr__ (self):
 
-            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+            return 'leoGui.leoKeyEvent: char: %s, keysym: %s, widget: %s' % (
+                repr(self.char),repr(self.keysym),self.widget)
     #@nonl
     #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
     #@-node:ekr.20070228154059:May be defined in subclasses
