@@ -27,6 +27,7 @@ class LeoApp:
         self.commandName = None # The name of the command being executed.
         self.config = None # The leoConfig instance.
         self.count = 0 # General purpose debugging count.
+        self.customConfigFilePrefix = '.' # prepend this to "myLeoSettings.eo" and <machineName>LeoSettings.leo
         self.debug = False # True: enable extra debugging tests (not used at present).
             # WARNING: this could greatly slow things down.
         self.debugSwitch = 0

@@ -4344,8 +4344,8 @@ node has the headline ``@settings``. When opening a .leo file, Leo looks for
 
 - The file ``leoSettings.leo`` in the leo/config directory.
 - The file ``leoSettings.leo`` in the user's home directory.
-- The file ``myLeoSettings.leo`` in the leo/config directory.
-- The file ``myLeoSettings.leo`` in the user's home directory.
+- The file ``${g.app.customConfigFilePrefix}myLeoSettings.leo`` in the user's home directory.  Where ${g.app.customCOnfigFilePrefix} is a string prepended to the filename (if '.', makes the file hidden in Linux).
+- The file ``${g.app.customConfigFilePrefix}${HOSTNAME}LeoSettings.leo`` in the user's home directory.  Where ${HOSTNAME} is the computer's machine name.
 - The file being loaded.
 
 Settings that appear later in the above list override settings found earlier. For

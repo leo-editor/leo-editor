@@ -1148,8 +1148,8 @@ class configClass:
         """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
 
         settingsFile = 'leoSettings.leo'
-        mySettingsFile = 'myLeoSettings.leo'
-        machineConfigFile = self.getMachineName()
+        mySettingsFile = g.app.customConfigFilePrefix + 'myLeoSettings.leo'
+        machineConfigFile = g.app.customConfigFilePrefix + self.getMachineName()
 
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
