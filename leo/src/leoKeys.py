@@ -3162,7 +3162,7 @@ class keyHandlerClass:
         if k.state.kind:
             if (
                 k.ignore_unbound_non_ascii_keys and
-                ch not in ('\b','\n','\r') and
+                ch and ch not in ('\b','\n','\r','\t') and
                 (ord(ch) < 32 or ord(ch) > 128)
             ):
                 # g.trace('non-ascii',ord(ch))
