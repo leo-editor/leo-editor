@@ -22,6 +22,7 @@ import pickle
 import string
 import sys
 import zipfile
+import re
 
 try:
     # IronPython has problems with this.
@@ -565,6 +566,18 @@ class baseFileCommands:
             self.currentVnodeStack = [] # A stack of vnodes giving the current position.
             self.topVnodeStack     = [] # A stack of vnodes giving the top position.
             self.topPosition = None
+            # regular expression for parsing
+            reVnodeAttributes = "|".join((
+                "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+                "t=\s*\"([^\"]*)\"",        # group 3
+                "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+                "tnodeList=\s*\"([^\"]*)\"", # group 5
+                "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+                "expanded=\s*\"([^\"]*)\"", # group 7
+                "marks=\s*\"([^\"]*)\"", # group 8
+                ">"))
+            self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
         # For writing
         self.read_only = False
         self.rootPosition = None
@@ -580,7 +593,6 @@ class baseFileCommands:
         self.tnodesDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
             # Values are gnx's.
-    #@nonl
     #@-node:ekr.20031218072017.3019:leoFileCommands._init_
     #@+node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20060919104836: Top-level
@@ -1015,7 +1027,7 @@ class baseFileCommands:
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
-            for p in c.all_positions_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if marks.get(p.v.t):
                     p.v.initMarkedBit()
                         # This was the problem: was p.setMark.
@@ -1197,7 +1209,7 @@ class baseFileCommands:
         if self.matchTag(tag):
             return
         else:
-            print "getTag(", tag, ") failed:"
+            print "getTag(", tag, ") failed at %s:" % self.fileBuffer[self.fileBufferIndex:(self.fileBufferIndex+256)]
             raise BadLeoFile("expecting" + tag)
     #@-node:EKR.20040526204706.9:getTag
     #@+node:EKR.20040526204036:getUnknownTag
@@ -1284,6 +1296,7 @@ class baseFileCommands:
     #@-node:ekr.20031218072017.3031:xmlUnescape
     #@-node:ekr.20031218072017.1243:get, match & skip (basic)
     #@+node:ekr.20031218072017.1555:getAllLeoElements
+
     def getAllLeoElements (self,fileName,silent):
         c = self.c
 
@@ -1305,7 +1318,6 @@ class baseFileCommands:
         self.getTnodes()
         self.getCloneWindows()
         self.getTag("</leo_file>")
-    #@nonl
     #@-node:ekr.20031218072017.1555:getAllLeoElements
     #@+node:ekr.20031218072017.3023:getCloneWindows
     # For compatibility with old file formats.
@@ -1663,65 +1675,70 @@ class baseFileCommands:
             else: return v
 
         while 1:
-            if self.matchTag("a=\""):
-                #@            << Handle vnode attribute bits >>
-                #@+node:ekr.20031218072017.1567:<< Handle vnode attribute bits  >>
-                # The a=" has already been seen.
-                while 1:
-                    if   self.matchChar('C'): pass # Not used: clone bits are recomputed later.
-                    elif self.matchChar('D'): pass # Not used.
-                    elif self.matchChar('E'): setExpanded = True
-                    elif self.matchChar('M'): setMarked = True
-                    elif self.matchChar('O'): setOrphan = True
-                    elif self.matchChar('T'): setTop = True
-                    elif self.matchChar('V'): setCurrent = True
-                    else: break
-
-                self.getDquote()
-                #@-node:ekr.20031218072017.1567:<< Handle vnode attribute bits  >>
-                #@nl
-            elif self.matchTag("t="):
-                # New for 4.1.  Read either "Tnnn" or "gnx".
-                tref = index = self.getDqString()
-                if self.usingClipboard:
-                    #@                << raise invalidPaste if the tnode is in self.forbiddenTnodes >>
-                    #@+node:ekr.20041023110111:<< raise invalidPaste if the tnode is in self.forbiddenTnodes >>
-                    # Bug fix in 4.3 a1: make sure we have valid paste.
-                    junk,theTime,junk = g.app.nodeIndices.scanGnx(index,0)
-                    if not theTime and index[0] == "T":
-                        index = index[1:]
-
-                    index = self.canonicalTnodeIndex(index)
-                    t = self.tnodesDict.get(index)
-
-                    if t in self.forbiddenTnodes:
-                        # g.trace(t)
-                        raise invalidPaste
-                    #@-node:ekr.20041023110111:<< raise invalidPaste if the tnode is in self.forbiddenTnodes >>
+            matchobj = self.reVnodeAttributesCompiled.match(self.fileBuffer,self.fileBufferIndex)
+            if matchobj:
+                self.fileBufferIndex = matchobj.end()
+                m=matchobj.group(1)
+                if m.startswith("a="):
+                    #@                << Handle vnode attribute bits >>
+                    #@+node:ekr.20031218072017.1567:<< Handle vnode attribute bits  >>
+                    # The a=" has already been seen.
+                    for flag in matchobj.group(2):
+                        if   flag == 'C': pass # Not used: clone bits are recomputed later.
+                        elif flag == 'D': pass # Not used.
+                        elif flag == 'E': setExpanded = True
+                        elif flag == 'M': setMarked = True
+                        elif flag == 'O': setOrphan = True
+                        elif flag == 'T': setTop = True
+                        elif flag == 'V': setCurrent = True
+                    #@-node:ekr.20031218072017.1567:<< Handle vnode attribute bits  >>
                     #@nl
-            elif self.matchTag("vtag=\"V"):
-                self.getIndex() ; self.getDquote() # ignored
-            elif self.matchTag("tnodeList="):
-                s = self.getDqString()
-                tnodeList = self.getTnodeList(s) # New for 4.0
-            elif self.matchTag("descendentTnodeUnknownAttributes="):
-                # New for 4.2, deprecated for 4.3?
-                s = self.getDqString()
-                theDict = self.getDescendentUnknownAttributes(s)
-                if theDict:
-                    self.descendentUnknownAttributesDictList.append(theDict)
-            elif self.matchTag("expanded="): # New in 4.2
-                s = self.getDqString()
-                self.descendentExpandedList.extend(self.getDescendentAttributes(s,tag="expanded"))
-            elif self.matchTag("marks="): # New in 4.2.
-                s = self.getDqString()
-                self.descendentMarksList.extend(self.getDescendentAttributes(s,tag="marks"))
-            elif self.matchTag(">"):
-                break
+                elif m.startswith("t="):
+                    # New for 4.1.  Read either "Tnnn" or "gnx".
+                    tref = index = matchobj.group(3)
+                    if self.usingClipboard:
+                        #@                    << raise invalidPaste if the tnode is in self.forbiddenTnodes >>
+                        #@+node:ekr.20041023110111:<< raise invalidPaste if the tnode is in self.forbiddenTnodes >>
+                        # Bug fix in 4.3 a1: make sure we have valid paste.
+                        junk,theTime,junk = g.app.nodeIndices.scanGnx(index,0)
+                        if not theTime and index[0] == "T":
+                            index = index[1:]
+
+                        index = self.canonicalTnodeIndex(index)
+                        t = self.tnodesDict.get(index)
+
+                        if t in self.forbiddenTnodes:
+                            # g.trace(t)
+                            raise invalidPaste
+                        #@-node:ekr.20041023110111:<< raise invalidPaste if the tnode is in self.forbiddenTnodes >>
+                        #@nl
+                elif m.startswith("vtag="):
+                    pass # ignored
+                elif m.startswith("tnodeList="):
+                    s = matchobj.group(5)
+                    tnodeList = self.getTnodeList(s) # New for 4.0
+                elif m.startswith("descendentTnodeUnknownAttributes="):
+                    # New for 4.2, deprecated for 4.3?
+                    s = matchobj.group(6)
+                    theDict = self.getDescendentUnknownAttributes(s)
+                    if theDict:
+                        self.descendentUnknownAttributesDictList.append(theDict)
+                elif m.startswith("expanded="):
+                    s = matchobj.group(7)
+                    self.descendentExpandedList.extend(self.getDescendentAttributes(s,tag="expanded"))
+                elif m.startswith("marks="):
+                    s = matchobj.group(8)
+                    self.descendentMarksList.extend(self.getDescendentAttributes(s,tag="marks"))
+                elif m.startswith(">"):
+                    break
+                else:
+                    print("Unexpected match: \"%s\"" % m);
+                    break
             else: # New for 4.0: allow unknown attributes.
                 # New in 4.2: allow pickle'd and hexlify'ed values.
                 attr,val = self.getUa("vnode")
                 if attr: attrDict[attr] = val
+
         # Headlines are optional.
         if self.matchTag("<vh>"):
             headline = self.getEscapedString() ; self.getTag("</vh>")
@@ -1781,7 +1798,6 @@ class baseFileCommands:
         # End this vnode.
         self.getTag("</v>")
         return v
-    #@nonl
     #@+node:ekr.20031218072017.1860:createVnode
     # (changed for 4.2) sets skip
 
@@ -2224,7 +2240,7 @@ class baseFileCommands:
 
         c = self.c
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if hasattr(p.v,'tempTnodeList'):
                 # g.trace(p.v.headString())
                 result = []
@@ -2571,7 +2587,7 @@ class baseFileCommands:
         if self.usingClipboard: # write the current tree.
             theIter = c.currentPosition().self_and_subtree_iter()
         else: # write everything
-            theIter = c.allNodes_iter()
+            theIter = c.all_positions_with_unique_tnodes_iter()
 
         # Populate tnodes
         tnodes = {}
