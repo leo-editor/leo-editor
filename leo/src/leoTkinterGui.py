@@ -745,8 +745,7 @@ class tkinterGui(leoGui.leoGui):
 
         def __repr__ (self):
 
-            return 'tkGui.leoKeyEvent: char: %s, keysym: %s, widget: %s' % (
-                repr(self.char),repr(self.keysym),self.widget)
+            return 'tkGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
     #@nonl
     #@-node:ekr.20061112152012.2:class leoKeyEvent (tkGui)
     #@-others
