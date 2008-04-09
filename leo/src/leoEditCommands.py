@@ -2187,7 +2187,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Put the cursor at the next word that starts with a character.'''
 
-        return self.findWordHelper(event,oneLine=True)
+        return self.findWordHelper(event,oneLine=False)
 
     def findWordInLine(self,event):
 
