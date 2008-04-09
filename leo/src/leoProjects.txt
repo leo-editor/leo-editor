@@ -5873,6 +5873,30 @@ def doBackSpace (self,defaultCompletionList,completion=True):
     k.mb_tabListPrefix = w.getAllText()
     k.computeCompletionList(defaultCompletionList,backspace=True)
 #@-node:ekr.20061031131434.177:k.doBackSpace
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
 #@-node:ekr.20080406075855.1:Fixed backspace bug in the find command
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
@@ -7815,7 +7839,7 @@ def callStateFunction (self,event):
     if k.state.kind:
         if (
             k.ignore_unbound_non_ascii_keys and
-            ch not in ('\b','\n','\r') and
+            ch and ch not in ('\b','\n','\r','\t') and
             (ord(ch) < 32 or ord(ch) > 128)
         ):
             # g.trace('non-ascii',ord(ch))
