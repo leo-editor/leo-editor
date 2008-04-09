@@ -298,7 +298,7 @@ if sys.platform != 'cli':
 
             if target == 'xml-stylesheet':
                 self.c.frame.stylesheet = data
-                if not self.silent:
+                if False and not self.silent:
                     g.es('','%s: %s' % (target,data),color='blue')
             else:
                 g.trace(target,data)
@@ -531,8 +531,7 @@ class baseFileCommands:
 
         self.use_new_positions = False
 
-        # New positions require the sax-based read code.
-        self.use_sax = self.use_new_positions or c.config.getBool('use_sax_based_read')
+        self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
 
         self.nativeTnodeAttributes = ('tx',)
         self.nativeVnodeAttributes = (
@@ -2262,7 +2261,7 @@ class baseFileCommands:
         try:
             aList = [int(z) for z in aList]
         except Exception:
-            g.trace('oops: bad archived position:',aList)
+            # g.trace('oops: bad archived position. not an int:',aList,c)
             aList = None
         if not aList: return None
         p = c.rootPosition() ; level = 0
@@ -2273,7 +2272,7 @@ class baseFileCommands:
                     p.moveToNext()
                     i -= 1
                 else:
-                    g.trace('oops: bad archived position:',aList)
+                    # g.trace('oops: bad archived position. no sibling:',aList,p.headString(),c)
                     return None
             level += 1
             if level < len(aList):
