@@ -35112,7 +35112,7 @@ If you make modifications to Leo (with the interest in sharing them with the Leo
 community), you can check them in to your local branch by doing ``bzr checkin``.
 Now, to actually request your changes to be merged to Leo trunk, you need a
 Launchpad account with RSA keys in place. There is showmedo video about how to
-accomplish this on Windows using puttygen and pageant at
+accomplish this in Windows using puttygen and pageant at
 ``http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151``.
 
 After your Launchpad account is set up, go to
