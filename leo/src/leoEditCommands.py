@@ -128,11 +128,14 @@ class baseEditCommandsClass:
     #@-node:ekr.20051214133130.1:endCommand
     #@-node:ekr.20051214132256:begin/endCommand (baseEditCommands)
     #@+node:ekr.20061007105001:editWidget
-    def editWidget (self,event):
+    def editWidget (self,event,allowMinibuffer=False):
 
         c = self.c ; w = event and event.widget
 
-        if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+        if w and g.app.gui.isTextWidget(w) and (
+            allowMinibuffer or
+            w != c.frame.miniBufferWidget
+        ):
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
@@ -2726,7 +2729,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''Delete the character to the left of the cursor.'''
 
         c = self.c ; p = c.currentPosition()
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         if not w: return
 
         wname = c.widget_name(w)
@@ -2867,7 +2870,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Delete the character to the right of the cursor.'''
 
-        c = self.c ; w = self.editWidget(event)
+        c = self.c ; w = self.editWidget(event,allowMinibuffer=True)
         if not w: return
 
         s = w.getAllText()
@@ -3407,6 +3410,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''
         c = self.c ; p = c.currentPosition()
         extend = extend or self.extendMode
+
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
         # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
@@ -3445,7 +3449,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
         c.frame.updateStatusLine()
-    #@nonl
     #@-node:ekr.20060113130510:extendHelper
     #@+node:ekr.20060113105246.1:moveUpOrDownHelper
     def moveUpOrDownHelper (self,event,direction,extend):
@@ -3477,12 +3480,12 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20060113105246.1:moveUpOrDownHelper
     #@+node:ekr.20051218122116:moveToHelper
-    def moveToHelper (self,event,spot,extend):
+    def moveToHelper (self,event,spot,extend,allowMinibuffer=False):
 
         '''Common helper method for commands the move the cursor
         in a way that can be described by a Tk Text expression.'''
 
-        c = self.c ; k = c.k ; w = self.editWidget(event)
+        c = self.c ; k = c.k ; w = self.editWidget(event,allowMinibuffer=allowMinibuffer)
         if not w: return
 
         c.widgetWantsFocusNow(w)
@@ -3708,33 +3711,33 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051213080533:characters
     def backCharacter (self,event):
         '''Move the cursor back one character, extending the selection if in extend mode.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         i = w.getInsertPoint()
         i = max(0,i-1)
-        self.moveToHelper(event,i,extend=False)
+        self.moveToHelper(event,i,extend=False,allowMinibuffer=True)
 
     def backCharacterExtendSelection (self,event):
         '''Extend the selection by moving the cursor back one character.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         i = w.getInsertPoint()
         i = max(0,i-1)
-        self.moveToHelper(event,i,extend=True)
+        self.moveToHelper(event,i,extend=True,allowMinibuffer=True)
 
     def forwardCharacter (self,event):
         '''Move the cursor forward one character, extending the selection if in extend mode.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         s = w.getAllText()
         i = w.getInsertPoint()
         i = min(i+1,len(s))
-        self.moveToHelper(event,i,extend=False)
+        self.moveToHelper(event,i,extend=False,allowMinibuffer=True)
 
     def forwardCharacterExtendSelection (self,event):
         '''Extend the selection by moving the cursor forward one character.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         s = w.getAllText()
         i = w.getInsertPoint()
         i = min(i+1,len(s))
-        self.moveToHelper(event,i,extend=True)
+        self.moveToHelper(event,i,extend=True,allowMinibuffer=True)
     #@-node:ekr.20051213080533:characters
     #@+node:ekr.20051218174113:clear/set/ToggleExtendMode
     def clearExtendMode (self,event):
@@ -3844,31 +3847,31 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051218141237:lines
     def beginningOfLine (self,event):
         '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
-        self.moveToHelper(event,i,extend=False)
+        self.moveToHelper(event,i,extend=False,allowMinibuffer=True)
 
     def beginningOfLineExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the start of the line.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
-        self.moveToHelper(event,i,extend=True)
+        self.moveToHelper(event,i,extend=True,allowMinibuffer=True)
 
     def endOfLine (self,event): # passed
         '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         s = w.getAllText()
         junk,i = g.getLine(s,w.getInsertPoint())
         if g.match(s,i-1,'\n'): i -= 1
-        self.moveToHelper(event,i,extend=False)
+        self.moveToHelper(event,i,extend=False,allowMinibuffer=True)
 
     def endOfLineExtendSelection (self,event): # passed
         '''Extend the selection by moving the cursor to the end of the line.'''
-        w = self.editWidget(event)
+        w = self.editWidget(event,allowMinibuffer=True)
         s = w.getAllText()
         junk,i = g.getLine(s,w.getInsertPoint())
         if g.match(s,i-1,'\n'): i -= 1
-        self.moveToHelper(event,i,extend=True)
+        self.moveToHelper(event,i,extend=True,allowMinibuffer=True)
 
     def nextLine (self,event):
         '''Move the cursor down, extending the selection if in extend mode.'''
@@ -4753,8 +4756,11 @@ class editCommandsClass (baseEditCommandsClass):
     def selectAllText (self,event):
 
         c = self.c 
-        w = g.app.gui.eventWidget(event) or c.frame.body.bodyCtrl
-        return w.selectAllText()
+        w = self.editWidget(event,allowMinibuffer=True) or g.app.gui.eventWidget(event) or c.frame.body.bodyCtrl
+        if w == c.frame.miniBufferWidget:
+            c.k.selectAll()
+        else:
+            return w.selectAllText()
     #@-node:ekr.20061111223516:selectAllText (leoEditCommands)
     #@-others
 #@-node:ekr.20050920084036.53:editCommandsClass
@@ -5749,24 +5755,28 @@ class killBufferCommandsClass (baseEditCommandsClass):
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.178:kill
-    #@+node:ekr.20071003183657:KillLine
+    #@+node:ekr.20071003183657:killLine
     def killLine (self,event):
         '''Kill the line containing the cursor.'''
-        w = self.editWidget(event)
+        c = self.c
+        w = self.editWidget(event,allowMinibuffer=True)
         if not w: return
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        i,j = g.getLine(s,ins)
-        # g.trace(i,j,ins,len(s),repr(s[i:j]))
-        if ins >= len(s) and g.match(s,j-1,'\n'): # Kill the trailing newline.
-            i = max(0,len(s)-1)
-            j = len(s)
-        elif j > i+1 and g.match(s,j-1,'\n'): # Kill the line, but not the newline.
-            j -= 1
-        else: # Kill the newline.
-            pass
-        self.kill(event,i,j,undoType='kill-line')
-    #@-node:ekr.20071003183657:KillLine
+        if w == c.frame.miniBufferWidget:
+            c.k.killLine()
+        else:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i,j = g.getLine(s,ins)
+            # g.trace(i,j,ins,len(s),repr(s[i:j]))
+            if ins >= len(s) and g.match(s,j-1,'\n'): # Kill the trailing newline.
+                i = max(0,len(s)-1)
+                j = len(s)
+            elif j > i+1 and g.match(s,j-1,'\n'): # Kill the line, but not the newline.
+                j -= 1
+            else: # Kill the newline.
+                pass
+            self.kill(event,i,j,undoType='kill-line')
+    #@-node:ekr.20071003183657:killLine
     #@+node:ekr.20050920084036.182:killRegion & killRegionSave & helper
     def killRegion (self,event):
         '''Kill the text selection.'''
@@ -5850,7 +5860,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         yank-pop: insert the next entry of the kill ring.
         '''
 
-        c = self.c ; w = self.editWidget(event)
+        c = self.c ; w = self.editWidget(event,allowMinibuffer=True)
         if not w: return
         current = c.currentPosition()
         if not current: return
