@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -180,6 +180,7 @@
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
+<v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
 <v t="edream.110203163054.50"><vh>How to install Leo on Linux</vh></v>
 <v t="ekr.20070622141457"><vh>Installing Leo on Windows</vh>
 <v t="edream.110203163054.60"><vh>How to associate Leo with .leo files on Windows</vh></v>
@@ -769,8 +770,8 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
@@ -780,7 +781,7 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
-<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080302174639.8" a="TV"><vh>Example code snippets</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
@@ -3650,7 +3651,7 @@
 </v>
 </v>
 <v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
-<v t="ekr.20080405074410.4" a="TV"><vh>4.4.8 final</vh>
+<v t="ekr.20080405074410.4"><vh>4.4.8 final</vh>
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
 <v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
@@ -34613,6 +34614,13 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080405074410.7"></t>
 <t tx="ekr.20080405074410.9"></t>
 <t tx="ekr.20080405074410.38"></t>
+<t tx="ekr.20080408060320.784">Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo puts several files in your HOME directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+There are various fallback directories if there is no home directory.
+</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
@@ -34934,6 +34942,14 @@ which means "current node") and moves focus to node number 5::
     for i in range(10):
         _p[i] = 'hello %d' % d
     _p[5].go()
+
+Sort contents of a node in alphabetical order (after pushing this to
+IPython, you can sort a node 'foo' in-place by doing ``sort_node(wb.foo)``)::
+
+    def sort_node(n):
+        lines = n.l
+        lines.sort()
+        n.l = lines
 </t>
 <t tx="vivainio.20080302174639.9">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:
