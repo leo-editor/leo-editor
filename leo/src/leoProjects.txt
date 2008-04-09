@@ -899,7 +899,7 @@ def getArg (self,event,
         k.afterGetArgState=returnKind,returnState,handler
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-        if useMinibuffer and k.useTextWidget: c.minibufferWantsFocusNow()
+        if useMinibuffer: c.minibufferWantsFocusNow()
     elif keysym == 'Escape':
         k.keyboardQuit(event)
     elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
@@ -1152,6 +1152,10 @@ def doBackSpace (self,defaultCompletionList,completion=True):
 #@-node:ekr.20061031131434.177:k.doBackSpace
 #@-node:ekr.20080406075855.1:Fixed find completion bug
 #@-node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080409111805.1:Cleanup
+#@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@-node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
 @nocolor

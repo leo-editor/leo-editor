@@ -7,8 +7,6 @@
 #@+node:ekr.20080403100132.1:First
 #@+node:ekr.20080404074921.2:Start Komodo question
 #@-node:ekr.20080404074921.2:Start Komodo question
-#@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
-#@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
 #@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
 #@+node:ekr.20080407090400.5:Remove old fileCommands read code
