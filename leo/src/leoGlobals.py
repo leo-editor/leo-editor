@@ -4958,13 +4958,14 @@ class fileLikeObject:
 
         pass
     #@-node:ekr.20050404151753.3:flush
-    #@+node:ekr.20050404151753.4:get & getvalue
+    #@+node:ekr.20050404151753.4:get & getvalue & read
     def get (self):
 
         return ''.join(self.list)
 
     getvalue = get # for compatibility with StringIo
-    #@-node:ekr.20050404151753.4:get & getvalue
+    read = get # for use by sax.
+    #@-node:ekr.20050404151753.4:get & getvalue & read
     #@+node:ekr.20050404151753.5:readline
     def readline(self): # New for read-from-string (readOpenFile).
 

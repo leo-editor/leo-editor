@@ -3028,6 +3028,7 @@ class baseCommands:
         c = self
         c.endEditing()
         s = c.fileCommands.putLeoOutline()
+        # g.trace('type(s)',type(s))
         g.app.gui.replaceClipboardWith(s)
     #@-node:ekr.20031218072017.1550:copyOutline
     #@+node:ekr.20031218072017.1551:pasteOutline
@@ -3077,7 +3078,7 @@ class baseCommands:
             #@nl
 
         if isLeo:
-            pasted = c.fileCommands.getLeoOutline(s,reassignIndices)
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
         if not pasted: return

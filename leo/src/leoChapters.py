@@ -204,7 +204,7 @@ class chapterController:
             parent = cc.getChapterNode(toChapter.name)
             undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
             s = c.fileCommands.putLeoOutline()
-            p2 = c.fileCommands.getLeoOutline(s)
+            p2 = c.fileCommands.getLeoOutlineFromClipboard(s)
             p2.unlink()
             p2.moveToLastChildOf(parent)
             c.selectPosition(p2)

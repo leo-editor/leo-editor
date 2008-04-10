@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.571052631579">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="10" left="289" height="950" width="907"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -887,7 +887,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080407102459.1" a="TV"><vh>Test how-many, find-character, goto-character commands</vh></v>
+<v t="ekr.20080407102459.1"><vh>Test how-many, find-character, goto-character commands</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2316,7 +2316,7 @@ leo_to_html.py
 
 # vim.py
 </t>
-<t tx="ekr.20071026082438" lineYOffset="4b002e" icons="5d71002e">@
+<t tx="ekr.20071026082438">@
 
 ** Note **: icons will appear only if they are found on your system.
 
@@ -2336,7 +2336,7 @@ To do:
 
 c.redraw()
 </t>
-<t tx="ekr.20071026082438.2" lineYOffset="4b002e" icons="5d71002e">p.v.t.unknownAttributes = {}
+<t tx="ekr.20071026082438.2">p.v.t.unknownAttributes = {}
 a = p.v.t.unknownAttributes
 
 &lt;&lt; define event callbacks &gt;&gt;
@@ -2382,8 +2382,8 @@ def onDoubleClick(p=p):
 
     g.trace(p)
 </t>
-<t tx="ekr.20071026082914" lineYOffset="4b002e" icons="5d71002e"></t>
-<t tx="ekr.20071026083020" lineYOffset="4b002e" icons="5d71002e">import Tkinter as Tk
+<t tx="ekr.20071026082914"></t>
+<t tx="ekr.20071026083020">import Tkinter as Tk
 import os, sys
 
 tree = c.frame.tree
@@ -2430,7 +2430,7 @@ c.redraw()
 #"onRightClick" : onRightClick,
 #"onDoubleClick" : onDoubleClick }
 </t>
-<t tx="ekr.20071026084348" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071026084348"></t>
 <t tx="ekr.20071026085244">if hasattr(p.v.t,"unknownAttributes"):
     a = p.v.t.unknownAttributes
     iconsList = a.get("icons")
@@ -2492,14 +2492,14 @@ for z in ('LargeIcons','MediumIcons','SmallIcons'):
         #g.es_exception()
         return None,None
 </t>
-<t tx="ekr.20071026174231" lineYOffset="4b002e" icons="5d71002e"></t>
-<t tx="ekr.20071026174331" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071026174231"></t>
+<t tx="ekr.20071026174331"></t>
 <t tx="ekr.20071026174414"></t>
 <t tx="ekr.20071026174414.1"></t>
-<t tx="ekr.20071026174414.2" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071026174414.2"></t>
 <t tx="ekr.20071026174655"></t>
 <t tx="ekr.20071026174655.1"></t>
-<t tx="ekr.20071026174655.2" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071026174655.2"></t>
 <t tx="ekr.20071026174817"></t>
 <t tx="ekr.20071026174817.1"></t>
 <t tx="ekr.20071026175552">seen = {}
@@ -2703,7 +2703,7 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20071105085941" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071110092702.1"></t>
 <t tx="ekr.20071113100456">@@markup wiki
 
@@ -2750,8 +2750,8 @@ File "..\Icons\Tango\16x16\status\*.*"
 </t>
 <t tx="ekr.20071114053401"># This is a test.</t>
 <t tx="ekr.20071114071901"></t>
-<t tx="ekr.20071114084053" lineYOffset="4b032e" icons="5d71007d7101285504747970657102550466696c6571035507796f666673657471044b016803583e000000433a5c70726f675c7469677269732d6376735c6c656f5c49636f6e735c54616e676f5c31367831365c656d6f7465735c666163652d616e67656c2e706e67710555047870616471064afeffffff550577686572657107550e6265666f7265486561646c696e6571085507786f666673657471094b02550772656c50617468710a582100000054616e676f5c31367831365c656d6f7465735c666163652d616e67656c2e706e67710b75612e"></t>
-<t tx="ekr.20071114092813" lineYOffset="4b002e" icons="5d71002e">@
+<t tx="ekr.20071114084053"></t>
+<t tx="ekr.20071114092813">@
 
 ** Note **: icons will appear only if they are found on your system.
 
@@ -2760,18 +2760,18 @@ To do:
 - Icon menu.
 - Left click to delete icons.
 - Tree control recomputes height of each line.</t>
-<t tx="ekr.20071114092813.1" lineYOffset="4b002e" icons="5d71002e"></t>
-<t tx="ekr.20071114092813.2" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071114092813.1"></t>
+<t tx="ekr.20071114092813.2"></t>
 <t tx="ekr.20071114092813.3"></t>
-<t tx="ekr.20071114092813.4" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071114092813.4"></t>
 <t tx="ekr.20071114092813.5"></t>
-<t tx="ekr.20071114092813.6" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071114092813.6"></t>
 <t tx="ekr.20071114092813.7"></t>
-<t tx="ekr.20071114092813.8" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071114092813.8"></t>
 <t tx="ekr.20071114092813.9"></t>
 <t tx="ekr.20071114092813.10"></t>
 <t tx="ekr.20071114092813.11"></t>
-<t tx="ekr.20071114092813.12" lineYOffset="4b002e" icons="5d71002e"></t>
+<t tx="ekr.20071114092813.12"></t>
 <t tx="ekr.20071114092813.13">for p in c.allNodes_iter():
 
     if hasattr(p.v.t,"unknownAttributes"):
@@ -2790,7 +2790,7 @@ c.redraw()
         a["icons"] = []
         a["lineYOffset"] = 0
         c.redraw()</t>
-<t tx="ekr.20071114092813.15" lineYOffset="4b002e" icons="5d71002e">p.v.t.unknownAttributes = {}
+<t tx="ekr.20071114092813.15">p.v.t.unknownAttributes = {}
 a = p.v.t.unknownAttributes
 
 &lt;&lt; define event callbacks &gt;&gt;
@@ -2836,7 +2836,7 @@ def onDoubleClick(p=p):
 
     g.trace(p)
 </t>
-<t tx="ekr.20071114092813.17" lineYOffset="4b002e" icons="5d71002e">import Tkinter as Tk
+<t tx="ekr.20071114092813.17">import Tkinter as Tk
 import os, sys
 
 tree = c.frame.tree
@@ -4048,7 +4048,7 @@ p = c.rootPosition()
 
 # import pdb ; pdb.Pdb() # Doesn't work.
 print_all(c)</t>
-<t tx="ekr.20071124195608" lineYOffset="4b002e" icons="5d71002e"># The html has been validated by html-tidy: http://tidy.sourceforge.net/
+<t tx="ekr.20071124195608"># The html has been validated by html-tidy: http://tidy.sourceforge.net/
 </t>
 <t tx="ekr.20071126145358">@
 
@@ -4420,8 +4420,8 @@ W0702 No exception type specified
 W0703 Catch "Exception"
 W0704 Except doesn't do anything (Except: pass)
 W1111 Assigning to a function call that only returns None</t>
-<t tx="ekr.20080108091619" lineYOffset="4b002e" icons="5d71002e"></t>
-<t tx="ekr.20080108092210" lineYOffset="4b002e" icons="5d71002e"># Inserts the icon in the presently selected node.
+<t tx="ekr.20080108091619"></t>
+<t tx="ekr.20080108092210"># Inserts the icon in the presently selected node.
 # path is an absolute path or a path relative to the leo/Icons folder.
 
 path = 'rt_arrow_disabled.gif'
