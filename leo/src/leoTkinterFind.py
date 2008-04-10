@@ -654,10 +654,13 @@ class tkFindTab (leoFind.findTab):
             self.findButton()
             return 'break'
 
+        def rightClickCallback(event=None):
+            return k.masterClick3Handler(event, self.onRightClick)
+
         table = [
             ('<Button-1>',  k.masterClickHandler),
             ('<Double-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClickHandler),
+            ('<Button-3>',  rightClickCallback),
             ('<Double-3>',  k.masterClickHandler),
             ('<Key>',       resetWrapCallback),
             ('<Return>',    findButtonBindingCallback),
@@ -675,6 +678,12 @@ class tkFindTab (leoFind.findTab):
             for event, callback in table:
                 w.bind(event,callback)
     #@-node:ekr.20051023181449:createBindings (tkFindTab)
+    #@+node:bobjack.20080401211408.2:onRightClick
+    def onRightClick(self, event):
+
+        context_menu = self.c.widget_name(event.widget)
+        return g.doHook('rclick-popup', c=self.c, event=event, context_menu=context_menu)
+    #@-node:bobjack.20080401211408.2:onRightClick
     #@+node:ekr.20070212091209:tkFindTab.init
     def init (self,c):
 
