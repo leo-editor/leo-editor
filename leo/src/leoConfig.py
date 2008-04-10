@@ -1086,6 +1086,7 @@ class configClass:
         self.modeCommandsDict = {} # For use by @mode logic. Keys are command names, values are g.Bunches.
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
+        self.machineConfigFile = None
         self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
         self.write_recent_files_as_needed = False # Will be set later.
         self.silent = g.app.silentMode
@@ -1170,17 +1171,21 @@ class configClass:
     #@+node:ekr.20041117083857:initSettingsFiles
     def initSettingsFiles (self):
 
-        """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
+        """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
+        self.myHomeConfigFile, and self.machineConfigFile."""
 
         settingsFile = 'leoSettings.leo'
-        mySettingsFile = g.app.homeSettingsPrefix + 'myLeoSettings.leo'
-        machineConfigFile = g.app.homeSettingsPrefix + g.computeMachineName() + 'LeoSettings.leo'
+        mySettingsFile = 'myLeoSettings.leo'
+        machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
 
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
             ('homeFile',            g.app.homeDir,          settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+            #non-prefixed names take priority over prefixed names
+            ('myHomeConfigFile',    g.app.homeDir,          g.app.homeSettingsPrefix + mySettingsFile),
             ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+            ('machineConfigFile',   g.app.homeDir,          g.app.homeSettingsPrefix + machineConfigFile),
             ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
         ):
             # The same file may be assigned to multiple ivars:
@@ -1188,8 +1193,11 @@ class configClass:
             path = g.os_path_join(theDir,fileName)
             if g.os_path_exists(path):
                 setattr(self,ivar,path)
-            else:
-                setattr(self,ivar,None)
+            #else:
+                #if the path does not exist, only set to None if the ivar isn't already set.
+                #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+                #     This avoids the creation of ivars in odd (non __init__) places.
+                #setattr(self,ivar, getattr(self,ivar,None))
         if 0:
             g.trace('global file:',self.globalConfigFile)
             g.trace('home file:',self.homeFile)
