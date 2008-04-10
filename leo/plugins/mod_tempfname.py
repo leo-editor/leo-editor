@@ -41,12 +41,20 @@ def openWithTempFilePath (self,v,ext):
     #g.es("os = " + os.name)
     if(os.name == "dos" or os.name == "nt"):
        c = self
+       atFileFoundAlready = False   #Track when at closest @file ancestor
        #Build list of all of node's parents
        ancestor = []
        p = c.currentPosition()
        while p:
            hs = p.isAnyAtFileNode() #Get file name if we're at a @file node
-           if not hs:
+           if hs:
+               #Get file extension from first found @file type node
+               if atFileFoundAlready == False:
+                   nameNotUsed,extension = g.os_path_splitext(hs)
+                   if extension: #Found, use it instead of @language or default
+                       ext = extension
+                   atFileFoundAlready = True
+           else:
                hs = p.headString()  #Otherwise, use the entire header
 
            #Remove unsupported dir & file name characters from node's text.
