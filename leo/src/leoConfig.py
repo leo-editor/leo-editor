@@ -9,7 +9,6 @@
 import leoGlobals as g
 import leoGui
 
-import os
 import sys
 #@-node:ekr.20041227063801:<< imports >>
 #@nl
@@ -1175,7 +1174,7 @@ class configClass:
 
         settingsFile = 'leoSettings.leo'
         mySettingsFile = g.app.homeSettingsPrefix + 'myLeoSettings.leo'
-        machineConfigFile = g.app.homeSettingsPrefix + self.getMachineName() + 'LeoSettings.leo'
+        machineConfigFile = g.app.homeSettingsPrefix + g.computeMachineName() + 'LeoSettings.leo'
 
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
@@ -1197,24 +1196,6 @@ class configClass:
             g.trace('myGlobal file:',self.myGlobalConfigFile)
             g.trace('myHome file:',self.myHomeConfigFile)
     #@nonl
-    #@+node:ekr.20071211112804:getMachineName
-    def getMachineName (self):
-
-        try:
-            import os
-            name = os.getenv('HOSTNAME')
-            if not name:
-                name = os.getenv('COMPUTERNAME')
-            if not name:
-                import socket
-                name = socket.gethostname()
-        except Exception:
-            name = ''
-
-        # g.trace(name)
-
-        return name
-    #@-node:ekr.20071211112804:getMachineName
     #@-node:ekr.20041117083857:initSettingsFiles
     #@-node:ekr.20041117083202:Birth... (g.app.config)
     #@+node:ekr.20041117081009:Getters... (g.app.config)
