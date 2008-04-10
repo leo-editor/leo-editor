@@ -823,10 +823,15 @@ class tkSpellTab:
                         # g.trace(shortcut,commandName)
                         w.bind(shortcut,func)
 
-        self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-        self.listBox.bind("<Button-1>",self.onSelectListBox)
-        self.listBox.bind("<Map>",self.onMap)
-    #@nonl
+        for binding,func in (
+            ("<Double-1>",  self.onChangeThenFindButton),
+            ("<Button-1>",  self.onSelectListBox),
+            ("<Map>",       self.onMap),
+            # These never get called because focus is always in the body pane!
+            # ("<Up>",        self.up),
+            # ("<Down>",      self.down),
+        ):
+            self.listBox.bind(binding,func)
     #@-node:ekr.20051025120920:createBindings
     #@+node:ekr.20070212132230.2:createFrame
     def createFrame (self):
@@ -1002,6 +1007,39 @@ class tkSpellTab:
 
         return 'continue'
     #@-node:ekr.20051025071455.50:onSelectListBox
+    #@+node:ekr.20080404095546.1:down/up
+    def down (self,event):
+
+        # Work around an old Python bug.  Convert strings to ints.
+        w = self.listBox ; items = w.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
+
+        if items:
+            n = items[0]
+            if n + 1 < len(self.positionList):
+                w.selection_clear(n)
+                w.selection_set(n+1)
+        else:
+            w.selection_set(0)
+        w.focus_force()
+        return 'break'
+
+
+    def up (self,event):
+
+        # Work around an old Python bug.  Convert strings to ints.
+        w = self.listBox ; items = w.curselection()
+        try: items = map(int, items)
+        except ValueError: pass
+
+        if items: n = items[0]
+        else:     n = 0
+        w.selection_clear(n)
+        w.selection_set(max(0,n-1))
+        w.focus_force()
+        return 'break'
+    #@-node:ekr.20080404095546.1:down/up
     #@-node:ekr.20051025071455.29:Event handlers
     #@+node:ekr.20051025071455.42:Helpers
     #@+node:ekr.20051025071455.43:bringToFront

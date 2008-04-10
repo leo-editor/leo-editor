@@ -24,11 +24,7 @@ class tkinterKeyHandlerClass (leoKeys.keyHandlerClass):
     #@+node:ekr.20061031170011.1:createTkIvars
     def createTkIvars(self):
 
-        if not self.useTextWidget and self.widget:
-            self.svar = Tk.StringVar()
-            self.widget.configure(textvariable=self.svar)
-        else:
-            self.svar = None
+        pass
     #@-node:ekr.20061031170011.1:createTkIvars
     #@+node:ekr.20070613190239:tkKeys.propagateKeyEvent
     def propagateKeyEvent (self,event):

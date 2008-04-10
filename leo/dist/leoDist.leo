@@ -48,7 +48,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080403083615.1"><vh>ANN: Leo 4.4.8 rc1</vh></v>
+<v t="ekr.20080405093619.1"><vh>ANN: Leo 4.4.8 final</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -163,6 +163,7 @@
 <v t="ekr.20080305100429"><vh>ANN: Leo 4.4.8 b1</vh></v>
 <v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
 <v t="ekr.20080328075132.1"><vh>ANN: Leo 4.4.8 b3</vh></v>
+<v t="ekr.20080403083615.1"><vh>ANN: Leo 4.4.8 rc1</vh></v>
 </v>
 </v>
 </v>
@@ -180,8 +181,8 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20080218154442.2" a="TV"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
+<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
+<v t="ekr.20080402154207.1" a="TV"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
@@ -428,7 +429,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.4.8-rc1
+Version: 4.4.8-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -447,9 +448,9 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.4.8 rc1                        April 3, 2008
+<t tx="EKR.20040519090846.9">Leo 4.4.8 final                        April 6, 2008
 
-Leo 4.4.8 rc1 is now available at:
+Leo 4.4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge
@@ -2262,8 +2263,8 @@ Leo: http://webpages.charter.net/edreamleo/front.html
 <t tx="ekr.20050118103207">@comment ;</t>
 <t tx="ekr.20050118103207.1">File "..\__init__.py"
 File "..\..\install"
-File "..\..\manifest.in"
-File "..\..\MANIFEST"
+;File "..\..\manifest.in"
+;File "..\..\MANIFEST"
 ; File "..\..\setup.py"
 File "..\..\uninstall"</t>
 <t tx="ekr.20050118103447"></t>
@@ -2275,8 +2276,8 @@ Delete "$INSTDIR\uninst.exe"
 
 ; Done later...
 Delete "$INSTDIR\install"
-Delete "$INSTDIR\manifest.in"
-Delete "$INSTDIR\MANIFEST"
+; Delete "$INSTDIR\manifest.in"
+; Delete "$INSTDIR\MANIFEST"
 ; Delete "$INSTDIR\setup.py"
 Delete "$INSTDIR\uninstall"
 </t>
@@ -2308,18 +2309,18 @@ File "..\doc\Pkg-info.txt"
 File "..\doc\Install.txt"
 File "..\doc\License.txt"
 
-File "..\doc\LeoTechReport.pdf"
+; File "..\doc\LeoTechReport.pdf"
 
 File "..\doc\default.css"
 File "..\doc\leo_rst.css"
 File "..\doc\silver_city.css"
 
-SetOutPath "$INSTDIR\doc\LeoN"
+; SetOutPath "$INSTDIR\doc\LeoN"
 
-File "..\doc\LeoN\sun98achieving.pdf"
-File "..\doc\LeoN\sun97generic.pdf"
-File "..\doc\LeoN\sun98operational.pdf"
-File "..\doc\LeoN\sun98reversible.pdf"
+; File "..\doc\LeoN\sun98achieving.pdf"
+; File "..\doc\LeoN\sun97generic.pdf"
+; File "..\doc\LeoN\sun98operational.pdf"
+; File "..\doc\LeoN\sun98reversible.pdf"
 
 SetOutPath "$INSTDIR\doc\html"
 
@@ -2337,16 +2338,16 @@ Delete "$INSTDIR\doc\Install.txt"
 Delete "$INSTDIR\doc\Pkg-info.txt"
 Delete "$INSTDIR\doc\Readme.txt"
 
-Delete "$INSTDIR\doc\LeoTechReport.pdf"
+; Delete "$INSTDIR\doc\LeoTechReport.pdf"
 
 Delete "$INSTDIR\doc\silver_city.css"
 Delete "$INSTDIR\doc\leo_rst.css"
 Delete "$INSTDIR\doc\default.css"
 
-Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
-Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
-Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
-Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98achieving.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun97generic.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98operational.pdf"
+; Delete "$INSTDIR\doc\LeoN\sun98reversible.pdf"
 
 Delete "$INSTDIR\doc\html\*.*"</t>
 <t tx="ekr.20050118104901.3"></t>
@@ -5303,12 +5304,42 @@ os.system(command)
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -rc1
+Latest suffix:  -final
 
 @color</t>
 <t tx="ekr.20080403083615.1">Leo 4.4.8 rc1                        April 3, 2008
 
 Leo 4.4.8 rc1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This version features a new ipython plugin that provides a two-way bridge
+between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.4.8:
+----------------------------
+- Leo's source code is now managed by bzr: see link below.
+- Leo's discussion is now hosted by Google Groups: see link below.
+- Arguments to g.es and g.es_print can be translated using gettext.
+- Completed ILeo: a bridge between IPython and Leo.
+  See http://webpages.charter.net/edreamleo/IPythonBridge.html
+- Minibuffer commands may have arguments.
+- @menu trees can now refer to commands created by
+  @command and @button nodes.
+- Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080405093619.1">Leo 4.4.8 final                        April 6, 2008
+
+Leo 4.4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 This version features a new ipython plugin that provides a two-way bridge

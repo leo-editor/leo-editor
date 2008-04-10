@@ -1349,16 +1349,15 @@ class leoFind:
         redraw = not p.isVisible(c)
         c.beginUpdate()
         try:
-            if sparseFind:
+            if sparseFind and not c.currentPosition().isAncestorOf(p):
                 # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-                for p in c.allNodes_iter():
-                    if not p.isAncestorOf(self.p):
-                        p.contract()
+                for p2 in c.currentPosition().self_and_parents_iter():
+                        p2.contract()
                         redraw = True
-                for p in self.p.parents_iter():
-                    if not p.isExpanded():
-                        p.expand()
-                        redraw = True
+            for p in self.p.parents_iter():
+                if not p.isExpanded():
+                    p.expand()
+                    redraw = True
             p = self.p
             if not p: g.trace('can not happen: self.p is None')
             c.selectPosition(p)
