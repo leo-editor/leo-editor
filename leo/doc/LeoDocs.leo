@@ -30406,7 +30406,13 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an ``@
 
 - ``@ifplatform`` *platform-name*
 
-  Same as ``@if sys.platform == "platform-name":`` except that it isn't necessary to import sys.</t>
+  Same as ``@if sys.platform == "platform-name":`` except that it isn't necessary to import sys.
+
+- ``@ifhostname`` *hostA,!hostB*
+
+  Evaluates to True iff: h=g.computeMachineName(); h==hostA and h!=hostB.
+  The "!" version allows matching to every machineName except the given one
+  to allow differing settings on only a few machines.</t>
 <t tx="ekr.20070317043727.2">Simple settings nodes have headlines of the form::
 
     @&lt;type&gt; name = val
