@@ -1150,12 +1150,12 @@ class leoTkinterTree (leoFrame.leoTree):
                     anchor="nw",image=image)
 
                 tag='userIcon-%s' % theId
-                self.canvas.itemconfigure(theId,tag=(tag,'userIcon'))
+                self.canvas.itemconfigure(theId,tag=(tag,'userIcon')) #BJ
                 self.ids[theId] = p.copy()
 
-                def deleteButtonCallback(event=None,c=c,t=p.v.t,fullname=fullname,relPath=relPath):
+                def deleteButtonCallback(event=None,c=c,p=p,fullname=fullname,relPath=relPath):
                     #g.trace()
-                    c.editCommands.deleteIconByName(t,fullname,relPath)
+                    c.editCommands.deleteIconByName(p,fullname,relPath)
                     self._block_canvas_menu = True
                     return 'break'
 
