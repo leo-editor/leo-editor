@@ -233,6 +233,24 @@ def computeLoadDir():
         #import traceback ; traceback.print_exc()
         #return None
 #@-node:ekr.20031218072017.1937:computeLoadDir
+#@+node:dan.20080410121257.1:computeMachineName
+def computeMachineName():
+    """Returns the name of the current machine, i.e, HOSTNAME"""
+    try:
+        import os
+        name = os.getenv('HOSTNAME')
+        if not name:
+            name = os.getenv('COMPUTERNAME')
+        if not name:
+            import socket
+            name = socket.gethostname()
+    except Exception:
+        name = ''
+
+    # g.trace(name)
+
+    return name
+#@-node:dan.20080410121257.1:computeMachineName
 #@+node:ekr.20050328133444:computeStandardDirectories
 def computeStandardDirectories():
 

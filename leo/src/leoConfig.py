@@ -9,6 +9,7 @@
 import leoGlobals as g
 import leoGui
 
+import os
 import sys
 #@-node:ekr.20041227063801:<< imports >>
 #@nl
@@ -29,7 +30,8 @@ class parserBaseClass:
         'float','path','ratio','shortcut','string','strings']
 
     control_types = [
-        'abbrev','buttons','commands','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
+        'abbrev','buttons','commands','data','enabledplugins','font',
+        'if','ifgui','ifhostname','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
         'popup', # New in Leo 4.4.8.
@@ -64,6 +66,7 @@ class parserBaseClass:
             'font':         self.doFont,
             'if':           self.doIf,
             # 'ifgui':        self.doIfGui,  # Removed in 4.4 b3.
+            'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
             'ignore':       self.doIgnore,
             'int':          self.doInt,
@@ -279,6 +282,29 @@ class parserBaseClass:
             else:
                 return "skip"
     #@-node:ekr.20041121125416:doIfGui
+    #@+node:dan.20080410121257.2:doIfHostname
+    def doIfHostname (self,p,kind,name,val):
+        """headline: @ifhostname bob,!harry,joe
+
+        Logical AND with the comma-separated list of host names, NO SPACES.
+
+        descends this node iff:
+            h = os.environ('HOSTNAME')
+            h == 'bob' and h != 'harry' and h == 'joe'"""
+
+        __pychecker__ = '--no-argsused' # args not used.
+
+        h = g.computeMachineName()
+        names = name.split(',')
+
+        for n in names:
+            if (n[0] == '!' and h == n[1:]) or (h != n):
+                g.trace('skipping', name)
+                return 'skip'
+
+        return None
+
+    #@-node:dan.20080410121257.2:doIfHostname
     #@+node:ekr.20041120104215:doIfPlatform
     def doIfPlatform (self,p,kind,name,val):
 
@@ -1148,8 +1174,8 @@ class configClass:
         """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
 
         settingsFile = 'leoSettings.leo'
-        mySettingsFile = g.app.customConfigFilePrefix + 'myLeoSettings.leo'
-        machineConfigFile = g.app.customConfigFilePrefix + self.getMachineName()
+        mySettingsFile = g.app.homeSettingsPrefix + 'myLeoSettings.leo'
+        machineConfigFile = g.app.homeSettingsPrefix + self.getMachineName() + 'LeoSettings.leo'
 
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
@@ -1184,9 +1210,6 @@ class configClass:
                 name = socket.gethostname()
         except Exception:
             name = ''
-
-        if name:
-            name +='LeoSettings.leo'
 
         # g.trace(name)
 

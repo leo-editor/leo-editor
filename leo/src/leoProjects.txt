@@ -1434,8 +1434,8 @@ def initSettingsFiles (self):
     """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
 
     settingsFile = 'leoSettings.leo'
-    mySettingsFile = g.app.customConfigFilePrefix + 'myLeoSettings.leo'
-    machineConfigFile = g.app.customConfigFilePrefix + self.getMachineName()
+    mySettingsFile = g.app.homeSettingsPrefix + 'myLeoSettings.leo'
+    machineConfigFile = g.app.homeSettingsPrefix + self.getMachineName() + 'LeoSettings.leo'
 
     for ivar,theDir,fileName in (
         ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
@@ -1470,9 +1470,6 @@ def getMachineName (self):
             name = socket.gethostname()
     except Exception:
         name = ''
-
-    if name:
-        name +='LeoSettings.leo'
 
     # g.trace(name)
 

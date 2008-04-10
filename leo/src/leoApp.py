@@ -27,7 +27,6 @@ class LeoApp:
         self.commandName = None # The name of the command being executed.
         self.config = None # The leoConfig instance.
         self.count = 0 # General purpose debugging count.
-        self.customConfigFilePrefix = '.' # prepend this to "myLeoSettings.eo" and <machineName>LeoSettings.leo
         self.debug = False # True: enable extra debugging tests (not used at present).
             # WARNING: this could greatly slow things down.
         self.debugSwitch = 0
@@ -43,6 +42,7 @@ class LeoApp:
         self.hookError = False # True: suppress further calls to hooks.
         self.hookFunction = None # Application wide hook function.
         self.homeDir = None # The user's home directory.
+        self.homeSettingsPrefix = '.' # prepend to "myLeoSettings.leo" and <machineName>LeoSettings.leo
         self.idle_imported = False # True: we have done an import idle
         self.idleTimeDelay = 100 # Delay in msec between calls to "idle time" hook.
         self.idleTimeHook = False # True: the global idleTimeHookHandler will reshedule itself.
