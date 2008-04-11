@@ -176,8 +176,8 @@
 <v t="ekr.20050906105946"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
@@ -189,6 +189,7 @@
 <v t="ekr.20050225070247"><vh>How to use Platypus to create a Mac launcher for Leo</vh></v>
 <v t="ekr.20050225070247.1"><vh>How to create MacOS X .pkg files</vh></v>
 </v>
+<v t="vivainio.20080409164902.1" a="TV"><vh>Tracking the development version</vh></v>
 <v t="ekr.20050901174937"><vh>Running Leo</vh></v>
 <v t="ekr.20070629130418" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
@@ -770,7 +771,7 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
 <v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
@@ -781,7 +782,7 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
-<v t="vivainio.20080302174639.8" a="TV"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
@@ -35088,5 +35089,48 @@ Now, in Leo, you only need to press Alt+Shift+I (launch-ipython) to actually
 make the document visible in IPython. Despite the name, launch-ipython will not
 create a new instance of IPython; if an IPython session already exists, it will
 be automatically used by ILeo.</t>
+<t tx="vivainio.20080409164902.1">Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   ``bzr qlog``, ``bzr qannotate`` etc.
+
+2. Get Leo from launchpad by doing::
+
+     bzr branch lp:leo-editor
+     
+And that's it! You can run leo/src/leo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run ``bzr pull``.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing ``bzr checkin``.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this in Windows using puttygen and pageant at
+``http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151``.
+
+After your Launchpad account is set up, go to
+``https://launchpad.net/leo-editor``, choose "Code" tab -&gt; Register Branch,
+select Branch type "Hosted" and fill in descriptive details about the branch.
+After that, go to the branch home page from Code tab again, and copy-paste the
+push command line to terminal. For example, for branch::
+
+    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+    
+The push command is::
+
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute ``bzr push``.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.</t>
 </tnodes>
 </leo_file>
