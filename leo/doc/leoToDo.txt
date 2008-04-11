@@ -5,12 +5,12 @@
 #@+node:ekr.20080411091507.10: First
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
+#@+node:ekr.20080411091507.11:sax: fix paste node code
+#@-node:ekr.20080411091507.11:sax: fix paste node code
 #@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080411091507.11:sax: fix paste node code
-#@-node:ekr.20080411091507.11:sax: fix paste node code
 #@+node:ekr.20080404074921.2:Start Komodo question
 #@-node:ekr.20080404074921.2:Start Komodo question
 #@-node:ekr.20080411091507.10: First
