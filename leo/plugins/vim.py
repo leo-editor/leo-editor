@@ -264,15 +264,23 @@ def open_in_vim (tag,keywords,val=None):
     vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
     vim_exe = c.config.getString('vim_exe') or _vim_exe
 
-    #Line number - start at same line as Leo cursor
-    #  get node's body text
-    bodyCtrl = c.frame.body.bodyCtrl
-    s = bodyCtrl.getAllText()    
-    #  Get cursors row & column number
-    index = bodyCtrl.getInsertPoint()
-    row,col = g.convertPythonIndexToRowCol(s,index)
-    #  Build gVim command line parameter for setting cursor row
-    Lnum = "+" + str(row + 1)
+    #Cursor positioning
+    Lnum = ""
+    if c.config.getBool('vim_plugin_positions_cursor'):
+        #Line number - start at same line as Leo cursor
+        #  get node's body text
+        bodyCtrl = c.frame.body.bodyCtrl
+        s = bodyCtrl.getAllText()    
+        #  Get cursors row & column number
+        index = bodyCtrl.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,index)
+        #  Build gVim command line parameter for setting cursor row
+        Lnum = "+" + str(row + 1)
+
+    #Vim's tab card stack
+    useTabs = ""
+    if c.config.getBool('vim_plugin_uses_tab_feature'):
+        useTabs = "-tab"
 
     # Search g.app.openWithFiles for a file corresponding to v.
     for d in g.app.openWithFiles:
@@ -296,7 +304,8 @@ def open_in_vim (tag,keywords,val=None):
         v.OpenWithOldBody=v.bodyString() # Remember the previous contents.
         if subprocess:
             # New code by Jim Sizemore (TL: added support for gVim tabs).
-            data = "subprocess.Popen",[vim_exe, "--servername", "LEO","--remote-tab-silent", Lnum], None
+            data = "subprocess.Popen",[vim_exe, "--servername", "LEO" \
+                              ,"--remote" + useTabs + "-silent", Lnum], None
             c.openWith(data=data)
         else:
             # Works, but gives weird error message on first open of Vim.

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.477886977887">
-	<global_window_position top="77" left="158" height="749" width="930"/>
+	<global_window_position top="163" left="431" height="749" width="930"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1083,7 +1083,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1124,10 +1124,13 @@
 <v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
 <v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
 </v>
-<v t="ekr.20070411101857"><vh>Open With plugin</vh>
+<v t="ekr.20070411101857" a="E"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+<v t="TL.20080410171007.2"><vh>@bool open_with_save_on_update = False</vh></v>
+<v t="TL.20080410171007.3"><vh>@bool open_with_clean_filenames = False</vh></v>
+<v t="TL.20080411073907.1"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
 <v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
@@ -1210,10 +1213,12 @@
 <v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
 <v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
 </v>
-<v t="ekr.20051123100536.1"><vh>vim plugin</vh>
+<v t="ekr.20051123100536.1" a="E"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
+<v t="TL.20080410171007.9"><vh>@bool vim_plugin_positions_cursor = False</vh></v>
+<v t="TL.20080410171007.8" a="V"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
@@ -1301,6 +1306,24 @@
 </v>
 </vnodes>
 <tnodes>
+<t tx="TL.20080410171007.2"></t>
+<t tx="TL.20080410171007.3">if True: The Open-With plugin will store temporary files utilizing cleaner file names (no unique number is appended to the node's headline text).  Unique temporary directory paths are used to insure unique files are created by creating temporary directories reflecting each node's ancestor nodes in the Leo outline.
+Note: Do not have multiple sibling nodes (nodes having the same parent node) in Leo with the same headline text.  There will be a conflict if both are opened in an external editor at the same time. 
+
+if False: The Open-With plugin will store temporary files with an appended unique number to insure unique temporary filenames.
+</t>
+<t tx="TL.20080410171007.8">if True: Each file sent to gVim is placed in a tab card.  Files in gVim are accessed by selecing from a row of tabs.
+Note: Information on gVim's Tab feature can be viewed by entering the gVim command :help tabpage
+Note: Put "@bool open_with_clean_filenames = True" in myLeoSetting.leo to create smaller tab labels.
+
+if False: Each file sent to vim plaes the previous file in a hidden Vim buffer (use Vim's :bn and :bN command to view each file)
+</t>
+<t tx="TL.20080410171007.9">if True: The Vim plugin will send the file to Vim with a request to place the Vim cursor on the same line as the location of the cursor in Leo.
+
+if False: The cursor will be placed on the first line.</t>
+<t tx="TL.20080411073907.1">if True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
+
+if False or no derived file exists for that node, The Open-With plugin will use the file extension of the node's default language (set by the @language command or '.txt' in none exists)</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
 The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>

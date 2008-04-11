@@ -31,31 +31,33 @@ def openWithTempFilePath (self,v,ext):
     """Return the path to the temp file corresponding to v and ext.
        Replaces the Commands method."""    
 
-    #TL: Replace use of unique id in filename to insure unique temporary file
-    #    with creation of temporary directory structure based on node's
+    #TL: Added support creating temporary directory structure based on node's
     #    hierarchy in Leo's outline.
-    #    Note: Sibling nodes with same headline should not open at same time.
+    #    Note: Sibling nodes with same headline should not be open at same time.
     #          Same temporary file will be used for both. (needs to be handled)
-    #    Note: Only windows users supported, Others should be added
+    #    Note: Only windows users supported, Others should be added.
 
     #g.es("os = " + os.name)
-    if(os.name == "dos" or os.name == "nt"):
-       c = self
-       atFileFoundAlready = False   #Track when at closest @file ancestor
+    c = self
+    if(c.config.getBool('open_with_clean_filenames')
+                                     and (os.name == "dos" or os.name == "nt")):
+       atFileFound = False   #Track when first ancestor @file found
        #Build list of all of node's parents
        ancestor = []
        p = c.currentPosition()
        while p:
            hs = p.isAnyAtFileNode() #Get file name if we're at a @file node
-           if hs:
-               #Get file extension from first found @file type node
-               if atFileFoundAlready == False:
-                   nameNotUsed,extension = g.os_path_splitext(hs)
-                   if extension: #Found, use it instead of @language or default
-                       ext = extension
-                   atFileFoundAlready = True
-           else:
+           if not hs:
                hs = p.headString()  #Otherwise, use the entire header
+           else:
+               if(c.config.getBool('open_with_uses_derived_file_extensions')):
+                   #Leo configured to use node's derived file's extension
+                   if atFileFound == False:
+                       #Found first ancestor @file node in outline
+                       nameNotUsed,extension = g.os_path_splitext(hs)
+                       if extension: #Found extension
+                           ext = extension #use it
+                       atFileFound = True
 
            #Remove unsupported dir & file name characters from node's text.
            #Note: Replacing characters increases chance of temp files matching.
