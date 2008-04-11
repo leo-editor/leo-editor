@@ -298,7 +298,7 @@ class parserBaseClass:
 
         for n in names:
             if (n[0] == '!' and h == n[1:]) or (h != n):
-                g.trace('skipping', name)
+                # g.trace('skipping', name)
                 return 'skip'
 
         return None

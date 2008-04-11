@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.524731182796">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="19" left="372" height="931" width="861"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@button Spell</vh></v>
@@ -53,7 +53,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
@@ -415,7 +415,7 @@
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
-<v t="ekr.20070317043727.1"><vh>@ignore nodes</vh></v>
+<v t="ekr.20070317043727.1"><vh>\@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
 <v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh></v>
 </v>
@@ -770,8 +770,8 @@
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
@@ -781,7 +781,7 @@
 <v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
 <v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
 <v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
-<v t="vivainio.20080302174639.8" a="TV"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
@@ -1145,7 +1145,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
 <v t="ekr.20080314081157.121"><vh>@rst html\new-4-4-8.html</vh>
@@ -3650,7 +3650,7 @@
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080405074410.4"><vh>4.4.8 final</vh>
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
@@ -3658,6 +3658,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070317043727.1"><vh>\@if nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
