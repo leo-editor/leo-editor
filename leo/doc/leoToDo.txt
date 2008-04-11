@@ -5,26 +5,49 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20080403100132.1:First
-#@+node:ekr.20080330085343.2:Fix easy bugs
-#@+node:ekr.20080406075855.1:Fix find completion bug
-@nocolor
-
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@-node:ekr.20080406075855.1:Fix find completion bug
-#@-node:ekr.20080330085343.2:Fix easy bugs
-#@+node:ekr.20080404074921.2:Start Komodo question
-#@-node:ekr.20080404074921.2:Start Komodo question
-#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
-#@+node:ekr.20080407090400.5:Remove old fileCommands read code
-#@-node:ekr.20080407090400.5:Remove old fileCommands read code
-#@+node:ekr.20080402153826.2:Make Leo a package
+#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
-#@-node:ekr.20080402153826.2:Make Leo a package
+#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
+#@+node:ekr.20080404074921.2:Start Komodo question
+#@-node:ekr.20080404074921.2:Start Komodo question
+#@+node:ekr.20080403102730.1:Explore ipython stuff
+@nocolor
+
+>  > %run leo.py  (in leo/leo/src)
+>  >
+>  > When leo is installable as a package, this will be much simpler
+>  > (because we don't need to know where leo.py is).
+>
+>  I'm having trouble with this because I don't know where leo.py is :-)
+>  What directory do I have to be in for this to work?
+
+leo/leo/src. See the documentation in leodocs.
+
+>  Also, I'd like to use ipython for all my Python work, but I'm not sure
+>  whether what I am doing makes sense.  Formerly, in the XP Folder
+
+I think it's better to request IPython explicitly (using ip.runlines
+if you want ipython input handling or ip.ex if you don't), rather than
+having ipython as default for everything.
+
+>  c:\python25\python.exe C:\Python25\scripts\ipython c:\leo.repo\leo-
+>  editor\trunk\leo\src\leo.py "%1"
+>
+>  This works, kind of.  The .leo file starts up, but I get the *python*
+>  version number in Leo's log.  When I quit Leo, I do indeed drop into
+
+Yes, IPython runs the startup script using normal python execfile.
+
+>  IPython. Is this how you set things up, Ville?
+
+Pretty normally; I start leo.py as normal python program.
+#@nonl
+#@-node:ekr.20080403102730.1:Explore ipython stuff
+#@+node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@-node:ekr.20080330085343.4:Add new iterators from branch thrysus
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080407090400.6:Fix file bugs
 #@+node:ekr.20080330085343.3:Fix bug in atFile.write
 The code should save/restore, just as in the clean_file function (from scripts.leo)
@@ -131,39 +154,8 @@ should refer to foo/src and foo/src/tmpl
 using @path src/tmpl works fine though.
 [end quote]
 #@-node:ekr.20080124083629.1:Improve @path handling
-#@+node:ekr.20080403102730.1:Explore ipython stuff
-@nocolor
-
->  > %run leo.py  (in leo/leo/src)
->  >
->  > When leo is installable as a package, this will be much simpler
->  > (because we don't need to know where leo.py is).
->
->  I'm having trouble with this because I don't know where leo.py is :-)
->  What directory do I have to be in for this to work?
-
-leo/leo/src. See the documentation in leodocs.
-
->  Also, I'd like to use ipython for all my Python work, but I'm not sure
->  whether what I am doing makes sense.  Formerly, in the XP Folder
-
-I think it's better to request IPython explicitly (using ip.runlines
-if you want ipython input handling or ip.ex if you don't), rather than
-having ipython as default for everything.
-
->  c:\python25\python.exe C:\Python25\scripts\ipython c:\leo.repo\leo-
->  editor\trunk\leo\src\leo.py "%1"
->
->  This works, kind of.  The .leo file starts up, but I get the *python*
->  version number in Leo's log.  When I quit Leo, I do indeed drop into
-
-Yes, IPython runs the startup script using normal python execfile.
-
->  IPython. Is this how you set things up, Ville?
-
-Pretty normally; I start leo.py as normal python program.
-#@nonl
-#@-node:ekr.20080403102730.1:Explore ipython stuff
+#@+node:ekr.20080407090400.5:Remove old fileCommands read code (wait a few days)
+#@-node:ekr.20080407090400.5:Remove old fileCommands read code (wait a few days)
 #@-node:ekr.20080403100132.1:First
 #@+node:ekr.20080218110223.1:Files
 #@+node:ekr.20080318081653.1:Support 'fixed Leo file' option

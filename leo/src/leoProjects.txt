@@ -899,7 +899,7 @@ def getArg (self,event,
         k.afterGetArgState=returnKind,returnState,handler
         k.setState('getArg',1,k.getArg)
         k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-        if useMinibuffer and k.useTextWidget: c.minibufferWantsFocusNow()
+        if useMinibuffer: c.minibufferWantsFocusNow()
     elif keysym == 'Escape':
         k.keyboardQuit(event)
     elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
@@ -997,7 +997,7 @@ def findWord(self,event):
 
     '''Put the cursor at the next word that starts with a character.'''
 
-    return self.findWordHelper(event,oneLine=True)
+    return self.findWordHelper(event,oneLine=False)
 
 def findWordInLine(self,event):
 
@@ -1083,7 +1083,183 @@ LEO_LIB_DIR="${LEO_PREFIX}/lib"
 With the change the installation worked.
 #@nonl
 #@-node:ekr.20080408060320.2:Fixed bug in install script
+#@+node:ekr.20080406075855.1:Fixed find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+#@nonl
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.177:k.doBackSpace
+# Used by getArg and fullCommand.
+
+def doBackSpace (self,defaultCompletionList,completion=True):
+
+    '''Cut back to previous prefix and update prefix.'''
+
+    k = self ; c = k.c ; w = self.widget
+
+    if 0:
+        g.trace('(keyHandler)',g.callers(4))
+        g.trace('completion',completion,
+            len(k.mb_tabListPrefix) > len(k.mb_prefix),
+            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+
+    # Step 1: actually delete the character.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    if ins <= len(k.mb_prefix):
+        # g.trace('at start')
+        return
+    i,j = w.getSelectionRange()
+    if i == j:
+        ins -= 1
+        w.delete(ins)
+        w.setSelectionRange(ins,ins,insert=ins)
+    else:
+        ins = i
+        w.delete(i,j)
+        w.setSelectionRange(i,i,insert=ins)
+
+    # Step 2: compute completions.
+    if not completion: return
+    k.mb_tabListPrefix = w.getAllText()
+    k.computeCompletionList(defaultCompletionList,backspace=True)
+#@-node:ekr.20061031131434.177:k.doBackSpace
+#@-node:ekr.20080406075855.1:Fixed find completion bug
 #@-node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080409111805.1:Cleanup
+#@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
+#@+node:ekr.20080409111805.2:Set use_sax = True always
+#@+node:ekr.20031218072017.3019:leoFileCommands._init_
+def __init__(self,c):
+
+    # g.trace("__init__", "fileCommands.__init__")
+    self.c = c
+    self.frame = c.frame
+
+    self.use_new_positions = False
+
+    self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
+
+    self.nativeTnodeAttributes = ('tx',)
+    self.nativeVnodeAttributes = (
+        'a','descendentTnodeUnknownAttributes',
+        'expanded','marks','t','tnodeList',
+        # 'vtag',
+    )
+    self.initIvars()
+
+def initIvars(self):
+
+    # General
+    c = self.c
+    self.mFileName = ""
+    self.fileDate = -1
+    self.leo_file_encoding = c.config.new_leo_file_encoding
+    # For reading
+    self.checking = False # True: checking only: do *not* alter the outline.
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.forbiddenTnodes = []
+    self.descendentUnknownAttributesDictList = []
+    self.ratio = 0.5
+    if self.use_sax:
+        self.currentVnode = None
+        self.rootVnode = None
+    else:
+        self.fileBuffer = None
+        self.fileIndex = 0
+        self.currentVnodeStack = [] # A stack of vnodes giving the current position.
+        self.topVnodeStack     = [] # A stack of vnodes giving the top position.
+        self.topPosition = None
+    # For writing
+    self.read_only = False
+    self.rootPosition = None
+    self.outputFile = None
+    self.openDirectory = None
+    self.putCount = 0
+    self.topVnode = None
+    self.toString = False
+    self.usingClipboard = False
+    self.currentPosition = None
+    # New in 3.12
+    self.copiedTree = None
+    self.tnodesDict = {}
+        # keys are gnx strings as returned by canonicalTnodeIndex.
+        # Values are gnx's.
+#@nonl
+#@-node:ekr.20031218072017.3019:leoFileCommands._init_
+#@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+def setPositionsFromVnodes (self):
+
+    c = self.c ; p = c.rootPosition()
+
+    current = None
+    d = hasattr(p.v,'unknownAttributes') and p.v.unknownAttributes
+    if d:
+        s = d.get('str_leo_pos')
+        if s:
+            current = self.archivedPositionToPosition(s)
+
+    c.setCurrentPosition(current or c.rootPosition())
+#@nonl
+#@+node:ekr.20061006104837.1:archivedPositionToPosition
+def archivedPositionToPosition (self,s):
+
+    c = self.c
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        # g.trace('oops: bad archived position. not an int:',aList,c)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition() ; level = 0
+    while level < len(aList):
+        i = aList[level]
+        while i > 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.headString(),c)
+                return None
+        level += 1
+        if level < len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.headString())
+    return p
+#@nonl
+#@-node:ekr.20061006104837.1:archivedPositionToPosition
+#@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
+#@-node:ekr.20080409111805.2:Set use_sax = True always
+#@-node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
 @nocolor
