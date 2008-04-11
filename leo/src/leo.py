@@ -380,6 +380,7 @@ def reportDirectories(verbose):
 
     if verbose:
         for kind,theDir in (
+            ("load",g.app.loadDir),
             ("global config",g.app.globalConfigDir),
             ("home",g.app.homeDir),
         ):
