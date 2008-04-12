@@ -887,7 +887,9 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080407102459.1"><vh>Test how-many, find-character, goto-character commands</vh></v>
+<v t="ekr.20080407102459.1" a="E"><vh>Test how-many, find-character, goto-character commands</vh>
+<v t="ekr.20080410122557.1"><vh>a</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5529,6 +5531,7 @@ a b cat hat aa
 end
 
 </t>
+<t tx="ekr.20080410122557.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
