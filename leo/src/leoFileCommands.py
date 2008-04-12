@@ -511,7 +511,8 @@ if sys.platform != 'cli':
         def dump (self):
 
             print
-            print 'node: tnx: %s len(body): %d %s' % (self.tnx,len(self.bodyString),self.headString)
+            print 'node: tnx: %s len(body): %d %s' % (
+                self.tnx,len(self.bodyString),self.headString)
             print 'children:',g.listToString(self.children)
             print 'attrs:',self.attributes.values()
         #@nonl
@@ -626,59 +627,57 @@ class baseFileCommands:
             self.checking = False
             c.loading = False # reenable c.changed
     #@-node:ekr.20070919133659.1:checkLeoFile (fileCommands)
-    #@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers (rewritten)
+    #@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
 
         '''Read a Leo outline from string s in clipboard format.'''
 
-        # if self.use_sax:
+        c = self.c ; p = c.currentPosition() ; check = not reassignIndices
 
-        c = self.c ; current = c.currentPosition()
         self.usingClipboard = True
-
-        # This encoding must match the encoding used in putLeoOutline.
-        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
-        # g.trace(g.splitLines(s)[:5])
-
         try:
-            self.initReadIvars() # Important.
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             v = self.readSaxFile(
-                theFile=None,fileName='<clipboard>',
-                silent=True,inClipboard=True,s=s)
+                theFile=None, fileName='<clipboard>',
+                silent=True, # don't tell about stylesheet elements.
+                inClipboard=True, reassignIndices=reassignIndices,s=s)
+            if not v:
+                return g.es("the clipboard is not valid ",color="blue")
         finally:
             self.usingClipboard = False
 
-        p = leoNodes.position(v)
-        if reassignIndices:
-            self.reassignIndices(p)
+        pasted = leoNodes.position(v)
+        if p.hasChildren() and p.isExpanded():
+            if check and not self.checkPaste(p,pasted): return None
+            pasted.linkAsNthChild(p,0)
         else:
-            pass ### To do: check the paste.
-            # g.es("the clipboard is not valid ",color="blue")
-            # return None
+            if check and not self.checkPaste(p.parent(),pasted): return None
+            pasted.linkAfter(p)
 
-        p.linkAfter(current)
-        c.selectPosition(p)
-        return p
+        c.selectPosition(pasted)
+        return pasted
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-    #@+node:ekr.20031218072017.1557:reassignIndices
-    def reassignIndices(self,p):
+    #@+node:ekr.20080410115129.1:checkPaste
+    def checkPaste (self,parent,p):
 
-        '''Reassign all tnodes indices in p's tree.'''
+        '''Return True if p may be pasted as a child of parent.'''
 
-        nodeIndices = g.app.nodeIndices
-        d = {}
+        if not parent: return True
 
-        # Not ready yet: this is tricky.
+        parents = [z.copy() for z in parent.self_and_parents_iter()]
 
-        # for p in p.self_and_subtree_iter():
-            # t = p.v.t
-            # if not d.get(t):
-                # d[t] = t
-                # t.fileIndex = nodeIndices.getNewIndex()
-                # g.trace(t.fileIndex,p.headString())
-    #@-node:ekr.20031218072017.1557:reassignIndices
-    #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers (rewritten)
+        for p in p.self_and_subtree_iter():
+            for z in parents:
+                g.trace(p.headString(),id(p.v.t),id(z.v.t))
+                if p.v.t == z.v.t:
+                    g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                    return False
+
+        return True
+    #@-node:ekr.20080410115129.1:checkPaste
+    #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
     #@+node:ekr.20031218072017.1553:getLeoFile
     # The caller should enclose this in begin/endUpdate.
 
@@ -711,7 +710,7 @@ class baseFileCommands:
             # t1 = time.clock()
 
             #if self.use_sax:
-            v = self.readSaxFile(theFile,fileName,silent,inClipboard=False)
+            v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
                 self.rootVnode = v
@@ -972,13 +971,13 @@ class baseFileCommands:
     #@-node:ekr.20060919133249:Common
     #@+node:ekr.20060919104530:Sax
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
-    def createSaxVnodes (self, dummyRoot):
+    def createSaxVnodes (self, dummyRoot,reassignIndices):
 
         '''**Important**: this method and its helpers are low-level code
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
-        children = self.createSaxChildren(dummyRoot,parent_v = None)
+        children = self.createSaxChildren(dummyRoot,parent_v = None,reassignIndices=reassignIndices)
         firstChild = children and children[0]
 
         return firstChild
@@ -986,19 +985,19 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.5:createSaxChildren
     # node is a saxNodeClass object, parent_v is a vnode.
 
-    def createSaxChildren (self, node, parent_v):
+    def createSaxChildren (self, node, parent_v, reassignIndices):
 
         result = []
 
         for child in node.children:
             tnx = child.tnx
             t = self.tnodesDict.get(tnx)
-            if t:
+            if t and not reassignIndices: ###
                 # A clone.  Create a new clone node, but share the subtree, i.e., the tnode.
-                v = self.createSaxVnode(child,parent_v,t=t)
+                v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
                 # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
-                v = self.createSaxVnodeTree(child,parent_v)
+                v = self.createSaxVnodeTree(child,parent_v,reassignIndices)
             result.append(v)
 
         self.linkSiblings(result)
@@ -1007,17 +1006,17 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
-    def createSaxVnodeTree (self,node,parent_v):
+    def createSaxVnodeTree (self,node,parent_v,reassignIndices):
 
-        v = self.createSaxVnode(node,parent_v)
+        v = self.createSaxVnode(node,parent_v,reassignIndices)
 
-        self.createSaxChildren(node,v)
+        self.createSaxChildren(node,v,reassignIndices)
 
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
     #@+node:ekr.20060919110638.7:createSaxVnode
-    def createSaxVnode (self,node,parent_v,t=None):
+    def createSaxVnode (self,node,parent_v,reassignIndices,t=None):
 
         h = node.headString
         b = node.bodyString
@@ -1234,15 +1233,16 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
-    def readSaxFile (self,theFile,fileName,silent,inClipboard,s=None):
+    def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         # Pass one: create the intermediate nodes.
-        dummyRoot = self.parse_leo_file(theFile,fileName,silent=silent,inClipboard=inClipboard,s=s)
+        dummyRoot = self.parse_leo_file(theFile,fileName,
+            silent=silent,inClipboard=inClipboard,s=s)
 
         # self.dumpSaxTree(dummyRoot,dummy=True)
 
         # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-        v = dummyRoot and self.createSaxVnodes(dummyRoot)
+        v = dummyRoot and self.createSaxVnodes(dummyRoot,reassignIndices)
         return v
     #@nonl
     #@-node:ekr.20060919110638.3:readSaxFile
