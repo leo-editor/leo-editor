@@ -2289,7 +2289,7 @@ class baseFileCommands:
     #@-node:ekr.20060919104530:Sax
     #@-node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20031218072017.3032:Writing
-    #@+node:ekr.20070413045221.2:Top-level  (leoFileCommands)
+    #@+node:ekr.20070413045221.2: Top-level  (leoFileCommands)
     #@+node:ekr.20031218072017.1720:save (fileCommands)
     def save(self,fileName):
 
@@ -2358,7 +2358,7 @@ class baseFileCommands:
         g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
     #@nonl
     #@-node:ekr.20070413061552:putSavedMessage
-    #@-node:ekr.20070413045221.2:Top-level  (leoFileCommands)
+    #@-node:ekr.20070413045221.2: Top-level  (leoFileCommands)
     #@+node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
     def assignFileIndices (self):
 
@@ -2426,6 +2426,7 @@ class baseFileCommands:
     #@+node:ekr.20040324080819.1:putLeoFile & helpers
     def putLeoFile (self):
 
+        self.updateFixedStatus()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
@@ -2476,6 +2477,8 @@ class baseFileCommands:
                 # of Leo that do not support fixed .leo files.
         else:
             width,height,left,top = c.frame.get_window_info()
+
+        # g.trace(width,height,left,top)
 
         self.put_tab()
         self.put("<global_window_position")
@@ -3011,6 +3014,23 @@ class baseFileCommands:
             if len(theDir) > 0 and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
                 c.openDirectory = theDir
     #@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
+    #@+node:ekr.20080412172151.2:updateFixedStatus
+    def updateFixedStatus (self):
+
+        c = self.c
+        p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
+        if p:
+            import leoConfig
+            parser = leoConfig.settingsTreeParser(c)
+            kind,name,val = parser.parseHeadline(p.headString())
+            if val and val.lower() in ('true','1'):
+                val = True
+            else:
+                val = False
+            c.fixed = val
+
+        # g.trace('c.fixed',c.fixed)
+    #@-node:ekr.20080412172151.2:updateFixedStatus
     #@+node:ekr.20031218072017.3046:write_Leo_file
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
 
