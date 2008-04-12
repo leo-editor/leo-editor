@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.477886977887">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="77" left="158" height="749" width="930"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,7,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="TV" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -289,7 +289,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -297,6 +297,7 @@
 </v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
@@ -8633,6 +8634,13 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 2: scaled progress bars</t>
 <t tx="ekr.20080328105334.8">pixels per time unit to add to width of scaled progress bars</t>
 <t tx="ekr.20080328105334.9">The name of time unit (e.g. days, weeks, hours)</t>
+<t tx="ekr.20080412115752.1"># Must be four entries: width,height,left,top.
+# Put this in myLeoSettings.leo, **not** in individual .leo files.
+
+1200
+800
+50
+50</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
