@@ -95,8 +95,6 @@ class baseCommands:
             try:
                 w,h,l,t = self.fixedWindowPosition
                 self.fixedWindowPosition = int(w),int(h),int(l),int(t)
-                if self.fixed:
-                    g.es_print('using @data fixedWindowPosition',self.fixedWindowPosition,color='blue')
             except Exception:
                 g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
         else:
@@ -352,6 +350,8 @@ class baseCommands:
             g.es(signon)
             g.es('',"python %s.%s.%s, %s\n%s" % (n1,n2,n3,g.app.gui.getFullVersion(c),version))
             g.enl()
+            if c.fixed:
+                g.es_print('This is a fixed window',color='red')
     #@-node:ekr.20040629121554.3:c.signOnWithVersion
     #@-node:ekr.20031218072017.2582: version & signon stuff
     #@+node:ekr.20040312090934:c.iterators
