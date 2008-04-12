@@ -11,8 +11,35 @@
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080404074921.2:Start Komodo question
-#@-node:ekr.20080404074921.2:Start Komodo question
+#@+node:ekr.20080404074921.2:Put Komodo prototype on the wiki
+#@-node:ekr.20080404074921.2:Put Komodo prototype on the wiki
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
 #@-node:ekr.20080411091507.10: First
 #@+node:ekr.20080411091507.1: Non-branch
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
@@ -191,14 +218,6 @@ outline that spawned it, and the @auto file is read no problems.
 #@-node:ekr.20080405074410.39:Fix new @auto bug
 #@-node:ekr.20080407090400.6:Fix file bugs
 #@+node:ekr.20080218110223.1:Files
-#@+node:ekr.20080318081653.1:Support 'fixed Leo file' option
-@nocolor
-
-We should avoid conflicts here in the first place. We really need that
-'toggle-fixed' thing (that would prevent writing window positions and node
-expansion statuses to .leo file) I suggested a while back, to make collaboration
-with .leo files possible...
-#@-node:ekr.20080318081653.1:Support 'fixed Leo file' option
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
