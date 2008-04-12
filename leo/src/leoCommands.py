@@ -88,6 +88,19 @@ class baseCommands:
         self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
         self.showMinibuffer = c.config.getBool('useMinibuffer')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
+        self.fixed = c.config.getBool('fixedWindow',False)
+            # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
+        self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
+        if self.fixedWindowPosition:
+            try:
+                w,h,l,t = self.fixedWindowPosition
+                self.fixedWindowPosition = int(w),int(h),int(l),int(t)
+                if self.fixed:
+                    g.es_print('using @data fixedWindowPosition',self.fixedWindowPosition,color='blue')
+            except Exception:
+                g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
+        else:
+            self.windowPosition = 500,700,50,50 # width,height,left,top.
 
         # initialize the sub-commanders.
         # c.finishCreate creates the sub-commanders for edit commands.
