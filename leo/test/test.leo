@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_window_position top="50" left="50" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -531,7 +531,7 @@
 </v>
 </v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = True</vh></v>
+<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
 <v t="ekr.20070503120403"><vh>@bool trace_tree_gc = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -622,7 +622,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = True</vh></v>
+<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
