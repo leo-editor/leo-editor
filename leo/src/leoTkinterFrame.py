@@ -2579,11 +2579,15 @@ class leoTkinterLog (leoFrame.leoLog):
         tab = self.nb.tab(tabName)
         w = self.textDict.get(tabName) or self.frameDict.get(tabName)
 
+        def logTextRightClickCallback(event):
+            return c.k.masterClick3Handler(event,self.onLogTextRightClick)
+
+
         # Send all event in the text area to the master handlers.
         for kind,handler in (
             ('<Key>',       k.masterKeyHandler),
             ('<Button-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClick3Handler),
+            ('<Button-3>',  logTextRightClickCallback),
         ):
             w.bind(kind,handler)
 
@@ -2599,6 +2603,11 @@ class leoTkinterLog (leoFrame.leoLog):
 
         k.completeAllBindingsForWidget(w)
     #@-node:ekr.20051022162730:setTabBindings
+    #@+node:bobjack.20080401113759.3:onLogTextRightClick
+    def onLogTextRightClick(self, event):
+
+        g.doHook('rclick-popup', c=self.c, event=event, context_menu='log')
+    #@-node:bobjack.20080401113759.3:onLogTextRightClick
     #@+node:ekr.20071003090546:setCanvasTabBindings
     def setCanvasTabBindings (self,tabName,menu):
 

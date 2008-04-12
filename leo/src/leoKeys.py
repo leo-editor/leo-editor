@@ -1556,9 +1556,6 @@ class keyHandlerClass:
 
         self.c = c
         self.widget = c.frame.miniBufferWidget
-        self.useTextWidget = c.useTextMinibuffer
-            # A Tk Label or Text widget.
-            # Exists even if c.showMinibuffer is False.
         self.useGlobalKillbuffer = useGlobalKillbuffer
         self.useGlobalRegisters = useGlobalRegisters
 
@@ -2825,7 +2822,7 @@ class keyHandlerClass:
             k.afterGetArgState=returnKind,returnState,handler
             k.setState('getArg',1,k.getArg)
             k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-            if useMinibuffer and k.useTextWidget: c.minibufferWantsFocusNow()
+            if useMinibuffer: c.minibufferWantsFocusNow()
         elif keysym == 'Escape':
             k.keyboardQuit(event)
         elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
@@ -3189,7 +3186,7 @@ class keyHandlerClass:
         # c.frame.body.colorizer.interrupt() # New in 4.4.1
 
         # A click outside the minibuffer terminates any state.
-        if k.inState() and c.useTextMinibuffer and w != c.frame.miniBufferWidget:
+        if k.inState() and w != c.frame.miniBufferWidget:
             if not c.widget_name(w).startswith('log'):
                 k.keyboardQuit(event,hideTabs=False)
                 # k.endMode(event) # Less drastic than keyboard-quit.
@@ -3270,18 +3267,13 @@ class keyHandlerClass:
     def minibufferWantsFocus(self):
 
         c = self.c
-        if self.useTextWidget:
-            c.widgetWantsFocus(c.miniBufferWidget)
-        else:
-            c.bodyWantsFocus()
+        c.widgetWantsFocus(c.miniBufferWidget)
+
 
     def minibufferWantsFocusNow(self):
 
         c = self.c
-        if self.useTextWidget:
-            c.widgetWantsFocusNow(c.miniBufferWidget)
-        else:
-            c.bodyWantsFocusNow()
+        c.widgetWantsFocusNow(c.miniBufferWidget)
     #@-node:ekr.20061031131434.135:k.minibufferWantsFocus/Now
     #@+node:ekr.20061031170011.5:getLabel
     def getLabel (self,ignorePrompt=False):
@@ -3289,10 +3281,7 @@ class keyHandlerClass:
         k = self ; w = self.widget
         if not w: return ''
 
-        if self.useTextWidget:
-            s = w.getAllText()
-        else:
-            s = k.svar and k.svar.get()
+        s = w.getAllText()
 
         if ignorePrompt:
             return s[len(k.mb_prefix):]
@@ -3307,13 +3296,10 @@ class keyHandlerClass:
         s = w.getAllText()
         s = s[:len(k.mb_prefix)]
 
-        if self.useTextWidget:
-            w.setAllText(s)
-            n = len(s)
-            w.setSelectionRange(n,n,insert=n)
-            c.masterFocusHandler() # Restore to the previously requested focus.
-        else:
-            if k.svar: k.svar.set(s)
+        w.setAllText(s)
+        n = len(s)
+        w.setSelectionRange(n,n,insert=n)
+        c.masterFocusHandler() # Restore to the previously requested focus.
 
         if protect:
             k.mb_prefix = s
@@ -3324,11 +3310,8 @@ class keyHandlerClass:
         k = self ; w = self.widget
         if not w: return
 
-        if self.useTextWidget:
-            k.mb_prefix = w.getAllText()
-        else:
-            if k.svar:
-                k.mb_prefix = k.svar.get()
+        k.mb_prefix = w.getAllText()
+
     #@-node:ekr.20061031170011.6:protectLabel
     #@+node:ekr.20061031170011.7:resetLabel (changed)
     def resetLabel (self):
@@ -3346,15 +3329,12 @@ class keyHandlerClass:
         if not w: return
         trace = self.trace_minibuffer and not g.app.unitTesting
 
-        trace and g.trace('len(s)',len(s),g.callers())
+        if trace: g.trace('len(s)',len(s),g.callers())
 
-        if self.useTextWidget:
-            w.setAllText(s)
-            n = len(s)
-            w.setSelectionRange(n,n,insert=n)
-            c.masterFocusHandler() # Restore to the previously requested focus.
-        else:
-            if k.svar: k.svar.set(s)
+        w.setAllText(s)
+        n = len(s)
+        w.setSelectionRange(n,n,insert=n)
+        c.masterFocusHandler() # Restore to the previously requested focus.
 
         if protect:
             k.mb_prefix = s
@@ -3369,14 +3349,15 @@ class keyHandlerClass:
         trace and g.trace('len(s)',len(s))
         if not s: return
 
-        if self.useTextWidget:
-            c.widgetWantsFocusNow(w)
-            w.insert('end',s)
-            if select:
-                i,j = k.getEditableTextRange()
-                w.setSelectionRange(i,j,insert=j)
-            if protect:
-                k.protectLabel()
+        c.widgetWantsFocusNow(w)
+        w.insert('end',s)
+
+        if select:
+            i,j = k.getEditableTextRange()
+            w.setSelectionRange(i,j,insert=j)
+
+        if protect:
+            k.protectLabel()
     #@-node:ekr.20061031170011.9:extendLabel
     #@+node:ekr.20080408060320.790:selectAll (new)
     def selectAll (self):
@@ -3428,22 +3409,18 @@ class keyHandlerClass:
         # g.trace(g.callers())
 
         if ch and ch not in ('\n','\r'):
-            if self.useTextWidget:
-                c.widgetWantsFocusNow(w)
-                i,j = w.getSelectionRange()
-                ins = w.getInsertPoint()
-                if i != j:
-                    w.delete(i,j)
-                if ch == '\b':
-                    s = w.getAllText()
-                    if len(s) > len(k.mb_prefix):
-                        w.delete(i-1)
-                else:
-                    w.insert(ins,ch)
-                # g.trace(k.mb_prefix)       
+            c.widgetWantsFocusNow(w)
+            i,j = w.getSelectionRange()
+            ins = w.getInsertPoint()
+            if i != j:
+                w.delete(i,j)
+            if ch == '\b':
+                s = w.getAllText()
+                if len(s) > len(k.mb_prefix):
+                    w.delete(i-1)
             else:
-                # Just add the character.
-                k.setLabel(k.getLabel() + ch)
+                w.insert(ins,ch)
+            # g.trace(k.mb_prefix)       
     #@-node:ekr.20061031170011.12:updateLabel
     #@+node:ekr.20061031170011.13:getEditableTextRange
     def getEditableTextRange (self):
@@ -3567,10 +3544,7 @@ class keyHandlerClass:
                     k.modeHelp(event)
                 else:
                     c.frame.log.hideTab('Mode')
-                if k.useTextWidget:
-                    c.minibufferWantsFocus()
-                else:
-                    c.restoreRequestedFocus()
+                c.minibufferWantsFocus()
         elif not func:
             g.trace('No func: improper key binding')
             return 'break'
@@ -3639,10 +3613,7 @@ class keyHandlerClass:
         else:
             k.setLabelBlue(modeName+': ',protect=True)
             k.showStateAndMode()
-            if k.useTextWidget:
-                c.minibufferWantsFocus()
-            else:
-                pass # Do *not* change the focus here!
+            c.minibufferWantsFocus()
     #@-node:ekr.20061031131434.163:initMode
     #@+node:ekr.20061031131434.164:reinitMode
     def reinitMode (self,modeName):
@@ -3660,10 +3631,7 @@ class keyHandlerClass:
         else:
             # Do not set the status line here.
             k.setLabelBlue(modeName+': ',protect=True)
-            if k.useTextWidget:
-                c.minibufferWantsFocus()
-            else:
-                pass # Do *not* change the focus here!
+            c.minibufferWantsFocus()
     #@-node:ekr.20061031131434.164:reinitMode
     #@+node:ekr.20061031131434.165:modeHelp
     def modeHelp (self,event):
@@ -3683,7 +3651,7 @@ class keyHandlerClass:
             d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
             k.modeHelpHelper(d)
 
-        if k.useTextWidget and not k.silentMode:
+        if not k.silentMode:
             c.minibufferWantsFocus()
 
         return 'break'
