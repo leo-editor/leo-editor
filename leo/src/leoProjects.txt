@@ -1151,6 +1151,90 @@ def doBackSpace (self,defaultCompletionList,completion=True):
     k.computeCompletionList(defaultCompletionList,backspace=True)
 #@-node:ekr.20061031131434.177:k.doBackSpace
 #@-node:ekr.20080406075855.1:Fixed find completion bug
+#@+node:ekr.20080418154703.1:Fixed Tangle bugs
+#@+node:ekr.20031218072017.2062:getPrefs
+# Note: Leo 4.3 does not write these settings to local .leo files.
+# Instead, corresponding settings are contained in leoConfig.leo files.
+
+def getPrefs (self):
+
+    c = self.c
+
+    if self.getOpenTag("<preferences"):
+        return # <preferences/> seen
+
+    table = (
+        ("allow_rich_text",None,None), # Ignored.
+        ("tab_width","tab_width",self.getLong),
+        ("page_width","page_width",self.getLong),
+        ("tangle_bat","tangle_batch_flag",self.getBool),
+        ("untangle_bat","untangle_batch_flag",self.getBool),
+        ("output_doc_chunks","output_doc_flag",self.getBool),
+        ("noweb_flag",None,None), # Ignored.
+        ("extended_noweb_flag",None,None), # Ignored.
+        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
+        ("use_header_flag","use_header_flag",self.getBool))
+
+    done = False
+    while 1:
+        found = False
+        for tag,var,f in table:
+            if self.matchTag("%s=" % tag):
+                if var:
+                    self.getDquote() ; val = f() ; self.getDquote()
+                    setattr(c,var,val)
+                    # g.trace(var,val)
+                else:
+                    self.getDqString()
+                found = True ; break
+        if not found:
+            if self.matchTag("/>"):
+                done = True ; break
+            if self.matchTag(">"):
+                break
+            else: # New in 4.1: ignore all other tags.
+                self.getUnknownTag()
+
+    if not done:
+        while 1:
+            if self.matchTag("<defaultDirectory>"):
+                # New in version 0.16.
+                c.tangle_directory = self.getEscapedString()
+                self.getTag("</defaultDirectory>")
+                if not g.os_path_exists(c.tangle_directory):
+                    g.es("default tangle directory not found:",c.tangle_directory)
+            elif self.matchTag("<TSyntaxMemo_options>"):
+                self.getEscapedString() # ignored
+                self.getTag("</TSyntaxMemo_options>")
+            else: break
+        self.getTag("</preferences>")
+#@+node:ekr.20031218072017.2063:getTargetLanguage
+def getTargetLanguage (self):
+
+    # Must match longer tags before short prefixes.
+    for name in g.app.language_delims_dict.keys():
+        if self.matchTagWordIgnoringCase(name):
+            language = name.replace("/","")
+            # self.getDquote()
+            return language
+
+    return "c" # default
+#@-node:ekr.20031218072017.2063:getTargetLanguage
+#@-node:ekr.20031218072017.2062:getPrefs
+#@+node:ekr.20031218072017.3579:error, pathError, warning
+def error (self,s):
+    self.errors += 1
+    g.es_error(g.translateString(s))
+
+def pathError (self,s):
+    if not self.path_warning_given:
+        self.path_warning_given = True
+        self.error(s)
+
+def warning (self,s):
+    g.es_error(g.translateString(s))
+#@-node:ekr.20031218072017.3579:error, pathError, warning
+#@-node:ekr.20080418154703.1:Fixed Tangle bugs
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -1198,17 +1282,18 @@ def initIvars(self):
         self.currentVnodeStack = [] # A stack of vnodes giving the current position.
         self.topVnodeStack     = [] # A stack of vnodes giving the top position.
         self.topPosition = None
-        # regular expression for parsing
-        reVnodeAttributes = "|".join((
-            "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
-            "t=\s*\"([^\"]*)\"",        # group 3
-            "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
-            "tnodeList=\s*\"([^\"]*)\"", # group 5
-            "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
-            "expanded=\s*\"([^\"]*)\"", # group 7
-            "marks=\s*\"([^\"]*)\"", # group 8
-            ">"))
-        self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
+    # regular expression for parsing
+    reVnodeAttributes = "|".join((
+        "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+        "t=\s*\"([^\"]*)\"",        # group 3
+        "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+        "tnodeList=\s*\"([^\"]*)\"", # group 5
+        "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+        "expanded=\s*\"([^\"]*)\"", # group 7
+        "marks=\s*\"([^\"]*)\"", # group 8
+        ">"))
+    self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
 
     # For writing
     self.read_only = False

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -893,12 +893,13 @@
 <v t="ekr.20080418154153.1"><vh>at-root-doc-test.py</vh>
 <v t="ekr.20080418154153.2"><vh>&lt;&lt; section a &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080419080504.1" a="E"><vh>a</vh>
+<v t="ekr.20080419080504.1"><vh>a</vh>
 <v t="ekr.20080419080504.2"><vh>b</vh></v>
 </v>
-<v t="ekr.20080419080504.1" a="E"><vh>a</vh>
+<v t="ekr.20080419080504.1"><vh>a</vh>
 <v t="ekr.20080419080504.2"><vh>b</vh></v>
 </v>
+<v t="ekr.20080421093238.1"><vh>insert</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5546,8 +5547,9 @@ line2
 @c
 
 a = 5 # code part</t>
-<t tx="ekr.20080419080504.1"></t>
+<t tx="ekr.20080419080504.1">print p.v.t</t>
 <t tx="ekr.20080419080504.2"></t>
+<t tx="ekr.20080421093238.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
