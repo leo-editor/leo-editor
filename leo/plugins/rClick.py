@@ -705,6 +705,9 @@ class ContextMenuController(object):
                         g.trace('[[[' + str(cmd) + ']]]')
                         pass
 
+                    if not cmd and not s.startswith('*'):
+                        s = '*' + s
+
                     cmds = cmd.splitlines()
                     if not cmds:
                         cmds = ['']

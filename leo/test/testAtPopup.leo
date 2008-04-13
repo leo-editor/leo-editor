@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.455547391624">
-	<global_window_position top="31" left="20" height="724" width="1361"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="165" left="321" height="590" width="1060"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080329075629.2" a="E"><vh>@startup</vh>
+<v t="bobjack.20080329075629.2" str_leo_pos="3"><vh>@startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh>
 <v t="bobjack.20080402160713.6"><vh>@chapter two</vh>
 <v t="bobjack.20080402160713.7"><vh>two node 1</vh></v>
@@ -18,12 +18,14 @@
 <v t="bobjack.20080402160713.9"><vh>one node 1</vh></v>
 </v>
 </v>
-</v>
-<v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
+<v t="bobjack.20080412154131.2"><vh>Buttons</vh>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080404113810.1"><vh>@button show button events</vh></v>
 <v t="bobjack.20080405081601.2"><vh>@button show-button-data</vh></v>
-<v t="bobjack.20080329075629.4" a="E"><vh>Experiments</vh>
+</v>
+</v>
+<v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
+<v t="bobjack.20080329075629.4"><vh>Experiments</vh>
 <v t="bobjack.20080330095006.2" lineYOffset="4b002e"><vh>Replacing the log menu</vh></v>
 <v t="bobjack.20080330095006.3" lineYOffset="4b002e"><vh>Editing the 'edit-menu' fragment</vh></v>
 </v>
@@ -31,10 +33,10 @@
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080324164314.1" a="E"><vh>@settings</vh>
+<v t="bobjack.20080324164314.1"><vh>@settings</vh>
 <v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  </vh></v>
-<v t="bobjack.20080329054053.1" a="E"><vh>provide a fragment for use in other menus</vh>
-<v t="bobjack.20080329053100.1" a="E"><vh>@popup find change fragment</vh>
+<v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
+<v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
 <v t="bobjack.20080326150321.8"><vh>@item *change</vh></v>
@@ -42,12 +44,12 @@
 </v>
 </v>
 <v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh></v>
-<v t="bobjack.20080329054053.2" a="E"><vh>... the log pane</vh>
-<v t="bobjack.20080326150321.5" a="E"><vh>@popup log</vh>
-<v t="bobjack.20080329051459.3" a="E"><vh>column one</vh>
+<v t="bobjack.20080329054053.2"><vh>... the log pane</vh>
+<v t="bobjack.20080326150321.5"><vh>@popup log</vh>
+<v t="bobjack.20080329051459.3"><vh>column one</vh>
 <v t="bobjack.20080329043447.3"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080329051459.7" a="E"><vh>Test Radio Groups</vh>
+<v t="bobjack.20080329051459.7"><vh>Test Radio Groups</vh>
 <v t="bobjack.20080329043447.2"><vh>@item |</vh></v>
 <v t="bobjack.20080404054928.7"><vh>@item *Radio</vh></v>
 <v t="bobjack.20080403171532.7"><vh>@item rclick-button</vh></v>
@@ -56,7 +58,7 @@
 <v t="bobjack.20080403171532.9"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080403171532.11"><vh>@item rclick-button</vh></v>
 </v>
-<v t="bobjack.20080404054928.8" a="E"><vh>Test Check Buttons</vh>
+<v t="bobjack.20080404054928.8"><vh>Test Check Buttons</vh>
 <v t="bobjack.20080404054928.9"><vh>@item |</vh></v>
 <v t="bobjack.20080404054928.10"><vh>@item *Check</vh></v>
 <v t="bobjack.20080404054928.6"><vh>@item rclick-button</vh></v>
@@ -64,7 +66,7 @@
 <v t="bobjack.20080404054928.12"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080404054928.13"><vh>@item rclick-button</vh></v>
 </v>
-<v t="bobjack.20080329051459.4" a="E"><vh>column four</vh>
+<v t="bobjack.20080329051459.4"><vh>column four</vh>
 <v t="bobjack.20080329052834.1"><vh>@item |</vh></v>
 <v t="bobjack.20080329053100.2"><vh>@item &amp;</vh></v>
 </v>
@@ -87,7 +89,7 @@
 <v t="bobjack.20080329054053.15"><vh>@menu Find Change</vh>
 <v t="bobjack.20080329054053.16"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080329061442.1" a="E"><vh>another pre-defined fragment</vh>
+<v t="bobjack.20080329061442.1"><vh>another pre-defined fragment</vh>
 <v t="bobjack.20080329061442.2"><vh>@item &amp;</vh></v>
 </v>
 <v t="bobjack.20080329054053.17"><vh>@item -</vh></v>
@@ -98,7 +100,7 @@
 </v>
 </v>
 <v t="bobjack.20080329062304.14"><vh>... the find-text entry</vh>
-<v t="bobjack.20080401213500.1"><vh>@popup find-change-fragment</vh>
+<v t="bobjack.20080401213500.1"><vh>@popup find_change_text_menu</vh>
 <v t="bobjack.20080329062304.2"><vh>column one</vh>
 <v t="bobjack.20080329062304.3"><vh>@item &amp;</vh></v>
 </v>
@@ -108,26 +110,26 @@
 </v>
 </v>
 <v t="bobjack.20080329062304.1"><vh>@popup find-text</vh>
-<v t="bobjack.20080401213339.1"><vh>@item find-text-menu</vh></v>
+<v t="bobjack.20080401213339.1"><vh>@item label for menu</vh></v>
 <v t="bobjack.20080401213339.2"><vh>@item -</vh></v>
 <v t="bobjack.20080401213500.2"><vh>@item &amp;</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.15" a="E"><vh>... the change-text entry</vh>
-<v t="bobjack.20080329062956.1" a="E"><vh>@popup change-text</vh>
-<v t="bobjack.20080401213023.1"><vh>@item change-text-menu</vh></v>
+<v t="bobjack.20080329062304.15"><vh>... the change-text entry</vh>
+<v t="bobjack.20080329062956.1"><vh>@popup change-text</vh>
+<v t="bobjack.20080401213023.1"><vh>@item label for menu</vh></v>
 <v t="bobjack.20080401213339.3"><vh>@item -</vh></v>
 <v t="bobjack.20080402160713.11"><vh>@item &amp;</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401143613.2"><vh>... the tree canvas</vh>
 <v t="bobjack.20080401113850.2"><vh>@popup canvas</vh>
-<v t="bobjack.20080401113850.3"><vh>@item *canvas menu</vh></v>
+<v t="bobjack.20080401113850.3"><vh>@item label for menu</vh></v>
 <v t="bobjack.20080402154726.5"><vh>@item -</vh></v>
-<v t="bobjack.20080402172239.2" a="E"><vh>@menu Clone To Chapter</vh>
+<v t="bobjack.20080402172239.2"><vh>@menu Clone To Chapter</vh>
 <v t="bobjack.20080402160713.10"><vh>@item *</vh></v>
 </v>
-<v t="bobjack.20080402172239.3" a="E"><vh>@menu Copy To Chapter</vh>
+<v t="bobjack.20080402172239.3"><vh>@menu Copy To Chapter</vh>
 <v t="bobjack.20080402172239.4"><vh>@item *</vh></v>
 </v>
 <v t="bobjack.20080402172239.5"><vh>@menu Move To Chapter</vh>
@@ -138,20 +140,19 @@
 <v t="bobjack.20080402175002.4"><vh>@item *remove-chapter</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143954.2" a="E"><vh>... the plus box</vh>
-<v t="bobjack.20080401143954.3" a="E"><vh>@popup plusbox</vh>
-<v t="bobjack.20080401143954.4"><vh>@item *plus box menu</vh></v>
-<v t="bobjack.20080407082242.6" a="TV"><vh>@item *test one</vh></v>
+<v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
+<v t="bobjack.20080401143954.3"><vh>@popup plusbox</vh>
+<v t="bobjack.20080401143954.4"><vh>@item label for menu</vh></v>
 </v>
 </v>
-<v t="bobjack.20080401143613.3" a="E"><vh>... headlines</vh>
-<v t="bobjack.20080401143613.4" a="E"><vh>@popup headline</vh>
-<v t="bobjack.20080401143613.5"><vh>@item *headline menu</vh></v>
+<v t="bobjack.20080401143613.3"><vh>... headlines</vh>
+<v t="bobjack.20080401143613.4"><vh>@popup headline</vh>
+<v t="bobjack.20080401143613.5"><vh>@item label for menu</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401214039.1"><vh>... the icon box</vh>
-<v t="bobjack.20080401214039.2" a="E"><vh>@popup iconbox</vh>
-<v t="bobjack.20080401214039.3"><vh>@item *iconbox menu</vh></v>
+<v t="bobjack.20080401214039.2"><vh>@popup iconbox</vh>
+<v t="bobjack.20080401214039.3"><vh>@item label for menu</vh></v>
 </v>
 </v>
 </v>
@@ -320,7 +321,7 @@ et = c.context_menus['edit-menu']
 c.context_menus['edit-menu'] = et[:-2]
 g.es('removed select-all from ALL edit-menus', color='blue')</t>
 <t tx="bobjack.20080401113850.2"></t>
-<t tx="bobjack.20080401113850.3"></t>
+<t tx="bobjack.20080401113850.3">Canvas Menu</t>
 <t tx="bobjack.20080401143613.2"></t>
 <t tx="bobjack.20080401143613.3"></t>
 <t tx="bobjack.20080401143613.4">@
@@ -331,16 +332,16 @@ Alternativly, setting
     c.context_menus['headline'] = []
     
 will also restore the leo standard popup menu. Highlight the code above and execute it to see the effect.</t>
-<t tx="bobjack.20080401143613.5"></t>
+<t tx="bobjack.20080401143613.5">Headline Menu</t>
 <t tx="bobjack.20080401143954.2"></t>
 <t tx="bobjack.20080401143954.3"></t>
-<t tx="bobjack.20080401143954.4"></t>
-<t tx="bobjack.20080401213023.1"></t>
-<t tx="bobjack.20080401213339.1"></t>
+<t tx="bobjack.20080401143954.4">Plus Box Menu</t>
+<t tx="bobjack.20080401213023.1">Change Text Menu</t>
+<t tx="bobjack.20080401213339.1">Find Text Menu</t>
 <t tx="bobjack.20080401213339.2"></t>
 <t tx="bobjack.20080401213339.3"></t>
 <t tx="bobjack.20080401213500.1"></t>
-<t tx="bobjack.20080401213500.2">find-change-fragment</t>
+<t tx="bobjack.20080401213500.2">find_change_text_menu</t>
 <t tx="bobjack.20080401214039.1"></t>
 <t tx="bobjack.20080401214039.2">@
 Icon box menus will be disabled by cleo or other plugind using the same hook.
@@ -352,7 +353,7 @@ Alternativly, setting
     c.context_menus['iconbox'] = []
     
 will also restore the leo standard popup menu. Highlight the code above and execute it to see the effect.</t>
-<t tx="bobjack.20080401214039.3"></t>
+<t tx="bobjack.20080401214039.3">Icon Box Menu</t>
 <t tx="bobjack.20080402071100.2">@
 This setting determines where the output of rclick's "Help on: ...""
 menu item goes.
@@ -377,7 +378,7 @@ Example::
 <t tx="bobjack.20080402160713.8"></t>
 <t tx="bobjack.20080402160713.9"></t>
 <t tx="bobjack.20080402160713.10">clone-node-to-chapter-menu</t>
-<t tx="bobjack.20080402160713.11">find-text</t>
+<t tx="bobjack.20080402160713.11">find_change_text_menu</t>
 <t tx="bobjack.20080402172239.2"></t>
 <t tx="bobjack.20080402172239.3"></t>
 <t tx="bobjack.20080402172239.4">copy-node-to-chapter-menu</t>
@@ -438,7 +439,7 @@ name = check-four
 
 </t>
 <t tx="bobjack.20080404111009.1"></t>
-<t tx="bobjack.20080404113810.1" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505746e6f64657103550577686572657104550e6265666f7265486561646c696e6571055507796f666673657471064b00550466696c6571075844000000433a5c4c656f5c6d6f645f72636c69636b5c6c656f5c49636f6e735c54616e676f5c31367831365c656d626c656d735c656d626c656d2d696d706f7274616e742e706e67710855047870616471094b01550474797065710a68075507786f6666736574710b4b02550772656c50617468710c582800000054616e676f5c31367831365c656d626c656d735c656d626c656d2d696d706f7274616e742e706e67710d75612e"># Run this as a script to enable reporting of changes
+<t tx="bobjack.20080404113810.1"># Run this as a script to enable reporting of changes
 # to the check/radio menu items in the log panel menu.
 
 # Example: how to initialize/modify item settings
@@ -499,6 +500,6 @@ for check, selected in sorted(checks.iteritems()):
     g.es("'%s' -&gt; %s"%(check, selected), color='blue')
 
 </t>
-<t tx="bobjack.20080407082242.6"></t>
+<t tx="bobjack.20080412154131.2"></t>
 </tnodes>
 </leo_file>
