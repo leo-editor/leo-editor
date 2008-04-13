@@ -1222,6 +1222,8 @@ class configClass:
     munge = canonicalizeSettingName
     #@-node:ekr.20041123070429:canonicalizeSettingName (munge)
     #@+node:ekr.20041123092357:config.findSettingsPosition
+    # This was not used prior to Leo 4.5.
+
     def findSettingsPosition (self,c,setting):
 
         """Return the position for the setting in the @settings tree for c."""
@@ -1236,7 +1238,7 @@ class configClass:
 
         for p in root.subtree_iter():
             h = munge(p.headString())
-            if h == setting:
+            if h.startswith(setting):
                 return p.copy()
 
         return c.nullPosition()

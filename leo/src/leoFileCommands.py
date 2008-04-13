@@ -326,20 +326,24 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.36:getPositionAttributes
         def getPositionAttributes (self,attrs):
 
-            d = {}
+            c = self.c
 
-            for bunch in self.attrsToList(attrs):
-                name = bunch.name ; val = bunch.val
-                if name in ('top','left','width','height'):
-                    try:
-                        d[name] = int(val)
-                    except ValueError:
-                        d[name] = 100 # A reasonable emergency default.
-                else:
-                    g.trace(name,len(val))
+            if c.fixed and c.fixedWindowPosition:
+                width,height,left,top = c.fixedWindowPosition
+                d = {'top':top,'left':left,'width':width,'height':height}
+            else:
+                d = {}
+                for bunch in self.attrsToList(attrs):
+                    name = bunch.name ; val = bunch.val
+                    if name in ('top','left','width','height'):
+                        try:
+                            d[name] = int(val)
+                        except ValueError:
+                            d[name] = 100 # A reasonable default.
+                    else:
+                        g.trace(name,len(val))
 
             return d
-        #@nonl
         #@-node:ekr.20060919110638.36:getPositionAttributes
         #@+node:ekr.20060919110638.37:startGlobals
         def startGlobals (self,attrs):
@@ -2285,7 +2289,7 @@ class baseFileCommands:
     #@-node:ekr.20060919104530:Sax
     #@-node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20031218072017.3032:Writing
-    #@+node:ekr.20070413045221.2:Top-level  (leoFileCommands)
+    #@+node:ekr.20070413045221.2: Top-level  (leoFileCommands)
     #@+node:ekr.20031218072017.1720:save (fileCommands)
     def save(self,fileName):
 
@@ -2354,7 +2358,7 @@ class baseFileCommands:
         g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
     #@nonl
     #@-node:ekr.20070413061552:putSavedMessage
-    #@-node:ekr.20070413045221.2:Top-level  (leoFileCommands)
+    #@-node:ekr.20070413045221.2: Top-level  (leoFileCommands)
     #@+node:ekr.20031218072017.1570:assignFileIndices & compactFileIndices
     def assignFileIndices (self):
 
@@ -2422,6 +2426,7 @@ class baseFileCommands:
     #@+node:ekr.20040324080819.1:putLeoFile & helpers
     def putLeoFile (self):
 
+        self.updateFixedStatus()
         self.putProlog()
         self.putHeader()
         self.putGlobals()
@@ -2452,13 +2457,28 @@ class baseFileCommands:
         # Puts an innumerate number of digits
 
         self.put(" body_outline_ratio=")
-        self.put_in_dquotes(str(c.frame.ratio))
+
+        # New in Leo 4.5: support fixed .leo files.
+        self.put_in_dquotes(
+            str(g.choose(c.fixed,0.5,c.frame.ratio)))
         #@-node:ekr.20031218072017.3038:<< put the body/outline ratio >>
         #@nl
         self.put(">") ; self.put_nl()
         #@    << put the position of this frame >>
         #@+node:ekr.20031218072017.3039:<< put the position of this frame >>
-        width,height,left,top = c.frame.get_window_info()
+        # New in Leo 4.5: support fixed .leo files.
+
+        if c.fixed:
+            width,height,left,top = 700,500,50,50
+                # Put fixed, immutable, reasonable defaults.
+                # Leo 4.5 and later will ignore these when reading.
+                # These should be reasonable defaults so that the
+                # file will be opened properly by older versions
+                # of Leo that do not support fixed .leo files.
+        else:
+            width,height,left,top = c.frame.get_window_info()
+
+        # g.trace(width,height,left,top)
 
         self.put_tab()
         self.put("<global_window_position")
@@ -2472,6 +2492,7 @@ class baseFileCommands:
         #@    << put the position of the log window >>
         #@+node:ekr.20031218072017.3040:<< put the position of the log window >>
         top = left = height = width = 0 # no longer used
+
         self.put_tab()
         self.put("<global_log_window_position")
         self.put(" top=") ; self.put_in_dquotes(str(top))
@@ -2704,27 +2725,30 @@ class baseFileCommands:
         #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         # These string catenations are benign because they rarely happen.
         attr = ""
-        if v.isExpanded(): attr += "E"
-        if v.isMarked():   attr += "M"
-        if v.isOrphan():   attr += "O"
 
-        # No longer a bottleneck now that we use p.equal rather than p.__cmp__
-        # Almost 30% of the entire writing time came from here!!!
-        if not self.use_sax:
-            if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-            if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+        # New in Leo 4.5: support fixed .leo files.
+        if not c.fixed:
+            if v.isExpanded(): attr += "E"
+            if v.isMarked():   attr += "M"
+            if v.isOrphan():   attr += "O"
 
-        if attr:
-            attrs.append(' a="%s"' % attr)
+            # No longer a bottleneck now that we use p.equal rather than p.__cmp__
+            # Almost 30% of the entire writing time came from here!!!
+            if not self.use_sax:
+                if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+                if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+
+            if attr:
+                attrs.append(' a="%s"' % attr)
 
         # Put the archived *current* position in the *root* positions <v> element.
         if self.use_sax and p.equal(self.rootPosition):
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
-            d['str_leo_pos'] = ','.join(aList)
+            if not c.fixed:
+                d['str_leo_pos'] = ','.join(aList)
             # g.trace(aList,d)
             v.unknownAttributes = d
-        #@nonl
         #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         #@nl
         #@    << Append tnodeList and unKnownAttributes to attrs >>
@@ -2990,6 +3014,23 @@ class baseFileCommands:
             if len(theDir) > 0 and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
                 c.openDirectory = theDir
     #@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
+    #@+node:ekr.20080412172151.2:updateFixedStatus
+    def updateFixedStatus (self):
+
+        c = self.c
+        p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
+        if p:
+            import leoConfig
+            parser = leoConfig.settingsTreeParser(c)
+            kind,name,val = parser.parseHeadline(p.headString())
+            if val and val.lower() in ('true','1'):
+                val = True
+            else:
+                val = False
+            c.fixed = val
+
+        # g.trace('c.fixed',c.fixed)
+    #@-node:ekr.20080412172151.2:updateFixedStatus
     #@+node:ekr.20031218072017.3046:write_Leo_file
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
 

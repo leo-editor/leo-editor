@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@button Spell</vh></v>
@@ -29,6 +29,7 @@
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20050407144342"><vh>@page http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -34628,6 +34629,7 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an ``@
   Evaluates to True iff: h=g.computeMachineName(); h==hostA and h!=hostB.
   The "!" version allows matching to every machineName except the given one
   to allow differing settings on only a few machines.</t>
+<t tx="ekr.20080412124815.1"></t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and

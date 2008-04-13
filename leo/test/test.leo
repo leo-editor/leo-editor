@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="289" height="950" width="907"/>
+	<global_window_position top="50" left="50" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -21,21 +21,6 @@
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20070305085403"><vh>vim plugin</vh>
-<v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
-<v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
-</v>
-<v t="ekr.20070723091227"><vh>http plugin</vh>
-<v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
-<v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
-<v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
-</v>
-<v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
-<v t="ekr.20070503120403"><vh>@bool trace_tree_gc = False</vh></v>
-<v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080310164329.2"><vh>@@menus</vh>
 <v t="ekr.20080310164329.3"><vh>@menu &amp;File</vh>
@@ -545,6 +530,22 @@
 <v t="ekr.20080310164713.2"><vh>@item clones-tab</vh></v>
 </v>
 </v>
+<v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
+<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
+<v t="ekr.20070503120403"><vh>@bool trace_tree_gc = False</vh></v>
+<v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
+<v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070723091227"><vh>http plugin</vh>
+<v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
+<v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
+</v>
+<v t="ekr.20070305085403"><vh>vim plugin</vh>
+<v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
+<v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
+</v>
 </v>
 <v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
@@ -603,7 +604,7 @@
 </v>
 <v t="ekr.20060904110922"><vh>OPML buttons</vh>
 <v t="ekr.20060904111037.1"><vh>@@button opml-write</vh></v>
-<v t="ekr.20060904111037" a="M"><vh>@@button opml-read</vh></v>
+<v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 <v t="ekr.20071128122043"><vh>@@command create-shell-tab @key = Alt+5</vh></v>
 <v t="ekr.20080310111916.1"><vh>@@button Translate "can not" to "can't"</vh></v>
@@ -621,6 +622,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -5529,6 +5531,7 @@ a b cat hat aa
 end
 
 </t>
+<t tx="ekr.20080412082246.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
