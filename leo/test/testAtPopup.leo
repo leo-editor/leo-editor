@@ -2,15 +2,18 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="165" left="321" height="590" width="1060"/>
+<globals body_outline_ratio="0.334365325077">
+	<global_window_position top="92" left="313" height="707" width="969"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080329075629.2" str_leo_pos="3"><vh>@startup</vh>
+<v t="bobjack.20080329075629.2" str_leo_pos="2"><vh>@startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh>
+<v t="bobjack.20080413203125.1"><vh>@chapter three</vh>
+<v t="bobjack.20080413203125.2"><vh>three node 1</vh></v>
+</v>
 <v t="bobjack.20080402160713.6"><vh>@chapter two</vh>
 <v t="bobjack.20080402160713.7"><vh>two node 1</vh></v>
 </v>
@@ -22,6 +25,7 @@
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080404113810.1"><vh>@button show button events</vh></v>
 <v t="bobjack.20080405081601.2"><vh>@button show-button-data</vh></v>
+<v t="bobjack.20080414080643.1"><vh>@button Do Unit Tests</vh></v>
 </v>
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh></v>
@@ -37,10 +41,10 @@
 <v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  </vh></v>
 <v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
-<v t="bobjack.20080326150321.6"><vh>@item *find-next</vh></v>
-<v t="bobjack.20080326150321.7"><vh>@item *find-prev</vh></v>
-<v t="bobjack.20080326150321.8"><vh>@item *change</vh></v>
-<v t="bobjack.20080326150321.9"><vh>@item *change-then-find</vh></v>
+<v t="bobjack.20080326150321.6"><vh>@item find-next</vh></v>
+<v t="bobjack.20080326150321.7"><vh>@item find-prev</vh></v>
+<v t="bobjack.20080326150321.8"><vh>@item change</vh></v>
+<v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
 </v>
 </v>
 <v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh></v>
@@ -74,13 +78,13 @@
 </v>
 <v t="bobjack.20080329054053.3"><vh>... the body pane</vh>
 <v t="bobjack.20080329054053.4"><vh>@popup body</vh>
-<v t="bobjack.20080329061920.1"><vh>@item *undo</vh></v>
+<v t="bobjack.20080329061920.1"><vh>@item undo</vh></v>
 <v t="bobjack.20080329061920.2"><vh>@item -</vh></v>
 <v t="bobjack.20080329054053.5"><vh>@item cut-text</vh></v>
 <v t="bobjack.20080329054053.6"><vh>@item copy-text</vh></v>
 <v t="bobjack.20080329054053.7"><vh>@item paste-text</vh></v>
 <v t="bobjack.20080329054053.8"><vh>@item -</vh></v>
-<v t="bobjack.20080329054053.9"><vh>@item *select-all</vh></v>
+<v t="bobjack.20080329054053.9"><vh>@item select-all</vh></v>
 <v t="bobjack.20080329054053.10"><vh>@item -</vh></v>
 <v t="bobjack.20080329054053.11"><vh>@menu Block Ops</vh>
 <v t="bobjack.20080329054053.12"><vh>@item indent-region</vh></v>
@@ -136,8 +140,8 @@
 <v t="bobjack.20080402172239.6"><vh>@item *</vh></v>
 </v>
 <v t="bobjack.20080402175002.3"><vh>@item -</vh></v>
-<v t="bobjack.20080402175002.2"><vh>@item *create-chapter</vh></v>
-<v t="bobjack.20080402175002.4"><vh>@item *remove-chapter</vh></v>
+<v t="bobjack.20080402175002.2"><vh>@item create-chapter</vh></v>
+<v t="bobjack.20080402175002.4"><vh>@item remove-chapter</vh></v>
 </v>
 </v>
 <v t="bobjack.20080401143954.2"><vh>... the plus box</vh>
@@ -154,6 +158,44 @@
 <v t="bobjack.20080401214039.2"><vh>@popup iconbox</vh>
 <v t="bobjack.20080401214039.3"><vh>@item label for menu</vh></v>
 </v>
+</v>
+<v t="bobjack.20080413173856.2"><vh>Unit Test Stuff - Do Not Change</vh>
+<v t="bobjack.20080413173856.3"><vh>@popup unit-test-one</vh>
+<v t="bobjack.20080413173856.4"><vh>@item -</vh></v>
+<v t="bobjack.20080413173856.5"><vh>@item |</vh></v>
+<v t="bobjack.20080413173856.6"><vh>@item "</vh></v>
+<v t="bobjack.20080413191217.3"><vh>@item *</vh></v>
+<v t="bobjack.20080413191217.4"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080413191217.5"><vh>@popup unit-test-two</vh>
+<v t="bobjack.20080413191217.6"><vh>@item *rclick-unit-&amp;test-invoke-one</vh></v>
+<v t="bobjack.20080413191217.7"><vh>@item     *rclick-&amp;unit-test-&amp;invoke-two  </vh></v>
+<v t="bobjack.20080413194942.2"><vh>@item rclick-unit-test-invoke-three</vh></v>
+<v t="bobjack.20080413194942.3"><vh>@item     rclick-unit-test-invoke-four  </vh></v>
+<v t="bobjack.20080413200228.1"><vh>@item rclick-unit-&amp;test-invoke-five</vh></v>
+<v t="bobjack.20080413200228.4"><vh>@item     rclick-&amp;unit-test-&amp;invoke-six  </vh></v>
+</v>
+<v t="bobjack.20080413203324.2"><vh>@popup unit-test-three</vh>
+<v t="bobjack.20080413203324.3"><vh>@menu unit-test-submenu-one</vh></v>
+<v t="bobjack.20080413203324.4"><vh>@menu unit-test-submenu-two</vh>
+<v t="bobjack.20080413203324.5"><vh>@menu   unit-test-submenu-three   </vh>
+<v t="bobjack.20080413203324.6"><vh>@item first place holder</vh></v>
+<v t="bobjack.20080413203324.7"><vh>@item second place holder</vh></v>
+</v>
+</v>
+</v>
+<v t="bobjack.20080413211455.1"><vh>@popup unit-test-four</vh>
+<v t="bobjack.20080413211455.4"><vh>@item rclick-button</vh></v>
+</v>
+</v>
+</v>
+<v t="bobjack.20080413173856.7"><vh>Unit Tests</vh>
+<v t="bobjack.20080413173856.9"><vh>@test c.context_menus exists and is well formed</vh></v>
+<v t="bobjack.20080413200905.1"><vh>Test @popup to rclick format</vh>
+<v t="bobjack.20080413173856.10"><vh>@test single character items translate correctly</vh></v>
+<v t="bobjack.20080413191217.8"><vh>@test minbuffer command items translate correctly</vh></v>
+<v t="bobjack.20080413203324.8"><vh>@test @menu items translate correctly</vh></v>
+<v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
 </v>
 </v>
 </vnodes>
@@ -304,12 +346,12 @@ c.context_menus['log'] = [
     ('12', cb('12')),
     ('13', cb('13')),
     ('14', cb('14')),
-    ('|', None),
+    ('|', ''),
     ('xone', cb('one')),
     ('xtwo', cb()),
     ('xthree', cb('three')),
     ('xfour', cb('four')),
-    ('|', None),    
+    ('|', ''),    
     ('&amp;', 'edit-menu'),
 ]
 g.es('replaced log menu', color='blue')
@@ -501,5 +543,233 @@ for check, selected in sorted(checks.iteritems()):
 
 </t>
 <t tx="bobjack.20080412154131.2"></t>
+<t tx="bobjack.20080413173856.2"></t>
+<t tx="bobjack.20080413173856.3">Test that single character items translaate correctly.</t>
+<t tx="bobjack.20080413173856.4">separator</t>
+<t tx="bobjack.20080413173856.5">column break</t>
+<t tx="bobjack.20080413173856.6">comment</t>
+<t tx="bobjack.20080413173856.7">print
+print
+print
+</t>
+<t tx="bobjack.20080413173856.9">assert hasattr(c, 'context_menus'), \
+    'c has no context menus'
+
+menus = c.context_menus
+assert isinstance(menus, dict), \
+    'c.context_menus must be a dictionary'
+
+def test_menu_list(menu_table):
+    
+     for item in menu_table:
+      
+        assert isinstance(item, tuple) and len(item)==2,\
+            'items in menu_tables must be tuples of length two'
+    
+        label, cmd = item
+        assert isinstance(label, basestring),\
+            'the label for a menu_table item must be a string'
+        
+        if isinstance(cmd, list):
+            test_menu_list(cmd)
+            
+        else:
+            assert  isinstance(cmd, basestring) \
+            or callable(cmd) or cmd is None, \
+                'the command for a mentu_table item must be None,' + \
+                'a list, a string, or a callable object.'
+   
+for key, value in menus.iteritems():
+    
+    assert isinstance(key, basestring),\
+        'keys for c.context_menus must be strings'
+        
+    assert isinstance(value, list),\
+        'values for c.context_menus must be lists'
+    
+    test_menu_list(value)
+            
+        
+            
+        
+            </t>
+<t tx="bobjack.20080413173856.10">menu_name = u'unit-test-one'
+
+assert menu_name in c.context_menus, \
+    '%s is not in context_menus' % menu_name
+
+menu_table = c.context_menus[menu_name]
+
+assert len(menu_table) == 5, \
+    "wrong number of items in menu_table"
+    
+for kind, argument, item in zip(
+        ('-', '|', '"', '*', '&amp;'),
+        ('separator', 'column break', 'comment',
+          'rclick-unit-test-generator', 'rclick-unit-test-include'),
+        menu_table ):
+            
+    assert kind == item[0], \
+        "Wrong marker"
+    
+    #print 'argument', item[1]    
+    assert  item[1] == argument, \
+        "Wrong argument"
+        
+    
+        
+        </t>
+<t tx="bobjack.20080413191217.3">rclick-unit-test-generator</t>
+<t tx="bobjack.20080413191217.4">rclick-unit-test-include
+</t>
+<t tx="bobjack.20080413191217.5">Test @item *minibuffer-command-items translate correctly.
+
+If there are spaces befor and after the text in the headline, then this
+is delibrate, do not remove theme.</t>
+<t tx="bobjack.20080413191217.6">bad</t>
+<t tx="bobjack.20080413191217.7">bad
+
+
+
+</t>
+<t tx="bobjack.20080413191217.8">menu_name = u'unit-test-two'
+
+assert menu_name in c.context_menus, \
+    '%s is not in context_menus' % menu_name
+
+menu_table = c.context_menus[menu_name]
+
+nItems = 6
+assert len(menu_table) == nItems, \
+    "wrong number of items in menu_table"
+    
+labels = (
+    'Rclick Unit Test Invoke One',
+    'Rclick Unit Test Invoke Two',
+    'three',
+    'four',
+    'Rclick Unit Test Invoke Five',
+    'Rclick Unit Test Invoke Six',
+)
+
+commands = (
+    'rclick-unit-test-invoke-one',
+    'rclick-unit-test-invoke-two',
+    'rclick-unit-test-invoke-three',
+    'rclick-unit-test-invoke-four',
+    'rclick-unit-test-invoke-five',
+    'rclick-unit-test-invoke-six',
+)
+
+assert len(labels)==nItems and len(commands)==nItems, \
+    "Wrong number of items in test tables."
+    
+for label, command, item in zip(labels, commands, menu_table):
+             
+    assert label == item[0], \
+        "Wrong label"
+        
+    assert  item[1] == command, \
+        "Wrong command\n\tGot: %s\n\tExpected: %s" % (item[1], command)</t>
+<t tx="bobjack.20080413194942.2">three</t>
+<t tx="bobjack.20080413194942.3">f&amp;our
+
+
+</t>
+<t tx="bobjack.20080413200228.1"></t>
+<t tx="bobjack.20080413200228.4">
+
+
+
+</t>
+<t tx="bobjack.20080413200905.1"></t>
+<t tx="bobjack.20080413203125.1"></t>
+<t tx="bobjack.20080413203125.2"></t>
+<t tx="bobjack.20080413203324.2"></t>
+<t tx="bobjack.20080413203324.3"></t>
+<t tx="bobjack.20080413203324.4"></t>
+<t tx="bobjack.20080413203324.5"></t>
+<t tx="bobjack.20080413203324.6">first
+
+
+</t>
+<t tx="bobjack.20080413203324.7">second
+
+</t>
+<t tx="bobjack.20080413203324.8">menu_name = u'unit-test-three'
+
+assert menu_name in c.context_menus, \
+    '%s is not in context_menus' % menu_name
+
+menu_table = c.context_menus[menu_name]
+
+assert len(menu_table) == 2, \
+    "wrong number of items in menu_table"
+    
+    
+item = menu_table[0]
+assert item[0] == 'unit-test-submenu-one', 'Wrong Label'
+
+# Test empty menu item produces an empty list
+submenu_table = item[1]
+assert isinstance(submenu_table, list), 'Expecting a list'
+assert not submenu_table, 'submenu table should be empty'
+
+
+item = menu_table[1]
+assert item[0] == 'unit-test-submenu-two'
+
+submenu_table = item[1]
+assert isinstance(submenu_table, list), 'Expecting a list'
+assert len(submenu_table) == 1, 'submenu table should of length one'
+            
+item = submenu_table[0]
+assert item[0] == 'unit-test-submenu-three'
+
+submenu_table = item[1]
+assert isinstance(submenu_table, list), 'Expecting a list'
+assert len(submenu_table) == 2, 'submenu table should of length two'
+
+</t>
+<t tx="bobjack.20080413210035.1">menu_name = u'unit-test-four'
+
+assert menu_name in c.context_menus, \
+    '%s is not in context_menus' % menu_name
+
+menu_table = c.context_menus[menu_name]
+
+assert len(menu_table) == 1, \
+    "wrong number of items in menu_table"
+    
+item = menu_table[0]
+
+
+#print 'label', item[0]
+assert item[0] == 'button label', \
+    "wrong label"
+
+#print 'cmd', item[1]
+assert item[1] == 'rclick-button\nkind=radio\ngroup=test1\nname=test-one-one', \
+    "cmd string is wrong" </t>
+<t tx="bobjack.20080413211455.1">These do nothing! but could be made
+to do something if you want.</t>
+<t tx="bobjack.20080413211455.4">button label
+
+# this is a comment because it starts with #
+and this is a comment because it does not contain an equal sign
+
+kind = radio
+group =   test1
+name = test-one-one
+
+
+#
+
+</t>
+<t tx="bobjack.20080414080643.1">@color
+
+import leoTest
+leoTest.doTests(c,all=True)
+</t>
 </tnodes>
 </leo_file>

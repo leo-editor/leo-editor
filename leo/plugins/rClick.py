@@ -512,6 +512,8 @@ command to handle check and radio items, using rclick-button as a template.
 # 1.25 bobjack:
 # - bug fixes
 # - make version 1.25 to show the new api is stable
+# 1.26 bobjack:
+# - bug fixes
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -546,7 +548,7 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "1.25"
+__version__ = "1.26"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -664,10 +666,9 @@ class ContextMenuController(object):
 
         if not hasattr(c, 'context_menus'):
 
+            menus = {}
             if hasattr(g.app.config, 'context_menus'):
-                menus = copy.deepcopy(g.app.config.context_menus)
-            else:
-                menus = {}
+                menus = self.copyMenuDict(g.app.config.context_menus)
 
             if not isinstance(menus, dict):
                 menus = {}
@@ -690,39 +691,28 @@ class ContextMenuController(object):
                     s, cmd = menu_table.pop(0)
 
                     if isinstance(cmd, list):
-                        out.append((s.replace('&',''), config_to_rclick(cmd[:])))
+                        out.append((s.strip().replace('&',''), config_to_rclick(cmd[:])))
                         continue
 
-                    s, cmd = s.strip(), cmd.strip()
+                    else:
+                        cmd, pairs = self.getBodyData(cmd)
 
-                    if s in ('-', '&', '*', '|'):
-                        out.append((s, cmd))
+                    if s in ('-', '&', '*', '|', '"'):
+                        out.append((s, self.rejoin(cmd, pairs)))
                         continue
 
-                    if 0 and cmd:
-                        print
-                        g.trace(s)
-                        g.trace('[[[' + str(cmd) + ']]]')
-                        pass
+                    star = s.startswith('*')
 
-                    if not cmd and not s.startswith('*'):
-                        s = '*' + s
-
-                    cmds = cmd.splitlines()
-                    if not cmds:
-                        cmds = ['']
-                    cmd, cmds = cmds[0], '\n'.join(cmds[1:])
-
-                    if not s.startswith('*'):
-                        s = s + '\n' + cmds
-                        out.append((cmd.replace('&',''), s),)
+                    if not star and cmd:
+                        out.append((cmd.replace('&',''), self.rejoin(s, pairs)))
                         continue
 
-                    removeHyphens = True
-                    s = s[1:]
-                    label = c.frame.menu.capitalizeMinibufferMenuName(s,removeHyphens)
-                    s = s.replace('&','') + '\n' + cmds
-                    out.append( (label.replace('&',''), s) )
+                    if star:
+                        s = s[1:]
+
+                    label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
+                    cmd = self.rejoin(s.replace('&',''), pairs)
+                    out.append( (label.replace('&',''), cmd) )
 
                 return out
             #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
@@ -739,10 +729,14 @@ class ContextMenuController(object):
         for key, item in self.default_context_menus.iteritems():
 
             if not key in menus:
-                menus[key] = copy.deepcopy(item)
+                menus[key] = self.copyMenuTable(item)
 
         return True
-    #@nonl
+    #@+node:bobjack.20080414064211.4:rejoin
+    def rejoin(self, cmd, pairs):
+
+        return (cmd + '\n' + pairs).strip()
+    #@-node:bobjack.20080414064211.4:rejoin
     #@-node:ekr.20080327061021.218:rSetupMenus
     #@-node:bobjack.20080323045434.15:__init__
     #@+node:bobjack.20080329153415.3:Generator Minibuffer Commands
@@ -1220,38 +1214,6 @@ class ContextMenuController(object):
     #@-node:bobjack.20080404190912.2:rclick_button
     #@-node:bobjack.20080403171532.12:Button Event Handlers
     #@+node:bobjack.20080329153415.14:Event Handler
-    #@+node:bobjack.20080403171532.5:split_cmd
-    def split_cmd(self, cmd):
-
-        """Split cmd into lines and extract name=text lines.
-
-        Return (str, cmd_data) where str is the first line of cmd and dict is the
-        following lines split on the first '='.
-
-        Blank lines, lines starting with #, and lines not containig '=, are comments.
-
-        """
-
-        lines = cmd.splitlines()
-
-        if lines:
-            cmd, lines = lines[0], lines[1:]
-            #print
-            #g.trace(cmd, lines)
-
-        else:
-            s, ss = '', []
-
-        cmd_data = {}
-        for line in lines:
-            line = line.strip()
-            if '=' in line and not line.startswith('#'):
-                key, val = line.split('=', 1)
-                key, val = key.strip(), val.strip()
-                cmd_data[key] = val
-
-        return cmd, cmd_data
-    #@-node:bobjack.20080403171532.5:split_cmd
     #@+node:bobjack.20080404222250.4:add_menu_item
     def add_menu_item(self, rmenu, label, command, keywords):
 
@@ -1448,7 +1410,8 @@ class ContextMenuController(object):
             while menu_table:
 
                 txt, cmd = menu_table.pop(0)
-                #g.trace(txt, cmd)
+
+                #g.trace(txt, '[', cmd, ']')
 
                 if isinstance(cmd, basestring):
                     cmd, item_data = self.split_cmd(cmd)
@@ -1514,7 +1477,7 @@ class ContextMenuController(object):
                 elif txt == '&':
                     #@            << include a menu chunk >>
                     #@+node:bobjack.20080329153415.9:<< include a menu chunk >>
-                    menu_table = copy.deepcopy(c.context_menus.get(cmd, [])) + menu_table
+                    menu_table = self.copyMenuTable(c.context_menus.get(cmd, [])) + menu_table
                     #@nonl
                     #@-node:bobjack.20080329153415.9:<< include a menu chunk >>
                     #@nl
@@ -1772,6 +1735,94 @@ class ContextMenuController(object):
 
 
     #@-node:bobjack.20080321133958.7:init_default_menus
+    #@+node:bobjack.20080414064211.5:Utility
+    #@+node:bobjack.20080414064211.3:getBodyData
+    def getBodyData(self, cmd):
+
+        """Get and precondition data from cmd.
+
+        'cmd' is a string which may be empty or have multiple lines. 
+
+        The first line will be stripped of leading and trailing whitespace.
+
+        If any subsequent lines have '#' as the first character or do not contain
+        '=' they are discarded.
+
+        The remaining lines are split on the first '=', the components stripped
+        of leading and trailing whitespace and rejoined with an '='
+
+        Returns a tuple (first line, subsequent lines as a single string)
+
+        """
+
+        assert isinstance(cmd, basestring)
+
+        cmds = cmd.splitlines()
+        if not cmds:
+            return '', ''
+
+
+        pairs = []
+        for pair in cmds[1:]:
+
+            if '=' in pair and not pair.startswith('#'):
+                k, v = pair.split('=', 1)
+                kv = k.strip(), v.strip()
+                cmd = '='.join(kv)
+                pairs.append(cmd)
+
+        pairs = '\n'.join(pairs)
+        return cmds[0], pairs
+    #@-node:bobjack.20080414064211.3:getBodyData
+    #@+node:bobjack.20080403171532.5:split_cmd
+    def split_cmd(self, cmd):
+
+        """Split string cmd into a cmd and dictionary of key value pairs."""
+
+        cmd, lines = self.getBodyData(cmd)
+
+        pairs = [ line.split('=', 1) for line in lines.splitlines()]
+
+        cmd_data = {}
+        for key, value in pairs:
+            cmd_data[key] = value
+
+        return cmd, cmd_data
+    #@-node:bobjack.20080403171532.5:split_cmd
+    #@+node:bobjack.20080414113201.2:copyMenuTable
+    def copyMenuTable(self, menu_table):
+
+        """make a copy of the menu_table and make copies of its submenus."""
+
+
+        def _deepcopy(menu):
+
+            table = []
+            for item in menu:
+                label, cmd = item
+                if isinstance(cmd, list):
+                    cmd = _deepcopy(cmd)
+                    item = (label, cmd)
+                table.append(item)
+
+            return table
+
+        newtable =  _deepcopy(menu_table)
+
+        return newtable
+
+    #@-node:bobjack.20080414113201.2:copyMenuTable
+    #@+node:bobjack.20080414113201.3:copyMenuDict
+    def copyMenuDict(self, menu_dict):
+
+        menus = {}
+        for key, value in menu_dict.iteritems():
+            menus[key] = self.copyMenuTable(value)
+
+        return menus
+
+    #@-node:bobjack.20080414113201.3:copyMenuDict
+    #@-node:bobjack.20080414064211.5:Utility
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
 #@-others
