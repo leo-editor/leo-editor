@@ -11,7 +11,7 @@ Any non-tkinter gui's wishing to support this plugin should supply:
     a marksDialog class          as g.app.gui.marksDialog
     a recentSectionsDialog class as g.app.gui.recentSectionsDialog
 
-Obviously these classes should mimic the behaviour of the Tk classes for
+Obviously these classes should mimic the behavior of the Tk classes for
 the relevant gui.
 
 The dialogs will be automatically detected by the plugin and used if supplied.
@@ -34,7 +34,7 @@ import os
 #@nonl
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.8"
+__version__ = "1.9"
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
@@ -64,12 +64,23 @@ __version__ = "1.8"
 # - Added show-marks-dialog and show-recent-sections-dialog commands.
 # - Select an item initially.
 # - Added bindings for up and down arrows.
+# 1.9 bobjack:
+# - Fixed hook bugs.
+#     - added module level hook dispatchers so that hooks
+#       only get registered once.  Hook handlers for non existant
+#       commanders were being kept alive by the references in the hook list
+#       after the commanders were dead.
+#     - changed mark hooks from open2, new2 to after-create-leo-frame
+#       as open2 and new2 do not work
+#     - removed open2 and new2 from recent hooks ditto.
 #@-at
 #@-node:ekr.20050219114353.1:<< version history >>
 #@nl
 
 marksInitiallyVisible = False
 recentInitiallyVisible = False
+
+moduleBindings = False
 
 #@+others
 #@+node:ekr.20050219114353.2:init
@@ -243,9 +254,9 @@ def init ():
 
                 '''Recreate the Marks listbox.'''
 
-                # Warning: it is not correct to use self.c in hook handlers.
-                c = keywords.get('c')
-                if c != self.c: return
+                # It is safe to use self.c as the module level dispatcher
+                # ensures we only get events from our own controller.
+                c = self.c
 
                 self.box.delete(0,"end")
 
@@ -494,31 +505,6 @@ def init ():
                 self.box.selection_set(max(0,len(self.positionList)-1))
             #@nonl
             #@-node:edream.110203113231.787:fillbox
-            #@+node:ekr.20050508104217:testxxx.py
-            import unittest
-
-            #@+others
-            #@+node:ekr.20050508104217.1:TestXXX
-            class TestXXX(unittest.TestCase):
-
-                """Tests for the XXX class"""
-
-                #@    @+others
-                #@+node:ekr.20050508104217.2:setUp
-                def setUp(self):
-
-                    """Create the test fixture"""
-                #@nonl
-                #@-node:ekr.20050508104217.2:setUp
-                #@-others
-            #@nonl
-            #@-node:ekr.20050508104217.1:TestXXX
-            #@-others
-
-            if __name__ == "__main__":
-                unittest.main()
-            #@nonl
-            #@-node:ekr.20050508104217:testxxx.py
             #@+node:ekr.20050219122657:updateButtons
             def updateButtons (self):
 
@@ -543,14 +529,16 @@ def init ():
             #@+node:ekr.20050219162434:updateRecent
             def updateRecent(self,tag,keywords):
 
-                # Warning: it is not correct to use self.c in hook handlers.
-                c = keywords.get('c')
-                if c != self.c: return
+                """Recreate the Recent listbox"""
 
-                forceUpdate = tag in ('new2','open2')
+                # It is safe to use self.c as the module level dispatcher
+                # ensures we only get events from our own controller.
+
+                c = self.c
+
+                forceUpdate = False
                 self.fillbox(forceUpdate)
                 self.updateButtons()
-            #@nonl
             #@-node:ekr.20050219162434:updateRecent
             #@-others
         #@nonl
@@ -564,7 +552,11 @@ def init ():
 
     # print 'navButtons:init','ok',ok,g.app.gui.guiName()
 
-    leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+    r = leoPlugins.registerHandler          
+    r('after-create-leo-frame',onCreate)
+    r(('after-create-leo-frame', 'set-mark','clear-mark'), marksHandler)
+    r('select2', recentHandler)
+
     g.plugin_signon(__name__)
 
     return True
@@ -572,29 +564,72 @@ def init ():
 #@-node:ekr.20050219114353.2:init
 #@+node:ekr.20050219115116:onCreate
 def onCreate (tag,keywords):
+    global moduleBindings
 
     # Not ok for unit testing: can't use unitTestGui.
     if g.app.unitTesting:
         return
 
     c = keywords.get("c")
-    r = leoPlugins.registerHandler
+
+    if not c:
+        return
 
     images = imageClass()
 
-    # Create the marks dialog and hooks.
+    # Create the marks dialog.
     try:
-        marks = g.app.gui.marksDialog(c,images)
-        r(('open2','new2','set-mark','clear-mark'),marks.updateMarks)
-    except:
+        c.theNavButtonsMarksController = marks = \
+            g.app.gui.marksDialog(c,images)
+    except Exception:
+        #g.trace('Fail Marks')
         pass
 
-    # Create the recent nodes dialog.
+    # Create the recent nodes.
     try:
-        recent = g.app.gui.recentSectionsDialog(c,images)
-        r(('open2','new2','select2'),recent.updateRecent)
-    except:
+        c.theNavButtonsRecentController = recent = \
+            g.app.gui.recentSectionsDialog(c,images)
+    except Exception:
+        #g.trace('Fail Recent')
         pass
+
+
+#@+node:bobjack.20080412180149.7:marksHandler
+def marksHandler(tag, keywords):
+
+    """Global hook handler for marks dialog."""
+
+    c = keywords.get('c')
+    if not c or not c.exists:
+        return
+
+    try:
+        marks = c.theNavButtonsMarksController
+    except Exception:
+        marks = None
+
+    #g.trace(tag, marks)
+    if marks:
+        marks.updateMarks(tag, keywords)
+#@-node:bobjack.20080412180149.7:marksHandler
+#@+node:bobjack.20080412180149.8:recentHandler
+def recentHandler(tag, keywords):
+
+    """Global hook handler for recent dialog."""
+
+    c = keywords.get('c')
+    if not c or not c.exists:
+        return
+
+    try:
+        recent = c.theNavButtonsRecentController
+    except Exception:
+        recent = None
+
+    #g.trace(tag, recent)
+    if recent:
+        recent.updateRecent(tag, keywords)
+#@-node:bobjack.20080412180149.8:recentHandler
 #@-node:ekr.20050219115116:onCreate
 #@-others
 #@nonl
