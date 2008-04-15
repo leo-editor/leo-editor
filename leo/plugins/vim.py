@@ -222,16 +222,18 @@ else:
 #@+node:ekr.20050226184624:init
 def init ():
 
+    event = "icondclick1" #Only launched if previous handlers let it.
+
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
 
     if ok:
         # Register the handlers...
         if useDoubleClick:
             # Open on double click
-            leoPlugins.registerHandler("icondclick2", open_in_vim)
+            leoPlugins.registerHandler(event,open_in_vim)
         else:
             # Open on single click: interferes with dragging.
-            leoPlugins.registerHandler("iconclick2",open_in_vim,val=True)
+            leoPlugins.registerHandler(event,open_in_vim,val=True)
 
         # Enable the os.system call if you want to start a (g)vim server when Leo starts.
         if 0:
@@ -250,8 +252,8 @@ def open_in_vim (tag,keywords,val=None):
     if not c or not p: return
     #
     #Avoid @file node types
-    if p.isAnyAtFileNode():
-       return
+    #if p.isAnyAtFileNode():
+    #   return
     if p.headString().find('file-ref') == 1: #Must be at 2nd position
        return
 
