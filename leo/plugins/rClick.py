@@ -121,24 +121,24 @@ eg::
         ('Copy', 'copy-text'),
         ('Paste', 'paste-text'),
 
-        ('-',None),
+        ('-', ''),
 
         ('Select All', 'select-all'),
 
-        ('-',None),
+        ('-', ''),
 
         ('Block Operations', [
 
             ('Indent', 'indent-region'),
             ('Dedent', 'unindent-region'),
 
-            ('-',None),
+            ('-', ''),
 
             ('Add Comments', 'add-comments'),
             ('Remove Comments', 'delete-comments'),
         ]),
 
-        ('-',None),
+        ('-', ''),
 
         ('&', 'recent-files-menu'),
 
@@ -691,7 +691,7 @@ class ContextMenuController(object):
                     s, cmd = menu_table.pop(0)
 
                     if isinstance(cmd, list):
-                        out.append((s.strip().replace('&',''), config_to_rclick(cmd[:])))
+                        out.append((s.strip().replace('&', ''), config_to_rclick(cmd[:])))
                         continue
 
                     else:
@@ -704,15 +704,15 @@ class ContextMenuController(object):
                     star = s.startswith('*')
 
                     if not star and cmd:
-                        out.append((cmd.replace('&',''), self.rejoin(s, pairs)))
+                        out.append((cmd.replace('&', ''), self.rejoin(s, pairs)))
                         continue
 
                     if star:
                         s = s[1:]
 
                     label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
-                    cmd = self.rejoin(s.replace('&',''), pairs)
-                    out.append( (label.replace('&',''), cmd) )
+                    cmd = self.rejoin(s.replace('&', ''), pairs)
+                    out.append( (label.replace('&', ''), cmd) )
 
                 return out
             #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
@@ -856,7 +856,7 @@ class ContextMenuController(object):
 
         if contextCommands:
             # Must change table is situ. 
-            menu_table += [("-",None)] + contextCommands
+            menu_table += [("-", '')] + contextCommands
     #@+node:bobjack.20080322043011.13:get_urls
     def get_urls(self, text):
 
@@ -1633,7 +1633,7 @@ class ContextMenuController(object):
             ('Cut', invoke('rc_OnCutFromMenu')),
             ('Copy', invoke('rc_OnCopyFromMenu')),
             ('Paste', invoke('rc_OnPasteFromMenu')),
-            ('-', None),
+            ('-', ''),
             ('Select All', invoke('rc_selectAll')),
         ]
         #@-node:bobjack.20080325060741.6:edit-menu
@@ -1671,24 +1671,24 @@ class ContextMenuController(object):
             ('Copy', 'copy-text'),
             ('Paste', 'paste-text'),
 
-            ('-',None),
+            ('-', ''),
 
             ('Select All', 'select-all'),
 
-            ('-',None),
+            ('-', ''),
 
             ('Block Operations', [
 
                 ('Indent', 'indent-region'),
                 ('Dedent', 'unindent-region'),
 
-                ('-',None),
+                ('-', ''),
 
                 ('Add Comments', 'add-comments'),
                 ('Remove Comments', 'delete-comments'),
             ]),
 
-            ('-',None),
+            ('-', ''),
 
             ('&', 'recent-files-menu'),
 
@@ -1716,9 +1716,9 @@ class ContextMenuController(object):
         #@+node:bobjack.20080403074002.9:canvas
         self.default_context_menus['canvas'] = [
             ('Canvas Menu', ''),   
-            ('-', None),
+            ('-', ''),
             ('&', 'to-chapter-fragment'),
-            ('-', None),
+            ('-', ''),
             ('Create Chapter', 'create-chapter'),
             ('Remove Chapter', 'remove-chapter'),
         ]
