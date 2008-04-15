@@ -5694,11 +5694,11 @@ class baseCommands:
     #@+node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''
-        self.openSettingsHelper('leoSettings.leo')
+        self.openSettingsHelper(g.app.config.globalConfigFile)
 
     def openMyLeoSettings (self,event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
-        self.openSettingsHelper('myLeoSettings.leo')
+        self.openSettingsHelper(g.app.config.myHomeConfigFile)
 
     def openSettingsHelper(self,name):
         c = self

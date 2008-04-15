@@ -607,6 +607,19 @@ redefined menu.
 #@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20071211142600.3:Clean up config mess
+#@+node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4562648
+By: rogererens
+
+Maybe I may use this thread to make another suggestion for Leo 4.4.5, related
+to @menus: have the menu-options for right-clicking in the various panes also
+in the @settings-tree.
+
+Regards, Roger
+#@nonl
+#@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20071211142600.2:Config stuff
 #@-node:ekr.20080411091507.5:trunk
 #@+node:ekr.20080411091507.7:key-handling
