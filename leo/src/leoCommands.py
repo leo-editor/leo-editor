@@ -876,6 +876,7 @@ class baseCommands:
     def createOpenWithTempFile (self,p,ext):
 
         c = self
+        theFile = ""
         path = c.openWithTempFilePath(p,ext)
         try:
             if g.os_path_exists(path):

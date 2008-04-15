@@ -29,18 +29,12 @@ def onStart (tag,keywords):
 def openWithTempFilePath (self,v,ext):
 
     """Return the path to the temp file corresponding to v and ext.
-       Replaces the Commands method."""    
+       Replaces the Commands method."""
 
     #TL: Added support creating temporary directory structure based on node's
     #    hierarchy in Leo's outline.
-    #    Note: Sibling nodes with same headline should not be open at same time.
-    #          Same temporary file will be used for both. (needs to be handled)
-    #    Note: Only windows users supported, Others should be added.
-
-    #g.es("os = " + os.name)
     c = self
-    if(c.config.getBool('open_with_clean_filenames')
-                                     and (os.name == "dos" or os.name == "nt")):
+    if c.config.getBool('open_with_clean_filenames'):
        atFileFound = False   #Track when first ancestor @file found
        #Build list of all of node's parents
        ancestor = []
@@ -50,6 +44,8 @@ def openWithTempFilePath (self,v,ext):
            if not hs:
                hs = p.headString()  #Otherwise, use the entire header
            else:
+#@verbatim
+               #@file type node
                if c.config.getBool('open_with_uses_derived_file_extensions'):
                    #Leo configured to use node's derived file's extension
                    if(atFileFound == False):
@@ -62,11 +58,10 @@ def openWithTempFilePath (self,v,ext):
                        if atFileExt: #It has an extension
                            ext = atFileExt #use it
 
-           #Remove unsupported dir & file name characters from node's text.
-           #Note: Replacing characters increases chance of temp files matching.
+           #Remove unsupported directory & file name characters
            if(os.name == "dos" or os.name == "nt"):
               hsClean = ""
-              for ch in hs.strip():
+              for ch in hs:
                   if ch in g.string.whitespace: #Convert tabs to spaces
                       hsClean += ' '
                   elif ch in ('\\','/',':','|','<','>'): #Not allowed in Windows
@@ -75,22 +70,25 @@ def openWithTempFilePath (self,v,ext):
                       hsClean += '\''   #replace with '
                   else:
                       hsClean += ch
+           else:
+              hsClean = g.sanitize_filename(hs)
            #Add node's headstring (filtered) to the list of ancestors
-           ancestor.append(hsClean.strip())
+           ancestor.append(hsClean)
            p = p.parent()
 
-       #Put temporary directory structure under <tempdir>\Leo directory
-       ancestor.append( "Leo" )
+       #Put temporary directory structure under <tempdir>\Leo<uniqueId> directory
+       ancestor.append( "Leo" + str(id(v.t)))
+
+       #Build temporary directory
        td = os.path.abspath(tempfile.gettempdir())
-       #Loop through all ancestor's of node
+       #Loop through all of node's ancestors
        while len(ancestor) > 1:
-           #Build temporary directory structure
+           #Add each ancestor of node from nearest to farthest
            td = os.path.join(td, ancestor.pop()) #Add next subdirectory
            if not os.path.exists(td):
                os.mkdir(td)
        #Add filename with extension to the path (last entry in ancestor list)
        name = ancestor.pop() + ext
-       g.es("name = " + name)
     else:
        #Use old method for unsupported operating systems
        try:
