@@ -50,30 +50,33 @@ def openWithTempFilePath (self,v,ext):
            if not hs:
                hs = p.headString()  #Otherwise, use the entire header
            else:
-               if(c.config.getBool('open_with_uses_derived_file_extensions')):
+               if c.config.getBool('open_with_uses_derived_file_extensions'):
                    #Leo configured to use node's derived file's extension
-                   if atFileFound == False:
+                   if(atFileFound == False):
+                       atFileFound = True #no need to look any more.
                        #Found first ancestor @file node in outline
-                       nameNotUsed,extension = g.os_path_splitext(hs)
-                       if extension: #Found extension
-                           ext = extension #use it
-                       atFileFound = True
+                       atFileBase,atFileExt = g.os_path_splitext(hs)
+                       if(p == c.currentPosition()):
+                           #node to edit is an @file, Move ext from hs to ext
+                           hs = atFileBase
+                       if atFileExt: #It has an extension
+                           ext = atFileExt #use it
 
            #Remove unsupported dir & file name characters from node's text.
            #Note: Replacing characters increases chance of temp files matching.
            if(os.name == "dos" or os.name == "nt"):
-              result = ""
+              hsClean = ""
               for ch in hs.strip():
                   if ch in g.string.whitespace: #Convert tabs to spaces
-                      result += ' '
+                      hsClean += ' '
                   elif ch in ('\\','/',':','|','<','>'): #Not allowed in Windows
-                      result += '_'
+                      hsClean += '_'
                   elif ch in ('"'): #Leo code can't handle the "
-                      result += '\''   #replace with '
+                      hsClean += '\''   #replace with '
                   else:
-                      result += ch
+                      hsClean += ch
            #Add node's headstring (filtered) to the list of ancestors
-           ancestor.append(result.strip())
+           ancestor.append(hsClean.strip())
            p = p.parent()
 
        #Put temporary directory structure under <tempdir>\Leo directory
@@ -87,6 +90,7 @@ def openWithTempFilePath (self,v,ext):
                os.mkdir(td)
        #Add filename with extension to the path (last entry in ancestor list)
        name = ancestor.pop() + ext
+       g.es("name = " + name)
     else:
        #Use old method for unsupported operating systems
        try:
@@ -98,7 +102,7 @@ def openWithTempFilePath (self,v,ext):
        td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
        if not os.path.exists(td):
            os.mkdir(td)
-       name = g.sanitize_filename(v.headString()) + '_' + str(id(v.t))  + ext
+       name = g.sanitize_filename(v.headString()) + '_' + str(id(v.t)) + ext
 
     path = os.path.join(td,name)
     return path
