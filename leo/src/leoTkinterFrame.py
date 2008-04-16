@@ -528,8 +528,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         f = self ; c = f.c
 
         t = leoNodes.tnode()
-        v = leoNodes.vnode(t)
-        p = leoNodes.position(v,[])
+        v = leoNodes.vnode(context=c,t=t)
+        p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
         p.moveToRoot(oldRoot=None)
         c.setRootPosition(p) # New in 4.4.2.

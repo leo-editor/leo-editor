@@ -91,7 +91,7 @@ def doTests(c,all,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
-        while p and p != last: #  Don't use p.isEqual: it assumes last != None
+        while p and p != last:
             h = p.headString()
             if g.match_word(h,0,'@ignore'):
                 p.moveToNodeAfterTree()

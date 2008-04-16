@@ -459,8 +459,8 @@ def get_directives_dict(p,root=None):
 
     # The headline has higher precedence because it is more visible.
     for kind,s in (
-        ('body',p.v.t.headString),
-        ('head',p.v.t.bodyString),
+        ('body',p.v.t._headString),
+        ('head',p.v.t._bodyString),
     ):
         i = 0 ; n = len(s)
         while i < n:

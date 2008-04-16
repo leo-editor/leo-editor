@@ -75,6 +75,8 @@ class baseCommands:
         # Init ivars with self.x instead of c.x to keep Pychecker happy
         self.chapterController = None
         self.frame = frame
+        t = leoNodes.tnode()
+        self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -640,8 +642,8 @@ class baseCommands:
             frame.lift()
             frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
             t = leoNodes.tnode()
-            v = leoNodes.vnode(t)
-            p = leoNodes.position(v,[])
+            v = leoNodes.vnode(context=c,t=t)
+            p = leoNodes.position(v)
             v.initHeadString("NewHeadline")
             v.moveToRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
@@ -2319,7 +2321,7 @@ class baseCommands:
                         dirtyVnodeList.extend(dirtyVnodeList2)
                 else:
                     changed = False ; result = []
-                    text = p.t.bodyString
+                    text = p.t._bodyString
                     assert(g.isUnicode(text))
                     lines = string.split(text, '\n')
                     for line in lines:
@@ -2366,7 +2368,7 @@ class baseCommands:
                         dirtyVnodeList.extend(dirtyVnodeList2)
                 else:
                     result = [] ; changed = False
-                    text = p.t.bodyString
+                    text = p.t._bodyString
                     assert(g.isUnicode(text))
                     lines = string.split(text, '\n')
                     for line in lines:
@@ -6685,7 +6687,8 @@ class baseCommands:
         if p is None or c._currentPosition is None:
             return False
         else:
-            return p.isEqual(c._currentPosition)
+            # return p.isEqual(c._currentPosition)
+            return p == c._currentPosition
     #@-node:ekr.20040803112450:c.isCurrentPosition
     #@+node:ekr.20040803112450.1:c.isRootPosition
     def isRootPosition (self,p):
@@ -6695,7 +6698,9 @@ class baseCommands:
         if p is None or c._rootPosition is None:
             return False
         else:
-            return p.isEqual(c._rootPosition)
+            # return p.isEqual(c._rootPosition)
+            return p == c._rootPosition
+    #@nonl
     #@-node:ekr.20040803112450.1:c.isRootPosition
     #@-node:ekr.20040803112200:c.is...Position
     #@+node:ekr.20031218072017.2987:c.isChanged
@@ -6738,7 +6743,7 @@ class baseCommands:
     def nullPosition (self):
 
         c = self ; v = None
-        return leoNodes.position(v,[])
+        return leoNodes.position(v)
     #@-node:ekr.20040311094927:c.nullPosition
     #@+node:ekr.20040307104131.3:c.positionExists
     def positionExists(self,p,root=None):
@@ -6840,7 +6845,7 @@ class baseCommands:
             c.recolor()
 
         # Keep the body text in the tnode up-to-date.
-        if v.t.bodyString != s:
+        if v.t._bodyString != s:
             c.beginUpdate()
             try:
                 v.setTnodeText(s)
@@ -6968,7 +6973,7 @@ class baseCommands:
     def setRootVnode (self, v):
 
         c = self
-        newRoot = leoNodes.position(v,[])
+        newRoot = leoNodes.position(v)
         c.setRootPosition(newRoot)
     #@nonl
     #@-node:ekr.20060906131836:c.setRootVnode New in 4.4.2

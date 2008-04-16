@@ -1808,7 +1808,7 @@ class baseFileCommands:
         elif parent: # create v as the parent's first child.
             v = parent.insertAsNthChild(0,t)
         else: # create a root vnode
-            v = leoNodes.vnode(t)
+            v = leoNodes.vnode(context=c,t=t)
             v.moveToRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
 
@@ -1993,34 +1993,37 @@ class baseFileCommands:
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
-    #@+node:ekr.20060919110638.7:createSaxVnode
-    def createSaxVnode (self,node,parent_v,t=None):
+    #@+node:ekr.20060919110638.7:createSaxVnode (uses v._parent)
+    def createSaxVnode (self,sax_node,parent_v,t=None):
 
-        h = node.headString
-        b = node.bodyString
+        c = self.c
+        h = sax_node.headString
+        b = sax_node.bodyString
 
         if not t:
             t = leoNodes.tnode(bodyString=b,headString=h)
-            if node.tnx:
-                t.fileIndex = g.app.nodeIndices.scanGnx(node.tnx,0)
-        v = leoNodes.vnode(t)
-        v.t.vnodeList.append(v)
-        v._parent = parent_v
+            if sax_node.tnx:
+                t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-        index = self.canonicalTnodeIndex(node.tnx)
+        v = leoNodes.vnode(context=c,t=t)
+        v.t.vnodeList.append(v)
+
+        ### v._parent = parent_v
+
+        index = self.canonicalTnodeIndex(sax_node.tnx)
         self.tnodesDict [index] = t
 
         # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
 
-        self.handleVnodeSaxAttributes(node,v)
-        self.handleTnodeSaxAttributes(node,t)
+        self.handleVnodeSaxAttributes(sax_node,v)
+        self.handleTnodeSaxAttributes(sax_node,t)
 
         return v
     #@nonl
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
-    def handleTnodeSaxAttributes (self,node,t):
+    def handleTnodeSaxAttributes (self,sax_node,t):
 
-        d = node.tnodeAttributes
+        d = sax_node.tnodeAttributes
 
         aDict = {}
         for key in d.keys():
@@ -2037,9 +2040,9 @@ class baseFileCommands:
     # The native attributes of <v> elements are a, t, vtag, tnodeList,
     # marks, expanded and descendentTnodeUnknownAttributes.
 
-    def handleVnodeSaxAttributes (self,node,v):
+    def handleVnodeSaxAttributes (self,sax_node,v):
 
-        d = node.attributes
+        d = sax_node.attributes
         s = d.get('a')
         if s:
             # g.trace('%s a=%s %s' % (id(node),s,v.headString()))
@@ -2092,24 +2095,35 @@ class baseFileCommands:
             v.unknownAttributes = aDict
     #@nonl
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
-    #@-node:ekr.20060919110638.7:createSaxVnode
-    #@+node:ekr.20060919110638.9:linkParentAndChildren
+    #@-node:ekr.20060919110638.7:createSaxVnode (uses v._parent)
+    #@+node:ekr.20060919110638.9:linkParentAndChildren (uses v._parent)
     def linkParentAndChildren (self, parent_v, children):
 
         # if children: g.trace(parent_v,len(children))
 
-        firstChild_v = children and children[0] or None
+        # Add parent_v to it's tnode's vnodeList.
+        if parent_v not in parent_v.t.vnodeList:
+            parent_v.t.vnodeList.append(v)
 
-        parent_v.t._firstChild = firstChild_v
+        # Set parent_v's children.
+        parent_v.children = children
 
-        for child in children:
-            child._parent = parent_v
+        # Make parent_v a parent of each child.
+        for v in children:
+            if parent_v not in v.parents:
+                v.parents.append(parent_v)
 
-        v = parent_v
-        if v not in v.t.vnodeList:
-            v.t.vnodeList.append(v)
-    #@nonl
-    #@-node:ekr.20060919110638.9:linkParentAndChildren
+        # firstChild_v = children and children[0] or None
+
+        # parent_v.t._firstChild = firstChild_v
+
+        # for child in children:
+            # child._parent = parent_v
+
+        # v = parent_v
+        # if v not in v.t.vnodeList:
+            # v.t.vnodeList.append(v)
+    #@-node:ekr.20060919110638.9:linkParentAndChildren (uses v._parent)
     #@+node:ekr.20060919110638.10:linkSiblings
     def linkSiblings (self, sibs):
 
@@ -2575,7 +2589,7 @@ class baseFileCommands:
         # New in Leo 4.4.2 b2: call put just once.
         gnx = g.app.nodeIndices.toString(t.fileIndex)
         ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-        body = t.bodyString and xml.sax.saxutils.escape(t.bodyString) or ''
+        body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
     #@-node:ekr.20031218072017.1577:putTnode
     #@+node:ekr.20031218072017.1575:putTnodes

@@ -3196,7 +3196,7 @@ class OutlineCanvas(gtk.DrawingArea):
                 ## if p.isExpanded() and p.hasFirstChild():
 
                 v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
+                if v.statusBits & v.expandedBit and v.hasChildren(): ### v.t._firstChild:
                 #@nonl
                 #@-node:bob.20080117104810.12:<< if p.isExpanded() and p.hasFirstChild():>>
                 #@nl
@@ -3565,7 +3565,7 @@ class OutlineCanvas(gtk.DrawingArea):
                 ## if p.isExpanded() and p.hasFirstChild():
 
                 v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
+                if v.statusBits & v.expandedBit and v.hasChildren(): ### v.t._firstChild:
                 #@nonl
                 #@-node:bob.20080117104810.12:<< if p.isExpanded() and p.hasFirstChild():>>
                 #@nl

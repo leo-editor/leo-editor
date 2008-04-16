@@ -376,7 +376,7 @@ class atFile:
         # Create a dummy vnode as the root.
         fileName='check-derived-file'
         root_t = leoNodes.tnode()
-        root_v = leoNodes.vnode(root_t)
+        root_v = leoNodes.vnode(context=c,t=root_t)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
         thinFile = at.scanHeaderForThin (theFile,fileName)
@@ -1036,7 +1036,7 @@ class atFile:
                 body = g.toUnicode(body,g.app.tkEncoding) # 9/28/03
 
                 if at.importing:
-                    child.t.bodyString = body
+                    child.t._bodyString = body
                 else:
                     child.t.tempBodyString = body
 
@@ -1447,7 +1447,7 @@ class atFile:
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
             parent = at.lastThinNode
-            child = leoNodes.vnode(t)
+            child = leoNodes.vnode(context=c,t=t)
             t.vnodeList.append(child)
             child.linkAsNthChild(parent,parent.numberOfChildren())
             # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
@@ -1846,7 +1846,7 @@ class atFile:
         s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
 
         if at.importing:
-            at.t.bodyString = s
+            at.t._bodyString = s
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
@@ -1890,7 +1890,7 @@ class atFile:
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
-                    at.t.bodyString = s # Just setting at.t.tempBodyString won't work here.
+                    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
                     at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
@@ -2554,7 +2554,8 @@ class atFile:
         self.error(message)
 
         # Bug fix: 12/10/05: Delete all of root's tree.
-        self.root.v.t._firstChild = None
+        ### self.root.v.t.   = None
+        self.root.children = []
         self.root.setOrphan()
         self.root.setDirty()
     #@-node:ekr.20041005105605.127:readError
@@ -2678,7 +2679,7 @@ class atFile:
             #@-at
             #@@c
 
-            s = root.v.t.bodyString
+            s = root.v.t._bodyString
             tag = "@first"
             i = 0
             while g.match(s,i,tag):
@@ -2739,7 +2740,7 @@ class atFile:
             #@@c
 
             tag = "@last"
-            lines = string.split(root.v.t.bodyString,'\n')
+            lines = string.split(root.v.t._bodyString,'\n')
             n = len(lines) ; j = k = n - 1
             # Don't write an empty last line.
             if j >= 0 and len(lines[j])==0:
@@ -3288,7 +3289,7 @@ class atFile:
 
         """Do all writes except asis writes."""
 
-        at = self ; s = g.choose(fromString,fromString,root.v.t.bodyString)
+        at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
 
         root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
         root.clearVisitedInTree()

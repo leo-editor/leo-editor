@@ -349,7 +349,7 @@ class undoer:
 
         u.cutStack()
     #@-node:ekr.20031218072017.3616:setUndoTypes
-    #@+node:EKR.20040530121329:u.restoreTree & helpers
+    #@+node:EKR.20040530121329:u.restoreTree & helpers (uses v._parent)
     def restoreTree (self,treeInfo):
 
         """Use the tree info to restore all vnode and tnode data,
@@ -383,19 +383,19 @@ class undoer:
 
         t = bunch.t
 
-        t.headString  = bunch.headString
-        t.bodyString  = bunch.bodyString
+        t._headString  = bunch.headString
+        t._bodyString  = bunch.bodyString
         t.vnodeList   = bunch.vnodeList
         t.statusBits  = bunch.statusBits
-        t._firstChild = bunch.firstChild
+        ### t._firstChild = bunch.firstChild
 
         uA = bunch.get('unknownAttributes')
         if uA is not None:
             t.unknownAttributes = uA
             t._p_changed = 1
     #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
-    #@-node:EKR.20040530121329:u.restoreTree & helpers
-    #@+node:EKR.20040528075307:u.saveTree & helpers
+    #@-node:EKR.20040530121329:u.restoreTree & helpers (uses v._parent)
+    #@+node:EKR.20040528075307:u.saveTree & helpers (uses v._parent)
     def saveTree (self,p,treeInfo=None):
 
         """Return a list of tuples with all info needed to handle a general undo operation."""
@@ -469,11 +469,11 @@ class undoer:
 
         bunch = g.Bunch(
             t = t,
-            headString = t.headString,
-            bodyString = t.bodyString,
+            headString = t._headString,
+            bodyString = t._bodyString,
             vnodeList  = t.vnodeList[:],
             statusBits = t.statusBits,
-            firstChild = t._firstChild,
+            ### firstChild = t._firstChild,
         )
 
         if hasattr(t,'unknownAttributes'):
@@ -481,7 +481,7 @@ class undoer:
 
         return bunch
     #@-node:ekr.20050415170812.1:createTnodeUndoInfo
-    #@-node:EKR.20040528075307:u.saveTree & helpers
+    #@-node:EKR.20040528075307:u.saveTree & helpers (uses v._parent)
     #@+node:ekr.20050525151449:u.trace
     def trace (self):
 
@@ -736,7 +736,7 @@ class undoer:
             for bunch2 in beforeTree:
                 t = bunch2.t
                 afterTree.append(
-                    g.Bunch(t=t,head=t.headString[:],body=t.bodyString[:]))
+                    g.Bunch(t=t,head=t._headString[:],body=t._bodyString[:]))
             bunch.afterTree=afterTree
             # g.trace(afterTree)
 

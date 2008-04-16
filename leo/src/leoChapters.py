@@ -993,7 +993,7 @@ class chapter:
 
         if 0:
             self.error('***** chapter: %s findPositionInChapter: lost %s' % (
-                self.name,p1.v.t.headString))
+                self.name,p1.v.t._headString))
             g.trace(g.callers())
 
         return self.p.copy()
