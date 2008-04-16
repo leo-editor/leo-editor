@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080121105857" str_leo_pos="15,6"><vh>Startup</vh>
+<v t="ekr.20080121105857" str_leo_pos="15"><vh>Startup</vh>
 <v t="ekr.20080121105230.3"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
@@ -5623,7 +5623,7 @@
 <v t="ekr.20080329224906.5"><vh>To do</vh></v>
 </v>
 <v t="ekr.20080121143612"><vh>Komodo test script</vh>
-<v t="ekr.20080331170945.1" a="E"><vh>&lt;&lt; imports &gt;&gt;</vh>
+<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
 <v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20080331170945.2"><vh>doLog</vh></v>
@@ -5631,8 +5631,8 @@
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
 <v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
 </v>
-<v t="ekr.20080416071842.2" a="E"><vh>@asis komodo-test.py</vh>
-<v t="ekr.20080416071842.4"><vh>addKomodPaths</vh></v>
+<v t="ekr.20080416071842.2"><vh>@asis komodo-test.py</vh>
+<v t="ekr.20080416071842.4"><vh>addKomodoPaths</vh></v>
 <v t="ekr.20080416071842.11"><vh>complete imports</vh></v>
 <v t="ekr.20080416071842.5"><vh>doLog</vh></v>
 <v t="ekr.20080416071842.6"><vh>doTrigger</vh></v>
