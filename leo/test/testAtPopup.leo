@@ -595,7 +595,14 @@ The following button are provided:
 print
 print
 </t>
-<t tx="bobjack.20080413173856.9">assert hasattr(c, 'context_menus'), \
+<t tx="bobjack.20080413173856.9">@
+This test checks the integrity of the rClick menu tables stored in
+c.context_menus. It can be copied to other leo files and used to check
+that scripts which modify the menus are at least producing valid menus.
+
+This node can be run using execute-script as well as the unit test command.
+@c
+assert hasattr(c, 'context_menus'), \
     'c has no context menus'
 
 menus = c.context_menus
@@ -603,39 +610,40 @@ assert isinstance(menus, dict), \
     'c.context_menus must be a dictionary'
 
 def test_menu_list(menu_table):
-    
+
      for item in menu_table:
-      
+
         assert isinstance(item, tuple) and len(item)==2,\
             'items in menu_tables must be tuples of length two'
-    
+
         label, cmd = item
         assert isinstance(label, basestring),\
             'the label for a menu_table item must be a string'
-        
+
         if isinstance(cmd, list):
             test_menu_list(cmd)
-            
+
         else:
             assert  isinstance(cmd, basestring) \
             or callable(cmd) or cmd is None, \
                 'the command for a mentu_table item must be None,' + \
                 'a list, a string, or a callable object.'
-   
+
 for key, value in menus.iteritems():
-    
+
     assert isinstance(key, basestring),\
         'keys for c.context_menus must be strings'
-        
+
     assert isinstance(value, list),\
         'values for c.context_menus must be lists'
-    
+
     test_menu_list(value)
-            
-        
-            
-        
-            </t>
+
+
+
+
+
+</t>
 <t tx="bobjack.20080413173856.10">menu_name = u'unit-test-one'
 
 assert menu_name in c.context_menus, \
