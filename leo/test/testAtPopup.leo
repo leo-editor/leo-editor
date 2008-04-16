@@ -32,10 +32,11 @@
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080414143159.2"><vh>Howto . . . </vh>
-<v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands</vh>
+<v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands 1</vh>
 <v t="bobjack.20080414143159.4"><vh>&lt;&lt;description of the contents of keywords&gt;&gt;</vh></v>
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
 </v>
+<v t="bobjack.20080415130112.2"><vh>. . . Write Generator Commands 2</vh></v>
 <v t="bobjack.20080414155140.2"><vh>. . . Use Radio Buttons</vh></v>
 <v t="bobjack.20080415090247.2"><vh>. . . Use Check Buttons</vh></v>
 </v>
@@ -384,9 +385,9 @@ g.es('removed select-all from ALL edit-menus', color='blue')</t>
 <t tx="bobjack.20080401143613.2"></t>
 <t tx="bobjack.20080401143613.3"></t>
 <t tx="bobjack.20080401143613.4">@
-Remove the '@item headline menu' node to leave an '@popup headline' node with no childeren to restore the standard tree popup menu.
+Remove the '@item headline menu' node to leave an '@popup headline' node with no children to restore the standard tree popup menu.
  
-Alternativly, setting
+Alternatively, setting
 
     c.context_menus['headline'] = []
     
@@ -403,11 +404,11 @@ will also restore the leo standard popup menu. Highlight the code above and exec
 <t tx="bobjack.20080401213500.2">find_change_text_menu</t>
 <t tx="bobjack.20080401214039.1"></t>
 <t tx="bobjack.20080401214039.2">@
-Icon box menus will be disabled by cleo or other plugind using the same hook.
+Icon box menus will be disabled by cleo or other plugins using the same hook.
 
-Remove the '@item iconbox menu' node to leave an '@popup iconbox' node with no childeren to restore the standard tree popup menu.
+Remove the '@item iconbox menu' node to leave an '@popup iconbox' node with no children to restore the standard tree popup menu.
  
-Alternativly, setting
+Alternatively, setting
 
     c.context_menus['iconbox'] = []
     
@@ -522,7 +523,7 @@ def report_item_clicked(tag, keywords):
     which contains all the information about the right click
     that posted the menu that this event derives from.
 
-    mb_keywords tells which widget the right click occured in,
+    mb_keywords tells which widget the right click occurred in,
     among other things.
     """
 
@@ -586,7 +587,7 @@ The following button are provided:
         change over time.
     </t>
 <t tx="bobjack.20080413173856.2"></t>
-<t tx="bobjack.20080413173856.3">Test that single character items translaate correctly.</t>
+<t tx="bobjack.20080413173856.3">Test that single character items translate correctly.</t>
 <t tx="bobjack.20080413173856.4">separator</t>
 <t tx="bobjack.20080413173856.5">column break</t>
 <t tx="bobjack.20080413173856.6">comment</t>
@@ -594,7 +595,14 @@ The following button are provided:
 print
 print
 </t>
-<t tx="bobjack.20080413173856.9">assert hasattr(c, 'context_menus'), \
+<t tx="bobjack.20080413173856.9">@
+This test checks the integrity of the rClick menu tables stored in
+c.context_menus. It can be copied to other leo files and used to check
+that scripts which modify the menus are at least producing valid menus.
+
+This node can be run using execute-script as well as the unit test command.
+@c
+assert hasattr(c, 'context_menus'), \
     'c has no context menus'
 
 menus = c.context_menus
@@ -602,39 +610,40 @@ assert isinstance(menus, dict), \
     'c.context_menus must be a dictionary'
 
 def test_menu_list(menu_table):
-    
+
      for item in menu_table:
-      
+
         assert isinstance(item, tuple) and len(item)==2,\
             'items in menu_tables must be tuples of length two'
-    
+
         label, cmd = item
         assert isinstance(label, basestring),\
             'the label for a menu_table item must be a string'
-        
+
         if isinstance(cmd, list):
             test_menu_list(cmd)
-            
+
         else:
             assert  isinstance(cmd, basestring) \
             or callable(cmd) or cmd is None, \
                 'the command for a mentu_table item must be None,' + \
                 'a list, a string, or a callable object.'
-   
+
 for key, value in menus.iteritems():
-    
+
     assert isinstance(key, basestring),\
         'keys for c.context_menus must be strings'
-        
+
     assert isinstance(value, list),\
         'values for c.context_menus must be lists'
-    
+
     test_menu_list(value)
-            
-        
-            
-        
-            </t>
+
+
+
+
+
+</t>
 <t tx="bobjack.20080413173856.10">menu_name = u'unit-test-one'
 
 assert menu_name in c.context_menus, \
@@ -666,8 +675,8 @@ for kind, argument, item in zip(
 </t>
 <t tx="bobjack.20080413191217.5">Test @item *minibuffer-command-items translate correctly.
 
-If there are spaces befor and after the text in the headline, then this
-is delibrate, do not remove theme.</t>
+If there are spaces before and after the text in the headline, then this
+is deliberate, do not remove theme.</t>
 <t tx="bobjack.20080413191217.6">bad</t>
 <t tx="bobjack.20080413191217.7">bad
 
@@ -824,10 +833,11 @@ leoTest.doTests(c,all=True)
 </t>
 <t tx="bobjack.20080414143159.2"></t>
 <t tx="bobjack.20080414143159.3">@
-How to write generator commands.
-================================
+How to write generator commands version 1.
+==========================================
 
-After reading this node you can use Execute Script on it to see the example code in action.
+After reading this node you can use Execute Script on it to see the example code
+in action.
 
 A generator command is a minibuffer command that is used to add items to a right
 click menu at the time it is being created. They are only of use in @popup trees
@@ -841,10 +851,10 @@ A generator command can be used in @popup trees like this::
 Notice there is only a single * after the @item in the headline, and the name of
 the command is in the first line of the body.
 
-We will now write a simple command 'demo-editor-items' which will add menu items
-to add a new editor and delete an editor preceeded by a separator. Of course we
-wouldn't want to write a command to do this normally but we have to start
-somewhere.
+We will now write a simple minibuffer command 'demo-editor-items' which will add
+menu items to add a new editor and delete an editor preceded by a separator. Of
+course we wouldn't want to write a command to do this normally but we have to
+start somewhere.
 
 First of all define the function that will be used for the command.
 
@@ -924,7 +934,7 @@ keywords['event']:
 
 keywords['rc_rmenu']:
 
-     The gui menu widget that has been genereated from previous items.
+     The gui menu widget that has been generated from previous items.
 
      This menu may be changed.
 
@@ -951,7 +961,7 @@ Include another menu in this menu.
 Start another column in a menu.
 @item |  (body: a comment)          or ('|', 'a comment')
 
-Insert a seperator.
+Insert a separator.
 @item  -  (body: a comment)         or ('-', 'a comment')
 
 Comment - this item is ignored.
@@ -966,13 +976,15 @@ Minibuffer Command with no label.
 
 Submenu.
 @menu menu label (body: &lt;empty&gt;     or ('menu label', [ &lt;menu_list&gt; ])
-    
- </t>
+
+
+</t>
 <t tx="bobjack.20080414155140.2">@
 How to use radio buttons.
 =========================
 
-After reading this node you can use Execute Script on it to see the example code in action.
+After reading this node you can use Execute Script on it to see the example code
+in action.
 
 Radio buttons can be placed in @popup menus using the following form::
 
@@ -982,24 +994,24 @@ Radio buttons can be placed in @popup menus using the following form::
                                     group = demo-group
                                     name = demo-radio-button-one
 
-Notice that 'Demo Radio One' which is the first line of the body is used as the label
-for the radio button. The second line of the body identifies this as a radio
-button, the third line says which group the button belongs too and the fourth line
-identifies this button uniquly within the group 'demo-group'.
+Notice that 'Demo Radio One' which is the first line of the body is used as the
+label for the radio button. The second line of the body identifies this as a
+radio button, the third line says which group the button belongs too and the
+fourth line identifies this button uniquely within the group 'demo-group'.
 
-The three lines with '=' in can appear in any order, space around the '=' will be
-deleted.
+The three lines with '=' in can appear in any order, space around the '=' will
+be deleted. Any other text such as comments may appear in the body, any line
+without an '=' will be ignored as will any line with '#' as the first character.
 
-Any other text such as comments may appear in the body, any line without an '='
-will be ignored as will any line with '#' as the first character.
-
-Radio groups can be spread over many different menus.
+Button belonging to the same radio group can be appear in many different menus.
+Button having the same name and belonging to the same group are effectively the
+same button, regardless of what menu or how many menus they appear in.
 
 Here we will insert three radio buttons into the second position of the body menu.
 
 Notice that in the menu tables the label is the first item of the tuple and the
-minibuffer command 'rclick' button  is the first line of the second item of the tuple.
-This is done so that @item in @popup menus are compatible with @item in @menus.
+minibuffer command 'rclick' button is the first line of the second item of the
+tuple, which may be the opposite of what you expect.
 
 @c
 new_items = [
@@ -1026,6 +1038,9 @@ new_items = [
 
 ]
 
+# Insert the menu items into the second position of the 'body' menu.
+# Notice we must change the menu in situ.
+
 c.context_menus['body'][1:1] = new_items
 
 # Choose the button we want selected initially
@@ -1044,7 +1059,7 @@ def demo_radio_callback(self, keywords):
     if kind == 'radio' and group=='demo-group':
          g.es("Demo Radio Group Selected['%s']"%selected)
 
-# register the callback to recieve notification of rclick button events
+# register the callback to receive notification of rclick button events
 
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_radio_callback)
@@ -1091,13 +1106,14 @@ Check buttons can be placed in @popup menus using the following form::
 Notice that 'Demo Check One' which is the first line of the body is used as the label
 for the check button. The second line of the body identifies this as a check
 button, the third line says which group the button belongs too and the fourth line
-identifies this button uniquly within the group 'demo-group'.
+identifies this button uniquely within the group 'demo-group'.
 
-The three lines with '=' in can appear in any order, space around the '=' will be
-deleted.
+The lines with '=' in can appear in any order, space around the '=' will
+be deleted. Any other text such as comments may appear in the body, any line
+without an '=' will be ignored as will any line with '#' as the first character.
 
-Any other text such as comments may appear in the body, any line without an '='
-will be ignored as will any line with '#' as the first character.
+rclick-button check buttons with the same name are effectively the same button, any number
+of identical buttons can appear in any number of menus and submenus.
 
 Here we will insert two check buttons into the second position of the body menu.
 
@@ -1121,7 +1137,12 @@ new_items = [
 
 ]
 
+
+# Insert the menu items into the second position of the 'body' menu.
+# Notice we must change the menu in situ.
+
 c.context_menus['body'][1:1] = new_items
+
 
 # Choose the button we want selected initially
 
@@ -1139,9 +1160,9 @@ def demo_check_callback(self, keywords):
             'kind', 'selected', 'name')]
 
     if kind == 'check' and name in btns:
-         g.es("Demo Check Button[%s] Selected['%s']"%(name, selected))
+         g.es("Demo Check Button[%s] Selected[%s]"%(name, selected))
 
-# register the callback to recieve notification of rclick button events
+# register the callback to receive notification of rclick button events
 
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
@@ -1171,5 +1192,58 @@ leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
 
 </t>
 <t tx="bobjack.20080415093045.2"></t>
+<t tx="bobjack.20080415130112.2">@
+How to write generator commands version 2.
+==========================================
+
+This is an alternative method of writing generator commands. 
+
+First of all define the base function.
+
+@c
+def do_demo_editor_items(keywords):
+
+    menu_table = keywords['rc_menu_table']
+
+    new_items = [
+        ('-', ''),
+        ('Add Editor Test', 'add-editor'),
+        ('Delete Editor Test', 'delete-editor'),
+    ]
+
+    menu_table[:0] = new_items
+
+# Now define a wrapper to convert the minibuffer command event.
+
+def demo_editor_items(event):
+
+    cm = c.theContextMenuController
+    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
+
+c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+
+c.context_menus['body'][1:1] = [('*', 'demo-editor-items')]
+
+@
+The results of this version is exactly the same as the first. The advantage of
+using this method is that the do_demo... function can be used directly in rclick
+menu tables as well as being accessed through the minibuffer commands, the only
+method available in @popup menus
+
+Execute this node as a script.
+
+Right click the body pane to see the new menu items appear.
+
+
+
+
+
+
+
+
+
+
+
+</t>
 </tnodes>
 </leo_file>
