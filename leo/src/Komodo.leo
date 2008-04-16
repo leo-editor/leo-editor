@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080121105857" str_leo_pos="15"><vh>Startup</vh>
+<v t="ekr.20080121105857" str_leo_pos="15,3"><vh>Startup</vh>
 <v t="ekr.20080121105230.3"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
@@ -5615,22 +5615,6 @@
 </v>
 <v t="ekr.20080331182810.3"><vh>other tests</vh></v>
 <v t="ekr.20080331081556.1"><vh>@asis komodo-test-data.py</vh></v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
-<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
-<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
-<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
-<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
-<v t="ekr.20080329224906.5"><vh>To do</vh></v>
-</v>
-<v t="ekr.20080121143612"><vh>Komodo test script</vh>
-<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
-<v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080331170945.2"><vh>doLog</vh></v>
-<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
-<v t="ekr.20080331170945.3"><vh>scan</vh></v>
-<v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
-</v>
 <v t="ekr.20080416071842.2"><vh>@asis komodo-test.py</vh>
 <v t="ekr.20080416071842.4"><vh>addKomodoPaths</vh></v>
 <v t="ekr.20080416071842.11"><vh>complete imports</vh></v>
@@ -5640,6 +5624,22 @@
 <v t="ekr.20080416071842.7"><vh>scan</vh></v>
 <v t="ekr.20080416071842.8"><vh>scanComplete</vh></v>
 <v t="ekr.20080416071842.10"><vh>top-level</vh></v>
+</v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
+<v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
+<v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080331170945.2"><vh>doLog</vh></v>
+<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
+<v t="ekr.20080331170945.3"><vh>scan</vh></v>
+<v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -59685,7 +59685,7 @@ def scan(mgr):
 
     # Print the data.
     s = file(path).read()
-     if trace:
+    if trace:
         print '%s...' % path
         print '\n%s\n' % s
         print ; print 'end %s' % path ; print
