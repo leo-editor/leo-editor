@@ -8,9 +8,11 @@
 
 When properly installed, this plugin does the following:
 
-- Double clicking on a node's icon opens that node in VIM. You can open nodes in
-VIM with a single-click if you set useDoubleClick = False. However, that
-interfere's with Leo's dragging logic.
+- Double clicking on a node's icon opens that node in VIM. You can open nodes in VIM with a single-click if you set useDoubleClick = False. However, that interfere's with Leo's dragging logic.
+
+- Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
+
+- Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
 
 - Leo will update the node in the outline when you save the file in VIM.
 
@@ -20,10 +22,7 @@ To install this plugin do the following:
 
 2. Set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo.
 
-3. If you are using Python 2.4 or above, that's all you need to do. Jim
-Sizelove's new code will start vim automatically using Python's subprocess
-module. The subprocess module comes standard with Python 2.4. For Linux systems,
-Leo will use subprocess.py in Leo's extensions folder if necessary.
+3. If you are using Python 2.4 or above, that's all you need to do. Jim Sizelove's new code will start vim automatically using Python's subprocess module. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
 
 On Windows, you can install Python's subprocess module in Python 2.2 or 2.3 as follows:
 

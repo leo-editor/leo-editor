@@ -1,10 +1,12 @@
 #@+leo-ver=4-thin
 #@+node:TL.20080221123824.2:@thin mod_tempfname.py
-"""Replace Commands.openWithTempFilePath so Leo opens temporary
+"""Replace Commands.openWithTempFilePath to create alternate temporary
+directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and
 located in a "username_Leo" subdirectory of the temporary
-directory. The "LeoTemp" prefix is omitted.  This makes it easier to
-see which temporary file is related to which outline node."""
+directory. The "LeoTemp" prefix is omitted.  If 'open_with_clean_filenames' is
+set to true then subdirectories mirror the node's hierarchy in Leo. Either method
+makes it easier to see which temporary file is related to which outline node."""
 
 #@@language python
 #@@tabwidth -4
