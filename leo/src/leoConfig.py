@@ -29,7 +29,8 @@ class parserBaseClass:
         'float','path','ratio','shortcut','string','strings']
 
     control_types = [
-        'abbrev','buttons','commands','data','enabledplugins','font','if','ifgui','ifplatform','ignore','mode',
+        'abbrev','buttons','commands','data','enabledplugins','font',
+        'if','ifgui','ifhostname','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
         'popup', # New in Leo 4.4.8.
@@ -64,6 +65,7 @@ class parserBaseClass:
             'font':         self.doFont,
             'if':           self.doIf,
             # 'ifgui':        self.doIfGui,  # Removed in 4.4 b3.
+            'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
             'ignore':       self.doIgnore,
             'int':          self.doInt,
@@ -279,6 +281,29 @@ class parserBaseClass:
             else:
                 return "skip"
     #@-node:ekr.20041121125416:doIfGui
+    #@+node:dan.20080410121257.2:doIfHostname
+    def doIfHostname (self,p,kind,name,val):
+        """headline: @ifhostname bob,!harry,joe
+
+        Logical AND with the comma-separated list of host names, NO SPACES.
+
+        descends this node iff:
+            h = os.environ('HOSTNAME')
+            h == 'bob' and h != 'harry' and h == 'joe'"""
+
+        __pychecker__ = '--no-argsused' # args not used.
+
+        h = g.computeMachineName()
+        names = name.split(',')
+
+        for n in names:
+            if (n[0] == '!' and h == n[1:]) or (h != n):
+                # g.trace('skipping', name)
+                return 'skip'
+
+        return None
+
+    #@-node:dan.20080410121257.2:doIfHostname
     #@+node:ekr.20041120104215:doIfPlatform
     def doIfPlatform (self,p,kind,name,val):
 
@@ -1061,6 +1086,7 @@ class configClass:
         self.modeCommandsDict = {} # For use by @mode logic. Keys are command names, values are g.Bunches.
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
+        self.machineConfigFile = None
         self.recentFilesFiles = [] # List of g.Bunches describing .leoRecentFiles.txt files.
         self.write_recent_files_as_needed = False # Will be set later.
         self.silent = g.app.silentMode
@@ -1145,17 +1171,21 @@ class configClass:
     #@+node:ekr.20041117083857:initSettingsFiles
     def initSettingsFiles (self):
 
-        """Set self.globalConfigFile, self.homeFile, self.machineConfigFile and self.myConfigFile."""
+        """Set self.globalConfigFile, self.homeFile, self.myGlobalConfigFile,
+        self.myHomeConfigFile, and self.machineConfigFile."""
 
         settingsFile = 'leoSettings.leo'
         mySettingsFile = 'myLeoSettings.leo'
-        machineConfigFile = self.getMachineName()
+        machineConfigFile = g.computeMachineName() + 'LeoSettings.leo'
 
         for ivar,theDir,fileName in (
             ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
             ('homeFile',            g.app.homeDir,          settingsFile),
             ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
+            #non-prefixed names take priority over prefixed names
+            ('myHomeConfigFile',    g.app.homeDir,          g.app.homeSettingsPrefix + mySettingsFile),
             ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+            ('machineConfigFile',   g.app.homeDir,          g.app.homeSettingsPrefix + machineConfigFile),
             ('machineConfigFile',   g.app.homeDir,          machineConfigFile),
         ):
             # The same file may be assigned to multiple ivars:
@@ -1163,35 +1193,17 @@ class configClass:
             path = g.os_path_join(theDir,fileName)
             if g.os_path_exists(path):
                 setattr(self,ivar,path)
-            else:
-                setattr(self,ivar,None)
+            #else:
+                #if the path does not exist, only set to None if the ivar isn't already set.
+                #dan: IMO, it's better to set the defaults to None in configClass.__init__().
+                #     This avoids the creation of ivars in odd (non __init__) places.
+                #setattr(self,ivar, getattr(self,ivar,None))
         if 0:
             g.trace('global file:',self.globalConfigFile)
             g.trace('home file:',self.homeFile)
             g.trace('myGlobal file:',self.myGlobalConfigFile)
             g.trace('myHome file:',self.myHomeConfigFile)
     #@nonl
-    #@+node:ekr.20071211112804:getMachineName
-    def getMachineName (self):
-
-        try:
-            import os
-            name = os.getenv('HOSTNAME')
-            if not name:
-                name = os.getenv('COMPUTERNAME')
-            if not name:
-                import socket
-                name = socket.gethostname()
-        except Exception:
-            name = ''
-
-        if name:
-            name +='LeoSettings.leo'
-
-        # g.trace(name)
-
-        return name
-    #@-node:ekr.20071211112804:getMachineName
     #@-node:ekr.20041117083857:initSettingsFiles
     #@-node:ekr.20041117083202:Birth... (g.app.config)
     #@+node:ekr.20041117081009:Getters... (g.app.config)
@@ -1210,6 +1222,8 @@ class configClass:
     munge = canonicalizeSettingName
     #@-node:ekr.20041123070429:canonicalizeSettingName (munge)
     #@+node:ekr.20041123092357:config.findSettingsPosition
+    # This was not used prior to Leo 4.5.
+
     def findSettingsPosition (self,c,setting):
 
         """Return the position for the setting in the @settings tree for c."""
@@ -1224,7 +1238,7 @@ class configClass:
 
         for p in root.subtree_iter():
             h = munge(p.headString())
-            if h == setting:
+            if h.startswith(setting):
                 return p.copy()
 
         return c.nullPosition()

@@ -325,6 +325,10 @@ class leoTkinterTree (leoFrame.leoTree):
         self.freeText = [] # New in 4.4b2: a list of free Tk.Text widgets
 
         self.freeUserIcons = []
+
+        self._block_canvas_menu = False
+
+
     #@-node:ekr.20040803072955.16:__init__ (tkTree)
     #@+node:ekr.20051024102724:tkTtree.setBindings & helper
     def setBindings (self,):
@@ -376,6 +380,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         canvas.bind('<Key>',k.masterKeyHandler)
         canvas.bind('<Button-1>',self.onTreeClick)
+        canvas.bind('<Button-3>',self.onTreeRightClick)
 
         #@    << make bindings for tagged items on the canvas >>
         #@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
@@ -389,6 +394,10 @@ class leoTkinterTree (leoFrame.leoTree):
             ('iconBox','<Double-3>',self.onIconBoxRightClick),
             ('iconBox','<B1-Motion>',self.onDrag),
             ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
+
+            ('plusBox','<Button-3>', self.onPlusBoxRightClick),
+            ('plusBox','<Button-1>', self.onClickBoxClick),
+            ('clickBox','<Button-3>',  self.onClickBoxRightClick),
         )
         for tag,event,callback in table:
             canvas.tag_bind(tag,event,callback)
@@ -1141,11 +1150,14 @@ class leoTkinterTree (leoFrame.leoTree):
                     anchor="nw",image=image)
 
                 tag='userIcon-%s' % theId
-                self.canvas.itemconfigure(theId,tag=tag)
+                self.canvas.itemconfigure(theId,tag=(tag,'userIcon')) #BJ
                 self.ids[theId] = p.copy()
 
                 def deleteButtonCallback(event=None,c=c,p=p,fullname=fullname,relPath=relPath):
+                    #g.trace()
                     c.editCommands.deleteIconByName(p,fullname,relPath)
+                    self._block_canvas_menu = True
+                    return 'break'
 
                 self.canvas.tag_bind(tag,'<3>',deleteButtonCallback)
 
@@ -1219,12 +1231,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         canvas.lower("lines")  # Lowest.
         canvas.lift("textBox") # Not the Tk.Text widget: it should be low.
-        canvas.lift("userIcon")
-        canvas.lift("plusBox")
+
         canvas.lift("clickBox")
         canvas.lift("clickExpandBox")
-        canvas.lift("iconBox") # Higest.
-
+        canvas.lift("iconBox") # Higest. BJ:Not now
+        canvas.lift("plusBox")
+        canvas.lift("userIcon")
         self.redrawing = False
     #@-node:ekr.20040803072955.52:drawTopTree
     #@+node:ekr.20040803072955.53:drawTree
@@ -1637,6 +1649,30 @@ class leoTkinterTree (leoFrame.leoTree):
         finally:
             c.endUpdate()
     #@-node:ekr.20040803072955.79:onClickBoxClick
+    #@+node:bobjack.20080401090801.2:onClickBoxRightClick
+    def onClickBoxRightClick(self, event, p=None):
+        #g.trace()
+        return 'break'
+    #@nonl
+    #@-node:bobjack.20080401090801.2:onClickBoxRightClick
+    #@+node:bobjack.20080401090801.4:onPlusBoxRightClick
+    def onPlusBoxRightClick(self, event, p=None):
+
+        #g.trace()
+
+        self._block_canvas_menu = True
+
+        if not p: p = self.eventToPosition(event)
+        if not p: return
+
+        self.OnActivateHeadline(p)
+        self.endEditLabel()
+
+        g.doHook('rclick-popup',
+            c=self.c, p=p, event=event, context_menu='plusbox')
+
+        return 'break'
+    #@-node:bobjack.20080401090801.4:onPlusBoxRightClick
     #@-node:ekr.20040803072955.78:Click Box...
     #@+node:ekr.20040803072955.99:Dragging (tkTree)
     #@+node:ekr.20041111115908:endDrag
@@ -1836,6 +1872,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Handle a right click in any outline widget."""
 
+        #g.trace()
+
         c = self.c
 
         if not p: p = self.eventToPosition(event)
@@ -1847,11 +1885,13 @@ class leoTkinterTree (leoFrame.leoTree):
             if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
                 self.OnActivateHeadline(p)
                 self.endEditLabel()
-                self.OnPopup(p,event)
+                if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
+                    self.OnPopup(p,event)
             g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
 
+        self._block_canvas_menu = True
         return 'break'
     #@-node:ekr.20040803072955.89:onIconBoxRightClick
     #@+node:ekr.20040803072955.82:onIconBoxDoubleClick
@@ -2001,7 +2041,8 @@ class leoTkinterTree (leoFrame.leoTree):
             if not g.doHook("headrclick1",c=c,p=p,v=p,event=event):
                 self.OnActivateHeadline(p)
                 self.endEditLabel()
-                self.OnPopup(p,event)
+                if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='headline'):
+                    self.OnPopup(p,event)
             g.doHook("headrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("headrclick")
@@ -2204,6 +2245,18 @@ class leoTkinterTree (leoFrame.leoTree):
 
         return 'break'
     #@-node:ekr.20051022141020:onTreeClick
+    #@+node:bobjack.20080401090801.3:onTreeRightClick
+    def onTreeRightClick(self, event=None):
+
+        #g.trace()
+
+        if self._block_canvas_menu:
+            self._block_canvas_menu = False
+            return 'break'
+
+        g.doHook('rclick-popup', c=self.c, event=event, context_menu='canvas')
+        return 'break'
+    #@-node:bobjack.20080401090801.3:onTreeRightClick
     #@-node:ekr.20040803072955.71:Event handlers (tkTree)
     #@+node:ekr.20040803072955.118:Incremental drawing...
     #@+node:ekr.20040803072955.119:allocateNodes

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="248" height="967" width="865"/>
+	<global_window_position top="-4" left="244" height="967" width="863"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080121105857"><vh>Startup</vh>
+<v t="ekr.20080121105857" str_leo_pos="15,3"><vh>Startup</vh>
 <v t="ekr.20080121105230.3"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
@@ -19,7 +19,7 @@
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
 <v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080121133057" a="E"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
 <v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
 <v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
@@ -5614,7 +5614,17 @@
 </v>
 </v>
 <v t="ekr.20080331182810.3"><vh>other tests</vh></v>
-<v t="ekr.20080331081556.1"><vh>@asis ../test/komodo-test.py</vh></v>
+<v t="ekr.20080331081556.1"><vh>@asis komodo-test-data.py</vh></v>
+<v t="ekr.20080416071842.2"><vh>@asis komodo-test.py</vh>
+<v t="ekr.20080416071842.4"><vh>addKomodoPaths</vh></v>
+<v t="ekr.20080416071842.11"><vh>complete imports</vh></v>
+<v t="ekr.20080416071842.5"><vh>doLog</vh></v>
+<v t="ekr.20080416071842.6"><vh>doTrigger</vh></v>
+<v t="ekr.20080416071842.9"><vh>main</vh></v>
+<v t="ekr.20080416071842.7"><vh>scan</vh></v>
+<v t="ekr.20080416071842.8"><vh>scanComplete</vh></v>
+<v t="ekr.20080416071842.10"><vh>top-level</vh></v>
+</v>
 <v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
 <v t="ekr.20080329224906.1"><vh>Usage</vh></v>
 <v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
@@ -5627,12 +5637,10 @@
 <v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20080331170945.2"><vh>doLog</vh></v>
-<v t="ekr.20080331182810.4" a="TV"><vh>doTrigger</vh></v>
+<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
 <v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
 </v>
-<v t="ekr.20080331170945.3"><vh>scan</vh></v>
-<v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20080121105230.3"></t>
@@ -59196,7 +59204,7 @@ mgr.upgrade() # Can use mgr.db.upgrade methods for finer control.
 mgr.initialize()
 
 try:
-    scan()
+    scan(mgr)
 finally:
     mgr.finalize()
     print 'done'
@@ -59662,7 +59670,7 @@ from codeintel2.common import EvalController</t>
 </t>
 <t tx="ekr.20080331170945.3"># From example code in codeintel2.__init__.py
 
-def scan():
+def scan(mgr):
 
     trace = True
     path = g.os_path_normpath(g.os_path_join(g.app.loadDir,'..','test','komodo-test.py'))
@@ -59677,7 +59685,10 @@ def scan():
 
     # Print the data.
     s = file(path).read()
-    if trace: print '\n%s\n' % s
+    if trace:
+        print '%s...' % path
+        print '\n%s\n' % s
+        print ; print 'end %s' % path ; print
 
     # Find all trigger points.
     for i in xrange(1,len(s)):
@@ -59710,14 +59721,171 @@ def doTrigger (s,i,trigger,buf,ctlr):
         directories = [b for (a,b) in completions if a == 'directory']
         print 'directories',len(directories)
 
-    global prev_trigger
-    if prev_trigger is None:
-        prev_trigger = trigger
-        print '\n***** modules...'
-        for z in modules: print z
-        print '\n***** directories...'
-        for z in directories: print z
+    if 0: # print all modules and directories.
+        global prev_trigger
+        if prev_trigger is None:
+            prev_trigger = trigger
+            print '\n***** %s modules...' % len(modules)
+            for z in modules: print z
+            print '\n***** %s directories...' % len(directories)
+            for z in directories: print z
 </t>
 <t tx="ekr.20080331182810.5"></t>
+<t tx="ekr.20080416071842.2"># Most imports happen after addKomodoPaths has been defined.
+import os
+import sys
+
+baseKomodoDir = r'C:\Program Files\Komodo Edit 4.3\lib\mozilla\python'
+
+</t>
+<t tx="ekr.20080416071842.4">def addKomodoPaths ():
+
+    '''Add paths to sys.path so Komodo imports will work.'''
+    paths = (
+        r'komodo', # For ciElementree.pyd
+        r'komodo\codeintel2',
+        r'komodo\codeintel2\catalogs',
+        r'komodo\codeintel2\database',
+        r'komodo\codeintel2\stdlibs',
+        # r'C:\Python25\Lib\site-packages\SilverCity',
+        r'komodo\SilverCity',
+    )
+
+    trace = False
+
+    if trace: print 'sys.path...'
+    for path in paths:
+        path = os.path.join(baseKomodoDir,path)
+        if os.path.exists(path):
+            if path in sys.path:
+                if trace: print('in sys.path',path)
+            else:
+                if trace: print('added',path)
+                sys.path.append(path)
+        else:
+            print('Does not exist: %s' % path)
+
+</t>
+<t tx="ekr.20080416071842.5">def doLog():
+
+    log_level = logging.ERROR
+        # DEBUG, INFO, WARN, ERROR, NOTSET
+
+    log = logging.getLogger('codeintel')
+
+    rootLogger = logging.getLogger('')
+    rootLogger.setLevel(log_level)
+
+    if not log.handlers:
+
+        # Create handler for codeintel logger.
+        formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+        console = logging.StreamHandler()
+        console.setLevel(log_level)
+        console.setFormatter(formatter)
+        log.addHandler(console)
+
+    if 0:
+        log.debug('debug msg.')
+        log.info('info msg.')
+        log.warning('warning msg.')
+        log.error('error msg.')
+
+</t>
+<t tx="ekr.20080416071842.6">prev_trigger = None
+
+def doTrigger (s,i,trigger,buf,ctlr):
+
+    # See also Buffer.async_eval_at_trg()
+    print 'trigger at %3d' % (i),'%33s' % (
+        trigger.name),'%9s' % (repr(s[i: i+5])),
+
+    completions = buf.cplns_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'completions %3s' % (completions and len(completions) or 0),
+
+    calltips = buf.calltips_from_trg(trigger,timeout=None,ctlr=ctlr)
+    print 'calltips %s' % (calltips and len(calltips) or 0),
+
+    if completions:
+        modules = [b for (a,b) in completions if a == 'module']
+        print 'modules',len(modules),
+
+        directories = [b for (a,b) in completions if a == 'directory']
+        print 'directories',len(directories)
+
+    if 0: # print all modules and directories.
+        global prev_trigger
+        if prev_trigger is None:
+            prev_trigger = trigger
+            print '\n***** %s modules...' % len(modules)
+            for z in modules: print z
+            print '\n***** %s directories...' % len(directories)
+            for z in directories: print z
+
+</t>
+<t tx="ekr.20080416071842.7"># From example code in codeintel2.__init__.py
+
+def scan(mgr):
+
+    trace = True
+    # path = os.path.normpath(os.path.join(os.curdir,'..','test','komodo-test-data.py'))
+    path = 'komodo-test-data.py'
+
+    buf = mgr.buf_from_path(path) # Can also get Buffer from content.
+        # Buf is a PythonBuffer (see lang_python), a subclass of CitadelBuffer: see citadel.py
+    buf.scan()
+    buf.load()
+
+    ctlr = EvalController() # Use a common controller.
+    ### tree = buf.tree # A property: scans if necessary.
+
+    # Print the data.
+    s = file(path).read()
+    if trace:
+        print '%s...' % path
+        print '\n%s\n' % s
+        print ; print 'end %s' % path ; print
+
+    # Find all trigger points.
+    for i in xrange(1,len(s)):
+        trigger = buf.trg_from_pos(i,implicit=False)
+        if trigger:
+            doTrigger(s,i,trigger,buf,ctlr)
+
+</t>
+<t tx="ekr.20080416071842.8">def scanComplete(request):
+    '''An event handler, called by the mgr when the scan is complete.'''
+    print ('scanComplete','*'*10,request)
+
+</t>
+<t tx="ekr.20080416071842.9">def main ():
+
+    doLog()
+
+    mgr = Manager(on_scan_complete=scanComplete)
+    mgr.upgrade() # Can use mgr.db.upgrade methods for finer control.
+    mgr.initialize()
+
+    try:
+        scan(mgr)
+    finally:
+        mgr.finalize()
+        print 'done'
+
+</t>
+<t tx="ekr.20080416071842.10">if __name__ == '__main__':
+    print '=' * 40
+    main()
+    print '-' * 40
+</t>
+<t tx="ekr.20080416071842.11"># Don't change the order of these imports.
+addKomodoPaths()
+
+import logging
+from codeintel2.indexer import BatchUpdater
+from codeintel2.manager import Manager
+from codeintel2.common import EvalController
+
+</t>
 </tnodes>
 </leo_file>
