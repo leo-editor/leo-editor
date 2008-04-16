@@ -3177,6 +3177,8 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.153:masterClickHandler
     def masterClickHandler (self,event,func=None):
 
+        g.app.gui.killPopupMenu()
+
         k = self ; c = k.c ; gui = g.app.gui
         if not event: return
         w = event.widget ; wname = c.widget_name(w)
