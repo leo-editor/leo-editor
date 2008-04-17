@@ -1546,9 +1546,12 @@ class configClass:
         # g.trace(c,c.rootPosition())
 
         for p in c.allNodes_iter():
+            # g.trace(c.shortFileName(),p.headString())
             if p.headString().rstrip() == "@settings":
+                # g.trace('**found**',p.headString())
                 return p.copy()
         else:
+            # g.trace('***no @settings found')
             return c.nullPosition()
     #@-node:ekr.20041120074536:settingsRoot
     #@-node:ekr.20041117081009:Getters... (g.app.config)

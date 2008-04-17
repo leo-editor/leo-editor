@@ -77,6 +77,7 @@ class baseCommands:
         self.frame = frame
         t = leoNodes.tnode()
         self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
+        self.hiddenRootNode.setHeadString('<hidden root vnode>')
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -645,7 +646,8 @@ class baseCommands:
             v = leoNodes.vnode(context=c,t=t)
             p = leoNodes.position(v)
             v.initHeadString("NewHeadline")
-            v.moveToRoot(oldRoot=None)
+            ### v.moveToRoot(oldRoot=None)
+            p.moveToRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
             c.editPosition(p)
             # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.

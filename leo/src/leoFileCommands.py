@@ -1947,7 +1947,7 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20040326054052:setPositionsFromStacks (silly)
     #@-node:ekr.20031218072017.3021:Non-sax
-    #@+node:ekr.20060919104530:Sax
+    #@+node:ekr.20060919104530:Sax (reading)
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
     def createSaxVnodes (self, dummyRoot):
 
@@ -1956,22 +1956,22 @@ class baseFileCommands:
         Modify this with extreme care.'''
 
         children = self.createSaxChildren(dummyRoot,parent_v = None)
-        firstChild = children and children[0]
-
-        return firstChild
+        ### firstChild = children and children[0]
+        ### return firstChild
+        return children
     #@nonl
     #@+node:ekr.20060919110638.5:createSaxChildren
     # node is a saxNodeClass object, parent_v is a vnode.
 
-    def createSaxChildren (self, node, parent_v):
+    def createSaxChildren (self, sax_node, parent_v):
 
         result = []
 
-        for child in node.children:
+        for child in sax_node.children:
             tnx = child.tnx
             t = self.tnodesDict.get(tnx)
             if t:
-                # A clone.  Create a new clone node, but share the subtree, i.e., the tnode.
+                # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
                 v = self.createSaxVnode(child,parent_v,t=t)
                 # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
@@ -1981,14 +1981,13 @@ class baseFileCommands:
         self.linkSiblings(result)
         if parent_v: self.linkParentAndChildren(parent_v,result)
         return result
-    #@nonl
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
-    def createSaxVnodeTree (self,node,parent_v):
+    def createSaxVnodeTree (self,sax_node,parent_v):
 
-        v = self.createSaxVnode(node,parent_v)
+        v = self.createSaxVnode(sax_node,parent_v)
 
-        self.createSaxChildren(node,v)
+        self.createSaxChildren(sax_node,v)
 
         return v
     #@nonl
@@ -2045,7 +2044,7 @@ class baseFileCommands:
         d = sax_node.attributes
         s = d.get('a')
         if s:
-            # g.trace('%s a=%s %s' % (id(node),s,v.headString()))
+            # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
             # 'C' (clone) and 'D' bits are not used.
             if 'M' in s: v.setMarked()
             if 'E' in s: v.expand()
@@ -2195,6 +2194,7 @@ class baseFileCommands:
     def parse_leo_file (self,theFile,inputFileName,silent):
 
         c = self.c
+        # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
             # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
@@ -2232,9 +2232,14 @@ class baseFileCommands:
         # self.dumpSaxTree(dummyRoot,dummy=True)
 
         # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-        v = dummyRoot and self.createSaxVnodes(dummyRoot)
-        return v
-    #@nonl
+        if dummyRoot:
+            children = self.createSaxVnodes(dummyRoot)
+            # g.trace('children',children)
+            self.c.hiddenRootNode.children = children
+            v = children and children[0] or None
+            return v
+        else:
+            return None
     #@-node:ekr.20060919110638.3:readSaxFile
     #@+node:ekr.20060919110638.11:resolveTnodeLists
     def resolveTnodeLists (self):
@@ -2300,7 +2305,7 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20061006104837.1:archivedPositionToPosition
     #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
-    #@-node:ekr.20060919104530:Sax
+    #@-node:ekr.20060919104530:Sax (reading)
     #@-node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20031218072017.3032:Writing
     #@+node:ekr.20070413045221.2: Top-level  (leoFileCommands)

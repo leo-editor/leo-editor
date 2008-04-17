@@ -1412,9 +1412,15 @@ class atFile:
             g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
         # See if there is already a child with the proper index.
-        child = at.lastThinNode.firstChild()
-        while child and not indices.areEqual(gnx,child.t.fileIndex):
-            child = child.next()
+        # child = at.lastThinNode.firstChild()
+        # while child and not indices.areEqual(gnx,child.t.fileIndex):
+            # child = child.next()
+        children = at.lastThinNode.children
+        for child in children:
+            if indices.areEqual(gnx,child.t.fileIndex):
+                break
+        else:
+            child = None
 
         if at.cloneSibCount > 1:
             n = at.cloneSibCount ; at.cloneSibCount = 0

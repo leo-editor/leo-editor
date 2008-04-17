@@ -1756,7 +1756,8 @@ def new (self,event=None,gui=None):
         v = leoNodes.vnode(context=c,t=t)
         p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
-        v.moveToRoot(oldRoot=None)
+        ### v.moveToRoot(oldRoot=None)
+        p.moveToRoot(oldRoot=None)
         c.setRootVnode(v) # New in Leo 4.4.2.
         c.editPosition(p)
         # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
