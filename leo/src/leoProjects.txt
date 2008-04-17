@@ -4074,6 +4074,25 @@ def updateFixedStatus (self):
 #@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@+node:ekr.20080416161308.1:This is the graph world
+#@+node:ekr.20080417100013.3:Known problems
+@nocolor
+
+Known problems.
+
+- Clipboard paste probably does not work.
+    - See todo item: calls to v.linkAfter by calls to v.linkAsNthChild.
+
+- Undo probably does not work in all cases:
+    - p.adjustParentLinksInSubtree **does nothing** at present.
+      It may have to be rewritten (if it is still needed)
+
+- The new command does not create the tree properly.
+
+- 9 Unit tests fail.
+
+- More unit tests are needed for the new code.
+#@nonl
+#@-node:ekr.20080417100013.3:Known problems
 #@+node:ekr.20080416161551.189:To do
 @nocolor
 
