@@ -1028,7 +1028,10 @@ class basePosition (object):
 
         # g.trace(p1.headString(),p2 and p2.headString())
 
-        if p2 is not None and p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
+        if p2 is None or p2.v is None:
+            if p1.v is None: return 0 # equal
+            else:            return 1 # not equal
+        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
             return 0 # equal
         else:
             return 1 # not equal
@@ -1038,7 +1041,10 @@ class basePosition (object):
     def isEqual (self,p2):
 
         p1 = self
-        return p2 is not None and p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+        if p2 is None or p2.v is None:
+            return p1.v is None
+        else:
+            return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
 
     equal = isEqual
     #@-node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
