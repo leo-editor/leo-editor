@@ -1220,7 +1220,7 @@ First define the base function.
 
 def do_demo_editor_items(keywords):
 
-    menu_table = None #keywords['rc_menu_table']
+    menu_table = keywords['rc_menu_table']
 
     new_items = [
         ('-', ''),
