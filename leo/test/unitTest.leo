@@ -13418,7 +13418,8 @@ for key in keys1:
         if (
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
-            key.startswith('delete-') and key.endswith('-button')
+            key.startswith('delete-') and key.endswith('-button') or
+            key.startswith('nav-') and key.endswith('-menu')
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:
