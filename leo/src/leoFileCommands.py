@@ -1803,8 +1803,16 @@ class baseFileCommands:
 
         if self.checking: return None,False
 
+        g.trace('parent',parent,'back',back)
+
         if back: # create v after back.
-            v = back.insertAfter(t)
+            # v = back.insertAfter(t)
+            children = parent.t.children
+            if back in children:
+                n = children.index(back)
+            else:
+                n = len(children)-1 # Not correct, but this code is going away soon...
+            v = parent.insertAsNthChild(n+1)
         elif parent: # create v as the parent's first child.
             v = parent.insertAsNthChild(0,t)
         else: # create a root vnode
@@ -1832,7 +1840,6 @@ class baseFileCommands:
         #@nl
         # g.trace(skip,tref,v,v.t,len(v.t.vnodeList))
         return v,skip
-    #@nonl
     #@-node:ekr.20031218072017.1860:createVnode
     #@+node:ekr.20040326063413:getExistingVnode
     def getExistingVnode (self,tref,headline):
@@ -1862,8 +1869,12 @@ class baseFileCommands:
         self.topVnodeStack = []
 
         if self.usingClipboard:
+            g.es_print('Paste Nodes not supported yet',color='red')
+            return ###
             oldRoot = c.rootPosition()
             oldCurrent = c.currentPosition()
+            oldParent = oldCurrent.parent()
+            oldChildIndex = oldCurrent.childIndex()
             if not reassignIndices:
                 #@            << set self.forbiddenTnodes to tnodes than must not be pasted >>
                 #@+node:ekr.20041023105832:<< set self.forbiddenTnodes to tnodes than must not be pasted >>
@@ -1885,12 +1896,18 @@ class baseFileCommands:
 
         if self.usingClipboard and not self.checking:
             # Link in the pasted nodes after the current position.
-            newRoot = c.rootPosition()
+            g.pdb()
+            newRoot = c.rootPosition() # newRoot is the pasted position.
+            oldRoot.linkAsRoot(oldRoot=None)
             c.setRootPosition(oldRoot)
-            newRoot.v.linkAfter(oldCurrent.v)
-            newCurrent = oldCurrent.copy()
-            newCurrent.v = newRoot.v
-            c.setCurrentPosition(newCurrent)
+            if 0:
+                ### newRoot.v.linkAfter(oldCurrent.v)
+                if oldParent: parent_v = oldParent.v
+                else:         parent_v = oldRoot.v.context.hiddenRootNode
+                newRoot.v.linkAsNthChild(parent_v,oldChildIndex+1)
+                newCurrent = oldCurrent.copy()
+                newCurrent.v = newRoot.v
+                c.setCurrentPosition(newCurrent)
 
         self.getTag("</vnodes>")
     #@-node:ekr.20031218072017.1565:getVnodes
