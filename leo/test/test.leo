@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -890,11 +890,11 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080417131530.1" a="E"><vh>a</vh>
+<v t="ekr.20080417131530.1"><vh>a</vh>
 <v t="ekr.20080417131530.2" a="E"><vh>b</vh></v>
 <v t="ekr.20080418094851.1"><vh>c</vh></v>
 </v>
-<v t="ekr.20080417131530.1" a="E"><vh>a</vh>
+<v t="ekr.20080417131530.1"><vh>a</vh>
 <v t="ekr.20080417131530.2" a="E"><vh>b</vh></v>
 <v t="ekr.20080418094851.1"><vh>c</vh></v>
 </v>
