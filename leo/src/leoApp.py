@@ -107,6 +107,7 @@ class LeoApp:
         self.language_delims_dict = {
             "ada" : "--",
             "actionscript" : "// /* */", #jason 2003-07-03
+            "autohotkey" : "; /* */", #TL - AutoHotkey language
             "c" : "// /* */", # C, C++ or objective C.
             "csharp" : "// /* */", # C#
             "cpp" : "// /* */",# C++.
@@ -138,6 +139,7 @@ class LeoApp:
         self.language_extension_dict = {
             "ada" : "ads",
             "actionscript" : "as", #jason 2003-07-03
+            "autohotkey" : "ahk", #TL - AutoHotkey language
             "c" : "c",
             "cpp" : "cpp",
             "css" : "css", # 4/1/04
@@ -172,6 +174,7 @@ class LeoApp:
         self.extension_dict = {
             "ads"   : "ada",
             "adb"   : "ada",
+            "ahk"   : "autohotkey", #TL - AutoHotkey language
             "as"    : "actionscript",
             "bas"   : "rapidq",
             "c"     : "c",
