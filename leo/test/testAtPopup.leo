@@ -1048,18 +1048,27 @@ new_items = [
     kind = radio
     group = demo-group
     name = demo-radio-one
+
+    selected-bg = lightblue
+    selected-fg = yellow
 """),
 
 ('Demo Radio Two', """rclick-button
     kind = radio
     group = demo-group
     name = demo-radio-two
+
+    selected-bg = lightblue
+    selected-fg = yellow
 """),
 
 ('Demo Radio Three', """rclick-button
     kind = radio
     group = demo-group
     name = demo-radio-three
+
+    selected-bg = lightblue
+    selected-fg = yellow
 """)
 
 ]
@@ -1162,11 +1171,15 @@ new_items = [
 ('Demo Check One', """rclick-button
     kind = check
     name = demo-check-one
+
+    selected-bg = yellow
 """),
 
 ('Demo Check Two', """rclick-button
     kind = check
     name = demo-check-two
+
+    selected-bg = lightgreen
 """),
 
 ]
