@@ -113,6 +113,8 @@ The menu tables are simply lists of tuples with the form::
 
     (txt, cmd)
 
+where txt and cmd can be **any python object**
+
 eg::
 
     default_context_menus['body'] = [
@@ -601,9 +603,9 @@ def rClicker(tag, keywords):
 
     c = keywords.get("c")
     event = keywords.get("event")
-    if not c or not c.exists or not event:
-        return
 
+    if not c or not c.exists:
+        return
 
     return c.theContextMenuController.rClicker(keywords)
 #@-node:ekr.20080327061021.220:rClicker
@@ -894,7 +896,7 @@ class ContextMenuController(object):
         inclusion in a menu list.
         """
 
-        scan_jump_re="<"+"<[^<>]+>"+">"
+        scan_jump_re="<" + "<.+?>>"
 
         c = self.c
 
@@ -1321,35 +1323,37 @@ class ContextMenuController(object):
 
         event = keywords.get('event')
 
-        widget = event.widget
-        if not widget:
+        if not event and not g.app.unitTesting:
             return
 
-        name = c.widget_name(widget)
+        if event:
+            widget = event.widget
+            if not widget:
+                return
 
-        c.widgetWantsFocusNow(widget)
+            name = c.widget_name(widget)
 
-        #@    << hack selections for text widgets >>
-        #@+node:bobjack.20080405054059.2:<< hack selections for text widgets >>
-        isText = g.app.gui.isTextWidget(widget)
-        if isText:
-            try:
-                widget.setSelectionRange(*c.k.previousSelection)
-            except TypeError:
-                #g.trace('no previous selection')
-                pass
+            c.widgetWantsFocusNow(widget)
 
-            if not name.startswith('body'):
-                k.previousSelection = (s1,s2) = widget.getSelectionRange()
-                x,y = g.app.gui.eventXY(event)
-                i = widget.xyToPythonIndex(x,y)
+            #@        << hack selections for text widgets >>
+            #@+node:bobjack.20080405054059.2:<< hack selections for text widgets >>
+            isText = g.app.gui.isTextWidget(widget)
+            if isText:
+                try:
+                    widget.setSelectionRange(*c.k.previousSelection)
+                except TypeError:
+                    #g.trace('no previous selection')
+                    pass
 
-                widget.setSelectionRange(s1,s2,insert=i)
-        #@nonl
-        #@-node:bobjack.20080405054059.2:<< hack selections for text widgets >>
-        #@nl
+                if not name.startswith('body'):
+                    k.previousSelection = (s1,s2) = widget.getSelectionRange()
+                    x,y = g.app.gui.eventXY(event)
+                    i = widget.xyToPythonIndex(x,y)
 
-
+                    widget.setSelectionRange(s1,s2,insert=i)
+            #@nonl
+            #@-node:bobjack.20080405054059.2:<< hack selections for text widgets >>
+            #@nl
 
         top_menu_table = []
 
@@ -1364,7 +1368,7 @@ class ContextMenuController(object):
         context_menu = keywords.get('context_menu')
 
         # If widget has an explicit context_menu set then use it
-        if hasattr(widget, 'context_menu'):
+        if event and hasattr(widget, 'context_menu'):
             context_menu = widget.context_menu = context_menu
 
         if context_menu:
@@ -1386,6 +1390,7 @@ class ContextMenuController(object):
                     break
         #@-node:bobjack.20080405054059.3:<< context menu => top_menu_table >>
         #@nl
+
         #@    << def table_to_menu >>
         #@+node:bobjack.20080329153415.6:<< def table_to_menu >>
         def table_to_menu(menu_table, level=0):
@@ -1438,27 +1443,41 @@ class ContextMenuController(object):
                     # 
                     # The handler should place any return data in 
                     # self.mb_retval
+                    # 
+                    # The retval should normally be None, 'abandond' will 
+                    # cause the curent menu or
+                    # submenu to be abandoned, any other value will also cause 
+                    # the current menu to
+                    # be abandoned but this will change in future.
+                    # 
                     #@-at
                     #@@c
 
-                    if isinstance(cmd, basestring):
+                    self.mb_keywords = keywords
+                    self.mb_retval = None
 
-                        self.mb_keywords = keywords
-                        self.mb_retval = None
-
-                        #g.trace(cmd)
+                    try:
 
                         try:
-                            try:
-                                c.executeMinibufferCommand(cmd)
-                            except:
-                                g.es_exception()
-                                self.mb_retval = None
-                        finally:
-                            self.mb_event = None
+                            if isinstance(cmd, basestring):
+                                c.executeMinibufferCommand(cmd) 
+                            elif cmd:
+                                self.mb_retval = cmd(keywords)
 
-                    elif cmd:
-                        self.mb_retval = cmd(keywords)
+                        except Exception:
+                            self.mb_retval = None
+
+                    finally:
+                        self.mb_keywords = None
+
+
+
+
+
+
+
+
+
                     #@-node:bobjack.20080329153415.7:<< call a menu generator >>
                     #@nl
                     continue
@@ -1494,6 +1513,7 @@ class ContextMenuController(object):
                         #@    << minibuffer command item >>
                         #@+node:bobjack.20080329153415.11:<< minibuffer command item >>
                         def invokeMinibufferMenuCommand(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
+
                             """Prepare for and execute a minibuffer command in response to a menu item being selected.
 
                             All the data for the minibuffer command handler is in::
@@ -1503,11 +1523,22 @@ class ContextMenuController(object):
                             The handler should place any return data in self.mb_retval
 
                             """
-                            self.mb_retval = None
+
                             keywords['rc_phase'] = phase
                             keywords['rc_label'] = txt
                             keywords['rc_item_data'] = item_data
-                            c.executeMinibufferCommand(cmd)
+
+                            self.mb_keywords = keywords
+                            self.mb_retval = None 
+
+                            try:
+                                try:
+                                    c.executeMinibufferCommand(cmd)
+                                except:
+                                    g.es_exception()
+                                    self.mb_retval = None
+                            finally:
+                                self.mb_keywords = None    
 
                         self.add_menu_item(rmenu, txt, invokeMinibufferMenuCommand, keywords)
                         #@-node:bobjack.20080329153415.11:<< minibuffer command item >>
@@ -1555,8 +1586,10 @@ class ContextMenuController(object):
         #@nl
 
         top_menu = table_to_menu(top_menu_table)
+
         if top_menu:
-            top_menu.tk_popup(event.x_root-23, event.y_root+13)
+            if event:
+                top_menu.tk_popup(event.x_root-23, event.y_root+13)
             self.popup_menu = top_menu
             return 'break'
     #@-node:bobjack.20080329153415.5:rClicker

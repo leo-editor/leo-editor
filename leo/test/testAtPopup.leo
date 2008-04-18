@@ -46,6 +46,7 @@
 </v>
 <v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
+<v t="bobjack.20080416183608.1"><vh>&lt;&lt;test having a &lt; or &gt; in the section headline &gt;&gt;</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080324164314.1"><vh>@settings</vh>
@@ -59,7 +60,7 @@
 <v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh></v>
+<v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh>
 <v t="bobjack.20080329054053.2"><vh>... the log pane</vh>
 <v t="bobjack.20080326150321.5"><vh>@popup log</vh>
 <v t="bobjack.20080329051459.3"><vh>column one</vh>
@@ -174,6 +175,7 @@
 <v t="bobjack.20080401214039.3"><vh>@item label for menu</vh></v>
 </v>
 </v>
+</v>
 <v t="bobjack.20080413173856.2"><vh>Unit Test Stuff - Do Not Change</vh>
 <v t="bobjack.20080413173856.3"><vh>@popup unit-test-one</vh>
 <v t="bobjack.20080413173856.4"><vh>@item -</vh></v>
@@ -202,6 +204,7 @@
 <v t="bobjack.20080413211455.1"><vh>@popup unit-test-four</vh>
 <v t="bobjack.20080413211455.4"><vh>@item rclick-button</vh></v>
 </v>
+<v t="bobjack.20080416154107.7"><vh>@popup unit-test-five</vh></v>
 </v>
 </v>
 <v t="bobjack.20080413173856.7"><vh>Unit Tests</vh>
@@ -211,6 +214,9 @@
 <v t="bobjack.20080413191217.8"><vh>@test minbuffer command items translate correctly</vh></v>
 <v t="bobjack.20080413203324.8"><vh>@test @menu items translate correctly</vh></v>
 <v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
+</v>
+<v t="bobjack.20080416154107.4"><vh>Test generators</vh>
+<v t="bobjack.20080416154107.8"><vh>@test generator functions</vh></v>
 </v>
 </v>
 </vnodes>
@@ -271,6 +277,8 @@ g.es_print(pformat(c.context_menus))</t>
 
     &lt;&lt; test 'Help on: ...' &gt;&gt;
     
+    &lt;&lt; test having a &lt; or &gt; in the section headline &gt;&gt;
+    
     &lt;&lt; test 'Open URL: ...'&gt;&gt;
     
     http://localhost/
@@ -288,10 +296,9 @@ Place the cursor in the url below, then right click.
     http://code.launchpad.net/leo-editor/
     
     http://localhost/</t>
-<t tx="bobjack.20080329075629.2">
-
-
-</t>
+<t tx="bobjack.20080329075629.2">print
+print
+print</t>
 <t tx="bobjack.20080329075629.3">@
 @popup &lt;name&gt; menus are converted to a list of tuples and stored in::
     
@@ -617,17 +624,23 @@ def test_menu_list(menu_table):
             'items in menu_tables must be tuples of length two'
 
         label, cmd = item
+        
         assert isinstance(label, basestring),\
             'the label for a menu_table item must be a string'
-
+            
         if isinstance(cmd, list):
             test_menu_list(cmd)
+            
+        #cmd can be ANY object for '-', '|' or '"'
+        elif label in ('-', '|', '"'):
+            pass
 
         else:
             assert  isinstance(cmd, basestring) \
-            or callable(cmd) or cmd is None, \
-                'the command for a mentu_table item must be None,' + \
-                'a list, a string, or a callable object.'
+                or callable(cmd) or cmd is None, \
+            'the command for a mentu_table item  other than  - | and " must ' + \
+            'be None, a list, a string, or a callable object.'
+            
 
 for key, value in menus.iteritems():
 
@@ -1198,9 +1211,13 @@ How to write generator commands version 2.
 
 This is an alternative method of writing generator commands. 
 
-First of all define the base function.
+The advantage of using this method is that the do_demo_editor_items function can
+be used directly in rclick menu tables as well as being accessed through the
+minibuffer command.
 
+First define the base function.
 @c
+
 def do_demo_editor_items(keywords):
 
     menu_table = keywords['rc_menu_table']
@@ -1222,13 +1239,14 @@ def demo_editor_items(event):
 
 c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
 
-c.context_menus['body'][1:1] = [('*', 'demo-editor-items')]
+c.context_menus['body'][1:1] = [
+    ('*', do_demo_editor_items), # do it once using the function directly
+    ('*', 'demo-editor-items')   # do it again using minbuffer command
+]
+
 
 @
-The results of this version is exactly the same as the first. The advantage of
-using this method is that the do_demo... function can be used directly in rclick
-menu tables as well as being accessed through the minibuffer commands, the only
-method available in @popup menus
+
 
 Execute this node as a script.
 
@@ -1245,5 +1263,99 @@ Right click the body pane to see the new menu items appear.
 
 
 </t>
+<t tx="bobjack.20080416154107.4"></t>
+<t tx="bobjack.20080416154107.7"></t>
+<t tx="bobjack.20080416154107.8">call_status = 'not called'
+
+def do_demo_editor_items(*args, **kw):
+
+    global call_status
+    call_status = 'error'
+
+    assert len(args) == 1 and not kw, \
+        "Expected one and only one argument and no keyword arguments."
+
+    keywords = args[0]
+
+    assert isinstance(keywords, dict), \
+        "Expected the argument to be a dictionary."
+        
+    for key, value in (
+        ('event', None),
+        ('testOne', 'test one'),
+        ('testTwo', 'test two'),
+        #('rc_phase', 'generate'),
+        ('rc_label', '*'),
+    ):
+        assert key in keywords, \
+            'Expected key %s to be in keywords' % key
+
+        assert keywords[key] == value, \
+            'Expected keywords[%s] == %s' %(key, value)
+
+    for key in (
+        'rc_rmenu',
+        'rc_menu_table',
+        'rc_label', 
+        'rc_item_data',
+    ):
+        assert key in keywords, \
+            'Expected key %s to be in keywords' % key
+
+    msg = 'Expected keywords[%s] %s'
+
+    key = 'rc_rmenu'
+    menu = keywords[key]
+    new_menu = c.frame.menu.new_menu(None)
+
+    assert isinstance(menu, new_menu.__class__), \
+        msg % (key, 'to be a gui menu class %s' % new_menu.__class__.__name__)
+
+    key = 'rc_menu_table'
+    menu_table = keywords[key]
+    assert isinstance(menu_table, list), \
+        msg % (key, 'to be a list.')
+
+    key = 'rc_item_data'
+    item_data = keywords[key]
+    assert isinstance(item_data, dict) and not item_data, \
+        msg % (key, 'to be an empty dictionary')
+
+    menu_table = keywords['rc_menu_table']
+
+    new_items = [
+        ('-', ''),
+        ('Add Editor Test', 'add-editor'),
+        ('Delete Editor Test', 'delete-editor'),
+    ]
+
+    menu_table[:0] = new_items
+
+    call_status = 'done'
+    return 'hello'
+
+    ## End of Function
+
+menu = [('*', do_demo_editor_items)]
+
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+assert call_status == 'done', \
+    'The function call status was "%s", expected "done"' % call_status
+
+assert retval == 'hello', \
+    'The return value is "%s", expected "hello"' % retval
+
+
+
+</t>
+<t tx="bobjack.20080416183608.1">The old re wouldn't recognise this section headline
+
+hopefully the new one does.</t>
 </tnodes>
 </leo_file>
