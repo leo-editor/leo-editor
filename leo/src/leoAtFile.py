@@ -1415,7 +1415,7 @@ class atFile:
         # child = at.lastThinNode.firstChild()
         # while child and not indices.areEqual(gnx,child.t.fileIndex):
             # child = child.next()
-        children = at.lastThinNode.children
+        children = at.lastThinNode.t.children
         for child in children:
             if indices.areEqual(gnx,child.t.fileIndex):
                 break
@@ -2560,8 +2560,8 @@ class atFile:
         self.error(message)
 
         # Bug fix: 12/10/05: Delete all of root's tree.
-        ### self.root.v.t.   = None
-        self.root.children = []
+        ### self.root.v.t._firstChild = None
+        self.root.t.children = []
         self.root.setOrphan()
         self.root.setDirty()
     #@-node:ekr.20041005105605.127:readError
