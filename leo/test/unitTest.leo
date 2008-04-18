@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -122,7 +122,10 @@
 <v t="ekr.20051104081502.9"><vh>a</vh></v>
 </v>
 <v t="ekr.20051104081502.10"><vh>d</vh>
-<v t="ekr.20051104081502.5"><vh>c</vh></v>
+<v t="ekr.20051104081502.5"><vh>c</vh>
+<v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
+<v t="ekr.20051104081502.7"><vh>secondChild</vh></v>
+</v>
 <v t="ekr.20051104081502.11"><vh>sibling 2</vh></v>
 </v>
 <v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
@@ -135,16 +138,59 @@
 <v t="ekr.20051104081502.17"><vh>d</vh></v>
 <v t="ekr.20051104081502.18"><vh>e</vh></v>
 </v>
-<v t="ekr.20051104081502.16"><vh>c</vh></v>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
 </v>
 <v t="ekr.20051104081502.19"><vh>g</vh></v>
 </v>
 <v t="ekr.20051104081502.20"><vh>a</vh>
-<v t="ekr.20051104081502.15"><vh>b</vh></v>
-<v t="ekr.20051104081502.15"><vh>b</vh></v>
+<v t="ekr.20051104081502.15"><vh>b</vh>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20051104081502.15"><vh>b</vh>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+</v>
 <v t="ekr.20051104081502.19"><vh>g</vh></v>
 </v>
-<v t="ekr.20051104081502.20"><vh>a</vh></v>
+<v t="ekr.20051104081502.20"><vh>a</vh>
+<v t="ekr.20051104081502.15"><vh>b</vh>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20051104081502.15"><vh>b</vh>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+<v t="ekr.20051104081502.16"><vh>c</vh>
+<v t="ekr.20051104081502.17"><vh>d</vh></v>
+<v t="ekr.20051104081502.18"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20051104081502.19"><vh>g</vh></v>
+</v>
 <v t="ekr.20051104081502.21"><vh>f</vh></v>
 </v>
 <v t="ekr.20051104081502.308"><vh>Develop &amp; test g.removeExtraLws</vh>
@@ -219,10 +265,26 @@
 <v t="ekr.20051104081502.125"><vh>Clone test data</vh>
 <v t="ekr.20051104081502.126"><vh>aa</vh></v>
 <v t="ekr.20051104081502.127"><vh>a</vh>
-<v t="ekr.20051104081502.120"><vh>b</vh></v>
+<v t="ekr.20051104081502.120"><vh>b</vh>
+<v t="ekr.20051104081502.121"><vh>c</vh>
+<v t="ekr.20051104081502.122"><vh>c2</vh>
+<v t="ekr.20051104081502.123"><vh>c3</vh></v>
+<v t="ekr.20051104081502.124"><vh>c4</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20051104081502.128"><vh>d</vh>
-<v t="ekr.20051104081502.127"><vh>a</vh></v>
+<v t="ekr.20051104081502.127"><vh>a</vh>
+<v t="ekr.20051104081502.120"><vh>b</vh>
+<v t="ekr.20051104081502.121"><vh>c</vh>
+<v t="ekr.20051104081502.122"><vh>c2</vh>
+<v t="ekr.20051104081502.123"><vh>c3</vh></v>
+<v t="ekr.20051104081502.124"><vh>c4</vh></v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20051104081502.129"><vh>e</vh></v>
 <v t="ekr.20051104081502.130"><vh>z</vh></v>
@@ -729,11 +791,11 @@
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -1912,23 +1974,26 @@
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
-<v t="ekr.20040712101754.182"><vh>parent</vh></v>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+</v>
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
+<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
+</v>
 <v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
 <v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@@test consistency of back/next links</vh></v>
-<v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links 1</vh></v>
-<v t="ekr.20080417104223.2"><vh>@test consistency of parent/child lists 2</vh></v>
+<v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@test consistency of back/next links</vh></v>
 <v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
 <v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
 <v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
-<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
+<v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links</vh></v>
 <v t="ekr.20040712101754.207" annotate="7d71002e"><vh>@test consistency of threadBack/Next links</vh></v>
-<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
 <v t="ekr.20040712101754.209" annotate="7d71002e"><vh>@test hasNextBack</vh></v>
 <v t="ekr.20040712101754.210" annotate="7d71002e"><vh>@test hasParentChild</vh></v>
 <v t="ekr.20040712101754.211" annotate="7d71002e"><vh>@test hasThreadNextBack</vh></v>
@@ -1943,7 +2008,9 @@
 <v t="ekr.20040712101754.191"><vh>b</vh></v>
 </v>
 <v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"><vh>a</vh></v>
+<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.191"><vh>b</vh></v>
+</v>
 <v t="ekr.20040712101754.193"><vh>d</vh>
 <v t="ekr.20040712101754.194"><vh>e</vh></v>
 </v>
@@ -2061,6 +2128,76 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080418105304.1" a="E"><vh>Failed tests</vh>
+<v t="ekr.20070611105728" a="E"><vh>@test illegal clone demote</vh></v>
+<v t="ekr.20071113193729" a="E"><vh>leoUndo</vh>
+<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>tempNode</vh></v>
+<v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
+<v t="ekr.20050417202713.1"><vh>before</vh></v>
+<v t="ekr.20050417202713.2"><vh>after</vh></v>
+<v t="ekr.20050417202713.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417204940" annotate="7d71002e"><vh>convertAllBlanks</vh>
+<v t="ekr.20050417204940.1"><vh>before</vh></v>
+<v t="ekr.20050417204940.2"><vh>after</vh></v>
+<v t="ekr.20050417204940.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417205012" annotate="7d71002e"><vh>convertAllTabs</vh>
+<v t="ekr.20050417205012.1"><vh>before</vh></v>
+<v t="ekr.20050417205012.2"><vh>after</vh></v>
+<v t="ekr.20050417205012.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114" annotate="7d71002e"><vh>convertBlanks</vh>
+<v t="ekr.20050417203310"><vh>before</vh></v>
+<v t="ekr.20050417203310.1"><vh>after</vh></v>
+<v t="ekr.20050417203336"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114.1" annotate="7d71002e"><vh>convertTabs</vh>
+<v t="ekr.20050417204834"><vh>before</vh></v>
+<v t="ekr.20050417204830"><vh>after</vh></v>
+<v t="ekr.20050417204901"><vh>selection</vh></v>
+</v>
+<v t="ekr.20040712101754.49" annotate="7d71002e"><vh>dedentBody</vh>
+<v t="ekr.20040712101754.50"><vh>before</vh></v>
+<v t="ekr.20040712101754.51"><vh>after</vh></v>
+<v t="ekr.20040712101754.52"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417202817" annotate="7d71002e"><vh>deleteComments</vh>
+<v t="ekr.20050417202817.1"><vh>before</vh></v>
+<v t="ekr.20050417202817.2"><vh>after</vh></v>
+<v t="ekr.20050417202817.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417201845" annotate="7d71002e"><vh>extract test1</vh>
+<v t="ekr.20050417201845.1"><vh>before</vh></v>
+<v t="ekr.20050417201845.2"><vh>after</vh>
+<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050417201845.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070540" annotate="7d71002e"><vh>extract test2</vh>
+<v t="ekr.20050518070540.1"><vh>before</vh></v>
+<v t="ekr.20050518070545"><vh>after</vh></v>
+<v t="ekr.20050518070540.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070927" annotate="7d71002e"><vh>extractSection test1</vh>
+<v t="ekr.20050518070927.1"><vh>before</vh></v>
+<v t="ekr.20050518070927.2"><vh>after</vh>
+<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050518070927.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518071251" annotate="7d71002e"><vh>extractSection test2</vh>
+<v t="ekr.20050518071251.1"><vh>before</vh></v>
+<v t="ekr.20050518071258"><vh>after</vh></v>
+<v t="ekr.20050518071251.4"><vh>selection</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3969,11 +4106,12 @@ def moreBody (self):
                 parents2.append(v)
                 parent2 = v.directParents()
         else:
-            if p.v._parent: parents1 = p.v._parent.t.vnodeList
-            else:           parents1 = []
+            parents1 = p.v.t.parents
+            # if p.v._parent: parents1 = p.v._parent.t.vnodeList
+            # else:           parents1 = []
             parents2 = p.v.directParents()
         
-        assert len(parents1) == len(parents2), "length mismatch: %s, %s" % (p,p.v._parent)
+        assert len(parents1) == len(parents2), "length mismatch: %s" % (p)
         for parent in parents1:
             assert parent in parents2, "%s not in %s" % (parent,parent1)
         for parent in parents2:
@@ -4112,20 +4250,15 @@ assert p.equal(root) is False</t>
 <t tx="ekr.20040712101754.200">for p in c.allNodes_iter():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
-        firstChild = p.v.children and p.v.children[0] or None
-        
         # assert(childv == p.v.t._firstChild)
-        assert childv == firstChild,'fail 1'
-
         # assert(id(childv) == id(p.v.t._firstChild))
-        assert id(childv) == id(firstChild),'fail 2'
-
-        # for v in p.v.t.vnodeList:
-            # firstChild = v.children and v.children[0]
-            # # assert(v.t._firstChild == childv)
-            # assert firstChild == childv,'fail 3'
-            # # assert(id(v.t._firstChild) == id(childv))
-            # assert id(firstChild) == id(childv),'fail 4'</t>
+        firstChild = p.v.t.children[0]
+        assert childv == firstChild
+        for v in p.v.t.vnodeList:
+            # assert(v.t._firstChild == childv)
+            # assert(id(v.t._firstChild) == id(childv))
+            firstChild = v.t.children[0]
+            assert(id(firstChild) == id(childv))</t>
 <t tx="ekr.20040712101754.201">for copy in (True,False):
     p2 = c.rootPosition()
     for p in c.allNodes_iter(copy=copy):
@@ -4176,17 +4309,16 @@ for p in c.allNodes_iter():
     
     if p.hasParent():
         n = p.childIndex()
-        assert p == p.parent().moveToNthChild(n), 'fail 1'
+        assert(p == p.parent().moveToNthChild(n))
         
     for child in p.children_iter():
-        assert p == child.parent(), 'fail 2'
+        assert(p == child.parent())
 
     if p.hasNext():
-        assert p.next().parent() == p.parent(), 'fail 3: p.next().parent(): %s, p.parent(): %s' % (
-            p.next().parent(),p.parent())
+        assert(p.next().parent() == p.parent())
         
     if p.hasBack():
-        assert p.back().parent() == p.parent(), 'fail 4'</t>
+        assert(p.back().parent() == p.parent())</t>
 <t tx="ekr.20040712101754.207">for p in c.allNodes_iter():
 
     threadBack = p.threadBack()
@@ -4197,16 +4329,25 @@ for p in c.allNodes_iter():
 
     if threadNext:
         assert(p == threadNext.getThreadBack())</t>
-<t tx="ekr.20040712101754.208">for p in c.allNodes_iter():
-    if p.isCloned():
-        parents = p.v.t.vnodeList
-        for child in p.children_iter():
-            vparents = child.v.directParents()
-            assert(len(parents) == len(vparents))
-            for parent in parents:
-                assert(parent in vparents)
-            for parent in vparents:
-                assert(parent in parents)</t>
+<t tx="ekr.20040712101754.208">try:
+    for p in c.allNodes_iter():
+        if p.isCloned():
+            parents = p.v.t.vnodeList
+            for child in p.children_iter():
+                vparents = child.directParents()
+                assert(len(parents) == len(vparents)), 'fail 1'
+                for z in parents:
+                    assert(z in vparents), 'fail 2'
+                for z in vparents:
+                    assert(z in parents), 'fail 3'
+                    
+except AssertionError:
+    print "parents..."
+    for parent in parents: print parent
+    print "vparents..."
+    for parent in vparents: print parent
+    g.pdb()
+    raise # for unittest.</t>
 <t tx="ekr.20040712101754.209">for p in c.allNodes_iter():
 
     back = p.back()
@@ -13363,7 +13504,8 @@ for key in keys1:
         if (
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
-            key.startswith('delete-') and key.endswith('-button')
+            key.startswith('delete-') and key.endswith('-button') or
+            key.startswith('nav-') and key.endswith('-menu')
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:
@@ -16624,6 +16766,7 @@ c.insertHeadline()
 p2 = c.currentPosition()
 p2.moveToFirstChildOf(p)
 p2.setHeadString('aClone')
+c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
@@ -16632,9 +16775,9 @@ try:
     # Select the first clone and demote (it should be illegal)
     c.selectPosition(p2)
     c.demote() # This should do nothing.
-    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning')
-    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True)
-    assert 2 == p.numberOfChildren()
+    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+    assert 2 == p.numberOfChildren(), 'fail 3'
     # Delete the children, but only if there are no errors.
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -19997,11 +20140,7 @@ try:
 finally:
     c.endUpdate(False)
 </t>
-<t tx="ekr.20080417104223.2">for p in c.allNodes_iter():
-    parent = p.parent()
-    if parent:
-        assert p.v in parent.v.children, 'fail 1'
-    for child in p.v.children:
-        assert p.v in child.parents, 'fail 2'</t>
+<t tx="ekr.20080418101332.1"></t>
+<t tx="ekr.20080418105304.1"></t>
 </tnodes>
 </leo_file>

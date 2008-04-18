@@ -4079,7 +4079,12 @@ def updateFixedStatus (self):
 
 Known problems.
 
-- Clipboard paste probably does not work.
+*** Cloned nodes do not share subtrees.
+
+- isVisible isn't completely correct: inserting a node as a children collapses the parent.
+
+- Clipboard paste does not work.
+    * v.moveToRoot does not exist.
     - See todo item: calls to v.linkAfter by calls to v.linkAsNthChild.
 
 - Undo probably does not work in all cases:
@@ -4112,7 +4117,7 @@ Later:
 #@+node:ekr.20080417064246.1:What I did
 @nocolor
 
-- Rewrote some code in createThinChild4 to v.children
+- Rewrote some code in createThinChild4 to v.t.children
 
 - Create c.hiddenRootNode in Commands ctor.
 
@@ -6887,12 +6892,12 @@ def linkParentAndChildren (self, parent_v, children):
         parent_v.t.vnodeList.append(v)
 
     # Set parent_v's children.
-    parent_v.children = children
+    parent_v.t.children = children
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+        if parent_v not in v.t.parents:
+            v.t.parents.append(parent_v)
 
     # firstChild_v = children and children[0] or None
 
@@ -7039,19 +7044,21 @@ def readError(self,message):
     self.error(message)
 
     # Bug fix: 12/10/05: Delete all of root's tree.
-    ### self.root.v.t.   = None
-    self.root.children = []
+    ### self.root.v.t._firstChild = None
+    self.root.t.children = []
     self.root.setOrphan()
     self.root.setDirty()
 #@-node:ekr.20041005105605.127:readError
 #@+node:ekr.20040323162707:assert that clones actually share subtrees
 if p.isCloned() and p.hasChildren():
-    childv = p.firstChild().v
-    assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
-    assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
-    for v in p.v.t.vnodeList:
-        assert v.t._firstChild == childv, "v.t._firstChild == childv"
-        assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
+    # childv = p.firstChild().v
+    # assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
+    # assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
+    # for v in p.v.t.vnodeList:
+        # assert v.t._firstChild == childv, "v.t._firstChild == childv"
+        # assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
+    for z in p.v.t.vnodeList:
+        assert z.t == p.v.t
 #@-node:ekr.20040323162707:assert that clones actually share subtrees
 #@+node:ekr.20050415170812.2:restoreTnodeUndoInfo
 def restoreTnodeUndoInfo (self,bunch):
@@ -7167,7 +7174,7 @@ def moveToBack (self):
 
     if parent_v and p.v and n > 0:
         p._childIndex -= 1
-        p.v = parent_v.children[n-1]
+        p.v = parent_v.t.children[n-1]
     else:
         p.v = None
 
@@ -7180,9 +7187,9 @@ def moveToFirstChild (self):
 
     p = self
 
-    if p.v and p.v.children:
+    if p.v and p.v.t.children:
         p.stack.append((p.v,p._childIndex),)
-        p.v = p.v.children[0]
+        p.v = p.v.t.children[0]
         p._childIndex = 0
     else:
         p.v = None
@@ -7209,10 +7216,10 @@ def moveToLastChild (self):
 
     p = self
 
-    if p.v and p.v.children:
+    if p.v and p.v.t.children:
         p.stack.append((p.v,p._childIndex),)
-        n = len(p.v.children)
-        p.v = p.v.children[n-1]
+        n = len(p.v.t.children)
+        p.v = p.v.t.children[n-1]
         p._childIndex = n-1
     else:
         p.v = None
@@ -7257,9 +7264,9 @@ def moveToNext (self):
         # Returns None if p.v is None.
     if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
 
-    if p.v and parent_v and len(parent_v.children) > n+1:
+    if p.v and parent_v and len(parent_v.t.children) > n+1:
         p._childIndex = n+1
-        p.v = parent_v.children[n+1]
+        p.v = parent_v.t.children[n+1]
     else:
         p.v = None
 
@@ -7285,9 +7292,9 @@ def moveToNthChild (self,n):
 
     p = self
 
-    if p.v and len(p.v.children) > n:
+    if p.v and len(p.v.t.children) > n:
         p.stack.append((p.v,p._childIndex),)
-        p.v = p.v.children[n]
+        p.v = p.v.t.children[n]
         p._childIndex = n
     else:
         p.v = None
@@ -7353,7 +7360,7 @@ def moveToThreadNext (self):
     p = self
 
     if p.v:
-        if p.v.children:
+        if p.v.t.children:
             p.moveToFirstChild()
         elif p.hasNext():
             p.moveToNext()
@@ -7773,12 +7780,12 @@ def linkParentAndChildren (self, parent_v, children):
         parent_v.t.vnodeList.append(v)
 
     # Set parent_v's children.
-    parent_v.children = children
+    parent_v.t.children = children
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+        if parent_v not in v.t.parents:
+            v.t.parents.append(parent_v)
 
     # firstChild_v = children and children[0] or None
 
@@ -7903,7 +7910,7 @@ def readSaxFile (self,theFile,fileName,silent):
     if dummyRoot:
         children = self.createSaxVnodes(dummyRoot)
         # g.trace('children',children)
-        self.c.hiddenRootNode.children = children
+        self.c.hiddenRootNode.t.children = children
         v = children and children[0] or None
         return v
     else:
@@ -7986,7 +7993,7 @@ def readSaxFile (self,theFile,fileName,silent):
     if dummyRoot:
         children = self.createSaxVnodes(dummyRoot)
         # g.trace('children',children)
-        self.c.hiddenRootNode.children = children
+        self.c.hiddenRootNode.t.children = children
         v = children and children[0] or None
         return v
     else:
@@ -8149,12 +8156,12 @@ def linkParentAndChildren (self, parent_v, children):
         parent_v.t.vnodeList.append(v)
 
     # Set parent_v's children.
-    parent_v.children = children
+    parent_v.t.children = children
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+        if parent_v not in v.t.parents:
+            v.t.parents.append(parent_v)
 
     # firstChild_v = children and children[0] or None
 
@@ -8203,7 +8210,7 @@ def createThinChild4 (self,gnxString,headline):
     # child = at.lastThinNode.firstChild()
     # while child and not indices.areEqual(gnx,child.t.fileIndex):
         # child = child.next()
-    children = at.lastThinNode.children
+    children = at.lastThinNode.t.children
     for child in children:
         if indices.areEqual(gnx,child.t.fileIndex):
             break
@@ -8412,12 +8419,12 @@ def linkAsNthChild (self,parent_v,n):
         v.t._p_changed = 1 # Support for tnode class.
 
     # Add v to parent_v's children.
-    parent_v.children.insert(n,v)
+    parent_v.t.children.insert(n,v)
     parent_v._p_changed = 1
 
     # Add parent_v to v's parents.
-    if not parent_v in v.parents:
-        v.parents.append(parent_v)
+    if not parent_v in v.t.parents:
+        v.t.parents.append(parent_v)
         v._p_changed = 1
 
     # v = self
@@ -8477,18 +8484,18 @@ def linkAsRoot (self,oldRoot):
     # Init p.v.t.vnodeList
     p.v.t.vnodeList = [p.v]
 
-    # Init p.v.parents to the hidden root node.
-    p.v.parents = [hiddenRootNode]
+    # Init p.v.t.parents to the hidden root node.
+    p.v.t.parents = [hiddenRootNode]
     p.v._p_changed = 1
 
     # Init hiddenRootNode's children to p.v.
-    hiddenRootNode.children = [p.v]
+    hiddenRootNode.t.children = [p.v]
 
     # Link in the rest of the tree only when oldRoot != None.
     # Otherwise, we are calling this routine from init code and
     # we want to start with a pristine tree.
     if oldRoot:
-        hiddenRootNode.children.append(oldRootNode)
+        hiddenRootNode.t.children.append(oldRootNode)
         oldRootNode.parents = [hiddenRootNode]
         oldRootNode.t.vnodeList = [oldRootNode]
 
