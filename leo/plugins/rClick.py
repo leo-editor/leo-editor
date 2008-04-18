@@ -105,6 +105,39 @@ The right click menu to be used is determined in one of three ways.
         the first match found will be used. Better to use w.context_menu for anything
         other than the default 'body', 'log', 'find-text' and 'change-text'.
 
+Keyword = Value data items in the body
+--------------------------------------
+
+Each line after the first line of a body can have the form::
+
+    key-string = value string
+
+these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
+be availiable to generator and invocation callbacks as keywords['item_data'].
+
+Lines not containing '=' or with '#' as the first character are ignored.
+
+Leading and trailing spaces will be stripped as will spaces aroung the first '=' sign.
+The value string may contain '=' signs.
+
+
+Colored Menu Items
+------------------
+
+Colors for menu items can be set using keyword = value data lines in the body of 
+@item nodes or the cmd string in rClick menus. 
+
+To set the foreground and background colors for menu items use::
+
+    fg = color
+    bg = color
+
+additionaly different background and foreground colors can be set for radio and
+check items in the selected state by using::
+
+    selected-fg = color
+    selected-bg = color
+
 
 Format of menu tables.
 ======================
@@ -113,7 +146,7 @@ The menu tables are simply lists of tuples with the form::
 
     (txt, cmd)
 
-where txt and cmd can be **any python object**
+where txt and cmd can be any python object
 
 eg::
 
@@ -281,6 +314,8 @@ If `txt` is '&':
     c.context_menus. If a menu exists with that name its contents are included
     inline, (not as a submenu).
 
+
+
 Example menu generator
 ======================
 
@@ -392,6 +427,10 @@ of the node should have the following format::
                  name = <unique name for this item>
                  group = <name of group if kind is radio>
 
+As well as 'fg = color' and 'bg = color', 'selected-fg = color' and
+'selected-bg' can be used to set the colors for when a radio or check button is
+selected
+
 From now on controller will refer to c.theContextMenuController
 
 :controller.radio_group_data:
@@ -431,6 +470,9 @@ When any check or radio item is clicked, a hook is generated
 
 The 'rclick-button' command is provided for convenience.  Plugins may provide there own
 command to handle check and radio items, using rclick-button as a template.
+
+
+
 
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
@@ -516,6 +558,8 @@ command to handle check and radio items, using rclick-button as a template.
 # - make version 1.25 to show the new api is stable
 # 1.26 bobjack:
 # - bug fixes
+# 1.27 bobjack:
+# - added support for colored menu items
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -550,7 +594,7 @@ Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "1.26"
+__version__ = "1.27"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
@@ -1215,7 +1259,7 @@ class ContextMenuController(object):
     #@-node:bobjack.20080404054928.4:do_check_button_event
     #@-node:bobjack.20080404190912.2:rclick_button
     #@-node:bobjack.20080403171532.12:Button Event Handlers
-    #@+node:bobjack.20080329153415.14:Event Handler
+    #@+node:bobjack.20080329153415.14:rClick Event Handler
     #@+node:bobjack.20080404222250.4:add_menu_item
     def add_menu_item(self, rmenu, label, command, keywords):
 
@@ -1224,19 +1268,33 @@ class ContextMenuController(object):
         item_data = keywords.get('rc_item_data', {})
 
         kind = item_data.get('kind', 'command')
+        name = item_data.get('name')
 
         if not kind or kind=='command':
-            rmenu.add_command(
-                label=label,
-                command=command,
-                columnbreak=rmenu.rc_columnbreak
-            )
+
+            #@        << add command item >>
+            #@+node:bobjack.20080418065623.3:<< add command item >>
+
+            label = keywords.get('rc_label')
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+            }
+
+            self.add_optional_args(kws, item_data)
+
+            rmenu.add_command(kws)
+            #@nonl
+            #@-node:bobjack.20080418065623.3:<< add command item >>
+            #@nl
+
             return
 
         self.mb_keywords = keywords
         self.mb_retval = None  
 
-        name = item_data.get('name')
         if not name:
             item_data['name'] = keywords['rc_label']
 
@@ -1259,22 +1317,30 @@ class ContextMenuController(object):
                 self.radio_vars[group] = Tk.StringVar()
 
             control_var = self.radio_vars[group]
+            selected = self.radio_group_data.get(group) == name
 
             item_data['control_var'] = control_var
+
+            label = keywords.get('rc_label')
+            selectcolor = item_data.get('selectcolor') or 'red'
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+                'value': name,
+                'variable': control_var,
+                'selectcolor': selectcolor,
+            }
+
+            self.add_optional_args(kws, item_data, selected)
 
             command(phase='generate')
 
             # Doing this here allows command to change the label.
-            label = keywords.get('rc_label')
 
-            rmenu.add_radiobutton(
-                label=label,
-                command=command,
-                columnbreak=rmenu.rc_columnbreak,
-                value=name,
-                variable=control_var,
-                selectcolor='red',
-            )
+            rmenu.add_radiobutton(**kws)
+            #@nonl
             #@-node:bobjack.20080405054059.4:<< add radio item >>
             #@nl
             return
@@ -1285,23 +1351,54 @@ class ContextMenuController(object):
 
 
             control_var = item_data['control_var'] = Tk.IntVar()
+            selected = self.check_button_data.get(name)
 
             command(phase='generate')
 
             # Doing this here allows command to change the label.
             label = keywords.get('rc_label')
 
-            rmenu.add_checkbutton(
-                label=label,
-                command=command, columnbreak=rmenu.rc_columnbreak,
-                variable=control_var,
-                selectcolor='blue',
-            )
+            selectcolor = item_data.get('selectcolor') or 'blue'
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+                'variable': control_var,
+                'selectcolor': selectcolor,
+            }
+
+            self.add_optional_args(kws, item_data, selected)
+
+            rmenu.add_checkbutton(kws)
             #@nonl
             #@-node:bobjack.20080405054059.5:<< add checkbutton item >>
             #@nl
             return        
     #@-node:bobjack.20080404222250.4:add_menu_item
+    #@+node:bobjack.20080418065623.2:add_optional_args
+    def add_optional_args(self, kws, item_data, selected=False):
+
+
+        foreground = item_data.get('fg')
+        if selected:
+            foreground = item_data.get('selected-fg') or foreground
+
+        if foreground:
+            kws['foreground'] = foreground
+
+
+        background = item_data.get('bg')
+        if selected:
+            background = item_data.get('selected-bg') or background
+
+        if background:
+            kws['background'] = background
+
+
+
+
+    #@-node:bobjack.20080418065623.2:add_optional_args
     #@+node:bobjack.20080329153415.5:rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
 
@@ -1593,7 +1690,7 @@ class ContextMenuController(object):
             self.popup_menu = top_menu
             return 'break'
     #@-node:bobjack.20080329153415.5:rClicker
-    #@-node:bobjack.20080329153415.14:Event Handler
+    #@-node:bobjack.20080329153415.14:rClick Event Handler
     #@+node:bobjack.20080321133958.8:Invocation Callbacks
     #@+node:ekr.20040422072343.3:rc_nl
     def rc_nl(self, keywords):
