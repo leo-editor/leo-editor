@@ -3758,39 +3758,41 @@ class baseCommands:
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20040323155951.1:assert consistency of directParents and parent
-                    if p.hasParent():
-                        t = p.parent().v.t
-                        for v in p.directParents():
-                            try:
-                                assert v.t == t
-                            except:
-                                print "p",p
-                                print "p.directParents",p.directParents()
-                                print "v",v
-                                print "v.t",v.t
-                                print "t = p.parent().v.t",t
-                                raise AssertionError,"v.t == t"
-                    #@-node:ekr.20040323155951.1:assert consistency of directParents and parent
-                    #@+node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
-                    if p.isCloned():
-                        parents = p.v.t.vnodeList
-                        for child in p.children_iter():
-                            vparents = child.directParents()
-                            assert len(parents) == len(vparents), "len(parents) == len(vparents)"
-                            for parent in parents:
-                                assert parent in vparents, "parent in vparents"
-                            for parent in vparents:
-                                assert parent in parents, "parent in parents"
-                    #@-node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
+                    #@+node:ekr.20040323155951.1:assert consistency of directParents and parent (not used)'
+                    # if p.hasParent():
+                        # t = p.parent().v.t
+                        # for v in p.directParents():
+                            # try:
+                                # assert v.t == t
+                            # except:
+                                # print "p",p
+                                # print "p.directParents",p.directParents()
+                                # print "v",v
+                                # print "v.t",v.t
+                                # print "t = p.parent().v.t",t
+                                # raise AssertionError,"v.t == t"
+                    #@-node:ekr.20040323155951.1:assert consistency of directParents and parent (not used)'
+                    #@+node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes (not used)
+                    # if p.isCloned():
+                        # parents = p.v.t.vnodeList
+                        # for child in p.children_iter():
+                            # vparents = child.directParents()
+                            # assert len(parents) == len(vparents), "len(parents) == len(vparents)"
+                            # for parent in parents:
+                                # assert parent in vparents, "parent in vparents"
+                            # for parent in vparents:
+                                # assert parent in parents, "parent in parents"
+                    #@-node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes (not used)
                     #@+node:ekr.20040323162707:assert that clones actually share subtrees
                     if p.isCloned() and p.hasChildren():
-                        childv = p.firstChild().v
-                        assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
-                        assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
-                        for v in p.v.t.vnodeList:
-                            assert v.t._firstChild == childv, "v.t._firstChild == childv"
-                            assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
+                        # childv = p.firstChild().v
+                        # assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
+                        # assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
+                        # for v in p.v.t.vnodeList:
+                            # assert v.t._firstChild == childv, "v.t._firstChild == childv"
+                            # assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
+                        for z in p.v.t.vnodeList:
+                            assert z.t == p.v.t
                     #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20040314043623:assert consistency of vnodeList
                     vnodeList = p.v.t.vnodeList
