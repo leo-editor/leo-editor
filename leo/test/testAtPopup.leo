@@ -242,9 +242,15 @@ in other menus.</t>
 <t tx="bobjack.20080329054053.2"></t>
 <t tx="bobjack.20080329054053.3"></t>
 <t tx="bobjack.20080329054053.4"></t>
-<t tx="bobjack.20080329054053.5">Cut</t>
-<t tx="bobjack.20080329054053.6">Copy</t>
-<t tx="bobjack.20080329054053.7">Paste</t>
+<t tx="bobjack.20080329054053.5">Cut
+
+icon = Tango/16x16/actions/editcut.png</t>
+<t tx="bobjack.20080329054053.6">Copy
+
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="bobjack.20080329054053.7">Paste
+
+icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080329054053.8"></t>
 <t tx="bobjack.20080329054053.9"></t>
 <t tx="bobjack.20080329054053.10">this is an optional label</t>

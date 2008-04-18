@@ -587,7 +587,14 @@ import sys
 import copy
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-#@nonl
+
+try:
+    from PIL import Image
+    from PIL import ImageTk
+except ImportError:
+    Image = ImageTk = None
+
+print "IMPORTS\n\t%s\n\t%s"%(Image, ImageTk)
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
@@ -600,6 +607,8 @@ __plugin_name__ = 'Right Click Menus'
 default_context_menus = {}
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
+
+ICON_PATH  = g.os_path_join(g.app.leoDir, 'Icons')
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
@@ -703,6 +712,8 @@ class ContextMenuController(object):
         self.check_button_data = {}
 
         self.radio_vars = {}
+
+        self.icon_cache = {}
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
 
@@ -1270,8 +1281,10 @@ class ContextMenuController(object):
         kind = item_data.get('kind', 'command')
         name = item_data.get('name')
 
-        if not kind or kind=='command':
+        if not name:
+            item_data['name'] = keywords['rc_label']
 
+        if not kind or kind=='command':
             #@        << add command item >>
             #@+node:bobjack.20080418065623.3:<< add command item >>
 
@@ -1289,14 +1302,10 @@ class ContextMenuController(object):
             #@nonl
             #@-node:bobjack.20080418065623.3:<< add command item >>
             #@nl
-
             return
 
         self.mb_keywords = keywords
         self.mb_retval = None  
-
-        if not name:
-            item_data['name'] = keywords['rc_label']
 
         if kind == 'radio':
             #@        << add radio item >>
@@ -1394,6 +1403,22 @@ class ContextMenuController(object):
 
         if background:
             kws['background'] = background
+
+        icon = item_data.get('icon')
+        if icon:
+            image = self.getImage(icon)
+            if image:
+                kws['image'] = image
+                compound = item_data.get('compound')
+                if not compound:
+                    compound = 'left'
+                kws['compound'] = compound
+
+        hidemargin = item_data.get('hidemargin')
+        if hidemargin and hidemargin == 'False':
+            kws['hidemargin'] = '0'
+
+
 
 
 
@@ -1525,6 +1550,7 @@ class ContextMenuController(object):
                     ('rc_menu_table', menu_table),
                     ('rc_label', txt), 
                     ('rc_item_data', item_data),
+                    ('rc_phase', 'generate'),
                 ):
                     keywords[k] = v
 
@@ -1952,6 +1978,68 @@ class ContextMenuController(object):
         return menus
 
     #@-node:bobjack.20080414113201.3:copyMenuDict
+    #@+node:bobjack.20080418150812.3:getImage
+    def getImage(self, path):
+
+        """Use PIL to get an image suitable for displaying in menus."""
+
+        c = self.c
+
+        g.trace('path', path)
+
+        if not (Image and ImageTk):
+            return None
+
+        path = g.os_path_normpath(path)
+
+        try:
+            return self.icon_cache[path]
+        except KeyError:
+            pass
+
+        iconpath = g.os_path_join(ICON_PATH, path)
+        g.trace('iconpath', iconpath)
+
+        try:
+            return self.icon_cache[iconpath]
+        except KeyError:
+            pass
+
+        try:
+            image = Image.open(path)
+        except:
+            image = None
+
+        g.trace('first try', image)
+
+        if not image:
+
+            try:
+                image = Image.open(iconpath)
+            except:
+                image = None
+
+        g.trace('second try', image)
+
+        if not image:
+            return None
+
+        try:    
+            image = ImageTk.PhotoImage(image)
+        except:
+            image = None
+
+        g.trace('ImageTk', image)
+
+        if not image or not image.height() == 16:
+            g.es('Bad Menu Icon: %s' % path)
+            return None
+
+        self.icon_cache[path] = image
+
+        return image
+
+    #@-node:bobjack.20080418150812.3:getImage
     #@-node:bobjack.20080414064211.5:Utility
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
