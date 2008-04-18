@@ -3809,7 +3809,7 @@ def findNodeInTree(c,p,headline):
 
 def findNodeAnywhere(c,headline):
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_tnodes_iter():
         if p.headString().strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
