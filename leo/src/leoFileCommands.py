@@ -2105,12 +2105,12 @@ class baseFileCommands:
             parent_v.t.vnodeList.append(v)
 
         # Set parent_v's children.
-        parent_v.children = children
+        parent_v.t.children = children
 
         # Make parent_v a parent of each child.
         for v in children:
-            if parent_v not in v.parents:
-                v.parents.append(parent_v)
+            if parent_v not in v.t.parents:
+                v.t.parents.append(parent_v)
 
         # firstChild_v = children and children[0] or None
 
@@ -2235,7 +2235,7 @@ class baseFileCommands:
         if dummyRoot:
             children = self.createSaxVnodes(dummyRoot)
             # g.trace('children',children)
-            self.c.hiddenRootNode.children = children
+            self.c.hiddenRootNode.t.children = children
             v = children and children[0] or None
             return v
         else:
