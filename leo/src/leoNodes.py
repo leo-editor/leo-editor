@@ -73,6 +73,8 @@ class tnode (baseTnode):
         self._headString = g.toUnicode(headString,g.app.tkEncoding)
         self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
 
+        self.children = [] # List of all children of this node.
+        self.parents = [] # List of all parents of this node.
         self.vnodeList = [] # List of all vnodes pointing to this tnode.
         ### self._firstChild = None
     #@nonl
@@ -278,8 +280,6 @@ class vnode (baseVnode):
 
         # Structure links.
         ### self._parent = self._next = self._back = None
-        self.children = []
-        self.parents = []
     #@-node:ekr.20031218072017.3344:v.__init__
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -304,8 +304,8 @@ class vnode (baseVnode):
         else:
             print "self    ",v.dumpLink(v)
             print "len(vnodeList)",len(v.t.vnodeList)
-            print 'len(parents)',len(v.parents)
-            print 'len(children)',len(v.children)
+            print 'len(parents)',len(v.t.parents)
+            print 'len(children)',len(v.t.children)
 
         # print "_back   ",v.dumpLink(v._back)
         # print "_next   ",v.dumpLink(v._next)
@@ -315,8 +315,8 @@ class vnode (baseVnode):
         if 1:
             print "t",v.dumpLink(v.t)
             print "vnodeList", g.listToString(v.t.vnodeList)
-            print 'parents',g.listToString(v.parents)
-            print 'children',g.listToString(v.children)
+            print 'parents',g.listToString(v.t.parents)
+            print 'children',g.listToString(v.t.children)
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
@@ -479,7 +479,8 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3362:v.firstChild
     def firstChild (self):
 
-        return self.children and self.children[0]
+        v = self
+        return v.t.children and v.t.children[0]
 
         # return self.t._firstChild
     #@-node:ekr.20031218072017.3362:v.firstChild
@@ -487,7 +488,7 @@ class vnode (baseVnode):
     def hasChildren (self):
 
         v = self
-        return len(v.children) > 0
+        return len(v.t.children) > 0
 
     hasFirstChild = hasChildren
     #@-node:ekr.20040307085922:v.hasChildren & hasFirstChild
@@ -495,7 +496,7 @@ class vnode (baseVnode):
     def lastChild (self):
 
         v = self
-        return v.children and v.children[-1] or None
+        return v.t.children and v.t.children[-1] or None
 
         # child = self.firstChild()
         # while child and child.next():
@@ -509,8 +510,8 @@ class vnode (baseVnode):
 
         v = self
 
-        if 0 <= n < len(v.children):
-            return v.children[n]
+        if 0 <= n < len(v.t.children):
+            return v.t.children[n]
         else:
             return None
 
@@ -525,7 +526,7 @@ class vnode (baseVnode):
     def numberOfChildren (self):
 
         v = self
-        return len(v.children)
+        return len(v.t.children)
 
         # n = 0
         # child = self.firstChild()
@@ -619,7 +620,7 @@ class vnode (baseVnode):
         This is NOT the same as the list of ancestors of the vnode."""
 
         v = self
-        return v.parents
+        return v.t.parents
 
         # if v._parent:
             # return v._parent.t.vnodeList
@@ -791,12 +792,12 @@ class vnode (baseVnode):
             v.t._p_changed = 1 # Support for tnode class.
 
         # Add v to parent_v's children.
-        parent_v.children.insert(n,v)
+        parent_v.t.children.insert(n,v)
         parent_v._p_changed = 1
 
         # Add parent_v to v's parents.
-        if not parent_v in v.parents:
-            v.parents.append(parent_v)
+        if not parent_v in v.t.parents:
+            v.t.parents.append(parent_v)
             v._p_changed = 1
 
         # v = self
@@ -1266,14 +1267,14 @@ class basePosition (object):
     def hasChildren (self):
 
         p = self
-        return len(p.v.children) > 0
+        return len(p.v.t.children) > 0
 
     hasFirstChild = hasChildren
 
     def numberOfChildren (self):
 
         p = self
-        return len(p.v.children)
+        return len(p.v.t.children)
 
         # return self.v.numberOfChildren()
 
@@ -1332,7 +1333,7 @@ class basePosition (object):
         try:
             parent_v = p.parentNode(includeHiddenRootNode=True)
                 # Returns None if p.v is None.
-            return p.v and parent_v and p._childIndex+1 < len(parent_v.children)
+            return p.v and parent_v and p._childIndex+1 < len(parent_v.t.children)
         except Exception:
             g.trace('*** Unexpected exception')
             g.es_exception()
@@ -1361,7 +1362,7 @@ class basePosition (object):
                 parent_v = v.context.hiddenRootNode
             else:
                 parent_v,junk = p.stack[n-1]
-            if len(parent_v.children) > childIndex+1:
+            if len(parent_v.t.children) > childIndex+1:
                 # v has a next sibling.
                 return True
             n -= 1
@@ -2168,11 +2169,11 @@ class basePosition (object):
         p = self ; context = p.v.context
 
         p2 = p.copy()
-        p2.v = vnode(context=context,t=p.v.t)
+        p2.v = vnode(context=context,t=p2.v.t)
         p2.linkAfter(p)
+        assert (p.v.t == p2.v.t)
 
         return p2
-    #@nonl
     #@-node:ekr.20040303175026.8:p.clone
     #@+node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
     # These used by unit tests and by the group_operations plugin.
@@ -2403,7 +2404,7 @@ class basePosition (object):
 
         if parent_v and p.v and n > 0:
             p._childIndex -= 1
-            p.v = parent_v.children[n-1]
+            p.v = parent_v.t.children[n-1]
         else:
             p.v = None
 
@@ -2416,9 +2417,9 @@ class basePosition (object):
 
         p = self
 
-        if p.v and p.v.children:
+        if p.v and p.v.t.children:
             p.stack.append((p.v,p._childIndex),)
-            p.v = p.v.children[0]
+            p.v = p.v.t.children[0]
             p._childIndex = 0
         else:
             p.v = None
@@ -2445,10 +2446,10 @@ class basePosition (object):
 
         p = self
 
-        if p.v and p.v.children:
+        if p.v and p.v.t.children:
             p.stack.append((p.v,p._childIndex),)
-            n = len(p.v.children)
-            p.v = p.v.children[n-1]
+            n = len(p.v.t.children)
+            p.v = p.v.t.children[n-1]
             p._childIndex = n-1
         else:
             p.v = None
@@ -2493,9 +2494,9 @@ class basePosition (object):
             # Returns None if p.v is None.
         if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
 
-        if p.v and parent_v and len(parent_v.children) > n+1:
+        if p.v and parent_v and len(parent_v.t.children) > n+1:
             p._childIndex = n+1
-            p.v = parent_v.children[n+1]
+            p.v = parent_v.t.children[n+1]
         else:
             p.v = None
 
@@ -2521,9 +2522,9 @@ class basePosition (object):
 
         p = self
 
-        if p.v and len(p.v.children) > n:
+        if p.v and len(p.v.t.children) > n:
             p.stack.append((p.v,p._childIndex),)
-            p.v = p.v.children[n]
+            p.v = p.v.t.children[n]
             p._childIndex = n
         else:
             p.v = None
@@ -2589,7 +2590,7 @@ class basePosition (object):
         p = self
 
         if p.v:
-            if p.v.children:
+            if p.v.t.children:
                 p.moveToFirstChild()
             elif p.hasNext():
                 p.moveToNext()
@@ -2804,12 +2805,12 @@ class basePosition (object):
             p.v.t._p_changed = 1 # Support for tnode class.
 
         # Add p.v to parent_v's children.
-        parent_v.children.insert(p_after._childIndex+1,p.v)
+        parent_v.t.children.insert(p_after._childIndex+1,p.v)
         parent_v._p_changed = 1
 
-        # Add parent_v to p.v.parents.
-        if not parent_v in p.v.parents:
-            p.v.parents.append(parent_v)
+        # Add parent_v to p.v.t.parents.
+        if not parent_v in p.v.t.parents:
+            p.v.t.parents.append(parent_v)
             p.v._p_changed = 1
 
     # def linkAfter (self,after):
@@ -2848,7 +2849,7 @@ class basePosition (object):
 
         # Init the ivars.
         p.stack = parent.stack[:]
-        p.stack.append((p.v,p._childIndex),)
+        p.stack.append((parent_v,parent._childIndex),)
         p._childIndex = n
 
         # Add p.v to it's tnode's vnodeList.
@@ -2857,12 +2858,12 @@ class basePosition (object):
             p.v.t._p_changed = 1 # Support for tnode class.
 
         # Add p.v to parent_v's children.
-        parent_v.children.insert(n,p.v)
+        parent_v.t.children.insert(n,p.v)
         parent_v._p_changed = 1
 
         # Add parent_v to p.v's parents.
-        if not parent_v in p.v.parents:
-            p.v.parents.append(parent_v)
+        if not parent_v in p.v.t.parents:
+            p.v.t.parents.append(parent_v)
             p.v._p_changed = 1
 
     # def linkAsNthChild (self,parent,n):
@@ -2932,18 +2933,18 @@ class basePosition (object):
         # Init p.v.t.vnodeList
         p.v.t.vnodeList = [p.v]
 
-        # Init p.v.parents to the hidden root node.
-        p.v.parents = [hiddenRootNode]
+        # Init p.v.t.parents to the hidden root node.
+        p.v.t.parents = [hiddenRootNode]
         p.v._p_changed = 1
 
         # Init hiddenRootNode's children to p.v.
-        hiddenRootNode.children = [p.v]
+        hiddenRootNode.t.children = [p.v]
 
         # Link in the rest of the tree only when oldRoot != None.
         # Otherwise, we are calling this routine from init code and
         # we want to start with a pristine tree.
         if oldRoot:
-            hiddenRootNode.children.append(oldRootNode)
+            hiddenRootNode.t.children.append(oldRootNode)
             oldRootNode.parents = [hiddenRootNode]
             oldRootNode.t.vnodeList = [oldRootNode]
 
@@ -2986,12 +2987,12 @@ class basePosition (object):
             p.v.t._p_changed = 1 # Support for tnode class.
 
         # Delete p.v from parent_v's children.
-        del parent_v.children[n:n+1]
+        del parent_v.t.children[n:n+1]
         parent_v._p_changed = 1
 
         # Delete parent_v from p.v's parents.
-        if parent_v in p.v.parents:
-            p.v.parents.remove(parent_v)
+        if parent_v in p.v.t.parents:
+            p.v.t.parents.remove(parent_v)
             p.v._p_changed = 1 # Support for tnode class.
 
     # def unlink (self):
