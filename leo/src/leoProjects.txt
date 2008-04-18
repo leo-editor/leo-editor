@@ -1198,6 +1198,18 @@ def initIvars(self):
         self.currentVnodeStack = [] # A stack of vnodes giving the current position.
         self.topVnodeStack     = [] # A stack of vnodes giving the top position.
         self.topPosition = None
+        # regular expression for parsing
+        reVnodeAttributes = "|".join((
+            "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+            "t=\s*\"([^\"]*)\"",        # group 3
+            "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+            "tnodeList=\s*\"([^\"]*)\"", # group 5
+            "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+            "expanded=\s*\"([^\"]*)\"", # group 7
+            "marks=\s*\"([^\"]*)\"", # group 8
+            ">"))
+        self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
     # For writing
     self.read_only = False
     self.rootPosition = None
@@ -1213,7 +1225,6 @@ def initIvars(self):
     self.tnodesDict = {}
         # keys are gnx strings as returned by canonicalTnodeIndex.
         # Values are gnx's.
-#@nonl
 #@-node:ekr.20031218072017.3019:leoFileCommands._init_
 #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
 def setPositionsFromVnodes (self):
