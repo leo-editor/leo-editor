@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:EKR.20040517075715.10:@thin vim.py
+#@+node:TL.20080221123824.1:@thin vim.py
 #@<< docstring >>
 #@+node:ekr.20050226184411:<< docstring >>
 '''A plugin that communicates with VIM.
@@ -8,9 +8,11 @@
 
 When properly installed, this plugin does the following:
 
-- Double clicking on a node's icon opens that node in VIM. You can open nodes in
-VIM with a single-click if you set useDoubleClick = False. However, that
-interfere's with Leo's dragging logic.
+- Double clicking on a node's icon opens that node in VIM. You can open nodes in VIM with a single-click if you set useDoubleClick = False. However, that interfere's with Leo's dragging logic.
+
+- Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
+
+- Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
 
 - Leo will update the node in the outline when you save the file in VIM.
 
@@ -20,10 +22,7 @@ To install this plugin do the following:
 
 2. Set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo.
 
-3. If you are using Python 2.4 or above, that's all you need to do. Jim
-Sizelove's new code will start vim automatically using Python's subprocess
-module. The subprocess module comes standard with Python 2.4. For Linux systems,
-Leo will use subprocess.py in Leo's extensions folder if necessary.
+3. If you are using Python 2.4 or above, that's all you need to do. Jim Sizelove's new code will start vim automatically using Python's subprocess module. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
 
 On Windows, you can install Python's subprocess module in Python 2.2 or 2.3 as follows:
 
@@ -95,6 +94,9 @@ __version__ = "1.13"
 # 1.14 EKR: Emphasized that the open_with plugin must be enabled.
 # 1.15 EKR: Don't open @url nodes in vim if @bool vim_plugin_opens_url_nodes 
 # setting is False.
+# 1.16 TL: open_in_vim modifications
+#     - support file open in gVim at same line number as Leo cursor location
+#     - support file open in a gVim tab (see also mod_tempfname.py)
 #@-at
 #@nonl
 #@-node:ekr.20050226184411.1:<< version history >>
@@ -219,16 +221,18 @@ else:
 #@+node:ekr.20050226184624:init
 def init ():
 
+    event = "icondclick1" #Only launched if previous handlers let it.
+
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
 
     if ok:
         # Register the handlers...
         if useDoubleClick:
             # Open on double click
-            leoPlugins.registerHandler("icondclick2", open_in_vim)
+            leoPlugins.registerHandler(event,open_in_vim)
         else:
             # Open on single click: interferes with dragging.
-            leoPlugins.registerHandler("iconclick2",open_in_vim,val=True)
+            leoPlugins.registerHandler(event,open_in_vim,val=True)
 
         # Enable the os.system call if you want to start a (g)vim server when Leo starts.
         if 0:
@@ -237,7 +241,6 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
 #@-node:ekr.20050226184624:init
 #@+node:EKR.20040517075715.11:open_in_vim
 def open_in_vim (tag,keywords,val=None):
@@ -246,7 +249,14 @@ def open_in_vim (tag,keywords,val=None):
     c = keywords.get('c')
     p = keywords.get("p")
     if not c or not p: return
+    #
+    #Avoid @file node types
+    #if p.isAnyAtFileNode():
+    #   return
+    if p.headString().find('file-ref') == 1: #Must be at 2nd position
+       return
 
+    #URL nodes
     openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
     if not openURLNodes and p.headString().startswith('@url'):
         return # Avoid conflicts with @url nodes.
@@ -254,6 +264,24 @@ def open_in_vim (tag,keywords,val=None):
 
     vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
     vim_exe = c.config.getString('vim_exe') or _vim_exe
+
+    #Cursor positioning
+    Lnum = ""
+    if c.config.getBool('vim_plugin_positions_cursor'):
+        #Line number - start at same line as Leo cursor
+        #  get node's body text
+        bodyCtrl = c.frame.body.bodyCtrl
+        s = bodyCtrl.getAllText()    
+        #  Get cursors row & column number
+        index = bodyCtrl.getInsertPoint()
+        row,col = g.convertPythonIndexToRowCol(s,index)
+        #  Build gVim command line parameter for setting cursor row
+        Lnum = "+" + str(row + 1)
+
+    #Vim's tab card stack
+    useTabs = ""
+    if c.config.getBool('vim_plugin_uses_tab_feature'):
+        useTabs = "-tab"
 
     # Search g.app.openWithFiles for a file corresponding to v.
     for d in g.app.openWithFiles:
@@ -273,11 +301,12 @@ def open_in_vim (tag,keywords,val=None):
             # Remove the old file and the entry in g.app.openWithFiles.
             os.remove(path)
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
-            os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd! "+path+"<CR>'")
+            os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
         v.OpenWithOldBody=v.bodyString() # Remember the previous contents.
         if subprocess:
-            # New code by Jim Sizemore.
-            data = "subprocess.Popen",[vim_exe, "--servername", "LEO", "--remote-silent"], None
+            # New code by Jim Sizemore (TL: added support for gVim tabs).
+            data = "subprocess.Popen",[vim_exe, "--servername", "LEO" \
+                              ,"--remote" + useTabs + "-silent", Lnum], None
             c.openWith(data=data)
         else:
             # Works, but gives weird error message on first open of Vim.
@@ -289,9 +318,8 @@ def open_in_vim (tag,keywords,val=None):
         os.system(vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'")
 
     return val
-#@nonl
 #@-node:EKR.20040517075715.11:open_in_vim
 #@-others
 #@nonl
-#@-node:EKR.20040517075715.10:@thin vim.py
+#@-node:TL.20080221123824.1:@thin vim.py
 #@-leo
