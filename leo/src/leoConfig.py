@@ -628,8 +628,9 @@ class parserBaseClass:
                         if tag == '@menu':
                             aList2 = []
                             kind = '%s' % itemName
+                            body = p.bodyString()
                             self.doPopupItems(p,aList2)
-                            aList.append((kind,aList2),)
+                            aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break
                         else:

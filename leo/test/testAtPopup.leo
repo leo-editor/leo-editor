@@ -216,7 +216,11 @@
 <v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
 </v>
 <v t="bobjack.20080416154107.4"><vh>Test generators</vh>
-<v t="bobjack.20080416154107.8"><vh>@test generator functions</vh></v>
+<v t="bobjack.20080416154107.8"><vh>@test generator functions and methods</vh>
+<v t="bobjack.20080419045546.3"><vh>&lt;&lt; def do_demo_editor_items &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.7"><vh>&lt;&lt; test function generator &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.8"><vh>&lt;&lt; test minibuffer command generator &gt;&gt;</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -244,7 +248,8 @@ in other menus.</t>
 <t tx="bobjack.20080329054053.4"></t>
 <t tx="bobjack.20080329054053.5">Cut
 
-icon = Tango/16x16/actions/editcut.png</t>
+icon = Tango/16x16/actions/editcut.png
+</t>
 <t tx="bobjack.20080329054053.6">Copy
 
 icon = Tango/16x16/actions/editcopy.png</t>
@@ -257,14 +262,19 @@ icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080329054053.11"></t>
 <t tx="bobjack.20080329054053.12">Indent</t>
 <t tx="bobjack.20080329054053.13">Dedent</t>
-<t tx="bobjack.20080329054053.15"></t>
+<t tx="bobjack.20080329054053.15">
+bg = cyan
+fg = red
+
+icon = Tango\16x16\actions\search.png</t>
 <t tx="bobjack.20080329054053.16">find change fragment</t>
 <t tx="bobjack.20080329054053.17"></t>
 <t tx="bobjack.20080329054053.18"></t>
 <t tx="bobjack.20080329054053.19">rclick-gen-context-sensitive-commands</t>
 <t tx="bobjack.20080329061442.1"></t>
 <t tx="bobjack.20080329061442.2">recent-files-menu</t>
-<t tx="bobjack.20080329061920.1"></t>
+<t tx="bobjack.20080329061920.1">
+hidemargin = True</t>
 <t tx="bobjack.20080329061920.2"></t>
 <t tx="bobjack.20080329062304.1"></t>
 <t tx="bobjack.20080329062304.2">Example of using a pre-defined fragment.</t>
@@ -306,7 +316,7 @@ Place the cursor in the url below, then right click.
 print
 print</t>
 <t tx="bobjack.20080329075629.3">@
-@popup &lt;name&gt; menus are converted to a list of tuples and stored in::
+@popup &lt;name&gt; menus are converted to a list of two tuples and stored in::
     
      c.context_menus[&lt;name&gt;]
 
@@ -337,7 +347,7 @@ Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises ei
 a 'bodyrclick1' hook, such as c.frame.OnBodyRClick or a 'rclick-popup' hook.
 
 Any keyword arguments included in the doHook call will be passed to generator
-callbacks and invocation callbacks.
+callbacks and invocation callbacks in 'keywords'.
     
 Menu tables in c.context_menus are live, they can be manipulated by scripts and
 the changes will show up immediately.  See 'experiments' and 'Howto ...'.
@@ -350,8 +360,11 @@ To get a right click menu for a widget use::
     
     g.doHook('rclick-popup', c=c, event=event, context_menu='&lt;default menu name&gt;', &lt;any key=value pairs...&gt;)
 
+The context_menu will only be used if the event.widget does not have a
+context_menu attribute. Normally the widget does NOT have such an attribute.
 
-Make sure the event has passed through the master rclick handler before using the hook.
+Make sure the event has passed through the master rclick handlers (if required)
+before using the hook.
 </t>
 <t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
 
@@ -826,14 +839,7 @@ assert len(menu_table) == 1, \
     
 item = menu_table[0]
 
-
-#print 'label', item[0]
-assert item[0] == 'Rclick Unit Test One', \
-    "wrong label"
-
-#print 'cmd', item[1]
-
-expected = """rclick-button
+expected = """Rclick Unit Test One
 kind=radio
 group=rclick_unit_test_group
 name=rclick_unit_test_one
@@ -841,7 +847,15 @@ test=this has an = sign"""
 
 expected = '\n'.join(expected.strip().splitlines())
 
-assert item[1] ==  expected, "cmd string is wrong" </t>
+#print 'label', item[0]
+
+assert item[0] == expected, \
+    "wrong label"
+
+#print 'cmd', item[1]
+
+
+assert item[1] ==  'rclick-button', "cmd string is wrong" </t>
 <t tx="bobjack.20080413211455.1">Test </t>
 <t tx="bobjack.20080413211455.4">Rclick Unit Test One
 
@@ -1050,32 +1064,32 @@ new_items = [
 
 ('-', ''), #separator
 
-('Demo Radio One', """rclick-button
+("""Demo Radio One
     kind = radio
     group = demo-group
     name = demo-radio-one
 
     selected-bg = lightblue
     selected-fg = yellow
-"""),
+""", 'rclick-button'),
 
-('Demo Radio Two', """rclick-button
+("""Demo Radio Two
     kind = radio
     group = demo-group
     name = demo-radio-two
 
     selected-bg = lightblue
     selected-fg = yellow
-"""),
+""", 'rclick-button'),
 
-('Demo Radio Three', """rclick-button
+("""Demo Radio Three
     kind = radio
     group = demo-group
     name = demo-radio-three
 
     selected-bg = lightblue
     selected-fg = yellow
-""")
+""", 'rclick-button')
 
 ]
 
@@ -1174,22 +1188,21 @@ This is done so that @item in @popup menus are compatible with @item in @menus.
 new_items = [
 ('-', ''),
 
-('Demo Check One', """rclick-button
+("""Demo Check One
     kind = check
     name = demo-check-one
 
     selected-bg = yellow
-"""),
+""", 'rclick-button'),
 
-('Demo Check Two', """rclick-button
+("""Demo Check Two
     kind = check
     name = demo-check-two
 
     selected-bg = lightgreen
-"""),
+""", 'rclick-button'),
 
 ]
-
 
 # Insert the menu items into the second position of the 'body' menu.
 # Notice we must change the menu in situ.
@@ -1310,9 +1323,26 @@ Right click the body pane to see the new menu items appear.
 <t tx="bobjack.20080416154107.7"></t>
 <t tx="bobjack.20080416154107.8">call_status = 'not called'
 
-def do_demo_editor_items(*args, **kw):
+&lt;&lt; def do_demo_editor_items &gt;&gt;
 
-    global call_status
+def xtest(value, expected, msg):
+    assert value == expected, \
+        'The %s was "%s", expected "%s"' % (msg, value, expected)
+
+call_status = 'not called'
+&lt;&lt; test function generator &gt;&gt;
+
+call_status = 'not called'
+&lt;&lt; test minibuffer command generator &gt;&gt;
+
+
+</t>
+<t tx="bobjack.20080416183608.1">The old re wouldn't recognise this section headline
+
+hopefully the new one does.</t>
+<t tx="bobjack.20080419045546.3">def do_demo_editor_items(*args, **kw):
+
+    global call_status, test_menu_table
     call_status = 'error'
 
     assert len(args) == 1 and not kw, \
@@ -1327,7 +1357,7 @@ def do_demo_editor_items(*args, **kw):
         ('event', None),
         ('testOne', 'test one'),
         ('testTwo', 'test two'),
-        #('rc_phase', 'generate'),
+        ('rc_phase', 'generate'),
         ('rc_label', '*'),
     ):
         assert key in keywords, \
@@ -1373,12 +1403,12 @@ def do_demo_editor_items(*args, **kw):
     ]
 
     menu_table[:0] = new_items
-
+    
+    test_menu_table = keywords['rc_menu_table']
     call_status = 'done'
     return 'hello'
-
-    ## End of Function
-
+</t>
+<t tx="bobjack.20080419045546.7">
 menu = [('*', do_demo_editor_items)]
 
 result = g.doHook('rclick-popup',
@@ -1388,17 +1418,33 @@ result = g.doHook('rclick-popup',
 
 retval = c.theContextMenuController.mb_retval
 
-assert call_status == 'done', \
-    'The function call status was "%s", expected "done"' % call_status
 
-assert retval == 'hello', \
-    'The return value is "%s", expected "hello"' % retval
-
-
+xtest(call_status, 'done', 'function call status')
+xtest(retval, 'hello', 'function return value')
+xtest(result, None, 'function hook result')
 
 </t>
-<t tx="bobjack.20080416183608.1">The old re wouldn't recognise this section headline
+<t tx="bobjack.20080419045546.8">
+def demo_editor_items(event):
 
-hopefully the new one does.</t>
+    cm = c.theContextMenuController
+    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
+
+c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+
+
+menu = [('*', 'demo-editor-items')]
+
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+xtest(call_status, 'done', 'minibuffer call status')
+xtest(retval, 'hello', 'minibuffer return value')
+xtest(result, None, 'minibuffer hook result')
+</t>
 </tnodes>
 </leo_file>

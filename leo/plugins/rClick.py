@@ -125,7 +125,7 @@ Colored Menu Items
 ------------------
 
 Colors for menu items can be set using keyword = value data lines in the body of 
-@item nodes or the cmd string in rClick menus. 
+@item and @menu nodes or the cmd string in rClick menus. 
 
 To set the foreground and background colors for menu items use::
 
@@ -137,6 +137,28 @@ check items in the selected state by using::
 
     selected-fg = color
     selected-bg = color
+
+Icons in Menu Items
+-------------------
+Icons will only be shown if the Python Imaging Library extension is availiable.
+
+To set an icon for an @item or @menu setting in @popup trees use this in the body::
+
+    icon = <full path to image>
+
+or::
+
+    icon = <path relative to leo's Icon folder>
+
+an additional key 'compound' can be added::
+
+    compound = [bottom | center | left | right | top | none]
+
+if compound is not included it is equivelent to::
+
+    compound = left
+
+See the Tk menu documentation for more details.
 
 
 Format of menu tables.
@@ -560,6 +582,11 @@ command to handle check and radio items, using rclick-button as a template.
 # - bug fixes
 # 1.27 bobjack:
 # - added support for colored menu items
+# 1.28
+# - added support for icons
+# - extended icon and color support to @menu nodes
+# - modified api so that key-value pairs are stored with the label
+#   in the first item of the tuple, instead of with the cmd item.
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -594,21 +621,20 @@ try:
 except ImportError:
     Image = ImageTk = None
 
-print "IMPORTS\n\t%s\n\t%s"%(Image, ImageTk)
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "1.27"
+__version__ = "1.28"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
 
-ICON_PATH  = g.os_path_join(g.app.leoDir, 'Icons')
+
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
@@ -681,6 +707,8 @@ class ContextMenuController(object):
         self.mb_retval = None
         self.mb_event = None
 
+        self.setIconBasePath()   
+
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
         for command in (
@@ -713,7 +741,12 @@ class ContextMenuController(object):
 
         self.radio_vars = {}
 
-        self.icon_cache = {}
+        self.iconCache = {}
+    #@+node:bobjack.20080419070147.2:setIconBasePath
+    def setIconBasePath(self):
+        self.iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
+    #@nonl
+    #@-node:bobjack.20080419070147.2:setIconBasePath
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
 
@@ -748,28 +781,33 @@ class ContextMenuController(object):
                     s, cmd = menu_table.pop(0)
 
                     if isinstance(cmd, list):
-                        out.append((s.strip().replace('&', ''), config_to_rclick(cmd[:])))
+
+                        s, pairs = self.getBodyData(s) 
+                        s = s.replace('&', '')
+                        out.append((self.rejoin(s, pairs), config_to_rclick(cmd[:])))
                         continue
 
                     else:
                         cmd, pairs = self.getBodyData(cmd)
 
                     if s in ('-', '&', '*', '|', '"'):
-                        out.append((s, self.rejoin(cmd, pairs)))
+                        out.append((self.rejoin(s, pairs), cmd))
                         continue
 
                     star = s.startswith('*')
 
                     if not star and cmd:
-                        out.append((cmd.replace('&', ''), self.rejoin(s, pairs)))
+                        cmd = cmd.replace('&', '')
+                        out.append((self.rejoin(cmd, pairs), s))
                         continue
 
                     if star:
                         s = s[1:]
 
                     label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
-                    cmd = self.rejoin(s.replace('&', ''), pairs)
-                    out.append( (label.replace('&', ''), cmd) )
+                    label = label.replace('&', '')
+                    cmd = s.replace('&', '')
+                    out.append( (self.rejoin(label, pairs), cmd) )
 
                 return out
             #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
@@ -791,6 +829,7 @@ class ContextMenuController(object):
         return True
     #@+node:bobjack.20080414064211.4:rejoin
     def rejoin(self, cmd, pairs):
+        """Join two strings with a line separator."""
 
         return (cmd + '\n' + pairs).strip()
     #@-node:bobjack.20080414064211.4:rejoin
@@ -1409,14 +1448,14 @@ class ContextMenuController(object):
             image = self.getImage(icon)
             if image:
                 kws['image'] = image
-                compound = item_data.get('compound')
-                if not compound:
+                compound = item_data.get('compound', '').lower()
+                if not compound in ('bottom', 'center', 'left', 'none', 'right', 'top'):
                     compound = 'left'
                 kws['compound'] = compound
 
-        hidemargin = item_data.get('hidemargin')
-        if hidemargin and hidemargin == 'False':
-            kws['hidemargin'] = '0'
+        hidemargin = item_data.get('hidemargin', '').lower()
+        if hidemargin and hidemargin == 'true':
+            kws['hidemargin'] = '1'
 
 
 
@@ -1540,10 +1579,8 @@ class ContextMenuController(object):
 
                 #g.trace(txt, '[', cmd, ']')
 
-                if isinstance(cmd, basestring):
-                    cmd, item_data = self.split_cmd(cmd)
-                else:
-                    item_data = {}
+                txt, item_data = self.split_cmd(txt)
+
 
                 for k, v in (
                     ('rc_rmenu', rmenu),
@@ -1672,10 +1709,16 @@ class ContextMenuController(object):
                         #@+node:bobjack.20080329153415.12:<< cascade item >>
                         submenu = table_to_menu(cmd[:], level+1)
                         if submenu:
-                            rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
+
+                            kws = {
+                                'label': txt,
+                                'menu': submenu,
+                                'columnbreak': rmenu.rc_columnbreak,
+                            }
+                            self.add_optional_args(kws, item_data)
+                            rmenu.add_cascade(**kws)
                         else:
                             continue # to avoid reseting columnbreak
-                        #@nonl
                         #@-node:bobjack.20080329153415.12:<< cascade item >>
                         #@nl
 
@@ -1786,9 +1829,9 @@ class ContextMenuController(object):
         #@    @+others
         #@+node:bobjack.20080325060741.6:edit-menu
         self.default_context_menus['edit-menu'] = [
-            ('Cut', invoke('rc_OnCutFromMenu')),
-            ('Copy', invoke('rc_OnCopyFromMenu')),
-            ('Paste', invoke('rc_OnPasteFromMenu')),
+            ('Cut\nicon = Tango/16x16/actions/editcut.png', invoke('rc_OnCutFromMenu')),
+            ('Copy\nicon = Tango/16x16/actions/editcopy.png', invoke('rc_OnCopyFromMenu')),
+            ('Paste\nicon = Tango/16x16/actions/editpaste.png', invoke('rc_OnPasteFromMenu')),
             ('-', ''),
             ('Select All', invoke('rc_selectAll')),
         ]
@@ -1823,9 +1866,9 @@ class ContextMenuController(object):
         #@+node:bobjack.20080325060741.4:body
         self.default_context_menus['body'] = [
 
-            ('Cut', 'cut-text'),
-            ('Copy', 'copy-text'),
-            ('Paste', 'paste-text'),
+            ('Cut\nicon = Tango/16x16/actions/editcut.png', 'cut-text'),
+            ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'copy-text'),
+            ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'paste-text'),
 
             ('-', ''),
 
@@ -1985,23 +2028,20 @@ class ContextMenuController(object):
 
         c = self.c
 
-        g.trace('path', path)
-
         if not (Image and ImageTk):
             return None
 
         path = g.os_path_normpath(path)
 
         try:
-            return self.icon_cache[path]
+            return self.iconCache[path]
         except KeyError:
             pass
 
-        iconpath = g.os_path_join(ICON_PATH, path)
-        g.trace('iconpath', iconpath)
+        iconpath = g.os_path_join(self.iconBasePath, path)
 
         try:
-            return self.icon_cache[iconpath]
+            return self.iconCache[iconpath]
         except KeyError:
             pass
 
@@ -2010,16 +2050,12 @@ class ContextMenuController(object):
         except:
             image = None
 
-        g.trace('first try', image)
-
         if not image:
 
             try:
                 image = Image.open(iconpath)
             except:
                 image = None
-
-        g.trace('second try', image)
 
         if not image:
             return None
@@ -2029,13 +2065,12 @@ class ContextMenuController(object):
         except:
             image = None
 
-        g.trace('ImageTk', image)
 
         if not image or not image.height() == 16:
             g.es('Bad Menu Icon: %s' % path)
             return None
 
-        self.icon_cache[path] = image
+        self.iconCache[path] = image
 
         return image
 
