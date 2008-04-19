@@ -97,7 +97,7 @@ class tnode (baseTnode):
 
             return hash(g.app.nodeIndices.toString(self.fileIndex))
     #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
-    #@+node:ekr.20031218072017.3325:Getters
+    #@+node:ekr.20031218072017.3325:t.Getters
     #@+node:EKR.20040625161602:t.bodyString
     def getBody (self):
 
@@ -137,8 +137,8 @@ class tnode (baseTnode):
         return (self.statusBits & self.writeBit) != 0
     #@-node:EKR.20040503094727:isWriteBit
     #@-node:ekr.20031218072017.3327:t.Status bits
-    #@-node:ekr.20031218072017.3325:Getters
-    #@+node:ekr.20031218072017.3331:Setters
+    #@-node:ekr.20031218072017.3325:t.Getters
+    #@+node:ekr.20031218072017.3331:t.Setters
     #@+node:ekr.20031218072017.1484:Setting body text
     #@+node:ekr.20031218072017.1485:setTnodeText
     # This sets the text in the tnode from the given string.
@@ -231,7 +231,7 @@ class tnode (baseTnode):
         s = g.toUnicode(s,encoding,reportErrors=True)
         t._headString = s
     #@-node:ekr.20050418101546:t.setHeadString (new in 4.3)
-    #@-node:ekr.20031218072017.3331:Setters
+    #@-node:ekr.20031218072017.3331:t.Setters
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3321:class tnode
@@ -265,7 +265,7 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.951:<< vnode constants >>
     #@nl
     #@    @+others
-    #@+node:ekr.20031218072017.3342:Birth & death
+    #@+node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3344:v.__init__
     def __init__ (self,context,t):
 
@@ -320,7 +320,7 @@ class vnode (baseVnode):
             return self.t.__hash__()
     #@nonl
     #@-node:ekr.20060910100316:v.__hash__ (only for zodb)
-    #@-node:ekr.20031218072017.3342:Birth & death
+    #@-node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3346:v.Comparisons
     #@+node:ekr.20040705201018:v.findAtFileName
     def findAtFileName (self,names):
@@ -1111,7 +1111,7 @@ class basePosition (object):
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20040306212636:p.Getters
-    #@+node:ekr.20040306210951: vnode proxies (no change)
+    #@+node:ekr.20040306210951:p.vnode proxies
     #@+node:ekr.20040306211032:p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
@@ -1168,8 +1168,8 @@ class basePosition (object):
     def isVisited   (self): return self.v.isVisited()
     def status      (self): return self.v.status()
     #@-node:ekr.20040306214401:p.Status bits
-    #@-node:ekr.20040306210951: vnode proxies (no change)
-    #@+node:ekr.20040306214240.2:children & parents (changed)
+    #@-node:ekr.20040306210951:p.vnode proxies
+    #@+node:ekr.20040306214240.2:p.children & parents
     #@+node:ekr.20040326064330:p.childIndex (changed)
     def childIndex(self):
 
@@ -1210,7 +1210,7 @@ class basePosition (object):
         p = self
         return len(p.v.t.children)
     #@-node:ekr.20040306214240.3:p.hasChildren & p.numberOfChildren (changed)
-    #@-node:ekr.20040306214240.2:children & parents (changed)
+    #@-node:ekr.20040306214240.2:p.children & parents
     #@+node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines (no change)
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
@@ -1601,7 +1601,7 @@ class basePosition (object):
     # uses level().
     # - moreBody could be anywhere: it may as well be a postion method.
     #@-at
-    #@+node:ekr.20040315023430.1:convertTreeToString
+    #@+node:ekr.20040315023430.1:p.convertTreeToString
     def convertTreeToString (self):
 
         """Convert a positions  suboutline to a string in MORE format."""
@@ -1616,8 +1616,8 @@ class basePosition (object):
                 array.append(body +'\n')
 
         return ''.join(array)
-    #@-node:ekr.20040315023430.1:convertTreeToString
-    #@+node:ekr.20040315023430.2:moreHead
+    #@-node:ekr.20040315023430.1:p.convertTreeToString
+    #@+node:ekr.20040315023430.2:p.moreHead
     def moreHead (self, firstLevel,useVerticalBar=False):
 
         """Return the headline string in MORE format."""
@@ -1630,8 +1630,8 @@ class basePosition (object):
         plusMinus = g.choose(p.hasChildren(), "+", "-")
 
         return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
-    #@-node:ekr.20040315023430.2:moreHead
-    #@+node:ekr.20040315023430.3:moreBody
+    #@-node:ekr.20040315023430.2:p.moreHead
+    #@+node:ekr.20040315023430.3:p.moreBody
     #@+at 
     #     + test line
     #     - test line
@@ -1657,7 +1657,7 @@ class basePosition (object):
                 s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
-    #@-node:ekr.20040315023430.3:moreBody
+    #@-node:ekr.20040315023430.3:p.moreBody
     #@-node:ekr.20040315023430:P.File Conversion
     #@+node:ekr.20040305162628.1:p.Iterators
     #@+at 
@@ -2551,8 +2551,8 @@ class basePosition (object):
     #@nonl
     #@-node:ekr.20080416161551.211:p.moveToVisNext
     #@-node:ekr.20080416161551.199:p.moveToX
-    #@+node:ekr.20040228094013.1:p.utils... (test)
-    #@+node:ekr.20080416161551.212:p.parentNode (New, test)
+    #@+node:ekr.20040228094013.1:p.utils...
+    #@+node:ekr.20080416161551.212:p.parentNode
     def parentNode (self,includeHiddenRootNode=False):
 
         '''return a new position representing the parent position.
@@ -2572,7 +2572,7 @@ class basePosition (object):
                 return None
         else:
             return None
-    #@-node:ekr.20080416161551.212:p.parentNode (New, test)
+    #@-node:ekr.20080416161551.212:p.parentNode
     #@+node:ekr.20040409203454:p.restoreLinksInTree (no change)
     def restoreLinksInTree (self):
 
@@ -2611,7 +2611,7 @@ class basePosition (object):
             for p in root.children_iter():
                 p.deleteLinksInTree()
     #@-node:ekr.20040409203454.1:p.deleteLinksInTree
-    #@-node:ekr.20040228094013.1:p.utils... (test)
+    #@-node:ekr.20040228094013.1:p.utils...
     #@+node:ekr.20080416161551.213:p.Link/Unlink methods
     # These remain in 4.2:  linking and unlinking does not depend on position.
 
