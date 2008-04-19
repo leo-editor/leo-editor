@@ -1299,15 +1299,20 @@ class rstClass:
         pub.set_writer(writer)
 
         # Make the stylesheet path relative to the directory containing the output file.
-        rel_stylesheet_path = (
-            self.getOption('stylesheet_path') or
-            self.c.frame.openDirectory) # Bug fix: take entire open directory.
+        rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
-        stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
+        # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+        stylesheet_path = g.os_path_abspath(g.os_path_join(
+            self.c.frame.openDirectory,rel_stylesheet_path))
 
-        # Allow relative paths.
         path = g.os_path_abspath(g.os_path_join(
             stylesheet_path,self.getOption('stylesheet_name')))
+
+        # stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
+
+        # # Allow relative paths.
+        # path = g.os_path_abspath(g.os_path_join(
+            # stylesheet_path,self.getOption('stylesheet_name')))
 
         # g.trace('stylesheet_path',stylesheet_path)
         # g.trace('path',path)
@@ -1320,9 +1325,10 @@ class rstClass:
         else:
             if not args1:
                 if rel_stylesheet_path == stylesheet_path:
-                    g.es_print('stylesheet does not exist: %s' % (path),color='red')
+                    g.es_print('stylesheet not found: %s' % (path),color='red')
                 else:
-                    g.es_print('stylesheet does not exist',color='red')
+                    g.es_print('stylesheet not found',color='red')
+                    g.es_print('open directory: %s' % (self.c.frame.openDirectory),color='red')
                     g.es_print('relative path: %s' % (rel_stylesheet_path),color='red')
                     g.es_print('absolute path: %s' % (path),color='red')
             return pub.publish(argv=args)

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="800" width="898"/>
+	<global_window_position top="74" left="120" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -890,6 +890,9 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
+<v t="ekr.20080418154153.1" a="E"><vh>at-root-doc-test.py</vh>
+<v t="ekr.20080418154153.2"><vh>&lt;&lt; section a &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5528,6 +5531,15 @@ Leo's init code populates this menu as a special case.</t>
 g.es(pydispatch)
 g.es(g.listToString(dir(pydispatch)))
 </t>
+<t tx="ekr.20080418154153.1">@root c:\prog\test\at-root-doc-test.py
+
+&lt;&lt; section a &gt;&gt;</t>
+<t tx="ekr.20080418154153.2">@doc
+section a doc
+line2
+@c
+
+a = 5 # code part</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

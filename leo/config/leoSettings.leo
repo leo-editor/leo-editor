@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="77" left="158" height="749" width="930"/>
+	<global_window_position top="108" left="221" height="749" width="930"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,7,3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,15,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -289,7 +289,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413" a="E"><vh>File options</vh>
+<v t="ekr.20061003173413"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -1220,12 +1220,12 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.28" a="E" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
+<v t="ekr.20041119034357.33"><vh>@bool output_doc_flag = True</vh></v>
 <v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
 <v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
