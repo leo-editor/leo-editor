@@ -1025,7 +1025,7 @@ def es_dump (s,n = 30,title=None):
 def es_error (s,color=None):
 
     if color is None and g.app.config: # May not exist during initialization.
-        color = g.app.config.getColor(None,"log_error_color")
+        color = g.app.config.getColor(None,"log_error_color") or 'red'
 
     g.es(s,color=color)
 #@-node:ekr.20031218072017.3110:es_error

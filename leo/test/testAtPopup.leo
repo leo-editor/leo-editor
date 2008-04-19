@@ -52,7 +52,7 @@
 <v t="bobjack.20080324164314.1"><vh>@settings</vh>
 <v t="bobjack.20080415093045.2"><vh>@bool fixedWindow = True</vh></v>
 <v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  browser</vh></v>
-<v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
+<v t="bobjack.20080329054053.1"><vh>@popup fragment for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item find-prev</vh></v>
@@ -60,7 +60,7 @@
 <v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh>
+<v t="bobjack.20080329062304.13"><vh>@popup menus for ...</vh>
 <v t="bobjack.20080329054053.2"><vh>... the log pane</vh>
 <v t="bobjack.20080326150321.5"><vh>@popup log</vh>
 <v t="bobjack.20080329051459.3"><vh>column one</vh>
@@ -77,7 +77,7 @@
 </v>
 <v t="bobjack.20080404054928.8"><vh>Test Check Buttons</vh>
 <v t="bobjack.20080404054928.9"><vh>@item |</vh></v>
-<v t="bobjack.20080404054928.10"><vh>@item *Check</vh></v>
+<v t="bobjack.20080404054928.10"><vh>@item Check</vh></v>
 <v t="bobjack.20080404054928.6"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080404054928.11"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080404054928.12"><vh>@item rclick-button</vh></v>
@@ -460,51 +460,64 @@ Example::
 kind = radio
 group = test1
 name = test-one-one
-</t>
+
+selected-bg = yellow</t>
 <t tx="bobjack.20080403171532.8">2
 kind = radio
 group = test1
 name = test-one-two
 
-</t>
+selected-bg = yellow</t>
 <t tx="bobjack.20080403171532.9">3
 kind = radio
 group = test2
-name = test-two-three</t>
+name = test-two-three
+
+selected-bg = pink
+selected-fg = red</t>
 <t tx="bobjack.20080403171532.11">4
 kind = radio
 group = test2
 name = test-two-four
 
-</t>
+selected-bg = pink
+selected-fg = red</t>
 <t tx="bobjack.20080404054928.6">1
 kind = check
 name = check-one
+fg = magenta
+bg = green
 
 </t>
 <t tx="bobjack.20080404054928.7"></t>
 <t tx="bobjack.20080404054928.8">Although the general purpose rclick-check-button is used here
 which emits </t>
 <t tx="bobjack.20080404054928.9"></t>
-<t tx="bobjack.20080404054928.10"></t>
+<t tx="bobjack.20080404054928.10">
+fg= blue
+bg = white
+</t>
 <t tx="bobjack.20080404054928.11">2
 kind = check
 name = check-two
 
-
+fg = red
+bg = yellow
 
 </t>
 <t tx="bobjack.20080404054928.12">3
 kind = check
 name = check-three
 
-</t>
+fg = white
+bg = magenta</t>
 <t tx="bobjack.20080404054928.13">4
 kind = check
 name = check-four
 
 
-</t>
+fg = darkred
+bg = lightblue</t>
 <t tx="bobjack.20080404111009.1"></t>
 <t tx="bobjack.20080404113810.1"># Run this as a script to enable reporting of changes
 # to the check/radio menu items in the log panel menu.
@@ -1077,7 +1090,15 @@ def demo_radio_callback(self, keywords):
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_radio_callback)
 
-# Execute this node as a script and right click the body to see the results.
+@
+Execute this node as a script and right click the body to see the results.
+
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behaviour.
+
+A radio button with the same group name and the same name is effectivly the same button.  It can appear in the menu many times or in many different menus.
+
+Radio buttons with the same name but in different groups are unreleated.
+
 
 
 
@@ -1180,9 +1201,12 @@ def demo_check_callback(self, keywords):
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
 
-# Execute this node as a script and right click the body to see the results.
+@
+Execute this node as a script and right click the body to see the results.
 
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behaviour.
 
+All check buttons with the same name are effectivly the same button.  It can appear in the menu many times or in many different menus.
 
 
 

@@ -462,13 +462,15 @@ class baseTangleCommands:
         # Global options
         self.page_width = c.page_width
         self.tab_width = c.tab_width
-        self.tangle_batch_flag = c.tangle_batch_flag
-        self.untangle_batch_flag = c.untangle_batch_flag
+
+        # New in Leo 4.5: get these from settings.
+        self.output_doc_flag = c.config.getBool('output_doc_flag')
+        self.tangle_batch_flag = c.config.getBool('tangle_batch_flag')
+        self.untangle_batch_flag = c.config.getBool('untangle_batch_flag')
+        self.use_header_flag = c.config.getBool('use_header_flag')
 
         # Default tangle options.
         self.tangle_directory = None # Initialized by scanAllDirectives
-        self.output_doc_flag = c.output_doc_flag
-        self.use_header_flag = c.use_header_flag
 
         # Default tangle language
         if c.target_language: c.target_language = c.target_language.lower()
@@ -1744,7 +1746,7 @@ class baseTangleCommands:
             else: name = "<NULL part>"
             g.trace(name)
 
-        if part.doc and self.output_doc_flag and self.print_mode != "silent" and part.doc:
+        if part.doc and self.output_doc_flag and self.print_mode != "silent":
             self.put_doc(part.doc)
 
         if part.code:
@@ -3023,7 +3025,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3579:error, pathError, warning
     def error (self,s):
         self.errors += 1
-        g.es_error('',s)
+        g.es_error(g.translateString(s))
 
     def pathError (self,s):
         if not self.path_warning_given:
@@ -3031,7 +3033,7 @@ class baseTangleCommands:
             self.error(s)
 
     def warning (self,s):
-        g.es_error('',s)
+        g.es_error(g.translateString(s))
     #@-node:ekr.20031218072017.3579:error, pathError, warning
     #@+node:ekr.20031218072017.3580:is_end_of_directive
     # This function returns True if we are at the end of preprocessor directive.
