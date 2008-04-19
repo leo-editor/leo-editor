@@ -349,7 +349,7 @@ class undoer:
 
         u.cutStack()
     #@-node:ekr.20031218072017.3616:setUndoTypes
-    #@+node:EKR.20040530121329:u.restoreTree & helpers (uses v._parent)
+    #@+node:EKR.20040530121329:u.restoreTree & helpers
     def restoreTree (self,treeInfo):
 
         """Use the tree info to restore all vnode and tnode data,
@@ -394,8 +394,8 @@ class undoer:
             t.unknownAttributes = uA
             t._p_changed = 1
     #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
-    #@-node:EKR.20040530121329:u.restoreTree & helpers (uses v._parent)
-    #@+node:EKR.20040528075307:u.saveTree & helpers (uses v._parent)
+    #@-node:EKR.20040530121329:u.restoreTree & helpers
+    #@+node:EKR.20040528075307:u.saveTree & helpers
     def saveTree (self,p,treeInfo=None):
 
         """Return a list of tuples with all info needed to handle a general undo operation."""
@@ -473,7 +473,6 @@ class undoer:
             bodyString = t._bodyString,
             vnodeList  = t.vnodeList[:],
             statusBits = t.statusBits,
-            ### firstChild = t._firstChild,
         )
 
         if hasattr(t,'unknownAttributes'):
@@ -481,7 +480,7 @@ class undoer:
 
         return bunch
     #@-node:ekr.20050415170812.1:createTnodeUndoInfo
-    #@-node:EKR.20040528075307:u.saveTree & helpers (uses v._parent)
+    #@-node:EKR.20040528075307:u.saveTree & helpers
     #@+node:ekr.20050525151449:u.trace
     def trace (self):
 

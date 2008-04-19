@@ -2009,7 +2009,7 @@ class baseFileCommands:
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
-    #@+node:ekr.20060919110638.7:createSaxVnode (uses v._parent)
+    #@+node:ekr.20060919110638.7:createSaxVnode
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
@@ -2111,8 +2111,8 @@ class baseFileCommands:
             v.unknownAttributes = aDict
     #@nonl
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
-    #@-node:ekr.20060919110638.7:createSaxVnode (uses v._parent)
-    #@+node:ekr.20060919110638.9:linkParentAndChildren (uses v._parent)
+    #@-node:ekr.20060919110638.7:createSaxVnode
+    #@+node:ekr.20060919110638.9:linkParentAndChildren
     def linkParentAndChildren (self, parent_v, children):
 
         # if children: g.trace(parent_v,len(children))
@@ -2139,7 +2139,7 @@ class baseFileCommands:
         # v = parent_v
         # if v not in v.t.vnodeList:
             # v.t.vnodeList.append(v)
-    #@-node:ekr.20060919110638.9:linkParentAndChildren (uses v._parent)
+    #@-node:ekr.20060919110638.9:linkParentAndChildren
     #@+node:ekr.20060919110638.10:linkSiblings
     def linkSiblings (self, sibs):
 

@@ -2587,19 +2587,12 @@ class basePosition (object):
         for p in root.children_iter():
             p.restoreLinksInTree()
     #@-node:ekr.20040409203454:p.restoreLinksInTree (no change)
-    #@+node:ekr.20040409203454.1:p.deleteLinksInTree & allies (????)
+    #@+node:ekr.20040409203454.1:p.deleteLinksInTree
     def deleteLinksInTree (self):
 
-        """Delete and otherwise adjust links when deleting node."""
+        """Adjust links when deleting node."""
 
-        root = self
-
-        root.deleteLinksInSubtree()
-
-        for p in root.children_iter():
-            p.adjustParentLinksInSubtree(parent=root)
-    #@+node:ekr.20040410170806:p.deleteLinksInSubtree
-    def deleteLinksInSubtree (self):
+        # Unlike in the non-graph world, there is no need to adjust _parent links.
 
         root = p = self
 
@@ -2616,23 +2609,8 @@ class basePosition (object):
         if len(p.v.t.vnodeList) == 0:
             # This node is not shared by other nodes.
             for p in root.children_iter():
-                p.deleteLinksInSubtree()
-    #@-node:ekr.20040410170806:p.deleteLinksInSubtree
-    #@+node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
-    def adjustParentLinksInSubtree (self,parent):
-
-        root = p = self
-
-        # assert(parent)
-
-        # if p.v._parent and parent.v.t.vnodeList and p.v._parent not in parent.v.t.vnodeList:
-            # # g.trace('**** adjust parent in %s' % p.headString())
-            # p.v._parent = parent.v.t.vnodeList[0]
-
-        # for p in root.children_iter():
-            # p.adjustParentLinksInSubtree(parent=root)
-    #@-node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
-    #@-node:ekr.20040409203454.1:p.deleteLinksInTree & allies (????)
+                p.deleteLinksInTree()
+    #@-node:ekr.20040409203454.1:p.deleteLinksInTree
     #@-node:ekr.20040228094013.1:p.utils... (test)
     #@+node:ekr.20080416161551.213:p.Link/Unlink methods
     # These remain in 4.2:  linking and unlinking does not depend on position.
