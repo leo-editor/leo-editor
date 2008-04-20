@@ -113,11 +113,11 @@ Each line after the first line of a body can have the form::
     key-string = value string
 
 these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
-be availiable to generator and invocation callbacks as keywords['item_data'].
+be available to generator and invocation callbacks as keywords['item_data'].
 
 Lines not containing '=' or with '#' as the first character are ignored.
 
-Leading and trailing spaces will be stripped as will spaces aroung the first '=' sign.
+Leading and trailing spaces will be stripped as will spaces around the first '=' sign.
 The value string may contain '=' signs.
 
 
@@ -132,7 +132,7 @@ To set the foreground and background colors for menu items use::
     fg = color
     bg = color
 
-additionaly different background and foreground colors can be set for radio and
+additionally different background and foreground colors can be set for radio and
 check items in the selected state by using::
 
     selected-fg = color
@@ -140,7 +140,7 @@ check items in the selected state by using::
 
 Icons in Menu Items
 -------------------
-Icons will only be shown if the Python Imaging Library extension is availiable.
+Icons will only be shown if the Python Imaging Library extension is available.
 
 To set an icon for an @item or @menu setting in @popup trees use this in the body::
 
@@ -154,7 +154,7 @@ an additional key 'compound' can be added::
 
     compound = [bottom | center | left | right | top | none]
 
-if compound is not included it is equivelent to::
+if compound is not included it is equivalent to::
 
     compound = left
 
@@ -571,7 +571,7 @@ command to handle check and radio items, using rclick-button as a template.
 # 0.23 bobjack:
 # - remove rclickbinder as all binding is now done via hooks.
 # - added support for radio/checkbox items
-# - now dependant on Tk again :(
+# - now dependent on Tk again :(
 # 0.24 bobjack:
 # - fix recent-menus bug
 # - fix canvas/plusbox menu bug
@@ -587,6 +587,8 @@ command to handle check and radio items, using rclick-button as a template.
 # - extended icon and color support to @menu nodes
 # - modified api so that key-value pairs are stored with the label
 #   in the first item of the tuple, instead of with the cmd item.
+# - add rclick-[cut,copy,paste]-text and rclick-select-all commands
+# 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -676,7 +678,7 @@ def rClicker(tag, keywords):
     """Construct and display a popup context menu.
 
     This handler responds to the `bodyrclick1` and `rclick-popup` hooks and
-    dispatches the event to the approriate commander for further processing.
+    dispatches the event to the appropriate commander for further processing.
 
     """
 
@@ -693,7 +695,7 @@ def rClicker(tag, keywords):
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
-    """A per commander contoller for right click menu functionality."""
+    """A per commander controller for right click menu functionality."""
 
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
@@ -726,6 +728,18 @@ class ContextMenuController(object):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
 
+        for command, function in (
+            ('rclick-select-all', self.rc_selectAll),
+            ('rclick-cut-text', self.rc_OnCutFromMenu),
+            ('rclick-copy-text', self.rc_OnCopyFromMenu),
+            ('rclick-paste-text', self.rc_OnPasteFromMenu),
+        ):
+            def cb(event, c=c, command=command, function=function):
+                cm = c.theContextMenuController
+                cm.mb_retval = function(cm.mb_keywords)
+
+            c.k.registerCommand(command, shortcut=None, func=cb)
+
         self.default_context_menus = {}
         self.init_default_menus()
 
@@ -750,7 +764,7 @@ class ContextMenuController(object):
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
 
-        """Set up c.context-menus with menus from @settengs or default_context_menu."""
+        """Set up c.context-menus with menus from @settings or default_context_menu."""
 
         c = self.c
 
@@ -850,7 +864,7 @@ class ContextMenuController(object):
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
@@ -914,7 +928,7 @@ class ContextMenuController(object):
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
@@ -927,7 +941,7 @@ class ContextMenuController(object):
         Example provided:
             - extracts URL's from the text and puts "Open URL:..." in the menu.
             - extracts section headers and puts "Jump To:..." in the menu.
-            - applys python help() to the word or selected text.
+            - applies python help() to the word or selected text.
 
         """
 
@@ -1269,7 +1283,7 @@ class ContextMenuController(object):
             selected = control_var.get()
             groups[group] = selected
 
-            # All data is availiable through c.theContextMenuController.mb_keywords
+            # All data is available through c.theContextMenuController.mb_keywords
             # so only the minimum data is sent through the hook.
 
             g.doHook('rclick-button-clicked',
@@ -1300,7 +1314,7 @@ class ContextMenuController(object):
             selected = control_var.get()
             buttons[name] = bool(selected)
 
-            # All data is availiable through c.theContextMenuController.mb_keywords
+            # All data is available through c.theContextMenuController.mb_keywords
             # so only the minimum data is sent through the hook.
 
             g.doHook('rclick-button-clicked',
@@ -1452,16 +1466,6 @@ class ContextMenuController(object):
                 if not compound in ('bottom', 'center', 'left', 'none', 'right', 'top'):
                     compound = 'left'
                 kws['compound'] = compound
-
-        hidemargin = item_data.get('hidemargin', '').lower()
-        if hidemargin and hidemargin == 'true':
-            kws['hidemargin'] = '1'
-
-
-
-
-
-
     #@-node:bobjack.20080418065623.2:add_optional_args
     #@+node:bobjack.20080329153415.5:rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
@@ -1604,8 +1608,8 @@ class ContextMenuController(object):
                     # The handler should place any return data in 
                     # self.mb_retval
                     # 
-                    # The retval should normally be None, 'abandond' will 
-                    # cause the curent menu or
+                    # The retval should normally be None, 'abandoned' will 
+                    # cause the current menu or
                     # submenu to be abandoned, any other value will also cause 
                     # the current menu to
                     # be abandoned but this will change in future.
@@ -1764,7 +1768,7 @@ class ContextMenuController(object):
     #@+node:ekr.20040422072343.3:rc_nl
     def rc_nl(self, keywords):
 
-        """Insert a newline at the current curser position of selected body editor."""
+        """Insert a newline at the current cursor position of selected body editor."""
 
         c = self.c
 
@@ -1786,7 +1790,6 @@ class ContextMenuController(object):
         insert = w.getInsertPoint()
         w.selectAllText(insert=insert)
         w.focus()
-
     #@-node:ekr.20040422072343.4:rc_selectAll
     #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
     def rc_OnCutFromMenu(self, keywords):
@@ -1817,6 +1820,7 @@ class ContextMenuController(object):
         """Initialize all default context menus"""
 
         c = self.c
+        return
 
         def invoke(method_name):
 
@@ -1991,7 +1995,12 @@ class ContextMenuController(object):
     #@+node:bobjack.20080414113201.2:copyMenuTable
     def copyMenuTable(self, menu_table):
 
-        """make a copy of the menu_table and make copies of its submenus."""
+        """make a copy of the menu_table and make copies of its submenus.
+
+        It is the menu lists that are being copied we are not deep copying
+        objects contained in those lists.
+
+        """
 
 
         def _deepcopy(menu):
@@ -2064,7 +2073,6 @@ class ContextMenuController(object):
             image = ImageTk.PhotoImage(image)
         except:
             image = None
-
 
         if not image or not image.height() == 16:
             g.es('Bad Menu Icon: %s' % path)
