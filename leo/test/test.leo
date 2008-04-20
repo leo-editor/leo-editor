@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -890,8 +890,14 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080418154153.1" a="E"><vh>at-root-doc-test.py</vh>
+<v t="ekr.20080418154153.1"><vh>at-root-doc-test.py</vh>
 <v t="ekr.20080418154153.2"><vh>&lt;&lt; section a &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080419080504.1" a="E"><vh>a</vh>
+<v t="ekr.20080419080504.2"><vh>b</vh></v>
+</v>
+<v t="ekr.20080419080504.1" a="E"><vh>a</vh>
+<v t="ekr.20080419080504.2"><vh>b</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5540,6 +5546,8 @@ line2
 @c
 
 a = 5 # code part</t>
+<t tx="ekr.20080419080504.1"></t>
+<t tx="ekr.20080419080504.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
