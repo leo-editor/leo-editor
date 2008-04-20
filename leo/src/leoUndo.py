@@ -369,9 +369,8 @@ class undoer:
         v = bunch.v
 
         v.statusBits = bunch.statusBits
-        v._parent    = bunch.parent
-        v._next      = bunch.next
-        v._back      = bunch.back
+        v.children   = bunch.children
+        v.parents    = bunch.parents
 
         uA = bunch.get('unknownAttributes')
         if uA is not None:
@@ -387,7 +386,6 @@ class undoer:
         t._bodyString  = bunch.bodyString
         t.vnodeList   = bunch.vnodeList
         t.statusBits  = bunch.statusBits
-        ### t._firstChild = bunch.firstChild
 
         uA = bunch.get('unknownAttributes')
         if uA is not None:
@@ -451,9 +449,8 @@ class undoer:
         bunch = g.Bunch(
             v = v,
             statusBits = v.statusBits,
-            parent     = v._parent,
-            next       = v._next,
-            back       = v._back,
+            parents    = v.parents[:],
+            children   = v.children[:],
             # The tnode never changes so there is no need to save it here.
         )
 
