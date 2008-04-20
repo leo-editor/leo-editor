@@ -3270,7 +3270,6 @@ def __init__ (self,c,fileName,silent,inClipboard):
 
     # Semantics...
     self.content = None
-    self.currentNode = None
     self.elementStack = []
     self.errors = 0
     self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -3278,8 +3277,7 @@ def __init__ (self,c,fileName,silent,inClipboard):
     self.node = None
     self.nodeList = [] # List of saxNodeClass objects with the present tnode.
     self.nodeStack = []
-    self.rootNode = None
-    self.topNode = None
+    self.rootNode = None # a sax node.
 #@nonl
 #@+node:ekr.20060919110638.21:<< define dispatch dict >>
 # There is no need for an 'end' method if all info is carried in attributes.
@@ -3468,17 +3466,10 @@ def endVH (self):
 #@nonl
 #@-node:ekr.20060919110638.34:endVH
 #@-node:ekr.20060919110638.31:endElement & helpers
-#@+node:ekr.20060919110638.45:getters
-def getCurrentNode (self):
-    return self.currentNode # Always None
-
+#@+node:ekr.20060919110638.45:getRootNode
 def getRootNode (self):
     return self.rootNode
-
-def getTopNode (self):
-    return self.topNode # Always None.
-#@nonl
-#@-node:ekr.20060919110638.45:getters
+#@-node:ekr.20060919110638.45:getRootNode
 #@+node:ekr.20061004054323:processingInstruction (stylesheet)
 def processingInstruction (self,target,data):
 

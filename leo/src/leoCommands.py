@@ -3088,8 +3088,10 @@ class baseCommands:
                     tnodeInfoDict[t] = g.Bunch(
                         t=t,head=v.headString(),body=v.bodyString())
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-            #@nl
+            #@afterref
+getSignOnLine (Contains hard-coded version info)
 
+        # create a *position* to be pasted.
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:

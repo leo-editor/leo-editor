@@ -105,7 +105,6 @@ if sys.platform != 'cli':
 
             # Semantics...
             self.content = None
-            self.currentNode = None
             self.elementStack = []
             self.errors = 0
             self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -113,8 +112,7 @@ if sys.platform != 'cli':
             self.node = None
             self.nodeList = [] # List of saxNodeClass objects with the present tnode.
             self.nodeStack = []
-            self.rootNode = None
-            self.topNode = None
+            self.rootNode = None # a sax node.
         #@nonl
         #@-node:ekr.20060919110638.20: __init__ & helpers
         #@+node:ekr.20060919110638.29: Do nothing
@@ -284,17 +282,10 @@ if sys.platform != 'cli':
         #@nonl
         #@-node:ekr.20060919110638.34:endVH
         #@-node:ekr.20060919110638.31:endElement & helpers
-        #@+node:ekr.20060919110638.45:getters
-        def getCurrentNode (self):
-            return self.currentNode # Always None
-
+        #@+node:ekr.20060919110638.45:getRootNode
         def getRootNode (self):
             return self.rootNode
-
-        def getTopNode (self):
-            return self.topNode # Always None.
-        #@nonl
-        #@-node:ekr.20060919110638.45:getters
+        #@-node:ekr.20060919110638.45:getRootNode
         #@+node:ekr.20061004054323:processingInstruction (stylesheet)
         def processingInstruction (self,target,data):
 
@@ -634,7 +625,7 @@ class baseFileCommands:
 
         '''Read a Leo outline from string s in clipboard format.'''
 
-        c = self.c ; p = c.currentPosition() ; check = not reassignIndices
+        c = self.c ; current = c.currentPosition() ; check = not reassignIndices
 
         self.usingClipboard = True
         try:
@@ -649,16 +640,16 @@ class baseFileCommands:
         finally:
             self.usingClipboard = False
 
-        pasted = leoNodes.position(v)
-        if p.hasChildren() and p.isExpanded():
-            if check and not self.checkPaste(p,pasted): return None
-            pasted.linkAsNthChild(p,0)
+        p = leoNodes.position(v)
+        if current.hasChildren() and current.isExpanded():
+            if check and not self.checkPaste(current,p): return None
+            p.linkAsNthChild(current,0)
         else:
-            if check and not self.checkPaste(p.parent(),pasted): return None
-            pasted.linkAfter(p)
+            if check and not self.checkPaste(current.parent(),p): return None
+            p.linkAfter(current)
 
-        c.selectPosition(pasted)
-        return pasted
+        c.selectPosition(p)
+        return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
     #@+node:ekr.20080410115129.1:checkPaste
@@ -973,29 +964,29 @@ class baseFileCommands:
     #@-node:ekr.20060919133249:Common
     #@+node:ekr.20060919104530:Sax
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
-    def createSaxVnodes (self, dummyRoot,reassignIndices):
+    def createSaxVnodes (self,saxRoot,reassignIndices):
 
         '''**Important**: this method and its helpers are low-level code
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
-        children = self.createSaxChildren(dummyRoot,parent_v = None,reassignIndices=reassignIndices)
-        firstChild = children and children[0]
+        children = self.createSaxChildren(
+            saxRoot,
+            parent_v=None,
+            reassignIndices=reassignIndices)
 
-        return firstChild
+        return children
     #@nonl
     #@+node:ekr.20060919110638.5:createSaxChildren
-    # node is a saxNodeClass object, parent_v is a vnode.
-
-    def createSaxChildren (self, node, parent_v, reassignIndices):
+    def createSaxChildren (self, sax_node, parent_v, reassignIndices):
 
         result = []
 
-        for child in node.children:
+        for child in sax_node.children:
             tnx = child.tnx
             t = self.tnodesDict.get(tnx)
             if t and not reassignIndices: ###
-                # A clone.  Create a new clone node, but share the subtree, i.e., the tnode.
+                # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
                 v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
                 # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
@@ -1008,43 +999,43 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
-    def createSaxVnodeTree (self,node,parent_v,reassignIndices):
+    def createSaxVnodeTree (self,sax_node,parent_v,reassignIndices):
 
-        v = self.createSaxVnode(node,parent_v,reassignIndices)
+        v = self.createSaxVnode(sax_node,parent_v,reassignIndices)
 
-        self.createSaxChildren(node,v,reassignIndices)
+        self.createSaxChildren(sax_node,v,reassignIndices)
 
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
     #@+node:ekr.20060919110638.7:createSaxVnode
-    def createSaxVnode (self,node,parent_v,reassignIndices,t=None):
+    def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
 
-        h = node.headString
-        b = node.bodyString
+        h = sax_node.headString
+        b = sax_node.bodyString
 
         if not t:
             t = leoNodes.tnode(bodyString=b,headString=h)
-            if node.tnx:
-                t.fileIndex = g.app.nodeIndices.scanGnx(node.tnx,0)
+            if sax_node.tnx:
+                t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
         v = leoNodes.vnode(t)
         v.t.vnodeList.append(v)
         v._parent = parent_v
 
-        index = self.canonicalTnodeIndex(node.tnx)
+        index = self.canonicalTnodeIndex(sax_node.tnx)
         self.tnodesDict [index] = t
 
         # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
 
-        self.handleVnodeSaxAttributes(node,v)
-        self.handleTnodeSaxAttributes(node,t)
+        self.handleVnodeSaxAttributes(sax_node,v)
+        self.handleTnodeSaxAttributes(sax_node,t)
 
         return v
     #@nonl
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
-    def handleTnodeSaxAttributes (self,node,t):
+    def handleTnodeSaxAttributes (self,sax_node,t):
 
-        d = node.tnodeAttributes
+        d = sax_node.tnodeAttributes
 
         aDict = {}
         for key in d.keys():
@@ -1061,12 +1052,12 @@ class baseFileCommands:
     # The native attributes of <v> elements are a, t, vtag, tnodeList,
     # marks, expanded and descendentTnodeUnknownAttributes.
 
-    def handleVnodeSaxAttributes (self,node,v):
+    def handleVnodeSaxAttributes (self,sax_node,v):
 
-        d = node.attributes
+        d = sax_node.attributes
         s = d.get('a')
         if s:
-            # g.trace('%s a=%s %s' % (id(node),s,v.headString()))
+            # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
             # 'C' (clone) and 'D' bits are not used.
             if 'M' in s: v.setMarked()
             if 'E' in s: v.expand()
@@ -1223,7 +1214,7 @@ class baseFileCommands:
             handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
-            node = handler.getRootNode()
+            sax_node = handler.getRootNode()
         except xml.sax.SAXParseException:
             g.es_print('error parsing',inputFileName,color='red')
             g.es_exception()
@@ -1231,20 +1222,21 @@ class baseFileCommands:
             g.es_print('unexpected exception parsing',inputFileName,color='red')
             g.es_exception()
 
-        return node
+        return sax_node
     #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         # Pass one: create the intermediate nodes.
-        dummyRoot = self.parse_leo_file(theFile,fileName,
+        saxRoot = self.parse_leo_file(theFile,fileName,
             silent=silent,inClipboard=inClipboard,s=s)
 
-        # self.dumpSaxTree(dummyRoot,dummy=True)
+        # self.dumpSaxTree(saxRoot,dummy=True)
 
         # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-        v = dummyRoot and self.createSaxVnodes(dummyRoot,reassignIndices)
+        children = saxRoot and self.createSaxVnodes(saxRoot,reassignIndices)
+        firstChild = children and children[0]
         return v
     #@nonl
     #@-node:ekr.20060919110638.3:readSaxFile
