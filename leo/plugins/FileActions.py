@@ -118,8 +118,8 @@ def onIconDoubleClick(tag, keywords):
     p = keywords.get("p")
 
     if not c or not p:
-        return
-    
+        return None
+
     h = p.headString()
     words = h.split()
     directive = words[0]
@@ -135,7 +135,12 @@ def onIconDoubleClick(tag, keywords):
         # This generates a slightly confusing warning if there are no dirty nodes.
         c.fileCommands.writeDirtyAtFileNodes()
 
-    doFileAction(filename,c)
+    if doFileAction(filename,c):
+        return True #Action was taken - Stop other double-click handlers from running
+    else:
+        return None #No action taken - Let other double-click handlers run
+
+
 #@-node:ekr.20040915105758.14:onIconDoubleClick
 #@+node:ekr.20040915105758.15:doFileAction
 def doFileAction(filename, c):
@@ -152,8 +157,12 @@ def doFileAction(filename, c):
                 break
         if not done:
             g.es("no file action matches " + filename, color='blue')
+            return False #TL - Inform onIconDoubleClick that no action was taken
+        else:
+            return True #TL - Inform onIconDoubleClick that action was taken
     else:
         g.es("no FileActions node", color='blue')
+        return False #TL - Inform onIconDoubleClick that no action was taken
 #@nonl
 #@-node:ekr.20040915105758.15:doFileAction
 #@+node:ekr.20040915105758.16:applyFileAction
