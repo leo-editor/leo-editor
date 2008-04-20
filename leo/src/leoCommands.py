@@ -3091,7 +3091,7 @@ class baseCommands:
                     tnodeInfoDict[t] = g.Bunch(
                         t=t,head=v.headString(),body=v.bodyString())
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
-
+            #@nl
         # create a *position* to be pasted.
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
@@ -3556,12 +3556,6 @@ class baseCommands:
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
                     #@+node:ekr.20040323162707:assert that clones actually share subtrees
                     if p.isCloned() and p.hasChildren():
-                        # childv = p.firstChild().v
-                        # assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
-                        # assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
-                        # for v in p.v.t.vnodeList:
-                            # assert v.t._firstChild == childv, "v.t._firstChild == childv"
-                            # assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
                         for z in p.v.t.vnodeList:
                             assert z.t == p.v.t
                     #@-node:ekr.20040323162707:assert that clones actually share subtrees
