@@ -13419,7 +13419,8 @@ for key in keys1:
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
             key.startswith('delete-') and key.endswith('-button') or
-            key.startswith('nav-') and key.endswith('-menu')
+            key.startswith('nav-') or #ignore commands defined in nav_buttons plugin
+            key.startswith('rclick-') #ignore commands defined in rclick plugin
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:

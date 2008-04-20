@@ -23,7 +23,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119035137" str_leo_pos="3,10"><vh>About this file</vh>
+<v t="ekr.20041119035137" a="E" str_leo_pos="3,10"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -575,7 +575,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
@@ -1083,6 +1083,72 @@
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
 </v>
+<v t="bobjack.20080419192045.2" a="E"><vh>@popup_menus</vh>
+<v t="bobjack.20080419192045.3" a="E"><vh>Main Context Menus</vh>
+<v t="bobjack.20080419192045.4"><vh>@popup body</vh>
+<v t="bobjack.20080419192045.5"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080419192045.6"><vh>@item -</vh></v>
+<v t="bobjack.20080419192045.7"><vh>@menu Block Operations</vh>
+<v t="bobjack.20080419192045.8"><vh>@item indent-region</vh></v>
+<v t="bobjack.20080419192045.9"><vh>@item dedent-region</vh></v>
+<v t="bobjack.20080419192045.10"><vh>@item -</vh></v>
+<v t="bobjack.20080419192045.11"><vh>@item add-comments</vh></v>
+<v t="bobjack.20080419192045.12"><vh>@item delete-comments</vh></v>
+</v>
+<v t="bobjack.20080419192045.13"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080419192045.14"><vh>@item -</vh></v>
+<v t="bobjack.20080419192045.15"><vh>@item match-brackets</vh></v>
+<v t="bobjack.20080419192045.16"><vh>@item execute-script</vh></v>
+<v t="bobjack.20080419192045.17"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080419192045.18"><vh>@popup log</vh>
+<v t="bobjack.20080419192045.19"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080419192045.20"><vh>@popup find-text</vh>
+<v t="bobjack.20080419192045.21"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080419192045.22" a="E"><vh>@popup change-text</vh>
+<v t="bobjack.20080419192045.23"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080419192045.24"><vh>@popup canvas</vh>
+<v t="bobjack.20080419192045.25"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080419192045.26"><vh>@item -</vh></v>
+<v t="bobjack.20080419192045.27"><vh>@item *create-chapter</vh></v>
+<v t="bobjack.20080419192045.28"><vh>@item *remove-chapter</vh></v>
+</v>
+<v t="bobjack.20080419192045.29"><vh>@popup headline</vh></v>
+<v t="bobjack.20080419192045.30"><vh>@popup iconbox</vh></v>
+<v t="bobjack.20080419192045.31"><vh>@popup plusbox</vh></v>
+</v>
+<v t="bobjack.20080419192045.32"><vh>Fragments</vh>
+<v t="bobjack.20080419192045.33"><vh>@popup edit-menu</vh>
+<v t="bobjack.20080419192045.34"><vh>@item rclick-cut-text</vh></v>
+<v t="bobjack.20080419192045.35"><vh>@item rclick-copy-text</vh></v>
+<v t="bobjack.20080419192045.36"><vh>@item rclick-paste-text</vh></v>
+<v t="bobjack.20080419192045.37"><vh>@item -</vh></v>
+<v t="bobjack.20080419192045.38"><vh>@item rclick-select-all</vh></v>
+</v>
+<v t="bobjack.20080419192045.39"><vh>@popup recent-files-menu</vh>
+<v t="bobjack.20080419192045.40" a="E"><vh>@menu Recent Files</vh>
+<v t="bobjack.20080419192045.41"><vh>@item *</vh></v>
+</v>
+</v>
+<v t="bobjack.20080419192045.42"><vh>@popup to-chapter-fragment</vh>
+<v t="bobjack.20080419192045.43"><vh>@menu Clone to Chapter</vh>
+<v t="bobjack.20080419192045.44"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080419192045.45"><vh>@menu Copy to Chapter</vh>
+<v t="bobjack.20080419192045.46"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080419192045.47"><vh>@menu Move to Chapter</vh>
+<v t="bobjack.20080419192045.48"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080419192045.49"><vh>@menu Goto to Chapter</vh>
+<v t="bobjack.20080419192045.50"><vh>@item *</vh></v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
@@ -1325,6 +1391,76 @@ if False: The cursor will be placed on the first line.</t>
 <t tx="TL.20080411073907.1">if True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
 
 if False or no derived file exists for that node, The Open-With plugin will use the file extension of the node's default language (set by the @language command or '.txt' in none exists)</t>
+<t tx="bobjack.20080419192045.2"></t>
+<t tx="bobjack.20080419192045.3"></t>
+<t tx="bobjack.20080419192045.4">@popup body is the default menu for right clicks in the body pane.
+</t>
+<t tx="bobjack.20080419192045.5">edit-menu
+
+# This will include the contents of @popup edit-text </t>
+<t tx="bobjack.20080419192045.6"></t>
+<t tx="bobjack.20080419192045.7"></t>
+<t tx="bobjack.20080419192045.8">Indent</t>
+<t tx="bobjack.20080419192045.9">Dedent</t>
+<t tx="bobjack.20080419192045.10"></t>
+<t tx="bobjack.20080419192045.11"></t>
+<t tx="bobjack.20080419192045.12"></t>
+<t tx="bobjack.20080419192045.13">recent-files-menu
+
+# This will include a copy of @popup recent-files-menu</t>
+<t tx="bobjack.20080419192045.14"></t>
+<t tx="bobjack.20080419192045.15"></t>
+<t tx="bobjack.20080419192045.16"></t>
+<t tx="bobjack.20080419192045.17">rclick-gen-context-sensitive-commands
+
+# This is an example of a menu generator command. It will scan the body text for
+# occuurances of hyperlinks, or section headings in the current line or in the
+# selected text and append items to the menu that will invoke a webbrowser or
+# jump to the section as appropriate.
+</t>
+<t tx="bobjack.20080419192045.18">@popup log is the default menu for right clicks in the log pane.</t>
+<t tx="bobjack.20080419192045.19">edit-menu</t>
+<t tx="bobjack.20080419192045.20">@popup find-text is the default menu for right clicks in the find text entry in the find panel.</t>
+<t tx="bobjack.20080419192045.21">edit-menu</t>
+<t tx="bobjack.20080419192045.22">@popup change-text is the default menu for right clicks in the change text entry in the find panel.</t>
+<t tx="bobjack.20080419192045.23">find-text</t>
+<t tx="bobjack.20080419192045.24">@popup canvas is the default menu for right clicks in the tree canvas that occur outside any other tree widget.</t>
+<t tx="bobjack.20080419192045.25">to-chapter-fragment</t>
+<t tx="bobjack.20080419192045.26"></t>
+<t tx="bobjack.20080419192045.27"></t>
+<t tx="bobjack.20080419192045.28"></t>
+<t tx="bobjack.20080419192045.29">@popup headline is the default menu for right clicks in the text part of the headline.</t>
+<t tx="bobjack.20080419192045.30">@popup iconbox is the default menu for right clicks in the icon box pane.  This will normally be overridden by the cleo menu.</t>
+<t tx="bobjack.20080419192045.31">@popup plusbox is the default menu for right clicks on the plusbox.</t>
+<t tx="bobjack.20080419192045.32"></t>
+<t tx="bobjack.20080419192045.33"></t>
+<t tx="bobjack.20080419192045.34">Cut
+
+icon = Tango/16x16/actions/editcut.png</t>
+<t tx="bobjack.20080419192045.35">Copy
+
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="bobjack.20080419192045.36">Paste
+
+icon = Tango/16x16/actions/editpaste.png</t>
+<t tx="bobjack.20080419192045.37"></t>
+<t tx="bobjack.20080419192045.38">Select All
+#First line must be blank as we want to work out the
+#label based on the command, key = value pairs may follow.</t>
+<t tx="bobjack.20080419192045.39">@popup recent-files-menu is a fragment meant to be included in other menus.
+
+It consists of a single cascade menu which opens to show a list of recent files. </t>
+<t tx="bobjack.20080419192045.40"></t>
+<t tx="bobjack.20080419192045.41">rclick-gen-recent-files-list</t>
+<t tx="bobjack.20080419192045.42"></t>
+<t tx="bobjack.20080419192045.43"></t>
+<t tx="bobjack.20080419192045.44">clone-node-to-chapter-menu</t>
+<t tx="bobjack.20080419192045.45"></t>
+<t tx="bobjack.20080419192045.46">copy-node-to-chapter-menu</t>
+<t tx="bobjack.20080419192045.47"></t>
+<t tx="bobjack.20080419192045.48">move-node-to-chapter-menu</t>
+<t tx="bobjack.20080419192045.49"></t>
+<t tx="bobjack.20080419192045.50">select-chapter-menu</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
 The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>

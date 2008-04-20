@@ -113,11 +113,11 @@ Each line after the first line of a body can have the form::
     key-string = value string
 
 these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
-be availiable to generator and invocation callbacks as keywords['item_data'].
+be available to generator and invocation callbacks as keywords['item_data'].
 
 Lines not containing '=' or with '#' as the first character are ignored.
 
-Leading and trailing spaces will be stripped as will spaces aroung the first '=' sign.
+Leading and trailing spaces will be stripped as will spaces around the first '=' sign.
 The value string may contain '=' signs.
 
 
@@ -125,18 +125,40 @@ Colored Menu Items
 ------------------
 
 Colors for menu items can be set using keyword = value data lines in the body of 
-@item nodes or the cmd string in rClick menus. 
+@item and @menu nodes or the cmd string in rClick menus. 
 
 To set the foreground and background colors for menu items use::
 
     fg = color
     bg = color
 
-additionaly different background and foreground colors can be set for radio and
+additionally different background and foreground colors can be set for radio and
 check items in the selected state by using::
 
     selected-fg = color
     selected-bg = color
+
+Icons in Menu Items
+-------------------
+Icons will only be shown if the Python Imaging Library extension is available.
+
+To set an icon for an @item or @menu setting in @popup trees use this in the body::
+
+    icon = <full path to image>
+
+or::
+
+    icon = <path relative to leo's Icon folder>
+
+an additional key 'compound' can be added::
+
+    compound = [bottom | center | left | right | top | none]
+
+if compound is not included it is equivalent to::
+
+    compound = left
+
+See the Tk menu documentation for more details.
 
 
 Format of menu tables.
@@ -549,7 +571,7 @@ command to handle check and radio items, using rclick-button as a template.
 # 0.23 bobjack:
 # - remove rclickbinder as all binding is now done via hooks.
 # - added support for radio/checkbox items
-# - now dependant on Tk again :(
+# - now dependent on Tk again :(
 # 0.24 bobjack:
 # - fix recent-menus bug
 # - fix canvas/plusbox menu bug
@@ -560,6 +582,13 @@ command to handle check and radio items, using rclick-button as a template.
 # - bug fixes
 # 1.27 bobjack:
 # - added support for colored menu items
+# 1.28
+# - added support for icons
+# - extended icon and color support to @menu nodes
+# - modified api so that key-value pairs are stored with the label
+#   in the first item of the tuple, instead of with the cmd item.
+# - add rclick-[cut,copy,paste]-text and rclick-select-all commands
+# 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -587,19 +616,27 @@ import sys
 import copy
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-#@nonl
+
+try:
+    from PIL import Image
+    from PIL import ImageTk
+except ImportError:
+    Image = ImageTk = None
+
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "1.27"
+__version__ = "1.28"
 __plugin_name__ = 'Right Click Menus'
 
 default_context_menus = {}
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
+
+
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
@@ -641,7 +678,7 @@ def rClicker(tag, keywords):
     """Construct and display a popup context menu.
 
     This handler responds to the `bodyrclick1` and `rclick-popup` hooks and
-    dispatches the event to the approriate commander for further processing.
+    dispatches the event to the appropriate commander for further processing.
 
     """
 
@@ -658,7 +695,7 @@ def rClicker(tag, keywords):
 #@+node:bobjack.20080323045434.14:class ContextMenuController
 class ContextMenuController(object):
 
-    """A per commander contoller for right click menu functionality."""
+    """A per commander controller for right click menu functionality."""
 
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
@@ -671,6 +708,8 @@ class ContextMenuController(object):
         self.popup_menu = None
         self.mb_retval = None
         self.mb_event = None
+
+        self.setIconBasePath()   
 
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
@@ -689,6 +728,18 @@ class ContextMenuController(object):
             method = getattr(self, command.replace('-','_'))
             c.k.registerCommand(command, shortcut=None, func=method)
 
+        for command, function in (
+            ('rclick-select-all', self.rc_selectAll),
+            ('rclick-cut-text', self.rc_OnCutFromMenu),
+            ('rclick-copy-text', self.rc_OnCopyFromMenu),
+            ('rclick-paste-text', self.rc_OnPasteFromMenu),
+        ):
+            def cb(event, c=c, command=command, function=function):
+                cm = c.theContextMenuController
+                cm.mb_retval = function(cm.mb_keywords)
+
+            c.k.registerCommand(command, shortcut=None, func=cb)
+
         self.default_context_menus = {}
         self.init_default_menus()
 
@@ -703,10 +754,17 @@ class ContextMenuController(object):
         self.check_button_data = {}
 
         self.radio_vars = {}
+
+        self.iconCache = {}
+    #@+node:bobjack.20080419070147.2:setIconBasePath
+    def setIconBasePath(self):
+        self.iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
+    #@nonl
+    #@-node:bobjack.20080419070147.2:setIconBasePath
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
 
-        """Set up c.context-menus with menus from @settengs or default_context_menu."""
+        """Set up c.context-menus with menus from @settings or default_context_menu."""
 
         c = self.c
 
@@ -737,28 +795,33 @@ class ContextMenuController(object):
                     s, cmd = menu_table.pop(0)
 
                     if isinstance(cmd, list):
-                        out.append((s.strip().replace('&', ''), config_to_rclick(cmd[:])))
+
+                        s, pairs = self.getBodyData(s) 
+                        s = s.replace('&', '')
+                        out.append((self.rejoin(s, pairs), config_to_rclick(cmd[:])))
                         continue
 
                     else:
                         cmd, pairs = self.getBodyData(cmd)
 
                     if s in ('-', '&', '*', '|', '"'):
-                        out.append((s, self.rejoin(cmd, pairs)))
+                        out.append((self.rejoin(s, pairs), cmd))
                         continue
 
                     star = s.startswith('*')
 
                     if not star and cmd:
-                        out.append((cmd.replace('&', ''), self.rejoin(s, pairs)))
+                        cmd = cmd.replace('&', '')
+                        out.append((self.rejoin(cmd, pairs), s))
                         continue
 
                     if star:
                         s = s[1:]
 
                     label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
-                    cmd = self.rejoin(s.replace('&', ''), pairs)
-                    out.append( (label.replace('&', ''), cmd) )
+                    label = label.replace('&', '')
+                    cmd = s.replace('&', '')
+                    out.append( (self.rejoin(label, pairs), cmd) )
 
                 return out
             #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
@@ -780,6 +843,7 @@ class ContextMenuController(object):
         return True
     #@+node:bobjack.20080414064211.4:rejoin
     def rejoin(self, cmd, pairs):
+        """Join two strings with a line separator."""
 
         return (cmd + '\n' + pairs).strip()
     #@-node:bobjack.20080414064211.4:rejoin
@@ -800,7 +864,7 @@ class ContextMenuController(object):
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
@@ -864,7 +928,7 @@ class ContextMenuController(object):
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
@@ -877,7 +941,7 @@ class ContextMenuController(object):
         Example provided:
             - extracts URL's from the text and puts "Open URL:..." in the menu.
             - extracts section headers and puts "Jump To:..." in the menu.
-            - applys python help() to the word or selected text.
+            - applies python help() to the word or selected text.
 
         """
 
@@ -1219,7 +1283,7 @@ class ContextMenuController(object):
             selected = control_var.get()
             groups[group] = selected
 
-            # All data is availiable through c.theContextMenuController.mb_keywords
+            # All data is available through c.theContextMenuController.mb_keywords
             # so only the minimum data is sent through the hook.
 
             g.doHook('rclick-button-clicked',
@@ -1250,7 +1314,7 @@ class ContextMenuController(object):
             selected = control_var.get()
             buttons[name] = bool(selected)
 
-            # All data is availiable through c.theContextMenuController.mb_keywords
+            # All data is available through c.theContextMenuController.mb_keywords
             # so only the minimum data is sent through the hook.
 
             g.doHook('rclick-button-clicked',
@@ -1270,8 +1334,10 @@ class ContextMenuController(object):
         kind = item_data.get('kind', 'command')
         name = item_data.get('name')
 
-        if not kind or kind=='command':
+        if not name:
+            item_data['name'] = keywords['rc_label']
 
+        if not kind or kind=='command':
             #@        << add command item >>
             #@+node:bobjack.20080418065623.3:<< add command item >>
 
@@ -1289,14 +1355,10 @@ class ContextMenuController(object):
             #@nonl
             #@-node:bobjack.20080418065623.3:<< add command item >>
             #@nl
-
             return
 
         self.mb_keywords = keywords
         self.mb_retval = None  
-
-        if not name:
-            item_data['name'] = keywords['rc_label']
 
         if kind == 'radio':
             #@        << add radio item >>
@@ -1395,9 +1457,15 @@ class ContextMenuController(object):
         if background:
             kws['background'] = background
 
-
-
-
+        icon = item_data.get('icon')
+        if icon:
+            image = self.getImage(icon)
+            if image:
+                kws['image'] = image
+                compound = item_data.get('compound', '').lower()
+                if not compound in ('bottom', 'center', 'left', 'none', 'right', 'top'):
+                    compound = 'left'
+                kws['compound'] = compound
     #@-node:bobjack.20080418065623.2:add_optional_args
     #@+node:bobjack.20080329153415.5:rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
@@ -1515,16 +1583,15 @@ class ContextMenuController(object):
 
                 #g.trace(txt, '[', cmd, ']')
 
-                if isinstance(cmd, basestring):
-                    cmd, item_data = self.split_cmd(cmd)
-                else:
-                    item_data = {}
+                txt, item_data = self.split_cmd(txt)
+
 
                 for k, v in (
                     ('rc_rmenu', rmenu),
                     ('rc_menu_table', menu_table),
                     ('rc_label', txt), 
                     ('rc_item_data', item_data),
+                    ('rc_phase', 'generate'),
                 ):
                     keywords[k] = v
 
@@ -1541,8 +1608,8 @@ class ContextMenuController(object):
                     # The handler should place any return data in 
                     # self.mb_retval
                     # 
-                    # The retval should normally be None, 'abandond' will 
-                    # cause the curent menu or
+                    # The retval should normally be None, 'abandoned' will 
+                    # cause the current menu or
                     # submenu to be abandoned, any other value will also cause 
                     # the current menu to
                     # be abandoned but this will change in future.
@@ -1646,10 +1713,16 @@ class ContextMenuController(object):
                         #@+node:bobjack.20080329153415.12:<< cascade item >>
                         submenu = table_to_menu(cmd[:], level+1)
                         if submenu:
-                            rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
+
+                            kws = {
+                                'label': txt,
+                                'menu': submenu,
+                                'columnbreak': rmenu.rc_columnbreak,
+                            }
+                            self.add_optional_args(kws, item_data)
+                            rmenu.add_cascade(**kws)
                         else:
                             continue # to avoid reseting columnbreak
-                        #@nonl
                         #@-node:bobjack.20080329153415.12:<< cascade item >>
                         #@nl
 
@@ -1695,7 +1768,7 @@ class ContextMenuController(object):
     #@+node:ekr.20040422072343.3:rc_nl
     def rc_nl(self, keywords):
 
-        """Insert a newline at the current curser position of selected body editor."""
+        """Insert a newline at the current cursor position of selected body editor."""
 
         c = self.c
 
@@ -1717,7 +1790,6 @@ class ContextMenuController(object):
         insert = w.getInsertPoint()
         w.selectAllText(insert=insert)
         w.focus()
-
     #@-node:ekr.20040422072343.4:rc_selectAll
     #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
     def rc_OnCutFromMenu(self, keywords):
@@ -1748,6 +1820,7 @@ class ContextMenuController(object):
         """Initialize all default context menus"""
 
         c = self.c
+        return
 
         def invoke(method_name):
 
@@ -1760,9 +1833,9 @@ class ContextMenuController(object):
         #@    @+others
         #@+node:bobjack.20080325060741.6:edit-menu
         self.default_context_menus['edit-menu'] = [
-            ('Cut', invoke('rc_OnCutFromMenu')),
-            ('Copy', invoke('rc_OnCopyFromMenu')),
-            ('Paste', invoke('rc_OnPasteFromMenu')),
+            ('Cut\nicon = Tango/16x16/actions/editcut.png', invoke('rc_OnCutFromMenu')),
+            ('Copy\nicon = Tango/16x16/actions/editcopy.png', invoke('rc_OnCopyFromMenu')),
+            ('Paste\nicon = Tango/16x16/actions/editpaste.png', invoke('rc_OnPasteFromMenu')),
             ('-', ''),
             ('Select All', invoke('rc_selectAll')),
         ]
@@ -1797,9 +1870,9 @@ class ContextMenuController(object):
         #@+node:bobjack.20080325060741.4:body
         self.default_context_menus['body'] = [
 
-            ('Cut', 'cut-text'),
-            ('Copy', 'copy-text'),
-            ('Paste', 'paste-text'),
+            ('Cut\nicon = Tango/16x16/actions/editcut.png', 'cut-text'),
+            ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'copy-text'),
+            ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'paste-text'),
 
             ('-', ''),
 
@@ -1922,7 +1995,12 @@ class ContextMenuController(object):
     #@+node:bobjack.20080414113201.2:copyMenuTable
     def copyMenuTable(self, menu_table):
 
-        """make a copy of the menu_table and make copies of its submenus."""
+        """make a copy of the menu_table and make copies of its submenus.
+
+        It is the menu lists that are being copied we are not deep copying
+        objects contained in those lists.
+
+        """
 
 
         def _deepcopy(menu):
@@ -1952,6 +2030,59 @@ class ContextMenuController(object):
         return menus
 
     #@-node:bobjack.20080414113201.3:copyMenuDict
+    #@+node:bobjack.20080418150812.3:getImage
+    def getImage(self, path):
+
+        """Use PIL to get an image suitable for displaying in menus."""
+
+        c = self.c
+
+        if not (Image and ImageTk):
+            return None
+
+        path = g.os_path_normpath(path)
+
+        try:
+            return self.iconCache[path]
+        except KeyError:
+            pass
+
+        iconpath = g.os_path_join(self.iconBasePath, path)
+
+        try:
+            return self.iconCache[iconpath]
+        except KeyError:
+            pass
+
+        try:
+            image = Image.open(path)
+        except:
+            image = None
+
+        if not image:
+
+            try:
+                image = Image.open(iconpath)
+            except:
+                image = None
+
+        if not image:
+            return None
+
+        try:    
+            image = ImageTk.PhotoImage(image)
+        except:
+            image = None
+
+        if not image or not image.height() == 16:
+            g.es('Bad Menu Icon: %s' % path)
+            return None
+
+        self.iconCache[path] = image
+
+        return image
+
+    #@-node:bobjack.20080418150812.3:getImage
     #@-node:bobjack.20080414064211.5:Utility
     #@-others
 #@-node:bobjack.20080323045434.14:class ContextMenuController
