@@ -46,12 +46,13 @@
 </v>
 <v t="bobjack.20080329070612.1"><vh>Test context sesitive items</vh>
 <v t="bobjack.20080329070612.2"><vh>&lt;&lt; test 'Help on: ...' &gt;&gt;	</vh></v>
+<v t="bobjack.20080416183608.1"><vh>&lt;&lt;test having a &lt; or &gt; in the section headline &gt;&gt;</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080324164314.1"><vh>@settings</vh>
 <v t="bobjack.20080415093045.2"><vh>@bool fixedWindow = True</vh></v>
 <v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  browser</vh></v>
-<v t="bobjack.20080329054053.1"><vh>provide a fragment for use in other menus</vh>
+<v t="bobjack.20080329054053.1"><vh>@popup_fragments for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item find-prev</vh></v>
@@ -59,7 +60,7 @@
 <v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.13"><vh>Provide context menus for ...</vh></v>
+<v t="bobjack.20080329062304.13"><vh>@popup_menus for ...</vh>
 <v t="bobjack.20080329054053.2"><vh>... the log pane</vh>
 <v t="bobjack.20080326150321.5"><vh>@popup log</vh>
 <v t="bobjack.20080329051459.3"><vh>column one</vh>
@@ -76,7 +77,7 @@
 </v>
 <v t="bobjack.20080404054928.8"><vh>Test Check Buttons</vh>
 <v t="bobjack.20080404054928.9"><vh>@item |</vh></v>
-<v t="bobjack.20080404054928.10"><vh>@item *Check</vh></v>
+<v t="bobjack.20080404054928.10"><vh>@item Check</vh></v>
 <v t="bobjack.20080404054928.6"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080404054928.11"><vh>@item rclick-button</vh></v>
 <v t="bobjack.20080404054928.12"><vh>@item rclick-button</vh></v>
@@ -167,11 +168,106 @@
 <v t="bobjack.20080401143613.3"><vh>... headlines</vh>
 <v t="bobjack.20080401143613.4"><vh>@popup headline</vh>
 <v t="bobjack.20080401143613.5"><vh>@item label for menu</vh></v>
+<v t="bobjack.20080420083100.85"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.86"><vh>@item cut-node</vh></v>
+<v t="bobjack.20080420083100.87"><vh>@item copy-node</vh></v>
+<v t="bobjack.20080420083100.89"><vh>@item clone-node</vh></v>
+<v t="bobjack.20080420083100.88"><vh>@item paste-node</vh></v>
+<v t="bobjack.20080420083100.6"><vh>@item paste-retaining-clones</vh></v>
+<v t="bobjack.20080420083100.90"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.7"><vh>@item delete-node</vh></v>
+<v t="bobjack.20080420085604.1"><vh>@item -</vh></v>
+<v t="bobjack.20080420084658.1"><vh>@menu Sort Nodes</vh>
+<v t="bobjack.20080420084658.2"><vh></vh></v>
+<v t="bobjack.20080420083100.12"><vh>@item *sort-childre&amp;n</vh></v>
+<v t="bobjack.20080420083100.13"><vh>@item *&amp;sort-siblings</vh></v>
+</v>
+<v t="bobjack.20080420083100.2"><vh>@menu &amp;Outline</vh>
+<v t="bobjack.20080420083100.9"><vh>@item *&amp;insert-node</vh></v>
+<v t="bobjack.20080420083100.10"><vh>@item *insert-child</vh></v>
+<v t="bobjack.20080420083100.14"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.15"><vh>@item *&amp;hoist</vh></v>
+<v t="bobjack.20080420083100.16"><vh>@item de-hoist</vh></v>
+<v t="bobjack.20080420083100.17"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.18"><vh>@menu Chec&amp;k...</vh>
+<v t="bobjack.20080420083100.19"><vh>@item *check-&amp;outline</vh></v>
+<v t="bobjack.20080420083100.20"><vh>@item *&amp;dump-outline</vh></v>
+<v t="bobjack.20080420083100.21"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.22"><vh>@item *check-&amp;all-python-code</vh></v>
+<v t="bobjack.20080420083100.23"><vh>@item *&amp;check-python-code</vh></v>
+</v>
+<v t="bobjack.20080420083100.24"><vh>@menu E&amp;xpand/Contract...</vh>
+<v t="bobjack.20080420083100.25"><vh>@item *&amp;contract-all</vh></v>
+<v t="bobjack.20080420083100.26"><vh>@item *contract-&amp;node</vh></v>
+<v t="bobjack.20080420083100.27"><vh>@item *contract-&amp;parent</vh></v>
+<v t="bobjack.20080420083100.28"><vh>@item *contract-or-go-&amp;left</vh></v>
+<v t="bobjack.20080420083100.29"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.30"><vh>@item *expand-p&amp;rev-level</vh></v>
+<v t="bobjack.20080420083100.31"><vh>@item *expand-n&amp;ext-level</vh></v>
+<v t="bobjack.20080420083100.32"><vh>@item *expand-and-go-right</vh></v>
+<v t="bobjack.20080420083100.33"><vh>@item *expand-or-go-right</vh></v>
+<v t="bobjack.20080420083100.34"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.35"><vh>@item *expand-to-level-&amp;1</vh></v>
+<v t="bobjack.20080420083100.36"><vh>@item *expand-to-level-&amp;2</vh></v>
+<v t="bobjack.20080420083100.37"><vh>@item *expand-to-level-&amp;3</vh></v>
+<v t="bobjack.20080420083100.38"><vh>@item *expand-to-level-&amp;4</vh></v>
+<v t="bobjack.20080420083100.39"><vh>@item *expand-to-level-&amp;5</vh></v>
+<v t="bobjack.20080420083100.40"><vh>@item *expand-to-level-&amp;6</vh></v>
+<v t="bobjack.20080420083100.41"><vh>@item *expand-to-level-&amp;7</vh></v>
+<v t="bobjack.20080420083100.42"><vh>@item *expand-to-level-&amp;8</vh></v>
+<v t="bobjack.20080420083100.43"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.44"><vh>@item *expand-&amp;all</vh></v>
+<v t="bobjack.20080420083100.45"><vh>@item *expand-n&amp;ode</vh></v>
+</v>
+<v t="bobjack.20080420083100.46"><vh>@menu &amp;Move...</vh>
+<v t="bobjack.20080420083100.47"><vh>@item move-outline-down</vh></v>
+<v t="bobjack.20080420083100.48"><vh>@item move-outline-left</vh></v>
+<v t="bobjack.20080420083100.49"><vh>@item move-outline-right</vh></v>
+<v t="bobjack.20080420083100.50"><vh>@item move-outline-up</vh></v>
+<v t="bobjack.20080420083100.51"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.52"><vh>@item *&amp;promote</vh></v>
+<v t="bobjack.20080420083100.53"><vh>@item *&amp;demote</vh></v>
+</v>
+<v t="bobjack.20080420083100.54"><vh>@menu M&amp;ark...</vh>
+<v t="bobjack.20080420083100.55"><vh>@item *&amp;mark</vh></v>
+<v t="bobjack.20080420083100.56"><vh>@item *mark-&amp;subheads</vh></v>
+<v t="bobjack.20080420083100.57"><vh>@item *mark-changed-&amp;items</vh></v>
+<v t="bobjack.20080420083100.58"><vh>@item *mark-changed-&amp;roots</vh></v>
+<v t="bobjack.20080420083100.59"><vh>@item *mark-&amp;clones</vh></v>
+<v t="bobjack.20080420083100.60"><vh>@item *&amp;unmark-all</vh></v>
+</v>
+<v t="bobjack.20080420083100.61"><vh>@menu &amp;Go To...</vh>
+<v t="bobjack.20080420083100.62"><vh>@item find-next-clone</vh></v>
+<v t="bobjack.20080420083100.63"><vh>@item goto-first-node</vh></v>
+<v t="bobjack.20080420083100.64"><vh>@item goto-first-visible-node</vh></v>
+<v t="bobjack.20080420083100.65"><vh>@item goto-first-sibling</vh></v>
+<v t="bobjack.20080420083100.66"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.67"><vh>@item goto-next-changed</vh></v>
+<v t="bobjack.20080420083100.68"><vh>@item goto-next-clone</vh></v>
+<v t="bobjack.20080420083100.69"><vh>@item goto-next-marked</vh></v>
+<v t="bobjack.20080420083100.70"><vh>@item goto-next-node</vh></v>
+<v t="bobjack.20080420083100.71"><vh>@item goto-next-sibling</vh></v>
+<v t="bobjack.20080420083100.72"><vh>@item goto-next-visible</vh></v>
+<v t="bobjack.20080420083100.73"><vh>@item go-forward</vh></v>
+<v t="bobjack.20080420083100.74"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.75"><vh>@item goto-parent</vh></v>
+<v t="bobjack.20080420083100.76"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.77"><vh>@item goto-prev-node</vh></v>
+<v t="bobjack.20080420083100.78"><vh>@item goto-prev-sibling</vh></v>
+<v t="bobjack.20080420083100.79"><vh>@item goto-prev-visible</vh></v>
+<v t="bobjack.20080420083100.80"><vh>@item go-back</vh></v>
+<v t="bobjack.20080420083100.81"><vh>@item -</vh></v>
+<v t="bobjack.20080420083100.82"><vh>@item goto-last-node</vh></v>
+<v t="bobjack.20080420083100.83"><vh>@item goto-last-sibling</vh></v>
+<v t="bobjack.20080420083100.84"><vh>@item goto-last-visible-node</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="bobjack.20080401214039.1"><vh>... the icon box</vh>
 <v t="bobjack.20080401214039.2"><vh>@popup iconbox</vh>
 <v t="bobjack.20080401214039.3"><vh>@item label for menu</vh></v>
+</v>
 </v>
 </v>
 <v t="bobjack.20080413173856.2"><vh>Unit Test Stuff - Do Not Change</vh>
@@ -202,15 +298,28 @@
 <v t="bobjack.20080413211455.1"><vh>@popup unit-test-four</vh>
 <v t="bobjack.20080413211455.4"><vh>@item rclick-button</vh></v>
 </v>
+<v t="bobjack.20080416154107.7"><vh>@popup unit-test-five</vh></v>
 </v>
 </v>
 <v t="bobjack.20080413173856.7"><vh>Unit Tests</vh>
+<v t="bobjack.20080420051406.1"><vh>Test utility methods</vh>
+<v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
+<v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
+<v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
+</v>
 <v t="bobjack.20080413173856.9"><vh>@test c.context_menus exists and is well formed</vh></v>
 <v t="bobjack.20080413200905.1"><vh>Test @popup to rclick format</vh>
 <v t="bobjack.20080413173856.10"><vh>@test single character items translate correctly</vh></v>
 <v t="bobjack.20080413191217.8"><vh>@test minbuffer command items translate correctly</vh></v>
 <v t="bobjack.20080413203324.8"><vh>@test @menu items translate correctly</vh></v>
 <v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
+</v>
+<v t="bobjack.20080416154107.4"><vh>Test generators</vh>
+<v t="bobjack.20080416154107.8"><vh>@test generator functions and methods</vh>
+<v t="bobjack.20080419045546.3"><vh>&lt;&lt; def do_demo_editor_items &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.7"><vh>&lt;&lt; test function generator &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.8"><vh>&lt;&lt; test minibuffer command generator &gt;&gt;</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -236,23 +345,35 @@ in other menus.</t>
 <t tx="bobjack.20080329054053.2"></t>
 <t tx="bobjack.20080329054053.3"></t>
 <t tx="bobjack.20080329054053.4"></t>
-<t tx="bobjack.20080329054053.5">Cut</t>
-<t tx="bobjack.20080329054053.6">Copy</t>
-<t tx="bobjack.20080329054053.7">Paste</t>
+<t tx="bobjack.20080329054053.5">Cut
+
+icon = Tango/16x16/actions/editcut.png
+</t>
+<t tx="bobjack.20080329054053.6">Copy
+
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="bobjack.20080329054053.7">Paste
+
+icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080329054053.8"></t>
 <t tx="bobjack.20080329054053.9"></t>
 <t tx="bobjack.20080329054053.10">this is an optional label</t>
 <t tx="bobjack.20080329054053.11"></t>
 <t tx="bobjack.20080329054053.12">Indent</t>
 <t tx="bobjack.20080329054053.13">Dedent</t>
-<t tx="bobjack.20080329054053.15"></t>
+<t tx="bobjack.20080329054053.15">
+bg = cyan
+fg = red
+
+icon = Tango\16x16\actions\search.png</t>
 <t tx="bobjack.20080329054053.16">find change fragment</t>
 <t tx="bobjack.20080329054053.17"></t>
 <t tx="bobjack.20080329054053.18"></t>
 <t tx="bobjack.20080329054053.19">rclick-gen-context-sensitive-commands</t>
 <t tx="bobjack.20080329061442.1"></t>
 <t tx="bobjack.20080329061442.2">recent-files-menu</t>
-<t tx="bobjack.20080329061920.1"></t>
+<t tx="bobjack.20080329061920.1">
+icon = Tango\16x16\actions\undo.png</t>
 <t tx="bobjack.20080329061920.2"></t>
 <t tx="bobjack.20080329062304.1"></t>
 <t tx="bobjack.20080329062304.2">Example of using a pre-defined fragment.</t>
@@ -267,15 +388,19 @@ in other menus.</t>
 <t tx="bobjack.20080329063457.1">from pprint import pformat
 
 g.es_print(pformat(c.context_menus))</t>
-<t tx="bobjack.20080329070612.1">Here is a couple of tests you might like to try out:
+<t tx="bobjack.20080329070612.1">
+# Here is a couple of tests you might like to try out:
 
     &lt;&lt; test 'Help on: ...' &gt;&gt;
-    
+
+    &lt;&lt; test having a &lt; or &gt; in the section headline &gt;&gt;
+
     &lt;&lt; test 'Open URL: ...'&gt;&gt;
-    
-    http://localhost/
-    
-Select all the text above then right click.</t>
+
+#    http://localhost/
+
+#Select all the text above then right click.
+</t>
 <t tx="bobjack.20080329070612.2">@
 Hello,why don't you right click on
 
@@ -286,15 +411,15 @@ then click on 'Help on: leoGlobals'</t>
 Place the cursor in the url below, then right click.
 
     http://code.launchpad.net/leo-editor/
-    
-    http://localhost/</t>
-<t tx="bobjack.20080329075629.2">
 
-
+    http://localhost/
 </t>
+<t tx="bobjack.20080329075629.2">print
+print
+print</t>
 <t tx="bobjack.20080329075629.3">@
-@popup &lt;name&gt; menus are converted to a list of tuples and stored in::
-    
+@popup &lt;name&gt; menus are converted to a list of two tuples and stored in::
+
      c.context_menus[&lt;name&gt;]
 
 Some of these names are special, like 'body', 'log', 'find-text', 'change-text'
@@ -324,8 +449,8 @@ Widgets must have &lt;Button-3&gt; bound to a callback that eventually raises ei
 a 'bodyrclick1' hook, such as c.frame.OnBodyRClick or a 'rclick-popup' hook.
 
 Any keyword arguments included in the doHook call will be passed to generator
-callbacks and invocation callbacks.
-    
+callbacks and invocation callbacks in 'keywords'.
+
 Menu tables in c.context_menus are live, they can be manipulated by scripts and
 the changes will show up immediately.  See 'experiments' and 'Howto ...'.
 
@@ -334,11 +459,14 @@ immediately in all those menus.
 
 
 To get a right click menu for a widget use::
-    
+
     g.doHook('rclick-popup', c=c, event=event, context_menu='&lt;default menu name&gt;', &lt;any key=value pairs...&gt;)
 
+The context_menu will only be used if the event.widget does not have a
+context_menu attribute. Normally the widget does NOT have such an attribute.
 
-Make sure the event has passed through the master rclick handler before using the hook.
+Make sure the event has passed through the master rclick handlers (if required)
+before using the hook.
 </t>
 <t tx="bobjack.20080329075629.4"># Experiment with using scripts to create or manipulate menu tables.
 
@@ -453,51 +581,66 @@ Example::
 kind = radio
 group = test1
 name = test-one-one
+
+selected-bg = yellow
+
 </t>
 <t tx="bobjack.20080403171532.8">2
 kind = radio
 group = test1
 name = test-one-two
 
-</t>
+selected-bg = yellow</t>
 <t tx="bobjack.20080403171532.9">3
 kind = radio
 group = test2
-name = test-two-three</t>
+name = test-two-three
+
+selected-bg = pink
+selected-fg = red</t>
 <t tx="bobjack.20080403171532.11">4
 kind = radio
 group = test2
 name = test-two-four
 
-</t>
+selected-bg = pink
+selected-fg = red</t>
 <t tx="bobjack.20080404054928.6">1
 kind = check
 name = check-one
+fg = magenta
+bg = green
 
 </t>
 <t tx="bobjack.20080404054928.7"></t>
 <t tx="bobjack.20080404054928.8">Although the general purpose rclick-check-button is used here
 which emits </t>
 <t tx="bobjack.20080404054928.9"></t>
-<t tx="bobjack.20080404054928.10"></t>
+<t tx="bobjack.20080404054928.10">
+fg= blue
+bg = white
+</t>
 <t tx="bobjack.20080404054928.11">2
 kind = check
 name = check-two
 
-
+fg = red
+bg = yellow
 
 </t>
 <t tx="bobjack.20080404054928.12">3
 kind = check
 name = check-three
 
-</t>
+fg = white
+bg = magenta</t>
 <t tx="bobjack.20080404054928.13">4
 kind = check
 name = check-four
 
 
-</t>
+fg = darkred
+bg = lightblue</t>
 <t tx="bobjack.20080404111009.1"></t>
 <t tx="bobjack.20080404113810.1"># Run this as a script to enable reporting of changes
 # to the check/radio menu items in the log panel menu.
@@ -542,7 +685,7 @@ def report_item_clicked(tag, keywords):
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", report_item_clicked)
 
-g.es('registered to recieve radio/check button events', color='blue')
+g.es('registered to receive radio/check button events', color='blue')
 </t>
 <t tx="bobjack.20080405081601.2">cm = c.theContextMenuController
 
@@ -562,38 +705,40 @@ for check, selected in sorted(checks.iteritems()):
 </t>
 <t tx="bobjack.20080412154131.2">@
 The following button are provided:
-    
+
     show-menu-tables:
-        
+
         This button pretty prints the rclick menu tables in
         c.context_menus to the log panel.
-        
+
     show-button-events:
-        
+
         After clicking this button, all clicks to the radio and
         check button menu items will be reported in the log
         panel.
-        
-        
+
+
     show-button-data:
-        
+
         This button prints the status of the radio groups and check
         buttons that are used in the menus.
-        
+
     do-unit-tests:
-        
+
         This button runs all the unit tests for the rClick
         plugin.  There are not many of them yet but that will
         change over time.
-    </t>
+
+</t>
 <t tx="bobjack.20080413173856.2"></t>
 <t tx="bobjack.20080413173856.3">Test that single character items translate correctly.</t>
 <t tx="bobjack.20080413173856.4">separator</t>
 <t tx="bobjack.20080413173856.5">column break</t>
 <t tx="bobjack.20080413173856.6">comment</t>
-<t tx="bobjack.20080413173856.7">print
-print
-print
+<t tx="bobjack.20080413173856.7">@
+NOTE:
+
+    After doing unit tests the headline and plusbox menus stop working!
 </t>
 <t tx="bobjack.20080413173856.9">@
 This test checks the integrity of the rClick menu tables stored in
@@ -617,17 +762,23 @@ def test_menu_list(menu_table):
             'items in menu_tables must be tuples of length two'
 
         label, cmd = item
+
         assert isinstance(label, basestring),\
             'the label for a menu_table item must be a string'
 
         if isinstance(cmd, list):
             test_menu_list(cmd)
 
+        #cmd can be ANY object for '-', '|' or '"'
+        elif label in ('-', '|', '"'):
+            pass
+
         else:
-            assert  isinstance(cmd, basestring) \
-            or callable(cmd) or cmd is None, \
-                'the command for a mentu_table item must be None,' + \
-                'a list, a string, or a callable object.'
+            assert isinstance(cmd, basestring) \
+                or callable(cmd) or cmd is None, \
+            'the command for a mentu_table item  other than  - | and " must ' + \
+            'be a list, a string, or a callable object.'
+
 
 for key, value in menus.iteritems():
 
@@ -653,23 +804,24 @@ menu_table = c.context_menus[menu_name]
 
 assert len(menu_table) == 5, \
     "wrong number of items in menu_table"
-    
+
 for kind, argument, item in zip(
         ('-', '|', '"', '*', '&amp;'),
         ('separator', 'column break', 'comment',
           'rclick-unit-test-generator', 'rclick-unit-test-include'),
         menu_table ):
-            
+
     assert kind == item[0], \
         "Wrong marker"
-    
+
     #print 'argument', item[1]    
     assert  item[1] == argument, \
         "Wrong argument"
-        
-    
-        
-        </t>
+
+
+
+
+</t>
 <t tx="bobjack.20080413191217.3">rclick-unit-test-generator</t>
 <t tx="bobjack.20080413191217.4">rclick-unit-test-include
 </t>
@@ -693,7 +845,7 @@ menu_table = c.context_menus[menu_name]
 nItems = 6
 assert len(menu_table) == nItems, \
     "wrong number of items in menu_table"
-    
+
 labels = (
     'Rclick Unit Test Invoke One',
     'Rclick Unit Test Invoke Two',
@@ -714,14 +866,15 @@ commands = (
 
 assert len(labels)==nItems and len(commands)==nItems, \
     "Wrong number of items in test tables."
-    
+
 for label, command, item in zip(labels, commands, menu_table):
-             
+
     assert label == item[0], \
         "Wrong label"
-        
+
     assert  item[1] == command, \
-        "Wrong command\n\tGot: %s\n\tExpected: %s" % (item[1], command)</t>
+        "Wrong command\n\tGot: %s\n\tExpected: %s" % (item[1], command)
+</t>
 <t tx="bobjack.20080413194942.2">three</t>
 <t tx="bobjack.20080413194942.3">f&amp;our
 
@@ -756,8 +909,8 @@ menu_table = c.context_menus[menu_name]
 
 assert len(menu_table) == 2, \
     "wrong number of items in menu_table"
-    
-    
+
+
 item = menu_table[0]
 assert item[0] == 'unit-test-submenu-one', 'Wrong Label'
 
@@ -773,7 +926,7 @@ assert item[0] == 'unit-test-submenu-two'
 submenu_table = item[1]
 assert isinstance(submenu_table, list), 'Expecting a list'
 assert len(submenu_table) == 1, 'submenu table should of length one'
-            
+
 item = submenu_table[0]
 assert item[0] == 'unit-test-submenu-three'
 
@@ -791,17 +944,10 @@ menu_table = c.context_menus[menu_name]
 
 assert len(menu_table) == 1, \
     "wrong number of items in menu_table"
-    
+
 item = menu_table[0]
 
-
-#print 'label', item[0]
-assert item[0] == 'Rclick Unit Test One', \
-    "wrong label"
-
-#print 'cmd', item[1]
-
-expected = """rclick-button
+expected = """Rclick Unit Test One
 kind=radio
 group=rclick_unit_test_group
 name=rclick_unit_test_one
@@ -809,7 +955,16 @@ test=this has an = sign"""
 
 expected = '\n'.join(expected.strip().splitlines())
 
-assert item[1] ==  expected, "cmd string is wrong" </t>
+#print 'label', item[0]
+
+assert item[0] == expected, \
+    "wrong label"
+
+#print 'cmd', item[1]
+
+
+assert item[1] ==  'rclick-button', "cmd string is wrong" 
+</t>
 <t tx="bobjack.20080413211455.1">Test </t>
 <t tx="bobjack.20080413211455.4">Rclick Unit Test One
 
@@ -1018,23 +1173,32 @@ new_items = [
 
 ('-', ''), #separator
 
-('Demo Radio One', """rclick-button
+("""Demo Radio One
     kind = radio
     group = demo-group
     name = demo-radio-one
-"""),
 
-('Demo Radio Two', """rclick-button
+    selected-bg = lightblue
+    selected-fg = yellow
+""", 'rclick-button'),
+
+("""Demo Radio Two
     kind = radio
     group = demo-group
     name = demo-radio-two
-"""),
 
-('Demo Radio Three', """rclick-button
+    selected-bg = lightblue
+    selected-fg = yellow
+""", 'rclick-button'),
+
+("""Demo Radio Three
     kind = radio
     group = demo-group
     name = demo-radio-three
-""")
+
+    selected-bg = lightblue
+    selected-fg = yellow
+""", 'rclick-button')
 
 ]
 
@@ -1064,7 +1228,15 @@ def demo_radio_callback(self, keywords):
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_radio_callback)
 
-# Execute this node as a script and right click the body to see the results.
+@
+Execute this node as a script and right click the body to see the results.
+
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
+
+A radio button with the same group name and the same name is effectively the same button.  It can appear in the menu many times or in many different menus.
+
+Radio buttons with the same name but in different groups are unrelated.
+
 
 
 
@@ -1125,18 +1297,21 @@ This is done so that @item in @popup menus are compatible with @item in @menus.
 new_items = [
 ('-', ''),
 
-('Demo Check One', """rclick-button
+("""Demo Check One
     kind = check
     name = demo-check-one
-"""),
 
-('Demo Check Two', """rclick-button
+    selected-bg = yellow
+""", 'rclick-button'),
+
+("""Demo Check Two
     kind = check
     name = demo-check-two
-"""),
+
+    selected-bg = lightgreen
+""", 'rclick-button'),
 
 ]
-
 
 # Insert the menu items into the second position of the 'body' menu.
 # Notice we must change the menu in situ.
@@ -1167,9 +1342,12 @@ def demo_check_callback(self, keywords):
 import leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
 
-# Execute this node as a script and right click the body to see the results.
+@
+Execute this node as a script and right click the body to see the results.
 
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
 
+All check buttons with the same name are effectively the same button.  It can appear in the menu many times or in many different menus.
 
 
 
@@ -1198,9 +1376,13 @@ How to write generator commands version 2.
 
 This is an alternative method of writing generator commands. 
 
-First of all define the base function.
+The advantage of using this method is that the do_demo_editor_items function can
+be used directly in rclick menu tables as well as being accessed through the
+minibuffer command.
 
+First define the base function.
 @c
+
 def do_demo_editor_items(keywords):
 
     menu_table = keywords['rc_menu_table']
@@ -1222,13 +1404,14 @@ def demo_editor_items(event):
 
 c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
 
-c.context_menus['body'][1:1] = [('*', 'demo-editor-items')]
+c.context_menus['body'][1:1] = [
+    ('*', do_demo_editor_items), # do it once using the function directly
+    ('*', 'demo-editor-items')   # do it again using minbuffer command
+]
+
 
 @
-The results of this version is exactly the same as the first. The advantage of
-using this method is that the do_demo... function can be used directly in rclick
-menu tables as well as being accessed through the minibuffer commands, the only
-method available in @popup menus
+
 
 Execute this node as a script.
 
@@ -1245,5 +1428,436 @@ Right click the body pane to see the new menu items appear.
 
 
 </t>
+<t tx="bobjack.20080416154107.4"></t>
+<t tx="bobjack.20080416154107.7"></t>
+<t tx="bobjack.20080416154107.8">call_status = 'not called'
+
+&lt;&lt; def do_demo_editor_items &gt;&gt;
+
+def xtest(value, expected, msg):
+    assert value == expected, \
+        'The %s was "%s", expected "%s"' % (msg, value, expected)
+
+call_status = 'not called'
+&lt;&lt; test function generator &gt;&gt;
+
+call_status = 'not called'
+&lt;&lt; test minibuffer command generator &gt;&gt;
+
+
+</t>
+<t tx="bobjack.20080416183608.1">@
+The old re wouldn't recognize this section headline
+
+hopefully the new one does.</t>
+<t tx="bobjack.20080419045546.3">def do_demo_editor_items(*args, **kw):
+
+    """A sample menu generator function.
+
+    Check that all required parameters are supplied and have the
+    correct form.
+
+    """
+
+    global call_status, test_menu_table
+    call_status = 'error'
+
+    assert len(args) == 1 and not kw, \
+        "Expected one and only one argument and no keyword arguments."
+
+    keywords = args[0]
+
+    assert isinstance(keywords, dict), \
+        "Expected the argument to be a dictionary."
+
+    for key, value in (
+        ('event', None),
+        ('testOne', 'test one'),
+        ('testTwo', 'test two'),
+        ('rc_phase', 'generate'),
+        ('rc_label', '*'),
+    ):
+        assert key in keywords, \
+            'Expected key %s to be in keywords' % key
+
+        assert keywords[key] == value, \
+            'Expected keywords[%s] == %s' %(key, value)
+
+    for key in (
+        'rc_rmenu',
+        'rc_menu_table',
+        'rc_label', 
+        'rc_item_data',
+    ):
+        assert key in keywords, \
+            'Expected key %s to be in keywords' % key
+
+    msg = 'Expected keywords[%s] %s'
+
+    key = 'rc_rmenu'
+    menu = keywords[key]
+    new_menu = c.frame.menu.new_menu(None)
+
+    assert isinstance(menu, new_menu.__class__), \
+        msg % (key, 'to be a gui menu class %s' % new_menu.__class__.__name__)
+
+    key = 'rc_menu_table'
+    menu_table = keywords[key]
+    assert isinstance(menu_table, list), \
+        msg % (key, 'to be a list.')
+
+    key = 'rc_item_data'
+    item_data = keywords[key]
+    assert isinstance(item_data, dict) and not item_data, \
+        msg % (key, 'to be an empty dictionary')
+
+    menu_table = keywords['rc_menu_table']
+
+    new_items = [
+        ('-', ''),
+        ('Add Editor Test', 'add-editor'),
+        ('Delete Editor Test', 'delete-editor'),
+    ]
+
+    menu_table[:0] = new_items
+
+    test_menu_table = keywords['rc_menu_table']
+    call_status = 'done'
+    return 'hello'
+</t>
+<t tx="bobjack.20080419045546.7">
+menu = [('*', do_demo_editor_items)]
+
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+
+xtest(call_status, 'done', 'function call status')
+xtest(retval, 'hello', 'function return value')
+xtest(result, None, 'function hook result')
+
+</t>
+<t tx="bobjack.20080419045546.8">
+def demo_editor_items(event):
+
+    cm = c.theContextMenuController
+    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
+
+c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+
+
+menu = [('*', 'demo-editor-items')]
+
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+xtest(call_status, 'done', 'minibuffer call status')
+xtest(retval, 'hello', 'minibuffer return value')
+xtest(result, None, 'minibuffer hook result')
+</t>
+<t tx="bobjack.20080420051406.1"></t>
+<t tx="bobjack.20080420051406.2">cm = c.theContextMenuController
+
+def testRetval(t, r1, r2, name):
+
+    xp = 'in %s expected ' % name
+
+    assert isinstance(t, tuple), \
+        xp +'result to be a tuple, got %s' % type(t)
+
+    assert len(t) == 2, \
+        xp + '2 items in result, got %s' % len(t)
+
+    x, y = t
+
+    assert isinstance(x, basestring), \
+        xp + 'first value to be a string, got %s' % type(x)
+
+    assert isinstance(y, dict), \
+        xp + 'second value to be a dict, got %s' % type(x)
+
+    assert x == r1, \
+        xp + 'first value\n\tto be: %r\n\tgot:%r' % (r1, x)
+
+    assert y == r2, \
+        xp + 'second value\n\tto be: %r\n\tgot:%r' % (r2, y)
+
+
+tests = ( 
+ u'  win 100 if this is unchanged  ',
+ ' ignore lines with no equal signs ',
+ 'test1=one',
+ '    \t  \t  ',
+ '# this is a comment',
+ u' test 2 =  two three   ',
+ ' ',
+ '# comment with = sign',
+ ' test 3 \t  =  three \t= four',
+)
+
+spaces = '   \t          '
+
+# test empty string input
+testRetval(cm.split_cmd(''), '', {}, 'test(blank)')
+
+# test single line input
+testRetval(
+    cm.split_cmd(' one=1 '),
+    ' one=1 ', {}, 'test(single line)'
+)
+
+xpect1 = tests[0]
+xpect2 = {
+    'test1': 'one',
+    'test 2': 'two three',
+    'test 3': 'three \t= four'
+}
+
+for ending in ('\n', '\r', '\r\n'):
+    testRetval(
+        cm.split_cmd(ending.join(tests)),
+        xpect1, xpect2, 'test(%r)'%ending
+    )
+</t>
+<t tx="bobjack.20080420051406.3">cm = c.theContextMenuController
+
+def testRetval(t, r1, r2, name):
+
+    xp = 'in %s expected ' % name
+
+    assert isinstance(t, tuple), \
+        xp +'result to be a tuple, got %s' % type(t)
+
+    assert len(t) == 2, \
+        xp + '2 items in result, got %s' % len(t)
+
+    x, y = t
+
+    assert isinstance(x, basestring), \
+        xp + 'first value to be a string, got %s' % type(x)
+
+    assert isinstance(y, basestring), \
+        xp + 'second value to be a string, got %s' % type(x)
+
+    assert x == r1, \
+        xp + 'first value\n\tto be: %r\n\tgot:%r' % (r1, x)
+
+    assert y == r2, \
+        xp + 'second value\n\tto be: %r\n\tgot:%r' % (r2, y)
+
+
+tests = ( 
+ u'  win 100 if this is unchanged  ',
+ ' ignore lines with no equal signs ',
+ 'test1=one',
+ '    \t  \t  ',
+ '# this is a comment',
+ u' test 2 =  two three   ',
+ ' ',
+ '# comment with = sign',
+ ' test 3 \t  =  three \t= four',
+)
+
+spaces = '   \t          '
+
+# test empty string input
+testRetval(cm.getBodyData(''), '', '', 'test(blank)')
+
+# test single line input
+testRetval(
+    cm.getBodyData(' one=1 '),
+    ' one=1 ', '', 'test(single line)'
+)
+
+xpect1 = tests[0]
+xpect2 = 'test1=one\ntest 2=two three\ntest 3=three \t= four'
+
+for ending in ('\n', '\r', '\r\n'):
+    testRetval(
+        cm.getBodyData(ending.join(tests)),
+        xpect1, xpect2, 'test(%r)'%ending
+    )
+
+
+
+
+
+
+
+
+</t>
+<t tx="bobjack.20080420051406.4">cm = c.theContextMenuController
+
+class myclass(object):
+    pass
+
+o1 = myclass()
+o2 = myclass()
+
+menu = [
+
+    ('1', [
+        ('1.1', [
+            ('1.1.1', [ ('1.1.1.2', o1), ('1.1.1.2', o1)]),
+            ('1.1.2', [ ('1.1.2.2', o1), ('1.1.2.2', o2)])
+        ]),
+        ('1.2', [
+            ('1.2.1', [ ('1.2.1.2', o1), ('1.2.1.2', o1)]),
+            ('1.2.2', [ ('1.2.2.2', o1), ('1.2.2.2', o2)])
+        ])
+    ]),  
+
+    ('2', [      
+        ('2.1', [
+            ('2.1.1', [ ('2.1.1.2', o1), ('2.1.1.2', o1)]),
+            ('2.1.2', [ ('2.1.2.2', o1), ('2.1.2.2', o2)])
+        ]),
+        ('2.2', [
+            ('2.2.1', [ ('2.2.1.2', o1), ('2.2.1.2', o1)]),
+            ('2.2.2', [ ('2.2.2.2', o1), ('2.2.2.2', o2)])
+        ]),
+    ])
+]     
+
+emptyMenu = []
+retval = cm.copyMenuTable(emptyMenu)
+
+assert isinstance(retval, list), \
+    'Expected a list got %s' % type(retval)
+
+assert retval == emptyMenu, \
+    'Expected an empty list'
+
+assert retval is not emptyMenu, \
+    'Returned list object is identical to input object!'
+
+retval = cm.copyMenuTable(menu)
+
+def testlists(xx, rr):
+
+    for c in (0, 1):
+
+        x, r = xx[c], rr[c]
+
+        assert x[0] == r[0], \
+            'menu labels have been changed'
+
+        if  isinstance(x[1], myclass):
+
+            assert x[1] is r[1], \
+                'Embedded object should be identical'
+            continue
+
+        assert isinstance(r[1], list), \
+            'Expected a list got %s\n\t%s' % (type(r[1]), r[1])
+
+        assert x[1] is not r[1], \
+            'Returned list object is identical to input'
+
+        assert x[1] == r[1], \
+            'Expected input == output'
+
+        testlists(x[1], r[1])
+
+testlists(menu, retval)
+</t>
+<t tx="bobjack.20080420083100.2"></t>
+<t tx="bobjack.20080420083100.6">Pas&amp;te Node As Clone</t>
+<t tx="bobjack.20080420083100.7"></t>
+<t tx="bobjack.20080420083100.9"></t>
+<t tx="bobjack.20080420083100.10"></t>
+<t tx="bobjack.20080420083100.12"></t>
+<t tx="bobjack.20080420083100.13"></t>
+<t tx="bobjack.20080420083100.14"></t>
+<t tx="bobjack.20080420083100.15"></t>
+<t tx="bobjack.20080420083100.16">D&amp;e-Hoist</t>
+<t tx="bobjack.20080420083100.17"></t>
+<t tx="bobjack.20080420083100.18"></t>
+<t tx="bobjack.20080420083100.19"></t>
+<t tx="bobjack.20080420083100.20"></t>
+<t tx="bobjack.20080420083100.21"></t>
+<t tx="bobjack.20080420083100.22"></t>
+<t tx="bobjack.20080420083100.23"></t>
+<t tx="bobjack.20080420083100.24"></t>
+<t tx="bobjack.20080420083100.25"></t>
+<t tx="bobjack.20080420083100.26"></t>
+<t tx="bobjack.20080420083100.27"></t>
+<t tx="bobjack.20080420083100.28"></t>
+<t tx="bobjack.20080420083100.29"></t>
+<t tx="bobjack.20080420083100.30"></t>
+<t tx="bobjack.20080420083100.31"></t>
+<t tx="bobjack.20080420083100.32"></t>
+<t tx="bobjack.20080420083100.33"></t>
+<t tx="bobjack.20080420083100.34"></t>
+<t tx="bobjack.20080420083100.35"></t>
+<t tx="bobjack.20080420083100.36"></t>
+<t tx="bobjack.20080420083100.37"></t>
+<t tx="bobjack.20080420083100.38"></t>
+<t tx="bobjack.20080420083100.39"></t>
+<t tx="bobjack.20080420083100.40"></t>
+<t tx="bobjack.20080420083100.41"></t>
+<t tx="bobjack.20080420083100.42"></t>
+<t tx="bobjack.20080420083100.43"></t>
+<t tx="bobjack.20080420083100.44"></t>
+<t tx="bobjack.20080420083100.45"></t>
+<t tx="bobjack.20080420083100.46"></t>
+<t tx="bobjack.20080420083100.47">Move &amp;Down</t>
+<t tx="bobjack.20080420083100.48">Move &amp;Left</t>
+<t tx="bobjack.20080420083100.49">Move &amp;Right</t>
+<t tx="bobjack.20080420083100.50">Move &amp;Up</t>
+<t tx="bobjack.20080420083100.51"></t>
+<t tx="bobjack.20080420083100.52"></t>
+<t tx="bobjack.20080420083100.53"></t>
+<t tx="bobjack.20080420083100.54"></t>
+<t tx="bobjack.20080420083100.55"></t>
+<t tx="bobjack.20080420083100.56"></t>
+<t tx="bobjack.20080420083100.57"></t>
+<t tx="bobjack.20080420083100.58"></t>
+<t tx="bobjack.20080420083100.59"></t>
+<t tx="bobjack.20080420083100.60"></t>
+<t tx="bobjack.20080420083100.61"></t>
+<t tx="bobjack.20080420083100.62"></t>
+<t tx="bobjack.20080420083100.63">Go To &amp;First Node</t>
+<t tx="bobjack.20080420083100.64">Go To First V&amp;isible</t>
+<t tx="bobjack.20080420083100.65">Go To First Si&amp;bling</t>
+<t tx="bobjack.20080420083100.66"></t>
+<t tx="bobjack.20080420083100.67">Go To Next C&amp;hanged</t>
+<t tx="bobjack.20080420083100.68">Go To Next &amp;Clone</t>
+<t tx="bobjack.20080420083100.69">Go To Next &amp;Marked</t>
+<t tx="bobjack.20080420083100.70">Go To Next N&amp;ode</t>
+<t tx="bobjack.20080420083100.71">Go To Next &amp;Sibling</t>
+<t tx="bobjack.20080420083100.72">Go To Next Visibl&amp;e</t>
+<t tx="bobjack.20080420083100.73">Go To Next Visite&amp;d</t>
+<t tx="bobjack.20080420083100.74"></t>
+<t tx="bobjack.20080420083100.75">Go To P&amp;arent</t>
+<t tx="bobjack.20080420083100.76"></t>
+<t tx="bobjack.20080420083100.77">Go To &amp;Prev Node</t>
+<t tx="bobjack.20080420083100.78">Go To P&amp;rev Sibling</t>
+<t tx="bobjack.20080420083100.79">Go To Pre&amp;v Visible</t>
+<t tx="bobjack.20080420083100.80">Go To Prev Visi&amp;ted</t>
+<t tx="bobjack.20080420083100.81"></t>
+<t tx="bobjack.20080420083100.82">Go To Last Node</t>
+<t tx="bobjack.20080420083100.83">Go To Last Siblin&amp;g</t>
+<t tx="bobjack.20080420083100.84">Go To &amp;Last Visible</t>
+<t tx="bobjack.20080420083100.85"></t>
+<t tx="bobjack.20080420083100.86">
+icon = Tango/16x16/actions/editcut.png</t>
+<t tx="bobjack.20080420083100.87">
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="bobjack.20080420083100.88">
+icon = Tango/16x16/actions/editpaste.png</t>
+<t tx="bobjack.20080420083100.89"></t>
+<t tx="bobjack.20080420083100.90"></t>
+<t tx="bobjack.20080420084658.1"></t>
+<t tx="bobjack.20080420084658.2"></t>
+<t tx="bobjack.20080420085604.1"></t>
 </tnodes>
 </leo_file>
