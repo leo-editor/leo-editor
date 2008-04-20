@@ -558,26 +558,8 @@ class baseFileCommands:
         self.descendentUnknownAttributesDictList = []
         self.ratio = 0.5
 
-        # if self.use_sax:
         self.currentVnode = None
         self.rootVnode = None
-        # else:
-            # self.fileBuffer = None
-            # self.fileIndex = 0
-            # self.currentVnodeStack = [] # A stack of vnodes giving the current position.
-            # self.topVnodeStack     = [] # A stack of vnodes giving the top position.
-            # self.topPosition = None
-            # # regular expression for parsing
-            # reVnodeAttributes = "|".join((
-                # "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
-                # "t=\s*\"([^\"]*)\"",        # group 3
-                # "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
-                # "tnodeList=\s*\"([^\"]*)\"", # group 5
-                # "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
-                # "expanded=\s*\"([^\"]*)\"", # group 7
-                # "marks=\s*\"([^\"]*)\"", # group 8
-                # ">"))
-            # self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
 
         # For writing
         self.read_only = False
@@ -585,7 +567,7 @@ class baseFileCommands:
         self.outputFile = None
         self.openDirectory = None
         self.putCount = 0
-        self.topVnode = None
+        # self.topVnode = None
         self.toString = False
         self.usingClipboard = False
         self.currentPosition = None
@@ -1066,7 +1048,7 @@ class baseFileCommands:
             if 'M' in s: v.setMarked()
             if 'E' in s: v.expand()
             if 'O' in s: v.setOrphan()
-            if 'T' in s: self.topVnode = v
+            # if 'T' in s: self.topVnode = v
             if 'V' in s:
                 # g.trace('setting currentVnode',v,color='red')
                 self.currentVnode = v
