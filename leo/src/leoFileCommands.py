@@ -22,6 +22,7 @@ import pickle
 import string
 import sys
 import zipfile
+import re
 
 try:
     # IronPython has problems with this.
@@ -63,11 +64,12 @@ if sys.platform != 'cli':
 
         #@    @+others
         #@+node:ekr.20060919110638.20: __init__ & helpers
-        def __init__ (self,c,fileName,silent):
+        def __init__ (self,c,fileName,silent,inClipboard):
 
             self.c = c
             self.fileName = fileName
             self.silent = silent
+            self.inClipboard = inClipboard
 
             # Init the base class.
             xml.sax.saxutils.XMLGenerator.__init__(self)
@@ -103,7 +105,6 @@ if sys.platform != 'cli':
 
             # Semantics...
             self.content = None
-            self.currentNode = None
             self.elementStack = []
             self.errors = 0
             self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -111,8 +112,7 @@ if sys.platform != 'cli':
             self.node = None
             self.nodeList = [] # List of saxNodeClass objects with the present tnode.
             self.nodeStack = []
-            self.rootNode = None
-            self.topNode = None
+            self.rootNode = None # a sax node.
         #@nonl
         #@-node:ekr.20060919110638.20: __init__ & helpers
         #@+node:ekr.20060919110638.29: Do nothing
@@ -143,13 +143,13 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            if 1:
+            if 0: # check for non-unicode attributes.
                 for name in attrs.getNames():
                     val = attrs.getValue(name)
                     if type(val) != type(u''):
                         g.trace('Non-unicode attribute',name,val)
 
-            # g.trace(g.listToString([repr() for name in attrs.getNames()]))
+            # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
             return [
                 g.Bunch(name=name,val=attrs.getValue(name))
@@ -239,6 +239,7 @@ if sys.platform != 'cli':
         def endElement(self,name):
 
             name = name.lower()
+
             if name in self.printElements or 'all' in self.printElements:
                 indent = '\t' * (self.level-1) or ''
                 print '%s</%s>' % (indent,self.clean(name).strip())
@@ -246,8 +247,7 @@ if sys.platform != 'cli':
             data = self.dispatchDict.get(name)
 
             if data is None:
-                if 0:
-                    g.trace('unknown element',name)
+                if 1: g.trace('unknown end element',name)
             else:
                 junk,func = data
                 if func:
@@ -282,17 +282,10 @@ if sys.platform != 'cli':
         #@nonl
         #@-node:ekr.20060919110638.34:endVH
         #@-node:ekr.20060919110638.31:endElement & helpers
-        #@+node:ekr.20060919110638.45:getters
-        def getCurrentNode (self):
-            return self.currentNode
-
+        #@+node:ekr.20060919110638.45:getRootNode
         def getRootNode (self):
             return self.rootNode
-
-        def getTopNode (self):
-            return self.topNode
-        #@nonl
-        #@-node:ekr.20060919110638.45:getters
+        #@-node:ekr.20060919110638.45:getRootNode
         #@+node:ekr.20061004054323:processingInstruction (stylesheet)
         def processingInstruction (self,target,data):
 
@@ -308,6 +301,7 @@ if sys.platform != 'cli':
         def startElement(self,name,attrs):
 
             name = name.lower()
+
             if name in self.printElements or 'all' in self.printElements:
                 self.printStartElement(name,attrs)
 
@@ -316,8 +310,7 @@ if sys.platform != 'cli':
             data = self.dispatchDict.get(name)
 
             if data is None:
-                if 0:
-                    g.trace('unknown element',name)
+                if 1: g.trace('unknown start element',name)
             else:
                 func,junk = data
                 if func:
@@ -353,7 +346,8 @@ if sys.platform != 'cli':
 
                 if name == 'body_outline_ratio':
                     # self.body_outline_ratio = val
-                    self.c.ratio = val
+                    if not self.inClipboard:
+                        self.c.ratio = val
                     # g.trace(name,val)
                 elif 0:
                     g.trace(name,len(val))
@@ -381,6 +375,9 @@ if sys.platform != 'cli':
 
             # __pychecker__ = '--no-argsused'
 
+            if self.inClipboard:
+                return # No need to do anything to the main window.
+
             c = self.c ; d = self.global_window_position
 
             w = d.get('width',700)
@@ -400,7 +397,6 @@ if sys.platform != 'cli':
             c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:",self.fileName)
-        #@nonl
         #@-node:ekr.20060919112118:startVnodes
         #@+node:ekr.20060919110638.41:startTnode
         def startTnode (self,attrs):
@@ -510,8 +506,9 @@ if sys.platform != 'cli':
         def dump (self):
 
             print
-            print 'node: tnx: %s body: %d %s' % (self.tnx,len(self.bodyString),self.headString)
-            print 'children:',g.listToString([child for child in self.children])
+            print 'node: tnx: %s len(body): %d %s' % (
+                self.tnx,len(self.bodyString),self.headString)
+            print 'children:',g.listToString(self.children)
             print 'attrs:',self.attributes.values()
         #@nonl
         #@-node:ekr.20060919110638.18:node.dump
@@ -534,8 +531,7 @@ class baseFileCommands:
         self.frame = c.frame
 
         self.use_new_positions = False
-
-        self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
+        self.use_sax = True
 
         self.nativeTnodeAttributes = ('tx',)
         self.nativeVnodeAttributes = (
@@ -559,15 +555,28 @@ class baseFileCommands:
         self.forbiddenTnodes = []
         self.descendentUnknownAttributesDictList = []
         self.ratio = 0.5
-        if self.use_sax:
-            self.currentVnode = None
-            self.rootVnode = None
-        else:
-            self.fileBuffer = None
-            self.fileIndex = 0
-            self.currentVnodeStack = [] # A stack of vnodes giving the current position.
-            self.topVnodeStack     = [] # A stack of vnodes giving the top position.
-            self.topPosition = None
+
+        # if self.use_sax:
+        self.currentVnode = None
+        self.rootVnode = None
+        # else:
+            # self.fileBuffer = None
+            # self.fileIndex = 0
+            # self.currentVnodeStack = [] # A stack of vnodes giving the current position.
+            # self.topVnodeStack     = [] # A stack of vnodes giving the top position.
+            # self.topPosition = None
+            # # regular expression for parsing
+            # reVnodeAttributes = "|".join((
+                # "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+                # "t=\s*\"([^\"]*)\"",        # group 3
+                # "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+                # "tnodeList=\s*\"([^\"]*)\"", # group 5
+                # "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+                # "expanded=\s*\"([^\"]*)\"", # group 7
+                # "marks=\s*\"([^\"]*)\"", # group 8
+                # ">"))
+            # self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
         # For writing
         self.read_only = False
         self.rootPosition = None
@@ -583,7 +592,6 @@ class baseFileCommands:
         self.tnodesDict = {}
             # keys are gnx strings as returned by canonicalTnodeIndex.
             # Values are gnx's.
-    #@nonl
     #@-node:ekr.20031218072017.3019:leoFileCommands._init_
     #@+node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20060919104836: Top-level
@@ -595,7 +603,7 @@ class baseFileCommands:
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.bodyString() ; tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
-        self.fileBuffer = s ; self.fileBufferIndex = 0
+        # self.fileBuffer = s ; self.fileBufferIndex = 0
 
         # Do a trial read.
         self.checking = True
@@ -617,116 +625,51 @@ class baseFileCommands:
 
         '''Read a Leo outline from string s in clipboard format.'''
 
-        try:
-            v = self.getLeoOutlineHelper(s,reassignIndices,checking=True)
-            v = self.getLeoOutlineHelper(s,reassignIndices,checking=False)
-        except invalidPaste:
-            v = None
-            g.es("invalid Paste As Clone",color="blue")
-        except BadLeoFile:
-            v = None
-            g.es("the clipboard is not valid ",color="blue")
+        c = self.c ; current = c.currentPosition() ; check = not reassignIndices
 
-        return v
+        self.usingClipboard = True
+        try:
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+            v = self.readSaxFile(
+                theFile=None, fileName='<clipboard>',
+                silent=True, # don't tell about stylesheet elements.
+                inClipboard=True, reassignIndices=reassignIndices,s=s)
+            if not v:
+                return g.es("the clipboard is not valid ",color="blue")
+        finally:
+            self.usingClipboard = False
+
+        p = leoNodes.position(v)
+        if current.hasChildren() and current.isExpanded():
+            if check and not self.checkPaste(current,p): return None
+            p.linkAsNthChild(current,0)
+        else:
+            if check and not self.checkPaste(current.parent(),p): return None
+            p.linkAfter(current)
+
+        c.selectPosition(p)
+        return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-    #@nonl
-    #@+node:ekr.20031218072017.1557:finishPaste
-    def finishPaste(self,reassignIndices=True):
+    #@+node:ekr.20080410115129.1:checkPaste
+    def checkPaste (self,parent,p):
 
-        """Finish pasting an outline from the clipboard.
+        '''Return True if p may be pasted as a child of parent.'''
 
-        Retain clone links if reassignIndices is False."""
+        if not parent: return True
 
-        c = self.c
-        current = c.currentPosition()
-        if reassignIndices:
-            #@        << reassign tnode indices >>
-            #@+node:ekr.20031218072017.1558:<< reassign tnode indices >>
-            # We must *reassign* indices here so no "False clones" are created.
+        parents = [z.copy() for z in parent.self_and_parents_iter()]
 
-            nodeIndices = g.app.nodeIndices
+        for p in p.self_and_subtree_iter():
+            for z in parents:
+                g.trace(p.headString(),id(p.v.t),id(z.v.t))
+                if p.v.t == z.v.t:
+                    g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                    return False
 
-            current.clearVisitedInTree()
-
-            for p in current.self_and_subtree_iter():
-                t = p.v.t
-                if not t.isVisited():
-                    t.setVisited()
-                    t.fileIndex = nodeIndices.getNewIndex()
-            #@-node:ekr.20031218072017.1558:<< reassign tnode indices >>
-            #@nl
-        c.selectPosition(current)
-        return current
-    #@-node:ekr.20031218072017.1557:finishPaste
-    #@+node:ekr.20060826052453.1:getLeoOutlineHelper
-    def getLeoOutlineHelper (self,s,reassignIndices,checking):
-
-        self.checking = checking
-        self.usingClipboard = True
-        self.fileBuffer = s ; self.fileBufferIndex = 0
-        self.descendentUnknownAttributesDictList = []
-        v = None
-
-        self.tnodesDict = {}
-        if not reassignIndices:
-            #@        << recreate tnodesDict >>
-            #@+node:EKR.20040610134756:<< recreate tnodesDict >>
-            nodeIndices = g.app.nodeIndices
-
-            self.tnodesDict = {}
-
-            for t in self.c.all_unique_tnodes_iter():
-                # Bug fix: Leo 4.4.8: all tnodes have a fileIndex field: make sure it is non-None.
-                if hasattr(t,'fileIndex') and t.fileIndex:
-                    tref = t.fileIndex
-                    if nodeIndices.isGnx(tref):
-                        tref = nodeIndices.toString(tref)
-                    self.tnodesDict[tref] = t
-
-            if 0:
-                print '-'*40
-                for key in self.tnodesDict.keys():
-                    print key,self.tnodesDict[key]
-            #@-node:EKR.20040610134756:<< recreate tnodesDict >>
-            #@nl
-        try:
-            self.getXmlVersionTag()
-            self.getXmlStylesheetTag()
-            self.getTag("<leo_file>")
-            self.getClipboardHeader()
-            self.getDummyElements()
-            self.getVnodes(reassignIndices)
-            self.getTnodes()
-            self.getTag("</leo_file>")
-            if not checking:
-                v = self.finishPaste(reassignIndices)
-        finally:
-            self.fileBuffer = None ; self.fileBufferIndex = 0
-            self.usingClipboard = False
-            self.tnodesDict = {}
-        return v
-    #@-node:ekr.20060826052453.1:getLeoOutlineHelper
-    #@+node:ekr.20031218072017.3022:getClipboardHeader
-    def getClipboardHeader (self):
-
-        if self.getOpenTag("<leo_header"):
-            return # <leo_header> or <leo_header/> has been seen.
-
-        while 1:
-            if self.matchTag("file_format="):
-                self.getDquote() ; self.getLong() ; self.getDquote()
-            elif self.matchTag("tnodes="):
-                self.getDquote() ; self.getLong() ; self.getDquote() # no longer used
-            elif self.matchTag("max_tnode_index="):
-                self.getDquote() ; self.getLong() ; self.getDquote() # no longer used
-            elif self.matchTag("></leo_header>"): # new in 4.2: allow this form.
-                break
-            else:
-                self.getTag("/>")
-                break
-    #@nonl
-    #@-node:ekr.20031218072017.3022:getClipboardHeader
+        return True
+    #@-node:ekr.20080410115129.1:checkPaste
     #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
     #@+node:ekr.20031218072017.1553:getLeoFile
     # The caller should enclose this in begin/endUpdate.
@@ -758,15 +701,17 @@ class baseFileCommands:
         try:
             ok = True
             # t1 = time.clock()
-            if self.use_sax:
-                v = self.readSaxFile(theFile,fileName,silent)
-                if v: # v == None for minimal .leo files.
-                    c.setRootVnode(v)
-                    self.rootVnode = v
-                else:
-                    self.rootVnode = c.rootPosition().v
+
+            #if self.use_sax:
+            v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+            if v: # v is None for minimal .leo files.
+                c.setRootVnode(v)
+                self.rootVnode = v
             else:
-                self.getAllLeoElements(fileName,silent)
+                self.rootVnode = c.rootPosition().v
+            # else:
+                # self.getAllLeoElements(fileName,silent)
+
             # t2 = time.clock()
             # g.trace('time',t2-t1)
         except BadLeoFile, message:
@@ -775,9 +720,10 @@ class baseFileCommands:
                 g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
-        # New in Leo 4.2.2: before reading derived files.
-        if self.use_sax:
-            self.resolveTnodeLists()
+        # Do this before reading derived files.
+        # if self.use_sax:
+        self.resolveTnodeLists()
+
         if ok and readAtFileNodesFlag:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
@@ -788,20 +734,20 @@ class baseFileCommands:
         if readAtFileNodesFlag:
             # The descendent nodes won't exist unless we have read the @thin nodes!
             self.restoreDescendentAttributes()
-        if self.use_sax:
-            self.setPositionsFromVnodes()
-        else:
-            if not self.usingClipboard:
-                self.setPositionsFromStacks()
-            if not c.currentPosition():
-                c.setCurrentPosition(c.rootPosition())
+
+        # if self.use_sax:
+        self.setPositionsFromVnodes()
+        # else:
+            # if not self.usingClipboard:
+                # self.setPositionsFromStacks()
+            # if not c.currentPosition():
+                # c.setCurrentPosition(c.rootPosition())
 
         c.selectVnode(c.currentPosition()) # load body pane
         c.loading = False # reenable c.changed
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
         return ok, self.ratio
-    #@nonl
     #@-node:ekr.20031218072017.1553:getLeoFile
     #@+node:ekr.20031218072017.2009:newTnode
     def newTnode(self,index):
@@ -843,21 +789,13 @@ class baseFileCommands:
     def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c ; frame = c.frame
-        if not self.use_sax:
-            #@        << read the entire file into the buffer >>
-            #@+node:ekr.20070412103240:<< read the entire file into the buffer >>
-            isZipped = zipfile.is_zipfile(fileName)
 
-            if isZipped:
-                aList = theFile.infolist()
-                contentsName = aList[0].filename
-                self.fileBuffer = theFile.read(contentsName)
-            else:
-                self.fileBuffer = theFile.read()
-            #@-node:ekr.20070412103240:<< read the entire file into the buffer >>
-            #@nl
-            theFile.close()
-            self.fileBufferIndex = 0
+        # if not self.use_sax:
+            # < < read the entire file into the buffer > >
+            # theFile.close()
+            # self.fileBufferIndex = 0
+            # self.topPosition = None
+
         #@    << Set the default directory >>
         #@+node:ekr.20031218072017.2298:<< Set the default directory >>
         #@+at 
@@ -875,27 +813,27 @@ class baseFileCommands:
             c.openDirectory = theDir
         #@-node:ekr.20031218072017.2298:<< Set the default directory >>
         #@nl
-        self.topPosition = None
+
         ok, ratio = self.getLeoFile(
             theFile,fileName,
             readAtFileNodesFlag=readAtFileNodesFlag,
             silent=silent)
         frame.resizePanesToRatio(ratio,frame.secondary_ratio)
-        if 0: # 1/30/04: this is useless.
-            if self.topPosition: 
-                c.setTopVnode(self.topPosition)
-        if not self.use_sax: # Delete the file buffer
-            self.fileBuffer = ""
+
+
+        # if not self.use_sax: # Delete the file buffer
+            # self.fileBuffer = ""
+
         return ok
-    #@nonl
     #@-node:ekr.20031218072017.2297:open (leoFileCommands)
     #@+node:ekr.20031218072017.3030:readOutlineOnly
     def readOutlineOnly (self,theFile,fileName):
 
         c = self.c
         # Read the entire file into the buffer
-        self.fileBuffer = theFile.read() ; theFile.close()
-        self.fileBufferIndex = 0
+        # if not use_sax:
+            # self.fileBuffer = theFile.read() ; theFile.close()
+            # self.fileBufferIndex = 0
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
         #@+at 
@@ -921,13 +859,10 @@ class baseFileCommands:
         c.frame.deiconify()
         junk,junk,secondary_ratio = self.frame.initialRatios()
         c.frame.resizePanesToRatio(ratio,secondary_ratio)
-        if 0: # 1/30/04: this is useless.
-            # This should be done after the pane size has been set.
-            if self.topPosition:
-                c.frame.tree.setTopPosition(self.topPosition)
-                c.redraw_now()
+
         # delete the file buffer
-        self.fileBuffer = ""
+        # if not use_sax:
+            # self.fileBuffer = ""
         return ok
     #@-node:ekr.20031218072017.3030:readOutlineOnly
     #@-node:ekr.20060919104836: Top-level
@@ -1018,7 +953,7 @@ class baseFileCommands:
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
-            for p in c.all_positions_iter():
+            for p in c.all_positions_with_unique_vnodes_iter():
                 if marks.get(p.v.t):
                     p.v.initMarkedBit()
                         # This was the problem: was p.setMark.
@@ -1027,7 +962,7 @@ class baseFileCommands:
                     p.expand()
     #@-node:EKR.20040627120120:restoreDescendentAttributes
     #@-node:ekr.20060919133249:Common
-    #@+node:ekr.20031218072017.3021:Non-sax
+    #@+node:ekr.20031218072017.3021:Non-sax (leoFileCommands) (used only by paste-outline logic)
     #@+node:ekr.20040326052245:convertStackToPosition
     def convertStackToPosition (self,stack):
 
@@ -1963,36 +1898,37 @@ class baseFileCommands:
                 c.setTopPosition(top)
     #@nonl
     #@-node:ekr.20040326054052:setPositionsFromStacks (silly)
-    #@-node:ekr.20031218072017.3021:Non-sax
+    #@-node:ekr.20031218072017.3021:Non-sax (leoFileCommands) (used only by paste-outline logic)
     #@+node:ekr.20060919104530:Sax (reading)
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
-    def createSaxVnodes (self, dummyRoot):
+    def createSaxVnodes (self,saxRoot,reassignIndices):
 
         '''**Important**: this method and its helpers are low-level code
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
-        children = self.createSaxChildren(dummyRoot,parent_v = None)
-        ### firstChild = children and children[0]
-        ### return firstChild
+
+        children = self.createSaxChildren(
+            saxRoot,
+            parent_v=None,
+            reassignIndices=reassignIndices)
+
         return children
     #@nonl
     #@+node:ekr.20060919110638.5:createSaxChildren
-    # node is a saxNodeClass object, parent_v is a vnode.
-
-    def createSaxChildren (self, sax_node, parent_v):
+    def createSaxChildren (self, sax_node, parent_v, reassignIndices):
 
         result = []
 
         for child in sax_node.children:
             tnx = child.tnx
             t = self.tnodesDict.get(tnx)
-            if t:
+            if t and not reassignIndices: ###
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-                v = self.createSaxVnode(child,parent_v,t=t)
+                v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
                 # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
-                v = self.createSaxVnodeTree(child,parent_v)
+                v = self.createSaxVnodeTree(child,parent_v,reassignIndices)
             result.append(v)
 
         self.linkSiblings(result)
@@ -2000,17 +1936,17 @@ class baseFileCommands:
         return result
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
-    def createSaxVnodeTree (self,sax_node,parent_v):
+    def createSaxVnodeTree (self,sax_node,parent_v,reassignIndices):
 
-        v = self.createSaxVnode(sax_node,parent_v)
+        v = self.createSaxVnode(sax_node,parent_v,reassignIndices)
 
-        self.createSaxChildren(sax_node,v)
+        self.createSaxChildren(sax_node,v,reassignIndices)
 
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
     #@+node:ekr.20060919110638.7:createSaxVnode
-    def createSaxVnode (self,sax_node,parent_v,t=None):
+    def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
 
         c = self.c
         h = sax_node.headString
@@ -2018,15 +1954,15 @@ class baseFileCommands:
 
         if not t:
             t = leoNodes.tnode(bodyString=b,headString=h)
+
             if sax_node.tnx:
                 t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
         v = leoNodes.vnode(context=c,t=t)
         v.t.vnodeList.append(v)
 
-        ### v._parent = parent_v
-
         index = self.canonicalTnodeIndex(sax_node.tnx)
+
         self.tnodesDict [index] = t
 
         # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -2208,14 +2144,15 @@ class baseFileCommands:
             return val
     #@-node:ekr.20061003093021:getSaxUa
     #@+node:ekr.20060919110638.14:parse_leo_file
-    def parse_leo_file (self,theFile,inputFileName,silent):
+    def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
         c = self.c
         # g.trace('hiddenRootNode',c.hiddenRootNode)
 
         try:
             # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
-            s = theFile.read()
+            if theFile:
+                s = theFile.read()
             theFile = cStringIO.StringIO(s)
             # g.trace(repr(inputFileName))
             node = None
@@ -2226,10 +2163,10 @@ class baseFileCommands:
                 parser.setFeature(xml.sax.handler.feature_external_pes,1)
                     # Include all external parameter entities
                     # Hopefully the parser can figure out the encoding from the <?xml> element.
-            handler = saxContentHandler(c,inputFileName,silent)
+            handler = saxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
-            node = handler.getRootNode()
+            sax_node = handler.getRootNode()
         except xml.sax.SAXParseException:
             g.es_print('error parsing',inputFileName,color='red')
             g.es_exception()
@@ -2237,20 +2174,21 @@ class baseFileCommands:
             g.es_print('unexpected exception parsing',inputFileName,color='red')
             g.es_exception()
 
-        return node
+        return sax_node
     #@nonl
     #@-node:ekr.20060919110638.14:parse_leo_file
     #@+node:ekr.20060919110638.3:readSaxFile
-    def readSaxFile (self,theFile,fileName,silent):
+    def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         # Pass one: create the intermediate nodes.
-        dummyRoot = self.parse_leo_file(theFile,fileName,silent=silent)
+        saxRoot = self.parse_leo_file(theFile,fileName,
+            silent=silent,inClipboard=inClipboard,s=s)
 
-        # self.dumpSaxTree(dummyRoot,dummy=True)
+        # self.dumpSaxTree(saxRoot,dummy=True)
 
         # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-        if dummyRoot:
-            children = self.createSaxVnodes(dummyRoot)
+        if saxRoot:
+            children = self.createSaxVnodes(saxRoot,reassignIndices=reassignIndices)
             # g.trace('children',children)
             self.c.hiddenRootNode.t.children = children
             v = children and children[0] or None
@@ -2263,7 +2201,7 @@ class baseFileCommands:
 
         c = self.c
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             if hasattr(p.v,'tempTnodeList'):
                 # g.trace(p.v.headString())
                 result = []
@@ -2545,12 +2483,16 @@ class baseFileCommands:
 
         tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
 
-        self.put("<leo_header")
-        self.put(" file_format=") ; self.put_in_dquotes("2")
-        self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
-        self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
-        self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
-        self.put("/>") ; self.put_nl()
+        if 1: # For compatibility with versions before Leo 4.5.
+            self.put("<leo_header")
+            self.put(" file_format=") ; self.put_in_dquotes("2")
+            self.put(" tnodes=") ; self.put_in_dquotes(str(tnodes))
+            self.put(" max_tnode_index=") ; self.put_in_dquotes(str(0))
+            self.put(" clone_windows=") ; self.put_in_dquotes(str(clone_windows))
+            self.put("/>") ; self.put_nl()
+
+        else:
+            self.put('<leo_header file_format="2"/>\n')
     #@-node:ekr.20031218072017.3041:putHeader
     #@+node:ekr.20031218072017.3042:putPostlog
     def putPostlog (self):
@@ -2627,7 +2569,7 @@ class baseFileCommands:
         if self.usingClipboard: # write the current tree.
             theIter = c.currentPosition().self_and_subtree_iter()
         else: # write everything
-            theIter = c.allNodes_iter()
+            theIter = c.all_positions_with_unique_tnodes_iter()
 
         # Populate tnodes
         tnodes = {}
@@ -2715,7 +2657,7 @@ class baseFileCommands:
         # Make only one copy for all calls.
         self.currentPosition = c.currentPosition() 
         self.rootPosition    = c.rootPosition()
-        self.topPosition     = c.topPosition()
+        # self.topPosition     = c.topPosition()
 
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.
@@ -2761,7 +2703,6 @@ class baseFileCommands:
         #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         # These string catenations are benign because they rarely happen.
         attr = ""
-
         # New in Leo 4.5: support fixed .leo files.
         if not c.fixed:
             if v.isExpanded(): attr += "E"
@@ -2778,7 +2719,7 @@ class baseFileCommands:
                 attrs.append(' a="%s"' % attr)
 
         # Put the archived *current* position in the *root* positions <v> element.
-        if self.use_sax and p.equal(self.rootPosition):
+        if p.equal(self.rootPosition): ### and self.use_sax
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
             if not c.fixed:
@@ -2982,9 +2923,10 @@ class baseFileCommands:
     #@-node:ekr.20031218072017.1579:putVnodes & helpers
     #@-node:ekr.20040324080819.1:putLeoFile & helpers
     #@+node:ekr.20031218072017.1573:putLeoOutline (to clipboard) & helper
-    # Writes a Leo outline to s in a format suitable for pasting to the clipboard.
-
     def putLeoOutline (self):
+
+        '''Return a string, *not unicode*, encoded with self.leo_file_encoding,
+        suitable for pasting to the clipboard.'''
 
         self.outputFile = g.fileLikeObject()
         self.usingClipboard = True
@@ -3003,27 +2945,32 @@ class baseFileCommands:
     def putClipboardHeader (self):
 
         c = self.c ; tnodes = 0
-        #@    << count the number of tnodes >>
-        #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
-        c.clearAllVisited()
 
-        for p in c.currentPosition().self_and_subtree_iter():
-            t = p.v.t
-            if t and not t.isWriteBit():
-                t.setWriteBit()
-                tnodes += 1
-        #@-node:ekr.20031218072017.1972:<< count the number of tnodes >>
-        #@nl
-        self.put('<leo_header file_format="1" tnodes=')
-        self.put_in_dquotes(str(tnodes))
-        self.put(" max_tnode_index=")
-        self.put_in_dquotes(str(tnodes))
-        self.put("/>") ; self.put_nl()
+        if 1: # Put the minimum header for sax.
+            self.put('<leo_header file_format="2"/>\n')
 
-        # New in Leo 4.4.3: Add dummy elements so copied nodes form a valid .leo file.
-        self.put('<globals/>\n')
-        self.put('<preferences/>\n')
-        self.put('<find_panel_settings/>\n')
+        else: # Put the header for the old read code.
+            #@        << count the number of tnodes >>
+            #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
+            c.clearAllVisited()
+
+            for p in c.currentPosition().self_and_subtree_iter():
+                t = p.v.t
+                if t and not t.isWriteBit():
+                    t.setWriteBit()
+                    tnodes += 1
+            #@-node:ekr.20031218072017.1972:<< count the number of tnodes >>
+            #@nl
+            self.put('<leo_header file_format="1" tnodes=')
+            self.put_in_dquotes(str(tnodes))
+            self.put(" max_tnode_index=")
+            self.put_in_dquotes(str(tnodes))
+            self.put("/>") ; self.put_nl()
+
+            # New in Leo 4.4.3: Add dummy elements so copied nodes form a valid .leo file.
+            self.put('<globals/>\n')
+            self.put('<preferences/>\n')
+            self.put('<find_panel_settings/>\n')
     #@-node:ekr.20031218072017.1971:putClipboardHeader
     #@-node:ekr.20031218072017.1573:putLeoOutline (to clipboard) & helper
     #@+node:ekr.20060919064401:putToOPML

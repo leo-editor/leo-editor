@@ -3809,7 +3809,7 @@ def findNodeInTree(c,p,headline):
 
 def findNodeAnywhere(c,headline):
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_tnodes_iter():
         if p.headString().strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
@@ -4976,13 +4976,14 @@ class fileLikeObject:
 
         pass
     #@-node:ekr.20050404151753.3:flush
-    #@+node:ekr.20050404151753.4:get & getvalue
+    #@+node:ekr.20050404151753.4:get & getvalue & read
     def get (self):
 
         return ''.join(self.list)
 
     getvalue = get # for compatibility with StringIo
-    #@-node:ekr.20050404151753.4:get & getvalue
+    read = get # for use by sax.
+    #@-node:ekr.20050404151753.4:get & getvalue & read
     #@+node:ekr.20050404151753.5:readline
     def readline(self): # New for read-from-string (readOpenFile).
 

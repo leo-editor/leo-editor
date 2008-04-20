@@ -1164,8 +1164,7 @@ def __init__(self,c):
     self.frame = c.frame
 
     self.use_new_positions = False
-
-    self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
+    self.use_sax = True
 
     self.nativeTnodeAttributes = ('tx',)
     self.nativeVnodeAttributes = (
@@ -1189,15 +1188,28 @@ def initIvars(self):
     self.forbiddenTnodes = []
     self.descendentUnknownAttributesDictList = []
     self.ratio = 0.5
-    if self.use_sax:
-        self.currentVnode = None
-        self.rootVnode = None
-    else:
-        self.fileBuffer = None
-        self.fileIndex = 0
-        self.currentVnodeStack = [] # A stack of vnodes giving the current position.
-        self.topVnodeStack     = [] # A stack of vnodes giving the top position.
-        self.topPosition = None
+
+    # if self.use_sax:
+    self.currentVnode = None
+    self.rootVnode = None
+    # else:
+        # self.fileBuffer = None
+        # self.fileIndex = 0
+        # self.currentVnodeStack = [] # A stack of vnodes giving the current position.
+        # self.topVnodeStack     = [] # A stack of vnodes giving the top position.
+        # self.topPosition = None
+        # # regular expression for parsing
+        # reVnodeAttributes = "|".join((
+            # "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+            # "t=\s*\"([^\"]*)\"",        # group 3
+            # "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+            # "tnodeList=\s*\"([^\"]*)\"", # group 5
+            # "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+            # "expanded=\s*\"([^\"]*)\"", # group 7
+            # "marks=\s*\"([^\"]*)\"", # group 8
+            # ">"))
+        # self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
     # For writing
     self.read_only = False
     self.rootPosition = None
@@ -1213,7 +1225,6 @@ def initIvars(self):
     self.tnodesDict = {}
         # keys are gnx strings as returned by canonicalTnodeIndex.
         # Values are gnx's.
-#@nonl
 #@-node:ekr.20031218072017.3019:leoFileCommands._init_
 #@+node:ekr.20060919110638.13:setPositionsFromVnodes & helper
 def setPositionsFromVnodes (self):
@@ -3238,11 +3249,12 @@ class saxContentHandler (xml.sax.saxutils.XMLGenerator):
     @others
 #@nonl
 #@+node:ekr.20060919110638.20: __init__ & helpers
-def __init__ (self,c,fileName,silent):
+def __init__ (self,c,fileName,silent,inClipboard):
 
     self.c = c
     self.fileName = fileName
     self.silent = silent
+    self.inClipboard = inClipboard
 
     # Init the base class.
     xml.sax.saxutils.XMLGenerator.__init__(self)
@@ -3258,7 +3270,6 @@ def __init__ (self,c,fileName,silent):
 
     # Semantics...
     self.content = None
-    self.currentNode = None
     self.elementStack = []
     self.errors = 0
     self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -3266,8 +3277,7 @@ def __init__ (self,c,fileName,silent):
     self.node = None
     self.nodeList = [] # List of saxNodeClass objects with the present tnode.
     self.nodeStack = []
-    self.rootNode = None
-    self.topNode = None
+    self.rootNode = None # a sax node.
 #@nonl
 #@+node:ekr.20060919110638.21:<< define dispatch dict >>
 # There is no need for an 'end' method if all info is carried in attributes.
@@ -3317,13 +3327,13 @@ def attrsToList (self,attrs):
 
     attrs: an Attributes item passed to startElement.'''
 
-    if 1:
+    if 0: # check for non-unicode attributes.
         for name in attrs.getNames():
             val = attrs.getValue(name)
             if type(val) != type(u''):
                 g.trace('Non-unicode attribute',name,val)
 
-    # g.trace(g.listToString([repr() for name in attrs.getNames()]))
+    # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
     return [
         g.Bunch(name=name,val=attrs.getValue(name))
@@ -3413,6 +3423,7 @@ def characters(self,content):
 def endElement(self,name):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         indent = '\t' * (self.level-1) or ''
         print '%s</%s>' % (indent,self.clean(name).strip())
@@ -3420,8 +3431,7 @@ def endElement(self,name):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown end element',name)
     else:
         junk,func = data
         if func:
@@ -3456,17 +3466,10 @@ def endVH (self):
 #@nonl
 #@-node:ekr.20060919110638.34:endVH
 #@-node:ekr.20060919110638.31:endElement & helpers
-#@+node:ekr.20060919110638.45:getters
-def getCurrentNode (self):
-    return self.currentNode
-
+#@+node:ekr.20060919110638.45:getRootNode
 def getRootNode (self):
     return self.rootNode
-
-def getTopNode (self):
-    return self.topNode
-#@nonl
-#@-node:ekr.20060919110638.45:getters
+#@-node:ekr.20060919110638.45:getRootNode
 #@+node:ekr.20061004054323:processingInstruction (stylesheet)
 def processingInstruction (self,target,data):
 
@@ -3482,6 +3485,7 @@ def processingInstruction (self,target,data):
 def startElement(self,name,attrs):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         self.printStartElement(name,attrs)
 
@@ -3490,8 +3494,7 @@ def startElement(self,name,attrs):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown start element',name)
     else:
         func,junk = data
         if func:
@@ -3527,7 +3530,8 @@ def startGlobals (self,attrs):
 
         if name == 'body_outline_ratio':
             # self.body_outline_ratio = val
-            self.c.ratio = val
+            if not self.inClipboard:
+                self.c.ratio = val
             # g.trace(name,val)
         elif 0:
             g.trace(name,len(val))
@@ -3555,6 +3559,9 @@ def startVnodes (self,unused_attrs):
 
     # __pychecker__ = '--no-argsused'
 
+    if self.inClipboard:
+        return # No need to do anything to the main window.
+
     c = self.c ; d = self.global_window_position
 
     w = d.get('width',700)
@@ -3574,7 +3581,6 @@ def startVnodes (self,unused_attrs):
     c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
     if not self.silent and not g.unitTesting:
         g.es("reading:",self.fileName)
-#@nonl
 #@-node:ekr.20060919112118:startVnodes
 #@+node:ekr.20060919110638.41:startTnode
 def startTnode (self,attrs):
@@ -3683,8 +3689,9 @@ __repr__ = __str__
 def dump (self):
 
     print
-    print 'node: tnx: %s body: %d %s' % (self.tnx,len(self.bodyString),self.headString)
-    print 'children:',g.listToString([child for child in self.children])
+    print 'node: tnx: %s len(body): %d %s' % (
+        self.tnx,len(self.bodyString),self.headString)
+    print 'children:',g.listToString(self.children)
     print 'attrs:',self.attributes.values()
 #@nonl
 #@-node:ekr.20060919110638.18:node.dump
@@ -3943,7 +3950,6 @@ if forceWrite or self.usingClipboard:
 #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 # These string catenations are benign because they rarely happen.
 attr = ""
-
 # New in Leo 4.5: support fixed .leo files.
 if not c.fixed:
     if v.isExpanded(): attr += "E"
@@ -3960,7 +3966,7 @@ if not c.fixed:
         attrs.append(' a="%s"' % attr)
 
 # Put the archived *current* position in the *root* positions <v> element.
-if self.use_sax and p.equal(self.rootPosition):
+if p.equal(self.rootPosition): ### and self.use_sax
     aList = [str(z) for z in self.currentPosition.archivedPosition()]
     d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
     if not c.fixed:
@@ -4131,7 +4137,7 @@ Later:
 #@-node:ekr.20080417064246.1:What I did
 #@+node:ekr.20080416161551.223:Uses v._parent
 #@+node:ekr.20060919110638.7:createSaxVnode
-def createSaxVnode (self,sax_node,parent_v,t=None):
+def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
 
     c = self.c
     h = sax_node.headString
@@ -4139,15 +4145,15 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     if not t:
         t = leoNodes.tnode(bodyString=b,headString=h)
+
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    ### v._parent = parent_v
-
     index = self.canonicalTnodeIndex(sax_node.tnx)
+
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -4542,33 +4548,34 @@ def deleteLinksInTree (self):
 #@-node:ekr.20040409203454.1:p.deleteLinksInTree
 #@+node:ekr.20080419065321.3:Recent sax stuff
 #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
-def createSaxVnodes (self, dummyRoot):
+def createSaxVnodes (self,saxRoot,reassignIndices):
 
     '''**Important**: this method and its helpers are low-level code
     corresponding to link/unlink methods in leoNodes.py.
     Modify this with extreme care.'''
 
-    children = self.createSaxChildren(dummyRoot,parent_v = None)
-    ### firstChild = children and children[0]
-    ### return firstChild
+
+    children = self.createSaxChildren(
+        saxRoot,
+        parent_v=None,
+        reassignIndices=reassignIndices)
+
     return children
 #@nonl
 #@+node:ekr.20060919110638.5:createSaxChildren
-# node is a saxNodeClass object, parent_v is a vnode.
-
-def createSaxChildren (self, sax_node, parent_v):
+def createSaxChildren (self, sax_node, parent_v, reassignIndices):
 
     result = []
 
     for child in sax_node.children:
         tnx = child.tnx
         t = self.tnodesDict.get(tnx)
-        if t:
+        if t and not reassignIndices: ###
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-            v = self.createSaxVnode(child,parent_v,t=t)
+            v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
             # g.trace('clone',id(child),child.headString,'t',v.t)
         else:
-            v = self.createSaxVnodeTree(child,parent_v)
+            v = self.createSaxVnodeTree(child,parent_v,reassignIndices)
         result.append(v)
 
     self.linkSiblings(result)
@@ -4576,17 +4583,17 @@ def createSaxChildren (self, sax_node, parent_v):
     return result
 #@-node:ekr.20060919110638.5:createSaxChildren
 #@+node:ekr.20060919110638.6:createSaxVnodeTree
-def createSaxVnodeTree (self,sax_node,parent_v):
+def createSaxVnodeTree (self,sax_node,parent_v,reassignIndices):
 
-    v = self.createSaxVnode(sax_node,parent_v)
+    v = self.createSaxVnode(sax_node,parent_v,reassignIndices)
 
-    self.createSaxChildren(sax_node,v)
+    self.createSaxChildren(sax_node,v,reassignIndices)
 
     return v
 #@nonl
 #@-node:ekr.20060919110638.6:createSaxVnodeTree
 #@+node:ekr.20060919110638.7:createSaxVnode
-def createSaxVnode (self,sax_node,parent_v,t=None):
+def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
 
     c = self.c
     h = sax_node.headString
@@ -4594,15 +4601,15 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     if not t:
         t = leoNodes.tnode(bodyString=b,headString=h)
+
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    ### v._parent = parent_v
-
     index = self.canonicalTnodeIndex(sax_node.tnx)
+
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -5074,33 +5081,34 @@ def moveToRoot (self,oldRoot=None):
 #@-node:ekr.20040303175026.6:p.moveToRoot
 #@+node:ekr.20060919104530:Sax (reading)
 #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
-def createSaxVnodes (self, dummyRoot):
+def createSaxVnodes (self,saxRoot,reassignIndices):
 
     '''**Important**: this method and its helpers are low-level code
     corresponding to link/unlink methods in leoNodes.py.
     Modify this with extreme care.'''
 
-    children = self.createSaxChildren(dummyRoot,parent_v = None)
-    ### firstChild = children and children[0]
-    ### return firstChild
+
+    children = self.createSaxChildren(
+        saxRoot,
+        parent_v=None,
+        reassignIndices=reassignIndices)
+
     return children
 #@nonl
 #@+node:ekr.20060919110638.5:createSaxChildren
-# node is a saxNodeClass object, parent_v is a vnode.
-
-def createSaxChildren (self, sax_node, parent_v):
+def createSaxChildren (self, sax_node, parent_v, reassignIndices):
 
     result = []
 
     for child in sax_node.children:
         tnx = child.tnx
         t = self.tnodesDict.get(tnx)
-        if t:
+        if t and not reassignIndices: ###
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-            v = self.createSaxVnode(child,parent_v,t=t)
+            v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
             # g.trace('clone',id(child),child.headString,'t',v.t)
         else:
-            v = self.createSaxVnodeTree(child,parent_v)
+            v = self.createSaxVnodeTree(child,parent_v,reassignIndices)
         result.append(v)
 
     self.linkSiblings(result)
@@ -5108,17 +5116,17 @@ def createSaxChildren (self, sax_node, parent_v):
     return result
 #@-node:ekr.20060919110638.5:createSaxChildren
 #@+node:ekr.20060919110638.6:createSaxVnodeTree
-def createSaxVnodeTree (self,sax_node,parent_v):
+def createSaxVnodeTree (self,sax_node,parent_v,reassignIndices):
 
-    v = self.createSaxVnode(sax_node,parent_v)
+    v = self.createSaxVnode(sax_node,parent_v,reassignIndices)
 
-    self.createSaxChildren(sax_node,v)
+    self.createSaxChildren(sax_node,v,reassignIndices)
 
     return v
 #@nonl
 #@-node:ekr.20060919110638.6:createSaxVnodeTree
 #@+node:ekr.20060919110638.7:createSaxVnode
-def createSaxVnode (self,sax_node,parent_v,t=None):
+def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
 
     c = self.c
     h = sax_node.headString
@@ -5126,15 +5134,15 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     if not t:
         t = leoNodes.tnode(bodyString=b,headString=h)
+
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    ### v._parent = parent_v
-
     index = self.canonicalTnodeIndex(sax_node.tnx)
+
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -5316,14 +5324,15 @@ def getSaxUa(self,attr,val):
         return val
 #@-node:ekr.20061003093021:getSaxUa
 #@+node:ekr.20060919110638.14:parse_leo_file
-def parse_leo_file (self,theFile,inputFileName,silent):
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
     c = self.c
     # g.trace('hiddenRootNode',c.hiddenRootNode)
 
     try:
         # Use cStringIo to avoid a crash in sax when inputFileName has unicode characters.
-        s = theFile.read()
+        if theFile:
+            s = theFile.read()
         theFile = cStringIO.StringIO(s)
         # g.trace(repr(inputFileName))
         node = None
@@ -5334,10 +5343,10 @@ def parse_leo_file (self,theFile,inputFileName,silent):
             parser.setFeature(xml.sax.handler.feature_external_pes,1)
                 # Include all external parameter entities
                 # Hopefully the parser can figure out the encoding from the <?xml> element.
-        handler = saxContentHandler(c,inputFileName,silent)
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
         parser.setContentHandler(handler)
         parser.parse(theFile) # expat does not support parseString
-        node = handler.getRootNode()
+        sax_node = handler.getRootNode()
     except xml.sax.SAXParseException:
         g.es_print('error parsing',inputFileName,color='red')
         g.es_exception()
@@ -5345,20 +5354,21 @@ def parse_leo_file (self,theFile,inputFileName,silent):
         g.es_print('unexpected exception parsing',inputFileName,color='red')
         g.es_exception()
 
-    return node
+    return sax_node
 #@nonl
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@+node:ekr.20060919110638.3:readSaxFile
-def readSaxFile (self,theFile,fileName,silent):
+def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
     # Pass one: create the intermediate nodes.
-    dummyRoot = self.parse_leo_file(theFile,fileName,silent=silent)
+    saxRoot = self.parse_leo_file(theFile,fileName,
+        silent=silent,inClipboard=inClipboard,s=s)
 
-    # self.dumpSaxTree(dummyRoot,dummy=True)
+    # self.dumpSaxTree(saxRoot,dummy=True)
 
     # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
-    if dummyRoot:
-        children = self.createSaxVnodes(dummyRoot)
+    if saxRoot:
+        children = self.createSaxVnodes(saxRoot,reassignIndices=reassignIndices)
         # g.trace('children',children)
         self.c.hiddenRootNode.t.children = children
         v = children and children[0] or None
@@ -5371,7 +5381,7 @@ def resolveTnodeLists (self):
 
     c = self.c
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_vnodes_iter():
         if hasattr(p.v,'tempTnodeList'):
             # g.trace(p.v.headString())
             result = []

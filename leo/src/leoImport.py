@@ -1018,16 +1018,16 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
-    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+    def convertMoreStringToOutlineAfter (self,s,first_p):
         s = string.replace(s,"\r","")
         strings = string.split(s,"\n")
-        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+        return self.convertMoreStringsToOutlineAfter(strings,first_p)
 
     # Almost all the time spent in this command is spent here.
 
-    def convertMoreStringsToOutlineAfter (self,strings,firstVnode):
+    def convertMoreStringsToOutlineAfter (self,strings,first_p):
 
-        # __pychecker__ = '--no-objattrs' # suppress bad warnings re lastVnode.
+        # __pychecker__ = '--no-objattrs' # suppress bad warnings re last_p.
 
         c = self.c
         if len(strings) == 0: return None
@@ -1035,7 +1035,7 @@ class leoImportCommands:
         c.beginUpdate()
         try: # range of update...
             firstLevel, junk = self.moreHeadlineLevel(strings[0])
-            lastLevel = -1 ; theRoot = lastVnode = None
+            lastLevel = -1 ; theRoot = last_p = None
             index = 0
             while index < len(strings):
                 progress = index
@@ -1043,27 +1043,27 @@ class leoImportCommands:
                 level,junk = self.moreHeadlineLevel(s)
                 level -= firstLevel
                 if level >= 0:
-                    #@                << Link a new vnode v into the outline >>
-                    #@+node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@                << Link a new position p into the outline >>
+                    #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
                     assert(level >= 0)
-                    if lastVnode is None:
-                        # g.trace(firstVnode)
-                        theRoot = v = firstVnode.insertAfter()
+                    if not last_p:
+                        # g.trace(first_p)
+                        theRoot = p = first_p.insertAfter()
                     elif level == lastLevel:
-                        v = lastVnode.insertAfter()
+                        p = last_p.insertAfter()
                     elif level == lastLevel + 1:
-                        v = lastVnode.insertAsNthChild(0)
+                        p = last_p.insertAsNthChild(0)
                     else:
                         assert(level < lastLevel)
                         while level < lastLevel:
                             lastLevel -= 1
-                            lastVnode = lastVnode.parent()
-                            assert(lastVnode)
+                            last_p = last_p.parent()
+                            assert(last_p)
                             assert(lastLevel >= 0)
-                        v = lastVnode.insertAfter()
-                    lastVnode = v
+                        p = last_p.insertAfter()
+                    last_p = p
                     lastLevel = level
-                    #@-node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
                     #@nl
                     #@                << Set the headline string, skipping over the leader >>
                     #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
@@ -1073,7 +1073,7 @@ class leoImportCommands:
                     if g.match(s,j,"+ ") or g.match(s,j,"- "):
                         j += 2
 
-                    v.initHeadString(s[j:])
+                    p.initHeadString(s[j:])
                     #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
                     #@nl
                     #@                << Count the number of following body lines >>
@@ -1093,8 +1093,8 @@ class leoImportCommands:
                         index += 1
                     #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
                     #@nl
-                    #@                << Add the lines to the body text of v >>
-                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                    #@                << Add the lines to the body text of p >>
+                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
                     if bodyLines > 0:
                         body = ""
                         n = index - bodyLines
@@ -1103,10 +1103,10 @@ class leoImportCommands:
                             if n != index - 1:
                                 body += "\n"
                             n += 1
-                        v.setTnodeText(body)
-                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                        p.setTnodeText(body)
+                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
                     #@nl
-                    v.setDirty()
+                    p.setDirty()
                 else: index += 1
                 assert progress < index
             if theRoot:

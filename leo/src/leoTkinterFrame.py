@@ -856,7 +856,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         # Using a dict here is essential for adequate speed.
         vList = [] ; tDict = {}
 
-        for p in c.allNodes_iter():
+        for p in c.all_positions_with_unique_vnodes_iter():
             vList.append(p.v)
             if p.v.t:
                 key = id(p.v.t)
