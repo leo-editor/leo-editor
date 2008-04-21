@@ -62,7 +62,7 @@ cp -rp config $LEO_LIB_DIR/.
 #echo ""
 #echo "Creating startup script located at: $LEO_RUN_SCRIPT_OUTPUT"
 
-echo "python ${LEO_PREFIX}/lib/leo/src/leo.py \"\$1\"" > $LEO_RUN_SCRIPT_OUTPUT
+echo "python ${LEO_PREFIX}/lib/src/leo.py \"\$1\"" > $LEO_RUN_SCRIPT_OUTPUT
 
 RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
 

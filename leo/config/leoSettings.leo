@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.854271356784">
-	<global_window_position top="10" left="458" height="796" width="833"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="108" left="221" height="749" width="930"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,13,1,0,3,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,15,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1195,6 +1195,9 @@
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+<v t="TL.20080410171007.2"><vh>@bool open_with_save_on_update = False</vh></v>
+<v t="TL.20080410171007.3"><vh>@bool open_with_clean_filenames = False</vh></v>
+<v t="TL.20080411073907.1"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
 <v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
@@ -1281,17 +1284,19 @@
 <v t="ekr.20051123100536.2"><vh>@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
+<v t="TL.20080410171007.9"><vh>@bool vim_plugin_positions_cursor = False</vh></v>
+<v t="TL.20080410171007.8" a="V"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.28" a="E" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.33"><vh>@bool output_doc_chunks = True</vh></v>
+<v t="ekr.20041119034357.33"><vh>@bool output_doc_flag = True</vh></v>
 <v t="ekr.20041119034357.34"><vh>@bool tangle_outputs_header = True</vh></v>
 <v t="ekr.20041119034357.35"><vh>@bool run_tangle_done.py = False</vh></v>
 <v t="ekr.20041119034357.36"><vh>@bool run_untangle_done.py = False</vh></v>
@@ -1368,6 +1373,24 @@
 </v>
 </vnodes>
 <tnodes>
+<t tx="TL.20080410171007.2"></t>
+<t tx="TL.20080410171007.3">if True: The Open-With plugin will store temporary files utilizing cleaner file names (no unique number is appended to the node's headline text).  Unique temporary directory paths are used to insure unique files are created by creating temporary directories reflecting each node's ancestor nodes in the Leo outline.
+Note: Do not have multiple sibling nodes (nodes having the same parent node) in Leo with the same headline text.  There will be a conflict if both are opened in an external editor at the same time. 
+
+if False: The Open-With plugin will store temporary files with an appended unique number to insure unique temporary filenames.
+</t>
+<t tx="TL.20080410171007.8">if True: Each file sent to gVim is placed in a tab card.  Files in gVim are accessed by selecing from a row of tabs.
+Note: Information on gVim's Tab feature can be viewed by entering the gVim command :help tabpage
+Note: Put "@bool open_with_clean_filenames = True" in myLeoSetting.leo to create smaller tab labels.
+
+if False: Each file sent to vim plaes the previous file in a hidden Vim buffer (use Vim's :bn and :bN command to view each file)
+</t>
+<t tx="TL.20080410171007.9">if True: The Vim plugin will send the file to Vim with a request to place the Vim cursor on the same line as the location of the cursor in Leo.
+
+if False: The cursor will be placed on the first line.</t>
+<t tx="TL.20080411073907.1">if True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
+
+if False or no derived file exists for that node, The Open-With plugin will use the file extension of the node's default language (set by the @language command or '.txt' in none exists)</t>
 <t tx="bobjack.20080419192045.2"></t>
 <t tx="bobjack.20080419192045.3"></t>
 <t tx="bobjack.20080419192045.4">@popup body is the default menu for right clicks in the body pane.

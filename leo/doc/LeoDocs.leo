@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="19" left="372" height="931" width="861"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@button Spell</vh></v>
@@ -49,6 +49,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080412124815.1"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
@@ -282,7 +283,7 @@
 </v>
 <v t="ekr.20050828062751"><vh>Reference: the seven ways of creating derived files</vh>
 <v t="ekr.20070814090306"><vh>\@auto</vh>
-<v t="ekr.20070814090306.2" a="M"><vh>Perfect import checks</vh></v>
+<v t="ekr.20070814090306.2"><vh>Perfect import checks</vh></v>
 <v t="ekr.20070814090306.3"><vh>Commands related to @auto</vh></v>
 </v>
 <v t="ekr.20050828061501.51"><vh>\@thin and @file</vh></v>
@@ -445,7 +446,7 @@
 <v t="ekr.20050902105852.11"><vh>Leo 4.2: Complete at last</vh></v>
 <v t="ekr.20050902105852.12"><vh>Leo 4.3 Settings</vh></v>
 <v t="ekr.20060629083935"><vh>Leo 4.4 The minibuffer and key bindings</vh></v>
-<v t="ekr.20080315115427.568" a="M"><vh>Leo 4.4.4 Improvements</vh>
+<v t="ekr.20080315115427.568"><vh>Leo 4.4.4 Improvements</vh>
 <v t="ekr.20080315115427.569"><vh>Leo 4.4.1</vh></v>
 <v t="ekr.20080315115427.570"><vh>Leo 4.4.2</vh></v>
 <v t="ekr.20080315115427.571"><vh>Leo 4.4.3</vh></v>

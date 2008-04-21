@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet ekr_stylesheet?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.560371517028">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="43" left="279" height="767" width="848"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5,1,4,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -182,7 +182,7 @@
 </v>
 </v>
 <v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1" a="TV"><vh>Release files/info</vh>
+<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
@@ -235,7 +235,7 @@
 <v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -246,7 +246,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>

@@ -1025,7 +1025,7 @@ def es_dump (s,n = 30,title=None):
 def es_error (s,color=None):
 
     if color is None and g.app.config: # May not exist during initialization.
-        color = g.app.config.getColor(None,"log_error_color")
+        color = g.app.config.getColor(None,"log_error_color") or 'red'
 
     g.es(s,color=color)
 #@-node:ekr.20031218072017.3110:es_error
@@ -3809,7 +3809,7 @@ def findNodeInTree(c,p,headline):
 
 def findNodeAnywhere(c,headline):
 
-    for p in c.allNodes_iter():
+    for p in c.all_positions_with_unique_tnodes_iter():
         if p.headString().strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
