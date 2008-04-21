@@ -569,17 +569,18 @@ class baseFileCommands:
             self.currentVnodeStack = [] # A stack of vnodes giving the current position.
             self.topVnodeStack     = [] # A stack of vnodes giving the top position.
             self.topPosition = None
-            # regular expression for parsing
-            reVnodeAttributes = "|".join((
-                "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
-                "t=\s*\"([^\"]*)\"",        # group 3
-                "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
-                "tnodeList=\s*\"([^\"]*)\"", # group 5
-                "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
-                "expanded=\s*\"([^\"]*)\"", # group 7
-                "marks=\s*\"([^\"]*)\"", # group 8
-                ">"))
-            self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+
+        # regular expression for parsing
+        reVnodeAttributes = "|".join((
+            "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
+            "t=\s*\"([^\"]*)\"",        # group 3
+            "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
+            "tnodeList=\s*\"([^\"]*)\"", # group 5
+            "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
+            "expanded=\s*\"([^\"]*)\"", # group 7
+            "marks=\s*\"([^\"]*)\"", # group 8
+            ">"))
+        self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
 
         # For writing
         self.read_only = False
