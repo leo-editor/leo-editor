@@ -836,7 +836,7 @@ class leoImportCommands:
             p = parent.copy()
             c.beginUpdate()
             try:
-                p.setTnodeText('')
+                p.setBodyString('')
             finally:
                 c.endUpdate(False)
         else:
@@ -1103,7 +1103,7 @@ class leoImportCommands:
                             if n != index - 1:
                                 body += "\n"
                             n += 1
-                        p.setTnodeText(body)
+                        p.setBodyString(body)
                     #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
                     #@nl
                     p.setDirty()
@@ -2868,7 +2868,7 @@ class baseScannerClass:
             self.sigStart = g.find_line_start(s,k)
 
         # Issue this warning only if we have a real class or function.
-        if 0: ### wrong.
+        if 0: # wrong.
             if s[self.sigStart:k].strip():
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
@@ -3775,7 +3775,7 @@ class xmlScanner (baseScannerClass):
             self.sigStart = g.find_line_start(s,k)
 
         # Issue this warning only if we have a real class or function.
-        if 0: ### wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
             if s[self.sigStart:k].strip():
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
