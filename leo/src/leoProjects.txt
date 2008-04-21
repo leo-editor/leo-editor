@@ -1163,9 +1163,6 @@ def __init__(self,c):
     self.c = c
     self.frame = c.frame
 
-    self.use_new_positions = False
-    self.use_sax = True
-
     self.nativeTnodeAttributes = ('tx',)
     self.nativeVnodeAttributes = (
         'a','descendentTnodeUnknownAttributes',
@@ -3386,38 +3383,37 @@ if forceWrite or self.usingClipboard:
 attr = ""
 # New in Leo 4.5: support fixed .leo files.
 if not c.fixed:
-    if v.isExpanded(): attr += "E"
+    if v.isExpanded() and v.hasChildren(): attr += "E"
     if v.isMarked():   attr += "M"
     if v.isOrphan():   attr += "O"
 
     # No longer a bottleneck now that we use p.equal rather than p.__cmp__
     # Almost 30% of the entire writing time came from here!!!
-    if not self.use_sax:
-        if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
 
     if attr:
         attrs.append(' a="%s"' % attr)
 
 # Put the archived *current* position in the *root* positions <v> element.
-if p.equal(self.rootPosition): ### and self.use_sax
+if p == self.rootPosition:
     aList = [str(z) for z in self.currentPosition.archivedPosition()]
     d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
     if not c.fixed:
         d['str_leo_pos'] = ','.join(aList)
     # g.trace(aList,d)
     v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
-
-# Debugging.
-# if v.isAnyAtFileNode():
-    # if hasattr(v.t,"tnodeList"):
-        # g.trace(v.headString(),len(v.t.tnodeList))
-    # else:
-        # g.trace(v.headString(),"no tnodeList")
 
 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
     if isThin:
@@ -3514,25 +3510,6 @@ def updateFixedStatus (self):
 #@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@+node:ekr.20080416161308.1:This is the graph world
-#@+node:ekr.20080417100013.3:Known problems
-@nocolor
-
-Known problems.
-
-- Clipboard paste does not work.
-    * v.moveToRoot does not exist.
-    - See todo item: calls to v.linkAfter by calls to v.linkAsNthChild.
-
-- More unit tests are needed for the new code.
-#@nonl
-#@-node:ekr.20080417100013.3:Known problems
-#@+node:ekr.20080416161551.189:To do
-@nocolor
-
-- Replace calls to v.linkAfter by calls to v.linkAsNthChild.
-    - This happens in getVnodes (clipboard cut/paste)
-#@nonl
-#@-node:ekr.20080416161551.189:To do
 #@+node:ekr.20080417064246.1:What I did
 @nocolor
 
@@ -3563,7 +3540,7 @@ Known problems.
 #@+node:ekr.20080420163857.2:Projects...
 #@+node:ekr.20080416161551.223:Used v._parent
 #@+node:ekr.20060919110638.7:createSaxVnode
-def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
+def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
     h = sax_node.headString
@@ -3973,336 +3950,253 @@ def restoreTnodeUndoInfo (self,bunch):
 #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
 #@-node:EKR.20040530121329:u.restoreTree & helpers
 #@-node:ekr.20080420163857.1:Eliminated _parent
-#@-node:ekr.20080420163857.2:Projects...
-#@+node:ekr.20080419065321.2:Unused
-#@+node:ekr.20040410170806.1:p.adjustParentLinksInSubtree (no longer used)
-def adjustParentLinksInSubtree (self,parent):
+#@+node:ekr.20080421083619.3:Fixed paste outline
+#@+node:ekr.20060919110638.4:createSaxVnodes & helpers
+def createSaxVnodes (self,saxRoot,reassignIndices):
 
-    root = p = self
+    '''**Important**: this method and its helpers are low-level code
+    corresponding to link/unlink methods in leoNodes.py.
+    Modify this with extreme care.'''
 
-    assert(parent)
 
-    if p.v._parent and parent.v.t.vnodeList and p.v._parent not in parent.v.t.vnodeList:
-        # g.trace('**** adjust parent in %s' % p.headString())
-        p.v._parent = parent.v.t.vnodeList[0]
+    children = self.createSaxChildren(saxRoot,parent_v=None)
 
-    for p in root.children_iter():
-        p.adjustParentLinksInSubtree(parent=root)
-#@-node:ekr.20040410170806.1:p.adjustParentLinksInSubtree (no longer used)
-#@-node:ekr.20080419065321.2:Unused
-#@+node:ekr.20080417064246.2:Recent
-#@+node:ekr.20031218072017.2812:c.__init__
-def __init__(self,frame,fileName,relativeFileName=None):
+    return children
+#@+node:ekr.20060919110638.5:createSaxChildren
+def createSaxChildren (self, sax_node, parent_v):
 
-    c = self
+    result = []
 
-    # g.trace('Commands')
-    self.exists = True # Indicate that this class exists and has not been destroyed.
-        # Do this early in the startup process so we can call hooks.
-
-    # Init ivars with self.x instead of c.x to keep Pychecker happy
-    self.chapterController = None
-    self.frame = frame
-    t = leoNodes.tnode()
-    self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
-    self.hiddenRootNode.setHeadString('<hidden root vnode>')
-    self.isZipped = False # May be set to True by g.openWithFileName.
-    self.mFileName = fileName
-        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-    self.mRelativeFileName = relativeFileName
-
-    # g.trace(c) # Do this after setting c.mFileName.
-    c.initIvars()
-    self.nodeHistory = nodeHistory(c)
-
-    self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
-    self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
-    self.showMinibuffer = c.config.getBool('useMinibuffer')
-    self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
-    self.fixed = c.config.getBool('fixedWindow',False)
-        # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
-    self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
-    if self.fixedWindowPosition:
-        try:
-            w,h,l,t = self.fixedWindowPosition
-            self.fixedWindowPosition = int(w),int(h),int(l),int(t)
-        except Exception:
-            g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
-    else:
-        self.windowPosition = 500,700,50,50 # width,height,left,top.
-
-    # initialize the sub-commanders.
-    # c.finishCreate creates the sub-commanders for edit commands.
-    self.fileCommands   = leoFileCommands.fileCommands(c)
-    self.atFileCommands = leoAtFile.atFile(c)
-    self.importCommands = leoImport.leoImportCommands(c)
-    self.tangleCommands = leoTangle.tangleCommands(c)
-    leoEditCommands.createEditCommanders(c)
-
-    if 0:
-        print ; print "*** using Null undoer ***" ; print
-        self.undoer = leoUndo.nullUndoer(self)
-    else:
-        self.undoer = leoUndo.undoer(self)
-#@-node:ekr.20031218072017.2812:c.__init__
-#@+node:ekr.20041005105605.72:createThinChild4
-def createThinChild4 (self,gnxString,headline):
-
-    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode."""
-
-    at = self ; c = at.c ; indices = g.app.nodeIndices
-    last = at.lastThinNode ; lastIndex = last.t.fileIndex
-    gnx = indices.scanGnx(gnxString,0)
-
-    # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
-    if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
-        last.fileIndex = lastIndex =  gnx
-        self._forcedGnxPositionList.remove(last)
-
-    if 0:
-        g.trace("last",last,last.t.fileIndex)
-        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
-
-    # See if there is already a child with the proper index.
-    # child = at.lastThinNode.firstChild()
-    # while child and not indices.areEqual(gnx,child.t.fileIndex):
-        # child = child.next()
-    children = at.lastThinNode.t.children
-    for child in children:
-        if indices.areEqual(gnx,child.t.fileIndex):
-            break
-    else:
-        child = None
-
-    if at.cloneSibCount > 1:
-        n = at.cloneSibCount ; at.cloneSibCount = 0
-        if child: clonedSibs,junk = at.scanForClonedSibs(child)
-        else: clonedSibs = 0
-        copies = n - clonedSibs
-        # g.trace(copies,headline)
-    else:
-        if indices.areEqual(gnx,lastIndex):
-            last.t.setVisited() # Supress warning/deletion of unvisited nodes.
-            return last
-        if child:
-            child.t.setVisited() # Supress warning/deletion of unvisited nodes.
-            return child
-        copies = 1 # Create exactly one copy.
-
-    while copies > 0:
-        copies -= 1
-        # Create the tnode only if it does not already exist.
-        tnodesDict = c.fileCommands.tnodesDict
-        t = tnodesDict.get(gnxString)
+    for child in sax_node.children:
+        tnx = child.tnx
+        t = self.tnodesDict.get(tnx)
         if t:
-            if indices.areEqual(t.fileIndex,gnx):
-                pass
-            else:
-                g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
-                # g.trace('not created, should already exist',gnxString)
+            # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
+            v = self.createSaxVnode(child,parent_v,t=t)
+            # g.trace('clone',id(child),child.headString,'t',v.t)
         else:
-            t = leoNodes.tnode(bodyString=None,headString=headline)
-            t.fileIndex = gnx
-            tnodesDict[gnxString] = t
-        parent = at.lastThinNode
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
-        child.linkAsNthChild(parent,parent.numberOfChildren())
-        # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
+            v = self.createSaxVnodeTree(child,parent_v)
+        result.append(v)
 
-    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
-    return child
-#@-node:ekr.20041005105605.72:createThinChild4
-#@+node:ekr.20031218072017.1860:createVnode
-# (changed for 4.2) sets skip
+    # self.linkSiblings(result)
+    if parent_v: self.linkParentAndChildren(parent_v,result)
+    return result
+#@-node:ekr.20060919110638.5:createSaxChildren
+#@+node:ekr.20060919110638.6:createSaxVnodeTree
+def createSaxVnodeTree (self,sax_node,parent_v):
 
-def createVnode (self,parent,back,tref,headline,attrDict):
+    v = self.createSaxVnode(sax_node,parent_v)
 
-    # g.trace(parent,headline)
-    v = None ; c = self.c
-    # Shared tnodes are placed in the file even if empty.
-    if tref == -1:
-        t = leoNodes.tnode()
-    else:
-        tref = self.canonicalTnodeIndex(tref)
-        t = self.tnodesDict.get(tref)
-        if not t:
-            t = self.newTnode(tref)
+    self.createSaxChildren(sax_node,v)
 
-    if self.checking: return None,False
-
-    g.trace('parent',parent,'back',back)
-
-    if back: # create v after back.
-        # v = back.insertAfter(t)
-        children = parent.t.children
-        if back in children:
-            n = children.index(back)
-        else:
-            n = len(children)-1 # Not correct, but this code is going away soon...
-        v = parent.insertAsNthChild(n+1)
-    elif parent: # create v as the parent's first child.
-        v = parent.insertAsNthChild(0,t)
-    else: # create a root vnode
-        v = leoNodes.vnode(context=c,t=t)
-        v.moveToRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-
-    if v not in v.t.vnodeList:
-        v.t.vnodeList.append(v) # New in 4.2.
-
-    skip = len(v.t.vnodeList) > 1
-    v.initHeadString(headline,encoding=self.leo_file_encoding)
-    << handle unknown vnode attributes >>
-    # g.trace(skip,tref,v,v.t,len(v.t.vnodeList))
-    return v,skip
-#@+node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
-keys = attrDict.keys()
-if keys:
-    v.unknownAttributes = attrDict
-    v._p_changed = 1
-
-    if 0: # For debugging.
-        g.es_print("unknown attributes for",v.headString(),color="blue")
-        for key in keys:
-            g.es_print('',"%s = %s" % (key,attrDict.get(key)))
-#@-node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
-#@-node:ekr.20031218072017.1860:createVnode
-#@+node:ekr.20031218072017.1565:getVnodes
-def getVnodes (self,reassignIndices=True):
+    return v
+#@nonl
+#@-node:ekr.20060919110638.6:createSaxVnodeTree
+#@+node:ekr.20060919110638.7:createSaxVnode
+def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
+    h = sax_node.headString
+    b = sax_node.bodyString
 
-    if self.getOpenTag("<vnodes>"):
-        return # <vnodes/> seen.
+    if not t:
+        t = leoNodes.tnode(bodyString=b,headString=h)
 
-    self.forbiddenTnodes = []
-    back = parent = None # This routine _must_ work on vnodes!
-    self.currentVnodeStack = []
-    self.topVnodeStack = []
+        if sax_node.tnx:
+            t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    if self.usingClipboard:
-        g.es_print('Paste Nodes not supported yet',color='red')
-        return ###
-        oldRoot = c.rootPosition()
-        oldCurrent = c.currentPosition()
-        oldParent = oldCurrent.parent()
-        oldChildIndex = oldCurrent.childIndex()
-        if not reassignIndices:
-            << set self.forbiddenTnodes to tnodes than must not be pasted >>
+    v = leoNodes.vnode(context=c,t=t)
+    v.t.vnodeList.append(v)
 
-    while self.matchTag("<v"):
-        append1 = not self.usingClipboard and len(self.currentVnodeStack) == 0
-        append2 = not self.usingClipboard and len(self.topVnodeStack) == 0
-        back = self.getVnode(parent,back,skip=False,
-            appendToCurrentStack=append1,appendToTopStack=append2)
+    index = self.canonicalTnodeIndex(sax_node.tnx)
 
-    if self.usingClipboard and not self.checking:
-        # Link in the pasted nodes after the current position.
-        g.pdb()
-        newRoot = c.rootPosition() # newRoot is the pasted position.
-        oldRoot.linkAsRoot(oldRoot=None)
-        c.setRootPosition(oldRoot)
-        if 0:
-            ### newRoot.v.linkAfter(oldCurrent.v)
-            if oldParent: parent_v = oldParent.v
-            else:         parent_v = oldRoot.v.context.hiddenRootNode
-            newRoot.v.linkAsNthChild(parent_v,oldChildIndex+1)
-            newCurrent = oldCurrent.copy()
-            newCurrent.v = newRoot.v
-            c.setCurrentPosition(newCurrent)
+    self.tnodesDict [index] = t
 
-    self.getTag("</vnodes>")
-#@+node:ekr.20041023105832:<< set self.forbiddenTnodes to tnodes than must not be pasted >>
-self.forbiddenTnodes = []
+    # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
 
-for p in oldCurrent.self_and_parents_iter():
-    if p.v.t not in self.forbiddenTnodes:
-        self.forbiddenTnodes.append(p.v.t)
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,t)
 
-# g.trace("forbiddenTnodes",self.forbiddenTnodes)
-#@-node:ekr.20041023105832:<< set self.forbiddenTnodes to tnodes than must not be pasted >>
-#@-node:ekr.20031218072017.1565:getVnodes
-#@+node:ekr.20040409203454.1:p.deleteLinksInTree
-def deleteLinksInTree (self):
+    return v
+#@nonl
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,t):
 
-    """Adjust links when deleting node."""
+    d = sax_node.tnodeAttributes
 
-    # Unlike in the non-graph world, there is no need to adjust _parent links.
+    aDict = {}
+    for key in d.keys():
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        aDict[key] = val2
 
-    root = p = self
+    if aDict:
+        # g.trace('uA',aDict)
+        t.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded and descendentTnodeUnknownAttributes.
 
-    # Delete p.v from the vnodeList
-    if p.v in p.v.t.vnodeList:
-        # g.trace('**** remove p.v from %s' % p.headString())
-        p.v.t.vnodeList.remove(p.v)
-        p.v.t._p_changed = 1  # Support for tnode class.
-        assert(p.v not in p.v.t.vnodeList)
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    d = sax_node.attributes
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnode list will be resolved later.
+        # g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes') # Correct: only tnode have descendent uA's.
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentUaDictList',aDict)
+            self.descendentUnknownAttributesDictList.append(aDict)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d.keys():
+        if key in self.nativeVnodeAttributes:
+            if 0: g.trace('****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # g.trace('uA',aDict)
+        v.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:createSaxVnode
+#@+node:ekr.20060919110638.9:linkParentAndChildren
+def linkParentAndChildren (self, parent_v, children):
+
+    # if children: g.trace(parent_v,len(children))
+
+    # Add parent_v to it's tnode's vnodeList.
+    if parent_v not in parent_v.t.vnodeList:
+        parent_v.t.vnodeList.append(v)
+
+    # Set parent_v's children.
+    parent_v.t.children = children
+
+    # Make parent_v a parent of each child.
+    for v in children:
+        if parent_v not in v.t.parents:
+            v.t.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:linkParentAndChildren
+#@-node:ekr.20060919110638.4:createSaxVnodes & helpers
+#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    c = self.c ; current = c.currentPosition() ; check = not reassignIndices
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.t.children
+
+    if reassignIndices:
+        oldTnodesDict = self.tnodesDict
+        self.tnodesDict = {}
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True, reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+        if reassignIndices:
+            self.tnodesDict = oldTnodesDict
+
+        # Restore the hidden root's children
+        c.hiddenRootNode.t.children = children
+
+    p = leoNodes.position(v)
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p): return None
+        p.linkAsNthChild(current,0)
     else:
-        # g.trace("not in vnodeList",p.v,p.vnodeListIds())
-        pass
+        if check and not self.checkPaste(current.parent(),p): return None
+        p.linkAfter(current)
 
-    if len(p.v.t.vnodeList) == 0:
-        # This node is not shared by other nodes.
-        for p in root.children_iter():
-            p.deleteLinksInTree()
-#@-node:ekr.20040409203454.1:p.deleteLinksInTree
-#@+node:ekr.20080416161551.213:p.Link/Unlink methods
-# These remain in 4.2:  linking and unlinking does not depend on position.
+    if reassignIndices:
+        for p2 in p.self_and_subtree_iter():
+            p2.v.t.fileIndex = None
 
-# These are private routines:  the position class does not define proxies for these.
-#@+node:ekr.20080416161551.214:p.linkAfter
-def linkAfter (self,p_after):
+    c.selectPosition(p)
+    return p
 
-    '''Link self after p_after.'''
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1:checkPaste
+def checkPaste (self,parent,p):
 
-    p = self
-    parent_v = p_after.parentNode(includeHiddenRootNode=True)
-        # Returns None if p.v is None
+    '''Return True if p may be pasted as a child of parent.'''
 
-    # Init the ivars.
-    p.stack = p_after.stack[:]
-    p._childIndex = p_after._childIndex + 1
+    if not parent: return True
 
-    # Add v to it's tnode's vnodeList.
-    if p.v not in p.v.t.vnodeList:
-        p.v.t.vnodeList.append(p.v)
-        p.v.t._p_changed = 1 # Support for tnode class.
+    parents = [z.copy() for z in parent.self_and_parents_iter()]
 
-    # Add p.v to parent_v's children.
-    parent_v.t.children.insert(p_after._childIndex+1,p.v)
-    parent_v._p_changed = 1
+    for p in p.self_and_subtree_iter():
+        for z in parents:
+            g.trace(p.headString(),id(p.v.t),id(z.v.t))
+            if p.v.t == z.v.t:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
 
-    # Add parent_v to p.v.t.parents.
-    if not parent_v in p.v.t.parents:
-        p.v.t.parents.append(parent_v)
-        p.v._p_changed = 1
-#@-node:ekr.20080416161551.214:p.linkAfter
-#@+node:ekr.20080416161551.215:p.linkAsNthChild
-def linkAsNthChild (self,parent,n):
+    return True
+#@-node:ekr.20080410115129.1:checkPaste
+#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+#@-node:ekr.20080421083619.3:Fixed paste outline
+#@+node:ekr.20080421083619.1:Fixed two recent node bugs
+@nocolor
 
-    p = self
-    parent_v = parent.v
+1. clone-find-all truncated the outline.
+   The fix was in p.linkAsRoot.
 
-    # Init the ivars.
-    p.stack = parent.stack[:]
-    p.stack.append((parent_v,parent._childIndex),)
-    p._childIndex = n
+2. The move outline down command skipped nodes.
+   The fix was to p.moveAfter.
 
-    # Add p.v to it's tnode's vnodeList.
-    if p.v not in p.v.t.vnodeList:
-        p.v.t.vnodeList.append(p.v)
-        p.v.t._p_changed = 1 # Support for tnode class.
+3. Added defensive code to p.unlink.
 
-    # Add p.v to parent_v's children.
-    parent_v.t.children.insert(n,p.v)
-    parent_v._p_changed = 1
-
-    # Add parent_v to p.v's parents.
-    if not parent_v in p.v.t.parents:
-        p.v.t.parents.append(parent_v)
-        p.v._p_changed = 1
-#@-node:ekr.20080416161551.215:p.linkAsNthChild
+@color
+#@nonl
 #@+node:ekr.20080416161551.216:p.linkAsRoot
 def linkAsRoot (self,oldRoot):
 
@@ -4327,17 +4221,34 @@ def linkAsRoot (self,oldRoot):
     p.v.t.parents = [hiddenRootNode]
     p.v._p_changed = 1
 
-    # Init hiddenRootNode's children to p.v.
-    hiddenRootNode.t.children = [p.v]
-
-    # Link in the rest of the tree only when oldRoot != None.
-    # Otherwise, we are calling this routine from init code and
-    # we want to start with a pristine tree.
     if oldRoot:
-        hiddenRootNode.t.children.append(oldRootNode)
-        oldRootNode.parents = [hiddenRootNode]
-        oldRootNode.t.vnodeList = [oldRootNode]
+        hiddenRootNode.t.children.insert(0,p.v)
+    else:
+        hiddenRootNode.t.children = [p.v]
+
+    return p
 #@-node:ekr.20080416161551.216:p.linkAsRoot
+#@+node:ekr.20040303175026.10:p.moveAfter
+def moveAfter (self,a):
+
+    """Move a position after position a."""
+
+    p = self # Do NOT copy the position!
+
+    # Adjust a._childIndex if p is a preceding sibling.
+    # so p.linkAfter(a) will set p.childIndex correctly.
+    sib = a.copy()
+    while sib.hasBack():
+        sib.moveToBack()
+        if sib == p:
+            a._childIndex -= 1
+            break
+
+    p.unlink()
+    p.linkAfter(a)
+
+    return p
+#@-node:ekr.20040303175026.10:p.moveAfter
 #@+node:ekr.20080416161551.217:p.unlink
 def unlink (self):
 
@@ -4353,8 +4264,12 @@ def unlink (self):
         p.v.t._p_changed = 1 # Support for tnode class.
 
     # Delete p.v from parent_v's children.
-    del parent_v.t.children[n:n+1]
-    parent_v._p_changed = 1
+    if 0 <= n < len(parent_v.t.children):
+        del parent_v.t.children[n]
+        parent_v._p_changed = 1
+
+    # else: pass # It is not an error to unlink an already unlinked node.
+        # g.trace('can not happen: bad child index: %s' % (n),color='red')
 
     # Delete parent_v from p.v's parents.
     if parent_v in p.v.t.parents:
@@ -4362,149 +4277,8 @@ def unlink (self):
         p.v._p_changed = 1 # Support for tnode class.
 
 #@-node:ekr.20080416161551.217:p.unlink
-#@-node:ekr.20080416161551.213:p.Link/Unlink methods
-#@+node:ekr.20080416161551.216:p.linkAsRoot
-def linkAsRoot (self,oldRoot):
-
-    """Link self as the root node."""
-
-    p = self
-    assert(p.v)
-
-    hiddenRootNode = p.v.context.hiddenRootNode
-
-    if oldRoot: oldRootNode = oldRoot.v
-    else:       oldRootNode = None
-
-    # Init the ivars.
-    p.stack = []
-    p._childIndex = 0
-
-    # Init p.v.t.vnodeList
-    p.v.t.vnodeList = [p.v]
-
-    # Init p.v.t.parents to the hidden root node.
-    p.v.t.parents = [hiddenRootNode]
-    p.v._p_changed = 1
-
-    # Init hiddenRootNode's children to p.v.
-    hiddenRootNode.t.children = [p.v]
-
-    # Link in the rest of the tree only when oldRoot != None.
-    # Otherwise, we are calling this routine from init code and
-    # we want to start with a pristine tree.
-    if oldRoot:
-        hiddenRootNode.t.children.append(oldRootNode)
-        oldRootNode.parents = [hiddenRootNode]
-        oldRootNode.t.vnodeList = [oldRootNode]
-#@-node:ekr.20080416161551.216:p.linkAsRoot
-#@+node:ekr.20040303175026.6:p.moveToRoot
-def moveToRoot (self,oldRoot=None):
-
-    '''Moves a position to the root position.
-
-    Important: oldRoot must the previous root position if it exists.'''
-
-    p = self # Do NOT copy the position!
-    p.unlink()
-    p.linkAsRoot(oldRoot)
-
-    return p
-#@-node:ekr.20040303175026.6:p.moveToRoot
-#@+node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
-# These remain in 4.2: the file read logic calls these before creating positions.
-#@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-def insertAsNthChild (self,n,t=None):
-
-    """Inserts a new node as the the nth child of the receiver.
-    The receiver must have at least n-1 children"""
-
-    v = self
-
-    if not t:
-        t = tnode(headString="NewHeadline")
-
-    v2 = vnode(context=v.context,t=t)
-    v2.linkAsNthChild(self,n)
-
-    return v2
-#@-node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-#@+node:ekr.20031218072017.3425:v.linkAsNthChild (used by 4.x read logic)
-def linkAsNthChild (self,parent_v,n):
-
-    """Links self as the n'th child of vnode pv"""
-
-    # Similar to p.linkAsNthChild.
-    v = self
-
-     # Add v to it's tnode's vnodeList.
-    if v not in v.t.vnodeList:
-        v.t.vnodeList.append(v)
-        v.t._p_changed = 1 # Support for tnode class.
-
-    # Add v to parent_v's children.
-    parent_v.t.children.insert(n,v)
-    parent_v._p_changed = 1
-
-    # Add parent_v to v's parents.
-    if not parent_v in v.t.parents:
-        v.t.parents.append(parent_v)
-        v._p_changed = 1
-#@-node:ekr.20031218072017.3425:v.linkAsNthChild (used by 4.x read logic)
-#@+node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
-def moveToRoot (self,oldRoot=None):
-
-    v = self
-    context = v.context
-    hiddenRootNode = context.hiddenRootNode
-
-    if oldRoot: oldRootNode = oldRoot.v
-    else:       oldRootNode = None
-
-    # Init v.t.vnodeList
-    v.t.vnodeList = [v]
-
-    # Init v.t.parents to the hidden root node.
-    v.t.parents = [hiddenRootNode]
-    v._p_changed = 1
-
-    # Init hiddenRootNode's children to v.
-    hiddenRootNode.t.children = [v]
-
-    # Link in the rest of the tree only when oldRoot != None.
-    if oldRoot:
-        hiddenRootNode.t.children.append(oldRootNode)
-        oldRootNode.parents = [hiddenRootNode]
-        oldRootNode.t.vnodeList = [oldRootNode]
-#@-node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
-#@-node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
-#@+node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
-def moveToRoot (self,oldRoot=None):
-
-    v = self
-    context = v.context
-    hiddenRootNode = context.hiddenRootNode
-
-    if oldRoot: oldRootNode = oldRoot.v
-    else:       oldRootNode = None
-
-    # Init v.t.vnodeList
-    v.t.vnodeList = [v]
-
-    # Init v.t.parents to the hidden root node.
-    v.t.parents = [hiddenRootNode]
-    v._p_changed = 1
-
-    # Init hiddenRootNode's children to v.
-    hiddenRootNode.t.children = [v]
-
-    # Link in the rest of the tree only when oldRoot != None.
-    if oldRoot:
-        hiddenRootNode.t.children.append(oldRootNode)
-        oldRootNode.parents = [hiddenRootNode]
-        oldRootNode.t.vnodeList = [oldRootNode]
-#@-node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
-#@-node:ekr.20080417064246.2:Recent
+#@-node:ekr.20080421083619.1:Fixed two recent node bugs
+#@-node:ekr.20080420163857.2:Projects...
 #@-node:ekr.20080416161308.1:This is the graph world
 #@-all
 #@nonl

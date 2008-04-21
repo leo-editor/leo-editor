@@ -877,7 +877,7 @@ class undoer:
         bunch.pasteAsClone = pasteAsClone
 
         if pasteAsClone:
-            # Save the list of bunches created by fc.createVnode.
+            # Save the list of bunched.
             bunch.beforeTree = copiedBunchList
             # g.trace(bunch.beforeTree)
 
@@ -1380,7 +1380,7 @@ class undoer:
                     c.setBodyString(u.newP,bunch.body)
                     c.setHeadString(u.newP,bunch.head)
                 else:
-                    t.setTnodeText(bunch.body)
+                    t.setBodyString(bunch.body)
                     t.setHeadString(bunch.head)
                 # g.trace(t,bunch.head,bunch.body)
 
@@ -1452,7 +1452,7 @@ class undoer:
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
         # Restore the body.
-        u.p.setTnodeText(u.newBody)
+        u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
         c.frame.body.recolor(u.p,incremental=False)
 
@@ -1712,7 +1712,7 @@ class undoer:
                     c.setBodyString(u.p,bunch.body)
                     c.setHeadString(u.p,bunch.head)
                 else:
-                    t.setTnodeText(bunch.body)
+                    t.setBodyString(bunch.body)
                     t.setHeadString(bunch.head)
 
         c.selectPosition(u.p)
@@ -1761,7 +1761,7 @@ class undoer:
 
         u = self ; c = u.c ;  w = c.frame.body.bodyCtrl
 
-        u.p.setTnodeText(u.oldBody)
+        u.p.setBodyString(u.oldBody)
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p,incremental=False)
 
@@ -1882,7 +1882,7 @@ class undoer:
             print "result:",result
         #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         #@nl
-        p.setTnodeText(result)
+        p.setBodyString(result)
         w.setAllText(result)
         c.frame.body.recolor(p,incremental=False)
     #@-node:ekr.20031218072017.1493:undoRedoText (passed)

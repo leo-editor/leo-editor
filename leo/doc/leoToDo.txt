@@ -424,7 +424,7 @@ def setUp(self):
 
     c = self.c ; temp_p = self.temp_p ; d = self.dialog
 
-    temp_p.setTnodeText('',g.app.tkEncoding)
+    temp_p.setBodyString('',g.app.tkEncoding)
 
     # Create a node under temp_p.
     child = temp_p.insertAsLastChild()
@@ -473,7 +473,7 @@ def tearDown (self):
         self.gui.destroySelf()
         self.gui = None
 
-    temp_p.setTnodeText("",g.app.tkEncoding)
+    temp_p.setBodyString("",g.app.tkEncoding)
     temp_p.clearDirty()
 
     if not self.wasChanged:

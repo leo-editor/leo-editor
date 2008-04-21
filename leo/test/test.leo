@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -547,7 +547,7 @@
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
 </v>
-<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
 <v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
@@ -888,15 +888,6 @@
 </v>
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
-</v>
-<v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080417131530.1"><vh>a</vh>
-<v t="ekr.20080417131530.2" a="E"><vh>b</vh></v>
-<v t="ekr.20080418094851.1"><vh>c</vh></v>
-</v>
-<v t="ekr.20080417131530.1"><vh>a</vh>
-<v t="ekr.20080417131530.2" a="E"><vh>b</vh></v>
-<v t="ekr.20080418094851.1"><vh>c</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5532,13 +5523,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
 <t tx="ekr.20080412082246.1"></t>
-<t tx="ekr.20080413195706.1">import pydispatch
-g.es(pydispatch)
-g.es(g.listToString(dir(pydispatch)))
-</t>
-<t tx="ekr.20080417131530.1">print id(p.v.t)</t>
-<t tx="ekr.20080417131530.2">print id(p.v.t)</t>
-<t tx="ekr.20080418094851.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
