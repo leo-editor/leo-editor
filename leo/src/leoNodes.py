@@ -676,7 +676,7 @@ class vnode (baseVnode):
         self.statusBits |= self.visitedBit
     #@-node:ekr.20031218072017.3401:v.setVisited
     #@-node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString 
+    #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
 
         v = self
@@ -693,7 +693,7 @@ class vnode (baseVnode):
     initHeadString = setHeadString
 
     setHeadText = setHeadString
-    #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString 
+    #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
     #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
     def computeIcon (self):
 
@@ -1206,7 +1206,7 @@ class basePosition (object):
     def hasNext(self):
         p = self
         try:
-            parent_v = p.parentNode(includeHiddenRootNode=True)
+            parent_v = p.parentVnode()
                 # Returns None if p.v is None.
             return p.v and parent_v and p._childIndex+1 < len(parent_v.t.children)
         except Exception:
@@ -2102,12 +2102,21 @@ class basePosition (object):
     #@-at
     #@@c
 
-    def doDelete (self):
+    def doDelete (self,newNode=None):
 
         """Deletes position p from the outline."""
 
         p = self
         p.setDirty() # Mark @file nodes dirty!
+
+        # Adjust newNode._childIndex if newNode is a following sibling of p.
+        sib = p.copy()
+        while sib.hasNext():
+            sib.moveToNext()
+            if sib == newNode:
+                newNode._childIndex -= 1
+                break
+
         p.unlink()
         p.deleteLinksInTree()
     #@-node:ekr.20040303175026.2:p.doDelete
@@ -2184,8 +2193,8 @@ class basePosition (object):
 
         p = self # Do NOT copy the position!
 
-        # Adjust a._childIndex if p is a preceding sibling.
-        # so p.linkAfter(a) will set p.childIndex correctly.
+        # Adjust a._childIndex if p is a preceding sibling,
+        # so p.linkAfter(a) will set p.v.t._childIndex correctly.
         sib = a.copy()
         while sib.hasBack():
             sib.moveToBack()
@@ -2309,7 +2318,7 @@ class basePosition (object):
 
         p = self ; n = p._childIndex
 
-        parent_v = p.parentNode(includeHiddenRootNode = True)
+        parent_v = p.parentVnode()
             # Returns None if p.v is None.
 
         # Do not assume n is in range: this is used by positionExists.
@@ -2377,7 +2386,7 @@ class basePosition (object):
 
         p = self ; n = p._childIndex
 
-        parent_v = p.parentNode(includeHiddenRootNode = True)
+        parent_v = p.parentVnode()
             # Returns None if p.v is None.
         if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
 
@@ -2549,12 +2558,11 @@ class basePosition (object):
     #@-node:ekr.20080416161551.211:p.moveToVisNext
     #@-node:ekr.20080416161551.199:p.moveToX
     #@+node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20080416161551.212:p.parentNode
-    def parentNode (self,includeHiddenRootNode=False):
+    #@+node:ekr.20080416161551.212:p.parentVnode
+    def parentVnode (self):
 
-        '''return a new position representing the parent position.
-
-        This is always inexpensive.'''
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
 
         p = self
 
@@ -2563,13 +2571,11 @@ class basePosition (object):
             if data:
                 v, junk = data
                 return v
-            elif includeHiddenRootNode:
-                return p.v.context.hiddenRootNode
             else:
-                return None
+                return p.v.context.hiddenRootNode
         else:
             return None
-    #@-node:ekr.20080416161551.212:p.parentNode
+    #@-node:ekr.20080416161551.212:p.parentVnode
     #@+node:ekr.20040409203454:p.restoreLinksInTree (no change)
     def restoreLinksInTree (self):
 
@@ -2619,7 +2625,7 @@ class basePosition (object):
         '''Link self after p_after.'''
 
         p = self
-        parent_v = p_after.parentNode(includeHiddenRootNode=True)
+        parent_v = p_after.parentVnode()
             # Returns None if p.v is None
 
         # Init the ivars.
@@ -2682,13 +2688,17 @@ class basePosition (object):
         p.stack = []
         p._childIndex = 0
 
-        # Init p.v.t.vnodeList
-        p.v.t.vnodeList = [p.v]
+        # Update p.v.t.vnodeList.
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1
 
-        # Init p.v.t.parents to the hidden root node.
-        p.v.t.parents = [hiddenRootNode]
-        p.v._p_changed = 1
+        # Update the p.v.t.parents.
+        if hiddenRootNode not in p.v.t.parents:
+            p.v.t.parents.append(hiddenRootNode)
+            p.v._p_changed = 1
 
+        # Update the hiddenRootNode's children.
         if oldRoot:
             hiddenRootNode.t.children.insert(0,p.v)
         else:
@@ -2700,7 +2710,7 @@ class basePosition (object):
     def unlink (self):
 
         p = self ; n = p._childIndex
-        parent_v = p.parentNode(includeHiddenRootNode=True)
+        parent_v = p.parentVnode()
             # returns None if p.v is None
         assert(p.v)
         assert(parent_v)
