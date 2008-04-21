@@ -532,9 +532,6 @@ class baseFileCommands:
         self.c = c
         self.frame = c.frame
 
-        self.use_new_positions = False
-        self.use_sax = True
-
         self.nativeTnodeAttributes = ('tx',)
         self.nativeVnodeAttributes = (
             'a','descendentTnodeUnknownAttributes',
@@ -611,10 +608,19 @@ class baseFileCommands:
 
         c = self.c ; current = c.currentPosition() ; check = not reassignIndices
 
+        # Save the hidden root's children.
+        children = c.hiddenRootNode.t.children
+
+        if reassignIndices:
+            oldTnodesDict = self.tnodesDict
+            self.tnodesDict = {}
+
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+
+            # readSaxFile modifies the hidden root.
             v = self.readSaxFile(
                 theFile=None, fileName='<clipboard>',
                 silent=True, # don't tell about stylesheet elements.
@@ -624,6 +630,12 @@ class baseFileCommands:
         finally:
             self.usingClipboard = False
 
+            if reassignIndices:
+                self.tnodesDict = oldTnodesDict
+
+            # Restore the hidden root's children
+            c.hiddenRootNode.t.children = children
+
         p = leoNodes.position(v)
         if current.hasChildren() and current.isExpanded():
             if check and not self.checkPaste(current,p): return None
@@ -631,6 +643,10 @@ class baseFileCommands:
         else:
             if check and not self.checkPaste(current.parent(),p): return None
             p.linkAfter(current)
+
+        if reassignIndices:
+            for p2 in p.self_and_subtree_iter():
+                p2.v.t.fileIndex = None
 
         c.selectPosition(p)
         return p
@@ -685,19 +701,12 @@ class baseFileCommands:
         try:
             ok = True
             # t1 = time.clock()
-
-            #if self.use_sax:
             v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
                 self.rootVnode = v
             else:
                 self.rootVnode = c.rootPosition().v
-            # else:
-                # self.getAllLeoElements(fileName,silent)
-
-            # t2 = time.clock()
-            # g.trace('time',t2-t1)
         except BadLeoFile, message:
             if not silent:
                 g.es_exception()
@@ -705,7 +714,6 @@ class baseFileCommands:
             ok = False
 
         # Do this before reading derived files.
-        # if self.use_sax:
         self.resolveTnodeLists()
 
         if ok and readAtFileNodesFlag:
@@ -719,14 +727,7 @@ class baseFileCommands:
             # The descendent nodes won't exist unless we have read the @thin nodes!
             self.restoreDescendentAttributes()
 
-        # if self.use_sax:
         self.setPositionsFromVnodes()
-        # else:
-            # if not self.usingClipboard:
-                # self.setPositionsFromStacks()
-            # if not c.currentPosition():
-                # c.setCurrentPosition(c.rootPosition())
-
         c.selectVnode(c.currentPosition()) # load body pane
         c.loading = False # reenable c.changed
         c.setChanged(c.changed) # Refresh the changed marker.
@@ -774,12 +775,6 @@ class baseFileCommands:
 
         c = self.c ; frame = c.frame
 
-        # if not self.use_sax:
-            # < < read the entire file into the buffer > >
-            # theFile.close()
-            # self.fileBufferIndex = 0
-            # self.topPosition = None
-
         #@    << Set the default directory >>
         #@+node:ekr.20031218072017.2298:<< Set the default directory >>
         #@+at 
@@ -804,20 +799,13 @@ class baseFileCommands:
             silent=silent)
         frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
-
-        # if not self.use_sax: # Delete the file buffer
-            # self.fileBuffer = ""
-
         return ok
     #@-node:ekr.20031218072017.2297:open (leoFileCommands)
     #@+node:ekr.20031218072017.3030:readOutlineOnly
     def readOutlineOnly (self,theFile,fileName):
 
         c = self.c
-        # Read the entire file into the buffer
-        # if not use_sax:
-            # self.fileBuffer = theFile.read() ; theFile.close()
-            # self.fileBufferIndex = 0
+
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
         #@+at 
@@ -844,9 +832,6 @@ class baseFileCommands:
         junk,junk,secondary_ratio = self.frame.initialRatios()
         c.frame.resizePanesToRatio(ratio,secondary_ratio)
 
-        # delete the file buffer
-        # if not use_sax:
-            # self.fileBuffer = ""
         return ok
     #@-node:ekr.20031218072017.3030:readOutlineOnly
     #@-node:ekr.20060919104836: Top-level
@@ -909,7 +894,7 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; verbose = True 
+        c = self.c ; verbose = True and not g.unitTesting
 
         for resultDict in self.descendentUnknownAttributesDictList:
             for gnx in resultDict.keys():
@@ -954,45 +939,42 @@ class baseFileCommands:
         corresponding to link/unlink methods in leoNodes.py.
         Modify this with extreme care.'''
 
-        children = self.createSaxChildren(
-            saxRoot,
-            parent_v=None,
-            reassignIndices=reassignIndices)
+
+        children = self.createSaxChildren(saxRoot,parent_v=None)
 
         return children
-    #@nonl
     #@+node:ekr.20060919110638.5:createSaxChildren
-    def createSaxChildren (self, sax_node, parent_v, reassignIndices):
+    def createSaxChildren (self, sax_node, parent_v):
 
         result = []
 
         for child in sax_node.children:
             tnx = child.tnx
             t = self.tnodesDict.get(tnx)
-            if t and not reassignIndices: ###
+            if t:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-                v = self.createSaxVnode(child,parent_v,reassignIndices,t=t)
+                v = self.createSaxVnode(child,parent_v,t=t)
                 # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
-                v = self.createSaxVnodeTree(child,parent_v,reassignIndices)
+                v = self.createSaxVnodeTree(child,parent_v)
             result.append(v)
 
-        self.linkSiblings(result)
+        # self.linkSiblings(result)
         if parent_v: self.linkParentAndChildren(parent_v,result)
         return result
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
-    def createSaxVnodeTree (self,sax_node,parent_v,reassignIndices):
+    def createSaxVnodeTree (self,sax_node,parent_v):
 
-        v = self.createSaxVnode(sax_node,parent_v,reassignIndices)
+        v = self.createSaxVnode(sax_node,parent_v)
 
-        self.createSaxChildren(sax_node,v,reassignIndices)
+        self.createSaxChildren(sax_node,v)
 
         return v
     #@nonl
     #@-node:ekr.20060919110638.6:createSaxVnodeTree
     #@+node:ekr.20060919110638.7:createSaxVnode
-    def createSaxVnode (self,sax_node,parent_v,reassignIndices,t=None):
+    def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
         h = sax_node.headString
@@ -1111,19 +1093,6 @@ class baseFileCommands:
             if parent_v not in v.t.parents:
                 v.t.parents.append(parent_v)
     #@-node:ekr.20060919110638.9:linkParentAndChildren
-    #@+node:ekr.20060919110638.10:linkSiblings (rewrite)
-    def linkSiblings (self, sibs):
-
-        '''Set the v._back and v._next links for all vnodes v in sibs.'''
-
-        n = len(sibs)
-
-        for i in xrange(n):
-            v = sibs[i]
-            v._back = (i-1 >= 0 and sibs[i-1]) or None
-            v._next = (i+1 <  n and sibs[i+1]) or None
-    #@nonl
-    #@-node:ekr.20060919110638.10:linkSiblings (rewrite)
     #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
@@ -1640,8 +1609,10 @@ class baseFileCommands:
             g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
             return ''
         else:
-            return ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
-    #@nonl
+
+            val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+            # g.trace(torv,attrDict,g.callers())
+            return val
     #@+node:ekr.20050418161620.2:putUaHelper
     def putUaHelper (self,torv,key,val):
 
@@ -1740,40 +1711,39 @@ class baseFileCommands:
         attr = ""
         # New in Leo 4.5: support fixed .leo files.
         if not c.fixed:
-            if v.isExpanded(): attr += "E"
+            if v.isExpanded() and v.hasChildren(): attr += "E"
             if v.isMarked():   attr += "M"
             if v.isOrphan():   attr += "O"
 
             # No longer a bottleneck now that we use p.equal rather than p.__cmp__
             # Almost 30% of the entire writing time came from here!!!
-            if not self.use_sax:
-                if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-                if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+            # if not self.use_sax:
+                # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+                # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
 
             if attr:
                 attrs.append(' a="%s"' % attr)
 
         # Put the archived *current* position in the *root* positions <v> element.
-        if p.equal(self.rootPosition): ### and self.use_sax
+        if p == self.rootPosition:
             aList = [str(z) for z in self.currentPosition.archivedPosition()]
             d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
             if not c.fixed:
                 d['str_leo_pos'] = ','.join(aList)
             # g.trace(aList,d)
             v.unknownAttributes = d
+        elif hasattr(v,"unknownAttributes"):
+            d = v.unknownAttributes
+            if d and not c.fixed and d.get('str_leo_pos'):
+                # g.trace("clearing str_leo_pos",v)
+                del d['str_leo_pos']
+                v.unknownAttributes = d
         #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
         #@nl
         #@    << Append tnodeList and unKnownAttributes to attrs >>
         #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
         # Write the tnodeList only for @file nodes.
         # New in 4.2: tnode list is in tnode.
-
-        # Debugging.
-        # if v.isAnyAtFileNode():
-            # if hasattr(v.t,"tnodeList"):
-                # g.trace(v.headString(),len(v.t.tnodeList))
-            # else:
-                # g.trace(v.headString(),"no tnodeList")
 
         if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
             if isThin:
