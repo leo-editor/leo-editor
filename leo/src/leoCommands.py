@@ -1062,7 +1062,7 @@ class baseCommands:
                     w = c.frame.body.bodyCtrl
                     p = c.insertHeadline(op_name=undoType)
                     p.setHeadString('@read-file-into-node ' + fileName)
-                    p.v.setTnodeText(s)
+                    p.setBodyString(s)
                     w.setAllText(s)
                 finally:
                     c.endUpdate()
@@ -2131,7 +2131,7 @@ class baseCommands:
                         dirtyVnodeList2 = p.setDirty()
                         dirtyVnodeList.extend(dirtyVnodeList2)
                         result = string.join(result,'\n')
-                        p.setTnodeText(result)
+                        p.setBodyString(result)
                         u.afterChangeNodeContents(p,undoType,innerUndoData)
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             if not g.unitTesting:
@@ -2178,7 +2178,7 @@ class baseCommands:
                         dirtyVnodeList2 = p.setDirty()
                         dirtyVnodeList.extend(dirtyVnodeList2)
                         result = string.join(result,'\n')
-                        p.setTnodeText(result)
+                        p.setBodyString(result)
                         u.afterChangeNodeContents(p,undoType,undoData)
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             if not g.unitTesting:
@@ -2251,7 +2251,7 @@ class baseCommands:
 
         p = parent.insertAsLastChild()
         p.initHeadString(headline)
-        p.setTnodeText(body)
+        p.setBodyString(body)
         p.setDirty()
         c.validateOutline()
         return p
@@ -6617,7 +6617,7 @@ class baseCommands:
         if v.t._bodyString != s:
             c.beginUpdate()
             try:
-                v.setTnodeText(s)
+                v.setBodyString(s)
                 v.t.setSelection(0,0)
                 p.setDirty()
                 if not c.isChanged():
