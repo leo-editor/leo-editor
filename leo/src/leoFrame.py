@@ -1201,7 +1201,7 @@ class leoBody:
         if not changed: return
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-        p.v.setTnodeText(newText)
+        p.v.setBodyString(newText)
         p.v.t.insertSpot = body.getInsertPoint()
         #@    << recolor the body >>
         #@+node:ekr.20051026083733.6:<< recolor the body >>
