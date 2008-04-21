@@ -3274,7 +3274,7 @@ class baseCommands:
         try:
             undoData = u.beforeDeleteNode(p)
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.doDelete()
+            p.doDelete(newNode)
             c.selectPosition(newNode)
             c.setChanged(True)
             u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
@@ -5656,7 +5656,7 @@ class baseCommands:
                 not c.checkDrag(p,parent) or
                 not c.checkMoveWithParentWithWarning(clone,parent,True)
             ):
-                clone.doDelete() # Destroys clone and makes p the current node.
+                clone.doDelete(newNode=p) # Destroys clone and makes p the current node.
                 c.selectPosition(p) # Also sets root position.
                 c.endUpdate(False) # Nothing has changed.
                 return
@@ -5705,7 +5705,7 @@ class baseCommands:
                 p = clone
             else:
                 # g.trace("invalid clone drag")
-                clone.doDelete()
+                clone.doDelete(newNode=p)
         finally:
             c.selectPosition(p) # Also sets root position.
             c.endUpdate()
