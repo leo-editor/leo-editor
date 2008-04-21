@@ -3950,6 +3950,28 @@ def restoreTnodeUndoInfo (self,bunch):
 #@-node:ekr.20050415170812.2:restoreTnodeUndoInfo
 #@-node:EKR.20040530121329:u.restoreTree & helpers
 #@-node:ekr.20080420163857.1:Eliminated _parent
+#@+node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
+#@+node:ekr.20080416161551.212:p.parentVnode
+def parentVnode (self):
+
+    '''Return the parent vnode.
+    Return the hiddenRootNode if there is no other parent.'''
+
+    p = self
+
+    if p.v:
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        else:
+            return p.v.context.hiddenRootNode
+    else:
+        return None
+#@-node:ekr.20080416161551.212:p.parentVnode
+#@-node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
+#@-node:ekr.20080420163857.2:Projects...
+#@+node:ekr.20080421162832.7:Recent bugs
 #@+node:ekr.20080421083619.3:Fixed paste outline
 #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
 def createSaxVnodes (self,saxRoot,reassignIndices):
@@ -4214,13 +4236,17 @@ def linkAsRoot (self,oldRoot):
     p.stack = []
     p._childIndex = 0
 
-    # Init p.v.t.vnodeList
-    p.v.t.vnodeList = [p.v]
+    # Update p.v.t.vnodeList.
+    if p.v not in p.v.t.vnodeList:
+        p.v.t.vnodeList.append(p.v)
+        p.v.t._p_changed = 1
 
-    # Init p.v.t.parents to the hidden root node.
-    p.v.t.parents = [hiddenRootNode]
-    p.v._p_changed = 1
+    # Update the p.v.t.parents.
+    if hiddenRootNode not in p.v.t.parents:
+        p.v.t.parents.append(hiddenRootNode)
+        p.v._p_changed = 1
 
+    # Update the hiddenRootNode's children.
     if oldRoot:
         hiddenRootNode.t.children.insert(0,p.v)
     else:
@@ -4235,8 +4261,8 @@ def moveAfter (self,a):
 
     p = self # Do NOT copy the position!
 
-    # Adjust a._childIndex if p is a preceding sibling.
-    # so p.linkAfter(a) will set p.childIndex correctly.
+    # Adjust a._childIndex if p is a preceding sibling,
+    # so p.linkAfter(a) will set p.v.t._childIndex correctly.
     sib = a.copy()
     while sib.hasBack():
         sib.moveToBack()
@@ -4253,7 +4279,7 @@ def moveAfter (self,a):
 def unlink (self):
 
     p = self ; n = p._childIndex
-    parent_v = p.parentNode(includeHiddenRootNode=True)
+    parent_v = p.parentVnode()
         # returns None if p.v is None
     assert(p.v)
     assert(parent_v)
@@ -4278,7 +4304,476 @@ def unlink (self):
 
 #@-node:ekr.20080416161551.217:p.unlink
 #@-node:ekr.20080421083619.1:Fixed two recent node bugs
-#@-node:ekr.20080420163857.2:Projects...
+#@+node:ekr.20080421083619.6:Fixed bug: Deleting the root didn't select another node
+#@+node:ekr.20031218072017.1193:c.deleteOutline
+def deleteOutline (self,event=None,op_name="Delete Node"):
+
+    """Deletes the selected outline."""
+
+    c = self ; cc = c.chapterController ; u = c.undoer
+    p = c.currentPosition()
+    if not p: return
+
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+
+    c.beginUpdate()
+    try:
+        c.endEditing() # Make sure we capture the headline for Undo.
+    finally:
+        c.endUpdate(False)
+
+    if cc: # Special cases for @chapter and @chapters nodes.
+        chapter = '@chapter ' ; chapters = '@chapters ' 
+        h = p.headString()
+        if h.startswith(chapters):
+            if p.hasChildren():
+                return cc.error('Can not delete @chapters node with children.')
+        elif h.startswith(chapter):
+            name = h[len(chapter):].strip()
+            if name:
+                return cc.removeChapterByName(name)
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeDeleteNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.doDelete(newNode)
+        c.selectPosition(newNode)
+        c.setChanged(True)
+        u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate()
+
+    c.validateOutline()
+#@-node:ekr.20031218072017.1193:c.deleteOutline
+#@+node:ekr.20040303175026.2:p.doDelete
+@ This is the main delete routine.  It deletes the receiver's entire tree from the screen.  Because of the undo command we never actually delete vnodes or tnodes.
+@c
+
+def doDelete (self,newNode=None):
+
+    """Deletes position p from the outline."""
+
+    p = self
+    p.setDirty() # Mark @file nodes dirty!
+
+    # Adjust newNode._childIndex if newNode is a following sibling of p.
+    sib = p.copy()
+    while sib.hasNext():
+        sib.moveToNext()
+        if sib == newNode:
+            newNode._childIndex -= 1
+            break
+
+    p.unlink()
+    p.deleteLinksInTree()
+#@-node:ekr.20040303175026.2:p.doDelete
+#@+node:ekr.20040303175026.10:p.moveAfter
+def moveAfter (self,a):
+
+    """Move a position after position a."""
+
+    p = self # Do NOT copy the position!
+
+    # Adjust a._childIndex if p is a preceding sibling,
+    # so p.linkAfter(a) will set p.v.t._childIndex correctly.
+    sib = a.copy()
+    while sib.hasBack():
+        sib.moveToBack()
+        if sib == p:
+            a._childIndex -= 1
+            break
+
+    p.unlink()
+    p.linkAfter(a)
+
+    return p
+#@-node:ekr.20040303175026.10:p.moveAfter
+#@+node:ekr.20040303175026.3:p.insertAfter
+def insertAfter (self,t=None):
+
+    """Inserts a new position after self.
+
+    Returns the newly created position."""
+
+    p = self ; context = p.v.context
+    p2 = self.copy()
+
+    if not t:
+        t = tnode(headString="NewHeadline")
+
+    p2.v = vnode(context=context,t=t)
+    p2.v.iconVal = 0
+    p2.linkAfter(p)
+
+    return p2
+#@-node:ekr.20040303175026.3:p.insertAfter
+#@-node:ekr.20080421083619.6:Fixed bug: Deleting the root didn't select another node
+#@+node:ekr.20080421162832.9:The str_leo_pos uA was not being cleared
+#@+node:ekr.20031218072017.1579:putVnodes & helpers
+def putVnodes (self):
+
+    """Puts all <v> elements in the order in which they appear in the outline."""
+
+    c = self.c
+    c.clearAllVisited()
+
+    self.put("<vnodes>\n")
+
+    # Make only one copy for all calls.
+    self.currentPosition = c.currentPosition() 
+    self.rootPosition    = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
+    else:
+        for p in c.rootPosition().self_and_siblings_iter():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+
+    self.put("</vnodes>\n")
+#@nonl
+#@+node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    # Not writing @auto nodes is way too dangerous.
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isThin = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # forceWrite = isIgnore or not isThin or (isThin and isOrphan)
+    if isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto: forceWrite = False     # Never write non-ignored @auto trees.
+    elif isThin: forceWrite = isOrphan  # Only write orphan @thin trees.
+    else:        forceWrite = True      # Write all other @file trees.
+
+    << Set gnx = tnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append tnodeList and unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
+    # The string catentation is faster than repeated calls to fc.put.
+    if not self.usingClipboard:
+        << issue informational messages >>
+    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+    if p.hasChildren() and (forceWrite or self.usingClipboard):
+        fc.put('%s\n' % v_head)
+        # This optimization eliminates all "recursive" copies.
+        p.moveToFirstChild()
+        while 1:
+            fc.putVnode(p,isIgnore)
+            if p.hasNext(): p.moveToNext()
+            else:           break
+        p.moveToParent() # Restore p in the caller.
+        fc.put('</v>\n')
+    else:
+        fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+if not v.t.fileIndex:
+    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+
+    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
+    # Almost 30% of the entire writing time came from here!!!
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    if not c.fixed:
+        d['str_leo_pos'] = ','.join(aList)
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+# Write the tnodeList only for @file nodes.
+# New in 4.2: tnode list is in tnode.
+
+if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
+    if isThin:
+        if g.app.unitTesting:
+            g.app.unitTestDict["warning"] = True
+        g.es("deleting tnode list for",p.headString(),color="blue")
+        # This is safe: cloning can't change the type of this node!
+        delattr(v.t,"tnodeList")
+    else:
+        attrs.append(fc.putTnodeList(v)) # New in 4.0
+
+if hasattr(v,"unknownAttributes"): # New in 4.0
+    attrs.append(self.putUnknownAttributes(v))
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentAttributes(p))
+#@nonl
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040702085529:<< issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.headString(),color="blue")
+    p.clearOrphan()
+#@-node:ekr.20040702085529:<< issue informational messages >>
+#@-node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@+node:ekr.20031218072017.2002:putTnodeList (4.0,4.2)
+def putTnodeList (self,v):
+
+    """Put the tnodeList attribute of a tnode."""
+
+    # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
+    nodeIndices = g.app.nodeIndices
+    tnodeList = v.t.tnodeList
+
+    if tnodeList:
+        # g.trace("%4d" % len(tnodeList),v)
+        for t in tnodeList:
+            try: # Will fail for None or any pre 4.1 file index.
+                junk,junk,junk = t.fileIndex
+            except Exception:
+                gnx = nodeIndices.getNewIndex()
+                # Apparent bug fix: Leo 4.4.8, 2008-3-8: use t, not v.t here!
+                # t.setFileIndex(gnx) # Don't convert to string until the actual write.
+                t.fileIndex = gnx
+        s = ','.join([nodeIndices.toString(t.fileIndex) for t in tnodeList])
+        return ' tnodeList="%s"' % (s)
+    else:
+        return ''
+#@nonl
+#@-node:ekr.20031218072017.2002:putTnodeList (4.0,4.2)
+#@+node:ekr.20040701065235.2:putDescendentAttributes
+def putDescendentAttributes (self,p):
+
+    nodeIndices = g.app.nodeIndices
+
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = [] ; expanded = []
+    for p in p.subtree_iter():
+        t = p.v.t
+        if p.isMarked() and p.v.t not in marks:
+            marks.append(t)
+        if p.hasChildren() and p.isExpanded() and t not in expanded:
+            expanded.append(t)
+
+    result = []
+    for theList,tag in ((marks,"marks"),(expanded,"expanded")):
+        if theList:
+            sList = []
+            for t in theList:
+                # New in Leo 4.4.8.  Assign t.fileIndex here as needed.
+                if not t.fileIndex:
+                    t.fileIndex = g.app.nodeIndices.getNewIndex()
+                gnx = t.fileIndex
+                sList.append("%s," % nodeIndices.toString(gnx))
+            s = string.join(sList,'')
+            # g.trace(tag,[str(p.headString()) for p in theList])
+            result.append('\n%s="%s"' % (tag,s))
+
+    return ''.join(result)
+#@-node:ekr.20040701065235.2:putDescendentAttributes
+#@+node:EKR.20040627113418:putDescendentUnknownAttributes
+def putDescendentUnknownAttributes (self,p):
+
+    # pychecker complains about dumps.
+
+    # The bin param doesn't exist in Python 2.3;
+    # the protocol param doesn't exist in earlier versions of Python.
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+    python23 = g.CheckVersion(version,'2.3')
+
+    # Create a list of all tnodes having a valid unknownAttributes dict.
+    tnodes = []
+    tnodesData = []
+    for p2 in p.subtree_iter():
+        t = p2.v.t
+        if hasattr(t,"unknownAttributes"):
+            if t not in tnodes :
+                # g.trace(p2.headString(),t)
+                tnodes.append(t) # Bug fix: 10/4/06.
+                tnodesData.append((p2,t),)
+
+    # Create a list of pairs (t,d) where d contains only pickleable entries.
+    data = []
+    for p,t in tnodesData:
+        if type(t.unknownAttributes) != type({}):
+            g.es("ignoring non-dictionary unknownAttributes for",p,color="blue")
+        else:
+            # Create a new dict containing only entries that can be pickled.
+            d = dict(t.unknownAttributes) # Copy the dict.
+
+            for key in d.keys():
+                try:
+                    # We don't actually save the pickled values here.
+                    if python23:
+                        pickle.dumps(d[key],protocol=1) # Requires Python 2.3
+                    else:
+                        pickle.dumps(d[key],bin=True) # Requires earlier versions of Python.
+                except pickle.PicklingError:
+                    del d[key]
+                    g.es("ignoring bad unknownAttributes key",key,"in",p,color="blue")
+                except Exception:
+                    del d[key]
+                    g.es('putDescendentUnknownAttributes: unexpected pickling exception',color='red')
+                    g.es_exception()
+            data.append((t,d),)
+
+    # Create resultDict, an enclosing dict to hold all the data.
+    resultDict = {}
+    nodeIndices = g.app.nodeIndices
+    for t,d in data:
+        # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+        if not t.fileIndex:
+            t.fileIndex = g.app.nodeIndices.getNewIndex()
+        gnx = nodeIndices.toString(t.fileIndex)
+        resultDict[gnx]=d
+
+    if 0:
+        print "resultDict..."
+        for key in resultDict:
+            print repr(key),repr(resultDict.get(key))
+
+    # Pickle and hexlify resultDict.
+    if resultDict:
+        try:
+            tag = "descendentTnodeUnknownAttributes"
+            if python23:
+                s = pickle.dumps(resultDict,protocol=1) # Requires Python 2.3
+                # g.trace('protocol=1')
+            else:
+                s = pickle.dumps(resultDict,bin=True) # Requires Earlier version of Python.
+                # g.trace('bin=True')
+            field = ' %s="%s"' % (tag,binascii.hexlify(s))
+            return field
+        except pickle.PicklingError:
+            g.trace("putDescendentUnknownAttributes can't happen 1",color="red")
+        except Exception:
+            g.es("putDescendentUnknownAttributes can't happen 2",color='red')
+            g.es_exception()
+    return ''
+#@-node:EKR.20040627113418:putDescendentUnknownAttributes
+#@-node:ekr.20031218072017.1579:putVnodes & helpers
+#@+node:EKR.20040526202501:putUnknownAttributes & helper
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict,g.callers())
+        return val
+#@+node:ekr.20050418161620.2:putUaHelper
+def putUaHelper (self,torv,key,val):
+
+    '''Put attribute whose name is key and value is val to the output stream.'''
+
+    # g.trace(key,repr(val),g.callers())
+
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if key.startswith('str_'):
+        if type(val) == type(''):
+            attr = ' %s="%s"' % (key,xml.sax.saxutils.escape(val))
+            return attr
+        else:
+            g.es("ignoring non-string attribute",key,"in",torv,color="blue")
+            return ''
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+        python23 = g.CheckVersion(version,'2.3')
+        try:
+            if python23:
+                # Protocol argument is new in Python 2.3
+                # Use protocol 1 for compatibility with bin.
+                s = pickle.dumps(val,protocol=1)
+            else:
+                s = pickle.dumps(val,bin=True)
+            attr = ' %s="%s"' % (key,binascii.hexlify(s))
+            return attr
+        except Exception:
+            g.es('putUaHelper: unexpected pickling exception',color='red')
+            g.es_exception()
+            return ''
+    except pickle.PicklingError:
+        # New in 4.2 beta 1: keep going after error.
+        g.es("ignoring non-pickleable attribute",key,"in",torv,color="blue")
+        return ''
+#@-node:ekr.20050418161620.2:putUaHelper
+#@-node:EKR.20040526202501:putUnknownAttributes & helper
+#@-node:ekr.20080421162832.9:The str_leo_pos uA was not being cleared
+#@+node:ekr.20080421162832.6:Fixed bug: Moving a clone to the root lost the clone mark
+#@+node:ekr.20080416161551.216:p.linkAsRoot
+def linkAsRoot (self,oldRoot):
+
+    """Link self as the root node."""
+
+    p = self
+    assert(p.v)
+
+    hiddenRootNode = p.v.context.hiddenRootNode
+
+    if oldRoot: oldRootNode = oldRoot.v
+    else:       oldRootNode = None
+
+    # Init the ivars.
+    p.stack = []
+    p._childIndex = 0
+
+    # Update p.v.t.vnodeList.
+    if p.v not in p.v.t.vnodeList:
+        p.v.t.vnodeList.append(p.v)
+        p.v.t._p_changed = 1
+
+    # Update the p.v.t.parents.
+    if hiddenRootNode not in p.v.t.parents:
+        p.v.t.parents.append(hiddenRootNode)
+        p.v._p_changed = 1
+
+    # Update the hiddenRootNode's children.
+    if oldRoot:
+        hiddenRootNode.t.children.insert(0,p.v)
+    else:
+        hiddenRootNode.t.children = [p.v]
+
+    return p
+#@-node:ekr.20080416161551.216:p.linkAsRoot
+#@-node:ekr.20080421162832.6:Fixed bug: Moving a clone to the root lost the clone mark
+#@-node:ekr.20080421162832.7:Recent bugs
 #@-node:ekr.20080416161308.1:This is the graph world
 #@-all
 #@nonl
