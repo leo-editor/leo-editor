@@ -499,6 +499,10 @@ command to handle check and radio items, using rclick-button as a template.
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
+
+__version__ = "1.29"
+__plugin_name__ = 'Right Click Menus'
+
 #@<< version history >>
 #@+node:ekr.20040422081253:<< version history >>
 #@+at
@@ -588,6 +592,8 @@ command to handle check and radio items, using rclick-button as a template.
 # - modified api so that key-value pairs are stored with the label
 #   in the first item of the tuple, instead of with the cmd item.
 # - add rclick-[cut,copy,paste]-text and rclick-select-all commands
+# 1.29
+# - bug fix, in onCreate only create the controller once!
 # 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
@@ -629,8 +635,7 @@ except ImportError:
 # To do: move top-level functions into ContextMenuController class.
 # Eliminate global vars.
 
-__version__ = "1.28"
-__plugin_name__ = 'Right Click Menus'
+
 
 default_context_menus = {}
 
@@ -664,10 +669,13 @@ def init ():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not (c and c.exists):
+        return
 
-    c.theContextMenuController = ContextMenuController(c)
-#@nonl
+    try:
+        c.theContextMenuController
+    except AttributeError:
+        c.theContextMenuController = ContextMenuController(c)
 #@-node:bobjack.20080323045434.18:onCreate
 #@+node:ekr.20080327061021.229:Event handler
 #@+node:ekr.20080327061021.220:rClicker
