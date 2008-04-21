@@ -139,41 +139,41 @@ class tnode (baseTnode):
     #@-node:ekr.20031218072017.3327:t.Status bits
     #@-node:ekr.20031218072017.3325:t.Getters
     #@+node:ekr.20031218072017.3331:t.Setters
-    #@+node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.1485:setBodyString (aka setTnodeText)
-    # This sets the text in the tnode from the given string.
+    #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+    def setBodyString (self,s,encoding="utf-8"):
 
-    def setTnodeText (self,s,encoding="utf-8"):
+        t = self
+        t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
 
-        """Set the body text of a tnode to the given string."""
+    initBodyString = setBodyString
+    setTnodeText = setBodyString
 
+    def setHeadString (self,s,encoding="utf-8"):
+
+        t = self
         s = g.toUnicode(s,encoding,reportErrors=True)
+        t._headString = s
 
-        # DANGEROUS:  This automatically converts everything when reading files.
+    initHeadString = setHeadString
 
-            # New in Leo 4.4.2: self.c does not exist!
-            # This must be done in the Commands class.
-            # option = self.c.config.trailing_body_newlines
+    #@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+    #@+node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+    def setCloneIndex (self, index):
 
-            # if option == "one":
-                # s = s.rstrip() + '\n'
-            # elif option == "zero":
-                # s = s.rstrip()
+        self.cloneIndex = index
+    #@-node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+    #@+node:ekr.20031218072017.3340:t.setFileIndex
+    def setFileIndex (self, index):
 
-        self._bodyString = s
-
-        # g.trace(len(s),g.callers())
-
-    setBodyString = setTnodeText
-    #@-node:ekr.20031218072017.1485:setBodyString (aka setTnodeText)
-    #@+node:ekr.20031218072017.1486:setSelection
+        self.fileIndex = index
+    #@-node:ekr.20031218072017.3340:t.setFileIndex
+    #@+node:ekr.20031218072017.1486:t.setSelection
     def setSelection (self,start,length):
 
         self.selectionStart = start
         self.selectionLength = length
-    #@-node:ekr.20031218072017.1486:setSelection
-    #@-node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.3332:Status bits
+    #@-node:ekr.20031218072017.1486:t.setSelection
+    #@+node:ekr.20031218072017.3332:t.Status bits
     #@+node:ekr.20031218072017.3333:clearDirty
     def clearDirty (self):
 
@@ -214,25 +214,7 @@ class tnode (baseTnode):
 
         self.statusBits |= self.writeBit
     #@-node:EKR.20040503094727.1:setWriteBit
-    #@-node:ekr.20031218072017.3332:Status bits
-    #@+node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
-    def setCloneIndex (self, index):
-
-        self.cloneIndex = index
-    #@-node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
-    #@+node:ekr.20031218072017.3340:setFileIndex
-    def setFileIndex (self, index):
-
-        self.fileIndex = index
-    #@-node:ekr.20031218072017.3340:setFileIndex
-    #@+node:ekr.20050418101546:t.setHeadString (new in 4.3)
-    def setHeadString (self,s,encoding="utf-8"):
-
-        t = self
-
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        t._headString = s
-    #@-node:ekr.20050418101546:t.setHeadString (new in 4.3)
+    #@-node:ekr.20031218072017.3332:t.Status bits
     #@-node:ekr.20031218072017.3331:t.Setters
     #@-others
 #@nonl
@@ -694,6 +676,24 @@ class vnode (baseVnode):
         self.statusBits |= self.visitedBit
     #@-node:ekr.20031218072017.3401:v.setVisited
     #@-node:ekr.20031218072017.3386: v.Status bits
+    #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString 
+    def setBodyString (self,s,encoding="utf-8"):
+
+        v = self
+        v.t.setBodyString(s,encoding)
+
+    initBodyString = setBodyString
+    setTnodeText = setBodyString
+
+    def setHeadString (self,s,encoding="utf-8"):
+
+        v = self
+        v.t.setHeadString(s,encoding)
+
+    initHeadString = setHeadString
+
+    setHeadText = setHeadString
+    #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString 
     #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
     def computeIcon (self):
 
@@ -708,28 +708,12 @@ class vnode (baseVnode):
 
         pass # Compatibility routine for old scripts
     #@-node:ekr.20031218072017.3385:v.computeIcon & setIcon
-    #@+node:ekr.20040315032144:v.initHeadString
-    def initHeadString (self,s,encoding="utf-8"):
-
-        v = self
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        v.t._headString = s
-
-        # g.trace(g.callers(5))
-    #@-node:ekr.20040315032144:v.initHeadString
     #@+node:ekr.20031218072017.3402:v.setSelection
     def setSelection (self, start, length):
 
-        self.t.setSelection ( start, length )
+        v = self
+        v.t.setSelection ( start, length )
     #@-node:ekr.20031218072017.3402:v.setSelection
-    #@+node:ekr.20040315042106:v.setHeadString (aka setTnodeText, setHeadText)
-    def setTnodeText (self,s,encoding="utf-8"):
-
-        return self.t.setTnodeText(s,encoding)
-
-    setHeadText = setTnodeText
-    setHeadString = setTnodeText
-    #@-node:ekr.20040315042106:v.setHeadString (aka setTnodeText, setHeadText)
     #@-node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
@@ -771,32 +755,6 @@ class vnode (baseVnode):
             v.t.parents.append(parent_v)
             v._p_changed = 1
     #@-node:ekr.20031218072017.3425:v.linkAsNthChild (used by 4.x read logic)
-    #@+node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
-    def moveToRoot (self,oldRoot=None):
-
-        v = self
-        context = v.context
-        hiddenRootNode = context.hiddenRootNode
-
-        if oldRoot: oldRootNode = oldRoot.v
-        else:       oldRootNode = None
-
-        # Init v.t.vnodeList
-        v.t.vnodeList = [v]
-
-        # Init v.t.parents to the hidden root node.
-        v.t.parents = [hiddenRootNode]
-        v._p_changed = 1
-
-        # Init hiddenRootNode's children to v.
-        hiddenRootNode.t.children = [v]
-
-        # Link in the rest of the tree only when oldRoot != None.
-        if oldRoot:
-            hiddenRootNode.t.children.append(oldRootNode)
-            oldRootNode.parents = [hiddenRootNode]
-            oldRootNode.t.vnodeList = [oldRootNode]
-    #@-node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
     #@-node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
     #@-others
 #@nonl
@@ -1432,37 +1390,27 @@ class basePosition (object):
         return self.v.setSelection(start,length)
     #@-node:ekr.20040306220634.29:p.setSelection
     #@-node:ekr.20040306220634:p.Vnode proxies
-    #@+node:ekr.20040315031401:p.Head & body text
-    #@+node:ekr.20040315034158:p.setBodyString (aka p.setTnodeText)
-    def setTnodeText (self,s,encoding="utf-8"):
-
-        return self.v.setTnodeText(s,encoding)
-
-    setBodyString = setTnodeText
-    #@nonl
-    #@-node:ekr.20040315034158:p.setBodyString (aka p.setTnodeText)
-    #@+node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
-    def setHeadString (self,s,encoding="utf-8"):
+    #@+node:ekr.20040315034158:p.setBodyString & setHeadString
+    def setBodyString (self,s,encoding="utf-8"):
 
         p = self
-        p.v.initHeadString(s,encoding)
-        p.setDirty()
+        return p.v.t.setBodyString(s,encoding)
+
+    initBodyString = setBodyString
+    setTnodeText = setBodyString
+    scriptSetBodyString = setBodyString
 
     def initHeadString (self,s,encoding="utf-8"):
 
         p = self
         p.v.initHeadString(s,encoding)
-    #@-node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
-    #@+node:ekr.20040315031445:p.scriptSetBodyString
-    def scriptSetBodyString (self,s,encoding="utf-8"):
 
-        """Update the body string for the receiver.
+    def setHeadString (self,s,encoding="utf-8"):
 
-        Should be called only from scripts: does NOT update body text."""
-
-        self.v.t._bodyString = g.toUnicode(s,encoding)
-    #@-node:ekr.20040315031445:p.scriptSetBodyString
-    #@-node:ekr.20040315031401:p.Head & body text
+        p = self
+        p.v.initHeadString(s,encoding)
+        p.setDirty()
+    #@-node:ekr.20040315034158:p.setBodyString & setHeadString
     #@+node:ekr.20040312015908:p.Visited bits
     #@+node:ekr.20040306220634.17:p.clearVisitedInTree
     # Compatibility routine for scripts.
@@ -2235,11 +2183,20 @@ class basePosition (object):
         """Move a position after position a."""
 
         p = self # Do NOT copy the position!
+
+        # Adjust a._childIndex if p is a preceding sibling.
+        # so p.linkAfter(a) will set p.childIndex correctly.
+        sib = a.copy()
+        while sib.hasBack():
+            sib.moveToBack()
+            if sib == p:
+                a._childIndex -= 1
+                break
+
         p.unlink()
         p.linkAfter(a)
 
         return p
-    #@nonl
     #@-node:ekr.20040303175026.10:p.moveAfter
     #@+node:ekr.20040306060312:p.moveToFirst/LastChildOf
     def moveToFirstChildOf (self,parent):
@@ -2732,16 +2689,12 @@ class basePosition (object):
         p.v.t.parents = [hiddenRootNode]
         p.v._p_changed = 1
 
-        # Init hiddenRootNode's children to p.v.
-        hiddenRootNode.t.children = [p.v]
-
-        # Link in the rest of the tree only when oldRoot != None.
-        # Otherwise, we are calling this routine from init code and
-        # we want to start with a pristine tree.
         if oldRoot:
-            hiddenRootNode.t.children.append(oldRootNode)
-            oldRootNode.parents = [hiddenRootNode]
-            oldRootNode.t.vnodeList = [oldRootNode]
+            hiddenRootNode.t.children.insert(0,p.v)
+        else:
+            hiddenRootNode.t.children = [p.v]
+
+        return p
     #@-node:ekr.20080416161551.216:p.linkAsRoot
     #@+node:ekr.20080416161551.217:p.unlink
     def unlink (self):
@@ -2758,8 +2711,12 @@ class basePosition (object):
             p.v.t._p_changed = 1 # Support for tnode class.
 
         # Delete p.v from parent_v's children.
-        del parent_v.t.children[n:n+1]
-        parent_v._p_changed = 1
+        if 0 <= n < len(parent_v.t.children):
+            del parent_v.t.children[n]
+            parent_v._p_changed = 1
+
+        # else: pass # It is not an error to unlink an already unlinked node.
+            # g.trace('can not happen: bad child index: %s' % (n),color='red')
 
         # Delete parent_v from p.v's parents.
         if parent_v in p.v.t.parents:
