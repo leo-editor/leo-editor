@@ -115,7 +115,6 @@ class chapterController:
             clone = c.clone()
             # Do the move.
             undoData2 = u.beforeMoveNode(clone)
-            clone.unlink()
             if toChapter.name == 'main':
                 clone.moveAfter(toChapter.p)
             else:
@@ -205,7 +204,6 @@ class chapterController:
             undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
             s = c.fileCommands.putLeoOutline()
             p2 = c.fileCommands.getLeoOutline(s)
-            p2.unlink()
             p2.moveToLastChildOf(parent)
             c.selectPosition(p2)
             u.afterInsertNode(p2,undoType,undoData)
@@ -344,10 +342,8 @@ class chapterController:
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
                 # Do the move.
                 if toChapter.name == 'main':
-                    p.unlink()
                     p.moveAfter(toChapter.p)
                 else:
-                    p.unlink()
                     p.moveToLastChildOf(toChapter.root)
                 c.selectPosition(sel)
                 c.setChanged(True)
