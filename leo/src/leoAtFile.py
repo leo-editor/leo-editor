@@ -2396,7 +2396,7 @@ class atFile:
                     print ; print "new:",s
                     print ; print "old:",p.bodyString()
                 if thinFile:
-                    p.v.setTnodeText(s)
+                    p.v.setBodyString(s)
                     if p.v.isDirty():
                         p.setAllAncestorAtFileNodesDirty()
                 else:
@@ -4941,8 +4941,7 @@ class atFile:
         s = g.joinLines(cleanLines)
 
         if changed and not g.app.unitTesting:
-            p.setTnodeText(s)
-            c.setBodyString(p,s)
+            p.setBodyString(s)
             c.setChanged(True)
 
         return s
