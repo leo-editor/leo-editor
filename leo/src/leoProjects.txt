@@ -3642,8 +3642,8 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:linkParentAndChildren
-def linkParentAndChildren (self, parent_v, children):
+#@+node:ekr.20060919110638.9:_linkParentAndChildren
+def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
 
@@ -3658,7 +3658,7 @@ def linkParentAndChildren (self, parent_v, children):
     for v in children:
         if parent_v not in v.t.parents:
             v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:linkParentAndChildren
+#@-node:ekr.20060919110638.9:_linkParentAndChildren
 #@+node:EKR.20040530121329:u.restoreTree & helpers
 def restoreTree (self,treeInfo):
 
@@ -3951,8 +3951,8 @@ def restoreTnodeUndoInfo (self,bunch):
 #@-node:EKR.20040530121329:u.restoreTree & helpers
 #@-node:ekr.20080420163857.1:Eliminated _parent
 #@+node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
-#@+node:ekr.20080416161551.212:p.parentVnode
-def parentVnode (self):
+#@+node:ekr.20080416161551.212:p._parentVnode
+def _parentVnode (self):
 
     '''Return the parent vnode.
     Return the hiddenRootNode if there is no other parent.'''
@@ -3968,7 +3968,7 @@ def parentVnode (self):
             return p.v.context.hiddenRootNode
     else:
         return None
-#@-node:ekr.20080416161551.212:p.parentVnode
+#@-node:ekr.20080416161551.212:p._parentVnode
 #@-node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
 #@-node:ekr.20080420163857.2:Projects...
 #@+node:ekr.20080421162832.7:Recent bugs
@@ -4000,8 +4000,8 @@ def createSaxChildren (self, sax_node, parent_v):
             v = self.createSaxVnodeTree(child,parent_v)
         result.append(v)
 
-    # self.linkSiblings(result)
-    if parent_v: self.linkParentAndChildren(parent_v,result)
+    if parent_v:
+        self._linkParentAndChildren(parent_v,result)
     return result
 #@-node:ekr.20060919110638.5:createSaxChildren
 #@+node:ekr.20060919110638.6:createSaxVnodeTree
@@ -4117,8 +4117,8 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:linkParentAndChildren
-def linkParentAndChildren (self, parent_v, children):
+#@+node:ekr.20060919110638.9:_linkParentAndChildren
+def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
 
@@ -4133,7 +4133,7 @@ def linkParentAndChildren (self, parent_v, children):
     for v in children:
         if parent_v not in v.t.parents:
             v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:linkParentAndChildren
+#@-node:ekr.20060919110638.9:_linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
 def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
@@ -4173,10 +4173,10 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
     p = leoNodes.position(v)
     if current.hasChildren() and current.isExpanded():
         if check and not self.checkPaste(current,p): return None
-        p.linkAsNthChild(current,0)
+        p._linkAsNthChild(current,0)
     else:
         if check and not self.checkPaste(current.parent(),p): return None
-        p.linkAfter(current)
+        p._linkAfter(current)
 
     if reassignIndices:
         for p2 in p.self_and_subtree_iter():
@@ -4219,8 +4219,8 @@ def checkPaste (self,parent,p):
 
 @color
 #@nonl
-#@+node:ekr.20080416161551.216:p.linkAsRoot
-def linkAsRoot (self,oldRoot):
+#@+node:ekr.20080416161551.216:p._linkAsRoot
+def _linkAsRoot (self,oldRoot):
 
     """Link self as the root node."""
 
@@ -4253,7 +4253,7 @@ def linkAsRoot (self,oldRoot):
         hiddenRootNode.t.children = [p.v]
 
     return p
-#@-node:ekr.20080416161551.216:p.linkAsRoot
+#@-node:ekr.20080416161551.216:p._linkAsRoot
 #@+node:ekr.20040303175026.10:p.moveAfter
 def moveAfter (self,a):
 
@@ -4262,7 +4262,7 @@ def moveAfter (self,a):
     p = self # Do NOT copy the position!
 
     # Adjust a._childIndex if p is a preceding sibling,
-    # so p.linkAfter(a) will set p.v.t._childIndex correctly.
+    # so p._linkAfter(a) will set p.v.t._childIndex correctly.
     sib = a.copy()
     while sib.hasBack():
         sib.moveToBack()
@@ -4270,16 +4270,16 @@ def moveAfter (self,a):
             a._childIndex -= 1
             break
 
-    p.unlink()
-    p.linkAfter(a)
+    p._unlink()
+    p._linkAfter(a)
 
     return p
 #@-node:ekr.20040303175026.10:p.moveAfter
-#@+node:ekr.20080416161551.217:p.unlink
-def unlink (self):
+#@+node:ekr.20080416161551.217:p._unlink
+def _unlink (self):
 
     p = self ; n = p._childIndex
-    parent_v = p.parentVnode()
+    parent_v = p._parentVnode()
         # returns None if p.v is None
     assert(p.v)
     assert(parent_v)
@@ -4291,8 +4291,11 @@ def unlink (self):
 
     # Delete p.v from parent_v's children.
     if 0 <= n < len(parent_v.t.children):
-        del parent_v.t.children[n]
-        parent_v._p_changed = 1
+        if parent_v.t.children[n] == p.v:
+            del parent_v.t.children[n]
+            parent_v._p_changed = 1
+        else:
+            g.trace('**can not happen: parents[n] != p.v')
 
     # else: pass # It is not an error to unlink an already unlinked node.
         # g.trace('can not happen: bad child index: %s' % (n),color='red')
@@ -4302,7 +4305,7 @@ def unlink (self):
         p.v.t.parents.remove(parent_v)
         p.v._p_changed = 1 # Support for tnode class.
 
-#@-node:ekr.20080416161551.217:p.unlink
+#@-node:ekr.20080416161551.217:p._unlink
 #@-node:ekr.20080421083619.1:Fixed two recent node bugs
 #@+node:ekr.20080421083619.6:Fixed bug: Deleting the root didn't select another node
 #@+node:ekr.20031218072017.1193:c.deleteOutline
@@ -4367,8 +4370,8 @@ def doDelete (self,newNode=None):
             newNode._childIndex -= 1
             break
 
-    p.unlink()
-    p.deleteLinksInTree()
+    p._unlink()
+    p._deleteLinksInTree()
 #@-node:ekr.20040303175026.2:p.doDelete
 #@+node:ekr.20040303175026.10:p.moveAfter
 def moveAfter (self,a):
@@ -4378,7 +4381,7 @@ def moveAfter (self,a):
     p = self # Do NOT copy the position!
 
     # Adjust a._childIndex if p is a preceding sibling,
-    # so p.linkAfter(a) will set p.v.t._childIndex correctly.
+    # so p._linkAfter(a) will set p.v.t._childIndex correctly.
     sib = a.copy()
     while sib.hasBack():
         sib.moveToBack()
@@ -4386,8 +4389,8 @@ def moveAfter (self,a):
             a._childIndex -= 1
             break
 
-    p.unlink()
-    p.linkAfter(a)
+    p._unlink()
+    p._linkAfter(a)
 
     return p
 #@-node:ekr.20040303175026.10:p.moveAfter
@@ -4406,7 +4409,7 @@ def insertAfter (self,t=None):
 
     p2.v = vnode(context=context,t=t)
     p2.v.iconVal = 0
-    p2.linkAfter(p)
+    p2._linkAfter(p)
 
     return p2
 #@-node:ekr.20040303175026.3:p.insertAfter
@@ -4737,8 +4740,8 @@ def putUaHelper (self,torv,key,val):
 #@-node:EKR.20040526202501:putUnknownAttributes & helper
 #@-node:ekr.20080421162832.9:The str_leo_pos uA was not being cleared
 #@+node:ekr.20080421162832.6:Fixed bug: Moving a clone to the root lost the clone mark
-#@+node:ekr.20080416161551.216:p.linkAsRoot
-def linkAsRoot (self,oldRoot):
+#@+node:ekr.20080416161551.216:p._linkAsRoot
+def _linkAsRoot (self,oldRoot):
 
     """Link self as the root node."""
 
@@ -4771,7 +4774,7 @@ def linkAsRoot (self,oldRoot):
         hiddenRootNode.t.children = [p.v]
 
     return p
-#@-node:ekr.20080416161551.216:p.linkAsRoot
+#@-node:ekr.20080416161551.216:p._linkAsRoot
 #@-node:ekr.20080421162832.6:Fixed bug: Moving a clone to the root lost the clone mark
 #@-node:ekr.20080421162832.7:Recent bugs
 #@-node:ekr.20080416161308.1:This is the graph world

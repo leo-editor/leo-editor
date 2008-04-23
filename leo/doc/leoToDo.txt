@@ -2,48 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080411091507.10: First
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20080411091507.11:sax: fix paste node code
-#@-node:ekr.20080411091507.11:sax: fix paste node code
-#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
-# The start of this project is in leo.repo/leo-working.
-#@nonl
-#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080404074921.2:Put Komodo prototype on the wiki
-#@-node:ekr.20080404074921.2:Put Komodo prototype on the wiki
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@-node:ekr.20080411091507.10: First
-#@+node:ekr.20080411091507.1: Non-branch
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080403102730.1:Explore ipython stuff
 @nocolor
 
@@ -77,231 +35,23 @@ Yes, IPython runs the startup script using normal python execfile.
 Pretty normally; I start leo.py as normal python program.
 #@nonl
 #@-node:ekr.20080403102730.1:Explore ipython stuff
-#@+node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+#@+node:ekr.20080411091507.1:Docs
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
+#@+node:ekr.20080423062035.2:Update scripting stuff
 @nocolor
 
-The idea: if a key binding is only in effect for one pane, and we get the
-binding, maybe we should change to the pane first!
-
-Examples:
-
-copy-node: auto-select tree pane.
-copy_text (when not editing a headline): auto-select body text.
-
-
-Unified body/tree panes
-
-Up/down arrows move between headline and body panes.
+- WARNING: can *not* save sibling positions when moving/deleting nodes.
+- p._linkX and p._unlink are for internal use only.
 #@nonl
-#@-node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+#@-node:ekr.20080423062035.2:Update scripting stuff
 #@+node:ekr.20071211093323:more screen shots on Leo's web site
 #@-node:ekr.20071211093323:more screen shots on Leo's web site
-#@+node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20070929125944:Emulate Orange's download philosophy
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4543089
-By: billp9619
-
-from the download page:
-
-If it's the first time you hear about Python, this is the installation for you.
-The packages includes complete Orange, Python, Windows Extensions for Python
-(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
-
-Leo should copy this download philosophy.
-
-
-
-#@-node:ekr.20070929125944:Emulate Orange's download philosophy
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20071029082025:Improve distribution
-#@-node:ekr.20080411091507.1: Non-branch
-#@+node:ekr.20080411091507.2:leo-as-a-package branch
+#@-node:ekr.20080411091507.1:Docs
 #@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@-node:ekr.20080411091507.2:leo-as-a-package branch
-#@+node:ekr.20080411091507.3:sax
-#@+node:ekr.20080411091507.11:sax: fix paste node code
-#@-node:ekr.20080411091507.11:sax: fix paste node code
-#@+node:ekr.20080407090400.6:Fix file bugs
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080405074410.39:Fix new @auto bug
-@nocolor
-
-Leo's running, so I create a new outline with File->New
-
-Then I save as in a location where foo.py exists.
-
-The I create a node '@auto foo.py'
-
-Then I use File->Read/Write->Read @auto (with that node selected)
-
-Leo says it can't read it.
-
-I close the leo file, re-open in from the recent files menu of the
-outline that spawned it, and the @auto file is read no problems.
-
-
-#@-node:ekr.20080405074410.39:Fix new @auto bug
-#@-node:ekr.20080407090400.6:Fix file bugs
-#@+node:ekr.20080218110223.1:Files
-#@+node:ekr.20080311135649.2:Allow different .leo formats
-@nocolor
-
-On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
-
-> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
-
-> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
-> >  > It could also be argued that
-
-> >  > - Referring to previous cloned vnodes explicitly in XML does not
-> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
-> rule
-> >  > - It will speed up reading
-> >  > - Wouldn't it be better for preserving the integrity of the XML file?
-
-> > I would lean towards this line of argumentation. A couple of days I
-> >  had my Leo extension destroy the Leo ODM file (which was still valid
-> >  according to Leo, but unreadable wrt the extension and broken uAs). I
-> >  resorted to editing the Leo file with Emacs, and was quite surprised
-> >  to see that the headStrings were attributes of vnodes.
-
-> I'll chime in with my pet peeve re: .leo file structure::
-
-> I think that putting the headstrings on vnodes and body strings on tnodes
-> obscures the informational content of the .leo file, and makes the .leo
-> file
-> format less attractive as a generalized solution to the problem of how to
-> manage head/body pairs which live in a hierarchal structure.
-
-> Thanks,
-> Kent
-
-> >  I think that
-> >  editing the file might have been a bit easier if there had been no
-> >  such redundancy. But this is more a feeling rather than a qualified
-> >  opinion.
-
-Thanks for all these comments.  I'll respond to them all here.
-
-Clearly, we should be using a standard xml parser to read .leo files.
-
-My present thoughts:
-
-- I personally like human-readable headlines in <v> elements.
-
-- I am open to putting headlines in <t> elements, as an indication that
-tnodes do indeed contain headlines and body text.
-
-- I am willing to consider only writing shared subtrees once.
-
-Oh! (An Aha)  All these are preferences.  We can allow any combination of
-these provided that headlines appear somewhere.
-
-So that's clean.  This will happen in Leo 4.5. 
-#@nonl
-#@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20071031113657:Always use sax parser to read .leo files
-# Are there proper unit tests?
-# Do global settings and find-panel settings get set properly.
-#@nonl
-#@-node:ekr.20071031113657:Always use sax parser to read .leo files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080225104355:@bool fixed-leo-file
-@nocolor
-
-http://mail.google.com/mail/#inbox/118504bef91bb8ce
-
-I think it might be handy to have a 'fixed' flag in .leo file, to
-minimize cvs conflicts. When a leo document has that flag, nothing
-about frame positions etc. will ever be written to the .leo file on
-save.
-
-Most leo documents where people are supposed to collaborate should
-have this flag (e.g. the .leo documents in Leo cvs).
-
-@bool fixed-leo-file = True
-#@-node:ekr.20080225104355:@bool fixed-leo-file
-#@-node:ekr.20080218110223.1:Files
-#@-node:ekr.20080411091507.3:sax
-#@+node:ekr.20080411091507.4:ekr-devel
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
@@ -318,10 +68,6 @@ should refer to foo/src and foo/src/tmpl
 using @path src/tmpl works fine though.
 [end quote]
 #@-node:ekr.20080124083629.1:Improve @path handling
-#@-node:ekr.20080411091507.4:ekr-devel
-#@+node:ekr.20080411091507.5:trunk
-#@+node:ekr.20080411091507.6:merge thyrsus branch to trunk
-#@-node:ekr.20080411091507.6:merge thyrsus branch to trunk
 #@+node:ekr.20080407090400.7:Fix minor bugs
 #@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
 @nocolor
@@ -561,6 +307,33 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:One message during import test on Linux
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
 #@-node:ekr.20080407090400.7:Fix minor bugs
 #@+node:ekr.20071211142600.2:Config stuff
 #@+node:ekr.20080311135649.5:List the special cases in the config code
@@ -608,7 +381,6 @@ redefined menu.
 #@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20071211142600.3:Clean up config mess
 #@-node:ekr.20071211142600.2:Config stuff
-#@-node:ekr.20080411091507.5:trunk
 #@+node:ekr.20080411091507.7:key-handling
 #@+node:ekr.20070824094005:Requests
 @nocolor
@@ -741,7 +513,44 @@ Regards, Roger
 #@nonl
 #@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20080411091507.8:Pluings
-#@+node:ekr.20080411091507.9:drawing branch
+#@+node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+@nocolor
+
+The idea: if a key binding is only in effect for one pane, and we get the
+binding, maybe we should change to the pane first!
+
+Examples:
+
+copy-node: auto-select tree pane.
+copy_text (when not editing a headline): auto-select body text.
+
+
+Unified body/tree panes
+
+Up/down arrows move between headline and body panes.
+#@nonl
+#@-node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
+#@+node:ekr.20071029082025:Improve distribution
+#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4543089
+By: billp9619
+
+from the download page:
+
+If it's the first time you hear about Python, this is the installation for you.
+The packages includes complete Orange, Python, Windows Extensions for Python
+(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
+
+Leo should copy this download philosophy.
+
+
+
+#@-node:ekr.20070929125944:Emulate Orange's download philosophy
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20071215101531:Reorg drawing/focus code?
 @nocolor
 
@@ -823,7 +632,6 @@ set_focus_now = actual_set_focus
 #@nonl
 #@-node:ekr.20071215114036:Possible code
 #@-node:ekr.20071215101531:Reorg drawing/focus code?
-#@-node:ekr.20080411091507.9:drawing branch
 #@-node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
