@@ -715,7 +715,7 @@ class vnode (baseVnode):
         v.t.setSelection ( start, length )
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
-    #@+node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
+    #@+node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
     #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
     def insertAsNthChild (self,n,t=None):
@@ -729,16 +729,16 @@ class vnode (baseVnode):
             t = tnode(headString="NewHeadline")
 
         v2 = vnode(context=v.context,t=t)
-        v2.linkAsNthChild(self,n)
+        v2._linkAsNthChild(self,n)
 
         return v2
     #@-node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-    #@+node:ekr.20031218072017.3425:v.linkAsNthChild (used by 4.x read logic)
-    def linkAsNthChild (self,parent_v,n):
+    #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
+    def _linkAsNthChild (self,parent_v,n):
 
         """Links self as the n'th child of vnode pv"""
 
-        # Similar to p.linkAsNthChild.
+        # Similar to p._linkAsNthChild.
         v = self
 
          # Add v to it's tnode's vnodeList.
@@ -754,8 +754,8 @@ class vnode (baseVnode):
         if not parent_v in v.t.parents:
             v.t.parents.append(parent_v)
             v._p_changed = 1
-    #@-node:ekr.20031218072017.3425:v.linkAsNthChild (used by 4.x read logic)
-    #@-node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
+    #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
+    #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -1206,7 +1206,7 @@ class basePosition (object):
     def hasNext(self):
         p = self
         try:
-            parent_v = p.parentVnode()
+            parent_v = p._parentVnode()
                 # Returns None if p.v is None.
             return p.v and parent_v and p._childIndex+1 < len(parent_v.t.children)
         except Exception:
@@ -2071,7 +2071,7 @@ class basePosition (object):
 
         p2 = p.copy()
         p2.v = vnode(context=context,t=p2.v.t)
-        p2.linkAfter(p)
+        p2._linkAfter(p)
         assert (p.v.t == p2.v.t)
 
         return p2
@@ -2117,8 +2117,8 @@ class basePosition (object):
                 newNode._childIndex -= 1
                 break
 
-        p.unlink()
-        p.deleteLinksInTree()
+        p._unlink()
+        p._deleteLinksInTree()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
     def insertAfter (self,t=None):
@@ -2135,7 +2135,7 @@ class basePosition (object):
 
         p2.v = vnode(context=context,t=t)
         p2.v.iconVal = 0
-        p2.linkAfter(p)
+        p2._linkAfter(p)
 
         return p2
     #@-node:ekr.20040303175026.3:p.insertAfter
@@ -2170,7 +2170,7 @@ class basePosition (object):
 
         p2.v = vnode(context=context,t=t)
         p2.v.iconVal = 0
-        p2.linkAsNthChild(p,n)
+        p2._linkAsNthChild(p,n)
 
         return p2
     #@-node:ekr.20040303175026.5:p.insertAsNthChild
@@ -2194,7 +2194,7 @@ class basePosition (object):
         p = self # Do NOT copy the position!
 
         # Adjust a._childIndex if p is a preceding sibling,
-        # so p.linkAfter(a) will set p.v.t._childIndex correctly.
+        # so p._linkAfter(a) will set p.v.t._childIndex correctly.
         sib = a.copy()
         while sib.hasBack():
             sib.moveToBack()
@@ -2202,8 +2202,8 @@ class basePosition (object):
                 a._childIndex -= 1
                 break
 
-        p.unlink()
-        p.linkAfter(a)
+        p._unlink()
+        p._linkAfter(a)
 
         return p
     #@-node:ekr.20040303175026.10:p.moveAfter
@@ -2213,8 +2213,8 @@ class basePosition (object):
         """Move a position to the first child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsNthChild(parent,0)
+        p._unlink()
+        p._linkAsNthChild(parent,0)
         return p
 
 
@@ -2223,9 +2223,9 @@ class basePosition (object):
         """Move a position to the last child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
+        p._unlink()
         n = parent.numberOfChildren()
-        p.linkAsNthChild(parent,n)
+        p._linkAsNthChild(parent,n)
         return p
     #@-node:ekr.20040306060312:p.moveToFirst/LastChildOf
     #@+node:ekr.20040303175026.11:p.moveToNthChildOf
@@ -2234,8 +2234,8 @@ class basePosition (object):
         """Move a position to the nth child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsNthChild(parent,n)
+        p._unlink()
+        p._linkAsNthChild(parent,n)
 
         return p
     #@nonl
@@ -2248,8 +2248,8 @@ class basePosition (object):
         Important: oldRoot must the previous root position if it exists.'''
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsRoot(oldRoot)
+        p._unlink()
+        p._linkAsRoot(oldRoot)
 
         return p
     #@-node:ekr.20040303175026.6:p.moveToRoot
@@ -2318,7 +2318,7 @@ class basePosition (object):
 
         p = self ; n = p._childIndex
 
-        parent_v = p.parentVnode()
+        parent_v = p._parentVnode()
             # Returns None if p.v is None.
 
         # Do not assume n is in range: this is used by positionExists.
@@ -2386,7 +2386,7 @@ class basePosition (object):
 
         p = self ; n = p._childIndex
 
-        parent_v = p.parentVnode()
+        parent_v = p._parentVnode()
             # Returns None if p.v is None.
         if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
 
@@ -2557,41 +2557,13 @@ class basePosition (object):
     #@nonl
     #@-node:ekr.20080416161551.211:p.moveToVisNext
     #@-node:ekr.20080416161551.199:p.moveToX
-    #@+node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20080416161551.212:p.parentVnode
-    def parentVnode (self):
-
-        '''Return the parent vnode.
-        Return the hiddenRootNode if there is no other parent.'''
-
-        p = self
-
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                return v
-            else:
-                return p.v.context.hiddenRootNode
-        else:
-            return None
-    #@-node:ekr.20080416161551.212:p.parentVnode
-    #@+node:ekr.20040409203454:p.restoreLinksInTree (no change)
-    def restoreLinksInTree (self):
-
-        """Restore links when undoing a delete node operation."""
-
-        root = p = self
-
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
-
-        for p in root.children_iter():
-            p.restoreLinksInTree()
-    #@-node:ekr.20040409203454:p.restoreLinksInTree (no change)
-    #@+node:ekr.20040409203454.1:p.deleteLinksInTree
-    def deleteLinksInTree (self):
+    #@+node:ekr.20080423062035.1:p.Low level methods
+    # These methods are only for the use of low-level code
+    # in leoNodes.py, leoFileCommands.py and leoUndo.py.
+    #@nonl
+    #@+node:ekr.20040228094013.1:p.utils
+    #@+node:ekr.20040409203454.1:p._deleteLinksInTree
+    def _deleteLinksInTree (self):
 
         """Adjust links when deleting node."""
 
@@ -2612,20 +2584,49 @@ class basePosition (object):
         if len(p.v.t.vnodeList) == 0:
             # This node is not shared by other nodes.
             for p in root.children_iter():
-                p.deleteLinksInTree()
-    #@-node:ekr.20040409203454.1:p.deleteLinksInTree
-    #@-node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20080416161551.213:p.Link/Unlink methods
-    # These remain in 4.2:  linking and unlinking does not depend on position.
+                p._deleteLinksInTree()
+    #@-node:ekr.20040409203454.1:p._deleteLinksInTree
+    #@+node:ekr.20080416161551.212:p._parentVnode
+    def _parentVnode (self):
 
-    # These are private routines:  the position class does not define proxies for these.
-    #@+node:ekr.20080416161551.214:p.linkAfter
-    def linkAfter (self,p_after):
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
+
+        p = self
+
+        if p.v:
+            data = p.stack and p.stack[-1]
+            if data:
+                v, junk = data
+                return v
+            else:
+                return p.v.context.hiddenRootNode
+        else:
+            return None
+    #@-node:ekr.20080416161551.212:p._parentVnode
+    #@+node:ekr.20040409203454:p._restoreLinksInTree
+    def _restoreLinksInTree (self):
+
+        """Restore links when undoing a delete node operation."""
+
+        root = p = self
+
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1 # Support for tnode class.
+
+        for p in root.children_iter():
+            p._restoreLinksInTree()
+    #@-node:ekr.20040409203454:p._restoreLinksInTree
+    #@-node:ekr.20040228094013.1:p.utils
+    #@+node:ekr.20080416161551.213:p._linkX and p._unlink
+    #@+node:ekr.20080416161551.214:p._linkAfter
+    def _linkAfter (self,p_after):
 
         '''Link self after p_after.'''
 
         p = self
-        parent_v = p_after.parentVnode()
+        parent_v = p_after._parentVnode()
             # Returns None if p.v is None
 
         # Init the ivars.
@@ -2645,9 +2646,9 @@ class basePosition (object):
         if not parent_v in p.v.t.parents:
             p.v.t.parents.append(parent_v)
             p.v._p_changed = 1
-    #@-node:ekr.20080416161551.214:p.linkAfter
-    #@+node:ekr.20080416161551.215:p.linkAsNthChild
-    def linkAsNthChild (self,parent,n):
+    #@-node:ekr.20080416161551.214:p._linkAfter
+    #@+node:ekr.20080416161551.215:p._linkAsNthChild
+    def _linkAsNthChild (self,parent,n):
 
         p = self
         parent_v = parent.v
@@ -2670,9 +2671,9 @@ class basePosition (object):
         if not parent_v in p.v.t.parents:
             p.v.t.parents.append(parent_v)
             p.v._p_changed = 1
-    #@-node:ekr.20080416161551.215:p.linkAsNthChild
-    #@+node:ekr.20080416161551.216:p.linkAsRoot
-    def linkAsRoot (self,oldRoot):
+    #@-node:ekr.20080416161551.215:p._linkAsNthChild
+    #@+node:ekr.20080416161551.216:p._linkAsRoot
+    def _linkAsRoot (self,oldRoot):
 
         """Link self as the root node."""
 
@@ -2705,12 +2706,12 @@ class basePosition (object):
             hiddenRootNode.t.children = [p.v]
 
         return p
-    #@-node:ekr.20080416161551.216:p.linkAsRoot
-    #@+node:ekr.20080416161551.217:p.unlink
-    def unlink (self):
+    #@-node:ekr.20080416161551.216:p._linkAsRoot
+    #@+node:ekr.20080416161551.217:p._unlink
+    def _unlink (self):
 
         p = self ; n = p._childIndex
-        parent_v = p.parentVnode()
+        parent_v = p._parentVnode()
             # returns None if p.v is None
         assert(p.v)
         assert(parent_v)
@@ -2722,8 +2723,11 @@ class basePosition (object):
 
         # Delete p.v from parent_v's children.
         if 0 <= n < len(parent_v.t.children):
-            del parent_v.t.children[n]
-            parent_v._p_changed = 1
+            if parent_v.t.children[n] == p.v:
+                del parent_v.t.children[n]
+                parent_v._p_changed = 1
+            else:
+                g.trace('**can not happen: parents[n] != p.v')
 
         # else: pass # It is not an error to unlink an already unlinked node.
             # g.trace('can not happen: bad child index: %s' % (n),color='red')
@@ -2733,8 +2737,9 @@ class basePosition (object):
             p.v.t.parents.remove(parent_v)
             p.v._p_changed = 1 # Support for tnode class.
 
-    #@-node:ekr.20080416161551.217:p.unlink
-    #@-node:ekr.20080416161551.213:p.Link/Unlink methods
+    #@-node:ekr.20080416161551.217:p._unlink
+    #@-node:ekr.20080416161551.213:p._linkX and p._unlink
+    #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 
 class position (basePosition):
