@@ -713,7 +713,7 @@ class ContextMenuController(object):
 
         self.c = c
 
-        self.popup_menu = None
+        self.top_menu = None
         self.mb_retval = None
         self.mb_event = None
 
@@ -762,8 +762,8 @@ class ContextMenuController(object):
         self.check_button_data = {}
 
         self.radio_vars = {}
-
         self.iconCache = {}
+
     #@+node:bobjack.20080419070147.2:setIconBasePath
     def setIconBasePath(self):
         self.iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
@@ -1489,6 +1489,8 @@ class ContextMenuController(object):
 
         """
 
+        g.app.gui.killPopupMenu()
+
         self.radio_vars = {}
 
         c = self.c
@@ -1566,23 +1568,18 @@ class ContextMenuController(object):
 
         #@    << def table_to_menu >>
         #@+node:bobjack.20080329153415.6:<< def table_to_menu >>
-        def table_to_menu(menu_table, level=0):
+        def table_to_menu(parent, menu_table, level=0):
 
             """Generate a TK menu from a python list."""
 
             if level > 4 or not menu_table:
                 return
 
-            if level == 0:
-                rmenu = self.popup_menu
-                try:
-                    rmenu.destroy()
-                except:
-                    pass
-
             self.mb_keywords = keywords
 
-            rmenu = c.frame.menu.new_menu(None) #Tk.Menu(None,tearoff=0,takefocus=0)
+            rmenu = Tk.Menu(parent,
+                 tearoff=0,takefocus=0)
+
             rmenu.rc_columnbreak = 0
 
             while menu_table:
@@ -1719,7 +1716,7 @@ class ContextMenuController(object):
                     elif isinstance(cmd, list):
                         #@    << cascade item >>
                         #@+node:bobjack.20080329153415.12:<< cascade item >>
-                        submenu = table_to_menu(cmd[:], level+1)
+                        submenu = table_to_menu(rmenu, cmd[:], level+1)
                         if submenu:
 
                             kws = {
@@ -1763,12 +1760,11 @@ class ContextMenuController(object):
         #@-node:bobjack.20080329153415.6:<< def table_to_menu >>
         #@nl
 
-        top_menu = table_to_menu(top_menu_table)
+        top_menu = m = table_to_menu(c.frame.top, top_menu_table)
 
-        if top_menu:
-            if event:
-                top_menu.tk_popup(event.x_root-23, event.y_root+13)
-            self.popup_menu = top_menu
+        if m and event:
+            g.app.gui.postPopupMenu(c, m,
+                event.x_root-23, event.y_root+13)
             return 'break'
     #@-node:bobjack.20080329153415.5:rClicker
     #@-node:bobjack.20080329153415.14:rClick Event Handler

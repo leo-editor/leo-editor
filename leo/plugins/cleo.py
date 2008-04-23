@@ -1133,12 +1133,9 @@ class cleoController:
     #@+node:tbrown.20060903121429.53:show_menu
     def show_menu (self,tag,k):
 
-        if k['c'] != self.c: return  # not our problem
+        g.app.gui.killPopupMenu()
 
-        if self.menu:
-            # Destroy any previous popup.
-            self.menu.unpost()
-            self.menu.destroy()
+        if k['c'] != self.c: return  # not our problem
 
         p = k['p']
         v = k['p'].v ## EKR
@@ -1148,7 +1145,7 @@ class cleoController:
         self.pickleP = p.copy()
 
         # Create the menu.
-        self.menu = menu = Tk.Menu(None,tearoff=0,takefocus=0)
+        menu = Tk.Menu(None,tearoff=0,takefocus=0)
 
         self.left_priority_menu(menu, p)
 
@@ -1175,10 +1172,9 @@ class cleoController:
 
         # Show the menu.
         event = k['event']
-        menu.post(event.x_root,event.y_root)
+        g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
 
         return 'break' # EKR: Prevent other right clicks.
-    #@nonl
     #@-node:tbrown.20060903121429.53:show_menu
     #@-node:tbrown.20060903121429.47:menus...
     #@+node:tbrown.20060903121429.54:priority_clear

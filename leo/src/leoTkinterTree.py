@@ -2122,10 +2122,6 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c ; frame = c.frame
 
-        # If we are going to recreate it, we had better destroy it.
-        if self.popupMenu:
-            self.popupMenu.destroy()
-            self.popupMenu = None
 
         self.popupMenu = menu = Tk.Menu(g.app.root, tearoff=0)
 
@@ -2220,13 +2216,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c ; menu = self.popupMenu
 
-        if sys.platform == "linux2": # 20-SEP-2002 DTHEIN: not needed for Windows
-            menu.bind("<FocusOut>",self.OnPopupFocusLost)
+        g.app.gui.postPopupMenu(c, menu, event.x_root, event.y_root)
 
-        menu.post(event.x_root, event.y_root)
+        self.popupMenu = None
 
         # Set the focus immediately so we know when we lose it.
-        c.widgetWantsFocus(menu)
+        #c.widgetWantsFocus(menu)
     #@-node:ekr.20040803072955.116:showPopupMenu
     #@-node:ekr.20040803072955.110:tree.OnPopup & allies
     #@+node:ekr.20051022141020:onTreeClick
@@ -2242,6 +2237,8 @@ class leoTkinterTree (leoFrame.leoTree):
             c.doubleClickFlag = False
         else:
             c.treeWantsFocusNow()
+
+        g.app.gui.killPopupMenu()
 
         return 'break'
     #@-node:ekr.20051022141020:onTreeClick
