@@ -9,7 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20080423125940.12" str_leo_pos="8"><vh>NewHeadline</vh></v>
+<v t="ekr.20080423125940.8"><vh>NewHeadline</vh></v>
+<v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2129,6 +2131,15 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080423110627.1"><vh>New unit tests</vh>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.5"><vh>@@ test paste-node Fails</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20071,5 +20082,174 @@ finally:
     c.endUpdate(False)
 </t>
 <t tx="ekr.20080418101332.1"></t>
+<t tx="ekr.20080423110627.1"></t>
+<t tx="ekr.20080423110627.2">n = 0
+for v in c.all_unique_vnodes_iter():
+    if hasattr(v,'unknownAttributes'):
+        d = v.unknownAttributes
+        if d.get('str_leo_pos'):
+            n += 1
+            
+# print n
+assert n &lt; 2</t>
+<t tx="ekr.20080423110627.3"># It should retain its clone mark.
+
+# Delete all children.
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+assert child, 'no child'
+
+try:
+    clone = child.clone()
+    
+    assert child.isCloned(), 'fail 1'
+    assert clone.isCloned(), 'fail 2'
+    
+    oldRoot = c.rootPosition()
+    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    assert child.isCloned(), 'fail 3'
+    assert clone.isCloned(), 'fail 4'
+    assert not clone.parent(), 'fail 5'
+    assert not clone.back(), 'fail 6'
+    clone.doDelete()
+    
+    assert not child.isCloned(), 'fail 7'
+finally:
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080423110627.5">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+c.selectPosition(grandChild)
+c.clone()
+c.selectPosition(child)
+
+try:
+    p.expand()
+    c.selectPosition(child)
+    c.copyOutline()
+    # oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    c.selectPosition(child)
+    c.pasteOutline()
+    # current = c.currentPosition()
+    # assert current != child, 'fail 2'
+    # newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    # for t in newTnodes:
+        # assert t not in oldTnodes, 'fail 3'
+
+finally:
+    if 0:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080423110627.8">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+assert child, 'no child'
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+
+try:
+    c.selectPosition(child, updateBeadList=False)
+    c.copyOutline()
+    oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    c.pasteOutlineRetainingClones()
+    current = c.currentPosition()
+    assert current != child, 'fail 2'
+    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    print 'oldTnodes',oldTnodes
+    print 'newTnodes',newTnodes
+    for t in newTnodes:
+        assert t in oldTnodes, 'fail 3'
+
+finally:
+     if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.11">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p5 = p.insertAsNthChild(3)
+    p5.setHeadString('D')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.moveOutlineDown()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1'
+    assert moved.back().headString() == 'C', 'fail 2'
+    assert moved.next().headString() == 'D', 'fail 3'
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
+    assert moved.next() == p5, 'fail 5: %s != %s' % (moved.next(),p5)
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.12">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p5 = p.insertAsNthChild(3)
+    p5.setHeadString('D')
+    p.expand()
+    c.setCurrentPosition(p4)
+    c.moveOutlineUp()
+    moved = c.currentPosition()
+    assert moved.headString() == 'C', 'fail 1'
+    assert moved.back().headString() == 'A', 'fail 2'
+    assert moved.next().headString() == 'B', 'fail 3'
+    assert moved.back() == p2, 'fail 4: %s != %s' % (moved.back(),p2)
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    # assert moved.next() == p3, 'fail 5: %s != %s' % (moved.next(),p3)
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.13">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+assert child, 'no child'
+
+try:
+    oldRoot = c.rootPosition()
+    print child
+    child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    print child
+finally:
+    if 0:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    # c.selectPosition(p)
+    c.redraw_now()</t>
+<t tx="ekr.20080423125940.8"></t>
+<t tx="ekr.20080423125940.12"></t>
 </tnodes>
 </leo_file>

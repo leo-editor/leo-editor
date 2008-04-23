@@ -3543,11 +3543,15 @@ def updateFixedStatus (self):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
+    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if not t:
+    if t:
+        if trace: g.trace('clone',t,h)
+    else:
         t = leoNodes.tnode(bodyString=b,headString=h)
+        if trace: g.trace('     ',t,h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
@@ -3565,7 +3569,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
-#@nonl
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -3995,7 +3998,6 @@ def createSaxChildren (self, sax_node, parent_v):
         if t:
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
             v = self.createSaxVnode(child,parent_v,t=t)
-            # g.trace('clone',id(child),child.headString,'t',v.t)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
         result.append(v)
@@ -4018,11 +4020,15 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
+    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if not t:
+    if t:
+        if trace: g.trace('clone',t,h)
+    else:
         t = leoNodes.tnode(bodyString=b,headString=h)
+        if trace: g.trace('     ',t,h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
@@ -4040,7 +4046,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
-#@nonl
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -4145,9 +4150,16 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
     # Save the hidden root's children.
     children = c.hiddenRootNode.t.children
 
-    if reassignIndices:
-        oldTnodesDict = self.tnodesDict
-        self.tnodesDict = {}
+    # Always recreate the tnodesDict
+    self.tnodesDict = {}
+    if not reassignIndices:
+        x = g.app.nodeIndices
+        for t in c.all_unique_tnodes_iter():
+            index = x.toString(t.fileIndex)
+            self.tnodesDict[index] = t
+
+    # g.trace('reassignIndices',reassignIndices,
+        # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
 
     self.usingClipboard = True
     try:
@@ -4163,9 +4175,6 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
             return g.es("the clipboard is not valid ",color="blue")
     finally:
         self.usingClipboard = False
-
-        if reassignIndices:
-            self.tnodesDict = oldTnodesDict
 
         # Restore the hidden root's children
         c.hiddenRootNode.t.children = children
@@ -4197,7 +4206,7 @@ def checkPaste (self,parent,p):
 
     for p in p.self_and_subtree_iter():
         for z in parents:
-            g.trace(p.headString(),id(p.v.t),id(z.v.t))
+            # g.trace(p.headString(),id(p.v.t),id(z.v.t))
             if p.v.t == z.v.t:
                 g.es('Invalid paste: nodes may not descend from themselves',color="blue")
                 return False
@@ -4776,6 +4785,346 @@ def _linkAsRoot (self,oldRoot):
     return p
 #@-node:ekr.20080416161551.216:p._linkAsRoot
 #@-node:ekr.20080421162832.6:Fixed bug: Moving a clone to the root lost the clone mark
+#@+node:ekr.20080423062035.16:Fixed paste-retaining-clones
+# getLeoOutlineFromClipboard now recreates the tnodesDict as needed.
+#@nonl
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.currentPosition()
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    tnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+    if not pasted: return
+
+    c.beginUpdate()
+    try:
+        copiedBunchList = []
+        if pasteAsClone:
+            << put only needed info in copiedBunchList >>
+        undoData = u.beforeInsertNode(current,
+            pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+        c.endEditing()
+        c.validateOutline()
+        c.selectPosition(pasted)
+        pasted.setDirty()
+        c.setChanged(True)
+        # paste as first child if back is expanded.
+        back = pasted.back()
+        if back and back.isExpanded():
+            pasted.moveToNthChildOf(back,0)
+        c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+        u.afterInsertNode(pasted,undoType,undoData)
+    finally:
+        c.endUpdate()
+        c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_vnodes_iter():
+    t = v.t
+    if t not in tnodeInfoDict.keys():
+        tnodeInfoDict[t] = g.Bunch(
+            t=t,head=v.headString(),body=v.bodyString())
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedTnodeDict = {}
+for p in pasted.self_and_subtree_iter():
+    if p.v.t not in copiedTnodeDict:
+        copiedTnodeDict[p.v.t] = p.v.t
+
+# g.trace(copiedTnodeDict.keys())
+
+for t in tnodeInfoDict.keys():
+    bunch = tnodeInfoDict.get(t)
+    if copiedTnodeDict.get(t):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+
+    '''Read a Leo outline from string s in clipboard format.'''
+
+    c = self.c ; current = c.currentPosition() ; check = not reassignIndices
+
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.t.children
+
+    # Always recreate the tnodesDict
+    self.tnodesDict = {}
+    if not reassignIndices:
+        x = g.app.nodeIndices
+        for t in c.all_unique_tnodes_iter():
+            index = x.toString(t.fileIndex)
+            self.tnodesDict[index] = t
+
+    # g.trace('reassignIndices',reassignIndices,
+        # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
+
+    self.usingClipboard = True
+    try:
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='<clipboard>',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True, reassignIndices=reassignIndices,s=s)
+        if not v:
+            return g.es("the clipboard is not valid ",color="blue")
+    finally:
+        self.usingClipboard = False
+
+        # Restore the hidden root's children
+        c.hiddenRootNode.t.children = children
+
+    p = leoNodes.position(v)
+    if current.hasChildren() and current.isExpanded():
+        if check and not self.checkPaste(current,p): return None
+        p._linkAsNthChild(current,0)
+    else:
+        if check and not self.checkPaste(current.parent(),p): return None
+        p._linkAfter(current)
+
+    if reassignIndices:
+        for p2 in p.self_and_subtree_iter():
+            p2.v.t.fileIndex = None
+
+    c.selectPosition(p)
+    return p
+
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
+#@+node:ekr.20080410115129.1:checkPaste
+def checkPaste (self,parent,p):
+
+    '''Return True if p may be pasted as a child of parent.'''
+
+    if not parent: return True
+
+    parents = [z.copy() for z in parent.self_and_parents_iter()]
+
+    for p in p.self_and_subtree_iter():
+        for z in parents:
+            # g.trace(p.headString(),id(p.v.t),id(z.v.t))
+            if p.v.t == z.v.t:
+                g.es('Invalid paste: nodes may not descend from themselves',color="blue")
+                return False
+
+    return True
+#@-node:ekr.20080410115129.1:checkPaste
+#@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
+#@+node:ekr.20060919110638.4:createSaxVnodes & helpers
+def createSaxVnodes (self,saxRoot,reassignIndices):
+
+    '''**Important**: this method and its helpers are low-level code
+    corresponding to link/unlink methods in leoNodes.py.
+    Modify this with extreme care.'''
+
+
+    children = self.createSaxChildren(saxRoot,parent_v=None)
+
+    return children
+#@+node:ekr.20060919110638.5:createSaxChildren
+def createSaxChildren (self, sax_node, parent_v):
+
+    result = []
+
+    for child in sax_node.children:
+        tnx = child.tnx
+        t = self.tnodesDict.get(tnx)
+        if t:
+            # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
+            v = self.createSaxVnode(child,parent_v,t=t)
+        else:
+            v = self.createSaxVnodeTree(child,parent_v)
+        result.append(v)
+
+    if parent_v:
+        self._linkParentAndChildren(parent_v,result)
+    return result
+#@-node:ekr.20060919110638.5:createSaxChildren
+#@+node:ekr.20060919110638.6:createSaxVnodeTree
+def createSaxVnodeTree (self,sax_node,parent_v):
+
+    v = self.createSaxVnode(sax_node,parent_v)
+
+    self.createSaxChildren(sax_node,v)
+
+    return v
+#@nonl
+#@-node:ekr.20060919110638.6:createSaxVnodeTree
+#@+node:ekr.20060919110638.7:createSaxVnode
+def createSaxVnode (self,sax_node,parent_v,t=None):
+
+    c = self.c
+    trace = False and self.usingClipboard
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if t:
+        if trace: g.trace('clone',t,h)
+    else:
+        t = leoNodes.tnode(bodyString=b,headString=h)
+        if trace: g.trace('     ',t,h)
+
+        if sax_node.tnx:
+            t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    v = leoNodes.vnode(context=c,t=t)
+    v.t.vnodeList.append(v)
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+
+    self.tnodesDict [index] = t
+
+    # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,t)
+
+    return v
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,t):
+
+    d = sax_node.tnodeAttributes
+
+    aDict = {}
+    for key in d.keys():
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        aDict[key] = val2
+
+    if aDict:
+        # g.trace('uA',aDict)
+        t.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded and descendentTnodeUnknownAttributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    d = sax_node.attributes
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnode list will be resolved later.
+        # g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes') # Correct: only tnode have descendent uA's.
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentUaDictList',aDict)
+            self.descendentUnknownAttributesDictList.append(aDict)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d.keys():
+        if key in self.nativeVnodeAttributes:
+            if 0: g.trace('****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # g.trace('uA',aDict)
+        v.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:createSaxVnode
+#@+node:ekr.20060919110638.9:_linkParentAndChildren
+def _linkParentAndChildren (self, parent_v, children):
+
+    # if children: g.trace(parent_v,len(children))
+
+    # Add parent_v to it's tnode's vnodeList.
+    if parent_v not in parent_v.t.vnodeList:
+        parent_v.t.vnodeList.append(v)
+
+    # Set parent_v's children.
+    parent_v.t.children = children
+
+    # Make parent_v a parent of each child.
+    for v in children:
+        if parent_v not in v.t.parents:
+            v.t.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:_linkParentAndChildren
+#@-node:ekr.20060919110638.4:createSaxVnodes & helpers
+#@+node:ekr.20031218072017.2004:canonicalTnodeIndex
+def canonicalTnodeIndex(self,index):
+
+    """Convert Tnnn to nnn, leaving gnx's unchanged."""
+
+    # index might be Tnnn, nnn, or gnx.
+    junk,theTime,junk = g.app.nodeIndices.scanGnx(index,0)
+    if theTime == None: # A pre-4.1 file index.
+        if index[0] == "T":
+            index = index[1:]
+
+    return index
+#@-node:ekr.20031218072017.2004:canonicalTnodeIndex
+#@-node:ekr.20080423062035.16:Fixed paste-retaining-clones
 #@-node:ekr.20080421162832.7:Recent bugs
 #@-node:ekr.20080416161308.1:This is the graph world
 #@-all
