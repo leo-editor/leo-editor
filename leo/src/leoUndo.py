@@ -1334,12 +1334,12 @@ class undoer:
         u = self ; c = u.c
 
         if u.newBack:
-            u.newP.linkAfter(u.newBack)
+            u.newP._linkAfter(u.newBack)
         elif u.newParent:
-            u.newP.linkAsNthChild(u.newParent,0)
+            u.newP._linkAsNthChild(u.newParent,0)
         else:
             oldRoot = c.rootPosition()
-            u.newP.linkAsRoot(oldRoot)
+            u.newP._linkAsRoot(oldRoot)
 
         for v in u.dirtyVnodeList:
             v.t.setDirty()
@@ -1363,15 +1363,15 @@ class undoer:
         # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
 
         if u.newBack:
-            u.newP.linkAfter(u.newBack)
+            u.newP._linkAfter(u.newBack)
         elif u.newParent:
-            u.newP.linkAsNthChild(u.newParent,0)
+            u.newP._linkAsNthChild(u.newParent,0)
         else:
             oldRoot = c.rootPosition()
-            u.newP.linkAsRoot(oldRoot)
+            u.newP._linkAsRoot(oldRoot)
 
         # Restore all vnodeLists (and thus all clone marks).
-        u.newP.restoreLinksInTree()
+        u.newP._restoreLinksInTree()
 
         if u.pasteAsClone:
             for bunch in u.afterTree:
@@ -1621,15 +1621,15 @@ class undoer:
         u = self ; c = u.c
 
         if u.oldBack:
-            u.p.linkAfter(u.oldBack)
+            u.p._linkAfter(u.oldBack)
         elif u.oldParent:
-            u.p.linkAsNthChild(u.oldParent,0)
+            u.p._linkAsNthChild(u.oldParent,0)
         else:
             oldRoot = c.rootPosition()
-            u.p.linkAsRoot(oldRoot)
+            u.p._linkAsRoot(oldRoot)
 
         # Restore all vnodeLists (and thus all clone marks).
-        u.p.restoreLinksInTree()
+        u.p._restoreLinksInTree()
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
     #@-node:ekr.20050412084055:undoDeleteNode
