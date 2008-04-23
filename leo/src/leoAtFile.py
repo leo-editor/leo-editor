@@ -1449,7 +1449,7 @@ class atFile:
             parent = at.lastThinNode
             child = leoNodes.vnode(context=c,t=t)
             t.vnodeList.append(child)
-            child.linkAsNthChild(parent,parent.numberOfChildren())
+            child._linkAsNthChild(parent,parent.numberOfChildren())
             # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
 
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
