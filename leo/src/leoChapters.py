@@ -800,9 +800,9 @@ class chapterController:
         elif u.undoType in ('Create Chapter From Node','Create Chapter'):
             root = theChapter.root
             firstChild = root.firstChild()
-            firstChild.unlink()
+            firstChild._unlink()
             firstChild = u.savedRoot.firstChild()
-            firstChild.linkAsNthChild(root,0)
+            firstChild._linkAsNthChild(root,0)
         else:
             return g.trace('Can not happen: bad undoType: %s' % u.undoType)
     #@-node:ekr.20070606081341:redoInsertChapter
@@ -842,7 +842,7 @@ class chapterController:
         # u.savedRoot is the entire @chapter tree.
         # Link it as the last child of the @chapters node.
         parent = cc.findChaptersNode()
-        u.savedRoot.linkAsNthChild(parent,parent.numberOfChildren())
+        u.savedRoot._linkAsNthChild(parent,parent.numberOfChildren())
 
         # Now recreate the chapter.
         name = u.newChapterName
