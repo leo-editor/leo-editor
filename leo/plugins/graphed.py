@@ -20,7 +20,7 @@ Leo plugin by Terry Brown terry_n_brown@yahoo.com
 #@@tabwidth -4
 #@@nowrap
 
-__version__ = "0.3"
+__version__ = "0.4"
 
 #@<< imports >>
 #@+node:ekr.20071004090250.2:<< imports >>
@@ -70,6 +70,7 @@ except:
 #   - gNode class used to make API more friendly
 #   - ask user if they want headings split into lines on spaces
 #   - @graph headString text to indicate container node
+# 0.4 EKR: changed p.link to p._link, and p.unlink to p._unlink
 #@-at
 #@-node:ekr.20071004090250.3:<< version history >>
 #@nl
@@ -282,9 +283,9 @@ class tGraph:
         # if only one top level node, remove the holder node
         if pos.numberOfChildren() == 1:
             ch = pos.children_iter().next()
-            ch.linkAfter(pos)
+            ch._linkAfter(pos)
             ans = ch
-            pos.unlink()
+            pos._unlink()
 
         return ans
     #@-node:tbrown.20071004152905:createTreeFromGraph
