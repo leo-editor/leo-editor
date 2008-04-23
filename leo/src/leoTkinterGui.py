@@ -717,6 +717,38 @@ class tkinterGui(leoGui.leoGui):
         #@-node:ekr.20060621164312.4:<< create press-buttonText-button command >>
         #@nl
     #@-node:ekr.20060621164312:makeScriptButton
+    #@+node:bobjack.20080427200147.2:killPopupMenu
+    def killPopupMenu(self, event=None):
+        """If there is a popup menu, destroy it."""
+
+        if event:
+            g.trace('focusout')
+
+        try:
+            menu = self.lastPopupMenu
+            try:
+                menu.unpost()
+            finally:
+                menu.destroy()
+        except:
+            pass
+
+
+    #@-node:bobjack.20080427200147.2:killPopupMenu
+    #@+node:bobjack.20080428071655.3:postPopupMenu
+    def postPopupMenu(self, c, m, x, y):
+
+        """Post a popup menu after killing any previous menu."""
+
+        self.killPopupMenu()
+        self.lastPopupMenu = m
+
+        try:
+            m.post(x, y)
+        except:
+            pass
+
+    #@-node:bobjack.20080428071655.3:postPopupMenu
     #@-node:ekr.20031218072017.4059:tkGui utils
     #@+node:ekr.20061112152012.2:class leoKeyEvent (tkGui)
     class leoKeyEvent:
