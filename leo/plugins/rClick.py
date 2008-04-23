@@ -705,6 +705,21 @@ class ContextMenuController(object):
 
     """A per commander controller for right click menu functionality."""
 
+    commandList = (
+        'rclick-gen-recent-files-list',
+        'rclick-gen-context-sensitive-commands',
+        'rclick-select-all',
+        'rclick-cut-text',
+        'rclick-copy-text',
+        'rclick-paste-text',
+        'rclick-button',
+
+        'clone-node-to-chapter-menu',
+        'copy-node-to-chapter-menu',
+        'move-node-to-chapter-menu',
+        'select-chapter-menu',
+    )
+
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
     def __init__ (self,c):
@@ -721,27 +736,8 @@ class ContextMenuController(object):
 
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
-        for command in (
-            'rclick-gen-context-sensitive-commands',
-            'rclick-gen-recent-files-list',
-
-            'clone-node-to-chapter-menu',
-            'copy-node-to-chapter-menu',
-            'move-node-to-chapter-menu',
-            'select-chapter-menu',
-
-            'rclick-button',
-
-        ):
-            method = getattr(self, command.replace('-','_'))
-            c.k.registerCommand(command, shortcut=None, func=method)
-
-        for command, function in (
-            ('rclick-select-all', self.rc_selectAll),
-            ('rclick-cut-text', self.rc_OnCutFromMenu),
-            ('rclick-copy-text', self.rc_OnCopyFromMenu),
-            ('rclick-paste-text', self.rc_OnPasteFromMenu),
-        ):
+        for command in self.commandList:
+            function = getattr(self, command.replace('-','_'))
             def cb(event, c=c, command=command, function=function):
                 cm = c.theContextMenuController
                 cm.mb_retval = function(cm.mb_keywords)
@@ -859,14 +855,8 @@ class ContextMenuController(object):
     #@-node:bobjack.20080323045434.15:__init__
     #@+node:bobjack.20080329153415.3:Generator Minibuffer Commands
     #@+node:bobjack.20080325162505.5:rclick_gen_recent_files_list
-    def rclick_gen_recent_files_list(self, event):
-
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.gen_recent_files_list(self.mb_keywords)
-    #@nonl
     #@+node:bobjack.20080325162505.4:gen_recent_files_list
-    def gen_recent_files_list(self, keywords):
+    def rclick_gen_recent_files_list(self, keywords):
 
         """Generate menu items that will open files from the recent files list.
 
@@ -921,16 +911,8 @@ class ContextMenuController(object):
     #@-node:bobjack.20080325162505.4:gen_recent_files_list
     #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
     #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
-    def rclick_gen_context_sensitive_commands(self, event):
-
-        """Minibuffer command wrapper."""
-
-
-        self.mb_retval = self.gen_context_sensitive_commands(self.mb_keywords)
-
-
     #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
-    def gen_context_sensitive_commands(self, keywords):
+    def rclick_gen_context_sensitive_commands(self, keywords):
 
         """Generate context-sensitive rclick items.
 
@@ -1191,27 +1173,25 @@ class ContextMenuController(object):
     #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
     #@+node:bobjack.20080402160713.3:Chapter Menus
     #@+node:bobjack.20080402160713.4:rclick_gen_*_node_to_chapter_menu
-    def clone_node_to_chapter_menu(self, event):
+    def clone_node_to_chapter_menu(self, keywords):
         """Minibuffer command wrapper."""
 
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='clone')
+        return self.chapter_menu_helper(keywords, 'clone')
 
-    def copy_node_to_chapter_menu(self, event):
+    def copy_node_to_chapter_menu(self, keywords):
         """Minibuffer command wrapper."""
 
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='copy')
+        return self.chapter_menu_helper(keywords, 'copy')
 
-    def move_node_to_chapter_menu(self, event):
+    def move_node_to_chapter_menu(self, keywords):
         """Minibuffer command wrapper."""
 
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='move')
+        return self.chapter_menu_helper(keywords, 'move')
 
-    def select_chapter_menu(self, event):
+    def select_chapter_menu(self, keywords):
         """Minibuffer command wrapper."""
 
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='select')
-
-
+        return self.chapter_menu_helper(keywords, 'select')
     #@+node:bobjack.20080402160713.5:chapter_menu_helper
     def chapter_menu_helper(self, keywords, action):
 
@@ -1248,12 +1228,6 @@ class ContextMenuController(object):
     #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
     #@+node:bobjack.20080403171532.12:Button Event Handlers
     #@+node:bobjack.20080404190912.2:rclick_button
-    def rclick_button(self, event):
-
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.do_button_event(self.mb_keywords)
-    #@nonl
     #@+node:bobjack.20080404190912.3:do_button_event
     def do_button_event(self, keywords):
 
@@ -1265,6 +1239,9 @@ class ContextMenuController(object):
 
         if kind in self.button_handlers:
             self.button_handlers[kind](keywords, item_data)
+
+    rclick_button = do_button_event
+    #@nonl
     #@-node:bobjack.20080404190912.3:do_button_event
     #@+node:bobjack.20080403171532.14:do_radio_button_event
     def do_radio_button_event(self, keywords, item_data):
@@ -1784,7 +1761,7 @@ class ContextMenuController(object):
             c.frame.body.onBodyChanged("Typing")
     #@-node:ekr.20040422072343.3:rc_nl
     #@+node:ekr.20040422072343.4:rc_selectAll
-    def rc_selectAll(self, keywords):
+    def rclick_select_all(self, keywords):
 
         """Select the entire contents of the text widget."""
 
@@ -1794,28 +1771,38 @@ class ContextMenuController(object):
         insert = w.getInsertPoint()
         w.selectAllText(insert=insert)
         w.focus()
+
+    rc_selectAll = rclick_select_all
     #@-node:ekr.20040422072343.4:rc_selectAll
     #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
-    def rc_OnCutFromMenu(self, keywords):
+    def rclick_cut_text(self, keywords):
 
         """Cut text from currently focused text widget."""
 
         event = keywords.get('event')
         self.c.frame.OnCutFromMenu(event)
+
+    rc_OnCutFromMenu = rclick_cut_text
     #@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
     #@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-    def rc_OnCopyFromMenu(self, keywords):
+    def rclick_copy_text(self, keywords):
         """Copy text from currently focused text widget."""
 
         event = keywords.get('event')
         self.c.frame.OnCopyFromMenu(event)
+
+    rc_OnCopyFromMenu = rclick_copy_text
+    #@nonl
     #@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
     #@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-    def rc_OnPasteFromMenu(self, keywords):
+    def rclick_paste_text(self, keywords):
         """Paste text into currently focused text widget."""
 
         event = keywords.get('event')
         self.c.frame.OnPasteFromMenu(event)
+
+    rc_OnPasteFromMenu = rclick_paste_text
+    #@nonl
     #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
     #@-node:bobjack.20080321133958.8:Invocation Callbacks
     #@+node:bobjack.20080321133958.7:init_default_menus
