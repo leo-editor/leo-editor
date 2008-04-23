@@ -611,9 +611,16 @@ class baseFileCommands:
         # Save the hidden root's children.
         children = c.hiddenRootNode.t.children
 
-        if reassignIndices:
-            oldTnodesDict = self.tnodesDict
-            self.tnodesDict = {}
+        # Always recreate the tnodesDict
+        self.tnodesDict = {}
+        if not reassignIndices:
+            x = g.app.nodeIndices
+            for t in c.all_unique_tnodes_iter():
+                index = x.toString(t.fileIndex)
+                self.tnodesDict[index] = t
+
+        # g.trace('reassignIndices',reassignIndices,
+            # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
 
         self.usingClipboard = True
         try:
@@ -629,9 +636,6 @@ class baseFileCommands:
                 return g.es("the clipboard is not valid ",color="blue")
         finally:
             self.usingClipboard = False
-
-            if reassignIndices:
-                self.tnodesDict = oldTnodesDict
 
             # Restore the hidden root's children
             c.hiddenRootNode.t.children = children
@@ -663,7 +667,7 @@ class baseFileCommands:
 
         for p in p.self_and_subtree_iter():
             for z in parents:
-                g.trace(p.headString(),id(p.v.t),id(z.v.t))
+                # g.trace(p.headString(),id(p.v.t),id(z.v.t))
                 if p.v.t == z.v.t:
                     g.es('Invalid paste: nodes may not descend from themselves',color="blue")
                     return False
@@ -954,7 +958,6 @@ class baseFileCommands:
             if t:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
                 v = self.createSaxVnode(child,parent_v,t=t)
-                # g.trace('clone',id(child),child.headString,'t',v.t)
             else:
                 v = self.createSaxVnodeTree(child,parent_v)
             result.append(v)
@@ -977,11 +980,15 @@ class baseFileCommands:
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
+        trace = False and self.usingClipboard
         h = sax_node.headString
         b = sax_node.bodyString
 
-        if not t:
+        if t:
+            if trace: g.trace('clone',t,h)
+        else:
             t = leoNodes.tnode(bodyString=b,headString=h)
+            if trace: g.trace('     ',t,h)
 
             if sax_node.tnx:
                 t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
@@ -999,7 +1006,6 @@ class baseFileCommands:
         self.handleTnodeSaxAttributes(sax_node,t)
 
         return v
-    #@nonl
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
     def handleTnodeSaxAttributes (self,sax_node,t):
 
