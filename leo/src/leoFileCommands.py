@@ -639,10 +639,10 @@ class baseFileCommands:
         p = leoNodes.position(v)
         if current.hasChildren() and current.isExpanded():
             if check and not self.checkPaste(current,p): return None
-            p.linkAsNthChild(current,0)
+            p._linkAsNthChild(current,0)
         else:
             if check and not self.checkPaste(current.parent(),p): return None
-            p.linkAfter(current)
+            p._linkAfter(current)
 
         if reassignIndices:
             for p2 in p.self_and_subtree_iter():
@@ -959,8 +959,8 @@ class baseFileCommands:
                 v = self.createSaxVnodeTree(child,parent_v)
             result.append(v)
 
-        # self.linkSiblings(result)
-        if parent_v: self.linkParentAndChildren(parent_v,result)
+        if parent_v:
+            self._linkParentAndChildren(parent_v,result)
         return result
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
@@ -1076,8 +1076,8 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
     #@-node:ekr.20060919110638.7:createSaxVnode
-    #@+node:ekr.20060919110638.9:linkParentAndChildren
-    def linkParentAndChildren (self, parent_v, children):
+    #@+node:ekr.20060919110638.9:_linkParentAndChildren
+    def _linkParentAndChildren (self, parent_v, children):
 
         # if children: g.trace(parent_v,len(children))
 
@@ -1092,7 +1092,7 @@ class baseFileCommands:
         for v in children:
             if parent_v not in v.t.parents:
                 v.t.parents.append(parent_v)
-    #@-node:ekr.20060919110638.9:linkParentAndChildren
+    #@-node:ekr.20060919110638.9:_linkParentAndChildren
     #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
