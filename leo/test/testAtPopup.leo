@@ -302,11 +302,7 @@
 </v>
 </v>
 <v t="bobjack.20080413173856.7"><vh>Unit Tests</vh>
-<v t="bobjack.20080420051406.1"><vh>Test utility methods</vh>
-<v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
-<v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
-<v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
-</v>
+<v t="bobjack.20080424054748.5"><vh>@test announce testAtPopup</vh></v>
 <v t="bobjack.20080413173856.9"><vh>@test c.context_menus exists and is well formed</vh></v>
 <v t="bobjack.20080413200905.1"><vh>Test @popup to rclick format</vh>
 <v t="bobjack.20080413173856.10"><vh>@test single character items translate correctly</vh></v>
@@ -314,17 +310,37 @@
 <v t="bobjack.20080413203324.8"><vh>@test @menu items translate correctly</vh></v>
 <v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
 </v>
+<v t="bobjack.20080423221422.1"><vh>Test ContextMenuController</vh>
+<v t="bobjack.20080424055945.1"><vh>@test ivars exist and have correct type</vh></v>
+<v t="bobjack.20080424073616.7"><vh>@test Controller Methods</vh>
+<v t="bobjack.20080424073616.16"><vh>@test add_menu_item</vh></v>
+<v t="bobjack.20080424073616.17"><vh>@test add_optional_args</vh></v>
+<v t="bobjack.20080424073616.13"><vh>@test chapter_menu_helper</vh></v>
+<v t="bobjack.20080424073616.20"><vh>@test copyMenuDict</vh></v>
+<v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
+<v t="bobjack.20080424073616.15"><vh>@test do_check_button_event</vh></v>
+<v t="bobjack.20080424073616.14"><vh>@test do_radio_button_event</vh></v>
+<v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
+<v t="bobjack.20080424073616.10"><vh>@test getButtonHandlers</vh></v>
+<v t="bobjack.20080424073616.21"><vh>@test getImage</vh></v>
+<v t="bobjack.20080424073616.8"><vh>@test init</vh></v>
+<v t="bobjack.20080424073616.19"><vh>@test init_default_menus</vh></v>
+<v t="bobjack.20080424073616.18"><vh>@test rClicker</vh></v>
+<v t="bobjack.20080424073616.9"><vh>@test registerCommands</vh></v>
+<v t="bobjack.20080424073616.12"><vh>@test rejoin</vh></v>
+<v t="bobjack.20080424073616.11"><vh>@test rSetupMenus</vh></v>
+<v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
+</v>
+<v t="bobjack.20080423221422.2"><vh>@test commands have methods and are registered</vh></v>
+</v>
 <v t="bobjack.20080416154107.4"><vh>Test generators</vh>
 <v t="bobjack.20080416154107.8"><vh>@test generator functions and methods</vh>
 <v t="bobjack.20080419045546.3"><vh>&lt;&lt; def do_demo_editor_items &gt;&gt;</vh></v>
-<v t="bobjack.20080419045546.7"><vh>&lt;&lt; test function generator &gt;&gt;</vh>
-<v t="bobjack.20080423210615.1"><vh>&lt;&lt; test results &gt;&gt;</vh></v>
-</v>
-<v t="bobjack.20080419045546.8"><vh>&lt;&lt; test minibuffer command generator &gt;&gt;</vh>
-<v t="bobjack.20080423210615.1"><vh>&lt;&lt; test results &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.7"><vh>&lt;&lt; test function generator &gt;&gt;</vh></v>
+<v t="bobjack.20080419045546.8"><vh>&lt;&lt; test minibuffer command generator &gt;&gt;</vh></v>
 </v>
 </v>
-</v>
+<v t="bobjack.20080424054748.6"><vh>@test announce end of tests</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -419,9 +435,7 @@ Place the cursor in the url below, then right click.
     http://localhost/
 </t>
 <t tx="bobjack.20080329075629.2">@
-The HowTos, Experiments etc in this file are part of the testing regime for the
-rClick.py plugin. Feel free to add your own but please think carefully before
-changing anything that is already here.</t>
+The Howtos, Experiments etc in this file are part of the testing regime for rClick.  Feel free to add more but think carefully before changing those that already exist.</t>
 <t tx="bobjack.20080329075629.3">@
 @popup &lt;name&gt; menus are converted to a list of two tuples and stored in::
 
@@ -736,8 +750,7 @@ The following button are provided:
 
 </t>
 <t tx="bobjack.20080413173856.2"></t>
-<t tx="bobjack.20080413173856.3">@
-Test that single character items translate correctly.</t>
+<t tx="bobjack.20080413173856.3">Test that single character items translate correctly.</t>
 <t tx="bobjack.20080413173856.4">separator</t>
 <t tx="bobjack.20080413173856.5">column break</t>
 <t tx="bobjack.20080413173856.6">comment</t>
@@ -745,8 +758,6 @@ Test that single character items translate correctly.</t>
 NOTE:
 
     After doing unit tests the headline and plusbox menus stop working!
-    
-In fact, after running unit tests this window should be closed.
 </t>
 <t tx="bobjack.20080413173856.9">@
 This test checks the integrity of the rClick menu tables stored in
@@ -833,8 +844,7 @@ for kind, argument, item in zip(
 <t tx="bobjack.20080413191217.3">rclick-unit-test-generator</t>
 <t tx="bobjack.20080413191217.4">rclick-unit-test-include
 </t>
-<t tx="bobjack.20080413191217.5">@
-Test @item *minibuffer-command-items translate correctly.
+<t tx="bobjack.20080413191217.5">Test @item *minibuffer-command-items translate correctly.
 
 If there are spaces before and after the text in the headline, then this
 is deliberate, do not remove theme.</t>
@@ -898,8 +908,7 @@ for label, command, item in zip(labels, commands, menu_table):
 <t tx="bobjack.20080413200905.1"></t>
 <t tx="bobjack.20080413203125.1"></t>
 <t tx="bobjack.20080413203125.2"></t>
-<t tx="bobjack.20080413203324.2">@
-Test nesting of submenus.</t>
+<t tx="bobjack.20080413203324.2"></t>
 <t tx="bobjack.20080413203324.3"></t>
 <t tx="bobjack.20080413203324.4"></t>
 <t tx="bobjack.20080413203324.5"></t>
@@ -935,7 +944,7 @@ assert item[0] == 'unit-test-submenu-two'
 
 submenu_table = item[1]
 assert isinstance(submenu_table, list), 'Expecting a list'
-assert len(submenu_table) == 1, 'submenu table should of length one'
+assert len(submenu_table) == 1, 'submenu table should be of length one'
 
 item = submenu_table[0]
 assert item[0] == 'unit-test-submenu-three'
@@ -975,7 +984,7 @@ assert item[0] == expected, \
 
 assert item[1] ==  'rclick-button', "cmd string is wrong" 
 </t>
-<t tx="bobjack.20080413211455.1">Test rclick-button item</t>
+<t tx="bobjack.20080413211455.1">Test </t>
 <t tx="bobjack.20080413211455.4">Rclick Unit Test One
 
 # this is a comment because it starts with #
@@ -1001,8 +1010,8 @@ leoTest.doTests(c,all=True)
 How to write generator commands version 1.
 ==========================================
 
-After reading this node you can use Execute Script on it then right click the
-body pane to see the results.
+After reading this node you can use Execute Script on it to see the example code
+in action.
 
 A generator command is a minibuffer command that is used to add items to a right
 click menu at the time it is being created. They are only of use in @popup trees
@@ -1148,8 +1157,8 @@ Submenu.
 How to use radio buttons.
 =========================
 
-After reading this node you can use Execute Script on it then right click the
-body pane to see the results.
+After reading this node you can use Execute Script on it to see the example code
+in action.
 
 Radio buttons can be placed in @popup menus using the following form::
 
@@ -1276,8 +1285,7 @@ Radio buttons with the same name but in different groups are unrelated.
 How to use check buttons.
 =========================
 
-After reading this node you can use Execute Script on it then right click the
-body pane to see the results.
+After reading this node you can use Execute Script on it to see the example code in action.
 
 Check buttons can be placed in @popup menus using the following form::
 
@@ -1422,6 +1430,8 @@ c.context_menus['body'][1:1] = [
 
 
 @
+
+
 Execute this node as a script.
 
 Right click the body pane to see the new menu items appear.
@@ -1537,7 +1547,17 @@ hopefully the new one does.</t>
 <t tx="bobjack.20080419045546.7">
 menu = [('*', do_demo_editor_items)]
 
-&lt;&lt; test results &gt;&gt;
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+
+xtest(call_status, 'done', 'function call status')
+xtest(retval, 'hello', 'function return value')
+xtest(result, None, 'function hook result')
 
 </t>
 <t tx="bobjack.20080419045546.8">
@@ -1551,9 +1571,17 @@ c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
 
 menu = [('*', 'demo-editor-items')]
 
-&lt;&lt; test results &gt;&gt;
+result = g.doHook('rclick-popup',
+    c=c, event=None, context_menu = menu,
+    testOne='test one', testTwo='test two'
+)
+
+retval = c.theContextMenuController.mb_retval
+
+xtest(call_status, 'done', 'minibuffer call status')
+xtest(retval, 'hello', 'minibuffer return value')
+xtest(result, None, 'minibuffer hook result')
 </t>
-<t tx="bobjack.20080420051406.1"></t>
 <t tx="bobjack.20080420051406.2">cm = c.theContextMenuController
 
 def testRetval(t, r1, r2, name):
@@ -1849,15 +1877,109 @@ icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080420084658.1"></t>
 <t tx="bobjack.20080420084658.2"></t>
 <t tx="bobjack.20080420085604.1"></t>
-<t tx="bobjack.20080423210615.1">result = g.doHook('rclick-popup',
-    c=c, event=None, context_menu = menu,
-    testOne='test one', testTwo='test two'
+<t tx="bobjack.20080423221422.1"></t>
+<t tx="bobjack.20080423221422.2">
+cm = c.theContextMenuController
+
+commands = cm.commandList
+
+for command in commands:
+    
+    assert isinstance(command, basestring), \
+        "Command must be a sring. Got type: %s" % type(command)
+    
+    method_name = command.replace('-', '_')
+    
+    assert hasattr(cm, method_name), \
+        "No method for command %s" % command
+        
+    function = c.commandsDict.get(command)
+    
+    assert function, \
+        "command '%s' has not been registered." % command 
+        
+    assert callable(function), \
+        "function registered for '%s' is not callable" % command</t>
+<t tx="bobjack.20080424054748.5">print 
+print 'Starting testAtPopup (rClick) tests.'
+print</t>
+<t tx="bobjack.20080424054748.6">print
+print
+print 'End of testAtPoupup (rClick) tests.'
+</t>
+<t tx="bobjack.20080424055945.1">import rClick
+from rClick import ContextMenuController
+
+xcm = ContextMenuController(c)
+
+cm = c.theContextMenuController
+
+
+ivars = (
+    'mb_retval',
+    'mb_event',
+    'default_context_menus',
+    'button_handlers',
+    'radio_group_data',
+    'check_button_data',
+    'radio_vars',
+    'iconCache',
 )
 
-retval = c.theContextMenuController.mb_retval
-xtest(call_status, 'done', 'function call status')
-xtest(retval, 'hello', 'function return value')
-xtest(result, None, 'function hook result')
+for ivar in ivars:
+    
+    assert hasattr(cm, ivar), \
+        "Live controller does not have attribute: %s" % ivar
+    
+    assert hasattr(xcm, ivar), \
+        "Test controller does not have attribute: %s" % ivar </t>
+<t tx="bobjack.20080424073616.7">
+from rClick import ContextMenuController
+
+       
+cm = ContextMenuController
+
+    
+headlines = [p.headString() for p in p.children_iter()]
+
+for h in headlines:
+    if h.startswith('@test'):
+        h = h[5:].strip()
+        
+        assert hasattr(cm, h), \
+            "Controller has no method %s" % h
 </t>
+<t tx="bobjack.20080424073616.8"></t>
+<t tx="bobjack.20080424073616.9"></t>
+<t tx="bobjack.20080424073616.10">method = c.theContextMenuController.getButtonHandlers
+
+result = method()
+
+assert isinstance(result, dict) and \
+    'radio' in result and 'check' in result, \
+        "Expected a dictionary with at least 'radio' an 'check' keys."
+
+for k, v in result.iteritems():
+    
+    assert isinstance(k, basestring), \
+        'keys must be strings not type %s' % type(k)
+        
+    assert callable(v), \
+        'values must be callable'</t>
+<t tx="bobjack.20080424073616.11"></t>
+<t tx="bobjack.20080424073616.12">rejoin = c.theContextMenuController.rejoin
+
+assert rejoin('a', '') == 'a', 'Fails when second argument is empty second argument.' 
+assert rejoin('a', 'b') == 'a\nb'
+</t>
+<t tx="bobjack.20080424073616.13"></t>
+<t tx="bobjack.20080424073616.14"></t>
+<t tx="bobjack.20080424073616.15"></t>
+<t tx="bobjack.20080424073616.16"></t>
+<t tx="bobjack.20080424073616.17"></t>
+<t tx="bobjack.20080424073616.18"></t>
+<t tx="bobjack.20080424073616.19"></t>
+<t tx="bobjack.20080424073616.20"></t>
+<t tx="bobjack.20080424073616.21"></t>
 </tnodes>
 </leo_file>

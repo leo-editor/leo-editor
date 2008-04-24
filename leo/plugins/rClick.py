@@ -500,7 +500,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.29"
+__version__ = "1.31"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -586,14 +586,18 @@ __plugin_name__ = 'Right Click Menus'
 # - bug fixes
 # 1.27 bobjack:
 # - added support for colored menu items
-# 1.28
+# 1.28 bobjack:
 # - added support for icons
 # - extended icon and color support to @menu nodes
 # - modified api so that key-value pairs are stored with the label
 #   in the first item of the tuple, instead of with the cmd item.
 # - add rclick-[cut,copy,paste]-text and rclick-select-all commands
-# 1.29
+# 1.29 bobjack:
 # - bug fix, in onCreate only create the controller once!
+# 1.30 bobjack:
+# - Linux bug fixes
+# 1.31 bobjack:
+# - some refacoring to aid unit tests
 # 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
@@ -673,9 +677,12 @@ def onCreate (tag, keys):
         return
 
     try:
-        c.theContextMenuController
+        cm = c.theContextMenuController
     except AttributeError:
-        c.theContextMenuController = ContextMenuController(c)
+        cm = c.theContextMenuController = ContextMenuController(c)
+        cm.init()
+
+
 #@-node:bobjack.20080323045434.18:onCreate
 #@+node:ekr.20080327061021.229:Event handler
 #@+node:ekr.20080327061021.220:rClicker
@@ -720,39 +727,30 @@ class ContextMenuController(object):
         'select-chapter-menu',
     )
 
+    iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
+
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
     def __init__ (self,c):
 
-        """Initialize rclick functionality for this commander."""
+        """Initialize rclick functionality for this commander.
+
+        This only initializes ivars, the proper setup must be done by calling init
+        in onCreate. This is to make unit testing easier.
+
+        """
+
+       # Warning: hook handlers must use keywords.get('c'), NOT self.c.
 
         self.c = c
 
-        self.top_menu = None
         self.mb_retval = None
         self.mb_event = None
-
-        self.setIconBasePath()   
-
-        # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
-        for command in self.commandList:
-            function = getattr(self, command.replace('-','_'))
-            def cb(event, c=c, command=command, function=function):
-                cm = c.theContextMenuController
-                cm.mb_retval = function(cm.mb_keywords)
-
-            c.k.registerCommand(command, shortcut=None, func=cb)
 
         self.default_context_menus = {}
         self.init_default_menus()
 
-        self.rSetupMenus()
-
-        self.button_handlers = {
-            'radio': self.do_radio_button_event,
-            'check': self.do_check_button_event,
-        }
+        self.button_handlers = {}
 
         self.radio_group_data = {}
         self.check_button_data = {}
@@ -760,11 +758,40 @@ class ContextMenuController(object):
         self.radio_vars = {}
         self.iconCache = {}
 
-    #@+node:bobjack.20080419070147.2:setIconBasePath
-    def setIconBasePath(self):
-        self.iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
-    #@nonl
-    #@-node:bobjack.20080419070147.2:setIconBasePath
+    #@+node:bobjack.20080423205354.3:init
+    def init(self):
+
+        self.registerCommands(self.getCommandList())
+
+        self.button_handlers = self.getButtonHandlers()
+
+        self.rSetupMenus()
+    #@-node:bobjack.20080423205354.3:init
+    #@+node:bobjack.20080423205354.2:registerCommands
+    def registerCommands(self, commandList):
+
+        for command in self.commandList:
+
+            function = getattr(self, command.replace('-','_'))
+
+            def cb(event, self=self, function=function):
+                self.mb_retval = function(self.mb_keywords)
+
+            self.c.k.registerCommand(command, shortcut=None, func=cb)
+    #@-node:bobjack.20080423205354.2:registerCommands
+    #@+node:bobjack.20080423205354.4:getButtonHandlers
+    def getButtonHandlers(self):
+
+        return {
+            'radio': self.do_radio_button_event,
+            'check': self.do_check_button_event,
+        }
+    #@-node:bobjack.20080423205354.4:getButtonHandlers
+    #@+node:bobjack.20080423205354.5:getCommandList
+    def getCommandList(self):
+
+        return self.commandList
+    #@-node:bobjack.20080423205354.5:getCommandList
     #@+node:ekr.20080327061021.218:rSetupMenus
     def rSetupMenus (self):
 
