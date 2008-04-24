@@ -978,7 +978,7 @@ class baseCommands:
         fileName = name
         if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
             ok, frame = g.openWithFileName(fileName,c)
-            if ok and closeFlag:
+            if ok and closeFlag and frame != c.frame:
                 g.app.destroyWindow(c.frame) # 12/12/03
                 c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
                 c.setLog() # Sets the log stream for g.es
