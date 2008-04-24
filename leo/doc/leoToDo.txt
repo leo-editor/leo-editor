@@ -11,8 +11,6 @@
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080404074921.2:Put Komodo prototype on the wiki
-#@-node:ekr.20080404074921.2:Put Komodo prototype on the wiki
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
 
@@ -40,6 +38,14 @@ intended behavior. The correct behavior would be to save the file,
 give me the warning about the undefined section, and exit.
 #@nonl
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
+#@+node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+@color
+#@nonl
+#@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 #@-node:ekr.20080411091507.10: First
 #@+node:ekr.20080411091507.1: Non-branch
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
