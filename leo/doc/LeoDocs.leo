@@ -18048,7 +18048,7 @@ For everything a beginner needs to know about Leo see:
 http://webpages.charter.net/edreamleo/intro.html
 
 For help, please ask questions at:
-http://sourceforge.net/forum/?group_id=3458</t>
+http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20050831231852">@ @rst-options
 code_mode=False
 generate_rst=True
