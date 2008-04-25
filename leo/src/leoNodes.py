@@ -2710,6 +2710,9 @@ class basePosition (object):
     #@+node:ekr.20080416161551.217:p._unlink
     def _unlink (self):
 
+        '''Unlink the receiver from the tree.'''
+
+        trace = True
         p = self ; n = p._childIndex
         parent_v = p._parentVnode()
             # returns None if p.v is None
@@ -2726,11 +2729,16 @@ class basePosition (object):
             if parent_v.t.children[n] == p.v:
                 del parent_v.t.children[n]
                 parent_v._p_changed = 1
-            else:
-                g.trace('**can not happen: parents[n] != p.v')
-
-        # else: pass # It is not an error to unlink an already unlinked node.
-            # g.trace('can not happen: bad child index: %s' % (n),color='red')
+            elif trace:
+                g.trace('**can not happen: children[%s] != p.v' % (n))
+                g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+                g.trace('p.v',p.v)
+                g.trace(g.callers())
+        elif trace:
+            g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
+            g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+            g.trace('p.v',p.v)
+            g.trace(g.callers())
 
         # Delete parent_v from p.v's parents.
         if parent_v in p.v.t.parents:
