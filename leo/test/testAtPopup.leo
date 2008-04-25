@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080329075629.2"><vh>@startup</vh>
+<v t="bobjack.20080329075629.2"><vh>Startup</vh>
 <v t="bobjack.20080324163716.1"><vh>@chapters</vh>
 <v t="bobjack.20080413203125.1"><vh>@chapter three</vh>
 <v t="bobjack.20080413203125.2"><vh>three node 1</vh></v>
@@ -311,6 +311,7 @@
 <v t="bobjack.20080413210035.1"><vh>@test key value pairs in the body</vh></v>
 </v>
 <v t="bobjack.20080423221422.1"><vh>Test ContextMenuController</vh>
+<v t="bobjack.20080424195922.95"><vh>@test module has required functions</vh></v>
 <v t="bobjack.20080424055945.1"><vh>@test ivars exist and have correct type</vh></v>
 <v t="bobjack.20080424073616.7"><vh>@test Controller Methods</vh>
 <v t="bobjack.20080424073616.16"><vh>@test add_menu_item</vh></v>
@@ -318,15 +319,18 @@
 <v t="bobjack.20080424073616.13"><vh>@test chapter_menu_helper</vh></v>
 <v t="bobjack.20080424073616.20"><vh>@test copyMenuDict</vh></v>
 <v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
+<v t="bobjack.20080424195922.8"><vh>@test createCommandCallbacks</vh></v>
 <v t="bobjack.20080424073616.15"><vh>@test do_check_button_event</vh></v>
 <v t="bobjack.20080424073616.14"><vh>@test do_radio_button_event</vh></v>
 <v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
 <v t="bobjack.20080424073616.10"><vh>@test getButtonHandlers</vh></v>
+<v t="bobjack.20080424195922.96"><vh>@test getCommandList</vh></v>
 <v t="bobjack.20080424073616.21"><vh>@test getImage</vh></v>
-<v t="bobjack.20080424073616.8"><vh>@test init</vh></v>
 <v t="bobjack.20080424073616.19"><vh>@test init_default_menus</vh></v>
+<v t="bobjack.20080424073616.8"><vh>@test onClose</vh></v>
+<v t="bobjack.20080424195922.6"><vh>@test onCreate</vh></v>
 <v t="bobjack.20080424073616.18"><vh>@test rClicker</vh></v>
-<v t="bobjack.20080424073616.9"><vh>@test registerCommands</vh></v>
+<v t="bobjack.20080424195922.97"><vh>@test registerCommands</vh></v>
 <v t="bobjack.20080424073616.12"><vh>@test rejoin</vh></v>
 <v t="bobjack.20080424073616.11"><vh>@test rSetupMenus</vh></v>
 <v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
@@ -435,7 +439,8 @@ Place the cursor in the url below, then right click.
     http://localhost/
 </t>
 <t tx="bobjack.20080329075629.2">@
-The Howtos, Experiments etc in this file are part of the testing regime for rClick.  Feel free to add more but think carefully before changing those that already exist.</t>
+The Howtos, Experiments etc in this file are part of the testing regime for rClick.  Feel free to add more but think carefully before changing those that already exist.
+</t>
 <t tx="bobjack.20080329075629.3">@
 @popup &lt;name&gt; menus are converted to a list of two tuples and stored in::
 
@@ -1908,31 +1913,37 @@ print
 print 'End of testAtPoupup (rClick) tests.'
 </t>
 <t tx="bobjack.20080424055945.1">import rClick
-from rClick import ContextMenuController
+plugin = rClick
 
-xcm = ContextMenuController(c)
+testController = tc = plugin.pluginController(c)
 
-cm = c.theContextMenuController
+liveController = lc = plugin.controllers.get('c')
 
+ivars = plugin.requiredIvars
 
-ivars = (
-    'mb_retval',
-    'mb_event',
-    'default_context_menus',
-    'button_handlers',
-    'radio_group_data',
-    'check_button_data',
-    'radio_vars',
-    'iconCache',
-)
-
-for ivar in ivars:
+for ivar, kind in ivars:
     
-    assert hasattr(cm, ivar), \
-        "Live controller does not have attribute: %s" % ivar
+    if lc:
+        assert hasattr(lc, ivar), \
+            "Live controller does not have attribute: %s" % ivar
     
-    assert hasattr(xcm, ivar), \
-        "Test controller does not have attribute: %s" % ivar </t>
+    assert hasattr(tc, ivar), \
+        "Test controller does not have attribute: %s" % ivar
+    
+    if not kind:
+        continue
+        
+    if lc:
+        val = getattr(lc, ivar)
+        assert isinstance(val, kind), \
+            "Live Controller has ivar of wrong type\n\tGot type: %s\n\tExpected: %s" %(
+                type(val), kind)
+    
+       
+    val = getattr(tc, ivar)
+    assert isinstance(val, kind), \
+        "Test Controller has ivar of wrong type\n\tGot type: %s\n\tExpected: %s" %(
+            type(val), kind)</t>
 <t tx="bobjack.20080424073616.7">
 from rClick import ContextMenuController
 
@@ -1950,7 +1961,6 @@ for h in headlines:
             "Controller has no method %s" % h
 </t>
 <t tx="bobjack.20080424073616.8"></t>
-<t tx="bobjack.20080424073616.9"></t>
 <t tx="bobjack.20080424073616.10">method = c.theContextMenuController.getButtonHandlers
 
 result = method()
@@ -1981,5 +1991,21 @@ assert rejoin('a', 'b') == 'a\nb'
 <t tx="bobjack.20080424073616.19"></t>
 <t tx="bobjack.20080424073616.20"></t>
 <t tx="bobjack.20080424073616.21"></t>
+<t tx="bobjack.20080424195922.6"></t>
+<t tx="bobjack.20080424195922.8"></t>
+<t tx="bobjack.20080424195922.95">import rClick
+plugin = rClick
+
+for name in (
+    'init',
+    'onCreate',
+    'onClose',
+    'pluginController',
+):
+    assert hasattr(plugin, name), \
+        "%s is missing"
+</t>
+<t tx="bobjack.20080424195922.96"></t>
+<t tx="bobjack.20080424195922.97"></t>
 </tnodes>
 </leo_file>

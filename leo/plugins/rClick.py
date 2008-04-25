@@ -1,10 +1,5 @@
 #@+leo-ver=4-thin
 #@+node:bobjack.20080321133958.6:@thin rClick.py
-# Send bug reports to
-# http://sourceforge.net/forum/forum.php?thread_id=980723&forum_id=10228
-
-#@@first
-
 #@@language python
 #@@tabwidth -4
 
@@ -623,7 +618,6 @@ import leoPlugins
 
 import re
 import sys
-import copy
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 
@@ -636,54 +630,106 @@ except ImportError:
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
-# To do: move top-level functions into ContextMenuController class.
-# Eliminate global vars.
-
-
-
+controllers = {}
 default_context_menus = {}
+
 
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
 
+#@<< required ivars >>
+#@+node:bobjack.20080424195922.5:<< required ivars >>
+#@+at
+# This is a list of ivars that the pluginController must have and the type of 
+# objects they are allowed to contain.
+# 
+#     (ivar, type)
+# 
+# where type may be a tuple and False indicates any type will do
+# 
+# The list is used by unit tests.
+#@-at
+#@@c
+
+requiredIvars = (
+    ('mb_retval', False),
+    ('mb_keywords', False),
+    ('default_context_menus', dict),
+    ('button_handlers', dict),
+    ('radio_group_data', dict),
+    ('check_button_data', dict),
+    ('radio_vars', dict),
+    ('iconCache', dict),
+
+    ('commandList', (tuple, dict)),
+    ('iconBasePath', basestring),
+)
+#@-node:bobjack.20080424195922.5:<< required ivars >>
+#@nl
 
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
 #@+node:ekr.20060108122501.1:init
 def init ():
-    """Initialize and register plugin.
+    """Initialize and register plugin."""
 
-    Hooks bodyrclick1 and after-create-leo-frame.
+    if not Tk:
+        return False
 
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
 
-    """
+    ok = g.app.gui.guiName() == "tkinter"
 
-    ok = bool(g.app.gui)
     if ok:
 
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
-        leoPlugins.registerHandler("bodyrclick1",rClicker)
+        leoPlugins.registerHandler('close-frame',onClose)
 
+        leoPlugins.registerHandler("bodyrclick1",rClicker)
         leoPlugins.registerHandler("rclick-popup",rClicker)
+
         g.plugin_signon(__name__)
 
     return ok
 #@-node:ekr.20060108122501.1:init
 #@+node:bobjack.20080323045434.18:onCreate
 def onCreate (tag, keys):
+    """Handle creation and initialization of the pluginController.
+
+    Make sure the pluginController is created only once.
+    """
 
     c = keys.get('c')
     if not (c and c.exists):
         return
 
-    try:
-        cm = c.theContextMenuController
-    except AttributeError:
-        cm = c.theContextMenuController = ContextMenuController(c)
-        cm.init()
-
-
+    controller = controllers.get(c)
+    if not controller:
+        controllers[c] = controller = pluginController(c)
+        controller.onCreate()
 #@-node:bobjack.20080323045434.18:onCreate
+#@+node:bobjack.20080424195922.4:onClose
+def onClose (tag, keys):
+
+    """Tell controller to clean up then destroy it."""
+
+    c = keys.get('c')
+    if not (c and c.exists):
+        return
+
+    controller = controllers.get(c)
+
+    try: 
+        del controllers[c]
+    except KeyError:
+        pass
+
+    try:
+        controller.onClose()
+    finally:
+        controller = None
+#@-node:bobjack.20080424195922.4:onClose
 #@+node:ekr.20080327061021.229:Event handler
 #@+node:ekr.20080327061021.220:rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
@@ -707,8 +753,8 @@ def rClicker(tag, keywords):
 #@-node:ekr.20080327061021.220:rClicker
 #@-node:ekr.20080327061021.229:Event handler
 #@-node:ekr.20060108122501:Module-level
-#@+node:bobjack.20080323045434.14:class ContextMenuController
-class ContextMenuController(object):
+#@+node:bobjack.20080323045434.14:class pluginController
+class pluginController(object):
 
     """A per commander controller for right click menu functionality."""
 
@@ -731,7 +777,7 @@ class ContextMenuController(object):
 
     #@    @+others
     #@+node:bobjack.20080323045434.15:__init__
-    def __init__ (self,c):
+    def __init__(self, c):
 
         """Initialize rclick functionality for this commander.
 
@@ -740,17 +786,13 @@ class ContextMenuController(object):
 
         """
 
-       # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
         self.c = c
 
         self.mb_retval = None
-        self.mb_event = None
+        self.mb_keywords = None
 
         self.default_context_menus = {}
         self.init_default_menus()
-
-        self.button_handlers = {}
 
         self.radio_group_data = {}
         self.check_button_data = {}
@@ -758,34 +800,70 @@ class ContextMenuController(object):
         self.radio_vars = {}
         self.iconCache = {}
 
-    #@+node:bobjack.20080423205354.3:init
-    def init(self):
+        self.button_handlers = {
+            'radio': self.do_radio_button_event,
+            'check': self.do_check_button_event,
+        }
 
-        self.registerCommands(self.getCommandList())
+    #@+node:bobjack.20080423205354.3:onCreate
+    def onCreate(self):
 
-        self.button_handlers = self.getButtonHandlers()
+        c = self.c
+
+        self.registerCommands()
+
 
         self.rSetupMenus()
-    #@-node:bobjack.20080423205354.3:init
-    #@+node:bobjack.20080423205354.2:registerCommands
-    def registerCommands(self, commandList):
 
-        for command in self.commandList:
+        c.theContextMenuController = self
+    #@-node:bobjack.20080423205354.3:onCreate
+    #@+node:bobjack.20080424195922.7:onClose
+    def onClose(self):
+        """Clean up and prepare to die."""
 
-            function = getattr(self, command.replace('-','_'))
+        return
+    #@-node:bobjack.20080424195922.7:onClose
+    #@+node:bobjack.20080423205354.2:createCommandCallbacks
+    def createCommandCallbacks(self, commands):
+
+        """Create command callbacks for the list of `commands`.
+
+        Returns a list of tuples
+
+            (command, methodName, callback)
+
+        """
+
+        lst = []
+        for command in commands:
+
+            methodName = command.replace('-','_')
+            function = getattr(self, methodName)
 
             def cb(event, self=self, function=function):
                 self.mb_retval = function(self.mb_keywords)
 
-            self.c.k.registerCommand(command, shortcut=None, func=cb)
-    #@-node:bobjack.20080423205354.2:registerCommands
+            lst.append((command, methodName, cb))
+
+        return lst
+    #@-node:bobjack.20080423205354.2:createCommandCallbacks
+    #@+node:bobjack.20080424195922.9:registerCommands
+    def registerCommands(self):
+
+        """Create callbacks for minibuffer commands and register them."""
+
+        c = self.c
+
+        commandList = self.createCommandCallbacks(self.getCommandList())
+
+        for cmd, methodName, function in commandList:
+            c.k.registerCommand(cmd, shortcut=None, func=function)   
+    #@-node:bobjack.20080424195922.9:registerCommands
     #@+node:bobjack.20080423205354.4:getButtonHandlers
     def getButtonHandlers(self):
 
-        return {
-            'radio': self.do_radio_button_event,
-            'check': self.do_check_button_event,
-        }
+        return self.button_handlers
+
     #@-node:bobjack.20080423205354.4:getButtonHandlers
     #@+node:bobjack.20080423205354.5:getCommandList
     def getCommandList(self):
@@ -2103,8 +2181,11 @@ class ContextMenuController(object):
     #@-node:bobjack.20080418150812.3:getImage
     #@-node:bobjack.20080414064211.5:Utility
     #@-others
-#@-node:bobjack.20080323045434.14:class ContextMenuController
+
+#@-node:bobjack.20080323045434.14:class pluginController
 #@-others
+
+ContextMenuController = pluginController
 
 
 #@-node:bobjack.20080321133958.6:@thin rClick.py
