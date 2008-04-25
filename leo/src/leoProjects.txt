@@ -3585,7 +3585,7 @@ def computeHomeDir():
 #@-node:ekr.20041117151301:computeHomeDir
 #@-node:ekr.20080407090400.4:Found: homeDir
 #@-node:ekr.20080407090400.3:Added install nodes re Leo's home directory
-#@+node:ekr.20080318081653.1:Added preliminary support for @bool fixedWindow option
+#@+node:ekr.20080318081653.1:Added support for @bool fixedWindow option
 @nocolor
 
 We should avoid conflicts here in the first place. We really need that
@@ -4477,7 +4477,7 @@ def updateFixedStatus (self):
     # g.trace('c.fixed',c.fixed)
 #@-node:ekr.20080412172151.2:updateFixedStatus
 #@-node:ekr.20080412053100.2:changed
-#@-node:ekr.20080318081653.1:Added preliminary support for @bool fixedWindow option
+#@-node:ekr.20080318081653.1:Added support for @bool fixedWindow option
 #@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@-all
