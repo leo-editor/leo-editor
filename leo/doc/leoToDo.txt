@@ -1,7 +1,7 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080403102730.1:Explore ipython stuff
 @nocolor
 
@@ -1295,7 +1295,7 @@ Regards, Roger
 #@nonl
 #@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20080411091507.8:Pluings
-#@-node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
 @nocolor

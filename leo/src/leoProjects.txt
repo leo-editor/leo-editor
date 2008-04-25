@@ -1549,6 +1549,27 @@ def skipString (self,s,i):
 #@-node:ekr.20070711090052.3:Overrides
 #@-node:ekr.20070711090052.1:class phpScanner
 #@-node:ekr.20080424115643.5:Fixed import PHP bug
+#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+def appendToRecentFiles (self,files):
+
+    files = [theFile.strip() for theFile in files]
+
+    # g.trace(files)
+
+    def munge(name):
+        name = name or ''
+        return g.os_path_normpath(name).lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in self.recentFiles[:]:
+            if munge(name) == munge(name2):
+                self.recentFiles.remove(name2)
+
+        self.recentFiles.append(name)
+#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
