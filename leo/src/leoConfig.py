@@ -1629,7 +1629,7 @@ class configClass:
 
         for name in files:
             # Remove all variants of name.
-            for name2 in self.recentFiles:
+            for name2 in self.recentFiles[:]:
                 if munge(name) == munge(name2):
                     self.recentFiles.remove(name2)
 
