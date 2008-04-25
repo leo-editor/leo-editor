@@ -3984,6 +3984,154 @@ def moveToRoot (self,oldRoot=None):
         oldRootNode.t.vnodeList = [oldRootNode]
 #@-node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
 #@-node:ekr.20080421083619.5:Old file code
+#@+node:ekr.20080424073114.1:OLDc.sortTopLevel
+def sortTopLevel (self,event=None, cmp=None):
+
+    '''Sort the top-level nodes of an outline.'''
+
+    c = self ; u = c.undoer ; undoType = 'Sort Siblings'
+    root = c.rootPosition()
+    if not root: return
+
+    # Create a list of tuples sorted by headlines.
+    pairs = [(p.headString().lower(),p.copy())
+        for p in root.self_and_siblings_iter()]
+
+    if cmp:
+        pairs.sort(cmp)
+    else:
+        pairs.sort()
+
+    c.beginUpdate()
+    try: # In update...
+        dirtyVnodeList = []
+        u.beforeChangeGroup(root,undoType)
+        if 1: # In group...
+            h,p = pairs[0]
+            if p != root:
+                undoData = u.beforeMoveNode(p)
+                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                p.moveToRoot(oldRoot=None) # This unlinks the old root.
+                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                u.afterMoveNode(p,'Sort',undoData)
+                newRoot = p.copy()
+                c.setRootPosition(newRoot)
+            for h,next in pairs[1:]:
+                undoData = u.beforeMoveNode(next)
+                next.moveAfter(p)
+                u.afterMoveNode(next,'Sort',undoData)
+                p = next
+            c.setRootPosition(c.findRootPosition(root)) # New in 4.4.2.
+        u.afterChangeGroup(root,undoType,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.selectPosition(c.rootPosition())
+        c.endUpdate()
+#@-node:ekr.20080424073114.1:OLDc.sortTopLevel
+#@+node:ekr.20031218072017.2896:c.sortTopLevel (never used)
+def sortTopLevel (self,event=None, cmp=None):
+
+    '''Sort the top-level nodes of an outline.'''
+
+    c = self ; u = c.undoer ; undoType = 'Sort Siblings'
+    root = c.rootPosition()
+    if not root: return
+
+    # headlines = [p.headString().lower() for p in root.self_and_siblings_iter()]
+    if cmp: headlines.sort(cmp,key=string.lower
+    else:   headlines.sort(key=string.lower)
+
+    c.beginUpdate()
+    try:
+        ### u.beforeSort(root,undoType)
+        # Populate the children list and compute the dirty nodes.
+        children = [] ; dirtyVnodeList = [] ; n = 0
+        visited  = [] # Visited child indices.
+
+        for h in headlines:
+            # Find a position p at or after the nth sibling matching h.
+            for p in root.self_and_siblings_iter():
+                if p.childIndex() not in visited and p.headString().lower() == h:
+                    break
+            assert p
+            visited.append(p.childIndex())
+            children.append(p.v)
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+            n += 1
+        # Swap in the new children: parent/child relationships remain unchanged.
+        parent_v = root._parentVnode()
+        parent_v.t.children = children
+        newRoot = leoNodes.position(v=children[0])
+        c.setRootPosition(newRoot)
+            # Required so c.positionExists(newRoot) will be true.
+        c.selectPosition(newRoot)   
+        ### u.afterSort(root,undoType,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate()
+#@-node:ekr.20031218072017.2896:c.sortTopLevel (never used)
+#@+node:ekr.20040303175026.12:c.sortChildrenHelper
+def sortChildrenHelper (self,p,cmp=None):
+
+    c = self ; u = c.undoer
+
+    # Create a list of tuples sorted on headlines.
+    pairs = [(child.headString().lower(),child.copy()) for child in p.children_iter()]
+    if cmp:
+        pairs.sort(cmp)
+    else:
+        pairs.sort()
+
+    # Move the children.
+    index = 0
+    for headline,child in pairs:
+        undoData = u.beforeMoveNode(child)
+        child.moveToNthChildOf(p,index)
+        u.afterMoveNode(child,'Sort',undoData)
+        index += 1
+#@nonl
+#@-node:ekr.20040303175026.12:c.sortChildrenHelper
+#@+node:ekr.20080425060424.6:OLD demote
+def demote (self,event=None):
+
+    '''Make all following siblings children of the selected node.'''
+
+    c = self ; u = c.undoer
+    current = c.currentPosition()
+    command = 'Demote'
+    if not current or not current.hasNext():
+        c.treeFocusHelper() ; return
+
+    # Make sure all the moves will be valid.
+    next = current.next()
+    while next:
+        if not c.checkMoveWithParentWithWarning(next,current,True):
+            c.treeFocusHelper() ; return
+        next.moveToNext()
+
+    c.beginUpdate()
+    try: # update...
+        c.endEditing()
+        u.beforeChangeGroup(current,command)
+        p = current.copy()
+        while p.hasNext(): # Do not use iterator here.
+            child = p.next()
+            undoData = u.beforeMoveNode(child)
+            child.moveToNthChildOf(p,p.numberOfChildren())
+            u.afterMoveNode(child,command,undoData)
+        p.expand()
+        # Even if p is an @ignore node there is no need to mark the demoted children dirty.
+        dirtyVnodeList = current.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        u.afterChangeGroup(current,command,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.selectPosition(current)  # Also sets rootPosition.
+        c.endUpdate()
+        # c.treeWantsFocusNow()
+        c.treeFocusHelper()
+    c.updateSyntaxColorer(current) # Moving can change syntax coloring.
+#@-node:ekr.20080425060424.6:OLD demote
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

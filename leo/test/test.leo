@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -889,8 +889,15 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080421171033.1"><vh>A</vh></v>
-<v t="ekr.20080421171033.1"><vh>A</vh></v>
+<v t="ekr.20080421171033.1" a="E"><vh>A</vh>
+<v t="ekr.20080425112350.1"><vh>c1</vh></v>
+<v t="ekr.20080425112350.2"><vh>c2</vh></v>
+</v>
+<v t="ekr.20080421171033.1"><vh>A</vh>
+<v t="ekr.20080425112350.1"><vh>c1</vh></v>
+<v t="ekr.20080425112350.2"><vh>c2</vh></v>
+</v>
+<v t="ekr.20080424081248.1"><vh>B</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5526,6 +5533,9 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164713.2"></t>
 <t tx="ekr.20080412082246.1"></t>
 <t tx="ekr.20080421171033.1"></t>
+<t tx="ekr.20080424081248.1"></t>
+<t tx="ekr.20080425112350.1"></t>
+<t tx="ekr.20080425112350.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
