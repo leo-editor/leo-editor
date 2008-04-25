@@ -683,6 +683,30 @@ class undoer:
 
         u.pushBead(bunch)
     #@-node:ekr.20050411193627.8:afterDeleteNode
+    #@+node:ekr.20080425060424.8:afterDemote
+    def afterDemote (self,p,followingSibs,dirtyVnodeList):
+
+        '''Create an undo node for demote operations.'''
+
+        u = self
+        bunch = u.createCommonBunch(p)
+
+        # Set types.
+        bunch.kind = 'demote'
+        bunch.undoType = 'Demote'
+
+        bunch.undoHelper = u.undoDemote
+        bunch.redoHelper = u.redoDemote
+
+        bunch.followingSibs = followingSibs
+
+        # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
+
+        # Recalculate the menu labels.
+        u.setUndoTypes()
+    #@-node:ekr.20080425060424.8:afterDemote
     #@+node:ekr.20050411193627.7:afterHoist
     def afterHoist (self,p,command):
 
@@ -781,12 +805,53 @@ class undoer:
         bunch.newDirty = p.isDirty()
         bunch.newMarked = p.isMarked()
 
-        bunch.newBack   = p.back()
+        # bunch.newBack   = p.back()
+        # bunch.newParent = p.parent()
         bunch.newN = p.childIndex()
-        bunch.newParent = p.parent()
+        bunch.newParent_v = p._parentVnode()
+        bunch.newP = p.copy()
 
         u.pushBead(bunch)
     #@-node:ekr.20050410110343:afterMoveNode
+    #@+node:ekr.20080425060424.12:afterPromote
+    def afterPromote (self,p,children,dirtyVnodeList):
+
+        '''Create an undo node for demote operations.'''
+
+        u = self
+        bunch = u.createCommonBunch(p)
+
+        # Set types.
+        bunch.kind = 'promote'
+        bunch.undoType = 'Promote'
+
+        bunch.undoHelper = u.undoPromote
+        bunch.redoHelper = u.redoPromote
+
+        bunch.children = children
+
+        # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
+
+        # Recalculate the menu labels.
+        u.setUndoTypes()
+    #@-node:ekr.20080425060424.12:afterPromote
+    #@+node:ekr.20080425060424.2:afterSort
+    def afterSort (self,p,bunch,dirtyVnodeList):
+
+        '''Create an undo node for sort operations'''
+
+        u = self ; c = self.c
+        if u.redoing or u.undoing: return
+
+        bunch.dirtyVnodeList = dirtyVnodeList
+
+        # Recalculate the menu labels.
+        u.setUndoTypes()
+
+        # g.trace(u.undoMenuLabel,u.redoMenuLabel)
+    #@-node:ekr.20080425060424.2:afterSort
     #@-node:ekr.20050318085432.4:afterX...
     #@+node:ekr.20050318085432.3:beforeX...
     #@+node:ekr.20050315134017.7:beforeChangeGroup
@@ -901,12 +966,37 @@ class undoer:
 
         bunch = u.createCommonBunch(p)
 
-        bunch.oldBack = p.back()
+        # bunch.oldBack = p.back()
+        # bunch.oldParent = p.parent()
         bunch.oldN = p.childIndex()
-        bunch.oldParent = p.parent()
+        bunch.oldParent_v = p._parentVnode()
 
         return bunch
     #@-node:ekr.20050410110215:beforeMoveNode
+    #@+node:ekr.20080425060424.3:beforeSort
+    def beforeSort (self,p,undoType,oldChildren,newChildren):
+
+        '''Create an undo node for sort operations.'''
+
+        u = self
+        bunch = u.createCommonBunch(p)
+
+        # Set types.
+        bunch.kind = 'sort'
+        bunch.undoType = undoType
+
+        bunch.undoHelper = u.undoSort
+        bunch.redoHelper = u.redoSort
+
+        bunch.oldChildren = oldChildren
+        bunch.newChildren = newChildren
+
+        # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
+
+        return bunch
+    #@-node:ekr.20080425060424.3:beforeSort
     #@+node:ekr.20050318085432.2:createCommonBunch
     def createCommonBunch (self,p):
 
@@ -1355,52 +1445,26 @@ class undoer:
         c.deleteOutline()
         c.selectPosition(u.newP)
     #@-node:EKR.20040526072519.2:redoDeleteNode
-    #@+node:ekr.20050412084532:redoInsertNode
-    def redoInsertNode (self):
+    #@+node:ekr.20080425060424.9:redoDemote
+    def redoDemote (self):
 
-        u = self ; c = u.c
+        u = self
+        parent_v = u.p._parentVnode()
+        n = len(u.followingSibs)
 
-        # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
+        # Remove the moved nodes from the parent's children.
+        parent_v.t.children = parent_v.t.children[:n+1]
 
-        if u.newBack:
-            u.newP._linkAfter(u.newBack)
-        elif u.newParent:
-            u.newP._linkAsNthChild(u.newParent,0)
-        else:
-            oldRoot = c.rootPosition()
-            u.newP._linkAsRoot(oldRoot)
+        # Add the moved nodes to p's children
+        u.p.v.t.children.extend(u.followingSibs)
 
-        # Restore all vnodeLists (and thus all clone marks).
-        u.newP._restoreLinksInTree()
-
-        if u.pasteAsClone:
-            for bunch in u.afterTree:
-                t = bunch.t
-                if u.newP.v.t == t:
-                    c.setBodyString(u.newP,bunch.body)
-                    c.setHeadString(u.newP,bunch.head)
-                else:
-                    t.setBodyString(bunch.body)
-                    t.setHeadString(bunch.head)
-                # g.trace(t,bunch.head,bunch.body)
-
-        c.selectPosition(u.newP)
-    #@-node:ekr.20050412084532:redoInsertNode
-    #@+node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
-    def redoHoistNode (self):
-
-        u = self ; c = u.c
-
-        c.selectPosition(u.p)
-        c.hoist()
-
-    def redoDehoistNode (self):
-
-        u = self ; c = u.c
-
-        c.selectPosition(u.p)
-        c.dehoist()
-    #@-node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
+        # Adjust the parent links of all moved nodes.
+        for z in u.followingSibs:
+            if parent_v in z.t.parents:
+                z.t.parents.remove(parent_v)
+            if u.p.v not in z.t.parents:
+                z.t.parents.append(u.p.v)
+    #@-node:ekr.20080425060424.9:redoDemote
     #@+node:ekr.20050318085432.6:redoGroup
     def redoGroup (self):
 
@@ -1446,6 +1510,106 @@ class undoer:
         if newSel: c.frame.body.setSelectionRange(newSel)
     #@nonl
     #@-node:ekr.20050318085432.6:redoGroup
+    #@+node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
+    def redoHoistNode (self):
+
+        u = self ; c = u.c
+
+        c.selectPosition(u.p)
+        c.hoist()
+
+    def redoDehoistNode (self):
+
+        u = self ; c = u.c
+
+        c.selectPosition(u.p)
+        c.dehoist()
+    #@-node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
+    #@+node:ekr.20050412084532:redoInsertNode
+    def redoInsertNode (self):
+
+        u = self ; c = u.c
+
+        # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
+
+        if u.newBack:
+            u.newP._linkAfter(u.newBack)
+        elif u.newParent:
+            u.newP._linkAsNthChild(u.newParent,0)
+        else:
+            oldRoot = c.rootPosition()
+            u.newP._linkAsRoot(oldRoot)
+
+        # Restore all vnodeLists (and thus all clone marks).
+        u.newP._restoreLinksInTree()
+
+        if u.pasteAsClone:
+            for bunch in u.afterTree:
+                t = bunch.t
+                if u.newP.v.t == t:
+                    c.setBodyString(u.newP,bunch.body)
+                    c.setHeadString(u.newP,bunch.head)
+                else:
+                    t.setBodyString(bunch.body)
+                    t.setHeadString(bunch.head)
+                # g.trace(t,bunch.head,bunch.body)
+
+        c.selectPosition(u.newP)
+    #@-node:ekr.20050412084532:redoInsertNode
+    #@+node:ekr.20050526125801:redoMark
+    def redoMark (self):
+
+        u = self ; c = u.c
+
+        u.updateMarks('new')
+
+        if u.groupCount == 0:
+
+            for v in u.dirtyVnodeList:
+                v.t.setDirty()
+
+            c.selectPosition(u.p)
+    #@nonl
+    #@-node:ekr.20050526125801:redoMark
+    #@+node:ekr.20050411111847:redoMove
+    def redoMove (self):
+
+        u = self ; c = u.c ; v = u.p.v
+        assert(u.oldParent_v)
+        assert(u.newParent_v)
+        assert(v)
+
+        # Adjust the children arrays.
+        assert u.oldParent_v.t.children[u.oldN] == v
+        del u.oldParent_v.t.children[u.oldN]
+        u.newParent_v.t.children.insert(u.newN,v)
+
+        # Adjust the parent links.
+        if u.oldParent_v in v.t.parents:
+            v.t.parents.remove(u.oldParent_v)
+
+        if u.newParent_v not in v.t.parents:
+            v.t.parents.append(u.newParent_v)
+
+        # if u.newParent:
+            # u.p.moveToNthChildOf(u.newParent,u.newN)
+        # elif u.newBack:
+            # u.p.moveAfter(u.newBack)
+        # else:
+            # oldRoot = c.rootPosition()
+            # u.p.moveToRoot(oldRoot=oldRoot)
+
+        u.updateMarks('new')
+
+        for v in u.dirtyVnodeList:
+            v.t.setDirty()
+
+        if u.newParent_v != u.oldParent_v:
+            if u.p.parent():
+                u.p.parent().contract()
+
+        c.selectPosition(u.newP)
+    #@-node:ekr.20050411111847:redoMove
     #@+node:ekr.20050318085432.7:redoNodeContents
     def redoNodeContents (self):
 
@@ -1470,43 +1634,37 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
     #@-node:ekr.20050318085432.7:redoNodeContents
-    #@+node:ekr.20050526125801:redoMark
-    def redoMark (self):
+    #@+node:ekr.20080425060424.13:redoPromote
+    def redoPromote (self):
 
-        u = self ; c = u.c
+        u = self
+        parent_v = u.p._parentVnode()
 
-        u.updateMarks('new')
+        # Add the children to parent_v's children.
+        n = u.p.childIndex() + 1
+        z = parent_v.t.children[:]
+        parent_v.t.children = z[:n]
+        parent_v.t.children.extend(u.children)
+        parent_v.t.children.extend(z[n:])
 
-        if u.groupCount == 0:
+        # Remove v's children.
+        u.p.v.t.children = []
 
-            for v in u.dirtyVnodeList:
-                v.t.setDirty()
+        # Adjust the parent links of all moved nodes.
+        for z in u.children:
+            if u.p.v in z.t.parents:
+                z.t.parents.remove(u.p.v)
+            if parent_v not in z.t.parents:
+                z.t.parents.append(parent_v)
+    #@-node:ekr.20080425060424.13:redoPromote
+    #@+node:ekr.20080425060424.4:redoSort
+    def redoSort (self):
 
-            c.selectPosition(u.p)
-    #@nonl
-    #@-node:ekr.20050526125801:redoMark
-    #@+node:ekr.20050411111847:redoMove
-    def redoMove (self):
+        u = self
 
-        u = self ; c = u.c
-
-        # g.trace(u.p)
-
-        if u.newParent:
-            u.p.moveToNthChildOf(u.newParent,u.newN)
-        elif u.newBack:
-            u.p.moveAfter(u.newBack)
-        else:
-            oldRoot = c.rootPosition()
-            u.p.moveToRoot(oldRoot=oldRoot)
-
-        u.updateMarks('new')
-
-        for v in u.dirtyVnodeList:
-            v.t.setDirty()
-
-        c.selectPosition(u.p)
-    #@-node:ekr.20050411111847:redoMove
+        parent_v = u.p._parentVnode()
+        parent_v.t.children = u.newChildren
+    #@-node:ekr.20080425060424.4:redoSort
     #@+node:ekr.20050318085432.8:redoTree
     def redoTree (self):
 
@@ -1633,6 +1791,26 @@ class undoer:
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)
     #@-node:ekr.20050412084055:undoDeleteNode
+    #@+node:ekr.20080425060424.10:undoDemote
+    def undoDemote (self):
+
+        u = self
+        parent_v = u.p._parentVnode()
+        n = len(u.followingSibs)
+
+        # Remove the demoted nodes from p's children.
+        u.p.v.t.children = u.p.v.t.children[:-n]
+
+        # Add the demoted nodes to the parent's children.
+        parent_v.t.children.extend(u.followingSibs)
+
+        # Adjust the parent links of all moved nodes.
+        for z in u.followingSibs:
+            if u.p.v in z.t.parents:
+                z.t.parents.remove(u.p.v)
+            if parent_v not in z.t.parents:
+                z.t.parents.append(parent_v)
+    #@-node:ekr.20080425060424.10:undoDemote
     #@+node:ekr.20050318085713:undoGroup
     def undoGroup (self):
 
@@ -1734,21 +1912,39 @@ class undoer:
     #@+node:ekr.20050411112033:undoMove
     def undoMove (self):
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; v = u.p.v
+        assert(u.oldParent_v)
+        assert(u.newParent_v)
+        assert(v)
 
-        # g.trace(u.p,u.oldParent,u.oldN)
+        # Adjust the children arrays.
+        assert u.newParent_v.t.children[u.newN] == v
+        del u.newParent_v.t.children[u.newN]
+        u.oldParent_v.t.children.insert(u.oldN,v)
 
-        if u.oldParent:
-            u.p.moveToNthChildOf(u.oldParent,u.oldN)
-        elif u.oldBack:
-            u.p.moveAfter(u.oldBack)
-        else:
-            u.p.moveToRoot(oldRoot=c.rootPosition())
+        # Adjust the parent links.
+        if u.newParent_v in v.t.parents:
+            v.t.parents.remove(u.newParent_v)
+
+        if u.oldParent_v not in v.t.parents:
+            v.t.parents.append(u.oldParent_v)
+
+        # if u.oldParent:
+            # u.p.moveToNthChildOf(u.oldParent,u.oldN)
+        # elif u.oldBack:
+            # u.p.moveAfter(u.oldBack)
+        # else:
+            # u.p.moveToRoot(oldRoot=c.rootPosition())
+
 
         u.updateMarks('old')
 
         for v in u.dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6.
+            v.t.setDirty()
+
+        if u.newParent_v != u.oldParent_v:
+            if u.newP.parent():
+                u.newP.parent().contract()
 
         c.selectPosition(u.p)
     #@-node:ekr.20050411112033:undoMove
@@ -1776,72 +1972,29 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty() # Bug fix: Leo 4.4.6.
     #@-node:ekr.20050318085713.1:undoNodeContents
-    #@+node:ekr.20050318085713.2:undoTree
-    def undoTree (self):
+    #@+node:ekr.20080425060424.14:undoPromote
+    def undoPromote (self):
 
-        '''Redo replacement of an entire tree.'''
+        u = self
+        parent_v = u.p._parentVnode()
 
-        u = self ; c = u.c
+        # Remove the promoted nodes from parent_v's children.
+        n = u.p.childIndex() + 1
+        z = parent_v.t.children
+        parent_v.t.children = z[:n]
+        parent_v.t.children.extend(z[n+len(u.children):])
 
-        u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
-        c.selectPosition(u.p) # Does full recolor.
-        if u.oldSel:
-            c.frame.body.setSelectionRange(u.oldSel)
-    #@-node:ekr.20050318085713.2:undoTree
-    #@+node:ekr.20050408100042:undoRedoTree
-    def undoRedoTree (self,p,new_data,old_data):
+        # Add the demoted nodes to v's children.
+        u.p.t.children = u.children[:]
 
-        '''Replace p and its subtree using old_data during undo.'''
-
-        # Same as undoReplace except uses g.Bunch.
-
-        u = self ; c = u.c
-
-        if new_data == None:
-            # This is the first time we have undone the operation.
-            # Put the new data in the bead.
-            bunch = u.beads[u.bead]
-            bunch.newTree = u.saveTree(p.copy())
-            u.beads[u.bead] = bunch
-
-        # Replace data in tree with old data.
-        u.restoreTree(old_data)
-        c.setBodyString(p,p.bodyString())
-
-        return p # Nothing really changes.
-    #@-node:ekr.20050408100042:undoRedoTree
-    #@+node:EKR.20040526090701.4:undoTyping
-    def undoTyping (self):
-
-        u = self ; c = u.c ; current = c.currentPosition()
-        w = c.frame.body.bodyCtrl
-
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if current != u.p:
-            c.selectPosition(u.p)
-        elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
-            c.frame.body.forceFullRecolor()
-
-        self.undoRedoText(
-            u.p,u.leading,u.trailing,
-            u.oldMiddleLines,u.newMiddleLines,
-            u.oldNewlines,u.newNewlines,
-            tag="undo",undoType=u.undoType)
-
-        u.updateMarks('old')
-
-        for v in u.dirtyVnodeList:
-            v.t.setDirty() # Bug fix: Leo 4.4.6.
-
-        if u.oldSel:
-            c.bodyWantsFocusNow()
-            i,j = u.oldSel
-            w.setSelectionRange(i,j,insert=j)
-        if u.yview:
-            c.bodyWantsFocusNow()
-            c.frame.body.setYScrollPosition(u.yview)
-    #@-node:EKR.20040526090701.4:undoTyping
-    #@+node:ekr.20031218072017.1493:undoRedoText (passed)
+        # Adjust the parent links of all moved nodes.
+        for z in u.children:
+            if parent_v in z.t.parents:
+                z.t.parents.remove(parent_v)
+            if u.p.v not in z.t.parents:
+                z.t.parents.append(u.p.v)
+    #@-node:ekr.20080425060424.14:undoPromote
+    #@+node:ekr.20031218072017.1493:undoRedoText
     def undoRedoText (self,p,
         leading,trailing, # Number of matching leading & trailing lines.
         oldMidLines,newMidLines, # Lists of unmatched lines.
@@ -1885,7 +2038,80 @@ class undoer:
         p.setBodyString(result)
         w.setAllText(result)
         c.frame.body.recolor(p,incremental=False)
-    #@-node:ekr.20031218072017.1493:undoRedoText (passed)
+    #@-node:ekr.20031218072017.1493:undoRedoText
+    #@+node:ekr.20050408100042:undoRedoTree
+    def undoRedoTree (self,p,new_data,old_data):
+
+        '''Replace p and its subtree using old_data during undo.'''
+
+        # Same as undoReplace except uses g.Bunch.
+
+        u = self ; c = u.c
+
+        if new_data == None:
+            # This is the first time we have undone the operation.
+            # Put the new data in the bead.
+            bunch = u.beads[u.bead]
+            bunch.newTree = u.saveTree(p.copy())
+            u.beads[u.bead] = bunch
+
+        # Replace data in tree with old data.
+        u.restoreTree(old_data)
+        c.setBodyString(p,p.bodyString())
+
+        return p # Nothing really changes.
+    #@-node:ekr.20050408100042:undoRedoTree
+    #@+node:ekr.20080425060424.5:undoSort
+    def undoSort (self):
+
+        u = self
+
+        parent_v = u.p._parentVnode()
+        parent_v.t.children = u.oldChildren
+    #@-node:ekr.20080425060424.5:undoSort
+    #@+node:ekr.20050318085713.2:undoTree
+    def undoTree (self):
+
+        '''Redo replacement of an entire tree.'''
+
+        u = self ; c = u.c
+
+        u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
+        c.selectPosition(u.p) # Does full recolor.
+        if u.oldSel:
+            c.frame.body.setSelectionRange(u.oldSel)
+    #@-node:ekr.20050318085713.2:undoTree
+    #@+node:EKR.20040526090701.4:undoTyping
+    def undoTyping (self):
+
+        u = self ; c = u.c ; current = c.currentPosition()
+        w = c.frame.body.bodyCtrl
+
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if current != u.p:
+            c.selectPosition(u.p)
+        elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
+            c.frame.body.forceFullRecolor()
+
+        self.undoRedoText(
+            u.p,u.leading,u.trailing,
+            u.oldMiddleLines,u.newMiddleLines,
+            u.oldNewlines,u.newNewlines,
+            tag="undo",undoType=u.undoType)
+
+        u.updateMarks('old')
+
+        for v in u.dirtyVnodeList:
+            v.t.setDirty() # Bug fix: Leo 4.4.6.
+
+        if u.oldSel:
+            c.bodyWantsFocusNow()
+            i,j = u.oldSel
+            w.setSelectionRange(i,j,insert=j)
+        if u.yview:
+            c.bodyWantsFocusNow()
+            c.frame.body.setYScrollPosition(u.yview)
+    #@-node:EKR.20040526090701.4:undoTyping
     #@-node:ekr.20031218072017.2039:undo & helpers...
     #@-others
 #@-node:ekr.20031218072017.3605:class undoer
