@@ -442,7 +442,8 @@ class baseCommands:
             v = leoNodes.vnode(context=c,t=t)
             p = leoNodes.position(v)
             v.initHeadString("NewHeadline")
-            p.moveToRoot(oldRoot=None)
+            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+            p._linkAsRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
             c.editPosition(p)
             # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -3371,112 +3372,68 @@ class baseCommands:
             return True
     #@-node:ekr.20031218072017.1765:c.validateOutline
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
+    #@+node:ekr.20080425060424.1:Sort...
     #@+node:ekr.20050415134809:c.sortChildren
     def sortChildren (self,event=None,cmp=None):
 
         '''Sort the children of a node.'''
 
-        c = self ; u = c.undoer ; undoType = 'Sort Children'
-        p = c.currentPosition()
-        if not p or not p.hasChildren(): return
+        c = self ; p = c.currentPosition()
 
-        c.beginUpdate()
-        try: # In update
-            c.endEditing()
-            u.beforeChangeGroup(p,undoType)
-            c.sortChildrenHelper(p, cmp=cmp)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            c.setChanged(True)
-            u.afterChangeGroup(p,undoType,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate()
+        if p and p.hasChildren():
+            c.sortSiblings(p=p.firstChild(),undoType='Sort Children')
     #@-node:ekr.20050415134809:c.sortChildren
-    #@+node:ekr.20040303175026.12:c.sortChildrenHelper
-    def sortChildrenHelper (self,p,cmp=None):
-
-        c = self ; u = c.undoer
-
-        # Create a list of tuples sorted on headlines.
-        pairs = [(child.headString().lower(),child.copy()) for child in p.children_iter()]
-        if cmp:
-            pairs.sort(cmp)
-        else:
-            pairs.sort()
-
-        # Move the children.
-        index = 0
-        for headline,child in pairs:
-            undoData = u.beforeMoveNode(child)
-            child.moveToNthChildOf(p,index)
-            u.afterMoveNode(child,'Sort',undoData)
-            index += 1
-    #@nonl
-    #@-node:ekr.20040303175026.12:c.sortChildrenHelper
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None,cmp=None):
+    def sortSiblings (self,event=None,cmp=None,p=None,undoType='Sort Siblings'):
 
         '''Sort the siblings of a node.'''
 
-        c = self ; u = c.undoer ; undoType = 'Sort Siblings'
-        p = c.currentPosition()
+        c = self ; u = c.undoer
+        if p is None: p = c.currentPosition()
         if not p: return
 
+        parent_v = p._parentVnode()
         parent = p.parent()
-        if not parent:
-            c.sortTopLevel(cmp=cmp)
-        else:
-            c.beginUpdate()
-            try: # In update...
-                c.endEditing()
-                u.beforeChangeGroup(p,undoType)
-                c.sortChildrenHelper(parent, cmp=cmp)
-                dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-                c.setChanged(True)
-                u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
-            finally:
-                c.endUpdate()
-    #@-node:ekr.20050415134809.1:c.sortSiblings
-    #@+node:ekr.20031218072017.2896:c.sortTopLevel
-    def sortTopLevel (self,event=None, cmp=None):
+        oldChildren = parent_v.t.children[:]
+        newChildren = parent_v.t.children[:]
 
-        '''Sort the top-level nodes of an outline.'''
+        def key (self):
+            return self.headString().lower()
 
-        c = self ; u = c.undoer ; undoType = 'Sort Siblings'
-        root = c.rootPosition()
-        if not root: return
+        if cmp: newChildren.sort(cmp,key=key)
+        else:   newChildren.sort(key=key)
 
-        # Create a list of tuples sorted by headlines.
-        pairs = [(p.headString().lower(),p.copy())
-            for p in root.self_and_siblings_iter()]
-        if cmp:
-            pairs.sort(cmp)
-        else:
-            pairs.sort()
+        # g.trace(g.listToString(newChildren))
 
         c.beginUpdate()
-        try: # In update...
-            dirtyVnodeList = []
-            u.beforeChangeGroup(root,undoType)
-            if 1: # In group...
-                h,p = pairs[0]
-                if p != root:
-                    undoData = u.beforeMoveNode(p)
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    p.moveToRoot(oldRoot=root)
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    u.afterMoveNode(p,'Sort',undoData)
-                for h,next in pairs[1:]:
-                    undoData = u.beforeMoveNode(next)
-                    next.moveAfter(p)
-                    u.afterMoveNode(next,'Sort',undoData)
-                    p = next
-                c.setRootPosition(c.findRootPosition(root)) # New in 4.4.2.
-            u.afterChangeGroup(root,undoType,dirtyVnodeList=dirtyVnodeList)
+        try:
+            bunch = u.beforeSort(p,undoType,oldChildren,newChildren)
+            parent_v.t.children = newChildren
+            if parent:
+                dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+            else:
+                dirtyVnodeList = []
+            u.afterSort(p,bunch,dirtyVnodeList)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2896:c.sortTopLevel
+
+
+        # parent = p.parent()
+        # if not parent:
+            # c.sortTopLevel(cmp=cmp)
+        # else:
+            # c.beginUpdate()
+            # try: # In update...
+                # c.endEditing()
+                # u.beforeChangeGroup(p,undoType)
+                # c.sortChildrenHelper(parent, cmp=cmp)
+                # dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+                # c.setChanged(True)
+                # u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
+            # finally:
+                # c.endUpdate()
+    #@-node:ekr.20050415134809.1:c.sortSiblings
+    #@-node:ekr.20080425060424.1:Sort...
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
     #@+node:ekr.20040711135959.2:Check Outline submenu...
     #@+node:ekr.20031218072017.2072:c.checkOutline
@@ -4741,39 +4698,44 @@ class baseCommands:
         '''Make all following siblings children of the selected node.'''
 
         c = self ; u = c.undoer
-        current = c.currentPosition()
-        command = 'Demote'
-        if not current or not current.hasNext():
+        p = c.currentPosition()
+        if not p or not p.hasNext():
             c.treeFocusHelper() ; return
 
         # Make sure all the moves will be valid.
-        next = current.next()
+        next = p.next()
         while next:
-            if not c.checkMoveWithParentWithWarning(next,current,True):
+            if not c.checkMoveWithParentWithWarning(next,p,True):
                 c.treeFocusHelper() ; return
             next.moveToNext()
 
         c.beginUpdate()
         try: # update...
             c.endEditing()
-            u.beforeChangeGroup(current,command)
-            p = current.copy()
-            while p.hasNext(): # Do not use iterator here.
-                child = p.next()
-                undoData = u.beforeMoveNode(child)
-                child.moveToNthChildOf(p,p.numberOfChildren())
-                u.afterMoveNode(child,command,undoData)
+            parent_v = p._parentVnode()
+            n = p.childIndex()
+            followingSibs = parent_v.t.children[n+1:]
+            # g.trace('sibs2\n',g.listToString(followingSibs2))
+            # Adjust the parent links of all moved nodes.
+            for z in followingSibs:
+                if parent_v in z.t.parents:
+                    z.t.parents.remove(parent_v)
+                if p.v not in z.t.parents:
+                    z.t.parents.append(p.v)
+            # Remove the moved nodes from the parent's children.
+            parent_v.t.children = parent_v.t.children[:n+1]
+            # Add the moved nodes to p's children
+            p.v.t.children.extend(followingSibs)
             p.expand()
             # Even if p is an @ignore node there is no need to mark the demoted children dirty.
-            dirtyVnodeList = current.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             c.setChanged(True)
-            u.afterChangeGroup(current,command,dirtyVnodeList=dirtyVnodeList)
+            u.afterDemote(p,followingSibs,dirtyVnodeList)
         finally:
-            c.selectPosition(current)  # Also sets rootPosition.
+            c.selectPosition(p)  # Also sets rootPosition.
             c.endUpdate()
-            # c.treeWantsFocusNow()
             c.treeFocusHelper()
-        c.updateSyntaxColorer(current) # Moving can change syntax coloring.
+        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
     #@+at 
@@ -4987,7 +4949,6 @@ class baseCommands:
                         p.moveToFirstChildOf(limit)
                 else:
                     # p will be the new root node
-                    # g.trace('move to root')
                     p.moveToRoot(oldRoot=c.rootPosition())
                     moved = True
             elif back2.hasChildren() and back2.isExpanded():
@@ -5036,21 +4997,29 @@ class baseCommands:
         c.beginUpdate()
         try: # In update...
             c.endEditing()
-            u.beforeChangeGroup(p,command)
-            after = p
-            while p.hasChildren(): # Don't use an iterator.
-                child = p.firstChild()
-                undoData = u.beforeMoveNode(child)
-                child.moveAfter(after)
-                after = child
-                u.afterMoveNode(child,command,undoData)
+            parent_v = p._parentVnode()
+            children = p.v.t.children
+            # Adjust the parent links of all moved nodes.
+            for z in children:
+                if p.v in z.t.parents:
+                    z.t.parents.remove(p.v)
+                if parent_v not in z.t.parents:
+                    z.t.parents.append(parent_v)
+            # Add the children to parent_v's children.
+            n = p.childIndex()+1
+            z = parent_v.t.children[:]
+            parent_v.t.children = z[:n]
+            parent_v.t.children.extend(children)
+            parent_v.t.children.extend(z[n:])
+            # Remove v's children.
+            p.v.t.children = []
             c.setChanged(True)
             if not inAtIgnoreRange and isAtIgnoreNode:
                 # The promoted nodes have just become newly unignored.
                 dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
             else: # No need to mark descendents dirty.
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            u.afterChangeGroup(p,command,dirtyVnodeList=dirtyVnodeList)
+            u.afterPromote(p,children,dirtyVnodeList)
             c.selectPosition(p)
         finally:
             c.endUpdate()
