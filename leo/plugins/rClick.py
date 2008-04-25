@@ -725,6 +725,9 @@ def onClose (tag, keys):
     except KeyError:
         pass
 
+    if not controller:
+        return
+
     try:
         controller.onClose()
     finally:
