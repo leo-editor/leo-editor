@@ -3458,7 +3458,7 @@ class phpScanner (baseScannerClass):
 
     def skipString (self,s,i):
         if g.match(s,i,'"') or g.match(s,i,"'"):
-            return self.skipString()
+            return g.skip_string(s,i)
         else:
             return g.skip_heredoc_string(s,i)
     #@-node:ekr.20070711090807:startsString skipString

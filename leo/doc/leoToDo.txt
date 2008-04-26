@@ -1,49 +1,7 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
-#@+node:ekr.20080411091507.10: First
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20080411091507.11:sax: fix paste node code
-#@-node:ekr.20080411091507.11:sax: fix paste node code
-#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
-# The start of this project is in leo.repo/leo-working.
-#@nonl
-#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080404074921.2:Put Komodo prototype on the wiki
-#@-node:ekr.20080404074921.2:Put Komodo prototype on the wiki
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@-node:ekr.20080411091507.10: First
-#@+node:ekr.20080411091507.1: Non-branch
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
+#@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080403102730.1:Explore ipython stuff
 @nocolor
 
@@ -77,6 +35,31 @@ Yes, IPython runs the startup script using normal python execfile.
 Pretty normally; I start leo.py as normal python program.
 #@nonl
 #@-node:ekr.20080403102730.1:Explore ipython stuff
+#@+node:ekr.20080411091507.1:Docs
+#@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
+@nocolor
+
+I'm updating my local copy of the trunk to add support for the
+AutoHotkey language to Leo.  It appears that the documentation in the
+leoNotes.txt file for adding support for a new language is outdated.
+Here is what I've done.  Is anything else necessary?
+
+The following structures were updated in leoApp.py:
+  self.language_delims_dict
+  self.language_extension_dict
+  self.extension_dict
+
+and an ahk.xml and ahk.py file was added to the leo\modes directory.
+
+With these changes I get correct syntax highlighting using "@language
+ahk" and by also setting the language as the default language in
+myLeoSettings.leo.  Is it also necessary to test:
+  "Test workings of the Preferences Panel by..." and
+  "Test the leoconfig.txt by setting default_target_language..." and
+  "Create an @root node and verify that you can tangle it."?
+#@-node:ekr.20080417213809.1:Update the docs re adding support for a new language
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20071105160956:*** auto-change panes  OR unified body/tree panes
 @nocolor
 
@@ -117,17 +100,71 @@ Leo should copy this download philosophy.
 #@+node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20071029082025:Improve distribution
-#@-node:ekr.20080411091507.1: Non-branch
-#@+node:ekr.20080411091507.2:leo-as-a-package branch
+#@-node:ekr.20080411091507.1:Docs
+#@+node:ekr.20080425054202.2:Early in release
 #@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@-node:ekr.20080411091507.2:leo-as-a-package branch
-#@+node:ekr.20080411091507.3:sax
-#@+node:ekr.20080411091507.11:sax: fix paste node code
-#@-node:ekr.20080411091507.11:sax: fix paste node code
-#@+node:ekr.20080407090400.6:Fix file bugs
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@-node:ekr.20080124083629.1:Improve @path handling
+#@-node:ekr.20080425054202.2:Early in release
+#@+node:ekr.20080411091507.10:Bugs
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
+
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
+
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
+
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
+
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
+#@nonl
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
+#@+node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+@color
+#@nonl
+#@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+This affects @auto imports of all "unknown" languages.
+
+For example, @auto x.css would put @language css in the root node.
+#@nonl
+#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
 #@+node:ekr.20080330085343.3:Fix bug in atFile.write
 The code should save/restore, just as in the clean_file function (from scripts.leo)
 #@nonl
@@ -216,113 +253,6 @@ outline that spawned it, and the @auto file is read no problems.
 
 
 #@-node:ekr.20080405074410.39:Fix new @auto bug
-#@-node:ekr.20080407090400.6:Fix file bugs
-#@+node:ekr.20080218110223.1:Files
-#@+node:ekr.20080311135649.2:Allow different .leo formats
-@nocolor
-
-On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
-
-> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
-
-> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
-> >  > It could also be argued that
-
-> >  > - Referring to previous cloned vnodes explicitly in XML does not
-> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
-> rule
-> >  > - It will speed up reading
-> >  > - Wouldn't it be better for preserving the integrity of the XML file?
-
-> > I would lean towards this line of argumentation. A couple of days I
-> >  had my Leo extension destroy the Leo ODM file (which was still valid
-> >  according to Leo, but unreadable wrt the extension and broken uAs). I
-> >  resorted to editing the Leo file with Emacs, and was quite surprised
-> >  to see that the headStrings were attributes of vnodes.
-
-> I'll chime in with my pet peeve re: .leo file structure::
-
-> I think that putting the headstrings on vnodes and body strings on tnodes
-> obscures the informational content of the .leo file, and makes the .leo
-> file
-> format less attractive as a generalized solution to the problem of how to
-> manage head/body pairs which live in a hierarchal structure.
-
-> Thanks,
-> Kent
-
-> >  I think that
-> >  editing the file might have been a bit easier if there had been no
-> >  such redundancy. But this is more a feeling rather than a qualified
-> >  opinion.
-
-Thanks for all these comments.  I'll respond to them all here.
-
-Clearly, we should be using a standard xml parser to read .leo files.
-
-My present thoughts:
-
-- I personally like human-readable headlines in <v> elements.
-
-- I am open to putting headlines in <t> elements, as an indication that
-tnodes do indeed contain headlines and body text.
-
-- I am willing to consider only writing shared subtrees once.
-
-Oh! (An Aha)  All these are preferences.  We can allow any combination of
-these provided that headlines appear somewhere.
-
-So that's clean.  This will happen in Leo 4.5. 
-#@nonl
-#@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20071031113657:Always use sax parser to read .leo files
-# Are there proper unit tests?
-# Do global settings and find-panel settings get set properly.
-#@nonl
-#@-node:ekr.20071031113657:Always use sax parser to read .leo files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080225104355:@bool fixed-leo-file
-@nocolor
-
-http://mail.google.com/mail/#inbox/118504bef91bb8ce
-
-I think it might be handy to have a 'fixed' flag in .leo file, to
-minimize cvs conflicts. When a leo document has that flag, nothing
-about frame positions etc. will ever be written to the .leo file on
-save.
-
-Most leo documents where people are supposed to collaborate should
-have this flag (e.g. the .leo documents in Leo cvs).
-
-@bool fixed-leo-file = True
-#@-node:ekr.20080225104355:@bool fixed-leo-file
-#@-node:ekr.20080218110223.1:Files
-#@-node:ekr.20080411091507.3:sax
-#@+node:ekr.20080411091507.4:ekr-devel
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@-node:ekr.20080124083629.1:Improve @path handling
-#@-node:ekr.20080411091507.4:ekr-devel
-#@+node:ekr.20080411091507.5:trunk
-#@+node:ekr.20080411091507.6:merge thyrsus branch to trunk
-#@-node:ekr.20080411091507.6:merge thyrsus branch to trunk
-#@+node:ekr.20080407090400.7:Fix minor bugs
 #@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
 @nocolor
 
@@ -561,7 +491,632 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:One message during import test on Linux
-#@-node:ekr.20080407090400.7:Fix minor bugs
+#@-node:ekr.20080411091507.10:Bugs
+#@+node:ekr.20080425054202.3:ASAP
+#@+node:ekr.20071110071126.2:Better isearch
+#@-node:ekr.20071110071126.2:Better isearch
+#@+node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20050920084036.265:scolorizer LATER
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # not ready yet.   
+
+    # k = self.k ; w = self.w
+    # s = pattern or k.getLabel(ignorePrompt=True)
+    # # g.trace(repr(s))
+    # w.tag_delete('color','color1')
+    # if not s: return
+    # if g.app.gui.guiName() != 'tkinter':
+        # return g.es('command not ready yet',color='blue')
+
+    # ind = 0
+    # index = w.getInsertPoint()
+    # index2 = index + len(s)
+    # # g.trace(index,index2)
+    # # Colorize in the forward direction, regardless of the kind of search.
+    # while ind:
+        # try:
+            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
+        # except Exception: break
+        # if ind:
+            # i, d = ind.split('.')
+            # d = str(int(d)+len(s))
+            # # g.trace(ind)
+            # if ind in (index,index2):
+                # w.tag_add('color1',ind,'%s.%s' % (i,d))
+            # w.tag_add('color',ind,'%s.%s' % (i,d))
+            # ind = i + '.' + d
+
+    # w.tag_config('color',foreground='red')
+    # w.tag_config('color1',background='lightblue')
+#@-node:ekr.20050920084036.265:scolorizer LATER
+#@-node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        t = leoNodes.tnode()
+        v = leoNodes.vnode(t)
+        p = leoNodes.position(v,[])
+        v.initHeadString("NewHeadline")
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # print language,ext
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# print "ext",ext
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    theFile = ""
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    c.beginUpdate()
+    try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.fileCommands.save(c.mFileName)
+                c.updateRecentFiles(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
+#@nonl
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            g.trace(fileName)
+            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.saveAs(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        # set local fileName, _not_ c.mFileName
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            fileName = g.ensure_extension(fileName, ".leo")
+            c.fileCommands.saveTo(fileName)
+            c.updateRecentFiles(fileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocus(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@-node:ekr.20061002093442:Add opml support to new,open, save commands
+#@+node:ekr.20061127170002.1:Allow multiple lines on the button bar
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3993176
+By: rich_ries
+
+How can the button bar be enlarged to take a second (or third!) row of icons? Or maybe the Scripting buttons can have
+their own section, like the NodeBar plugin did/does?
+
+add-new-icon-row command?
+#@nonl
+#@-node:ekr.20061127170002.1:Allow multiple lines on the button bar
+#@+node:ekr.20070624135822:Templates for common code fragments
+# How will users be reminded of the fragments?
+#   - A dropdown menu?
+#   - "Completion" in the log pane?
+
+# Invent a way for simple keystrokes to insert fragments:
+
+Fragment 1:
+
+c.beginUpdate()
+try:
+    pass
+finally:
+    endUpdate()
+
+Fragment 2:
+
+for p in c.allNodes_iter():
+    pass
+#@-node:ekr.20070624135822:Templates for common code fragments
+#@-node:ekr.20080425054202.3:ASAP
+#@+node:ekr.20080218110223.1:Files
+#@+node:ekr.20080311135649.2:Allow different .leo formats
+@nocolor
+
+On Tue, Mar 11, 2008 at 7:03 AM, Kent Tenney <kten...@gmail.com> wrote:
+
+> On 3/11/08, derwisch <johannes.hues...@med.uni-heidelberg.de> wrote:
+
+> >  On 11 Mrz., 08:03, "Ville M. Vainio" <vivai...@gmail.com> wrote:
+> >  > It could also be argued that
+
+> >  > - Referring to previous cloned vnodes explicitly in XML does not
+> >  > necessarily obscure DAG - it follows the "do not repeat yourself"
+> rule
+> >  > - It will speed up reading
+> >  > - Wouldn't it be better for preserving the integrity of the XML file?
+
+> > I would lean towards this line of argumentation. A couple of days I
+> >  had my Leo extension destroy the Leo ODM file (which was still valid
+> >  according to Leo, but unreadable wrt the extension and broken uAs). I
+> >  resorted to editing the Leo file with Emacs, and was quite surprised
+> >  to see that the headStrings were attributes of vnodes.
+
+> I'll chime in with my pet peeve re: .leo file structure::
+
+> I think that putting the headstrings on vnodes and body strings on tnodes
+> obscures the informational content of the .leo file, and makes the .leo
+> file
+> format less attractive as a generalized solution to the problem of how to
+> manage head/body pairs which live in a hierarchal structure.
+
+> Thanks,
+> Kent
+
+> >  I think that
+> >  editing the file might have been a bit easier if there had been no
+> >  such redundancy. But this is more a feeling rather than a qualified
+> >  opinion.
+
+Thanks for all these comments.  I'll respond to them all here.
+
+Clearly, we should be using a standard xml parser to read .leo files.
+
+My present thoughts:
+
+- I personally like human-readable headlines in <v> elements.
+
+- I am open to putting headlines in <t> elements, as an indication that
+tnodes do indeed contain headlines and body text.
+
+- I am willing to consider only writing shared subtrees once.
+
+Oh! (An Aha)  All these are preferences.  We can allow any combination of
+these provided that headlines appear somewhere.
+
+So that's clean.  This will happen in Leo 4.5. 
+#@nonl
+#@-node:ekr.20080311135649.2:Allow different .leo formats
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@-node:ekr.20080218110223.1:Files
 #@+node:ekr.20071211142600.2:Config stuff
 #@+node:ekr.20080311135649.5:List the special cases in the config code
 #@-node:ekr.20080311135649.5:List the special cases in the config code
@@ -608,8 +1163,7 @@ redefined menu.
 #@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20071211142600.3:Clean up config mess
 #@-node:ekr.20071211142600.2:Config stuff
-#@-node:ekr.20080411091507.5:trunk
-#@+node:ekr.20080411091507.7:key-handling
+#@+node:ekr.20080411091507.7:key-handling branch
 #@+node:ekr.20070824094005:Requests
 @nocolor
 
@@ -725,7 +1279,7 @@ EKR
                 a = getattr(event,z)
                 print z,repr(a)
 #@-node:ekr.20070613181147:(maybe) Improve key handling
-#@-node:ekr.20080411091507.7:key-handling
+#@-node:ekr.20080411091507.7:key-handling branch
 #@+node:ekr.20080411091507.8:Pluings
 #@+node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 @nocolor
@@ -741,90 +1295,7 @@ Regards, Roger
 #@nonl
 #@-node:ekr.20071010162003:Add @rclick-menus trees to specify rclick popup menus
 #@-node:ekr.20080411091507.8:Pluings
-#@+node:ekr.20080411091507.9:drawing branch
-#@+node:ekr.20071215101531:Reorg drawing/focus code?
-@nocolor
-
-** Dangerous!  Complex!
-    * This could be a very bad idea.
-    - Make *sure* everything works before making massive code changes!
-    - Make a separate bzr branch for this.
-
-Changing position
-    - Affects both redraw and focus.
-
-Drawing
-    - Most redraws happen at end-of-command.
-    - Must allow immediate redraws: make list of exceptions.
-    ** Don't eliminate begin/endUpdate pairs until *sure* everything works.
-        - Experiment by making begin/endUpdate do nothing.
-
-Focus
-    - Most focus changes happen at end-of-command.
-    - Must allow immediate focus changes: make list of exceptions.
-    ** The present focus code seems too complex, **but it works**.
-    - Clean up focus code: use treeFocusHelper everywhere
-
-@color
-#@nonl
-#@+node:ekr.20071215114036:Possible code
-@color
-
-@ notes:
-
-- Calls to request_x emphasize that the action is not to be taken immediately.
-- Calls to redraw, set_focus and setCurrentPosition emphasize that the action will happen eventually.
-- Calls to actual_x are for special situations.
-@c
-
-Add c ivars: requested_draw, requested_position, requested_focus.
-
-c methods:
-
-def update (self):
-    '''Honor all requests for drawing, focus and position.'''
-    c = self
-    if c.requested_position(): # First.
-        c.actual_selectPosition(c.requested_positiion)
-        c.requested_position = None
-    if c.requested_draw: # Second.
-        c.actual_draw()
-        c.requested_draw = False
-    if c.requested_focus: # Third.
-        c.actual_set_focus()
-        c.requested_focus = None
-
-def request_draw (self,flag = True):
-    self.requested_draw = flag
-draw = redraw = request_redraw
-
-def begin_update(self):
-    pass
-end_update = request_redraw
-
-def actual_draw (self):
-    << do the actual redraw >>
-redraw_now = actual_draw
-
-def request_currentPosition (self,p):
-    self.requested_draw = p.copy()
-setCurrentPosition = request_currentPosition
-
-def actual_setCurrentPosition (self,p):
-    << select position p >>
-
-def request_focus (self,w):
-    self.requested_focus = w
-set_focus = request_focus
-
-def actual_set_focus (self,w):
-    << set the focus to w >>
-set_focus_now = actual_set_focus
-#@nonl
-#@-node:ekr.20071215114036:Possible code
-#@-node:ekr.20071215101531:Reorg drawing/focus code?
-#@-node:ekr.20080411091507.9:drawing branch
-#@-node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
 @nocolor
@@ -1495,47 +1966,7 @@ could specify autocompleter conventions, say in an @autocompleter node in an
 #@nonl
 #@-node:ekr.20071106083149:Recent post
 #@-node:ekr.20071211093011:4.6  autocompletion
-#@+node:ekr.20071211091355:Other
-#@+node:ekr.20071110071126.2:Better isearch
-#@-node:ekr.20071110071126.2:Better isearch
-#@+node:ekr.20071128094234:Finish scolorizer
-#@+node:ekr.20050920084036.265:scolorizer LATER
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
-#@-node:ekr.20071128094234:Finish scolorizer
+#@+node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20071001052501:Versioning for nodes
 @nocolor
 
@@ -1552,171 +1983,89 @@ implementing a new feature.
 Remove all references to pluginsManager.txt.
 #@nonl
 #@-node:ekr.20071021125124:Revise plugins manager plugin
-#@+node:ekr.20061127170002.1:Allow multiple lines on the button bar
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=3993176
-By: rich_ries
-
-How can the button bar be enlarged to take a second (or third!) row of icons? Or maybe the Scripting buttons can have
-their own section, like the NodeBar plugin did/does?
-
-add-new-icon-row command?
-#@nonl
-#@-node:ekr.20061127170002.1:Allow multiple lines on the button bar
 #@+node:ekr.20070220082124:Make sure Leo can generate Latex
 #@-node:ekr.20070220082124:Make sure Leo can generate Latex
-#@+node:ekr.20070307082503:Make Leo an IPython notebook
-#@+node:ekr.20071128071822:Do ipython demo
+#@+node:ekr.20071215101531:Reorg drawing/focus code?
 @nocolor
 
-> The simple Python prompt is interesting in its own right and maybe an established use of it within Leo would act as a demonstration. The advancement to IPython would be obvious once there was an attractive integration of the normal prompt.
+** Dangerous!  Complex!
+    * This could be a very bad idea.
+    - Make *sure* everything works before making massive code changes!
+    - Make a separate bzr branch for this.
 
-Good point.
+Changing position
+    - Affects both redraw and focus.
 
-> It seems that many of the user stories you responded to on the wiki could be done with the simple Python prompt integration(somehow using the shell prompt instead of how you might have explained current execute script in your answers). So, of course, the Leo integration and demonstration of a simple Python prompt would assist these users - but require giving up IPython convenience in those situations.
+Drawing
+    - Most redraws happen at end-of-command.
+    - Must allow immediate redraws: make list of exceptions.
+    ** Don't eliminate begin/endUpdate pairs until *sure* everything works.
+        - Experiment by making begin/endUpdate do nothing.
 
-Exactly. 
+Focus
+    - Most focus changes happen at end-of-command.
+    - Must allow immediate focus changes: make list of exceptions.
+    ** The present focus code seems too complex, **but it works**.
+    - Clean up focus code: use treeFocusHelper everywhere
 
-> But then there would be more of a dialog on how to get to IPython since the integration of the shell - in terms of Leo - is a then a concrete model.
-
-Yes, it would be feasible to do a 'toy' implementation using python's cmd and readline modules. Presumably, this would sidestep all the difficult implementation issues that make ipython valuable :-)
-
-So this is all good.  We have a start of a user-level design, and a way of turning that design into working code *relatively* easily.
-
-Originally, I was thinking that the demo would be a set of diagrams illustrating how to integrate ipython into Leo.  The original post on this thread might claim to be such a 'diagram'.  Here are the bones of the design as described in the first post:
-
-1. Put the interactive shell in a Shell tab in the log pane.
-
-2. If the present node is an @history node, all of the work on the interactive prompt is captured (appended) in that body pane. Such nodes might be grouped into chapters, or by @shell-histories trees.
-
-3. Buttons or commands would play back captured sessions one step at a time.
-
-4. The open-shell-tab command could (under control of user options) rearrange Leo's panes to make them easier to use for entering shell commands.  The close-shell-tab command would undo whatever rearrangement took place.
-
-5. Leo users would see leo outlines as conveniently arranged saved sessions which are available for review and replay. 
-
-I think this is a pretty decent demo!
-
-My original idea was to use the minibuffer for input and use the 'shell' tab (or body pane for @shell nodes) only for output. But this would make it impossible to play back captured sessions.
-
-Actually, it may be easiest to do the full simulation in the Shell tab.  The Shell tab must have bindings that emulate the bindings (say) in idle's main console window.  I strongly suspect that there are more details than meet the eye.  Still, python's cmd and readline modules are a good start.  
-
-In short, it looks like we have a clear roadmap for an ipython demo in Leo: put an 'idle-like' console window in a Shell tab in Leo's log pane.
-
-I'll create commands to open and close the Shell tab soon--maybe today.  Is anyone interested in actually creating an 'idle-like' command interpreter in the Shell pane?
+@color
 #@nonl
-#@-node:ekr.20071128071822:Do ipython demo
-#@+node:ekr.20071127103206:Post from BillP
-@nocolor
+#@+node:ekr.20071215114036:Possible code
+@color
 
-http://sourceforge.net/forum/message.php?msg_id=4640591
-By: billp9619
+@ notes:
 
-It seems to me that the python interactive prompt is such a prominent feature
-of the language that it should be integrated better into leo.
+- Calls to request_x emphasize that the action is not to be taken immediately.
+- Calls to redraw, set_focus and setCurrentPosition emphasize that the action will happen eventually.
+- Calls to actual_x are for special situations.
+@c
 
-If the shell was there as a standard tab (similar to "Find" panel) then I think
-this would make Leo more enticing as a teaching tool.
+Add c ivars: requested_draw, requested_position, requested_focus.
 
-I could envision an arrangement such that if the selected outline node is of
-a certain kind - maybe @interactive - then all of the work on the interactive
-prompt is captured(appended) in that body pane. Another button or command would
-play back the captured session one step at a time.
+c methods:
 
-The window action "Toggle Split Direction" places the Log pane at the bottom
-where the body is normally. So when using the prompt it would be below the outline
-- and the body pane hidden by dragging left edge of window flush to the right.
-Such a user would see leo outlines as conveniently arranged saved sessions which
-are available for replay(and reviewable history as saved in corresponding body
-texts).
+def update (self):
+    '''Honor all requests for drawing, focus and position.'''
+    c = self
+    if c.requested_position(): # First.
+        c.actual_selectPosition(c.requested_positiion)
+        c.requested_position = None
+    if c.requested_draw: # Second.
+        c.actual_draw()
+        c.requested_draw = False
+    if c.requested_focus: # Third.
+        c.actual_set_focus()
+        c.requested_focus = None
+
+def request_draw (self,flag = True):
+    self.requested_draw = flag
+draw = redraw = request_redraw
+
+def begin_update(self):
+    pass
+end_update = request_redraw
+
+def actual_draw (self):
+    << do the actual redraw >>
+redraw_now = actual_draw
+
+def request_currentPosition (self,p):
+    self.requested_draw = p.copy()
+setCurrentPosition = request_currentPosition
+
+def actual_setCurrentPosition (self,p):
+    << select position p >>
+
+def request_focus (self,w):
+    self.requested_focus = w
+set_focus = request_focus
+
+def actual_set_focus (self,w):
+    << set the focus to w >>
+set_focus_now = actual_set_focus
 #@nonl
-#@-node:ekr.20071127103206:Post from BillP
-#@+node:ekr.20071117082144:@url http://projects.scipy.org/ipython/ipython/wiki/NoteBook/ProjectDescription
-#@-node:ekr.20071117082144:@url http://projects.scipy.org/ipython/ipython/wiki/NoteBook/ProjectDescription
-#@+node:ekr.20071118051101:@url http://leo.zwiki.org/ResponsesToIPythonsUserStories
-#@-node:ekr.20071118051101:@url http://leo.zwiki.org/ResponsesToIPythonsUserStories
-#@+node:ekr.20060603090445.7:Ipython stuff
-#@+node:ekr.20060603085719.1:Use IPython autocompleter?
-#@-node:ekr.20060603085719.1:Use IPython autocompleter?
-#@+node:ekr.20060603090445.8:Add newline history (like Iptyon history?)
-#@-node:ekr.20060603090445.8:Add newline history (like Iptyon history?)
-#@+node:ekr.20060601150940.1:Investigate Ipython support in Scripting plugin
-#@-node:ekr.20060601150940.1:Investigate Ipython support in Scripting plugin
-#@+node:ekr.20060603090445.9:Script button that saves environment between runs
-This would allow IPython-like operation.
-#@nonl
-#@-node:ekr.20060603090445.9:Script button that saves environment between runs
-#@-node:ekr.20060603090445.7:Ipython stuff
-#@+node:ekr.20070521100324.1:Using Leo as a notebook
-@nocolor
-https://sourceforge.net/forum/message.php?msg_id=4314394
-By: duanekaufman
-
-I am starting a kinda 'stream-of-thought' document, one in which I can put down
-a paragraph of thought (perhaps in a pretty fashion, using ReST markup), develop
-some code, to do some calculations, run the code and display the results...rinse,
-repeat.
-
-The document, in pseudo-form, would look like:
-
-<Development of thought #1>
-<Code to calculate something>
-<Results from code execution>
-<Discussion of results>
-
-Each of the above would probably be a node, and I have already put together
-things that look like the above, all except for the <results> part. I can run
-the code, but how can I get the output automatically in my node? I can cut-and-paste
-from the underlying command window (I run under Linux and Windows XP), but I
-would like o automate it as much as possible.
-
-Does anyone have any ideas on how to accomodate this workflow?
-
------- Reply
-
-A most interesting and important question--with such a capability one could make Leo into a full-fledged engineering notebook, e.g., as envisaged by the IPython Notebook project: 
-
-http://projects.scipy.org/ipython/ipython/wiki/NbshellManual 
-
-I can think of several possible approaches: 
-
-1. Create a custom version of the execute script command that would put script output in a particular node. Perhaps the headline of the node could be an argument to the enhanced command. 
-
-2. Have your script write to some 'standard place', and create a command to put that script in the presently selected node. Something like insert-script-output. 
-
-3. Create a script button that executes the script in the presently selected node and puts the result in the node *following* the selected node. You can then either move the node by hand, or use another script button to move the node to a 'standard place', say the last child of the <<results>> node. 
-
-As I write this I think the script-button approach is likely to be the simplest, most flexible and most powerful. I'll look into this myself soon... 
-
-Edward
-#@nonl
-#@-node:ekr.20070521100324.1:Using Leo as a notebook
-#@+node:ekr.20071116093143.1:Execute script using Ipython
-# It should be possible to use Leo as an IPython notebook *now*.
-#@nonl
-#@+node:ekr.20071118114756:IPython notes
-@nocolor
-
-shell.start has a user_ns keyword.  It might be interesting to set this to Leo global dict.
-
-shell_class is IPython.iplib.InteractiveShell
-
-InteractiveShell creates self.logger and self.jobs
-
-self.compile is codeop.CommandCompiler
-
-__builtin__.quit = Quitter('quit')
-__builtin__.exit = Quitter('exit')
-self.meta = Struct()
-
-Show Me videos:
-
-discusses all the magic commands.  Some are cool.
-#@nonl
-#@-node:ekr.20071118114756:IPython notes
-#@-node:ekr.20071116093143.1:Execute script using Ipython
-#@-node:ekr.20070307082503:Make Leo an IPython notebook
+#@-node:ekr.20071215114036:Possible code
+#@-node:ekr.20071215101531:Reorg drawing/focus code?
 #@+node:ekr.20070703111455.3:Minor
 # some of these can wait till much later.
 #@nonl
@@ -1734,517 +2083,12 @@ http://epydoc.sourceforge.net/epydoc.html
 #@-node:ekr.20070521105645:Improve api docs with epidoc?
 #@+node:ekr.20061116054917.6:Remove blanks in calltips
 #@-node:ekr.20061116054917.6:Remove blanks in calltips
-#@+node:ekr.20061002093442:Add opml support to new,open, save commands
-#@+node:ekr.20031218072017.2820:top level (file menu)
-#@+node:ekr.20031218072017.1623:new
-def new (self,event=None,gui=None):
-
-    '''Create a new Leo window.'''
-
-    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        t = leoNodes.tnode()
-        v = leoNodes.vnode(t)
-        p = leoNodes.position(v,[])
-        v.initHeadString("NewHeadline")
-        v.moveToRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-    return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
-def open (self,event=None):
-
-    '''Open a Leo window containing the contents of a .leo file.'''
-
-    c = self
-    << Set closeFlag if the only open window is empty >>
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",
-        filetypes = [("Leo files","*.leo"), ("All files","*")],
-        defaultextension = ".leo")
-    c.bringToFront()
-
-    ok = False
-    if fileName and len(fileName) > 0:
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            g.setGlobalOpenDir(fileName)
-        if ok and closeFlag:
-            g.app.destroyWindow(c.frame)
-
-    # openWithFileName sets focus if ok.
-    if not ok:
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
-@c
-
-closeFlag = (
-    c.frame.startupWindow and # The window was open on startup
-    not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
-#@+node:ekr.20031218072017.2823:openWith and allies
-def openWith(self,event=None,data=None):
-
-    """This routine handles the items in the Open With... menu.
-
-    These items can only be created by createOpenWithMenuFromTable().
-    Typically this would be done from the "open2" hook.
-
-    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
-    using a list, e.g.:
-
-    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
-    """
-
-    c = self ; p = c.currentPosition()
-    n = data and len(data) or 0
-    if n != 3:
-        g.trace('bad data, length must be 3, got %d' % n)
-        return
-    try:
-        openType,arg,ext=data
-        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-            g.enableIdleTimeHook(idleTimeDelay=100)
-            << set ext based on the present language >>
-            << create or reopen temp file, testing for conflicting changes >>
-            << execute a command to open path in external editor >>
-        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
-    except Exception:
-        g.es("unexpected exception in c.openWith")
-        g.es_exception()
-
-    return "break"
-#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
-if not ext:
-    theDict = g.scanDirectives(c)
-    language = theDict.get("language")
-    ext = g.app.language_extension_dict.get(language)
-    # print language,ext
-    if ext == None:
-        ext = "txt"
-
-if ext[0] != ".":
-    ext = "."+ext
-
-# print "ext",ext
-#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
-#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-theDict = None ; path = None
-<< set dict and path if a temp file already refers to p.v.t >>
-if path:
-    << create or recreate temp file as needed >>
-else:
-    path = c.createOpenWithTempFile(p,ext)
-
-if not path:
-    return # An error has occured.
-#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-searchPath = c.openWithTempFilePath(p,ext)
-
-if g.os_path_exists(searchPath):
-    for theDict in g.app.openWithFiles:
-        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
-            path = searchPath
-            break
-#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
-#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-@ We test for changes in both p and the temp file:
-
-- If only p's body text has changed, we recreate the temp file.
-- If only the temp file has changed, do nothing here.
-- If both have changed we must prompt the user to see which code to use.
-@c
-
-encoding = theDict.get("encoding")
-old_body = theDict.get("body")
-new_body = p.bodyString()
-new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
-
-old_time = theDict.get("time")
-try:
-    new_time = g.os_path_getmtime(path)
-except:
-    new_time = None
-
-body_changed = old_body != new_body
-temp_changed = old_time != new_time
-
-if body_changed and temp_changed:
-    << Raise dialog about conflict and set result >>
-    if result == "cancel": return
-    rewrite = result == "outline"
-else:
-    rewrite = body_changed
-
-if rewrite:
-    path = c.createOpenWithTempFile(p,ext)
-else:
-    g.es("reopening:",g.shortFileName(path),color="blue")
-#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-message = (
-    "Conflicting changes in outline and temp file\n\n" +
-    "Do you want to use the code in the outline or the temp file?\n\n")
-
-result = g.app.gui.runAskYesNoCancelDialog(c,
-    "Conflict!", message,
-    yesMessage = "Outline",
-    noMessage = "File",
-    defaultButton = "Cancel")
-#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
-#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
-#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
-#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-try:
-    if arg == None: arg = ""
-    shortPath = path # g.shortFileName(path)
-    if openType == "os.system":
-        if 1:
-            # This works, _provided_ that arg does not contain blanks.  Sheesh.
-            command = 'os.system(%s)' % (arg+shortPath)
-            os.system(arg+shortPath)
-        else:
-            # XP does not like this format!
-            command = 'os.system("%s" "%s")' % (arg,shortPath)
-            os.system('"%s" "%s"' % (arg,shortPath))
-    elif openType == "os.startfile":
-        command = "os.startfile(%s)" % (arg+shortPath)
-        os.startfile(arg+path)
-    elif openType == "exec":
-        command = "exec(%s)" % (arg+shortPath)
-        exec arg+path in {}
-    elif openType == "os.spawnl":
-        filename = g.os_path_basename(arg)
-        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
-        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
-    elif openType == "os.spawnv":
-        filename = os.path.basename(arg[0]) 
-        vtuple = arg[1:]
-        vtuple.insert(0, filename)
-            # add the name of the program as the first argument.
-            # Change suggested by Jim Sizelove.
-        vtuple.append(path)
-        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
-        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
-    # This clause by Jim Sizelove.
-    elif openType == "subprocess.Popen":
-        if isinstance(arg, basestring):
-            vtuple = arg + " " + path
-        elif isinstance(arg, (list, tuple)):
-            vtuple = arg[:]
-            vtuple.append(path)
-        command = "subprocess.Popen(%s)" % repr(vtuple)
-        if subprocess:
-            subprocess.Popen(vtuple)
-        else:
-            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
-    else:
-        command="bad command:"+str(openType)
-        g.trace(command)
-except Exception:
-    g.es("exception executing:",command)
-    g.es_exception()
-#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
-#@+node:ekr.20031218072017.2830:createOpenWithTempFile
-def createOpenWithTempFile (self,p,ext):
-
-    c = self
-    theFile = ""
-    path = c.openWithTempFilePath(p,ext)
-    try:
-        if g.os_path_exists(path):
-            g.es("recreating:  ",g.shortFileName(path),color="red")
-        else:
-            g.es("creating:  ",g.shortFileName(path),color="blue")
-        theFile = open(path,"w")
-        # Convert s to whatever encoding is in effect.
-        s = p.bodyString()
-        theDict = g.scanDirectives(c,p=p)
-        encoding = theDict.get("encoding",None)
-        if encoding == None:
-            encoding = c.config.default_derived_file_encoding
-        s = g.toEncodedString(s,encoding,reportErrors=True) 
-        theFile.write(s)
-        theFile.flush()
-        theFile.close()
-        try:    time = g.os_path_getmtime(path)
-        except: time = None
-        # g.es("time: " + str(time))
-        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
-        theDict = {
-            "body":s, "c":c, "encoding":encoding,
-            "f":theFile, "path":path, "time":time,
-            "p":p, "v":p.v }
-        << remove previous entry from app.openWithFiles if it exists >>
-        g.app.openWithFiles.append(theDict)
-        return path
-    except:
-        if theFile:
-            theFile.close()
-        theFile = None
-        g.es("exception creating temp file",color="red")
-        g.es_exception()
-        return None
-#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-for d in g.app.openWithFiles[:]:
-    p2 = d.get("p")
-    if p.v.t == p2.v.t:
-        # print "removing previous entry in g.app.openWithFiles for",p.headString()
-        g.app.openWithFiles.remove(d)
-#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
-#@-node:ekr.20031218072017.2830:createOpenWithTempFile
-#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
-def openWithTempFilePath (self,p,ext):
-
-    """Return the path to the temp file corresponding to p and ext."""
-
-    name = "LeoTemp_%s_%s%s" % (
-        str(id(p.v.t)),
-        g.sanitize_filename(p.headString()),
-        ext)
-
-    name = g.toUnicode(name,g.app.tkEncoding)
-
-    td = g.os_path_abspath(tempfile.gettempdir())
-
-    path = g.os_path_join(td,name)
-
-    return path
-#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-#@-node:ekr.20031218072017.2823:openWith and allies
-#@+node:ekr.20031218072017.2833:close
-def close (self,event=None):
-
-    '''Close the Leo window, prompting to save it if it has been changed.'''
-
-    g.app.closeLeoWindow(self.frame)
-#@-node:ekr.20031218072017.2833:close
-#@+node:ekr.20031218072017.2834:save (commands)
-def save (self,event=None):
-
-    '''Save a Leo outline to a file.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-        c.mFileName = ""
-
-    c.beginUpdate()
-    try:
-        if c.mFileName:
-            # Calls c.setChanged(False) if no error.
-            c.fileCommands.save(c.mFileName)
-        else:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
-
-            if fileName:
-                # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocus(w)
-#@nonl
-#@-node:ekr.20031218072017.2834:save (commands)
-#@+node:ekr.20031218072017.2835:saveAs
-def saveAs (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename.'''
-
-    c = self ;  w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
-
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
-
-        if fileName:
-            g.trace(fileName)
-            # 7/2/02: don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            # Calls c.setChanged(False) if no error.
-            c.fileCommands.saveAs(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocus(w)
-#@-node:ekr.20031218072017.2835:saveAs
-#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-def saveAsUnzipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is not compressed.'''
-    self.saveAsZippedHelper(False)
-
-def saveAsZipped (self,event=None):
-
-    '''Save a Leo outline to a file with a new filename,
-    ensuring that the file is compressed.'''
-    self.saveAsZippedHelper(True)
-
-def saveAsZippedHelper (self,isZipped):
-
-    c = self
-    oldZipped = c.isZipped
-    c.isZipped = isZipped
-    try:
-        c.saveAs()
-    finally:
-        c.isZipped = oldZipped
-#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
-#@+node:ekr.20031218072017.2836:saveTo
-def saveTo (self,event=None):
-
-    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
-
-    c = self ; w = g.app.gui.get_focus(c)
-
-    if g.app.disableSave:
-        g.es("save commands disabled",color="purple")
-        return
-
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
-
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
-
-        if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
-            c.fileCommands.saveTo(fileName)
-            c.updateRecentFiles(fileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocus(w)
-#@-node:ekr.20031218072017.2836:saveTo
-#@+node:ekr.20031218072017.2837:revert
-def revert (self,event=None):
-
-    '''Revert the contents of a Leo outline to last saved contents.'''
-
-    c = self
-
-    # Make sure the user wants to Revert.
-    if not c.mFileName:
-        return
-
-    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
-        "Revert to previous version of " + c.mFileName + "?")
-    c.bringToFront()
-
-    if reply=="no":
-        return
-
-    # Kludge: rename this frame so openWithFileName won't think it is open.
-    fileName = c.mFileName ; c.mFileName = ""
-
-    # Create a new frame before deleting this frame.
-    ok, frame = g.openWithFileName(fileName,c)
-    if ok:
-        frame.deiconify()
-        g.app.destroyWindow(c.frame)
-    else:
-        c.mFileName = fileName
-#@-node:ekr.20031218072017.2837:revert
-#@-node:ekr.20031218072017.2820:top level (file menu)
-#@-node:ekr.20061002093442:Add opml support to new,open, save commands
 #@+node:ekr.20071004120359.2:Do expand-region-abbrevs from
 See: regionalExpandAbbrev.
 #@nonl
 #@-node:ekr.20071004120359.2:Do expand-region-abbrevs from
-#@+node:ekr.20070605114358:Improve how recent files works?
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4347116
-By: terry_n_brown
-
-This is just a nit I guess, but I move between two machines all the time, and
-Leo keeps changing the paths I open from /home/tbrown/project/project.leo to
-/media/hda8/project/project.leo, so that when I switch to the other machine,
-where /home/tbrown/project/project.leo is actually /media/hdb2/project/project.leo,
-the recent files link is wrong.
-
-If it would be trivial for Leo to not do this, I'd like that feature.  If it's
-a big deal, then not to worry, I can always navigate to the file of course.
-#@-node:ekr.20070605114358:Improve how recent files works?
-#@+node:ekr.20070624135822:Templates for common code fragments
-#@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20070703111455.3:Minor
-#@-node:ekr.20071211091355:Other
+#@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3615177
@@ -2342,8 +2186,6 @@ S5: http://meyerweb.com/eric/tools/s5/
 #@-node:ekr.20060829103523:Render Leo slideshows
 #@-node:ekr.20060306194040:Leo Video
 #@+node:ekr.20071211093011.1:Other guis
-#@+node:ekr.20071030191227:Emacs/Pymacs gui
-#@-node:ekr.20071030191227:Emacs/Pymacs gui
 #@+node:ekr.20071117150547:pyGtk
 Wing IDE uses this: it looks great.
 #@nonl
@@ -10602,7 +10444,7 @@ I do not want to be treading on your toes, so please tell me if I am intruding.
 
 
 #@-node:ekr.20070824093611:Improve wxGui plugin
-#@+node:ekr.20080118175128:Create emacs-gui for use by leoPymacs module?
+#@+node:ekr.20080118175128:Emacs-gui for use by leoPymacs module
 @nocolor
 
 This would draw into Emacs Windows(!)
@@ -10611,7 +10453,7 @@ This would draw into Emacs Windows(!)
 - Outline buffer: harder?
 - Minibuffer: can we use the Emacs minibuffer?
 #@nonl
-#@-node:ekr.20080118175128:Create emacs-gui for use by leoPymacs module?
+#@-node:ekr.20080118175128:Emacs-gui for use by leoPymacs module
 #@-node:ekr.20071211093011.1:Other guis
 #@-all
 #@nonl

@@ -1897,6 +1897,9 @@
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal/delphi interface</vh></v>
 </v>
+<v t="ekr.20080424120358.1"><vh>PHP tests</vh>
+<v t="ekr.20080424120358.2"><vh>@test PHP 1</vh></v>
+</v>
 <v t="ekr.20071020075538.10"><vh>Python tests</vh>
 <v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
 <v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
@@ -20054,5 +20057,18 @@ try:
 finally:
     c.endUpdate(False)
 </t>
+<t tx="ekr.20080424120358.1"></t>
+<t tx="ekr.20080424120358.2">s = '''
+&lt;?
+
+echo 'Hello,
+world!';
+
+?&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.phpUnitTest(p,s=s,showTree=False)</t>
 </tnodes>
 </leo_file>

@@ -1235,6 +1235,341 @@ def warning (self,s):
     g.es_error(g.translateString(s))
 #@-node:ekr.20031218072017.3579:error, pathError, warning
 #@-node:ekr.20080418154703.1:Fixed Tangle bugs
+#@+node:ekr.20080424061644.1:Fixed recent files bug
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
+
+To reproduce:
+
+Run leo.
+Go to "File->Save as" and save the empty outline template somewhere,
+for example to /tmp/test.leo
+It will appear in "File->Recent files"
+When trying to open it from there, I get the following traceback:
+
+---
+Error: 1
+<type 'exceptions.AttributeError'> Exception in Tk callback
+ Function: <function recentFilesCallback at 0x8ba8df4> (type: <type
+'function'>)
+ Args: ()
+Traceback (innermost last):
+ File "/home/shadow/leo/extensions/Pmw/Pmw_1_3/lib/PmwBase.py", line
+1747, in __call__
+   return apply(self.func, args)
+ File "/home/shadow/leo/src/leoMenu.py", line 1599, in
+recentFilesCallback
+   c.openRecentFile(name)
+ File "/home/shadow/leo/src/leoCommands.py", line 1173, in
+openRecentFile
+   c = frame.c # Switch to the new commander so the "recentfiles2"
+hook doesn't crash.
+<type 'exceptions.AttributeError'>: leoTkinterFrame instance has no
+attribute 'c'
+---
+
+leo seems to crash, I hit Ctrl-C to stop it.
+When I run leo again, there is no entry for test.leo in "File->Recent
+files"
+
+Leo 4.4.8 final, build  1.244 , April 6, 2008
+python 2.5.1, Tk 8.4.16, Pmw 1.3
+OS: Linux
+
+This behaviour doesn't hurt me at all, I've found it accidentally.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k: k.setInputState(k.unboundKeyAction)
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.2080:clearRecentFiles
+def clearRecentFiles (self,event=None):
+
+    """Clear the recent files list, then add the present file."""
+
+    c = self ; f = c.frame ; u = c.undoer
+
+    bunch = u.beforeClearRecentFiles()
+
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
+    f.menu.delete_range(recentFilesMenu,0,len(c.recentFiles))
+
+    c.recentFiles = []
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    f.menu.createRecentFilesMenuItems()
+    c.updateRecentFiles(c.relativeFileName())
+
+    g.app.config.appendToRecentFiles(c.recentFiles)
+
+    # g.trace(c.recentFiles)
+
+    u.afterClearRecentFiles(bunch)
+
+    # New in Leo 4.4.5: write the file immediately.
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:ekr.20031218072017.2080:clearRecentFiles
+#@+node:ekr.20031218072017.2081:openRecentFile
+def openRecentFile(self,name=None):
+
+    if not name: return
+
+    c = self ; v = c.currentVnode()
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = name
+    if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok and closeFlag and frame != c.frame:
+            g.app.destroyWindow(c.frame) # 12/12/03
+            c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
+            c.setLog() # Sets the log stream for g.es
+
+    g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
+#@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2081:openRecentFile
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+    def munge2(name):
+        return g.os_path_abspath(g.os_path_join(g.app.loadDir,name or ''))
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@-node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@-node:ekr.20080424061644.1:Fixed recent files bug
+#@+node:ekr.20080424115643.5:Fixed import PHP bug
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
+
+I have just started using Leo and though not familiar with Python, I
+am finding it to be a great program.
+I am however having difficulty understanding the ins & outs, for
+example;
+
+I am trying to use Leo to organize all my different php scripts I have
+on my hard drive, when I try to import any php file I get errors. (see
+example) I was able to import html files just fine but I don't
+understand what I need to do to import my php files one by one so that
+I can organize them in a useful manner.
+
+ex error;
+exception executing command
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 275, in
+doCommand
+    val = command(event)
+  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 1508, in
+importAtFile
+    c.importCommands.importFilesCommand(names,"@file")
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1004, in
+importFilesCommand
+    v = self.createOutline(fileName,current)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 869, in
+createOutline
+    self.scanPHPText(s,p,atAuto=atAuto)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1671, in
+scanPHPText
+    scanner.run(s,parent)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2929, in
+run
+    self.scan(s,parent)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2394, in
+scan
+    i = self.skipDecls(s,0,len(s),inClass=False)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2615, in
+skipDecls
+    i = self.skipString(s,i)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 3461, in
+skipString
+    return self.skipString()
+TypeError: skipString() takes exactly 3 arguments (1 given)
+
+@color
+#@nonl
+#@+node:ekr.20070711090052.1:class phpScanner
+class phpScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070711090052.2: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '/*'
+    self.blockCommentDelim2 = '*/'
+    self.lineCommentDelim = '//'
+    self.lineCommentDelim2 = '#'
+
+    # The valid characters in an id
+    self.chars = list(string.ascii_letters + string.digits)
+    extra = [chr(z) for z in xrange(127,256)]
+    self.chars.extend(extra)
+#@-node:ekr.20070711090052.2: __init__
+#@+node:ekr.20070711094850:isPurePHP
+def isPurePHP (self,s):
+
+    '''Return True if the file begins with <?php or ends with ?>'''
+
+    s = s.strip()
+
+    return (
+        s.startswith('<?') and
+        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
+        s.endswith('?>'))
+
+#@-node:ekr.20070711094850:isPurePHP
+#@+node:ekr.20070711090052.3:Overrides
+# Does not create @first/@last nodes
+#@+node:ekr.20070711090807:startsString skipString
+def startsString(self,s,i):
+    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
+
+def skipString (self,s,i):
+    if g.match(s,i,'"') or g.match(s,i,"'"):
+        return g.skip_string(s,i)
+    else:
+        return g.skip_heredoc_string(s,i)
+#@-node:ekr.20070711090807:startsString skipString
+#@-node:ekr.20070711090052.3:Overrides
+#@-node:ekr.20070711090052.1:class phpScanner
+#@-node:ekr.20080424115643.5:Fixed import PHP bug
+#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+def appendToRecentFiles (self,files):
+
+    files = [theFile.strip() for theFile in files]
+
+    # g.trace(files)
+
+    def munge(name):
+        name = name or ''
+        return g.os_path_normpath(name).lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in self.recentFiles[:]:
+            if munge(name) == munge(name2):
+                self.recentFiles.remove(name2)
+
+        self.recentFiles.append(name)
+#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -3271,7 +3606,7 @@ def computeHomeDir():
 #@-node:ekr.20041117151301:computeHomeDir
 #@-node:ekr.20080407090400.4:Found: homeDir
 #@-node:ekr.20080407090400.3:Added install nodes re Leo's home directory
-#@+node:ekr.20080318081653.1:Added preliminary support for @bool fixedWindow option
+#@+node:ekr.20080318081653.1:Added support for @bool fixedWindow option
 @nocolor
 
 We should avoid conflicts here in the first place. We really need that
@@ -4164,7 +4499,7 @@ def updateFixedStatus (self):
     # g.trace('c.fixed',c.fixed)
 #@-node:ekr.20080412172151.2:updateFixedStatus
 #@-node:ekr.20080412053100.2:changed
-#@-node:ekr.20080318081653.1:Added preliminary support for @bool fixedWindow option
+#@-node:ekr.20080318081653.1:Added support for @bool fixedWindow option
 #@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@-all
