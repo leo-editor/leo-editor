@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:TL.20080221123824.1:@thin vim.py
+#@+node:EKR.20040517075715.10:@thin vim.py
 #@<< docstring >>
 #@+node:ekr.20050226184411:<< docstring >>
 '''A plugin that communicates with VIM.
@@ -321,5 +321,5 @@ def open_in_vim (tag,keywords,val=None):
 #@-node:EKR.20040517075715.11:open_in_vim
 #@-others
 #@nonl
-#@-node:TL.20080221123824.1:@thin vim.py
+#@-node:EKR.20040517075715.10:@thin vim.py
 #@-leo

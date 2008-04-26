@@ -35,7 +35,7 @@ import sys
 #@nonl
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
-__version__ = "0.25"
+__version__ = "0.25.1"
 #@<< version history >>
 #@+node:tbrown.20060903121429.3:<< version history >>
 #@@killcolor
@@ -110,6 +110,10 @@ __version__ = "0.25"
 # 0.25 TNB:
 # - added priority sort, tag all children 'todo'
 # - switched to leo icons for priority display
+# 0.25.1 bobjack
+# - make leo play nice with rclick and standard tree popup on linux
+#     - post menu with g.app.postPopupMenu
+#     - destroy menu with g.app.killPopupMenu
 #@-at
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
