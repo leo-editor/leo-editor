@@ -944,13 +944,15 @@ class baseFileCommands:
         Modify this with extreme care.'''
 
 
-        children = self.createSaxChildren(saxRoot,parent_v=None)
+        parent_v = self.c.hiddenRootNode
+
+        children = self.createSaxChildren(saxRoot,parent_v=parent_v)
 
         return children
     #@+node:ekr.20060919110638.5:createSaxChildren
     def createSaxChildren (self, sax_node, parent_v):
 
-        result = []
+        children = []
 
         for child in sax_node.children:
             tnx = child.tnx
@@ -958,13 +960,20 @@ class baseFileCommands:
             if t:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
                 v = self.createSaxVnode(child,parent_v,t=t)
+                # g.trace('**clone',v)
+                if v not in t.parents:
+                    t.parents.append(v)
+                for grandChild in v.t.children:
+                    if v not in grandChild.t.parents:
+                        # g.trace('adding %s to parents of %s' % (v,grandChild))
+                        grandChild.t.parents.append(v)
             else:
                 v = self.createSaxVnodeTree(child,parent_v)
-            result.append(v)
+            children.append(v)
 
-        if parent_v:
-            self._linkParentAndChildren(parent_v,result)
-        return result
+        self._linkParentAndChildren(parent_v,children)
+
+        return children
     #@-node:ekr.20060919110638.5:createSaxChildren
     #@+node:ekr.20060919110638.6:createSaxVnodeTree
     def createSaxVnodeTree (self,sax_node,parent_v):
@@ -1089,7 +1098,7 @@ class baseFileCommands:
 
         # Add parent_v to it's tnode's vnodeList.
         if parent_v not in parent_v.t.vnodeList:
-            parent_v.t.vnodeList.append(v)
+            parent_v.t.vnodeList.append(parent_v)
 
         # Set parent_v's children.
         parent_v.t.children = children
