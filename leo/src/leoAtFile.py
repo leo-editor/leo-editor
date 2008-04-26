@@ -647,11 +647,8 @@ class atFile:
             g.trace("last",last,last.t.fileIndex)
             g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
-        # See if there is already a child with the proper index.
-        # child = at.lastThinNode.firstChild()
-        # while child and not indices.areEqual(gnx,child.t.fileIndex):
-            # child = child.next()
-        children = at.lastThinNode.t.children
+        parent = at.lastThinNode # A vnode.
+        children = parent.t.children
         for child in children:
             if indices.areEqual(gnx,child.t.fileIndex):
                 break
@@ -660,7 +657,7 @@ class atFile:
 
         if at.cloneSibCount > 1:
             n = at.cloneSibCount ; at.cloneSibCount = 0
-            if child: clonedSibs,junk = at.scanForClonedSibs(child)
+            if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
             else: clonedSibs = 0
             copies = n - clonedSibs
             # g.trace(copies,headline)
@@ -690,7 +687,6 @@ class atFile:
                 t = leoNodes.tnode(bodyString=None,headString=headline)
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
-            parent = at.lastThinNode
             child = leoNodes.vnode(context=c,t=t)
             t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
@@ -2748,7 +2744,8 @@ class atFile:
 
         at = self
 
-        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(p.v)
+        parent_v = p._parentVnode()
+        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1:
             if thisClonedSibIndex == 1:
                 at.putSentinel("@clone %d" % (clonedSibs))
@@ -2796,7 +2793,8 @@ class atFile:
 
         at = self
 
-        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(p.v)
+        parent_v = p._parentVnode()
+        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1 and thisClonedSibIndex == 1:
             at.writeError("Cloned siblings are not valid in @thin trees")
 
@@ -4297,7 +4295,7 @@ class atFile:
     #@-node:ekr.20050104132026:stat
     #@-node:ekr.20050104131929:file operations...
     #@+node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
-    def scanForClonedSibs (self,v):
+    def scanForClonedSibs (self,parent_v,v):
 
         """Scan the siblings of vnode v looking for clones of v.
         Return the number of cloned sibs and n where p is the n'th cloned sibling."""
@@ -4306,15 +4304,23 @@ class atFile:
         thisClonedSibIndex = 0 # Position of p in list of cloned siblings.
 
         if v and v.isCloned():
-            sib = v
-            while sib.back():
-                sib = sib.back()
-            while sib:
+            sibs = parent_v.t.children
+            for sib in sibs:
                 if sib.t == v.t:
                     clonedSibs += 1
                     if sib == v:
                         thisClonedSibIndex = clonedSibs
-                sib = sib.next()
+
+        # if v and v.isCloned():
+            # sib = v
+            # while sib.back():
+                # sib = sib.back()
+            # while sib:
+                # if sib.t == v.t:
+                    # clonedSibs += 1
+                    # if sib == v:
+                        # thisClonedSibIndex = clonedSibs
+                # sib = sib.next()
 
         # g.trace(clonedSibs,thisClonedSibIndex)
 
