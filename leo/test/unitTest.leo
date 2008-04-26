@@ -874,6 +874,20 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20080423110627.1"><vh>New unit tests</vh>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+</v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
@@ -2128,20 +2142,6 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20080423110627.1"><vh>New unit tests</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 </v>
 </vnodes>
 <tnodes>

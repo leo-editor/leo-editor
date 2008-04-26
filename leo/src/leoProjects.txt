@@ -3357,9 +3357,9 @@ if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and not v.isAnyAtFileNode
 #@-node:ekr.20040313150633:<< remove unused tnodeList >>
 #@+node:ekr.20040323155951:<< do full tests >>
 if not unittest:
-    if count % 100 == 0:
+    if count % 1000 == 0:
         g.es('','.',newline=False)
-    if count % 2000 == 0:
+    if count % 8000 == 0:
         g.enl()
 
 @others
@@ -3658,11 +3658,8 @@ def createThinChild4 (self,gnxString,headline):
         g.trace("last",last,last.t.fileIndex)
         g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
-    # See if there is already a child with the proper index.
-    # child = at.lastThinNode.firstChild()
-    # while child and not indices.areEqual(gnx,child.t.fileIndex):
-        # child = child.next()
-    children = at.lastThinNode.t.children
+    parent = at.lastThinNode # A vnode.
+    children = parent.t.children
     for child in children:
         if indices.areEqual(gnx,child.t.fileIndex):
             break
@@ -3671,7 +3668,7 @@ def createThinChild4 (self,gnxString,headline):
 
     if at.cloneSibCount > 1:
         n = at.cloneSibCount ; at.cloneSibCount = 0
-        if child: clonedSibs,junk = at.scanForClonedSibs(child)
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
         else: clonedSibs = 0
         copies = n - clonedSibs
         # g.trace(copies,headline)
@@ -3701,7 +3698,6 @@ def createThinChild4 (self,gnxString,headline):
             t = leoNodes.tnode(bodyString=None,headString=headline)
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
-        parent = at.lastThinNode
         child = leoNodes.vnode(context=c,t=t)
         t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
@@ -3746,6 +3742,168 @@ def _linkAsNthChild (self,parent,n):
         p.v._p_changed = 1
 #@-node:ekr.20080416161551.215:p._linkAsNthChild
 #@-node:ekr.20080426051658.2:Fixed inconsistencies between parents and children arrays
+#@+node:ekr.20080426084849.1:Rewrote scanForClonedSibs
+#@+node:ekr.20080426082114.1:Found: scanForClonedSibs
+#@+node:ekr.20041005105605.72:createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode."""
+
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode ; lastIndex = last.t.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
+    if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
+        last.fileIndex = lastIndex =  gnx
+        self._forcedGnxPositionList.remove(last)
+
+    if 0:
+        g.trace("last",last,last.t.fileIndex)
+        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.t.children
+    for child in children:
+        if indices.areEqual(gnx,child.t.fileIndex):
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        # g.trace(copies,headline)
+    else:
+        if indices.areEqual(gnx,lastIndex):
+            last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            return last
+        if child:
+            child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the tnode only if it does not already exist.
+        tnodesDict = c.fileCommands.tnodesDict
+        t = tnodesDict.get(gnxString)
+        if t:
+            isClone = True
+            if indices.areEqual(t.fileIndex,gnx):
+                pass
+            else:
+                g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+                # g.trace('not created, should already exist',gnxString)
+        else:
+            isClone = False
+            t = leoNodes.tnode(bodyString=None,headString=headline)
+            t.fileIndex = gnx
+            tnodesDict[gnxString] = t
+        child = leoNodes.vnode(context=c,t=t)
+        t.vnodeList.append(child)
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+        if isClone:
+            # g.trace('**clone',child)
+            if parent not in t.parents:
+                t.parents.append(parent)
+            for grandChild in child.t.children:
+                if child not in grandChild.t.parents:
+                    # g.trace('adding %s to parents of %s' % (child,grandChild))
+                    grandChild.t.parents.append(child)
+
+        # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
+
+    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:createThinChild4
+#@+node:ekr.20041005105605.169:putAtAllChild
+@
+This code puts only the first of two or more cloned siblings, preceding the
+clone with an @clone n sentinel.
+
+This is a debatable choice: the cloned tree appears only once in the derived
+file. This should be benign; the text created by @all is likely to be used only
+for recreating the outline in Leo. The representation in the derived file
+doesn't matter much.
+@c
+
+def putAtAllChild(self,p):
+
+    at = self
+
+    parent_v = p._parentVnode()
+    clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+    if clonedSibs > 1:
+        if thisClonedSibIndex == 1:
+            at.putSentinel("@clone %d" % (clonedSibs))
+        else: return # Don't write second or greater trees.
+
+    at.putOpenNodeSentinel(p,inAtAll=True) # Suppress warnings about @file nodes.
+    at.putAtAllBody(p) 
+
+    for child in p.children_iter():
+        at.putAtAllChild(child)
+
+    at.putCloseNodeSentinel(p)
+#@-node:ekr.20041005105605.169:putAtAllChild
+#@+node:ekr.20041005105605.172:putAtOthersChild
+def putAtOthersChild(self,p):
+
+    at = self
+
+    parent_v = p._parentVnode()
+    clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+    if clonedSibs > 1 and thisClonedSibIndex == 1:
+        at.writeError("Cloned siblings are not valid in @thin trees")
+
+    at.putOpenNodeSentinel(p)
+    at.putBody(p) 
+
+    # Insert expansions of all children.
+    for child in p.children_iter():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    at.putCloseNodeSentinel(p)
+#@-node:ekr.20041005105605.172:putAtOthersChild
+#@+node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
+def scanForClonedSibs (self,parent_v,v):
+
+    """Scan the siblings of vnode v looking for clones of v.
+    Return the number of cloned sibs and n where p is the n'th cloned sibling."""
+
+    clonedSibs = 0 # The number of cloned siblings of p, including p.
+    thisClonedSibIndex = 0 # Position of p in list of cloned siblings.
+
+    if v and v.isCloned():
+        sibs = parent_v.t.children
+        for sib in sibs:
+            if sib.t == v.t:
+                clonedSibs += 1
+                if sib == v:
+                    thisClonedSibIndex = clonedSibs
+
+    # if v and v.isCloned():
+        # sib = v
+        # while sib.back():
+            # sib = sib.back()
+        # while sib:
+            # if sib.t == v.t:
+                # clonedSibs += 1
+                # if sib == v:
+                    # thisClonedSibIndex = clonedSibs
+            # sib = sib.next()
+
+    # g.trace(clonedSibs,thisClonedSibIndex)
+
+    return clonedSibs,thisClonedSibIndex
+#@-node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
+#@-node:ekr.20080426082114.1:Found: scanForClonedSibs
+#@-node:ekr.20080426084849.1:Rewrote scanForClonedSibs
 #@-node:ekr.20080421162832.7:Recent graph-world bugs
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -6103,7 +6261,6 @@ def updateFixedStatus (self):
 #@-node:ekr.20080412053100.2:changed
 #@-node:ekr.20080318081653.1:Added preliminary support for @bool fixedWindow option
 #@-node:ekr.20080408060320.783:Features
-#@-node:ekr.20080408060320.4:4.5 a1
 #@+node:ekr.20080416161308.1:This is the graph world
 #@+node:ekr.20080417064246.1:What I did
 @nocolor
@@ -6570,6 +6727,7 @@ def _parentVnode (self):
 #@-node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
 #@-node:ekr.20080420163857.2:Projects...
 #@-node:ekr.20080416161308.1:This is the graph world
+#@-node:ekr.20080408060320.4:4.5 a1
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
