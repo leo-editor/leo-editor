@@ -2612,9 +2612,15 @@ def es(s,*args,**keys):
     # See Section 5.3.4 (Calls) of the Python reference manual.
     # In other words, the following is about the best that can be done.
     color = keys.get('color')
-    commas = keys.get('commas') ; commas = g.choose(commas=='True',True,False) # default is False
-    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
-    spaces= keys.get('spaces') ; spaces = g.choose(spaces=='False',False,True) # default is True
+    commas = keys.get('commas')
+    commas = g.choose( 
+        commas in (True,'True','true'),True,False)# default is False
+    newline = keys.get('newline')
+    newline = g.choose(
+        newline in (False,'False','false'),False,True)# default is True
+    spaces= keys.get('spaces')
+    spaces = g.choose(
+        spaces in (False,'False','false'),False,True)# default is True
     tabName = keys.get('tabName','Log')
 
         # Default goes to log pane *not* the presently active pane.
@@ -2678,10 +2684,15 @@ def es_print(s,*args,**keys):
     # Important: defining keyword arguments in addition to *args **does not work**.
     # See Section 5.3.4 (Calls) of the Python reference manual.
     # In other words, the following is about the best that can be done.
-    commas = keys.get('commas') ; commas  = g.choose(commas=='True',True,False) # default is False
-    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
-    spaces= keys.get('spaces') ; spaces  = g.choose(spaces=='False',False,True) # default is True
-
+    commas = keys.get('commas')
+    commas = g.choose( 
+        commas in (True,'True','true'),True,False)# default is False
+    newline = keys.get('newline')
+    newline = g.choose(
+        newline in (False,'False','false'),False,True)# default is True
+    spaces= keys.get('spaces')
+    spaces = g.choose(
+        spaces in (False,'False','false'),False,True)# default is True
     try:
         if type(s) != type(u''):
             s = unicode(s,encoding)
