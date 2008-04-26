@@ -3471,9 +3471,9 @@ class baseCommands:
                     #@                << do full tests >>
                     #@+node:ekr.20040323155951:<< do full tests >>
                     if not unittest:
-                        if count % 100 == 0:
+                        if count % 1000 == 0:
                             g.es('','.',newline=False)
-                        if count % 2000 == 0:
+                        if count % 8000 == 0:
                             g.enl()
 
                     #@+others
