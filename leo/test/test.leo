@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="186" height="800" width="898"/>
+	<global_window_position top="67" left="334" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -5532,9 +5532,9 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080310164329.467"></t>
 <t tx="ekr.20080310164713.2"></t>
 <t tx="ekr.20080412082246.1"></t>
-<t tx="ekr.20080421171033.1"></t>
+<t tx="ekr.20080421171033.1">print p.v</t>
 <t tx="ekr.20080424081248.1"></t>
-<t tx="ekr.20080425112350.1"></t>
+<t tx="ekr.20080425112350.1">print p.v.t.parents</t>
 <t tx="ekr.20080425112350.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
