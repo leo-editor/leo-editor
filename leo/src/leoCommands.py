@@ -3548,6 +3548,24 @@ class baseCommands:
                             s = t.getAllText()
                             assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
                     #@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+                    #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+                    #@+at
+                    # Every nodes gets visited, so we only check consistency
+                    # between p and its parent, not between p and its 
+                    # children.
+                    # 
+                    # In other words, this is a strong test.
+                    #@-at
+                    #@@c
+
+                    parent_v = p._parentVnode()
+                    n = p.childIndex()
+
+                    assert parent_v.t.children[n] == p.v,'fail 1'
+
+                    assert parent_v in p.v.t.parents,'fail 2: parent_v: %s, parents: %s' % (
+                        parent_v,p.v.t.parents)
+                    #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
