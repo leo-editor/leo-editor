@@ -666,7 +666,6 @@ requiredIvars = (
 #@-node:bobjack.20080424195922.5:<< required ivars >>
 #@nl
 
-
 #@+others
 #@+node:ekr.20060108122501:Module-level
 #@+node:ekr.20060108122501.1:init
@@ -814,8 +813,6 @@ class pluginController(object):
         c = self.c
 
         self.registerCommands()
-
-
         self.rSetupMenus()
 
         c.theContextMenuController = self
