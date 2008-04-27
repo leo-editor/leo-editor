@@ -675,6 +675,8 @@ class leoFind:
         if not self.checkArgs():
             return
         self.initInHeadline()
+        if self.clone_find_all:
+            self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
         count = 0 ; clones = []
@@ -700,6 +702,7 @@ class leoFind:
                     found = oldRoot.insertAfter()
                     found.moveToRoot(oldRoot)
                     c.setHeadString(found,'Found: ' + self.find_text)
+                    c.setRootPosition(found) # New in Leo 4.5.
 
                     u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
                     #@-node:ekr.20051113110735:<< create the found node and begin the undo group >>
@@ -714,14 +717,15 @@ class leoFind:
                 #@-node:ekr.20051113110851:<< create a clone of p under the find node >>
                 #@nl
         if self.clone_find_all and clones:
-            c.setRootPosition(c.findRootPosition(found)) # New in 4.4.2.
             u.afterChangeGroup(found,undoType,reportFlag=True) 
             c.selectPosition(found) # Recomputes root.
             c.setChanged(True)
 
+
+        self.restore(data)
         c.redraw_now()
         g.es("found",count,"matches")
-        self.restore(data)
+
     #@-node:ekr.20031218072017.3073:findAll
     #@+node:ekr.20031218072017.3074:findNext
     def findNext(self,initFlag=True):
@@ -1300,7 +1304,10 @@ class leoFind:
         c.frame.bringToFront() # Needed on the Mac
 
         # Don't try to reedit headline.
-        c.selectPosition(p)
+        if p:
+            c.selectPosition(p)
+        else:
+            c.selectPosition(c.rootPosition()) # New in Leo 4.5.
 
         if not in_headline:
             # Looks good and provides clear indication of failure or termination.
