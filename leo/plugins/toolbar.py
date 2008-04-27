@@ -17,8 +17,8 @@ Backward compatability will be maintainid for the iconbar.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.1"
-__plugin_name__ = 'Toolbars'
+__version__ = "0.3"
+__plugin_name__ = 'Toolbar Manager'
 
 controllers = {}
 
@@ -27,8 +27,13 @@ controllers = {}
 #@+at
 # 0.1 bobjack:
 #     - initial version
+# 0.2 bobjack:
+#     - add toolbar-delete-button for use in button menus
+#     - introduced onPreCreate module method
+# 0.3 bobjack:
+#     - added support for tooltips in @buttons
+#     - fixed parameter bleed bug
 #@-at
-#@nonl
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
 #@<< todo >>
@@ -77,6 +82,7 @@ import leoTkinterFrame
 requiredIvars = (
     ('mb_retval', False),
     ('mb_keywords', False),
+    ('commandList', (list, tuple)),
 )
 #@nonl
 #@-node:bobjack.20080424195922.85:<< required ivars >>
@@ -97,9 +103,10 @@ def init ():
     ok = g.app.gui.guiName() == "tkinter"
 
     if ok:
-
-        leoPlugins.registerHandler('before-create-leo-frame',onCreate)
-        leoPlugins.registerHandler('close-frame', onClose)
+        r = leoPlugins.registerHandler
+        r('before-create-leo-frame',onPreCreate)
+        r('after-create-leo-frame', onCreate)
+        r('close-frame', onClose)
 
         g.app.gui.ScriptingControllerClass = ToolbarScriptingController
 
@@ -107,7 +114,17 @@ def init ():
 
     return ok
 #@-node:bobjack.20080424190906.7:init
-#@+node:bobjack.20080424195922.11:onCreate
+#@+node:bobjack.20080424195922.11:onPreCreate
+def onPreCreate (tag, keys):
+    """Replace iconBarClass with our own."""
+
+    c = keys.get('c')
+    if not (c and c.exists):
+        return
+
+    c.frame.iconBarClass = ToolbarTkIconBarClass
+#@-node:bobjack.20080424195922.11:onPreCreate
+#@+node:bobjack.20080426190702.6:onCreate
 def onCreate (tag, keys):
     """Handle creation and initialization of the pluginController.
 
@@ -123,8 +140,7 @@ def onCreate (tag, keys):
         controllers[c] = controller = pluginController(c)
         controller.onCreate()
 
-    c.frame.iconBarClass = ToolbarTkIconBarClass
-#@-node:bobjack.20080424195922.11:onCreate
+#@-node:bobjack.20080426190702.6:onCreate
 #@+node:bobjack.20080424195922.10:onClose
 def onClose (tag, keys):
 
@@ -149,8 +165,6 @@ def onClose (tag, keys):
     finally:
         controller = None
 #@-node:bobjack.20080424195922.10:onClose
-#@+node:bobjack.20080424190906.9:Event handlers
-#@-node:bobjack.20080424190906.9:Event handlers
 #@+node:bobjack.20080425135232.6:class ToolbarScriptingController
 scripting = mod_scripting.scriptingController
 class ToolbarScriptingController(scripting):
@@ -159,23 +173,30 @@ class ToolbarScriptingController(scripting):
     #@+node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
     def createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,bg=None):
 
-        self.getItemData(script)
+        data = self.getItemData(script)
         kw = {}
         if bg is not None:
             kw['bg'] = bg
+
+        if data and 'tooltip' in data:
+            statusLine = data['tooltip']
         scripting.createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,**kw)
 
     #@-node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
     #@+node:bobjack.20080425135232.11:createAtButtonHelper
-    def createAtButtonHelper(self, p, *args, **kw):
+    def createAtButtonHelper(self, p, h, statusLine, shortcut, *args, **kw):
 
-        self.getItemData(p.bodyString())
+        data = self.getItemData(p.bodyString())
 
         for k in 'bg', 'verbose':
             if k in kw and kw[k] is None:
                 del(kw[k])
 
-        scripting.createAtButtonHelper(self, p, *args, **kw)
+        if data and 'tooltip' in data:
+            statusLine = data['tooltip']
+
+
+        scripting.createAtButtonHelper(self, p, h, statusLine, shortcut,  *args, **kw)
     #@-node:bobjack.20080425135232.11:createAtButtonHelper
     #@+node:bobjack.20080425135232.10:getItemData
     def getItemData(self, script):
@@ -216,16 +237,20 @@ class ToolbarScriptingController(scripting):
         """
 
         try:
-            menu = self.item_data['menu']
+            menu = button.context_menu
         except Exception:
             menu = None
 
         if event and menu:
-            g.doHook('rclick-popup', c=self.c, event=event, context_menu=menu)
-            return
+            result = g.doHook(
+                'rclick-popup',
+                c=self.c, 
+                event=event,
+            )
+            if result:
+                return
 
         scripting.deleteButton(self, button)
-
     #@-node:bobjack.20080426064755.77:deleteButton
     #@-others
 #@-node:bobjack.20080425135232.6:class ToolbarScriptingController
@@ -246,27 +271,38 @@ class ToolbarTkIconBarClass(iconbar):
         except:
             data = None
 
-        if data:
-            if 'bg' in data:
-                keys['bg'] = data['bg']
+        btn = None
+        try:
+            #@        << pre create button >>
+            #@+node:bobjack.20080426205344.2:<< pre create button >>
+            if data:
 
-            if 'icon' in data:
-                image = self.getImage(data['icon'])
-                if image:
-                    keys['image'] = image
-                    if not 'bg' in keys:
-                        keys['bg'] = ''
+                if 'bg' in data:
+                    keys['bg'] = data['bg']
 
-        btn = iconbar.add(self, *args, **keys)
+                if 'icon' in data:
+                    image = self.getImage(data['icon'])
+                    if image:
+                        keys['image'] = image
+                        if not 'bg' in keys:
+                            keys['bg'] = ''
+            #@-node:bobjack.20080426205344.2:<< pre create button >>
+            #@nl
+            btn = iconbar.add(self, *args, **keys)
+            #@        << post create button >>
+            #@+node:bobjack.20080426205344.3:<< post create button >>
+            if data and btn:
 
-        if not data:
-            return btn
+                if 'fg' in data:
+                    btn.configure(fg=data['fg'])
 
-        if not btn:
-            return btn
+                if 'menu' in data:
+                    btn.context_menu = data['menu']
+            #@-node:bobjack.20080426205344.3:<< post create button >>
+            #@nl
 
-        if 'fg' in data:
-            btn.configure(fg=data['fg'])
+        finally:
+            self.item_data = None
 
         return btn
     #@-node:bobjack.20080426064755.76:add
@@ -334,7 +370,9 @@ class pluginController(object):
 
     """A per commander controller providing a toolbar manager."""
 
-    commandList = ()
+    commandList = (
+        'toolbar-delete-button',
+    )
 
     #@    @+others
     #@+node:bobjack.20080424195922.13:__init__
@@ -384,9 +422,10 @@ class pluginController(object):
 
             methodName = command.replace('-','_')
             function = getattr(self, methodName)
+            cm = self.c.theContextMenuController
 
             def cb(event, self=self, function=function):
-                self.mb_retval = function(self.mb_keywords)
+                cm.mb_retval = function(cm.mb_keywords)
 
             lst.append((command, methodName, cb))
 
@@ -410,6 +449,26 @@ class pluginController(object):
         return self.commandList
     #@-node:bobjack.20080424195922.19:getCommandList
     #@-node:bobjack.20080424195922.13:__init__
+    #@+node:bobjack.20080426190702.2:Generator Commands
+    #@+node:bobjack.20080426190702.3:toolbar_delete_button
+    def toolbar_delete_button(self, keywords):
+        """Minibuffer command to delete a toolbar button.
+
+        For use only in rClick menus attached to toolbar buttons.
+
+        """
+
+        try:
+            button = keywords['event'].widget
+            self.c.theScriptingController.deleteButton(button)
+        except:
+            g.es('failed to delete button')    
+
+
+
+
+    #@-node:bobjack.20080426190702.3:toolbar_delete_button
+    #@-node:bobjack.20080426190702.2:Generator Commands
     #@-others
 
 #@-node:bobjack.20080424195922.12:class pluginController

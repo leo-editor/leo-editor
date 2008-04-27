@@ -133,6 +133,14 @@ __version__ = '2.2'
 # 2.2 EKR: Bug fix: use g.match_word rather than s.startswith to discover 
 # names.
 # This prevents an 's' button from being created from @buttons nodes.
+# 2.3 bobjack:
+#     - added 'event' parameter to deleteButtonCallback to support rClick 
+# menus
+#     - exposed the scripting contoller class as
+#          g.app.gui.ScriptingControllerClass
+# 2.4 bobjack:
+#     - exposed the scripting controller instance as
+#         c.theScriptingController
 #@-at
 #@nonl
 #@-node:ekr.20060328125248.3:<< version history >>
@@ -172,6 +180,7 @@ def onCreate (tag, keys):
     if c:
         # g.trace('mod_scripting',c)
         sc = g.app.gui.ScriptingControllerClass(c)
+        c.theScriptingController = sc
         sc.createAllButtons()
 #@nonl
 #@-node:ekr.20060328125248.5:onCreate
