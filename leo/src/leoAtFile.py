@@ -680,7 +680,6 @@ class atFile:
                     pass
                 else:
                     g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
-                    # g.trace('not created, should already exist',gnxString)
             else:
                 t = leoNodes.tnode(bodyString=None,headString=headline)
                 t.fileIndex = gnx
@@ -689,8 +688,6 @@ class atFile:
             child = leoNodes.vnode(context=c,t=t)
             t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
-            child._addVnodeListToParents()
-            # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
 
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
