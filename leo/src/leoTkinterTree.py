@@ -566,6 +566,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
             # Keys are p.key().  Entries are (w,theId)
             self.visibleText [p.key()] = w,theId
+            ### self.visibleText[id(p.v)] = w,theId
         else:
             g.trace('**** can not happen.  No p')
 
@@ -740,7 +741,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Return the address part of repr(Tk.Text)."""
 
-        return repr(w)[-9:-1].lower()
+        s = repr(w)
+        i = s.find('id: ')
+        if i != -1:
+            return s[i+4:i+12].lower()
+        else:
+            return s ### [-9:-1].lower()
     #@-node:ekr.20040803072955.33:textAddr
     #@+node:ekr.20040803072955.34:traceIds (Not used)
     # Verbose tracing is much more useful than this because we can see the recent past.
@@ -1582,12 +1588,14 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; trace = False
 
         # if trace: g.trace(g.callers())
+
         if p and c:
-            if trace: g.trace('h',p.headString(),'key',p.key())
+            # if trace: g.trace('h',p.headString(),'key',p.key())
             aTuple = self.visibleText.get(p.key())
+            ### aTuple = self.visibleText.get(id(p.v))
             if aTuple:
                 w,theId = aTuple
-                if trace: g.trace('%4d' % (theId),self.textAddr(w),p.headString())
+                # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
                 return w
             else:
                 if trace: g.trace('oops: not found',p,g.callers())
@@ -1974,7 +1982,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if not p: return
 
-        # g.trace(p.headString(),self.c._currentPosition)
+        # g.trace(c.isCurrentPosition(p),self.c._currentPosition,p)
 
         if c.isCurrentPosition(p):
             if p == self.editPosition():
@@ -2439,13 +2447,20 @@ class leoTkinterTree (leoFrame.leoTree):
     setNormalLabelState = setEditLabelState # For compatibility.
     #@-node:ekr.20040803072955.135:setEditLabelState
     #@+node:ekr.20040803072955.136:setSelectedLabelState
-    def setSelectedLabelState (self,p): # selected, disabled
+    trace_n = 0
 
-        # g.trace(p.headString(),g.callers())
+    def setSelectedLabelState (self,p): # selected, disabled
 
         c = self.c
 
+
         if p and c.edit_widget(p):
+
+            if 0:
+                g.trace(self.trace_n,c.edit_widget(p),p)
+                # g.trace(g.callers(6))
+                self.trace_n += 1
+
             self.setDisabledHeadlineColors(p)
     #@-node:ekr.20040803072955.136:setSelectedLabelState
     #@+node:ekr.20040803072955.138:setUnselectedLabelState
