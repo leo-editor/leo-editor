@@ -495,7 +495,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.31"
+__version__ = "1.32"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -592,7 +592,9 @@ __plugin_name__ = 'Right Click Menus'
 # 1.30 bobjack:
 # - Linux bug fixes
 # 1.31 bobjack:
-# - some refacoring to aid unit tests
+# - some refactoring to aid unit tests
+# 1.32 bobjack:
+#     - bugfix per widget context_menu
 # 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
@@ -1626,7 +1628,7 @@ class pluginController(object):
 
         # If widget has an explicit context_menu set then use it
         if event and hasattr(widget, 'context_menu'):
-            context_menu = widget.context_menu = context_menu
+            context_menu = widget.context_menu
 
         if context_menu:
 
