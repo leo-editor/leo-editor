@@ -4741,11 +4741,7 @@ class baseCommands:
             followingSibs = parent_v.t.children[n+1:]
             # g.trace('sibs2\n',g.listToString(followingSibs2))
             # Adjust the parent links of all moved nodes.
-            for z in followingSibs:
-                if parent_v in z.parents:
-                    z.parents.remove(parent_v)
-                if p.v not in z.parents:
-                    z.parents.append(p.v)
+            parent_v._computeParentsOfChildren(children=followingSibs)
             # Remove the moved nodes from the parent's children.
             parent_v.t.children = parent_v.t.children[:n+1]
             # Add the moved nodes to p's children
@@ -5023,12 +5019,6 @@ class baseCommands:
             c.endEditing()
             parent_v = p._parentVnode()
             children = p.v.t.children
-            # Adjust the parent links of all moved nodes.
-            for z in children:
-                if p.v in z.parents:
-                    z.parents.remove(p.v)
-                if parent_v not in z.parents:
-                    z.parents.append(parent_v)
             # Add the children to parent_v's children.
             n = p.childIndex()+1
             z = parent_v.t.children[:]
@@ -5037,6 +5027,8 @@ class baseCommands:
             parent_v.t.children.extend(z[n:])
             # Remove v's children.
             p.v.t.children = []
+            # Adjust the parent links of all moved nodes.
+            parent_v._computeParentsOfChildren(children=children)
             c.setChanged(True)
             if not inAtIgnoreRange and isAtIgnoreNode:
                 # The promoted nodes have just become newly unignored.
