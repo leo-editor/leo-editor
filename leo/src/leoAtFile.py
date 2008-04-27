@@ -676,30 +676,20 @@ class atFile:
             tnodesDict = c.fileCommands.tnodesDict
             t = tnodesDict.get(gnxString)
             if t:
-                isClone = True
                 if indices.areEqual(t.fileIndex,gnx):
                     pass
                 else:
                     g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
                     # g.trace('not created, should already exist',gnxString)
             else:
-                isClone = False
                 t = leoNodes.tnode(bodyString=None,headString=headline)
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
+
             child = leoNodes.vnode(context=c,t=t)
             t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
-
-            if isClone:
-                # g.trace('**clone',child)
-                if parent not in t.parents:
-                    t.parents.append(parent)
-                for grandChild in child.t.children:
-                    if child not in grandChild.t.parents:
-                        # g.trace('adding %s to parents of %s' % (child,grandChild))
-                        grandChild.t.parents.append(child)
-
+            child._addVnodeListToParents()
             # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
 
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
