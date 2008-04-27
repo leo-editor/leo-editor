@@ -3970,8 +3970,8 @@ def moveToRoot (self,oldRoot=None):
     # Init v.t.vnodeList
     v.t.vnodeList = [v]
 
-    # Init v.t.parents to the hidden root node.
-    v.t.parents = [hiddenRootNode]
+    # Init v.parents to the hidden root node.
+    v.parents = [hiddenRootNode]
     v._p_changed = 1
 
     # Init hiddenRootNode's children to v.

@@ -3684,8 +3684,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    if not parent_v in v.t.parents:
-        v.t.parents.append(parent_v)
+    # Now done in call to v._computeParentsOfChildren in callers.
+    # if not parent_v in v.parents:
+        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -3773,7 +3774,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:_linkParentAndChildren
+#@+node:ekr.20060919110638.9:p._linkParentAndChildren
 def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
@@ -3787,9 +3788,9 @@ def _linkParentAndChildren (self, parent_v, children):
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.t.parents:
-            v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:_linkParentAndChildren
+        if parent_v not in v.parents:
+            v.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@+node:EKR.20040530121329:u.restoreTree & helpers
 def restoreTree (self,treeInfo):
 
@@ -3810,7 +3811,7 @@ def restoreVnodeUndoInfo (self,bunch):
     v = bunch.v
 
     v.statusBits = bunch.statusBits
-    v.children   = bunch.children
+    v.t.children = bunch.children
     v.parents    = bunch.parents
 
     uA = bunch.get('unknownAttributes')
@@ -3878,7 +3879,7 @@ def createVnodeUndoInfo (self,v):
         v = v,
         statusBits = v.statusBits,
         parents    = v.parents[:],
-        children   = v.children[:],
+        children   = v.t.children[:],
         # The tnode never changes so there is no need to save it here.
     )
 
@@ -4008,7 +4009,7 @@ def createVnodeUndoInfo (self,v):
         v = v,
         statusBits = v.statusBits,
         parents    = v.parents[:],
-        children   = v.children[:],
+        children   = v.t.children[:],
         # The tnode never changes so there is no need to save it here.
     )
 
@@ -4056,7 +4057,7 @@ def restoreVnodeUndoInfo (self,bunch):
     v = bunch.v
 
     v.statusBits = bunch.statusBits
-    v.children   = bunch.children
+    v.t.children = bunch.children
     v.parents    = bunch.parents
 
     uA = bunch.get('unknownAttributes')
@@ -4131,24 +4132,13 @@ def createSaxChildren (self, sax_node, parent_v):
         t = self.tnodesDict.get(tnx)
         if t:
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-            v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            assert v in t.vnodeList
-            assert parent_v in t.parents
-            for grandChild in v.t.children:
-                if v not in grandChild.t.parents:
-                    # g.trace('adding %s to parents of %s' % (v,grandChild))
-                    grandChild.t.parents.append(v)
-
-            if 0: # previous code
-                if v not in t.parents:
-                    t.parents.append(v)
-                for grandChild in v.t.children:
-                    if v not in grandChild.t.parents:
-                        # g.trace('adding %s to parents of %s' % (v,grandChild))
-                        grandChild.t.parents.append(v)
+            v = self.createSaxVnode(child,parent_v,t=t)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
+
+        # Add all items in v.t.vnodeList to parents of grandchildren.
+        v._computeParentsOfChildren()
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -4185,8 +4175,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    if not parent_v in v.t.parents:
-        v.t.parents.append(parent_v)
+    # Now done in call to v._computeParentsOfChildren in callers.
+    # if not parent_v in v.parents:
+        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -4274,7 +4265,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:_linkParentAndChildren
+#@+node:ekr.20060919110638.9:p._linkParentAndChildren
 def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
@@ -4288,9 +4279,9 @@ def _linkParentAndChildren (self, parent_v, children):
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.t.parents:
-            v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:_linkParentAndChildren
+        if parent_v not in v.parents:
+            v.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
 def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
@@ -4402,9 +4393,9 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.t.parents.
-    if hiddenRootNode not in p.v.t.parents:
-        p.v.t.parents.append(hiddenRootNode)
+    # Update the p.v.parents.
+    if hiddenRootNode not in p.v.parents:
+        p.v.parents.append(hiddenRootNode)
         p.v._p_changed = 1
 
     # Update the hiddenRootNode's children.
@@ -4462,9 +4453,16 @@ def _unlink (self):
         g.trace(g.callers())
 
     # Delete parent_v from p.v's parents.
-    if parent_v in p.v.t.parents:
-        p.v.t.parents.remove(parent_v)
-        p.v._p_changed = 1 # Support for tnode class.
+    # if parent_v in p.v.parents:
+        # p.v.parents.remove(parent_v)
+        # p.v._p_changed = 1
+
+    # Clear the entire parents array.
+    if p.v.parents:
+        p.v.parents = []
+        p.v._p_changed = 1
+
+
 
 #@-node:ekr.20080416161551.217:p._unlink
 #@-node:ekr.20080421083619.1:Fixed two recent node bugs
@@ -4915,9 +4913,9 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.t.parents.
-    if hiddenRootNode not in p.v.t.parents:
-        p.v.t.parents.append(hiddenRootNode)
+    # Update the p.v.parents.
+    if hiddenRootNode not in p.v.parents:
+        p.v.parents.append(hiddenRootNode)
         p.v._p_changed = 1
 
     # Update the hiddenRootNode's children.
@@ -5114,24 +5112,13 @@ def createSaxChildren (self, sax_node, parent_v):
         t = self.tnodesDict.get(tnx)
         if t:
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-            v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            assert v in t.vnodeList
-            assert parent_v in t.parents
-            for grandChild in v.t.children:
-                if v not in grandChild.t.parents:
-                    # g.trace('adding %s to parents of %s' % (v,grandChild))
-                    grandChild.t.parents.append(v)
-
-            if 0: # previous code
-                if v not in t.parents:
-                    t.parents.append(v)
-                for grandChild in v.t.children:
-                    if v not in grandChild.t.parents:
-                        # g.trace('adding %s to parents of %s' % (v,grandChild))
-                        grandChild.t.parents.append(v)
+            v = self.createSaxVnode(child,parent_v,t=t)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
+
+        # Add all items in v.t.vnodeList to parents of grandchildren.
+        v._computeParentsOfChildren()
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -5168,8 +5155,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    if not parent_v in v.t.parents:
-        v.t.parents.append(parent_v)
+    # Now done in call to v._computeParentsOfChildren in callers.
+    # if not parent_v in v.parents:
+        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -5257,7 +5245,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:_linkParentAndChildren
+#@+node:ekr.20060919110638.9:p._linkParentAndChildren
 def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
@@ -5271,9 +5259,9 @@ def _linkParentAndChildren (self, parent_v, children):
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.t.parents:
-            v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:_linkParentAndChildren
+        if parent_v not in v.parents:
+            v.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20031218072017.2004:canonicalTnodeIndex
 def canonicalTnodeIndex(self,index):
@@ -5325,9 +5313,16 @@ def _unlink (self):
         g.trace(g.callers())
 
     # Delete parent_v from p.v's parents.
-    if parent_v in p.v.t.parents:
-        p.v.t.parents.remove(parent_v)
-        p.v._p_changed = 1 # Support for tnode class.
+    # if parent_v in p.v.parents:
+        # p.v.parents.remove(parent_v)
+        # p.v._p_changed = 1
+
+    # Clear the entire parents array.
+    if p.v.parents:
+        p.v.parents = []
+        p.v._p_changed = 1
+
+
 
 #@-node:ekr.20080416161551.217:p._unlink
 #@+node:ekr.20080425060424.3:beforeSort
@@ -5505,29 +5500,13 @@ def undoMove (self):
     del u.newParent_v.t.children[u.newN]
     u.oldParent_v.t.children.insert(u.oldN,v)
 
-    # Adjust the parent links.
-    if u.newParent_v in v.t.parents:
-        v.t.parents.remove(u.newParent_v)
-
-    if u.oldParent_v not in v.t.parents:
-        v.t.parents.append(u.oldParent_v)
-
-    # if u.oldParent:
-        # u.p.moveToNthChildOf(u.oldParent,u.oldN)
-    # elif u.oldBack:
-        # u.p.moveAfter(u.oldBack)
-    # else:
-        # u.p.moveToRoot(oldRoot=c.rootPosition())
-
+    # Recompute the parent links.
+    u.oldParent_v._computeParentsOfChildren()
 
     u.updateMarks('old')
 
     for v in u.dirtyVnodeList:
         v.t.setDirty()
-
-    # if u.newParent_v != u.oldParent_v:
-        # if u.newP.parent():
-            # u.newP.parent().contract()
 
     c.selectPosition(u.p)
 #@-node:ekr.20050411112033:undoMove
@@ -5544,29 +5523,13 @@ def redoMove (self):
     del u.oldParent_v.t.children[u.oldN]
     u.newParent_v.t.children.insert(u.newN,v)
 
-    # Adjust the parent links.
-    if u.oldParent_v in v.t.parents:
-        v.t.parents.remove(u.oldParent_v)
-
-    if u.newParent_v not in v.t.parents:
-        v.t.parents.append(u.newParent_v)
-
-    # if u.newParent:
-        # u.p.moveToNthChildOf(u.newParent,u.newN)
-    # elif u.newBack:
-        # u.p.moveAfter(u.newBack)
-    # else:
-        # oldRoot = c.rootPosition()
-        # u.p.moveToRoot(oldRoot=oldRoot)
+    # Recompute the parent links.
+    u.newParent_v._computeParentsOfChildren()
 
     u.updateMarks('new')
 
     for v in u.dirtyVnodeList:
         v.t.setDirty()
-
-    # if u.newParent_v != u.oldParent_v:
-        # if u.p.parent():
-            # u.p.parent().contract()
 
     c.selectPosition(u.newP)
 #@-node:ekr.20050411111847:redoMove
@@ -5603,11 +5566,7 @@ def demote (self,event=None):
         followingSibs = parent_v.t.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
         # Adjust the parent links of all moved nodes.
-        for z in followingSibs:
-            if parent_v in z.t.parents:
-                z.t.parents.remove(parent_v)
-            if p.v not in z.t.parents:
-                z.t.parents.append(p.v)
+        parent_v._computeParentsOfChildren(children=followingSibs)
         # Remove the moved nodes from the parent's children.
         parent_v.t.children = parent_v.t.children[:n+1]
         # Add the moved nodes to p's children
@@ -5877,12 +5836,6 @@ def promote (self,event=None):
         c.endEditing()
         parent_v = p._parentVnode()
         children = p.v.t.children
-        # Adjust the parent links of all moved nodes.
-        for z in children:
-            if p.v in z.t.parents:
-                z.t.parents.remove(p.v)
-            if parent_v not in z.t.parents:
-                z.t.parents.append(parent_v)
         # Add the children to parent_v's children.
         n = p.childIndex()+1
         z = parent_v.t.children[:]
@@ -5891,6 +5844,8 @@ def promote (self,event=None):
         parent_v.t.children.extend(z[n:])
         # Remove v's children.
         p.v.t.children = []
+        # Adjust the parent links of all moved nodes.
+        parent_v._computeParentsOfChildren(children=children)
         c.setChanged(True)
         if not inAtIgnoreRange and isAtIgnoreNode:
             # The promoted nodes have just become newly unignored.
@@ -5991,11 +5946,7 @@ def demote (self,event=None):
         followingSibs = parent_v.t.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
         # Adjust the parent links of all moved nodes.
-        for z in followingSibs:
-            if parent_v in z.t.parents:
-                z.t.parents.remove(parent_v)
-            if p.v not in z.t.parents:
-                z.t.parents.append(p.v)
+        parent_v._computeParentsOfChildren(children=followingSibs)
         # Remove the moved nodes from the parent's children.
         parent_v.t.children = parent_v.t.children[:n+1]
         # Add the moved nodes to p's children
@@ -6030,12 +5981,6 @@ def promote (self,event=None):
         c.endEditing()
         parent_v = p._parentVnode()
         children = p.v.t.children
-        # Adjust the parent links of all moved nodes.
-        for z in children:
-            if p.v in z.t.parents:
-                z.t.parents.remove(p.v)
-            if parent_v not in z.t.parents:
-                z.t.parents.append(parent_v)
         # Add the children to parent_v's children.
         n = p.childIndex()+1
         z = parent_v.t.children[:]
@@ -6044,6 +5989,8 @@ def promote (self,event=None):
         parent_v.t.children.extend(z[n:])
         # Remove v's children.
         p.v.t.children = []
+        # Adjust the parent links of all moved nodes.
+        parent_v._computeParentsOfChildren(children=children)
         c.setChanged(True)
         if not inAtIgnoreRange and isAtIgnoreNode:
             # The promoted nodes have just become newly unignored.
@@ -6061,9 +6008,9 @@ def promote (self,event=None):
 #@+node:ekr.20080425060424.9:redoDemote
 def redoDemote (self):
 
-    u = self
+    u = self ; c = u.c
     parent_v = u.p._parentVnode()
-    n = len(u.followingSibs)
+    n = u.p.childIndex()
 
     # Remove the moved nodes from the parent's children.
     parent_v.t.children = parent_v.t.children[:n+1]
@@ -6072,16 +6019,14 @@ def redoDemote (self):
     u.p.v.t.children.extend(u.followingSibs)
 
     # Adjust the parent links of all moved nodes.
-    for z in u.followingSibs:
-        if parent_v in z.t.parents:
-            z.t.parents.remove(parent_v)
-        if u.p.v not in z.t.parents:
-            z.t.parents.append(u.p.v)
+    u.p.v._computeParentsOfChildren(children=u.followingSibs)
+
+    c.setCurrentPosition(u.p)
 #@-node:ekr.20080425060424.9:redoDemote
 #@+node:ekr.20080425060424.10:undoDemote
 def undoDemote (self):
 
-    u = self
+    u = self ; c = u.c
     parent_v = u.p._parentVnode()
     n = len(u.followingSibs)
 
@@ -6092,16 +6037,15 @@ def undoDemote (self):
     parent_v.t.children.extend(u.followingSibs)
 
     # Adjust the parent links of all moved nodes.
-    for z in u.followingSibs:
-        if u.p.v in z.t.parents:
-            z.t.parents.remove(u.p.v)
-        if parent_v not in z.t.parents:
-            z.t.parents.append(parent_v)
+    parent_v._computeParentsOfChildren(children=u.followingSibs)
+
+    c.setCurrentPosition(u.p)
+#@nonl
 #@-node:ekr.20080425060424.10:undoDemote
 #@+node:ekr.20080425060424.13:redoPromote
 def redoPromote (self):
 
-    u = self
+    u = self ; c = u.c
     parent_v = u.p._parentVnode()
 
     # Add the children to parent_v's children.
@@ -6115,16 +6059,14 @@ def redoPromote (self):
     u.p.v.t.children = []
 
     # Adjust the parent links of all moved nodes.
-    for z in u.children:
-        if u.p.v in z.t.parents:
-            z.t.parents.remove(u.p.v)
-        if parent_v not in z.t.parents:
-            z.t.parents.append(parent_v)
+    parent_v._computeParentsOfChildren(children=u.children)
+
+    c.setCurrentPosition(u.p)
 #@-node:ekr.20080425060424.13:redoPromote
 #@+node:ekr.20080425060424.14:undoPromote
 def undoPromote (self):
 
-    u = self
+    u = self ; c = u.c
     parent_v = u.p._parentVnode()
 
     # Remove the promoted nodes from parent_v's children.
@@ -6137,11 +6079,9 @@ def undoPromote (self):
     u.p.t.children = u.children[:]
 
     # Adjust the parent links of all moved nodes.
-    for z in u.children:
-        if parent_v in z.t.parents:
-            z.t.parents.remove(parent_v)
-        if u.p.v not in z.t.parents:
-            z.t.parents.append(u.p.v)
+    u.p.v._computeParentsOfChildren(children=u.children)
+
+    c.setCurrentPosition(u.p)
 #@-node:ekr.20080425060424.14:undoPromote
 #@-node:ekr.20080425060424.7:Rewrote promote/demote code
 #@+node:ekr.20080425060424.16:Test undo clone-find-all
@@ -6211,10 +6151,12 @@ back = p.back()
 next = p.next()
 
 if back:
-    assert p == back.next(), "p==back.next"
+    assert p == back.next(), 'p!=back.next(),  back: %s back.next: %s' % (
+        back,back.next())
 
 if next:
-    assert p == next.back(), "p==next.back"
+    assert p == next.back(), 'p!=next.back, next: %s next.back: %s' % (
+        next,next.back())
 #@-node:ekr.20040314035615.1:assert consistency of next and back links
 #@+node:ekr.20040314035615.2:assert consistency of parent and child links
 if p.hasParent():
@@ -6280,11 +6222,11 @@ n = p.childIndex()
 
 assert parent_v.t.children[n] == p.v,'fail 1'
 
-assert parent_v in p.v.t.parents,'fail 2: parent_v: %s\nparents: %s' % (
-    parent_v,g.listToString(p.v.t.parents))
+assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+    parent_v,g.listToString(p.v.parents))
 
-if 0: # Fails for all clones at present.
-    for z in p.v.t.parents:
+if 1: # Fails for all clones at present.
+    for z in p.v.parents:
         assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@-node:ekr.20040323155951:<< do full tests >>
@@ -6327,24 +6269,13 @@ def createSaxChildren (self, sax_node, parent_v):
         t = self.tnodesDict.get(tnx)
         if t:
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-            v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            assert v in t.vnodeList
-            assert parent_v in t.parents
-            for grandChild in v.t.children:
-                if v not in grandChild.t.parents:
-                    # g.trace('adding %s to parents of %s' % (v,grandChild))
-                    grandChild.t.parents.append(v)
-
-            if 0: # previous code
-                if v not in t.parents:
-                    t.parents.append(v)
-                for grandChild in v.t.children:
-                    if v not in grandChild.t.parents:
-                        # g.trace('adding %s to parents of %s' % (v,grandChild))
-                        grandChild.t.parents.append(v)
+            v = self.createSaxVnode(child,parent_v,t=t)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
+
+        # Add all items in v.t.vnodeList to parents of grandchildren.
+        v._computeParentsOfChildren()
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -6381,8 +6312,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    if not parent_v in v.t.parents:
-        v.t.parents.append(parent_v)
+    # Now done in call to v._computeParentsOfChildren in callers.
+    # if not parent_v in v.parents:
+        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -6470,7 +6402,7 @@ def handleVnodeSaxAttributes (self,sax_node,v):
 #@nonl
 #@-node:ekr.20061004053644:handleVnodeSaxAttributes
 #@-node:ekr.20060919110638.7:createSaxVnode
-#@+node:ekr.20060919110638.9:_linkParentAndChildren
+#@+node:ekr.20060919110638.9:p._linkParentAndChildren
 def _linkParentAndChildren (self, parent_v, children):
 
     # if children: g.trace(parent_v,len(children))
@@ -6484,9 +6416,9 @@ def _linkParentAndChildren (self, parent_v, children):
 
     # Make parent_v a parent of each child.
     for v in children:
-        if parent_v not in v.t.parents:
-            v.t.parents.append(parent_v)
-#@-node:ekr.20060919110638.9:_linkParentAndChildren
+        if parent_v not in v.parents:
+            v.parents.append(parent_v)
+#@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20041005105605.72:createThinChild4
 def createThinChild4 (self,gnxString,headline):
@@ -6535,31 +6467,18 @@ def createThinChild4 (self,gnxString,headline):
         tnodesDict = c.fileCommands.tnodesDict
         t = tnodesDict.get(gnxString)
         if t:
-            isClone = True
             if indices.areEqual(t.fileIndex,gnx):
                 pass
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
-                # g.trace('not created, should already exist',gnxString)
         else:
-            isClone = False
             t = leoNodes.tnode(bodyString=None,headString=headline)
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
+
         child = leoNodes.vnode(context=c,t=t)
         t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
-
-        if isClone:
-            # g.trace('**clone',child)
-            if parent not in t.parents:
-                t.parents.append(parent)
-            for grandChild in child.t.children:
-                if child not in grandChild.t.parents:
-                    # g.trace('adding %s to parents of %s' % (child,grandChild))
-                    grandChild.t.parents.append(child)
-
-        # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
     return child
@@ -6584,10 +6503,12 @@ def _linkAsNthChild (self,parent,n):
     parent_v.t.children.insert(n,p.v)
     parent_v._p_changed = 1
 
-    # Add parent_v to p.v's parents.
-    if not parent_v in p.v.t.parents:
-        p.v.t.parents.append(parent_v)
-        p.v._p_changed = 1
+    # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+    # This is the same as parent_v._computeParentsOfChildren()
+    for v2 in parent_v.t.vnodeList:
+        if not v2 in p.v.parents:
+            p.v.parents.append(v2)
+            p.v._p_changed = 1
 #@-node:ekr.20080416161551.215:p._linkAsNthChild
 #@-node:ekr.20080426051658.2:Fixed inconsistencies between parents and children arrays
 #@+node:ekr.20080426084849.1:Rewrote scanForClonedSibs
@@ -6639,31 +6560,18 @@ def createThinChild4 (self,gnxString,headline):
         tnodesDict = c.fileCommands.tnodesDict
         t = tnodesDict.get(gnxString)
         if t:
-            isClone = True
             if indices.areEqual(t.fileIndex,gnx):
                 pass
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
-                # g.trace('not created, should already exist',gnxString)
         else:
-            isClone = False
             t = leoNodes.tnode(bodyString=None,headString=headline)
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
+
         child = leoNodes.vnode(context=c,t=t)
         t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
-
-        if isClone:
-            # g.trace('**clone',child)
-            if parent not in t.parents:
-                t.parents.append(parent)
-            for grandChild in child.t.children:
-                if child not in grandChild.t.parents:
-                    # g.trace('adding %s to parents of %s' % (child,grandChild))
-                    grandChild.t.parents.append(child)
-
-        # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
     return child
@@ -6797,7 +6705,7 @@ def findAllPotentiallyDirtyNodes(self):
             for v2 in v.t.vnodeList:
                 if v2 not in nodes and v2 not in addedNodes:
                     addedNodes.append(v2)
-            for v2 in v.t.parents:
+            for v2 in v.parents:
                 if v2 not in nodes and v2 not in addedNodes:
                     addedNodes.append(v2)
         newNodes = addedNodes[:]
@@ -6876,11 +6784,7 @@ def demote (self,event=None):
         followingSibs = parent_v.t.children[n+1:]
         # g.trace('sibs2\n',g.listToString(followingSibs2))
         # Adjust the parent links of all moved nodes.
-        for z in followingSibs:
-            if parent_v in z.t.parents:
-                z.t.parents.remove(parent_v)
-            if p.v not in z.t.parents:
-                z.t.parents.append(p.v)
+        parent_v._computeParentsOfChildren(children=followingSibs)
         # Remove the moved nodes from the parent's children.
         parent_v.t.children = parent_v.t.children[:n+1]
         # Add the moved nodes to p's children
@@ -7150,12 +7054,6 @@ def promote (self,event=None):
         c.endEditing()
         parent_v = p._parentVnode()
         children = p.v.t.children
-        # Adjust the parent links of all moved nodes.
-        for z in children:
-            if p.v in z.t.parents:
-                z.t.parents.remove(p.v)
-            if parent_v not in z.t.parents:
-                z.t.parents.append(parent_v)
         # Add the children to parent_v's children.
         n = p.childIndex()+1
         z = parent_v.t.children[:]
@@ -7164,6 +7062,8 @@ def promote (self,event=None):
         parent_v.t.children.extend(z[n:])
         # Remove v's children.
         p.v.t.children = []
+        # Adjust the parent links of all moved nodes.
+        parent_v._computeParentsOfChildren(children=children)
         c.setChanged(True)
         if not inAtIgnoreRange and isAtIgnoreNode:
             # The promoted nodes have just become newly unignored.
@@ -7602,10 +7502,13 @@ def _linkAfter (self,p_after):
     parent_v.t.children.insert(p_after._childIndex+1,p.v)
     parent_v._p_changed = 1
 
-    # Add parent_v to p.v.t.parents.
-    if not parent_v in p.v.t.parents:
-        p.v.t.parents.append(parent_v)
-        p.v._p_changed = 1
+    # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+    # This is the same as parent_v._computeParentsOfChildren()
+    for v2 in parent_v.t.vnodeList:
+        if not v2 in p.v.parents:
+            p.v.parents.append(v2)
+            p.v._p_changed = 1
+
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20080416161551.215:p._linkAsNthChild
 def _linkAsNthChild (self,parent,n):
@@ -7627,10 +7530,12 @@ def _linkAsNthChild (self,parent,n):
     parent_v.t.children.insert(n,p.v)
     parent_v._p_changed = 1
 
-    # Add parent_v to p.v's parents.
-    if not parent_v in p.v.t.parents:
-        p.v.t.parents.append(parent_v)
-        p.v._p_changed = 1
+    # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+    # This is the same as parent_v._computeParentsOfChildren()
+    for v2 in parent_v.t.vnodeList:
+        if not v2 in p.v.parents:
+            p.v.parents.append(v2)
+            p.v._p_changed = 1
 #@-node:ekr.20080416161551.215:p._linkAsNthChild
 #@+node:ekr.20080416161551.216:p._linkAsRoot
 def _linkAsRoot (self,oldRoot):
@@ -7654,9 +7559,9 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.t.parents.
-    if hiddenRootNode not in p.v.t.parents:
-        p.v.t.parents.append(hiddenRootNode)
+    # Update the p.v.parents.
+    if hiddenRootNode not in p.v.parents:
+        p.v.parents.append(hiddenRootNode)
         p.v._p_changed = 1
 
     # Update the hiddenRootNode's children.
@@ -7701,9 +7606,16 @@ def _unlink (self):
         g.trace(g.callers())
 
     # Delete parent_v from p.v's parents.
-    if parent_v in p.v.t.parents:
-        p.v.t.parents.remove(parent_v)
-        p.v._p_changed = 1 # Support for tnode class.
+    # if parent_v in p.v.parents:
+        # p.v.parents.remove(parent_v)
+        # p.v._p_changed = 1
+
+    # Clear the entire parents array.
+    if p.v.parents:
+        p.v.parents = []
+        p.v._p_changed = 1
+
+
 
 #@-node:ekr.20080416161551.217:p._unlink
 #@-node:ekr.20080416161551.213:p._linkX and p._unlink & helper

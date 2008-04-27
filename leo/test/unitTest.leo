@@ -1984,7 +1984,7 @@
 </v>
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
@@ -2141,6 +2141,14 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
+<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
+<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+</v>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4049,7 +4057,7 @@ def moreBody (self):
                 parents2.append(v)
                 parent2 = v.directParents()
         else:
-            parents1 = p.v.t.parents
+            parents1 = p.v.parents
             # if p.v._parent: parents1 = p.v._parent.t.vnodeList
             # else:           parents1 = []
             parents2 = p.v.directParents()
