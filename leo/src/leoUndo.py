@@ -369,7 +369,7 @@ class undoer:
         v = bunch.v
 
         v.statusBits = bunch.statusBits
-        v.children   = bunch.children
+        v.t.children = bunch.children
         v.parents    = bunch.parents
 
         uA = bunch.get('unknownAttributes')
@@ -450,7 +450,7 @@ class undoer:
             v = v,
             statusBits = v.statusBits,
             parents    = v.parents[:],
-            children   = v.children[:],
+            children   = v.t.children[:],
             # The tnode never changes so there is no need to save it here.
         )
 
@@ -1448,9 +1448,9 @@ class undoer:
     #@+node:ekr.20080425060424.9:redoDemote
     def redoDemote (self):
 
-        u = self
+        u = self ; c = u.c
         parent_v = u.p._parentVnode()
-        n = len(u.followingSibs)
+        n = u.p.childIndex()
 
         # Remove the moved nodes from the parent's children.
         parent_v.t.children = parent_v.t.children[:n+1]
@@ -1459,11 +1459,9 @@ class undoer:
         u.p.v.t.children.extend(u.followingSibs)
 
         # Adjust the parent links of all moved nodes.
-        for z in u.followingSibs:
-            if parent_v in z.t.parents:
-                z.t.parents.remove(parent_v)
-            if u.p.v not in z.t.parents:
-                z.t.parents.append(u.p.v)
+        u.p.v._computeParentsOfChildren(children=u.followingSibs)
+
+        c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.9:redoDemote
     #@+node:ekr.20050318085432.6:redoGroup
     def redoGroup (self):
@@ -1584,29 +1582,13 @@ class undoer:
         del u.oldParent_v.t.children[u.oldN]
         u.newParent_v.t.children.insert(u.newN,v)
 
-        # Adjust the parent links.
-        if u.oldParent_v in v.t.parents:
-            v.t.parents.remove(u.oldParent_v)
-
-        if u.newParent_v not in v.t.parents:
-            v.t.parents.append(u.newParent_v)
-
-        # if u.newParent:
-            # u.p.moveToNthChildOf(u.newParent,u.newN)
-        # elif u.newBack:
-            # u.p.moveAfter(u.newBack)
-        # else:
-            # oldRoot = c.rootPosition()
-            # u.p.moveToRoot(oldRoot=oldRoot)
+        # Recompute the parent links.
+        u.newParent_v._computeParentsOfChildren()
 
         u.updateMarks('new')
 
         for v in u.dirtyVnodeList:
             v.t.setDirty()
-
-        # if u.newParent_v != u.oldParent_v:
-            # if u.p.parent():
-                # u.p.parent().contract()
 
         c.selectPosition(u.newP)
     #@-node:ekr.20050411111847:redoMove
@@ -1637,7 +1619,7 @@ class undoer:
     #@+node:ekr.20080425060424.13:redoPromote
     def redoPromote (self):
 
-        u = self
+        u = self ; c = u.c
         parent_v = u.p._parentVnode()
 
         # Add the children to parent_v's children.
@@ -1651,11 +1633,9 @@ class undoer:
         u.p.v.t.children = []
 
         # Adjust the parent links of all moved nodes.
-        for z in u.children:
-            if u.p.v in z.t.parents:
-                z.t.parents.remove(u.p.v)
-            if parent_v not in z.t.parents:
-                z.t.parents.append(parent_v)
+        parent_v._computeParentsOfChildren(children=u.children)
+
+        c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.13:redoPromote
     #@+node:ekr.20080425060424.4:redoSort
     def redoSort (self):
@@ -1794,7 +1774,7 @@ class undoer:
     #@+node:ekr.20080425060424.10:undoDemote
     def undoDemote (self):
 
-        u = self
+        u = self ; c = u.c
         parent_v = u.p._parentVnode()
         n = len(u.followingSibs)
 
@@ -1805,11 +1785,10 @@ class undoer:
         parent_v.t.children.extend(u.followingSibs)
 
         # Adjust the parent links of all moved nodes.
-        for z in u.followingSibs:
-            if u.p.v in z.t.parents:
-                z.t.parents.remove(u.p.v)
-            if parent_v not in z.t.parents:
-                z.t.parents.append(parent_v)
+        parent_v._computeParentsOfChildren(children=u.followingSibs)
+
+        c.setCurrentPosition(u.p)
+    #@nonl
     #@-node:ekr.20080425060424.10:undoDemote
     #@+node:ekr.20050318085713:undoGroup
     def undoGroup (self):
@@ -1922,29 +1901,13 @@ class undoer:
         del u.newParent_v.t.children[u.newN]
         u.oldParent_v.t.children.insert(u.oldN,v)
 
-        # Adjust the parent links.
-        if u.newParent_v in v.t.parents:
-            v.t.parents.remove(u.newParent_v)
-
-        if u.oldParent_v not in v.t.parents:
-            v.t.parents.append(u.oldParent_v)
-
-        # if u.oldParent:
-            # u.p.moveToNthChildOf(u.oldParent,u.oldN)
-        # elif u.oldBack:
-            # u.p.moveAfter(u.oldBack)
-        # else:
-            # u.p.moveToRoot(oldRoot=c.rootPosition())
-
+        # Recompute the parent links.
+        u.oldParent_v._computeParentsOfChildren()
 
         u.updateMarks('old')
 
         for v in u.dirtyVnodeList:
             v.t.setDirty()
-
-        # if u.newParent_v != u.oldParent_v:
-            # if u.newP.parent():
-                # u.newP.parent().contract()
 
         c.selectPosition(u.p)
     #@-node:ekr.20050411112033:undoMove
@@ -1975,7 +1938,7 @@ class undoer:
     #@+node:ekr.20080425060424.14:undoPromote
     def undoPromote (self):
 
-        u = self
+        u = self ; c = u.c
         parent_v = u.p._parentVnode()
 
         # Remove the promoted nodes from parent_v's children.
@@ -1988,11 +1951,9 @@ class undoer:
         u.p.t.children = u.children[:]
 
         # Adjust the parent links of all moved nodes.
-        for z in u.children:
-            if parent_v in z.t.parents:
-                z.t.parents.remove(parent_v)
-            if u.p.v not in z.t.parents:
-                z.t.parents.append(u.p.v)
+        u.p.v._computeParentsOfChildren(children=u.children)
+
+        c.setCurrentPosition(u.p)
     #@-node:ekr.20080425060424.14:undoPromote
     #@+node:ekr.20031218072017.1493:undoRedoText
     def undoRedoText (self,p,
