@@ -74,7 +74,6 @@ class tnode (baseTnode):
         self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
 
         self.children = [] # List of all children of this node.
-        self.parents = [] # List of all parents of this node.
         self.vnodeList = []
             # List of all vnodes pointing to this tnode.
             # v is a clone iff len(v.t.vnodeList) > 1.
@@ -264,6 +263,9 @@ class vnode (baseVnode):
 
         self.iconVal = 0
         self.t = t # The tnode.
+        self.parents = [] # List of all parents of this node.
+            # This list will have 1 member unless the parent node is a clone.
+            # In particular, cloned nodes do *not* share parents.
         self.statusBits = 0 # status bits
     #@-node:ekr.20031218072017.3344:v.__init__
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
@@ -289,13 +291,13 @@ class vnode (baseVnode):
         else:
             print "self    ",v.dumpLink(v)
             print "len(vnodeList)",len(v.t.vnodeList)
-            print 'len(parents)',len(v.t.parents)
+            print 'len(parents)',len(v.parents)
             print 'len(children)',len(v.t.children)
 
         if 1:
             print "t",v.dumpLink(v.t)
             print "vnodeList", g.listToString(v.t.vnodeList)
-            print 'parents',g.listToString(v.t.parents)
+            print 'parents',g.listToString(v.parents)
             print 'children',g.listToString(v.t.children)
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
@@ -579,7 +581,7 @@ class vnode (baseVnode):
         This is NOT the same as the list of ancestors of the vnode."""
 
         v = self
-        return v.t.parents
+        return v.parents
     #@-node:ekr.20040323100443:v.directParents
     #@-node:ekr.20031218072017.3359:v.Getters
     #@+node:ekr.20031218072017.3384:v.Setters
@@ -715,6 +717,7 @@ class vnode (baseVnode):
         v.t.setSelection ( start, length )
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
+    #@+node:ekr.20080427062528.9:v.Low level
     #@+node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
     #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
@@ -751,11 +754,25 @@ class vnode (baseVnode):
         parent_v._p_changed = 1
 
         # Add parent_v to v's parents.
-        if not parent_v in v.t.parents:
-            v.t.parents.append(parent_v)
+        if not parent_v in v.parents:
+            v.parents.append(parent_v)
             v._p_changed = 1
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
+    #@+node:ekr.20080427062528.10:v._addVnodeListToParents
+    def _addVnodeListToParents (self):
+
+        '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
+
+        v = self ; children = v.t.children
+
+        for v2 in v.t.vnodeList:
+            for child in children:
+                if v2 not in child.parents:
+                    # g.trace('Adding %s to parents of %s' % (v2,child))
+                    child.parents.append(v2)
+    #@-node:ekr.20080427062528.10:v._addVnodeListToParents
+    #@-node:ekr.20080427062528.9:v.Low level
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -1454,7 +1471,7 @@ class basePosition (object):
                 for v2 in v.t.vnodeList:
                     if v2 not in nodes and v2 not in addedNodes:
                         addedNodes.append(v2)
-                for v2 in v.t.parents:
+                for v2 in v.parents:
                     if v2 not in nodes and v2 not in addedNodes:
                         addedNodes.append(v2)
             newNodes = addedNodes[:]
@@ -2083,11 +2100,9 @@ class basePosition (object):
         assert (p.v in p.v.t.vnodeList)
         assert (p2.v in p.v.t.vnodeList)
 
-        # # Add all parents of all cloned nodes to the parent list.
-        # for v in p.v.t.vnodeList:
-            # for v2 in v.t.parents:
-                # if v2 not in p.v.t.parents:
-                    # p.v.t.parents.append(v2)
+        # Add all items in p.v.t.vnodeList to parents of grandchildren.
+        # Now done in p2.linkAfter.
+        # p.v._addVnodeListToParents()
 
         return p2
     #@-node:ekr.20040303175026.8:p.clone
@@ -2665,10 +2680,13 @@ class basePosition (object):
         parent_v.t.children.insert(p_after._childIndex+1,p.v)
         parent_v._p_changed = 1
 
-        # Add parent_v to p.v.t.parents.
-        if not parent_v in p.v.t.parents:
-            p.v.t.parents.append(parent_v)
-            p.v._p_changed = 1
+        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+        # This is the same as parent_v._addVnodeListToParents()
+        for v2 in parent_v.t.vnodeList:
+            if not v2 in p.v.parents:
+                p.v.parents.append(v2)
+                p.v._p_changed = 1
+
     #@-node:ekr.20080416161551.214:p._linkAfter
     #@+node:ekr.20080416161551.215:p._linkAsNthChild
     def _linkAsNthChild (self,parent,n):
@@ -2690,10 +2708,12 @@ class basePosition (object):
         parent_v.t.children.insert(n,p.v)
         parent_v._p_changed = 1
 
-        # Add parent_v to p.v's parents.
-        if not parent_v in p.v.t.parents:
-            p.v.t.parents.append(parent_v)
-            p.v._p_changed = 1
+        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+        # This is the same as parent_v._addVnodeListToParents()
+        for v2 in parent_v.t.vnodeList:
+            if not v2 in p.v.parents:
+                p.v.parents.append(v2)
+                p.v._p_changed = 1
     #@-node:ekr.20080416161551.215:p._linkAsNthChild
     #@+node:ekr.20080416161551.216:p._linkAsRoot
     def _linkAsRoot (self,oldRoot):
@@ -2717,9 +2737,9 @@ class basePosition (object):
             p.v.t.vnodeList.append(p.v)
             p.v.t._p_changed = 1
 
-        # Update the p.v.t.parents.
-        if hiddenRootNode not in p.v.t.parents:
-            p.v.t.parents.append(hiddenRootNode)
+        # Update the p.v.parents.
+        if hiddenRootNode not in p.v.parents:
+            p.v.parents.append(hiddenRootNode)
             p.v._p_changed = 1
 
         # Update the hiddenRootNode's children.
@@ -2764,9 +2784,16 @@ class basePosition (object):
             g.trace(g.callers())
 
         # Delete parent_v from p.v's parents.
-        if parent_v in p.v.t.parents:
-            p.v.t.parents.remove(parent_v)
-            p.v._p_changed = 1 # Support for tnode class.
+        # if parent_v in p.v.parents:
+            # p.v.parents.remove(parent_v)
+            # p.v._p_changed = 1
+
+        # Clear the entire parents array.
+        if p.v.parents:
+            p.v.parents = []
+            p.v._p_changed = 1
+
+
 
     #@-node:ekr.20080416161551.217:p._unlink
     #@-node:ekr.20080416161551.213:p._linkX and p._unlink & helper
