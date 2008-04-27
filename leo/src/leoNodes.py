@@ -2199,15 +2199,7 @@ class basePosition (object):
 
         p = self # Do NOT copy the position!
 
-        # Adjust a._childIndex if p is a preceding sibling,
-        # so p._linkAfter(a) will set p.v.t._childIndex correctly.
-        sib = a.copy()
-        while sib.hasBack():
-            sib.moveToBack()
-            if sib == p:
-                a._childIndex -= 1
-                break
-
+        a._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAfter(a)
 
@@ -2240,11 +2232,12 @@ class basePosition (object):
         """Move a position to the nth child of parent."""
 
         p = self # Do NOT copy the position!
+
+        parent._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAsNthChild(parent,n)
 
         return p
-    #@nonl
     #@-node:ekr.20040303175026.11:p.moveToNthChildOf
     #@+node:ekr.20040303175026.6:p.moveToRoot
     def moveToRoot (self,oldRoot=None):
@@ -2254,6 +2247,8 @@ class basePosition (object):
         Important: oldRoot must the previous root position if it exists.'''
 
         p = self # Do NOT copy the position!
+        if oldRoot:
+            oldRoot._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAsRoot(oldRoot)
 
@@ -2625,7 +2620,20 @@ class basePosition (object):
             p._restoreLinksInTree()
     #@-node:ekr.20040409203454:p._restoreLinksInTree
     #@-node:ekr.20040228094013.1:p.utils
-    #@+node:ekr.20080416161551.213:p._linkX and p._unlink
+    #@+node:ekr.20080416161551.213:p._linkX and p._unlink & helper
+    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+    def _adjustPositionBeforeUnlink (self,p2):
+
+        '''Adjust position p before unlinking p2.'''
+
+        p = self ; sib = p.copy()
+
+        while sib.hasBack():
+            sib.moveToBack()
+            if sib == p2:
+                p._childIndex -= 1
+                break
+    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after):
 
@@ -2716,7 +2724,7 @@ class basePosition (object):
     #@+node:ekr.20080416161551.217:p._unlink
     def _unlink (self):
 
-        '''Unlink the receiver from the tree.'''
+        '''Unlink the receiver p from the tree.'''
 
         trace = True
         p = self ; n = p._childIndex
@@ -2752,7 +2760,7 @@ class basePosition (object):
             p.v._p_changed = 1 # Support for tnode class.
 
     #@-node:ekr.20080416161551.217:p._unlink
-    #@-node:ekr.20080416161551.213:p._linkX and p._unlink
+    #@-node:ekr.20080416161551.213:p._linkX and p._unlink & helper
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 
