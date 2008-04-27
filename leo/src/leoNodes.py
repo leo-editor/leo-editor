@@ -2078,7 +2078,16 @@ class basePosition (object):
         p2 = p.copy()
         p2.v = vnode(context=context,t=p2.v.t)
         p2._linkAfter(p)
+
         assert (p.v.t == p2.v.t)
+        assert (p.v in p.v.t.vnodeList)
+        assert (p2.v in p.v.t.vnodeList)
+
+        # # Add all parents of all cloned nodes to the parent list.
+        # for v in p.v.t.vnodeList:
+            # for v2 in v.t.parents:
+                # if v2 not in p.v.t.parents:
+                    # p.v.t.parents.append(v2)
 
         return p2
     #@-node:ekr.20040303175026.8:p.clone
