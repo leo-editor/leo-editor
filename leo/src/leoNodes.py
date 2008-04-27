@@ -1011,9 +1011,10 @@ class basePosition (object):
         p = self
 
         if p.v:
-            return "<pos %d lvl: %d [%d] %s>" % (id(p),p.level(),len(p.stack),p.cleanHeadString())
+            return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
+                id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
         else:
-            return "<pos %d        [%d] None>" % (id(p),len(p.stack))
+            return "<pos %d [%d] None>" % (id(p),len(p.stack))
 
     __repr__ = __str__
     #@-node:ekr.20040301205720:p.__str__ and p.__repr__
@@ -1439,7 +1440,7 @@ class basePosition (object):
     #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
 
-        p = self 
+        p = self ;  c = p.v.context
 
         # Start with all nodes in the vnodeList.
         nodes = []
@@ -1453,12 +1454,17 @@ class basePosition (object):
                 for v2 in v.t.vnodeList:
                     if v2 not in nodes and v2 not in addedNodes:
                         addedNodes.append(v2)
-                    for v3 in v2.directParents():
-                        if v3 not in nodes and v3 not in addedNodes:
-                            addedNodes.append(v3)
+                for v2 in v.t.parents:
+                    if v2 not in nodes and v2 not in addedNodes:
+                        addedNodes.append(v2)
             newNodes = addedNodes[:]
 
+        # Remove the hidden vnode.
+        if c.hiddenRootNode in nodes:
+            nodes.remove(c.hiddenRootNode)
+
         # g.trace(len(nodes))
+        # g.trace(g.listToString(nodes))
         return nodes
     #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
