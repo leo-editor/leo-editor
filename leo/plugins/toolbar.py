@@ -17,8 +17,8 @@ Backward compatability will be maintainid for the iconbar.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.2"
-__plugin_name__ = 'Toolbars'
+__version__ = "0.3"
+__plugin_name__ = 'Toolbar Manager'
 
 controllers = {}
 
@@ -30,8 +30,10 @@ controllers = {}
 # 0.2 bobjack:
 #     - add toolbar-delete-button for use in button menus
 #     - introduced onPreCreate module method
+# 0.3 bobjack:
+#     - added support for tooltips in @buttons
+#     - fixed parameter bleed bug
 #@-at
-#@nonl
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
 #@<< todo >>
@@ -80,6 +82,7 @@ import leoTkinterFrame
 requiredIvars = (
     ('mb_retval', False),
     ('mb_keywords', False),
+    ('commandList', (list, tuple)),
 )
 #@nonl
 #@-node:bobjack.20080424195922.85:<< required ivars >>
@@ -170,23 +173,30 @@ class ToolbarScriptingController(scripting):
     #@+node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
     def createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,bg=None):
 
-        self.getItemData(script)
+        data = self.getItemData(script)
         kw = {}
         if bg is not None:
             kw['bg'] = bg
+
+        if data and 'tooltip' in data:
+            statusLine = data['tooltip']
         scripting.createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,**kw)
 
     #@-node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
     #@+node:bobjack.20080425135232.11:createAtButtonHelper
-    def createAtButtonHelper(self, p, *args, **kw):
+    def createAtButtonHelper(self, p, h, statusLine, shortcut, *args, **kw):
 
-        self.getItemData(p.bodyString())
+        data = self.getItemData(p.bodyString())
 
         for k in 'bg', 'verbose':
             if k in kw and kw[k] is None:
                 del(kw[k])
 
-        scripting.createAtButtonHelper(self, p, *args, **kw)
+        if data and 'tooltip' in data:
+            statusLine = data['tooltip']
+
+
+        scripting.createAtButtonHelper(self, p, h, statusLine, shortcut,  *args, **kw)
     #@-node:bobjack.20080425135232.11:createAtButtonHelper
     #@+node:bobjack.20080425135232.10:getItemData
     def getItemData(self, script):
@@ -261,36 +271,38 @@ class ToolbarTkIconBarClass(iconbar):
         except:
             data = None
 
-        #@    << pre create button >>
-        #@+node:bobjack.20080426205344.2:<< pre create button >>
-        if data:
+        btn = None
+        try:
+            #@        << pre create button >>
+            #@+node:bobjack.20080426205344.2:<< pre create button >>
+            if data:
 
-            if 'bg' in data:
-                keys['bg'] = data['bg']
+                if 'bg' in data:
+                    keys['bg'] = data['bg']
 
-            if 'icon' in data:
-                image = self.getImage(data['icon'])
-                if image:
-                    keys['image'] = image
-                    if not 'bg' in keys:
-                        keys['bg'] = ''
-        #@-node:bobjack.20080426205344.2:<< pre create button >>
-        #@nl
-        btn = iconbar.add(self, *args, **keys)
-        #@    << post create button >>
-        #@+node:bobjack.20080426205344.3:<< post create button >>
-        if data and btn:
+                if 'icon' in data:
+                    image = self.getImage(data['icon'])
+                    if image:
+                        keys['image'] = image
+                        if not 'bg' in keys:
+                            keys['bg'] = ''
+            #@-node:bobjack.20080426205344.2:<< pre create button >>
+            #@nl
+            btn = iconbar.add(self, *args, **keys)
+            #@        << post create button >>
+            #@+node:bobjack.20080426205344.3:<< post create button >>
+            if data and btn:
 
-            if 'fg' in data:
-                btn.configure(fg=data['fg'])
+                if 'fg' in data:
+                    btn.configure(fg=data['fg'])
 
-            if 'menu' in data:
-                btn.context_menu = data['menu']
-        #@-node:bobjack.20080426205344.3:<< post create button >>
-        #@nl
+                if 'menu' in data:
+                    btn.context_menu = data['menu']
+            #@-node:bobjack.20080426205344.3:<< post create button >>
+            #@nl
 
-        if btn:
-            btn.scriptingController = self
+        finally:
+            self.item_data = None
 
         return btn
     #@-node:bobjack.20080426064755.76:add
@@ -448,7 +460,7 @@ class pluginController(object):
 
         try:
             button = keywords['event'].widget
-            button.scriptingController.deleteButton(button)
+            self.c.theScriptingController.deleteButton(button)
         except:
             g.es('failed to delete button')    
 
