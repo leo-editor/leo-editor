@@ -122,7 +122,7 @@ class atFile:
     #@nl
 
     #@    @+others
-    #@+node:ekr.20041005105605.7:Birth & init
+    #@+node:ekr.20041005105605.7:at.Birth & init
     #@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
     def __init__(self,c):
 
@@ -360,8 +360,8 @@ class atFile:
             self.root.v.t.tnodeList = []
             self.root.v.t._p_changed = True
     #@-node:ekr.20041005105605.15:initWriteIvars
-    #@-node:ekr.20041005105605.7:Birth & init
-    #@+node:ekr.20041005105605.17:Reading...
+    #@-node:ekr.20041005105605.7:at.Birth & init
+    #@+node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.18:Reading (top level)
     #@+at
     # 
@@ -1884,8 +1884,8 @@ class atFile:
         return i
     #@-node:ekr.20041005105605.131:skipIndent
     #@-node:ekr.20041005105605.116:Reading utils...
-    #@-node:ekr.20041005105605.17:Reading...
-    #@+node:ekr.20041005105605.132:Writing...
+    #@-node:ekr.20041005105605.17:at.Reading
+    #@+node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.134:Don't override in plugins
     # Plugins probably should not need to override these methods.
@@ -3825,8 +3825,8 @@ class atFile:
             root.setDirty()
     #@-node:ekr.20041005105605.218:writeException
     #@-node:ekr.20041005105605.196:Writing 4.x utils...
-    #@-node:ekr.20041005105605.132:Writing...
-    #@+node:ekr.20041005105605.219:Uilites... (atFile)
+    #@-node:ekr.20041005105605.132:at.Writing
+    #@+node:ekr.20041005105605.219:at.Uilites
     #@+node:ekr.20041005105605.220:atFile.error
     def error(self,message):
 
@@ -4356,7 +4356,7 @@ class atFile:
 
         return sentinelNameDict.get(kind,"<unknown sentinel!>")
     #@-node:ekr.20041005105605.243:sentinelName
-    #@-node:ekr.20041005105605.219:Uilites... (atFile)
+    #@-node:ekr.20041005105605.219:at.Uilites
     #@-others
 #@-node:ekr.20041005105605.1:@thin leoAtFile.py
 #@-leo
