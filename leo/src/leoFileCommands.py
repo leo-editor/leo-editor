@@ -970,7 +970,7 @@ class baseFileCommands:
                 v = self.createSaxVnodeTree(child,parent_v)
 
             # Add all items in v.t.vnodeList to parents of grandchildren.
-            v._addVnodeListToParents()
+            v._computeParentsOfChildren()
             children.append(v)
 
         self._linkParentAndChildren(parent_v,children)
@@ -1007,7 +1007,7 @@ class baseFileCommands:
         v = leoNodes.vnode(context=c,t=t)
         v.t.vnodeList.append(v)
 
-        # Now done in call to v._addVnodeListToParents in callers.
+        # Now done in call to v._computeParentsOfChildren in callers.
         # if not parent_v in v.parents:
             # v.parents.append(parent_v)
 
