@@ -759,19 +759,21 @@ class vnode (baseVnode):
             v._p_changed = 1
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
-    #@+node:ekr.20080427062528.10:v._addVnodeListToParents
-    def _addVnodeListToParents (self):
+    #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
+    def _computeParentsOfChildren (self,children=None,init=True):
 
         '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
 
-        v = self ; children = v.t.children
+        v = self
+        if not children: children = v.t.children
 
-        for v2 in v.t.vnodeList:
-            for child in children:
+        for child in children:
+            child.parents = []
+            for v2 in v.t.vnodeList:
                 if v2 not in child.parents:
                     # g.trace('Adding %s to parents of %s' % (v2,child))
                     child.parents.append(v2)
-    #@-node:ekr.20080427062528.10:v._addVnodeListToParents
+    #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level
     #@-others
 #@nonl
@@ -2100,10 +2102,6 @@ class basePosition (object):
         assert (p.v in p.v.t.vnodeList)
         assert (p2.v in p.v.t.vnodeList)
 
-        # Add all items in p.v.t.vnodeList to parents of grandchildren.
-        # Now done in p2.linkAfter.
-        # p.v._addVnodeListToParents()
-
         return p2
     #@-node:ekr.20040303175026.8:p.clone
     #@+node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
@@ -2681,7 +2679,7 @@ class basePosition (object):
         parent_v._p_changed = 1
 
         # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        # This is the same as parent_v._addVnodeListToParents()
+        # This is the same as parent_v._computeParentsOfChildren()
         for v2 in parent_v.t.vnodeList:
             if not v2 in p.v.parents:
                 p.v.parents.append(v2)
@@ -2709,7 +2707,7 @@ class basePosition (object):
         parent_v._p_changed = 1
 
         # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        # This is the same as parent_v._addVnodeListToParents()
+        # This is the same as parent_v._computeParentsOfChildren()
         for v2 in parent_v.t.vnodeList:
             if not v2 in p.v.parents:
                 p.v.parents.append(v2)
