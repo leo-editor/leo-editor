@@ -889,7 +889,13 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080421171033.1" a="E"><vh>A</vh>
+<v t="ekr.20080426123230.1"><vh>Moved</vh></v>
+<v t="ekr.20080427072332.1" a="E"><vh>a</vh>
+<v t="ekr.20080427072332.2"><vh>b</vh></v>
+</v>
+<v t="ekr.20080426144848.1" a="E"
+marks="ekr.20080426144848.2,"><vh>@thin dirty-test.py</vh></v>
+<v t="ekr.20080421171033.1"><vh>A</vh>
 <v t="ekr.20080425112350.1"><vh>c1</vh></v>
 <v t="ekr.20080425112350.2"><vh>c2</vh></v>
 </v>
@@ -898,6 +904,7 @@
 <v t="ekr.20080425112350.2"><vh>c2</vh></v>
 </v>
 <v t="ekr.20080424081248.1"><vh>B</vh></v>
+<v t="ekr.20080426144848.2" a="M"><vh>E</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5536,6 +5543,10 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20080424081248.1"></t>
 <t tx="ekr.20080425112350.1">print p.v.t.parents</t>
 <t tx="ekr.20080425112350.2"></t>
+<t tx="ekr.20080426123230.1"></t>
+<t tx="ekr.20080426144848.2">deabx</t>
+<t tx="ekr.20080427072332.1"></t>
+<t tx="ekr.20080427072332.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
