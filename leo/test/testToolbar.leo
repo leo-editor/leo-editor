@@ -3,27 +3,26 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="72" left="218" height="634" width="1161"/>
+	<global_window_position top="51" left="243" height="634" width="1161"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080424195922.3" str_leo_pos="1,2"><vh>Startup</vh>
+<v t="bobjack.20080424195922.3" str_leo_pos="1,0"><vh>Startup</vh>
 <v t="bobjack.20080424195922.2" str_leo_pos="1"><vh>@chapters</vh></v>
 </v>
 <v t="bobjack.20080424195922.90" a="E"><vh>Buttons</vh>
-<v t="bobjack.20080424195922.94"><vh>@button Do Unit Tests</vh></v>
+<v t="bobjack.20080427085237.1"><vh>@button Fav Button</vh></v>
 <v t="bobjack.20080427084403.1"><vh>@button Say Hello!</vh></v>
-<v t="bobjack.20080427085237.1"><vh>@button Test Image</vh></v>
+<v t="bobjack.20080427183647.2"><vh>@button show-menu-tables</vh></v>
+<v t="bobjack.20080424195922.94"><vh>@button Do Unit Tests</vh></v>
 </v>
-<v t="bobjack.20080427064828.4" a="E"><vh>@settings</vh>
-<v t="bobjack.20080427091720.1" a="E"><vh>@popup test-button-menu</vh>
+<v t="bobjack.20080427091720.1"><vh>@popup test-button-menu</vh>
 <v t="bobjack.20080427091720.2"><vh>@item toolbar-delete-button</vh></v>
 </v>
-</v>
 <v t="bobjack.20080424195922.89" a="E"><vh>Unit Tests</vh>
-<v t="bobjack.20080424195922.87"><vh>Test Plugin Controller</vh>
+<v t="bobjack.20080424195922.87" a="E"><vh>Test Plugin Controller</vh>
 <v t="bobjack.20080424224706.1"><vh>@test module has required functions</vh></v>
 <v t="bobjack.20080424195922.88"><vh>@test ivars exist and have correct type</vh></v>
 <v t="bobjack.20080424224706.2"><vh>@test Controller Methods</vh>
@@ -145,7 +144,6 @@ for h in headlines:
 <t tx="bobjack.20080424224706.16"></t>
 <t tx="bobjack.20080424224706.22"></t>
 <t tx="bobjack.20080424224706.23"></t>
-<t tx="bobjack.20080427064828.4"></t>
 <t tx="bobjack.20080427084403.1">@
 @btn bg = lightgreen
 @btn fg = blue
@@ -165,5 +163,8 @@ g.es('I LOVE LEO')</t>
 <t tx="bobjack.20080427091720.2">Remove Button
 
 icon = Tango\16x16\actions\stop.png</t>
+<t tx="bobjack.20080427183647.2">from pprint import pformat
+
+g.es_print(pformat(c.context_menus))</t>
 </tnodes>
 </leo_file>
