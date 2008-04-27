@@ -3684,6 +3684,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
+    if not parent_v in v.t.parents:
+        v.t.parents.append(parent_v)
+
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
     self.tnodesDict [index] = t
@@ -4100,6 +4103,8 @@ def _parentVnode (self):
 #@-node:ekr.20080421162832.5:Cleanup: parentVnode always returns hidden root node
 #@-node:ekr.20080420163857.2:Projects...
 #@-node:ekr.20080416161308.1:Changed to the graph world
+#@+node:ekr.20080426090228.1:Added  @bool check_outline_after_read
+#@-node:ekr.20080426090228.1:Added  @bool check_outline_after_read
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080421162832.7:Recent graph-world bugs
 #@+node:ekr.20080421083619.3:Fixed paste outline
@@ -4128,12 +4133,20 @@ def createSaxChildren (self, sax_node, parent_v):
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
             v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            if v not in t.parents:
-                t.parents.append(v)
+            assert v in t.vnodeList
+            assert parent_v in t.parents
             for grandChild in v.t.children:
                 if v not in grandChild.t.parents:
                     # g.trace('adding %s to parents of %s' % (v,grandChild))
                     grandChild.t.parents.append(v)
+
+            if 0: # previous code
+                if v not in t.parents:
+                    t.parents.append(v)
+                for grandChild in v.t.children:
+                    if v not in grandChild.t.parents:
+                        # g.trace('adding %s to parents of %s' % (v,grandChild))
+                        grandChild.t.parents.append(v)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
         children.append(v)
@@ -4171,6 +4184,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
+
+    if not parent_v in v.t.parents:
+        v.t.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -5100,12 +5116,20 @@ def createSaxChildren (self, sax_node, parent_v):
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
             v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            if v not in t.parents:
-                t.parents.append(v)
+            assert v in t.vnodeList
+            assert parent_v in t.parents
             for grandChild in v.t.children:
                 if v not in grandChild.t.parents:
                     # g.trace('adding %s to parents of %s' % (v,grandChild))
                     grandChild.t.parents.append(v)
+
+            if 0: # previous code
+                if v not in t.parents:
+                    t.parents.append(v)
+                for grandChild in v.t.children:
+                    if v not in grandChild.t.parents:
+                        # g.trace('adding %s to parents of %s' % (v,grandChild))
+                        grandChild.t.parents.append(v)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
         children.append(v)
@@ -5143,6 +5167,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
+
+    if not parent_v in v.t.parents:
+        v.t.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -6253,12 +6280,16 @@ n = p.childIndex()
 
 assert parent_v.t.children[n] == p.v,'fail 1'
 
-assert parent_v in p.v.t.parents,'fail 2: parent_v: %s, parents: %s' % (
-    parent_v,p.v.t.parents)
+assert parent_v in p.v.t.parents,'fail 2: parent_v: %s\nparents: %s' % (
+    parent_v,g.listToString(p.v.t.parents))
+
+if 0: # Fails for all clones at present.
+    for z in p.v.t.parents:
+        assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@-node:ekr.20040323155951:<< do full tests >>
 #@+node:ekr.20040314044652:<< give test failed message >>
-s = "test failed: %s %s" % (message,repr(p))
+s = "test failed at position %s\n%s" % (repr(p),message)
 print s ; g.es_print(s,color="red")
 #@-node:ekr.20040314044652:<< give test failed message >>
 #@+node:ekr.20040314043900:<<print summary message >>
@@ -6298,12 +6329,20 @@ def createSaxChildren (self, sax_node, parent_v):
             # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
             v = self.createSaxVnode(child,parent_v,t=t)
             # g.trace('**clone',v)
-            if v not in t.parents:
-                t.parents.append(v)
+            assert v in t.vnodeList
+            assert parent_v in t.parents
             for grandChild in v.t.children:
                 if v not in grandChild.t.parents:
                     # g.trace('adding %s to parents of %s' % (v,grandChild))
                     grandChild.t.parents.append(v)
+
+            if 0: # previous code
+                if v not in t.parents:
+                    t.parents.append(v)
+                for grandChild in v.t.children:
+                    if v not in grandChild.t.parents:
+                        # g.trace('adding %s to parents of %s' % (v,grandChild))
+                        grandChild.t.parents.append(v)
         else:
             v = self.createSaxVnodeTree(child,parent_v)
         children.append(v)
@@ -6341,6 +6380,9 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
+
+    if not parent_v in v.t.parents:
+        v.t.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
