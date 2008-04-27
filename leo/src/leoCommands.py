@@ -3563,8 +3563,12 @@ class baseCommands:
 
                     assert parent_v.t.children[n] == p.v,'fail 1'
 
-                    assert parent_v in p.v.t.parents,'fail 2: parent_v: %s, parents: %s' % (
-                        parent_v,p.v.t.parents)
+                    assert parent_v in p.v.t.parents,'fail 2: parent_v: %s\nparents: %s' % (
+                        parent_v,g.listToString(p.v.t.parents))
+
+                    if 0: # Fails for all clones at present.
+                        for z in p.v.t.parents:
+                            assert p.v in z.t.children,'fail 3'
                     #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
@@ -3573,7 +3577,7 @@ class baseCommands:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
-                s = "test failed: %s %s" % (message,repr(p))
+                s = "test failed at position %s\n%s" % (repr(p),message)
                 print s ; g.es_print(s,color="red")
                 #@-node:ekr.20040314044652:<< give test failed message >>
                 #@nl
