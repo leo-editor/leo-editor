@@ -1604,9 +1604,9 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
 
-        if u.newParent_v != u.oldParent_v:
-            if u.p.parent():
-                u.p.parent().contract()
+        # if u.newParent_v != u.oldParent_v:
+            # if u.p.parent():
+                # u.p.parent().contract()
 
         c.selectPosition(u.newP)
     #@-node:ekr.20050411111847:redoMove
@@ -1942,9 +1942,9 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
 
-        if u.newParent_v != u.oldParent_v:
-            if u.newP.parent():
-                u.newP.parent().contract()
+        # if u.newParent_v != u.oldParent_v:
+            # if u.newP.parent():
+                # u.newP.parent().contract()
 
         c.selectPosition(u.p)
     #@-node:ekr.20050411112033:undoMove
