@@ -579,6 +579,8 @@ class baseFileCommands:
     #@+node:ekr.20070919133659.1:checkLeoFile (fileCommands)
     def checkLeoFile (self,event=None):
 
+        '''The check-leo-file command.'''
+
         fc = self ; c = fc.c ; p = c.currentPosition()
 
         # Put the body (minus the @nocolor) into the file buffer.
@@ -730,6 +732,9 @@ class baseFileCommands:
         if readAtFileNodesFlag:
             # The descendent nodes won't exist unless we have read the @thin nodes!
             self.restoreDescendentAttributes()
+
+        if c.config.getBool('check_outline_after_read'):
+            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         self.setPositionsFromVnodes()
         c.selectVnode(c.currentPosition()) # load body pane
@@ -961,12 +966,20 @@ class baseFileCommands:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
                 v = self.createSaxVnode(child,parent_v,t=t)
                 # g.trace('**clone',v)
-                if v not in t.parents:
-                    t.parents.append(v)
+                assert v in t.vnodeList
+                assert parent_v in t.parents
                 for grandChild in v.t.children:
                     if v not in grandChild.t.parents:
                         # g.trace('adding %s to parents of %s' % (v,grandChild))
                         grandChild.t.parents.append(v)
+
+                if 0: # previous code
+                    if v not in t.parents:
+                        t.parents.append(v)
+                    for grandChild in v.t.children:
+                        if v not in grandChild.t.parents:
+                            # g.trace('adding %s to parents of %s' % (v,grandChild))
+                            grandChild.t.parents.append(v)
             else:
                 v = self.createSaxVnodeTree(child,parent_v)
             children.append(v)
@@ -1004,6 +1017,9 @@ class baseFileCommands:
 
         v = leoNodes.vnode(context=c,t=t)
         v.t.vnodeList.append(v)
+
+        if not parent_v in v.t.parents:
+            v.t.parents.append(parent_v)
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
 
