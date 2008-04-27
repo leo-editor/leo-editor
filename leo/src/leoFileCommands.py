@@ -964,24 +964,13 @@ class baseFileCommands:
             t = self.tnodesDict.get(tnx)
             if t:
                 # A clone.  Create a new clone vnode, but share the subtree, i.e., the tnode.
-                v = self.createSaxVnode(child,parent_v,t=t)
                 # g.trace('**clone',v)
-                assert v in t.vnodeList
-                assert parent_v in t.parents
-                for grandChild in v.t.children:
-                    if v not in grandChild.t.parents:
-                        # g.trace('adding %s to parents of %s' % (v,grandChild))
-                        grandChild.t.parents.append(v)
-
-                if 0: # previous code
-                    if v not in t.parents:
-                        t.parents.append(v)
-                    for grandChild in v.t.children:
-                        if v not in grandChild.t.parents:
-                            # g.trace('adding %s to parents of %s' % (v,grandChild))
-                            grandChild.t.parents.append(v)
+                v = self.createSaxVnode(child,parent_v,t=t)
             else:
                 v = self.createSaxVnodeTree(child,parent_v)
+
+            # Add all items in v.t.vnodeList to parents of grandchildren.
+            v._addVnodeListToParents()
             children.append(v)
 
         self._linkParentAndChildren(parent_v,children)
@@ -1018,8 +1007,9 @@ class baseFileCommands:
         v = leoNodes.vnode(context=c,t=t)
         v.t.vnodeList.append(v)
 
-        if not parent_v in v.t.parents:
-            v.t.parents.append(parent_v)
+        # Now done in call to v._addVnodeListToParents in callers.
+        # if not parent_v in v.parents:
+            # v.parents.append(parent_v)
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -1107,7 +1097,7 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
     #@-node:ekr.20060919110638.7:createSaxVnode
-    #@+node:ekr.20060919110638.9:_linkParentAndChildren
+    #@+node:ekr.20060919110638.9:p._linkParentAndChildren
     def _linkParentAndChildren (self, parent_v, children):
 
         # if children: g.trace(parent_v,len(children))
@@ -1121,9 +1111,9 @@ class baseFileCommands:
 
         # Make parent_v a parent of each child.
         for v in children:
-            if parent_v not in v.t.parents:
-                v.t.parents.append(parent_v)
-    #@-node:ekr.20060919110638.9:_linkParentAndChildren
+            if parent_v not in v.parents:
+                v.parents.append(parent_v)
+    #@-node:ekr.20060919110638.9:p._linkParentAndChildren
     #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
     def dumpSaxTree (self,root,dummy):
