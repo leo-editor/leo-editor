@@ -3492,10 +3492,12 @@ class baseCommands:
                     next = p.next()
 
                     if back:
-                        assert p == back.next(), "p==back.next"
+                        assert p == back.next(), 'p!=back.next(),  back: %s back.next: %s' % (
+                            back,back.next())
 
                     if next:
-                        assert p == next.back(), "p==next.back"
+                        assert p == next.back(), 'p!=next.back, next: %s next.back: %s' % (
+                            next,next.back())
                     #@-node:ekr.20040314035615.1:assert consistency of next and back links
                     #@+node:ekr.20040314035615.2:assert consistency of parent and child links
                     if p.hasParent():
@@ -3563,11 +3565,11 @@ class baseCommands:
 
                     assert parent_v.t.children[n] == p.v,'fail 1'
 
-                    assert parent_v in p.v.t.parents,'fail 2: parent_v: %s\nparents: %s' % (
-                        parent_v,g.listToString(p.v.t.parents))
+                    assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+                        parent_v,g.listToString(p.v.parents))
 
-                    if 0: # Fails for all clones at present.
-                        for z in p.v.t.parents:
+                    if 1: # Fails for all clones at present.
+                        for z in p.v.parents:
                             assert p.v in z.t.children,'fail 3'
                     #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
@@ -4740,10 +4742,10 @@ class baseCommands:
             # g.trace('sibs2\n',g.listToString(followingSibs2))
             # Adjust the parent links of all moved nodes.
             for z in followingSibs:
-                if parent_v in z.t.parents:
-                    z.t.parents.remove(parent_v)
-                if p.v not in z.t.parents:
-                    z.t.parents.append(p.v)
+                if parent_v in z.parents:
+                    z.parents.remove(parent_v)
+                if p.v not in z.parents:
+                    z.parents.append(p.v)
             # Remove the moved nodes from the parent's children.
             parent_v.t.children = parent_v.t.children[:n+1]
             # Add the moved nodes to p's children
@@ -5023,10 +5025,10 @@ class baseCommands:
             children = p.v.t.children
             # Adjust the parent links of all moved nodes.
             for z in children:
-                if p.v in z.t.parents:
-                    z.t.parents.remove(p.v)
-                if parent_v not in z.t.parents:
-                    z.t.parents.append(parent_v)
+                if p.v in z.parents:
+                    z.parents.remove(p.v)
+                if parent_v not in z.parents:
+                    z.parents.append(parent_v)
             # Add the children to parent_v's children.
             n = p.childIndex()+1
             z = parent_v.t.children[:]
