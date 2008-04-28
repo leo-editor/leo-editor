@@ -621,9 +621,6 @@ class baseFileCommands:
                 index = x.toString(t.fileIndex)
                 self.tnodesDict[index] = t
 
-        # g.trace('reassignIndices',reassignIndices,
-            # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
-
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
@@ -653,6 +650,11 @@ class baseFileCommands:
         if reassignIndices:
             for p2 in p.self_and_subtree_iter():
                 p2.v.t.fileIndex = None
+
+        self.initAllParents()
+
+        if c.config.getBool('check_outline_after_read'):
+            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         c.selectPosition(p)
         return p
@@ -733,16 +735,38 @@ class baseFileCommands:
             # The descendent nodes won't exist unless we have read the @thin nodes!
             self.restoreDescendentAttributes()
 
+        self.setPositionsFromVnodes()
+        c.selectVnode(c.currentPosition()) # load body pane
+
+        self.initAllParents()
+
         if c.config.getBool('check_outline_after_read'):
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
-        self.setPositionsFromVnodes()
-        c.selectVnode(c.currentPosition()) # load body pane
         c.loading = False # reenable c.changed
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
         return ok, self.ratio
     #@-node:ekr.20031218072017.1553:getLeoFile
+    #@+node:ekr.20080428055516.3:initAllParents
+    def initAllParents(self):
+
+        c = self.c ; trace = True
+
+        if trace:
+            import time
+            t1 = time.time()
+
+        # This takes about 0.15 sec for this file.
+        for v in c.all_unique_vnodes_iter():
+            if c.shortFileName().startswith('minimal'):
+                g.trace(v)
+            v._computeParentsOfChildren()
+
+        if trace:
+            t2 = time.time()
+            g.trace(t2-t1)
+    #@-node:ekr.20080428055516.3:initAllParents
     #@+node:ekr.20031218072017.2009:newTnode
     def newTnode(self,index):
 
@@ -971,6 +995,7 @@ class baseFileCommands:
 
             # Add all items in v.t.vnodeList to parents of grandchildren.
             v._computeParentsOfChildren()
+
             children.append(v)
 
         self._linkParentAndChildren(parent_v,children)
@@ -1006,10 +1031,6 @@ class baseFileCommands:
 
         v = leoNodes.vnode(context=c,t=t)
         v.t.vnodeList.append(v)
-
-        # Now done in call to v._computeParentsOfChildren in callers.
-        # if not parent_v in v.parents:
-            # v.parents.append(parent_v)
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -1110,9 +1131,8 @@ class baseFileCommands:
         parent_v.t.children = children
 
         # Make parent_v a parent of each child.
-        for v in children:
-            if parent_v not in v.parents:
-                v.parents.append(parent_v)
+        parent_v._computeParentsOfChildren()
+
     #@-node:ekr.20060919110638.9:p._linkParentAndChildren
     #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
     #@+node:ekr.20060919110638.2:dumpSaxTree
