@@ -760,7 +760,7 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
-    def _computeParentsOfChildren (self,children=None,init=True):
+    def _computeParentsOfChildren (self,children=None):
 
         '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
 
