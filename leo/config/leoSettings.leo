@@ -8753,7 +8753,44 @@ push-to-ipython         = Alt-i
 Default is UTF-8 (case not important).</t>
 <t tx="ekr.20080312071248.19">The headline contains the button name, optionally followed by an @key=val field indicating a shortcut.
 
-The body text contains the script associated with the button.</t>
+The body text contains the script associated with the button.
+
+Extras if the toolbar.py plugin is enabled.
+-------------------------------------------
+
+If the toolbar.py plugin is enabled then a comment block can be added to the top of
+the body node, ie starting with a line containing a single @ and ending with a single line
+containing @c. Within this block you may include lines starting with @btn to set extra parameters
+for the button created.
+
+eg 1:
+
+@
+@btn fg = yellow
+@btn bg = red
+@btn menu = my-button-menu
+@c
+
+The created button would have yellow text on a red background and when the right mouse
+button is clicked on it a popup menu (requires rClick to be enabled also) will 
+appear.
+
+eg 2:
+@
+@btn icon = Tango\16x16\actions\add.png
+@btn menu = my-button-menu
+@btn bg =
+@btn tooltip = My First Icon Button
+@c
+
+Here the button will only have an icon, not text. It still has a right click
+menu. The line after the 'bg =' is left blank to suppress any default background
+colors, without setting our own color.
+
+Icons in buttons requires the Python Imaging Library to be istalled on your computer.
+
+The line containing the single @ must not be preceeded by any other line except blank
+lines.</t>
 <t tx="ekr.20080312071248.20">The headline contains the command name, optionally followed by an @key=val field indicating a shortcut.
 
 The body text contains the script associated with the command.</t>

@@ -21,6 +21,10 @@
 <v t="bobjack.20080402160713.9"><vh>one node 1</vh></v>
 </v>
 </v>
+<v t="bobjack.20080324164314.1"><vh>@settings</vh>
+<v t="bobjack.20080415093045.2"><vh>@bool fixedWindow = True</vh></v>
+<v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  browser</vh></v>
+</v>
 </v>
 <v t="bobjack.20080412154131.2"><vh>Buttons</vh>
 <v t="bobjack.20080329063457.1"><vh>@button show-menu-tables</vh></v>
@@ -49,10 +53,8 @@
 <v t="bobjack.20080416183608.1"><vh>&lt;&lt;test having a &lt; or &gt; in the section headline &gt;&gt;</vh></v>
 <v t="bobjack.20080329070612.3"><vh>&lt;&lt; test 'Open URL: ...'&gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080324164314.1"><vh>@settings</vh>
-<v t="bobjack.20080415093045.2"><vh>@bool fixedWindow = True</vh></v>
-<v t="bobjack.20080402071100.2"><vh>@string rclick-show-help = print log  browser</vh></v>
-<v t="bobjack.20080329054053.1"><vh>@popup_fragments for use in other menus</vh>
+<v t="bobjack.20080427183647.1"><vh>Local Popup Menus</vh>
+<v t="bobjack.20080329054053.1"><vh>Popup fragments for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
 <v t="bobjack.20080326150321.6"><vh>@item find-next</vh></v>
 <v t="bobjack.20080326150321.7"><vh>@item find-prev</vh></v>
@@ -60,7 +62,7 @@
 <v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
 </v>
 </v>
-<v t="bobjack.20080329062304.13"><vh>@popup_menus for ...</vh>
+<v t="bobjack.20080329062304.13"><vh>Popup Menus For ...</vh>
 <v t="bobjack.20080329054053.2"><vh>... the log pane</vh>
 <v t="bobjack.20080326150321.5"><vh>@popup log</vh>
 <v t="bobjack.20080329051459.3"><vh>column one</vh>
@@ -2007,5 +2009,6 @@ for name in (
 </t>
 <t tx="bobjack.20080424195922.96"></t>
 <t tx="bobjack.20080424195922.97"></t>
+<t tx="bobjack.20080427183647.1"></t>
 </tnodes>
 </leo_file>
