@@ -495,7 +495,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.32"
+__version__ = "1.33"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -595,6 +595,9 @@ __plugin_name__ = 'Right Click Menus'
 # - some refactoring to aid unit tests
 # 1.32 bobjack:
 #     - bugfix per widget context_menu
+# 1.33 bobjack:
+#     - allow popup menus outside @settings trees.
+#       These wil be local to the commander
 # 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
@@ -815,9 +818,10 @@ class pluginController(object):
         c = self.c
 
         self.registerCommands()
-        self.rSetupMenus()
 
         c.theContextMenuController = self
+
+        self.rSetupMenus()
     #@-node:bobjack.20080423205354.3:onCreate
     #@+node:bobjack.20080424195922.7:onClose
     def onClose(self):
@@ -890,6 +894,8 @@ class pluginController(object):
 
             c.context_menus = menus
 
+            self.handleLocalPopupMenus()
+
             #@        << def config_to_rclick >>
             #@+node:ekr.20080327061021.219:<< def config_to_rclick >>
             def config_to_rclick(menu_table):
@@ -958,6 +964,77 @@ class pluginController(object):
 
         return (cmd + '\n' + pairs).strip()
     #@-node:bobjack.20080414064211.4:rejoin
+    #@+node:bobjack.20080427165505.1:handleLocalPopupMenus
+    def handleLocalPopupMenus(self):
+
+        """Handle @popup menu items outside @settings trees."""
+
+        c = self.c
+
+        popup = '@popup '
+        lp = len(popup)
+
+        for p in self.c.allNodes_iter():
+
+            h = p.headString().strip()
+
+            if not h.startswith(popup):
+                continue
+
+            found = False
+            for pp in p.parents_iter():
+                if pp.headString().strip().lower().startswith('@settings'):
+                    found = True
+                    break
+
+            if found:
+                continue
+
+            h = h[lp:]
+            if '=' in h:
+                name, val = h.split('=', 1)
+            else:
+                name, val = h, ''
+
+            name, val = name.strip(), val.strip() 
+
+            aList = []
+
+            self.doPopupItems(p, aList)
+
+            c.context_menus[name] = aList        
+    #@+node:bobjack.20080427165505.2:doPopupItems
+    def doPopupItems (self,p,aList):
+
+        p = p.copy() ; after = p.nodeAfterTree()
+        p.moveToThreadNext()
+        while p and p != after:
+            h = p.headString()
+            for tag in ('@menu','@item'):
+                if g.match_word(h,0,tag):
+                    itemName = h[len(tag):].strip()
+                    if itemName:
+                        if tag == '@menu':
+                            aList2 = []
+                            kind = '%s' % itemName
+                            body = p.bodyString()
+                            self.doPopupItems(p,aList2)
+                            aList.append((kind + '\n' + body, aList2),)
+                            p.moveToNodeAfterTree()
+                            break
+                        else:
+                            kind = tag
+                            head = itemName
+                            body = p.bodyString()
+                            aList.append((head,body),)
+                            p.moveToThreadNext()
+                            break
+            else:
+                # g.trace('***skipping***',p.headString())
+                p.moveToThreadNext()
+    #@nonl
+    #@-node:bobjack.20080427165505.2:doPopupItems
+    #@-node:bobjack.20080427165505.1:handleLocalPopupMenus
     #@-node:ekr.20080327061021.218:rSetupMenus
     #@-node:bobjack.20080323045434.15:__init__
     #@+node:bobjack.20080329153415.3:Generator Minibuffer Commands
