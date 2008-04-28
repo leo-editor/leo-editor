@@ -78,6 +78,7 @@ class baseCommands:
         t = leoNodes.tnode()
         self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
+        self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
