@@ -3568,9 +3568,8 @@ class baseCommands:
                     assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
                         parent_v,g.listToString(p.v.parents))
 
-                    if 1: # Fails for all clones at present.
-                        for z in p.v.parents:
-                            assert p.v in z.t.children,'fail 3'
+                    for z in p.v.parents:
+                        assert p.v in z.t.children,'fail 3'
                     #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
