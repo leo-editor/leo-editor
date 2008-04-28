@@ -757,6 +757,10 @@ class baseFileCommands:
     #@+node:ekr.20080428055516.3:initAllParents
     def initAllParents(self):
 
+        '''Properly init the parents list of all vnodes.'''
+
+        # An important point: the iter below does not depend on any parent list.
+
         c = self.c ; trace = False
 
         if trace:
