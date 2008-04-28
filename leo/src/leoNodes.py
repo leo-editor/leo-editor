@@ -754,9 +754,7 @@ class vnode (baseVnode):
         parent_v._p_changed = 1
 
         # Add parent_v to v's parents.
-        if not parent_v in v.parents:
-            v.parents.append(parent_v)
-            v._p_changed = 1
+        parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
@@ -2679,11 +2677,7 @@ class basePosition (object):
         parent_v._p_changed = 1
 
         # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        # This is the same as parent_v._computeParentsOfChildren()
-        for v2 in parent_v.t.vnodeList:
-            if not v2 in p.v.parents:
-                p.v.parents.append(v2)
-                p.v._p_changed = 1
+        parent_v._computeParentsOfChildren()
 
     #@-node:ekr.20080416161551.214:p._linkAfter
     #@+node:ekr.20080416161551.215:p._linkAsNthChild
@@ -2707,11 +2701,8 @@ class basePosition (object):
         parent_v._p_changed = 1
 
         # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-        # This is the same as parent_v._computeParentsOfChildren()
-        for v2 in parent_v.t.vnodeList:
-            if not v2 in p.v.parents:
-                p.v.parents.append(v2)
-                p.v._p_changed = 1
+        parent_v._computeParentsOfChildren()
+
     #@-node:ekr.20080416161551.215:p._linkAsNthChild
     #@+node:ekr.20080416161551.216:p._linkAsRoot
     def _linkAsRoot (self,oldRoot):
@@ -2735,16 +2726,13 @@ class basePosition (object):
             p.v.t.vnodeList.append(p.v)
             p.v.t._p_changed = 1
 
-        # Update the p.v.parents.
-        if hiddenRootNode not in p.v.parents:
-            p.v.parents.append(hiddenRootNode)
-            p.v._p_changed = 1
-
         # Update the hiddenRootNode's children.
         if oldRoot:
             hiddenRootNode.t.children.insert(0,p.v)
         else:
             hiddenRootNode.t.children = [p.v]
+
+        hiddenRootNode._computeParentsOfChildren()
 
         return p
     #@-node:ekr.20080416161551.216:p._linkAsRoot
@@ -2780,11 +2768,6 @@ class basePosition (object):
             g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
             g.trace('p.v',p.v)
             g.trace(g.callers())
-
-        # Delete parent_v from p.v's parents.
-        # if parent_v in p.v.parents:
-            # p.v.parents.remove(parent_v)
-            # p.v._p_changed = 1
 
         # Clear the entire parents array.
         if p.v.parents:
