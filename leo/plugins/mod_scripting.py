@@ -133,6 +133,14 @@ __version__ = '2.2'
 # 2.2 EKR: Bug fix: use g.match_word rather than s.startswith to discover 
 # names.
 # This prevents an 's' button from being created from @buttons nodes.
+# 2.3 bobjack:
+#     - added 'event' parameter to deleteButtonCallback to support rClick 
+# menus
+#     - exposed the scripting contoller class as
+#          g.app.gui.ScriptingControllerClass
+# 2.4 bobjack:
+#     - exposed the scripting controller instance as
+#         c.theScriptingController
 #@-at
 #@nonl
 #@-node:ekr.20060328125248.3:<< version history >>
@@ -149,6 +157,11 @@ def init ():
     ok = g.app.gui.guiName() in ('tkinter','wxPython','nullGui')
 
     if ok:
+
+        sc = 'ScriptingControllerClass'
+        if not hasattr(g.app.gui, sc):
+            setattr(g.app.gui, sc, scriptingController)
+
         # Note: call onCreate _after_ reading the .leo file.
         # That is, the 'after-create-leo-frame' hook is too early!
         leoPlugins.registerHandler(('new','open2'),onCreate)
@@ -166,7 +179,8 @@ def onCreate (tag, keys):
 
     if c:
         # g.trace('mod_scripting',c)
-        sc = scriptingController(c)
+        sc = g.app.gui.ScriptingControllerClass(c)
+        c.theScriptingController = sc
         sc.createAllButtons()
 #@nonl
 #@-node:ekr.20060328125248.5:onCreate
@@ -701,7 +715,7 @@ class scriptingController:
 
         # Define the callback used to delete the button.
         def deleteButtonCallback(event=None,self=self,b=b):
-            self.deleteButton(b)
+            self.deleteButton(b, event=event)
 
         if self.gui.guiName() == 'tkinter':
             # Bind right-clicks to deleteButton.
@@ -744,7 +758,7 @@ class scriptingController:
         k.registerCommand(buttonText,shortcut=shortcut,func=atButtonCallback,pane='button',verbose=shortcut)
     #@-node:ekr.20060929131245:definePressButtonCommand (no longer used)
     #@+node:ekr.20060328125248.26:deleteButton
-    def deleteButton(self,button):
+    def deleteButton(self,button,**kw):
 
         """Delete the given button.
         This is called from callbacks, it is not a callback."""
