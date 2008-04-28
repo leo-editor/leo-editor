@@ -664,9 +664,11 @@ class atFile:
         else:
             if indices.areEqual(gnx,lastIndex):
                 last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                # g.trace('last',last)
                 return last
             if child:
                 child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                # g.trace('child',child)
                 return child
             copies = 1 # Create exactly one copy.
 
