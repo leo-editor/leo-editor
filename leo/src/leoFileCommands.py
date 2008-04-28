@@ -714,7 +714,13 @@ class baseFileCommands:
                 c.setRootVnode(v)
                 self.rootVnode = v
             else:
-                self.rootVnode = c.rootPosition().v
+                t = leoNodes.tnode(headString='created root node')
+                v = leoNodes.vnode(context=c,t=t)
+                p = leoNodes.position(v)
+                p._linkAsRoot(oldRoot=None)
+                self.rootVnode = v
+                c.setRootPosition(p)
+                c.changed = False
         except BadLeoFile, message:
             if not silent:
                 g.es_exception()
@@ -751,16 +757,16 @@ class baseFileCommands:
     #@+node:ekr.20080428055516.3:initAllParents
     def initAllParents(self):
 
-        c = self.c ; trace = True
+        c = self.c ; trace = False
 
         if trace:
             import time
             t1 = time.time()
 
         # This takes about 0.15 sec for this file.
+        c.hiddenRootNode._computeParentsOfChildren()
+
         for v in c.all_unique_vnodes_iter():
-            if c.shortFileName().startswith('minimal'):
-                g.trace(v)
             v._computeParentsOfChildren()
 
         if trace:
