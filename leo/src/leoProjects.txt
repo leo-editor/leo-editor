@@ -3684,10 +3684,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
 
-    # Now done in call to v._computeParentsOfChildren in callers.
-    # if not parent_v in v.parents:
-        # v.parents.append(parent_v)
-
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
     self.tnodesDict [index] = t
@@ -3787,9 +3783,8 @@ def _linkParentAndChildren (self, parent_v, children):
     parent_v.t.children = children
 
     # Make parent_v a parent of each child.
-    for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@+node:EKR.20040530121329:u.restoreTree & helpers
 def restoreTree (self,treeInfo):
@@ -4139,6 +4134,7 @@ def createSaxChildren (self, sax_node, parent_v):
 
         # Add all items in v.t.vnodeList to parents of grandchildren.
         v._computeParentsOfChildren()
+
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -4174,10 +4170,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
-
-    # Now done in call to v._computeParentsOfChildren in callers.
-    # if not parent_v in v.parents:
-        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -4278,9 +4270,8 @@ def _linkParentAndChildren (self, parent_v, children):
     parent_v.t.children = children
 
     # Make parent_v a parent of each child.
-    for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
@@ -4300,9 +4291,6 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
         for t in c.all_unique_tnodes_iter():
             index = x.toString(t.fileIndex)
             self.tnodesDict[index] = t
-
-    # g.trace('reassignIndices',reassignIndices,
-        # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
 
     self.usingClipboard = True
     try:
@@ -4333,6 +4321,11 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
     if reassignIndices:
         for p2 in p.self_and_subtree_iter():
             p2.v.t.fileIndex = None
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
     c.selectPosition(p)
     return p
@@ -4393,16 +4386,13 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.parents.
-    if hiddenRootNode not in p.v.parents:
-        p.v.parents.append(hiddenRootNode)
-        p.v._p_changed = 1
-
     # Update the hiddenRootNode's children.
     if oldRoot:
         hiddenRootNode.t.children.insert(0,p.v)
     else:
         hiddenRootNode.t.children = [p.v]
+
+    hiddenRootNode._computeParentsOfChildren()
 
     return p
 #@-node:ekr.20080416161551.216:p._linkAsRoot
@@ -4451,11 +4441,6 @@ def _unlink (self):
         g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
         g.trace('p.v',p.v)
         g.trace(g.callers())
-
-    # Delete parent_v from p.v's parents.
-    # if parent_v in p.v.parents:
-        # p.v.parents.remove(parent_v)
-        # p.v._p_changed = 1
 
     # Clear the entire parents array.
     if p.v.parents:
@@ -4913,16 +4898,13 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.parents.
-    if hiddenRootNode not in p.v.parents:
-        p.v.parents.append(hiddenRootNode)
-        p.v._p_changed = 1
-
     # Update the hiddenRootNode's children.
     if oldRoot:
         hiddenRootNode.t.children.insert(0,p.v)
     else:
         hiddenRootNode.t.children = [p.v]
+
+    hiddenRootNode._computeParentsOfChildren()
 
     return p
 #@-node:ekr.20080416161551.216:p._linkAsRoot
@@ -5033,9 +5015,6 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
             index = x.toString(t.fileIndex)
             self.tnodesDict[index] = t
 
-    # g.trace('reassignIndices',reassignIndices,
-        # 'len(.tnodesDict.keys())',len(self.tnodesDict.keys()))
-
     self.usingClipboard = True
     try:
         # This encoding must match the encoding used in putLeoOutline.
@@ -5065,6 +5044,11 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
     if reassignIndices:
         for p2 in p.self_and_subtree_iter():
             p2.v.t.fileIndex = None
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
     c.selectPosition(p)
     return p
@@ -5119,6 +5103,7 @@ def createSaxChildren (self, sax_node, parent_v):
 
         # Add all items in v.t.vnodeList to parents of grandchildren.
         v._computeParentsOfChildren()
+
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -5154,10 +5139,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
-
-    # Now done in call to v._computeParentsOfChildren in callers.
-    # if not parent_v in v.parents:
-        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -5258,9 +5239,8 @@ def _linkParentAndChildren (self, parent_v, children):
     parent_v.t.children = children
 
     # Make parent_v a parent of each child.
-    for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20031218072017.2004:canonicalTnodeIndex
@@ -5311,11 +5291,6 @@ def _unlink (self):
         g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
         g.trace('p.v',p.v)
         g.trace(g.callers())
-
-    # Delete parent_v from p.v's parents.
-    # if parent_v in p.v.parents:
-        # p.v.parents.remove(parent_v)
-        # p.v._p_changed = 1
 
     # Clear the entire parents array.
     if p.v.parents:
@@ -6225,9 +6200,8 @@ assert parent_v.t.children[n] == p.v,'fail 1'
 assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
     parent_v,g.listToString(p.v.parents))
 
-if 1: # Fails for all clones at present.
-    for z in p.v.parents:
-        assert p.v in z.t.children,'fail 3'
+for z in p.v.parents:
+    assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@-node:ekr.20040323155951:<< do full tests >>
 #@+node:ekr.20040314044652:<< give test failed message >>
@@ -6276,6 +6250,7 @@ def createSaxChildren (self, sax_node, parent_v):
 
         # Add all items in v.t.vnodeList to parents of grandchildren.
         v._computeParentsOfChildren()
+
         children.append(v)
 
     self._linkParentAndChildren(parent_v,children)
@@ -6311,10 +6286,6 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
 
     v = leoNodes.vnode(context=c,t=t)
     v.t.vnodeList.append(v)
-
-    # Now done in call to v._computeParentsOfChildren in callers.
-    # if not parent_v in v.parents:
-        # v.parents.append(parent_v)
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
 
@@ -6415,9 +6386,8 @@ def _linkParentAndChildren (self, parent_v, children):
     parent_v.t.children = children
 
     # Make parent_v a parent of each child.
-    for v in children:
-        if parent_v not in v.parents:
-            v.parents.append(parent_v)
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20060919110638.9:p._linkParentAndChildren
 #@-node:ekr.20060919110638.4:createSaxVnodes & helpers
 #@+node:ekr.20041005105605.72:createThinChild4
@@ -6455,9 +6425,11 @@ def createThinChild4 (self,gnxString,headline):
     else:
         if indices.areEqual(gnx,lastIndex):
             last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('last',last)
             return last
         if child:
             child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('child',child)
             return child
         copies = 1 # Create exactly one copy.
 
@@ -6504,11 +6476,8 @@ def _linkAsNthChild (self,parent,n):
     parent_v._p_changed = 1
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-    # This is the same as parent_v._computeParentsOfChildren()
-    for v2 in parent_v.t.vnodeList:
-        if not v2 in p.v.parents:
-            p.v.parents.append(v2)
-            p.v._p_changed = 1
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20080416161551.215:p._linkAsNthChild
 #@-node:ekr.20080426051658.2:Fixed inconsistencies between parents and children arrays
 #@+node:ekr.20080426084849.1:Rewrote scanForClonedSibs
@@ -6548,9 +6517,11 @@ def createThinChild4 (self,gnxString,headline):
     else:
         if indices.areEqual(gnx,lastIndex):
             last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('last',last)
             return last
         if child:
             child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('child',child)
             return child
         copies = 1 # Create exactly one copy.
 
@@ -6734,7 +6705,7 @@ Traceback (most recent call last):
 IndexError: list index out of range
 
 #@-node:ekr.20080426121840.5:Bug: Undo move crashes
-#@+node:ekr.20080426121840.3:Bug: Selection gets lost 
+#@+node:ekr.20080426121840.3:Bug: Selection gets lost
 # when moving node down into child
 # when expanding node with alt-rtArrow
 
@@ -7377,7 +7348,7 @@ def drawTopTree (self):
     canvas.lift("userIcon")
     self.redrawing = False
 #@-node:ekr.20040803072955.52:drawTopTree
-#@-node:ekr.20080426121840.3:Bug: Selection gets lost 
+#@-node:ekr.20080426121840.3:Bug: Selection gets lost
 #@+node:ekr.20080427062528.2:Fixed bug involving p._unlink
 #@+node:ekr.20080427062528.3:Posting
 @nocolor
@@ -7503,11 +7474,7 @@ def _linkAfter (self,p_after):
     parent_v._p_changed = 1
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-    # This is the same as parent_v._computeParentsOfChildren()
-    for v2 in parent_v.t.vnodeList:
-        if not v2 in p.v.parents:
-            p.v.parents.append(v2)
-            p.v._p_changed = 1
+    parent_v._computeParentsOfChildren()
 
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20080416161551.215:p._linkAsNthChild
@@ -7531,11 +7498,8 @@ def _linkAsNthChild (self,parent,n):
     parent_v._p_changed = 1
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
-    # This is the same as parent_v._computeParentsOfChildren()
-    for v2 in parent_v.t.vnodeList:
-        if not v2 in p.v.parents:
-            p.v.parents.append(v2)
-            p.v._p_changed = 1
+    parent_v._computeParentsOfChildren()
+
 #@-node:ekr.20080416161551.215:p._linkAsNthChild
 #@+node:ekr.20080416161551.216:p._linkAsRoot
 def _linkAsRoot (self,oldRoot):
@@ -7559,16 +7523,13 @@ def _linkAsRoot (self,oldRoot):
         p.v.t.vnodeList.append(p.v)
         p.v.t._p_changed = 1
 
-    # Update the p.v.parents.
-    if hiddenRootNode not in p.v.parents:
-        p.v.parents.append(hiddenRootNode)
-        p.v._p_changed = 1
-
     # Update the hiddenRootNode's children.
     if oldRoot:
         hiddenRootNode.t.children.insert(0,p.v)
     else:
         hiddenRootNode.t.children = [p.v]
+
+    hiddenRootNode._computeParentsOfChildren()
 
     return p
 #@-node:ekr.20080416161551.216:p._linkAsRoot
@@ -7604,11 +7565,6 @@ def _unlink (self):
         g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
         g.trace('p.v',p.v)
         g.trace(g.callers())
-
-    # Delete parent_v from p.v's parents.
-    # if parent_v in p.v.parents:
-        # p.v.parents.remove(parent_v)
-        # p.v._p_changed = 1
 
     # Clear the entire parents array.
     if p.v.parents:
