@@ -75,8 +75,8 @@ class baseCommands:
         # Init ivars with self.x instead of c.x to keep Pychecker happy
         self.chapterController = None
         self.frame = frame
-        t = leoNodes.tnode()
-        self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
+
+        self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
         self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
         self.isZipped = False # May be set to True by g.openWithFileName.
@@ -439,8 +439,7 @@ class baseCommands:
             frame.deiconify()
             frame.lift()
             frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-            t = leoNodes.tnode()
-            v = leoNodes.vnode(context=c,t=t)
+            v = leoNodes.vnode(context=c)
             p = leoNodes.position(v)
             v.initHeadString("NewHeadline")
             # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
