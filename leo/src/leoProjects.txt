@@ -4544,7 +4544,7 @@ def moveAfter (self,a):
     return p
 #@-node:ekr.20040303175026.10:p.moveAfter
 #@+node:ekr.20040303175026.3:p.insertAfter
-def insertAfter (self): #,t=None):
+def insertAfter (self):
 
     """Inserts a new position after self.
 
@@ -4553,10 +4553,7 @@ def insertAfter (self): #,t=None):
     p = self ; context = p.v.context
     p2 = self.copy()
 
-    # if not t:
-        # t = tnode(headString="NewHeadline")
-
-    p2.v = vnode(context=context) # ,t=t)
+    p2.v = vnode(context=context)
     p2.v.iconVal = 0
     p2._linkAfter(p)
 
@@ -6216,11 +6213,13 @@ n = p.childIndex()
 
 assert parent_v.t.children[n] == p.v,'fail 1'
 
-assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
-    parent_v,g.listToString(p.v.parents))
+if not g.unified_nodes:
 
-for z in p.v.parents:
-    assert p.v in z.t.children,'fail 3'
+    assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+        parent_v,g.listToString(p.v.parents))
+
+    for z in p.v.parents:
+        assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@-node:ekr.20040323155951:<< do full tests >>
 #@+node:ekr.20040314044652:<< give test failed message >>
@@ -6474,8 +6473,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -6567,8 +6571,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -7618,11 +7627,13 @@ n = p.childIndex()
 
 assert parent_v.t.children[n] == p.v,'fail 1'
 
-assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
-    parent_v,g.listToString(p.v.parents))
+if not g.unified_nodes:
 
-for z in p.v.parents:
-    assert p.v in z.t.children,'fail 3'
+    assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+        parent_v,g.listToString(p.v.parents))
+
+    for z in p.v.parents:
+        assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@+node:ekr.20060919110638.5:createSaxChildren
 def createSaxChildren (self, sax_node, parent_v):
@@ -7819,8 +7830,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -8033,9 +8049,15 @@ def clone (self):
 
     p = self ; context = p.v.context
 
-    p2 = p.copy()
-    p2.v = vnode(context=context,t=p2.v.t)
-    p2._linkAfter(p)
+    if g.unified_nodes:
+        import copy
+        p2 = p.copy()
+        p2.v = copy.copy(p.v)
+        p2._linkAfter(p)
+    else:
+        p2 = p.copy()
+        p2.v = vnode(context=context,t=p2.v.t)
+        p2._linkAfter(p)
 
     assert (p.v.t == p2.v.t)
     assert (p.v in p.v.t.vnodeList)
@@ -8404,9 +8426,15 @@ def clone (self):
 
     p = self ; context = p.v.context
 
-    p2 = p.copy()
-    p2.v = vnode(context=context,t=p2.v.t)
-    p2._linkAfter(p)
+    if g.unified_nodes:
+        import copy
+        p2 = p.copy()
+        p2.v = copy.copy(p.v)
+        p2._linkAfter(p)
+    else:
+        p2 = p.copy()
+        p2.v = vnode(context=context,t=p2.v.t)
+        p2._linkAfter(p)
 
     assert (p.v.t == p2.v.t)
     assert (p.v in p.v.t.vnodeList)
@@ -8646,11 +8674,13 @@ n = p.childIndex()
 
 assert parent_v.t.children[n] == p.v,'fail 1'
 
-assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
-    parent_v,g.listToString(p.v.parents))
+if not g.unified_nodes:
 
-for z in p.v.parents:
-    assert p.v in z.t.children,'fail 3'
+    assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+        parent_v,g.listToString(p.v.parents))
+
+    for z in p.v.parents:
+        assert p.v in z.t.children,'fail 3'
 #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
 #@-node:ekr.20040323155951:<< do full tests >>
 #@+node:ekr.20040314044652:<< give test failed message >>
@@ -9294,8 +9324,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -9662,9 +9697,15 @@ def clone (self):
 
     p = self ; context = p.v.context
 
-    p2 = p.copy()
-    p2.v = vnode(context=context,t=p2.v.t)
-    p2._linkAfter(p)
+    if g.unified_nodes:
+        import copy
+        p2 = p.copy()
+        p2.v = copy.copy(p.v)
+        p2._linkAfter(p)
+    else:
+        p2 = p.copy()
+        p2.v = vnode(context=context,t=p2.v.t)
+        p2._linkAfter(p)
 
     assert (p.v.t == p2.v.t)
     assert (p.v in p.v.t.vnodeList)
@@ -9983,8 +10024,8 @@ def __init__ (self,context,t=None):
         self.selectionStart = 0 # The start of the selected body text.
 
         # Convert everything to unicode...
-        self._headString = g.toUnicode(headString,g.app.tkEncoding)
-        self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+        self._headString = u''
+        self._bodyString = u''
 
         self.children = [] # List of all children of this node.
         self.vnodeList = []
@@ -10227,8 +10268,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -10433,7 +10479,7 @@ def newTnode(self,index):
         return t
 #@-node:ekr.20031218072017.2009:newTnode
 #@+node:ekr.20040303175026.4:p.insertAsLastChild
-def insertAsLastChild (self): # ,t=None):
+def insertAsLastChild (self):
 
     """Inserts a new vnode as the last child of self.
 
@@ -10442,23 +10488,17 @@ def insertAsLastChild (self): # ,t=None):
     p = self
     n = p.numberOfChildren()
 
-    # if not t:
-        # t = tnode(headString="NewHeadline")
-
-    return p.insertAsNthChild(n) #,t)
+    return p.insertAsNthChild(n)
 #@-node:ekr.20040303175026.4:p.insertAsLastChild
 #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-def insertAsNthChild (self,n):  # ,t=None):
+def insertAsNthChild (self,n):
 
     """Inserts a new node as the the nth child of the receiver.
     The receiver must have at least n-1 children"""
 
     v = self
 
-    # if not t:
-        # t = tnode(headString="NewHeadline")
-
-    v2 = vnode(context=v.context) # ,t=t)
+    v2 = vnode(context=v.context)
     v2._linkAsNthChild(self,n)
 
     return v2
@@ -10691,8 +10731,13 @@ def createThinChild4 (self,gnxString,headline):
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
-        child = leoNodes.vnode(context=c,t=t)
-        t.vnodeList.append(child)
+        if g.unified_nodes:
+            child = t
+        else:
+            child = leoNodes.vnode(context=c,t=t)
+
+        if child not in t.vnodeList:
+            t.vnodeList.append(child)
         child._linkAsNthChild(parent,parent.numberOfChildren())
 
     child.t.setVisited() # Supress warning/deletion of unvisited nodes.
@@ -10786,13 +10831,20 @@ if use_zodb and ZODB:
 #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
 #@+node:ekr.20031218072017.3325:t.Getters
 #@+node:EKR.20040625161602:t.bodyString
-def getBody (self):
+def bodyString (self):
 
     return self._bodyString
 
-bodyString = getBody
-bodyText = getBody
+getBody = bodyString
+bodyText = bodyString
 #@-node:EKR.20040625161602:t.bodyString
+#@+node:ekr.20080429053831.14:t.headString
+def headString (self):
+
+    return self._headString
+
+headText = headString
+#@-node:ekr.20080429053831.14:t.headString
 #@+node:ekr.20031218072017.3326:t.hasBody
 def hasBody (self):
 
@@ -10955,8 +11007,8 @@ def __init__ (self,context,t=None):
         self.selectionStart = 0 # The start of the selected body text.
 
         # Convert everything to unicode...
-        self._headString = g.toUnicode(headString,g.app.tkEncoding)
-        self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+        self._headString = u''
+        self._bodyString = u''
 
         self.children = [] # List of all children of this node.
         self.vnodeList = []
@@ -10966,6 +11018,161 @@ def __init__ (self,context,t=None):
         self.t = t # The tnode.
 #@nonl
 #@-node:ekr.20031218072017.3344:v.__init__
+#@+node:ekr.20031218072017.2072:c.checkOutline
+def checkOutline (self,event=None,verbose=True,unittest=False,full=True):
+
+    """Report any possible clone errors in the outline.
+
+    Remove any unused tnodeLists."""
+
+    c = self ; count = 1 ; errors = 0
+    isTkinter = g.app.gui and g.app.gui.guiName() == "tkinter"
+
+    if full and not unittest:
+        g.es("all tests enabled: this may take awhile",color="blue")
+
+    p = c.rootPosition()
+    for p in c.allNodes_iter():
+        try:
+            count += 1
+            << remove unused tnodeList >>
+            if full: # Unit tests usually set this false.
+                << do full tests >>
+        except AssertionError,message:
+            errors += 1
+            << give test failed message >>
+    if verbose or not unittest:
+        << print summary message >>
+    return errors
+#@+node:ekr.20040313150633:<< remove unused tnodeList >>
+# Empty tnodeLists are not errors.
+v = p.v
+
+# New in 4.2: tnode list is in tnode.
+if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and not v.isAnyAtFileNode():
+    if 0:
+        s = "deleting tnodeList for " + repr(v)
+        print ; g.es_print(s,color="blue")
+    delattr(v.t,"tnodeList")
+    v.t._p_changed = True
+#@-node:ekr.20040313150633:<< remove unused tnodeList >>
+#@+node:ekr.20040323155951:<< do full tests >>
+if not unittest:
+    if count % 1000 == 0:
+        g.es('','.',newline=False)
+    if count % 8000 == 0:
+        g.enl()
+
+@others
+#@+node:ekr.20040314035615:assert consistency of threadNext & threadBack links
+threadBack = p.threadBack()
+threadNext = p.threadNext()
+
+if threadBack:
+    assert p == threadBack.threadNext(), "p==threadBack.threadNext"
+
+if threadNext:
+    assert p == threadNext.threadBack(), "p==threadNext.threadBack"
+#@-node:ekr.20040314035615:assert consistency of threadNext & threadBack links
+#@+node:ekr.20040314035615.1:assert consistency of next and back links
+back = p.back()
+next = p.next()
+
+if back:
+    assert p == back.next(), 'p!=back.next(),  back: %s back.next: %s' % (
+        back,back.next())
+
+if next:
+    assert p == next.back(), 'p!=next.back, next: %s next.back: %s' % (
+        next,next.back())
+#@-node:ekr.20040314035615.1:assert consistency of next and back links
+#@+node:ekr.20040314035615.2:assert consistency of parent and child links
+if p.hasParent():
+    n = p.childIndex()
+    assert p == p.parent().moveToNthChild(n), "p==parent.moveToNthChild"
+
+for child in p.children_iter():
+    assert p == child.parent(), "p==child.parent"
+
+if p.hasNext():
+    assert p.next().parent() == p.parent(), "next.parent==parent"
+
+if p.hasBack():
+    assert p.back().parent() == p.parent(), "back.parent==parent"
+#@-node:ekr.20040314035615.2:assert consistency of parent and child links
+#@+node:ekr.20040323162707:assert that clones actually share subtrees
+if p.isCloned() and p.hasChildren():
+    for z in p.v.t.vnodeList:
+        assert z.t == p.v.t
+#@-node:ekr.20040323162707:assert that clones actually share subtrees
+#@+node:ekr.20040314043623:assert consistency of vnodeList
+vnodeList = p.v.t.vnodeList
+
+for v in vnodeList:
+
+    try:
+        assert v.t == p.v.t
+    except AssertionError:
+        print "p",p
+        print "v",v
+        print "p.v",p.v
+        print "v.t",v.t
+        print "p.v.t",p.v.t
+        raise AssertionError, "v.t == p.v.t"
+
+    if p.v.isCloned():
+        assert v.isCloned(), "v.isCloned"
+        assert len(vnodeList) > 1, "len(vnodeList) > 1"
+    else:
+        assert not v.isCloned(), "not v.isCloned"
+        assert len(vnodeList) == 1, "len(vnodeList) == 1"
+#@-node:ekr.20040314043623:assert consistency of vnodeList
+#@+node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+# Not a great test: it only tests visible nodes.
+# This test may fail if a joined node is being editred.
+
+if isTkinter:
+    t = c.edit_widget(p)
+    if t:
+        s = t.getAllText()
+        assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
+#@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+#@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+@
+Every nodes gets visited, so we only check consistency
+between p and its parent, not between p and its children.
+
+In other words, this is a strong test.
+@c
+
+parent_v = p._parentVnode()
+n = p.childIndex()
+
+assert parent_v.t.children[n] == p.v,'fail 1'
+
+if not g.unified_nodes:
+
+    assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+        parent_v,g.listToString(p.v.parents))
+
+    for z in p.v.parents:
+        assert p.v in z.t.children,'fail 3'
+#@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+#@-node:ekr.20040323155951:<< do full tests >>
+#@+node:ekr.20040314044652:<< give test failed message >>
+s = "test failed at position %s\n%s" % (repr(p),message)
+print s ; g.es_print(s,color="red")
+#@-node:ekr.20040314044652:<< give test failed message >>
+#@+node:ekr.20040314043900:<<print summary message >>
+if full:
+    print
+    g.enl()
+
+if errors or verbose:
+    color = g.choose(errors,'red','green')
+    g.es_print('',count,'nodes checked',errors,'errors',color=color)
+#@-node:ekr.20040314043900:<<print summary message >>
+#@-node:ekr.20031218072017.2072:c.checkOutline
 #@-node:ekr.20080429053831.4:Found: unified_nodes
 #@-node:ekr.20080429053831.3:Added g.unified_nodes
 #@-node:ekr.20080408060320.4:4.5 a1
