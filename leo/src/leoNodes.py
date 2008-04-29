@@ -98,13 +98,20 @@ if not g.unified_nodes:
         #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
         #@+node:ekr.20031218072017.3325:t.Getters
         #@+node:EKR.20040625161602:t.bodyString
-        def getBody (self):
+        def bodyString (self):
 
             return self._bodyString
 
-        bodyString = getBody
-        bodyText = getBody
+        getBody = bodyString
+        bodyText = bodyString
         #@-node:EKR.20040625161602:t.bodyString
+        #@+node:ekr.20080429053831.14:t.headString
+        def headString (self):
+
+            return self._headString
+
+        headText = headString
+        #@-node:ekr.20080429053831.14:t.headString
         #@+node:ekr.20031218072017.3326:t.hasBody
         def hasBody (self):
 
@@ -281,8 +288,8 @@ class vnode (baseVnode):
             self.selectionStart = 0 # The start of the selected body text.
 
             # Convert everything to unicode...
-            self._headString = g.toUnicode(headString,g.app.tkEncoding)
-            self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+            self._headString = u''
+            self._bodyString = u''
 
             self.children = [] # List of all children of this node.
             self.vnodeList = []
@@ -481,6 +488,20 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3353:matchHeadline
     #@-node:ekr.20031218072017.3346:v.Comparisons
     #@+node:ekr.20031218072017.3359:v.Getters
+    #@+node:ekr.20031218072017.3378:v.bodyString
+    def bodyString (self):
+
+        # This message should never be printed and we want to avoid crashing here!
+        if not g.isUnicode(self.t._bodyString):
+            s = "v.bodyString: Leo internal error: not unicode:" + repr(self.t._bodyString)
+            g.es_print('',s,color="red")
+
+        # Make _sure_ we return a unicode string.
+        return g.toUnicode(self.t._bodyString,g.app.tkEncoding)
+
+    getBody = bodyString
+    #@nonl
+    #@-node:ekr.20031218072017.3378:v.bodyString
     #@+node:ekr.20031218072017.3360:v.Children
     #@+node:ekr.20031218072017.3362:v.firstChild
     def firstChild (self):
@@ -521,64 +542,25 @@ class vnode (baseVnode):
         return len(v.t.children)
     #@-node:ekr.20031218072017.3366:v.numberOfChildren
     #@-node:ekr.20031218072017.3360:v.Children
-    #@+node:ekr.20031218072017.3367:v.Status Bits
-    #@+node:ekr.20031218072017.3368:v.isCloned
-    def isCloned (self):
+    #@+node:ekr.20040323100443:v.directParents
+    def directParents (self):
 
-        return len(self.t.vnodeList) > 1
-    #@-node:ekr.20031218072017.3368:v.isCloned
-    #@+node:ekr.20031218072017.3369:isDirty
-    def isDirty (self):
+        """(New in 4.2) Return a list of all direct parent vnodes of a vnode.
 
-        return self.t.isDirty()
-    #@-node:ekr.20031218072017.3369:isDirty
-    #@+node:ekr.20031218072017.3370:isExpanded
-    def isExpanded (self):
+        This is NOT the same as the list of ancestors of the vnode."""
 
-        return ( self.statusBits & self.expandedBit ) != 0
-    #@-node:ekr.20031218072017.3370:isExpanded
-    #@+node:ekr.20031218072017.3371:isMarked
-    def isMarked (self):
+        v = self
+        return v.parents
+    #@-node:ekr.20040323100443:v.directParents
+    #@+node:ekr.20080429053831.6:v.hasBody
+    def hasBody (self):
 
-        return ( self.statusBits & vnode.markedBit ) != 0
-    #@-node:ekr.20031218072017.3371:isMarked
-    #@+node:ekr.20031218072017.3372:isOrphan
-    def isOrphan (self):
+        '''Return True if this tnode contains body text.'''
 
-        return ( self.statusBits & vnode.orphanBit ) != 0
-    #@-node:ekr.20031218072017.3372:isOrphan
-    #@+node:ekr.20031218072017.3373:isSelected
-    def isSelected (self):
+        s = self.t._bodyString
 
-        return ( self.statusBits & vnode.selectedBit ) != 0
-    #@-node:ekr.20031218072017.3373:isSelected
-    #@+node:ekr.20031218072017.3374:isTopBitSet
-    def isTopBitSet (self):
-
-        return ( self.statusBits & self.topBit ) != 0
-    #@-node:ekr.20031218072017.3374:isTopBitSet
-    #@+node:ekr.20031218072017.3376:isVisited
-    def isVisited (self):
-
-        return ( self.statusBits & vnode.visitedBit ) != 0
-    #@-node:ekr.20031218072017.3376:isVisited
-    #@+node:ekr.20031218072017.3377:status
-    def status (self):
-
-        return self.statusBits
-    #@-node:ekr.20031218072017.3377:status
-    #@-node:ekr.20031218072017.3367:v.Status Bits
-    #@+node:ekr.20031218072017.3378:v.bodyString
-    def bodyString (self):
-
-        # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self.t._bodyString):
-            s = "v.bodyString: Leo internal error: not unicode:" + repr(self.t._bodyString)
-            g.es_print('',s,color="red")
-
-        # Make _sure_ we return a unicode string.
-        return g.toUnicode(self.t._bodyString,g.app.tkEncoding)
-    #@-node:ekr.20031218072017.3378:v.bodyString
+        return s and len(s) > 0
+    #@-node:ekr.20080429053831.6:v.hasBody
     #@+node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
     def headString (self):
 
@@ -594,19 +576,64 @@ class vnode (baseVnode):
 
     def cleanHeadString (self):
 
-        s = self.headString()
+        s = self.t._headString
         return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
     #@-node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
-    #@+node:ekr.20040323100443:v.directParents
-    def directParents (self):
+    #@+node:ekr.20031218072017.3367:v.Status Bits
+    #@+node:ekr.20031218072017.3368:v.isCloned
+    def isCloned (self):
 
-        """(New in 4.2) Return a list of all direct parent vnodes of a vnode.
+        return len(self.t.vnodeList) > 1
+    #@-node:ekr.20031218072017.3368:v.isCloned
+    #@+node:ekr.20031218072017.3369:v.isDirty
+    def isDirty (self):
 
-        This is NOT the same as the list of ancestors of the vnode."""
+        return (self.t.statusBits & self.t.dirtyBit) != 0
+    #@-node:ekr.20031218072017.3369:v.isDirty
+    #@+node:ekr.20031218072017.3370:v.isExpanded
+    def isExpanded (self):
 
-        v = self
-        return v.parents
-    #@-node:ekr.20040323100443:v.directParents
+        return ( self.statusBits & self.expandedBit ) != 0
+    #@-node:ekr.20031218072017.3370:v.isExpanded
+    #@+node:ekr.20031218072017.3371:v.isMarked
+    def isMarked (self):
+
+        return ( self.statusBits & vnode.markedBit ) != 0
+    #@-node:ekr.20031218072017.3371:v.isMarked
+    #@+node:ekr.20031218072017.3372:v.isOrphan
+    def isOrphan (self):
+
+        return ( self.statusBits & vnode.orphanBit ) != 0
+    #@-node:ekr.20031218072017.3372:v.isOrphan
+    #@+node:ekr.20031218072017.3373:v.isSelected
+    def isSelected (self):
+
+        return ( self.statusBits & vnode.selectedBit ) != 0
+    #@-node:ekr.20031218072017.3373:v.isSelected
+    #@+node:ekr.20031218072017.3374:v.isTopBitSet
+    def isTopBitSet (self):
+
+        return ( self.statusBits & self.topBit ) != 0
+    #@-node:ekr.20031218072017.3374:v.isTopBitSet
+    #@+node:ekr.20031218072017.3376:v.isVisited
+    def isVisited (self):
+
+        return ( self.statusBits & vnode.visitedBit ) != 0
+    #@-node:ekr.20031218072017.3376:v.isVisited
+    #@+node:ekr.20080429053831.10:v.isWriteBit (unified-nodes only)
+    if g.unified_nodes:
+
+        def isWriteBit (self):
+
+            v = self
+            return (v.statusBits & v.writeBit) != 0
+    #@-node:ekr.20080429053831.10:v.isWriteBit (unified-nodes only)
+    #@+node:ekr.20031218072017.3377:v.status
+    def status (self):
+
+        return self.statusBits
+    #@-node:ekr.20031218072017.3377:v.status
+    #@-node:ekr.20031218072017.3367:v.Status Bits
     #@-node:ekr.20031218072017.3359:v.Getters
     #@+node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20031218072017.3386: v.Status bits
@@ -617,18 +644,21 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3389:v.clearClonedBit
     #@+node:ekr.20031218072017.3390:v.clearDirty
     def clearDirty (self):
-
         v = self
-        # v.t.clearDirty()
-
         v.t.statusBits &= ~ v.t.dirtyBit
-    #@nonl
+
     #@-node:ekr.20031218072017.3390:v.clearDirty
     #@+node:ekr.20031218072017.3391:v.clearMarked
     def clearMarked (self):
 
         self.statusBits &= ~ self.markedBit
     #@-node:ekr.20031218072017.3391:v.clearMarked
+    #@+node:ekr.20080429053831.8:v.clearWriteBit (unified-nodes only)
+    if g.unified_nodes:
+
+        def clearWriteBit (self):
+            self.statusBits &= ~ self.writeBit
+    #@-node:ekr.20080429053831.8:v.clearWriteBit (unified-nodes only)
     #@+node:ekr.20031218072017.3392:v.clearOrphan
     def clearOrphan (self):
 
@@ -675,6 +705,11 @@ class vnode (baseVnode):
         else:
             self.statusBits &= ~ self.clonedBit
     #@-node:ekr.20031218072017.3397:v.setClonedBit & initClonedBit
+    #@+node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
+    def setDirty (self):
+
+        self.t.statusBits |= self.t.dirtyBit
+    #@-node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
     #@+node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
     def setMarked (self):
 
@@ -703,6 +738,12 @@ class vnode (baseVnode):
 
         self.statusBits |= self.visitedBit
     #@-node:ekr.20031218072017.3401:v.setVisited
+    #@+node:ekr.20080429053831.9:v.setWriteBit (unified-nodes only)
+    if g.unified_nodes:
+
+        def setWriteBit (self):
+            self.statusBits |= self.writeBit
+    #@-node:ekr.20080429053831.9:v.setWriteBit (unified-nodes only)
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
@@ -718,6 +759,11 @@ class vnode (baseVnode):
     setHeadText = setHeadString
     setTnodeText = setBodyString
     #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+    #@+node:ekr.20080429053831.13:v.setFileIndex
+    def setFileIndex (self, index):
+
+        self.t.fileIndex = index
+    #@-node:ekr.20080429053831.13:v.setFileIndex
     #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
     def computeIcon (self):
 
@@ -746,17 +792,14 @@ class vnode (baseVnode):
     #@+node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
     #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-    def insertAsNthChild (self,n):  # ,t=None):
+    def insertAsNthChild (self,n):
 
         """Inserts a new node as the the nth child of the receiver.
         The receiver must have at least n-1 children"""
 
         v = self
 
-        # if not t:
-            # t = tnode(headString="NewHeadline")
-
-        v2 = vnode(context=v.context) # ,t=t)
+        v2 = vnode(context=v.context)
         v2._linkAsNthChild(self,n)
 
         return v2
@@ -1355,39 +1398,6 @@ class basePosition (object):
             assert progress > n
 
         return True
-
-
-    # def isVisible (self,c):
-
-        # """Return True if all of a position's parents are expanded."""
-
-        # # v.isVisible no longer exists.
-        # p = self ; cc = c.chapterController ; trace = False
-        # limit,limitIsVisible = c.visLimit()
-        # limit_v = limit and limit.v or None
-        # if p.v == limit_v:
-            # if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.v.headString())
-            # return limitIsVisible
-
-        # # Avoid calling p.copy() or copying the stack.
-        # v = p.v ; n = len(p.stack)-1
-
-        # v,n = p.vParentWithStack(v,p.stack,n)
-        # while v:
-            # if v == limit_v:  # We are at a descendant of limit.
-                # if trace: g.trace('*** descendant of limit',
-                    # 'limitIsVisible',limitIsVisible,
-                    # 'limit.isExpanded()',limit.isExpanded(),'v',v)
-                # if limitIsVisible:
-                    # return limit.isExpanded()
-                # else: # Ignore the expansion state of @chapter nodes.
-                    # return True
-            # if not v.isExpanded():
-                # if trace: g.trace('*** non-limit parent is not expanded',v)
-                # return False
-            # v,n = p.vParentWithStack(v,p.stack,n)
-
-        # return True
     #@-node:ekr.20080416161551.196:p.isVisible
     #@+node:ekr.20080416161551.197:p.level & simpleLevel
     def level (p):
@@ -2117,9 +2127,15 @@ class basePosition (object):
 
         p = self ; context = p.v.context
 
-        p2 = p.copy()
-        p2.v = vnode(context=context,t=p2.v.t)
-        p2._linkAfter(p)
+        if g.unified_nodes:
+            import copy
+            p2 = p.copy()
+            p2.v = copy.copy(p.v)
+            p2._linkAfter(p)
+        else:
+            p2 = p.copy()
+            p2.v = vnode(context=context,t=p2.v.t)
+            p2._linkAfter(p)
 
         assert (p.v.t == p2.v.t)
         assert (p.v in p.v.t.vnodeList)
@@ -2172,7 +2188,7 @@ class basePosition (object):
         p._deleteLinksInTree()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
-    def insertAfter (self): #,t=None):
+    def insertAfter (self):
 
         """Inserts a new position after self.
 
@@ -2181,17 +2197,14 @@ class basePosition (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        # if not t:
-            # t = tnode(headString="NewHeadline")
-
-        p2.v = vnode(context=context) # ,t=t)
+        p2.v = vnode(context=context)
         p2.v.iconVal = 0
         p2._linkAfter(p)
 
         return p2
     #@-node:ekr.20040303175026.3:p.insertAfter
     #@+node:ekr.20040303175026.4:p.insertAsLastChild
-    def insertAsLastChild (self): # ,t=None):
+    def insertAsLastChild (self):
 
         """Inserts a new vnode as the last child of self.
 
@@ -2200,13 +2213,10 @@ class basePosition (object):
         p = self
         n = p.numberOfChildren()
 
-        # if not t:
-            # t = tnode(headString="NewHeadline")
-
-        return p.insertAsNthChild(n) #,t)
+        return p.insertAsNthChild(n)
     #@-node:ekr.20040303175026.4:p.insertAsLastChild
     #@+node:ekr.20040303175026.5:p.insertAsNthChild
-    def insertAsNthChild (self,n): # ,t=None):
+    def insertAsNthChild (self,n):
 
         """Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
@@ -2216,10 +2226,7 @@ class basePosition (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        # if not t:
-            # t = tnode(headString="NewHeadline")
-
-        p2.v = vnode(context=context) # ,t=t)
+        p2.v = vnode(context=context)
         p2.v.iconVal = 0
         p2._linkAsNthChild(p,n)
 
