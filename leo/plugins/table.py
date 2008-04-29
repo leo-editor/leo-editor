@@ -132,8 +132,10 @@ class CSVVisualizer:
         cS.seek( 0 )
         self.c.beginUpdate() 
         if not save:
-            tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
-            pos.insertAfter( tnd )
+            # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
+            p2 = pos.insertAfter() # tnd )
+            p2.setBodyString(cS.getvalue())
+            p2.setHeadString("Save of Edited " + str(pos.headString()))
         else:
             pos.setTnodeText( cS.getvalue() )
         self.c.endUpdate()
