@@ -1984,7 +1984,7 @@
 </v>
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
@@ -2141,14 +2141,6 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182" a="E"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3627,7 +3619,7 @@ def copyTree(self,root):
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v.t = leoNodes.tnode(0, v.t.bodyString)
+        v.t = leoNodes.tnode(0, v.bodyString())
         v = v.threadNext()
     return result</t>
 <t tx="ekr.20040712101754.158">p = c.currentPosition().firstChild()
@@ -15638,7 +15630,7 @@ try:
     assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -15719,7 +15711,7 @@ try:
     assert len(s2) == len(s) + len('target')
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -15747,7 +15739,7 @@ try:
         c.k.autoCompleter.calltip(obj=g)
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15760,7 +15752,7 @@ try:
     c.insertBodyTime()
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15775,7 +15767,7 @@ try:
         (len(s)+len(pattern)-4,')'),
     ):
         w.setAllText(s)
-        p.v.t.bodyString = s
+        p.setBodyString(s)
         w.setInsertPoint('end')
         w.insert('end',pattern)
         w.setInsertPoint(index)
@@ -15786,7 +15778,7 @@ try:
         assert s2[ins] == result,'Expected: %s, got: %s' % (repr(result),repr(s2[ins]))
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString = s
     c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15864,7 +15856,7 @@ try:
     assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -16010,7 +16002,7 @@ try:
     assert len(s2) &gt; len(s) + 15
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     c.recolor()
 
 # end:</t>
@@ -19005,7 +18997,7 @@ try:
     assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -19025,7 +19017,7 @@ try:
     assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -19322,7 +19314,7 @@ try:
     assert len(s2) == len(s) + len('target')
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s2
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
