@@ -527,8 +527,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c
 
-        t = leoNodes.tnode()
-        v = leoNodes.vnode(context=c,t=t)
+        v = leoNodes.vnode(context=c)
         p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
