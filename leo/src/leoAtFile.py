@@ -687,8 +687,13 @@ class atFile:
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
 
-            child = leoNodes.vnode(context=c,t=t)
-            t.vnodeList.append(child)
+            if g.unified_nodes:
+                child = t
+            else:
+                child = leoNodes.vnode(context=c,t=t)
+
+            if child not in t.vnodeList:
+                t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
