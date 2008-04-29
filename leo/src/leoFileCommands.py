@@ -714,8 +714,8 @@ class baseFileCommands:
                 c.setRootVnode(v)
                 self.rootVnode = v
             else:
-                t = leoNodes.tnode(headString='created root node')
-                v = leoNodes.vnode(context=c,t=t)
+                v = leoNodes.vnode(context=c)
+                v.setHeadString('created root node')
                 p = leoNodes.position(v)
                 p._linkAsRoot(oldRoot=None)
                 self.rootVnode = v
@@ -780,12 +780,16 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.2009:newTnode
     def newTnode(self,index):
 
+        c = self.c
+
+        if g.unified_nodes: t = leoNodes.vnode(context=c)
+        else:               t = leoNodes.tnode()
+
         if self.tnodesDict.has_key(index):
             g.es("bad tnode index:",str(index),"using empty text.")
-            return leoNodes.tnode()
+            return t
         else:
             # Create the tnode.  Use the _original_ index as the key in tnodesDict.
-            t = leoNodes.tnode()
             self.tnodesDict[index] = t
 
             if type(index) not in (type(""),type(u"")):
@@ -1026,24 +1030,29 @@ class baseFileCommands:
     def createSaxVnode (self,sax_node,parent_v,t=None):
 
         c = self.c
-        trace = False and self.usingClipboard
         h = sax_node.headString
         b = sax_node.bodyString
 
-        if t:
-            if trace: g.trace('clone',t,h)
-        else:
-            t = leoNodes.tnode(bodyString=b,headString=h)
-            if trace: g.trace('     ',t,h)
+        if not t:
+            if g.unified_nodes:
+                t = leoNodes.vnode(context=c)
+                t.setBodyString(b)
+                t.setHeadString(h)
+            else:
+                t = leoNodes.tnode(bodyString=b,headString=h)
 
             if sax_node.tnx:
                 t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-        v = leoNodes.vnode(context=c,t=t)
+        if g.unified_nodes:
+            v = t
+        else:
+            v = leoNodes.vnode(context=c,t=t)
+
         v.t.vnodeList.append(v)
+        v._parent = parent_v
 
         index = self.canonicalTnodeIndex(sax_node.tnx)
-
         self.tnodesDict [index] = t
 
         # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -1052,6 +1061,7 @@ class baseFileCommands:
         self.handleTnodeSaxAttributes(sax_node,t)
 
         return v
+
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
     def handleTnodeSaxAttributes (self,sax_node,t):
 
