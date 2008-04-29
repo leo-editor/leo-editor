@@ -35,188 +35,187 @@ import time
 
 #@+others
 #@+node:ekr.20031218072017.3321:class tnode
-if use_zodb and ZODB:
-    class baseTnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class baseTnode (object):
-        pass
+if not g.unified_nodes:
 
-class tnode (baseTnode):
-    """A class that implements tnodes."""
-    #@    << tnode constants >>
-    #@+node:ekr.20031218072017.3322:<< tnode constants >>
-    dirtyBit    = 0x01
-    richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
-    visitedBit  = 0x04
-    writeBit    = 0x08 # Set: write the tnode.
-    #@-node:ekr.20031218072017.3322:<< tnode constants >>
-    #@nl
-    #@    @+others
-    #@+node:ekr.20031218072017.2006:t.__init__
-    # All params have defaults, so t = tnode() is valid.
-
-    def __init__ (self,bodyString=None,headString=None):
-
-        # To support ZODB the code must set t._p_changed = 1 whenever
-        # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
-
-        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
-        self.fileIndex = None # The immutable file index for this tnode.
-        self.insertSpot = None # Location of previous insert point.
-        self.scrollBarSpot = None # Previous value of scrollbar position.
-        self.selectionLength = 0 # The length of the selected body text.
-        self.selectionStart = 0 # The start of the selected body text.
-        self.statusBits = 0 # status bits
-
-        # Convert everything to unicode...
-        self._headString = g.toUnicode(headString,g.app.tkEncoding)
-        self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
-
-        self.children = [] # List of all children of this node.
-        self.vnodeList = []
-            # List of all vnodes pointing to this tnode.
-            # v is a clone iff len(v.t.vnodeList) > 1.
-    #@nonl
-    #@-node:ekr.20031218072017.2006:t.__init__
-    #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
-    def __repr__ (self):
-
-        return "<tnode %d>" % (id(self))
-
-    __str__ = __repr__
-    #@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
-    #@+node:ekr.20060908205857:t.__hash__ (only for zodb)
     if use_zodb and ZODB:
+        class baseTnode (ZODB.Persistence.Persistent):
+            pass
+    else:
+        class baseTnode (object):
+            pass
 
-        # The only required property is that objects
-        # which compare equal have the same hash value.
+    class tnode (baseTnode):
+        """A class that implements tnodes."""
+        #@        << tnode constants >>
+        #@+node:ekr.20031218072017.3322:<< tnode constants >>
+        dirtyBit    = 0x01
+        richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
+        visitedBit  = 0x04
+        writeBit    = 0x08 # Set: write the tnode.
+        #@-node:ekr.20031218072017.3322:<< tnode constants >>
+        #@nl
+        #@        @+others
+        #@+node:ekr.20031218072017.2006:t.__init__
+        def __init__ (self,bodyString=None,headString=None):
 
-        def __hash__(self):
+            # To support ZODB the code must set t._p_changed = 1 whenever
+            # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
 
-            return hash(g.app.nodeIndices.toString(self.fileIndex))
-    #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
-    #@+node:ekr.20031218072017.3325:t.Getters
-    #@+node:EKR.20040625161602:t.bodyString
-    def getBody (self):
+            self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+            self.fileIndex = None # The immutable file index for this tnode.
+            self.insertSpot = None # Location of previous insert point.
+            self.scrollBarSpot = None # Previous value of scrollbar position.
+            self.selectionLength = 0 # The length of the selected body text.
+            self.selectionStart = 0 # The start of the selected body text.
+            self.statusBits = 0 # status bits
 
-        return self._bodyString
+            # Convert everything to unicode...
+            self._headString = g.toUnicode(headString,g.app.tkEncoding)
+            self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
 
-    bodyString = getBody
-    bodyText = getBody
-    #@-node:EKR.20040625161602:t.bodyString
-    #@+node:ekr.20031218072017.3326:t.hasBody
-    def hasBody (self):
+            self.children = [] # List of all children of this node.
+            self.vnodeList = []
+                # List of all vnodes pointing to this tnode.
+                # v is a clone iff len(v.t.vnodeList) > 1.
+        #@nonl
+        #@-node:ekr.20031218072017.2006:t.__init__
+        #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+        def __repr__ (self):
 
-        '''Return True if this tnode contains body text.'''
+            return "<tnode %d>" % (id(self))
 
-        s = self._bodyString
+        __str__ = __repr__
+        #@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+        #@+node:ekr.20060908205857:t.__hash__ (only for zodb)
+        if use_zodb and ZODB:
 
-        return s and len(s) > 0
-    #@-node:ekr.20031218072017.3326:t.hasBody
-    #@+node:ekr.20031218072017.3327:t.Status bits
-    #@+node:ekr.20031218072017.3328:isDirty
-    def isDirty (self):
+            # The only required property is that objects
+            # which compare equal have the same hash value.
 
-        return (self.statusBits & self.dirtyBit) != 0
-    #@-node:ekr.20031218072017.3328:isDirty
-    #@+node:ekr.20031218072017.3329:isRichTextBit
-    def isRichTextBit (self):
+            def __hash__(self):
 
-        return (self.statusBits & self.richTextBit) != 0
-    #@-node:ekr.20031218072017.3329:isRichTextBit
-    #@+node:ekr.20031218072017.3330:isVisited
-    def isVisited (self):
+                return hash(g.app.nodeIndices.toString(self.fileIndex))
+        #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
+        #@+node:ekr.20031218072017.3325:t.Getters
+        #@+node:EKR.20040625161602:t.bodyString
+        def getBody (self):
 
-        return (self.statusBits & self.visitedBit) != 0
-    #@-node:ekr.20031218072017.3330:isVisited
-    #@+node:EKR.20040503094727:isWriteBit
-    def isWriteBit (self):
+            return self._bodyString
 
-        return (self.statusBits & self.writeBit) != 0
-    #@-node:EKR.20040503094727:isWriteBit
-    #@-node:ekr.20031218072017.3327:t.Status bits
-    #@-node:ekr.20031218072017.3325:t.Getters
-    #@+node:ekr.20031218072017.3331:t.Setters
-    #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
-    def setBodyString (self,s,encoding="utf-8"):
+        bodyString = getBody
+        bodyText = getBody
+        #@-node:EKR.20040625161602:t.bodyString
+        #@+node:ekr.20031218072017.3326:t.hasBody
+        def hasBody (self):
 
-        t = self
-        t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+            '''Return True if this tnode contains body text.'''
 
-    initBodyString = setBodyString
-    setTnodeText = setBodyString
+            s = self._bodyString
 
-    def setHeadString (self,s,encoding="utf-8"):
+            return s and len(s) > 0
+        #@-node:ekr.20031218072017.3326:t.hasBody
+        #@+node:ekr.20031218072017.3327:t.Status bits
+        #@+node:ekr.20031218072017.3328:isDirty
+        def isDirty (self):
 
-        t = self
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        t._headString = s
+            return (self.statusBits & self.dirtyBit) != 0
+        #@-node:ekr.20031218072017.3328:isDirty
+        #@+node:ekr.20031218072017.3329:isRichTextBit
+        def isRichTextBit (self):
 
-    initHeadString = setHeadString
+            return (self.statusBits & self.richTextBit) != 0
+        #@-node:ekr.20031218072017.3329:isRichTextBit
+        #@+node:ekr.20031218072017.3330:isVisited
+        def isVisited (self):
 
-    #@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
-    #@+node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
-    def setCloneIndex (self, index):
+            return (self.statusBits & self.visitedBit) != 0
+        #@-node:ekr.20031218072017.3330:isVisited
+        #@+node:EKR.20040503094727:isWriteBit
+        def isWriteBit (self):
 
-        self.cloneIndex = index
-    #@-node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
-    #@+node:ekr.20031218072017.3340:t.setFileIndex
-    def setFileIndex (self, index):
+            return (self.statusBits & self.writeBit) != 0
+        #@-node:EKR.20040503094727:isWriteBit
+        #@-node:ekr.20031218072017.3327:t.Status bits
+        #@-node:ekr.20031218072017.3325:t.Getters
+        #@+node:ekr.20031218072017.3331:t.Setters
+        #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+        def setBodyString (self,s,encoding="utf-8"):
 
-        self.fileIndex = index
-    #@-node:ekr.20031218072017.3340:t.setFileIndex
-    #@+node:ekr.20031218072017.1486:t.setSelection
-    def setSelection (self,start,length):
+            t = self
+            t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
 
-        self.selectionStart = start
-        self.selectionLength = length
-    #@-node:ekr.20031218072017.1486:t.setSelection
-    #@+node:ekr.20031218072017.3332:t.Status bits
-    #@+node:ekr.20031218072017.3333:clearDirty
-    def clearDirty (self):
+        initBodyString = setBodyString
+        setTnodeText = setBodyString
 
-        self.statusBits &= ~ self.dirtyBit
-    #@-node:ekr.20031218072017.3333:clearDirty
-    #@+node:ekr.20031218072017.3334:clearRichTextBit
-    def clearRichTextBit (self):
+        def setHeadString (self,s,encoding="utf-8"):
 
-        self.statusBits &= ~ self.richTextBit
-    #@-node:ekr.20031218072017.3334:clearRichTextBit
-    #@+node:ekr.20031218072017.3335:clearVisited
-    def clearVisited (self):
+            t = self
+            s = g.toUnicode(s,encoding,reportErrors=True)
+            t._headString = s
 
-        self.statusBits &= ~ self.visitedBit
-    #@-node:ekr.20031218072017.3335:clearVisited
-    #@+node:EKR.20040503093844:clearWriteBit
-    def clearWriteBit (self):
+        initHeadString = setHeadString
 
-        self.statusBits &= ~ self.writeBit
-    #@-node:EKR.20040503093844:clearWriteBit
-    #@+node:ekr.20031218072017.3336:setDirty
-    def setDirty (self):
+        #@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+        #@+node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+        def setCloneIndex (self, index):
 
-        self.statusBits |= self.dirtyBit
-    #@-node:ekr.20031218072017.3336:setDirty
-    #@+node:ekr.20031218072017.3337:setRichTextBit
-    def setRichTextBit (self):
+            self.cloneIndex = index
+        #@-node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+        #@+node:ekr.20031218072017.3340:t.setFileIndex
+        def setFileIndex (self, index):
 
-        self.statusBits |= self.richTextBit
-    #@-node:ekr.20031218072017.3337:setRichTextBit
-    #@+node:ekr.20031218072017.3338:setVisited
-    def setVisited (self):
+            self.fileIndex = index
+        #@-node:ekr.20031218072017.3340:t.setFileIndex
+        #@+node:ekr.20031218072017.1486:t.setSelection
+        def setSelection (self,start,length):
 
-        self.statusBits |= self.visitedBit
-    #@-node:ekr.20031218072017.3338:setVisited
-    #@+node:EKR.20040503094727.1:setWriteBit
-    def setWriteBit (self):
+            self.selectionStart = start
+            self.selectionLength = length
+        #@-node:ekr.20031218072017.1486:t.setSelection
+        #@+node:ekr.20031218072017.3332:t.Status bits
+        #@+node:ekr.20031218072017.3333:clearDirty
+        def clearDirty (self):
 
-        self.statusBits |= self.writeBit
-    #@-node:EKR.20040503094727.1:setWriteBit
-    #@-node:ekr.20031218072017.3332:t.Status bits
-    #@-node:ekr.20031218072017.3331:t.Setters
-    #@-others
-#@nonl
+            self.statusBits &= ~ self.dirtyBit
+        #@-node:ekr.20031218072017.3333:clearDirty
+        #@+node:ekr.20031218072017.3334:clearRichTextBit
+        def clearRichTextBit (self):
+
+            self.statusBits &= ~ self.richTextBit
+        #@-node:ekr.20031218072017.3334:clearRichTextBit
+        #@+node:ekr.20031218072017.3335:clearVisited
+        def clearVisited (self):
+
+            self.statusBits &= ~ self.visitedBit
+        #@-node:ekr.20031218072017.3335:clearVisited
+        #@+node:EKR.20040503093844:clearWriteBit
+        def clearWriteBit (self):
+
+            self.statusBits &= ~ self.writeBit
+        #@-node:EKR.20040503093844:clearWriteBit
+        #@+node:ekr.20031218072017.3336:setDirty
+        def setDirty (self):
+
+            self.statusBits |= self.dirtyBit
+        #@-node:ekr.20031218072017.3336:setDirty
+        #@+node:ekr.20031218072017.3337:setRichTextBit
+        def setRichTextBit (self):
+
+            self.statusBits |= self.richTextBit
+        #@-node:ekr.20031218072017.3337:setRichTextBit
+        #@+node:ekr.20031218072017.3338:setVisited
+        def setVisited (self):
+
+            self.statusBits |= self.visitedBit
+        #@-node:ekr.20031218072017.3338:setVisited
+        #@+node:EKR.20040503094727.1:setWriteBit
+        def setWriteBit (self):
+
+            self.statusBits |= self.writeBit
+        #@-node:EKR.20040503094727.1:setWriteBit
+        #@-node:ekr.20031218072017.3332:t.Status bits
+        #@-node:ekr.20031218072017.3331:t.Setters
+        #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
 if use_zodb and ZODB:
@@ -233,8 +232,7 @@ class vnode (baseVnode):
 
     # Archived...
     clonedBit   = 0x01 # True: vnode has clone mark.
-
-    # not used = 0x02
+    # unused      0x02
     expandedBit = 0x04 # True: vnode is expanded.
     markedBit   = 0x08 # True: vnode is marked
     orphanBit   = 0x10 # True: vnode saved in .leo file, not derived file.
@@ -242,17 +240,23 @@ class vnode (baseVnode):
     topBit      = 0x40 # True: vnode was top vnode when saved.
 
     # Not archived...
-    # dirtyBit  = 0x060 # Not used: the tnode determines whether the node is dirty.
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
+
+    if g.unified_nodes:
+        dirtyBit    = 0x200
+        writeBit    = 0x400
     #@-node:ekr.20031218072017.951:<< vnode constants >>
     #@nl
     #@    @+others
     #@+node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3344:v.__init__
-    def __init__ (self,context,t):
+    def __init__ (self,context,t=None):
 
-        assert(t)
+        if g.unified_nodes:
+            assert t is None
+        elif t is None:
+            t = tnode()
 
         # To support ZODB the code must set v._p_changed = 1 whenever
         # v.unknownAttributes or any mutable vnode object changes.
@@ -262,11 +266,31 @@ class vnode (baseVnode):
             # It is named .context rather than .c to emphasize its limited usage.
 
         self.iconVal = 0
-        self.t = t # The tnode.
         self.parents = [] # List of all parents of this node.
             # This list will have 1 member unless the parent node is a clone.
             # In particular, cloned nodes do *not* share parents.
         self.statusBits = 0 # status bits
+
+        if g.unified_nodes: # vnodes contain all tnode info.
+            self.t = self 
+            self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+            self.fileIndex = None # The immutable file index for this tnode.
+            self.insertSpot = None # Location of previous insert point.
+            self.scrollBarSpot = None # Previous value of scrollbar position.
+            self.selectionLength = 0 # The length of the selected body text.
+            self.selectionStart = 0 # The start of the selected body text.
+
+            # Convert everything to unicode...
+            self._headString = g.toUnicode(headString,g.app.tkEncoding)
+            self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+
+            self.children = [] # List of all children of this node.
+            self.vnodeList = []
+                # List of all vnodes pointing to this tnode.
+                # v is a clone iff len(v.vnodeList) > 1.
+        else:
+            self.t = t # The tnode.
+    #@nonl
     #@-node:ekr.20031218072017.3344:v.__init__
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -595,7 +619,9 @@ class vnode (baseVnode):
     def clearDirty (self):
 
         v = self
-        v.t.clearDirty()
+        # v.t.clearDirty()
+
+        v.t.statusBits &= ~ v.t.dirtyBit
     #@nonl
     #@-node:ekr.20031218072017.3390:v.clearDirty
     #@+node:ekr.20031218072017.3391:v.clearMarked
@@ -680,21 +706,17 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
-
         v = self
-        v.t.setBodyString(s,encoding)
-
-    initBodyString = setBodyString
-    setTnodeText = setBodyString
+        v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
 
     def setHeadString (self,s,encoding="utf-8"):
-
         v = self
-        v.t.setHeadString(s,encoding)
+        v.t._headString = g.toUnicode(s,encoding,reportErrors=True)
 
+    initBodyString = setBodyString
     initHeadString = setHeadString
-
     setHeadText = setHeadString
+    setTnodeText = setBodyString
     #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
     #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
     def computeIcon (self):
@@ -714,24 +736,27 @@ class vnode (baseVnode):
     def setSelection (self, start, length):
 
         v = self
-        v.t.setSelection ( start, length )
+        # v.t.setSelection ( start, length )
+
+        v.t.selectionStart = start
+        v.t.selectionLength = length
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20080427062528.9:v.Low level
     #@+node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
     #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-    def insertAsNthChild (self,n,t=None):
+    def insertAsNthChild (self,n):  # ,t=None):
 
         """Inserts a new node as the the nth child of the receiver.
         The receiver must have at least n-1 children"""
 
         v = self
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+        # if not t:
+            # t = tnode(headString="NewHeadline")
 
-        v2 = vnode(context=v.context,t=t)
+        v2 = vnode(context=v.context) # ,t=t)
         v2._linkAsNthChild(self,n)
 
         return v2
@@ -2147,7 +2172,7 @@ class basePosition (object):
         p._deleteLinksInTree()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
-    def insertAfter (self,t=None):
+    def insertAfter (self): #,t=None):
 
         """Inserts a new position after self.
 
@@ -2156,17 +2181,17 @@ class basePosition (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+        # if not t:
+            # t = tnode(headString="NewHeadline")
 
-        p2.v = vnode(context=context,t=t)
+        p2.v = vnode(context=context) # ,t=t)
         p2.v.iconVal = 0
         p2._linkAfter(p)
 
         return p2
     #@-node:ekr.20040303175026.3:p.insertAfter
     #@+node:ekr.20040303175026.4:p.insertAsLastChild
-    def insertAsLastChild (self,t=None):
+    def insertAsLastChild (self): # ,t=None):
 
         """Inserts a new vnode as the last child of self.
 
@@ -2175,13 +2200,13 @@ class basePosition (object):
         p = self
         n = p.numberOfChildren()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+        # if not t:
+            # t = tnode(headString="NewHeadline")
 
-        return p.insertAsNthChild(n,t)
+        return p.insertAsNthChild(n) #,t)
     #@-node:ekr.20040303175026.4:p.insertAsLastChild
     #@+node:ekr.20040303175026.5:p.insertAsNthChild
-    def insertAsNthChild (self,n,t=None):
+    def insertAsNthChild (self,n): # ,t=None):
 
         """Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
@@ -2191,10 +2216,10 @@ class basePosition (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+        # if not t:
+            # t = tnode(headString="NewHeadline")
 
-        p2.v = vnode(context=context,t=t)
+        p2.v = vnode(context=context) # ,t=t)
         p2.v.iconVal = 0
         p2._linkAsNthChild(p,n)
 
