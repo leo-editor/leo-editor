@@ -3357,8 +3357,8 @@ def __init__(self,frame,fileName,relativeFileName=None):
     # Init ivars with self.x instead of c.x to keep Pychecker happy
     self.chapterController = None
     self.frame = frame
-    t = leoNodes.tnode()
-    self.hiddenRootNode = leoNodes.vnode(context=c,t=t)
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
     self.hiddenRootNode.setHeadString('<hidden root vnode>')
     self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
     self.isZipped = False # May be set to True by g.openWithFileName.
@@ -3669,24 +3669,29 @@ def updateFixedStatus (self):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -3695,6 +3700,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -4156,24 +4162,29 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -4182,6 +4193,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -4532,7 +4544,7 @@ def moveAfter (self,a):
     return p
 #@-node:ekr.20040303175026.10:p.moveAfter
 #@+node:ekr.20040303175026.3:p.insertAfter
-def insertAfter (self,t=None):
+def insertAfter (self): #,t=None):
 
     """Inserts a new position after self.
 
@@ -4541,10 +4553,10 @@ def insertAfter (self,t=None):
     p = self ; context = p.v.context
     p2 = self.copy()
 
-    if not t:
-        t = tnode(headString="NewHeadline")
+    # if not t:
+        # t = tnode(headString="NewHeadline")
 
-    p2.v = vnode(context=context,t=t)
+    p2.v = vnode(context=context) # ,t=t)
     p2.v.iconVal = 0
     p2._linkAfter(p)
 
@@ -5125,24 +5137,29 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -5151,6 +5168,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -6272,24 +6290,29 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -6298,6 +6321,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -6405,9 +6429,8 @@ def createThinChild4 (self,gnxString,headline):
         last.fileIndex = lastIndex =  gnx
         self._forcedGnxPositionList.remove(last)
 
-    if 0:
-        g.trace("last",last,last.t.fileIndex)
-        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
     parent = at.lastThinNode # A vnode.
     children = parent.t.children
@@ -6445,7 +6468,9 @@ def createThinChild4 (self,gnxString,headline):
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
         else:
-            t = leoNodes.tnode(bodyString=None,headString=headline)
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
@@ -6497,9 +6522,8 @@ def createThinChild4 (self,gnxString,headline):
         last.fileIndex = lastIndex =  gnx
         self._forcedGnxPositionList.remove(last)
 
-    if 0:
-        g.trace("last",last,last.t.fileIndex)
-        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
     parent = at.lastThinNode # A vnode.
     children = parent.t.children
@@ -6537,7 +6561,9 @@ def createThinChild4 (self,gnxString,headline):
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
         else:
-            t = leoNodes.tnode(bodyString=None,headString=headline)
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
@@ -7626,24 +7652,29 @@ def createSaxChildren (self, sax_node, parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -7652,6 +7683,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -7742,9 +7774,8 @@ def createThinChild4 (self,gnxString,headline):
         last.fileIndex = lastIndex =  gnx
         self._forcedGnxPositionList.remove(last)
 
-    if 0:
-        g.trace("last",last,last.t.fileIndex)
-        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
     parent = at.lastThinNode # A vnode.
     children = parent.t.children
@@ -7782,7 +7813,9 @@ def createThinChild4 (self,gnxString,headline):
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
         else:
-            t = leoNodes.tnode(bodyString=None,headString=headline)
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
@@ -8428,8 +8461,8 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
             c.setRootVnode(v)
             self.rootVnode = v
         else:
-            t = leoNodes.tnode(headString='created root node')
-            v = leoNodes.vnode(context=c,t=t)
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
             p = leoNodes.position(v)
             p._linkAsRoot(oldRoot=None)
             self.rootVnode = v
@@ -8685,24 +8718,29 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -8711,6 +8749,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -9071,24 +9110,29 @@ def createSaxVnodeTree (self,sax_node,parent_v):
 def createSaxVnode (self,sax_node,parent_v,t=None):
 
     c = self.c
-    trace = False and self.usingClipboard
     h = sax_node.headString
     b = sax_node.bodyString
 
-    if t:
-        if trace: g.trace('clone',t,h)
-    else:
-        t = leoNodes.tnode(bodyString=b,headString=h)
-        if trace: g.trace('     ',t,h)
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
 
         if sax_node.tnx:
             t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
 
-    v = leoNodes.vnode(context=c,t=t)
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
     v.t.vnodeList.append(v)
+    v._parent = parent_v
 
     index = self.canonicalTnodeIndex(sax_node.tnx)
-
     self.tnodesDict [index] = t
 
     # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
@@ -9097,6 +9141,7 @@ def createSaxVnode (self,sax_node,parent_v,t=None):
     self.handleTnodeSaxAttributes(sax_node,t)
 
     return v
+
 #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
 def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -9204,9 +9249,8 @@ def createThinChild4 (self,gnxString,headline):
         last.fileIndex = lastIndex =  gnx
         self._forcedGnxPositionList.remove(last)
 
-    if 0:
-        g.trace("last",last,last.t.fileIndex)
-        g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
     parent = at.lastThinNode # A vnode.
     children = parent.t.children
@@ -9244,7 +9288,9 @@ def createThinChild4 (self,gnxString,headline):
             else:
                 g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
         else:
-            t = leoNodes.tnode(bodyString=None,headString=headline)
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
             t.fileIndex = gnx
             tnodesDict[gnxString] = t
 
@@ -9317,8 +9363,8 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
             c.setRootVnode(v)
             self.rootVnode = v
         else:
-            t = leoNodes.tnode(headString='created root node')
-            v = leoNodes.vnode(context=c,t=t)
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
             p = leoNodes.position(v)
             p._linkAsRoot(oldRoot=None)
             self.rootVnode = v
@@ -9832,6 +9878,1096 @@ Edward
 #@-node:ekr.20080428063003.2:posting
 #@-node:ekr.20080427062528.8:Linking/unlinking all clones into parents list
 #@-node:ekr.20080421162832.7:Recent graph-world projects
+#@+node:ekr.20080429053831.3:Added g.unified_nodes
+@nocolor
+
+- Made t arg optional in vnode ctor.
+
+- Removed the t arg from insertAsX.  Affects these plugins:
+
+wrote:     base64Packager.py
+wrote:     macros.py
+wrote:     table.py
+wrote:     templates.py
+wrote:     xsltWithNodes.py
+
+Search for tnode.
+
+@color
+
+#@nonl
+#@+node:ekr.20080429053831.5:involving vnode/tnode ctors
+#@+node:ekr.20031218072017.2812:c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    c = self
+
+    # g.trace('Commands')
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep Pychecker happy
+    self.chapterController = None
+    self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    # g.trace(c) # Do this after setting c.mFileName.
+    c.initIvars()
+    self.nodeHistory = nodeHistory(c)
+
+    self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
+    self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
+    self.showMinibuffer = c.config.getBool('useMinibuffer')
+    self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
+    self.fixed = c.config.getBool('fixedWindow',False)
+        # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
+    self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
+    if self.fixedWindowPosition:
+        try:
+            w,h,l,t = self.fixedWindowPosition
+            self.fixedWindowPosition = int(w),int(h),int(l),int(t)
+        except Exception:
+            g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
+    else:
+        self.windowPosition = 500,700,50,50 # width,height,left,top.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+
+    if 0:
+        print ; print "*** using Null undoer ***" ; print
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+#@-node:ekr.20031218072017.2812:c.__init__
+#@+node:ekr.20031218072017.3344:v.__init__
+def __init__ (self,context,t=None):
+
+    if g.unified_nodes:
+        assert t is None
+    elif t is None:
+        t = tnode()
+
+    # To support ZODB the code must set v._p_changed = 1 whenever
+    # v.unknownAttributes or any mutable vnode object changes.
+
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required for trees, so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+
+    self.iconVal = 0
+    self.parents = [] # List of all parents of this node.
+        # This list will have 1 member unless the parent node is a clone.
+        # In particular, cloned nodes do *not* share parents.
+    self.statusBits = 0 # status bits
+
+    if g.unified_nodes: # vnodes contain all tnode info.
+        self.t = self 
+        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+        self.fileIndex = None # The immutable file index for this tnode.
+        self.insertSpot = None # Location of previous insert point.
+        self.scrollBarSpot = None # Previous value of scrollbar position.
+        self.selectionLength = 0 # The length of the selected body text.
+        self.selectionStart = 0 # The start of the selected body text.
+
+        # Convert everything to unicode...
+        self._headString = g.toUnicode(headString,g.app.tkEncoding)
+        self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+
+        self.children = [] # List of all children of this node.
+        self.vnodeList = []
+            # List of all vnodes pointing to this tnode.
+            # v is a clone iff len(v.vnodeList) > 1.
+    else:
+        self.t = t # The tnode.
+#@nonl
+#@-node:ekr.20031218072017.3344:v.__init__
+#@+node:ekr.20070919133659:checkDerivedFile (atFile)
+def checkDerivedFile (self, event=None):  # based on atFile.read
+
+    at = self ; c = at.c ; p = c.currentPosition() ; s = p.bodyString()
+
+    # Create a dummy vnode as the root.
+    fileName='check-derived-file'
+    root_v = leoNodes.vnode(context=c)
+    root = leoNodes.position(root_v)
+    theFile = g.fileLikeObject(fromString=s)
+    thinFile = at.scanHeaderForThin (theFile,fileName)
+    # g.trace('thinFile',thinFile)
+    at.initReadIvars(root,fileName,thinFile=thinFile)
+    if at.errors: return
+    at.openFileForReading(fileName,fromString=s)
+    if not at.inputFile: return
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    if at.errors == 0:
+        g.es_print('check-derived-file passed',color='blue')
+#@-node:ekr.20070919133659:checkDerivedFile (atFile)
+#@+node:ekr.20051104075904.52:copyBeforeToTemp
+# Used in a unit test.
+
+def copyBeforeToTemp(self):
+
+    c = self.c ; tempNode = self.tempNode
+
+    # Delete all children of temp node.
+    while tempNode.firstChild():
+        tempNode.firstChild().doDelete()
+
+    # Copy the before node text to the temp node.
+    text = self.before.bodyString()
+    tempNode.setBodyString(text,g.app.tkEncoding)
+
+    # create the child node that holds the text.
+    self.tempChild = self.tempNode.insertAsNthChild(0)
+    self.tempChild.setHeadString('tempChildNode')
+
+    # copy the before text to the temp text.
+    text = self.before.bodyString()
+    self.tempChild.setBodyString(text,g.app.tkEncoding)
+
+    # Make the temp child node current, and put the cursor at the beginning.
+    c.selectPosition(self.tempChild)
+    w = c.frame.body.bodyCtrl
+    w.setSelectionRange(0,0)
+#@-node:ekr.20051104075904.52:copyBeforeToTemp
+#@+node:ekr.20051009045404:createFirstTreeNode
+def createFirstTreeNode (self):
+
+    f = self ; c = f.c
+
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootPosition(p) # New in 4.4.2.
+    c.editPosition(p)
+#@-node:ekr.20051009045404:createFirstTreeNode
+#@+node:ekr.20060919110638.7:createSaxVnode
+def createSaxVnode (self,sax_node,parent_v,t=None):
+
+    c = self.c
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
+
+        if sax_node.tnx:
+            t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
+    v.t.vnodeList.append(v)
+    v._parent = parent_v
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.tnodesDict [index] = t
+
+    # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,t)
+
+    return v
+
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,t):
+
+    d = sax_node.tnodeAttributes
+
+    aDict = {}
+    for key in d.keys():
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        aDict[key] = val2
+
+    if aDict:
+        # g.trace('uA',aDict)
+        t.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded and descendentTnodeUnknownAttributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    d = sax_node.attributes
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnode list will be resolved later.
+        # g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes') # Correct: only tnode have descendent uA's.
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentUaDictList',aDict)
+            self.descendentUnknownAttributesDictList.append(aDict)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d.keys():
+        if key in self.nativeVnodeAttributes:
+            if 0: g.trace('****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # g.trace('uA',aDict)
+        v.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:createSaxVnode
+#@+node:ekr.20041005105605.72:createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode."""
+
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode ; lastIndex = last.t.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
+    if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
+        last.fileIndex = lastIndex =  gnx
+        self._forcedGnxPositionList.remove(last)
+
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.t.children
+    for child in children:
+        if indices.areEqual(gnx,child.t.fileIndex):
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        # g.trace(copies,headline)
+    else:
+        if indices.areEqual(gnx,lastIndex):
+            last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('last',last)
+            return last
+        if child:
+            child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the tnode only if it does not already exist.
+        tnodesDict = c.fileCommands.tnodesDict
+        t = tnodesDict.get(gnxString)
+        if t:
+            if indices.areEqual(t.fileIndex,gnx):
+                pass
+            else:
+                g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+        else:
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
+            t.fileIndex = gnx
+            tnodesDict[gnxString] = t
+
+        child = leoNodes.vnode(context=c,t=t)
+        t.vnodeList.append(child)
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:createThinChild4
+#@+node:ekr.20031218072017.1860:createVnode
+# (changed for 4.2) sets skip
+
+def createVnode (self,parent,back,tref,headline,attrDict):
+
+    # g.trace(parent,headline)
+    v = None ; c = self.c
+    # Shared tnodes are placed in the file even if empty.
+    if tref == -1:
+        if g.unified_nodes: t = leoNodes.vnode(context=c)
+        else:               t = leoNodes.tnode()
+    else:
+        tref = self.canonicalTnodeIndex(tref)
+        t = self.tnodesDict.get(tref)
+        if not t:
+            t = self.newTnode(tref)
+
+    if self.checking: return None,False
+
+    g.trace('parent',parent,'back',back)
+
+    if back: # create v after back.
+        children = parent.t.children
+        if back in children:
+            n = children.index(back)
+        else:
+            n = len(children)-1 ### Not correct, but this code is going away soon...
+        v = parent.insertAsNthChild(n+1)
+    elif parent: # create v as the parent's first child.
+        v = parent.insertAsNthChild(0,t)
+    else: # create a root vnode
+        v = leoNodes.vnode(context=c,t=t)
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+
+    if v not in v.t.vnodeList:
+        v.t.vnodeList.append(v) # New in 4.2.
+
+    skip = len(v.t.vnodeList) > 1
+    v.initHeadString(headline,encoding=self.leo_file_encoding)
+    << handle unknown vnode attributes >>
+    # g.trace(skip,tref,v,v.t,len(v.t.vnodeList))
+    return v,skip
+#@+node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
+keys = attrDict.keys()
+if keys:
+    v.unknownAttributes = attrDict
+    v._p_changed = 1
+
+    if 0: # For debugging.
+        g.es_print("unknown attributes for",v.headString(),color="blue")
+        for key in keys:
+            g.es_print('',"%s = %s" % (key,attrDict.get(key)))
+#@-node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
+#@-node:ekr.20031218072017.1860:createVnode
+#@+node:ekr.20031218072017.1553:getLeoFile
+# The caller should enclose this in begin/endUpdate.
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    << warn on read-only files >>
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+    c.loading = True # disable c.changed
+
+    try:
+        ok = True
+        # t1 = time.clock()
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile, message:
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    # Do this before reading derived files.
+    self.resolveTnodeLists()
+
+    if ok and readAtFileNodesFlag:
+        # Redraw before reading the @file nodes so the screen isn't blank.
+        # This is important for big files like LeoPy.leo.
+        c.redraw_now()
+        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+    # Do this after reading derived files.
+    if readAtFileNodesFlag:
+        # The descendent nodes won't exist unless we have read the @thin nodes!
+        self.restoreDescendentAttributes()
+
+    self.setPositionsFromVnodes()
+    c.selectVnode(c.currentPosition()) # load body pane
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.loading = False # reenable c.changed
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, self.ratio
+#@+node:ekr.20031218072017.1554:<< warn on read-only files >>
+# os.access may not exist on all platforms.
+
+try:
+    self.read_only = not os.access(fileName,os.W_OK)
+except AttributeError:
+    self.read_only = False
+except UnicodeError:
+    self.read_only = False
+
+if self.read_only:
+    g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:<< warn on read-only files >>
+#@-node:ekr.20031218072017.1553:getLeoFile
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2009:newTnode
+def newTnode(self,index):
+
+    c = self.c
+
+    if g.unified_nodes: t = leoNodes.vnode(context=c)
+    else:               t = leoNodes.tnode()
+
+    if self.tnodesDict.has_key(index):
+        g.es("bad tnode index:",str(index),"using empty text.")
+        return t
+    else:
+        # Create the tnode.  Use the _original_ index as the key in tnodesDict.
+        self.tnodesDict[index] = t
+
+        if type(index) not in (type(""),type(u"")):
+            g.es("newTnode: unexpected index type:",type(index),index,color="red")
+
+        # Convert any pre-4.1 index to a gnx.
+        junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
+        if theTime != None:
+            t.fileIndex = gnx
+
+        return t
+#@-node:ekr.20031218072017.2009:newTnode
+#@+node:ekr.20040303175026.4:p.insertAsLastChild
+def insertAsLastChild (self): # ,t=None):
+
+    """Inserts a new vnode as the last child of self.
+
+    Returns the newly created position."""
+
+    p = self
+    n = p.numberOfChildren()
+
+    # if not t:
+        # t = tnode(headString="NewHeadline")
+
+    return p.insertAsNthChild(n) #,t)
+#@-node:ekr.20040303175026.4:p.insertAsLastChild
+#@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
+def insertAsNthChild (self,n):  # ,t=None):
+
+    """Inserts a new node as the the nth child of the receiver.
+    The receiver must have at least n-1 children"""
+
+    v = self
+
+    # if not t:
+        # t = tnode(headString="NewHeadline")
+
+    v2 = vnode(context=v.context) # ,t=t)
+    v2._linkAsNthChild(self,n)
+
+    return v2
+#@-node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
+#@-node:ekr.20080429053831.5:involving vnode/tnode ctors
+#@+node:ekr.20080429053831.4:Found: unified_nodes
+#@+node:ekr.20031218072017.1860:createVnode
+# (changed for 4.2) sets skip
+
+def createVnode (self,parent,back,tref,headline,attrDict):
+
+    # g.trace(parent,headline)
+    v = None ; c = self.c
+    # Shared tnodes are placed in the file even if empty.
+    if tref == -1:
+        if g.unified_nodes: t = leoNodes.vnode(context=c)
+        else:               t = leoNodes.tnode()
+    else:
+        tref = self.canonicalTnodeIndex(tref)
+        t = self.tnodesDict.get(tref)
+        if not t:
+            t = self.newTnode(tref)
+
+    if self.checking: return None,False
+
+    g.trace('parent',parent,'back',back)
+
+    if back: # create v after back.
+        children = parent.t.children
+        if back in children:
+            n = children.index(back)
+        else:
+            n = len(children)-1 ### Not correct, but this code is going away soon...
+        v = parent.insertAsNthChild(n+1)
+    elif parent: # create v as the parent's first child.
+        v = parent.insertAsNthChild(0,t)
+    else: # create a root vnode
+        v = leoNodes.vnode(context=c,t=t)
+        v.moveToRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+
+    if v not in v.t.vnodeList:
+        v.t.vnodeList.append(v) # New in 4.2.
+
+    skip = len(v.t.vnodeList) > 1
+    v.initHeadString(headline,encoding=self.leo_file_encoding)
+    << handle unknown vnode attributes >>
+    # g.trace(skip,tref,v,v.t,len(v.t.vnodeList))
+    return v,skip
+#@+node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
+keys = attrDict.keys()
+if keys:
+    v.unknownAttributes = attrDict
+    v._p_changed = 1
+
+    if 0: # For debugging.
+        g.es_print("unknown attributes for",v.headString(),color="blue")
+        for key in keys:
+            g.es_print('',"%s = %s" % (key,attrDict.get(key)))
+#@-node:ekr.20031218072017.1861:<< handle unknown vnode attributes >>
+#@-node:ekr.20031218072017.1860:createVnode
+#@+node:ekr.20060919110638.7:createSaxVnode
+def createSaxVnode (self,sax_node,parent_v,t=None):
+
+    c = self.c
+    h = sax_node.headString
+    b = sax_node.bodyString
+
+    if not t:
+        if g.unified_nodes:
+            t = leoNodes.vnode(context=c)
+            t.setBodyString(b)
+            t.setHeadString(h)
+        else:
+            t = leoNodes.tnode(bodyString=b,headString=h)
+
+        if sax_node.tnx:
+            t.fileIndex = g.app.nodeIndices.scanGnx(sax_node.tnx,0)
+
+    if g.unified_nodes:
+        v = t
+    else:
+        v = leoNodes.vnode(context=c,t=t)
+
+    v.t.vnodeList.append(v)
+    v._parent = parent_v
+
+    index = self.canonicalTnodeIndex(sax_node.tnx)
+    self.tnodesDict [index] = t
+
+    # g.trace('tnx','%-22s' % (index),'v',id(v),'v.t',id(v.t),'body','%-4d' % (len(b)),h)
+
+    self.handleVnodeSaxAttributes(sax_node,v)
+    self.handleTnodeSaxAttributes(sax_node,t)
+
+    return v
+
+#@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
+def handleTnodeSaxAttributes (self,sax_node,t):
+
+    d = sax_node.tnodeAttributes
+
+    aDict = {}
+    for key in d.keys():
+        val = d.get(key)
+        val2 = self.getSaxUa(key,val)
+        aDict[key] = val2
+
+    if aDict:
+        # g.trace('uA',aDict)
+        t.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded and descendentTnodeUnknownAttributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    d = sax_node.attributes
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnode list will be resolved later.
+        # g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes') # Correct: only tnode have descendent uA's.
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentUaDictList',aDict)
+            self.descendentUnknownAttributesDictList.append(aDict)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d.keys():
+        if key in self.nativeVnodeAttributes:
+            if 0: g.trace('****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # g.trace('uA',aDict)
+        v.unknownAttributes = aDict
+#@nonl
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@-node:ekr.20060919110638.7:createSaxVnode
+#@+node:ekr.20041005105605.72:createThinChild4
+def createThinChild4 (self,gnxString,headline):
+
+    """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode."""
+
+    at = self ; c = at.c ; indices = g.app.nodeIndices
+    last = at.lastThinNode ; lastIndex = last.t.fileIndex
+    gnx = indices.scanGnx(gnxString,0)
+
+    # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
+    if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
+        last.fileIndex = lastIndex =  gnx
+        self._forcedGnxPositionList.remove(last)
+
+    # g.trace("last",last,last.t.fileIndex)
+    # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+
+    parent = at.lastThinNode # A vnode.
+    children = parent.t.children
+    for child in children:
+        if indices.areEqual(gnx,child.t.fileIndex):
+            break
+    else:
+        child = None
+
+    if at.cloneSibCount > 1:
+        n = at.cloneSibCount ; at.cloneSibCount = 0
+        if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
+        else: clonedSibs = 0
+        copies = n - clonedSibs
+        # g.trace(copies,headline)
+    else:
+        if indices.areEqual(gnx,lastIndex):
+            last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('last',last)
+            return last
+        if child:
+            child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+            # g.trace('child',child)
+            return child
+        copies = 1 # Create exactly one copy.
+
+    while copies > 0:
+        copies -= 1
+        # Create the tnode only if it does not already exist.
+        tnodesDict = c.fileCommands.tnodesDict
+        t = tnodesDict.get(gnxString)
+        if t:
+            if indices.areEqual(t.fileIndex,gnx):
+                pass
+            else:
+                g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
+        else:
+            if g.unified_nodes: t = leoNodes.vnode(context=c)
+            else:               t = leoNodes.tnode()
+            t._headString = headline
+            t.fileIndex = gnx
+            tnodesDict[gnxString] = t
+
+        child = leoNodes.vnode(context=c,t=t)
+        t.vnodeList.append(child)
+        child._linkAsNthChild(parent,parent.numberOfChildren())
+
+    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+    return child
+#@-node:ekr.20041005105605.72:createThinChild4
+#@+node:ekr.20031218072017.2009:newTnode
+def newTnode(self,index):
+
+    c = self.c
+
+    if g.unified_nodes: t = leoNodes.vnode(context=c)
+    else:               t = leoNodes.tnode()
+
+    if self.tnodesDict.has_key(index):
+        g.es("bad tnode index:",str(index),"using empty text.")
+        return t
+    else:
+        # Create the tnode.  Use the _original_ index as the key in tnodesDict.
+        self.tnodesDict[index] = t
+
+        if type(index) not in (type(""),type(u"")):
+            g.es("newTnode: unexpected index type:",type(index),index,color="red")
+
+        # Convert any pre-4.1 index to a gnx.
+        junk,theTime,junk = gnx = g.app.nodeIndices.scanGnx(index,0)
+        if theTime != None:
+            t.fileIndex = gnx
+
+        return t
+#@-node:ekr.20031218072017.2009:newTnode
+#@+node:ekr.20031218072017.3321:class tnode
+if not g.unified_nodes:
+
+    if use_zodb and ZODB:
+        class baseTnode (ZODB.Persistence.Persistent):
+            pass
+    else:
+        class baseTnode (object):
+            pass
+
+    class tnode (baseTnode):
+        """A class that implements tnodes."""
+        << tnode constants >>
+        @others
+#@+node:ekr.20031218072017.3322:<< tnode constants >>
+dirtyBit    = 0x01
+richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
+visitedBit  = 0x04
+writeBit    = 0x08 # Set: write the tnode.
+#@-node:ekr.20031218072017.3322:<< tnode constants >>
+#@+node:ekr.20031218072017.2006:t.__init__
+def __init__ (self,bodyString=None,headString=None):
+
+    # To support ZODB the code must set t._p_changed = 1 whenever
+    # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
+
+    self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+    self.fileIndex = None # The immutable file index for this tnode.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+    self.statusBits = 0 # status bits
+
+    # Convert everything to unicode...
+    self._headString = g.toUnicode(headString,g.app.tkEncoding)
+    self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+
+    self.children = [] # List of all children of this node.
+    self.vnodeList = []
+        # List of all vnodes pointing to this tnode.
+        # v is a clone iff len(v.t.vnodeList) > 1.
+#@nonl
+#@-node:ekr.20031218072017.2006:t.__init__
+#@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+def __repr__ (self):
+
+    return "<tnode %d>" % (id(self))
+
+__str__ = __repr__
+#@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+#@+node:ekr.20060908205857:t.__hash__ (only for zodb)
+if use_zodb and ZODB:
+
+    # The only required property is that objects
+    # which compare equal have the same hash value.
+
+    def __hash__(self):
+
+        return hash(g.app.nodeIndices.toString(self.fileIndex))
+#@-node:ekr.20060908205857:t.__hash__ (only for zodb)
+#@+node:ekr.20031218072017.3325:t.Getters
+#@+node:EKR.20040625161602:t.bodyString
+def getBody (self):
+
+    return self._bodyString
+
+bodyString = getBody
+bodyText = getBody
+#@-node:EKR.20040625161602:t.bodyString
+#@+node:ekr.20031218072017.3326:t.hasBody
+def hasBody (self):
+
+    '''Return True if this tnode contains body text.'''
+
+    s = self._bodyString
+
+    return s and len(s) > 0
+#@-node:ekr.20031218072017.3326:t.hasBody
+#@+node:ekr.20031218072017.3327:t.Status bits
+#@+node:ekr.20031218072017.3328:isDirty
+def isDirty (self):
+
+    return (self.statusBits & self.dirtyBit) != 0
+#@-node:ekr.20031218072017.3328:isDirty
+#@+node:ekr.20031218072017.3329:isRichTextBit
+def isRichTextBit (self):
+
+    return (self.statusBits & self.richTextBit) != 0
+#@-node:ekr.20031218072017.3329:isRichTextBit
+#@+node:ekr.20031218072017.3330:isVisited
+def isVisited (self):
+
+    return (self.statusBits & self.visitedBit) != 0
+#@-node:ekr.20031218072017.3330:isVisited
+#@+node:EKR.20040503094727:isWriteBit
+def isWriteBit (self):
+
+    return (self.statusBits & self.writeBit) != 0
+#@-node:EKR.20040503094727:isWriteBit
+#@-node:ekr.20031218072017.3327:t.Status bits
+#@-node:ekr.20031218072017.3325:t.Getters
+#@+node:ekr.20031218072017.3331:t.Setters
+#@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+def setBodyString (self,s,encoding="utf-8"):
+
+    t = self
+    t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+
+initBodyString = setBodyString
+setTnodeText = setBodyString
+
+def setHeadString (self,s,encoding="utf-8"):
+
+    t = self
+    s = g.toUnicode(s,encoding,reportErrors=True)
+    t._headString = s
+
+initHeadString = setHeadString
+
+#@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+#@+node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+def setCloneIndex (self, index):
+
+    self.cloneIndex = index
+#@-node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+#@+node:ekr.20031218072017.3340:t.setFileIndex
+def setFileIndex (self, index):
+
+    self.fileIndex = index
+#@-node:ekr.20031218072017.3340:t.setFileIndex
+#@+node:ekr.20031218072017.1486:t.setSelection
+def setSelection (self,start,length):
+
+    self.selectionStart = start
+    self.selectionLength = length
+#@-node:ekr.20031218072017.1486:t.setSelection
+#@+node:ekr.20031218072017.3332:t.Status bits
+#@+node:ekr.20031218072017.3333:clearDirty
+def clearDirty (self):
+
+    self.statusBits &= ~ self.dirtyBit
+#@-node:ekr.20031218072017.3333:clearDirty
+#@+node:ekr.20031218072017.3334:clearRichTextBit
+def clearRichTextBit (self):
+
+    self.statusBits &= ~ self.richTextBit
+#@-node:ekr.20031218072017.3334:clearRichTextBit
+#@+node:ekr.20031218072017.3335:clearVisited
+def clearVisited (self):
+
+    self.statusBits &= ~ self.visitedBit
+#@-node:ekr.20031218072017.3335:clearVisited
+#@+node:EKR.20040503093844:clearWriteBit
+def clearWriteBit (self):
+
+    self.statusBits &= ~ self.writeBit
+#@-node:EKR.20040503093844:clearWriteBit
+#@+node:ekr.20031218072017.3336:setDirty
+def setDirty (self):
+
+    self.statusBits |= self.dirtyBit
+#@-node:ekr.20031218072017.3336:setDirty
+#@+node:ekr.20031218072017.3337:setRichTextBit
+def setRichTextBit (self):
+
+    self.statusBits |= self.richTextBit
+#@-node:ekr.20031218072017.3337:setRichTextBit
+#@+node:ekr.20031218072017.3338:setVisited
+def setVisited (self):
+
+    self.statusBits |= self.visitedBit
+#@-node:ekr.20031218072017.3338:setVisited
+#@+node:EKR.20040503094727.1:setWriteBit
+def setWriteBit (self):
+
+    self.statusBits |= self.writeBit
+#@-node:EKR.20040503094727.1:setWriteBit
+#@-node:ekr.20031218072017.3332:t.Status bits
+#@-node:ekr.20031218072017.3331:t.Setters
+#@-node:ekr.20031218072017.3321:class tnode
+#@+node:ekr.20031218072017.951:<< vnode constants >>
+# Define the meaning of status bits in new vnodes.
+
+# Archived...
+clonedBit   = 0x01 # True: vnode has clone mark.
+# unused      0x02
+expandedBit = 0x04 # True: vnode is expanded.
+markedBit   = 0x08 # True: vnode is marked
+orphanBit   = 0x10 # True: vnode saved in .leo file, not derived file.
+selectedBit = 0x20 # True: vnode is current vnode.
+topBit      = 0x40 # True: vnode was top vnode when saved.
+
+# Not archived...
+richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
+visitedBit  = 0x100
+
+if g.unified_nodes:
+    dirtyBit    = 0x200
+    writeBit    = 0x400
+#@-node:ekr.20031218072017.951:<< vnode constants >>
+#@+node:ekr.20031218072017.3344:v.__init__
+def __init__ (self,context,t=None):
+
+    if g.unified_nodes:
+        assert t is None
+    elif t is None:
+        t = tnode()
+
+    # To support ZODB the code must set v._p_changed = 1 whenever
+    # v.unknownAttributes or any mutable vnode object changes.
+
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required for trees, so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+
+    self.iconVal = 0
+    self.parents = [] # List of all parents of this node.
+        # This list will have 1 member unless the parent node is a clone.
+        # In particular, cloned nodes do *not* share parents.
+    self.statusBits = 0 # status bits
+
+    if g.unified_nodes: # vnodes contain all tnode info.
+        self.t = self 
+        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+        self.fileIndex = None # The immutable file index for this tnode.
+        self.insertSpot = None # Location of previous insert point.
+        self.scrollBarSpot = None # Previous value of scrollbar position.
+        self.selectionLength = 0 # The length of the selected body text.
+        self.selectionStart = 0 # The start of the selected body text.
+
+        # Convert everything to unicode...
+        self._headString = g.toUnicode(headString,g.app.tkEncoding)
+        self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+
+        self.children = [] # List of all children of this node.
+        self.vnodeList = []
+            # List of all vnodes pointing to this tnode.
+            # v is a clone iff len(v.vnodeList) > 1.
+    else:
+        self.t = t # The tnode.
+#@nonl
+#@-node:ekr.20031218072017.3344:v.__init__
+#@-node:ekr.20080429053831.4:Found: unified_nodes
+#@-node:ekr.20080429053831.3:Added g.unified_nodes
 #@-node:ekr.20080408060320.4:4.5 a1
 #@-all
 #@nonl

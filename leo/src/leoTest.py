@@ -1457,6 +1457,8 @@ class reformatParagraphTest:
             + "received " + str(newLinesCount) + " lines."
     #@-node:ekr.20051104075904.51:checkText
     #@+node:ekr.20051104075904.52:copyBeforeToTemp
+    # Used in a unit test.
+
     def copyBeforeToTemp(self):
 
         c = self.c ; tempNode = self.tempNode
@@ -1470,8 +1472,8 @@ class reformatParagraphTest:
         tempNode.setBodyString(text,g.app.tkEncoding)
 
         # create the child node that holds the text.
-        t = leoNodes.tnode(headString="tempChildNode")
-        self.tempChild = self.tempNode.insertAsNthChild(0,t)
+        self.tempChild = self.tempNode.insertAsNthChild(0)
+        self.tempChild.setHeadString('tempChildNode')
 
         # copy the before text to the temp text.
         text = self.before.bodyString()

@@ -1560,8 +1560,7 @@ def new (self,event=None,gui=None):
         frame.deiconify()
         frame.lift()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        t = leoNodes.tnode()
-        v = leoNodes.vnode(context=c,t=t)
+        v = leoNodes.vnode(context=c)
         p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
@@ -3240,19 +3239,23 @@ def createSplitterComponents (self):
     f.body.setFontFromConfig()
     f.body.setColorFromConfig()
 #@-node:ekr.20071001091231.30:createSplitterComponents (removed frame.bodyCtrl ivar)
-#@+node:ekr.20071001091231.31:createFirstTreeNode
+#@+node:ekr.20071001091231.31:createFirstTreeNode (swingFrame)
 def createFirstTreeNode (self):
 
     f = self ; c = f.c
 
-    t = leoNodes.tnode()
+    if unified_nodes:
+        t = None
+    else:
+        t = leoNodes.tnode()
+
     v = leoNodes.vnode(t)
     p = leoNodes.position(v,[])
     v.initHeadString("NewHeadline")
     p.moveToRoot(oldRoot=None)
     c.setRootPosition(p) # New in 4.4.2.
     c.editPosition(p)
-#@-node:ekr.20071001091231.31:createFirstTreeNode
+#@-node:ekr.20071001091231.31:createFirstTreeNode (swingFrame)
 #@-node:ekr.20071001091231.28:swingFrame.finishCreate & helpers
 #@+node:ekr.20071001091231.33:swingFrame.createCanvas & helpers
 def createCanvas (self,parentFrame,pack=True):
