@@ -82,6 +82,7 @@ globalDirectiveList = [
 
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
+unified_nodes = False # True: unify vnodes and tnodes into a single vnode.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
