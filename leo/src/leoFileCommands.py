@@ -261,8 +261,8 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.32:endTnode
         def endTnode (self):
 
-            for node in self.nodeList:
-                node.bodyString = ''.join(self.content)
+            for sax_node in self.nodeList:
+                sax_node.bodyString = ''.join(self.content)
 
             self.content = []
         #@nonl
