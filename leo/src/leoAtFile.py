@@ -375,8 +375,7 @@ class atFile:
 
         # Create a dummy vnode as the root.
         fileName='check-derived-file'
-        root_t = leoNodes.tnode()
-        root_v = leoNodes.vnode(context=c,t=root_t)
+        root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
         thinFile = at.scanHeaderForThin (theFile,fileName)
@@ -643,9 +642,8 @@ class atFile:
             last.fileIndex = lastIndex =  gnx
             self._forcedGnxPositionList.remove(last)
 
-        if 0:
-            g.trace("last",last,last.t.fileIndex)
-            g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+        # g.trace("last",last,last.t.fileIndex)
+        # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
         parent = at.lastThinNode # A vnode.
         children = parent.t.children
@@ -683,7 +681,9 @@ class atFile:
                 else:
                     g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
             else:
-                t = leoNodes.tnode(bodyString=None,headString=headline)
+                if g.unified_nodes: t = leoNodes.vnode(context=c)
+                else:               t = leoNodes.tnode()
+                t._headString = headline
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
 
