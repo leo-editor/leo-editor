@@ -82,7 +82,10 @@ globalDirectiveList = [
 
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
-unified_nodes = False # True: unify vnodes and tnodes into a single vnode.
+unified_nodes = False
+    # True: unify vnodes and tnodes into a single vnode.
+    # Warning: this is a "compile-time" constant:
+    # it makes absolutely no sense to change this after Leo loads.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
