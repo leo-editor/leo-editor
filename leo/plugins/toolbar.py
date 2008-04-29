@@ -20,6 +20,8 @@ Backward compatability will be maintainid for the iconbar.
 __version__ = "0.3"
 __plugin_name__ = 'Toolbar Manager'
 
+
+
 controllers = {}
 
 #@<< version history >>
@@ -47,6 +49,7 @@ controllers = {}
 #@+node:bobjack.20080424190906.15:<< imports >>
 import leoGlobals as g
 import leoPlugins
+import leoTkinterFrame
 
 import re
 import sys
@@ -88,14 +91,20 @@ requiredIvars = (
 #@-node:bobjack.20080424195922.85:<< required ivars >>
 #@nl
 
+
 #@+others
 #@+node:bobjack.20080424190906.6:Module-level
 #@+node:bobjack.20080424190906.7:init
 def init ():
     """Initialize and register plugin."""
 
+    global old
+
     if not Tk:
         return False
+
+    if g.app.unitTesting:
+         return False
 
     if g.app.gui is None:
         g.app.createTkGui(__file__)
@@ -109,6 +118,10 @@ def init ():
         r('close-frame', onClose)
 
         g.app.gui.ScriptingControllerClass = ToolbarScriptingController
+
+        leoTkinterFrame.leoTkinterFrame = ToolbarTkinterFrame
+
+
 
         g.plugin_signon(__name__)
 
@@ -165,9 +178,49 @@ def onClose (tag, keys):
     finally:
         controller = None
 #@-node:bobjack.20080424195922.10:onClose
+#@+node:bobjack.20080428114659.2:class ToolbarTkinterFrame
+class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
+
+    #@    @+others
+    #@+node:bobjack.20080428114659.3:def __init__
+    def __init__(self, *args, **kw):
+
+        self.iconBars= {}
+        self.toolbarFrame = None
+        super(ToolbarTkinterFrame, self).__init__(*args, **kw)
+    #@-node:bobjack.20080428114659.3:def __init__
+    #@+node:bobjack.20080428114659.4:createIconBar
+    def createIconBar (self, name='iconbar'):
+
+        frame = self.createToolbarFrame()
+
+        if not name in self.iconBars:
+
+            self.iconBars[name] = bar = self.iconBarClass(
+                self.c, self.toolbarFrame, name=name
+            )
+
+        if name == 'iconbar':
+            self.iconBar = self.iconBars[name]
+
+        return self.iconBars[name]
+    #@-node:bobjack.20080428114659.4:createIconBar
+    #@+node:bobjack.20080428114659.5:createToolbarFrame
+    def createToolbarFrame(self):
+
+        if self.toolbarFrame:
+            return self.toolbarFrame
+
+        self.toolbarFrame = w = Tk.Frame(self.outerFrame)
+
+        w.pack(fill='x')
+    #@-node:bobjack.20080428114659.5:createToolbarFrame
+    #@-others
+
+#@-node:bobjack.20080428114659.2:class ToolbarTkinterFrame
 #@+node:bobjack.20080425135232.6:class ToolbarScriptingController
 scripting = mod_scripting.scriptingController
-class ToolbarScriptingController(scripting):
+class ToolbarScriptingController(scripting, object):
 
     #@    @+others
     #@+node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
@@ -227,6 +280,17 @@ class ToolbarScriptingController(scripting):
 
         return item_data
     #@-node:bobjack.20080425135232.10:getItemData
+    #@+node:bobjack.20080428114659.18:getIconBar
+    def getIconBar(self):
+
+        return self.c.frame.iconBar
+
+
+    def setIconBar(*args, **kw):
+        pass
+
+    iconBar = property(getIconBar, setIconBar)
+    #@-node:bobjack.20080428114659.18:getIconBar
     #@+node:bobjack.20080426064755.77:deleteButton
     def deleteButton(self, button, event=None):
 
@@ -252,17 +316,82 @@ class ToolbarScriptingController(scripting):
 
         scripting.deleteButton(self, button)
     #@-node:bobjack.20080426064755.77:deleteButton
+    #@+node:bobjack.20080428114659.12:createScriptButtonIconButton 'script-button' & callback
+    def createScriptButtonIconButton (self, name='iconbar'):
+
+        '''Create the 'script-button' button and the script-button command.'''
+
+        c = self.c
+        frame = c.frame
+
+        def addScriptButtonCallback(event=None, self=self, name=name):
+            return self.addScriptButtonCommand(event, name)
+
+        self.createIconButton(
+            text='script-button',
+            command = addScriptButtonCallback,
+            shortcut=None,
+            statusLine='Make script button from selected node',
+            bg="#ffffcc",
+        )
+    #@+node:bobjack.20080428114659.13:addScriptButtonCommand
+    def addScriptButtonCommand (self,event=None, name='iconbar'):
+
+        '''Called when the user presses the 'script-button' button or executes the script-button command.'''
+
+        c = self.c
+        frame = c.frame
+        p = c.currentPosition();
+        h = p.headString()
+
+        buttonText = self.getButtonText(h)
+        shortcut = self.getShortcut(h)
+        statusLine = "Run Script: %s" % buttonText
+        if shortcut:
+            statusLine = statusLine + " @key=" + shortcut
+
+        if name not in frame.iconBars:
+            return
+
+        oldIconBar = frame.iconBar
+        try:
+            frame.iconBar =  frame.iconBars[name]       
+            b = self.createAtButtonHelper(
+                p, h, statusLine, shortcut, bg='MistyRose1', verbose=True
+            )
+        finally:
+            frame.iconBar = oldIconBar
+
+        c.frame.bodyWantsFocus()
+    #@-node:bobjack.20080428114659.13:addScriptButtonCommand
+    #@-node:bobjack.20080428114659.12:createScriptButtonIconButton 'script-button' & callback
     #@-others
 #@-node:bobjack.20080425135232.6:class ToolbarScriptingController
 #@+node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
 iconbar = leoTkinterFrame.leoTkinterFrame.tkIconBarClass
-class ToolbarTkIconBarClass(iconbar):
+class ToolbarTkIconBarClass(iconbar, object):
 
     '''A class representing the singleton Icon bar'''
 
     iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
 
     #@    @+others
+    #@+node:bobjack.20080428114659.6:__init__
+    def __init__ (self,c,parentFrame, name='iconBar'):
+
+        self.name = name
+        super(ToolbarTkIconBarClass, self).__init__(c, parentFrame)
+
+        self.iconFrame.bind('<Button-3>', self.onRightClick)
+    #@-node:bobjack.20080428114659.6:__init__
+    #@+node:bobjack.20080428114659.9:onRightClick
+    def onRightClick(self, event=None):
+
+        g.doHook('rclick-popup', c=self.c, event=event,
+            context_menu='default-iconbar-menu',
+            toolbar=self,
+        )
+    #@-node:bobjack.20080428114659.9:onRightClick
     #@+node:bobjack.20080426064755.76:add
     def add(self,*args,**keys):
 
@@ -372,6 +501,10 @@ class pluginController(object):
 
     commandList = (
         'toolbar-delete-button',
+        'toolbar-add-iconbar',
+        'toolbar-hide-iconbar',
+        'toolbar-add-script-button',
+        'toolbar-show-iconbar-menu',
     )
 
     #@    @+others
@@ -391,6 +524,19 @@ class pluginController(object):
         self.mb_retval = None
         self.mb_keywords = None
 
+        if hasattr(c.context_menus, 'default-iconbar-menu'):
+            return
+
+        items = [
+            ('Add Bar', 'toolbar-add-iconbar'),
+            ('Add Script-Button', 'toolbar-add-script-button'),
+            ('-', ''),
+            ('Hide', 'toolbar-hide-iconbar'),
+            ('*', 'toolbar-show-iconbar-menu'),
+        ]
+
+        c.context_menus['default-iconbar-menu'] = items
+    #@nonl
     #@+node:bobjack.20080424195922.14:onCreate
     def onCreate(self):
 
@@ -449,7 +595,43 @@ class pluginController(object):
         return self.commandList
     #@-node:bobjack.20080424195922.19:getCommandList
     #@-node:bobjack.20080424195922.13:__init__
-    #@+node:bobjack.20080426190702.2:Generator Commands
+    #@+node:bobjack.20080428114659.20:Generator Commands
+    #@+node:bobjack.20080428114659.21:toolbar_show_iconbar_menu
+    def toolbar_show_iconbar_menu(self, keywords):
+
+        c = self.c
+        frame = c.frame
+
+
+        menu_table = keywords.get('rc_menu_table', None)
+
+        barname = keywords.get('toolbar')
+
+        names = frame.iconBars.keys()
+
+        items = []
+        while names:
+            name = names.pop(0)
+
+            if name == barname:
+                continue
+
+            bar = frame.iconBars[name]
+            if not bar.visible:
+
+                def show_iconbar_cb(c, keywords, bar=bar):
+                    bar.show()
+
+                items.append((name, show_iconbar_cb))
+
+        if items:
+            items = [('Show', items)]
+
+        if menu_table is not None:
+            menu_table[:0] = items  
+    #@-node:bobjack.20080428114659.21:toolbar_show_iconbar_menu
+    #@-node:bobjack.20080428114659.20:Generator Commands
+    #@+node:bobjack.20080426190702.2:Invocation Commands
     #@+node:bobjack.20080426190702.3:toolbar_delete_button
     def toolbar_delete_button(self, keywords):
         """Minibuffer command to delete a toolbar button.
@@ -468,7 +650,86 @@ class pluginController(object):
 
 
     #@-node:bobjack.20080426190702.3:toolbar_delete_button
-    #@-node:bobjack.20080426190702.2:Generator Commands
+    #@+node:bobjack.20080428114659.11:toolbar_add_iconbar
+    def toolbar_add_iconbar(self, keywords):
+        """Minibuffer command to add a new iconBar."""
+
+        c = self.c
+        frame = c.frame
+
+        try:
+            bar = keywords.get('toolbar')
+        except:
+            bar = None
+
+        name = ''
+        if bar:
+            name = bar.name
+
+        if not name:
+            name='iconbar'
+
+        for i in range(1,100):
+            newname = '%s.%s' %(name, i)
+            if newname not in frame.iconBars:
+                break
+
+        frame.createIconBar(newname)
+
+
+
+
+
+
+    #@-node:bobjack.20080428114659.11:toolbar_add_iconbar
+    #@+node:bobjack.20080428114659.16:toolbar_hide_iconbar
+    def toolbar_hide_iconbar(self, keywords):
+        """Minibuffer command to hide an iconBar.
+
+        This is only for use in context menus attached to iconBars.
+        """
+
+        c = self.c
+        frame = c.frame
+
+        g.trace()
+
+        try:
+            bar = keywords.get('toolbar')
+        except:
+            bar = None
+
+        g.trace(bar)
+
+        if not bar or not bar.name in frame.iconBars:
+            return
+
+        frame.iconBars[bar.name].hide()
+    #@-node:bobjack.20080428114659.16:toolbar_hide_iconbar
+    #@+node:bobjack.20080428114659.17:toolbar_add_script_button
+    def toolbar_add_script_button(self, keywords):
+
+        c = self.c
+        frame = c.frame
+
+        bar = keywords.get('toolbar')
+        if not bar or bar.name not in frame.iconBars:
+            return
+
+        oldIconBar = frame.iconBar
+
+        g.trace(bar.name)
+
+        try:
+            frame.iconBar = frame.iconBars[bar.name]
+            sm = c.theScriptingController
+            sm.createScriptButtonIconButton(bar.name) 
+        finally:
+            frame.iconBar = oldIconBar
+
+
+    #@-node:bobjack.20080428114659.17:toolbar_add_script_button
+    #@-node:bobjack.20080426190702.2:Invocation Commands
     #@-others
 
 #@-node:bobjack.20080424195922.12:class pluginController

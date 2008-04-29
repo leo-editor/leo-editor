@@ -9,10 +9,10 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080424195922.3" str_leo_pos="1,0"><vh>Startup</vh>
+<v t="bobjack.20080424195922.3" str_leo_pos="0"><vh>Startup</vh>
 <v t="bobjack.20080424195922.2" str_leo_pos="1"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080424195922.90" a="E"><vh>Buttons</vh>
+<v t="bobjack.20080424195922.90"><vh>Buttons</vh>
 <v t="bobjack.20080427085237.1"><vh>@button Fav Button</vh></v>
 <v t="bobjack.20080427084403.1"><vh>@button Say Hello!</vh></v>
 <v t="bobjack.20080427183647.2"><vh>@button show-menu-tables</vh></v>
@@ -21,8 +21,8 @@
 <v t="bobjack.20080427091720.1"><vh>@popup test-button-menu</vh>
 <v t="bobjack.20080427091720.2"><vh>@item toolbar-delete-button</vh></v>
 </v>
-<v t="bobjack.20080424195922.89" a="E"><vh>Unit Tests</vh>
-<v t="bobjack.20080424195922.87" a="E"><vh>Test Plugin Controller</vh>
+<v t="bobjack.20080424195922.89"><vh>Unit Tests</vh>
+<v t="bobjack.20080424195922.87"><vh>Test Plugin Controller</vh>
 <v t="bobjack.20080424224706.1"><vh>@test module has required functions</vh></v>
 <v t="bobjack.20080424195922.88"><vh>@test ivars exist and have correct type</vh></v>
 <v t="bobjack.20080424224706.2"><vh>@test Controller Methods</vh>
