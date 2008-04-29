@@ -200,8 +200,10 @@ def processDocumentNode( c ):
         xmlsource = InputSource.DefaultFactory.fromString( xIO, uri = xhead ) 
         result = proc.run( xmlsource )
         nhline = "xsl:transform of " + str( xmlnode.headString )
-        tnode = leoNodes.tnode( result, nhline )
-        pos.insertAfter( tnode )
+        # tnode = leoNodes.tnode( result, nhline )
+        p2 = pos.insertAfter() # tnode )
+        p2.setBodyString(result)
+        p2.setHeadString(nhline)
         c.endUpdate()
 
     except Exception, x:
@@ -223,9 +225,11 @@ def addXSLTNode (c):
 <xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">    
 </xsl:transform>'''
 
-    tnode = leoNodes.tnode(body,"xslt stylesheet")
+    # tnode = leoNodes.tnode(body,"xslt stylesheet")
     c.beginUpdate()
-    pos.insertAfter(tnode)
+    p2 = pos.insertAfter() # tnode)
+    p2.setBodyString(body)
+    p2.setHeadString("xslt stylesheet")
     c.endUpdate()
 #@-node:mork.20041025121608:addXSLTNode
 #@+node:mork.20041010110121:addXSLTElement
@@ -511,10 +515,13 @@ def addMenu( tag, keywords ):
     cS.seek( 0 )
     self.c.beginUpdate() 
     if not save:
-        tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
-        pos.insertAfter( tnd )
+        # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
+        p2 = pos.insertAfter() #  tnd )
+        p2.setBodyString(cS.getvalue())
+        p2.setHeadString("Save of Edited " + str( pos.headString()))
     else:
-        pos.setTnodeText( cS.getvalue() )
+        # pos.setTnodeText( cS.getvalue() )
+        pos.setBodyString(cS.getvalue())
     self.c.endUpdate()
 
 
@@ -585,10 +592,11 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041017105444">def newTable( c ):
 
-    tnd = leoNodes.tnode( "", "New Table" )
+    # tnd = leoNodes.tnode( "", "New Table" )
     pos = c.currentPosition()
     c.beginUpdate()
-    npos = pos.insertAfter( tnd )
+    npos = pos.insertAfter() # tnd )
+    npos.setHeadString('New Table')
     c.endUpdate()
     c.selectPosition( npos )
     viewTable( c , True )
