@@ -128,10 +128,14 @@ def base64Import( c ):
 
             %s 
                 '''% ( "killcolor", size, ltime, pload)
-        tnode = leoNodes.tnode( body, "%s %s" % ( b64, name ) )
-        npos = pos.insertAfter( tnode )
-        payload = leoNodes.tnode( b64_data, pload)
-        npos.insertAsNthChild( 0, payload)
+        # tnode = leoNodes.tnode( body, "%s %s" % ( b64, name ) )
+        npos = pos.insertAfter() #  tnode )
+        npos.setBodyString(body)
+        npos.setHeadString("%s %s" % ( b64, name ))
+        # payload = leoNodes.tnode( b64_data, pload)
+        p = npos.insertAsNthChild(0) # , payload)
+        p.setBodyString(b64_data)
+        p.setHeadString(pload)
         c.endUpdate()
 #@-node:mork.20041020082653:base64Import
 #@+node:ekr.20050307135219.1:init

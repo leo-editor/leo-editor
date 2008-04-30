@@ -1446,6 +1446,22 @@ class leoFrame:
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
     #@nonl
+    #@+node:ekr.20080429051644.1:leoFrame.mustBeDefined
+    # List of methods that must be defined either in the base class or a subclass.
+
+    mustBeDefined = (
+
+        # Icon bar convenience methods.    
+        'addIconButton',
+        'clearIconBar',
+        'createIconBar',
+        'getIconBar',
+        'getIconBarObject',
+        'hideIconBar',
+
+    )
+    #@nonl
+    #@-node:ekr.20080429051644.1:leoFrame.mustBeDefined
     #@+node:ekr.20061109120726:leoFrame.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
 
@@ -1467,14 +1483,6 @@ class leoFrame:
         'copyText',
         'cutText',
         'pasteText',
-
-        # Icon bar convenience methods.    
-        'addIconButton',
-        'clearIconBar',
-        'createIconBar',
-        'getIconBar',
-        'getIconBarObject',
-        'hideIconBar',
 
         # Status line convenience methods.
         'createStatusLine',
