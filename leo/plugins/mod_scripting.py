@@ -689,6 +689,8 @@ class scriptingController:
         - Creates x amd delete-x-button commands, where x is the cleaned button name.
         - Binds a right-click in the button to a callback that deletes the button.'''
 
+
+        g.trace('base class')
         c = self.c ; k = c.k
 
         # Create the button and add it to the buttons dict.
@@ -701,6 +703,7 @@ class scriptingController:
             return None
 
         # Command may be None.
+        g.trace(self.iconBar.add)
         b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
         if not b: return None
 
