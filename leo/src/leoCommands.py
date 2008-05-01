@@ -3437,7 +3437,7 @@ class baseCommands:
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
     #@+node:ekr.20040711135959.2:Check Outline submenu...
     #@+node:ekr.20031218072017.2072:c.checkOutline
-    def checkOutline (self,event=None,verbose=True,unittest=False,full=True):
+    def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
 
         """Report any possible clone errors in the outline.
 
@@ -3449,8 +3449,10 @@ class baseCommands:
         if full and not unittest:
             g.es("all tests enabled: this may take awhile",color="blue")
 
-        p = c.rootPosition()
-        for p in c.allNodes_iter():
+        if root: iter = root.self_and_subtree_iter
+        else:    iter = c.allNodes_iter 
+
+        for p in iter():  # c.allNodes_iter():
             try:
                 count += 1
                 #@            << remove unused tnodeList >>
@@ -3588,11 +3590,10 @@ class baseCommands:
             #@        << print summary message >>
             #@+node:ekr.20040314043900:<<print summary message >>
             if full:
-                print
                 g.enl()
 
             if errors or verbose:
-                color = g.choose(errors,'red','green')
+                color = g.choose(errors,'red','blue')
                 g.es_print('',count,'nodes checked',errors,'errors',color=color)
             #@-node:ekr.20040314043900:<<print summary message >>
             #@nl

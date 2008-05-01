@@ -3984,6 +3984,19 @@ def moveToRoot (self,oldRoot=None):
         oldRootNode.t.vnodeList = [oldRootNode]
 #@-node:ekr.20080418124036.1:v.moveToRoot (used by non-sax copy outline logic)
 #@-node:ekr.20080421083619.5:Old file code
+#@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
+def insertAsNthChild (self,n):
+
+    """Inserts a new node as the the nth child of the receiver.
+    The receiver must have at least n-1 children"""
+
+    v = self
+
+    v2 = vnode(context=v.context)
+    v2._linkAsNthChild(self,n)
+
+    return v2
+#@-node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

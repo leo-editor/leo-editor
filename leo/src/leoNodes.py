@@ -788,22 +788,7 @@ class vnode (baseVnode):
         v.t.selectionLength = length
     #@-node:ekr.20031218072017.3402:v.setSelection
     #@-node:ekr.20031218072017.3384:v.Setters
-    #@+node:ekr.20080427062528.9:v.Low level
-    #@+node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
-    # These remain in 4.2: the file read logic calls these before creating positions.
-    #@+node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
-    def insertAsNthChild (self,n):
-
-        """Inserts a new node as the the nth child of the receiver.
-        The receiver must have at least n-1 children"""
-
-        v = self
-
-        v2 = vnode(context=v.context)
-        v2._linkAsNthChild(self,n)
-
-        return v2
-    #@-node:ekr.20031218072017.3421:v.insertAsNthChild (used by 3.x read logic)
+    #@+node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
@@ -824,14 +809,14 @@ class vnode (baseVnode):
         # Add parent_v to v's parents.
         parent_v._computeParentsOfChildren()
     #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
-    #@-node:ekr.20040301071824:v._link/Insert methods (used by file read logic)
     #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
     def _computeParentsOfChildren (self,children=None):
 
         '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
 
         v = self
-        if not children: children = v.t.children
+        if children is None:
+            children = v.t.children
 
         for child in children:
             child.parents = []
@@ -840,7 +825,7 @@ class vnode (baseVnode):
                     # g.trace('Adding %s to parents of %s' % (v2,child))
                     child.parents.append(v2)
     #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
-    #@-node:ekr.20080427062528.9:v.Low level
+    #@-node:ekr.20080427062528.9:v.Low level methods
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -2132,10 +2117,12 @@ class basePosition (object):
             p2 = p.copy()
             p2.v = copy.copy(p.v)
             p2._linkAfter(p)
+            p2.v._computeParentsOfChildren()
         else:
             p2 = p.copy()
             p2.v = vnode(context=context,t=p2.v.t)
             p2._linkAfter(p)
+            p2.v._computeParentsOfChildren()
 
         assert (p.v.t == p2.v.t)
         assert (p.v in p.v.t.vnodeList)
@@ -2614,65 +2601,6 @@ class basePosition (object):
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@nonl
-    #@+node:ekr.20040228094013.1:p.utils
-    #@+node:ekr.20040409203454.1:p._deleteLinksInTree
-    def _deleteLinksInTree (self):
-
-        """Adjust links when deleting node."""
-
-        # Unlike in the non-graph world, there is no need to adjust _parent links.
-
-        root = p = self
-
-        # Delete p.v from the vnodeList
-        if p.v in p.v.t.vnodeList:
-            # g.trace('**** remove p.v from %s' % p.headString())
-            p.v.t.vnodeList.remove(p.v)
-            p.v.t._p_changed = 1  # Support for tnode class.
-            assert(p.v not in p.v.t.vnodeList)
-        else:
-            # g.trace("not in vnodeList",p.v,p.vnodeListIds())
-            pass
-
-        if len(p.v.t.vnodeList) == 0:
-            # This node is not shared by other nodes.
-            for p in root.children_iter():
-                p._deleteLinksInTree()
-    #@-node:ekr.20040409203454.1:p._deleteLinksInTree
-    #@+node:ekr.20080416161551.212:p._parentVnode
-    def _parentVnode (self):
-
-        '''Return the parent vnode.
-        Return the hiddenRootNode if there is no other parent.'''
-
-        p = self
-
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                return v
-            else:
-                return p.v.context.hiddenRootNode
-        else:
-            return None
-    #@-node:ekr.20080416161551.212:p._parentVnode
-    #@+node:ekr.20040409203454:p._restoreLinksInTree
-    def _restoreLinksInTree (self):
-
-        """Restore links when undoing a delete node operation."""
-
-        root = p = self
-
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
-
-        for p in root.children_iter():
-            p._restoreLinksInTree()
-    #@-node:ekr.20040409203454:p._restoreLinksInTree
-    #@-node:ekr.20040228094013.1:p.utils
-    #@+node:ekr.20080416161551.213:p._linkX and p._unlink & helper
     #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     def _adjustPositionBeforeUnlink (self,p2):
 
@@ -2686,6 +2614,26 @@ class basePosition (object):
                 p._childIndex -= 1
                 break
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+    #@+node:ekr.20040409203454.1:p._deleteLinksInTree
+    def _deleteLinksInTree (self):
+
+        """Adjust links when deleting node."""
+
+        root = p = self
+
+        # Delete p.v from the its own vnodeList.
+        if p.v in p.v.t.vnodeList:
+            # g.trace('**** remove p.v from %s' % p.headString())
+            p.v.t.vnodeList.remove(p.v)
+            p.v.t._p_changed = 1
+            assert(p.v not in p.v.t.vnodeList)
+
+        # Recursively delete links in the subtree.
+        if len(p.v.t.vnodeList) == 0:
+            # This node is not shared by other nodes.
+            for p in root.children_iter():
+                p._deleteLinksInTree()
+    #@-node:ekr.20040409203454.1:p._deleteLinksInTree
     #@+node:ekr.20080416161551.214:p._linkAfter
     def _linkAfter (self,p_after):
 
@@ -2768,6 +2716,38 @@ class basePosition (object):
 
         return p
     #@-node:ekr.20080416161551.216:p._linkAsRoot
+    #@+node:ekr.20080416161551.212:p._parentVnode
+    def _parentVnode (self):
+
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
+
+        p = self
+
+        if p.v:
+            data = p.stack and p.stack[-1]
+            if data:
+                v, junk = data
+                return v
+            else:
+                return p.v.context.hiddenRootNode
+        else:
+            return None
+    #@-node:ekr.20080416161551.212:p._parentVnode
+    #@+node:ekr.20040409203454:p._restoreLinksInTree
+    def _restoreLinksInTree (self):
+
+        """Restore links when undoing a delete node operation."""
+
+        root = p = self
+
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1
+
+        for p in root.children_iter():
+            p._restoreLinksInTree()
+    #@-node:ekr.20040409203454:p._restoreLinksInTree
     #@+node:ekr.20080416161551.217:p._unlink
     def _unlink (self):
 
@@ -2809,7 +2789,6 @@ class basePosition (object):
 
 
     #@-node:ekr.20080416161551.217:p._unlink
-    #@-node:ekr.20080416161551.213:p._linkX and p._unlink & helper
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 

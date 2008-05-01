@@ -654,6 +654,7 @@ class baseFileCommands:
         self.initAllParents()
 
         if c.config.getBool('check_outline_after_read'):
+            g.trace('@bool check_outline_after_read = True',color='blue')
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         c.selectPosition(p)
@@ -747,6 +748,7 @@ class baseFileCommands:
         self.initAllParents()
 
         if c.config.getBool('check_outline_after_read'):
+            g.trace('@bool check_outline_after_read = True',color='blue')
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
 
         c.loading = False # reenable c.changed
@@ -941,7 +943,7 @@ class baseFileCommands:
     #@+node:EKR.20040627120120:restoreDescendentAttributes
     def restoreDescendentAttributes (self):
 
-        c = self.c ; verbose = True and not g.unitTesting
+        c = self.c ; verbose = False and not g.unitTesting
 
         for resultDict in self.descendentUnknownAttributesDictList:
             for gnx in resultDict.keys():
@@ -2089,6 +2091,13 @@ class baseFileCommands:
         theActualFile = None
         toZip = False
         atOk = True
+
+        if c.config.getBool('check_outline_before_save'):
+            g.trace('@bool check_outline_before_save = True',color='blue')
+            errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+            if errors > 0:
+                g.es_print('outline not written',color='red')
+                return False
 
         if not outlineOnlyFlag or toOPML:
             # Update .leoRecentFiles.txt if possible.

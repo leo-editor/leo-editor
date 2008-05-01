@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -889,7 +889,7 @@
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
-<v t="ekr.20080427082858.1" a="E"><vh>A</vh>
+<v t="ekr.20080427082858.1"><vh>A</vh>
 <v t="ekr.20080427160123.1"><vh>B</vh></v>
 <v t="ekr.20080427160301.1"><vh>C</vh></v>
 <v t="ekr.20080427161923.1"><vh>D</vh></v>
@@ -899,7 +899,6 @@
 <v t="ekr.20080427160301.1"><vh>C</vh></v>
 <v t="ekr.20080427161923.1"><vh>D</vh></v>
 </v>
-<v t="ekr.20080426144848.1"><vh>@thin dirty-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk

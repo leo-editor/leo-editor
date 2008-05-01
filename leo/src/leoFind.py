@@ -692,35 +692,29 @@ class leoFind:
             if self.clone_find_all and self.p.v.t not in clones:
                 # g.trace(self.p.v.t,self.p.headString())
                 if not clones:
-                    #@                << create the found node and begin the undo group >>
-                    #@+node:ekr.20051113110735:<< create the found node and begin the undo group >>
-                    u.beforeChangeGroup(c.currentPosition(),undoType)
-
                     undoData = u.beforeInsertNode(c.currentPosition())
-
+                    #@                << create the found node >>
+                    #@+node:ekr.20051113110735:<< create the found node >>
                     oldRoot = c.rootPosition()
                     found = oldRoot.insertAfter()
                     found.moveToRoot(oldRoot)
                     c.setHeadString(found,'Found: ' + self.find_text)
                     c.setRootPosition(found) # New in Leo 4.5.
-
-                    u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-                    #@-node:ekr.20051113110735:<< create the found node and begin the undo group >>
+                    #@-node:ekr.20051113110735:<< create the found node >>
                     #@nl
                 clones.append(self.p.v.t)
                 #@            << create a clone of p under the find node >>
                 #@+node:ekr.20051113110851:<< create a clone of p under the find node >>
-                undoData = u.beforeCloneNode(self.p)
                 q = self.p.clone()
                 q.moveToLastChildOf(found)
-                u.afterCloneNode(q,undoType,undoData,dirtyVnodeList=[])
                 #@-node:ekr.20051113110851:<< create a clone of p under the find node >>
                 #@nl
         if self.clone_find_all and clones:
-            u.afterChangeGroup(found,undoType,reportFlag=True) 
+            g.pdb()
+            u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+            # u.afterChangeGroup(found,undoType,reportFlag=True) 
             c.selectPosition(found) # Recomputes root.
             c.setChanged(True)
-
 
         self.restore(data)
         c.redraw_now()
