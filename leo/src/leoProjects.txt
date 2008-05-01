@@ -1300,6 +1300,138 @@ if g.unitTesting:
 #@-node:ekr.20070621092938:@@test g.es_print
 #@-node:ekr.20050707064040:es_print
 #@-node:ekr.20080426071701.1:Fixed keyword handling in g.es and g.es_print
+#@+node:ekr.20080501090548.2:Greatly increased speed of undo clone-find-all
+#@+node:ekr.20050411193627.4:beforeInsertNode
+def beforeInsertNode (self,p,pasteAsClone=False,copiedBunchList=[]):
+
+    u = self
+
+    bunch = u.createCommonBunch(p)
+    bunch.pasteAsClone = pasteAsClone
+
+    if pasteAsClone:
+        # Save the list of bunched.
+        bunch.beforeTree = copiedBunchList
+        # g.trace(bunch.beforeTree)
+
+    return bunch
+#@-node:ekr.20050411193627.4:beforeInsertNode
+#@+node:ekr.20050411193627.9:afterInsertNode
+def afterInsertNode (self,p,command,bunch,dirtyVnodeList=[]):
+
+    u = self ; c = u.c
+    if u.redoing or u.undoing: return
+
+    # Set types & helpers
+    bunch.kind = 'insert'
+    bunch.undoType = command
+    # g.trace(repr(command),g.callers())
+
+    # Set helpers
+    bunch.undoHelper = u.undoInsertNode
+    bunch.redoHelper = u.redoInsertNode
+
+    bunch.newP = p.copy()
+    bunch.dirtyVnodeList = dirtyVnodeList
+
+    bunch.newBack = p.back()
+    bunch.newParent = p.parent()
+
+    bunch.newChanged = c.isChanged()
+    bunch.newDirty = p.isDirty()
+    bunch.newMarked = p.isMarked()
+
+    if bunch.pasteAsClone:
+        beforeTree=bunch.beforeTree
+        afterTree = []
+        for bunch2 in beforeTree:
+            t = bunch2.t
+            afterTree.append(
+                g.Bunch(t=t,head=t._headString[:],body=t._bodyString[:]))
+        bunch.afterTree=afterTree
+        # g.trace(afterTree)
+
+    u.pushBead(bunch)
+#@-node:ekr.20050411193627.9:afterInsertNode
+#@+node:ekr.20040303175026.8:p.clone
+def clone (self):
+
+    """Create a clone of back.
+
+    Returns the newly created position."""
+
+    p = self ; context = p.v.context
+
+    if g.unified_nodes:
+        import copy
+        p2 = p.copy()
+        p2.v = copy.copy(p.v)
+        p2._linkAfter(p)
+        p2.v._computeParentsOfChildren()
+    else:
+        p2 = p.copy()
+        p2.v = vnode(context=context,t=p2.v.t)
+        p2._linkAfter(p)
+        p2.v._computeParentsOfChildren()
+
+    assert (p.v.t == p2.v.t)
+    assert (p.v in p.v.t.vnodeList)
+    assert (p2.v in p.v.t.vnodeList)
+
+    return p2
+#@-node:ekr.20040303175026.8:p.clone
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.headString())
+            if not clones:
+                undoData = u.beforeInsertNode(c.currentPosition())
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        # u.afterChangeGroup(found,undoType,reportFlag=True) 
+        c.selectPosition(found) # Recomputes root.
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw_now()
+    g.es("found",count,"matches")
+
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@-node:ekr.20080501090548.2:Greatly increased speed of undo clone-find-all
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
