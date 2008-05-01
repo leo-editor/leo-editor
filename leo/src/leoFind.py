@@ -710,7 +710,6 @@ class leoFind:
                 #@-node:ekr.20051113110851:<< create a clone of p under the find node >>
                 #@nl
         if self.clone_find_all and clones:
-            g.pdb()
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
             # u.afterChangeGroup(found,undoType,reportFlag=True) 
             c.selectPosition(found) # Recomputes root.

@@ -939,7 +939,6 @@ class undoer:
         u = self
 
         bunch = u.createCommonBunch(p)
-        g.pdb()
         bunch.pasteAsClone = pasteAsClone
 
         if pasteAsClone:
