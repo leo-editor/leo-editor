@@ -228,10 +228,12 @@ def getTemplateDialog (pos,c):
         hS = '<'+'<%s>'%hS+'>'
 
     if ok:
-        nTnd = leoNodes.tnode(bS,hS)
+        # nTnd = leoNodes.tnode(bS,hS)
         pos = c.currentPosition()
         c.beginUpdate()
-        pos.insertAsNthChild(0,nTnd)
+        p = pos.insertAsNthChild(0) #,nTnd)
+        p.setBodyString(bS)
+        p.setHeadString(hS)
         bodyCtrl = c.frame.body.bodyCtrl 
         bodyCtrl.insert('insert',hS)
         bodyCtrl.event_generate('<Key>')

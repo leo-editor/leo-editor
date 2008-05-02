@@ -15845,6 +15845,7 @@ finally:
     import inspect
     
     baseClass = leoFrame.leoFrame
+    baseClassName = baseClass.__name__
     subClasses  = (leoTkinterFrame.leoTkinterFrame,leoFrame.nullFrame)
     baseObject = c.frame
     
@@ -15852,7 +15853,7 @@ finally:
     methodNames = [z[0] for z in methods]
     
     for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClassName,name)
     
     for subClass in subClasses:
         subclassName = subClass.__name__
@@ -15860,10 +15861,15 @@ finally:
             base_func = getattr(baseClass,name)
             sub_func =  getattr(subClass,name)
             if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (
+                    subclassName,name)
             if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-</t>
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (
+                    subclassName,name)
+    
+    for name in baseObject.mustBeDefined:
+        assert name in methodNames, 'not defined in base class %s or any subclass %s' % (
+            baseClassName,name)</t>
 <t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
     import leoFrame,leoTkinterFrame
     import inspect,sys
