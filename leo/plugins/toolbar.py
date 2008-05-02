@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:bobjack.20080424190315.2:@thin toolbar.py
+#@+node:bobjack.20080507083323.2:@thin toolbar.py
 #@@language python
 #@@tabwidth -4
 
@@ -17,7 +17,7 @@ Backward compatability will be maintainid for the iconbar.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.3"
+__version__ = "0.5"
 __plugin_name__ = 'Toolbar Manager'
 
 
@@ -35,6 +35,11 @@ controllers = {}
 # 0.3 bobjack:
 #     - added support for tooltips in @buttons
 #     - fixed parameter bleed bug
+# O.4 bobjack:
+#     - added support for multiple toolbars
+# 0.5 bobjack:
+#     - added toolbars overflow to other toolbars if they are
+#       not wide enough to contain their buttons.
 #@-at
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
@@ -524,6 +529,8 @@ class ToolbarTkIconBarClass(iconbar, object):
         self.barName = barName    
         self.parentFrame = parentFrame
 
+        self.inConfigure = False
+
 
         self.slaveBar = None
         self.slaveMaster = slaveMaster
@@ -593,23 +600,27 @@ class ToolbarTkIconBarClass(iconbar, object):
 
     #@-node:bobjack.20080501125812.2:onToolbarRightClick
     #@+node:bobjack.20080429153129.16:onConfigure
-    def onConfigure(self, event):
+    def onConfigure(self, event=None):
 
-        self.configurePending = True
-        if self.inConfigure:
-            return
-
-        while self.configurePending:
-            try:
-                self.inConfigure = True
-                self.configurePending = False
-                self.repackButtons()
-            finally:
-                self.inConfigure = False
+        self.repackButtons()
 
 
-    #@+node:bobjack.20080430160907.12:repackButtons
+
+    #@+node:bobjack.20080507083323.4:repackButons
     def repackButtons(self, trace=None):
+
+        bar = self.getBarHead()
+
+        if bar.inConfigure:
+           return
+
+        try:
+            bar.doRepackButtons()
+        finally:
+            bar.inConfigure = False
+    #@-node:bobjack.20080507083323.4:repackButons
+    #@+node:bobjack.20080430160907.12:doRepackButtons
+    def doRepackButtons(self, trace=None):
 
         """Repack all the buttons in this toolbar.
 
@@ -617,6 +628,9 @@ class ToolbarTkIconBarClass(iconbar, object):
         visible. Empty slaves will be hidden but not removed.
 
         """
+
+        self.inConfigure = True
+
 
         barHead = self.getBarHead()
 
@@ -694,7 +708,6 @@ class ToolbarTkIconBarClass(iconbar, object):
         return orphans
 
     #@-node:bobjack.20080429153129.24:repackHelper
-    #@-node:bobjack.20080430160907.12:repackButtons
     #@+node:bobjack.20080430064145.3:createSlaveBar
     def createSlaveBar(self):
 
@@ -718,6 +731,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         return slaveBar 
     #@-node:bobjack.20080430064145.3:createSlaveBar
+    #@-node:bobjack.20080430160907.12:doRepackButtons
     #@-node:bobjack.20080429153129.16:onConfigure
     #@+node:bobjack.20080430160907.4:Properties
     #@+node:bobjack.20080430160907.5:outerFrame
@@ -1357,5 +1371,5 @@ class pluginController(object):
 
 #@-node:bobjack.20080424195922.12:class pluginController
 #@-others
-#@-node:bobjack.20080424190315.2:@thin toolbar.py
+#@-node:bobjack.20080507083323.2:@thin toolbar.py
 #@-leo
