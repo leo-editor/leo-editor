@@ -56,7 +56,7 @@ if not g.unified_nodes:
         #@nl
         #@        @+others
         #@+node:ekr.20031218072017.2006:t.__init__
-        def __init__ (self,bodyString=None,headString=None):
+        def __init__ (self,bodyString=None,headString='NewHeadline'):
 
             # To support ZODB the code must set t._p_changed = 1 whenever
             # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
