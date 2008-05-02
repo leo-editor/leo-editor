@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -874,20 +874,6 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20080423110627.1"><vh>New unit tests</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-</v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
@@ -1219,7 +1205,7 @@
 <v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20070131175538"><vh> Commands A-E</vh>
+<v t="ekr.20070131175538" a="E"><vh> Commands A-E</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
@@ -1443,7 +1429,7 @@
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
 </v>
-<v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
+<v t="ekr.20070131175538.1" a="E"><vh> Commands F-L</vh>
 <v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
 <v t="ekr.20061101121602.219"><vh>work</vh></v>
 <v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
@@ -2041,6 +2027,21 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+</v>
 <v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 <v t="ekr.20070611071101"><vh>@@test visback</vh>
 <v t="ekr.20070611071101.1"><vh>a</vh>
@@ -2142,6 +2143,21 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20079,7 +20095,6 @@ finally:
     c.endUpdate(False)
 </t>
 <t tx="ekr.20080418101332.1"></t>
-<t tx="ekr.20080423110627.1"></t>
 <t tx="ekr.20080423110627.2">n = 0
 for v in c.all_unique_vnodes_iter():
     if hasattr(v,'unknownAttributes'):
@@ -20250,6 +20265,19 @@ finally:
     while p.hasChildren():
         p.firstChild().doDelete(newNode=None)
     # c.selectPosition(p)
+    c.redraw_now()</t>
+<t tx="ekr.20080501121449.1"></t>
+<t tx="ekr.20080501121449.3"># Delete all children.
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+try:
+    child = p.insertAsNthChild(0)
+    assert child.headString() == 'NewHeadline','Expected headline=="NewHeadline",got "%s"' % child.headString()
+finally:
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 </tnodes>
 </leo_file>
