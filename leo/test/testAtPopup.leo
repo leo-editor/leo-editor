@@ -1136,8 +1136,7 @@ Now we have a function, lets register it as a minibuffer command.
 
 
 @c
-cb = c.universalCallback(do_demo_editor_items)
-c.k.registerCommand('demo-editor-items', shortcut=None, func=cb)# wrap=True)
+c.k.registerCommand('demo-editor-items', shortcut=None, func=cb, wrap=True)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into
@@ -1238,16 +1237,23 @@ Comment - this item is ignored.
 @item  "  (body: a comment)         or ('"', 'a comment')
 
 Minibuffer Command with label.
-@item mini-buffer-command (body: menu label)    or ('menu label', mini-buffer-command)
+@item mini-buffer-command (body: menu label)    or ('menu label', 'mini-buffer-command')
 
 Minibuffer Command with no label.
-@item mini-buffer-command (body: empty)    or ('Mini Buffer Command', mini-buffer-command)
-@item *mini-buffer-command (body: empty)   or ('Mini Buffer Command', mini-buffer-command)
+@item mini-buffer-command (body: empty)    or ('Mini Buffer Command', 'mini-buffer-command')
+@item *mini-buffer-command (body: empty)   or ('Mini Buffer Command', 'mini-buffer-command')
 
 Submenu.
 @menu menu label (body: &lt;empty&gt;     or ('menu label', [ &lt;menu_list&gt; ])
 
 
+The first item of the tuple can be multiline stirngs. eg :
+    
+    @item toolbar-add-iconbar  body:   Add IconBar
+                                       icon = Tango/16x16/actions/add.png
+
+    or ('Add IconBar\nicon=Tango/16x16/actions/add.png', 'toolbar-add-iconbar')
+    
 </t>
 <t tx="bobjack.20080414155140.2">@
 How to use radio buttons.
@@ -2107,8 +2113,7 @@ def demoCounterItem(keywords):
 
         g.es(text)
 
-cb = c.universalCallback(demoCounterItem)
-c.k.registerCommand('demo-count', shortcut='Alt-9', func=cb)#, wrap=True)
+c.k.registerCommand('demo-count', shortcut='Alt-9', func=demoCounterItem, wrap=True)
 
 mBody =c.context_menus['body']
 if not (mBody and mBody[0][1] == 'demo-count'):
@@ -2172,7 +2177,8 @@ def do_demo_editor_items(keywords):
 
     menu_table[:0] = new_items
 
-do_demo_editor_items = c.universalCallback(do_demo_editor_items)
+
+do_demo_editor_items = c.universallCallback(do_demo_editor_items)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into

@@ -495,7 +495,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.33"
+__version__ = "1.34"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -598,6 +598,9 @@ __plugin_name__ = 'Right Click Menus'
 # 1.33 bobjack:
 #     - allow popup menus outside @settings trees.
 #       These wil be local to the commander
+# 1.34 bobjack:
+#     - convert to use c.universalCallback via registerCommand(..., wrap=True)
+# 
 # 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
@@ -812,10 +815,6 @@ class pluginController(object):
             'check': self.do_check_button_event,
         }
 
-        if not hasattr(c, 'universalCallback'):
-
-            cb = lambda function, sel=self: self.universalCallback(function)
-            g.funcToMethod(cb, c, "universalCallback")
     #@+node:bobjack.20080423205354.3:onCreate
     def onCreate(self):
 
@@ -850,44 +849,10 @@ class pluginController(object):
             methodName = command.replace('-','_')
             function = getattr(self, methodName)
 
-            cb = self.universalCallback(function)
-
-            lst.append((command, methodName, cb))
+            lst.append((command, methodName, function))
 
         return lst
     #@-node:bobjack.20080423205354.2:createCommandCallbacks
-    #@+node:bobjack.20080507130315.2:universalCallback
-    def universalCallback(self, function):
-
-        """Create a universal command callback.
-
-        Create and return a callback that wraps function and adapts
-        the minibuffer command callback to a function that has the
-        rClick type signature.
-
-        When a function or method is wrapped in this way it can be
-        used as a standard minibuffer command regardless of whether
-        rclick is enabled or not and if its enabled then the
-        command can be used for rClick either as a generator command
-        or  an invocation
-
-        """
-        def minibufferCallback(event, function=function):
-
-            try:
-                cm = self.c.theContextMenuController
-            except AttributeError:
-                cm = None
-
-            if cm and cm.mb_keywords:
-                cm.mb_keywords['mb_event'] = event
-                cm.mb_retval = function(cm.mb_keywords)
-            else:
-                keywords = {'c': self.c, 'mb_event': event, 'rc_phase': 'minibuffer'}
-                return function(keywords)
-
-        return minibufferCallback
-    #@-node:bobjack.20080507130315.2:universalCallback
     #@+node:bobjack.20080424195922.9:registerCommands
     def registerCommands(self):
 
@@ -898,7 +863,9 @@ class pluginController(object):
         commandList = self.createCommandCallbacks(self.getCommandList())
 
         for cmd, methodName, function in commandList:
-            c.k.registerCommand(cmd, shortcut=None, func=function)   
+            c.k.registerCommand(cmd, shortcut=None, func=function, wrap=True)
+
+
     #@-node:bobjack.20080424195922.9:registerCommands
     #@+node:bobjack.20080423205354.4:getButtonHandlers
     def getButtonHandlers(self):
