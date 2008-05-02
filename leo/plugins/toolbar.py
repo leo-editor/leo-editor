@@ -609,7 +609,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
 
     #@+node:bobjack.20080430160907.12:repackButtons
-    def repackButtons(self, trace=False):
+    def repackButtons(self, trace=None):
 
         """Repack all the buttons in this toolbar.
 
