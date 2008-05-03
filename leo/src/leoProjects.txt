@@ -5101,10 +5101,10 @@ def sortChildren (self,event=None,cmp=None):
     c = self ; p = c.currentPosition()
 
     if p and p.hasChildren():
-        c.sortSiblings(p=p.firstChild(),undoType='Sort Children')
+        c.sortSiblings(p=p.firstChild(),sortChildren=True)
 #@-node:ekr.20050415134809:c.sortChildren
 #@+node:ekr.20050415134809.1:c.sortSiblings
-def sortSiblings (self,event=None,cmp=None,p=None,undoType='Sort Siblings'):
+def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
 
     '''Sort the siblings of a node.'''
 
@@ -5112,8 +5112,10 @@ def sortSiblings (self,event=None,cmp=None,p=None,undoType='Sort Siblings'):
     if p is None: p = c.currentPosition()
     if not p: return
 
+    undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
     parent_v = p._parentVnode()
     parent = p.parent()
+    p_v = p.v
     oldChildren = parent_v.t.children[:]
     newChildren = parent_v.t.children[:]
 
@@ -5135,23 +5137,15 @@ def sortSiblings (self,event=None,cmp=None,p=None,undoType='Sort Siblings'):
             dirtyVnodeList = []
         u.afterSort(p,bunch,dirtyVnodeList)
     finally:
+        # Sorting destroys position p, so we reconstitute it.
+        if not sortChildren:
+            p = parent.firstChild()
+            while p and p.v != p_v:
+                p.moveToNext()
+            c.selectPosition(p or parent)
+        else:
+            c.selectPosition(parent or c.rootPosition())
         c.endUpdate()
-
-
-    # parent = p.parent()
-    # if not parent:
-        # c.sortTopLevel(cmp=cmp)
-    # else:
-        # c.beginUpdate()
-        # try: # In update...
-            # c.endEditing()
-            # u.beforeChangeGroup(p,undoType)
-            # c.sortChildrenHelper(parent, cmp=cmp)
-            # dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-            # c.setChanged(True)
-            # u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
-        # finally:
-            # c.endUpdate()
 #@-node:ekr.20050415134809.1:c.sortSiblings
 #@-node:ekr.20080425060424.1:Sort...
 #@-node:ekr.20080424073114.2:Rewrote sort code
@@ -9392,6 +9386,64 @@ def _unlink (self):
 #@-node:ekr.20080416161551.217:p._unlink
 #@-node:ekr.20080423062035.1:p.Low level methods
 #@-node:ekr.20080501112115.4:Fixed bug: check-outline failed after clone and clone-find-all
+#@+node:ekr.20080503054701.1:Fixed bug: sort did not select a node
+#@+node:ekr.20080425060424.1:Sort...
+#@+node:ekr.20050415134809:c.sortChildren
+def sortChildren (self,event=None,cmp=None):
+
+    '''Sort the children of a node.'''
+
+    c = self ; p = c.currentPosition()
+
+    if p and p.hasChildren():
+        c.sortSiblings(p=p.firstChild(),sortChildren=True)
+#@-node:ekr.20050415134809:c.sortChildren
+#@+node:ekr.20050415134809.1:c.sortSiblings
+def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
+
+    '''Sort the siblings of a node.'''
+
+    c = self ; u = c.undoer
+    if p is None: p = c.currentPosition()
+    if not p: return
+
+    undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+    parent_v = p._parentVnode()
+    parent = p.parent()
+    p_v = p.v
+    oldChildren = parent_v.t.children[:]
+    newChildren = parent_v.t.children[:]
+
+    def key (self):
+        return self.headString().lower()
+
+    if cmp: newChildren.sort(cmp,key=key)
+    else:   newChildren.sort(key=key)
+
+    # g.trace(g.listToString(newChildren))
+
+    c.beginUpdate()
+    try:
+        bunch = u.beforeSort(p,undoType,oldChildren,newChildren)
+        parent_v.t.children = newChildren
+        if parent:
+            dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+        else:
+            dirtyVnodeList = []
+        u.afterSort(p,bunch,dirtyVnodeList)
+    finally:
+        # Sorting destroys position p, so we reconstitute it.
+        if not sortChildren:
+            p = parent.firstChild()
+            while p and p.v != p_v:
+                p.moveToNext()
+            c.selectPosition(p or parent)
+        else:
+            c.selectPosition(parent or c.rootPosition())
+        c.endUpdate()
+#@-node:ekr.20050415134809.1:c.sortSiblings
+#@-node:ekr.20080425060424.1:Sort...
+#@-node:ekr.20080503054701.1:Fixed bug: sort did not select a node
 #@-node:ekr.20080421162832.7:Recent graph-world projects
 #@+node:ekr.20080429053831.3:Added g.unified_nodes
 @nocolor

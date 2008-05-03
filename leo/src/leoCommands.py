@@ -3381,10 +3381,10 @@ class baseCommands:
         c = self ; p = c.currentPosition()
 
         if p and p.hasChildren():
-            c.sortSiblings(p=p.firstChild(),undoType='Sort Children')
+            c.sortSiblings(p=p.firstChild(),sortChildren=True)
     #@-node:ekr.20050415134809:c.sortChildren
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None,cmp=None,p=None,undoType='Sort Siblings'):
+    def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
 
         '''Sort the siblings of a node.'''
 
@@ -3392,8 +3392,10 @@ class baseCommands:
         if p is None: p = c.currentPosition()
         if not p: return
 
+        undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
         parent_v = p._parentVnode()
         parent = p.parent()
+        p_v = p.v
         oldChildren = parent_v.t.children[:]
         newChildren = parent_v.t.children[:]
 
@@ -3415,23 +3417,15 @@ class baseCommands:
                 dirtyVnodeList = []
             u.afterSort(p,bunch,dirtyVnodeList)
         finally:
+            # Sorting destroys position p, so we reconstitute it.
+            if not sortChildren:
+                p = parent.firstChild()
+                while p and p.v != p_v:
+                    p.moveToNext()
+                c.selectPosition(p or parent)
+            else:
+                c.selectPosition(parent or c.rootPosition())
             c.endUpdate()
-
-
-        # parent = p.parent()
-        # if not parent:
-            # c.sortTopLevel(cmp=cmp)
-        # else:
-            # c.beginUpdate()
-            # try: # In update...
-                # c.endEditing()
-                # u.beforeChangeGroup(p,undoType)
-                # c.sortChildrenHelper(parent, cmp=cmp)
-                # dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-                # c.setChanged(True)
-                # u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
-            # finally:
-                # c.endUpdate()
     #@-node:ekr.20050415134809.1:c.sortSiblings
     #@-node:ekr.20080425060424.1:Sort...
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
