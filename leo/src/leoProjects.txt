@@ -5038,7 +5038,7 @@ def _unlink (self):
 
 #@-node:ekr.20080416161551.217:p._unlink
 #@+node:ekr.20080425060424.3:beforeSort
-def beforeSort (self,p,undoType,oldChildren,newChildren):
+def beforeSort (self,p,undoType,oldChildren,newChildren,sortChildren):
 
     '''Create an undo node for sort operations.'''
 
@@ -5054,6 +5054,7 @@ def beforeSort (self,p,undoType,oldChildren,newChildren):
 
     bunch.oldChildren = oldChildren
     bunch.newChildren = newChildren
+    bunch.sortChildren = sortChildren # A bool
 
     # Push the bunch.
     u.bead += 1
@@ -5079,18 +5080,22 @@ def afterSort (self,p,bunch,dirtyVnodeList):
 #@+node:ekr.20080425060424.4:redoSort
 def redoSort (self):
 
-    u = self
+    u = self ; c = u.c
 
     parent_v = u.p._parentVnode()
     parent_v.t.children = u.newChildren
+    c.setPositionAfterSort(u.sortChildren)
+#@nonl
 #@-node:ekr.20080425060424.4:redoSort
 #@+node:ekr.20080425060424.5:undoSort
 def undoSort (self):
 
-    u = self
+    u = self ; c = u.c
 
     parent_v = u.p._parentVnode()
     parent_v.t.children = u.oldChildren
+    c.setPositionAfterSort(u.sortChildren)
+
 #@-node:ekr.20080425060424.5:undoSort
 #@+node:ekr.20080425060424.1:Sort...
 #@+node:ekr.20050415134809:c.sortChildren
@@ -5115,7 +5120,6 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
     undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
     parent_v = p._parentVnode()
     parent = p.parent()
-    p_v = p.v
     oldChildren = parent_v.t.children[:]
     newChildren = parent_v.t.children[:]
 
@@ -5129,7 +5133,7 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
 
     c.beginUpdate()
     try:
-        bunch = u.beforeSort(p,undoType,oldChildren,newChildren)
+        bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
         parent_v.t.children = newChildren
         if parent:
             dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
@@ -5137,16 +5141,30 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
             dirtyVnodeList = []
         u.afterSort(p,bunch,dirtyVnodeList)
     finally:
-        # Sorting destroys position p, so we reconstitute it.
-        if not sortChildren:
-            p = parent.firstChild()
-            while p and p.v != p_v:
-                p.moveToNext()
-            c.selectPosition(p or parent)
-        else:
-            c.selectPosition(parent or c.rootPosition())
+        # Sorting destroys position p, and possibly the root position.
+        c.setPositionAfterSort(sortChildren)
         c.endUpdate()
 #@-node:ekr.20050415134809.1:c.sortSiblings
+#@+node:ekr.20080503055349.1:c.setPositionAfterSort
+def setPositionAfterSort (self,sortChildren):
+
+    c = self
+    p = c.currentPosition()
+    p_v = p.v
+    parent = p.parent()
+    parent_v = p._parentVnode()
+
+    if sortChildren:
+        c.selectPosition(parent or c.rootPosition())
+    else:
+        if parent:
+            p = parent.firstChild()
+        else:
+            p = leoNodes.position(parent_v.t.children[0])
+        while p and p.v != p_v:
+            p.moveToNext()
+        c.selectPosition(p or parent)
+#@-node:ekr.20080503055349.1:c.setPositionAfterSort
 #@-node:ekr.20080425060424.1:Sort...
 #@-node:ekr.20080424073114.2:Rewrote sort code
 #@+node:ekr.20080425060424.7:Rewrote promote/demote code
@@ -9410,7 +9428,6 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
     undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
     parent_v = p._parentVnode()
     parent = p.parent()
-    p_v = p.v
     oldChildren = parent_v.t.children[:]
     newChildren = parent_v.t.children[:]
 
@@ -9424,7 +9441,7 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
 
     c.beginUpdate()
     try:
-        bunch = u.beforeSort(p,undoType,oldChildren,newChildren)
+        bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
         parent_v.t.children = newChildren
         if parent:
             dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
@@ -9432,17 +9449,76 @@ def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
             dirtyVnodeList = []
         u.afterSort(p,bunch,dirtyVnodeList)
     finally:
-        # Sorting destroys position p, so we reconstitute it.
-        if not sortChildren:
-            p = parent.firstChild()
-            while p and p.v != p_v:
-                p.moveToNext()
-            c.selectPosition(p or parent)
-        else:
-            c.selectPosition(parent or c.rootPosition())
+        # Sorting destroys position p, and possibly the root position.
+        c.setPositionAfterSort(sortChildren)
         c.endUpdate()
 #@-node:ekr.20050415134809.1:c.sortSiblings
+#@+node:ekr.20080503055349.1:c.setPositionAfterSort
+def setPositionAfterSort (self,sortChildren):
+
+    c = self
+    p = c.currentPosition()
+    p_v = p.v
+    parent = p.parent()
+    parent_v = p._parentVnode()
+
+    if sortChildren:
+        c.selectPosition(parent or c.rootPosition())
+    else:
+        if parent:
+            p = parent.firstChild()
+        else:
+            p = leoNodes.position(parent_v.t.children[0])
+        while p and p.v != p_v:
+            p.moveToNext()
+        c.selectPosition(p or parent)
+#@-node:ekr.20080503055349.1:c.setPositionAfterSort
 #@-node:ekr.20080425060424.1:Sort...
+#@+node:ekr.20080425060424.3:beforeSort
+def beforeSort (self,p,undoType,oldChildren,newChildren,sortChildren):
+
+    '''Create an undo node for sort operations.'''
+
+    u = self
+    bunch = u.createCommonBunch(p)
+
+    # Set types.
+    bunch.kind = 'sort'
+    bunch.undoType = undoType
+
+    bunch.undoHelper = u.undoSort
+    bunch.redoHelper = u.redoSort
+
+    bunch.oldChildren = oldChildren
+    bunch.newChildren = newChildren
+    bunch.sortChildren = sortChildren # A bool
+
+    # Push the bunch.
+    u.bead += 1
+    u.beads[u.bead:] = [bunch]
+
+    return bunch
+#@-node:ekr.20080425060424.3:beforeSort
+#@+node:ekr.20080425060424.5:undoSort
+def undoSort (self):
+
+    u = self ; c = u.c
+
+    parent_v = u.p._parentVnode()
+    parent_v.t.children = u.oldChildren
+    c.setPositionAfterSort(u.sortChildren)
+
+#@-node:ekr.20080425060424.5:undoSort
+#@+node:ekr.20080425060424.4:redoSort
+def redoSort (self):
+
+    u = self ; c = u.c
+
+    parent_v = u.p._parentVnode()
+    parent_v.t.children = u.newChildren
+    c.setPositionAfterSort(u.sortChildren)
+#@nonl
+#@-node:ekr.20080425060424.4:redoSort
 #@-node:ekr.20080503054701.1:Fixed bug: sort did not select a node
 #@-node:ekr.20080421162832.7:Recent graph-world projects
 #@+node:ekr.20080429053831.3:Added g.unified_nodes

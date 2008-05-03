@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,3"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2028,19 +2028,16 @@
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
-<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
 <v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
 <v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 </v>
 <v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 <v t="ekr.20070611071101"><vh>@@test visback</vh>
@@ -2145,19 +2142,16 @@
 </v>
 </v>
 <v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
-<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
 <v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
 <v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 <v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test move a clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20279,5 +20273,46 @@ finally:
     while p.hasChildren():
         p.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
+<t tx="ekr.20080503073030.1">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p.expand()
+    c.setCurrentPosition(p2)
+    c.moveOutlineLeft()
+    moved = c.currentPosition()
+    assert moved.headString() == 'A','fail 1'
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
+    moved.doDelete(newNode=p)
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        c.redraw_now()</t>
+<t tx="ekr.20080503073030.2">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.moveOutlineRight()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1'
+    assert moved.parent() == p2
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
 </tnodes>
 </leo_file>

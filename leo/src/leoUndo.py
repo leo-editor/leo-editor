@@ -974,7 +974,7 @@ class undoer:
         return bunch
     #@-node:ekr.20050410110215:beforeMoveNode
     #@+node:ekr.20080425060424.3:beforeSort
-    def beforeSort (self,p,undoType,oldChildren,newChildren):
+    def beforeSort (self,p,undoType,oldChildren,newChildren,sortChildren):
 
         '''Create an undo node for sort operations.'''
 
@@ -990,6 +990,7 @@ class undoer:
 
         bunch.oldChildren = oldChildren
         bunch.newChildren = newChildren
+        bunch.sortChildren = sortChildren # A bool
 
         # Push the bunch.
         u.bead += 1
@@ -1640,10 +1641,12 @@ class undoer:
     #@+node:ekr.20080425060424.4:redoSort
     def redoSort (self):
 
-        u = self
+        u = self ; c = u.c
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.newChildren
+        c.setPositionAfterSort(u.sortChildren)
+    #@nonl
     #@-node:ekr.20080425060424.4:redoSort
     #@+node:ekr.20050318085432.8:redoTree
     def redoTree (self):
@@ -2025,10 +2028,12 @@ class undoer:
     #@+node:ekr.20080425060424.5:undoSort
     def undoSort (self):
 
-        u = self
+        u = self ; c = u.c
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.oldChildren
+        c.setPositionAfterSort(u.sortChildren)
+
     #@-node:ekr.20080425060424.5:undoSort
     #@+node:ekr.20050318085713.2:undoTree
     def undoTree (self):

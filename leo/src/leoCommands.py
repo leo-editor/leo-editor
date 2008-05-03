@@ -3395,7 +3395,6 @@ class baseCommands:
         undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
         parent_v = p._parentVnode()
         parent = p.parent()
-        p_v = p.v
         oldChildren = parent_v.t.children[:]
         newChildren = parent_v.t.children[:]
 
@@ -3409,7 +3408,7 @@ class baseCommands:
 
         c.beginUpdate()
         try:
-            bunch = u.beforeSort(p,undoType,oldChildren,newChildren)
+            bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
             parent_v.t.children = newChildren
             if parent:
                 dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
@@ -3417,16 +3416,30 @@ class baseCommands:
                 dirtyVnodeList = []
             u.afterSort(p,bunch,dirtyVnodeList)
         finally:
-            # Sorting destroys position p, so we reconstitute it.
-            if not sortChildren:
-                p = parent.firstChild()
-                while p and p.v != p_v:
-                    p.moveToNext()
-                c.selectPosition(p or parent)
-            else:
-                c.selectPosition(parent or c.rootPosition())
+            # Sorting destroys position p, and possibly the root position.
+            c.setPositionAfterSort(sortChildren)
             c.endUpdate()
     #@-node:ekr.20050415134809.1:c.sortSiblings
+    #@+node:ekr.20080503055349.1:c.setPositionAfterSort
+    def setPositionAfterSort (self,sortChildren):
+
+        c = self
+        p = c.currentPosition()
+        p_v = p.v
+        parent = p.parent()
+        parent_v = p._parentVnode()
+
+        if sortChildren:
+            c.selectPosition(parent or c.rootPosition())
+        else:
+            if parent:
+                p = parent.firstChild()
+            else:
+                p = leoNodes.position(parent_v.t.children[0])
+            while p and p.v != p_v:
+                p.moveToNext()
+            c.selectPosition(p or parent)
+    #@-node:ekr.20080503055349.1:c.setPositionAfterSort
     #@-node:ekr.20080425060424.1:Sort...
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
     #@+node:ekr.20040711135959.2:Check Outline submenu...
