@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2030,6 +2030,7 @@
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
+<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
 <v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
@@ -2144,9 +2145,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
+<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
 <v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
@@ -20538,6 +20540,28 @@ try:
     assert not p.next(),                                'fail 3-3'
     assert p.firstChild().headString() == 'C',          'fail child 1-3'
     assert p.firstChild().next().headString() == 'D',   'fail child 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080503132221.1">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+c.selectPosition(child)
+
+try:
+    for undoType in ('Create Chapter From Node','Create Chapter'):
+        c.chapterController.createChapterByName('new-chapter',p,undoType)
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo() # Don't pollute future unit tests.
 
 finally:
     if 1:

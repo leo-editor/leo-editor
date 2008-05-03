@@ -1375,8 +1375,9 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
@@ -4946,7 +4947,6 @@ def _linkAfter (self,p_after):
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
     parent_v._computeParentsOfChildren()
-
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20080416161551.215:p._linkAsNthChild
 def _linkAsNthChild (self,parent,n):
@@ -5085,8 +5085,9 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
@@ -5457,8 +5458,9 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
@@ -5486,7 +5488,6 @@ def _linkAfter (self,p_after):
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
     parent_v._computeParentsOfChildren()
-
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20031218072017.1553:getLeoFile
 # The caller should enclose this in begin/endUpdate.
@@ -5813,7 +5814,6 @@ def _linkAfter (self,p_after):
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
     parent_v._computeParentsOfChildren()
-
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20080416161551.215:p._linkAsNthChild
 def _linkAsNthChild (self,parent,n):
@@ -6434,8 +6434,9 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
@@ -6802,8 +6803,9 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
@@ -6884,7 +6886,6 @@ def _linkAfter (self,p_after):
 
     # Add all all nodes in parent_v.t.vnodeList to p.v.parents
     parent_v._computeParentsOfChildren()
-
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@+node:ekr.20080416161551.215:p._linkAsNthChild
 def _linkAsNthChild (self,parent,n):
@@ -7260,12 +7261,117 @@ def clone (self):
     p2._parentVnode()._computeParentsOfChildren()
 
     assert (p.v.t == p2.v.t)
-    assert (p.v in p.v.t.vnodeList)
-    assert (p2.v in p.v.t.vnodeList)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
 
     return p2
 #@-node:ekr.20040303175026.8:p.clone
 #@-node:ekr.20080503055349.2:Fixed bug in clone (caused undo to fail)
+#@+node:ekr.20080503055349.5:Fixed bug in createChapterByName
+#@+node:ekr.20050412083057:redoCloneNode
+def redoCloneNode (self):
+
+    u = self ; c = u.c
+
+    if u.newBack:
+        u.newP._linkAfter(u.newBack)
+    elif u.newParent:
+        u.newP._linkAsNthChild(u.newParent,0)
+    else:
+        oldRoot = c.rootPosition()
+        u.newP._linkAsRoot(oldRoot)
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+
+    u.newP.v._computeParentsOfChildren()
+    u.newP._parentVnode()._computeParentsOfChildren()
+
+    c.selectPosition(u.newP)
+#@-node:ekr.20050412083057:redoCloneNode
+#@+node:ekr.20070325063303.2:cc.createChapterNode
+def createChapterNode (self,chapterName,p=None):
+
+    '''Create an @chapter node for the named chapter.
+    Use p for the first child, or create a first child if p is None.'''
+
+    cc = self ; c = cc.c
+    current = c.currentPosition() or c.rootPosition()
+
+    c.beginUpdate()
+    try:
+        # Create the node with a postion method
+        # so we don't involve the undo logic.
+        root = current.insertAsLastChild()
+        root.initHeadString('@chapter ' + chapterName)
+        root.moveToFirstChildOf(cc.chaptersNode)
+        if p:
+            # Clone p and move it to the first child of the root.
+            clone = p.clone()
+            clone.moveToFirstChildOf(root)
+        else:
+            cc.createChild(root,'%s node 1' % chapterName)
+        c.setChanged(True)
+    finally:
+        c.endUpdate(False)
+
+    return root
+#@-node:ekr.20070325063303.2:cc.createChapterNode
+#@+node:ekr.20040303175026.8:p.clone
+def clone (self):
+
+    """Create a clone of back.
+
+    Returns the newly created position."""
+
+    p = self ; context = p.v.context
+
+    if g.unified_nodes:
+        import copy
+        p2 = p.copy()
+        p2.v = copy.copy(p.v)
+    else:
+        p2 = p.copy()
+        p2.v = vnode(context=context,t=p2.v.t)
+
+    p2._linkAfter(p)
+    p2.v._computeParentsOfChildren()
+    p2._parentVnode()._computeParentsOfChildren()
+
+    assert (p.v.t == p2.v.t)
+    for z in (p.v,p2.v):
+        if z not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(z)
+
+    return p2
+#@-node:ekr.20040303175026.8:p.clone
+#@+node:ekr.20080416161551.214:p._linkAfter
+def _linkAfter (self,p_after):
+
+    '''Link self after p_after.'''
+
+    p = self
+    parent_v = p_after._parentVnode()
+        # Returns None if p.v is None
+
+    # Init the ivars.
+    p.stack = p_after.stack[:]
+    p._childIndex = p_after._childIndex + 1
+
+    # Add v to it's tnode's vnodeList.
+    if p.v not in p.v.t.vnodeList:
+        p.v.t.vnodeList.append(p.v)
+        p.v.t._p_changed = 1 # Support for tnode class.
+
+    # Add p.v to parent_v's children.
+    parent_v.t.children.insert(p_after._childIndex+1,p.v)
+    parent_v._p_changed = 1
+
+    # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+    parent_v._computeParentsOfChildren()
+#@-node:ekr.20080416161551.214:p._linkAfter
+#@-node:ekr.20080503055349.5:Fixed bug in createChapterByName
 #@-node:ekr.20080421162832.7:Recent graph-world bugs
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
