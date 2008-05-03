@@ -2125,8 +2125,9 @@ class basePosition (object):
         p2._parentVnode()._computeParentsOfChildren()
 
         assert (p.v.t == p2.v.t)
-        assert (p.v in p.v.t.vnodeList)
-        assert (p2.v in p.v.t.vnodeList)
+        for z in (p.v,p2.v):
+            if z not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(z)
 
         return p2
     #@-node:ekr.20040303175026.8:p.clone
@@ -2660,7 +2661,6 @@ class basePosition (object):
 
         # Add all all nodes in parent_v.t.vnodeList to p.v.parents
         parent_v._computeParentsOfChildren()
-
     #@-node:ekr.20080416161551.214:p._linkAfter
     #@+node:ekr.20080416161551.215:p._linkAsNthChild
     def _linkAsNthChild (self,parent,n):
