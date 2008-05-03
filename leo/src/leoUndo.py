@@ -1435,6 +1435,9 @@ class undoer:
         for v in u.dirtyVnodeList:
             v.t.setDirty()
 
+        u.newP.v._computeParentsOfChildren()
+        u.newP._parentVnode()._computeParentsOfChildren()
+
         c.selectPosition(u.newP)
     #@-node:ekr.20050412083057:redoCloneNode
     #@+node:EKR.20040526072519.2:redoDeleteNode
