@@ -1,7 +1,6 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
 #@+node:ekr.20080403102730.1:Explore ipython stuff
 @nocolor
 
@@ -35,6 +34,11 @@ Yes, IPython runs the startup script using normal python execfile.
 Pretty normally; I start leo.py as normal python program.
 #@nonl
 #@-node:ekr.20080403102730.1:Explore ipython stuff
+#@+node:ekr.20071113093057:4.5 cleanups & vim bindings
+#@+node:ekr.20080503055349.4:** Auto-switch to body on body-only commands
+# And do implicit ctrl-g for non-minibuffer commands.
+#@nonl
+#@-node:ekr.20080503055349.4:** Auto-switch to body on body-only commands
 #@+node:ekr.20080411091507.1:Docs
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages

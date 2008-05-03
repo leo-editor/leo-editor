@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -783,8 +783,9 @@
 <v t="ekr.20080128143841"><vh>test of ekrProj</vh></v>
 <v t="ekr.20080127215337"><vh>package-script</vh></v>
 </v>
-<v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
-<v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
+<v t="ekr.20070315071830" a="E"><vh>Test files (do not delete)</vh>
+<v t="ekr.20070227104713" a="E"
+expanded="ekr.20070227172826,"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>

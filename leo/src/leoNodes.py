@@ -2116,13 +2116,13 @@ class basePosition (object):
             import copy
             p2 = p.copy()
             p2.v = copy.copy(p.v)
-            p2._linkAfter(p)
-            p2.v._computeParentsOfChildren()
         else:
             p2 = p.copy()
             p2.v = vnode(context=context,t=p2.v.t)
-            p2._linkAfter(p)
-            p2.v._computeParentsOfChildren()
+
+        p2._linkAfter(p)
+        p2.v._computeParentsOfChildren()
+        p2._parentVnode()._computeParentsOfChildren()
 
         assert (p.v.t == p2.v.t)
         assert (p.v in p.v.t.vnodeList)
@@ -2173,6 +2173,8 @@ class basePosition (object):
 
         p._unlink()
         p._deleteLinksInTree()
+        p.v._computeParentsOfChildren()
+        p._parentVnode()._computeParentsOfChildren()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
     def insertAfter (self):
@@ -2774,12 +2776,14 @@ class basePosition (object):
                 g.trace('**can not happen: children[%s] != p.v' % (n))
                 g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
                 g.trace('p.v',p.v)
-                g.trace(g.callers())
+                g.trace('** callers:',g.callers())
+                if g.app.unitTesting: assert False, 'children[%s] != p.v'
         elif trace:
             g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
             g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
             g.trace('p.v',p.v)
-            g.trace(g.callers())
+            g.trace('** callsers:',g.callers())
+            if g.app.unitTesting: assert False, 'children[%s] != p.v'
 
         # Clear the entire parents array.
         if p.v.parents:

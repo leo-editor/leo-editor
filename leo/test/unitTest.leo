@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,3"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2030,9 +2030,12 @@
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node TO DO</vh></v>
+<v t="ekr.20080503082625.4"><vh>@test promote TO DO</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote TO DO</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node TO DO</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
 <v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
 <v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
 <v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
@@ -2144,9 +2147,12 @@
 <v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node set's headline to "NewHeadline"</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node TO DO</vh></v>
+<v t="ekr.20080503082625.4"><vh>@test promote TO DO</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote TO DO</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node TO DO</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
 <v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
 <v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
 <v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
@@ -20098,32 +20104,44 @@ for v in c.all_unique_vnodes_iter():
             
 # print n
 assert n &lt; 2</t>
-<t tx="ekr.20080423110627.3"># It should retain its clone mark.
-
-# Delete all children.
+<t tx="ekr.20080423110627.3"># Delete all children.
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
     
 child = p.insertAsNthChild(0)
+child.setHeadString('child')
 assert child, 'no child'
 
 try:
-    clone = child.clone()
+    c.selectPosition(child)
+    c.clone()
+    clone = c.currentPosition()
+    assert clone.headString() == 'child','fail headstring'
     assert child.isCloned(), 'fail 1'
     assert clone.isCloned(), 'fail 2'
-    oldRoot = c.rootPosition()
-    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
     assert child.isCloned(), 'fail 3'
     assert clone.isCloned(), 'fail 4'
+    c.undoer.undo()
+    assert not child.isCloned(), 'fail 1-a'
+    c.undoer.redo()
+    assert child.isCloned(), 'fail 1-b'
+    c.undoer.undo()
+    assert not child.isCloned(), 'fail 1-c'
+    c.undoer.redo()
+    assert child.isCloned(), 'fail 1-d'
+    oldRoot = c.rootPosition()
+    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    assert child.isCloned(), 'fail 3-2'
+    assert clone.isCloned(), 'fail 4-2'
     assert not clone.parent(), 'fail 5'
     assert not clone.back(), 'fail 6'
     clone.doDelete()
-    
     assert not child.isCloned(), 'fail 7'
 finally:
     # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete(newNode=None)
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 <t tx="ekr.20080423110627.5">while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -20149,6 +20167,10 @@ try:
     newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
     for t in newTnodes:
         assert t not in oldTnodes, 'fail 3'
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
 
 finally:
     if 1:
@@ -20204,11 +20226,30 @@ try:
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
     assert moved.next() == p5, 'fail 5: %s != %s' % (moved.next(),p5)
+    c.undoer.undo()
+    moved = c.currentPosition()
+    assert moved.back() == p2, 'fail 4'
+    assert moved.next() == p4, 'fail 5'
+    c.undoer.redo()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1-2'
+    assert moved.back().headString() == 'C', 'fail 2-2'
+    assert moved.next().headString() == 'D', 'fail 3-2'
+    c.undoer.undo()
+    moved = c.currentPosition()
+    assert moved.back() == p2, 'fail 4-2'
+    assert moved.next() == p4, 'fail 5-2'
+    c.undoer.redo()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1-3'
+    assert moved.back().headString() == 'C', 'fail 2-3'
+    assert moved.next().headString() == 'D', 'fail 3-3'
+
 finally:
     if 1:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
-        c.redraw_now()</t>
+    c.redraw_now()</t>
 <t tx="ekr.20080423110627.12">while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
 
@@ -20231,6 +20272,10 @@ try:
     assert moved.back() == p2, 'fail 4: %s != %s' % (moved.back(),p2)
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     # assert moved.next() == p3, 'fail 5: %s != %s' % (moved.next(),p3)
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
 finally:
     if 1:
         while p.hasChildren():
@@ -20286,7 +20331,15 @@ try:
     assert moved.headString() == 'A','fail 1'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
+    
+    
+    
     moved.doDelete(newNode=p)
+    
 finally:
     if 1:
         while p.hasChildren():
@@ -20308,11 +20361,18 @@ try:
     moved = c.currentPosition()
     assert moved.headString() == 'B', 'fail 1'
     assert moved.parent() == p2
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
 finally:
     if 1:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
     if 1:
         c.redraw_now()</t>
+<t tx="ekr.20080503082625.3"></t>
+<t tx="ekr.20080503082625.4"></t>
+<t tx="ekr.20080503082625.5"></t>
 </tnodes>
 </leo_file>
