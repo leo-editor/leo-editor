@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1205,7 +1205,7 @@
 <v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
-<v t="ekr.20070131175538" a="E"><vh> Commands A-E</vh>
+<v t="ekr.20070131175538"><vh> Commands A-E</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
@@ -1429,7 +1429,7 @@
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
 </v>
-<v t="ekr.20070131175538.1" a="E"><vh> Commands F-L</vh>
+<v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
 <v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
 <v t="ekr.20061101121602.219"><vh>work</vh></v>
 <v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
@@ -2145,7 +2145,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
