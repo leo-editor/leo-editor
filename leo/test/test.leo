@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -890,16 +890,10 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 </v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080418154153.1"><vh>at-root-doc-test.py</vh>
-<v t="ekr.20080418154153.2"><vh>&lt;&lt; section a &gt;&gt;</vh></v>
+<v t="ekr.20080502120646.1" tnodeList="ekr.20080502120646.1,ekr.20080502120646.2,ekr.20080502120646.3"><vh>@file C:\leo.repo\trunk\leo\test\test.php</vh>
+<v t="ekr.20080502120646.2"><vh>test declarations</vh></v>
+<v t="ekr.20080502120646.3"><vh>include</vh></v>
 </v>
-<v t="ekr.20080419080504.1"><vh>a</vh>
-<v t="ekr.20080419080504.2"><vh>b</vh></v>
-</v>
-<v t="ekr.20080419080504.1"><vh>a</vh>
-<v t="ekr.20080419080504.2"><vh>b</vh></v>
-</v>
-<v t="ekr.20080421093238.1"><vh>insert</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5539,18 +5533,64 @@ Leo's init code populates this menu as a special case.</t>
 g.es(pydispatch)
 g.es(g.listToString(dir(pydispatch)))
 </t>
-<t tx="ekr.20080418154153.1">@root c:\prog\test\at-root-doc-test.py
+<t tx="ekr.20080502120646.1">@language php
+@tabwidth -4
+@others
 
-&lt;&lt; section a &gt;&gt;</t>
-<t tx="ekr.20080418154153.2">@doc
-section a doc
-line2
-@c
+?&gt;
+</t>
+<t tx="ekr.20080502120646.2">&lt;?php /*Cascade Style Sheet style1.css*/
+?&gt;
+&lt;link href="../stex.css" rel="stylesheet" type="text/css" /&gt;
 
-a = 5 # code part</t>
-<t tx="ekr.20080419080504.1">print p.v.t</t>
-<t tx="ekr.20080419080504.2"></t>
-<t tx="ekr.20080421093238.1"></t>
+&lt;?php
+/*
+Choice of language for website yes/no
+*/
+$ADD_LANGUAGE_CHOICE = 'yes';
+/*
+If 'Yes' you need to create images based on content/filename.htm
+ex: /imgs/bttns_index.jpg
+$NAV_IMAGES ='yes';
+*/
+
+?&gt;
+
+&lt;?php /* Contact information */
+$domain = "domain.com";
+
+?&gt;
+
+&lt;?php /* Content Script; reads .htm files in Content Directory */
+
+</t>
+<t tx="ekr.20080502120646.3">//-- first section ends, second section begins
+
+include('language.php');
+
+$mycontentdir = "content"."/".$mylanguage;
+if ($main_page == "") $main_page = "index";
+
+
+$pagename = $main_page;
+$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
+" " . $state . " " . $zip;
+
+$main_page = "" . $main_page . ".htm";
+
+/* if (is_file("$mycontentdir/$main_page")) {
+$open = fopen("$mycontentdir/$main_page", "r");
+$size = filesize("$mycontentdir/$main_page");
+$content = fread($open, $size); */
+//}
+?&gt;
+
+&lt;?php
+/*Echo's Website*/
+function hpo(){
+echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
+}
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
