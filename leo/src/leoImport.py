@@ -3440,7 +3440,7 @@ class phpScanner (baseScannerClass):
     #@+node:ekr.20070711094850:isPurePHP
     def isPurePHP (self,s):
 
-        '''Return True if the file begins with <?php or ends with ?>'''
+        '''Return True if the file begins with <?php and ends with ?>'''
 
         s = s.strip()
 
