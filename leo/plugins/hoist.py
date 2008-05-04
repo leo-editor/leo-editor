@@ -52,6 +52,7 @@ USE_FIXED_SIZES = sys.platform != "darwin"
 SIZER_HEIGHT = 23 # was 25
 SIZER_WIDTH = 55 # was 70
 
+
 #@+others
 #@+node:ekr.20070301070027:init
 def init ():
@@ -75,10 +76,32 @@ def init ():
 def onCreate (tag,keys):
 
     c = keys.get('c')
-    hoist = HoistButtons(c)
-    hoist.addWidgets()
-    leoPlugins.registerHandler("hoist-changed",hoist.onHoistChanged)
+    if not (c and c.exists):
+        return
+
+    try:
+        c.theHoistButtonsController
+    except:
+        c.theHoistButtonsController = hoist = HoistButtons(c)
+
+        useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')
+
+        if useTkFrame:
+            hoist.addFramedWidgets()
+        else:
+            hoist.addWidgets()
+
+        leoPlugins.registerHandler("hoist-changed", onHoistChanged)
 #@-node:ekr.20050104063423:onCreate
+#@+node:bobjack.20080503151427.7:onHoistChanged
+def onHoistChanged(tag, keywords):
+
+    c = keywords.get('c')  
+    if not (c and c.exists and hasattr(c,"hoistStack")):
+        return
+
+    c.theHoistButtonsController.onHoistChanged(tag, keywords) 
+#@-node:bobjack.20080503151427.7:onHoistChanged
 #@+node:ekr.20040331072607.1:class HoistButtons
 class HoistButtons:
 
@@ -133,12 +156,60 @@ class HoistButtons:
         self.bgColor = b1.cget('background')
         self.activeBgColor = b1.cget('activebackground')
     #@-node:ekr.20040331072607.4:addWidgets
+    #@+node:bobjack.20080503151427.6:addFramedWidgets
+    def addFramedWidgets (self):
+
+        """Add the widgets to the toolbar."""
+
+        c = self.c ; toolbar = c.frame.iconBar
+        if not toolbar: return
+
+        self.hoist_button_frame = bf = Tk.Frame(self.c.frame.top)
+
+        buttons = []
+        for text in ('Hoist','De-Hoist'):
+            b = c.frame.getIconButton(text=text)
+            buttons.append(b)
+
+        self.hoistButton, self.dehoistButton = b1, b2 = buttons
+
+        for b,command in ((b1,c.hoist),(b2,c.dehoist)):
+            b.configure(command=command)
+
+        #@    << bind and pack buttons >>
+        #@+node:bobjack.20080503151427.8:<< bind and pack buttons >>
+        def getbuttonCallbacks():
+
+            def pressCallback(event, bf=bf):
+                return bf.leoIconBar.onPress(event)
+
+            def releaseCallback(event, bf=bf):
+                return bf.leoIconBar.onRelease(event)             
+
+            return pressCallback, releaseCallback
+
+        for btn in (b1, b2):
+            btn.pack(in_=bf, side='left')
+            press, release = getbuttonCallbacks()
+            btn.bind('<ButtonPress-1>', press)
+            btn.bind('<ButtonRelease-1>', release)
+            btn.leoSubWindow = True
+
+        self.c.frame.addIconWidget(bf)    
+        #@nonl
+        #@-node:bobjack.20080503151427.8:<< bind and pack buttons >>
+        #@nl
+
+        self.bgColor = b1.cget('background')
+        self.activeBgColor = b1.cget('activebackground')
+    #@-node:bobjack.20080503151427.6:addFramedWidgets
     #@+node:ekr.20040331072607.7:onHoistChanged
     def onHoistChanged(self,tag,keywords):
 
-        c = keywords.get('c')
+        c = self.c
+
         if g.app.killed or g.app.unitTesting: return
-        if c != self.c or not c.exists or not hasattr(c,"hoistStack"): return
+
 
         for b,f in (
             (self.hoistButton,c.canHoist),
