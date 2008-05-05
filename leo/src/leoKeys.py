@@ -3459,7 +3459,8 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        # g.trace(g.listToString(d.keys()))
+        # g.trace(w,g.callers())
+        # g.trace(g.dictToString(d))
 
         for commandName in d.keys():
             if commandName == '*entry-commands*': continue
@@ -3511,6 +3512,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modeName = commandName[6:]
+        c.inCommand = False # Allow inner commands in the mode.
         k.generalModeHandler(event,modeName=modeName)
     #@-node:ekr.20061031131434.160:enterNamedMode
     #@+node:ekr.20061031131434.161:exitNamedMode
@@ -4120,9 +4122,14 @@ class keyHandlerClass:
 
         for a,b in (
             ('Alt+','Alt-'),
-            ('Ctrl+','Control-'),
+            ('Ctrl-','Control-'),
+            ('Ctrl+','Control-'), # New in Leo 4.5.
             ('Shift+','Shift-'),
             ('Command+','Command-'),
+            ('DnArrow','Down'), # New in Leo 4.5.
+            ('LtArrow','Left'), # New in Leo 4.5.
+            ('RtArrow','Right'),# New in Leo 4.5.
+            ('UpArrow','Up'),   # New in Leo 4.5.
         ):
             stroke = stroke.replace(a,b)
 
