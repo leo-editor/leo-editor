@@ -3509,6 +3509,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         modeName = commandName[6:]
+        c.inCommand = False # Allow inner commands in the mode.
         k.generalModeHandler(event,modeName=modeName)
     #@-node:ekr.20061031131434.160:enterNamedMode
     #@+node:ekr.20061031131434.161:exitNamedMode
