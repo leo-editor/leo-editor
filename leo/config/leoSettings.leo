@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,15,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,0,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -23,7 +23,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119035137" a="E" str_leo_pos="3,10"><vh>About this file</vh>
+<v t="ekr.20041119035137" str_leo_pos="3,10"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -63,7 +63,7 @@
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = False</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -352,7 +352,7 @@
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = True</vh></v>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = False</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060122105527.5" annotate="7d71002e"><vh>@bool useCmdMenu = True</vh></v>
@@ -364,8 +364,8 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
-<v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051101160257" a="E" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
@@ -404,7 +404,7 @@
 <v t="ekr.20060115160004"><vh>@mode Register</vh></v>
 <v t="ekr.20060115160004.1"><vh>@mode Rect</vh></v>
 </v>
-<v t="ekr.20060115162748.1"><vh>Shortcuts</vh>
+<v t="ekr.20060115162748.1" a="E"><vh>Shortcuts</vh>
 <v t="ekr.20060103103812.1" annotate="7d71002e"><vh>@shortcuts EKR: mode-changing commands</vh></v>
 <v t="ekr.20060102102958" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
 <v t="ekr.20060112085325"><vh>@shortcuts EKR: F-M</vh></v>
@@ -549,9 +549,14 @@
 </v>
 </v>
 </v>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+</v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20060603215208.4"><vh>Modes</vh>
-<v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
+<v t="ekr.20060603215208.4" a="E"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
 <v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
 <v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
@@ -569,13 +574,8 @@
 <v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
-<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
-<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
-<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-</v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
@@ -1083,8 +1083,8 @@
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
 </v>
-<v t="bobjack.20080419192045.2" a="E"><vh>@popup_menus</vh>
-<v t="bobjack.20080419192045.3" a="E"><vh>Main Context Menus</vh>
+<v t="bobjack.20080419192045.2"><vh>@popup_menus</vh>
+<v t="bobjack.20080419192045.3"><vh>Main Context Menus</vh>
 <v t="bobjack.20080419192045.4"><vh>@popup body</vh>
 <v t="bobjack.20080419192045.5"><vh>@item &amp;</vh></v>
 <v t="bobjack.20080419192045.6"><vh>@item -</vh></v>
@@ -1107,7 +1107,7 @@
 <v t="bobjack.20080419192045.20"><vh>@popup find-text</vh>
 <v t="bobjack.20080419192045.21"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080419192045.22" a="E"><vh>@popup change-text</vh>
+<v t="bobjack.20080419192045.22"><vh>@popup change-text</vh>
 <v t="bobjack.20080419192045.23"><vh>@item &amp;</vh></v>
 </v>
 <v t="bobjack.20080419192045.24"><vh>@popup canvas</vh>
@@ -1129,7 +1129,7 @@
 <v t="bobjack.20080419192045.38"><vh>@item rclick-select-all</vh></v>
 </v>
 <v t="bobjack.20080419192045.39"><vh>@popup recent-files-menu</vh>
-<v t="bobjack.20080419192045.40" a="E"><vh>@menu Recent Files</vh>
+<v t="bobjack.20080419192045.40"><vh>@menu Recent Files</vh>
 <v t="bobjack.20080419192045.41"><vh>@item *</vh></v>
 </v>
 </v>
@@ -1285,13 +1285,13 @@
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
 <v t="TL.20080410171007.9"><vh>@bool vim_plugin_positions_cursor = False</vh></v>
-<v t="TL.20080410171007.8" a="V"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
+<v t="TL.20080410171007.8"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.28" a="E" annotate="7d71002e"><vh>Preferences panel</vh>
+<v t="ekr.20041119034357.28" annotate="7d71002e"><vh>Preferences panel</vh>
 <v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 <v t="ekr.20080326060254.3"><vh>@string target_language = python</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
@@ -1340,7 +1340,7 @@
 </v>
 <v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
 <v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
-<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
 <v t="ekr.20041119034357.59"><vh>@strings[vertical,horizontal] initial_splitter_orientation = vertical</vh></v>
 <v t="ekr.20041119034357.57"><vh>@ratio initial_horizontal_ratio = 0.4</vh></v>
 <v t="ekr.20041119034357.58"><vh>@ratio initial_horizontal_secondary_ratio = 0.8</vh></v>
@@ -1369,6 +1369,237 @@
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
 <v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051101160257" a="E" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
+<v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
+<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
+</v>
+<v t="ekr.20060117092249"><vh>About modes</vh></v>
+<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
+<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
+</v>
+<v t="ekr.20060103103812" annotate="7d71002e"><vh>@keys Legacy Leo shortcuts with important Emacs bindings</vh>
+<v t="ekr.20060111082632.1"><vh>@shortcuts Legacy+: A-E</vh></v>
+<v t="ekr.20060112085643"><vh>@shortcuts Legacy+: F-M</vh></v>
+<v t="ekr.20060112085643.1"><vh>@shortcuts Legacy+: N-Z</vh></v>
+</v>
+<v t="ekr.20060110141538.2" annotate="7d71002e"><vh>@keys Legacy Leo bindings</vh>
+<v t="ekr.20051218203646" annotate="7d71002e"><vh>@shortcuts Legacy: A-E</vh></v>
+<v t="ekr.20060112090844.4"><vh>@shortcuts Legacy: F-M</vh></v>
+<v t="ekr.20060112090844.5"><vh>@shortcuts Legacy: N-Z</vh></v>
+</v>
+<v t="ekr.20060607182402"><vh>@keys groupoperstions plugin</vh>
+<v t="ekr.20060325091143"><vh>@shortcuts group-operations</vh></v>
+</v>
+<v t="ekr.20051010112558"><vh>@keys EKR bindings: a mix of legacy Leo shortcuts with important Emacs bindings</vh>
+<v t="ekr.20060122105438"><vh>To do</vh></v>
+<v t="ekr.20060115162748"><vh>Modes</vh>
+<v t="ekr.20060121131041.2"><vh>@mode Command</vh></v>
+<v t="ekr.20060102113259" annotate="7d71002e"><vh>@mode File</vh></v>
+<v t="ekr.20060117182225"><vh>@mode Find (Control-F)</vh></v>
+<v t="ekr.20060122103118"><vh>@mode Find-reverse</vh></v>
+<v t="ekr.20060117130936"><vh>@mode Find-options</vh></v>
+<v t="ekr.20060115153348"><vh>@mode Quick-command</vh></v>
+<v t="ekr.20060115160004"><vh>@mode Register</vh></v>
+<v t="ekr.20060115160004.1"><vh>@mode Rect</vh></v>
+</v>
+<v t="ekr.20060115162748.1" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20060103103812.1" annotate="7d71002e"><vh>@shortcuts EKR: mode-changing commands</vh></v>
+<v t="ekr.20060102102958" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060112085325"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060102102958.1" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20060122105527"><vh>@keys EKR bindings: Mode-oriented bindings + Emacs bindings</vh>
+<v t="ekr.20060604180807" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060122105527.2"><vh>Summary of Ctrl bindings</vh></v>
+<v t="ekr.20060122105527.9"><vh>Modes</vh>
+<v t="ekr.20060122113439"><vh>@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20060122122150"><vh>@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20060122105527.11" annotate="7d71002e"><vh>@mode File</vh></v>
+<v t="ekr.20060122182825"><vh>@mode File-open</vh></v>
+<v t="ekr.20060122105527.12"><vh>@mode Find </vh>
+<v t="ekr.20060122105527.13"><vh>@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20060122105527.14"><vh>@mode Find-options</vh></v>
+<v t="ekr.20060122105732" annotate="7d71002e"><vh>@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20060122130002"><vh>@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20060122105527.15"><vh>@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20060122105527.18"><vh>Shortcuts</vh>
+<v t="ekr.20060122105527.19" annotate="7d71002e"><vh>@shortcuts EKR: mode-changing commands</vh></v>
+<v t="ekr.20060124070546"><vh>@shortcuts Find Commands</vh></v>
+<v t="ekr.20060203131942"><vh>@shortcuts Minibuffer bindings</vh></v>
+<v t="ekr.20060122105527.20" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060122105527.21"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060122105527.22" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20060923114638"><vh>@keys EKR bindings: Emacs keys + modes (prior to Leo 4.4.2)</vh>
+<v t="ekr.20060923114638.1"><vh>Settings related to key bindings</vh>
+<v t="ekr.20060923114638.2"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
+<v t="ekr.20060923114638.3" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
+<v t="ekr.20060923114638.4"><vh>Modes</vh>
+<v t="ekr.20060923114638.5"><vh>@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20060923114638.6"><vh>@mode apropos</vh></v>
+<v t="ekr.20060923114638.7"><vh>@mode buttons</vh></v>
+<v t="ekr.20060923114638.8"><vh>@mode commands</vh></v>
+<v t="ekr.20060923114638.9"><vh>@mode edit</vh></v>
+<v t="ekr.20060923114638.10"><vh>@mode Edit-extend</vh></v>
+<v t="ekr.20060923114638.11"><vh>@mode emacs</vh></v>
+<v t="ekr.20060923114638.12"><vh>@mode extract</vh></v>
+<v t="ekr.20060923114638.13"><vh>@mode file</vh></v>
+<v t="ekr.20060923114638.14" a="M"><vh>@mode gui</vh></v>
+<v t="ekr.20060923114638.15"><vh>@mode help</vh></v>
+<v t="ekr.20060923114638.16"><vh>@mode kill</vh></v>
+<v t="ekr.20060923114638.17"><vh>@mode modes</vh></v>
+<v t="ekr.20060923114638.18"><vh>@mode move-outline</vh></v>
+<v t="ekr.20060923114638.19"><vh>@mode outline</vh></v>
+<v t="ekr.20060923114638.20"><vh>@mode toggle-find</vh></v>
+</v>
+<v t="ekr.20060923114638.21"><vh>Shortcuts</vh>
+<v t="ekr.20060923114638.22"><vh>@@@@shortcuts top-level keys (like vim)</vh></v>
+<v t="ekr.20060923114638.23"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20060923114638.24"><vh>@shortcuts Find Commands</vh></v>
+<v t="ekr.20060923114638.25"><vh>@shortcuts Minibuffer bindings</vh></v>
+<v t="ekr.20060923114638.26" annotate="7d71002e"><vh>@shortcuts EKR: A-E</vh></v>
+<v t="ekr.20060923114638.27"><vh>@shortcuts EKR: F-M</vh></v>
+<v t="ekr.20060923114638.28" annotate="7d71002e"><vh>@shortcuts EKR: N-Z</vh></v>
+</v>
+</v>
+<v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
+<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810182514"><vh>@mode focus</vh></v>
+<v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
+<v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20070810181929.2"><vh>@@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20070810181929.3"><vh>@@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20070810181929.4" annotate="7d71002e"><vh>@@mode File</vh></v>
+<v t="ekr.20070810181929.5"><vh>@@mode File-open</vh></v>
+<v t="ekr.20070810181929.6"><vh>@@mode Find </vh>
+<v t="ekr.20070810181929.7"><vh>@@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20070810181929.8"><vh>@@mode Find-options</vh></v>
+<v t="ekr.20070810181929.9" annotate="7d71002e"><vh>@@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20070810181929.10"><vh>@@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20070810181929.11"><vh>@@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20070810180015.3"><vh>Shortcuts</vh>
+<v t="ekr.20070810181453"><vh>@shortcuts Arrow keys</vh></v>
+<v t="ekr.20070810181453.1"><vh>@shortcuts Home/End keys</vh></v>
+<v t="ekr.20070810181453.2"><vh>old...</vh></v>
+<v t="ekr.20070810180015.4"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20070810180015.5"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20070810180015.6"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20070810180015.7"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20070810180015.15"><vh>@shortcuts Text operations</vh></v>
+</v>
+</v>
+<v t="ekr.20070810181604"><vh>Vim stuff: not ready yet</vh>
+<v t="ekr.20070810181528"><vh>@@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
+<v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
+<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810182514"><vh>@mode focus</vh></v>
+<v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
+<v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
+<v t="ekr.20070810181929.2"><vh>@@mode Edit (Alt-Control-space)</vh>
+<v t="ekr.20070810181929.3"><vh>@@mode Edit-extend</vh></v>
+</v>
+<v t="ekr.20070810181929.4" annotate="7d71002e"><vh>@@mode File</vh></v>
+<v t="ekr.20070810181929.5"><vh>@@mode File-open</vh></v>
+<v t="ekr.20070810181929.6"><vh>@@mode Find </vh>
+<v t="ekr.20070810181929.7"><vh>@@@mode Find-reverse</vh></v>
+</v>
+<v t="ekr.20070810181929.8"><vh>@@mode Find-options</vh></v>
+<v t="ekr.20070810181929.9" annotate="7d71002e"><vh>@@mode Outline (Control-Shift-O)</vh>
+<v t="ekr.20070810181929.10"><vh>@@mode Outline-move</vh></v>
+</v>
+<v t="ekr.20070810181929.11"><vh>@@mode Quick-command (Alt-C)</vh></v>
+</v>
+<v t="ekr.20070810180015.3"><vh>Shortcuts</vh>
+<v t="ekr.20070810181453"><vh>@shortcuts Arrow keys</vh></v>
+<v t="ekr.20070810181453.1"><vh>@shortcuts Home/End keys</vh></v>
+<v t="ekr.20070810181453.2"><vh>old...</vh></v>
+<v t="ekr.20070810180015.4"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20070810180015.5"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20070810180015.6"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20070810180015.7"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20070810180015.15"><vh>@shortcuts Text operations</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+</v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4" a="E"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
+</v>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4" a="E"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
+</v>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
 </v>
 </v>
 </vnodes>
@@ -6782,16 +7013,16 @@ move-past-close-extend-selection    = None
 # previous-line-extend-selection    ! text = Ctrl-Shift-P
 select-all                          ! text =  Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.
 </t>
-<t tx="ekr.20060925060533.2">cycle-all-focus             = Alt-Ctrl-Y
+<t tx="ekr.20060925060533.2">cycle-all-focus             = Ctrl-tab # was Alt-Ctrl-Y
 contract-pane               = Alt+Ctrl+-
 expand-pane                 = Alt+Ctrl-=
-focus-to-body               = Alt-D  # boDy
-focus-to-tree               = Alt-T
-toggle-active-pane          = Ctrl-T</t>
+focus-to-body               = Alt-D
+# focus-to-tree               = Alt-T # now enter-move-outline-mode
+# toggle-active-pane          = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">contract-or-go-left         ! tree = LtArrow
 expand-and-go-right         ! tree = RtArrow
-goto-first-sibling          ! tree = Alt-Ctrl-UpArrow
-goto-last-sibling           ! tree = Alt-Ctrl-DnArrow
+# goto-first-sibling          ! tree = Alt-Ctrl-UpArrow
+# goto-last-sibling           ! tree = Alt-Ctrl-DnArrow
 goto-next-visible           ! tree = DnArrow
 goto-prev-visible           ! tree = UpArrow
 
@@ -6816,10 +7047,10 @@ goto-next-clone             = Alt-N
 insert-node                 = Ctrl-I
 mark                        = Ctrl-M
 move-node-to-chapter        = None
-move-outline-down           = Ctrl-D
-move-outline-left           = Ctrl-L
-move-outline-right          = Ctrl-R
-move-outline-up             = Ctrl-U
+# move-outline-down           = Ctrl-D
+# move-outline-left           = Ctrl-L
+# move-outline-right          = Ctrl-R
+# move-outline-up             = Ctrl-U
 paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
 remove-chapter              = None
@@ -6996,8 +7227,8 @@ beginning-of-line-extend-selection  = Shift-Home
 end-of-buffer-extend-selection      = Ctrl-Shift-End
 end-of-line-extend-selection        = Shift-End
 
-scroll-outline-down-page            ! tree = PageDn
-scroll-outline-up-page              ! tree = PageUp
+# scroll-outline-down-page            ! tree = PageDn
+# scroll-outline-up-page              ! tree = PageUp
 
 scroll-down                         ! text = PageDn 
 scroll-up                           ! text = PageUp
@@ -7021,8 +7252,8 @@ move-outline-up             = Alt-Shift-UpArrow
 scroll-outline-down-page    = Alt-PageDn
 scroll-outline-up-page      = Alt-PageUp
 
-scroll-outline-left         = Alt+Ctrl+LtArrow
-scroll-outline-right        = Alt+Ctrl+RtArrow</t>
+# scroll-outline-left         = Alt+Ctrl+LtArrow
+# scroll-outline-right        = Alt+Ctrl+RtArrow</t>
 <t tx="ekr.20061018061727.1"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.
 
 # Plain arrow keys depend on focus.
@@ -7037,10 +7268,10 @@ forward-char-extend-selection   ! text = Shift-RtArrow
 next-line-extend-selection      ! text = Shift-DnArrow
 previous-line-extend-selection  ! text = Shift-UpArrow
 
-move-outline-down               ! tree = Shift-DnArrow
-move-outline-left               ! tree = Shift-LtArrow
-move-outline-right              ! tree = Shift-RtArrow
-move-outline-up                 ! tree = Shift-UpArrow
+# move-outline-down               ! tree = Shift-DnArrow
+# move-outline-left               ! tree = Shift-LtArrow
+# move-outline-right              ! tree = Shift-RtArrow
+# move-outline-up                 ! tree = Shift-UpArrow
 
 # Ctrl-arrow and Ctrl-shift keys work only in text.
 back-word                           ! text = Ctrl-LtArrow
@@ -7061,8 +7292,8 @@ goto-first-visible-node             ! tree = Home
 goto-last-visible-node              ! tree = End
 scroll-down                         ! text = PageDn 
 scroll-down-extend-selection        ! text = Shift-PageDn
-scroll-outline-down-page            ! tree = PageDn
-scroll-outline-up-page              ! tree = PageUp
+# scroll-outline-down-page            ! tree = PageDn
+# scroll-outline-up-page              ! tree = PageUp
 scroll-up                           ! text = PageUp
 scroll-up-extend-selection          ! text = Shift-PageUp
 
@@ -7078,10 +7309,10 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
-scroll-outline-down-page    = Alt-PageDn
-scroll-outline-left         = Alt+Ctrl+LtArrow
-scroll-outline-right        = Alt+Ctrl+RtArrow
-scroll-outline-up-page      = Alt-PageUp
+# scroll-outline-down-page    = Alt-PageDn
+# scroll-outline-left         = Alt+Ctrl+LtArrow
+# scroll-outline-right        = Alt+Ctrl+RtArrow
+# scroll-outline-up-page      = Alt-PageUp
 </t>
 <t tx="ekr.20061029091403"></t>
 <t tx="ekr.20061030092620">True (Recommended): Leo scrolls the outline to put the selected node near the center of the outline pane.

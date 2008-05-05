@@ -1,9 +1,3 @@
-//@+leo-ver=4
-//@+node:@file C:\leo.repo\trunk\leo\test\test.php
-//@@language php
-//@@tabwidth -4
-//@+others
-//@+node:test declarations
 <?php /*Cascade Style Sheet style1.css*/
 ?>
 <link href="../stex.css" rel="stylesheet" type="text/css" />
@@ -28,8 +22,6 @@ $domain = "domain.com";
 
 <?php /* Content Script; reads .htm files in Content Directory */
 
-//@-node:test declarations
-//@+node:include
 //-- first section ends, second section begins
 
 include('language.php');
@@ -56,9 +48,4 @@ $content = fread($open, $size); */
 function hpo(){
 echo '<div class="hpo">whatever text goes here</a> </div>';
 }
-//@-node:include
-//@-others
-
 ?>
-//@-node:@file C:\leo.repo\trunk\leo\test\test.php
-//@-leo

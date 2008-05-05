@@ -1515,6 +1515,13 @@ def __init__ (self,importCommands,atAuto):
     self.blockCommentDelim2 = '*/'
     self.lineCommentDelim = '//'
     self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+
+    self.hasClasses = False
+    self.hasFunctions = True
+
+    self.functionTags = ['function']
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
