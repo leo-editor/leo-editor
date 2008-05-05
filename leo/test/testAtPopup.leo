@@ -338,14 +338,10 @@
 <v t="bobjack.20080424073616.7"><vh>@test Controller Methods</vh>
 <v t="bobjack.20080424073616.16"><vh>@test add_menu_item</vh></v>
 <v t="bobjack.20080424073616.17"><vh>@test add_optional_args</vh></v>
-<v t="bobjack.20080424073616.13"><vh>@test chapter_menu_helper</vh></v>
 <v t="bobjack.20080424073616.20"><vh>@test copyMenuDict</vh></v>
 <v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
-<v t="bobjack.20080424195922.8"><vh>@test createCommandCallbacks</vh></v>
-<v t="bobjack.20080424073616.15"><vh>@test do_check_button_event</vh></v>
-<v t="bobjack.20080424073616.14"><vh>@test do_radio_button_event</vh></v>
+<v t="bobjack.20080424195922.8"><vh>@test getPublicCommands</vh></v>
 <v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
-<v t="bobjack.20080424073616.10"><vh>@test getButtonHandlers</vh></v>
 <v t="bobjack.20080424195922.96"><vh>@test getCommandList</vh></v>
 <v t="bobjack.20080424073616.21"><vh>@test getImage</vh></v>
 <v t="bobjack.20080424073616.19"><vh>@test init_default_menus</vh></v>
@@ -357,7 +353,6 @@
 <v t="bobjack.20080424073616.11"><vh>@test rSetupMenus</vh></v>
 <v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
 </v>
-<v t="bobjack.20080423221422.2"><vh>@test commands have methods and are registered</vh></v>
 </v>
 <v t="bobjack.20080416154107.4"><vh>Test generators</vh>
 <v t="bobjack.20080416154107.8"><vh>@test generator functions and methods</vh>
@@ -1921,28 +1916,6 @@ icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080420084658.2"></t>
 <t tx="bobjack.20080420085604.1"></t>
 <t tx="bobjack.20080423221422.1"></t>
-<t tx="bobjack.20080423221422.2">
-cm = c.theContextMenuController
-
-commands = cm.commandList
-
-for command in commands:
-    
-    assert isinstance(command, basestring), \
-        "Command must be a sring. Got type: %s" % type(command)
-    
-    method_name = command.replace('-', '_')
-    
-    assert hasattr(cm, method_name), \
-        "No method for command %s" % command
-        
-    function = c.commandsDict.get(command)
-    
-    assert function, \
-        "command '%s' has not been registered." % command 
-        
-    assert callable(function), \
-        "function registered for '%s' is not callable" % command</t>
 <t tx="bobjack.20080424054748.5">print 
 print 'Starting testAtPopup (rClick) tests.'
 print</t>
@@ -1983,10 +1956,10 @@ for ivar, kind in ivars:
         "Test Controller has ivar of wrong type\n\tGot type: %s\n\tExpected: %s" %(
             type(val), kind)</t>
 <t tx="bobjack.20080424073616.7">
-from rClick import ContextMenuController
+from rClick import pluginController
 
        
-cm = ContextMenuController
+cm = pluginController
 
     
 headlines = [p.headString() for p in p.children_iter()]
@@ -1999,30 +1972,12 @@ for h in headlines:
             "Controller has no method %s" % h
 </t>
 <t tx="bobjack.20080424073616.8"></t>
-<t tx="bobjack.20080424073616.10">method = c.theContextMenuController.getButtonHandlers
-
-result = method()
-
-assert isinstance(result, dict) and \
-    'radio' in result and 'check' in result, \
-        "Expected a dictionary with at least 'radio' an 'check' keys."
-
-for k, v in result.iteritems():
-    
-    assert isinstance(k, basestring), \
-        'keys must be strings not type %s' % type(k)
-        
-    assert callable(v), \
-        'values must be callable'</t>
 <t tx="bobjack.20080424073616.11"></t>
 <t tx="bobjack.20080424073616.12">rejoin = c.theContextMenuController.rejoin
 
 assert rejoin('a', '') == 'a', 'Fails when second argument is empty second argument.' 
 assert rejoin('a', 'b') == 'a\nb'
 </t>
-<t tx="bobjack.20080424073616.13"></t>
-<t tx="bobjack.20080424073616.14"></t>
-<t tx="bobjack.20080424073616.15"></t>
 <t tx="bobjack.20080424073616.16"></t>
 <t tx="bobjack.20080424073616.17"></t>
 <t tx="bobjack.20080424073616.18"></t>
@@ -2045,7 +2000,9 @@ for name in (
 </t>
 <t tx="bobjack.20080424195922.96"></t>
 <t tx="bobjack.20080424195922.97"></t>
-<t tx="bobjack.20080427183647.1"></t>
+<t tx="bobjack.20080427183647.1">@
+These menus only apply in this frame they will have no effect on any other frame
+you may open.</t>
 <t tx="bobjack.20080504115316.3">@
 How to Make Multi-State Menu items.
 ==================================
