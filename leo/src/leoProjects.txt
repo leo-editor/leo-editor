@@ -902,8 +902,8 @@ def getArg (self,event,
         if useMinibuffer: c.minibufferWantsFocusNow()
     elif keysym == 'Escape':
         k.keyboardQuit(event)
-    elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
-        if stroke in k.getArgEscapes: k.getArgEscape = stroke
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
         else:
@@ -1577,6 +1577,250 @@ def appendToRecentFiles (self,files):
         self.recentFiles.append(name)
 #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
 #@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20080502114149.2:Temporary fix for php import bug
+#@+node:ekr.20080502114149.3:file
+ok here is short form of the php file for your review; I am trying to
+explain that this is the way Leo imported the file into 2 sections,
+instead of having the complete begining and end php tags on the same
+'section', it separated them.  I hope this helps.
+
+***FIST SECTION BEGINS***
+
+//@+leo-ver=4
+//@+node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@@language php
+//@@tabwidth -4
+//@+others
+//@+node:0_sitedef declarations
+<?php /*Cascade Style Sheet style1.css*/
+?>
+<link href="../stex.css" rel="stylesheet" type="text/css" />
+
+<?php
+/*
+Choice of language for website yes/no
+*/
+$ADD_LANGUAGE_CHOICE = 'yes';
+/*
+If 'Yes' you need to create images based on content/filename.htm
+ex: /imgs/bttns_index.jpg
+$NAV_IMAGES ='yes';
+*/
+
+?>
+
+<?php /* Contact information */
+$domain = "domain.com";
+
+?>
+
+<?php /* Content Script; reads .htm files in Content Directory */
+
+*** FIRST SECTION ENDS => NOTICE THE LAST LINE OF FILE IS A BEGINING <?
+PHP TAG THAT SHOULD BE FIRST LINE ON SECOND SECTION ***
+
+*** SECOND SECTION BEGINS ***
+
+//@-node:0_sitedef declarations
+//@+node:include
+include('language.php');
+
+$mycontentdir = "content"."/".$mylanguage;
+if ($main_page == "") $main_page = "index";
+
+
+$pagename = $main_page;
+$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
+" " . $state . " " . $zip;
+
+$main_page = "" . $main_page . ".htm";
+
+/* if (is_file("$mycontentdir/$main_page")) {
+$open = fopen("$mycontentdir/$main_page", "r");
+$size = filesize("$mycontentdir/$main_page");
+$content = fread($open, $size); */
+//}
+?>
+
+<?php
+/*Echo's Website*/
+function hpo(){
+echo '<div class="hpo">whatever text goes here</a> </div>';
+}
+//@-node:include
+//@-others
+?>
+//@-node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@-leo
+
+*** SECOND SECTION ENDS ***
+#@nonl
+#@-node:ekr.20080502114149.3:file
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    filename = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        c.beginUpdate()
+        try:
+            p.setTnodeText('')
+        finally:
+            c.endUpdate(False)
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # print 'found',e,'in',line1
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070711090122:scanPHPText
+def scanPHPText (self,s,parent,atAuto=False):
+
+    scanner = phpScanner(importCommands=self,atAuto=atAuto)
+    scanner.run(s,parent)
+
+    # if scanner.isPurePHP(s):
+        # scanner.run(s,parent)
+    # else:
+        # fileName = scanner.fileName
+        # if atAuto:
+            # print('seems to be mixed HTML and PHP:',fileName)
+        # else:
+            # g.es_print('seems to be mixed HTML and PHP:',fileName)
+        # scanner.createHeadline(
+            # parent,body=s,headline=fileName)
+#@-node:ekr.20070711090122:scanPHPText
+#@+node:ekr.20070711090052.1:class phpScanner
+class phpScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070711090052.2: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '/*'
+    self.blockCommentDelim2 = '*/'
+    self.lineCommentDelim = '//'
+    self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+
+    self.hasClasses = False
+    self.hasFunctions = True
+
+    self.functionTags = ['function']
+
+    # The valid characters in an id
+    self.chars = list(string.ascii_letters + string.digits)
+    extra = [chr(z) for z in xrange(127,256)]
+    self.chars.extend(extra)
+#@-node:ekr.20070711090052.2: __init__
+#@+node:ekr.20070711094850:isPurePHP
+def isPurePHP (self,s):
+
+    '''Return True if the file begins with <?php and ends with ?>'''
+
+    s = s.strip()
+
+    return (
+        s.startswith('<?') and
+        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
+        s.endswith('?>'))
+
+#@-node:ekr.20070711094850:isPurePHP
+#@+node:ekr.20070711090052.3:Overrides
+# Does not create @first/@last nodes
+#@+node:ekr.20070711090807:startsString skipString
+def startsString(self,s,i):
+    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
+
+def skipString (self,s,i):
+    if g.match(s,i,'"') or g.match(s,i,"'"):
+        return g.skip_string(s,i)
+    else:
+        return g.skip_heredoc_string(s,i)
+#@-node:ekr.20070711090807:startsString skipString
+#@-node:ekr.20070711090052.3:Overrides
+#@-node:ekr.20070711090052.1:class phpScanner
+#@-node:ekr.20080502114149.2:Temporary fix for php import bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py

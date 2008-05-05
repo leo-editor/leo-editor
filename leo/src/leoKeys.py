@@ -2825,8 +2825,8 @@ class keyHandlerClass:
             if useMinibuffer: c.minibufferWantsFocusNow()
         elif keysym == 'Escape':
             k.keyboardQuit(event)
-        elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
-            if stroke in k.getArgEscapes: k.getArgEscape = stroke
+        elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+            if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
             if k.oneCharacterArg:
                 k.arg = event.char
             else:
