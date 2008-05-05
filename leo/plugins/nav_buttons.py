@@ -612,17 +612,49 @@ def init ():
                 self.rt_nav_disabled_image = images.rt_nav_disabled_image
                 self.rt_nav_enabled_image  = images.rt_nav_enabled_image
 
-                self.lt_nav_iconFrame_button = btn = c.frame.addIconButton(
+                useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')
+
+                if useTkFrame:
+                    getButton = c.frame.getIconButton
+                    self.nav_button_frame = bf = Tk.Frame(self.c.frame.top)
+                else:
+                    getButton = c.frame.addIconButton
+
+                self.lt_nav_iconFrame_button = btnl = getButton(
                     image=self.lt_nav_disabled_image,
                     command=c.goPrevVisitedNode)
 
-                btn.bind('<Button-3>', self.rClickLeft)
+                btnl.bind('<Button-3>', self.rClickLeft)
 
-                self.rt_nav_iconFrame_button = btn = c.frame.addIconButton(
+                self.rt_nav_iconFrame_button = btnr = getButton(
                     image=self.rt_nav_disabled_image,
                     command=c.goNextVisitedNode)
 
-                btn.bind('<Button-3>', self.rClickRight)
+                btnr.bind('<Button-3>', self.rClickRight)
+
+                if useTkFrame:
+                    #@        << bind and pack prev/next buttons >>
+                    #@+node:bobjack.20080503151427.5:<< bind and pack prev/next buttons >>
+                    def getbuttonCallbacks():
+
+                        def pressCallback(event, bf=bf):
+                            return bf.leoIconBar.onPress(event)
+
+                        def releaseCallback(event, bf=bf):
+                            return bf.leoIconBar.onRelease(event)             
+
+                        return pressCallback, releaseCallback
+
+                    for btn in (btnl, btnr):
+                        btn.pack(in_=bf, side='left')
+                        press, release = getbuttonCallbacks()
+                        btn.bind('<ButtonPress-1>', press)
+                        btn.bind('<ButtonRelease-1>', release)
+                        btn.leoSubWindow = True
+
+                    self.c.frame.addIconWidget(bf)    
+                    #@-node:bobjack.20080503151427.5:<< bind and pack prev/next buttons >>
+                    #@nl
 
                 # Don't dim the button when it is inactive.
                 for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):
