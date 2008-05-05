@@ -5363,9 +5363,7 @@ class helpCommandsClass (baseEditCommandsClass):
         #@    << define s >>
         #@+node:ekr.20060209082023.1:<< define s >>
         s = '''
-        Important: all minibuffer search commands, with the exception of the isearch (incremental) commands, simply provide a minibuffer interface to Leo's legacy find commands.  This means that all the powerful features of Leo's legacy commands are available to the minibuffer search commands.
-
-        Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcut nodes in leoSettings.leo.
+        Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
 
         Settings
 
@@ -5377,27 +5375,24 @@ class helpCommandsClass (baseEditCommandsClass):
 
         - @bool minibufferSearchesShowFindTab = True
 
-        When True, Leo shows the Find tab when executing most of the commands discussed below.  It's not necessary for it to be visible, but I think it provides good feedback about what search-with-present-options does.  YMMY.  When True, the sequence Control-F, Control-G is one way to show the Find Tab.
+        When True, Leo shows the Find tab when executing most of the commands discussed below.
 
         Basic find commands
 
-        - The open-find-tab command makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
+        - open-find-tab makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
 
-        - The hide-find-tab commands hides the Find tab, but retains all the present settings.
+        - hide-find-tab hides the Find tab, but retains all the present settings.
 
-        - The search-with-present-options command (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default (Control-F) search command.
+        - search-with-present-options (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default search command.
 
-        - The show-search-options command shows the present search options in the status line.  At present, this command also makes the Find tab visible.
+        - show-search-options shows the present search options in the status line.  This command also makes the Find tab visible.
 
-        Search again commands
+        - find-next (F3) is the same as search-with-present-options, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
 
-        - The find-next command (F3) is the same as the search-with-present-options command, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
+        - Similarly, find-previous (F2) repeats the command specified by the Find tab, but in reverse.
 
-        - Similarly, the find-previous command (F2) repeats the command specified by the Find tab,
-          but in reverse.
-
-        - The find-again is the same as the find-next command if a search pattern is not '<find pattern here>'.
-          Otherwise, the find-again is the same as the search-with-present-options command.
+        - find-again is the same as find-next if a search pattern is not '<find pattern here>'.
+          Otherwise, find-again is the same as search-with-present-options.
 
         Setting find options
 
@@ -5407,45 +5402,45 @@ class helpCommandsClass (baseEditCommandsClass):
 
         Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
 
-        - The enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
+        - enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
 
         Search commands that set options as a side effect
 
         The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
 
-        - The search-backward and search-forward commands set the 'Whole Word' checkbox to False.
+        - search-backward and search-forward set the 'Whole Word' checkbox to False.
 
-        - The word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
+        - word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
 
-        - The re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
+        - re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
 
         Find all commands
 
-        - The find-all command prints all matches in the log pane.
+        - find-all prints all matches in the log pane.
 
-        - The clone-find-all command replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
+        - clone-find-all replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
 
         Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
 
         Search and replace commands
 
-        The replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, the search-with-present-options command.
+        - replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, search-with-present-options.
 
-        So the only difference between the replace-string and search-with-present-options commands is that the replace-string command has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
+        So the only difference between replace-string and search-with-present-options is that replace-string has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
 
-        - The change command (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
+        - change (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
 
-        - The change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
+        - change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
 
-        The find-next, change and change-then-find commands can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
+        find-next, change and change-then-find can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
 
-        - The change-all command changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
+        - change-all changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
 
         Incremental search commands
 
         Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
 
-        Coming in Leo 4.4b3: the incremental commands will maintain a list of previous matches.  This allows for
+        Eventually, the incremental commands will maintain a list of previous matches.  This allows for
 
         a) support for backspace and
         b) an incremental-search-again command.
@@ -7269,6 +7264,8 @@ class minibufferFind (baseEditCommandsClass):
 
         h = self.finder ; w = h.find_ctrl
 
+        # g.trace('pattern',pattern)
+
         s = g.toUnicode(pattern,g.app.tkEncoding)
 
         w.delete(0,'end')
@@ -7526,6 +7523,7 @@ class minibufferFind (baseEditCommandsClass):
         k = self.k ; tag = 'search-with-present-options'
         state = k.getState(tag)
 
+        # g.trace('state',state)
         if state == 0:
             self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
