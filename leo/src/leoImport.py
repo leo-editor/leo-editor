@@ -1666,15 +1666,18 @@ class leoImportCommands:
     def scanPHPText (self,s,parent,atAuto=False):
 
         scanner = phpScanner(importCommands=self,atAuto=atAuto)
+        scanner.run(s,parent)
 
-        if scanner.isPurePHP(s):
-            scanner.run(s,parent)
-        else:
-            fileName = scanner.fileName
-            if not atAuto:
-                g.es_print('seems to be mixed HTML and PHP:',fileName)
-            scanner.createHeadline(
-                parent,body=s,headline=fileName)
+        # if scanner.isPurePHP(s):
+            # scanner.run(s,parent)
+        # else:
+            # fileName = scanner.fileName
+            # if atAuto:
+                # print('seems to be mixed HTML and PHP:',fileName)
+            # else:
+                # g.es_print('seems to be mixed HTML and PHP:',fileName)
+            # scanner.createHeadline(
+                # parent,body=s,headline=fileName)
     #@-node:ekr.20070711090122:scanPHPText
     #@+node:ekr.20070703122141.99:scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
@@ -3431,6 +3434,13 @@ class phpScanner (baseScannerClass):
         self.blockCommentDelim2 = '*/'
         self.lineCommentDelim = '//'
         self.lineCommentDelim2 = '#'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+
+        self.hasClasses = False
+        self.hasFunctions = True
+
+        self.functionTags = ['function']
 
         # The valid characters in an id
         self.chars = list(string.ascii_letters + string.digits)
