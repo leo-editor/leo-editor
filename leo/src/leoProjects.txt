@@ -1664,7 +1664,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # New in Leo 4.4.7: honor @path directives.
 
     self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    filename = g.os_path_join(self.default_directory,fileName)
+    fileName = g.os_path_join(self.default_directory,fileName)
     junk,self.fileName = g.os_path_split(fileName)
     self.methodName,self.fileType = g.os_path_splitext(self.fileName)
     self.setEncoding(p=parent,atAuto=atAuto)
@@ -1728,6 +1728,7 @@ try:
     theFile.close()
 except IOError:
     z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
     g.es("can not open", "%s%s" % (z,fileName),color='red')
     leoTest.fail()
     return None
@@ -2031,6 +2032,310 @@ isearch-forward-regexp.'''
 #@-node:ekr.20060209082023.1:<< define s >>
 #@-node:ekr.20060205170335.1:aproposFindCommands
 #@-node:ekr.20080501180847.1:Fixed find bug
+#@+node:ekr.20080405074410.39:Fixed new @auto bug
+@nocolor
+
+Leo's running, so I create a new outline with File->New
+
+Then I save as in a location where foo.py exists.
+
+The I create a node '@auto foo.py'
+
+Then I use File->Read/Write->Read @auto (with that node selected)
+
+Leo says it can't read it.
+
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
+def readAtFileNodes (self,event=None):
+
+    '''Read all @file nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeChangeTree(p)
+        c.fileCommands.readAtFileNodes()
+        u.afterChangeTree(p,'Read @file Nodes',undoData)
+    finally:
+        c.endUpdate()
+#@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+#@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+def readAtFileNodes (self):
+
+    c = self.c ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        self.initReadIvars()
+        c.atFileCommands.readAll(p,partialFlag=True)
+    finally:
+        c.endUpdate()
+
+    # Force an update of the body pane.
+    c.setBodyString(p,p.bodyString())
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False,forceGnx=False):
+
+    """Scan vnodes, looking for @file nodes to read."""
+
+    at = self ; c = at.c
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+    if partialFlag: after = p.nodeAfterTree()
+    else: after = c.nullPosition()
+    while p and not p.equal(after): # Don't use iterator.
+        # g.trace(p.headString())
+        if p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
+                at.forceGnxOnPosition(p)
+            at.read(p,thinFile=True)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_vnodes_iter():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @file nodes in the selected tree")
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = g.os_path_join(at.default_directory,fileName)
+    # g.trace(fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.headString())
+
+    # Delete all children.
+    c.beginUpdate()
+    try:
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    finally:
+        c.endUpdate(False)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        c.beginUpdate()
+        try:
+            p.setTnodeText('')
+        finally:
+            c.endUpdate(False)
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # print 'found',e,'in',line1
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c
+    at.default_directory = None
+    << Set path from @file node >>
+    if at.default_directory:
+        return
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        if theDict.has_key("path"):
+            << handle @path >>
+            return
+
+    << Set current directory >>
+    if not at.default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        at.error("No absolute directory specified anywhere.")
+        at.default_directory = ""
+#@+node:ekr.20041005105605.237:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+# g.trace('at.default_directory',at.default_directory)
+# g.trace('theDir',theDir)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        at.default_directory = theDir
+    else:
+        at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not at.default_directory:
+            at.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.237:<< Set path from @file node >>
+#@+node:ekr.20041005105605.238:<< handle @path >>
+# We set the current director to a path so future writes will go to that directory.
+
+path = theDict["path"]
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = g.os_path_join(base,path)
+
+    if g.os_path_isabs(path):
+        << handle absolute path >>
+    else:
+        at.error("ignoring bad @path: %s" % path)
+else:
+    at.error("ignoring empty @path")
+#@+node:ekr.20041005105605.240:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    at.default_directory = path
+else:
+    at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not at.default_directory:
+        at.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.240:<< handle absolute path >>
+#@-node:ekr.20041005105605.238:<< handle @path >>
+#@+node:ekr.20041005105605.241:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not at.default_directory)
+
+if c.frame :
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    at.default_directory = theDir ; break
+                else:
+                    at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20041005105605.241:<< Set current directory >>
+#@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+#@-node:ekr.20080405074410.39:Fixed new @auto bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
