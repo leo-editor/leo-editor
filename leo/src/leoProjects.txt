@@ -634,6 +634,325 @@ Edward
 #@nonl
 #@-node:ekr.20080506135044.2:Unposted posting about removing .parents list
 #@+node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+def appendToRecentFiles (self,files):
+
+    files = [theFile.strip() for theFile in files]
+
+    # g.trace(files)
+
+    def munge(name):
+        name = name or ''
+        return g.os_path_normpath(name).lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in self.recentFiles[:]:
+            if munge(name) == munge(name2):
+                self.recentFiles.remove(name2)
+
+        self.recentFiles.append(name)
+#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20080408060320.2:Fixed bug in install script
+@nocolor
+
+On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.
+#@nonl
+#@-node:ekr.20080408060320.2:Fixed bug in install script
+#@+node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@+node:ekr.20080501180847.1:Fixed find bug
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
+
+For some reason if you remove the key mapping for the "replace-string"
+entry in myLeoSettings or leoSettings.leo ( replace-string = None)
+then the "search-with-present-options" function (ctrl-f) or the
+"search-forward" function (if mapped) displays the request for a
+search string in the mini-buffer but returns immediately when any key
+is pressed and searches with the "Find:" entry in the "Find" tab.
+
+@color
+#@nonl
+#@+node:ekr.20060125093807:searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    # g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060125093807:searchWithPresentOptions
+#@+node:ekr.20061031131434.128:getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    state = k.getState('getArg')
+    keysym = gui.eventKeysym(event)
+    trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
+    if trace: g.trace(
+        'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
+        'completion', state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocusNow()
+    elif keysym == 'Escape':
+        k.keyboardQuit(event)
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = event.char
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif keysym == 'Tab':
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif keysym == 'BackSpace':
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return 'break'
+#@+node:ekr.20061031131434.129:<< init altX vars >>
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
+#@-node:ekr.20061031131434.129:<< init altX vars >>
+#@-node:ekr.20061031131434.128:getArg
+#@+node:ekr.20060205170335.1:aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    c = self.c
+
+    << define s >>
+
+    # Remove indentation from s: a workaround of a Leo bug.
+    s = g.adjustTripleString(s,c.tab_width)
+
+    if not g.app.unitTesting:
+        g.es_print('',s)
+#@+node:ekr.20060209082023.1:<< define s >>
+s = '''
+Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
+
+Settings
+
+leoSettings.leo now contains several settings related to the Find tab:
+
+- @bool show_only_find_tab_options = True
+
+When True (recommended), the Find tab does not show the 'Find', 'Change', 'Change, Then Find', 'Find All' and 'Change All' buttons.
+
+- @bool minibufferSearchesShowFindTab = True
+
+When True, Leo shows the Find tab when executing most of the commands discussed below.
+
+Basic find commands
+
+- open-find-tab makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
+
+- hide-find-tab hides the Find tab, but retains all the present settings.
+
+- search-with-present-options (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default search command.
+
+- show-search-options shows the present search options in the status line.  This command also makes the Find tab visible.
+
+- find-next (F3) is the same as search-with-present-options, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
+
+- Similarly, find-previous (F2) repeats the command specified by the Find tab, but in reverse.
+
+- find-again is the same as find-next if a search pattern is not '<find pattern here>'.
+  Otherwise, find-again is the same as search-with-present-options.
+
+Setting find options
+
+- Several minibuffer commands toggle the checkboxes and radio buttons in the Find tab, and thus affect the operation of the search-with-present-options command. Some may want to bind these commands to keys. Others, will prefer to toggle options in a mode.
+
+Here are the commands that toggle checkboxes: toggle-find-ignore-case-option, toggle-find-in-body-option, toggle-find-in-headline-option, toggle-find-mark-changes-option, toggle-find-mark-finds-option, toggle-find-regex-option, toggle-find-reverse-option, toggle-find-word-option, and toggle-find-wrap-around-option.
+
+Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
+
+- enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
+
+Search commands that set options as a side effect
+
+The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
+
+- search-backward and search-forward set the 'Whole Word' checkbox to False.
+
+- word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
+
+- re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
+
+Find all commands
+
+- find-all prints all matches in the log pane.
+
+- clone-find-all replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
+
+Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
+
+Search and replace commands
+
+- replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, search-with-present-options.
+
+So the only difference between replace-string and search-with-present-options is that replace-string has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
+
+- change (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
+
+- change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
+
+find-next, change and change-then-find can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
+
+- change-all changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
+
+Incremental search commands
+
+Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
+
+Eventually, the incremental commands will maintain a list of previous matches.  This allows for
+
+a) support for backspace and
+b) an incremental-search-again command.
+
+Furthermore, this list makes it easy to detect the end of a wrapped incremental search.
+
+Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
+isearch-forward-regexp.'''
+#@-node:ekr.20060209082023.1:<< define s >>
+#@-node:ekr.20060205170335.1:aproposFindCommands
+#@-node:ekr.20080501180847.1:Fixed find bug
+#@+node:ekr.20080406075855.1:Fixed find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+
+@nocolor
+#@nonl
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.177:k.doBackSpace
+# Used by getArg and fullCommand.
+
+def doBackSpace (self,defaultCompletionList,completion=True):
+
+    '''Cut back to previous prefix and update prefix.'''
+
+    k = self ; c = k.c ; w = self.widget
+
+    if 0:
+        g.trace('(keyHandler)',g.callers(4))
+        g.trace('completion',completion,
+            len(k.mb_tabListPrefix) > len(k.mb_prefix),
+            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+
+    # Step 1: actually delete the character.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    if ins <= len(k.mb_prefix):
+        # g.trace('at start')
+        return
+    i,j = w.getSelectionRange()
+    if i == j:
+        ins -= 1
+        w.delete(ins)
+        w.setSelectionRange(ins,ins,insert=ins)
+    else:
+        ins = i
+        w.delete(i,j)
+        w.setSelectionRange(i,i,insert=ins)
+
+    # Step 2: compute completions.
+    if not completion: return
+    k.mb_tabListPrefix = w.getAllText()
+    k.computeCompletionList(defaultCompletionList,backspace=True)
+#@-node:ekr.20061031131434.177:k.doBackSpace
+#@-node:ekr.20080406075855.1:Fixed find completion bug
 #@+node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
 @nocolor
 
@@ -1089,389 +1408,6 @@ def gotoCharacter (self,event):
         k.clearState()
 #@-node:ekr.20050929115226:gotoCharacter
 #@-node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
-#@+node:ekr.20080408060320.2:Fixed bug in install script
-@nocolor
-
-On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
-
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-With the change the installation worked.
-#@nonl
-#@-node:ekr.20080408060320.2:Fixed bug in install script
-#@+node:ekr.20080406075855.1:Fixed find completion bug
-@nocolor
-
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@+node:ekr.20061031131434.108:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20061031131434.108:callStateFunction
-#@+node:ekr.20061031131434.177:k.doBackSpace
-# Used by getArg and fullCommand.
-
-def doBackSpace (self,defaultCompletionList,completion=True):
-
-    '''Cut back to previous prefix and update prefix.'''
-
-    k = self ; c = k.c ; w = self.widget
-
-    if 0:
-        g.trace('(keyHandler)',g.callers(4))
-        g.trace('completion',completion,
-            len(k.mb_tabListPrefix) > len(k.mb_prefix),
-            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
-
-    # Step 1: actually delete the character.
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    if ins <= len(k.mb_prefix):
-        # g.trace('at start')
-        return
-    i,j = w.getSelectionRange()
-    if i == j:
-        ins -= 1
-        w.delete(ins)
-        w.setSelectionRange(ins,ins,insert=ins)
-    else:
-        ins = i
-        w.delete(i,j)
-        w.setSelectionRange(i,i,insert=ins)
-
-    # Step 2: compute completions.
-    if not completion: return
-    k.mb_tabListPrefix = w.getAllText()
-    k.computeCompletionList(defaultCompletionList,backspace=True)
-#@-node:ekr.20061031131434.177:k.doBackSpace
-#@-node:ekr.20080406075855.1:Fixed find completion bug
-#@+node:ekr.20080418154703.1:Fixed Tangle bugs
-#@+node:ekr.20031218072017.2062:getPrefs
-# Note: Leo 4.3 does not write these settings to local .leo files.
-# Instead, corresponding settings are contained in leoConfig.leo files.
-
-def getPrefs (self):
-
-    c = self.c
-
-    if self.getOpenTag("<preferences"):
-        return # <preferences/> seen
-
-    table = (
-        ("allow_rich_text",None,None), # Ignored.
-        ("tab_width","tab_width",self.getLong),
-        ("page_width","page_width",self.getLong),
-        ("tangle_bat","tangle_batch_flag",self.getBool),
-        ("untangle_bat","untangle_batch_flag",self.getBool),
-        ("output_doc_chunks","output_doc_flag",self.getBool),
-        ("noweb_flag",None,None), # Ignored.
-        ("extended_noweb_flag",None,None), # Ignored.
-        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
-        ("use_header_flag","use_header_flag",self.getBool))
-
-    done = False
-    while 1:
-        found = False
-        for tag,var,f in table:
-            if self.matchTag("%s=" % tag):
-                if var:
-                    self.getDquote() ; val = f() ; self.getDquote()
-                    setattr(c,var,val)
-                    # g.trace(var,val)
-                else:
-                    self.getDqString()
-                found = True ; break
-        if not found:
-            if self.matchTag("/>"):
-                done = True ; break
-            if self.matchTag(">"):
-                break
-            else: # New in 4.1: ignore all other tags.
-                self.getUnknownTag()
-
-    if not done:
-        while 1:
-            if self.matchTag("<defaultDirectory>"):
-                # New in version 0.16.
-                c.tangle_directory = self.getEscapedString()
-                self.getTag("</defaultDirectory>")
-                if not g.os_path_exists(c.tangle_directory):
-                    g.es("default tangle directory not found:",c.tangle_directory)
-            elif self.matchTag("<TSyntaxMemo_options>"):
-                self.getEscapedString() # ignored
-                self.getTag("</TSyntaxMemo_options>")
-            else: break
-        self.getTag("</preferences>")
-#@+node:ekr.20031218072017.2063:getTargetLanguage
-def getTargetLanguage (self):
-
-    # Must match longer tags before short prefixes.
-    for name in g.app.language_delims_dict.keys():
-        if self.matchTagWordIgnoringCase(name):
-            language = name.replace("/","")
-            # self.getDquote()
-            return language
-
-    return "c" # default
-#@-node:ekr.20031218072017.2063:getTargetLanguage
-#@-node:ekr.20031218072017.2062:getPrefs
-#@+node:ekr.20031218072017.3579:error, pathError, warning
-def error (self,s):
-    self.errors += 1
-    g.es_error(g.translateString(s))
-
-def pathError (self,s):
-    if not self.path_warning_given:
-        self.path_warning_given = True
-        self.error(s)
-
-def warning (self,s):
-    g.es_error(g.translateString(s))
-#@-node:ekr.20031218072017.3579:error, pathError, warning
-#@-node:ekr.20080418154703.1:Fixed Tangle bugs
-#@+node:ekr.20080424061644.1:Fixed recent files bug
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
-
-To reproduce:
-
-Run leo.
-Go to "File->Save as" and save the empty outline template somewhere,
-for example to /tmp/test.leo
-It will appear in "File->Recent files"
-When trying to open it from there, I get the following traceback:
-
----
-Error: 1
-<type 'exceptions.AttributeError'> Exception in Tk callback
- Function: <function recentFilesCallback at 0x8ba8df4> (type: <type
-'function'>)
- Args: ()
-Traceback (innermost last):
- File "/home/shadow/leo/extensions/Pmw/Pmw_1_3/lib/PmwBase.py", line
-1747, in __call__
-   return apply(self.func, args)
- File "/home/shadow/leo/src/leoMenu.py", line 1599, in
-recentFilesCallback
-   c.openRecentFile(name)
- File "/home/shadow/leo/src/leoCommands.py", line 1173, in
-openRecentFile
-   c = frame.c # Switch to the new commander so the "recentfiles2"
-hook doesn't crash.
-<type 'exceptions.AttributeError'>: leoTkinterFrame instance has no
-attribute 'c'
----
-
-leo seems to crash, I hit Ctrl-C to stop it.
-When I run leo again, there is no entry for test.leo in "File->Recent
-files"
-
-Leo 4.4.8 final, build  1.244 , April 6, 2008
-python 2.5.1, Tk 8.4.16, Pmw 1.3
-OS: Linux
-
-This behaviour doesn't hurt me at all, I've found it accidentally.
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.2052:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
-
-    """Create a Leo Frame for the indicated fileName if the file exists."""
-
-    if not fileName or len(fileName) == 0:
-        return False, None
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    # Create a full, normalized, Unicode path name, preserving case.
-    relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
-    # g.trace(relativeFileName,'-->',fileName)
-
-    # If the file is already open just bring its window to the front.
-    theList = app.windowList
-    for frame in theList:
-        if munge(fileName) == munge(frame.c.mFileName):
-            frame.bringToFront()
-            frame.c.setLog()
-            return True, frame
-    if old_c:
-        # New in 4.4: We must read the file *twice*.
-        # The first time sets settings for the later call to c.finishCreate.
-        # g.trace('***** prereading',fileName)
-        c2 = g.app.config.openSettingsFile(fileName)
-        if c2: g.app.config.updateSettings(c2,localFlag=True)
-        g.doHook('open0')
-
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile: return False, None
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
-    assert frame.c == c and c.frame == frame
-    c.isZipped = isZipped
-    frame.log.enable(enableLog)
-    g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    c.beginUpdate()
-    try:
-        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-            c.setLog()
-            app.lockLog()
-            frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-        # Bug fix in 4.4.
-        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        p = c.currentPosition()
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(relativeFileName or fileName)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        assert frame.c == c and c.frame == frame
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.chapterController:
-            c.chapterController.finishCreate()
-        k = c.k
-        if k: k.setInputState(k.unboundKeyAction)
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-    return True, frame
-#@nonl
-#@-node:ekr.20031218072017.2052:g.openWithFileName
-#@+node:ekr.20031218072017.2079:Recent Files submenu & allies
-#@+node:ekr.20031218072017.2080:clearRecentFiles
-def clearRecentFiles (self,event=None):
-
-    """Clear the recent files list, then add the present file."""
-
-    c = self ; f = c.frame ; u = c.undoer
-
-    bunch = u.beforeClearRecentFiles()
-
-    recentFilesMenu = f.menu.getMenu("Recent Files...")
-    f.menu.delete_range(recentFilesMenu,0,len(c.recentFiles))
-
-    c.recentFiles = []
-    g.app.config.recentFiles = [] # New in Leo 4.3.
-    f.menu.createRecentFilesMenuItems()
-    c.updateRecentFiles(c.relativeFileName())
-
-    g.app.config.appendToRecentFiles(c.recentFiles)
-
-    # g.trace(c.recentFiles)
-
-    u.afterClearRecentFiles(bunch)
-
-    # New in Leo 4.4.5: write the file immediately.
-    g.app.config.recentFileMessageWritten = False # Force the write message.
-    g.app.config.writeRecentFilesFile(c)
-#@-node:ekr.20031218072017.2080:clearRecentFiles
-#@+node:ekr.20031218072017.2081:openRecentFile
-def openRecentFile(self,name=None):
-
-    if not name: return
-
-    c = self ; v = c.currentVnode()
-    << Set closeFlag if the only open window is empty >>
-
-    fileName = name
-    if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok and closeFlag and frame != c.frame:
-            g.app.destroyWindow(c.frame) # 12/12/03
-            c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
-            c.setLog() # Sets the log stream for g.es
-
-    g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
-#@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
-@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
-@c
-
-closeFlag = (
-    c.frame.startupWindow and # The window was open on startup
-    not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-#@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2081:openRecentFile
-#@+node:ekr.20031218072017.2083:c.updateRecentFiles
-def updateRecentFiles (self,fileName):
-
-    """Create the RecentFiles menu.  May be called with Null fileName."""
-
-    if g.app.unitTesting: return
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-    def munge2(name):
-        return g.os_path_abspath(g.os_path_join(g.app.loadDir,name or ''))
-
-    # Update the recent files list in all windows.
-    if fileName:
-        compareFileName = munge(fileName)
-        # g.trace(fileName)
-        for frame in g.app.windowList:
-            c = frame.c
-            # Remove all versions of the file name.
-            for name in c.recentFiles:
-                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
-                    c.recentFiles.remove(name)
-            c.recentFiles.insert(0,fileName)
-            # g.trace('adding',fileName)
-            # Recreate the Recent Files menu.
-            frame.menu.createRecentFilesMenuItems()
-    else:
-        for frame in g.app.windowList:
-            frame.menu.createRecentFilesMenuItems()
-#@-node:ekr.20031218072017.2083:c.updateRecentFiles
-#@-node:ekr.20031218072017.2079:Recent Files submenu & allies
-#@-node:ekr.20080424061644.1:Fixed recent files bug
 #@+node:ekr.20080424115643.5:Fixed import PHP bug
 @nocolor
 
@@ -1578,482 +1514,8 @@ def skipString (self,s,i):
 #@-node:ekr.20070711090052.3:Overrides
 #@-node:ekr.20070711090052.1:class phpScanner
 #@-node:ekr.20080424115643.5:Fixed import PHP bug
-#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
-#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-def appendToRecentFiles (self,files):
-
-    files = [theFile.strip() for theFile in files]
-
-    # g.trace(files)
-
-    def munge(name):
-        name = name or ''
-        return g.os_path_normpath(name).lower()
-
-    for name in files:
-        # Remove all variants of name.
-        for name2 in self.recentFiles[:]:
-            if munge(name) == munge(name2):
-                self.recentFiles.remove(name2)
-
-        self.recentFiles.append(name)
-#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
-#@+node:ekr.20080502114149.2:Temporary fix for php import bug
-#@+node:ekr.20080502114149.3:file
-ok here is short form of the php file for your review; I am trying to
-explain that this is the way Leo imported the file into 2 sections,
-instead of having the complete begining and end php tags on the same
-'section', it separated them.  I hope this helps.
-
-***FIST SECTION BEGINS***
-
-//@+leo-ver=4
-//@+node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
-//@@language php
-//@@tabwidth -4
-//@+others
-//@+node:0_sitedef declarations
-<?php /*Cascade Style Sheet style1.css*/
-?>
-<link href="../stex.css" rel="stylesheet" type="text/css" />
-
-<?php
-/*
-Choice of language for website yes/no
-*/
-$ADD_LANGUAGE_CHOICE = 'yes';
-/*
-If 'Yes' you need to create images based on content/filename.htm
-ex: /imgs/bttns_index.jpg
-$NAV_IMAGES ='yes';
-*/
-
-?>
-
-<?php /* Contact information */
-$domain = "domain.com";
-
-?>
-
-<?php /* Content Script; reads .htm files in Content Directory */
-
-*** FIRST SECTION ENDS => NOTICE THE LAST LINE OF FILE IS A BEGINING <?
-PHP TAG THAT SHOULD BE FIRST LINE ON SECOND SECTION ***
-
-*** SECOND SECTION BEGINS ***
-
-//@-node:0_sitedef declarations
-//@+node:include
-include('language.php');
-
-$mycontentdir = "content"."/".$mylanguage;
-if ($main_page == "") $main_page = "index";
-
-
-$pagename = $main_page;
-$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
-" " . $state . " " . $zip;
-
-$main_page = "" . $main_page . ".htm";
-
-/* if (is_file("$mycontentdir/$main_page")) {
-$open = fopen("$mycontentdir/$main_page", "r");
-$size = filesize("$mycontentdir/$main_page");
-$content = fread($open, $size); */
-//}
-?>
-
-<?php
-/*Echo's Website*/
-function hpo(){
-echo '<div class="hpo">whatever text goes here</a> </div>';
-}
-//@-node:include
-//@-others
-?>
-//@-node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
-//@-leo
-
-*** SECOND SECTION ENDS ***
-#@nonl
-#@-node:ekr.20080502114149.3:file
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = g.os_path_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    # g.trace(self.fileName,self.fileType)
-    # All file types except the following just get copied to the parent node.
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        c.beginUpdate()
-        try:
-            p.setBodyString('')
-        finally:
-            c.endUpdate(False)
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    if ext in (".c", ".cpp", ".cxx"):
-        self.scanCText(s,p,atAuto=atAuto)
-    elif ext == '.c#':
-        self.scanCSharpText(s,p,atAuto=atAuto)
-    elif ext == ".el":
-        self.scanElispText(s,p,atAuto=atAuto)
-    elif ext == ".java":
-        self.scanJavaText(s,p,atAuto=atAuto)
-    elif ext == ".js":
-        self.scanJavaScriptText(s,p,atAuto=atAuto)
-    elif ext == ".pas":
-        self.scanPascalText(s,p,atAuto=atAuto)
-    elif ext in (".py", ".pyw"):
-        self.scanPythonText(s,p,atAuto=atAuto)
-    elif ext == ".php":
-        self.scanPHPText(s,p,atAuto=atAuto)
-    elif ext in ('.html','.htm','.xml'):
-        self.scanXmlText(s,p,atAuto=atAuto)
-    else:
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = g.os_path_normpath(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    z = g.choose(atAuto,'@auto ','')
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (z,fileName),color='red')
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # print 'found',e,'in',line1
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20070711090122:scanPHPText
-def scanPHPText (self,s,parent,atAuto=False):
-
-    scanner = phpScanner(importCommands=self,atAuto=atAuto)
-    scanner.run(s,parent)
-
-    # if scanner.isPurePHP(s):
-        # scanner.run(s,parent)
-    # else:
-        # fileName = scanner.fileName
-        # if atAuto:
-            # print('seems to be mixed HTML and PHP:',fileName)
-        # else:
-            # g.es_print('seems to be mixed HTML and PHP:',fileName)
-        # scanner.createHeadline(
-            # parent,body=s,headline=fileName)
-#@-node:ekr.20070711090122:scanPHPText
-#@+node:ekr.20070711090052.1:class phpScanner
-class phpScanner (baseScannerClass):
-
-    @others
-#@+node:ekr.20070711090052.2: __init__
-def __init__ (self,importCommands,atAuto):
-
-    # Init the base class.
-    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
-
-    # Set the parser delims.
-    self.blockCommentDelim1 = '/*'
-    self.blockCommentDelim2 = '*/'
-    self.lineCommentDelim = '//'
-    self.lineCommentDelim2 = '#'
-    self.blockDelim1 = '{'
-    self.blockDelim2 = '}'
-
-    self.hasClasses = False
-    self.hasFunctions = True
-
-    self.functionTags = ['function']
-
-    # The valid characters in an id
-    self.chars = list(string.ascii_letters + string.digits)
-    extra = [chr(z) for z in xrange(127,256)]
-    self.chars.extend(extra)
-#@-node:ekr.20070711090052.2: __init__
-#@+node:ekr.20070711094850:isPurePHP
-def isPurePHP (self,s):
-
-    '''Return True if the file begins with <?php and ends with ?>'''
-
-    s = s.strip()
-
-    return (
-        s.startswith('<?') and
-        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
-        s.endswith('?>'))
-
-#@-node:ekr.20070711094850:isPurePHP
-#@+node:ekr.20070711090052.3:Overrides
-# Does not create @first/@last nodes
-#@+node:ekr.20070711090807:startsString skipString
-def startsString(self,s,i):
-    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
-
-def skipString (self,s,i):
-    if g.match(s,i,'"') or g.match(s,i,"'"):
-        return g.skip_string(s,i)
-    else:
-        return g.skip_heredoc_string(s,i)
-#@-node:ekr.20070711090807:startsString skipString
-#@-node:ekr.20070711090052.3:Overrides
-#@-node:ekr.20070711090052.1:class phpScanner
-#@-node:ekr.20080502114149.2:Temporary fix for php import bug
-#@+node:ekr.20080501180847.1:Fixed find bug
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
-
-For some reason if you remove the key mapping for the "replace-string"
-entry in myLeoSettings or leoSettings.leo ( replace-string = None)
-then the "search-with-present-options" function (ctrl-f) or the
-"search-forward" function (if mapped) displays the request for a
-search string in the mini-buffer but returns immediately when any key
-is pressed and searches with the "Find:" entry in the "Find" tab.
-
-@color
-#@nonl
-#@+node:ekr.20060125093807:searchWithPresentOptions
-def searchWithPresentOptions (self,event):
-
-    k = self.k ; tag = 'search-with-present-options'
-    state = k.getState(tag)
-
-    # g.trace('state',state)
-    if state == 0:
-        self.setupArgs(forward=None,regexp=None,word=None)
-        self.stateZeroHelper(
-            event,tag,'Search: ',self.searchWithPresentOptions,
-            escapes=[self.replaceStringShortcut])
-    elif k.getArgEscape:
-        # Switch to the replace command.
-        k.setState('replace-string',1,self.replaceString)
-        self.replaceString(event=None)
-    else:
-        self.updateFindList(k.arg)
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg)
-#@-node:ekr.20060125093807:searchWithPresentOptions
-#@+node:ekr.20061031131434.128:getArg
-def getArg (self,event,
-    returnKind=None,returnState=None,handler=None,
-    prefix=None,tabList=[],completion=True,oneCharacter=False,
-    stroke=None, # New in 4.4.1.
-    useMinibuffer=True # New in 4.4.1
-):
-
-    '''Accumulate an argument until the user hits return (or control-g).
-    Enter the given return state when done.
-    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
-    '''
-
-    k = self ; c = k.c ; gui  = g.app.gui
-    state = k.getState('getArg')
-    keysym = gui.eventKeysym(event)
-    trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
-    if trace: g.trace(
-        'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
-        'completion', state==0 and completion or state!=0 and k.arg_completion)
-    if state == 0:
-        k.arg = ''
-        << init altX vars >>
-        # Set the states.
-        bodyCtrl = c.frame.body.bodyCtrl
-        c.widgetWantsFocus(bodyCtrl)
-        k.afterGetArgState=returnKind,returnState,handler
-        k.setState('getArg',1,k.getArg)
-        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
-        if useMinibuffer: c.minibufferWantsFocusNow()
-    elif keysym == 'Escape':
-        k.keyboardQuit(event)
-    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
-        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
-        if k.oneCharacterArg:
-            k.arg = event.char
-        else:
-            k.arg = k.getLabel(ignorePrompt=True)
-        kind,n,handler = k.afterGetArgState
-        if kind: k.setState(kind,n,handler)
-        c.frame.log.deleteTab('Completion')
-        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
-        if handler: handler(event)
-    elif keysym == 'Tab':
-        k.doTabCompletion(k.argTabList,k.arg_completion)
-    elif keysym == 'BackSpace':
-        k.doBackSpace(k.argTabList,k.arg_completion)
-        c.minibufferWantsFocus()
-    else:
-        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
-        k.mb_tabList = []
-        k.updateLabel(event)
-        k.mb_tabListPrefix = k.getLabel()
-    return 'break'
-#@+node:ekr.20061031131434.129:<< init altX vars >>
-k.argTabList = tabList and tabList[:] or []
-k.arg_completion = completion
-# g.trace('completion',completion,'tabList',tabList)
-
-k.mb_prefix = prefix or k.getLabel()
-k.mb_prompt = prefix or ''
-k.mb_tabList = []
-
-# Clear the list: any non-tab indicates that a new prefix is in effect.
-k.mb_tabListPrefix = k.getLabel()
-k.oneCharacterArg = oneCharacter
-#@-node:ekr.20061031131434.129:<< init altX vars >>
-#@-node:ekr.20061031131434.128:getArg
-#@+node:ekr.20060205170335.1:aproposFindCommands
-def aproposFindCommands (self, event=None):
-
-    '''Prints a discussion of of Leo's find commands.'''
-
-    c = self.c
-
-    << define s >>
-
-    # Remove indentation from s: a workaround of a Leo bug.
-    s = g.adjustTripleString(s,c.tab_width)
-
-    if not g.app.unitTesting:
-        g.es_print('',s)
-#@+node:ekr.20060209082023.1:<< define s >>
-s = '''
-Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
-
-Settings
-
-leoSettings.leo now contains several settings related to the Find tab:
-
-- @bool show_only_find_tab_options = True
-
-When True (recommended), the Find tab does not show the 'Find', 'Change', 'Change, Then Find', 'Find All' and 'Change All' buttons.
-
-- @bool minibufferSearchesShowFindTab = True
-
-When True, Leo shows the Find tab when executing most of the commands discussed below.
-
-Basic find commands
-
-- open-find-tab makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
-
-- hide-find-tab hides the Find tab, but retains all the present settings.
-
-- search-with-present-options (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default search command.
-
-- show-search-options shows the present search options in the status line.  This command also makes the Find tab visible.
-
-- find-next (F3) is the same as search-with-present-options, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
-
-- Similarly, find-previous (F2) repeats the command specified by the Find tab, but in reverse.
-
-- find-again is the same as find-next if a search pattern is not '<find pattern here>'.
-  Otherwise, find-again is the same as search-with-present-options.
-
-Setting find options
-
-- Several minibuffer commands toggle the checkboxes and radio buttons in the Find tab, and thus affect the operation of the search-with-present-options command. Some may want to bind these commands to keys. Others, will prefer to toggle options in a mode.
-
-Here are the commands that toggle checkboxes: toggle-find-ignore-case-option, toggle-find-in-body-option, toggle-find-in-headline-option, toggle-find-mark-changes-option, toggle-find-mark-finds-option, toggle-find-regex-option, toggle-find-reverse-option, toggle-find-word-option, and toggle-find-wrap-around-option.
-
-Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
-
-- enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
-
-Search commands that set options as a side effect
-
-The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
-
-- search-backward and search-forward set the 'Whole Word' checkbox to False.
-
-- word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
-
-- re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
-
-Find all commands
-
-- find-all prints all matches in the log pane.
-
-- clone-find-all replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
-
-Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
-
-Search and replace commands
-
-- replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, search-with-present-options.
-
-So the only difference between replace-string and search-with-present-options is that replace-string has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
-
-- change (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
-
-- change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
-
-find-next, change and change-then-find can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
-
-- change-all changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
-
-Incremental search commands
-
-Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
-
-Eventually, the incremental commands will maintain a list of previous matches.  This allows for
-
-a) support for backspace and
-b) an incremental-search-again command.
-
-Furthermore, this list makes it easy to detect the end of a wrapped incremental search.
-
-Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
-isearch-forward-regexp.'''
-#@-node:ekr.20060209082023.1:<< define s >>
-#@-node:ekr.20060205170335.1:aproposFindCommands
-#@-node:ekr.20080501180847.1:Fixed find bug
+#@+node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+#@-node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
 #@+node:ekr.20080405074410.39:Fixed new @auto bug
 @nocolor
 
@@ -2357,58 +1819,305 @@ if c.frame :
 #@-node:ekr.20041005105605.241:<< Set current directory >>
 #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
 #@-node:ekr.20080405074410.39:Fixed new @auto bug
-#@+node:ekr.20080506135044.3:Fixed bug: no focus after save-as and save-to commands
-#@-node:ekr.20080506135044.3:Fixed bug: no focus after save-as and save-to commands
-#@+node:ekr.20080506135044.4:Fixed how-many, find-word and goto-character commands
+#@+node:ekr.20080424061644.1:Fixed recent files bug
 @nocolor
 
-find-word
-=========
-This command is supposed to:
+http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
 
-"Put the cursor at the next word (on a line) that starts with a
-character"
+To reproduce:
 
-It does not. You have to type in a whole word to get any result and
-even then
-it only selects the word it does not move the cursor to it.
+Run leo.
+Go to "File->Save as" and save the empty outline template somewhere,
+for example to /tmp/test.leo
+It will appear in "File->Recent files"
+When trying to open it from there, I get the following traceback:
 
+---
+Error: 1
+<type 'exceptions.AttributeError'> Exception in Tk callback
+ Function: <function recentFilesCallback at 0x8ba8df4> (type: <type
+'function'>)
+ Args: ()
+Traceback (innermost last):
+ File "/home/shadow/leo/extensions/Pmw/Pmw_1_3/lib/PmwBase.py", line
+1747, in __call__
+   return apply(self.func, args)
+ File "/home/shadow/leo/src/leoMenu.py", line 1599, in
+recentFilesCallback
+   c.openRecentFile(name)
+ File "/home/shadow/leo/src/leoCommands.py", line 1173, in
+openRecentFile
+   c = frame.c # Switch to the new commander so the "recentfiles2"
+hook doesn't crash.
+<type 'exceptions.AttributeError'>: leoTkinterFrame instance has no
+attribute 'c'
+---
 
-goto-charachter
-==============
-'''Put the cursor at the n'th character of the buffer.'''
+leo seems to crash, I hit Ctrl-C to stop it.
+When I run leo again, there is no entry for test.leo in "File->Recent
+files"
 
-Doesn't do anything.
+Leo 4.4.8 final, build  1.244 , April 6, 2008
+python 2.5.1, Tk 8.4.16, Pmw 1.3
+OS: Linux
+
+This behaviour doesn't hurt me at all, I've found it accidentally.
 
 @color
 #@nonl
-#@-node:ekr.20080506135044.4:Fixed how-many, find-word and goto-character commands
-#@+node:ekr.20080506135044.5:Fixed bug in install script
-@nocolor
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
 
-On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+    """Create a Leo Frame for the indicated fileName if the file exists."""
 
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
+    if not fileName or len(fileName) == 0:
+        return False, None
 
-With the change the installation worked.
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k: k.setInputState(k.unboundKeyAction)
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
 #@nonl
-#@-node:ekr.20080506135044.5:Fixed bug in install script
-#@+node:ekr.20080506135044.6:Fixed find completion bug
-@nocolor
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.2080:clearRecentFiles
+def clearRecentFiles (self,event=None):
 
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@-node:ekr.20080506135044.6:Fixed find completion bug
-#@+node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
-#@-node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+    """Clear the recent files list, then add the present file."""
+
+    c = self ; f = c.frame ; u = c.undoer
+
+    bunch = u.beforeClearRecentFiles()
+
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
+    f.menu.delete_range(recentFilesMenu,0,len(c.recentFiles))
+
+    c.recentFiles = []
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    f.menu.createRecentFilesMenuItems()
+    c.updateRecentFiles(c.relativeFileName())
+
+    g.app.config.appendToRecentFiles(c.recentFiles)
+
+    # g.trace(c.recentFiles)
+
+    u.afterClearRecentFiles(bunch)
+
+    # New in Leo 4.4.5: write the file immediately.
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:ekr.20031218072017.2080:clearRecentFiles
+#@+node:ekr.20031218072017.2081:openRecentFile
+def openRecentFile(self,name=None):
+
+    if not name: return
+
+    c = self ; v = c.currentVnode()
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = name
+    if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok and closeFlag and frame != c.frame:
+            g.app.destroyWindow(c.frame) # 12/12/03
+            c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
+            c.setLog() # Sets the log stream for g.es
+
+    g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
+#@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2081:openRecentFile
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+    def munge2(name):
+        return g.os_path_abspath(g.os_path_join(g.app.loadDir,name or ''))
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@-node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@-node:ekr.20080424061644.1:Fixed recent files bug
+#@+node:ekr.20080418154703.1:Fixed Tangle bugs
+#@+node:ekr.20031218072017.2062:getPrefs
+# Note: Leo 4.3 does not write these settings to local .leo files.
+# Instead, corresponding settings are contained in leoConfig.leo files.
+
+def getPrefs (self):
+
+    c = self.c
+
+    if self.getOpenTag("<preferences"):
+        return # <preferences/> seen
+
+    table = (
+        ("allow_rich_text",None,None), # Ignored.
+        ("tab_width","tab_width",self.getLong),
+        ("page_width","page_width",self.getLong),
+        ("tangle_bat","tangle_batch_flag",self.getBool),
+        ("untangle_bat","untangle_batch_flag",self.getBool),
+        ("output_doc_chunks","output_doc_flag",self.getBool),
+        ("noweb_flag",None,None), # Ignored.
+        ("extended_noweb_flag",None,None), # Ignored.
+        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
+        ("use_header_flag","use_header_flag",self.getBool))
+
+    done = False
+    while 1:
+        found = False
+        for tag,var,f in table:
+            if self.matchTag("%s=" % tag):
+                if var:
+                    self.getDquote() ; val = f() ; self.getDquote()
+                    setattr(c,var,val)
+                    # g.trace(var,val)
+                else:
+                    self.getDqString()
+                found = True ; break
+        if not found:
+            if self.matchTag("/>"):
+                done = True ; break
+            if self.matchTag(">"):
+                break
+            else: # New in 4.1: ignore all other tags.
+                self.getUnknownTag()
+
+    if not done:
+        while 1:
+            if self.matchTag("<defaultDirectory>"):
+                # New in version 0.16.
+                c.tangle_directory = self.getEscapedString()
+                self.getTag("</defaultDirectory>")
+                if not g.os_path_exists(c.tangle_directory):
+                    g.es("default tangle directory not found:",c.tangle_directory)
+            elif self.matchTag("<TSyntaxMemo_options>"):
+                self.getEscapedString() # ignored
+                self.getTag("</TSyntaxMemo_options>")
+            else: break
+        self.getTag("</preferences>")
+#@+node:ekr.20031218072017.2063:getTargetLanguage
+def getTargetLanguage (self):
+
+    # Must match longer tags before short prefixes.
+    for name in g.app.language_delims_dict.keys():
+        if self.matchTagWordIgnoringCase(name):
+            language = name.replace("/","")
+            # self.getDquote()
+            return language
+
+    return "c" # default
+#@-node:ekr.20031218072017.2063:getTargetLanguage
+#@-node:ekr.20031218072017.2062:getPrefs
+#@+node:ekr.20031218072017.3579:error, pathError, warning
+def error (self,s):
+    self.errors += 1
+    g.es_error(g.translateString(s))
+
+def pathError (self,s):
+    if not self.path_warning_given:
+        self.path_warning_given = True
+        self.error(s)
+
+def warning (self,s):
+    g.es_error(g.translateString(s))
+#@-node:ekr.20031218072017.3579:error, pathError, warning
+#@-node:ekr.20080418154703.1:Fixed Tangle bugs
 #@+node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
 # findAll now just creates undo info for clone-find-all for one inserted node.
 #@nonl
@@ -2464,8 +2173,251 @@ q.moveToLastChildOf(found)
 #@-node:ekr.20080506135044.11:<< create a clone of p under the find node >>
 #@-node:ekr.20080506135044.9:findAll
 #@-node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
-#@+node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
-#@-node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@+node:ekr.20080502114149.2:Temporary fix for php import bug
+#@+node:ekr.20080502114149.3:file
+ok here is short form of the php file for your review; I am trying to
+explain that this is the way Leo imported the file into 2 sections,
+instead of having the complete begining and end php tags on the same
+'section', it separated them.  I hope this helps.
+
+***FIST SECTION BEGINS***
+
+//@+leo-ver=4
+//@+node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@@language php
+//@@tabwidth -4
+//@+others
+//@+node:0_sitedef declarations
+<?php /*Cascade Style Sheet style1.css*/
+?>
+<link href="../stex.css" rel="stylesheet" type="text/css" />
+
+<?php
+/*
+Choice of language for website yes/no
+*/
+$ADD_LANGUAGE_CHOICE = 'yes';
+/*
+If 'Yes' you need to create images based on content/filename.htm
+ex: /imgs/bttns_index.jpg
+$NAV_IMAGES ='yes';
+*/
+
+?>
+
+<?php /* Contact information */
+$domain = "domain.com";
+
+?>
+
+<?php /* Content Script; reads .htm files in Content Directory */
+
+*** FIRST SECTION ENDS => NOTICE THE LAST LINE OF FILE IS A BEGINING <?
+PHP TAG THAT SHOULD BE FIRST LINE ON SECOND SECTION ***
+
+*** SECOND SECTION BEGINS ***
+
+//@-node:0_sitedef declarations
+//@+node:include
+include('language.php');
+
+$mycontentdir = "content"."/".$mylanguage;
+if ($main_page == "") $main_page = "index";
+
+
+$pagename = $main_page;
+$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
+" " . $state . " " . $zip;
+
+$main_page = "" . $main_page . ".htm";
+
+/* if (is_file("$mycontentdir/$main_page")) {
+$open = fopen("$mycontentdir/$main_page", "r");
+$size = filesize("$mycontentdir/$main_page");
+$content = fread($open, $size); */
+//}
+?>
+
+<?php
+/*Echo's Website*/
+function hpo(){
+echo '<div class="hpo">whatever text goes here</a> </div>';
+}
+//@-node:include
+//@-others
+?>
+//@-node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@-leo
+
+*** SECOND SECTION ENDS ***
+#@nonl
+#@-node:ekr.20080502114149.3:file
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        c.beginUpdate()
+        try:
+            p.setBodyString('')
+        finally:
+            c.endUpdate(False)
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # print 'found',e,'in',line1
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070711090122:scanPHPText
+def scanPHPText (self,s,parent,atAuto=False):
+
+    scanner = phpScanner(importCommands=self,atAuto=atAuto)
+    scanner.run(s,parent)
+
+    # if scanner.isPurePHP(s):
+        # scanner.run(s,parent)
+    # else:
+        # fileName = scanner.fileName
+        # if atAuto:
+            # print('seems to be mixed HTML and PHP:',fileName)
+        # else:
+            # g.es_print('seems to be mixed HTML and PHP:',fileName)
+        # scanner.createHeadline(
+            # parent,body=s,headline=fileName)
+#@-node:ekr.20070711090122:scanPHPText
+#@+node:ekr.20070711090052.1:class phpScanner
+class phpScanner (baseScannerClass):
+
+    @others
+#@+node:ekr.20070711090052.2: __init__
+def __init__ (self,importCommands,atAuto):
+
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
+
+    # Set the parser delims.
+    self.blockCommentDelim1 = '/*'
+    self.blockCommentDelim2 = '*/'
+    self.lineCommentDelim = '//'
+    self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+
+    self.hasClasses = False
+    self.hasFunctions = True
+
+    self.functionTags = ['function']
+
+    # The valid characters in an id
+    self.chars = list(string.ascii_letters + string.digits)
+    extra = [chr(z) for z in xrange(127,256)]
+    self.chars.extend(extra)
+#@-node:ekr.20070711090052.2: __init__
+#@+node:ekr.20070711094850:isPurePHP
+def isPurePHP (self,s):
+
+    '''Return True if the file begins with <?php and ends with ?>'''
+
+    s = s.strip()
+
+    return (
+        s.startswith('<?') and
+        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
+        s.endswith('?>'))
+
+#@-node:ekr.20070711094850:isPurePHP
+#@+node:ekr.20070711090052.3:Overrides
+# Does not create @first/@last nodes
+#@+node:ekr.20070711090807:startsString skipString
+def startsString(self,s,i):
+    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
+
+def skipString (self,s,i):
+    if g.match(s,i,'"') or g.match(s,i,"'"):
+        return g.skip_string(s,i)
+    else:
+        return g.skip_heredoc_string(s,i)
+#@-node:ekr.20070711090807:startsString skipString
+#@-node:ekr.20070711090052.3:Overrides
+#@-node:ekr.20070711090052.1:class phpScanner
+#@-node:ekr.20080502114149.2:Temporary fix for php import bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080506135044.14:Fixed paste outline
