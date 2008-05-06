@@ -844,6 +844,7 @@ class baseFileCommands:
 
         c.beginUpdate()
         try:
+            self.initReadIvars()
             c.atFileCommands.readAll(p,partialFlag=True)
         finally:
             c.endUpdate()

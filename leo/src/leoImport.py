@@ -789,7 +789,7 @@ class leoImportCommands:
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        filename = g.os_path_join(self.default_directory,fileName)
+        fileName = g.os_path_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -807,6 +807,7 @@ class leoImportCommands:
                 theFile.close()
             except IOError:
                 z = g.choose(atAuto,'@auto ','')
+                # g.trace('c.frame.openDirectory',c.frame.openDirectory)
                 g.es("can not open", "%s%s" % (z,fileName),color='red')
                 leoTest.fail()
                 return None
