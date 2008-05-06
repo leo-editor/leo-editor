@@ -798,7 +798,7 @@ class baseCommands:
                     c.updateRecentFiles(c.mFileName)
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@nonl
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -837,7 +837,7 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
@@ -894,7 +894,7 @@ class baseCommands:
 
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
     def revert (self,event=None):
