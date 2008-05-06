@@ -1682,7 +1682,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
         p = parent.copy()
         c.beginUpdate()
         try:
-            p.setTnodeText('')
+            p.setBodyString('')
         finally:
             c.endUpdate(False)
     else:
@@ -2072,7 +2072,6 @@ def readAtFileNodes (self):
 
     c.beginUpdate()
     try:
-        self.initReadIvars()
         c.atFileCommands.readAll(p,partialFlag=True)
     finally:
         c.endUpdate()
@@ -2183,7 +2182,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
         p = parent.copy()
         c.beginUpdate()
         try:
-            p.setTnodeText('')
+            p.setBodyString('')
         finally:
             c.endUpdate(False)
     else:
@@ -2348,10 +2347,6 @@ def __init__(self,c):
     self.c = c
     self.frame = c.frame
 
-    self.use_new_positions = False
-
-    self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
-
     self.nativeTnodeAttributes = ('tx',)
     self.nativeVnodeAttributes = (
         'a','descendentTnodeUnknownAttributes',
@@ -2374,27 +2369,9 @@ def initIvars(self):
     self.forbiddenTnodes = []
     self.descendentUnknownAttributesDictList = []
     self.ratio = 0.5
-    if self.use_sax:
-        self.currentVnode = None
-        self.rootVnode = None
-    else:
-        self.fileBuffer = None
-        self.fileIndex = 0
-        self.currentVnodeStack = [] # A stack of vnodes giving the current position.
-        self.topVnodeStack     = [] # A stack of vnodes giving the top position.
-        self.topPosition = None
 
-    # regular expression for parsing
-    reVnodeAttributes = "|".join((
-        "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
-        "t=\s*\"([^\"]*)\"",        # group 3
-        "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
-        "tnodeList=\s*\"([^\"]*)\"", # group 5
-        "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
-        "expanded=\s*\"([^\"]*)\"", # group 7
-        "marks=\s*\"([^\"]*)\"", # group 8
-        ">"))
-    self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+    self.currentVnode = None
+    self.rootVnode = None
 
     # For writing
     self.read_only = False
@@ -2402,7 +2379,7 @@ def initIvars(self):
     self.outputFile = None
     self.openDirectory = None
     self.putCount = 0
-    self.topVnode = None
+    # self.topVnode = None
     self.toString = False
     self.usingClipboard = False
     self.currentPosition = None
@@ -4435,11 +4412,12 @@ class saxContentHandler (xml.sax.saxutils.XMLGenerator):
     @others
 #@nonl
 #@+node:ekr.20060919110638.20: __init__ & helpers
-def __init__ (self,c,fileName,silent):
+def __init__ (self,c,fileName,silent,inClipboard):
 
     self.c = c
     self.fileName = fileName
     self.silent = silent
+    self.inClipboard = inClipboard
 
     # Init the base class.
     xml.sax.saxutils.XMLGenerator.__init__(self)
@@ -4455,7 +4433,6 @@ def __init__ (self,c,fileName,silent):
 
     # Semantics...
     self.content = None
-    self.currentNode = None
     self.elementStack = []
     self.errors = 0
     self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -4463,14 +4440,15 @@ def __init__ (self,c,fileName,silent):
     self.node = None
     self.nodeList = [] # List of saxNodeClass objects with the present tnode.
     self.nodeStack = []
-    self.rootNode = None
-    self.topNode = None
+    self.rootNode = None # a sax node.
 #@nonl
 #@+node:ekr.20060919110638.21:<< define dispatch dict >>
 # There is no need for an 'end' method if all info is carried in attributes.
 
 self.dispatchDict = {
+    'change_string':               (None,None),
     'find_panel_settings':         (None,None),
+    'find_string':                 (None,None),
     'globals':                     (self.startGlobals,None),
     'global_log_window_position':  (None,None), # The position of the log window is no longer used.
     'global_window_position':      (self.startWinPos,None),
@@ -4514,13 +4492,13 @@ def attrsToList (self,attrs):
 
     attrs: an Attributes item passed to startElement.'''
 
-    if 1:
+    if 0: # check for non-unicode attributes.
         for name in attrs.getNames():
             val = attrs.getValue(name)
             if type(val) != type(u''):
                 g.trace('Non-unicode attribute',name,val)
 
-    # g.trace(g.listToString([repr() for name in attrs.getNames()]))
+    # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
     return [
         g.Bunch(name=name,val=attrs.getValue(name))
@@ -4610,6 +4588,7 @@ def characters(self,content):
 def endElement(self,name):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         indent = '\t' * (self.level-1) or ''
         print '%s</%s>' % (indent,self.clean(name).strip())
@@ -4617,8 +4596,7 @@ def endElement(self,name):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown end element',name)
     else:
         junk,func = data
         if func:
@@ -4630,8 +4608,8 @@ def endElement(self,name):
 #@+node:ekr.20060919110638.32:endTnode
 def endTnode (self):
 
-    for node in self.nodeList:
-        node.bodyString = ''.join(self.content)
+    for sax_node in self.nodeList:
+        sax_node.bodyString = ''.join(self.content)
 
     self.content = []
 #@nonl
@@ -4653,17 +4631,10 @@ def endVH (self):
 #@nonl
 #@-node:ekr.20060919110638.34:endVH
 #@-node:ekr.20060919110638.31:endElement & helpers
-#@+node:ekr.20060919110638.45:getters
-def getCurrentNode (self):
-    return self.currentNode
-
+#@+node:ekr.20060919110638.45:getRootNode
 def getRootNode (self):
     return self.rootNode
-
-def getTopNode (self):
-    return self.topNode
-#@nonl
-#@-node:ekr.20060919110638.45:getters
+#@-node:ekr.20060919110638.45:getRootNode
 #@+node:ekr.20061004054323:processingInstruction (stylesheet)
 def processingInstruction (self,target,data):
 
@@ -4679,6 +4650,7 @@ def processingInstruction (self,target,data):
 def startElement(self,name,attrs):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         self.printStartElement(name,attrs)
 
@@ -4687,8 +4659,7 @@ def startElement(self,name,attrs):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown start element',name)
     else:
         func,junk = data
         if func:
@@ -4724,7 +4695,8 @@ def startGlobals (self,attrs):
 
         if name == 'body_outline_ratio':
             # self.body_outline_ratio = val
-            self.c.ratio = val
+            if not self.inClipboard:
+                self.c.ratio = val
             # g.trace(name,val)
         elif 0:
             g.trace(name,len(val))
@@ -4752,6 +4724,9 @@ def startVnodes (self,unused_attrs):
 
     # __pychecker__ = '--no-argsused'
 
+    if self.inClipboard:
+        return # No need to do anything to the main window.
+
     c = self.c ; d = self.global_window_position
 
     w = d.get('width',700)
@@ -4771,7 +4746,6 @@ def startVnodes (self,unused_attrs):
     c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
     if not self.silent and not g.unitTesting:
         g.es("reading:",self.fileName)
-#@nonl
 #@-node:ekr.20060919112118:startVnodes
 #@+node:ekr.20060919110638.41:startTnode
 def startTnode (self,attrs):
@@ -4880,8 +4854,9 @@ __repr__ = __str__
 def dump (self):
 
     print
-    print 'node: tnx: %s body: %d %s' % (self.tnx,len(self.bodyString),self.headString)
-    print 'children:',g.listToString([child for child in self.children])
+    print 'node: tnx: %s len(body): %d %s' % (
+        self.tnx,len(self.bodyString),self.headString)
+    print 'children:',g.listToString(self.children)
     print 'attrs:',self.attributes.values()
 #@nonl
 #@-node:ekr.20060919110638.18:node.dump
@@ -4904,9 +4879,15 @@ def es(s,*args,**keys):
     # See Section 5.3.4 (Calls) of the Python reference manual.
     # In other words, the following is about the best that can be done.
     color = keys.get('color')
-    commas = keys.get('commas') ; commas = g.choose(commas=='True',True,False) # default is False
-    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
-    spaces= keys.get('spaces') ; spaces = g.choose(spaces=='False',False,True) # default is True
+    commas = keys.get('commas')
+    commas = g.choose( 
+        commas in (True,'True','true'),True,False)# default is False
+    newline = keys.get('newline')
+    newline = g.choose(
+        newline in (False,'False','false'),False,True)# default is True
+    spaces= keys.get('spaces')
+    spaces = g.choose(
+        spaces in (False,'False','false'),False,True)# default is True
     tabName = keys.get('tabName','Log')
 
         # Default goes to log pane *not* the presently active pane.
@@ -4990,6 +4971,10 @@ def __init__(self,frame,fileName,relativeFileName=None):
     # Init ivars with self.x instead of c.x to keep Pychecker happy
     self.chapterController = None
     self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
     self.isZipped = False # May be set to True by g.openWithFileName.
     self.mFileName = fileName
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -5138,41 +5123,39 @@ if forceWrite or self.usingClipboard:
 #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 # These string catenations are benign because they rarely happen.
 attr = ""
-
 # New in Leo 4.5: support fixed .leo files.
 if not c.fixed:
-    if v.isExpanded(): attr += "E"
+    if v.isExpanded() and v.hasChildren(): attr += "E"
     if v.isMarked():   attr += "M"
     if v.isOrphan():   attr += "O"
 
     # No longer a bottleneck now that we use p.equal rather than p.__cmp__
     # Almost 30% of the entire writing time came from here!!!
-    if not self.use_sax:
-        if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
 
     if attr:
         attrs.append(' a="%s"' % attr)
 
 # Put the archived *current* position in the *root* positions <v> element.
-if self.use_sax and p.equal(self.rootPosition):
+if p == self.rootPosition:
     aList = [str(z) for z in self.currentPosition.archivedPosition()]
     d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
     if not c.fixed:
         d['str_leo_pos'] = ','.join(aList)
     # g.trace(aList,d)
     v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
-
-# Debugging.
-# if v.isAnyAtFileNode():
-    # if hasattr(v.t,"tnodeList"):
-        # g.trace(v.headString(),len(v.t.tnodeList))
-    # else:
-        # g.trace(v.headString(),"no tnodeList")
 
 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
     if isThin:

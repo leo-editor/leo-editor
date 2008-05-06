@@ -2145,22 +2145,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
-<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
-<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
