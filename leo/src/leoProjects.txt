@@ -611,6 +611,28 @@ E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'cr
 #@-node:ekr.20071220081732:pylint report
 #@-node:ekr.20071217134533:Pylint
 #@+node:ekr.20080408060320.4:4.5 a1
+#@+node:ekr.20080506135044.2:Unposted posting about removing .parents list
+@nocolor
+
+Unless I hear a truly convincing reason why I shouldn't, I plan to removed v.parents entirely from the sax-graph world. My reasons are as follows:
+
+1. v.parents is actually used in exactly one place, namely p.setAllAncestorAtFileNodesDirty.  Because this is a position method, the full position stack is available, so the vnodes of all direct parents are available.  This means, in turn, that v.t.vnodeList is available, so at each level all clones of v are also available.
+
+This is only a special case.  In general, given a position, it is possible to *compute* all information about parents.
+
+2. As a result, all the work following work is essentially wasted: initing v.parents during reads, and updating v.parents during moves, clones, insertions, deletions, promotions, demotions, and the corresponding undo/redo for all these operations.
+
+It's not so much that the work is odious: it's not.  It's just that conceptually it is completely unnecessary.  Because the work exists, it must be checked: unit tests written, code added to the check-outline command, etc.  All for nothing.
+
+3. Conceptually, the big aha in the unified node world, and *also* in the graph world, is that the *combination* of positions and nodes is what defines the graph.  In any context containing a position p, the combination of p and p.v.t.children is the minimum needed to get *all* information about the graph.  That being so, the parents list adds nothing. 
+
+4. Continuing with the idea in 3, good things often happen when one eliminates an entire area of complexity.  Not only does eliminating the parents list give us the "simplest thing that could possibly work", there is the as-yet-unexplored possibility of future improvements.  That is, this is not merely an implementation issue--by generalizing and simplifying the data structure we open the door to using that data structure in previously unimagined contexts.
+
+So to repeat, I am very likely to get rid of v.parents. I must rewrite p.setAllAncestorAtFileNodesDirty first, so there is still time to voice any objections.  They had better be good :-)
+
+Edward
+#@nonl
+#@-node:ekr.20080506135044.2:Unposted posting about removing .parents list
 #@+node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
 @nocolor
@@ -2335,7 +2357,240 @@ if c.frame :
 #@-node:ekr.20041005105605.241:<< Set current directory >>
 #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
 #@-node:ekr.20080405074410.39:Fixed new @auto bug
+#@+node:ekr.20080506135044.3:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080506135044.3:Fixed bug: no focus after save-as and save-to commands
+#@+node:ekr.20080506135044.4:Fixed how-many, find-word and goto-character commands
+@nocolor
+
+find-word
+=========
+This command is supposed to:
+
+"Put the cursor at the next word (on a line) that starts with a
+character"
+
+It does not. You have to type in a whole word to get any result and
+even then
+it only selects the word it does not move the cursor to it.
+
+
+goto-charachter
+==============
+'''Put the cursor at the n'th character of the buffer.'''
+
+Doesn't do anything.
+
+@color
+#@nonl
+#@-node:ekr.20080506135044.4:Fixed how-many, find-word and goto-character commands
+#@+node:ekr.20080506135044.5:Fixed bug in install script
+@nocolor
+
+On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.
+#@nonl
+#@-node:ekr.20080506135044.5:Fixed bug in install script
+#@+node:ekr.20080506135044.6:Fixed find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+#@nonl
+#@-node:ekr.20080506135044.6:Fixed find completion bug
+#@+node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+#@-node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+#@+node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
+# findAll now just creates undo info for clone-find-all for one inserted node.
+#@nonl
+#@+node:ekr.20080506135044.9:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.headString())
+            if not clones:
+                undoData = u.beforeInsertNode(c.currentPosition())
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        # u.afterChangeGroup(found,undoType,reportFlag=True) 
+        c.selectPosition(found) # Recomputes root.
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw_now()
+    g.es("found",count,"matches")
+
+#@+node:ekr.20080506135044.10:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20080506135044.10:<< create the found node >>
+#@+node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+#@-node:ekr.20080506135044.9:findAll
+#@-node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
+#@+node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
 #@-node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080506135044.13:Recent graph-world bugs
+#@+node:ekr.20080506135044.14:Fixed paste outline
+#@-node:ekr.20080506135044.14:Fixed paste outline
+#@+node:ekr.20080506135044.15:Fixed two recent node bugs
+@nocolor
+
+1. clone-find-all truncated the outline.
+   The fix was in p.linkAsRoot.
+
+2. The move outline down command skipped nodes.
+   The fix was to p.moveAfter.
+
+3. Added defensive code to p.unlink.
+
+@color
+#@nonl
+#@-node:ekr.20080506135044.15:Fixed two recent node bugs
+#@+node:ekr.20080506135044.16:Fixed bug: Deleting the root didn't select another node
+#@-node:ekr.20080506135044.16:Fixed bug: Deleting the root didn't select another node
+#@+node:ekr.20080506135044.17:The str_leo_pos uA was not being cleared
+#@-node:ekr.20080506135044.17:The str_leo_pos uA was not being cleared
+#@+node:ekr.20080506135044.18:Fixed bug: Moving a clone to the root lost the clone mark
+#@-node:ekr.20080506135044.18:Fixed bug: Moving a clone to the root lost the clone mark
+#@+node:ekr.20080506135044.19:Fixed paste-retaining-clones
+# getLeoOutlineFromClipboard now recreates the tnodesDict as needed.
+#@nonl
+#@-node:ekr.20080506135044.19:Fixed paste-retaining-clones
+#@+node:ekr.20080506135044.20:Rewrote sort code
+#@-node:ekr.20080506135044.20:Rewrote sort code
+#@+node:ekr.20080506135044.21:Rewrote promote/demote code
+#@-node:ekr.20080506135044.21:Rewrote promote/demote code
+#@+node:ekr.20080506135044.22:Fixed undo/redo move
+#@-node:ekr.20080506135044.22:Fixed undo/redo move
+#@+node:ekr.20080506135044.23:Fixed inconsistencies between parents and children arrays
+#@-node:ekr.20080506135044.23:Fixed inconsistencies between parents and children arrays
+#@+node:ekr.20080506135044.24:Rewrote scanForClonedSibs
+#@-node:ekr.20080506135044.24:Rewrote scanForClonedSibs
+#@+node:ekr.20080506135044.25:Fixed bug: ancestors were not being marked dirty properly
+#@-node:ekr.20080506135044.25:Fixed bug: ancestors were not being marked dirty properly
+#@+node:ekr.20080506135044.26:Bug: Undo move crashes
+@nocolor
+
+This was fixed by calling p._adjustPositionBeforeUnlink.
+
+Traceback (most recent call last):
+  File "C:\leo.repo\sax-graph\leo\src\leoCommands.py", line 289, in doCommand
+    val = command(event)
+  File "C:\leo.repo\sax-graph\leo\src\leoUndo.py", line 1736, in undo
+    if u.undoHelper: u.undoHelper()
+  File "C:\leo.repo\sax-graph\leo\src\leoUndo.py", line 1921, in undoMove
+    assert u.newParent_v.t.children[u.newN] == v
+IndexError: list index out of range
+
+#@-node:ekr.20080506135044.26:Bug: Undo move crashes
+#@+node:ekr.20080506135044.27:Bug: Selection gets lost
+# when moving node down into child
+# when expanding node with alt-rtArrow
+
+# This was fixed by calling p._adjustPositionBeforeUnlink.
+#@nonl
+#@-node:ekr.20080506135044.27:Bug: Selection gets lost
+#@+node:ekr.20080506135044.28:Fixed bug involving p._unlink
+#@+node:ekr.20080506135044.29:Posting
+@nocolor
+
+A brief period of testing revealed two, possibly three bugs that must be
+fixed before the sax-graph branch will be usable.  One bug in particular is
+interesting.  Code similar to the following code appears in several places
+in leoNodes.py:
+
+def insertAsNthChild(self,parent):
+    p = self
+    p._unlink()
+    p._linkAsNthChild(parent)
+
+This works in the "linked" world, but it must be modified for the graph
+world.  Indeed, unlinking p can change the position at which p is to be
+linked.  For example, suppose we have:
+
+A
+B
+C
+
+And we wish to move B to the first child of C.  After unlinking B, we will
+have:
+
+A
+C
+
+Notice: C's childIndex has changed from 2 to 1 but it has *not* changed in
+the parent arg to p._linkAsNthChild(parent).  To handle this, Leo will need
+code such as:
+
+def insertAsNthChild(self,parent):
+    p = self
+    p._unlink()
+    parent = p._adjustPositionAfterUnlink(parent)
+    p._linkAsNthChild(parent)
+
+p._adjustPositionAfterUnlink(parent) can adjust the parent position as
+needed **provided** that p._unlink() does *not* change position p, but only
+changes p.v.t.children, p.v.t.parents and p.v.t.vnodeList.  In particular,
+p._adjustPositionAfterUnlink(parent) only needs to compare the stacks of
+positions p and parent in order to adjust parent.  This breaks the circular
+dependency: the position can be adjusted even after the actual links
+(parents, children arrays) have be changed. 
+#@nonl
+#@-node:ekr.20080506135044.29:Posting
+#@-node:ekr.20080506135044.28:Fixed bug involving p._unlink
+#@+node:ekr.20080506135044.30:Moved parents ivar into vnodes
+#@-node:ekr.20080506135044.30:Moved parents ivar into vnodes
+#@+node:ekr.20080506135044.31:Bug: clone-find-all fails check-outline
+#@-node:ekr.20080506135044.31:Bug: clone-find-all fails check-outline
+#@+node:ekr.20080506135044.32:Linking/unlinking all clones into parents list
+#@-node:ekr.20080506135044.32:Linking/unlinking all clones into parents list
+#@+node:ekr.20080506135044.33:Fixed bug: check-outline failed after clone and clone-find-all
+#@-node:ekr.20080506135044.33:Fixed bug: check-outline failed after clone and clone-find-all
+#@+node:ekr.20080506135044.34:Fixed bug: sort did not select a node
+#@-node:ekr.20080506135044.34:Fixed bug: sort did not select a node
+#@+node:ekr.20080506135044.35:Fixed bug in clone (caused undo to fail)
+#@-node:ekr.20080506135044.35:Fixed bug in clone (caused undo to fail)
+#@+node:ekr.20080506135044.36:Fixed bug in createChapterByName
+#@-node:ekr.20080506135044.36:Fixed bug in createChapterByName
+#@-node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -2433,6 +2688,23 @@ def archivedPositionToPosition (self,s):
 #@-node:ekr.20061006104837.1:archivedPositionToPosition
 #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
 #@-node:ekr.20080409111805.2:Set use_sax = True always
+#@+node:ekr.20080506135044.54:Added g.unified_nodes
+@nocolor
+
+- Made t arg optional in vnode ctor.
+
+- Removed the t arg from insertAsX.  Affects these plugins:
+
+wrote:     base64Packager.py
+wrote:     macros.py
+wrote:     table.py
+wrote:     templates.py
+wrote:     xsltWithNodes.py
+
+Search for tnode.
+
+@color
+#@-node:ekr.20080506135044.54:Added g.unified_nodes
 #@-node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
