@@ -1433,6 +1433,9 @@ q.moveToLastChildOf(found)
 #@-node:ekr.20051113110851:<< create a clone of p under the find node >>
 #@-node:ekr.20031218072017.3073:findAll
 #@-node:ekr.20080501090548.2:Greatly increased speed of undo clone-find-all
+#@+node:ekr.20080506084849.58:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080506084849.58:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080421162832.7:Recent graph-world bugs
 #@+node:ekr.20080421083619.3:Fixed paste outline
 #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
@@ -7373,7 +7376,6 @@ def _linkAfter (self,p_after):
 #@-node:ekr.20080416161551.214:p._linkAfter
 #@-node:ekr.20080503055349.5:Fixed bug in createChapterByName
 #@-node:ekr.20080421162832.7:Recent graph-world bugs
-#@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
