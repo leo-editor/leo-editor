@@ -35,199 +35,194 @@ import time
 
 #@+others
 #@+node:ekr.20031218072017.3321:class tnode
-if use_zodb and ZODB:
-    class baseTnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class baseTnode (object):
-        pass
+if not g.unified_nodes:
 
-class tnode (baseTnode):
-    """A class that implements tnodes."""
-    #@    << tnode constants >>
-    #@+node:ekr.20031218072017.3322:<< tnode constants >>
-    dirtyBit    = 0x01
-    richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
-    visitedBit  = 0x04
-    writeBit    = 0x08 # Set: write the tnode.
-    #@-node:ekr.20031218072017.3322:<< tnode constants >>
-    #@nl
-    #@    @+others
-    #@+node:ekr.20031218072017.2006:t.__init__
-    # All params have defaults, so t = tnode() is valid.
-
-    def __init__ (self,bodyString=None,headString=None):
-
-        # To support ZODB the code must set t._p_changed = 1 whenever
-        # t.vnodeList, t.unknownAttributes or any mutable tnode object changes.
-
-        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
-        self.fileIndex = None # The immutable file index for this tnode.
-        self.insertSpot = None # Location of previous insert point.
-        self.scrollBarSpot = None # Previous value of scrollbar position.
-        self.selectionLength = 0 # The length of the selected body text.
-        self.selectionStart = 0 # The start of the selected body text.
-        self.statusBits = 0 # status bits
-
-        # Convert everything to unicode...
-        self.headString = g.toUnicode(headString,g.app.tkEncoding)
-        self.bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
-
-        self.vnodeList = [] # List of all vnodes pointing to this tnode.
-        self._firstChild = None
-    #@nonl
-    #@-node:ekr.20031218072017.2006:t.__init__
-    #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
-    def __repr__ (self):
-
-        return "<tnode %d>" % (id(self))
-
-    __str__ = __repr__
-    #@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
-    #@+node:ekr.20060908205857:t.__hash__ (only for zodb)
     if use_zodb and ZODB:
+        class baseTnode (ZODB.Persistence.Persistent):
+            pass
+    else:
+        class baseTnode (object):
+            pass
 
-        # The only required property is that objects
-        # which compare equal have the same hash value.
+    class tnode (baseTnode):
+        """A class that implements tnodes."""
+        #@        << tnode constants >>
+        #@+node:ekr.20031218072017.3322:<< tnode constants >>
+        dirtyBit    = 0x01
+        richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
+        visitedBit  = 0x04
+        writeBit    = 0x08 # Set: write the tnode.
+        #@-node:ekr.20031218072017.3322:<< tnode constants >>
+        #@nl
+        #@        @+others
+        #@+node:ekr.20031218072017.2006:t.__init__
+        def __init__ (self,bodyString=None,headString='NewHeadline'):
 
-        def __hash__(self):
+            # To support ZODB the code must set t._p_changed = 1 whenever
+            # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
 
-            return hash(g.app.nodeIndices.toString(self.fileIndex))
-    #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
-    #@+node:ekr.20031218072017.3325:Getters
-    #@+node:EKR.20040625161602:getBody
-    def getBody (self):
+            self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+            self.fileIndex = None # The immutable file index for this tnode.
+            self.insertSpot = None # Location of previous insert point.
+            self.scrollBarSpot = None # Previous value of scrollbar position.
+            self.selectionLength = 0 # The length of the selected body text.
+            self.selectionStart = 0 # The start of the selected body text.
+            self.statusBits = 0 # status bits
 
-        return self.bodyString
-    #@-node:EKR.20040625161602:getBody
-    #@+node:ekr.20031218072017.3326:t.hasBody
-    def hasBody (self):
+            # Convert everything to unicode...
+            self._headString = g.toUnicode(headString,g.app.tkEncoding)
+            self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
 
-        '''Return True if this tnode contains body text.'''
+            self.children = [] # List of all children of this node.
+            self.vnodeList = []
+                # List of all vnodes pointing to this tnode.
+                # v is a clone iff len(v.t.vnodeList) > 1.
+        #@nonl
+        #@-node:ekr.20031218072017.2006:t.__init__
+        #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+        def __repr__ (self):
 
-        s = self.bodyString
+            return "<tnode %d>" % (id(self))
 
-        return s and len(s) > 0
-    #@-node:ekr.20031218072017.3326:t.hasBody
-    #@+node:ekr.20031218072017.3327:Status bits
-    #@+node:ekr.20031218072017.3328:isDirty
-    def isDirty (self):
+        __str__ = __repr__
+        #@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+        #@+node:ekr.20060908205857:t.__hash__ (only for zodb)
+        if use_zodb and ZODB:
 
-        return (self.statusBits & self.dirtyBit) != 0
-    #@-node:ekr.20031218072017.3328:isDirty
-    #@+node:ekr.20031218072017.3329:isRichTextBit
-    def isRichTextBit (self):
+            # The only required property is that objects
+            # which compare equal have the same hash value.
 
-        return (self.statusBits & self.richTextBit) != 0
-    #@-node:ekr.20031218072017.3329:isRichTextBit
-    #@+node:ekr.20031218072017.3330:isVisited
-    def isVisited (self):
+            def __hash__(self):
 
-        return (self.statusBits & self.visitedBit) != 0
-    #@-node:ekr.20031218072017.3330:isVisited
-    #@+node:EKR.20040503094727:isWriteBit
-    def isWriteBit (self):
+                return hash(g.app.nodeIndices.toString(self.fileIndex))
+        #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
+        #@+node:ekr.20031218072017.3325:t.Getters
+        #@+node:EKR.20040625161602:t.bodyString
+        def bodyString (self):
 
-        return (self.statusBits & self.writeBit) != 0
-    #@-node:EKR.20040503094727:isWriteBit
-    #@-node:ekr.20031218072017.3327:Status bits
-    #@-node:ekr.20031218072017.3325:Getters
-    #@+node:ekr.20031218072017.3331:Setters
-    #@+node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.1485:setTnodeText
-    # This sets the text in the tnode from the given string.
+            return self._bodyString
 
-    def setTnodeText (self,s,encoding="utf-8"):
+        getBody = bodyString
+        bodyText = bodyString
+        #@-node:EKR.20040625161602:t.bodyString
+        #@+node:ekr.20080429053831.14:t.headString
+        def headString (self):
 
-        """Set the body text of a tnode to the given string."""
+            return self._headString
 
-        s = g.toUnicode(s,encoding,reportErrors=True)
+        headText = headString
+        #@-node:ekr.20080429053831.14:t.headString
+        #@+node:ekr.20031218072017.3326:t.hasBody
+        def hasBody (self):
 
-        # DANGEROUS:  This automatically converts everything when reading files.
+            '''Return True if this tnode contains body text.'''
 
-            # New in Leo 4.4.2: self.c does not exist!
-            # This must be done in the Commands class.
-            # option = self.c.config.trailing_body_newlines
+            s = self._bodyString
 
-            # if option == "one":
-                # s = s.rstrip() + '\n'
-            # elif option == "zero":
-                # s = s.rstrip()
+            return s and len(s) > 0
+        #@-node:ekr.20031218072017.3326:t.hasBody
+        #@+node:ekr.20031218072017.3327:t.Status bits
+        #@+node:ekr.20031218072017.3328:isDirty
+        def isDirty (self):
 
-        self.bodyString = s
+            return (self.statusBits & self.dirtyBit) != 0
+        #@-node:ekr.20031218072017.3328:isDirty
+        #@+node:ekr.20031218072017.3329:isRichTextBit
+        def isRichTextBit (self):
 
-        # g.trace(len(s),g.callers())
-    #@-node:ekr.20031218072017.1485:setTnodeText
-    #@+node:ekr.20031218072017.1486:setSelection
-    def setSelection (self,start,length):
+            return (self.statusBits & self.richTextBit) != 0
+        #@-node:ekr.20031218072017.3329:isRichTextBit
+        #@+node:ekr.20031218072017.3330:isVisited
+        def isVisited (self):
 
-        self.selectionStart = start
-        self.selectionLength = length
-    #@-node:ekr.20031218072017.1486:setSelection
-    #@-node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.3332:Status bits
-    #@+node:ekr.20031218072017.3333:clearDirty
-    def clearDirty (self):
+            return (self.statusBits & self.visitedBit) != 0
+        #@-node:ekr.20031218072017.3330:isVisited
+        #@+node:EKR.20040503094727:isWriteBit
+        def isWriteBit (self):
 
-        self.statusBits &= ~ self.dirtyBit
-    #@-node:ekr.20031218072017.3333:clearDirty
-    #@+node:ekr.20031218072017.3334:clearRichTextBit
-    def clearRichTextBit (self):
+            return (self.statusBits & self.writeBit) != 0
+        #@-node:EKR.20040503094727:isWriteBit
+        #@-node:ekr.20031218072017.3327:t.Status bits
+        #@-node:ekr.20031218072017.3325:t.Getters
+        #@+node:ekr.20031218072017.3331:t.Setters
+        #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+        def setBodyString (self,s,encoding="utf-8"):
 
-        self.statusBits &= ~ self.richTextBit
-    #@-node:ekr.20031218072017.3334:clearRichTextBit
-    #@+node:ekr.20031218072017.3335:clearVisited
-    def clearVisited (self):
+            t = self
+            t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
 
-        self.statusBits &= ~ self.visitedBit
-    #@-node:ekr.20031218072017.3335:clearVisited
-    #@+node:EKR.20040503093844:clearWriteBit
-    def clearWriteBit (self):
+        initBodyString = setBodyString
+        setTnodeText = setBodyString
 
-        self.statusBits &= ~ self.writeBit
-    #@-node:EKR.20040503093844:clearWriteBit
-    #@+node:ekr.20031218072017.3336:setDirty
-    def setDirty (self):
+        def setHeadString (self,s,encoding="utf-8"):
 
-        self.statusBits |= self.dirtyBit
-    #@-node:ekr.20031218072017.3336:setDirty
-    #@+node:ekr.20031218072017.3337:setRichTextBit
-    def setRichTextBit (self):
+            t = self
+            s = g.toUnicode(s,encoding,reportErrors=True)
+            t._headString = s
 
-        self.statusBits |= self.richTextBit
-    #@-node:ekr.20031218072017.3337:setRichTextBit
-    #@+node:ekr.20031218072017.3338:setVisited
-    def setVisited (self):
+        initHeadString = setHeadString
 
-        self.statusBits |= self.visitedBit
-    #@-node:ekr.20031218072017.3338:setVisited
-    #@+node:EKR.20040503094727.1:setWriteBit
-    def setWriteBit (self):
+        #@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+        #@+node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+        def setCloneIndex (self, index):
 
-        self.statusBits |= self.writeBit
-    #@-node:EKR.20040503094727.1:setWriteBit
-    #@-node:ekr.20031218072017.3332:Status bits
-    #@+node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
-    def setCloneIndex (self, index):
+            self.cloneIndex = index
+        #@-node:ekr.20031218072017.3339:t.setCloneIndex (used in 3.x)
+        #@+node:ekr.20031218072017.3340:t.setFileIndex
+        def setFileIndex (self, index):
 
-        self.cloneIndex = index
-    #@-node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
-    #@+node:ekr.20031218072017.3340:setFileIndex
-    def setFileIndex (self, index):
+            self.fileIndex = index
+        #@-node:ekr.20031218072017.3340:t.setFileIndex
+        #@+node:ekr.20031218072017.1486:t.setSelection
+        def setSelection (self,start,length):
 
-        self.fileIndex = index
-    #@-node:ekr.20031218072017.3340:setFileIndex
-    #@+node:ekr.20050418101546:t.setHeadString (new in 4.3)
-    def setHeadString (self,s,encoding="utf-8"):
+            self.selectionStart = start
+            self.selectionLength = length
+        #@-node:ekr.20031218072017.1486:t.setSelection
+        #@+node:ekr.20031218072017.3332:t.Status bits
+        #@+node:ekr.20031218072017.3333:clearDirty
+        def clearDirty (self):
 
-        t = self
+            self.statusBits &= ~ self.dirtyBit
+        #@-node:ekr.20031218072017.3333:clearDirty
+        #@+node:ekr.20031218072017.3334:clearRichTextBit
+        def clearRichTextBit (self):
 
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        t.headString = s
-    #@-node:ekr.20050418101546:t.setHeadString (new in 4.3)
-    #@-node:ekr.20031218072017.3331:Setters
-    #@-others
-#@nonl
+            self.statusBits &= ~ self.richTextBit
+        #@-node:ekr.20031218072017.3334:clearRichTextBit
+        #@+node:ekr.20031218072017.3335:clearVisited
+        def clearVisited (self):
+
+            self.statusBits &= ~ self.visitedBit
+        #@-node:ekr.20031218072017.3335:clearVisited
+        #@+node:EKR.20040503093844:clearWriteBit
+        def clearWriteBit (self):
+
+            self.statusBits &= ~ self.writeBit
+        #@-node:EKR.20040503093844:clearWriteBit
+        #@+node:ekr.20031218072017.3336:setDirty
+        def setDirty (self):
+
+            self.statusBits |= self.dirtyBit
+        #@-node:ekr.20031218072017.3336:setDirty
+        #@+node:ekr.20031218072017.3337:setRichTextBit
+        def setRichTextBit (self):
+
+            self.statusBits |= self.richTextBit
+        #@-node:ekr.20031218072017.3337:setRichTextBit
+        #@+node:ekr.20031218072017.3338:setVisited
+        def setVisited (self):
+
+            self.statusBits |= self.visitedBit
+        #@-node:ekr.20031218072017.3338:setVisited
+        #@+node:EKR.20040503094727.1:setWriteBit
+        def setWriteBit (self):
+
+            self.statusBits |= self.writeBit
+        #@-node:EKR.20040503094727.1:setWriteBit
+        #@-node:ekr.20031218072017.3332:t.Status bits
+        #@-node:ekr.20031218072017.3331:t.Setters
+        #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
 if use_zodb and ZODB:
@@ -244,8 +239,7 @@ class vnode (baseVnode):
 
     # Archived...
     clonedBit   = 0x01 # True: vnode has clone mark.
-
-    # not used = 0x02
+    # unused      0x02
     expandedBit = 0x04 # True: vnode is expanded.
     markedBit   = 0x08 # True: vnode is marked
     orphanBit   = 0x10 # True: vnode saved in .leo file, not derived file.
@@ -253,34 +247,57 @@ class vnode (baseVnode):
     topBit      = 0x40 # True: vnode was top vnode when saved.
 
     # Not archived...
-    dirtyBit    = 0x060
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
+
+    if g.unified_nodes:
+        dirtyBit    = 0x200
+        writeBit    = 0x400
     #@-node:ekr.20031218072017.951:<< vnode constants >>
     #@nl
     #@    @+others
-    #@+node:ekr.20031218072017.3342:Birth & death
-    #@+node:ekr.20031218072017.3343:v.__cmp__ (not used)
-    if 0: # not used
-        def __cmp__(self,other):
-
-            g.trace(self,other)
-            return not (self is other) # Must return 0, 1 or -1
-    #@-node:ekr.20031218072017.3343:v.__cmp__ (not used)
+    #@+node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3344:v.__init__
-    def __init__ (self,t):
+    def __init__ (self,context,t=None):
 
-        assert(t)
+        if g.unified_nodes:
+            assert t is None
+        elif t is None:
+            t = tnode()
 
         # To support ZODB the code must set v._p_changed = 1 whenever
         # v.unknownAttributes or any mutable vnode object changes.
 
+        self.context = context # The context containing context.hiddenRootNode.
+            # Required for trees, so we can compute top-level siblings.
+            # It is named .context rather than .c to emphasize its limited usage.
+
         self.iconVal = 0
-        self.t = t # The tnode.
+        self.parents = [] # List of all parents of this node.
+            # This list will have 1 member unless the parent node is a clone.
+            # In particular, cloned nodes do *not* share parents.
         self.statusBits = 0 # status bits
 
-        # Structure links.
-        self._parent = self._next = self._back = None
+        if g.unified_nodes: # vnodes contain all tnode info.
+            self.t = self 
+            self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+            self.fileIndex = None # The immutable file index for this tnode.
+            self.insertSpot = None # Location of previous insert point.
+            self.scrollBarSpot = None # Previous value of scrollbar position.
+            self.selectionLength = 0 # The length of the selected body text.
+            self.selectionStart = 0 # The start of the selected body text.
+
+            # Convert everything to unicode...
+            self._headString = u''
+            self._bodyString = u''
+
+            self.children = [] # List of all children of this node.
+            self.vnodeList = []
+                # List of all vnodes pointing to this tnode.
+                # v is a clone iff len(v.vnodeList) > 1.
+        else:
+            self.t = t # The tnode.
+    #@nonl
     #@-node:ekr.20031218072017.3344:v.__init__
     #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
     def __repr__ (self):
@@ -305,17 +322,14 @@ class vnode (baseVnode):
         else:
             print "self    ",v.dumpLink(v)
             print "len(vnodeList)",len(v.t.vnodeList)
-
-        print "_back   ",v.dumpLink(v._back)
-        print "_next   ",v.dumpLink(v._next)
-        print "_parent ",v.dumpLink(v._parent)
-        print "t._child",v.dumpLink(v.t._firstChild)
+            print 'len(parents)',len(v.parents)
+            print 'len(children)',len(v.t.children)
 
         if 1:
             print "t",v.dumpLink(v.t)
-            print "vnodeList"
-            for v in v.t.vnodeList:
-                print v
+            print "vnodeList", g.listToString(v.t.vnodeList)
+            print 'parents',g.listToString(v.parents)
+            print 'children',g.listToString(v.t.children)
     #@-node:ekr.20040312145256:v.dump
     #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
@@ -323,9 +337,9 @@ class vnode (baseVnode):
             return self.t.__hash__()
     #@nonl
     #@-node:ekr.20060910100316:v.__hash__ (only for zodb)
-    #@-node:ekr.20031218072017.3342:Birth & death
+    #@-node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3346:v.Comparisons
-    #@+node:ekr.20040705201018:v.findAtFileName (new in 4.2 b3)
+    #@+node:ekr.20040705201018:v.findAtFileName
     def findAtFileName (self,names):
 
         """Return the name following one of the names in nameList.
@@ -344,7 +358,7 @@ class vnode (baseVnode):
             return name
         else:
             return ""
-    #@-node:ekr.20040705201018:v.findAtFileName (new in 4.2 b3)
+    #@-node:ekr.20040705201018:v.findAtFileName
     #@+node:ekr.20031218072017.3350:anyAtFileNodeName
     def anyAtFileNodeName (self):
 
@@ -401,7 +415,7 @@ class vnode (baseVnode):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""
 
-        flag, i = g.is_special(self.t.bodyString,0,"@all")
+        flag, i = g.is_special(self.t._bodyString,0,"@all")
         return flag
     #@-node:EKR.20040430152000:isAtAllNode
     #@+node:ekr.20040326031436:isAnyAtFileNode
@@ -444,7 +458,7 @@ class vnode (baseVnode):
 
         """Returns True if the receiver contains @ignore in its body at the start of a line."""
 
-        flag, i = g.is_special(self.t.bodyString, 0, "@ignore")
+        flag, i = g.is_special(self.t._bodyString, 0, "@ignore")
         return flag
     #@-node:ekr.20031218072017.3351:isAtIgnoreNode
     #@+node:ekr.20031218072017.3352:isAtOthersNode
@@ -452,7 +466,7 @@ class vnode (baseVnode):
 
         """Returns True if the receiver contains @others in its body at the start of a line."""
 
-        flag, i = g.is_special(self.t.bodyString,0,"@others")
+        flag, i = g.is_special(self.t._bodyString,0,"@others")
         return flag
     #@-node:ekr.20031218072017.3352:isAtOthersNode
     #@+node:ekr.20031218072017.3353:matchHeadline
@@ -473,160 +487,62 @@ class vnode (baseVnode):
         return h.startswith(pattern)
     #@-node:ekr.20031218072017.3353:matchHeadline
     #@-node:ekr.20031218072017.3346:v.Comparisons
-    #@+node:ekr.20031218072017.3359:Getters (vnode)
-    #@+node:ekr.20040306214240:Tree Traversal getters
-    #@+node:ekr.20031218072017.3406:v.back
-    # Compatibility routine for scripts
+    #@+node:ekr.20031218072017.3359:v.Getters
+    #@+node:ekr.20031218072017.3378:v.bodyString
+    def bodyString (self):
 
-    def back (self):
+        # This message should never be printed and we want to avoid crashing here!
+        if not g.isUnicode(self.t._bodyString):
+            s = "v.bodyString: Leo internal error: not unicode:" + repr(self.t._bodyString)
+            g.es_print('',s,color="red")
 
-        return self._back
-    #@-node:ekr.20031218072017.3406:v.back
-    #@+node:ekr.20031218072017.3409:v.next
-    # Compatibility routine for scripts
-    # Used by p.findAllPotentiallyDirtyNodes.
+        # Make _sure_ we return a unicode string.
+        return g.toUnicode(self.t._bodyString,g.app.tkEncoding)
 
-    def next (self):
-
-        return self._next
-    #@-node:ekr.20031218072017.3409:v.next
-    #@-node:ekr.20040306214240:Tree Traversal getters
-    #@+node:ekr.20031218072017.3360:Children
-    #@+node:ekr.20040303212445:v.childIndex
-    def childIndex(self):
-
-        v = self
-
-        if not v._back:
-            return 0
-
-        n = 0 ; v = v._back
-        while v:
-            n += 1
-            v = v._back
-        return n
-    #@-node:ekr.20040303212445:v.childIndex
+    getBody = bodyString
+    #@nonl
+    #@-node:ekr.20031218072017.3378:v.bodyString
+    #@+node:ekr.20031218072017.3360:v.Children
     #@+node:ekr.20031218072017.3362:v.firstChild
     def firstChild (self):
 
-        return self.t._firstChild
+        v = self
+        return v.t.children and v.t.children[0]
     #@-node:ekr.20031218072017.3362:v.firstChild
     #@+node:ekr.20040307085922:v.hasChildren & hasFirstChild
     def hasChildren (self):
 
         v = self
-        return v.firstChild()
+        return len(v.t.children) > 0
 
     hasFirstChild = hasChildren
     #@-node:ekr.20040307085922:v.hasChildren & hasFirstChild
     #@+node:ekr.20031218072017.3364:v.lastChild
     def lastChild (self):
 
-        child = self.firstChild()
-        while child and child.next():
-            child = child.next()
-        return child
+        v = self
+        return v.t.children and v.t.children[-1] or None
     #@-node:ekr.20031218072017.3364:v.lastChild
     #@+node:ekr.20031218072017.3365:v.nthChild
     # childIndex and nthChild are zero-based.
 
     def nthChild (self, n):
 
-        child = self.firstChild()
-        if not child: return None
-        while n > 0 and child:
-            n -= 1
-            child = child.next()
-        return child
+        v = self
+
+        if 0 <= n < len(v.t.children):
+            return v.t.children[n]
+        else:
+            return None
     #@-node:ekr.20031218072017.3365:v.nthChild
-    #@+node:ekr.20031218072017.3366:v.numberOfChildren (n)
+    #@+node:ekr.20031218072017.3366:v.numberOfChildren
     def numberOfChildren (self):
 
-        n = 0
-        child = self.firstChild()
-        while child:
-            n += 1
-            child = child.next()
-        return n
-    #@-node:ekr.20031218072017.3366:v.numberOfChildren (n)
-    #@-node:ekr.20031218072017.3360:Children
-    #@+node:ekr.20031218072017.3367:Status Bits
-    #@+node:ekr.20031218072017.3368:v.isCloned (4.2)
-    def isCloned (self):
-
-        return len(self.t.vnodeList) > 1
-    #@-node:ekr.20031218072017.3368:v.isCloned (4.2)
-    #@+node:ekr.20031218072017.3369:isDirty
-    def isDirty (self):
-
-        return self.t.isDirty()
-    #@-node:ekr.20031218072017.3369:isDirty
-    #@+node:ekr.20031218072017.3370:isExpanded
-    def isExpanded (self):
-
-        return ( self.statusBits & self.expandedBit ) != 0
-    #@-node:ekr.20031218072017.3370:isExpanded
-    #@+node:ekr.20031218072017.3371:isMarked
-    def isMarked (self):
-
-        return ( self.statusBits & vnode.markedBit ) != 0
-    #@-node:ekr.20031218072017.3371:isMarked
-    #@+node:ekr.20031218072017.3372:isOrphan
-    def isOrphan (self):
-
-        return ( self.statusBits & vnode.orphanBit ) != 0
-    #@-node:ekr.20031218072017.3372:isOrphan
-    #@+node:ekr.20031218072017.3373:isSelected
-    def isSelected (self):
-
-        return ( self.statusBits & vnode.selectedBit ) != 0
-    #@-node:ekr.20031218072017.3373:isSelected
-    #@+node:ekr.20031218072017.3374:isTopBitSet
-    def isTopBitSet (self):
-
-        return ( self.statusBits & self.topBit ) != 0
-    #@-node:ekr.20031218072017.3374:isTopBitSet
-    #@+node:ekr.20031218072017.3376:isVisited
-    def isVisited (self):
-
-        return ( self.statusBits & vnode.visitedBit ) != 0
-    #@-node:ekr.20031218072017.3376:isVisited
-    #@+node:ekr.20031218072017.3377:status
-    def status (self):
-
-        return self.statusBits
-    #@-node:ekr.20031218072017.3377:status
-    #@-node:ekr.20031218072017.3367:Status Bits
-    #@+node:ekr.20031218072017.3378:v.bodyString
-    def bodyString (self):
-
-        # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self.t.bodyString):
-            s = "v.bodyString: Leo internal error: not unicode:" + repr(self.t.bodyString)
-            g.es_print('',s,color="red")
-
-        # Make _sure_ we return a unicode string.
-        return g.toUnicode(self.t.bodyString,g.app.tkEncoding)
-    #@-node:ekr.20031218072017.3378:v.bodyString
-    #@+node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
-    def headString (self):
-
-        """Return the headline string."""
-
-        # This message should never be printed and we want to avoid crashing here!
-        if not g.isUnicode(self.t.headString):
-            s = "Leo internal error: not unicode:" + repr(self.t.headString)
-            g.es_print('',s,color="red")
-
-        # Make _sure_ we return a unicode string.
-        return g.toUnicode(self.t.headString,g.app.tkEncoding)
-
-    def cleanHeadString (self):
-
-        s = self.headString()
-        return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
-    #@-node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
-    #@+node:ekr.20040323100443:v.directParents (new method in 4.2)
+        v = self
+        return len(v.t.children)
+    #@-node:ekr.20031218072017.3366:v.numberOfChildren
+    #@-node:ekr.20031218072017.3360:v.Children
+    #@+node:ekr.20040323100443:v.directParents
     def directParents (self):
 
         """(New in 4.2) Return a list of all direct parent vnodes of a vnode.
@@ -634,185 +550,126 @@ class vnode (baseVnode):
         This is NOT the same as the list of ancestors of the vnode."""
 
         v = self
+        return v.parents
+    #@-node:ekr.20040323100443:v.directParents
+    #@+node:ekr.20080429053831.6:v.hasBody
+    def hasBody (self):
 
-        if v._parent:
-            return v._parent.t.vnodeList
-        else:
-            return []
-    #@-node:ekr.20040323100443:v.directParents (new method in 4.2)
-    #@-node:ekr.20031218072017.3359:Getters (vnode)
-    #@+node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
-    # These remain in 4.2: the file read logic calls these before creating positions.
-    #@+node:ekr.20060913091805.1:v.detach
-    def detach (self):
+        '''Return True if this tnode contains body text.'''
 
-        '''Return a standalone copy of a vnode,
-        detached from all other nodes and with a new tnode.'''
+        s = self.t._bodyString
 
-        v = self
+        return s and len(s) > 0
+    #@-node:ekr.20080429053831.6:v.hasBody
+    #@+node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
+    def headString (self):
 
-        # Create a completely separate tnode.
-        t2 = tnode(
-            bodyString=v.bodyString(),
-            headString=v.headString())
+        """Return the headline string."""
 
-        return vnode(t2)
-    #@nonl
-    #@-node:ekr.20060913091805.1:v.detach
-    #@+node:ekr.20031218072017.3419:v.insertAfter
-    def insertAfter (self,t=None):
+        # This message should never be printed and we want to avoid crashing here!
+        if not g.isUnicode(self.t._headString):
+            s = "Leo internal error: not unicode:" + repr(self.t._headString)
+            g.es_print('',s,color="red")
 
-        """Inserts a new vnode after self"""
+        # Make _sure_ we return a unicode string.
+        return g.toUnicode(self.t._headString,g.app.tkEncoding)
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+    def cleanHeadString (self):
 
-        v = vnode(t)
-        v.linkAfter(self)
+        s = self.t._headString
+        return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
+    #@-node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
+    #@+node:ekr.20031218072017.3367:v.Status Bits
+    #@+node:ekr.20031218072017.3368:v.isCloned
+    def isCloned (self):
 
-        return v
-    #@-node:ekr.20031218072017.3419:v.insertAfter
-    #@+node:ekr.20031218072017.3421:v.insertAsNthChild
-    def insertAsNthChild (self,n,t=None):
+        return len(self.t.vnodeList) > 1
+    #@-node:ekr.20031218072017.3368:v.isCloned
+    #@+node:ekr.20031218072017.3369:v.isDirty
+    def isDirty (self):
 
-        """Inserts a new node as the the nth child of the receiver.
-        The receiver must have at least n-1 children"""
+        return (self.t.statusBits & self.t.dirtyBit) != 0
+    #@-node:ekr.20031218072017.3369:v.isDirty
+    #@+node:ekr.20031218072017.3370:v.isExpanded
+    def isExpanded (self):
 
-        if not t:
-            t = tnode(headString="NewHeadline")
+        return ( self.statusBits & self.expandedBit ) != 0
+    #@-node:ekr.20031218072017.3370:v.isExpanded
+    #@+node:ekr.20031218072017.3371:v.isMarked
+    def isMarked (self):
 
-        v = vnode(t)
-        v.linkAsNthChild(self,n)
+        return ( self.statusBits & vnode.markedBit ) != 0
+    #@-node:ekr.20031218072017.3371:v.isMarked
+    #@+node:ekr.20031218072017.3372:v.isOrphan
+    def isOrphan (self):
 
-        return v
-    #@-node:ekr.20031218072017.3421:v.insertAsNthChild
-    #@+node:ekr.20031218072017.2355:v.linkAfter
-    def linkAfter (self,v):
+        return ( self.statusBits & vnode.orphanBit ) != 0
+    #@-node:ekr.20031218072017.3372:v.isOrphan
+    #@+node:ekr.20031218072017.3373:v.isSelected
+    def isSelected (self):
 
-        """Link self after v."""
+        return ( self.statusBits & vnode.selectedBit ) != 0
+    #@-node:ekr.20031218072017.3373:v.isSelected
+    #@+node:ekr.20031218072017.3374:v.isTopBitSet
+    def isTopBitSet (self):
 
-        self._parent = v._parent
-        self._back = v
-        self._next = v._next
-        v._next = self
-        if self._next:
-            self._next._back = self
-    #@-node:ekr.20031218072017.2355:v.linkAfter
-    #@+node:ekr.20031218072017.3425:v.linkAsNthChild
-    def linkAsNthChild (self,pv,n):
+        return ( self.statusBits & self.topBit ) != 0
+    #@-node:ekr.20031218072017.3374:v.isTopBitSet
+    #@+node:ekr.20031218072017.3376:v.isVisited
+    def isVisited (self):
 
-        """Links self as the n'th child of vnode pv"""
+        return ( self.statusBits & vnode.visitedBit ) != 0
+    #@-node:ekr.20031218072017.3376:v.isVisited
+    #@+node:ekr.20080429053831.10:v.isWriteBit (unified-nodes only)
+    if g.unified_nodes:
 
-        v = self
-        # g.trace(v,pv,n)
-        v._parent = pv
-        if n == 0:
-            v._back = None
-            v._next = pv.t._firstChild
-            if pv.t._firstChild:
-                pv.t._firstChild._back = v
-            pv.t._firstChild = v
-        else:
-            prev = pv.nthChild(n-1) # zero based
-            assert(prev)
-            v._back = prev
-            v._next = prev._next
-            prev._next = v
-            if v._next:
-                v._next._back = v
-    #@-node:ekr.20031218072017.3425:v.linkAsNthChild
-    #@+node:ekr.20031218072017.3426:v.linkAsRoot
-    def linkAsRoot (self,oldRoot):
+        def isWriteBit (self):
 
-        """Link a vnode as the root node and set the root _position_."""
+            v = self
+            return (v.statusBits & v.writeBit) != 0
+    #@-node:ekr.20080429053831.10:v.isWriteBit (unified-nodes only)
+    #@+node:ekr.20031218072017.3377:v.status
+    def status (self):
 
-        v = self
-
-        # Clear all links except the child link.
-        v._parent = None
-        v._back = None
-        v._next = oldRoot
-
-        # Add v to it's tnode's vnodeList. Bug fix: 5/02/04.
-        if v not in v.t.vnodeList:
-            v.t.vnodeList.append(v)
-            v.t._p_changed = 1
-
-        # Link in the rest of the tree only when oldRoot != None.
-        # Otherwise, we are calling this routine from init code and
-        # we want to start with a pristine tree.
-        if oldRoot: oldRoot._back = v
-    #@nonl
-    #@-node:ekr.20031218072017.3426:v.linkAsRoot
-    #@+node:ekr.20031218072017.3422:v.moveToRoot
-    def moveToRoot (self,oldRoot=None):
-
-        '''Moves a vnode to the root position.
-
-        Important: oldRoot must the previous root vnode if it exists.'''
-
-        v = self
-
-        v.unlink()
-        v.linkAsRoot(oldRoot)
-
-        return v
-    #@nonl
-    #@-node:ekr.20031218072017.3422:v.moveToRoot
-    #@+node:ekr.20031218072017.3438:v.unlink
-    def unlink (self):
-
-        """Unlinks a vnode from the tree."""
-
-        v = self
-
-        # g.trace(v._parent," child: ",v.t._firstChild," back: ", v._back, " next: ", v._next)
-
-        # Clear the links in other nodes.
-        if v._back:
-            v._back._next = v._next
-        if v._next:
-            v._next._back = v._back
-
-        if v._parent and v == v._parent.t._firstChild:
-            v._parent.t._firstChild = v._next
-
-        # Clear the links in this node.
-        v._parent = v._next = v._back = None
-        # v.parentsList = []
-    #@nonl
-    #@-node:ekr.20031218072017.3438:v.unlink
-    #@-node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
-    #@+node:ekr.20031218072017.3384:Setters
+        return self.statusBits
+    #@-node:ekr.20031218072017.3377:v.status
+    #@-node:ekr.20031218072017.3367:v.Status Bits
+    #@-node:ekr.20031218072017.3359:v.Getters
+    #@+node:ekr.20031218072017.3384:v.Setters
     #@+node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20031218072017.3389:clearClonedBit
+    #@+node:ekr.20031218072017.3389:v.clearClonedBit
     def clearClonedBit (self):
 
         self.statusBits &= ~ self.clonedBit
-    #@-node:ekr.20031218072017.3389:clearClonedBit
-    #@+node:ekr.20031218072017.3390:v.clearDirty (no change needed)
+    #@-node:ekr.20031218072017.3389:v.clearClonedBit
+    #@+node:ekr.20031218072017.3390:v.clearDirty
     def clearDirty (self):
-
         v = self
-        v.t.clearDirty()
-    #@nonl
-    #@-node:ekr.20031218072017.3390:v.clearDirty (no change needed)
+        v.t.statusBits &= ~ v.t.dirtyBit
+
+    #@-node:ekr.20031218072017.3390:v.clearDirty
     #@+node:ekr.20031218072017.3391:v.clearMarked
     def clearMarked (self):
 
         self.statusBits &= ~ self.markedBit
     #@-node:ekr.20031218072017.3391:v.clearMarked
-    #@+node:ekr.20031218072017.3392:clearOrphan
+    #@+node:ekr.20080429053831.8:v.clearWriteBit (unified-nodes only)
+    if g.unified_nodes:
+
+        def clearWriteBit (self):
+            self.statusBits &= ~ self.writeBit
+    #@-node:ekr.20080429053831.8:v.clearWriteBit (unified-nodes only)
+    #@+node:ekr.20031218072017.3392:v.clearOrphan
     def clearOrphan (self):
 
         self.statusBits &= ~ self.orphanBit
-    #@-node:ekr.20031218072017.3392:clearOrphan
-    #@+node:ekr.20031218072017.3393:clearVisited
+    #@-node:ekr.20031218072017.3392:v.clearOrphan
+    #@+node:ekr.20031218072017.3393:v.clearVisited
     def clearVisited (self):
 
         self.statusBits &= ~ self.visitedBit
-    #@-node:ekr.20031218072017.3393:clearVisited
-    #@+node:ekr.20031218072017.3395:contract & expand & initExpandedBit
+    #@-node:ekr.20031218072017.3393:v.clearVisited
+    #@+node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
     def contract(self):
 
         self.statusBits &= ~ self.expandedBit
@@ -830,13 +687,13 @@ class vnode (baseVnode):
     def initExpandedBit (self):
 
         self.statusBits |= self.expandedBit
-    #@-node:ekr.20031218072017.3395:contract & expand & initExpandedBit
-    #@+node:ekr.20031218072017.3396:initStatus
+    #@-node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
+    #@+node:ekr.20031218072017.3396:v.initStatus
     def initStatus (self, status):
 
         self.statusBits = status
-    #@-node:ekr.20031218072017.3396:initStatus
-    #@+node:ekr.20031218072017.3397:setClonedBit & initClonedBit
+    #@-node:ekr.20031218072017.3396:v.initStatus
+    #@+node:ekr.20031218072017.3397:v.setClonedBit & initClonedBit
     def setClonedBit (self):
 
         self.statusBits |= self.clonedBit
@@ -847,7 +704,12 @@ class vnode (baseVnode):
             self.statusBits |= self.clonedBit
         else:
             self.statusBits &= ~ self.clonedBit
-    #@-node:ekr.20031218072017.3397:setClonedBit & initClonedBit
+    #@-node:ekr.20031218072017.3397:v.setClonedBit & initClonedBit
+    #@+node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
+    def setDirty (self):
+
+        self.t.statusBits |= self.t.dirtyBit
+    #@-node:ekr.20080429053831.12:v.setDirty (new in Leo 4.5)
     #@+node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
     def setMarked (self):
 
@@ -857,26 +719,51 @@ class vnode (baseVnode):
 
         self.statusBits |= self.markedBit
     #@-node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
-    #@+node:ekr.20031218072017.3399:setOrphan
+    #@+node:ekr.20031218072017.3399:v.setOrphan
     def setOrphan (self):
 
         self.statusBits |= self.orphanBit
-    #@-node:ekr.20031218072017.3399:setOrphan
-    #@+node:ekr.20031218072017.3400:setSelected (vnode)
+    #@-node:ekr.20031218072017.3399:v.setOrphan
+    #@+node:ekr.20031218072017.3400:v.setSelected
     # This only sets the selected bit.
 
     def setSelected (self):
 
         self.statusBits |= self.selectedBit
-    #@-node:ekr.20031218072017.3400:setSelected (vnode)
-    #@+node:ekr.20031218072017.3401:t.setVisited
+    #@-node:ekr.20031218072017.3400:v.setSelected
+    #@+node:ekr.20031218072017.3401:v.setVisited
     # Compatibility routine for scripts
 
     def setVisited (self):
 
         self.statusBits |= self.visitedBit
-    #@-node:ekr.20031218072017.3401:t.setVisited
+    #@-node:ekr.20031218072017.3401:v.setVisited
+    #@+node:ekr.20080429053831.9:v.setWriteBit (unified-nodes only)
+    if g.unified_nodes:
+
+        def setWriteBit (self):
+            self.statusBits |= self.writeBit
+    #@-node:ekr.20080429053831.9:v.setWriteBit (unified-nodes only)
     #@-node:ekr.20031218072017.3386: v.Status bits
+    #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
+    def setBodyString (self,s,encoding="utf-8"):
+        v = self
+        v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+
+    def setHeadString (self,s,encoding="utf-8"):
+        v = self
+        v.t._headString = g.toUnicode(s,encoding,reportErrors=True)
+
+    initBodyString = setBodyString
+    initHeadString = setHeadString
+    setHeadText = setHeadString
+    setTnodeText = setBodyString
+    #@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+    #@+node:ekr.20080429053831.13:v.setFileIndex
+    def setFileIndex (self, index):
+
+        self.t.fileIndex = index
+    #@-node:ekr.20080429053831.13:v.setFileIndex
     #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
     def computeIcon (self):
 
@@ -891,26 +778,54 @@ class vnode (baseVnode):
 
         pass # Compatibility routine for old scripts
     #@-node:ekr.20031218072017.3385:v.computeIcon & setIcon
-    #@+node:ekr.20040315032144:v.initHeadString
-    def initHeadString (self,s,encoding="utf-8"):
-
-        v = self
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        v.t.headString = s
-
-        # g.trace(g.callers(5))
-    #@-node:ekr.20040315032144:v.initHeadString
     #@+node:ekr.20031218072017.3402:v.setSelection
     def setSelection (self, start, length):
 
-        self.t.setSelection ( start, length )
-    #@-node:ekr.20031218072017.3402:v.setSelection
-    #@+node:ekr.20040315042106:v.setTnodeText
-    def setTnodeText (self,s,encoding="utf-8"):
+        v = self
+        # v.t.setSelection ( start, length )
 
-        return self.t.setTnodeText(s,encoding)
-    #@-node:ekr.20040315042106:v.setTnodeText
-    #@-node:ekr.20031218072017.3384:Setters
+        v.t.selectionStart = start
+        v.t.selectionLength = length
+    #@-node:ekr.20031218072017.3402:v.setSelection
+    #@-node:ekr.20031218072017.3384:v.Setters
+    #@+node:ekr.20080427062528.9:v.Low level methods
+    #@+node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
+    def _linkAsNthChild (self,parent_v,n):
+
+        """Links self as the n'th child of vnode pv"""
+
+        # Similar to p._linkAsNthChild.
+        v = self
+
+         # Add v to it's tnode's vnodeList.
+        if v not in v.t.vnodeList:
+            v.t.vnodeList.append(v)
+            v.t._p_changed = 1 # Support for tnode class.
+
+        # Add v to parent_v's children.
+        parent_v.t.children.insert(n,v)
+        parent_v._p_changed = 1
+
+        # Add parent_v to v's parents.
+        parent_v._computeParentsOfChildren()
+    #@-node:ekr.20031218072017.3425:v._linkAsNthChild (used by 4.x read logic)
+    #@+node:ekr.20080427062528.10:v._computeParentsOfChildren
+    def _computeParentsOfChildren (self,children=None):
+
+        '''add all nodes in v.t.vnodeList to the parent list of all v's children.'''
+
+        v = self
+        if children is None:
+            children = v.t.children
+
+        for child in children:
+            child.parents = []
+            for v2 in v.t.vnodeList:
+                if v2 not in child.parents:
+                    # g.trace('Adding %s to parents of %s' % (v2,child))
+                    child.parents.append(v2)
+    #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
+    #@-node:ekr.20080427062528.9:v.Low level methods
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -1045,99 +960,84 @@ class nodeIndices (object):
 #@<< about the position class >>
 #@+node:ekr.20031218072017.890:<< about the position class >>
 #@@killcolor
-
-#@+at 
-#@nonl
-# This class provides tree traversal methods that operate on positions, not 
-# vnodes.  Positions encapsulate the notion of present position within a 
-# traversal.
+#@+at
 # 
-# Positions consist of a vnode and a stack of parent nodes used to determine 
-# the next parent when a vnode has mutliple parents.
+# A position marks the spot in a tree traversal. A position p consists of a 
+# vnode
+# p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one 
+# for
+# each ancestor **at the spot in tree traversal. Positions p has a unique set 
+# of
+# parents.
 # 
-# Calling, e.g., p.moveToThreadNext() results in p being an invalid position.  
-# That is, p represents the position following the last node of the outline.  
-# The test "if p" is the _only_ correct way to test whether a position p is 
-# valid.  In particular, tests like "if p is None" or "if p is not None" will 
-# not work properly.
+# The p.moveToX methods may return a null (invalid) position p with p.v = 
+# None.
 # 
-# The only changes to vnodes and tnodes needed to implement shared tnodes are:
-# 
-# - The firstChild field becomes part of tnodes.
-# - t.vnodes contains a list of all vnodes sharing the tnode.
-# 
-# The advantages of using shared tnodes:
-# 
-# - Leo no longer needs to create or destroy "dependent" trees when changing 
-# descendents of cloned trees.
-# - There is no need for join links and no such things as joined nodes.
-# 
-# These advantages are extremely important: Leo is now scalable to very large 
-# outlines.
-# 
-# An important complication is the need to avoid creating temporary positions 
-# while traversing trees:
-# - Several routines use p.vParentWithStack to avoid having to call 
-# tempPosition.moveToParent().
-#   These include p.level, p.isVisible and p.hasThreadNext.
-# - p.moveToLastNode and p.moveToThreadBack use new algorithms that don't use 
-# temporary data.
-# - Several lookahead routines compute whether a position exists without 
-# computing the actual position.
+# The tests "if p" or "if not p" are the _only_ correct way to test whether a
+# position p is valid. In particular, tests like "if p is None" or "if p is 
+# not
+# None" will not work properly.
 #@-at
 #@-node:ekr.20031218072017.890:<< about the position class >>
-#@nl
-#@<< positions may become invalid when outlines change >>
-#@+node:ekr.20050524082843:<< positions may become invalid when outlines change >>
-#@@killcolor
-
-#@+at 
-#@nonl
-# If a vnode has only one parent, v._parent is that parent. Otherwise,
-# v.t.vnodeList is the list of vnodes v2 such that v2._firstChild == v. Alas, 
-# this
-# means that positions can become invalid when vnodeList's change!
-# 
-# There is no use trying to solve the problem in p.moveToParent or
-# p.vParentWithStack: the invalidated positions simply don't have the stack
-# entries needed to compute parent fields properly. In short, changing 
-# t.vnodeList
-# may invalidate existing positions!
-#@-at
-#@-node:ekr.20050524082843:<< positions may become invalid when outlines change >>
 #@nl
 
 # Positions should *never* be saved by the ZOBD.
 
 class basePosition (object):
     #@    @+others
-    #@+node:ekr.20040228094013: ctor & other special methods...
-    #@+node:ekr.20031218072017.893:p.__cmp__
+    #@+node:ekr.20040228094013: p.ctor & other special methods...
+    #@+node:ekr.20080416161551.190: p.__init__
+    def __init__ (self,v,childIndex=0,stack=None,trace=False):
+
+        '''Create a new position with the given childIndex and parent stack.'''
+
+        # __pychecker__ = '--no-argsused' # trace not used.
+
+        # To support ZODB the code must set v._p_changed = 1
+        # whenever any mutable vnode object changes.
+
+        self._childIndex = childIndex
+        self.v = v
+
+        # New in Leo 4.5: stack entries are tuples (v,childIndex).
+        if stack:
+            self.stack = stack[:] # Creating a copy here is safest and best.
+        else:
+            self.stack = []
+
+        g.app.positions += 1
+
+        # if g.app.tracePositions and trace: g.trace(g.callers())
+    #@-node:ekr.20080416161551.190: p.__init__
+    #@+node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
     def __cmp__(self,p2):
 
         """Return 0 if two postions are equivalent."""
 
-        # Use p.equal if speed is crucial.
         p1 = self
 
         # g.trace(p1.headString(),p2 and p2.headString())
 
-        if p2 is None: # Allow tests like "p == None"
-            if p1.v: return 1 # not equal
-            else:    return 0 # equal
+        if p2 is None or p2.v is None:
+            if p1.v is None: return 0 # equal
+            else:            return 1 # not equal
+        elif p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack:
+            return 0 # equal
+        else:
+            return 1 # not equal
 
-        # Check entire stack quickly.
-        # The stack contains vnodes, so this is not a recursive call.
-        if p1.v != p2.v or p1.stack != p2.stack:
-            return 1 # notEqual
+    # isEqual and equal are deprecated.
 
-        # This is slow: do this last!
-        if p1.childIndex() != p2.childIndex():
-            # Disambiguate clones having the same parents.
-            return 1 # notEqual
+    def isEqual (self,p2):
 
-        return 0 # equal
-    #@-node:ekr.20031218072017.893:p.__cmp__
+        p1 = self
+        if p2 is None or p2.v is None:
+            return p1.v is None
+        else:
+            return p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+
+    equal = isEqual
+    #@-node:ekr.20080416161551.186:p.__cmp__, equal and isEqual
     #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
     if 1: # Good for compatibility, bad for finding conversion problems.
 
@@ -1158,33 +1058,6 @@ class basePosition (object):
                 raise AttributeError,attr
     #@nonl
     #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    #@+node:ekr.20031218072017.892:p.__init__
-    # New in Leo 4.4.2: make stack default to None.
-
-    def __init__ (self,v,stack=None,trace=True):
-
-        """Create a new position."""
-
-        # __pychecker__ = '--no-argsused' # trace not used.
-
-        # To support ZODB the code must set vort._p_changed = 1 whenever
-        # t.vnodeList (or any mutable tnode or vnode object) changes.
-
-        self.v = v
-        # assert(v is None or v.t)
-
-        if stack:
-            self.stack = stack[:] # Creating a copy here is safest and best.
-        else:
-            self.stack = []
-
-        g.app.positions += 1
-
-        # if g.app.tracePositions and trace: g.trace(g.callers())
-
-        # Note: __getattr__ implements p.t.
-    #@nonl
-    #@-node:ekr.20031218072017.892:p.__init__
     #@+node:ekr.20040117173448:p.__nonzero__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
@@ -1208,9 +1081,10 @@ class basePosition (object):
         p = self
 
         if p.v:
-            return "<pos %d lvl: %d [%d] %s>" % (id(p),p.level(),len(p.stack),p.cleanHeadString())
+            return "<pos %d childIndex: %d lvl: %d [%d] %s>" % (
+                id(p),p._childIndex,p.level(),len(p.stack),p.cleanHeadString())
         else:
-            return "<pos %d        [%d] None>" % (id(p),len(p.stack))
+            return "<pos %d [%d] None>" % (id(p),len(p.stack))
 
     __repr__ = __str__
     #@-node:ekr.20040301205720:p.__str__ and p.__repr__
@@ -1220,7 +1094,7 @@ class basePosition (object):
         '''Return a representation of a position suitable for use in .leo files.'''
 
         p = self
-        aList = [p2.v.childIndex() for p2 in p.self_and_parents_iter()]
+        aList = [z._childIndex for z in p.self_and_parents_iter()]
         aList.reverse()
         return aList
     #@nonl
@@ -1234,7 +1108,7 @@ class basePosition (object):
 
         # if g.app.tracePositions: g.trace(g.callers())
 
-        return position(self.v,self.stack,trace=False)
+        return position(self.v,self._childIndex,self.stack,trace=False)
     #@-node:ekr.20040117171654:p.copy
     #@+node:ekr.20040310153624:p.dump & p.vnodeListIds
     def dumpLink (self,link):
@@ -1253,41 +1127,22 @@ class basePosition (object):
         p = self
         return [id(v) for v in p.v.t.vnodeList]
     #@-node:ekr.20040310153624:p.dump & p.vnodeListIds
-    #@+node:ekr.20040325142015:p.equal & isEqual
-    def equal(self,p2):
-
-        """Return True if two postions are equivalent.
-
-        Use this method when the speed comparisons is crucial
-
-        N.B. Unlike __cmp__, p2 must not be None.
-        """
-
-        p1 = self
-
-        # Check entire stack quickly.
-        # The stack contains vnodes, so this does not call p.__cmp__.
-        return (
-            p1.v == p2.v and
-            p1.stack == p2.stack and
-            p1.childIndex() == p2.childIndex())
-
-    isEqual = equal
-    #@-node:ekr.20040325142015:p.equal & isEqual
-    #@+node:ekr.20060202090907:p.key
+    #@+node:ekr.20080416161551.191:p.key
     def key (self):
 
         p = self
 
-        return '%s:%d.%s' % (
+        vList = [z[0] for z in p.stack]
+
+        return '%s:%s.%s' % (
             id(p.v),
-            p.childIndex(),
-            ','.join([str(id(v)) for v in p.stack])
+            p._childIndex,
+            ','.join([str(id(z)) for z in vList])
         )
-    #@-node:ekr.20060202090907:p.key
-    #@-node:ekr.20040228094013: ctor & other special methods...
-    #@+node:ekr.20040306212636:Getters
-    #@+node:ekr.20040306210951: vnode proxies
+    #@-node:ekr.20080416161551.191:p.key
+    #@-node:ekr.20040228094013: p.ctor & other special methods...
+    #@+node:ekr.20040306212636:p.Getters
+    #@+node:ekr.20040306210951:p.vnode proxies
     #@+node:ekr.20040306211032:p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
@@ -1344,44 +1199,35 @@ class basePosition (object):
     def isVisited   (self): return self.v.isVisited()
     def status      (self): return self.v.status()
     #@-node:ekr.20040306214401:p.Status bits
+    #@-node:ekr.20040306210951:p.vnode proxies
+    #@+node:ekr.20040306214240.2:p.children & parents
+    #@+node:ekr.20040326064330:p.childIndex
+    # This used to be time-critical code.
+
+    def childIndex(self):
+
+        p = self
+        return p._childIndex
+    #@-node:ekr.20040326064330:p.childIndex
     #@+node:ekr.20040323160302:p.directParents
     def directParents (self):
 
         return self.v.directParents()
     #@-node:ekr.20040323160302:p.directParents
-    #@+node:ekr.20040326064330:p.childIndex
-    def childIndex(self):
-
-        p = self ; v = p.v
-
-        # This is time-critical code!
-
-        # 3/25/04: Much faster code:
-        if not v or not v._back:
-            return 0
-
-        n = 0 ; v = v._back
-        while v:
-            n += 1
-            v = v._back
-
-        return n
-    #@-node:ekr.20040326064330:p.childIndex
-    #@-node:ekr.20040306210951: vnode proxies
-    #@+node:ekr.20040306214240.2:children
-    #@+node:ekr.20040306214240.3:p.hasChildren
-    def hasChildren(self):
+    #@+node:ekr.20040306214240.3:p.hasChildren & p.numberOfChildren
+    def hasChildren (self):
 
         p = self
-        # g.trace(p,p.v)
-        return p.v and p.v.t and p.v.t._firstChild
-    #@-node:ekr.20040306214240.3:p.hasChildren
-    #@+node:ekr.20040306212636.1:p.numberOfChildren
+        return len(p.v.t.children) > 0
+
+    hasFirstChild = hasChildren
+
     def numberOfChildren (self):
 
-        return self.v.numberOfChildren()
-    #@-node:ekr.20040306212636.1:p.numberOfChildren
-    #@-node:ekr.20040306214240.2:children
+        p = self
+        return len(p.v.t.children)
+    #@-node:ekr.20040306214240.3:p.hasChildren & p.numberOfChildren
+    #@-node:ekr.20040306214240.2:p.children & parents
     #@+node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
@@ -1423,39 +1269,53 @@ class basePosition (object):
     hasVisNext = visNext
     #@nonl
     #@-node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines
-    #@+node:ekr.20040227212621:p.hasX
+    #@+node:ekr.20080416161551.192:p.hasX
     def hasBack(self):
-        return self.v and self.v._back
-
-    hasFirstChild = hasChildren
+        p = self
+        return p.v and p._childIndex > 0
 
     def hasNext(self):
-        return self.v and self.v._next
+        p = self
+        try:
+            parent_v = p._parentVnode()
+                # Returns None if p.v is None.
+            return p.v and parent_v and p._childIndex+1 < len(parent_v.t.children)
+        except Exception:
+            g.trace('*** Unexpected exception')
+            g.es_exception()
+            return None
 
     def hasParent(self):
-        return self.v and self.v._parent is not None
+        p = self
+        return p.v and len(p.stack) > 0
 
     def hasThreadBack(self):
-        return self.hasParent() or self.hasBack() # Much cheaper than computing the actual value.
-    #@+node:ekr.20040227224946:hasThreadNext (the only complex hasX method)
-    def hasThreadNext(self):
+        p = self
+        return p.hasParent() or p.hasBack() # Much cheaper than computing the actual value.
+    #@+node:ekr.20080416161551.193:hasThreadNext (the only complex hasX method)
+    def hasThreadNext (self):
 
-        p = self ; v = p.v
+        p = self
         if not p.v: return False
 
-        if v.t._firstChild or v._next:
-            return True
-        else:
-            n = len(p.stack)-1
-            v,n = p.vParentWithStack(v,p.stack,n)
-            while v:
-                if v._next:
-                    return True
-                v,n = p.vParentWithStack(v,p.stack,n)
-            return False
-    #@-node:ekr.20040227224946:hasThreadNext (the only complex hasX method)
-    #@-node:ekr.20040227212621:p.hasX
-    #@+node:ekr.20060920203352:p.findRootPosition (New in 4.4.2)
+        if p.hasChildren() or p.hasNext(): return True
+
+        n = len(p.stack) -1
+        while n >= 0:
+            v,childIndex = p.stack[n]
+            # See how many children v's parent has.
+            if n == 0:
+                parent_v = v.context.hiddenRootNode
+            else:
+                parent_v,junk = p.stack[n-1]
+            if len(parent_v.t.children) > childIndex+1:
+                # v has a next sibling.
+                return True
+            n -= 1
+        return False
+    #@-node:ekr.20080416161551.193:hasThreadNext (the only complex hasX method)
+    #@-node:ekr.20080416161551.192:p.hasX
+    #@+node:ekr.20060920203352:p.findRootPosition
     def findRootPosition (self):
 
         p = self.copy()
@@ -1465,32 +1325,24 @@ class basePosition (object):
             p.moveToBack()
         return p
     #@nonl
-    #@-node:ekr.20060920203352:p.findRootPosition (New in 4.4.2)
-    #@+node:ekr.20040307104131.1:p.isAncestorOf
+    #@-node:ekr.20060920203352:p.findRootPosition
+    #@+node:ekr.20080416161551.194:p.isAncestorOf
     def isAncestorOf (self, p2):
 
-        p = self
+        p = self ; v = p.v
 
-        if 0: # Avoid the copies made in the iterator.
-            for p3 in p2.parents_iter():
-                if p3 == p:
-                    return True
-
-        # Avoid calling p.copy() or copying the stack.
-        v2 = p2.v ; n = len(p2.stack)-1
-            # Major bug fix 7/22/04: changed len(p.stack) to len(p2.stack.)
-        v2,n = p2.vParentWithStack(v2,p2.stack,n)
-        while v2:
-            if v2 == p.v:
+        for z in p2.stack:
+            v2,junk = z
+            if v2 == v:
                 return True
-            v2,n = p2.vParentWithStack(v2,p2.stack,n)
 
         return False
-    #@-node:ekr.20040307104131.1:p.isAncestorOf
+    #@-node:ekr.20080416161551.194:p.isAncestorOf
     #@+node:ekr.20040306215056:p.isCloned
     def isCloned (self):
 
-        return len(self.v.t.vnodeList) > 1
+        p = self
+        return len(p.v.t.vnodeList) > 1
     #@-node:ekr.20040306215056:p.isCloned
     #@+node:ekr.20040307104131.2:p.isRoot
     def isRoot (self):
@@ -1499,24 +1351,23 @@ class basePosition (object):
 
         return not p.hasParent() and not p.hasBack()
     #@-node:ekr.20040307104131.2:p.isRoot
-    #@+node:ekr.20040117162509.16:p.isVisible
+    #@+node:ekr.20080416161551.196:p.isVisible
     def isVisible (self,c):
 
-        """Return True if all of a position's parents are expanded."""
-
-        # v.isVisible no longer exists.
-        p = self ; cc = c.chapterController ; trace = False
+        p = self
+        trace = False
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
             if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.v.headString())
             return limitIsVisible
 
-        # Avoid calling p.copy() or copying the stack.
-        v = p.v ; n = len(p.stack)-1
-
-        v,n = p.vParentWithStack(v,p.stack,n)
-        while v:
+        # It's much easier with a full stack.
+        n = len(p.stack)-1
+        while n >= 0:
+            progress = n
+            # v,n = p.vParentWithStack(v,p.stack,n)
+            v,junk = p.stack[n]
             if v == limit_v:  # We are at a descendant of limit.
                 if trace: g.trace('*** descendant of limit',
                     'limitIsVisible',limitIsVisible,
@@ -1528,38 +1379,21 @@ class basePosition (object):
             if not v.isExpanded():
                 if trace: g.trace('*** non-limit parent is not expanded',v)
                 return False
-            v,n = p.vParentWithStack(v,p.stack,n)
+            n -= 1
+            assert progress > n
 
         return True
-    #@-node:ekr.20040117162509.16:p.isVisible
-    #@+node:ekr.20040227214711:p.level & simpleLevel
-    def simpleLevel(self):
+    #@-node:ekr.20080416161551.196:p.isVisible
+    #@+node:ekr.20080416161551.197:p.level & simpleLevel
+    def level (p):
+        return p.v and len(p.stack) or 0
 
-        return len([p for p in self.parents_iter()])
-
-    def level(self,verbose=False):
-
-        p = self ; level = 0
-        if not p: return level
-
-        # Avoid calling p.copy() or copying the stack.
-        v = p.v ; n = len(p.stack)-1
-        while 1:
-            assert(p)
-            v,n = p.vParentWithStack(v,p.stack,n)
-            if v:
-                level += 1
-                if verbose: g.trace(level,"level %2d, n: %2d" % (level,n))
-            else:
-                if verbose: g.trace(level,"level %2d, n: %2d" % (level,n))
-                # if g.app.debug: assert(level==self.simpleLevel())
-                break
-        return level
-    #@-node:ekr.20040227214711:p.level & simpleLevel
-    #@-node:ekr.20040306212636:Getters
-    #@+node:ekr.20040305222924:Setters
-    #@+node:ekr.20040306220634:vnode proxies
-    #@+node:ekr.20040306220634.9: Status bits (position)
+    simpleLevel = level
+    #@-node:ekr.20080416161551.197:p.level & simpleLevel
+    #@-node:ekr.20040306212636:p.Getters
+    #@+node:ekr.20040305222924:p.Setters
+    #@+node:ekr.20040306220634:p.Vnode proxies
+    #@+node:ekr.20040306220634.9:p.Status bits
     # Clone bits are no longer used.
     # Dirty bits are handled carefully by the position class.
 
@@ -1578,7 +1412,7 @@ class basePosition (object):
     def setOrphan   (self): return self.v.setOrphan()
     def setSelected (self): return self.v.setSelected()
     def setVisited  (self): return self.v.setVisited()
-    #@-node:ekr.20040306220634.9: Status bits (position)
+    #@-node:ekr.20040306220634.9:p.Status bits
     #@+node:ekr.20040306220634.8:p.computeIcon & p.setIcon
     def computeIcon (self):
 
@@ -1593,36 +1427,29 @@ class basePosition (object):
 
         return self.v.setSelection(start,length)
     #@-node:ekr.20040306220634.29:p.setSelection
-    #@+node:ekr.20040315034158:p.setTnodeText
-    def setTnodeText (self,s,encoding="utf-8"):
-
-        return self.v.setTnodeText(s,encoding)
-    #@-node:ekr.20040315034158:p.setTnodeText
-    #@-node:ekr.20040306220634:vnode proxies
-    #@+node:ekr.20040315031401:Head & body text (position)
-    #@+node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
-    def setHeadString (self,s,encoding="utf-8"):
+    #@-node:ekr.20040306220634:p.Vnode proxies
+    #@+node:ekr.20040315034158:p.setBodyString & setHeadString
+    def setBodyString (self,s,encoding="utf-8"):
 
         p = self
-        p.v.initHeadString(s,encoding)
-        p.setDirty()
+        return p.v.t.setBodyString(s,encoding)
+
+    initBodyString = setBodyString
+    setTnodeText = setBodyString
+    scriptSetBodyString = setBodyString
 
     def initHeadString (self,s,encoding="utf-8"):
 
         p = self
         p.v.initHeadString(s,encoding)
-    #@-node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
-    #@+node:ekr.20040315031445:p.scriptSetBodyString
-    def scriptSetBodyString (self,s,encoding="utf-8"):
 
-        """Update the body string for the receiver.
+    def setHeadString (self,s,encoding="utf-8"):
 
-        Should be called only from scripts: does NOT update body text."""
-
-        self.v.t.bodyString = g.toUnicode(s,encoding)
-    #@-node:ekr.20040315031445:p.scriptSetBodyString
-    #@-node:ekr.20040315031401:Head & body text (position)
-    #@+node:ekr.20040312015908:Visited bits
+        p = self
+        p.v.initHeadString(s,encoding)
+        p.setDirty()
+    #@-node:ekr.20040315034158:p.setBodyString & setHeadString
+    #@+node:ekr.20040312015908:p.Visited bits
     #@+node:ekr.20040306220634.17:p.clearVisitedInTree
     # Compatibility routine for scripts.
 
@@ -1631,15 +1458,15 @@ class basePosition (object):
         for p in self.self_and_subtree_iter():
             p.clearVisited()
     #@-node:ekr.20040306220634.17:p.clearVisitedInTree
-    #@+node:ekr.20031218072017.3388:p.clearAllVisitedInTree (4.2)
+    #@+node:ekr.20031218072017.3388:p.clearAllVisitedInTree
     def clearAllVisitedInTree (self):
 
         for p in self.self_and_subtree_iter():
             p.v.clearVisited()
             p.v.t.clearVisited()
             p.v.t.clearWriteBit()
-    #@-node:ekr.20031218072017.3388:p.clearAllVisitedInTree (4.2)
-    #@-node:ekr.20040312015908:Visited bits
+    #@-node:ekr.20031218072017.3388:p.clearAllVisitedInTree
+    #@-node:ekr.20040312015908:p.Visited bits
     #@+node:ekr.20040305162628:p.Dirty bits
     #@+node:ekr.20040311113514:p.clearDirty
     def clearDirty (self):
@@ -1650,7 +1477,7 @@ class basePosition (object):
     #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
 
-        p = self 
+        p = self ;  c = p.v.context
 
         # Start with all nodes in the vnodeList.
         nodes = []
@@ -1664,12 +1491,17 @@ class basePosition (object):
                 for v2 in v.t.vnodeList:
                     if v2 not in nodes and v2 not in addedNodes:
                         addedNodes.append(v2)
-                    for v3 in v2.directParents():
-                        if v3 not in nodes and v3 not in addedNodes:
-                            addedNodes.append(v3)
+                for v2 in v.parents:
+                    if v2 not in nodes and v2 not in addedNodes:
+                        addedNodes.append(v2)
             newNodes = addedNodes[:]
 
+        # Remove the hidden vnode.
+        if c.hiddenRootNode in nodes:
+            nodes.remove(c.hiddenRootNode)
+
         # g.trace(len(nodes))
+        # g.trace(g.listToString(nodes))
         return nodes
     #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
@@ -1733,14 +1565,14 @@ class basePosition (object):
         return dirtyVnodeList
     #@-node:ekr.20040303163330:p.setDirty
     #@-node:ekr.20040305162628:p.Dirty bits
-    #@-node:ekr.20040305222924:Setters
-    #@+node:ekr.20040315023430:File Conversion
+    #@-node:ekr.20040305222924:p.Setters
+    #@+node:ekr.20040315023430:P.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be vnode methods because they 
     # uses level().
     # - moreBody could be anywhere: it may as well be a postion method.
     #@-at
-    #@+node:ekr.20040315023430.1:convertTreeToString
+    #@+node:ekr.20040315023430.1:p.convertTreeToString
     def convertTreeToString (self):
 
         """Convert a positions  suboutline to a string in MORE format."""
@@ -1755,8 +1587,8 @@ class basePosition (object):
                 array.append(body +'\n')
 
         return ''.join(array)
-    #@-node:ekr.20040315023430.1:convertTreeToString
-    #@+node:ekr.20040315023430.2:moreHead
+    #@-node:ekr.20040315023430.1:p.convertTreeToString
+    #@+node:ekr.20040315023430.2:p.moreHead
     def moreHead (self, firstLevel,useVerticalBar=False):
 
         """Return the headline string in MORE format."""
@@ -1769,8 +1601,8 @@ class basePosition (object):
         plusMinus = g.choose(p.hasChildren(), "+", "-")
 
         return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
-    #@-node:ekr.20040315023430.2:moreHead
-    #@+node:ekr.20040315023430.3:moreBody
+    #@-node:ekr.20040315023430.2:p.moreHead
+    #@+node:ekr.20040315023430.3:p.moreBody
     #@+at 
     #     + test line
     #     - test line
@@ -1796,8 +1628,8 @@ class basePosition (object):
                 s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
-    #@-node:ekr.20040315023430.3:moreBody
-    #@-node:ekr.20040315023430:File Conversion
+    #@-node:ekr.20040315023430.3:p.moreBody
+    #@-node:ekr.20040315023430:P.File Conversion
     #@+node:ekr.20040305162628.1:p.Iterators
     #@+at 
     #@nonl
@@ -1900,10 +1732,10 @@ class basePosition (object):
                 self.d[u(p)]=True
 
                 # First, try to find an unmarked child
-                if p.v.t._firstChild:
+                if p.v.t.children:
                     p.moveToFirstChild()
                     while p and self.d.get(u(p)):
-                        if p.v._next:
+                        if p.hasNext():
                             p.moveToNext()
                         else:
                             p.moveToParent()
@@ -1911,7 +1743,7 @@ class basePosition (object):
                 # If we didn't find an unmarked child,
                 # try to find an unmarked sibling
                 if p and self.d.get(u(p)):
-                    while p.v._next:
+                    while p.hasNext():
                         p.moveToNext()
                         if not self.d.get(u(p)):
                             break
@@ -1921,7 +1753,7 @@ class basePosition (object):
                 if p and self.d.get(u(p)):
                     p.moveToParent()
                     while p:
-                        while p.v._next:
+                        while p.hasNext():
                             p.moveToNext()
                             if not self.d.get(u(p)):
                                 break
@@ -2051,12 +1883,12 @@ class basePosition (object):
                 self.d[u(p)]=True
 
                 # First, try to find an unmarked child
-                if p.v.t._firstChild:
+                if p.v.t.children:
                     p.moveToFirstChild()
                     if p.equal(self.after):
                         raise StopIteration
                     while p and self.d.get(u(p)):
-                        if p.v._next:
+                        if p.hasNext():
                             p.moveToNext()
                         else:
                             p.moveToParent()
@@ -2066,7 +1898,7 @@ class basePosition (object):
                 # If we didn't find an unmarked child,
                 # try to find an unmarked sibling
                 if p and self.d.get(u(p)):
-                    while p.v._next:
+                    while p.hasNext():
                         p.moveToNext()
                         if p.equal(self.after):
                             raise StopIteration
@@ -2080,7 +1912,7 @@ class basePosition (object):
                     if p.equal(self.after):
                         raise StopIteration
                     while p:
-                        while p.v._next:
+                        while p.hasNext():
                             p.moveToNext()
                             if p.equal(self.after):
                                 raise StopIteration
@@ -2270,23 +2102,35 @@ class basePosition (object):
     #@-node:ekr.20040305173343:p.siblings_iter
     #@-others
     #@-node:ekr.20040305162628.1:p.Iterators
-    #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
-    #@+node:ekr.20040303175026.8:p.clone (does not need any args)
+    #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting
+    #@+node:ekr.20040303175026.8:p.clone
     def clone (self):
 
         """Create a clone of back.
 
         Returns the newly created position."""
 
-        p = self
+        p = self ; context = p.v.context
 
-        p2 = p.copy()
-        p2.v = vnode(p.v.t)
-        p2.linkAfter(p)
+        if g.unified_nodes:
+            import copy
+            p2 = p.copy()
+            p2.v = copy.copy(p.v)
+        else:
+            p2 = p.copy()
+            p2.v = vnode(context=context,t=p2.v.t)
+
+        p2._linkAfter(p)
+        p2.v._computeParentsOfChildren()
+        p2._parentVnode()._computeParentsOfChildren()
+
+        assert (p.v.t == p2.v.t)
+        for z in (p.v,p2.v):
+            if z not in p.v.t.vnodeList:
+                p.v.t.vnodeList.append(z)
 
         return p2
-    #@nonl
-    #@-node:ekr.20040303175026.8:p.clone (does not need any args)
+    #@-node:ekr.20040303175026.8:p.clone
     #@+node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
     # These used by unit tests and by the group_operations plugin.
 
@@ -2298,8 +2142,8 @@ class basePosition (object):
 
     def copyTreeFromSelfTo(self,p2):
         p = self
-        p2.v.t.headString = p.headString()
-        p2.v.t.bodyString = p.bodyString()
+        p2.v.t._headString = p.headString()
+        p2.v.t._bodyString = p.bodyString()
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
@@ -2313,36 +2157,44 @@ class basePosition (object):
     #@-at
     #@@c
 
-    def doDelete (self):
+    def doDelete (self,newNode=None):
 
         """Deletes position p from the outline."""
 
         p = self
         p.setDirty() # Mark @file nodes dirty!
-        p.unlink()
-        p.deleteLinksInTree()
+
+        # Adjust newNode._childIndex if newNode is a following sibling of p.
+        sib = p.copy()
+        while sib.hasNext():
+            sib.moveToNext()
+            if sib == newNode:
+                newNode._childIndex -= 1
+                break
+
+        p._unlink()
+        p._deleteLinksInTree()
+        p.v._computeParentsOfChildren()
+        p._parentVnode()._computeParentsOfChildren()
     #@-node:ekr.20040303175026.2:p.doDelete
     #@+node:ekr.20040303175026.3:p.insertAfter
-    def insertAfter (self,t=None):
+    def insertAfter (self):
 
         """Inserts a new position after self.
 
         Returns the newly created position."""
 
-        p = self
+        p = self ; context = p.v.context
         p2 = self.copy()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
-
-        p2.v = vnode(t)
+        p2.v = vnode(context=context)
         p2.v.iconVal = 0
-        p2.linkAfter(p)
+        p2._linkAfter(p)
 
         return p2
     #@-node:ekr.20040303175026.3:p.insertAfter
     #@+node:ekr.20040303175026.4:p.insertAsLastChild
-    def insertAsLastChild (self,t=None):
+    def insertAsLastChild (self):
 
         """Inserts a new vnode as the last child of self.
 
@@ -2351,27 +2203,22 @@ class basePosition (object):
         p = self
         n = p.numberOfChildren()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
-
-        return p.insertAsNthChild(n,t)
+        return p.insertAsNthChild(n)
     #@-node:ekr.20040303175026.4:p.insertAsLastChild
     #@+node:ekr.20040303175026.5:p.insertAsNthChild
-    def insertAsNthChild (self,n,t=None):
+    def insertAsNthChild (self,n):
 
         """Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
 
         Returns the newly created position."""
 
-        p = self ; p2 = self.copy()
+        p = self ; context = p.v.context
+        p2 = self.copy()
 
-        if not t:
-            t = tnode(headString="NewHeadline")
-
-        p2.v = vnode(t)
+        p2.v = vnode(context=context)
         p2.v.iconVal = 0
-        p2.linkAsNthChild(p,n)
+        p2._linkAsNthChild(p,n)
 
         return p2
     #@-node:ekr.20040303175026.5:p.insertAsNthChild
@@ -2393,11 +2240,12 @@ class basePosition (object):
         """Move a position after position a."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAfter(a)
+
+        a._adjustPositionBeforeUnlink(p)
+        p._unlink()
+        p._linkAfter(a)
 
         return p
-    #@nonl
     #@-node:ekr.20040303175026.10:p.moveAfter
     #@+node:ekr.20040306060312:p.moveToFirst/LastChildOf
     def moveToFirstChildOf (self,parent):
@@ -2405,8 +2253,8 @@ class basePosition (object):
         """Move a position to the first child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsNthChild(parent,0)
+        p._unlink()
+        p._linkAsNthChild(parent,0)
         return p
 
 
@@ -2415,9 +2263,9 @@ class basePosition (object):
         """Move a position to the last child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
+        p._unlink()
         n = parent.numberOfChildren()
-        p.linkAsNthChild(parent,n)
+        p._linkAsNthChild(parent,n)
         return p
     #@-node:ekr.20040306060312:p.moveToFirst/LastChildOf
     #@+node:ekr.20040303175026.11:p.moveToNthChildOf
@@ -2426,11 +2274,12 @@ class basePosition (object):
         """Move a position to the nth child of parent."""
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsNthChild(parent,n)
+
+        parent._adjustPositionBeforeUnlink(p)
+        p._unlink()
+        p._linkAsNthChild(parent,n)
 
         return p
-    #@nonl
     #@-node:ekr.20040303175026.11:p.moveToNthChildOf
     #@+node:ekr.20040303175026.6:p.moveToRoot
     def moveToRoot (self,oldRoot=None):
@@ -2440,8 +2289,10 @@ class basePosition (object):
         Important: oldRoot must the previous root position if it exists.'''
 
         p = self # Do NOT copy the position!
-        p.unlink()
-        p.linkAsRoot(oldRoot)
+        if oldRoot:
+            oldRoot._adjustPositionBeforeUnlink(p)
+        p._unlink()
+        p._linkAsRoot(oldRoot)
 
         return p
     #@-node:ekr.20040303175026.6:p.moveToRoot
@@ -2453,7 +2304,7 @@ class basePosition (object):
         p = self
         result = True # optimists get only unpleasant surprises.
         parent = p.getParent()
-        childIndex = p.childIndex()
+        childIndex = p._childIndex
 
         # g.trace(p,parent,pv)
         #@    << validate parent ivar >>
@@ -2487,8 +2338,8 @@ class basePosition (object):
 
         return result
     #@-node:ekr.20040303175026.13:p.validateOutlineWithParent
-    #@-node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
-    #@+node:ekr.20031218072017.928:p.moveToX
+    #@-node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting
+    #@+node:ekr.20080416161551.199:p.moveToX
     #@+at
     # These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
@@ -2503,57 +2354,60 @@ class basePosition (object):
     # will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@-at
-    #@+node:ekr.20031218072017.930:p.moveToBack
+    #@+node:ekr.20080416161551.200:p.moveToBack
     def moveToBack (self):
 
         """Move self to its previous sibling."""
 
-        p = self
+        p = self ; n = p._childIndex
 
-        p.v = p.v and p.v._back
+        parent_v = p._parentVnode()
+            # Returns None if p.v is None.
+
+        # Do not assume n is in range: this is used by positionExists.
+        if parent_v and p.v and 0 < n <= len(parent_v.t.children):
+            p._childIndex -= 1
+            p.v = parent_v.t.children[n-1]
+        else:
+            p.v = None
 
         return p
-    #@-node:ekr.20031218072017.930:p.moveToBack
-    #@+node:ekr.20031218072017.931:p.moveToFirstChild (pushes stack for cloned nodes)
+    #@-node:ekr.20080416161551.200:p.moveToBack
+    #@+node:ekr.20080416161551.201:p.moveToFirstChild
     def moveToFirstChild (self):
 
         """Move a position to it's first child's position."""
 
         p = self
 
-        if p:
-            child = p.v.t._firstChild
-            if child:
-                if p.isCloned():
-                    p.stack.append(p.v)
-                    # g.trace("push",p.v,p)
-                p.v = child
-            else:
-                p.v = None
+        if p.v and p.v.t.children:
+            p.stack.append((p.v,p._childIndex),)
+            p.v = p.v.t.children[0]
+            p._childIndex = 0
+        else:
+            p.v = None
 
         return p
-
-    #@-node:ekr.20031218072017.931:p.moveToFirstChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.932:p.moveToLastChild (pushes stack for cloned nodes)
+    #@nonl
+    #@-node:ekr.20080416161551.201:p.moveToFirstChild
+    #@+node:ekr.20080416161551.202:p.moveToLastChild
     def moveToLastChild (self):
 
         """Move a position to it's last child's position."""
 
         p = self
 
-        if p:
-            if p.v.t._firstChild:
-                child = p.v.lastChild()
-                if p.isCloned():
-                    p.stack.append(p.v)
-                    # g.trace("push",p.v,p)
-                p.v = child
-            else:
-                p.v = None
+        if p.v and p.v.t.children:
+            p.stack.append((p.v,p._childIndex),)
+            n = len(p.v.t.children)
+            p.v = p.v.t.children[n-1]
+            p._childIndex = n-1
+        else:
+            p.v = None
 
         return p
-    #@-node:ekr.20031218072017.932:p.moveToLastChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.933:p.moveToLastNode (Big improvement for 4.2)
+    #@-node:ekr.20080416161551.202:p.moveToLastChild
+    #@+node:ekr.20080416161551.203:p.moveToLastNode
     def moveToLastNode (self):
 
         """Move a position to last node of its tree.
@@ -2567,19 +2421,27 @@ class basePosition (object):
             p.moveToLastChild()
 
         return p
-    #@-node:ekr.20031218072017.933:p.moveToLastNode (Big improvement for 4.2)
-    #@+node:ekr.20031218072017.934:p.moveToNext
+    #@-node:ekr.20080416161551.203:p.moveToLastNode
+    #@+node:ekr.20080416161551.204:p.moveToNext
     def moveToNext (self):
 
         """Move a position to its next sibling."""
 
-        p = self
+        p = self ; n = p._childIndex
 
-        p.v = p.v and p.v._next
+        parent_v = p._parentVnode()
+            # Returns None if p.v is None.
+        if not p.v: g.trace('parent_v',parent_v,'p.v',p.v)
+
+        if p.v and parent_v and len(parent_v.t.children) > n+1:
+            p._childIndex = n+1
+            p.v = parent_v.t.children[n+1]
+        else:
+            p.v = None
 
         return p
-    #@-node:ekr.20031218072017.934:p.moveToNext
-    #@+node:ekr.20031218072017.935:p.moveToNodeAfterTree
+    #@-node:ekr.20080416161551.204:p.moveToNext
+    #@+node:ekr.20080416161551.205:p.moveToNodeAfterTree
     def moveToNodeAfterTree (self):
 
         """Move a position to the node after the position's tree."""
@@ -2593,42 +2455,36 @@ class basePosition (object):
             p.moveToParent()
 
         return p
-    #@-node:ekr.20031218072017.935:p.moveToNodeAfterTree
-    #@+node:ekr.20031218072017.936:p.moveToNthChild (pushes stack for cloned nodes)
+    #@-node:ekr.20080416161551.205:p.moveToNodeAfterTree
+    #@+node:ekr.20080416161551.206:p.moveToNthChild
     def moveToNthChild (self,n):
 
         p = self
 
-        if p:
-            child = p.v.nthChild(n) # Must call vnode method here!
-            if child:
-                if p.isCloned():
-                    p.stack.append(p.v)
-                    # g.trace("push",p.v,p)
-                p.v = child
-            else:
-                p.v = None
+        if p.v and len(p.v.t.children) > n:
+            p.stack.append((p.v,p._childIndex),)
+            p.v = p.v.t.children[n]
+            p._childIndex = n
+        else:
+            p.v = None
 
         return p
-    #@-node:ekr.20031218072017.936:p.moveToNthChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.937:p.moveToParent (pops stack when multiple parents)
+    #@-node:ekr.20080416161551.206:p.moveToNthChild
+    #@+node:ekr.20080416161551.207:p.moveToParent
     def moveToParent (self):
 
         """Move a position to its parent position."""
 
         p = self
 
-        if not p: return p
-
-        if p.v._parent and len(p.v._parent.t.vnodeList) == 1:
-            p.v = p.v._parent
-        elif p.stack:
-            p.v = p.stack.pop()
+        if p.v and p.stack:
+            p.v,p._childIndex = p.stack.pop()
         else:
             p.v = None
+
         return p
-    #@-node:ekr.20031218072017.937:p.moveToParent (pops stack when multiple parents)
-    #@+node:ekr.20031218072017.938:p.moveToThreadBack
+    #@-node:ekr.20080416161551.207:p.moveToParent
+    #@+node:ekr.20080416161551.208:p.moveToThreadBack
     def moveToThreadBack (self):
 
         """Move a position to it's threadBack position."""
@@ -2642,31 +2498,31 @@ class basePosition (object):
             p.moveToParent()
 
         return p
-    #@-node:ekr.20031218072017.938:p.moveToThreadBack
-    #@+node:ekr.20031218072017.939:p.moveToThreadNext
+    #@-node:ekr.20080416161551.208:p.moveToThreadBack
+    #@+node:ekr.20080416161551.209:p.moveToThreadNext
     def moveToThreadNext (self):
 
         """Move a position to threadNext position."""
 
         p = self
 
-        if p:
-            if p.v.t._firstChild:
+        if p.v:
+            if p.v.t.children:
                 p.moveToFirstChild()
-            elif p.v._next:
+            elif p.hasNext():
                 p.moveToNext()
             else:
                 p.moveToParent()
                 while p:
-                    if p.v._next:
+                    if p.hasNext():
                         p.moveToNext()
                         break #found
                     p.moveToParent()
                 # not found.
 
         return p
-    #@-node:ekr.20031218072017.939:p.moveToThreadNext
-    #@+node:ekr.20031218072017.940:p.moveToVisBack
+    #@-node:ekr.20080416161551.209:p.moveToThreadNext
+    #@+node:ekr.20080416161551.210:p.moveToVisBack
     def moveToVisBack (self,c):
 
         """Move a position to the position of the previous visible node."""
@@ -2704,8 +2560,8 @@ class basePosition (object):
             # assert not p.
             return p
     #@nonl
-    #@-node:ekr.20031218072017.940:p.moveToVisBack
-    #@+node:ekr.20031218072017.941:p.moveToVisNext
+    #@-node:ekr.20080416161551.210:p.moveToVisBack
+    #@+node:ekr.20080416161551.211:p.moveToVisNext
     def moveToVisNext (self,c):
 
         """Move a position to the position of the next visible node."""
@@ -2742,61 +2598,146 @@ class basePosition (object):
             # assert not p.
             return p
     #@nonl
-    #@-node:ekr.20031218072017.941:p.moveToVisNext
-    #@-node:ekr.20031218072017.928:p.moveToX
-    #@+node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20040228060340:p.vParentWithStack
-    # A crucial utility method.
-    # The p.level(), p.isVisible() and p.hasThreadNext() methods show how to use this method.
+    #@-node:ekr.20080416161551.211:p.moveToVisNext
+    #@-node:ekr.20080416161551.199:p.moveToX
+    #@+node:ekr.20080423062035.1:p.Low level methods
+    # These methods are only for the use of low-level code
+    # in leoNodes.py, leoFileCommands.py and leoUndo.py.
+    #@nonl
+    #@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+    def _adjustPositionBeforeUnlink (self,p2):
 
-    #@<< about the vParentWithStack utility method >>
-    #@+node:ekr.20040228060340.1:<< about the vParentWithStack utility method >>
-    #@+at 
-    # This method allows us to simulate calls to p.parent() without generating 
-    # any intermediate data.
-    # 
-    # For example, the code below will compute the same values for list1 and 
-    # list2:
-    # 
-    # # The first way depends on the call to p.copy:
-    # list1 = []
-    # p=p.copy() # odious.
-    # while p:
-    #     p = p.moveToParent()
-    #     if p: list1.append(p.v)
-    # 
-    # # The second way uses p.vParentWithStack to avoid all odious 
-    # intermediate data.
-    # 
-    # list2 = []
-    # n = len(p.stack)-1
-    # v,n = p.vParentWithStack(v,p.stack,n)
-    # while v:
-    #     list2.append(v)
-    #     v,n = p.vParentWithStack(v,p.stack,n)
-    #@-at
-    #@-node:ekr.20040228060340.1:<< about the vParentWithStack utility method >>
-    #@nl
+        '''Adjust position p before unlinking p2.'''
 
-    def vParentWithStack(self,v,stack,n):
+        p = self ; sib = p.copy()
 
-        """A utility that allows the computation of p.v without calling p.copy().
+        while sib.hasBack():
+            sib.moveToBack()
+            if sib == p2:
+                p._childIndex -= 1
+                break
+    #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+    #@+node:ekr.20040409203454.1:p._deleteLinksInTree
+    def _deleteLinksInTree (self):
 
-        v,stack[:n] correspond to p.v,p.stack for some intermediate position p.
+        """Adjust links when deleting node."""
 
-        Returns (v,n) such that v,stack[:n] correpond to the parent position of p."""
+        root = p = self
 
-        if not v:
-            return None,n
-        elif v._parent and len(v._parent.t.vnodeList) == 1:
-            return v._parent,n # don't change stack.
-        elif stack and n >= 0:
-            return self.stack[n],n-1 # simulate popping the stack.
+        # Delete p.v from the its own vnodeList.
+        if p.v in p.v.t.vnodeList:
+            # g.trace('**** remove p.v from %s' % p.headString())
+            p.v.t.vnodeList.remove(p.v)
+            p.v.t._p_changed = 1
+            assert(p.v not in p.v.t.vnodeList)
+
+        # Recursively delete links in the subtree.
+        if len(p.v.t.vnodeList) == 0:
+            # This node is not shared by other nodes.
+            for p in root.children_iter():
+                p._deleteLinksInTree()
+    #@-node:ekr.20040409203454.1:p._deleteLinksInTree
+    #@+node:ekr.20080416161551.214:p._linkAfter
+    def _linkAfter (self,p_after):
+
+        '''Link self after p_after.'''
+
+        p = self
+        parent_v = p_after._parentVnode()
+            # Returns None if p.v is None
+
+        # Init the ivars.
+        p.stack = p_after.stack[:]
+        p._childIndex = p_after._childIndex + 1
+
+        # Add v to it's tnode's vnodeList.
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1 # Support for tnode class.
+
+        # Add p.v to parent_v's children.
+        parent_v.t.children.insert(p_after._childIndex+1,p.v)
+        parent_v._p_changed = 1
+
+        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+        parent_v._computeParentsOfChildren()
+    #@-node:ekr.20080416161551.214:p._linkAfter
+    #@+node:ekr.20080416161551.215:p._linkAsNthChild
+    def _linkAsNthChild (self,parent,n):
+
+        p = self
+        parent_v = parent.v
+
+        # Init the ivars.
+        p.stack = parent.stack[:]
+        p.stack.append((parent_v,parent._childIndex),)
+        p._childIndex = n
+
+        # Add p.v to it's tnode's vnodeList.
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1 # Support for tnode class.
+
+        # Add p.v to parent_v's children.
+        parent_v.t.children.insert(n,p.v)
+        parent_v._p_changed = 1
+
+        # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+        parent_v._computeParentsOfChildren()
+
+    #@-node:ekr.20080416161551.215:p._linkAsNthChild
+    #@+node:ekr.20080416161551.216:p._linkAsRoot
+    def _linkAsRoot (self,oldRoot):
+
+        """Link self as the root node."""
+
+        p = self
+        assert(p.v)
+
+        hiddenRootNode = p.v.context.hiddenRootNode
+
+        if oldRoot: oldRootNode = oldRoot.v
+        else:       oldRootNode = None
+
+        # Init the ivars.
+        p.stack = []
+        p._childIndex = 0
+
+        # Update p.v.t.vnodeList.
+        if p.v not in p.v.t.vnodeList:
+            p.v.t.vnodeList.append(p.v)
+            p.v.t._p_changed = 1
+
+        # Update the hiddenRootNode's children.
+        if oldRoot:
+            hiddenRootNode.t.children.insert(0,p.v)
         else:
-            return None,n
-    #@-node:ekr.20040228060340:p.vParentWithStack
-    #@+node:ekr.20040409203454:p.restoreLinksInTree
-    def restoreLinksInTree (self):
+            hiddenRootNode.t.children = [p.v]
+
+        hiddenRootNode._computeParentsOfChildren()
+
+        return p
+    #@-node:ekr.20080416161551.216:p._linkAsRoot
+    #@+node:ekr.20080416161551.212:p._parentVnode
+    def _parentVnode (self):
+
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
+
+        p = self
+
+        if p.v:
+            data = p.stack and p.stack[-1]
+            if data:
+                v, junk = data
+                return v
+            else:
+                return p.v.context.hiddenRootNode
+        else:
+            return None
+    #@-node:ekr.20080416161551.212:p._parentVnode
+    #@+node:ekr.20040409203454:p._restoreLinksInTree
+    def _restoreLinksInTree (self):
 
         """Restore links when undoing a delete node operation."""
 
@@ -2804,216 +2745,55 @@ class basePosition (object):
 
         if p.v not in p.v.t.vnodeList:
             p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
+            p.v.t._p_changed = 1
 
         for p in root.children_iter():
-            p.restoreLinksInTree()
-    #@-node:ekr.20040409203454:p.restoreLinksInTree
-    #@+node:ekr.20040409203454.1:p.deleteLinksInTree & allies
-    def deleteLinksInTree (self):
+            p._restoreLinksInTree()
+    #@-node:ekr.20040409203454:p._restoreLinksInTree
+    #@+node:ekr.20080416161551.217:p._unlink
+    def _unlink (self):
 
-        """Delete and otherwise adjust links when deleting node."""
+        '''Unlink the receiver p from the tree.'''
 
-        root = self
-
-        root.deleteLinksInSubtree()
-
-        for p in root.children_iter():
-            p.adjustParentLinksInSubtree(parent=root)
-    #@+node:ekr.20040410170806:p.deleteLinksInSubtree
-    def deleteLinksInSubtree (self):
-
-        root = p = self
-
-        # Delete p.v from the vnodeList
-        if p.v in p.v.t.vnodeList:
-            # g.trace('**** remove p.v from %s' % p.headString())
-            p.v.t.vnodeList.remove(p.v)
-            p.v.t._p_changed = 1  # Support for tnode class.
-            assert(p.v not in p.v.t.vnodeList)
-        else:
-            # g.trace("not in vnodeList",p.v,p.vnodeListIds())
-            pass
-
-        if len(p.v.t.vnodeList) == 0:
-            # This node is not shared by other nodes.
-            for p in root.children_iter():
-                p.deleteLinksInSubtree()
-    #@-node:ekr.20040410170806:p.deleteLinksInSubtree
-    #@+node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
-    def adjustParentLinksInSubtree (self,parent):
-
-        root = p = self
-
-        assert(parent)
-
-        if p.v._parent and parent.v.t.vnodeList and p.v._parent not in parent.v.t.vnodeList:
-            # g.trace('**** adjust parent in %s' % p.headString())
-            p.v._parent = parent.v.t.vnodeList[0]
-
-        for p in root.children_iter():
-            p.adjustParentLinksInSubtree(parent=root)
-    #@-node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
-    #@-node:ekr.20040409203454.1:p.deleteLinksInTree & allies
-    #@-node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20040310062332:p.Link/Unlink methods
-    # These remain in 4.2:  linking and unlinking does not depend on position.
-
-    # These are private routines:  the position class does not define proxies for these.
-    #@+node:ekr.20040310062332.2:p.linkAfter
-    def linkAfter (self,after):
-
-        """Link self after v."""
-
-        p = self
-        # g.trace(p,after)
-
-        p.stack = after.stack[:]
-        p.v._parent = after.v._parent
-
-        # Add v to it's tnode's vnodeList.
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
-
-        p.v._back = after.v
-        p.v._next = after.v._next
-
-        after.v._next = p.v
-
-        if p.v._next:
-            p.v._next._back = p.v
-
-        if 0:
-            g.trace('-'*20,after)
-            p.dump(label="p")
-            after.dump(label="back")
-            if p.hasNext(): p.next().dump(label="next")
-    #@-node:ekr.20040310062332.2:p.linkAfter
-    #@+node:ekr.20040310062332.3:p.linkAsNthChild
-    def linkAsNthChild (self,parent,n):
-
-        """Links self as the n'th child of parent."""
-
-        # g.trace(self,parent,n,parent.v)
-
-        p = self
-
-        # Recreate the stack using the parent.
-        p.stack = parent.stack[:]
-
-        if parent.isCloned():
-            p.stack.append(parent.v)
-
-        p.v._parent = parent.v
-
-        # Add v to it's tnode's vnodeList.
-        if p.v not in p.v.t.vnodeList:
-            p.v.t.vnodeList.append(p.v)
-            p.v.t._p_changed = 1 # Support for tnode class.
-
-        if n == 0:
-            child1 = parent.v.t._firstChild
-            p.v._back = None
-            p.v._next = child1
-            if child1:
-                child1._back = p.v
-            parent.v.t._firstChild = p.v
-        else:
-            prev = parent.nthChild(n-1) # zero based
-            assert(prev)
-            p.v._back = prev.v
-            p.v._next = prev.v._next
-            prev.v._next = p.v
-            if p.v._next:
-                p.v._next._back = p.v
-
-        if 0:
-            g.trace('-'*20)
-            p.dump(label="p")
-            parent.dump(label="parent")
-    #@-node:ekr.20040310062332.3:p.linkAsNthChild
-    #@+node:ekr.20040310062332.4:p.linkAsRoot
-    def linkAsRoot (self,oldRoot):
-
-        """Link self as the root node."""
-
-        p = self ; v = p.v
-        if oldRoot: oldRootVnode = oldRoot.v
-        else:       oldRootVnode = None
-
-        p.stack = [] # Clear the stack.
-
-        # Clear all links except the child link.
-        v._parent = None
-        v._back = None
-        v._next = oldRootVnode
-
-        # Add v to it's tnode's vnodeList.
-        if v not in v.t.vnodeList:
-            v.t.vnodeList.append(v)
-            v.t._p_changed = 1 # Support for tnode class.
-
-        # Link in the rest of the tree only when oldRoot != None.
-        # Otherwise, we are calling this routine from init code and
-        # we want to start with a pristine tree.
-        if oldRoot:
-            oldRoot.v._back = v
-
-        # p.dump(label="root")
-    #@-node:ekr.20040310062332.4:p.linkAsRoot
-    #@+node:ekr.20040310062332.5:p.unlink
-    def unlink (self):
-
-        """Unlinks a position p from the tree before moving or deleting.
-
-        The p.v._fistChild link does NOT change."""
-
-        # Warning: p.parent() is NOT necessarily the same as p.v._parent!
-
-        p = self ; v = p.v
-
-        # g.trace('p.v._parent',p.v._parent," child:",v.t._firstChild," back:",v._back, " next:",v._next)
+        trace = True
+        p = self ; n = p._childIndex
+        parent_v = p._parentVnode()
+            # returns None if p.v is None
+        assert(p.v)
+        assert(parent_v)
 
         # Remove v from it's tnode's vnodeList.
-        vnodeList = v.t.vnodeList
-        if v in vnodeList:
-            vnodeList.remove(v)
-            v.t._p_changed = 1 # Support for tnode class.
-        assert(v not in vnodeList)
+        if p.v in p.v.t.vnodeList:
+            p.v.t.vnodeList.remove(p.v)
+            p.v.t._p_changed = 1 # Support for tnode class.
 
-        # Reset the firstChild link in its direct father.
-        if p.v._parent:
-            if 0: # This can fail.  I have no idea why it was present.
-                assert(p.v and p.v._parent in p.v.directParents())
-            if p.v._parent.t._firstChild == v:
-                #g.trace('resetting _parent.v.t._firstChild to',v._next)
-                p.v._parent.t._firstChild = v._next
-        else:
-            parent = p.parent()
-            if parent:
-                if 0: # This can fail.  I have no idea why it was present.
-                    assert(parent.v in p.v.directParents())
-                if parent.v.t._firstChild == v:
-                    #g.trace('resetting parent().v.t._firstChild to',v._next)
-                    parent.v.t._firstChild = v._next
+        # Delete p.v from parent_v's children.
+        if 0 <= n < len(parent_v.t.children):
+            if parent_v.t.children[n] == p.v:
+                del parent_v.t.children[n]
+                parent_v._p_changed = 1
+            elif trace:
+                g.trace('**can not happen: children[%s] != p.v' % (n))
+                g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+                g.trace('p.v',p.v)
+                g.trace('** callers:',g.callers())
+                if g.app.unitTesting: assert False, 'children[%s] != p.v'
+        elif trace:
+            g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
+            g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+            g.trace('p.v',p.v)
+            g.trace('** callsers:',g.callers())
+            if g.app.unitTesting: assert False, 'children[%s] != p.v'
 
-        # Do NOT delete the links in any child nodes.
+        # Clear the entire parents array.
+        if p.v.parents:
+            p.v.parents = []
+            p.v._p_changed = 1
 
-        # Clear the links in other nodes.
-        if v._back: v._back._next = v._next
-        if v._next: v._next._back = v._back
 
-        # Unlink _this_ node.
-        v._parent = v._next = v._back = None
 
-        if 0:
-            g.trace('-'*20)
-            p.dump(label="p")
-            if parent: parent.dump(label="parent")
-    #@nonl
-    #@-node:ekr.20040310062332.5:p.unlink
-    #@-node:ekr.20040310062332:p.Link/Unlink methods
+    #@-node:ekr.20080416161551.217:p._unlink
+    #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 
 class position (basePosition):

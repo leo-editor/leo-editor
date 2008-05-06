@@ -488,7 +488,6 @@ class parserBaseClass:
                 elif bunch is not None:
                     # A regular shortcut.
                     bunch.val = k.strokeFromSetting(bunch.val)
-                    # g.trace(bunch.val)
                     bunch.pane = modeName
                     bunchList = d.get(name,[])
                     # Important: use previous bindings if possible.

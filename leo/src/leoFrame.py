@@ -1201,7 +1201,7 @@ class leoBody:
         if not changed: return
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-        p.v.setTnodeText(newText)
+        p.v.setBodyString(newText)
         p.v.t.insertSpot = body.getInsertPoint()
         #@    << recolor the body >>
         #@+node:ekr.20051026083733.6:<< recolor the body >>
@@ -2682,7 +2682,7 @@ class leoTree:
 
             # Always do this.  Otherwise there can be problems with trailing newlines.
 
-            s = g.toUnicode(p.v.t.bodyString,"utf-8")
+            s = g.toUnicode(p.v.t._bodyString,"utf-8")
             old_s = w.getAllText()
 
             if True and p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
@@ -3245,7 +3245,7 @@ class nullTree (leoTree):
         for key in keys:
             # keys are tnodes, values are stringTextWidgets.
             w = d.get(key)
-            print 'w',w,'t.headString:',key.headString,'s:',repr(w.s)
+            print 'w',w,'t._headString:',key.headString,'s:',repr(w.s)
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides

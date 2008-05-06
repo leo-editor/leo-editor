@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -791,11 +791,11 @@
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -1189,7 +1189,6 @@
 <v t="ekr.20040802065214" annotate="7d71002e"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
 </v>
-<v t="ekr.20070611105423"><vh>@test contract all</vh></v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
@@ -1897,9 +1896,6 @@
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal/delphi interface</vh></v>
 </v>
-<v t="ekr.20080424120358.1"><vh>PHP tests</vh>
-<v t="ekr.20080424120358.2"><vh>@test PHP 1</vh></v>
-</v>
 <v t="ekr.20071020075538.10"><vh>Python tests</vh>
 <v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
 <v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
@@ -1982,6 +1978,10 @@
 </v>
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
+<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
+</v>
 <v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
 <v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
@@ -1990,11 +1990,9 @@
 <v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
 <v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
 <v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
-<v t="ekr.20040712101754.184"><vh>@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
 <v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links</vh></v>
 <v t="ekr.20040712101754.207" annotate="7d71002e"><vh>@test consistency of threadBack/Next links</vh></v>
-<v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@test consistency of tnodeListAndParents</vh></v>
 <v t="ekr.20040712101754.209" annotate="7d71002e"><vh>@test hasNextBack</vh></v>
 <v t="ekr.20040712101754.210" annotate="7d71002e"><vh>@test hasParentChild</vh></v>
 <v t="ekr.20040712101754.211" annotate="7d71002e"><vh>@test hasThreadNextBack</vh></v>
@@ -2025,9 +2023,25 @@
 <v t="ekr.20040802071519.1"><vh>child</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
-<v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
+<v t="ekr.20040712101754.200" a="M" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+</v>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
+<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
+<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
 <v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 <v t="ekr.20070611071101"><vh>@@test visback</vh>
@@ -2130,6 +2144,22 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
+<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
+<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3607,7 +3637,7 @@ def copyTree(self,root):
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v.t = leoNodes.tnode(0, v.t.bodyString)
+        v.t = leoNodes.tnode(0, v.bodyString())
         v = v.threadNext()
     return result</t>
 <t tx="ekr.20040712101754.158">p = c.currentPosition().firstChild()
@@ -4037,11 +4067,12 @@ def moreBody (self):
                 parents2.append(v)
                 parent2 = v.directParents()
         else:
-            if p.v._parent: parents1 = p.v._parent.t.vnodeList
-            else:           parents1 = []
+            parents1 = p.v.parents
+            # if p.v._parent: parents1 = p.v._parent.t.vnodeList
+            # else:           parents1 = []
             parents2 = p.v.directParents()
         
-        assert len(parents1) == len(parents2), "length mismatch: %s, %s" % (p,p.v._parent)
+        assert len(parents1) == len(parents2), "length mismatch: %s" % (p)
         for parent in parents1:
             assert parent in parents2, "%s not in %s" % (parent,parent1)
         for parent in parents2:
@@ -4180,11 +4211,15 @@ assert p.equal(root) is False</t>
 <t tx="ekr.20040712101754.200">for p in c.allNodes_iter():
     if p.isCloned() and p.hasChildren():
         childv = p.firstChild().v
-        assert(childv == p.v.t._firstChild)
-        assert(id(childv) == id(p.v.t._firstChild))
+        # assert(childv == p.v.t._firstChild)
+        # assert(id(childv) == id(p.v.t._firstChild))
+        firstChild = p.v.t.children[0]
+        assert childv == firstChild
         for v in p.v.t.vnodeList:
-            assert(v.t._firstChild == childv)
-            assert(id(v.t._firstChild) == id(childv))</t>
+            # assert(v.t._firstChild == childv)
+            # assert(id(v.t._firstChild) == id(childv))
+            firstChild = v.t.children[0]
+            assert(id(firstChild) == id(childv))</t>
 <t tx="ekr.20040712101754.201">for copy in (True,False):
     p2 = c.rootPosition()
     for p in c.allNodes_iter(copy=copy):
@@ -4255,16 +4290,25 @@ for p in c.allNodes_iter():
 
     if threadNext:
         assert(p == threadNext.getThreadBack())</t>
-<t tx="ekr.20040712101754.208">for p in c.allNodes_iter():
-    if p.isCloned():
-        parents = p.v.t.vnodeList
-        for child in p.children_iter():
-            vparents = child.v.directParents()
-            assert(len(parents) == len(vparents))
-            for parent in parents:
-                assert(parent in vparents)
-            for parent in vparents:
-                assert(parent in parents)</t>
+<t tx="ekr.20040712101754.208">try:
+    for p in c.allNodes_iter():
+        if p.isCloned():
+            parents = p.v.t.vnodeList
+            for child in p.children_iter():
+                vparents = child.directParents()
+                assert(len(parents) == len(vparents)), 'fail 1'
+                for z in parents:
+                    assert(z in vparents), 'fail 2'
+                for z in vparents:
+                    assert(z in parents), 'fail 3'
+                    
+except AssertionError:
+    print "parents..."
+    for parent in parents: print parent
+    print "vparents..."
+    for parent in vparents: print parent
+    g.pdb()
+    raise # for unittest.</t>
 <t tx="ekr.20040712101754.209">for p in c.allNodes_iter():
 
     back = p.back()
@@ -13422,10 +13466,7 @@ for key in keys1:
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
             key.startswith('delete-') and key.endswith('-button') or
-            key.startswith('nav-') or #ignore commands defined in nav_buttons plugin
-            key.startswith('rclick-') or #ignore commands defined in rclick plugin
-            key.startswith('toolbar-') or #ignore commands difined in toolbar plugin
-            key.endswith('-menu')
+            key.startswith('nav-') and key.endswith('-menu')
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:
@@ -15607,7 +15648,7 @@ try:
     assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -15688,7 +15729,7 @@ try:
     assert len(s2) == len(s) + len('target')
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -15716,7 +15757,7 @@ try:
         c.k.autoCompleter.calltip(obj=g)
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15729,7 +15770,7 @@ try:
     c.insertBodyTime()
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15744,7 +15785,7 @@ try:
         (len(s)+len(pattern)-4,')'),
     ):
         w.setAllText(s)
-        p.v.t.bodyString = s
+        p.setBodyString(s)
         w.setInsertPoint('end')
         w.insert('end',pattern)
         w.setInsertPoint(index)
@@ -15755,7 +15796,7 @@ try:
         assert s2[ins] == result,'Expected: %s, got: %s' % (repr(result),repr(s2[ins]))
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString = s
     c.recolor()
     c.endUpdate(False)
 # end:</t>
@@ -15833,7 +15874,7 @@ try:
     assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -15845,7 +15886,6 @@ finally:
     import inspect
     
     baseClass = leoFrame.leoFrame
-    baseClassName = baseClass.__name__
     subClasses  = (leoTkinterFrame.leoTkinterFrame,leoFrame.nullFrame)
     baseObject = c.frame
     
@@ -15853,7 +15893,7 @@ finally:
     methodNames = [z[0] for z in methods]
     
     for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClassName,name)
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
     
     for subClass in subClasses:
         subclassName = subClass.__name__
@@ -15861,15 +15901,10 @@ finally:
             base_func = getattr(baseClass,name)
             sub_func =  getattr(subClass,name)
             if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (
-                    subclassName,name)
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
             if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (
-                    subclassName,name)
-    
-    for name in baseObject.mustBeDefined:
-        assert name in methodNames, 'not defined in base class %s or any subclass %s' % (
-            baseClassName,name)</t>
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+</t>
 <t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
     import leoFrame,leoTkinterFrame
     import inspect,sys
@@ -15985,7 +16020,7 @@ try:
     assert len(s2) &gt; len(s) + 15
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     c.recolor()
 
 # end:</t>
@@ -16677,11 +16712,6 @@ finally:
 <t tx="ekr.20070611081718.1"></t>
 <t tx="ekr.20070611081718.2"></t>
 <t tx="ekr.20070611081718.4"></t>
-<t tx="ekr.20070611105423">c.contractAllHeadlines()
-p = c.rootPosition()
-while p.hasNext():
-    p.moveToNext()
-c.selectPosition(p)</t>
 <t tx="ekr.20070611105423.1">c.contractAllHeadlines()</t>
 <t tx="ekr.20070611105728"># Remove any previous children.
 while p.hasChildren():
@@ -16692,6 +16722,7 @@ c.insertHeadline()
 p2 = c.currentPosition()
 p2.moveToFirstChildOf(p)
 p2.setHeadString('aClone')
+c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
@@ -16700,9 +16731,9 @@ try:
     # Select the first clone and demote (it should be illegal)
     c.selectPosition(p2)
     c.demote() # This should do nothing.
-    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning')
-    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True)
-    assert 2 == p.numberOfChildren()
+    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+    assert 2 == p.numberOfChildren(), 'fail 3'
     # Delete the children, but only if there are no errors.
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -18984,7 +19015,7 @@ try:
     assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -19004,7 +19035,7 @@ try:
     assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -19301,7 +19332,7 @@ try:
     assert len(s2) == len(s) + len('target')
 finally:
     w.setAllText(s)
-    p.v.t.bodyString = s2
+    p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
     c.endUpdate(False)
@@ -20065,18 +20096,477 @@ try:
 finally:
     c.endUpdate(False)
 </t>
-<t tx="ekr.20080424120358.1"></t>
-<t tx="ekr.20080424120358.2">s = '''
-&lt;?
+<t tx="ekr.20080418101332.1"></t>
+<t tx="ekr.20080423110627.2">n = 0
+for v in c.all_unique_vnodes_iter():
+    if hasattr(v,'unknownAttributes'):
+        d = v.unknownAttributes
+        if d.get('str_leo_pos'):
+            n += 1
+            
+# print n
+assert n &lt; 2</t>
+<t tx="ekr.20080423110627.3"># Delete all children.
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+assert child, 'no child'
 
-echo 'Hello,
-world!';
+try:
+    c.selectPosition(child)
+    c.clone()
+    clone = c.currentPosition()
+    assert clone.headString() == 'child','fail headstring'
+    assert child.isCloned(), 'fail 1'
+    assert clone.isCloned(), 'fail 2'
+    assert child.isCloned(), 'fail 3'
+    assert clone.isCloned(), 'fail 4'
+    c.undoer.undo()
+    assert not child.isCloned(), 'fail 1-a'
+    c.undoer.redo()
+    assert child.isCloned(), 'fail 1-b'
+    c.undoer.undo()
+    assert not child.isCloned(), 'fail 1-c'
+    c.undoer.redo()
+    assert child.isCloned(), 'fail 1-d'
+    oldRoot = c.rootPosition()
+    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    assert child.isCloned(), 'fail 3-2'
+    assert clone.isCloned(), 'fail 4-2'
+    assert not clone.parent(), 'fail 5'
+    assert not clone.back(), 'fail 6'
+    clone.doDelete()
+    assert not child.isCloned(), 'fail 7'
+finally:
+    # Delete all children.
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080423110627.5">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+c.selectPosition(grandChild)
+c.clone()
+c.selectPosition(child)
 
-?&gt;
-'''
+try:
+    p.expand()
+    c.selectPosition(child)
+    c.copyOutline()
+    oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    c.selectPosition(child)
+    c.currentPosition().contract() # Essential
+    c.pasteOutline()
+    current = c.currentPosition()
+    assert current != child, 'fail 2'
+    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    for t in newTnodes:
+        assert t not in oldTnodes, 'fail 3'
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.phpUnitTest(p,s=s,showTree=False)</t>
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.8">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+assert child, 'no child'
+grandChild = child.insertAsNthChild(0)
+grandChild.setHeadString('grand child')
+
+try:
+    c.selectPosition(child, updateBeadList=False)
+    c.copyOutline()
+    oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
+    c.currentPosition().contract() # Essential
+    c.pasteOutlineRetainingClones()
+    current = c.currentPosition()
+    assert current != child, 'fail 2'
+    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    for t in newTnodes:
+        assert t in oldTnodes, 'fail 3'
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.11">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p5 = p.insertAsNthChild(3)
+    p5.setHeadString('D')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.moveOutlineDown()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1'
+    assert moved.back().headString() == 'C', 'fail 2'
+    assert moved.next().headString() == 'D', 'fail 3'
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
+    assert moved.next() == p5, 'fail 5: %s != %s' % (moved.next(),p5)
+    c.undoer.undo()
+    moved = c.currentPosition()
+    assert moved.back() == p2, 'fail 4'
+    assert moved.next() == p4, 'fail 5'
+    c.undoer.redo()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1-2'
+    assert moved.back().headString() == 'C', 'fail 2-2'
+    assert moved.next().headString() == 'D', 'fail 3-2'
+    c.undoer.undo()
+    moved = c.currentPosition()
+    assert moved.back() == p2, 'fail 4-2'
+    assert moved.next() == p4, 'fail 5-2'
+    c.undoer.redo()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1-3'
+    assert moved.back().headString() == 'C', 'fail 2-3'
+    assert moved.next().headString() == 'D', 'fail 3-3'
+
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080423110627.12">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p5 = p.insertAsNthChild(3)
+    p5.setHeadString('D')
+    p.expand()
+    c.setCurrentPosition(p4)
+    c.moveOutlineUp()
+    moved = c.currentPosition()
+    assert moved.headString() == 'C', 'fail 1'
+    assert moved.back().headString() == 'A', 'fail 2'
+    assert moved.next().headString() == 'B', 'fail 3'
+    assert moved.back() == p2, 'fail 4: %s != %s' % (moved.back(),p2)
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    # assert moved.next() == p3, 'fail 5: %s != %s' % (moved.next(),p3)
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
+<t tx="ekr.20080423110627.13">import leoNodes
+
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+
+try:
+    oldRoot = c.rootPosition()
+    child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    c.setRootPosition(child)
+    assert c.positionExists(child)
+    assert c.rootPosition().headString() == 'child', 'fail 1'
+    next = c.rootPosition().next()
+    assert next.headString() == 'Startup', 'fail 2: next: %s' % next
+    c.rootPosition().doDelete(newNode=next)
+    c.setRootPosition(next)
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
+    # c.selectPosition(p)
+    c.redraw_now()</t>
+<t tx="ekr.20080501121449.1"></t>
+<t tx="ekr.20080501121449.3">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p.expand()
+    c.setCurrentPosition(p2)
+    c.insertHeadline()
+    p = c.currentPosition()
+    p.setHeadString('inserted')
+    assert p.back().headString() == 'A', 'fail 1'
+    assert p.next().headString() == 'B', 'fail 2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p == p2,        'fail 3'
+    assert p.next() == p3, 'fail 4'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p.back().headString() == 'A', 'fail 1-2'
+    assert p.next().headString() == 'B', 'fail 2-2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p == p2,        'fail 3-2'
+    assert p.next() == p3, 'fail 3-2'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p.back().headString() == 'A', 'fail 1-3'
+    assert p.next().headString() == 'B', 'fail 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080503073030.1">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p.expand()
+    c.setCurrentPosition(p2)
+    c.moveOutlineLeft()
+    moved = c.currentPosition()
+    assert moved.headString() == 'A','fail 1'
+    # This assert fails because p4._childIndex != moved.back()._childIndex.
+    assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
+    
+    
+    
+    moved.doDelete(newNode=p)
+    
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+        c.redraw_now()</t>
+<t tx="ekr.20080503073030.2">while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.moveOutlineRight()
+    moved = c.currentPosition()
+    assert moved.headString() == 'B', 'fail 1'
+    assert moved.parent() == p2
+    c.undoer.undo()
+    c.undoer.redo()
+    c.undoer.undo()
+    c.undoer.redo()
+finally:
+    if 1:
+        while p.hasChildren():
+            p.firstChild().doDelete(newNode=None)
+    if 1:
+        c.redraw_now()</t>
+<t tx="ekr.20080503082625.3">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.deleteOutline()
+    p = c.currentPosition()
+    assert p.headString() == 'A', 'fail 1'
+    assert p.next().headString() == 'C', 'fail 2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p.back() == p2, 'fail 4'
+    assert p.next() == p4, 'fail 5'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p.headString() == 'A', 'fail 1-2'
+    assert p.next().headString() == 'C', 'fail 2-2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p.back() == p2, 'fail 4-2'
+    assert p.next() == p4, 'fail 5-2'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p.headString() == 'A', 'fail 1-3'
+    assert p.next().headString() == 'C', 'fail 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080503082625.4">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p3.insertAsNthChild(0)
+    p4.setHeadString('child 1')
+    p5 = p3.insertAsNthChild(1)
+    p5.setHeadString('child 2')
+    p.expand()
+    p6 = p.insertAsNthChild(2)
+    p6.setHeadString('C')
+    c.setCurrentPosition(p3)
+    c.promote()
+    p = c.currentPosition()
+    assert p == p3,                                     'fail 1'
+    assert p.headString() == 'B',                       'fail 2'
+    assert p.next().headString()=='child 1',            'fail 3'
+    assert p.next().next().headString() == 'child 2',   'fail child 1'
+    assert p.next().next().next().headString() == 'C',  'fail child 2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p == p3
+    assert p.back() == p2,                              'fail 5'
+    assert p.next() == p6,                              'fail 6'
+    assert p.firstChild().headString()=='child 1',          'fail child 3'
+    assert p.firstChild().next().headString() == 'child 2', 'fail child 4'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p == p3,                                     'fail 1-2'
+    assert p.headString() == 'B',                       'fail 2-2'
+    assert p.next().headString()=='child 1',            'fail 3-2'
+    assert p.next().next().headString() == 'child 2',   'fail child 1-2'
+    assert p.next().next().next().headString() == 'C',  'fail child 2-2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p == p3
+    assert p.back() == p2,                                  'fail 5-2'
+    assert p.next() == p6,                                  'fail 6-2'
+    assert p.firstChild().headString()=='child 1',          'fail child 3-2'
+    assert p.firstChild().next().headString() == 'child 2', 'fail child 4-2'
+    c.undoer.redo()
+    p = c.currentPosition()
+    assert p == p3,                                     'fail 1-3'
+    assert p.headString() == 'B',                       'fail 2-3'
+    assert p.next().headString()=='child 1',            'fail 3-3'
+    assert p.next().next().headString() == 'child 2',   'fail child 1-3'
+    assert p.next().next().next().headString() == 'C',  'fail child 2-3'
+    
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080503082625.5">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p5 = p.insertAsNthChild(3)
+    p5.setHeadString('D')
+    p.expand()
+    c.setCurrentPosition(p3)
+    c.demote()
+    p = c.currentPosition()
+    assert p == p3,                                     'fail 1'
+    assert p.headString() == 'B',                       'fail 2'
+    assert not p.next(),                                'fail 3'
+    assert p.firstChild().headString() == 'C',          'fail child 1'
+    assert p.firstChild().next().headString() == 'D',   'fail child 2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p == p3
+    assert p.back() == p2, 'fail 5'
+    assert p.next() == p4, 'fail 6'
+    c.undoer.redo()
+    assert p == p3,                                     'fail 1-2'
+    assert p.headString() == 'B',                       'fail 2-2'
+    assert not p.next(),                                'fail 3-2'
+    assert p.firstChild().headString() == 'C',          'fail child 1-2'
+    assert p.firstChild().next().headString() == 'D',   'fail child 2-2'
+    c.undoer.undo()
+    p = c.currentPosition()
+    assert p.back() == p2, 'fail 4-2'
+    assert p.next() == p4, 'fail 5-2'
+    c.undoer.redo()
+    assert p == p3,                                     'fail 1-3'
+    assert p.headString() == 'B',                       'fail 2-3'
+    assert not p.next(),                                'fail 3-3'
+    assert p.firstChild().headString() == 'C',          'fail child 1-3'
+    assert p.firstChild().next().headString() == 'D',   'fail child 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
+<t tx="ekr.20080503132221.1">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+    
+child = p.insertAsNthChild(0)
+child.setHeadString('child')
+c.selectPosition(child)
+
+try:
+    for undoType in ('Create Chapter From Node','Create Chapter'):
+        c.chapterController.createChapterByName('new-chapter',p,undoType)
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo()
+        c.undoer.redo()
+        c.undoer.undo() # Don't pollute future unit tests.
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()</t>
 </tnodes>
 </leo_file>

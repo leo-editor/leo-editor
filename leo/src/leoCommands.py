@@ -75,6 +75,10 @@ class baseCommands:
         # Init ivars with self.x instead of c.x to keep Pychecker happy
         self.chapterController = None
         self.frame = frame
+
+        self.hiddenRootNode = leoNodes.vnode(context=c)
+        self.hiddenRootNode.setHeadString('<hidden root vnode>')
+        self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
         self.isZipped = False # May be set to True by g.openWithFileName.
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -435,11 +439,11 @@ class baseCommands:
             frame.deiconify()
             frame.lift()
             frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-            t = leoNodes.tnode()
-            v = leoNodes.vnode(t)
-            p = leoNodes.position(v,[])
+            v = leoNodes.vnode(context=c)
+            p = leoNodes.position(v)
             v.initHeadString("NewHeadline")
-            v.moveToRoot(oldRoot=None)
+            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+            p._linkAsRoot(oldRoot=None)
             c.setRootVnode(v) # New in Leo 4.4.2.
             c.editPosition(p)
             # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -795,7 +799,7 @@ class baseCommands:
                     c.updateRecentFiles(c.mFileName)
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@nonl
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -834,7 +838,7 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
@@ -891,7 +895,7 @@ class baseCommands:
 
         finally:
             c.endUpdate()
-            c.widgetWantsFocus(w)
+            c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
     def revert (self,event=None):
@@ -1060,7 +1064,7 @@ class baseCommands:
                     w = c.frame.body.bodyCtrl
                     p = c.insertHeadline(op_name=undoType)
                     p.setHeadString('@read-file-into-node ' + fileName)
-                    p.v.setTnodeText(s)
+                    p.setBodyString(s)
                     w.setAllText(s)
                 finally:
                     c.endUpdate()
@@ -2116,7 +2120,7 @@ class baseCommands:
                         dirtyVnodeList.extend(dirtyVnodeList2)
                 else:
                     changed = False ; result = []
-                    text = p.t.bodyString
+                    text = p.t._bodyString
                     assert(g.isUnicode(text))
                     lines = string.split(text, '\n')
                     for line in lines:
@@ -2129,7 +2133,7 @@ class baseCommands:
                         dirtyVnodeList2 = p.setDirty()
                         dirtyVnodeList.extend(dirtyVnodeList2)
                         result = string.join(result,'\n')
-                        p.setTnodeText(result)
+                        p.setBodyString(result)
                         u.afterChangeNodeContents(p,undoType,innerUndoData)
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             if not g.unitTesting:
@@ -2163,7 +2167,7 @@ class baseCommands:
                         dirtyVnodeList.extend(dirtyVnodeList2)
                 else:
                     result = [] ; changed = False
-                    text = p.t.bodyString
+                    text = p.t._bodyString
                     assert(g.isUnicode(text))
                     lines = string.split(text, '\n')
                     for line in lines:
@@ -2176,7 +2180,7 @@ class baseCommands:
                         dirtyVnodeList2 = p.setDirty()
                         dirtyVnodeList.extend(dirtyVnodeList2)
                         result = string.join(result,'\n')
-                        p.setTnodeText(result)
+                        p.setBodyString(result)
                         u.afterChangeNodeContents(p,undoType,undoData)
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             if not g.unitTesting:
@@ -2249,7 +2253,7 @@ class baseCommands:
 
         p = parent.insertAsLastChild()
         p.initHeadString(headline)
-        p.setTnodeText(body)
+        p.setBodyString(body)
         p.setDirty()
         c.validateOutline()
         return p
@@ -3042,6 +3046,7 @@ class baseCommands:
         c = self
         c.endEditing()
         s = c.fileCommands.putLeoOutline()
+        # g.trace('type(s)',type(s))
         g.app.gui.replaceClipboardWith(s)
     #@-node:ekr.20031218072017.1550:copyOutline
     #@+node:ekr.20031218072017.1551:pasteOutline
@@ -3089,9 +3094,9 @@ class baseCommands:
                         t=t,head=v.headString(),body=v.bodyString())
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
-
+        # create a *position* to be pasted.
         if isLeo:
-            pasted = c.fileCommands.getLeoOutline(s,reassignIndices)
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
         if not pasted: return
@@ -3271,7 +3276,7 @@ class baseCommands:
         try:
             undoData = u.beforeDeleteNode(p)
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.doDelete()
+            p.doDelete(newNode)
             c.selectPosition(newNode)
             c.setChanged(True)
             u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
@@ -3368,116 +3373,79 @@ class baseCommands:
             return True
     #@-node:ekr.20031218072017.1765:c.validateOutline
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
+    #@+node:ekr.20080425060424.1:Sort...
     #@+node:ekr.20050415134809:c.sortChildren
     def sortChildren (self,event=None,cmp=None):
 
         '''Sort the children of a node.'''
 
-        c = self ; u = c.undoer ; undoType = 'Sort Children'
-        p = c.currentPosition()
-        if not p or not p.hasChildren(): return
+        c = self ; p = c.currentPosition()
 
-        c.beginUpdate()
-        try: # In update
-            c.endEditing()
-            u.beforeChangeGroup(p,undoType)
-            c.sortChildrenHelper(p, cmp=cmp)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            c.setChanged(True)
-            u.afterChangeGroup(p,undoType,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate()
+        if p and p.hasChildren():
+            c.sortSiblings(p=p.firstChild(),sortChildren=True)
     #@-node:ekr.20050415134809:c.sortChildren
-    #@+node:ekr.20040303175026.12:c.sortChildrenHelper
-    def sortChildrenHelper (self,p,cmp=None):
-
-        c = self ; u = c.undoer
-
-        # Create a list of tuples sorted on headlines.
-        pairs = [(child.headString().lower(),child.copy()) for child in p.children_iter()]
-        if cmp:
-            pairs.sort(cmp)
-        else:
-            pairs.sort()
-
-        # Move the children.
-        index = 0
-        for headline,child in pairs:
-            undoData = u.beforeMoveNode(child)
-            child.moveToNthChildOf(p,index)
-            u.afterMoveNode(child,'Sort',undoData)
-            index += 1
-    #@nonl
-    #@-node:ekr.20040303175026.12:c.sortChildrenHelper
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None,cmp=None):
+    def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
 
         '''Sort the siblings of a node.'''
 
-        c = self ; u = c.undoer ; undoType = 'Sort Siblings'
-        p = c.currentPosition()
+        c = self ; u = c.undoer
+        if p is None: p = c.currentPosition()
         if not p: return
 
+        undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+        parent_v = p._parentVnode()
         parent = p.parent()
-        if not parent:
-            c.sortTopLevel(cmp=cmp)
-        else:
-            c.beginUpdate()
-            try: # In update...
-                c.endEditing()
-                u.beforeChangeGroup(p,undoType)
-                c.sortChildrenHelper(parent, cmp=cmp)
-                dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-                c.setChanged(True)
-                u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
-            finally:
-                c.endUpdate()
-    #@-node:ekr.20050415134809.1:c.sortSiblings
-    #@+node:ekr.20031218072017.2896:c.sortTopLevel
-    def sortTopLevel (self,event=None, cmp=None):
+        oldChildren = parent_v.t.children[:]
+        newChildren = parent_v.t.children[:]
 
-        '''Sort the top-level nodes of an outline.'''
+        def key (self):
+            return self.headString().lower()
 
-        c = self ; u = c.undoer ; undoType = 'Sort Siblings'
-        root = c.rootPosition()
-        if not root: return
+        if cmp: newChildren.sort(cmp,key=key)
+        else:   newChildren.sort(key=key)
 
-        # Create a list of tuples sorted by headlines.
-        pairs = [(p.headString().lower(),p.copy())
-            for p in root.self_and_siblings_iter()]
-        if cmp:
-            pairs.sort(cmp)
-        else:
-            pairs.sort()
+        # g.trace(g.listToString(newChildren))
 
         c.beginUpdate()
-        try: # In update...
-            dirtyVnodeList = []
-            u.beforeChangeGroup(root,undoType)
-            if 1: # In group...
-                h,p = pairs[0]
-                if p != root:
-                    undoData = u.beforeMoveNode(p)
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    p.moveToRoot(oldRoot=root)
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    u.afterMoveNode(p,'Sort',undoData)
-                for h,next in pairs[1:]:
-                    undoData = u.beforeMoveNode(next)
-                    next.moveAfter(p)
-                    u.afterMoveNode(next,'Sort',undoData)
-                    p = next
-                c.setRootPosition(c.findRootPosition(root)) # New in 4.4.2.
-            u.afterChangeGroup(root,undoType,dirtyVnodeList=dirtyVnodeList)
+        try:
+            bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
+            parent_v.t.children = newChildren
+            if parent:
+                dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+            else:
+                dirtyVnodeList = []
+            u.afterSort(p,bunch,dirtyVnodeList)
         finally:
+            # Sorting destroys position p, and possibly the root position.
+            c.setPositionAfterSort(sortChildren)
             c.endUpdate()
-    #@-node:ekr.20031218072017.2896:c.sortTopLevel
+    #@-node:ekr.20050415134809.1:c.sortSiblings
+    #@+node:ekr.20080503055349.1:c.setPositionAfterSort
+    def setPositionAfterSort (self,sortChildren):
+
+        c = self
+        p = c.currentPosition()
+        p_v = p.v
+        parent = p.parent()
+        parent_v = p._parentVnode()
+
+        if sortChildren:
+            c.selectPosition(parent or c.rootPosition())
+        else:
+            if parent:
+                p = parent.firstChild()
+            else:
+                p = leoNodes.position(parent_v.t.children[0])
+            while p and p.v != p_v:
+                p.moveToNext()
+            c.selectPosition(p or parent)
+    #@-node:ekr.20080503055349.1:c.setPositionAfterSort
+    #@-node:ekr.20080425060424.1:Sort...
     #@-node:ekr.20031218072017.2895: Top Level... (Commands)
     #@+node:ekr.20040711135959.2:Check Outline submenu...
     #@+node:ekr.20031218072017.2072:c.checkOutline
-    def checkOutline (self,event=None,verbose=True,unittest=False,full=True):
+    def checkOutline (self,event=None,verbose=True,unittest=False,full=True,root=None):
 
         """Report any possible clone errors in the outline.
 
@@ -3489,8 +3457,10 @@ class baseCommands:
         if full and not unittest:
             g.es("all tests enabled: this may take awhile",color="blue")
 
-        p = c.rootPosition()
-        for p in c.allNodes_iter():
+        if root: iter = root.self_and_subtree_iter
+        else:    iter = c.allNodes_iter 
+
+        for p in iter():  # c.allNodes_iter():
             try:
                 count += 1
                 #@            << remove unused tnodeList >>
@@ -3511,9 +3481,9 @@ class baseCommands:
                     #@                << do full tests >>
                     #@+node:ekr.20040323155951:<< do full tests >>
                     if not unittest:
-                        if count % 100 == 0:
+                        if count % 1000 == 0:
                             g.es('','.',newline=False)
-                        if count % 2000 == 0:
+                        if count % 8000 == 0:
                             g.enl()
 
                     #@+others
@@ -3532,10 +3502,12 @@ class baseCommands:
                     next = p.next()
 
                     if back:
-                        assert p == back.next(), "p==back.next"
+                        assert p == back.next(), 'p!=back.next(),  back: %s back.next: %s' % (
+                            back,back.next())
 
                     if next:
-                        assert p == next.back(), "p==next.back"
+                        assert p == next.back(), 'p!=next.back, next: %s next.back: %s' % (
+                            next,next.back())
                     #@-node:ekr.20040314035615.1:assert consistency of next and back links
                     #@+node:ekr.20040314035615.2:assert consistency of parent and child links
                     if p.hasParent():
@@ -3551,39 +3523,10 @@ class baseCommands:
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20040323155951.1:assert consistency of directParents and parent
-                    if p.hasParent():
-                        t = p.parent().v.t
-                        for v in p.directParents():
-                            try:
-                                assert v.t == t
-                            except:
-                                print "p",p
-                                print "p.directParents",p.directParents()
-                                print "v",v
-                                print "v.t",v.t
-                                print "t = p.parent().v.t",t
-                                raise AssertionError,"v.t == t"
-                    #@-node:ekr.20040323155951.1:assert consistency of directParents and parent
-                    #@+node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
-                    if p.isCloned():
-                        parents = p.v.t.vnodeList
-                        for child in p.children_iter():
-                            vparents = child.directParents()
-                            assert len(parents) == len(vparents), "len(parents) == len(vparents)"
-                            for parent in parents:
-                                assert parent in vparents, "parent in vparents"
-                            for parent in vparents:
-                                assert parent in parents, "parent in parents"
-                    #@-node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
                     #@+node:ekr.20040323162707:assert that clones actually share subtrees
                     if p.isCloned() and p.hasChildren():
-                        childv = p.firstChild().v
-                        assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
-                        assert id(childv) == id(p.v.t._firstChild), "id(childv) == id(p.v.t._firstChild)"
-                        for v in p.v.t.vnodeList:
-                            assert v.t._firstChild == childv, "v.t._firstChild == childv"
-                            assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
+                        for z in p.v.t.vnodeList:
+                            assert z.t == p.v.t
                     #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20040314043623:assert consistency of vnodeList
                     vnodeList = p.v.t.vnodeList
@@ -3617,6 +3560,29 @@ class baseCommands:
                             s = t.getAllText()
                             assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
                     #@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+                    #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
+                    #@+at
+                    # Every nodes gets visited, so we only check consistency
+                    # between p and its parent, not between p and its 
+                    # children.
+                    # 
+                    # In other words, this is a strong test.
+                    #@-at
+                    #@@c
+
+                    parent_v = p._parentVnode()
+                    n = p.childIndex()
+
+                    assert parent_v.t.children[n] == p.v,'fail 1'
+
+                    if not g.unified_nodes:
+
+                        assert parent_v in p.v.parents,'fail 2: parent_v: %s\nparents: %s' % (
+                            parent_v,g.listToString(p.v.parents))
+
+                        for z in p.v.parents:
+                            assert p.v in z.t.children,'fail 3'
+                    #@-node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@-others
                     #@-node:ekr.20040323155951:<< do full tests >>
                     #@nl
@@ -3624,7 +3590,7 @@ class baseCommands:
                 errors += 1
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
-                s = "test failed: %s %s" % (message,repr(p))
+                s = "test failed at position %s\n%s" % (repr(p),message)
                 print s ; g.es_print(s,color="red")
                 #@-node:ekr.20040314044652:<< give test failed message >>
                 #@nl
@@ -3632,11 +3598,10 @@ class baseCommands:
             #@        << print summary message >>
             #@+node:ekr.20040314043900:<<print summary message >>
             if full:
-                print
                 g.enl()
 
             if errors or verbose:
-                color = g.choose(errors,'red','green')
+                color = g.choose(errors,'red','blue')
                 g.es_print('',count,'nodes checked',errors,'errors',color=color)
             #@-node:ekr.20040314043900:<<print summary message >>
             #@nl
@@ -4767,39 +4732,40 @@ class baseCommands:
         '''Make all following siblings children of the selected node.'''
 
         c = self ; u = c.undoer
-        current = c.currentPosition()
-        command = 'Demote'
-        if not current or not current.hasNext():
+        p = c.currentPosition()
+        if not p or not p.hasNext():
             c.treeFocusHelper() ; return
 
         # Make sure all the moves will be valid.
-        next = current.next()
+        next = p.next()
         while next:
-            if not c.checkMoveWithParentWithWarning(next,current,True):
+            if not c.checkMoveWithParentWithWarning(next,p,True):
                 c.treeFocusHelper() ; return
             next.moveToNext()
 
         c.beginUpdate()
         try: # update...
             c.endEditing()
-            u.beforeChangeGroup(current,command)
-            p = current.copy()
-            while p.hasNext(): # Do not use iterator here.
-                child = p.next()
-                undoData = u.beforeMoveNode(child)
-                child.moveToNthChildOf(p,p.numberOfChildren())
-                u.afterMoveNode(child,command,undoData)
+            parent_v = p._parentVnode()
+            n = p.childIndex()
+            followingSibs = parent_v.t.children[n+1:]
+            # g.trace('sibs2\n',g.listToString(followingSibs2))
+            # Adjust the parent links of all moved nodes.
+            parent_v._computeParentsOfChildren(children=followingSibs)
+            # Remove the moved nodes from the parent's children.
+            parent_v.t.children = parent_v.t.children[:n+1]
+            # Add the moved nodes to p's children
+            p.v.t.children.extend(followingSibs)
             p.expand()
             # Even if p is an @ignore node there is no need to mark the demoted children dirty.
-            dirtyVnodeList = current.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             c.setChanged(True)
-            u.afterChangeGroup(current,command,dirtyVnodeList=dirtyVnodeList)
+            u.afterDemote(p,followingSibs,dirtyVnodeList)
         finally:
-            c.selectPosition(current)  # Also sets rootPosition.
+            c.selectPosition(p)  # Also sets rootPosition.
             c.endUpdate()
-            # c.treeWantsFocusNow()
             c.treeFocusHelper()
-        c.updateSyntaxColorer(current) # Moving can change syntax coloring.
+        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
     #@+at 
@@ -5013,7 +4979,6 @@ class baseCommands:
                         p.moveToFirstChildOf(limit)
                 else:
                     # p will be the new root node
-                    # g.trace('move to root')
                     p.moveToRoot(oldRoot=c.rootPosition())
                     moved = True
             elif back2.hasChildren() and back2.isExpanded():
@@ -5062,21 +5027,25 @@ class baseCommands:
         c.beginUpdate()
         try: # In update...
             c.endEditing()
-            u.beforeChangeGroup(p,command)
-            after = p
-            while p.hasChildren(): # Don't use an iterator.
-                child = p.firstChild()
-                undoData = u.beforeMoveNode(child)
-                child.moveAfter(after)
-                after = child
-                u.afterMoveNode(child,command,undoData)
+            parent_v = p._parentVnode()
+            children = p.v.t.children
+            # Add the children to parent_v's children.
+            n = p.childIndex()+1
+            z = parent_v.t.children[:]
+            parent_v.t.children = z[:n]
+            parent_v.t.children.extend(children)
+            parent_v.t.children.extend(z[n:])
+            # Remove v's children.
+            p.v.t.children = []
+            # Adjust the parent links of all moved nodes.
+            parent_v._computeParentsOfChildren(children=children)
             c.setChanged(True)
             if not inAtIgnoreRange and isAtIgnoreNode:
                 # The promoted nodes have just become newly unignored.
                 dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
             else: # No need to mark descendents dirty.
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            u.afterChangeGroup(p,command,dirtyVnodeList=dirtyVnodeList)
+            u.afterPromote(p,children,dirtyVnodeList)
             c.selectPosition(p)
         finally:
             c.endUpdate()
@@ -5682,7 +5651,7 @@ class baseCommands:
                 not c.checkDrag(p,parent) or
                 not c.checkMoveWithParentWithWarning(clone,parent,True)
             ):
-                clone.doDelete() # Destroys clone and makes p the current node.
+                clone.doDelete(newNode=p) # Destroys clone and makes p the current node.
                 c.selectPosition(p) # Also sets root position.
                 c.endUpdate(False) # Nothing has changed.
                 return
@@ -5731,7 +5700,7 @@ class baseCommands:
                 p = clone
             else:
                 # g.trace("invalid clone drag")
-                clone.doDelete()
+                clone.doDelete(newNode=p)
         finally:
             c.selectPosition(p) # Also sets root position.
             c.endUpdate()
@@ -6482,7 +6451,8 @@ class baseCommands:
         if p is None or c._currentPosition is None:
             return False
         else:
-            return p.isEqual(c._currentPosition)
+            # return p.isEqual(c._currentPosition)
+            return p == c._currentPosition
     #@-node:ekr.20040803112450:c.isCurrentPosition
     #@+node:ekr.20040803112450.1:c.isRootPosition
     def isRootPosition (self,p):
@@ -6492,7 +6462,9 @@ class baseCommands:
         if p is None or c._rootPosition is None:
             return False
         else:
-            return p.isEqual(c._rootPosition)
+            # return p.isEqual(c._rootPosition)
+            return p == c._rootPosition
+    #@nonl
     #@-node:ekr.20040803112450.1:c.isRootPosition
     #@-node:ekr.20040803112200:c.is...Position
     #@+node:ekr.20031218072017.2987:c.isChanged
@@ -6535,7 +6507,7 @@ class baseCommands:
     def nullPosition (self):
 
         c = self ; v = None
-        return leoNodes.position(v,[])
+        return leoNodes.position(v)
     #@-node:ekr.20040311094927:c.nullPosition
     #@+node:ekr.20040307104131.3:c.positionExists
     def positionExists(self,p,root=None):
@@ -6637,10 +6609,10 @@ class baseCommands:
             c.recolor()
 
         # Keep the body text in the tnode up-to-date.
-        if v.t.bodyString != s:
+        if v.t._bodyString != s:
             c.beginUpdate()
             try:
-                v.setTnodeText(s)
+                v.setBodyString(s)
                 v.t.setSelection(0,0)
                 p.setDirty()
                 if not c.isChanged():
@@ -6765,7 +6737,7 @@ class baseCommands:
     def setRootVnode (self, v):
 
         c = self
-        newRoot = leoNodes.position(v,[])
+        newRoot = leoNodes.position(v)
         c.setRootPosition(newRoot)
     #@nonl
     #@-node:ekr.20060906131836:c.setRootVnode New in 4.4.2

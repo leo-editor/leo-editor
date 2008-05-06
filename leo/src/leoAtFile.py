@@ -122,7 +122,7 @@ class atFile:
     #@nl
 
     #@    @+others
-    #@+node:ekr.20041005105605.7:Birth & init
+    #@+node:ekr.20041005105605.7:at.Birth & init
     #@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
     def __init__(self,c):
 
@@ -360,8 +360,8 @@ class atFile:
             self.root.v.t.tnodeList = []
             self.root.v.t._p_changed = True
     #@-node:ekr.20041005105605.15:initWriteIvars
-    #@-node:ekr.20041005105605.7:Birth & init
-    #@+node:ekr.20041005105605.17:Reading...
+    #@-node:ekr.20041005105605.7:at.Birth & init
+    #@+node:ekr.20041005105605.17:at.Reading
     #@+node:ekr.20041005105605.18:Reading (top level)
     #@+at
     # 
@@ -375,8 +375,7 @@ class atFile:
 
         # Create a dummy vnode as the root.
         fileName='check-derived-file'
-        root_t = leoNodes.tnode()
-        root_v = leoNodes.vnode(root_t)
+        root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
         thinFile = at.scanHeaderForThin (theFile,fileName)
@@ -442,9 +441,6 @@ class atFile:
         """Read any derived file."""
 
         at = self ; c = at.c
-        if 0:
-            p = c.currentPosition()
-            g.trace('1',p,p.v._parent,p.v._parent and p.v._parent.t.vnodeList)
         #@    << set fileName >>
         #@+node:ekr.20041005105605.22:<< set fileName >>
         if fromString:
@@ -470,9 +466,6 @@ class atFile:
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
         at.readOpenFile(root,at.inputFile,fileName)
-        if 0:
-            p = c.currentPosition()
-            g.trace('2',p,p.v._parent,p.v._parent and p.v._parent.t.vnodeList)
         at.inputFile.close()
         root.clearDirty() # May be set dirty below.
         if at.errors == 0:
@@ -584,7 +577,9 @@ class atFile:
     #@+node:ekr.20041005105605.27:readOpenFile
     def readOpenFile(self,root,theFile,fileName):
 
-        """Read an open derived file, either 3.x or 4.x."""
+        '''Read an open derived file.
+
+        Leo 4.5 and later can only read 4.x derived files.'''
 
         at = self
 
@@ -593,7 +588,9 @@ class atFile:
         if read_new:
             lastLines = at.scanText4(theFile,fileName,root)
         else:
-            lastLines = at.scanText3(theFile,root,[],at.endLeo)
+            # lastLines = at.scanText3(theFile,root,[],at.endLeo)
+            g.es('can not read 3.x derived file',fileName,color='red')
+            g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
 
         if root:
             root.v.t.setVisited() # Disable warning about set nodes.
@@ -630,768 +627,6 @@ class atFile:
         return isThin
     #@-node:ekr.20050103163224:scanHeaderForThin
     #@-node:ekr.20041005105605.18:Reading (top level)
-    #@+node:ekr.20041005105605.29:Reading (3.x)
-    #@+node:ekr.20041005105605.30:createNthChild3
-    #@+at 
-    #@nonl
-    # Sections appear in the derived file in reference order, not tree order.  
-    # Therefore, when we insert the nth child of the parent there is no 
-    # guarantee that the previous n-1 children have already been inserted. And 
-    # it won't work just to insert the nth child as the last child if there 
-    # aren't n-1 previous siblings.  For example, if we insert the third child 
-    # followed by the second child followed by the first child the second and 
-    # third children will be out of order.
-    # 
-    # To ensure that nodes are placed in the correct location we create 
-    # "dummy" children as needed as placeholders.  In the example above, we 
-    # would insert two dummy children when inserting the third child.  When 
-    # inserting the other two children we replace the previously inserted 
-    # dummy child with the actual children.
-    # 
-    # vnode child indices are zero-based.  Here we use 1-based indices.
-    # 
-    # With the "mirroring" scheme it is a structure error if we ever have to 
-    # create dummy vnodes.  Such structure errors cause a second pass to be 
-    # made, with an empty root.  This second pass will generate other 
-    # structure errors, which are ignored.
-    #@-at
-    #@@c
-    def createNthChild3(self,n,parent,headline):
-
-        """Create the nth child of the parent."""
-
-        at = self
-        assert(n > 0)
-
-        if at.importing:
-            return at.createImportedNode(at.root,headline)
-
-        # Create any needed dummy children.
-        dummies = n - parent.numberOfChildren() - 1
-        if dummies > 0:
-            if 0: # CVS produces to many errors for this to be useful.
-                g.es("dummy created")
-            at.errors += 1
-        while dummies > 0:
-            dummies -= 1
-            dummy = parent.insertAsLastChild(leoNodes.tnode())
-            # The user should never see this headline.
-            dummy.initHeadString("Dummy")
-
-        if n <= parent.numberOfChildren():
-            #@        << check the headlines >>
-            #@+node:ekr.20041005105605.31:<< check the headlines >>
-            # 1/24/03: A kludgy fix to the problem of headlines containing comment delims.
-
-            result = parent.nthChild(n-1)
-            resulthead = result.headString()
-
-            if headline.strip() != resulthead.strip():
-                start = at.startSentinelComment
-                end = at.endSentinelComment
-                if end and len(end) > 0:
-                    # 1/25/03: The kludgy fix.
-                    # Compare the headlines without the delims.
-                    h1 =   headline.replace(start,"").replace(end,"")
-                    h2 = resulthead.replace(start,"").replace(end,"")
-                    if h1.strip() == h2.strip():
-                        # 1/25/03: Another kludge: use the headline from the outline, not the derived file.
-                        headline = resulthead
-                    else:
-                        at.errors += 1
-                else:
-                    at.errors += 1
-            #@-node:ekr.20041005105605.31:<< check the headlines >>
-            #@nl
-        else:
-            # This is using a dummy; we should already have bumped errors.
-            result = parent.insertAsLastChild(leoNodes.tnode())
-        result.initHeadString(headline)
-
-        result.setVisited() # Suppress all other errors for this node.
-        result.t.setVisited() # Suppress warnings about unvisited nodes.
-        return result
-    #@-node:ekr.20041005105605.30:createNthChild3
-    #@+node:ekr.20041005105605.32:handleLinesFollowingSentinel
-    def handleLinesFollowingSentinel (self,lines,sentinel,comments = True):
-
-        """convert lines following a sentinel to a single line"""
-
-        at = self
-        m = " following" + sentinel + " sentinel"
-        start = at.startSentinelComment
-        end   = at.endSentinelComment
-
-        if len(lines) == 1: # The expected case.
-            s = lines[0]
-        elif len(lines) == 5:
-            at.readError("potential cvs conflict" + m)
-            s = lines[1]
-            g.es("using",s)
-        else:
-            at.readError("unexpected lines" + m)
-            g.es('',len(lines), "lines",m)
-            s = "bad " + sentinel
-            if comments: s = start + ' ' + s
-
-        if comments:
-            #@        << remove the comment delims from s >>
-            #@+node:ekr.20041005105605.33:<< remove the comment delims from s >>
-            # Remove the starting comment and the blank.
-            # 5/1/03: The starting comment now looks like a sentinel, to warn users from changing it.
-            comment = start + '@ '
-            if g.match(s,0,comment):
-                s = s[len(comment):]
-            else:
-                at.readError("expecting comment" + m)
-
-            # Remove the trailing comment.
-            if len(end) == 0:
-                s = string.strip(s[:-1])
-            else:
-                k = s.rfind(end)
-                s = string.strip(s[:k]) # works even if k == -1
-            #@-node:ekr.20041005105605.33:<< remove the comment delims from s >>
-            #@nl
-
-        # Undo the cweb hack: undouble @ signs if the opening comment delim ends in '@'.
-        if start[-1:] == '@':
-            s = s.replace('@@','@')
-
-        return s
-    #@-node:ekr.20041005105605.32:handleLinesFollowingSentinel
-    #@+node:ekr.20041005105605.34:readLinesToNextSentinel
-    # We expect only a single line, and more may exist if cvs detects a conflict.
-    # We accept the first line even if it looks like a sentinel.
-    # 5/1/03: The starting comment now looks like a sentinel, to warn users from changing it.
-
-    def readLinesToNextSentinel (self,theFile):
-
-        """read lines following multiline sentinels"""
-
-        at = self
-        lines = []
-        start = at.startSentinelComment + '@ '
-        nextLine = at.readLine(theFile)
-        while nextLine and len(nextLine) > 0:
-            if len(lines) == 0:
-                lines.append(nextLine)
-                nextLine = at.readLine(theFile)
-            else:
-                # 5/1/03: looser test then calling sentinelKind3.
-                s = nextLine ; i = g.skip_ws(s,0)
-                if g.match(s,i,start):
-                    lines.append(nextLine)
-                    nextLine = at.readLine(theFile)
-                else: break
-
-        return nextLine,lines
-    #@-node:ekr.20041005105605.34:readLinesToNextSentinel
-    #@+node:ekr.20041005105605.35:scanDoc3
-    # Scans the doc part and appends the text out.
-    # s,i point to the present line on entry.
-
-    def scanDoc3(self,theFile,s,i,out,kind):
-
-        at = self
-        endKind = g.choose(kind ==at.startDoc,at.endDoc,at.endAt)
-        single = len(at.endSentinelComment) == 0
-        #@    << Skip the opening sentinel >>
-        #@+node:ekr.20041005105605.36:<< Skip the opening sentinel >>
-        assert(g.match(s,i,g.choose(kind == at.startDoc, "+doc", "+at")))
-
-        out.append(g.choose(kind == at.startDoc, "@doc", "@"))
-        s = at.readLine(theFile)
-        #@-node:ekr.20041005105605.36:<< Skip the opening sentinel >>
-        #@nl
-        #@    << Skip an opening block delim >>
-        #@+node:ekr.20041005105605.37:<< Skip an opening block delim >>
-        if not single:
-            j = g.skip_ws(s,0)
-            if g.match(s,j,at.startSentinelComment):
-                s = at.readLine(theFile)
-        #@-node:ekr.20041005105605.37:<< Skip an opening block delim >>
-        #@nl
-        nextLine = None ; kind = at.noSentinel
-        while len(s) > 0:
-            #@        << set kind, nextLine >>
-            #@+node:ekr.20041005105605.38:<< set kind, nextLine >>
-            #@+at 
-            #@nonl
-            # For non-sentinel lines we look ahead to see whether the next 
-            # line is a sentinel.
-            #@-at
-            #@@c
-
-            assert(nextLine==None)
-
-            kind = at.sentinelKind3(s)
-
-            if kind == at.noSentinel:
-                j = g.skip_ws(s,0)
-                blankLine = s[j] == '\n'
-                nextLine = at.readLine(theFile)
-                nextKind = at.sentinelKind3(nextLine)
-                if blankLine and nextKind == endKind:
-                    kind = endKind # stop the scan now
-            #@-node:ekr.20041005105605.38:<< set kind, nextLine >>
-            #@nl
-            if kind == endKind: break
-            #@        << Skip the leading stuff >>
-            #@+node:ekr.20041005105605.39:<< Skip the leading stuff >>
-            # Point i to the start of the real line.
-
-            if single: # Skip the opening comment delim and a blank.
-                i = g.skip_ws(s,0)
-                if g.match(s,i,at.startSentinelComment):
-                    i += len(at.startSentinelComment)
-                    if g.match(s,i," "): i += 1
-            else:
-                i = at.skipIndent(s,0, at.indent)
-            #@-node:ekr.20041005105605.39:<< Skip the leading stuff >>
-            #@nl
-            #@        << Append s to out >>
-            #@+node:ekr.20041005105605.40:<< Append s to out >>
-            # Append the line with a newline if it is real
-
-            line = s[i:-1] # remove newline for rstrip.
-
-            if line == line.rstrip():
-                # no trailing whitespace: the newline is real.
-                out.append(line + '\n')
-            else:
-                # trailing whitespace: the newline is not real.
-                out.append(line)
-            #@-node:ekr.20041005105605.40:<< Append s to out >>
-            #@nl
-            if nextLine:
-                s = nextLine ; nextLine = None
-            else: s = at.readLine(theFile)
-        if kind != endKind:
-            at.readError("Missing " + at.sentinelName(endKind) + " sentinel")
-        #@    << Remove a closing block delim from out >>
-        #@+node:ekr.20041005105605.41:<< Remove a closing block delim from out >>
-        # This code will typically only be executed for HTML files.
-
-        if not single:
-
-            delim = at.endSentinelComment
-            n = len(delim)
-
-            # Remove delim and possible a leading newline.
-            s = string.join(out,"")
-            s = s.rstrip()
-            if s[-n:] == delim:
-                s = s[:-n]
-            if s[-1] == '\n':
-                s = s[:-1]
-
-            # Rewrite out in place.
-            del out[:]
-            out.append(s)
-        #@-node:ekr.20041005105605.41:<< Remove a closing block delim from out >>
-        #@nl
-    #@-node:ekr.20041005105605.35:scanDoc3
-    #@+node:ekr.20041005105605.42:scanText3
-    def scanText3 (self,theFile,p,out,endSentinelKind,nextLine=None):
-
-        """Scan a 3.x derived file recursively."""
-
-        # __pychecker__ = '--maxbranches=100 --maxlines=500'
-
-        at = self
-        lastLines = [] # The lines after @-leo
-        lineIndent = 0 ; linep = 0 # Changed only for sentinels.
-        self.lineNumber = 0
-        while 1:
-            #@        << put the next line into s >>
-            #@+node:ekr.20041005105605.43:<< put the next line into s >>
-            if nextLine:
-                s = nextLine ; nextLine = None
-            else:
-                s = at.readLine(theFile)
-                if len(s) == 0: break
-            #@-node:ekr.20041005105605.43:<< put the next line into s >>
-            #@nl
-            self.lineNumber += 1
-            #@        << set kind, nextKind >>
-            #@+node:ekr.20041005105605.44:<< set kind, nextKind >>
-            #@+at 
-            #@nonl
-            # For non-sentinel lines we look ahead to see whether the next 
-            # line is a sentinel.  If so, the newline that ends a non-sentinel 
-            # line belongs to the next sentinel.
-            #@-at
-            #@@c
-
-            assert(nextLine==None)
-
-            kind = at.sentinelKind3(s)
-
-            if kind == at.noSentinel:
-                nextLine = at.readLine(theFile)
-                nextKind = at.sentinelKind3(nextLine)
-            else:
-                nextLine = nextKind = None
-
-            # nextLine != None only if we have a non-sentinel line.
-            # Therefore, nextLine == None whenever scanText3 returns.
-            #@-node:ekr.20041005105605.44:<< set kind, nextKind >>
-            #@nl
-            if kind != at.noSentinel:
-                #@            << set lineIndent, linep and leading_ws >>
-                #@+node:ekr.20041005105605.45:<< Set lineIndent, linep and leading_ws >>
-                #@+at 
-                #@nonl
-                # lineIndent is the total indentation on a sentinel line.  The 
-                # first "self.indent" portion of that must be removed when 
-                # recreating text.  leading_ws is the remainder of the leading 
-                # whitespace.  linep points to the first "real" character of a 
-                # line, the character following the "indent" whitespace.
-                #@-at
-                #@@c
-
-                # Point linep past the first self.indent whitespace characters.
-                if at.raw: # 10/15/02
-                    linep =0
-                else:
-                    linep = at.skipIndent(s,0,at.indent)
-
-                # Set lineIndent to the total indentation on the line.
-                lineIndent = 0 ; i = 0
-                while i < len(s):
-                    if s[i] == '\t': lineIndent += (abs(at.tab_width) - (lineIndent % abs(at.tab_width)))
-                    elif s[i] == ' ': lineIndent += 1
-                    else: break
-                    i += 1
-                # g.trace("lineIndent,s:",lineIndent,s)
-
-                # Set leading_ws to the additional indentation on the line.
-                leading_ws = s[linep:i]
-                #@-node:ekr.20041005105605.45:<< Set lineIndent, linep and leading_ws >>
-                #@nl
-                i = at.skipSentinelStart3(s,0)
-            #@        << handle the line in s >>
-            #@+node:ekr.20041005105605.46:<< handle the line in s >>
-            if kind == at.noSentinel:
-                #@    << append non-sentinel line >>
-                #@+node:ekr.20041005105605.47:<< append non-sentinel line >>
-                # We don't output the trailing newline if the next line is a sentinel.
-                if at.raw: # 10/15/02
-                    i = 0
-                else:
-                    i = at.skipIndent(s,0,at.indent)
-
-                assert(nextLine != None)
-
-                if nextKind == at.noSentinel:
-                    line = s[i:]
-                    out.append(line)
-                else:
-                    line = s[i:-1] # don't output the newline
-                    out.append(line)
-                #@-node:ekr.20041005105605.47:<< append non-sentinel line >>
-                #@nl
-            #@<< handle common sentinels >>
-            #@+node:ekr.20041005105605.48:<< handle common sentinels >>
-            elif kind in (at.endAt, at.endBody,at.endDoc,at.endLeo,at.endNode,at.endOthers):
-                #@    << handle an ending sentinel >>
-                #@+node:ekr.20041005105605.49:<< handle an ending sentinel >>
-                # g.trace("end sentinel:", at.sentinelName(kind))
-
-                if kind == endSentinelKind:
-                    if kind == at.endLeo:
-                        # Ignore everything after @-leo.
-                        # Such lines were presumably written by @last.
-                        while 1:
-                            s = at.readLine(theFile)
-                            if len(s) == 0: break
-                            lastLines.append(s) # Capture all trailing lines, even if empty.
-                    elif kind == at.endBody:
-                        at.raw = False
-                    # nextLine != None only if we have a non-sentinel line.
-                    # Therefore, nextLine == None whenever scanText3 returns.
-                    assert(nextLine==None)
-                    return lastLines # End the call to scanText3.
-                else:
-                    # Tell of the structure error.
-                    name = at.sentinelName(kind)
-                    expect = at.sentinelName(endSentinelKind)
-                    at.readError("Ignoring " + name + " sentinel.  Expecting " + expect)
-                #@-node:ekr.20041005105605.49:<< handle an ending sentinel >>
-                #@nl
-            elif kind == at.startBody:
-                #@    << scan @+body >>
-                #@+node:ekr.20041005105605.50:<< scan @+body >> 3.x
-                assert(g.match(s,i,"+body"))
-
-                child_out = [] ; child = p.copy() # Do not change out or p!
-                oldIndent = at.indent ; at.indent = lineIndent
-                at.scanText3(theFile,child,child_out,at.endBody)
-
-                # Set the body, removing cursed newlines.
-                # This must be done here, not in the @+node logic.
-                body = string.join(child_out, "")
-                body = body.replace('\r', '')
-                body = g.toUnicode(body,g.app.tkEncoding) # 9/28/03
-
-                if at.importing:
-                    child.t.bodyString = body
-                else:
-                    child.t.tempBodyString = body
-
-                at.indent = oldIndent
-                #@-node:ekr.20041005105605.50:<< scan @+body >> 3.x
-                #@nl
-            elif kind == at.startNode:
-                #@    << scan @+node >>
-                #@+node:ekr.20041005105605.51:<< scan @+node >>
-                assert(g.match(s,i,"+node:"))
-                i += 6
-
-                childIndex = 0 ; cloneIndex = 0
-                #@<< Set childIndex >>
-                #@+node:ekr.20041005105605.52:<< Set childIndex >>
-                i = g.skip_ws(s,i) ; j = i
-                while i < len(s) and s[i].isdigit():
-                    i += 1
-
-                if j == i:
-                    at.readError("Implicit child index in @+node")
-                    childIndex = 0
-                else:
-                    childIndex = int(s[j:i])
-
-                if g.match(s,i,':'):
-                    i += 1 # Skip the ":".
-                else:
-                    at.readError("Bad child index in @+node")
-                #@-node:ekr.20041005105605.52:<< Set childIndex >>
-                #@nl
-                #@<< Set cloneIndex >>
-                #@+node:ekr.20041005105605.53:<< Set cloneIndex >>
-                while i < len(s) and s[i] != ':' and not g.is_nl(s,i):
-                    if g.match(s,i,"C="):
-                        # set cloneIndex from the C=nnn, field
-                        i += 2 ; j = i
-                        while i < len(s) and s[i].isdigit():
-                            i += 1
-                        if j < i:
-                            cloneIndex = int(s[j:i])
-                    else: i += 1 # Ignore unknown status bits.
-
-                if g.match(s,i,":"):
-                    i += 1
-                else:
-                    at.readError("Bad attribute field in @+node")
-                #@-node:ekr.20041005105605.53:<< Set cloneIndex >>
-                #@nl
-                headline = ""
-                #@<< Set headline and ref >>
-                #@+node:ekr.20041005105605.54:<< Set headline and ref >>
-                # Set headline to the rest of the line.
-                # 6/22/03: don't strip leading whitespace.
-                if len(at.endSentinelComment) == 0:
-                    headline = s[i:-1].rstrip()
-                else:
-                    # 10/24/02: search from the right, not the left.
-                    k = s.rfind(at.endSentinelComment,i)
-                    headline = s[i:k].rstrip() # works if k == -1
-
-                # 10/23/02: The cweb hack: undouble @ signs if the opening comment delim ends in '@'.
-                if at.startSentinelComment[-1:] == '@':
-                    headline = headline.replace('@@','@')
-
-                # Set reference if it exists.
-                i = g.skip_ws(s,i)
-                #@nonl
-                #@-node:ekr.20041005105605.54:<< Set headline and ref >>
-                #@nl
-
-                # print childIndex,headline
-
-                if childIndex == 0: # The root node.
-                    if not at.importing:
-                        #@        << Check the filename in the sentinel >>
-                        #@+node:ekr.20041005105605.55:<< Check the filename in the sentinel >>
-                        h = headline.strip()
-
-                        if h[:5] == "@file":
-                            i,junk,junk = g.scanAtFileOptions(h)
-                            fileName = string.strip(h[i:])
-                            if fileName != at.targetFileName:
-                                at.readError("File name in @node sentinel does not match file's name")
-                        elif h[:8] == "@rawfile":
-                            fileName = string.strip(h[8:])
-                            if fileName != at.targetFileName:
-                                at.readError("File name in @node sentinel does not match file's name")
-                        else:
-                            at.readError("Missing @file in root @node sentinel")
-                        #@-node:ekr.20041005105605.55:<< Check the filename in the sentinel >>
-                        #@nl
-                    # Put the text of the root node in the current node.
-                    at.scanText3(theFile,p,out,at.endNode)
-                    p.v.t.setCloneIndex(cloneIndex)
-                    # if cloneIndex > 0: g.trace("clone index:",cloneIndex,p)
-                else:
-                    # NB: this call to createNthChild3 is the bottleneck!
-                    child = at.createNthChild3(childIndex,p,headline)
-                    child.t.setCloneIndex(cloneIndex)
-                    # if cloneIndex > 0: g.trace("cloneIndex,child:"cloneIndex,child)
-                    at.scanText3(theFile,child,out,at.endNode)
-
-                #@<< look for sentinels that may follow a reference >>
-                #@+node:ekr.20041005105605.56:<< look for sentinels that may follow a reference >>
-                s = at.readLine(theFile)
-                kind = at.sentinelKind3(s)
-
-                if len(s) > 1 and kind == at.startVerbatimAfterRef:
-                    s = at.readLine(theFile)
-                    # g.trace("verbatim:",repr(s))
-                    out.append(s)
-                elif len(s) > 1 and at.sentinelKind3(s) == at.noSentinel:
-                    out.append(s)
-                else:
-                    nextLine = s # Handle the sentinel or blank line later.
-                #@-node:ekr.20041005105605.56:<< look for sentinels that may follow a reference >>
-                #@nl
-                #@-node:ekr.20041005105605.51:<< scan @+node >>
-                #@nl
-            elif kind == at.startRef:
-                #@    << scan old ref >>
-                #@+node:ekr.20041005105605.57:<< scan old ref >> (3.0)
-                #@+at 
-                #@nonl
-                # The sentinel contains an @ followed by a section name in 
-                # angle brackets.  This code is different from the code for 
-                # the @@ sentinel: the expansion of the reference does not 
-                # include a trailing newline.
-                #@-at
-                #@@c
-
-                assert(g.match(s,i,"<<"))
-
-                if len(at.endSentinelComment) == 0:
-                    line = s[i:-1] # No trailing newline
-                else:
-                    k = s.find(at.endSentinelComment,i)
-                    line = s[i:k] # No trailing newline, whatever k is.
-
-                # 10/30/02: undo cweb hack here
-                start = at.startSentinelComment
-                if start and len(start) > 0 and start[-1] == '@':
-                    line = line.replace('@@','@')
-
-                out.append(line)
-                #@-node:ekr.20041005105605.57:<< scan old ref >> (3.0)
-                #@nl
-            elif kind == at.startAt:
-                #@    << scan @+at >>
-                #@+node:ekr.20041005105605.58:<< scan @+at >>
-                assert(g.match(s,i,"+at"))
-                at.scanDoc3(theFile,s,i,out,kind)
-                #@-node:ekr.20041005105605.58:<< scan @+at >>
-                #@nl
-            elif kind == at.startDoc:
-                #@    << scan @+doc >>
-                #@+node:ekr.20041005105605.59:<< scan @+doc >>
-                assert(g.match(s,i,"+doc"))
-                at.scanDoc3(theFile,s,i,out,kind)
-                #@-node:ekr.20041005105605.59:<< scan @+doc >>
-                #@nl
-            elif kind == at.startOthers:
-                #@    << scan @+others >>
-                #@+node:ekr.20041005105605.60:<< scan @+others >>
-                assert(g.match(s,i,"+others"))
-
-                # Make sure that the generated at-others is properly indented.
-                out.append(leading_ws + "@others")
-
-                at.scanText3(theFile,p,out,at.endOthers)
-                #@-node:ekr.20041005105605.60:<< scan @+others >>
-                #@nl
-            #@-node:ekr.20041005105605.48:<< handle common sentinels >>
-            #@nl
-            #@<< handle rare sentinels >>
-            #@+node:ekr.20041005105605.61:<< handle rare sentinels >>
-            elif kind == at.startComment:
-                #@    << scan @comment >>
-                #@+node:ekr.20041005105605.62:<< scan @comment >>
-                assert(g.match(s,i,"comment"))
-
-                # We need do nothing more to ignore the comment line!
-                #@-node:ekr.20041005105605.62:<< scan @comment >>
-                #@nl
-            elif kind == at.startDelims:
-                #@    << scan @delims >>
-                #@+node:ekr.20041005105605.63:<< scan @delims >>
-                assert(g.match(s,i-1,"@delims"))
-
-                # Skip the keyword and whitespace.
-                i0 = i-1
-                i = g.skip_ws(s,i-1+7)
-
-                # Get the first delim.
-                j = i
-                while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-                    i += 1
-
-                if j < i:
-                    at.startSentinelComment = s[j:i]
-                    # print "delim1:", at.startSentinelComment
-
-                    # Get the optional second delim.
-                    j = i = g.skip_ws(s,i)
-                    while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-                        i += 1
-                    end = g.choose(j<i,s[j:i],"")
-                    i2 = g.skip_ws(s,i)
-                    if end == at.endSentinelComment and (i2 >= len(s) or g.is_nl(s,i2)):
-                        at.endSentinelComment = "" # Not really two params.
-                        line = s[i0:j]
-                        line = line.rstrip()
-                        out.append(line+'\n')
-                    else:
-                        at.endSentinelComment = end
-                        # print "delim2:",end
-                        line = s[i0:i]
-                        line = line.rstrip()
-                        out.append(line+'\n')
-                else:
-                    at.readError("Bad @delims")
-                    # Append the bad @delims line to the body text.
-                    out.append("@delims")
-                #@-node:ekr.20041005105605.63:<< scan @delims >>
-                #@nl
-            elif kind == at.startDirective:
-                #@    << scan @@ >>
-                #@+node:ekr.20041005105605.64:<< scan @@ >>
-                # The first '@' has already been eaten.
-                assert(g.match(s,i,"@"))
-
-                if g.match_word(s,i,"@raw"):
-                    at.raw = True
-                elif g.match_word(s,i,"@end_raw"):
-                    at.raw = False
-
-                e = at.endSentinelComment
-                s2 = s[i:]
-                if len(e) > 0:
-                    k = s.rfind(e,i)
-                    if k != -1:
-                        s2 = s[i:k] + '\n'
-
-                start = at.startSentinelComment
-                if start and len(start) > 0 and start[-1] == '@':
-                    s2 = s2.replace('@@','@')
-                out.append(s2)
-                # g.trace(s2)
-                #@-node:ekr.20041005105605.64:<< scan @@ >>
-                #@nl
-            elif kind == at.startLeo:
-                #@    << scan @+leo >>
-                #@+node:ekr.20041005105605.65:<< scan @+leo >>
-                assert(g.match(s,i,"+leo"))
-                at.readError("Ignoring unexpected @+leo sentinel")
-                #@-node:ekr.20041005105605.65:<< scan @+leo >>
-                #@nl
-            elif kind == at.startVerbatim:
-                #@    << scan @verbatim >>
-                #@+node:ekr.20041005105605.66:<< scan @verbatim >>
-                assert(g.match(s,i,"verbatim"))
-
-                # Skip the sentinel.
-                s = at.readLine(theFile) 
-
-                # Append the next line to the text.
-                i = at.skipIndent(s,0,at.indent)
-                out.append(s[i:])
-                #@-node:ekr.20041005105605.66:<< scan @verbatim >>
-                #@nl
-            #@-node:ekr.20041005105605.61:<< handle rare sentinels >>
-            #@nl
-            else:
-                #@    << warn about unknown sentinel >>
-                #@+node:ekr.20041005105605.67:<< warn about unknown sentinel >>
-                j = i
-                i = g.skip_line(s,i)
-                line = s[j:i]
-                at.readError("Unknown sentinel: " + line)
-                #@-node:ekr.20041005105605.67:<< warn about unknown sentinel >>
-                #@nl
-            #@-node:ekr.20041005105605.46:<< handle the line in s >>
-            #@nl
-        #@    << handle unexpected end of text >>
-        #@+node:ekr.20041005105605.68:<< handle unexpected end of text >>
-        # Issue the error.
-        name = at.sentinelName(endSentinelKind)
-        at.readError("Unexpected end of file. Expecting " + name + "sentinel" )
-        #@-node:ekr.20041005105605.68:<< handle unexpected end of text >>
-        #@nl
-        assert(len(s)==0 and nextLine==None) # We get here only if readline fails.
-        return lastLines # We get here only if there are problems.
-    #@-node:ekr.20041005105605.42:scanText3
-    #@+node:ekr.20041005105605.69:sentinelKind3
-    def sentinelKind3(self,s):
-
-        """This method tells what kind of sentinel appears in line s.
-
-        Typically s will be an empty line before the actual sentinel,
-        but it is also valid for s to be an actual sentinel line.
-
-        Returns (kind, s, emptyFlag), where emptyFlag is True if
-        kind == at.noSentinel and s was an empty line on entry."""
-
-        at = self
-        i = g.skip_ws(s,0)
-        if g.match(s,i,at.startSentinelComment):
-            i += len(at.startSentinelComment)
-        else:
-            return at.noSentinel
-
-        # 10/30/02: locally undo cweb hack here
-        start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
-            s = s[:i] + string.replace(s[i:],'@@','@')
-
-        # Do not skip whitespace here!
-        if g.match(s,i,"@<<"): return at.startRef
-        if g.match(s,i,"@@"):   return at.startDirective
-        if not g.match(s,i,'@'): return at.noSentinel
-        j = i # start of lookup
-        i += 1 # skip the at sign.
-        if g.match(s,i,'+') or g.match(s,i,'-'):
-            i += 1
-        i = g.skip_c_id(s,i)
-        key = s[j:i]
-        if len(key) > 0 and at.sentinelDict.has_key(key):
-            # g.trace("found:",key)
-            return at.sentinelDict[key]
-        else:
-            # g.trace("not found:",key)
-            return at.noSentinel
-    #@-node:ekr.20041005105605.69:sentinelKind3
-    #@+node:ekr.20041005105605.70:skipSentinelStart3
-    def skipSentinelStart3(self,s,i):
-
-        """Skip the start of a sentinel."""
-
-        at = self
-        start = at.startSentinelComment
-        assert(start and len(start)>0)
-
-        if g.is_nl(s,i): i = g.skip_nl(s,i)
-
-        i = g.skip_ws(s,i)
-        assert(g.match(s,i,start))
-        i += len(start)
-
-        # 7/8/02: Support for REM hack
-        i = g.skip_ws(s,i)
-        assert(i < len(s) and s[i] == '@')
-        return i + 1
-    #@-node:ekr.20041005105605.70:skipSentinelStart3
-    #@-node:ekr.20041005105605.29:Reading (3.x)
     #@+node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.72:createThinChild4
     def createThinChild4 (self,gnxString,headline):
@@ -1407,27 +642,31 @@ class atFile:
             last.fileIndex = lastIndex =  gnx
             self._forcedGnxPositionList.remove(last)
 
-        if 0:
-            g.trace("last",last,last.t.fileIndex)
-            g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+        # g.trace("last",last,last.t.fileIndex)
+        # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
-        # See if there is already a child with the proper index.
-        child = at.lastThinNode.firstChild()
-        while child and not indices.areEqual(gnx,child.t.fileIndex):
-            child = child.next()
+        parent = at.lastThinNode # A vnode.
+        children = parent.t.children
+        for child in children:
+            if indices.areEqual(gnx,child.t.fileIndex):
+                break
+        else:
+            child = None
 
         if at.cloneSibCount > 1:
             n = at.cloneSibCount ; at.cloneSibCount = 0
-            if child: clonedSibs,junk = at.scanForClonedSibs(child)
+            if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
             else: clonedSibs = 0
             copies = n - clonedSibs
             # g.trace(copies,headline)
         else:
             if indices.areEqual(gnx,lastIndex):
                 last.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                # g.trace('last',last)
                 return last
             if child:
                 child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+                # g.trace('child',child)
                 return child
             copies = 1 # Create exactly one copy.
 
@@ -1441,16 +680,21 @@ class atFile:
                     pass
                 else:
                     g.trace('can not happen: t.fileIndex: %s gnx: %s' % (t.fileIndex,gnx))
-                    # g.trace('not created, should already exist',gnxString)
             else:
-                t = leoNodes.tnode(bodyString=None,headString=headline)
+                if g.unified_nodes: t = leoNodes.vnode(context=c)
+                else:               t = leoNodes.tnode()
+                t._headString = headline
                 t.fileIndex = gnx
                 tnodesDict[gnxString] = t
-            parent = at.lastThinNode
-            child = leoNodes.vnode(t)
-            t.vnodeList.append(child)
-            child.linkAsNthChild(parent,parent.numberOfChildren())
-            # g.trace('creating last child %s\nof parent%s\n' % (child,parent))
+
+            if g.unified_nodes:
+                child = t
+            else:
+                child = leoNodes.vnode(context=c,t=t)
+
+            if child not in t.vnodeList:
+                t.vnodeList.append(child)
+            child._linkAsNthChild(parent,parent.numberOfChildren())
 
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
@@ -1846,7 +1090,7 @@ class atFile:
         s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
 
         if at.importing:
-            at.t.bodyString = s
+            at.t._bodyString = s
         elif middle: 
             pass # Middle sentinels never alter text.
         else:
@@ -1890,7 +1134,7 @@ class atFile:
                     #@-node:ekr.20041005105605.97:<< bump at.correctedLines and tell about the correction >>
                     #@nl
                     # p.setMarked()
-                    at.t.bodyString = s # Just setting at.t.tempBodyString won't work here.
+                    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
                     at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
                     at.c.setChanged(True)
                 else:
@@ -2396,7 +1640,7 @@ class atFile:
                     print ; print "new:",s
                     print ; print "old:",p.bodyString()
                 if thinFile:
-                    p.v.setTnodeText(s)
+                    p.v.setBodyString(s)
                     if p.v.isDirty():
                         p.setAllAncestorAtFileNodesDirty()
                 else:
@@ -2553,8 +1797,8 @@ class atFile:
         # g.trace(self.root,g.callers())
         self.error(message)
 
-        # Bug fix: 12/10/05: Delete all of root's tree.
-        self.root.v.t._firstChild = None
+        # Delete all of root's tree.
+        self.root.t.children = []
         self.root.setOrphan()
         self.root.setDirty()
     #@-node:ekr.20041005105605.127:readError
@@ -2634,8 +1878,8 @@ class atFile:
         return i
     #@-node:ekr.20041005105605.131:skipIndent
     #@-node:ekr.20041005105605.116:Reading utils...
-    #@-node:ekr.20041005105605.17:Reading...
-    #@+node:ekr.20041005105605.132:Writing...
+    #@-node:ekr.20041005105605.17:at.Reading
+    #@+node:ekr.20041005105605.132:at.Writing
     #@+node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.134:Don't override in plugins
     # Plugins probably should not need to override these methods.
@@ -2678,7 +1922,7 @@ class atFile:
             #@-at
             #@@c
 
-            s = root.v.t.bodyString
+            s = root.v.t._bodyString
             tag = "@first"
             i = 0
             while g.match(s,i,tag):
@@ -2739,7 +1983,7 @@ class atFile:
             #@@c
 
             tag = "@last"
-            lines = string.split(root.v.t.bodyString,'\n')
+            lines = string.split(root.v.t._bodyString,'\n')
             n = len(lines) ; j = k = n - 1
             # Don't write an empty last line.
             if j >= 0 and len(lines[j])==0:
@@ -3288,7 +2532,7 @@ class atFile:
 
         """Do all writes except asis writes."""
 
-        at = self ; s = g.choose(fromString,fromString,root.v.t.bodyString)
+        at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
 
         root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
         root.clearVisitedInTree()
@@ -3494,7 +2738,8 @@ class atFile:
 
         at = self
 
-        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(p.v)
+        parent_v = p._parentVnode()
+        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1:
             if thisClonedSibIndex == 1:
                 at.putSentinel("@clone %d" % (clonedSibs))
@@ -3542,7 +2787,8 @@ class atFile:
 
         at = self
 
-        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(p.v)
+        parent_v = p._parentVnode()
+        clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
         if clonedSibs > 1 and thisClonedSibIndex == 1:
             at.writeError("Cloned siblings are not valid in @thin trees")
 
@@ -4573,8 +3819,8 @@ class atFile:
             root.setDirty()
     #@-node:ekr.20041005105605.218:writeException
     #@-node:ekr.20041005105605.196:Writing 4.x utils...
-    #@-node:ekr.20041005105605.132:Writing...
-    #@+node:ekr.20041005105605.219:Uilites... (atFile)
+    #@-node:ekr.20041005105605.132:at.Writing
+    #@+node:ekr.20041005105605.219:at.Uilites
     #@+node:ekr.20041005105605.220:atFile.error
     def error(self,message):
 
@@ -4941,8 +4187,7 @@ class atFile:
         s = g.joinLines(cleanLines)
 
         if changed and not g.app.unitTesting:
-            p.setTnodeText(s)
-            c.setBodyString(p,s)
+            p.setBodyString(s)
             c.setChanged(True)
 
         return s
@@ -5044,7 +4289,7 @@ class atFile:
     #@-node:ekr.20050104132026:stat
     #@-node:ekr.20050104131929:file operations...
     #@+node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
-    def scanForClonedSibs (self,v):
+    def scanForClonedSibs (self,parent_v,v):
 
         """Scan the siblings of vnode v looking for clones of v.
         Return the number of cloned sibs and n where p is the n'th cloned sibling."""
@@ -5053,15 +4298,23 @@ class atFile:
         thisClonedSibIndex = 0 # Position of p in list of cloned siblings.
 
         if v and v.isCloned():
-            sib = v
-            while sib.back():
-                sib = sib.back()
-            while sib:
+            sibs = parent_v.t.children
+            for sib in sibs:
                 if sib.t == v.t:
                     clonedSibs += 1
                     if sib == v:
                         thisClonedSibIndex = clonedSibs
-                sib = sib.next()
+
+        # if v and v.isCloned():
+            # sib = v
+            # while sib.back():
+                # sib = sib.back()
+            # while sib:
+                # if sib.t == v.t:
+                    # clonedSibs += 1
+                    # if sib == v:
+                        # thisClonedSibIndex = clonedSibs
+                # sib = sib.next()
 
         # g.trace(clonedSibs,thisClonedSibIndex)
 
@@ -5097,7 +4350,7 @@ class atFile:
 
         return sentinelNameDict.get(kind,"<unknown sentinel!>")
     #@-node:ekr.20041005105605.243:sentinelName
-    #@-node:ekr.20041005105605.219:Uilites... (atFile)
+    #@-node:ekr.20041005105605.219:at.Uilites
     #@-others
 #@-node:ekr.20041005105605.1:@thin leoAtFile.py
 #@-leo
