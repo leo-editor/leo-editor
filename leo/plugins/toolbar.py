@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:bobjack.20080507083323.2:@thin toolbar.py
+#@+node:bobjack.20080424190315.2:@thin toolbar.py
 #@@language python
 #@@tabwidth -4
 
@@ -101,7 +101,7 @@ The iconbars also have the following public properties.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.6"
+__version__ = "0.7"
 __plugin_name__ = 'Toolbar Manager'
 
 
@@ -130,6 +130,8 @@ controllers = {}
 #     - add toggle-iconbar minibuffer / rClick menu command
 #     - remove dependancy on rClick
 #     - add drag drop in iconBars
+# 0.7 bobjack:
+#     - add support for leoDragHandle and leoDragMaster
 # 
 # 
 #@-at
@@ -286,14 +288,12 @@ class ToolbarTkinterTreeTab (leoTkinterFrame.leoTkinterTreeTab):
     #@+node:bobjack.20080501055450.8:tt.createControl
     def createControl (self):
 
+        "Create and pack the Chapter Selector control."""
 
         tt = self ; c = tt.c
 
         # Create the main container.
         tt.frame = Tk.Frame(c.frame.top)
-
-        #c.frame.tt.frame.pack(side="left")
-        c.frame.addIconWidget(tt.frame)
 
         # Create the chapter menu.
         self.chapterVar = var = Tk.StringVar()
@@ -306,6 +306,10 @@ class ToolbarTkinterTreeTab (leoTkinterFrame.leoTkinterTreeTab):
             command = tt.selectTab,
         )
         menu.pack(side='left',padx=5)
+
+        tt.frame.leoDragHandle = menu.component('label')
+
+        c.frame.iconBar.addWidget(tt.frame)
     #@-node:bobjack.20080501055450.8:tt.createControl
     #@-others
 #@nonl
@@ -736,16 +740,15 @@ class ToolbarTkIconBarClass(iconbar, object):
     #@+node:bobjack.20080503090121.5:onPress
     def onPress(self, e):
 
-        w = e.widget        
-        while hasattr(w, 'leoSubWindow'):
-            w = w.pack_info()['in']
+        w = e.widget
+
+        w = self.getDragMaster(w)
 
         if hasattr(w, 'leoIconBar'):
             self.c.theToolbarController.grabWidget = w
     #@-node:bobjack.20080503090121.5:onPress
     #@+node:bobjack.20080503090121.6:onRelease
     def onRelease(self, e):
-
 
         try:
             c = self.c
@@ -754,8 +757,7 @@ class ToolbarTkIconBarClass(iconbar, object):
             target = e.widget.winfo_containing(e.x_root, e.y_root)
 
             try:
-                while hasattr(target, 'leoSubWindow'):
-                    target = target.pack_info()['in']
+                target = self.getDragMaster(target)
                 tBar = target.leoIconBar
             except:
                 tBar = None
@@ -777,6 +779,18 @@ class ToolbarTkIconBarClass(iconbar, object):
         finally:
             controller.grabWidget = None
     #@-node:bobjack.20080503090121.6:onRelease
+    #@+node:bobjack.20080506182829.2:getDragMaster
+    def getDragMaster(self, w):
+
+        if hasattr(w, 'leoDragMaster'):
+            w = w.leoDragMaster
+
+        else:
+            while hasattr(w, 'leoSubWindow'):
+                w = w.pack_info()['in']
+
+        return w
+    #@-node:bobjack.20080506182829.2:getDragMaster
     #@+node:bobjack.20080429153129.16:onConfigure
     def onConfigure(self, event=None):
 
@@ -1133,6 +1147,11 @@ class ToolbarTkIconBarClass(iconbar, object):
                 print "command for widget %s" % (n)
             command = commandCallback
 
+        if isinstance(command, basestring):
+            def commandCallback(command=command):
+                c.executeMinibufferCommand(command)
+            command = commandCallback
+
         if imagefile or image:
             #@        << create a picture >>
             #@+node:bobjack.20080429153129.18:<< create a picture >>
@@ -1185,24 +1204,43 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         """Add a widget to the iconBar.
 
-        The widget must have c.frame as it parent.
-
+        The widget must have c.frame.top as it parent.
 
         """
 
         barHead = self.barHead
         buttons = barHead._buttons
 
+        #@    << bind widget and drag handles >>
+        #@+node:bobjack.20080506090043.2:<< bind widget and drag handles >>
+
         widget.bind('<ButtonPress-1>', barHead.onPress)
         widget.bind('<ButtonRelease-1>', barHead.onRelease)
+
+        try:
+            drag = widget.leoDragHandle
+
+        except AttributeError:
+            drag = None
+
+        if drag:
+            if not isinstance(drag, (tuple, list)):
+                drag = (drag,)
+
+            for dragWidget in drag:
+                dragWidget.leoSubWindow = True
+                dragWidget.leoDragMaster = widget
+                dragWidget.bind('<ButtonPress-1>', barHead.onPress )
+                dragWidget.bind('<ButtonRelease-1>', barHead.onRelease)
+
         widget.c = self.c
 
         widget.leoIconBar = barHead
-
+        #@-node:bobjack.20080506090043.2:<< bind widget and drag handles >>
+        #@nl
 
         if not repack:
-            return
-
+            return widget
 
         try:
             index = int(index)
@@ -1228,8 +1266,31 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         barHead._buttons.remove(widget)
 
+        #@    << unbind widget and drag handles >>
+        #@+node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
         widget.unbind('<ButtonPress-1>')
         widget.unbind('<ButtonRelease-1>')
+
+        try:
+            drag = widget.leoDragHandlle
+        except AttributeError:
+            drag = None
+
+        if drag:
+            if not isinstance(drag, (tuple, list)):
+                drag = (drag,)
+
+            for dragWidget in drag:
+                try:
+                    del dragWidget.leoSubWindow
+                    del dragWidget.leoDragMaster
+                    dragWidget.unbind('<ButtonPress-1>')
+                    dragWidget.unbind('<ButtonRelease-1>')
+                except AttributeError:
+                    g.es_exception()
+
+        #@-node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
+        #@nl
 
         del widget.leoIconBar
 
@@ -1700,5 +1761,5 @@ class pluginController(object):
 
 #@-node:bobjack.20080424195922.12:class pluginController
 #@-others
-#@-node:bobjack.20080507083323.2:@thin toolbar.py
+#@-node:bobjack.20080424190315.2:@thin toolbar.py
 #@-leo

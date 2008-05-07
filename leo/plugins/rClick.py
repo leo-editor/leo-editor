@@ -812,6 +812,10 @@ class pluginController(object):
             'check': self.do_check_button_event,
         }
 
+        if not hasattr(c, 'universalCallback'):
+
+            cb = lambda function, sel=self: self.universalCallback(function)
+            g.funcToMethod(cb, c, "universalCallback")
     #@+node:bobjack.20080423205354.3:onCreate
     def onCreate(self):
 
@@ -846,13 +850,44 @@ class pluginController(object):
             methodName = command.replace('-','_')
             function = getattr(self, methodName)
 
-            def cb(event, self=self, function=function):
-                self.mb_retval = function(self.mb_keywords)
+            cb = self.universalCallback(function)
 
             lst.append((command, methodName, cb))
 
         return lst
     #@-node:bobjack.20080423205354.2:createCommandCallbacks
+    #@+node:bobjack.20080507130315.2:universalCallback
+    def universalCallback(self, function):
+
+        """Create a universal command callback.
+
+        Create and return a callback that wraps function and adapts
+        the minibuffer command callback to a function that has the
+        rClick type signature.
+
+        When a function or method is wrapped in this way it can be
+        used as a standard minibuffer command regardless of whether
+        rclick is enabled or not and if its enabled then the
+        command can be used for rClick either as a generator command
+        or  an invocation
+
+        """
+        def minibufferCallback(event, function=function):
+
+            try:
+                cm = self.c.theContextMenuController
+            except AttributeError:
+                cm = None
+
+            if cm and cm.mb_keywords:
+                cm.mb_keywords['mb_event'] = event
+                cm.mb_retval = function(cm.mb_keywords)
+            else:
+                keywords = {'c': self.c, 'mb_event': event, 'rc_phase': 'minibuffer'}
+                return function(keywords)
+
+        return minibufferCallback
+    #@-node:bobjack.20080507130315.2:universalCallback
     #@+node:bobjack.20080424195922.9:registerCommands
     def registerCommands(self):
 
