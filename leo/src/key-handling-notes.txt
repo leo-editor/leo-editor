@@ -1,0 +1,207 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20080508083640.10:@thin key-handling-notes.txt
+#@+all
+#@+node:ekr.20080508083640.11:Notes
+#@+node:ekr.20080508083640.12:Requests
+@nocolor
+
+Some of the features I've grown to like with VIM are:
+
+- search-and-replace within the current selection,
+- easy keyboard navigation
+- and to some extent macro recording and running.
+#@-node:ekr.20080508083640.12:Requests
+#@+node:ekr.20080508083640.13:Design post
+@nocolor
+
+http://sourceforge.net/forum/forum.php?thread_id=1800079&forum_id=10226
+
+Recent posts have discussed @menu trees and resolving cvs conflicts. The third of my recent ruminations concerns adding support for vim-like key bindings. 
+
+Earlier work involving input modes (@mode nodes in settings file) probably is not completely sufficient to implement plain-key key bindings in a way that would truly be vim-like. 
+
+Most of the issues are implementation issues: Leo's key-handling code is very complicated. The trick is to handle both vim and emacs styles compatibly. 
+
+The user must be able to specify vim-like key bindings without using @mode nodes. That is, top-level vim key bindings must always be available. Vim has an enormous number of key bindings: the user must be able to specify which are in effect. 
+
+My strategy will be as follows: 
+
+1. Create enter-vim-mode and exit-vim-mode commands, and create the setting: 
+
+@bool vim-mode-by-default = False 
+
+This will allow the user to specify vim mode as the default mode if desired. 
+
+2. Create **vim-edit** commands as needed in order to handler user interaction. For example, dd deletes the present line while d5 deletes 5 lines. Rather than trying to simulate this effect using the present mechanisms, the vim-delete command will prompt for the number of characters or lines to delete. 
+
+Give the complex nature of vims c and d commands (and others) it will probably be necessary to create a vim-edit class in leoEditCommands.py. This class will handle all the ways of specifying a range of characters to which the various commands will apply. It's not clear exactly how much work will be needed, but my guess is that it will, in fact, be easiest to handle vim-like interactions with new code. 
+
+3. Vim's ':' command will simply invoke Leo's minibuffer. This isn't precisely the same as Vim's status line: it is significantly better. Otoh, we will want a way to simulate the actual spelling of vim's ':' commands. Possible @abbreviation nodes can be pressed into service. 
+
+4. Internally, it will be quite a trick to allow top-level vim-like plain-key bindings in all text widgets. I'm not sure how to do this, but it is essential. 
+
+I am quite eager to get something truly vim-like working. It promises to increase my editing speed substantially. It also should appeal strongly to present vim users. 
+#@nonl
+#@-node:ekr.20080508083640.13:Design post
+#@+node:ekr.20080508083640.14:Posting re vim bindings
+@nocolor
+
+> I'm looking forward to this.
+
+Excellent.  You can help with the testing :-)
+
+Leo looks like a perfect match for the vim approach.  Indeed, vim typically uses a 1 or 2 level concatenation scheme (preceded by a repeat count).  This is kinda like a utf-8 encoding :-)  That is, it is a variable-length encoding of the command.
+
+This is a very powerful approach, one that vim doesn't really exploit (because it doesn't need to). But Leo absolutely needs this power of some extra levels.  Something like this:
+
+i input mode
+
+f focus commands
+..fb focus to body
+..fo focus to outline
+..fl focus to log
+..ft toggle body pane focus
+
+o outline commands
+..om outline move, i.e., actually move the nodes.
+..og outline go, i.e., select nodes without changing the outline
+..od outline delete
+..oh outline edit headline
+
+s search commands
+..so search options
+...soi toggle ignore-case checkbox
+...sow toggle word checkbox
+...etc!
+..st search using search tab
+..sf forward incremental search
+..sb backward incremental search
+
+x minibuffer commands
+
+w file commands
+..ws save outline
+..wq quit
+
+escape: universal escape, like ctrl-g now.
+
+Do you see?  Just one extra level allows 10+ times the number of key bindings.  This is a perfect match for Leo's complex environment.
+
+Naturally, Leo will allow the user to specify these bindings using nodes in the @settings tree. Indeed, this is truly an exciting prospect.
+
+Edward
+
+P.S.  I've glossed over the details of which single characters (like d for delete character) should be reserved for common editing and cursor-movement commands.  That's the beauty of creating these bindings with user settings: no need to argue :-)  And that's the beauty of arbitrarily deep key binding trees: there are plenty of keys to go around.
+
+EKR
+#@-node:ekr.20080508083640.14:Posting re vim bindings
+#@+node:ekr.20080508083640.16:5/08: New key handling
+@nocolor
+
+The "Huge Focus Aha", namely that focus never needs to be in the
+outline pane, continues to clarify and guide my thinking:
+
+1. There is no need for per-pane key bindings.  I'll be discussing
+this in more detail as we go along.  This is itself a major
+simplification.
+
+2. Ville has discovered the heart of the matter: most modes should
+continue until an unknown character is seen.  An **unknown character
+for a mode** is a character for which no explicit binding has been
+made for that mode.  Leo will enter a **main** (or default) mode when
+the user types an unknown (unbound) character in a mode.
+
+The main mode would be normal text-input mode for the emacs-like
+bindings, and a "command" mode for vim-like bindings.  Leo already
+allows the user to specify emacs-like or vim-like defaults via various
+settings.  I forget the details, but they don't much matter in this
+discussion.
+
+There are a few complications with "stay in the mode until an unknown
+character is seen".
+
+A. Some modes, like the minibuffer, and vim input mode, will allow the
+user to enter any unicode character.  Thus, we can't just list the
+"known" bindings of a mode--there can be too many.  To handle this, we
+need to create the distinction between **input modes** and **command
+modes**.  Input modes continue until another mode is explicitly
+requested.  Command modes continue until an unknown (unbound) key
+sequence is seen.
+
+B. Several modes, including the minibuffer and search modes, contain
+implicit bindings for keys like <tab>, <return> and <backspace>.
+Indeed, the user probably need not specify any bindings explicitly for
+such modes.  This creates some interesting complications however.  Let
+us distinguish between *text-editing* commands and *non-text-editing*
+commands.  'beginning-of-line' is a text editing command; 'save-
+outline' is not.  Commands such as sort-lines could be called text-
+editing commands, but they make no sense in a single-line environment
+such as the minibuffer or search/replace commands, so let us
+tentatively call them non-text-editing commands, or rather **multi-
+line-editing** commands.
+
+As I write this, I realize that the distinction between text-editing
+and non-text-editing commands implicitly assumes emacs-like *bindings*
+for commands.  In the vim-like world of plain-key bindings, we could
+imagine *temporarily* entering vim-command mode in the minibuffer, and
+then *returning* to the minibuffer-insert-mode after the temporary vim-
+command mode finished.  This could cause complications.  In general,
+I'd rather stay away from a stack of modes, but only experimentation
+will show what is needed.
+
+C. Regardless of other details, some **basic editing commands/
+bindings** surely must be supported in the minibuffer and search
+commands:  cut, copy, paste, arrow-keys move the cursor, shift-arrow
+keys extend the selection.  In emacs-like operation we can throw in
+all text-editing bindings at essentially no cost.  In vim-like
+operation, we can use the basic bindings, but more complex commands
+would seem to require nested modes.
+
+But the main point is that special-purpose modes will probably use
+some reasonable, standard defaults based on settings for *other*
+modes, plus some standard keys.  In other words, it may be possible to
+dispense with explicit bindings for the minibuffer, etc.
+
+That being so, we are left with a simple scheme:
+
+1. Bindings apply **everywhere** in several senses.  They apply to all
+panes, and bindings for text-editing commands apply in all text
+widgets: the minibuffer, body pane, log pane, headlines, etc.
+
+2. Binding unknown in a mode terminate the mode and return to the main
+or default mode.
+
+3. Non-text-editing commands, including multi-line-editing commands,
+should terminate **single-line modes** such as minibuffer commands
+unless a special case explicitly exists for them.
+
+4. Bindings for **Leo-provided modes** will be created automatically
+using the user's bindings for text-editing commands, plus special
+characters like <tab>, <return> and <backspace>.  Leo provided modes
+are the initial minibuffer mode and secondary minibuffer modes such
+entering search patterns.
+
+5. The only complication is possibly allowing vim-like command sub-
+modes of single-line modes.
+
+The code in k.masterKeyHandler is in the back of my mind as I write
+this.  With luck, the new scheme will be considerably simpler than the
+old, while being more flexible and more general.  Note that the way
+bindings are actually specified is an entirely separate issue, which
+is good because that logic is horrible.  Eliminating per-pane bindings
+will help some, but not a lot.
+
+We may want to allow the user to specify per-pane bindings as before,
+but the bindings will be ignored.  But as I write this it seems like
+this could cause a great deal of confusion.  Perhaps it will be better
+to outlaw the old syntax entirely, or at least issue warnings that per-
+pane bindings no longer have any effect.
+
+This is all very preliminary.  I've written no code.  Your comments
+are welcome now.
+#@-node:ekr.20080508083640.16:5/08: New key handling
+#@-node:ekr.20080508083640.11:Notes
+#@-all
+#@nonl
+#@-node:ekr.20080508083640.10:@thin key-handling-notes.txt
+#@-leo
