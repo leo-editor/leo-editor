@@ -86,7 +86,7 @@ class parserBaseClass:
             'strings':      self.doStrings,
         }
     #@-node:ekr.20041119204700: ctor (parserBaseClass)
-    #@+node:ekr.20060102103625:createModeCommand
+    #@+node:ekr.20060102103625:createModeCommand (parserBaseClass)
     def createModeCommand (self,name,modeDict):
 
         commandName = 'enter-' + name
@@ -99,7 +99,7 @@ class parserBaseClass:
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
         d [commandName] = modeDict
-    #@-node:ekr.20060102103625:createModeCommand
+    #@-node:ekr.20060102103625:createModeCommand (parserBaseClass)
     #@+node:ekr.20041120103012:error
     def error (self,s):
 

@@ -95,6 +95,23 @@ P.S.  I've glossed over the details of which single characters (like d for delet
 
 EKR
 #@-node:ekr.20080508083640.14:Posting re vim bindings
+#@+node:ekr.20080508094751.1:*** auto-change panes  OR unified body/tree panes
+@nocolor
+
+The idea: if a key binding is only in effect for one pane, and we get the
+binding, maybe we should change to the pane first!
+
+Examples:
+
+copy-node: auto-select tree pane.
+copy_text (when not editing a headline): auto-select body text.
+
+
+Unified body/tree panes
+
+Up/down arrows move between headline and body panes.
+#@nonl
+#@-node:ekr.20080508094751.1:*** auto-change panes  OR unified body/tree panes
 #@+node:ekr.20080508083640.16:5/08: New key handling
 @nocolor
 
@@ -201,6 +218,8 @@ This is all very preliminary.  I've written no code.  Your comments
 are welcome now.
 #@-node:ekr.20080508083640.16:5/08: New key handling
 #@-node:ekr.20080508083640.11:Notes
+#@+node:ekr.20080508083640.17:Projects
+#@-node:ekr.20080508083640.17:Projects
 #@-all
 #@nonl
 #@-node:ekr.20080508083640.10:@thin key-handling-notes.txt
