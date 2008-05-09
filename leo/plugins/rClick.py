@@ -495,7 +495,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.34"
+__version__ = "1.35"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -600,6 +600,7 @@ __plugin_name__ = 'Right Click Menus'
 #       These wil be local to the commander
 # 1.34 bobjack:
 #     - convert to use c.universalCallback via registerCommand(..., wrap=True)
+#     - fix k.funcReturn but in recentFoldersCallback
 # 
 # 
 #@-at
@@ -1085,7 +1086,10 @@ class pluginController(object):
 
             def recentFoldersCallback(c, event, path=path):
                 g.app.globalOpenDir = path
-                c.executeMinibufferCommand('open-outline')
+                try:
+                    c.executeMinibufferCommand('open-outline')
+                except AttributeError:
+                    pass
 
             label = "%s" % (g.computeWindowTitle(name),)
             fnList.append((fn, recentFilesCallback))

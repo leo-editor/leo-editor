@@ -402,7 +402,7 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         The bar will not be placed in self.iconBars if it is a slave bar.
 
         """
-        g.trace()
+
         frame = self.createToolbarFrame()
 
         if not barName in self.iconBars:
@@ -1788,7 +1788,7 @@ class ToolbarTkIconBarClass(iconbar, object):
     def removeWidget(self, widget, repack=True):
 
         """Remove widget from the list of manged widgets and repack the buttons."""
-        g.trace(widget)
+
         try:
             barHead = self.barHead
 

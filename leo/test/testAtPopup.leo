@@ -1610,12 +1610,7 @@ xtest(result, None, 'function hook result')
 
 </t>
 <t tx="bobjack.20080419045546.8">
-def demo_editor_items(event):
-
-    cm = c.theContextMenuController
-    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
-
-c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+c.k.registerCommand('demo-editor-items', shortcut=None, func=do_demo_editor_items, wrap=True)
 
 
 menu = [('*', 'demo-editor-items')]
