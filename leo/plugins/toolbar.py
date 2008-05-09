@@ -19,7 +19,7 @@ the default iconBar is also in *c.frame.iconBar*
 
 Any widget may be added to an iconBar but:
 
-** ALL WIDGETS TO BE ADDED TO ICONBARS SHOULD HAVE c.frame AS THE PARENT. **
+** ALL WIDGETS TO BE ADDED TO ICONBARS SHOULD HAVE c.frame.top AS THE PARENT. **
 
 This will break some code but it can't be helped.
 
@@ -28,12 +28,17 @@ the list in its assigned packing order but it will not be seen. Any change to
 widget.leoShow must be followed by a call to bar.repackButtons() before the
 change will take effect. 
 
+enhanced @buttons nodes
+-----------------------
+
+iconBars
+--------
 
 Some convenience methods are availiable in c.frame, all of which can have
 barName=<name of bar>. If no barName is supplied 'iconbar' will be used.
 
     createIconBar(barName='iconbar'):
-        If iconBar with barName already exists it will be returned, otherwise
+        If an iconBar with barName already exists it will be returned, otherwise
         a new iconBar will be created, packed and returned.
 
     addIconButton(*args, **keys):
@@ -69,7 +74,7 @@ in preferenct to the above methods.
         repack is True by default causing repackButtons() to be called after
         adding the widget. If repack is set to False the script must call
         repackButtons() itself. Setting repack to False is usefull if you
-        want to add several widget, you can then call repackButtons() just
+        want to add several widgets, you can then call repackButtons() just
         once.
 
     removeWidget(widget, repack=True)
@@ -101,7 +106,7 @@ The iconbars also have the following public properties.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.7"
+__version__ = "0.8"
 __plugin_name__ = 'Toolbar Manager'
 
 
@@ -132,6 +137,11 @@ controllers = {}
 #     - add drag drop in iconBars
 # 0.7 bobjack:
 #     - add support for leoDragHandle and leoDragMaster
+# 0.8 bobjack:
+#     - convert to use c.universallCallback via registerCommands( ... 
+# wrap=True)
+#     - seperate out icon and script button code and make these first class 
+# objects
 # 
 # 
 #@-at
@@ -192,6 +202,10 @@ requiredIvars = (
 #@-node:bobjack.20080424195922.85:<< required ivars >>
 #@nl
 
+allowedButtonConfigItems = ('image', 'bg', 'fg', 'justify', 'padx', 'pady', 'relief', 'text', 'command', 'state')
+iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
+
+
 
 #@+others
 #@+node:bobjack.20080424190906.6:Module-level
@@ -218,8 +232,6 @@ def init ():
         r('after-create-leo-frame', onCreate)
         r('close-frame', onClose)
 
-        g.app.gui.ScriptingControllerClass = ToolbarScriptingController
-        leoTkinterFrame.leoTkinterTreeTab = ToolbarTkinterTreeTab
         leoTkinterFrame.leoTkinterFrame = ToolbarTkinterFrame
 
         g.plugin_signon(__name__)
@@ -234,7 +246,13 @@ def onPreCreate (tag, keys):
     if not (c and c.exists):
         return
 
+    g.app.gui.ScriptingControllerClass = ToolbarScriptingController
     c.frame.iconBarClass = ToolbarTkIconBarClass
+    leoTkinterFrame.leoTkinterTreeTab = ToolbarTkinterTreeTab
+
+    if not hasattr(c.frame, 'iconBars'):
+        c.frame.iconBars= {}
+        c.frame.toolbarFrame = None
 #@-node:bobjack.20080424195922.11:onPreCreate
 #@+node:bobjack.20080426190702.6:onCreate
 def onCreate (tag, keys):
@@ -318,23 +336,18 @@ class ToolbarTkinterTreeTab (leoTkinterFrame.leoTkinterTreeTab):
 class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
     #@    @+others
-    #@+node:bobjack.20080428114659.3:__init__
-    def __init__(self, *args, **kw):
-
-        self.iconBars= {}
-        self.toolbarFrame = None
-        super(ToolbarTkinterFrame, self).__init__(*args, **kw)
-    #@-node:bobjack.20080428114659.3:__init__
     #@+node:bobjack.20080429153129.29:Icon area convenience methods
     #@+node:bobjack.20080429153129.30:addIconButton
     def addIconButton (self,*args,**keys):
 
         """Create and add an icon button to the named toolbar.
 
-        keys['barname'] gives the name of the toolbar or the
-        tollbar named 'iconbar' is used.
+        keys['barname'] gives the name of the toolbar to be uses if it is present
+        outherwise 'iconbar' is used.
 
         """
+
+
 
         if 'barName' in keys:
             barName = keys['barName']
@@ -343,7 +356,12 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         else:
              barName = 'iconbar'
 
-        return self.iconBars[barName].add(*args,**keys)
+        if barName in self.iconBars:
+            bar = self.iconBars[barName]
+        else:
+            bar = self.iconBar
+
+        return bar.add(*args,**keys)
     #@-node:bobjack.20080429153129.30:addIconButton
     #@+node:bobjack.20080503151427.2:getIconButton
     def getIconButton (self,*args,**keys):
@@ -367,6 +385,8 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@+node:bobjack.20080429153129.31:clearIconBar
     def clearIconBar (self, barName='iconbar'):
 
+        """This removes all widgets from the named iconbar and calls their delete method."""
+
         self.iconBars[barName].clear()
     #@-node:bobjack.20080429153129.31:clearIconBar
     #@+node:bobjack.20080429153129.32:createIconBar
@@ -382,7 +402,7 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         The bar will not be placed in self.iconBars if it is a slave bar.
 
         """
-
+        g.trace()
         frame = self.createToolbarFrame()
 
         if not barName in self.iconBars:
@@ -454,39 +474,660 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@-others
 
 #@-node:bobjack.20080428114659.2:class ToolbarTkinterFrame
+#@+node:bobjack.20080506182829.14:class ToolbarIconFrame
+class ToolbarIconFrame(object):
+
+   #@   @+others
+   #@+node:bobjack.20080506182829.15:__init__
+   def __init__(c, top=None):
+
+       self.c = c
+
+       self.top = top or Tk.Frame(c.frame.top)
+
+
+   #@-node:bobjack.20080506182829.15:__init__
+   #@-others
+#@-node:bobjack.20080506182829.14:class ToolbarIconFrame
+#@+node:bobjack.20080506182829.16:class ToolbarIconButton
+class ToolbarIconButton(Tk.Button, object):
+
+    """
+    text
+    command
+    shortcut
+    statusLine, baloon, tooltip
+    bg, fg
+    menu
+    image, imagefile, icon
+    command
+    """
+
+    #@    @+others
+    #@+node:bobjack.20080506182829.24:__init__
+    def __init__(self, c, cnf={}, **keys ):
+
+        """Create an iconBar button.
+
+        cnf must be a dictionary if it is supplied at all.
+
+        """
+        self.c = c
+        self.deleteOnRightClick = False
+        self.balloonEnabled = False
+        self.balloon = None
+
+        self.keys = keys = self.mergeConfigSources(cnf, keys)
+
+        #@    << setup menu >>
+        #@+node:bobjack.20080507053105.4:<< setup menu >>
+        if 'menu' in keys:
+            self.context_menu = keys['menu']
+            del keys['menu']
+        #@nonl
+        #@-node:bobjack.20080507053105.4:<< setup menu >>
+        #@nl
+        #@    << setup statusLine >>
+        #@+node:bobjack.20080507053105.5:<< setup statusLine >>
+        value = ''
+        for key in ('statusLine', 'balloonText', 'balloon', 'tooltip'):
+            if key in keys:
+                s = keys[key]
+                if s:
+                    value = s
+                del keys[key]
+
+        self.statusLine = value
+
+        if self.balloonEnabled and self.statusLine:
+            self.createBalloon()
+        #@-node:bobjack.20080507053105.5:<< setup statusLine >>
+        #@nl
+        #@    << setup image and relief >>
+        #@+node:bobjack.20080506182829.31:<< setup image and relief >>
+
+
+        imagefile = keys.get('imagefile')
+        image = keys.get('image')
+        icon = keys.get('icon')
+
+        for key in ('imagefile', 'image', 'icon'):
+            try:
+                del keys[key]
+            except KeyError:
+                pass
+
+        if icon:
+            imagefile = icon
+
+        if not image and imagefile:
+            image = self.getImage(imagefile)
+
+        if image:
+            keys['image'] = image
+            keys['bd'] = 0
+            if 'bg' not in keys:
+                # get background of toolbar FIXME:
+                pass
+            keys['relief'] = 'flat'
+            keys['image'] = image
+        else:
+            keys['relief'] = 'groove'
+        #@-node:bobjack.20080506182829.31:<< setup image and relief >>
+        #@nl
+        #@    << setup command >>
+        #@+node:bobjack.20080506182829.32:<< setup command >>
+        command = keys.get('command')
+        commandCallback = command
+
+        if not command:
+            def commandCallback():
+                print "command for widget %s" % self
+
+        elif isinstance(command, basestring):
+            def commandCallback(c=self.c, command=command):
+                c.executeMinibufferCommand(command)
+
+        keys['command'] = commandCallback
+        #@-node:bobjack.20080506182829.32:<< setup command >>
+        #@nl
+        #@    << setup font >>
+        #@+node:bobjack.20080506182829.33:<< setup font >>
+
+        if not hasattr(self, 'font'):
+            self.font = None
+
+        self.font = keys.get('font') or self.font or \
+            self.c.config.getFontFromParams(
+                "button_text_font_family", "button_text_font_size",
+                "button_text_font_slant",  "button_text_font_weight",
+            )
+
+        keys['font'] = self.font
+        #@-node:bobjack.20080506182829.33:<< setup font >>
+        #@nl
+
+        if 'bg' in keys and not keys['bg']:
+            del keys['bg'] 
+
+        kws = self.getButtonConfig(keys)    
+        Tk.Button.__init__(self, c.frame.top, **kws)
+
+
+        self.bind('<Button-3>', self.onRightClick)
+
+
+    #@-node:bobjack.20080506182829.24:__init__
+    #@+node:bobjack.20080507175534.2:attatchWidget
+    def attatchWidget(self, bar='iconbar', index=None, createBar=True, showBar=True):
+
+        """Attatach a widget to a bar.
+
+        index:
+            where to place the widget in the bar
+        bar:
+            The bar may be an iconbar object or the name of an iconBar.
+
+        createBar:
+            If bar is a sring and no bar with that name exists, then if this
+            is True a new bar will be created.
+
+        showBar:
+            If the bar has been created then it will be shown if showBar == True
+
+        """ 
+        pass      
+    #@+at            
+    #     # TODO: not ready yet
+    # 
+    #     try:
+    #         oldbar = self.leoIconBar
+    #     except:
+    #         oldbar = None
+    # 
+    #     if oldbar:
+    #         oldbar.removeWidget(self)
+    # 
+    #     if isinstance(bar, basestring):
+    #         bar = bar
+    #         bar.addWidget(self)
+    # 
+    # 
+    #@-at
+    #@-node:bobjack.20080507175534.2:attatchWidget
+    #@+node:bobjack.20080507175534.3:createBalloon (gui-dependent)
+    def createBalloon (self, delay=100):
+
+        'Create a balloon for a widget.'
+
+        if not self.balloon:
+            self.balloon = Pmw.Balloon(self, initwait=delay)
+
+
+        self.balloon.bind(self, self.statusLine)
+    #@-node:bobjack.20080507175534.3:createBalloon (gui-dependent)
+    #@+node:bobjack.20080507053105.7:detatchWidget
+    def detatchWidget(self):
+
+        try:
+            bar = self.leoIconBar
+        except:
+            bar = None
+
+        if bar:
+            self.leoIconBar.removeWidget(self)
+    #@-node:bobjack.20080507053105.7:detatchWidget
+    #@+node:bobjack.20080506182829.30:getImage
+    def getImage(self, path):
+
+        """Use PIL to get an image suitable for displaying in menus."""
+
+        c = self.c
+
+        if not (Image and ImageTk):
+            return None
+
+        path = g.os_path_normpath(path)
+
+        if not hasattr(self, 'iconCache'):
+            self.iconCache = {}
+
+        try:
+            return self.iconCache[path]
+        except KeyError:
+            pass
+
+        iconpath = g.os_path_join(iconBasePath, path)
+
+        try:
+            return self.iconCache[iconpath]
+        except KeyError:
+            pass
+
+        try:
+            image = Image.open(path)
+        except Exception:
+            image = None
+
+        if not image:
+
+            try:
+                image = Image.open(iconpath)
+            except Exception:
+                image = None
+
+        if not image:
+            return None
+
+        try:    
+            image = ImageTk.PhotoImage(image)
+        except Exception:
+            image = None
+
+        if not image or not image.height():
+            g.es('Bad Toolbar Icon: %s' % path)
+            return None
+
+        self.iconCache[path] = image
+
+        return image
+
+    #@-node:bobjack.20080506182829.30:getImage
+    #@+node:bobjack.20080508051801.5:getButtonConfig
+    def getButtonConfig(self, keys=None):
+
+        """Select keys and values to pass on to Tk.Button."""
+
+        if keys is None:
+            keys = self.keys
+
+        #print 'Items sent to Tk.Button'
+
+        haveKeys = set(keys.keys())
+        allowedKeys = set(allowedButtonConfigItems)
+
+        sendkeys = [ k for k in haveKeys & allowedKeys]
+
+        kws = {}
+        for k in sendkeys:
+            if isinstance(k, unicode):
+                k = k.encode()
+            kws[k] = keys[k]
+
+        return kws
+    #@-node:bobjack.20080508051801.5:getButtonConfig
+    #@+node:bobjack.20080507053105.9:mergeConfigSources
+    def mergeConfigSources(self, cnf, keys):
+
+        """Merge and prioritize config sources.
+
+        config sources are dictionaries cnf, keys and keys['item_data']
+
+        Priority cnf < keys < item_data.
+        """
+
+        if 0:
+            g.trace()
+            print '\t', cnf
+            print '\t', keys
+
+        if cnf:
+            for key, value in keys.iteritems():
+                cnf[key] = value
+            keys = keys = cnf
+
+        if 'item_data' in keys:
+            data = keys['item_data']
+            del keys['item_data']
+        else:
+            data = {}
+
+        self.item_data = data
+
+        if data:
+            for key, value in data.iteritems():
+                keys[key] = value
+
+        return keys
+    #@-node:bobjack.20080507053105.9:mergeConfigSources
+    #@+node:bobjack.20080507053105.6:onRightClick
+    def onRightClick(self, event):
+
+        try:
+            menu = self.context_menu
+        except Exception:
+            menu = None
+
+        if g.doHook('rclick-popup',
+            c=self.c, event=event,
+            button=self,
+        ):
+            return
+
+        if self.deleteOnRightClick:
+            self.deleteButton()
+
+    #@-node:bobjack.20080507053105.6:onRightClick
+    #@+node:bobjack.20080508051801.6:deleteButton
+    def deleteButton(self, event=None):
+
+        """Delete the given button.
+
+        This method does not actually delete the button, override the method
+        in derived classes to do that.
+
+        """
+
+        self.detatchWidget()
+
+    #@-node:bobjack.20080508051801.6:deleteButton
+    #@+node:bobjack.20080508051801.7:setCommand
+    def setCommand(self, command):
+
+
+        commandCallback = command
+
+        if isinstance(command, basestring):
+
+            def commandCallback(event, command=command):
+                return self.c.executeMinibufferCommand(command)
+
+        self.config(command=commandCallback) 
+    #@-node:bobjack.20080508051801.7:setCommand
+    #@-others
+#@-node:bobjack.20080506182829.16:class ToolbarIconButton
+#@+node:bobjack.20080506182829.18:class ToolbarScriptButton
+class ToolbarScriptButton(ToolbarIconButton):
+
+    #@    @+others
+    #@+node:bobjack.20080506182829.19:__init__
+    def __init__(self, c, cnf={}, **keys):
+
+        self.c = c
+        k = c.k
+
+        keys = self.mergeConfigSources(cnf, keys)
+
+        text = keys.get('text')
+        #@    << command name >>
+        #@+node:bobjack.20080507053105.11:<< command name >>
+        self.commandName = commandName = self.cleanButtonText(text).lower()
+        #@nonl
+        #@-node:bobjack.20080507053105.11:<< command name >>
+        #@nl
+        #@    << truncate text >>
+        #@+node:bobjack.20080507053105.10:<< truncate text >>
+
+        self.truncatedText = truncatedText = self.truncateButtonText(commandName)
+        keys['text'] = truncatedText
+        #@-node:bobjack.20080507053105.10:<< truncate text >>
+        #@nl
+        #@    << register commands >>
+        #@+node:bobjack.20080507053105.12:<< register commands >>
+        deleteCommandName= 'delete-%s-button' % commandName
+
+        k.registerCommand(deleteCommandName, shortcut=None,
+            func=self.deleteButton, pane='button', verbose=False
+        )
+
+        shortcut = keys.get('shortcut')
+        k.registerCommand( commandName,
+            shortcut=shortcut,
+            func=lambda event: self.invoke(),
+            pane='button',
+            verbose=shortcut,
+        )
+        #@nonl
+        #@-node:bobjack.20080507053105.12:<< register commands >>
+        #@nl
+
+        ToolbarIconButton.__init__(self, c, keys)
+
+        self.deleteOnRightClick = True
+
+        self.baloonEnabled = True
+        self.createBalloon()
+
+
+
+    #@-node:bobjack.20080506182829.19:__init__
+    #@+node:bobjack.20080507053105.13:Properties
+    #@+node:bobjack.20080507175534.4:baloonEnabled
+
+
+    #@-node:bobjack.20080507175534.4:baloonEnabled
+    #@+node:bobjack.20080507053105.15:maxButtonSize
+    def getMaxButtonSize(self):
+
+        return self.c.theScriptingController.maxButtonSize
+
+    maxButtonSize = property(getMaxButtonSize)
+    #@-node:bobjack.20080507053105.15:maxButtonSize
+    #@+node:bobjack.20080507053105.14:scriptingController
+    def getScriptingController(self):
+
+        return self.c.theScriptingController
+
+    scriptingController = property(getScriptingController)
+    #@-node:bobjack.20080507053105.14:scriptingController
+    #@-node:bobjack.20080507053105.13:Properties
+    #@+node:bobjack.20080506182829.36:cleanButtonText
+    def cleanButtonText (self,s):
+
+        '''Clean the text following @button or @command so that it is a valid name of a minibuffer command.'''
+
+        import string
+
+        # Strip @...@button.
+        while s.startswith('@'):
+            s = s[1:]
+        if g.match_word(s,0,'button'):
+            s = s[6:]
+        i = s.find('@key')
+        if i != -1:
+            s = s[:i].strip()
+        if 1: # Not great, but spaces, etc. interfere with tab completion.
+            chars = g.toUnicode(string.letters + string.digits,g.app.tkEncoding)
+            aList = [g.choose(ch in chars,ch,'-') for ch in g.toUnicode(s,g.app.tkEncoding)]
+            s = ''.join(aList)
+            s = s.replace('--','-')
+        while s.startswith('-'):
+            s = s[1:]
+        while s.endswith('-'):
+            s = s[:-1]
+        return s
+    #@-node:bobjack.20080506182829.36:cleanButtonText
+    #@+node:bobjack.20080506182829.37:truncateButtonText
+    def truncateButtonText (self,s, size=0):
+
+        if not size:
+            size = self.maxButtonSize
+
+        size = max(size, 1)
+
+        s = s[:size]
+        if s.endswith('-'):
+            s = s[:-1]
+        return s.strip()
+    #@-node:bobjack.20080506182829.37:truncateButtonText
+    #@+node:bobjack.20080426064755.77:deleteButton
+    def deleteButton(self, event=None):
+
+        """Delete the given button.
+
+        This is called from callbacks, it is not a callback.
+
+        """
+
+        super(self.__class__, self).deleteButton(event)
+
+        self.scriptingController.deleteButton(self)
+    #@nonl
+    #@-node:bobjack.20080426064755.77:deleteButton
+    #@-others
+
+
+#@-node:bobjack.20080506182829.18:class ToolbarScriptButton
+#@+node:bobjack.20080506182829.20:class ToolbarAddScriptButton
+class ToolbarAddScriptButton(ToolbarScriptButton):
+
+    #@    @+others
+    #@+node:bobjack.20080506182829.21:__init__
+    def __init__(self, c, *args, **kw):
+
+        super(ToolbarAddScriptButton, self).__init__(c, *args, **kw)
+    #@-node:bobjack.20080506182829.21:__init__
+    #@-others
+#@-node:bobjack.20080506182829.20:class ToolbarAddScriptButton
 #@+node:bobjack.20080425135232.6:class ToolbarScriptingController
 scripting = mod_scripting.scriptingController
 class ToolbarScriptingController(scripting, object):
 
     #@    @+others
-    #@+node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
-    def createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,bg=None):
+    #@+node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+
+        '''Create a button from an @button node.
+
+        - Calls createIconButton to do all standard button creation tasks.
+        - Binds button presses to a callback that executes the script.
+        '''
+
+        c = self.c
+        k = c.k
+
+        buttonText = self.cleanButtonText(h)
 
         data = self.getItemData(script)
-        kw = {}
-        if bg is not None:
-            kw['bg'] = bg
-
-        if data and 'tooltip' in data:
-            statusLine = data['tooltip']
-        scripting.createAtButtonFromSettingHelper(self,h,script,statusLine,shortcut,**kw)
-
-    #@-node:bobjack.20080425135232.9:createAtButtonFromSettingHelper
-    #@+node:bobjack.20080425135232.11:createAtButtonHelper
-    def createAtButtonHelper(self, p, h, statusLine, shortcut, *args, **kw):
-
-        data = self.getItemData(p.bodyString())
-
-        for k in 'bg', 'verbose':
-            if k in kw and kw[k] is None:
-                del(kw[k])
 
         if data and 'tooltip' in data:
             statusLine = data['tooltip']
 
 
-        scripting.createAtButtonHelper(self, p, h, statusLine, shortcut,  *args, **kw)
-    #@-node:bobjack.20080425135232.11:createAtButtonHelper
+        # We must define the callback *after* defining b,
+        # so set both command and shortcut to None here.
+
+        b = self.createIconButton(
+            text=h,
+            command=None,
+            shortcut=None,
+            statusLine=statusLine,
+            bg=bg,
+            item_data=data,
+        )
+
+        if not b:
+            return None
+
+        # Now that b is defined we can define the callback.
+        # Yes, the callback *does* use b (to delete b if requested by the script).
+
+        def atSettingButtonCallback (
+            event=None,
+            self=self,
+            b=b,
+            script=script,
+            buttonText=buttonText
+        ):
+            self.executeScriptFromSettingButton (b,script,buttonText)
+
+        self.iconBar.setCommandForButton(b,atSettingButtonCallback)
+
+        # At last we can define the command and use the shortcut.
+        k.registerCommand(buttonText.lower(),
+            shortcut=shortcut,func=atSettingButtonCallback,
+            pane='button',verbose=False)
+
+        return b
+    #@+node:bobjack.20080506182829.13:executeScriptFromSettingButton
+    def executeScriptFromSettingButton (self,b,script,buttonText):
+
+        '''Called from callbacks to execute the script in node p.'''
+
+        c = self.c
+
+        if c.disableCommandsMessage:
+            g.es(c.disableCommandsMessage,color='blue')
+        else:
+            g.app.scriptDict = {}
+            c.executeScript(script=script,silent=True)
+            # Remove the button if the script asks to be removed.
+            if g.app.scriptDict.get('removeMe'):
+                g.es("Removing '%s' button at its request" % buttonText)
+                b.deleteButton()
+
+        if 0: # Do *not* set focus here: the script may have changed the focus.
+            c.frame.bodyWantsFocus()
+    #@nonl
+    #@-node:bobjack.20080506182829.13:executeScriptFromSettingButton
+    #@-node:bobjack.20080506182829.12:createAtButtonFromSettingHelper & callback
+    #@+node:bobjack.20080508051801.2:createAtButtonHelper & callback
+    def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
+
+        '''Create a button from an @button node.
+
+        - Calls createIconButton to do all standard button creation tasks.
+        - Binds button presses to a callback that executes the script in node p.
+        '''
+        c = self.c ; k = c.k
+
+        item_data = self.getItemData(p.bodyString())
+
+        buttonText = self.cleanButtonText(h)
+
+
+
+        b = self.createIconButton(
+            text=h,
+            command=None,
+            shortcut=None,
+            statusLine=statusLine,
+            bg=bg,
+            item_data=item_data
+        )
+
+        if not b:
+            return None
+
+        def atButtonCallback (
+            event=None,
+            self=self,
+            p=p.copy(),
+            b=b,
+            buttonText=buttonText
+        ):
+            self.executeScriptFromButton (p,b,buttonText)
+
+        b.setCommand(atButtonCallback)
+
+        # At last we can define the command and use the shortcut.
+        k.registerCommand(buttonText.lower(),
+            shortcut=shortcut,func=atButtonCallback,
+            pane='button',verbose=verbose)
+
+        return b
+    #@+node:bobjack.20080508051801.3:executeScriptFromButton
+    def executeScriptFromButton (self,p,b,buttonText):
+
+        '''Called from callbacks to execute the script in node p.'''
+
+        c = self.c
+
+        if c.disableCommandsMessage:
+            g.es(c.disableCommandsMessage,color='blue')
+        else:
+            g.app.scriptDict = {}
+            c.executeScript(p=p,silent=True)
+            # Remove the button if the script asks to be removed.
+            if g.app.scriptDict.get('removeMe'):
+                g.es("Removing '%s' button at its request" % buttonText)
+                b.deleteButton()
+
+        if 0: # Do *not* set focus here: the script may have changed the focus.
+            c.frame.bodyWantsFocus()
+    #@nonl
+    #@-node:bobjack.20080508051801.3:executeScriptFromButton
+    #@-node:bobjack.20080508051801.2:createAtButtonHelper & callback
     #@+node:bobjack.20080425135232.10:getItemData
     def getItemData(self, script):
 
@@ -512,7 +1153,6 @@ class ToolbarScriptingController(scripting, object):
 
             item_data[key] = value
 
-        self.item_data = self.c.frame.iconBar.item_data = item_data
 
         return item_data
     #@-node:bobjack.20080425135232.10:getItemData
@@ -527,36 +1167,9 @@ class ToolbarScriptingController(scripting, object):
 
     iconBar = property(getIconBar, setIconBar)
     #@-node:bobjack.20080428114659.18:getIconBar
-    #@+node:bobjack.20080426064755.77:deleteButton
-    def deleteButton(self, button, event=None):
-
-        """Delete the given button.
-
-        This is called from callbacks, it is not a callback.
-
-        """
-
-        try:
-            menu = button.context_menu
-        except Exception:
-            menu = None
-
-        if event and menu:
-            result = g.doHook(
-                'rclick-popup',
-                c=self.c, 
-                event=event,
-            )
-            if result:
-                return
-
-        if hasattr(button, 'leoIconBar'):
-            button.leoIconBar.removeWidget(button)
-
-        scripting.deleteButton(self, button)
-    #@-node:bobjack.20080426064755.77:deleteButton
     #@+node:bobjack.20080430160907.2:createIconButton
-    def createIconButton (self,text,command,shortcut,statusLine,bg):
+
+    def createIconButton (self,text,command,shortcut,statusLine,bg, **keys):
 
         '''Create an icon button.  All icon buttons get created using this utility.
 
@@ -568,44 +1181,21 @@ class ToolbarScriptingController(scripting, object):
 
         c = self.c ; k = c.k
 
-        # Create the button and add it to the buttons dict.
-        commandName = self.cleanButtonText(text).lower()
+        cnf = {}
+        for k, v in (
+            ('text', text),
+            ('command', command),
+            ('shortcut', shortcut),
+            ('statusLine', statusLine),
+            ('bg', bg)
+        ):
+            cnf[k] = v
 
-        # Truncate only the text of the button, not the command name.
-        truncatedText = self.truncateButtonText(commandName)
-        if not truncatedText.strip():
-            g.es_print('%s ignored: no cleaned text' % (text.strip() or ''),color='red')
-            return None
+        b = ToolbarScriptButton(c, cnf, **keys)
 
-        # Command may be None.
-        b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
-        if not b: return None
-
-        self.buttonsDict[b] = truncatedText
-
-        if statusLine:
-            self.createBalloon(b,statusLine)
-
-        # Register the command name if it exists.
-        if command:
-            k.registerCommand(commandName,shortcut=shortcut,func=command,pane='button',verbose=shortcut)
-
-        # Define the callback used to delete the button.
-        def deleteButtonCallback(event=None,self=self,b=b):
-            self.deleteButton(b, event=event)
-
-        if self.gui.guiName() == 'tkinter':
-            # Bind right-clicks to deleteButton.
-            b.bind('<3>',deleteButtonCallback)
-
-        # Register the delete-x-button command.
-        deleteCommandName= 'delete-%s-button' % commandName
-        k.registerCommand(deleteCommandName,shortcut=None,
-            func=deleteButtonCallback,pane='button',verbose=False)
-            # Reporting this command is way too annoying.
-
+        self.buttonsDict[b] = b.truncatedText
+        self.iconBar.addWidget(b)
         return b
-    #@nonl
     #@-node:bobjack.20080430160907.2:createIconButton
     #@+node:bobjack.20080428114659.12:createScriptButtonIconButton 'script-button' & callback
     def createScriptButtonIconButton (self, barName='iconbar'):
@@ -631,7 +1221,12 @@ class ToolbarScriptingController(scripting, object):
     #@+node:bobjack.20080428114659.13:addScriptButtonCommand
     def addScriptButtonCommand (self,event=None, b=None):
 
-        '''Called when the user presses the 'script-button' button or executes the script-button command.'''
+        """Convert the node into a script button and add it to an iconBar.
+
+        b is the add-script-button that was clicked and the new script button
+        will be added to the same iconBar.
+
+        """ 
 
         c = self.c
         frame = c.frame
@@ -642,7 +1237,7 @@ class ToolbarScriptingController(scripting, object):
         shortcut = self.getShortcut(h)
         statusLine = "Run Script: %s" % buttonText
         if shortcut:
-            statusLine = statusLine + " @key=" + shortcut
+            statusLine = statusLine + "\@key=" + shortcut
 
         oldIconBar = frame.iconBar
         try:
@@ -724,6 +1319,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         c.frame.top.update_idletasks()
 
     #@-node:bobjack.20080428114659.6:__init__
+    #@+node:bobjack.20080508125414.5:Event Handlers
     #@+node:bobjack.20080428114659.9:onRightClick
     def onRightClick(self, event):
 
@@ -744,8 +1340,19 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         w = self.getDragMaster(w)
 
-        if hasattr(w, 'leoIconBar'):
+        try:
+            flag = w.leoIconBar
+        except AttributeError:
+            flag = False
+
+        if flag:
             self.c.theToolbarController.grabWidget = w
+
+        try:
+            w.balloon._leave(e)
+        except Exception:
+            pass
+
     #@-node:bobjack.20080503090121.5:onPress
     #@+node:bobjack.20080503090121.6:onRelease
     def onRelease(self, e):
@@ -779,18 +1386,6 @@ class ToolbarTkIconBarClass(iconbar, object):
         finally:
             controller.grabWidget = None
     #@-node:bobjack.20080503090121.6:onRelease
-    #@+node:bobjack.20080506182829.2:getDragMaster
-    def getDragMaster(self, w):
-
-        if hasattr(w, 'leoDragMaster'):
-            w = w.leoDragMaster
-
-        else:
-            while hasattr(w, 'leoSubWindow'):
-                w = w.pack_info()['in']
-
-        return w
-    #@-node:bobjack.20080506182829.2:getDragMaster
     #@+node:bobjack.20080429153129.16:onConfigure
     def onConfigure(self, event=None):
 
@@ -798,23 +1393,134 @@ class ToolbarTkIconBarClass(iconbar, object):
 
 
 
-    #@+node:bobjack.20080507083323.4:repackButons
-    def repackButtons(self, buttons=None):
+    #@-node:bobjack.20080429153129.16:onConfigure
+    #@+node:bobjack.20080506182829.2:getDragMaster
+    def getDragMaster(self, w):
 
+        if hasattr(w, 'leoDragMaster'):
+            w = w.leoDragMaster
+
+        return w
+    #@-node:bobjack.20080506182829.2:getDragMaster
+    #@-node:bobjack.20080508125414.5:Event Handlers
+    #@+node:bobjack.20080430160907.4:Properties
+    #@+node:bobjack.20080430160907.5:outerFrame
+    def getOuterFrame(self):
+
+        """Get the frame that contains this bar and its companion slaves."""
+
+        return self.barHead._outerFrame
+
+    def setOuterFrame(self, value):
+
+       self.barHead._outerFrame = value
+
+    outerFrame = property(getOuterFrame, setOuterFrame)
+    #@-node:bobjack.20080430160907.5:outerFrame
+    #@+node:bobjack.20080430064145.4:barHead
+    def getBarHead(self):
+
+        """Get the first bar for the list of bars of which this bar is a member."""
+
+        bar = self
+        while bar.slaveMaster:
+            bar = bar.slaveMaster
+
+        return bar
+
+    barHead = property(getBarHead)
+
+    #@-node:bobjack.20080430064145.4:barHead
+    #@+node:bobjack.20080501113939.2:slaveBars
+
+    def getSlaveBars(self):
+
+        """Get a list of slave iconBars packed in this toolbar."""
+
+        return [ bar.leoIconBar for bar in self.outerFrame.pack_slaves()]
+
+    slaveBars = property(getSlaveBars)
+    #@nonl
+    #@-node:bobjack.20080501113939.2:slaveBars
+    #@+node:bobjack.20080502134903.7:slaveBarFrames
+    def getSlaveBarFrames(self):
+
+        """Get a list of slave iconBar frames packed in this toolbar."""
+
+        return [ bar for bar in self.outerFrame.pack_slaves()]
+
+    slaveBarFrames = property(getSlaveBarFrames)
+    #@nonl
+    #@-node:bobjack.20080502134903.7:slaveBarFrames
+    #@+node:bobjack.20080501055450.2:slaveButtons
+    def getSlaveButtons(self):
+
+        """Get a list of widgets packed in this iconBar."""
+
+        return [ btn for btn in self.iconFrame.pack_slaves()]
+
+
+    slaveButtons = property(getSlaveButtons)
+    #@-node:bobjack.20080501055450.2:slaveButtons
+    #@+node:bobjack.20080501113939.3:allSlaveButtons
+    def getAllSlaveButtons(self,  shrink=False):
+
+        """Make a list of all widgets packed in this set of toolbars."""
+
+        buttons = []
         bar = self.barHead
+        while bar:
+            buttons += [ btn for btn in bar.iconFrame.pack_slaves()]
+            bar = bar.slaveBar
 
-        if bar.inConfigure:
-           return
+        return buttons 
 
-        if buttons is not None:
-            self.updateButtons(buttons)
+    allSlaveButtons = property(getAllSlaveButtons)
+    #@-node:bobjack.20080501113939.3:allSlaveButtons
+    #@+node:bobjack.20080501125812.5:buttons
+    def getButtons(self):
 
-        try:
-            bar.doRepackButtons()
-        finally:
-            bar.inConfigure = False
+        """Get the list of widgets that may appear in this toolbar."""
+
+        return self.barHead._buttons[:]
+
+    def setButtons(self, lst):
+
+        """Set a new list of widgets to be displayed in this toolbar."""
+
+        if not lst:
+            lst = []
+        self.repackButtons(lst)
+        return
+
+    buttons = property(getButtons, setButtons)
+    #@-node:bobjack.20080501125812.5:buttons
+    #@+node:bobjack.20080501181134.5:visible
+    def getVisible(self):
+
+        """Is the toolbar, of which this iconBar is a slave, packed."""
+
+        barHead = self.barHead
+        return barHead._outerFrame in barHead.parentFrame.pack_slaves()
+
+    def setVisible(self, show):
+
+        if show:
+            self.show()
+        else:
+            self.hide()
+
+    visible = property(getVisible, setVisible)
+    #@-node:bobjack.20080501181134.5:visible
+    #@-node:bobjack.20080430160907.4:Properties
     #@+node:bobjack.20080504034903.9:updateButtons
-    def updateButtons(self, buttons):
+    def updateButtons(self, buttons, repack=True):
+
+        """Update the iconBars button list to match buttons.
+
+        Buttons no longer needed are removed, new buttons are added.
+
+        """
 
         old = set(self.barHead._buttons)
         new = set(buttons)
@@ -832,8 +1538,24 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         self.barHead._buttons = buttons[:]
 
+        if repack:
+            self.repackButtons()
     #@-node:bobjack.20080504034903.9:updateButtons
-    #@-node:bobjack.20080507083323.4:repackButons
+    #@+node:bobjack.20080507083323.4:repackButons
+    def repackButtons(self, buttons=None):
+
+        bar = self.barHead
+
+        if bar.inConfigure:
+           return
+
+        if buttons is not None:
+            self.updateButtons(buttons, repack=False)
+
+        try:
+            bar.doRepackButtons()
+        finally:
+            bar.inConfigure = False
     #@+node:bobjack.20080430160907.12:doRepackButtons
     def doRepackButtons(self, trace=None):
 
@@ -957,117 +1679,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         return slaveBar 
     #@-node:bobjack.20080430064145.3:createSlaveBar
     #@-node:bobjack.20080430160907.12:doRepackButtons
-    #@-node:bobjack.20080429153129.16:onConfigure
-    #@+node:bobjack.20080430160907.4:Properties
-    #@+node:bobjack.20080430160907.5:outerFrame
-    def getOuterFrame(self):
-
-        """Get the frame that contains this bar and its companion slaves."""
-
-        return self.barHead._outerFrame
-
-    def setOuterFrame(self, value):
-
-       self.barHead._outerFrame = value
-
-    outerFrame = property(getOuterFrame, setOuterFrame)
-    #@-node:bobjack.20080430160907.5:outerFrame
-    #@+node:bobjack.20080430064145.4:barHead
-    def getBarHead(self):
-
-        """Get the first bar for the list of bars of which this bar is a member."""
-
-        bar = self
-        while bar.slaveMaster:
-            bar = bar.slaveMaster
-
-        return bar
-
-    barHead = property(getBarHead)
-
-    #@-node:bobjack.20080430064145.4:barHead
-    #@+node:bobjack.20080501113939.2:slaveBars
-
-    def getSlaveBars(self):
-
-        """Get a list of slave iconBars packed in this toolbar."""
-
-        return [ bar.leoIconBar for bar in self.outerFrame.pack_slaves()]
-
-    slaveBars = property(getSlaveBars)
-    #@nonl
-    #@-node:bobjack.20080501113939.2:slaveBars
-    #@+node:bobjack.20080502134903.7:slaveBarFrames
-    def getSlaveBarFrames(self):
-
-        """Get a list of slave iconBar frames packed in this toolbar."""
-
-        return [ bar for bar in self.outerFrame.pack_slaves()]
-
-    slaveBarFrames = property(getSlaveBarFrames)
-    #@nonl
-    #@-node:bobjack.20080502134903.7:slaveBarFrames
-    #@+node:bobjack.20080501055450.2:slaveButtons
-    def getSlaveButtons(self):
-
-        """Get a list of widgets packed in this iconBar."""
-
-        return [ btn for btn in self.iconFrame.pack_slaves()]
-
-
-    slaveButtons = property(getSlaveButtons)
-    #@-node:bobjack.20080501055450.2:slaveButtons
-    #@+node:bobjack.20080501113939.3:allSlaveButtons
-    def getAllSlaveButtons(self,  shrink=False):
-
-        """Make a list of all widgets packed in this set of toolbars."""
-
-        buttons = []
-        bar = self.barHead
-        while bar:
-            buttons += [ btn for btn in bar.iconFrame.pack_slaves()]
-            bar = bar.slaveBar
-
-        return buttons 
-
-    allSlaveButtons = property(getAllSlaveButtons)
-    #@-node:bobjack.20080501113939.3:allSlaveButtons
-    #@+node:bobjack.20080501125812.5:buttons
-    def getButtons(self):
-
-        """Get the list of widgets that may appear in this toolbar."""
-
-        return self.barHead._buttons
-
-    def setButtons(self, lst):
-
-        """Set a new list of widgets to be displayed in this toolbar."""
-
-        if not lst:
-            lst = []
-        self.repackButtons(lst)
-        return
-
-    buttons = property(getButtons, setButtons)
-    #@-node:bobjack.20080501125812.5:buttons
-    #@+node:bobjack.20080501181134.5:visible
-    def getVisible(self):
-
-        """Is the toolbar, of which this iconBar is a slave, packed."""
-
-        barHead = self.barHead
-        return barHead._outerFrame in barHead.parentFrame.pack_slaves()
-
-    def setVisible(self, show):
-
-        if show:
-            self.show()
-        else:
-            self.hide()
-
-    visible = property(getVisible, setVisible)
-    #@-node:bobjack.20080501181134.5:visible
-    #@-node:bobjack.20080430160907.4:Properties
+    #@-node:bobjack.20080507083323.4:repackButons
     #@+node:bobjack.20080503151427.3:add
     def add(self,*args,**keys):
         """Create and pack an iconBar button."""
@@ -1076,129 +1688,6 @@ class ToolbarTkIconBarClass(iconbar, object):
 
 
     #@-node:bobjack.20080503151427.3:add
-    #@+node:bobjack.20080426064755.76:getButton
-    def getButton(self,*args,**keys):
-        """Create an iconBar button."""
-
-        try:
-            data = self.item_data
-        except Exception:
-            data = None
-
-        btn = None
-        try:
-            #@        << pre create button >>
-            #@+node:bobjack.20080426205344.2:<< pre create button >>
-            if data:
-
-                if 'bg' in data:
-                    keys['bg'] = data['bg']
-
-                if 'icon' in data:
-                    image = self.getImage(data['icon'])
-                    if image:
-                        keys['image'] = image
-                        if not 'bg' in keys:
-                            keys['bg'] = ''
-            #@-node:bobjack.20080426205344.2:<< pre create button >>
-            #@nl
-            btn = self._add(self, *args, **keys)
-            #@        << post create button >>
-            #@+node:bobjack.20080426205344.3:<< post create button >>
-            if data and btn:
-
-                if 'fg' in data:
-                    btn.configure(fg=data['fg'])
-
-                if 'menu' in data:
-                    btn.context_menu = data['menu']
-            #@-node:bobjack.20080426205344.3:<< post create button >>
-            #@nl
-
-        finally:
-            self.item_data = None
-
-        return btn
-    #@+node:bobjack.20080429153129.17:_add
-    def _add(self,*args,**keys):
-
-        """Add a button containing text or a picture to the icon bar.
-
-        Pictures take precedence over text"""
-
-        c = self.c ; f = c.frame.top
-        text = keys.get('text')
-        imagefile = keys.get('imagefile')
-        image = keys.get('image')
-        command = keys.get('command')
-        bg = keys.get('bg')
-
-        if not imagefile and not image and not text: return
-
-        # First define n.
-        try:
-            g.app.iconWidgetCount += 1
-            n = g.app.iconWidgetCount
-        except Exception:
-            n = g.app.iconWidgetCount = 1
-
-        if not command:
-            def commandCallback():
-                print "command for widget %s" % (n)
-            command = commandCallback
-
-        if isinstance(command, basestring):
-            def commandCallback(command=command):
-                c.executeMinibufferCommand(command)
-            command = commandCallback
-
-        if imagefile or image:
-            #@        << create a picture >>
-            #@+node:bobjack.20080429153129.18:<< create a picture >>
-            try:
-                if imagefile:
-                    # Create the image.  Throws an exception if file not found
-                    imagefile = g.os_path_join(g.app.loadDir,imagefile)
-                    imagefile = g.os_path_normpath(imagefile)
-                    image = Tk.PhotoImage(master=g.app.root,file=imagefile)
-
-                    # Must keep a reference to the image!
-                    try:
-                        refs = g.app.iconImageRefs
-                    except Exception:
-                        refs = g.app.iconImageRefs = []
-
-                    refs.append((imagefile,image),)
-
-                if not bg:
-                    bg = f.cget("bg")
-
-                b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
-
-                return b
-
-            except Exception:
-                g.es_exception()
-                return None
-            #@-node:bobjack.20080429153129.18:<< create a picture >>
-            #@nl
-        elif text:
-            b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
-            if not self.font:
-                self.font = c.config.getFontFromParams(
-                    "button_text_font_family", "button_text_font_size",
-                    "button_text_font_slant",  "button_text_font_weight",)
-            b.configure(font=self.font)
-            # elif sys.platform.startswith('win'):
-                # width = max(6,len(text))
-                # b.configure(width=width,font=('verdana',7,'bold'))
-            if bg: b.configure(bg=bg)
-
-            return b
-
-        return None
-    #@-node:bobjack.20080429153129.17:_add
-    #@-node:bobjack.20080426064755.76:getButton
     #@+node:bobjack.20080430160907.11:addWidget
     def addWidget(self, widget, index=None, repack=True):
 
@@ -1206,97 +1695,183 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         The widget must have c.frame.top as it parent.
 
+        If the widget is already attached to an iconBar it will
+        first be removed
+
         """
 
-        barHead = self.barHead
-        buttons = barHead._buttons
-
-        #@    << bind widget and drag handles >>
-        #@+node:bobjack.20080506090043.2:<< bind widget and drag handles >>
-
-        widget.bind('<ButtonPress-1>', barHead.onPress)
-        widget.bind('<ButtonRelease-1>', barHead.onRelease)
-
         try:
-            drag = widget.leoDragHandle
+            #@        << remove from current bar >>
+            #@+node:bobjack.20080508125414.13:<< remove from current bar >>
+            try:
+                bar = widget.leoIconBar
+            except:
+                bar = None
 
-        except AttributeError:
-            drag = None
+            if bar:
+                bar.removeWidget(widget, repack=False)
+            #@nonl
+            #@-node:bobjack.20080508125414.13:<< remove from current bar >>
+            #@nl
 
-        if drag:
-            if not isinstance(drag, (tuple, list)):
-                drag = (drag,)
+            barHead = self.barHead
+            buttons = barHead._buttons
 
-            for dragWidget in drag:
-                dragWidget.leoSubWindow = True
-                dragWidget.leoDragMaster = widget
-                dragWidget.bind('<ButtonPress-1>', barHead.onPress )
-                dragWidget.bind('<ButtonRelease-1>', barHead.onRelease)
+            #@        << validate index >>
+            #@+node:bobjack.20080508125414.12:<< validate index >>
+            if index is not None:
+                try:
+                    idx = int(index)
+                except:
+                    idx = None
 
-        widget.c = self.c
+                if idx is None:
+                    if index in buttons:
+                        idx = buttons.index(index)
 
-        widget.leoIconBar = barHead
-        #@-node:bobjack.20080506090043.2:<< bind widget and drag handles >>
-        #@nl
+                index = idx
 
-        if not repack:
+                if index is None: g.es('Icon Bar index out of range')
+
+
+
+
+            #@-node:bobjack.20080508125414.12:<< validate index >>
+            #@nl
+
+            #@        << bind widget and drag handles >>
+            #@+node:bobjack.20080506090043.2:<< bind widget and drag handles >>
+
+            widget.bind('<ButtonPress-1>', barHead.onPress)
+            widget.bind('<ButtonRelease-1>', barHead.onRelease)
+
+            try:
+                drag = widget.leoDragHandle
+
+            except AttributeError:
+                drag = None
+
+            if drag:
+                if not isinstance(drag, (tuple, list)):
+                    drag = (drag,)
+
+                for dw in drag:
+
+                    dw.leoSubWindow = True
+                    dw.leoDragMaster = widget
+
+                    dw.bind('<ButtonPress-1>', barHead.onPress )
+                    dw.bind('<ButtonRelease-1>', barHead.onRelease)
+
+            widget.c = self.c
+            widget.leoIconBar = barHead
+            #@-node:bobjack.20080506090043.2:<< bind widget and drag handles >>
+            #@nl
+
+            if index is not None:
+                try:
+                   buttons.insert(index, widget)
+                except IndexError:
+                    index = None
+
+            if index is None:
+                buttons.append(widget)
+
+            if repack:
+                self.repackButtons()
+
+        finally:
             return widget
-
-        try:
-            index = int(index)
-        except:
-            index = None
-
-        if index is not None and index>=0 and index<len(buttons):
-            buttons.insert(index, widget)
-        else:
-            buttons.append(widget)
-
-        self.repackButtons()
-
-        return widget
 
     #@-node:bobjack.20080430160907.11:addWidget
     #@+node:bobjack.20080501181134.3:removeWidget
     def removeWidget(self, widget, repack=True):
 
         """Remove widget from the list of manged widgets and repack the buttons."""
+        g.trace(widget)
+        try:
+            barHead = self.barHead
 
-        barHead = self.barHead
+            barHead._buttons.remove(widget)
 
-        barHead._buttons.remove(widget)
+            #@        << unbind widget and drag handles >>
+            #@+node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
+            widget.unbind('<ButtonPress-1>')
+            widget.unbind('<ButtonRelease-1>')
 
-        #@    << unbind widget and drag handles >>
-        #@+node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
-        widget.unbind('<ButtonPress-1>')
-        widget.unbind('<ButtonRelease-1>')
+            try:
+                drag = widget.leoDragHandlle
+            except AttributeError:
+                drag = None
+
+            if drag:
+                if not isinstance(drag, (tuple, list)):
+                    drag = (drag,)
+
+                for dragWidget in drag:
+                    try:
+                        del dw.leoSubWindow
+                        del dw.leoDragMaster
+                        dw.unbind('<ButtonPress-1>')
+                        dw.unbind('<ButtonRelease-1>')
+                    except AttributeError:
+                        g.es_exception()
+
+            #@-node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
+            #@nl
+
+            widget.leoIconBar = None
+
+            if repack:
+                self.repackButtons()
+
+        finally:
+            pass
+
+            return widget
+    #@-node:bobjack.20080501181134.3:removeWidget
+    #@+node:bobjack.20080508125414.4:clear
+    def clear(self):
+
+        """Delete all the widgets in the the icon bar"""
+
+        buttons = self.buttons
+
+        # This removes all the buttos from the iconbar.
+        self.buttons = []
+
+        for w in buttons:
+            try:
+                if hasattr(w, 'deleteWidget'):
+                    w.deleteButton()
+                else:
+                    self.removeWidget(w)
+            except:
+                g.es_error('can\'t delete', str(w))
+                pass
+    #@-node:bobjack.20080508125414.4:clear
+    #@+node:bobjack.20080426064755.76:getButton
+    def getButton(self,*args,**keys):
+        """Create an iconBar button."""
+
+
+        if 'item_data' not in keys:
+            try:
+                data = self.item_data
+            except Exception:
+                data = {}
+            keys['item_data'] = data
+
 
         try:
-            drag = widget.leoDragHandlle
-        except AttributeError:
-            drag = None
+            btn = ToolbarIconButton(self.c, {}, **keys)
+        finally:
+            self.item_data = None
 
-        if drag:
-            if not isinstance(drag, (tuple, list)):
-                drag = (drag,)
 
-            for dragWidget in drag:
-                try:
-                    del dragWidget.leoSubWindow
-                    del dragWidget.leoDragMaster
-                    dragWidget.unbind('<ButtonPress-1>')
-                    dragWidget.unbind('<ButtonRelease-1>')
-                except AttributeError:
-                    g.es_exception()
 
-        #@-node:bobjack.20080506090043.3:<< unbind widget and drag handles >>
-        #@nl
-
-        del widget.leoIconBar
-
-        if repack:
-            self.repackButtons()
-    #@-node:bobjack.20080501181134.3:removeWidget
+        return btn
+    #@-node:bobjack.20080426064755.76:getButton
     #@+node:bobjack.20080429153129.36:pack (show)
     def pack (self):
 
@@ -1364,7 +1939,8 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         return w
     #@-node:bobjack.20080429153129.27:unpackWidget
-    #@+node:bobjack.20080426064755.79:getImage
+    #@+node:bobjack.20080508125414.6:Utility
+    #@+node:bobjack.20080506182829.30:getImage
     def getImage(self, path):
 
         """Use PIL to get an image suitable for displaying in menus."""
@@ -1384,7 +1960,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         except KeyError:
             pass
 
-        iconpath = g.os_path_join(self.iconBasePath, path)
+        iconpath = g.os_path_join(iconBasePath, path)
 
         try:
             return self.iconCache[iconpath]
@@ -1419,7 +1995,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         return image
 
-    #@-node:bobjack.20080426064755.79:getImage
+    #@-node:bobjack.20080506182829.30:getImage
     #@+node:bobjack.20080430064145.5:uniqueSlaveName
     def uniqueSlaveName(self):
 
@@ -1427,6 +2003,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         return '%s-%02d-slave' % (self.barHead.barName, self.barHead.nSlaves)
     #@-node:bobjack.20080430064145.5:uniqueSlaveName
+    #@-node:bobjack.20080508125414.6:Utility
     #@-others
 #@-node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
 #@-node:bobjack.20080424190906.6:Module-level
@@ -1539,9 +2116,10 @@ class pluginController(object):
                 cm = None
 
             if cm and cm.mb_keywords:
+                cm.mb_keywords['mb_event'] = event
                 cm.mb_retval = function(cm.mb_keywords)
             else:
-                keywords = {'mb_event': event}
+                keywords = {'c': self.c, 'mb_event': event, 'rc_phase': 'minibuffer'}
                 return function(keywords)
 
         return minibufferCallback
@@ -1653,8 +2231,8 @@ class pluginController(object):
         """
 
         try:
-            button = keywords['event'].widget
-            self.c.theScriptingController.deleteButton(button)
+           keywords['event'].widget.deleteButton()
+
         except Exception, e:
             g.es_error(e)
             g.es_error('failed to delete button')

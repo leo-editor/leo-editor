@@ -3,14 +3,14 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="51" left="243" height="634" width="1161"/>
+	<global_window_position top="101" left="225" height="634" width="1161"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080424195922.3" str_leo_pos="0"><vh>Startup</vh>
-<v t="bobjack.20080424195922.2" str_leo_pos="1"><vh>@chapters</vh></v>
+<v t="bobjack.20080424195922.3" str_leo_pos="2"><vh>Startup</vh>
+<v t="bobjack.20080424195922.2"><vh>@chapters</vh></v>
 </v>
 <v t="bobjack.20080424195922.90"><vh>Buttons</vh>
 <v t="bobjack.20080427085237.1"><vh>@button Fav Button</vh></v>
@@ -18,7 +18,7 @@
 <v t="bobjack.20080427183647.2"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080424195922.94"><vh>@button Do Unit Tests</vh></v>
 </v>
-<v t="bobjack.20080427091720.1"><vh>@popup test-button-menu</vh>
+<v t="bobjack.20080427091720.1" a="M"><vh>@popup test-button-menu</vh>
 <v t="bobjack.20080427091720.2"><vh>@item toolbar-delete-button</vh></v>
 </v>
 <v t="bobjack.20080424195922.89"><vh>Unit Tests</vh>
@@ -163,7 +163,11 @@ g.es('I LOVE LEO')</t>
 <t tx="bobjack.20080427091720.2">Remove Button
 
 icon = Tango\16x16\actions\stop.png</t>
-<t tx="bobjack.20080427183647.2">from pprint import pformat
+<t tx="bobjack.20080427183647.2">@
+@btn tooltip=Pretty print c.context_menus
+@c
+
+from pprint import pformat
 
 g.es_print(pformat(c.context_menus))</t>
 </tnodes>
