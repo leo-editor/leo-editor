@@ -1794,6 +1794,7 @@ class keyHandlerClass:
 
         k = self
 
+        # These commands can be executed in the minibuffer.
         k.singleLineCommandList = [
             # editCommandsClass
             'back-to-indentation',
