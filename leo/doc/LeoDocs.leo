@@ -3661,6 +3661,32 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
+<v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
+<v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
+<v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
+<v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
+<v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
+<v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
+<v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
+<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
+<v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
+<v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
+<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
+<v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
+<v t="ekr.20080204100523.1"><vh>Commands</vh></v>
+<v t="ekr.20080204100523"><vh>Startup</vh></v>
+<v t="ekr.20080204100523.2"><vh>Scripting IPython from Leo</vh></v>
+<v t="ekr.20080205080801"><vh>Scripting Leo from IPython</vh></v>
+<v t="ekr.20080204100523.3"><vh>@rst-ignore User Settings</vh></v>
+<v t="ekr.20080210101336"><vh>Acknowledgements</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
