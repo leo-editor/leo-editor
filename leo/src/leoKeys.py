@@ -1792,7 +1792,9 @@ class keyHandlerClass:
     #@+node:ekr.20080509064108.6:k.defineSingleLineCommands
     def defineSingleLineCommands (self):
 
-        self.singleLineCommandList = [
+        k = self
+
+        k.singleLineCommandList = [
             # editCommandsClass
             'back-to-indentation',
             'back-char',
@@ -1867,7 +1869,9 @@ class keyHandlerClass:
     #@+node:ekr.20080509064108.7:k.defineMultiLineCommands
     def defineMultiLineCommands (self):
 
-        self.multiLineCommandList = [
+        k = self
+
+        k.multiLineCommandList = [
             # editCommandsClass
             'add-space-to-lines',
             'add-tab-to-lines',
