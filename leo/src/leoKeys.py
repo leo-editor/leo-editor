@@ -1661,6 +1661,8 @@ class keyHandlerClass:
 
         self.defineTkNames()
         self.defineSpecialKeys()
+        self.defineSingleLineCommands()
+        self.defineMultiLineCommands()
         self.autoCompleter = autoCompleterClass(self)
         self.setDefaultUnboundKeyAction()
     #@-node:ekr.20061031131434.76: ctor (keyHandler)
@@ -1787,6 +1789,170 @@ class keyHandlerClass:
     # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9
     #@-at
     #@-node:ekr.20070123143428:k.defineTkNames
+    #@+node:ekr.20080509064108.6:k.defineSingleLineCommands
+    def defineSingleLineCommands (self):
+
+        self.singleLineCommandList = [
+            # editCommandsClass
+            'back-to-indentation',
+            'back-char',
+            'back-char-extend-selection',
+            'back-word',
+            'back-word-extend-selection',
+            'backward-delete-char',
+            'backward-find-character',
+            'backward-find-character-extend-selection',
+            'beginning-of-line',
+            'beginning-of-line-extend-selection',
+            'capitalize-word',
+            'delete-char',
+            'delete-indentation',
+            'delete-spaces',
+            'downcase-word',
+            'end-of-line',
+            'end-of-line-extend-selection',
+            'escape',
+            'exchange-point-mark',
+            'extend-to-line',
+            'extend-to-word',
+            'find-character',
+            'find-character-extend-selection',
+            'find-word',
+            'find-word-in-line',
+            'forward-char',
+            'forward-char-extend-selection',
+            'forward-end-word',
+            'forward-end-word-extend-selection',
+            'forward-word',
+            'forward-word-extend-selection',
+            'insert-newline',
+            'insert-parentheses',
+            'move-past-close',
+            'move-past-close-extend-selection',
+            'newline-and-indent',
+            'select-all',
+            'transpose-chars',
+            'transpose-words',
+            'upcase-word',
+            # keyHandlerCommandsClass
+            'negative-argument',
+            'number-command',
+            'number-command-0',
+            'number-command-1',
+            'number-command-2',
+            'number-command-3',
+            'number-command-4',
+            'number-command-5',
+            'number-command-6',
+            'number-command-7',
+            'number-command-8',
+            'universal-argument',
+            # killBufferCommandsClass
+            'backward-kill-word',
+            'kill-line',
+            'kill-word',
+            'kill-ws',
+            'yank',
+            'yank-pop',
+            'zap-to-character',
+            # macroCommandsClass
+            'call-last-keyboard-macro',
+            # registerCommandsClass
+            'append-to-register',
+            'copy-to-register',
+            'insert-register',
+            'prepend-to-register',
+        ]
+    #@-node:ekr.20080509064108.6:k.defineSingleLineCommands
+    #@+node:ekr.20080509064108.7:k.defineMultiLineCommands
+    def defineMultiLineCommands (self):
+
+        self.multiLineCommandList = [
+            # editCommandsClass
+            'add-space-to-lines',
+            'add-tab-to-lines',
+            'back-paragraph',
+            'back-paragraph-extend-selection',
+            'back-sentence',
+            'back-sentence-extend-selection',
+            'backward-kill-paragraph',
+            'beginning-of-buffer',
+            'beginning-of-buffer-extend-selection',
+            'center-line',
+            'center-region',
+            'clean-all-lines',
+            'clean-lines',
+            'downcase-region',
+            'end-of-buffer',
+            'end-of-buffer-extend-selection',
+            'extend-to-paragraph',
+            'extend-to-sentence',
+            'fill-paragraph',
+            'fill-region',
+            'fill-region-as-paragraph',
+            'flush-lines',
+            'forward-paragraph',
+            'forward-paragraph-extend-selection',
+            'forward-sentence',
+            'forward-sentence-extend-selection',
+            'indent-relative',
+            'indent-rigidly',
+            'indent-to-comment-column',
+            'move-lines-down',
+            'move-lines-up',
+            'next-line',
+            'next-line-extend-selection',
+            'previous-line',
+            'previous-line-extend-selection',
+            'remove-blank-lines',
+            'remove-space-from-lines',
+            'remove-tab-from-lines',
+            'reverse-region',
+            'reverse-sort-lines',
+            'reverse-sort-lines-ignoring-case',
+            'scroll-down',
+            'scroll-down-extend-selection',
+            'scroll-outline-down-line',
+            'scroll-outline-down-page',
+            'simulate-begin-drag',
+            'simulate-end-drag',
+            'sort-columns',
+            'sort-fields',
+            'sort-lines',
+            'sort-lines-ignoring-case',
+            'split-line',
+            'tabify',
+            'transpose-lines',
+            'untabify',
+            'upcase-region',
+            # keyHandlerCommandsClass
+            'repeat-complex-command',
+            # killBufferCommandsClass
+            'backward-kill-sentence',
+            'kill-sentence',
+            'kill-region',
+            'kill-region-save',
+            # queryReplaceCommandsClass
+            'query-replace',
+            'query-replace-regex',
+            # rectangleCommandsClass
+            'clear-rectangle',
+            'close-rectangle',
+            'delete-rectangle',
+            'kill-rectangle',
+            'open-rectangle',
+            'string-rectangle',
+            'yank-rectangle',
+            # registerCommandsClass
+            'jump-to-register',
+            'point-to-register',
+            # searchCommandsClass
+            'change',
+            'change-then-find',
+            'find-next',
+            'find-prev',
+        ]
+    #@-node:ekr.20080509064108.7:k.defineMultiLineCommands
     #@+node:ekr.20070123085931:k.defineSpecialKeys
     def defineSpecialKeys (self):
 
