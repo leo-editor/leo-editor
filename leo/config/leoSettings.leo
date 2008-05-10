@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,2,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -362,7 +362,7 @@
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
-<v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
@@ -472,7 +472,7 @@
 </v>
 </v>
 <v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
-<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810180015.1"><vh>Vim Modes</vh>
 <v t="ekr.20070810182514"><vh>@mode focus</vh></v>
 <v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
 <v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
@@ -511,7 +511,7 @@
 <v t="ekr.20070810181604"><vh>Vim stuff: not ready yet</vh>
 <v t="ekr.20070810181528"><vh>@@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
 <v t="ekr.20070810180015"><vh>@@keys Vim bindings</vh>
-<v t="ekr.20070810180015.1"><vh>Modes</vh>
+<v t="ekr.20070810180015.1"><vh>Vim Modes</vh>
 <v t="ekr.20070810182514"><vh>@mode focus</vh></v>
 <v t="ekr.20070810181929"><vh>@shortcuts top-level plain keys</vh></v>
 <v t="ekr.20070810180015.2"><vh>@@mode quick-command (Alt-C)</vh></v>
@@ -564,7 +564,9 @@
 <v t="ekr.20080510112420.9"><vh>@mode outline-Alt-Home</vh></v>
 <v t="ekr.20080510112420.10"><vh>@mode outline-Alt-End</vh></v>
 </v>
-<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20080510121331.14"><vh>Vim Modes</vh></v>
+<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
 <v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
@@ -1310,12 +1312,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080510112420.11" a="E"><vh>Recent settings</vh>
+<v t="ekr.20080510112420.11"><vh>Recent settings</vh>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = False</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
+<v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
 <v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
@@ -1331,7 +1335,9 @@
 <v t="ekr.20080510112420.9"><vh>@mode outline-Alt-Home</vh></v>
 <v t="ekr.20080510112420.10"><vh>@mode outline-Alt-End</vh></v>
 </v>
-<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20080510121331.14"><vh>Vim Modes</vh></v>
+<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
 <v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
@@ -1344,7 +1350,6 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
 </v>
 </v>
 </vnodes>
@@ -6635,7 +6640,7 @@ move-past-close-extend-selection    = None
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
 #select-all                         =  Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.
-select-all                          Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.</t>
+select-all                          = Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.</t>
 <t tx="ekr.20060925060533.2">contract-pane               = Alt+Ctrl+-
 expand-pane                 = Alt+Ctrl-=
 focus-to-body               = Alt-D
@@ -6725,7 +6730,7 @@ when no mode is in effect.  Note: the keyboard-quit command exits all modes.
 
 The valid values are::
 
-ignore:  Leo ignores the key (like Vim).
+command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20060930085332">True: Outline gets focus when a new window is opened.
@@ -8509,7 +8514,8 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 # --&gt; mode-help
     # Initial mode help is possible, but jarring.
     # Maybe jarring is good, but when the mode help goes away the user might think the mode has ended.
---&gt; focus-to-body
+--&gt; focus-to-tree
+    # Having the cursor *not* be in the body is an important visual cue.
 
 # To do: "plain keys" navigate the outline.
 # To do: any other key ends mode.
@@ -8693,6 +8699,93 @@ scroll-up-extend-selection          = Shift-PageUp
 --&gt; enter-outline-mode
 </t>
 <t tx="ekr.20080510112420.11"></t>
+<t tx="ekr.20080510121331.14">@color
+
+# Important: input state is **not** a mode.</t>
+<t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
+
+beginning-of-line           = a
+end-of-line                 = e
+find-character              = f
+# find-word                 = Shift-f
+set-insert-state            = i
+enter-outline-mode          = o
+search-with-present-options = s
+forward-word                = w
+back-word                   = Shift-w
+delete-char                 = x
+
+# cursor movement keys...
+    # back-char           = h
+    # forward-char        = l
+    # next-line           = j
+    # previous-line       = k
+    
+    # A 	Append to the end of the current line.
+    # C 	Change the rest of the current line.
+    # H 	To the first line of the screen.
+    # I 	Insert to the start of the current line. (first non-whitespace char)
+    # L 	To the the last line of the screen.
+    # M 	To the middle line of the screen.
+    # N 	Scan for next search match but opposite direction.
+    # O 	Open a new line above and insert.
+    # P 	Put characters before the cursor. Put lines above the current line.
+    # V 	Start highlighting lines.
+    # U 	Undo all the latest changes that were made to the current line.
+    # X 	Delete characters before the cursor.
+    # ^ 	Move to the first non-whitespace character of a line.
+    # $ 	Move to the end of a line.
+    # Ctrl + r 	Redo.
+    
+    # a 	Append after cursor.
+    # b 	Move to the beginning of a word.
+    # d6  Delete 6 lines.
+    # dd  Delete the current line.
+    # e  	Move to the end of a word.
+    # i  	Insert before cursor.
+    # o 	Open a new line below and insert.
+    # n 	Scan for next search match in the same direction.
+    # p 	Put (paste) the text you yanked or deleted.
+        # Put characters after the cursor. Put lines below the current line.
+    # r 	Overwrite one character. After overwriting the single character, go back to command mode.
+    # v  	Start highlighting characters. Use the normal movement keys and commands to select text for highlighting.
+        # Then use any other command, like d, on the region.
+    # u  	Undo the last action.
+    # x  	Delete characters under the cursor.
+    # /pattern Incremental search for pattern.
+    
+    # # Commands for visual mode
+    # &gt; Shift right.
+    # &lt; Shift left.
+    # c Change the highlighted text.
+    # yy or Y Yank the highlighted text and copy to clipboard.
+    # d Delete the highlighted text and copy to clipboar.
+    
+    # # Perhaps less useful
+    # # ~  	Change the case of characters.
+    # #   - In visual mode, change the case of highlighted characters.
+    # #   - In command mode, change the case of the character uder cursor.
+    # # R 	Enter insert mode but replace characters rather than inserting.
+    # # E 	To the end of a whitespace-delimited word.
+    # # B 	To the beginning of a whitespace-delimited word.
+    
+    # # Commands...
+    # . repeat last complete editing command.
+    # % match paren
+    # : enter file (command?) mode
+    # :42&lt;return&gt; go to line 42
+    # :d Delete the current line.
+    
+    # :s/foo/bar 	Substitute foo with bar on current line
+    # :s/foo/bar c Confirm each substitution. y: make match, n: skip match, a: all remaining, q: quit.
+    # :s/foo/bar/g Substitute all occurances on current line.
+    # :s/foo/bar/i Ignore case
+    # :s/foo/bar/gi (combination of arguments)
+    # :s/foo/bar/I Do not ignore case
+    # :42s/foo/bar Substitute on line 42
+    # :%s/foo/bar Substitute on entire file.
+    # :y Yank the current line.
+</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
