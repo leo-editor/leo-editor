@@ -3109,6 +3109,7 @@ class leoTkTextWidget (Tk.Text):
     # def _see(self,i):                   return self.widget.see(i)
     # def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
     # def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+    # def _setForegroundColor(self,color): return self.widget.configure(background=color)
     # def _setFocus(self):                return self.widget.focus_set()
     # def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
     # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
@@ -3366,13 +3367,18 @@ class leoTkTextWidget (Tk.Text):
 
         Tk.Text.configure(w,state=state)
     #@-node:ekr.20061113151148.20:setAllText
-    #@+node:ekr.20070218122857:setBackgroundColor
+    #@+node:ekr.20070218122857:setBackgroundColor & setForegroundColor
     def setBackgroundColor (self,color):
 
         w = self
         w.configure(background=color)
+
+    def setForegroundColor (self,color):
+
+        w = self
+        w.configure(foreground=color)
     #@nonl
-    #@-node:ekr.20070218122857:setBackgroundColor
+    #@-node:ekr.20070218122857:setBackgroundColor & setForegroundColor
     #@+node:ekr.20061113151148.21:setInsertPoint
     def setInsertPoint (self,i): # tkTextWidget.
 

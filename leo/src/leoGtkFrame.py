@@ -3273,6 +3273,7 @@ class leoGtkTextWidget(leoFrame.baseTextWidget):
     # def _see(self,i):                   return self.widget.see(i)
     # def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
     # def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+    # def _setForegroundColor(self,color): return self.widget.configure(background=color)
     # def _setFocus(self):                return self.widget.focus_set()
     # def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
     # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
