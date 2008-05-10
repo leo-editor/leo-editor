@@ -497,6 +497,7 @@ command to handle check and radio items, using rclick-button as a template.
 
 __version__ = "1.35"
 __plugin_name__ = 'Right Click Menus'
+__plugin_id__ = 'ContextMenu'
 
 #@<< version history >>
 #@+node:ekr.20040422081253:<< version history >>
@@ -601,6 +602,8 @@ __plugin_name__ = 'Right Click Menus'
 # 1.34 bobjack:
 #     - convert to use c.universalCallback via registerCommand(..., wrap=True)
 #     - fix k.funcReturn but in recentFoldersCallback
+# 1.35 bobjack:
+# 
 # 
 # 
 #@-at
@@ -823,7 +826,8 @@ class pluginController(object):
 
         self.registerCommands()
 
-        c.theContextMenuController = self
+        setattr(c, 'the%sController'%__plugin_id__, self)
+
 
         self.rSetupMenus()
     #@-node:bobjack.20080423205354.3:onCreate

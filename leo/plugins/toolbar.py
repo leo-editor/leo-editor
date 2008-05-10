@@ -108,8 +108,7 @@ The iconbars also have the following public properties.
 
 __version__ = "0.8"
 __plugin_name__ = 'Toolbar Manager'
-
-
+__plugin_id__ = 'Toolbar'
 
 controllers = {}
 
@@ -194,8 +193,6 @@ import leoTkinterTree
 #@@c
 
 requiredIvars = (
-    ('mb_retval', False),
-    ('mb_keywords', False),
     ('commandList', (list, tuple)),
 )
 #@nonl
@@ -356,12 +353,10 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         else:
              barName = 'iconbar'
 
-        if barName in self.iconBars:
-            bar = self.iconBars[barName]
-        else:
-            bar = self.iconBar
+        bar = self.createIconBar(barName)
 
-        return bar.add(*args,**keys)
+        if bar:
+            return bar.add(*args, **keys)
     #@-node:bobjack.20080429153129.30:addIconButton
     #@+node:bobjack.20080503151427.2:getIconButton
     def getIconButton (self,*args,**keys):
@@ -373,6 +368,8 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         """
         return self.iconBar.getButton(*args,**keys)
+
+    createIconButton = getIconButton
     #@nonl
     #@-node:bobjack.20080503151427.2:getIconButton
     #@+node:bobjack.20080501055450.16:addIconWidget
@@ -380,7 +377,9 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         """Adds a widget to the named toolbar."""
 
-        return self.iconBars[barName].addWidget(widget)
+        bar = self.createIconBar(barName)
+        if bar:
+            return bar.addWidget(widget)
     #@-node:bobjack.20080501055450.16:addIconWidget
     #@+node:bobjack.20080429153129.31:clearIconBar
     def clearIconBar (self, barName='iconbar'):
@@ -496,11 +495,13 @@ class ToolbarIconButton(Tk.Button, object):
     text
     command
     shortcut
-    statusLine, baloon, tooltip
+    statusLine, balloon, balloonText, tooltip
     bg, fg
-    menu
-    image, imagefile, icon
+    menu,
+    imagefile, image, icon
     command
+    font
+    item_data
     """
 
     #@    @+others
@@ -511,7 +512,13 @@ class ToolbarIconButton(Tk.Button, object):
 
         cnf must be a dictionary if it is supplied at all.
 
+
         """
+        if 0:
+            print 'ToolbarIconButton.__init__'
+            print '\t', cnf
+            print '\t', keys
+
         self.c = c
         self.deleteOnRightClick = False
         self.balloonEnabled = False
@@ -551,11 +558,11 @@ class ToolbarIconButton(Tk.Button, object):
         image = keys.get('image')
         icon = keys.get('icon')
 
-        for key in ('imagefile', 'image', 'icon'):
-            try:
-                del keys[key]
-            except KeyError:
-                pass
+        # for key in ('imagefile', 'image', 'icon'):
+            # try:
+                # del keys[key]
+            # except KeyError:
+                # pass
 
         if icon:
             imagefile = icon
@@ -826,6 +833,10 @@ class ToolbarIconButton(Tk.Button, object):
 
 
         commandCallback = command
+
+        if not command:
+            def commandCallback():
+                print "command for widget %s" % self
 
         if isinstance(command, basestring):
 
@@ -2026,7 +2037,7 @@ class pluginController(object):
     #@+node:bobjack.20080424195922.13:__init__
     def __init__(self, c):
 
-        """Initialize rclick functionality for this commander.
+        """Initialize toolbar functionality for this commander.
 
         This only initializes ivars, the proper setup must be done by calling the
         controllers onCreate method from the module level onCreate function. This is
@@ -2036,32 +2047,18 @@ class pluginController(object):
 
         self.c = c
 
-        self.mb_retval = None
-        self.mb_keywords = None
 
-        if not hasattr(c, 'context_menus'):
-            return
-
-        if 'default-iconbar-menu' in c.context_menus:
-            return
-
-        items = [
-            ('Add Bar', 'toolbar-add-iconbar'),
-            ('Add Script-Button', 'toolbar-add-script-button'),
-            ('-', ''),
-            ('*', 'toolbar-toggle-iconbar'),
-            ('*', 'toolbar-show-iconbar-menu'),
-        ]
-
-        c.context_menus['default-iconbar-menu'] = items
     #@+node:bobjack.20080424195922.14:onCreate
     def onCreate(self):
 
         c = self.c
 
         self.registerCommands()
+        self.setDefaultContextMenus()
 
-        c.theToolbarController = self
+
+        setattr(c, 'the%sController'%__plugin_id__, self)
+
     #@-node:bobjack.20080424195922.14:onCreate
     #@+node:bobjack.20080424195922.15:onClose
     def onClose(self):
@@ -2086,44 +2083,10 @@ class pluginController(object):
             methodName = command.replace('-','_')
             function = getattr(self, methodName)
 
-            cb = self.universalCommandCallback(function)
-
-            lst.append((command, methodName, cb))
+            lst.append((command, methodName, function))
 
         return lst
     #@-node:bobjack.20080424195922.16:createCommandCallbacks
-    #@+node:bobjack.20080503090121.2:universalCommandCallback
-    def universalCommandCallback(self, function):
-
-        """Create a universal command callback.
-
-        Create and return a callback that wraps function and adapts
-        the minibuffer command callback to a function that has the
-        rClick type signature.
-
-        When a function or method is wrapped in this way it can be
-        used as a standard minibuffer command regardless of whether
-        rclick is enabled or not and if its enabled then the
-        command can be used for rClick either as a generator command
-        or  an invocation
-
-        """
-        def minibufferCallback(event, function=function):
-
-            try:
-                cm = self.c.theContextMenuController
-            except AttributeError:
-                cm = None
-
-            if cm and cm.mb_keywords:
-                cm.mb_keywords['mb_event'] = event
-                cm.mb_retval = function(cm.mb_keywords)
-            else:
-                keywords = {'c': self.c, 'mb_event': event, 'rc_phase': 'minibuffer'}
-                return function(keywords)
-
-        return minibufferCallback
-    #@-node:bobjack.20080503090121.2:universalCommandCallback
     #@+node:bobjack.20080424195922.17:registerCommands
     def registerCommands(self):
 
@@ -2134,13 +2097,34 @@ class pluginController(object):
         commandList = self.createCommandCallbacks(self.getCommandList())
 
         for cmd, methodName, function in commandList:
-            c.k.registerCommand(cmd, shortcut=None, func=function)   
+            c.k.registerCommand(cmd, shortcut=None, func=function, wrap=True)   
     #@-node:bobjack.20080424195922.17:registerCommands
     #@+node:bobjack.20080424195922.19:getCommandList
     def getCommandList(self):
 
         return self.commandList
     #@-node:bobjack.20080424195922.19:getCommandList
+    #@+node:bobjack.20080510064957.112:setDeafaultContextMenus
+    def setDefaultContextMenus(self):
+
+        c = self.c
+
+        if not hasattr(c, 'context_menus'):
+            c.context_menus = {}
+
+        if 'default-iconbar-menu' in c.context_menus:
+            return
+
+        items = [
+            ('Add Bar', 'toolbar-add-iconbar'),
+            ('Add Script-Button', 'toolbar-add-script-button'),
+            ('-', ''),
+            ('*', 'toolbar-toggle-iconbar'),
+            ('*', 'toolbar-show-iconbar-menu'),
+        ]
+
+        c.context_menus['default-iconbar-menu'] = items
+    #@-node:bobjack.20080510064957.112:setDeafaultContextMenus
     #@-node:bobjack.20080424195922.13:__init__
     #@+node:bobjack.20080428114659.20:Generator Commands
     #@+node:bobjack.20080428114659.21:toolbar_show_iconbar_menu
