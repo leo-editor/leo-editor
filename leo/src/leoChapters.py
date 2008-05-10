@@ -115,7 +115,6 @@ class chapterController:
             clone = c.clone()
             # Do the move.
             undoData2 = u.beforeMoveNode(clone)
-            clone.unlink()
             if toChapter.name == 'main':
                 clone.moveAfter(toChapter.p)
             else:
@@ -205,7 +204,6 @@ class chapterController:
             undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
             s = c.fileCommands.putLeoOutline()
             p2 = c.fileCommands.getLeoOutline(s)
-            p2.unlink()
             p2.moveToLastChildOf(parent)
             c.selectPosition(p2)
             u.afterInsertNode(p2,undoType,undoData)
@@ -344,10 +342,8 @@ class chapterController:
                 dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
                 # Do the move.
                 if toChapter.name == 'main':
-                    p.unlink()
                     p.moveAfter(toChapter.p)
                 else:
-                    p.unlink()
                     p.moveToLastChildOf(toChapter.root)
                 c.selectPosition(sel)
                 c.setChanged(True)
@@ -804,9 +800,9 @@ class chapterController:
         elif u.undoType in ('Create Chapter From Node','Create Chapter'):
             root = theChapter.root
             firstChild = root.firstChild()
-            firstChild.unlink()
+            firstChild._unlink()
             firstChild = u.savedRoot.firstChild()
-            firstChild.linkAsNthChild(root,0)
+            firstChild._linkAsNthChild(root,0)
         else:
             return g.trace('Can not happen: bad undoType: %s' % u.undoType)
     #@-node:ekr.20070606081341:redoInsertChapter
@@ -846,7 +842,7 @@ class chapterController:
         # u.savedRoot is the entire @chapter tree.
         # Link it as the last child of the @chapters node.
         parent = cc.findChaptersNode()
-        u.savedRoot.linkAsNthChild(parent,parent.numberOfChildren())
+        u.savedRoot._linkAsNthChild(parent,parent.numberOfChildren())
 
         # Now recreate the chapter.
         name = u.newChapterName
@@ -993,7 +989,7 @@ class chapter:
 
         if 0:
             self.error('***** chapter: %s findPositionInChapter: lost %s' % (
-                self.name,p1.v.t.headString))
+                self.name,p1.v.t._headString))
             g.trace(g.callers())
 
         return self.p.copy()

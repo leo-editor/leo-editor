@@ -611,7 +611,348 @@ E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'cr
 #@-node:ekr.20071220081732:pylint report
 #@-node:ekr.20071217134533:Pylint
 #@+node:ekr.20080408060320.4:4.5 a1
+#@+node:ekr.20080506135044.2:Unposted posting about removing .parents list
+@nocolor
+
+Unless I hear a truly convincing reason why I shouldn't, I plan to removed v.parents entirely from the sax-graph world. My reasons are as follows:
+
+1. v.parents is actually used in exactly one place, namely p.setAllAncestorAtFileNodesDirty.  Because this is a position method, the full position stack is available, so the vnodes of all direct parents are available.  This means, in turn, that v.t.vnodeList is available, so at each level all clones of v are also available.
+
+This is only a special case.  In general, given a position, it is possible to *compute* all information about parents.
+
+2. As a result, all the work following work is essentially wasted: initing v.parents during reads, and updating v.parents during moves, clones, insertions, deletions, promotions, demotions, and the corresponding undo/redo for all these operations.
+
+It's not so much that the work is odious: it's not.  It's just that conceptually it is completely unnecessary.  Because the work exists, it must be checked: unit tests written, code added to the check-outline command, etc.  All for nothing.
+
+3. Conceptually, the big aha in the unified node world, and *also* in the graph world, is that the *combination* of positions and nodes is what defines the graph.  In any context containing a position p, the combination of p and p.v.t.children is the minimum needed to get *all* information about the graph.  That being so, the parents list adds nothing. 
+
+4. Continuing with the idea in 3, good things often happen when one eliminates an entire area of complexity.  Not only does eliminating the parents list give us the "simplest thing that could possibly work", there is the as-yet-unexplored possibility of future improvements.  That is, this is not merely an implementation issue--by generalizing and simplifying the data structure we open the door to using that data structure in previously unimagined contexts.
+
+So to repeat, I am very likely to get rid of v.parents. I must rewrite p.setAllAncestorAtFileNodesDirty first, so there is still time to voice any objections.  They had better be good :-)
+
+Edward
+#@nonl
+#@-node:ekr.20080506135044.2:Unposted posting about removing .parents list
 #@+node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+def appendToRecentFiles (self,files):
+
+    files = [theFile.strip() for theFile in files]
+
+    # g.trace(files)
+
+    def munge(name):
+        name = name or ''
+        return g.os_path_normpath(name).lower()
+
+    for name in files:
+        # Remove all variants of name.
+        for name2 in self.recentFiles[:]:
+            if munge(name) == munge(name2):
+                self.recentFiles.remove(name2)
+
+        self.recentFiles.append(name)
+#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
+#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@+node:ekr.20080408060320.2:Fixed bug in install script
+@nocolor
+
+On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.
+#@nonl
+#@-node:ekr.20080408060320.2:Fixed bug in install script
+#@+node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@-node:ekr.20080506135044.12:Fixed bug: no focus after save-as and save-to commands
+#@+node:ekr.20080501180847.1:Fixed find bug
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
+
+For some reason if you remove the key mapping for the "replace-string"
+entry in myLeoSettings or leoSettings.leo ( replace-string = None)
+then the "search-with-present-options" function (ctrl-f) or the
+"search-forward" function (if mapped) displays the request for a
+search string in the mini-buffer but returns immediately when any key
+is pressed and searches with the "Find:" entry in the "Find" tab.
+
+@color
+#@nonl
+#@+node:ekr.20060125093807:searchWithPresentOptions
+def searchWithPresentOptions (self,event):
+
+    k = self.k ; tag = 'search-with-present-options'
+    state = k.getState(tag)
+
+    # g.trace('state',state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        self.stateZeroHelper(
+            event,tag,'Search: ',self.searchWithPresentOptions,
+            escapes=[self.replaceStringShortcut])
+    elif k.getArgEscape:
+        # Switch to the replace command.
+        k.setState('replace-string',1,self.replaceString)
+        self.replaceString(event=None)
+    else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg)
+#@-node:ekr.20060125093807:searchWithPresentOptions
+#@+node:ekr.20061031131434.128:getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    state = k.getState('getArg')
+    keysym = gui.eventKeysym(event)
+    trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
+    if trace: g.trace(
+        'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
+        'completion', state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocusNow()
+    elif keysym == 'Escape':
+        k.keyboardQuit(event)
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = event.char
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif keysym == 'Tab':
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif keysym == 'BackSpace':
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return 'break'
+#@+node:ekr.20061031131434.129:<< init altX vars >>
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
+#@-node:ekr.20061031131434.129:<< init altX vars >>
+#@-node:ekr.20061031131434.128:getArg
+#@+node:ekr.20060205170335.1:aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    c = self.c
+
+    << define s >>
+
+    # Remove indentation from s: a workaround of a Leo bug.
+    s = g.adjustTripleString(s,c.tab_width)
+
+    if not g.app.unitTesting:
+        g.es_print('',s)
+#@+node:ekr.20060209082023.1:<< define s >>
+s = '''
+Note: all bindings shown are the default bindings for these commands.  You may change any of these bindings using @shortcuts nodes in leoSettings.leo.
+
+Settings
+
+leoSettings.leo now contains several settings related to the Find tab:
+
+- @bool show_only_find_tab_options = True
+
+When True (recommended), the Find tab does not show the 'Find', 'Change', 'Change, Then Find', 'Find All' and 'Change All' buttons.
+
+- @bool minibufferSearchesShowFindTab = True
+
+When True, Leo shows the Find tab when executing most of the commands discussed below.
+
+Basic find commands
+
+- open-find-tab makes the Find tab visible.  The Find tab does **not** need to be visible to execute any search command discussed below.
+
+- hide-find-tab hides the Find tab, but retains all the present settings.
+
+- search-with-present-options (Control-F) prompts for a search string.  Typing the <Return> key puts the search string in the Find tab and executes a search based on all the settings in the Find tab. This is a recommended default search command.
+
+- show-search-options shows the present search options in the status line.  This command also makes the Find tab visible.
+
+- find-next (F3) is the same as search-with-present-options, except that it uses the search string in the find-tab.  Recommended as the default 'search again' command.
+
+- Similarly, find-previous (F2) repeats the command specified by the Find tab, but in reverse.
+
+- find-again is the same as find-next if a search pattern is not '<find pattern here>'.
+  Otherwise, find-again is the same as search-with-present-options.
+
+Setting find options
+
+- Several minibuffer commands toggle the checkboxes and radio buttons in the Find tab, and thus affect the operation of the search-with-present-options command. Some may want to bind these commands to keys. Others, will prefer to toggle options in a mode.
+
+Here are the commands that toggle checkboxes: toggle-find-ignore-case-option, toggle-find-in-body-option, toggle-find-in-headline-option, toggle-find-mark-changes-option, toggle-find-mark-finds-option, toggle-find-regex-option, toggle-find-reverse-option, toggle-find-word-option, and toggle-find-wrap-around-option.
+
+Here are the commands that set radio buttons: set-find-everywhere, set-find-node-only, and set-find-suboutline-only.
+
+- enter-find-options-mode (Ctrl-Shift-F) enters a mode in which you may change all checkboxes and radio buttons in the Find tab with plain keys.  As always, you can use the mode-help (Tab) command to see a list of key bindings in effect for the mode.
+
+Search commands that set options as a side effect
+
+The following commands set an option in the Find tab, then work exactly like the search-with-present-options command.
+
+- search-backward and search-forward set the 'Whole Word' checkbox to False.
+
+- word-search-backward and word-search-forward set the 'Whole Word' checkbox to True.
+
+- re-search-forward and re-search-backward set the 'Regexp' checkbox to True.
+
+Find all commands
+
+- find-all prints all matches in the log pane.
+
+- clone-find-all replaces the previous 'Clone Find' checkbox.  It prints all matches in the log pane, and creates a node at the beginning of the outline containing clones of all nodes containing the 'find' string.  Only one clone is made of each node, regardless of how many clones the node has, or of how many matches are found in each node.
+
+Note: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by the find-all and clone-find-all commands.
+
+Search and replace commands
+
+- replace-string prompts for a search string.  Type <Return> to end the search string.  The command will then prompt for the replacement string.  Typing a second <Return> key will place both strings in the Find tab and executes a **find** command, that is, search-with-present-options.
+
+So the only difference between replace-string and search-with-present-options is that replace-string has the side effect of setting 'change' string in the Find tab.  However, this is an extremely useful side effect, because of the following commands...
+
+- change (Ctrl-=) replaces the selected text with the 'change' text in the Find tab.
+
+- change-then-find (Ctrl--) replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
+
+find-next, change and change-then-find can simulate any kind of query-replace command.  **Important**: Leo presently has separate query-replace and query-replace-regex commands, but they are buggy and 'under-powered'.  Fixing these commands has low priority.
+
+- change-all changes all occurrences of the 'find' text with the 'change' text.  Important: the radio buttons in the Find tab (Entire Outline, Suboutline Only and Node only) control how much of the outline is affected by this command.
+
+Incremental search commands
+
+Leo's incremental search commands are completely separate from Leo's legacy search commands.  At present, incremental search commands do not cross node boundaries: they work only in the body text of single node.
+
+Eventually, the incremental commands will maintain a list of previous matches.  This allows for
+
+a) support for backspace and
+b) an incremental-search-again command.
+
+Furthermore, this list makes it easy to detect the end of a wrapped incremental search.
+
+Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
+isearch-forward-regexp.'''
+#@-node:ekr.20060209082023.1:<< define s >>
+#@-node:ekr.20060205170335.1:aproposFindCommands
+#@-node:ekr.20080501180847.1:Fixed find bug
+#@+node:ekr.20080406075855.1:Fixed find completion bug
+@nocolor
+
+Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.
+
+@nocolor
+#@nonl
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.177:k.doBackSpace
+# Used by getArg and fullCommand.
+
+def doBackSpace (self,defaultCompletionList,completion=True):
+
+    '''Cut back to previous prefix and update prefix.'''
+
+    k = self ; c = k.c ; w = self.widget
+
+    if 0:
+        g.trace('(keyHandler)',g.callers(4))
+        g.trace('completion',completion,
+            len(k.mb_tabListPrefix) > len(k.mb_prefix),
+            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+
+    # Step 1: actually delete the character.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    if ins <= len(k.mb_prefix):
+        # g.trace('at start')
+        return
+    i,j = w.getSelectionRange()
+    if i == j:
+        ins -= 1
+        w.delete(ins)
+        w.setSelectionRange(ins,ins,insert=ins)
+    else:
+        ins = i
+        w.delete(i,j)
+        w.setSelectionRange(i,i,insert=ins)
+
+    # Step 2: compute completions.
+    if not completion: return
+    k.mb_tabListPrefix = w.getAllText()
+    k.computeCompletionList(defaultCompletionList,backspace=True)
+#@-node:ekr.20061031131434.177:k.doBackSpace
+#@-node:ekr.20080406075855.1:Fixed find completion bug
 #@+node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
 @nocolor
 
@@ -902,8 +1243,8 @@ def getArg (self,event,
         if useMinibuffer: c.minibufferWantsFocusNow()
     elif keysym == 'Escape':
         k.keyboardQuit(event)
-    elif keysym == 'Return' or k.oneCharacterArg or stroke in k.getArgEscapes:
-        if stroke in k.getArgEscapes: k.getArgEscape = stroke
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
         if k.oneCharacterArg:
             k.arg = event.char
         else:
@@ -1067,174 +1408,417 @@ def gotoCharacter (self,event):
         k.clearState()
 #@-node:ekr.20050929115226:gotoCharacter
 #@-node:ekr.20080407090400.1:Fixed how-many, find-word and goto-character commands
-#@+node:ekr.20080408060320.2:Fixed bug in install script
+#@+node:ekr.20080424115643.5:Fixed import PHP bug
 @nocolor
 
-On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob <bhossley@ieee.org> wrote:
+http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
 
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
+I have just started using Leo and though not familiar with Python, I
+am finding it to be a great program.
+I am however having difficulty understanding the ins & outs, for
+example;
 
-With the change the installation worked.
+I am trying to use Leo to organize all my different php scripts I have
+on my hard drive, when I try to import any php file I get errors. (see
+example) I was able to import html files just fine but I don't
+understand what I need to do to import my php files one by one so that
+I can organize them in a useful manner.
+
+ex error;
+exception executing command
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 275, in
+doCommand
+    val = command(event)
+  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 1508, in
+importAtFile
+    c.importCommands.importFilesCommand(names,"@file")
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1004, in
+importFilesCommand
+    v = self.createOutline(fileName,current)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 869, in
+createOutline
+    self.scanPHPText(s,p,atAuto=atAuto)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1671, in
+scanPHPText
+    scanner.run(s,parent)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2929, in
+run
+    self.scan(s,parent)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2394, in
+scan
+    i = self.skipDecls(s,0,len(s),inClass=False)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2615, in
+skipDecls
+    i = self.skipString(s,i)
+  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 3461, in
+skipString
+    return self.skipString()
+TypeError: skipString() takes exactly 3 arguments (1 given)
+
+@color
 #@nonl
-#@-node:ekr.20080408060320.2:Fixed bug in install script
-#@+node:ekr.20080406075855.1:Fixed find completion bug
-@nocolor
+#@+node:ekr.20070711090052.1:class phpScanner
+class phpScanner (baseScannerClass):
 
-Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.
-#@nonl
-#@+node:ekr.20061031131434.108:callStateFunction
-def callStateFunction (self,event):
+    @others
+#@+node:ekr.20070711090052.2: __init__
+def __init__ (self,importCommands,atAuto):
 
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+    # Init the base class.
+    baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
 
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+    # Set the parser delims.
+    self.blockCommentDelim1 = '/*'
+    self.blockCommentDelim2 = '*/'
+    self.lineCommentDelim = '//'
+    self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
 
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
+    self.hasClasses = False
+    self.hasFunctions = True
 
-    return val
-#@-node:ekr.20061031131434.108:callStateFunction
-#@+node:ekr.20061031131434.177:k.doBackSpace
-# Used by getArg and fullCommand.
+    self.functionTags = ['function']
 
-def doBackSpace (self,defaultCompletionList,completion=True):
+    # The valid characters in an id
+    self.chars = list(string.ascii_letters + string.digits)
+    extra = [chr(z) for z in xrange(127,256)]
+    self.chars.extend(extra)
+#@-node:ekr.20070711090052.2: __init__
+#@+node:ekr.20070711094850:isPurePHP
+def isPurePHP (self,s):
 
-    '''Cut back to previous prefix and update prefix.'''
+    '''Return True if the file begins with <?php and ends with ?>'''
 
-    k = self ; c = k.c ; w = self.widget
+    s = s.strip()
 
-    if 0:
-        g.trace('(keyHandler)',g.callers(4))
-        g.trace('completion',completion,
-            len(k.mb_tabListPrefix) > len(k.mb_prefix),
-            repr(k.mb_tabListPrefix),repr(k.mb_prefix))
+    return (
+        s.startswith('<?') and
+        s[2:3] in ('P','p','=','\n','\r',' ','\t') and
+        s.endswith('?>'))
 
-    # Step 1: actually delete the character.
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    if ins <= len(k.mb_prefix):
-        # g.trace('at start')
-        return
-    i,j = w.getSelectionRange()
-    if i == j:
-        ins -= 1
-        w.delete(ins)
-        w.setSelectionRange(ins,ins,insert=ins)
+#@-node:ekr.20070711094850:isPurePHP
+#@+node:ekr.20070711090052.3:Overrides
+# Does not create @first/@last nodes
+#@+node:ekr.20070711090807:startsString skipString
+def startsString(self,s,i):
+    return g.match(s,i,'"') or g.match(s,i,"'") or g.match(s,i,'<<<')
+
+def skipString (self,s,i):
+    if g.match(s,i,'"') or g.match(s,i,"'"):
+        return g.skip_string(s,i)
     else:
-        ins = i
-        w.delete(i,j)
-        w.setSelectionRange(i,i,insert=ins)
+        return g.skip_heredoc_string(s,i)
+#@-node:ekr.20070711090807:startsString skipString
+#@-node:ekr.20070711090052.3:Overrides
+#@-node:ekr.20070711090052.1:class phpScanner
+#@-node:ekr.20080424115643.5:Fixed import PHP bug
+#@+node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+#@-node:ekr.20080506135044.7:Fixed keyword handling in g.es and g.es_print
+#@+node:ekr.20080405074410.39:Fixed new @auto bug
+@nocolor
 
-    # Step 2: compute completions.
-    if not completion: return
-    k.mb_tabListPrefix = w.getAllText()
-    k.computeCompletionList(defaultCompletionList,backspace=True)
-#@-node:ekr.20061031131434.177:k.doBackSpace
-#@-node:ekr.20080406075855.1:Fixed find completion bug
-#@+node:ekr.20080418154703.1:Fixed Tangle bugs
-#@+node:ekr.20031218072017.2062:getPrefs
-# Note: Leo 4.3 does not write these settings to local .leo files.
-# Instead, corresponding settings are contained in leoConfig.leo files.
+Leo's running, so I create a new outline with File->New
 
-def getPrefs (self):
+Then I save as in a location where foo.py exists.
 
-    c = self.c
+The I create a node '@auto foo.py'
 
-    if self.getOpenTag("<preferences"):
-        return # <preferences/> seen
+Then I use File->Read/Write->Read @auto (with that node selected)
 
-    table = (
-        ("allow_rich_text",None,None), # Ignored.
-        ("tab_width","tab_width",self.getLong),
-        ("page_width","page_width",self.getLong),
-        ("tangle_bat","tangle_batch_flag",self.getBool),
-        ("untangle_bat","untangle_batch_flag",self.getBool),
-        ("output_doc_chunks","output_doc_flag",self.getBool),
-        ("noweb_flag",None,None), # Ignored.
-        ("extended_noweb_flag",None,None), # Ignored.
-        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
-        ("use_header_flag","use_header_flag",self.getBool))
+Leo says it can't read it.
 
-    done = False
-    while 1:
-        found = False
-        for tag,var,f in table:
-            if self.matchTag("%s=" % tag):
-                if var:
-                    self.getDquote() ; val = f() ; self.getDquote()
-                    setattr(c,var,val)
-                    # g.trace(var,val)
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
+def readAtFileNodes (self,event=None):
+
+    '''Read all @file nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeChangeTree(p)
+        c.fileCommands.readAtFileNodes()
+        u.afterChangeTree(p,'Read @file Nodes',undoData)
+    finally:
+        c.endUpdate()
+#@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+#@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+def readAtFileNodes (self):
+
+    c = self.c ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        c.atFileCommands.readAll(p,partialFlag=True)
+    finally:
+        c.endUpdate()
+
+    # Force an update of the body pane.
+    c.setBodyString(p,p.bodyString())
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False,forceGnx=False):
+
+    """Scan vnodes, looking for @file nodes to read."""
+
+    at = self ; c = at.c
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+    if partialFlag: after = p.nodeAfterTree()
+    else: after = c.nullPosition()
+    while p and not p.equal(after): # Don't use iterator.
+        # g.trace(p.headString())
+        if p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
+                at.forceGnxOnPosition(p)
+            at.read(p,thinFile=True)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_vnodes_iter():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @file nodes in the selected tree")
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = g.os_path_join(at.default_directory,fileName)
+    # g.trace(fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.headString())
+
+    # Delete all children.
+    c.beginUpdate()
+    try:
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    finally:
+        c.endUpdate(False)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        c.beginUpdate()
+        try:
+            p.setBodyString('')
+        finally:
+            c.endUpdate(False)
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # print 'found',e,'in',line1
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c
+    at.default_directory = None
+    << Set path from @file node >>
+    if at.default_directory:
+        return
+
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        if theDict.has_key("path"):
+            << handle @path >>
+            return
+
+    << Set current directory >>
+    if not at.default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        at.error("No absolute directory specified anywhere.")
+        at.default_directory = ""
+#@+node:ekr.20041005105605.237:<< Set path from @file node >>
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+name = p.anyAtFileNodeName()
+
+theDir = g.choose(name,g.os_path_dirname(name),None)
+
+# g.trace('at.default_directory',at.default_directory)
+# g.trace('theDir',theDir)
+
+if theDir and g.os_path_isabs(theDir):
+    if g.os_path_exists(theDir):
+        at.default_directory = theDir
+    else:
+        at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        if not at.default_directory:
+            at.error("Directory \"%s\" does not exist" % theDir)
+#@-node:ekr.20041005105605.237:<< Set path from @file node >>
+#@+node:ekr.20041005105605.238:<< handle @path >>
+# We set the current director to a path so future writes will go to that directory.
+
+path = theDict["path"]
+path = g.computeRelativePath (path)
+
+if path:
+    base = g.getBaseDirectory(c) # returns "" on error.
+    path = g.os_path_join(base,path)
+
+    if g.os_path_isabs(path):
+        << handle absolute path >>
+    else:
+        at.error("ignoring bad @path: %s" % path)
+else:
+    at.error("ignoring empty @path")
+#@+node:ekr.20041005105605.240:<< handle absolute path >>
+# path is an absolute path.
+
+if g.os_path_exists(path):
+    at.default_directory = path
+else:
+    at.default_directory = g.makeAllNonExistentDirectories(path,c=c)
+    if not at.default_directory:
+        at.error("invalid @path: %s" % path)
+#@-node:ekr.20041005105605.240:<< handle absolute path >>
+#@-node:ekr.20041005105605.238:<< handle @path >>
+#@+node:ekr.20041005105605.241:<< Set current directory >>
+# This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+assert(not at.default_directory)
+
+if c.frame :
+    base = g.getBaseDirectory(c) # returns "" on error.
+    for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                if g.os_path_exists(theDir):
+                    at.default_directory = theDir ; break
                 else:
-                    self.getDqString()
-                found = True ; break
-        if not found:
-            if self.matchTag("/>"):
-                done = True ; break
-            if self.matchTag(">"):
-                break
-            else: # New in 4.1: ignore all other tags.
-                self.getUnknownTag()
-
-    if not done:
-        while 1:
-            if self.matchTag("<defaultDirectory>"):
-                # New in version 0.16.
-                c.tangle_directory = self.getEscapedString()
-                self.getTag("</defaultDirectory>")
-                if not g.os_path_exists(c.tangle_directory):
-                    g.es("default tangle directory not found:",c.tangle_directory)
-            elif self.matchTag("<TSyntaxMemo_options>"):
-                self.getEscapedString() # ignored
-                self.getTag("</TSyntaxMemo_options>")
-            else: break
-        self.getTag("</preferences>")
-#@+node:ekr.20031218072017.2063:getTargetLanguage
-def getTargetLanguage (self):
-
-    # Must match longer tags before short prefixes.
-    for name in g.app.language_delims_dict.keys():
-        if self.matchTagWordIgnoringCase(name):
-            language = name.replace("/","")
-            # self.getDquote()
-            return language
-
-    return "c" # default
-#@-node:ekr.20031218072017.2063:getTargetLanguage
-#@-node:ekr.20031218072017.2062:getPrefs
-#@+node:ekr.20031218072017.3579:error, pathError, warning
-def error (self,s):
-    self.errors += 1
-    g.es_error(g.translateString(s))
-
-def pathError (self,s):
-    if not self.path_warning_given:
-        self.path_warning_given = True
-        self.error(s)
-
-def warning (self,s):
-    g.es_error(g.translateString(s))
-#@-node:ekr.20031218072017.3579:error, pathError, warning
-#@-node:ekr.20080418154703.1:Fixed Tangle bugs
+                    at.default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+#@-node:ekr.20041005105605.241:<< Set current directory >>
+#@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+#@-node:ekr.20080405074410.39:Fixed new @auto bug
 #@+node:ekr.20080424061644.1:Fixed recent files bug
 @nocolor
 
@@ -1450,56 +2034,334 @@ def updateRecentFiles (self,fileName):
 #@-node:ekr.20031218072017.2083:c.updateRecentFiles
 #@-node:ekr.20031218072017.2079:Recent Files submenu & allies
 #@-node:ekr.20080424061644.1:Fixed recent files bug
-#@+node:ekr.20080424115643.5:Fixed import PHP bug
-@nocolor
+#@+node:ekr.20080418154703.1:Fixed Tangle bugs
+#@+node:ekr.20031218072017.2062:getPrefs
+# Note: Leo 4.3 does not write these settings to local .leo files.
+# Instead, corresponding settings are contained in leoConfig.leo files.
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
+def getPrefs (self):
 
-I have just started using Leo and though not familiar with Python, I
-am finding it to be a great program.
-I am however having difficulty understanding the ins & outs, for
-example;
+    c = self.c
 
-I am trying to use Leo to organize all my different php scripts I have
-on my hard drive, when I try to import any php file I get errors. (see
-example) I was able to import html files just fine but I don't
-understand what I need to do to import my php files one by one so that
-I can organize them in a useful manner.
+    if self.getOpenTag("<preferences"):
+        return # <preferences/> seen
 
-ex error;
-exception executing command
-Traceback (most recent call last):
-  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 275, in
-doCommand
-    val = command(event)
-  File "C:\Program Files (x86)\Leo\src\leoCommands.py", line 1508, in
-importAtFile
-    c.importCommands.importFilesCommand(names,"@file")
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1004, in
-importFilesCommand
-    v = self.createOutline(fileName,current)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 869, in
-createOutline
-    self.scanPHPText(s,p,atAuto=atAuto)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 1671, in
-scanPHPText
-    scanner.run(s,parent)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2929, in
-run
-    self.scan(s,parent)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2394, in
-scan
-    i = self.skipDecls(s,0,len(s),inClass=False)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 2615, in
-skipDecls
-    i = self.skipString(s,i)
-  File "C:\Program Files (x86)\Leo\src\leoImport.py", line 3461, in
-skipString
-    return self.skipString()
-TypeError: skipString() takes exactly 3 arguments (1 given)
+    table = (
+        ("allow_rich_text",None,None), # Ignored.
+        ("tab_width","tab_width",self.getLong),
+        ("page_width","page_width",self.getLong),
+        ("tangle_bat","tangle_batch_flag",self.getBool),
+        ("untangle_bat","untangle_batch_flag",self.getBool),
+        ("output_doc_chunks","output_doc_flag",self.getBool),
+        ("noweb_flag",None,None), # Ignored.
+        ("extended_noweb_flag",None,None), # Ignored.
+        ("defaultTargetLanguage","target_language",self.getTargetLanguage),
+        ("use_header_flag","use_header_flag",self.getBool))
 
-@color
+    done = False
+    while 1:
+        found = False
+        for tag,var,f in table:
+            if self.matchTag("%s=" % tag):
+                if var:
+                    self.getDquote() ; val = f() ; self.getDquote()
+                    setattr(c,var,val)
+                    # g.trace(var,val)
+                else:
+                    self.getDqString()
+                found = True ; break
+        if not found:
+            if self.matchTag("/>"):
+                done = True ; break
+            if self.matchTag(">"):
+                break
+            else: # New in 4.1: ignore all other tags.
+                self.getUnknownTag()
+
+    if not done:
+        while 1:
+            if self.matchTag("<defaultDirectory>"):
+                # New in version 0.16.
+                c.tangle_directory = self.getEscapedString()
+                self.getTag("</defaultDirectory>")
+                if not g.os_path_exists(c.tangle_directory):
+                    g.es("default tangle directory not found:",c.tangle_directory)
+            elif self.matchTag("<TSyntaxMemo_options>"):
+                self.getEscapedString() # ignored
+                self.getTag("</TSyntaxMemo_options>")
+            else: break
+        self.getTag("</preferences>")
+#@+node:ekr.20031218072017.2063:getTargetLanguage
+def getTargetLanguage (self):
+
+    # Must match longer tags before short prefixes.
+    for name in g.app.language_delims_dict.keys():
+        if self.matchTagWordIgnoringCase(name):
+            language = name.replace("/","")
+            # self.getDquote()
+            return language
+
+    return "c" # default
+#@-node:ekr.20031218072017.2063:getTargetLanguage
+#@-node:ekr.20031218072017.2062:getPrefs
+#@+node:ekr.20031218072017.3579:error, pathError, warning
+def error (self,s):
+    self.errors += 1
+    g.es_error(g.translateString(s))
+
+def pathError (self,s):
+    if not self.path_warning_given:
+        self.path_warning_given = True
+        self.error(s)
+
+def warning (self,s):
+    g.es_error(g.translateString(s))
+#@-node:ekr.20031218072017.3579:error, pathError, warning
+#@-node:ekr.20080418154703.1:Fixed Tangle bugs
+#@+node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
+# findAll now just creates undo info for clone-find-all for one inserted node.
 #@nonl
+#@+node:ekr.20080506135044.9:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.headString())
+            if not clones:
+                undoData = u.beforeInsertNode(c.currentPosition())
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        # u.afterChangeGroup(found,undoType,reportFlag=True) 
+        c.selectPosition(found) # Recomputes root.
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw_now()
+    g.es("found",count,"matches")
+
+#@+node:ekr.20080506135044.10:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20080506135044.10:<< create the found node >>
+#@+node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+#@-node:ekr.20080506135044.9:findAll
+#@-node:ekr.20080506135044.8:Greatly increased speed of undo clone-find-all
+#@+node:ekr.20080502114149.2:Temporary fix for php import bug
+#@+node:ekr.20080502114149.3:file
+ok here is short form of the php file for your review; I am trying to
+explain that this is the way Leo imported the file into 2 sections,
+instead of having the complete begining and end php tags on the same
+'section', it separated them.  I hope this helps.
+
+***FIST SECTION BEGINS***
+
+//@+leo-ver=4
+//@+node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@@language php
+//@@tabwidth -4
+//@+others
+//@+node:0_sitedef declarations
+<?php /*Cascade Style Sheet style1.css*/
+?>
+<link href="../stex.css" rel="stylesheet" type="text/css" />
+
+<?php
+/*
+Choice of language for website yes/no
+*/
+$ADD_LANGUAGE_CHOICE = 'yes';
+/*
+If 'Yes' you need to create images based on content/filename.htm
+ex: /imgs/bttns_index.jpg
+$NAV_IMAGES ='yes';
+*/
+
+?>
+
+<?php /* Contact information */
+$domain = "domain.com";
+
+?>
+
+<?php /* Content Script; reads .htm files in Content Directory */
+
+*** FIRST SECTION ENDS => NOTICE THE LAST LINE OF FILE IS A BEGINING <?
+PHP TAG THAT SHOULD BE FIRST LINE ON SECOND SECTION ***
+
+*** SECOND SECTION BEGINS ***
+
+//@-node:0_sitedef declarations
+//@+node:include
+include('language.php');
+
+$mycontentdir = "content"."/".$mylanguage;
+if ($main_page == "") $main_page = "index";
+
+
+$pagename = $main_page;
+$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
+" " . $state . " " . $zip;
+
+$main_page = "" . $main_page . ".htm";
+
+/* if (is_file("$mycontentdir/$main_page")) {
+$open = fopen("$mycontentdir/$main_page", "r");
+$size = filesize("$mycontentdir/$main_page");
+$content = fread($open, $size); */
+//}
+?>
+
+<?php
+/*Echo's Website*/
+function hpo(){
+echo '<div class="hpo">whatever text goes here</a> </div>';
+}
+//@-node:include
+//@-others
+?>
+//@-node:@file C:\inetpub\wwwroot\0_PHP_Template\incl\0_sitedef.php
+//@-leo
+
+*** SECOND SECTION ENDS ***
+#@nonl
+#@-node:ekr.20080502114149.3:file
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = g.os_path_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    # g.trace(self.fileName,self.fileType)
+    # All file types except the following just get copied to the parent node.
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        c.beginUpdate()
+        try:
+            p.setBodyString('')
+        finally:
+            c.endUpdate(False)
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    if ext in (".c", ".cpp", ".cxx"):
+        self.scanCText(s,p,atAuto=atAuto)
+    elif ext == '.c#':
+        self.scanCSharpText(s,p,atAuto=atAuto)
+    elif ext == ".el":
+        self.scanElispText(s,p,atAuto=atAuto)
+    elif ext == ".java":
+        self.scanJavaText(s,p,atAuto=atAuto)
+    elif ext == ".js":
+        self.scanJavaScriptText(s,p,atAuto=atAuto)
+    elif ext == ".pas":
+        self.scanPascalText(s,p,atAuto=atAuto)
+    elif ext in (".py", ".pyw"):
+        self.scanPythonText(s,p,atAuto=atAuto)
+    elif ext == ".php":
+        self.scanPHPText(s,p,atAuto=atAuto)
+    elif ext in ('.html','.htm','.xml'):
+        self.scanXmlText(s,p,atAuto=atAuto)
+    else:
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = g.os_path_normpath(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    z = g.choose(atAuto,'@auto ','')
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (z,fileName),color='red')
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # print 'found',e,'in',line1
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20070711090122:scanPHPText
+def scanPHPText (self,s,parent,atAuto=False):
+
+    scanner = phpScanner(importCommands=self,atAuto=atAuto)
+    scanner.run(s,parent)
+
+    # if scanner.isPurePHP(s):
+        # scanner.run(s,parent)
+    # else:
+        # fileName = scanner.fileName
+        # if atAuto:
+            # print('seems to be mixed HTML and PHP:',fileName)
+        # else:
+            # g.es_print('seems to be mixed HTML and PHP:',fileName)
+        # scanner.createHeadline(
+            # parent,body=s,headline=fileName)
+#@-node:ekr.20070711090122:scanPHPText
 #@+node:ekr.20070711090052.1:class phpScanner
 class phpScanner (baseScannerClass):
 
@@ -1515,6 +2377,13 @@ def __init__ (self,importCommands,atAuto):
     self.blockCommentDelim2 = '*/'
     self.lineCommentDelim = '//'
     self.lineCommentDelim2 = '#'
+    self.blockDelim1 = '{'
+    self.blockDelim2 = '}'
+
+    self.hasClasses = False
+    self.hasFunctions = True
+
+    self.functionTags = ['function']
 
     # The valid characters in an id
     self.chars = list(string.ascii_letters + string.digits)
@@ -1524,7 +2393,7 @@ def __init__ (self,importCommands,atAuto):
 #@+node:ekr.20070711094850:isPurePHP
 def isPurePHP (self,s):
 
-    '''Return True if the file begins with <?php or ends with ?>'''
+    '''Return True if the file begins with <?php and ends with ?>'''
 
     s = s.strip()
 
@@ -1548,29 +2417,132 @@ def skipString (self,s,i):
 #@-node:ekr.20070711090807:startsString skipString
 #@-node:ekr.20070711090052.3:Overrides
 #@-node:ekr.20070711090052.1:class phpScanner
-#@-node:ekr.20080424115643.5:Fixed import PHP bug
-#@+node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
-#@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-def appendToRecentFiles (self,files):
-
-    files = [theFile.strip() for theFile in files]
-
-    # g.trace(files)
-
-    def munge(name):
-        name = name or ''
-        return g.os_path_normpath(name).lower()
-
-    for name in files:
-        # Remove all variants of name.
-        for name2 in self.recentFiles[:]:
-            if munge(name) == munge(name2):
-                self.recentFiles.remove(name2)
-
-        self.recentFiles.append(name)
-#@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
-#@-node:ekr.20080425062953.1:Fixed bug in appendToRecentFiles
+#@-node:ekr.20080502114149.2:Temporary fix for php import bug
 #@-node:ekr.20080408060320.782:Bug fixes
+#@+node:ekr.20080506135044.13:Recent graph-world bugs
+#@+node:ekr.20080506135044.14:Fixed paste outline
+#@-node:ekr.20080506135044.14:Fixed paste outline
+#@+node:ekr.20080506135044.15:Fixed two recent node bugs
+@nocolor
+
+1. clone-find-all truncated the outline.
+   The fix was in p.linkAsRoot.
+
+2. The move outline down command skipped nodes.
+   The fix was to p.moveAfter.
+
+3. Added defensive code to p.unlink.
+
+@color
+#@nonl
+#@-node:ekr.20080506135044.15:Fixed two recent node bugs
+#@+node:ekr.20080506135044.16:Fixed bug: Deleting the root didn't select another node
+#@-node:ekr.20080506135044.16:Fixed bug: Deleting the root didn't select another node
+#@+node:ekr.20080506135044.17:The str_leo_pos uA was not being cleared
+#@-node:ekr.20080506135044.17:The str_leo_pos uA was not being cleared
+#@+node:ekr.20080506135044.18:Fixed bug: Moving a clone to the root lost the clone mark
+#@-node:ekr.20080506135044.18:Fixed bug: Moving a clone to the root lost the clone mark
+#@+node:ekr.20080506135044.19:Fixed paste-retaining-clones
+# getLeoOutlineFromClipboard now recreates the tnodesDict as needed.
+#@nonl
+#@-node:ekr.20080506135044.19:Fixed paste-retaining-clones
+#@+node:ekr.20080506135044.20:Rewrote sort code
+#@-node:ekr.20080506135044.20:Rewrote sort code
+#@+node:ekr.20080506135044.21:Rewrote promote/demote code
+#@-node:ekr.20080506135044.21:Rewrote promote/demote code
+#@+node:ekr.20080506135044.22:Fixed undo/redo move
+#@-node:ekr.20080506135044.22:Fixed undo/redo move
+#@+node:ekr.20080506135044.23:Fixed inconsistencies between parents and children arrays
+#@-node:ekr.20080506135044.23:Fixed inconsistencies between parents and children arrays
+#@+node:ekr.20080506135044.24:Rewrote scanForClonedSibs
+#@-node:ekr.20080506135044.24:Rewrote scanForClonedSibs
+#@+node:ekr.20080506135044.25:Fixed bug: ancestors were not being marked dirty properly
+#@-node:ekr.20080506135044.25:Fixed bug: ancestors were not being marked dirty properly
+#@+node:ekr.20080506135044.26:Bug: Undo move crashes
+@nocolor
+
+This was fixed by calling p._adjustPositionBeforeUnlink.
+
+Traceback (most recent call last):
+  File "C:\leo.repo\sax-graph\leo\src\leoCommands.py", line 289, in doCommand
+    val = command(event)
+  File "C:\leo.repo\sax-graph\leo\src\leoUndo.py", line 1736, in undo
+    if u.undoHelper: u.undoHelper()
+  File "C:\leo.repo\sax-graph\leo\src\leoUndo.py", line 1921, in undoMove
+    assert u.newParent_v.t.children[u.newN] == v
+IndexError: list index out of range
+
+#@-node:ekr.20080506135044.26:Bug: Undo move crashes
+#@+node:ekr.20080506135044.27:Bug: Selection gets lost
+# when moving node down into child
+# when expanding node with alt-rtArrow
+
+# This was fixed by calling p._adjustPositionBeforeUnlink.
+#@nonl
+#@-node:ekr.20080506135044.27:Bug: Selection gets lost
+#@+node:ekr.20080506135044.28:Fixed bug involving p._unlink
+#@+node:ekr.20080506135044.29:Posting
+@nocolor
+
+A brief period of testing revealed two, possibly three bugs that must be
+fixed before the sax-graph branch will be usable.  One bug in particular is
+interesting.  Code similar to the following code appears in several places
+in leoNodes.py:
+
+def insertAsNthChild(self,parent):
+    p = self
+    p._unlink()
+    p._linkAsNthChild(parent)
+
+This works in the "linked" world, but it must be modified for the graph
+world.  Indeed, unlinking p can change the position at which p is to be
+linked.  For example, suppose we have:
+
+A
+B
+C
+
+And we wish to move B to the first child of C.  After unlinking B, we will
+have:
+
+A
+C
+
+Notice: C's childIndex has changed from 2 to 1 but it has *not* changed in
+the parent arg to p._linkAsNthChild(parent).  To handle this, Leo will need
+code such as:
+
+def insertAsNthChild(self,parent):
+    p = self
+    p._unlink()
+    parent = p._adjustPositionAfterUnlink(parent)
+    p._linkAsNthChild(parent)
+
+p._adjustPositionAfterUnlink(parent) can adjust the parent position as
+needed **provided** that p._unlink() does *not* change position p, but only
+changes p.v.t.children, p.v.t.parents and p.v.t.vnodeList.  In particular,
+p._adjustPositionAfterUnlink(parent) only needs to compare the stacks of
+positions p and parent in order to adjust parent.  This breaks the circular
+dependency: the position can be adjusted even after the actual links
+(parents, children arrays) have be changed. 
+#@nonl
+#@-node:ekr.20080506135044.29:Posting
+#@-node:ekr.20080506135044.28:Fixed bug involving p._unlink
+#@+node:ekr.20080506135044.30:Moved parents ivar into vnodes
+#@-node:ekr.20080506135044.30:Moved parents ivar into vnodes
+#@+node:ekr.20080506135044.31:Bug: clone-find-all fails check-outline
+#@-node:ekr.20080506135044.31:Bug: clone-find-all fails check-outline
+#@+node:ekr.20080506135044.32:Linking/unlinking all clones into parents list
+#@-node:ekr.20080506135044.32:Linking/unlinking all clones into parents list
+#@+node:ekr.20080506135044.33:Fixed bug: check-outline failed after clone and clone-find-all
+#@-node:ekr.20080506135044.33:Fixed bug: check-outline failed after clone and clone-find-all
+#@+node:ekr.20080506135044.34:Fixed bug: sort did not select a node
+#@-node:ekr.20080506135044.34:Fixed bug: sort did not select a node
+#@+node:ekr.20080506135044.35:Fixed bug in clone (caused undo to fail)
+#@-node:ekr.20080506135044.35:Fixed bug in clone (caused undo to fail)
+#@+node:ekr.20080506135044.36:Fixed bug in createChapterByName
+#@-node:ekr.20080506135044.36:Fixed bug in createChapterByName
+#@-node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
 #@-node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -1581,10 +2553,6 @@ def __init__(self,c):
     # g.trace("__init__", "fileCommands.__init__")
     self.c = c
     self.frame = c.frame
-
-    self.use_new_positions = False
-
-    self.use_sax = True ### self.use_new_positions or c.config.getBool('use_sax_based_read')
 
     self.nativeTnodeAttributes = ('tx',)
     self.nativeVnodeAttributes = (
@@ -1608,27 +2576,9 @@ def initIvars(self):
     self.forbiddenTnodes = []
     self.descendentUnknownAttributesDictList = []
     self.ratio = 0.5
-    if self.use_sax:
-        self.currentVnode = None
-        self.rootVnode = None
-    else:
-        self.fileBuffer = None
-        self.fileIndex = 0
-        self.currentVnodeStack = [] # A stack of vnodes giving the current position.
-        self.topVnodeStack     = [] # A stack of vnodes giving the top position.
-        self.topPosition = None
 
-    # regular expression for parsing
-    reVnodeAttributes = "|".join((
-        "a=\s*\"([CDEMOTV]*)\s*\"", # group 2
-        "t=\s*\"([^\"]*)\"",        # group 3
-        "vtag=\s*\"V\s*(-?\d*)\s*\"", # group 4
-        "tnodeList=\s*\"([^\"]*)\"", # group 5
-        "descendentTnodeUnknownAttributes=\s*\"([^\"]*)\"", # group 6
-        "expanded=\s*\"([^\"]*)\"", # group 7
-        "marks=\s*\"([^\"]*)\"", # group 8
-        ">"))
-    self.reVnodeAttributesCompiled = re.compile("\s*(%s)" % reVnodeAttributes)
+    self.currentVnode = None
+    self.rootVnode = None
 
     # For writing
     self.read_only = False
@@ -1636,7 +2586,7 @@ def initIvars(self):
     self.outputFile = None
     self.openDirectory = None
     self.putCount = 0
-    self.topVnode = None
+    # self.topVnode = None
     self.toString = False
     self.usingClipboard = False
     self.currentPosition = None
@@ -1690,6 +2640,23 @@ def archivedPositionToPosition (self,s):
 #@-node:ekr.20061006104837.1:archivedPositionToPosition
 #@-node:ekr.20060919110638.13:setPositionsFromVnodes & helper
 #@-node:ekr.20080409111805.2:Set use_sax = True always
+#@+node:ekr.20080506135044.54:Added g.unified_nodes
+@nocolor
+
+- Made t arg optional in vnode ctor.
+
+- Removed the t arg from insertAsX.  Affects these plugins:
+
+wrote:     base64Packager.py
+wrote:     macros.py
+wrote:     table.py
+wrote:     templates.py
+wrote:     xsltWithNodes.py
+
+Search for tnode.
+
+@color
+#@-node:ekr.20080506135044.54:Added g.unified_nodes
 #@-node:ekr.20080409111805.1:Cleanup
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080407090400.3:Added install nodes re Leo's home directory
@@ -3669,11 +4636,12 @@ class saxContentHandler (xml.sax.saxutils.XMLGenerator):
     @others
 #@nonl
 #@+node:ekr.20060919110638.20: __init__ & helpers
-def __init__ (self,c,fileName,silent):
+def __init__ (self,c,fileName,silent,inClipboard):
 
     self.c = c
     self.fileName = fileName
     self.silent = silent
+    self.inClipboard = inClipboard
 
     # Init the base class.
     xml.sax.saxutils.XMLGenerator.__init__(self)
@@ -3689,7 +4657,6 @@ def __init__ (self,c,fileName,silent):
 
     # Semantics...
     self.content = None
-    self.currentNode = None
     self.elementStack = []
     self.errors = 0
     self.tnxToListDict = {} # Keys are tnx's (strings), values are *lists* of saxNodeClass objects.
@@ -3697,14 +4664,15 @@ def __init__ (self,c,fileName,silent):
     self.node = None
     self.nodeList = [] # List of saxNodeClass objects with the present tnode.
     self.nodeStack = []
-    self.rootNode = None
-    self.topNode = None
+    self.rootNode = None # a sax node.
 #@nonl
 #@+node:ekr.20060919110638.21:<< define dispatch dict >>
 # There is no need for an 'end' method if all info is carried in attributes.
 
 self.dispatchDict = {
+    'change_string':               (None,None),
     'find_panel_settings':         (None,None),
+    'find_string':                 (None,None),
     'globals':                     (self.startGlobals,None),
     'global_log_window_position':  (None,None), # The position of the log window is no longer used.
     'global_window_position':      (self.startWinPos,None),
@@ -3748,13 +4716,13 @@ def attrsToList (self,attrs):
 
     attrs: an Attributes item passed to startElement.'''
 
-    if 1:
+    if 0: # check for non-unicode attributes.
         for name in attrs.getNames():
             val = attrs.getValue(name)
             if type(val) != type(u''):
                 g.trace('Non-unicode attribute',name,val)
 
-    # g.trace(g.listToString([repr() for name in attrs.getNames()]))
+    # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
     return [
         g.Bunch(name=name,val=attrs.getValue(name))
@@ -3844,6 +4812,7 @@ def characters(self,content):
 def endElement(self,name):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         indent = '\t' * (self.level-1) or ''
         print '%s</%s>' % (indent,self.clean(name).strip())
@@ -3851,8 +4820,7 @@ def endElement(self,name):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown end element',name)
     else:
         junk,func = data
         if func:
@@ -3864,8 +4832,8 @@ def endElement(self,name):
 #@+node:ekr.20060919110638.32:endTnode
 def endTnode (self):
 
-    for node in self.nodeList:
-        node.bodyString = ''.join(self.content)
+    for sax_node in self.nodeList:
+        sax_node.bodyString = ''.join(self.content)
 
     self.content = []
 #@nonl
@@ -3887,17 +4855,10 @@ def endVH (self):
 #@nonl
 #@-node:ekr.20060919110638.34:endVH
 #@-node:ekr.20060919110638.31:endElement & helpers
-#@+node:ekr.20060919110638.45:getters
-def getCurrentNode (self):
-    return self.currentNode
-
+#@+node:ekr.20060919110638.45:getRootNode
 def getRootNode (self):
     return self.rootNode
-
-def getTopNode (self):
-    return self.topNode
-#@nonl
-#@-node:ekr.20060919110638.45:getters
+#@-node:ekr.20060919110638.45:getRootNode
 #@+node:ekr.20061004054323:processingInstruction (stylesheet)
 def processingInstruction (self,target,data):
 
@@ -3913,6 +4874,7 @@ def processingInstruction (self,target,data):
 def startElement(self,name,attrs):
 
     name = name.lower()
+
     if name in self.printElements or 'all' in self.printElements:
         self.printStartElement(name,attrs)
 
@@ -3921,8 +4883,7 @@ def startElement(self,name,attrs):
     data = self.dispatchDict.get(name)
 
     if data is None:
-        if 0:
-            g.trace('unknown element',name)
+        if 1: g.trace('unknown start element',name)
     else:
         func,junk = data
         if func:
@@ -3958,7 +4919,8 @@ def startGlobals (self,attrs):
 
         if name == 'body_outline_ratio':
             # self.body_outline_ratio = val
-            self.c.ratio = val
+            if not self.inClipboard:
+                self.c.ratio = val
             # g.trace(name,val)
         elif 0:
             g.trace(name,len(val))
@@ -3986,6 +4948,9 @@ def startVnodes (self,unused_attrs):
 
     # __pychecker__ = '--no-argsused'
 
+    if self.inClipboard:
+        return # No need to do anything to the main window.
+
     c = self.c ; d = self.global_window_position
 
     w = d.get('width',700)
@@ -4005,7 +4970,6 @@ def startVnodes (self,unused_attrs):
     c.frame.resizePanesToRatio(c.frame.ratio,c.frame.secondary_ratio)
     if not self.silent and not g.unitTesting:
         g.es("reading:",self.fileName)
-#@nonl
 #@-node:ekr.20060919112118:startVnodes
 #@+node:ekr.20060919110638.41:startTnode
 def startTnode (self,attrs):
@@ -4114,8 +5078,9 @@ __repr__ = __str__
 def dump (self):
 
     print
-    print 'node: tnx: %s body: %d %s' % (self.tnx,len(self.bodyString),self.headString)
-    print 'children:',g.listToString([child for child in self.children])
+    print 'node: tnx: %s len(body): %d %s' % (
+        self.tnx,len(self.bodyString),self.headString)
+    print 'children:',g.listToString(self.children)
     print 'attrs:',self.attributes.values()
 #@nonl
 #@-node:ekr.20060919110638.18:node.dump
@@ -4138,9 +5103,15 @@ def es(s,*args,**keys):
     # See Section 5.3.4 (Calls) of the Python reference manual.
     # In other words, the following is about the best that can be done.
     color = keys.get('color')
-    commas = keys.get('commas') ; commas = g.choose(commas=='True',True,False) # default is False
-    newline = keys.get('newline') ; newline = g.choose(newline=='False',False,True) # default is True
-    spaces= keys.get('spaces') ; spaces = g.choose(spaces=='False',False,True) # default is True
+    commas = keys.get('commas')
+    commas = g.choose( 
+        commas in (True,'True','true'),True,False)# default is False
+    newline = keys.get('newline')
+    newline = g.choose(
+        newline in (False,'False','false'),False,True)# default is True
+    spaces= keys.get('spaces')
+    spaces = g.choose(
+        spaces in (False,'False','false'),False,True)# default is True
     tabName = keys.get('tabName','Log')
 
         # Default goes to log pane *not* the presently active pane.
@@ -4204,7 +5175,8 @@ def findSettingsPosition (self,c,setting):
     setting = munge(setting)
 
     for p in root.subtree_iter():
-        h = munge(p.headString())
+        #BJ munge will return None if a headstring is empty
+        h = munge(p.headString()) or ''
         if h.startswith(setting):
             return p.copy()
 
@@ -4223,6 +5195,10 @@ def __init__(self,frame,fileName,relativeFileName=None):
     # Init ivars with self.x instead of c.x to keep Pychecker happy
     self.chapterController = None
     self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
     self.isZipped = False # May be set to True by g.openWithFileName.
     self.mFileName = fileName
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -4371,41 +5347,39 @@ if forceWrite or self.usingClipboard:
 #@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 # These string catenations are benign because they rarely happen.
 attr = ""
-
 # New in Leo 4.5: support fixed .leo files.
 if not c.fixed:
-    if v.isExpanded(): attr += "E"
+    if v.isExpanded() and v.hasChildren(): attr += "E"
     if v.isMarked():   attr += "M"
     if v.isOrphan():   attr += "O"
 
     # No longer a bottleneck now that we use p.equal rather than p.__cmp__
     # Almost 30% of the entire writing time came from here!!!
-    if not self.use_sax:
-        if p.equal(self.topPosition):     attr += "T" # was a bottleneck
-        if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
 
     if attr:
         attrs.append(' a="%s"' % attr)
 
 # Put the archived *current* position in the *root* positions <v> element.
-if self.use_sax and p.equal(self.rootPosition):
+if p == self.rootPosition:
     aList = [str(z) for z in self.currentPosition.archivedPosition()]
     d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
     if not c.fixed:
         d['str_leo_pos'] = ','.join(aList)
     # g.trace(aList,d)
     v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
 #@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
 #@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
 # Write the tnodeList only for @file nodes.
 # New in 4.2: tnode list is in tnode.
-
-# Debugging.
-# if v.isAnyAtFileNode():
-    # if hasattr(v.t,"tnodeList"):
-        # g.trace(v.headString(),len(v.t.tnodeList))
-    # else:
-        # g.trace(v.headString(),"no tnodeList")
 
 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
     if isThin:

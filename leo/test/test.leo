@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -691,30 +691,6 @@
 <v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
 <v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
 </v>
-<v t="ekr.20071026102420.1"><vh>Prototype of text clones</vh>
-<v t="ekr.20071018103231"><vh>@textclone prototype</vh>
-<v t="ekr.20071018102040"><vh>test node 1</vh></v>
-<v t="ekr.20071022210854"><vh>a</vh></v>
-<v t="ekr.20071022194901"><vh>test node 2</vh></v>
-<v t="ekr.20071022210854.1"><vh>b</vh></v>
-<v t="ekr.20071022195015"><vh>test node 3</vh></v>
-<v t="ekr.20071022152159"><vh>@test textclone</vh></v>
-<v t="ekr.20071018101008"><vh>@@button textclone @key = Alt+7</vh>
-<v t="ekr.20071022190459"><vh>onEvent (module level)</vh></v>
-<v t="ekr.20071022185842"><vh>class textCloneManager</vh>
-<v t="ekr.20071022185842.1"><vh>ctor</vh></v>
-<v t="ekr.20071022164806"><vh>error</vh></v>
-<v t="ekr.20071022184417"><vh>findAllCloneText &amp; helper</vh>
-<v t="ekr.20071022170213"><vh>findEndCloneText</vh></v>
-</v>
-<v t="ekr.20071022193326"><vh>scanAllNodes</vh></v>
-<v t="ekr.20071022152159.2"><vh>updateBody &amp; helper</vh>
-<v t="ekr.20071022162551"><vh>upateName</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20071026082438"><vh>Prototype of user icons</vh>
 <v t="ekr.20071026082914"><vh>Arrow target</vh></v>
 <v t="ekr.20071026084348"><vh>Icon target</vh></v>
@@ -888,18 +864,11 @@
 </v>
 <v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
-</v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080418154153.1"><vh>at-root-doc-test.py</vh>
-<v t="ekr.20080418154153.2"><vh>&lt;&lt; section a &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080419080504.1"><vh>a</vh>
-<v t="ekr.20080419080504.2"><vh>b</vh></v>
-</v>
-<v t="ekr.20080419080504.1"><vh>a</vh>
-<v t="ekr.20080419080504.2"><vh>b</vh></v>
-</v>
-<v t="ekr.20080421093238.1"><vh>insert</vh></v>
+<v t="ekr.20080502120646.1" a="E"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080503195928.1" a="E"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2059,32 +2028,6 @@ s = w.getAllText()
 ins = w.getInsertPoint()
 row,col = g.convertPythonIndexToRowCol(s,ins)
 print 'row',row,'col',col</t>
-<t tx="ekr.20071018101008"># Execute this script to create a prototype for @textclone in body text.
-
-import leoPlugins
-
-textCloneManagers = {} # Keys are commanders, values are textCloneClass instances.
-
-@others
-
-leoPlugins.registerHandler(('after-create-leo-frame','select2','save1'),onEvent)
-
-g.es_print('registered update')
-
-# This kludge would not be needed in a plugin.
-onEvent(tag='after-create-leo-frame',keywords={'c':c,'p':p})
-
-</t>
-<t tx="ekr.20071018102040">Node 1
-
-@textcloneON John Doe info -2007-10-17-
-LastName:Doe 
-Firstname:John W.
-Gender:Male
-@textcloneOFF
-
-End node 1</t>
-<t tx="ekr.20071018103231"></t>
 <t tx="ekr.20071019073617">@language java
 @tabwidth 8
 @others
@@ -2092,216 +2035,6 @@ End node 1</t>
 // changed.3
 
 </t>
-<t tx="ekr.20071022152159">if g.unitTesting:
-    
-    # This code assumes that @button textclone exists, i.e., that the update method has been registered.
-    
-    g.app.unitTestDict = {}
-
-    import leoPlugins
-    
-    aList = leoPlugins.getHandlersForOneTag('select1')
-    aList = [z.fn.__name__ for z in aList]
-
-    if 'textCloneUpdate' not in aList:
-        # print 'aList',aList
-        c.keyHandler.simulateCommand('textclone')
-    
-    c.frame.tree.select(p)
-    tag = g.app.unitTestDict.get('update:tag')
-    assert tag == 'select2', 'expected %s, got %s' % ('select2',tag)
-</t>
-<t tx="ekr.20071022152159.2">def updateBody (self,p,redrawFlag=True):
-
-    '''Call updateName for all textclone ranges in p's body text.'''
-
-    newNames = []
-    aList = self.findAllCloneText(p)
-
-    # if aList: g.trace(aList)
-
-    for bunch in aList:
-        name = bunch.name ; s = bunch.s
-        if name in newNames:
-            self.error('&lt;%s %s&gt; defined multiple times in %s' % (
-                self.tag1,name,p.headString()))
-        else:
-            newNames.append(name)
-            self.updateName(p,name,s)
-
-    if redrawFlag and self.shouldRedraw:
-        self.c.redraw_now()
-    self.shouldRedraw = False
-</t>
-<t tx="ekr.20071022162551">def updateName (self,p,name,s):
-
-    '''Update all nodes containing the given textclone name.'''
-
-    c = self.c
-    if self.trace:
-        g.trace('node:&lt;%s&gt;, key:&lt;%s&gt;' % (p.headString(),name))
-        # g.trace('s:...\n',s,'\n')
-
-    # Get the list of tnodes containing the textclone name.
-    aList = self.textCloneNameDict.get(name,[])
-    newTnodes = [p.v.t] ; changed = False
-    for t in aList:
-        if t in newTnodes: continue
-        newTnodes.append(t)
-        aList2 = self.findAllCloneText(p=None,t=t)
-        for bunch in aList2:
-            name2 = bunch.name ; s2 = bunch.s
-            if name == name2 and s != s2:
-                i,j = bunch.i,bunch.j
-                lines = g.splitLines(t.bodyString)
-                lines2 = lines[:i]
-                lines2.extend(g.splitLines(s))
-                lines2.extend(lines[j:])
-                s3 = ''.join(lines2)
-                t.setTnodeText(s3)
-                if self.trace: g.trace('New text for %s in %s=%s...\n%s\n[end]\n' % (
-                    name,t,t.headString,s3))
-                changed = True
-                t.setDirty()
-
-    self.textCloneNameDict[name]=newTnodes
-    if changed:
-        self.shouldRedraw = True # Request a redraw in the select3 event handler.</t>
-<t tx="ekr.20071022164806">def error (self,message):
-
-    g.es_print(message,color='red')
-</t>
-<t tx="ekr.20071022170213">def findEndCloneText (self,lines,i,name,headline):
-
-    '''Find the matching tag. Return (True,i) if found.'''
-
-    j = i
-    while i &lt; len(lines):
-        line = lines[i] ; i += 1
-
-        if g.match_word(line.lower(),0,self.tag2):
-            name2 = line[len(self.tag2):].strip()
-            if self.trace: g.trace(self.tag2,name2)
-
-            # It's not an error for these not to match.
-            if name == name2 or not self.allowNested:
-                return True,i-1
-            else:
-                self.error('expecting &lt;%s %s&gt;, got &lt;%s %s&gt; in %s' % (
-                    self.tag2,name,self.tag2,name2,headline))
-
-    self.error('no matching %s for %s %s at node %s' % (self.tag2,self.tag1,name,headline))
-    return False,i
-</t>
-<t tx="ekr.20071022184417">def findAllCloneText (self,p,t=None):
-
-    if p:
-        s = p.bodyString() ; headline = p.headString()
-    else:
-        s = t.bodyString ; headline = t.headString
-
-    lines = g.splitLines(s)
-
-    result = [] ; i = 0
-    while i &lt; len(lines):
-        line = lines[i] ; i += 1
-
-        if g.match_word(line.lower(),0,self.tag1):
-            name = line[len(self.tag1):].strip()
-            if self.trace: g.trace('found',self.tag1,name)
-
-            ok,j = self.findEndCloneText(lines,i,name,headline)
-            if ok:
-                result.append(g.Bunch(name=name,i=i,j=j,s=''.join(lines[i:j])))
-
-    return result
-
-
-</t>
-<t tx="ekr.20071022185842">class textCloneManager:
-
-    @others
-</t>
-<t tx="ekr.20071022185842.1">def __init__ (self,c):
-
-    self.allowNested = False
-    self.c = c
-    self.shouldRedraw = False
-    self.tag1 = '@textcloneon'
-    self.tag2 = '@textcloneoff'
-    self.textCloneNameDict = {}
-        # Keys are textclone names, values are list of tnodes containing the textclone name.
-    self.trace = False
-</t>
-<t tx="ekr.20071022190459">def onEvent (tag,keywords):
-
-    trace = False
-
-    c = keywords.get('c')
-    if c:
-        manager = textCloneManagers.get(c)
-        if not manager:
-            manager = textCloneManager(c)
-            textCloneManagers[c] = manager
-            manager.scanAllNodes()
-    else:
-        g.es_print('textclone:onEvent: no c',color=red)
-        return
-
-    if tag.startswith('select'):
-        p = keywords.get('old_p')
-    else:
-        p = keywords.get('p')
-
-    if g.unitTesting:
-        g.app.unitTestDict['update:tag']=tag
-    else:
-       if trace: g.trace(tag,p and p.headString() or '&lt;None&gt;')
-
-    if tag == 'select3':
-        manager.onSelect3(p)
-    else:
-        manager.updateBody(p)
-</t>
-<t tx="ekr.20071022193326">def scanAllNodes (self):
-
-    seen = {}
-    for p in c.allNodes_iter():
-        if not seen.get(p.v.t):
-            seen[p.v.t] = True
-            self.updateBody(p,redrawFlag=False)
-
-    if self.trace:
-        g.trace('textCloneNameDict...\n',
-            g.dictToString(self.textCloneNameDict))
-</t>
-<t tx="ekr.20071022194901">Node 2
-
-@textcloneON Mr. Spam info -2007-10-17-
-LastName:Spam 
-Firstname:Mr.
-Gender:M
-@textcloneOFF
-
-
-@textcloneON John Doe info -2007-10-17-
-LastName:Doe 
-Firstname:John W.
-Gender:Male
-@textcloneOFF
-
-End node 2</t>
-<t tx="ekr.20071022195015">Node 3
-
-@textcloneON Mr. Spam info -2007-10-17-
-LastName:Spam 
-Firstname:Mr.
-Gender:M
-@textcloneOFF
-
-End node 3</t>
-<t tx="ekr.20071022210854"></t>
-<t tx="ekr.20071022210854.1"></t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
@@ -2312,6 +2045,7 @@ plugins_menu.py
 # ipython.py
 cleo.py
 rClick.py
+toolbar.py
 
 add_directives.py
 color_markup.py
@@ -2451,7 +2185,6 @@ c.redraw()
         a["lineYOffset"] = 0
         c.redraw()</t>
 <t tx="ekr.20071026102420"></t>
-<t tx="ekr.20071026102420.1"></t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
 <t tx="ekr.20071026133046">def getImageHeight (path):
@@ -5538,18 +5271,65 @@ Leo's init code populates this menu as a special case.</t>
 g.es(pydispatch)
 g.es(g.listToString(dir(pydispatch)))
 </t>
-<t tx="ekr.20080418154153.1">@root c:\prog\test\at-root-doc-test.py
+<t tx="ekr.20080502120646.1">&lt;?php /*Cascade Style Sheet style1.css*/
+?&gt;
+&lt;link href="../stex.css" rel="stylesheet" type="text/css" /&gt;
 
-&lt;&lt; section a &gt;&gt;</t>
-<t tx="ekr.20080418154153.2">@doc
-section a doc
-line2
-@c
+&lt;?php
+/*
+Choice of language for website yes/no
+*/
+$ADD_LANGUAGE_CHOICE = 'yes';
+/*
+If 'Yes' you need to create images based on content/filename.htm
+ex: /imgs/bttns_index.jpg
+$NAV_IMAGES ='yes';
+*/
 
-a = 5 # code part</t>
-<t tx="ekr.20080419080504.1">print p.v.t</t>
-<t tx="ekr.20080419080504.2"></t>
-<t tx="ekr.20080421093238.1"></t>
+?&gt;
+
+&lt;?php /* Contact information */
+$domain = "domain.com";
+
+?&gt;
+
+&lt;?php /* Content Script; reads .htm files in Content Directory */
+
+//-- first section ends, second section begins
+
+include('language.php');
+
+$mycontentdir = "content"."/".$mylanguage;
+if ($main_page == "") $main_page = "index";
+
+
+$pagename = $main_page;
+$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
+" " . $state . " " . $zip;
+
+$main_page = "" . $main_page . ".htm";
+
+/* if (is_file("$mycontentdir/$main_page")) {
+$open = fopen("$mycontentdir/$main_page", "r");
+$size = filesize("$mycontentdir/$main_page");
+$content = fread($open, $size); */
+//}
+?&gt;
+
+&lt;?php
+/*Echo's Website*/
+function hpo(){
+echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
+}
+?&gt;
+</t>
+<t tx="ekr.20080503195928.1"></t>
+<t tx="ekr.20080503202744.3">import rope.base.project
+
+
+myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
+
+print myproject</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

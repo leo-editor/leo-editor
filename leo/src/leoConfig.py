@@ -610,8 +610,9 @@ class parserBaseClass:
         if not hasattr(g.app.config, 'context_menus'):
             g.app.config.context_menus = {}
 
-        if popupName in g.app.config.context_menus:
-            print '*** duplicate popup ***', popupName
+        #if popupName in g.app.config.context_menus:
+            #print '*** duplicate popup ***', popupName
+
 
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5:doPopupItems
@@ -1238,7 +1239,8 @@ class configClass:
         setting = munge(setting)
 
         for p in root.subtree_iter():
-            h = munge(p.headString())
+            #BJ munge will return None if a headstring is empty
+            h = munge(p.headString()) or ''
             if h.startswith(setting):
                 return p.copy()
 

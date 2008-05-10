@@ -789,7 +789,7 @@ class leoImportCommands:
         # New in Leo 4.4.7: honor @path directives.
 
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-        filename = g.os_path_join(self.default_directory,fileName)
+        fileName = g.os_path_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -807,6 +807,7 @@ class leoImportCommands:
                 theFile.close()
             except IOError:
                 z = g.choose(atAuto,'@auto ','')
+                # g.trace('c.frame.openDirectory',c.frame.openDirectory)
                 g.es("can not open", "%s%s" % (z,fileName),color='red')
                 leoTest.fail()
                 return None
@@ -836,7 +837,7 @@ class leoImportCommands:
             p = parent.copy()
             c.beginUpdate()
             try:
-                p.setTnodeText('')
+                p.setBodyString('')
             finally:
                 c.endUpdate(False)
         else:
@@ -1018,16 +1019,16 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
-    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+    def convertMoreStringToOutlineAfter (self,s,first_p):
         s = string.replace(s,"\r","")
         strings = string.split(s,"\n")
-        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+        return self.convertMoreStringsToOutlineAfter(strings,first_p)
 
     # Almost all the time spent in this command is spent here.
 
-    def convertMoreStringsToOutlineAfter (self,strings,firstVnode):
+    def convertMoreStringsToOutlineAfter (self,strings,first_p):
 
-        # __pychecker__ = '--no-objattrs' # suppress bad warnings re lastVnode.
+        # __pychecker__ = '--no-objattrs' # suppress bad warnings re last_p.
 
         c = self.c
         if len(strings) == 0: return None
@@ -1035,7 +1036,7 @@ class leoImportCommands:
         c.beginUpdate()
         try: # range of update...
             firstLevel, junk = self.moreHeadlineLevel(strings[0])
-            lastLevel = -1 ; theRoot = lastVnode = None
+            lastLevel = -1 ; theRoot = last_p = None
             index = 0
             while index < len(strings):
                 progress = index
@@ -1043,27 +1044,27 @@ class leoImportCommands:
                 level,junk = self.moreHeadlineLevel(s)
                 level -= firstLevel
                 if level >= 0:
-                    #@                << Link a new vnode v into the outline >>
-                    #@+node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@                << Link a new position p into the outline >>
+                    #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
                     assert(level >= 0)
-                    if lastVnode is None:
-                        # g.trace(firstVnode)
-                        theRoot = v = firstVnode.insertAfter()
+                    if not last_p:
+                        # g.trace(first_p)
+                        theRoot = p = first_p.insertAfter()
                     elif level == lastLevel:
-                        v = lastVnode.insertAfter()
+                        p = last_p.insertAfter()
                     elif level == lastLevel + 1:
-                        v = lastVnode.insertAsNthChild(0)
+                        p = last_p.insertAsNthChild(0)
                     else:
                         assert(level < lastLevel)
                         while level < lastLevel:
                             lastLevel -= 1
-                            lastVnode = lastVnode.parent()
-                            assert(lastVnode)
+                            last_p = last_p.parent()
+                            assert(last_p)
                             assert(lastLevel >= 0)
-                        v = lastVnode.insertAfter()
-                    lastVnode = v
+                        p = last_p.insertAfter()
+                    last_p = p
                     lastLevel = level
-                    #@-node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
                     #@nl
                     #@                << Set the headline string, skipping over the leader >>
                     #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
@@ -1073,7 +1074,7 @@ class leoImportCommands:
                     if g.match(s,j,"+ ") or g.match(s,j,"- "):
                         j += 2
 
-                    v.initHeadString(s[j:])
+                    p.initHeadString(s[j:])
                     #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
                     #@nl
                     #@                << Count the number of following body lines >>
@@ -1093,8 +1094,8 @@ class leoImportCommands:
                         index += 1
                     #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
                     #@nl
-                    #@                << Add the lines to the body text of v >>
-                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                    #@                << Add the lines to the body text of p >>
+                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
                     if bodyLines > 0:
                         body = ""
                         n = index - bodyLines
@@ -1103,10 +1104,10 @@ class leoImportCommands:
                             if n != index - 1:
                                 body += "\n"
                             n += 1
-                        v.setTnodeText(body)
-                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                        p.setBodyString(body)
+                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
                     #@nl
-                    v.setDirty()
+                    p.setDirty()
                 else: index += 1
                 assert progress < index
             if theRoot:
@@ -1666,15 +1667,18 @@ class leoImportCommands:
     def scanPHPText (self,s,parent,atAuto=False):
 
         scanner = phpScanner(importCommands=self,atAuto=atAuto)
+        scanner.run(s,parent)
 
-        if scanner.isPurePHP(s):
-            scanner.run(s,parent)
-        else:
-            fileName = scanner.fileName
-            if not atAuto:
-                g.es_print('seems to be mixed HTML and PHP:',fileName)
-            scanner.createHeadline(
-                parent,body=s,headline=fileName)
+        # if scanner.isPurePHP(s):
+            # scanner.run(s,parent)
+        # else:
+            # fileName = scanner.fileName
+            # if atAuto:
+                # print('seems to be mixed HTML and PHP:',fileName)
+            # else:
+                # g.es_print('seems to be mixed HTML and PHP:',fileName)
+            # scanner.createHeadline(
+                # parent,body=s,headline=fileName)
     #@-node:ekr.20070711090122:scanPHPText
     #@+node:ekr.20070703122141.99:scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
@@ -2868,7 +2872,7 @@ class baseScannerClass:
             self.sigStart = g.find_line_start(s,k)
 
         # Issue this warning only if we have a real class or function.
-        if 0: ### wrong.
+        if 0: # wrong.
             if s[self.sigStart:k].strip():
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
@@ -3431,6 +3435,13 @@ class phpScanner (baseScannerClass):
         self.blockCommentDelim2 = '*/'
         self.lineCommentDelim = '//'
         self.lineCommentDelim2 = '#'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+
+        self.hasClasses = False
+        self.hasFunctions = True
+
+        self.functionTags = ['function']
 
         # The valid characters in an id
         self.chars = list(string.ascii_letters + string.digits)
@@ -3440,7 +3451,7 @@ class phpScanner (baseScannerClass):
     #@+node:ekr.20070711094850:isPurePHP
     def isPurePHP (self,s):
 
-        '''Return True if the file begins with <?php or ends with ?>'''
+        '''Return True if the file begins with <?php and ends with ?>'''
 
         s = s.strip()
 
@@ -3775,7 +3786,7 @@ class xmlScanner (baseScannerClass):
             self.sigStart = g.find_line_start(s,k)
 
         # Issue this warning only if we have a real class or function.
-        if 0: ### wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
+        if 0: # wrong.if trace: g.trace(kind,'returns\n'+s[self.sigStart:i])
             if s[self.sigStart:k].strip():
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))

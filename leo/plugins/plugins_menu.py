@@ -827,7 +827,7 @@ class TkScrolledMessageDialog:
 
         elif self.callback:
 
-            retval = self.callback(name)#, data)
+            retval = self.callback(name) or ''
 
         if retval.lower() == 'close':
             self.top.destroy()

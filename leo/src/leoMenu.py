@@ -466,10 +466,10 @@ class leoMenu:
         self.createMenuEntries(windowMenu,self.windowMenuTopTable)
     #@-node:ekr.20031218072017.3802:createWindowMenuFromTable
     #@+node:ekr.20031218072017.3803:createHelpMenuFromTable
-    def createHelpMenuFromTable (self,table):
+    def createHelpMenuFromTable (self):
 
         if sys.platform == 'darwin':
-            self.getMacHelpMenu(table)
+            pass ### self.getMacHelpMenu(table)
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)

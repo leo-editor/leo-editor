@@ -18,3 +18,5 @@ dist
 ./*.zip
 leo/*.zip
 leo/doc/leoTechReport.*
+leo/test/dirty-test.py
+

@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:TL.20080221123824.2:@thin mod_tempfname.py
+#@+node:EKR.20040517075715.1:@thin mod_tempfname.py
 """Replace Commands.openWithTempFilePath to create alternate temporary
 directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and
@@ -118,5 +118,5 @@ if not g.app.unitTesting: # Not Ok for unit testing: it changes Leo's core.
     __version__ = "1.3"
     g.plugin_signon(__name__)
 #@nonl
-#@-node:TL.20080221123824.2:@thin mod_tempfname.py
+#@-node:EKR.20040517075715.1:@thin mod_tempfname.py
 #@-leo
