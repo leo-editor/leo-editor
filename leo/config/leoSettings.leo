@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="77" left="158" height="749" width="930"/>
+<globals body_outline_ratio="0.720720720721">
+	<global_window_position top="72" left="0" height="891" width="1278"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,1,6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,13,0,0,12"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -23,7 +23,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119035137" str_leo_pos="3,10"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -88,7 +88,7 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -289,7 +289,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -301,6 +301,7 @@
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
+<v t="tbrown.20080509230255.2"><vh>@data path-demangle</vh></v>
 <v t="ekr.20041119034357.12"><vh>derived files options</vh>
 <v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
 <v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
@@ -553,7 +554,7 @@
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
-<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
 <v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
 <v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
 <v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
@@ -575,9 +576,9 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
-<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -590,6 +591,12 @@
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
 <v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
+<v t="tbrown.20080509230255.3" a="E"><vh>@menu Recent &amp;Files</vh>
+<v t="tbrown.20080509230255.4"><vh>@item clear-recent-files</vh></v>
+<v t="tbrown.20080509230255.5"><vh>@item clean-recent-files</vh></v>
+<v t="tbrown.20080509230255.6"><vh>@item sort-recent-files</vh></v>
+<v t="tbrown.20080509230255.7"><vh>@item -</vh></v>
+</v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *&amp;check-derived-file</vh></v>
@@ -1304,7 +1311,7 @@
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
-<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
 <v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
 <v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
 <v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
@@ -8661,6 +8668,20 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
+<t tx="tbrown.20080509230255.2"># pairs of lines in this text indicate search and replace targets for
+# cleaning the recent files list.  Each pair of lines should start with
+# "REPLACE:" (first line) and "WITH:" (second line).  For example:
+#
+#  REPLACE: .gnome-desktop
+#     WITH: My Desktop
+#  REPLACE: /mnt/usr1/
+#     WITH: /
+</t>
+<t tx="tbrown.20080509230255.3">Static part of Recent Files menu</t>
+<t tx="tbrown.20080509230255.4">Clear Recent Files</t>
+<t tx="tbrown.20080509230255.5">Clean Recent Files</t>
+<t tx="tbrown.20080509230255.6">Sort Recent Files</t>
+<t tx="tbrown.20080509230255.7"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

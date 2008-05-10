@@ -938,7 +938,7 @@ class baseCommands:
         bunch = u.beforeClearRecentFiles()
 
         recentFilesMenu = f.menu.getMenu("Recent Files...")
-        f.menu.delete_range(recentFilesMenu,0,len(c.recentFiles))
+        f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
 
         c.recentFiles = []
         g.app.config.recentFiles = [] # New in Leo 4.3.
@@ -955,6 +955,44 @@ class baseCommands:
         g.app.config.recentFileMessageWritten = False # Force the write message.
         g.app.config.writeRecentFilesFile(c)
     #@-node:ekr.20031218072017.2080:clearRecentFiles
+    #@+node:tbrown.20080509212202.6:cleanRecentFiles
+    def cleanRecentFiles(self,event=None):
+        dat = self.config.getData('path-demangle')
+        if not dat:
+            g.es('No @data path-demangle setting')
+            return
+
+        changes = []
+        replace = None
+        for line in dat:
+            text = line.strip()
+            if text.startswith('REPLACE: '):
+                replace = text.split(None, 1)[1].strip()
+            if text.startswith('WITH:') and replace is not None:
+                with_ = text[5:].strip()
+                changes.append((replace, with_))
+                g.es('%s -> %s' % changes[-1])
+
+        orig = [i for i in self.recentFiles if i.startswith("/")]
+        self.clearRecentFiles()
+
+        for i in orig:
+            t = i
+            for c in changes:
+                t = t.replace(*c)
+
+            self.updateRecentFiles(t)
+    #@-node:tbrown.20080509212202.6:cleanRecentFiles
+    #@+node:tbrown.20080509212202.8:sortRecentFiles
+    def sortRecentFiles(self,event=None):
+        orig = [i for i in self.recentFiles if i.startswith("/")]
+        self.clearRecentFiles()
+        import os
+        orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
+            os.path.basename(a).lower()))
+        for i in orig:
+            self.updateRecentFiles(i)
+    #@-node:tbrown.20080509212202.8:sortRecentFiles
     #@+node:ekr.20031218072017.2081:openRecentFile
     def openRecentFile(self,name=None):
 
