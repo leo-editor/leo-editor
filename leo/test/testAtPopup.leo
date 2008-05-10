@@ -2214,7 +2214,10 @@ for i, item in enumerate(menu):
     if item[1] is old:
         del menu[i]
 
-g.old_do_demo_editor_items = do_demo_editor_items
+try:
+    g.old_do_demo_editor_items = do_demo_editor_items
+except:
+    pass
 </t>
 <t tx="bobjack.20080505055217.10"># this is housekeeping stuff and can be ignored
 
