@@ -421,6 +421,42 @@ class baseCommands:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@-node:ekr.20051106040126:c.executeMinibufferCommand
+    #@+node:bobjack.20080509080123.2:c.universallCallback
+    def universallCallback(self, function):
+
+        """Create a universal command callback.
+
+        Create and return a callback that wraps a function whith an rCick
+        signature in a callback which addapts standard minibufer cammand
+        callbacks to a compatible format.
+
+        This also serves to allow rClick callback functions to handle
+        minibuffer commands from sources other than rClick menus so allowing
+        a single function to handle calls from all sources.
+
+        A function wrapped in this wrapper can handle rclick generator
+        and invocation commands and commands typed in the minibuffer.
+
+        It will also be able to handle commands from the minibuffer even
+        if rclick is not installed.
+        """
+        def minibufferCallback(event, function=function):
+
+            try:
+                cm = self.theContextMenuController
+                keywords = cm.mb_keywords 
+            except AttributeError:
+                keywords = None
+
+            if keywords:
+                keywords['mb_event'] = event  
+                cm.mb_retval = function(keywords)
+            else:
+                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
+                return function(keywords)
+
+        return minibufferCallback
+    #@-node:bobjack.20080509080123.2:c.universallCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)

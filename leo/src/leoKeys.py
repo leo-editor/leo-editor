@@ -2882,17 +2882,25 @@ class keyHandlerClass:
         c.bodyWantsFocus()
     #@-node:ekr.20061031131434.130:keyboardQuit
     #@+node:ekr.20061031131434.131:k.registerCommand
-    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False):
+    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
 
         '''Make the function available as a minibuffer command,
         and optionally attempt to bind a shortcut.
 
         You can wrap any method in a callback function, so the
-        restriction to functions is not significant.'''
+        restriction to functions is not significant.
+
+        If wrap is True then func will be wrapped with c.universallCallback.
+
+        '''
 
         # g.trace(commandName,g.callers())
 
         k = self ; c = k.c
+
+        if wrap:
+            func = c.universallCallback(func)
+
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting
         if f and f.__name__ != 'dummyCallback' and verbose:

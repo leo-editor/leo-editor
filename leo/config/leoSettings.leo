@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.720720720721">
-	<global_window_position top="72" left="0" height="891" width="1278"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="10" left="10" height="866" width="1278"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,13,0,0,12"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,14,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1090,8 +1090,74 @@
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
 </v>
+<v t="bobjack.20080507123337.2"><vh>@popup_menus</vh>
+<v t="bobjack.20080507123337.3" a="E"><vh>Main Context Menus</vh>
+<v t="bobjack.20080507123337.4"><vh>@popup body</vh>
+<v t="bobjack.20080507123337.5"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080507123337.6"><vh>@item -</vh></v>
+<v t="bobjack.20080507123337.7"><vh>@menu Block Operations</vh>
+<v t="bobjack.20080507123337.8"><vh>@item indent-region</vh></v>
+<v t="bobjack.20080507123337.9"><vh>@item dedent-region</vh></v>
+<v t="bobjack.20080507123337.10"><vh>@item -</vh></v>
+<v t="bobjack.20080507123337.11"><vh>@item add-comments</vh></v>
+<v t="bobjack.20080507123337.12"><vh>@item delete-comments</vh></v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="bobjack.20080507123337.13"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080507123337.14"><vh>@item -</vh></v>
+<v t="bobjack.20080507123337.15"><vh>@item match-brackets</vh></v>
+<v t="bobjack.20080507123337.16"><vh>@item execute-script</vh></v>
+<v t="bobjack.20080507123337.17"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080507123337.18"><vh>@popup log</vh>
+<v t="bobjack.20080507123337.19"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080507123337.20"><vh>@popup find-text</vh>
+<v t="bobjack.20080507123337.21"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080507123337.22" a="E"><vh>@popup change-text</vh>
+<v t="bobjack.20080507123337.23"><vh>@item &amp;</vh></v>
+</v>
+<v t="bobjack.20080507123337.24"><vh>@popup canvas</vh>
+<v t="bobjack.20080507123337.25"><vh>@item &amp;</vh></v>
+<v t="bobjack.20080507123337.26"><vh>@item -</vh></v>
+<v t="bobjack.20080507123337.27"><vh>@item *create-chapter</vh></v>
+<v t="bobjack.20080507123337.28"><vh>@item *remove-chapter</vh></v>
+</v>
+<v t="bobjack.20080507123337.29"><vh>@popup headline</vh></v>
+<v t="bobjack.20080507123337.30"><vh>@popup iconbox</vh></v>
+<v t="bobjack.20080507123337.31"><vh>@popup plusbox</vh></v>
+</v>
+<v t="bobjack.20080507123337.32"><vh>Fragments</vh>
+<v t="bobjack.20080507123337.33"><vh>@popup edit-menu</vh>
+<v t="bobjack.20080507123337.34"><vh>@item rclick-cut-text</vh></v>
+<v t="bobjack.20080507123337.35"><vh>@item rclick-copy-text</vh></v>
+<v t="bobjack.20080507123337.36"><vh>@item rclick-paste-text</vh></v>
+<v t="bobjack.20080507123337.37"><vh>@item -</vh></v>
+<v t="bobjack.20080507123337.38"><vh>@item rclick-select-all</vh></v>
+</v>
+<v t="bobjack.20080507123337.39"><vh>@popup recent-files-menu</vh>
+<v t="bobjack.20080507123337.40" a="E"><vh>@menu Recent Files</vh>
+<v t="bobjack.20080507123337.41"><vh>@item *</vh></v>
+</v>
+</v>
+<v t="bobjack.20080507123337.42"><vh>@popup to-chapter-fragment</vh>
+<v t="bobjack.20080507123337.43"><vh>@menu Clone to Chapter</vh>
+<v t="bobjack.20080507123337.44"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080507123337.45"><vh>@menu Copy to Chapter</vh>
+<v t="bobjack.20080507123337.46"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080507123337.47"><vh>@menu Move to Chapter</vh>
+<v t="bobjack.20080507123337.48"><vh>@item *</vh></v>
+</v>
+<v t="bobjack.20080507123337.49"><vh>@menu Goto to Chapter</vh>
+<v t="bobjack.20080507123337.50"><vh>@item *</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1329,6 +1395,76 @@
 </v>
 </vnodes>
 <tnodes>
+<t tx="bobjack.20080507123337.2"></t>
+<t tx="bobjack.20080507123337.3"></t>
+<t tx="bobjack.20080507123337.4">@popup body is the default menu for right clicks in the body pane.
+</t>
+<t tx="bobjack.20080507123337.5">edit-menu
+
+# This will include the contents of @popup edit-text </t>
+<t tx="bobjack.20080507123337.6"></t>
+<t tx="bobjack.20080507123337.7"></t>
+<t tx="bobjack.20080507123337.8">Indent</t>
+<t tx="bobjack.20080507123337.9">Dedent</t>
+<t tx="bobjack.20080507123337.10"></t>
+<t tx="bobjack.20080507123337.11"></t>
+<t tx="bobjack.20080507123337.12"></t>
+<t tx="bobjack.20080507123337.13">recent-files-menu
+
+# This will include a copy of @popup recent-files-menu</t>
+<t tx="bobjack.20080507123337.14"></t>
+<t tx="bobjack.20080507123337.15"></t>
+<t tx="bobjack.20080507123337.16"></t>
+<t tx="bobjack.20080507123337.17">rclick-gen-context-sensitive-commands
+
+# This is an example of a menu generator command. It will scan the body text for
+# occuurances of hyperlinks, or section headings in the current line or in the
+# selected text and append items to the menu that will invoke a webbrowser or
+# jump to the section as appropriate.
+</t>
+<t tx="bobjack.20080507123337.18">@popup log is the default menu for right clicks in the log pane.</t>
+<t tx="bobjack.20080507123337.19">edit-menu</t>
+<t tx="bobjack.20080507123337.20">@popup find-text is the default menu for right clicks in the find text entry in the find panel.</t>
+<t tx="bobjack.20080507123337.21">edit-menu</t>
+<t tx="bobjack.20080507123337.22">@popup change-text is the default menu for right clicks in the change text entry in the find panel.</t>
+<t tx="bobjack.20080507123337.23">find-text</t>
+<t tx="bobjack.20080507123337.24">@popup canvas is the default menu for right clicks in the tree canvas that occur outside any other tree widget.</t>
+<t tx="bobjack.20080507123337.25">to-chapter-fragment</t>
+<t tx="bobjack.20080507123337.26"></t>
+<t tx="bobjack.20080507123337.27"></t>
+<t tx="bobjack.20080507123337.28"></t>
+<t tx="bobjack.20080507123337.29">@popup headline is the default menu for right clicks in the text part of the headline.</t>
+<t tx="bobjack.20080507123337.30">@popup iconbox is the default menu for right clicks in the icon box pane.  This will normally be overridden by the cleo menu.</t>
+<t tx="bobjack.20080507123337.31">@popup plusbox is the default menu for right clicks on the plusbox.</t>
+<t tx="bobjack.20080507123337.32"></t>
+<t tx="bobjack.20080507123337.33"></t>
+<t tx="bobjack.20080507123337.34">Cut
+
+icon = Tango/16x16/actions/editcut.png</t>
+<t tx="bobjack.20080507123337.35">Copy
+
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="bobjack.20080507123337.36">Paste
+
+icon = Tango/16x16/actions/editpaste.png</t>
+<t tx="bobjack.20080507123337.37"></t>
+<t tx="bobjack.20080507123337.38">Select All
+#First line must be blank as we want to work out the
+#label based on the command, key = value pairs may follow.</t>
+<t tx="bobjack.20080507123337.39">@popup recent-files-menu is a fragment meant to be included in other menus.
+
+It consists of a single cascade menu which opens to show a list of recent files. </t>
+<t tx="bobjack.20080507123337.40"></t>
+<t tx="bobjack.20080507123337.41">rclick-gen-recent-files-list</t>
+<t tx="bobjack.20080507123337.42"></t>
+<t tx="bobjack.20080507123337.43"></t>
+<t tx="bobjack.20080507123337.44">clone-node-to-chapter-menu</t>
+<t tx="bobjack.20080507123337.45"></t>
+<t tx="bobjack.20080507123337.46">copy-node-to-chapter-menu</t>
+<t tx="bobjack.20080507123337.47"></t>
+<t tx="bobjack.20080507123337.48">move-node-to-chapter-menu</t>
+<t tx="bobjack.20080507123337.49"></t>
+<t tx="bobjack.20080507123337.50">select-chapter-menu</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
 The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
@@ -7023,6 +7159,9 @@ leo_to_html.py
 # Order is important for enabled plugins that add items to the icon area.
 
 threading_colorizer.py
+
+rClick.py
+toolbar.py
 
 #ConceptualSort.py
 #EditAttributes.py
