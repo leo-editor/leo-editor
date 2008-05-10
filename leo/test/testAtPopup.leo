@@ -1133,10 +1133,9 @@ def do_demo_editor_items(keywords):
 
 @
 Now we have a function, lets register it as a minibuffer command.
-
-
 @c
-c.k.registerCommand('demo-editor-items', shortcut=None, func=cb, wrap=True)
+c.k.registerCommand('demo-editor-items',
+    shortcut=None, func=do_demo_editor_items, wrap=True)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into
@@ -1248,12 +1247,12 @@ Submenu.
 
 
 The first item of the tuple can be multiline stirngs. eg :
-    
+
     @item toolbar-add-iconbar  body:   Add IconBar
                                        icon = Tango/16x16/actions/add.png
 
     or ('Add IconBar\nicon=Tango/16x16/actions/add.png', 'toolbar-add-iconbar')
-    
+
 </t>
 <t tx="bobjack.20080414155140.2">@
 How to use radio buttons.
@@ -1610,12 +1609,7 @@ xtest(result, None, 'function hook result')
 
 </t>
 <t tx="bobjack.20080419045546.8">
-def demo_editor_items(event):
-
-    cm = c.theContextMenuController
-    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
-
-c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+c.k.registerCommand('demo-editor-items', shortcut=None, func=do_demo_editor_items, wrap=True)
 
 
 menu = [('*', 'demo-editor-items')]
@@ -2065,6 +2059,9 @@ and printing out it's new value in the log panel.
 An icon button will appear in the second position of the iconBar also showing
 a cleo icon representing the current count.
 
+Typing demo-count in the minibuffer will also increment the count as will clicking
+on the icon button..
+
 This demo requires rClick.py and the toolbar.py plugins to be enabled
 
 @c
@@ -2217,7 +2214,10 @@ for i, item in enumerate(menu):
     if item[1] is old:
         del menu[i]
 
-g.old_do_demo_editor_items = do_demo_editor_items
+try:
+    g.old_do_demo_editor_items = do_demo_editor_items
+except:
+    pass
 </t>
 <t tx="bobjack.20080505055217.10"># this is housekeeping stuff and can be ignored
 

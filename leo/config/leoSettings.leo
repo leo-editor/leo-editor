@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.720720720721">
-	<global_window_position top="72" left="0" height="891" width="1278"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="10" left="10" height="866" width="1278"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,13,0,0,12"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,14,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -7159,6 +7159,9 @@ leo_to_html.py
 # Order is important for enabled plugins that add items to the icon area.
 
 threading_colorizer.py
+
+rClick.py
+toolbar.py
 
 #ConceptualSort.py
 #EditAttributes.py
