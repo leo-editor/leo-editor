@@ -114,6 +114,7 @@ class baseTextWidget:
     def _see(self,i):                   self.oops()
     def _setAllText(self,s):            self.oops()
     def _setBackgroundColor(self,color): self.oops()
+    def _setForegroundColor(self,color): self.oops()
     def _setFocus(self):                self.oops()
     def _setInsertPoint(self,i):        self.oops()
     def _setSelectionRange(self,i,j):   self.oops()
@@ -404,7 +405,7 @@ class baseTextWidget:
         w._setAllText(s)
     #@nonl
     #@-node:ekr.20070228074312.32:setAllText
-    #@+node:ekr.20070228074312.33:setBackgroundColor & SetBackgroundColour
+    #@+node:ekr.20070228074312.33:setBackgroundColor
     def setBackgroundColor (self,color):
 
         w = self
@@ -418,7 +419,22 @@ class baseTextWidget:
 
     SetBackgroundColour = setBackgroundColor
     #@nonl
-    #@-node:ekr.20070228074312.33:setBackgroundColor & SetBackgroundColour
+    #@-node:ekr.20070228074312.33:setBackgroundColor
+    #@+node:ekr.20080510153327.3:setForegroundColor
+    def setForegroundColor (self,color):
+
+        w = self
+
+        # Translate tk colors to wx colors.
+        d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
+
+        color = d.get(color,color)
+
+        return w._setForegroundColor(color)
+
+    SetForegroundColour = setForegroundColor
+    #@nonl
+    #@-node:ekr.20080510153327.3:setForegroundColor
     #@+node:ekr.20070228074312.34:setFocus (baseText)
     def setFocus (self):
 
@@ -626,6 +642,7 @@ class stringTextWidget (baseTextWidget):
         self.ins = i
         self.sel = i,i
     def _setBackgroundColor(self,color): pass
+    def _setForegroundColor(self,color): pass
     def _setFocus(self):                pass
     def _setInsertPoint(self,i):
         if self.trace: g.trace(self,'i',i)
