@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080310164329.2"><vh>@@menus</vh>
 <v t="ekr.20080310164329.3"><vh>@menu &amp;File</vh>
@@ -537,6 +537,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -547,7 +548,7 @@
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
 </v>
-<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
 <v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
@@ -623,6 +624,7 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -866,8 +868,8 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
 </v>
-<v t="ekr.20080502120646.1" a="E"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
-<v t="ekr.20080503195928.1" a="E"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 </vnodes>
 <tnodes>
@@ -5330,6 +5332,7 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
 
 print myproject</t>
+<t tx="ekr.20080510170551.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
