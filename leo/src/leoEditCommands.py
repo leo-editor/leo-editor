@@ -132,10 +132,16 @@ class baseEditCommandsClass:
 
         c = self.c ; w = event and event.widget
 
-        if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+        # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+        if w and g.app.gui.isTextWidget(w):
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+        # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+            # self.w = w
+        # else:
+            # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
         if self.w:
             c.widgetWantsFocusNow(self.w)
@@ -1701,7 +1707,7 @@ class editCommandsClass (baseEditCommandsClass):
         body = c.frame.body.bodyCtrl
         log  = c.frame.log.logCtrl
         tree = c.frame.tree.canvas
-        panes = [body,log,tree]
+        panes = [body,log] # ,tree]
 
         if w in panes:
             i = panes.index(w) + 1
@@ -1764,13 +1770,15 @@ class editCommandsClass (baseEditCommandsClass):
                     pane = c.frame.log.logCtrl
                 elif self.logWidgetCount > n:
                     self.logWidgetCount = 0
-                    pane = c.frame.tree.canvas
+                    ### pane = c.frame.tree.canvas
+                    pane = c.frame.body.bodyCtrl
                 else:
                     c.frame.log.cycleTabFocus()
                     pane = c.frame.log.logCtrl
             else:
                 self.logWidgetCount = 0
-                pane = c.frame.tree.canvas
+                ### pane = c.frame.tree.canvas
+                pane = c.frame.body.bodyCtrl
         else:
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0

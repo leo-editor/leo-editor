@@ -2587,7 +2587,7 @@ class keyHandlerClass:
                 c.bodyWantsFocus()
     #@-node:ekr.20061031131434.112:callAltXFunction
     #@-node:ekr.20061031131434.111:fullCommand (alt-x) & helper
-    #@+node:ekr.20061031131434.113:endCommand
+    #@+node:ekr.20061031131434.113:k.endCommand
     def endCommand (self,event,commandName):
 
         '''Make sure Leo updates the widget following a command.
@@ -2622,7 +2622,7 @@ class keyHandlerClass:
                 c.widgetWantsFocusNow(k.newMinibufferWidget)
                 # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
                 k.newMinibufferWidget = None
-    #@-node:ekr.20061031131434.113:endCommand
+    #@-node:ekr.20061031131434.113:k.endCommand
     #@-node:ekr.20061031131434.104:Dispatching (keyHandler)
     #@+node:ekr.20061031131434.114:Externally visible commands
     #@+node:ekr.20061031131434.115:digitArgument & universalArgument
@@ -3185,6 +3185,7 @@ class keyHandlerClass:
             #@        << handle mode bindings >>
             #@+node:ekr.20061031131434.149:<< handle mode bindings >>
             # First, honor minibuffer bindings for all except user modes.
+
             if state in ('getArg','getFileName','full-command','auto-complete'):
                 if k.handleMiniBindings(event,state,stroke):
                     return 'break'
@@ -3212,16 +3213,19 @@ class keyHandlerClass:
                             modeName=state,nextMode=b.nextMode)
                         return 'break'
                     else:
-                        ok = k.handleMiniBindings(event,state,stroke)
-                        if ok:
-                            return 'break'
-                        elif stroke and len(stroke) == 1:
-                            # if trace: g.trace('calling modeHelp')
-                            k.modeHelp(event)
-                            return 'break'
-                        else:
-                            # End the mode and fall through to the pane bindings!
-                            k.endMode(event)
+                        # New in Leo 4.5: unbound keys end mode.
+                        k.endMode(event)
+
+                        # ok = k.handleMiniBindings(event,state,stroke)
+                        # if ok:
+                            # return 'break'
+                        # elif stroke and len(stroke) == 1:
+                            # # if trace: g.trace('calling modeHelp')
+                            # k.modeHelp(event)
+                            # return 'break'
+                        # else:
+                            # # End the mode and fall through to the pane bindings!
+                            # k.endMode(event)
                 else:
                     # New in 4.4b4.
                     handler = k.getStateHandler()
@@ -3255,7 +3259,8 @@ class keyHandlerClass:
             ('tree','canvas'),
             ('log', 'log'),
             ('text','log'),
-            ('text',None), ('all',None),
+            ('text',None),
+            ('all',None),
         ):
             if (
                 key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
@@ -3273,54 +3278,11 @@ class keyHandlerClass:
                         return k.masterCommand(event,b.func,b.stroke,b.commandName)
         #@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
         #@nl
-        #@    << handle keys without bindings >>
-        #@+node:ekr.20061031131434.151:<< handle keys without bindings >>
+
         if traceGC: g.printNewObjects('masterKey 5')
 
-        modesTuple = ('insert','overwrite')
-
-        if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-            # insert/overwrite normal character.  <Return> is *not* a normal character.
-            if trace: g.trace('plain key in insert mode',repr(stroke))
-            if traceGC: g.printNewObjects('masterKey 4')
-            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-        elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-            # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-            if trace: g.trace('ignoring unbound non-ascii key')
-            return 'break'
-
-        elif keysym.find('Escape') != -1:
-            # Never insert escape characters.
-            return 'break'
-
-        else:
-            if trace: g.trace(repr(stroke),'no func')
-            if traceGC: g.printNewObjects('masterKey 6')
-            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-        #@-node:ekr.20061031131434.151:<< handle keys without bindings >>
-        #@nl
-    #@+node:ekr.20061031131434.152:handleMiniBindings
-    def handleMiniBindings (self,event,state,stroke):
-
-        k = self ; c = k.c
-        trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
-
-        if not state.startswith('auto-'):
-            d = k.masterBindingsDict.get('mini')
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    if not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-        return False
-    #@-node:ekr.20061031131434.152:handleMiniBindings
-    #@+node:ekr.20061031131434.108:callStateFunction
+        return k.handleUnboundKeys(event,char,keysym,stroke)
+    #@+node:ekr.20061031131434.108:k.callStateFunction
     def callStateFunction (self,event):
 
         k = self ; val = None ; ch = g.app.gui.eventChar(event)
@@ -3343,7 +3305,63 @@ class keyHandlerClass:
                 g.es_print('no state function for',k.state.kind,color='red')
 
         return val
-    #@-node:ekr.20061031131434.108:callStateFunction
+    #@-node:ekr.20061031131434.108:k.callStateFunction
+    #@+node:ekr.20061031131434.152:handleMiniBindings
+    def handleMiniBindings (self,event,state,stroke):
+
+        k = self ; c = k.c
+        trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
+
+        if not state.startswith('auto-'):
+            # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+            # for all single-line editing commands.
+            for pane in ('mini','all','text'):
+                d = k.masterBindingsDict.get(pane)
+                if d:
+                    b = d.get(stroke)
+                    if b:
+                        if b.commandName not in k.singleLineCommandList:
+                            if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName)
+                            k.keyboardQuit(event,hideTabs=True,setDefaultUnboundKeyAction=True)
+                        else:
+                            if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                            c.minibufferWantsFocusNow() # New in Leo 4.5.
+                        # Pass this on for macro recording.
+                        k.masterCommand(event,b.func,stroke,b.commandName)
+                        # Careful: the command could exit.
+                        if c.exists and not k.silentMode:
+                            c.minibufferWantsFocus()
+                        return True
+
+        return False
+    #@-node:ekr.20061031131434.152:handleMiniBindings
+    #@+node:ekr.20080510095819.1:handleUnboudKeys
+    def handleUnboundKeys (self,event,char,keysym,stroke):
+
+        k = self
+        modesTuple = ('insert','overwrite')
+        trace = False
+
+        if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+            # insert/overwrite normal character.  <Return> is *not* a normal character.
+            if trace: g.trace('plain key in insert mode',repr(stroke))
+            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+        elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+            # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+            if trace: g.trace('ignoring unbound non-ascii key')
+            return 'break'
+
+        elif keysym.find('Escape') != -1:
+            # Never insert escape characters.
+            return 'break'
+
+        else:
+            if trace: g.trace(repr(stroke),'no func')
+            # New in Leo 4.5: any unbound special key terminates all modes.
+            # k.keyboardQuit()
+            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    #@-node:ekr.20080510095819.1:handleUnboudKeys
     #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
     #@+node:ekr.20061031131434.153:masterClickHandler
     def masterClickHandler (self,event,func=None):
@@ -3778,6 +3796,10 @@ class keyHandlerClass:
             for commandName in entryCommands:
                 if trace: g.trace('entry command:',commandName)
                 k.simulateCommand(commandName)
+                # New in Leo 4.5: a startup command can immediately transfer to another mode.
+                if commandName.startswith('enter-'):
+                    if trace: g.trace('redirect to mode',commandName)
+                    return
 
         # Create bindings after we know whether we are in silent mode.
         w = g.choose(k.silentMode,k.modeWidget,k.widget)

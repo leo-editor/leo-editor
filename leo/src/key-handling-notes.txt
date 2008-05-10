@@ -2,7 +2,8 @@
 #@+node:ekr.20080508083640.10:@thin key-handling-notes.txt
 #@+all
 #@+node:ekr.20080508083640.11:Notes
-#@+node:ekr.20080508083640.12:Requests
+#@+node:ekr.20080509145618.2:Old/obsolete
+#@+node:ekr.20080508083640.12:Requests (old)
 @nocolor
 
 Some of the features I've grown to like with VIM are:
@@ -10,8 +11,8 @@ Some of the features I've grown to like with VIM are:
 - search-and-replace within the current selection,
 - easy keyboard navigation
 - and to some extent macro recording and running.
-#@-node:ekr.20080508083640.12:Requests
-#@+node:ekr.20080508083640.13:Design post
+#@-node:ekr.20080508083640.12:Requests (old)
+#@+node:ekr.20080508083640.13:Design post (old)
 @nocolor
 
 http://sourceforge.net/forum/forum.php?thread_id=1800079&forum_id=10226
@@ -42,7 +43,27 @@ Give the complex nature of vims c and d commands (and others) it will probably b
 
 I am quite eager to get something truly vim-like working. It promises to increase my editing speed substantially. It also should appeal strongly to present vim users. 
 #@nonl
-#@-node:ekr.20080508083640.13:Design post
+#@-node:ekr.20080508083640.13:Design post (old)
+#@+node:ekr.20080508094751.1:(obsolete) Auto-change panes  OR unified body/tree panes
+@nocolor
+
+The Huge Focus Aha makes this obsolete.
+
+The idea: if a key binding is only in effect for one pane, and we get the
+binding, maybe we should change to the pane first!
+
+Examples:
+
+copy-node: auto-select tree pane.
+copy_text (when not editing a headline): auto-select body text.
+
+
+Unified body/tree panes
+
+Up/down arrows move between headline and body panes.
+#@nonl
+#@-node:ekr.20080508094751.1:(obsolete) Auto-change panes  OR unified body/tree panes
+#@-node:ekr.20080509145618.2:Old/obsolete
 #@+node:ekr.20080508083640.14:Posting re vim bindings
 @nocolor
 
@@ -95,24 +116,7 @@ P.S.  I've glossed over the details of which single characters (like d for delet
 
 EKR
 #@-node:ekr.20080508083640.14:Posting re vim bindings
-#@+node:ekr.20080508094751.1:*** auto-change panes  OR unified body/tree panes
-@nocolor
-
-The idea: if a key binding is only in effect for one pane, and we get the
-binding, maybe we should change to the pane first!
-
-Examples:
-
-copy-node: auto-select tree pane.
-copy_text (when not editing a headline): auto-select body text.
-
-
-Unified body/tree panes
-
-Up/down arrows move between headline and body panes.
-#@nonl
-#@-node:ekr.20080508094751.1:*** auto-change panes  OR unified body/tree panes
-#@+node:ekr.20080508083640.16:5/08: New key handling
+#@+node:ekr.20080508083640.16:Posting: New key handling
 @nocolor
 
 The "Huge Focus Aha", namely that focus never needs to be in the
@@ -216,7 +220,176 @@ pane bindings no longer have any effect.
 
 This is all very preliminary.  I've written no code.  Your comments
 are welcome now.
-#@-node:ekr.20080508083640.16:5/08: New key handling
+#@-node:ekr.20080508083640.16:Posting: New key handling
+#@+node:ekr.20080509064108.9:Posting: More design notes
+@nocolor
+
+On May 7, 7:05 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
+
+> This post will be a "thinking out loud" discussion of the new design.
+
+I've just spent some time drawing state diagrams that indicate transitions between various states.  It turned out to be more simple than I had feared.
+
+> As I write this, I realize that the distinction between text-editing
+> and non-text-editing commands implicitly assumes emacs-like *bindings*
+> for commands.  
+
+No.  The distinction has nothing to do with bindings, as my post earlier today shows.  In fact, after seeing the final state diagrams, my intention is to be able to support *both* emacs-like and vim-like bindings simultaneously.  Actually, Leo can already do this, or it could if @mode bindings actually worked :-)
+
+The more useful distinction is between commands that change modes and commands that stay in the same mode.  This became clearer as I played with the diagrams.
+
+Ok, let's see if I can summarize what the diagrams are trying to tell me without tying myself up in knots :-)
+
+1. *All* modes are minibuffer modes.  That is, the present mode will always be indicated at the start of the minibuffer.  It would not be good to use the status area because the UNL plugin overwrites the status when changing nodes.
+
+However, not all modes need actually *use* (alter) the minibuffer.  For example, a user-defined outline mode might provide bindings for just the arrow and shift arrow keys.  Nothing the user types would appear in the minibuffer during that mode.
+
+2. @mode nodes define user modes.  These nodes can specify the "prompt" that will appear in the minibuffer while the node is active. For example:
+
+@mode <mode name> @prompt = <prompt>
+
+When a mode is active the minibuffer will contain as a **minibuffer prefix**:
+
+<mode name> mode: <prompt>
+
+As always, the prefix is protected: the user can not erase it by backspacing.
+
+3. Binding are actually a completely separate topic from how Leo handles modes.  However, modes can create "virtual key sequences" that represent a command.  It would be extremely complex to generate those virtual key sequences in menus with the present code base--and probably for *any* version of Leo's config code.  To handle this, @item nodes in @settings trees could specify a "hint" that would look like a real menu shortcut.  Leo would completely ignore such hints: they would be only for cosmetic purposes.  Like this;
+
+@item move-outline-left @hint = A-S-Left or [cmd]o,S-Left
+
+The hint can be any string that makes sense to you.  In this case it signifies that there are two possible ways move an outline left: Alt-Shift-Left in any mode or type o followed by Shift-Left in command mode.
+
+The advantage of this scheme is its simplicity and generality.  The disadvantage is that you, the user, must ensure that the hints make sense and are up-to-date.  I think it will turn out to be very handy.
+
+4. With these preliminaries in place, the actual scheme for switching between modes is relatively straightforward:
+
+A: The default (main) mode will be insert-mode for emacs-like operation and command-mode for vim-like operation.
+
+B: In insert mode, edit-commands executed via menus or by key bindings will cause Leo to remain in insert mode.  All other commands transfer to other modes, with the default mode as the default.  So for emacs-like operation, control (focus) typically stays in the body pane, while for vim-like operation control typically stays in the minibuffer.
+
+BTW, now that all modes can be considered minibuffer modes, we need to distinguish between modes that insert unbound keys (either in the present text pane or in the minibuffer) and those that don't.  For those modes that don't, any unbound key will transfer to the default mode.
+
+C: In general (there may be smallish exceptions), a key stroke that would invoke an unknown command causes control to go to the default mode.
+
+D: In user modes, all commands transfer to the default mode except for explicitly declared "stay-in-this-mode" commands.  This mechanism is already in place.
+
+In short, key **bindings** no longer matter to k.masterKeyHandler.  All that matters is the command that is about to be executed.  This is a very nice simplification: all the old pane-specific logic should just go away.  Actually, it seems like an important Aha.
+
+I now have hopes of putting this all in place in just a few days.
+
+BTW, none of this is a "requirements specification".  That's not how I work :-)  What will emerge will be the result of playing with the code and seeing what works and what doesn't.
+
+Edward
+#@nonl
+#@-node:ekr.20080509064108.9:Posting: More design notes
+#@+node:ekr.20080509145618.3:New vim-like bindings
+@nocolor
+
+top-level commands
+
+b/B enter-backward-find-text-mode (quick find)
+d enter-delete-mode
+f/F enter-find-text-mode (quick find)
+i enter-insert-mode
+o enter-outline-mode
+r enter-replace-mode
+s enter-search-mode
+t enter-toggle-options-mode
+: full-command (minibuffer)
+
+d delete commands
+..c character
+..l line
+..n node
+..p paragraph
+..s sentence
+
+m outline-move commands
+..Arrow keys select nodes
+
+o outline commands
+..c cut outline
+..d delete outline
+..m enter-move-outline-mode
+..Arrow keys select nodes
+..Shift-Arrow keys move nodes
+..Shift-ctrl-x: cut outline
+
+s/r search commands (search/replace)
+..st search using search tab
+..sf forward incremental search
+..sb backward incremental search
+
+t toggle options commands
+...i toggle ignore-case checkbox
+...w toggle word checkbox
+...etc!
+
+x minibuffer
+
+: command shortcut mode
+..q quit
+..s save
+etc (like Vim)
+
+
+escape: universal escape, like ctrl-g now.
+
+No longer needed:
+
+f enter-focus-mode (not important: ctrl-/ cycle-focus will work)
+
+f focus commands
+..Ctrl-\ cycle-all-focus
+..b focus to body
+..l focus to log
+..t toggle body pane focus
+
+m enter-outline-move-mode (can use another key to get moves)
+#@nonl
+#@-node:ekr.20080509145618.3:New vim-like bindings
+#@+node:ekr.20080509145618.4:Used by vim
+@nocolor
+
+Used by vim:
+
+a/A (append after cursor)
+c
+d,dd,D (delete before cursor)
+f/F/t/T
+g,gf,g0,gg,ge,gE
+h,j,k,l (motion commands)
+i/I (insert before cursor, insert at indentation)
+m,m',m` (marks)
+n,N
+o/O (open line) Why not just use <insert?>
+r/R
+x/X (delete after cursor)
+y
+u
+v,V
+w/W
+ZZ,ZQ
+.
+:
+;
++-
+/ (patterns)
+#@nonl
+#@-node:ekr.20080509145618.4:Used by vim
+#@+node:ekr.20080510055530.2:Small improvements
+@nocolor
+
+- no need for <return> binding for end-edit-headline command.
+- no need for Alt-T and Alt-D binding for focus-to-outline and focus-to-body.
+
+Plan:
+
+- Fix mode bugs.
+- Change myLeoSettings.leo.
+#@nonl
+#@-node:ekr.20080510055530.2:Small improvements
 #@-node:ekr.20080508083640.11:Notes
 #@+node:ekr.20080508083640.17:Projects
 #@-node:ekr.20080508083640.17:Projects
