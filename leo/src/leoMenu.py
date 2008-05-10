@@ -518,7 +518,12 @@ class leoMenu:
                 g.trace('can not happen: bad kind:',kind)
 
         if table:
-            self.createMenuEntries(parentMenu,table)
+            name2 = parentName.replace('&','').replace(' ','').lower()
+            # store for repeated use in createRecentFilesMenuItems
+            if name2 == 'recentfiles':
+                self.c.recentFilesStatic = table
+            else:
+                self.createMenuEntries(parentMenu,table)
     #@nonl
     #@-node:ekr.20070927082205:createMenuFromConfigList
     #@+node:ekr.20070927172712:handleSpecialMenus
@@ -539,7 +544,7 @@ class leoMenu:
             # Just create the menu.  createRecentFilesMenuItems will be called later.
             self.createNewMenu(name,parentName)
             c.recentFiles = c.config.getRecentFiles()
-            return True
+            return False  # so static part of table is captured
         elif name2 == 'help' and sys.platform == 'darwin':
             helpMenu = self.getMacHelpMenu(table)
             return helpMenu is not None
@@ -1582,12 +1587,10 @@ class leoMenu:
             return
 
         # Delete all previous entries.
-        self.delete_range(recentFilesMenu,0,len(c.recentFiles)+2)
+        self.deleteRecentFilesMenuItems(recentFilesMenu)
 
-        # Create the first two entries.
-        table = (
-            ("Clear Recent Files",None,c.clearRecentFiles),
-            ("-",None,None))
+        # Create the static entries.
+        table = self.c.recentFilesStatic
         self.createMenuEntries(recentFilesMenu,table)
 
         # Create all the other entries (a maximum of 36).
@@ -1601,6 +1604,13 @@ class leoMenu:
             self.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
             i += 1
     #@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
+    #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
+    def deleteRecentFilesMenuItems(self,menu):
+        """Delete recent file menu entries"""
+        self.delete_range(menu,0,
+            len(self.c.recentFilesStatic)+len(self.c.recentFiles))
+    #@nonl
+    #@-node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     #@+node:ekr.20031218072017.4117:defineMenuCallback
     def defineMenuCallback(self,command,name,minibufferCommand):
 
@@ -1761,7 +1771,7 @@ class leoMenu:
     def getMacHelpMenu (self,table):
         return None
 
-    def getManuLabel (self,menu):
+    def getMenuLabel (self,menu):
         # __pychecker__ = '--no-argsused' # menu not used.
         self.oops()
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="108" left="221" height="749" width="930"/>
+	<global_window_position top="10" left="10" height="918" width="1278"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,15,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -23,7 +23,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20041119035137" a="E" str_leo_pos="3,10"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -89,6 +89,7 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="foo.20080509223022.2"><vh>@data path-demangle</vh></v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -576,8 +577,8 @@
 </v>
 </v>
 <v t="ekr.20070925144552" a="E"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
-<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -589,9 +590,14 @@
 <v t="ekr.20070925144534.10"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
-<v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
+<v t="ekr.20070927173324" a="E"><vh>@menu Recent &amp;Files</vh>
+<v t="tbrown.20080425090929.2"><vh>@item clear-recent-files</vh></v>
+<v t="tbrown.20080509212202.4"><vh>@item clean-recent-files</vh></v>
+<v t="tbrown.20080509212202.5"><vh>@item sort-recent-files</vh></v>
+<v t="tbrown.20080429162930.2"><vh>@item -</vh></v>
+</v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
+<v t="ekr.20070925144534.13" a="E"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *&amp;check-derived-file</vh></v>
 <v t="ekr.20071001120755.1"><vh>@item *check-le&amp;o-file</vh></v>
 <v t="ekr.20071001121059"><vh>@item *compare-leo-file&amp;s</vh></v>
@@ -611,7 +617,7 @@
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 <v t="ekr.20070925144534.24"><vh>@item write-at-file-nodes</vh></v>
 </v>
-<v t="ekr.20070925144534.25"><vh>@menu Tan&amp;gle...</vh>
+<v t="ekr.20070925144534.25" a="E"><vh>@menu Tan&amp;gle...</vh>
 <v t="ekr.20070925144534.26"><vh>@item *tangle-&amp;all</vh></v>
 <v t="ekr.20070925144534.27"><vh>@item *tangle-&amp;marked</vh></v>
 <v t="ekr.20070925144534.28"><vh>@item *&amp;tangle</vh></v>
@@ -1110,7 +1116,7 @@
 <v t="bobjack.20080419192045.22" a="E"><vh>@popup change-text</vh>
 <v t="bobjack.20080419192045.23"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080419192045.24"><vh>@popup canvas</vh>
+<v t="bobjack.20080419192045.24" a="E"><vh>@popup canvas</vh>
 <v t="bobjack.20080419192045.25"><vh>@item &amp;</vh></v>
 <v t="bobjack.20080419192045.26"><vh>@item -</vh></v>
 <v t="bobjack.20080419192045.27"><vh>@item *create-chapter</vh></v>
@@ -1285,7 +1291,7 @@
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
 <v t="TL.20080410171007.9"><vh>@bool vim_plugin_positions_cursor = False</vh></v>
-<v t="TL.20080410171007.8" a="V"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
+<v t="TL.20080410171007.8"><vh>@bool vim_plugin_uses_tab_feature = False</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
@@ -8800,6 +8806,30 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
+<t tx="foo.20080509223022.2"># pairs of lines in this text indicate search and replace targets for
+# cleaning the recent files list.  Each pair of lines should start with
+# "REPLACE:" (first line) and "WITH:" (second line).  For example:
+#
+#  REPLACE: .gnome-desktop
+#     WITH: My Desktop
+#  REPLACE: /mnt/usr1/
+#     WITH: /
+
+REPLACE: /mnt/usr2/bkup/tb_usr1
+   WITH:
+REPLACE: /media/hdd1/usr1
+   WITH:
+REPLACE: /mnt/usr2/bkup/tb_proj
+   WITH: /home/tbrown/Desktop/Proj
+REPLACE: /media/hdd1/proj
+   WITH: /home/tbrown/Desktop/Proj
+REPLACE: .gnome-desktop
+   WITH: Desktop
+</t>
+<t tx="tbrown.20080425090929.2">Clear Recent Files</t>
+<t tx="tbrown.20080429162930.2"></t>
+<t tx="tbrown.20080509212202.4">Clean Recent Files</t>
+<t tx="tbrown.20080509212202.5">Sort Recent Files</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
