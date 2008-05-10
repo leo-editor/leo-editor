@@ -5941,6 +5941,8 @@ class leoCommandsClass (baseEditCommandsClass):
             'check-derived-file':           c.atFileCommands.checkDerivedFile,
             'check-leo-file':               c.fileCommands.checkLeoFile,
             'clear-recent-files':           c.clearRecentFiles,
+            'clean-recent-files':           c.cleanRecentFiles,
+            'sort-recent-files':            c.sortRecentFiles,
             'close-window':                 c.close,
             'contract-or-go-left':          c.contractNodeOrGoToParent,
             'check-python-code':            c.checkPythonCode,
