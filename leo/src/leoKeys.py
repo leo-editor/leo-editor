@@ -1693,6 +1693,7 @@ class keyHandlerClass:
         # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color,k)
 
         k.setInputState(self.unboundKeyAction)
+        k.resetLabel()
     #@nonl
     #@+node:ekr.20061031131434.81:createInverseCommandsDict
     def createInverseCommandsDict (self):
@@ -1717,7 +1718,7 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.81:createInverseCommandsDict
     #@-node:ekr.20061031131434.80:k.finishCreate & helpers
     #@+node:ekr.20061031131434.82:setDefaultUnboundKeyAction
-    def setDefaultUnboundKeyAction (self):
+    def setDefaultUnboundKeyAction (self,allowCommandState=True):
 
         k = self ; c = k.c
 
@@ -1726,10 +1727,12 @@ class keyHandlerClass:
         defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
         defaultAction.lower()
 
-        if defaultAction in ('command','insert','overwrite'):
+        if defaultAction == 'command' and not allowCommandState:
+            self.unboundAction = 'insert'
+        elif defaultAction in ('command','insert','overwrite'):
             self.unboundKeyAction = defaultAction
         else:
-            g.trace('ignoring top_level_unbound_key_action setting: %s' % defaultAction)
+            g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
             self.unboundKeyAction = 'insert'
 
         k.setInputState(self.unboundKeyAction)
@@ -1838,6 +1841,7 @@ class keyHandlerClass:
             'transpose-words',
             'upcase-word',
             # keyHandlerCommandsClass
+            # 'auto-complete',
             'negative-argument',
             'number-command',
             'number-command-0',
@@ -1858,8 +1862,23 @@ class keyHandlerClass:
             'yank',
             'yank-pop',
             'zap-to-character',
+            # leoCommands
+            'cut-text',
+            'copy-text',
+            'paste-text',
             # macroCommandsClass
             'call-last-keyboard-macro',
+            # search commands
+            'toggle-find-collapses_nodes',
+            'toggle-find-ignore-case-option',
+            'toggle-find-in-body-option',
+            'toggle-find-in-headline-option',
+            'toggle-find-mark-changes-option',
+            'toggle-find-mark-finds-option',
+            'toggle-find-regex-option',
+            'toggle-find-reverse-option',
+            'toggle-find-word-option',
+            'toggle-find-wrap-around-option',
             # registerCommandsClass
             'append-to-register',
             'copy-to-register',
@@ -2477,18 +2496,22 @@ class keyHandlerClass:
 
         return func
     #@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
-    #@+node:ekr.20061031131434.110:handleDefaultChar
+    #@+node:ekr.20061031131434.110:k.handleDefaultChar
     def handleDefaultChar(self,event,stroke):
 
         k = self ; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
+        trace = False
+
+        if trace: g.trace('stroke',stroke)
 
         if name.startswith('body'):
             action = k.unboundKeyAction
             if action in ('insert','overwrite'):
                 c.editCommands.selfInsertCommand(event,action=action)
-            else: pass # Ignore the key.
+            else: # Ignore the key
+                if trace: g.trace('ignoring',stroke)
             return 'break'
         elif name.startswith('head'):
             c.frame.tree.onHeadlineKey(event)
@@ -2501,7 +2524,7 @@ class keyHandlerClass:
             # Let tkinter handle the event.
             # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
             return None
-    #@-node:ekr.20061031131434.110:handleDefaultChar
+    #@-node:ekr.20061031131434.110:k.handleDefaultChar
     #@-node:ekr.20061031131434.105:masterCommand & helpers
     #@+node:ekr.20061031131434.111:fullCommand (alt-x) & helper
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
@@ -3161,6 +3184,8 @@ class keyHandlerClass:
         )
 
         self.master_key_count += 1
+
+        isPlain =  k.isPlainKey(stroke)
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
@@ -3239,10 +3264,18 @@ class keyHandlerClass:
 
         if traceGC: g.printNewObjects('masterKey 2')
 
+        #@    << handle plain keys in insert mode >>
+        #@+node:ekr.20080510153327.4:<< handle plain keys in insert mode >>
+        if isPlain and k.unboundKeyAction == 'insert':
+
+            if trace: g.trace('plain key in insert mode')
+            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+        #@-node:ekr.20080510153327.4:<< handle plain keys in insert mode >>
+        #@nl
+
         #@    << handle per-pane bindings >>
         #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
         keyStatesTuple = ('command','insert','overwrite')
-        isPlain =  k.isPlainKey(stroke)
 
         # g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
         # g.trace('button',k.masterBindingsDict.get('button'))
@@ -3313,6 +3346,10 @@ class keyHandlerClass:
         trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
 
         if not state.startswith('auto-'):
+            # New in Leo 4.5: ignore plain key binding in the minibuffer.
+            if not stroke or k.isPlainKey(stroke):
+                if trace: g.trace('plain key',stroke)
+                return False
             # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
             # for all single-line editing commands.
             for pane in ('mini','all','text'):
@@ -3321,7 +3358,7 @@ class keyHandlerClass:
                     b = d.get(stroke)
                     if b:
                         if b.commandName not in k.singleLineCommandList:
-                            if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName)
+                            if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
                             k.keyboardQuit(event,hideTabs=True,setDefaultUnboundKeyAction=True)
                         else:
                             if trace: g.trace(repr(stroke),'mini binding',b.commandName)
@@ -3479,7 +3516,7 @@ class keyHandlerClass:
         else:
             return s or ''
     #@-node:ekr.20061031170011.5:getLabel
-    #@+node:ekr.20080408060320.791:k.killLine (new)
+    #@+node:ekr.20080408060320.791:k.killLine
     def killLine (self,protect=True):
 
         k = self ; c = self.c
@@ -3494,7 +3531,7 @@ class keyHandlerClass:
 
         if protect:
             k.mb_prefix = s
-    #@-node:ekr.20080408060320.791:k.killLine (new)
+    #@-node:ekr.20080408060320.791:k.killLine
     #@+node:ekr.20061031170011.6:protectLabel
     def protectLabel (self):
 
@@ -3504,15 +3541,18 @@ class keyHandlerClass:
         k.mb_prefix = w.getAllText()
 
     #@-node:ekr.20061031170011.6:protectLabel
-    #@+node:ekr.20061031170011.7:resetLabel (changed)
+    #@+node:ekr.20061031170011.7:resetLabel
     def resetLabel (self):
 
         k = self ; w = self.widget
         k.setLabelGrey('')
         k.mb_prefix = ''
-        if w:
+
+        if w:    
             w.setSelectionRange(0,0,insert=0)
-    #@-node:ekr.20061031170011.7:resetLabel (changed)
+            state = k.unboundKeyAction
+            k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
+    #@-node:ekr.20061031170011.7:resetLabel
     #@+node:ekr.20061031170011.8:setLabel
     def setLabel (self,s,protect=False):
 
@@ -3585,6 +3625,17 @@ class keyHandlerClass:
 
     setLabelGray = setLabelGrey
     #@-node:ekr.20061031170011.11:setLabelGrey
+    #@+node:ekr.20080510153327.2:setLabelRed
+    def setLabelRed (self,label=None,protect=False):
+
+        k = self ; w = self.widget
+        if not w: return
+
+        w.setForegroundColor('red')
+
+        if label is not None:
+            k.setLabel(label,protect)
+    #@-node:ekr.20080510153327.2:setLabelRed
     #@+node:ekr.20061031170011.12:updateLabel
     def updateLabel (self,event):
 
@@ -4171,10 +4222,12 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; body = c.frame.body ; w = body.bodyCtrl
 
-        # g.trace(state,g.callers())
+        # g.trace(state)
         k.unboundKeyAction = state
         k.showStateAndMode()
-        assert state in ('insert','command','overwrite')
+
+        if state not in ('insert','command','overwrite'):
+            g.trace('bad input state',state)
 
         if w:
             if state == 'insert':
@@ -4183,11 +4236,12 @@ class keyHandlerClass:
                 bg = k.command_mode_bg_color ; fg = k.command_mode_fg_color
             elif state == 'overwrite':
                 bg = k.overwrite_mode_bg_color, fg = k.overwrite_mode_fg_color
+            else:
+                bg = fg = 'red'
 
             # g.trace(id(w),bg,fg,self)
 
             body.setEditorColors(bg=bg,fg=fg)
-    #@nonl
     #@-node:ekr.20061031131434.133:setInputState
     #@+node:ekr.20061031131434.181:Shortcuts (keyHandler)
     #@+node:ekr.20061031131434.182:isPlainKey
@@ -4366,24 +4420,38 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.192:showStateAndMode
     def showStateAndMode(self):
 
-        k = self ; c = k.c ; frame = c.frame
+        k = self ; w = self.widget
+        if not w: return
+
         state = k.unboundKeyAction
         mode = k.getStateKind()
 
-        if hasattr(frame,'clearStatusLine') and not state.capitalize()=='Insert':
-            frame.clearStatusLine()
-            put = frame.putStatusLine
-            put('Key state: ',color='blue')
-            put('%s' % state.capitalize())
-            if mode:
-                # put(' mode: ',color='blue')
-                if mode.endswith('-mode'): mode = mode[:-5]
-                mode = mode.replace('-',' ').capitalize()
-                put(' Mode: ',color='blue')
-                put(mode)
+        if mode:
+            k.setLabelBlue(label='%s Mode' % (mode.capitalize()),protect=True)
+        else:
+            k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
 
-            # Restore the focus.
-            c.restoreFocus()
+
+        if 0: # Now done in the minibuffer.
+
+            k = self ; c = k.c ; frame = c.frame
+            state = k.unboundKeyAction
+            mode = k.getStateKind()
+
+            if hasattr(frame,'clearStatusLine') and not state.capitalize()=='Insert':
+                frame.clearStatusLine()
+                put = frame.putStatusLine
+                put('Key state: ',color='blue')
+                put('%s' % state.capitalize())
+                if mode:
+                    # put(' mode: ',color='blue')
+                    if mode.endswith('-mode'): mode = mode[:-5]
+                    mode = mode.replace('-',' ').capitalize()
+                    put(' Mode: ',color='blue')
+                    put(mode)
+
+                # Restore the focus.
+                c.restoreFocus()
     #@-node:ekr.20061031131434.192:showStateAndMode
     #@+node:ekr.20061031131434.193:States
     #@+node:ekr.20061031131434.194:clearState
