@@ -3264,13 +3264,19 @@ class keyHandlerClass:
 
         if traceGC: g.printNewObjects('masterKey 2')
 
-        #@    << handle plain keys in insert mode >>
-        #@+node:ekr.20080510153327.4:<< handle plain keys in insert mode >>
-        if isPlain and k.unboundKeyAction == 'insert':
+        #@    << handle special cases for plain keys >>
+        #@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+        if isPlain:
 
-            if trace: g.trace('plain key in insert mode')
-            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-        #@-node:ekr.20080510153327.4:<< handle plain keys in insert mode >>
+            if k.unboundKeyAction in ('insert','overwrite'):
+
+                if trace: g.trace('plain key in insert mode')
+                return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+            else:
+                g.trace('plain key in command mode',stroke)
+
+        #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
         #@nl
 
         #@    << handle per-pane bindings >>
