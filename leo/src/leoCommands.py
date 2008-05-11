@@ -184,7 +184,6 @@ class baseCommands:
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
         self.recentFiles = [] # List of recent files
-        self.recentFilesStatic = [] # Static part of recent files menu (menu table)
 
         # For outline navigation.
         self.navPrefix = '' # Must always be a string.
@@ -1086,7 +1085,7 @@ class baseCommands:
     #@-node:tbrown.20080509212202.6:cleanRecentFiles
     #@+node:tbrown.20080509212202.8:sortRecentFiles
     def sortRecentFiles(self,event=None):
-        orig = [i for i in self.recentFiles if i.startswith("/")]
+        orig = self.recentFiles[:]
         self.clearRecentFiles()
         import os
         orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     

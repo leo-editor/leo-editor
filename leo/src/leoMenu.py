@@ -29,6 +29,13 @@ class leoMenu:
         self.menus = {} # Menu dictionary.
         self.menuShortcuts = {}
 
+        # static part of recent files menu
+        self.recentFilesStatic = (
+            ("Clear Recent Files",None,c.clearRecentFiles),
+            ("Clean Recent Files",None,c.cleanRecentFiles),
+            ("Sort Recent Files",None,c.sortRecentFiles),
+            ("-",None,None))
+
         # To aid transition to emacs-style key handling.
         self.useCmdMenu = c.config.getBool('useCmdMenu')
 
@@ -518,12 +525,7 @@ class leoMenu:
                 g.trace('can not happen: bad kind:',kind)
 
         if table:
-            name2 = parentName.replace('&','').replace(' ','').lower()
-            # store for repeated use in createRecentFilesMenuItems
-            if name2 == 'recentfiles':
-                self.c.recentFilesStatic = table
-            else:
-                self.createMenuEntries(parentMenu,table)
+            self.createMenuEntries(parentMenu,table)
     #@nonl
     #@-node:ekr.20070927082205:createMenuFromConfigList
     #@+node:ekr.20070927172712:handleSpecialMenus
@@ -544,7 +546,7 @@ class leoMenu:
             # Just create the menu.  createRecentFilesMenuItems will be called later.
             self.createNewMenu(name,parentName)
             c.recentFiles = c.config.getRecentFiles()
-            return False  # so static part of table is captured
+            return True
         elif name2 == 'help' and sys.platform == 'darwin':
             helpMenu = self.getMacHelpMenu(table)
             return helpMenu is not None
@@ -1590,7 +1592,8 @@ class leoMenu:
         self.deleteRecentFilesMenuItems(recentFilesMenu)
 
         # Create the static entries.
-        table = self.c.recentFilesStatic
+        table = self.recentFilesStatic
+
         self.createMenuEntries(recentFilesMenu,table)
 
         # Create all the other entries (a maximum of 36).
@@ -1607,8 +1610,10 @@ class leoMenu:
     #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     def deleteRecentFilesMenuItems(self,menu):
         """Delete recent file menu entries"""
-        self.delete_range(menu,0,
-            len(self.c.recentFilesStatic)+len(self.c.recentFiles))
+        toDrop = len(self.c.recentFiles)
+        if hasattr(self, 'recentFilesStatic'):
+            toDrop += len(self.recentFilesStatic)
+        self.delete_range(menu,0,toDrop)
     #@nonl
     #@-node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     #@+node:ekr.20031218072017.4117:defineMenuCallback

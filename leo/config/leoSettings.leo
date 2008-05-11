@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="10" height="734" width="1014"/>
+	<global_window_position top="10" left="10" height="933" width="1278"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,14,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3,13,0,0,11"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -591,12 +591,6 @@
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
 <v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
-<v t="tbrown.20080509230255.3" a="E"><vh>@menu Recent &amp;Files</vh>
-<v t="tbrown.20080509230255.4"><vh>@item clear-recent-files</vh></v>
-<v t="tbrown.20080509230255.5"><vh>@item clean-recent-files</vh></v>
-<v t="tbrown.20080509230255.6"><vh>@item sort-recent-files</vh></v>
-<v t="tbrown.20080509230255.7"><vh>@item -</vh></v>
-</v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
 <v t="ekr.20071001120755"><vh>@item *&amp;check-derived-file</vh></v>
@@ -1165,7 +1159,7 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
 <v t="ekr.20080328105334.4"><vh>@data cleo_color_file_node_list</vh></v>
@@ -8816,11 +8810,6 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 #  REPLACE: /mnt/usr1/
 #     WITH: /
 </t>
-<t tx="tbrown.20080509230255.3">Static part of Recent Files menu</t>
-<t tx="tbrown.20080509230255.4">Clear Recent Files</t>
-<t tx="tbrown.20080509230255.5">Clean Recent Files</t>
-<t tx="tbrown.20080509230255.6">Sort Recent Files</t>
-<t tx="tbrown.20080509230255.7"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
