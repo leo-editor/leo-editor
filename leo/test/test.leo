@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080310164329.2"><vh>@@menus</vh>
 <v t="ekr.20080310164329.3"><vh>@menu &amp;File</vh>
@@ -532,12 +532,13 @@
 </v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20070503120403"><vh>@bool trace_tree_gc = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20080510193930.2"><vh>Tree settings</vh>
 <v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20080510193930.1"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
+</v>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -624,7 +625,10 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
+<v t="ekr.20080510193930.2"><vh>Tree settings</vh>
 <v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20080510193930.1"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
+</v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -871,6 +875,7 @@
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20080510190406.1"><vh>test of sort lines</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1274,7 +1279,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
-<t tx="ekr.20070503120403">True: trace storage allocation in Leo's tree.</t>
 <t tx="ekr.20070504064616">import gc,types
 
 def printDict(d):
@@ -1304,7 +1308,6 @@ printDict(d2)
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.</t>
-<t tx="ekr.20070504100715"></t>
 <t tx="ekr.20070504131950">import gc,types
 
 @others
@@ -5333,6 +5336,17 @@ myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','
 
 print myproject</t>
 <t tx="ekr.20080510170551.1"></t>
+<t tx="ekr.20080510190406.1">a
+d
+x
+y
+z
+</t>
+<t tx="ekr.20080510193930.1">True: Focus moves to outline pane after editing a headline.
+
+False: (legacy operation) Focus moves to body pane after editing a headline.
+       </t>
+<t tx="ekr.20080510193930.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

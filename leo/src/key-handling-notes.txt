@@ -391,8 +391,940 @@ Plan:
 #@nonl
 #@-node:ekr.20080510055530.2:Small improvements
 #@-node:ekr.20080508083640.11:Notes
-#@+node:ekr.20080508083640.17:Projects
-#@-node:ekr.20080508083640.17:Projects
+#@+node:ekr.20080510185834.6:Projects
+#@+node:ekr.20080509064108.8:Classified commands
+#@+node:ekr.20080509064108.6:k.defineSingleLineCommands
+def defineSingleLineCommands (self):
+
+    k = self
+
+    # These commands can be executed in the minibuffer.
+    k.singleLineCommandList = [
+        # editCommandsClass
+        'back-to-indentation',
+        'back-char',
+        'back-char-extend-selection',
+        'back-word',
+        'back-word-extend-selection',
+        'backward-delete-char',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+        'capitalize-word',
+        'delete-char',
+        'delete-indentation',
+        'delete-spaces',
+        'downcase-word',
+        'end-of-line',
+        'end-of-line-extend-selection',
+        'escape',
+        'exchange-point-mark',
+        'extend-to-line',
+        'extend-to-word',
+        'find-character',
+        'find-character-extend-selection',
+        'find-word',
+        'find-word-in-line',
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'insert-newline',
+        'insert-parentheses',
+        'move-past-close',
+        'move-past-close-extend-selection',
+        'newline-and-indent',
+        'select-all',
+        'transpose-chars',
+        'transpose-words',
+        'upcase-word',
+        # keyHandlerCommandsClass
+        # 'auto-complete',
+        'negative-argument',
+        'number-command',
+        'number-command-0',
+        'number-command-1',
+        'number-command-2',
+        'number-command-3',
+        'number-command-4',
+        'number-command-5',
+        'number-command-6',
+        'number-command-7',
+        'number-command-8',
+        'universal-argument',
+        # killBufferCommandsClass
+        'backward-kill-word',
+        'kill-line',
+        'kill-word',
+        'kill-ws',
+        'yank',
+        'yank-pop',
+        'zap-to-character',
+        # leoCommands
+        'cut-text',
+        'copy-text',
+        'paste-text',
+        # macroCommandsClass
+        'call-last-keyboard-macro',
+        # search commands
+        'toggle-find-collapses_nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-reverse-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # registerCommandsClass
+        'append-to-register',
+        'copy-to-register',
+        'insert-register',
+        'prepend-to-register',
+    ]
+#@-node:ekr.20080509064108.6:k.defineSingleLineCommands
+#@+node:ekr.20080509064108.7:k.defineMultiLineCommands
+def defineMultiLineCommands (self):
+
+    k = self
+
+    k.multiLineCommandList = [
+        # editCommandsClass
+        'add-space-to-lines',
+        'add-tab-to-lines',
+        'back-paragraph',
+        'back-paragraph-extend-selection',
+        'back-sentence',
+        'back-sentence-extend-selection',
+        'backward-kill-paragraph',
+        'beginning-of-buffer',
+        'beginning-of-buffer-extend-selection',
+        'center-line',
+        'center-region',
+        'clean-all-lines',
+        'clean-lines',
+        'downcase-region',
+        'end-of-buffer',
+        'end-of-buffer-extend-selection',
+        'extend-to-paragraph',
+        'extend-to-sentence',
+        'fill-paragraph',
+        'fill-region',
+        'fill-region-as-paragraph',
+        'flush-lines',
+        'forward-paragraph',
+        'forward-paragraph-extend-selection',
+        'forward-sentence',
+        'forward-sentence-extend-selection',
+        'indent-relative',
+        'indent-rigidly',
+        'indent-to-comment-column',
+        'move-lines-down',
+        'move-lines-up',
+        'next-line',
+        'next-line-extend-selection',
+        'previous-line',
+        'previous-line-extend-selection',
+        'remove-blank-lines',
+        'remove-space-from-lines',
+        'remove-tab-from-lines',
+        'reverse-region',
+        'reverse-sort-lines',
+        'reverse-sort-lines-ignoring-case',
+        'scroll-down',
+        'scroll-down-extend-selection',
+        'scroll-outline-down-line',
+        'scroll-outline-down-page',
+        'simulate-begin-drag',
+        'simulate-end-drag',
+        'sort-columns',
+        'sort-fields',
+        'sort-lines',
+        'sort-lines-ignoring-case',
+        'split-line',
+        'tabify',
+        'transpose-lines',
+        'untabify',
+        'upcase-region',
+        # keyHandlerCommandsClass
+        'repeat-complex-command',
+        # killBufferCommandsClass
+        'backward-kill-sentence',
+        'kill-sentence',
+        'kill-region',
+        'kill-region-save',
+        # queryReplaceCommandsClass
+        'query-replace',
+        'query-replace-regex',
+        # rectangleCommandsClass
+        'clear-rectangle',
+        'close-rectangle',
+        'delete-rectangle',
+        'kill-rectangle',
+        'open-rectangle',
+        'string-rectangle',
+        'yank-rectangle',
+        # registerCommandsClass
+        'jump-to-register',
+        'point-to-register',
+        # searchCommandsClass
+        'change',
+        'change-then-find',
+        'find-next',
+        'find-prev',
+    ]
+#@-node:ekr.20080509064108.7:k.defineMultiLineCommands
+#@+node:ekr.20080509064108.1:editing commands: single-line (appropriate for find or minibuffer)
+# editCommandsClass
+# change ':.*$ to nothing
+# change ^[ ]*' to '
+
+'back-to-indentation':                  self.backToIndentation,
+'back-char':                            self.backCharacter,
+'back-char-extend-selection':           self.backCharacterExtendSelection,
+'back-word':                            self.backwardWord,
+'back-word-extend-selection':           self.backwardWordExtendSelection,
+'backward-delete-char':                 self.backwardDeleteCharacter,
+'backward-find-character':              self.backwardFindCharacter,
+'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
+'beginning-of-line':                    self.beginningOfLine,
+'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
+'capitalize-word':                      self.capitalizeWord,
+'delete-char':                          self.deleteNextChar,
+'delete-indentation':                   self.deleteIndentation,
+'delete-spaces':                        self.deleteSpaces,
+# 'do-nothing':                           self.doNothing,
+'downcase-word':                        self.downCaseWord,
+'end-of-line':                          self.endOfLine,
+'end-of-line-extend-selection':         self.endOfLineExtendSelection,
+'escape':                               self.watchEscape,
+'exchange-point-mark':                  self.exchangePointMark,
+'extend-to-line':                       self.extendToLine,
+'extend-to-word':                       self.extendToWord,
+'find-character':                       self.findCharacter,
+'find-character-extend-selection':      self.findCharacterExtendSelection,
+'find-word':                            self.findWord,
+'find-word-in-line':                    self.findWordInLine,
+'forward-char':                         self.forwardCharacter,
+'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
+'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
+'forward-word':                         self.forwardWord,
+'forward-word-extend-selection':        self.forwardWordExtendSelection,
+'insert-newline':                       self.insertNewline,
+'insert-parentheses':                   self.insertParentheses,
+'move-past-close':                      self.movePastClose,
+'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
+'newline-and-indent':                   self.insertNewLineAndTab,
+'select-all':                           self.selectAllText,
+'transpose-chars':                      self.transposeCharacters,
+'transpose-words':                      self.transposeWords,
+'upcase-word':                          self.upCaseWord,
+
+# keyHandlerCommandsClass
+'negative-argument':        k.negativeArgument,
+'number-command':           k.numberCommand,
+'number-command-0':         k.numberCommand0,
+'number-command-1':         k.numberCommand1,
+'number-command-2':         k.numberCommand2,
+'number-command-3':         k.numberCommand3,
+'number-command-4':         k.numberCommand4,
+'number-command-5':         k.numberCommand5,
+'number-command-6':         k.numberCommand6,
+'number-command-7':         k.numberCommand7,
+'number-command-8':         k.numberCommand8,
+'universal-argument':       k.universalArgument,
+
+# killBufferCommandsClass
+'backward-kill-word':       self.backwardKillWord,
+'kill-line':                self.killLine,
+'kill-word':                self.killWord,
+'kill-ws':                  self.killWs,
+'yank':                     self.yank,
+'yank-pop':                 self.yankPop,
+'zap-to-character':         self.zapToCharacter,
+
+# macroCommandsClass
+'call-last-keyboard-macro': self.callLastKeyboardMacro,
+
+# registerCommandsClass
+'append-to-register':           self.appendToRegister,
+'copy-to-register':             self.copyToRegister,
+'insert-register':              self.insertRegister,
+'prepend-to-register':          self.prependToRegister,
+
+#@-node:ekr.20080509064108.1:editing commands: single-line (appropriate for find or minibuffer)
+#@+node:ekr.20080509064108.2:editing commands: multi-line
+# editCommandsClass
+'add-space-to-lines':                   self.addSpaceToLines,
+'add-tab-to-lines':                     self.addTabToLines,
+'back-paragraph':                       self.backwardParagraph,
+'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
+'back-sentence':                        self.backSentence,
+'back-sentence-extend-selection':       self.backSentenceExtendSelection,
+'backward-kill-paragraph':              self.backwardKillParagraph,
+'beginning-of-buffer':                  self.beginningOfBuffer,
+'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
+'center-line':                          self.centerLine,
+'center-region':                        self.centerRegion,
+'clean-all-lines':                      self.cleanAllLines,
+'clean-lines':                          self.cleanLines,
+'downcase-region':                      self.downCaseRegion,
+'end-of-buffer':                        self.endOfBuffer,
+'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
+'extend-to-paragraph':                  self.extendToParagraph,
+'extend-to-sentence':                   self.extendToSentence,
+'fill-paragraph':                       self.fillParagraph,
+'fill-region':                          self.fillRegion,
+'fill-region-as-paragraph':             self.fillRegionAsParagraph,
+'flush-lines':                          self.flushLines,
+'forward-paragraph':                    self.forwardParagraph,
+'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
+'forward-sentence':                     self.forwardSentence,
+'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
+'indent-relative':                      self.indentRelative,
+'indent-rigidly':                       self.tabIndentRegion,
+'indent-to-comment-column':             self.indentToCommentColumn,
+'move-lines-down':                      self.moveLinesDown,
+'move-lines-up':                        self.moveLinesUp,
+'next-line':                            self.nextLine,
+'next-line-extend-selection':           self.nextLineExtendSelection,
+'previous-line':                        self.prevLine,
+'previous-line-extend-selection':       self.prevLineExtendSelection,
+'remove-blank-lines':                   self.removeBlankLines,
+'remove-space-from-lines':              self.removeSpaceFromLines,
+'remove-tab-from-lines':                self.removeTabFromLines,
+'reverse-region':                       self.reverseRegion,
+'reverse-sort-lines':                   self.reverseSortLines,
+'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,                 
+'scroll-down':                          self.scrollDown,
+'scroll-down-extend-selection':         self.scrollDownExtendSelection,
+'scroll-outline-down-line':             self.scrollOutlineDownLine,
+'scroll-outline-down-page':             self.scrollOutlineDownPage,
+'simulate-begin-drag':                  self.simulateBeginDrag,
+'simulate-end-drag':                    self.simulateEndDrag,
+'sort-columns':                         self.sortColumns,
+'sort-fields':                          self.sortFields,
+'sort-lines':                           self.sortLines,
+'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
+'split-line':                           self.splitLine,
+'tabify':                               self.tabify,
+'transpose-lines':                      self.transposeLines,
+'untabify':                             self.untabify,
+'upcase-region':                        self.upCaseRegion,
+
+# keyHandlerCommandsClass
+'repeat-complex-command':               k.repeatComplexCommand,
+
+# killBufferCommandsClass
+'backward-kill-sentence':   self.backwardKillSentence,
+'kill-sentence':            self.killSentence,
+'kill-region':              self.killRegion,
+'kill-region-save':         self.killRegionSave,
+
+# queryReplaceCommandsClass
+'query-replace':        self.queryReplace,
+'query-replace-regex':  self.queryReplaceRegex,
+
+# rectangleCommandsClass
+'clear-rectangle':  self.clearRectangle,
+'close-rectangle':  self.closeRectangle,
+'delete-rectangle': self.deleteRectangle,
+'kill-rectangle':   self.killRectangle,
+'open-rectangle':   self.openRectangle,
+'string-rectangle': self.stringRectangle,
+'yank-rectangle':   self.yankRectangle,
+
+# registerCommandsClass
+'jump-to-register':             self.jumpToRegister,
+'point-to-register':            self.pointToRegister,
+
+# searchCommandsClass
+'change':                               self.findTabChange,
+'change-then-find':                     self.findTabChangeThenFind,
+'find-next':                            self.findTabFindNext,
+'find-prev':                            self.findTabFindPrev,
+
+#@-node:ekr.20080509064108.2:editing commands: multi-line
+#@+node:ekr.20080509064108.3:non-editing commands (everything else)
+'activate-cmds-menu':                   self.activateCmdsMenu,
+'activate-edit-menu':                   self.activateEditMenu,
+'activate-file-menu':                   self.activateFileMenu,
+'activate-help-menu':                   self.activateHelpMenu,
+'activate-outline-menu':                self.activateOutlineMenu,
+'activate-plugins-menu':                self.activatePluginsMenu,
+'activate-window-menu':                 self.activateWindowMenu,
+'add-editor':                           c.frame.body and c.frame.body.addEditor,
+'clear-extend-mode':                    self.clearExtendMode,
+'clear-selected-text':                  self.clearSelectedText,
+'click-click-box':                      self.clickClickBox,
+'click-headline':                       self.clickHeadline,
+'click-icon-box':                       self.clickIconBox,
+'contract-body-pane':                   c.frame.contractBodyPane,
+'contract-log-pane':                    c.frame.contractLogPane,
+'contract-outline-pane':                c.frame.contractOutlinePane,
+'contract-pane':                        c.frame.contractPane,
+'count-region':                         self.countRegion,
+'cycle-focus':                          self.cycleFocus,
+'cycle-all-focus':                      self.cycleAllFocus,
+'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+'delete-editor':                        c.frame.body.deleteEditor,
+'delete-first-icon':                    self.deleteFirstIcon,
+'delete-last-icon':                     self.deleteLastIcon,
+'delete-node-icons':                    self.deleteNodeIcons,
+'double-click-headline':                self.doubleClickHeadline,
+'double-click-icon-box':                self.doubleClickIconBox,
+'eval-expression':                      self.evalExpression,
+'expand-body-pane':                     c.frame.expandBodyPane,
+'expand-log-pane':                      c.frame.expandLogPane,
+'expand-outline-pane':                  c.frame.expandOutlinePane,
+'expand-pane':                          c.frame.expandPane,
+'focus-to-body':                        self.focusToBody,
+'focus-to-log':                         self.focusToLog,
+'focus-to-minibuffer':                  self.focusToMinibuffer,
+'focus-to-tree':                        self.focusToTree,
+'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
+'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
+'fully-expand-pane':                    c.frame.fullyExpandPane,
+'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
+'goto-char':                            self.gotoCharacter,
+'goto-global-line':                     self.gotoGlobalLine,
+'goto-line':                            self.gotoLine,
+'hide-body-pane':                       c.frame.hideBodyPane,
+'hide-log-pane':                        c.frame.hideLogPane,
+'hide-pane':                            c.frame.hidePane,
+'hide-outline-pane':                    c.frame.hideOutlinePane,
+'how-many':                             self.howMany,
+'insert-icon':                          self.insertIcon,
+'keep-lines':                           self.keepLines,
+'kill-paragraph':                       self.killParagraph,
+'line-number':                          self.lineNumber,
+'scroll-outline-left':                  self.scrollOutlineLeft,
+'scroll-outline-right':                 self.scrollOutlineRight,
+'scroll-outline-up-line':               self.scrollOutlineUpLine,
+'scroll-outline-up-page':               self.scrollOutlineUpPage,
+'scroll-up':                            self.scrollUp,
+'scroll-up-extend-selection':           self.scrollUpExtendSelection,
+'set-comment-column':                   self.setCommentColumn,
+'set-extend-mode':                      self.setExtendMode,
+'set-fill-column':                      self.setFillColumn,
+'set-fill-prefix':                      self.setFillPrefix,
+'show-colors':                          self.showColors,
+'show-fonts':                           self.showFonts,
+'toggle-extend-mode':                   self.toggleExtendMode,
+'view-lossage':                         self.viewLossage,
+'what-line':                            self.whatLine,
+
+# registerCommandsClass
+'copy-rectangle-to-register':   self.copyRectangleToRegister,
+'increment-register':           self.incrementRegister,
+'view-register':                self.viewRegister,
+
+# Search commands
+'clone-find-all':                       self.cloneFindAll,
+'find-all':                             self.findAll,
+'change-all':                           self.changeAll,
+'hide-find-tab':                        self.hideFindTab,
+'isearch-forward':                      self.isearchForward,
+'isearch-backward':                     self.isearchBackward,
+'isearch-forward-regexp':               self.isearchForwardRegexp,
+'isearch-backward-regexp':              self.isearchBackwardRegexp,
+'isearch-with-present-options':         self.isearchWithPresentOptions,
+'open-find-tab':                        self.openFindTab,
+'replace-string':                       self.replaceString,
+'re-search-forward':                    self.reSearchForward,
+'re-search-backward':                   self.reSearchBackward,
+'search-again':                         self.findAgain,
+'search-forward':                       self.searchForward,
+'search-backward':                      self.searchBackward,
+'search-with-present-options':          self.searchWithPresentOptions,
+'set-find-everywhere':                  self.setFindScopeEveryWhere,
+'set-find-node-only':                   self.setFindScopeNodeOnly,
+'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
+'show-find-options':                    self.showFindOptions,
+'word-search-forward':                  self.wordSearchForward,
+'word-search-backward':                 self.wordSearchBackward,
+
+# spelling
+'open-spell-tab':           self.openSpellTab,
+'spell-find':               self.find,
+'spell-change':             self.change,
+'spell-change-then-find':   self.changeThenFind,
+'spell-ignore':             self.ignore,
+'hide-spell-tab':           self.hide,
+#@-node:ekr.20080509064108.3:non-editing commands (everything else)
+#@-node:ekr.20080509064108.8:Classified commands
+#@+node:ekr.20080510145650.1:Found: unboundKeyAction
+#@+node:ekr.20031218072017.2886:c.editHeadline
+def editHeadline (self,event=None):
+
+    '''Begin editing the headline of the selected node.'''
+
+    c = self ; k = c.k ; tree = c.frame.tree
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Edit Headline")
+        return
+
+    if k:
+        k.setDefaultUnboundKeyAction()
+        k.showStateAndMode()
+
+    tree.editLabel(c.currentPosition())
+#@-node:ekr.20031218072017.2886:c.editHeadline
+#@+node:ekr.20051026083544.2:updateHead
+def updateHead (self,event,w):
+
+    '''Update a headline from an event.
+
+    The headline officially changes only when editing ends.'''
+
+    c = self.c ; k = c.k
+    ch = event and event.char or ''
+    i,j = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    if i != j: ins = i
+
+    # g.trace('w',w,'ch',repr(ch),g.callers())
+
+    if ch == '\b':
+        if i != j:  w.delete(i,j)
+        else:       w.delete(ins-1)
+        w.setSelectionRange(i-1,i-1,insert=i-1)
+    elif ch and ch not in ('\n','\r'):
+        if i != j:                              w.delete(i,j)
+        elif k.unboundKeyAction == 'overwrite': w.delete(i,i+1)
+        w.insert(ins,ch)
+        w.setSelectionRange(ins+1,ins+1,insert=ins+1)
+
+    s = w.getAllText()
+    if s.endswith('\n'):
+        # g.trace('can not happen: trailing newline')
+        s = s[:-1]
+    w.setWidth(self.headWidth(s=s))
+
+    if ch in ('\n','\r'):
+        self.endEditLabel() # Now calls self.onHeadChanged.
+#@-node:ekr.20051026083544.2:updateHead
+#@+node:ekr.20061031131434.82:setDefaultUnboundKeyAction
+def setDefaultUnboundKeyAction (self,allowCommandState=True):
+
+    k = self ; c = k.c
+
+    # g.trace(g.callers())
+
+    defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
+    defaultAction.lower()
+
+    if defaultAction == 'command' and not allowCommandState:
+        self.unboundAction = 'insert'
+    elif defaultAction in ('command','insert','overwrite'):
+        self.unboundKeyAction = defaultAction
+    else:
+        g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
+        self.unboundKeyAction = 'insert'
+
+    k.setInputState(self.unboundKeyAction)
+#@-node:ekr.20061031131434.82:setDefaultUnboundKeyAction
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False
+
+    if trace: g.trace('stroke',stroke)
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    else:
+        # Let tkinter handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
+        return None
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@+node:ekr.20061031131434.119:printBindings & helper
+def printBindings (self,event=None):
+
+    '''Print all the bindings presently in effect.'''
+
+    k = self ; c = k.c
+    d = k.bindingsDict ; tabName = 'Bindings'
+    keys = d.keys() ; keys.sort()
+    c.frame.log.clearTab(tabName)
+    data = [] ; n1 = 4 ; n2 = 20
+    if not keys: return g.es('no bindings')
+    for key in keys:
+        bunchList = d.get(key,[])
+        for b in bunchList:
+            pane = g.choose(b.pane=='all','',' %s:' % (b.pane))
+            s1 = pane
+            s2 = k.prettyPrintKey(key,brief=True)
+            s3 = b.commandName
+            n1 = max(n1,len(s1))
+            n2 = max(n2,len(s2))
+            data.append((s1,s2,s3),)
+
+    # Print keys by type:
+    sep = '-' * n1
+    for prefix in (
+        'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
+        'Ctrl+Shift', 'Ctrl', 'Shift',
+    ):
+        data2 = []
+        for item in data:
+            s1,s2,s3 = item
+            if s2.startswith(prefix):
+                data2.append(item)
+        g.es('','%s %s' % (sep, prefix),tabName=tabName)
+        self.printBindingsHelper(data2,n1,n2,prefix=prefix)
+        # Remove all the items in data2 from data.
+        # This must be done outside the iterator on data.
+        for item in data2:
+            data.remove(item)
+    # Print all plain bindings.
+    g.es('','%s %s' % (sep, 'Plain Keys',),tabName=tabName)
+    self.printBindingsHelper(data,n1,n2,prefix=None)
+    state = k.unboundKeyAction 
+    k.showStateAndMode()
+#@+node:ekr.20061031131434.120:printBindingsHelper
+def printBindingsHelper (self,data,n1,n2,prefix):
+
+    n = prefix and len(prefix)+1 or 0 # Add 1 for the '+' after the prefix.
+
+    data1 = [z for z in data if z and z[1] and len(z[1][n:]) == 1]
+        # The list of all items with only one character following the prefix.
+    data2 = [z for z in data if z and z[1] and len(z[1][n:]) >  1]
+        # The list of all other items.
+
+    # This isn't perfect in variable-width fonts.
+    for data in (data1,data2):
+        data.sort(lambda x,y: cmp(x[1],y[1]))
+        for s1,s2,s3 in data:
+            g.es('','%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3),tabName='Bindings')
+#@-node:ekr.20061031131434.120:printBindingsHelper
+#@-node:ekr.20061031131434.119:printBindings & helper
+#@+node:ekr.20061031131434.124:toggle-input-state
+def toggleInputState (self,event=None):
+
+    '''The toggle-input-state command.'''
+
+    k = self ; c = k.c
+    default = c.config.getString('top_level_unbound_key_action') or 'insert'
+    state = k.unboundKeyAction
+
+    if default == 'insert':
+        state = g.choose(state=='insert','command','insert')
+    elif default == 'overwrite':
+        state = g.choose(state=='overwrite','command','overwrite')
+    else:
+        state = g.choose(state=='command','insert','command') # prefer insert to overwrite.
+
+    k.setInputState(state)
+#@-node:ekr.20061031131434.124:toggle-input-state
+#@+node:ekr.20061031131434.130:keyboardQuit
+def keyboardQuit (self,event,hideTabs=True,setDefaultUnboundKeyAction=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    if setDefaultUnboundKeyAction: k.setDefaultUnboundKeyAction()
+    k.showStateAndMode()
+    c.endEditing()
+    c.bodyWantsFocus()
+#@-node:ekr.20061031131434.130:keyboardQuit
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+# g.trace('button',k.masterBindingsDict.get('button'))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self
+    modesTuple = ('insert','overwrite')
+    trace = False
+
+    if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        # New in Leo 4.5: any unbound special key terminates all modes.
+        # k.keyboardQuit()
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@+node:ekr.20061031131434.133:setInputState
+def setInputState (self,state,showState=False):
+
+    k = self ; c = k.c ; body = c.frame.body ; w = body.bodyCtrl
+
+    # g.trace(state)
+    k.unboundKeyAction = state
+    k.showStateAndMode()
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if w:
+        if state == 'insert':
+            bg = k.insert_mode_bg_color ; fg = k.insert_mode_fg_color
+        elif state == 'command':
+            bg = k.command_mode_bg_color ; fg = k.command_mode_fg_color
+        elif state == 'overwrite':
+            bg = k.overwrite_mode_bg_color, fg = k.overwrite_mode_fg_color
+        else:
+            bg = fg = 'red'
+
+        # g.trace(id(w),bg,fg,self)
+
+        body.setEditorColors(bg=bg,fg=fg)
+#@-node:ekr.20061031131434.133:setInputState
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self):
+
+    k = self ; w = self.widget
+    if not w: return
+
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+
+    if mode:
+        k.setLabelBlue(label='%s Mode' % (mode.capitalize()),protect=True)
+    else:
+        k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
+
+
+    if 0: # Now done in the minibuffer.
+
+        k = self ; c = k.c ; frame = c.frame
+        state = k.unboundKeyAction
+        mode = k.getStateKind()
+
+        if hasattr(frame,'clearStatusLine') and not state.capitalize()=='Insert':
+            frame.clearStatusLine()
+            put = frame.putStatusLine
+            put('Key state: ',color='blue')
+            put('%s' % state.capitalize())
+            if mode:
+                # put(' mode: ',color='blue')
+                if mode.endswith('-mode'): mode = mode[:-5]
+                mode = mode.replace('-',' ').capitalize()
+                put(' Mode: ',color='blue')
+                put(mode)
+
+            # Restore the focus.
+            c.restoreFocus()
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20080510145650.1:Found: unboundKeyAction
+#@+node:ekr.20080510072134.5:Do tree navigation in outline mode
+#@+node:ekr.20060923202156:c.onCanvasKey
+def onCanvasKey (self,event):
+
+    '''Navigate to the next headline starting with ch = event.char.
+    If ch is uppercase, search all headlines; otherwise search only visible headlines.
+    This is modelled on Windows explorer.'''
+
+    if not event or not event.char or not event.keysym.isalnum():
+        return
+    c  = self ; p = c.currentPosition() ; p1 = p.copy()
+    invisible = c.config.getBool('invisible_outline_navigation')
+    ch = event.char
+    allFlag = ch.isupper() and invisible # all is a global (!?)
+    if not invisible: ch = ch.lower()
+    found = False
+    extend = self.navQuickKey()
+    attempts = g.choose(extend,(True,False),(False,))
+    for extend2 in attempts:
+        p = p1.copy()
+        while 1:
+            if allFlag:
+                p.moveToThreadNext()
+            else:
+                p.moveToVisNext(c)
+            if not p:
+                p = c.rootPosition()
+            if p == p1: # Never try to match the same position.
+                # g.trace('failed',extend2)
+                found = False ; break
+            newPrefix = c.navHelper(p,ch,extend2)
+            if newPrefix:
+                found = True ; break
+        if found: break
+    if found:
+        if allFlag: c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.navTime = time.clock()
+        c.navPrefix = newPrefix
+        # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.headString())
+    else:
+        c.navTime = None
+        c.navPrefix = ''
+    c.treeWantsFocusNow()
+#@nonl
+#@+node:ekr.20061002095711.1:c.navQuickKey
+def navQuickKey (self):
+
+    '''return true if there are two quick outline navigation keys
+    in quick succession.
+
+    Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
+
+    c = self
+
+    deltaTime = c.config.getFloat('outline_nav_extend_delay')
+
+    if deltaTime in (None,0.0):
+        return False
+    else:
+        nearTime = c.navTime and time.clock() - c.navTime < deltaTime
+        return nearTime
+#@nonl
+#@-node:ekr.20061002095711.1:c.navQuickKey
+#@+node:ekr.20061002095711:c.navHelper
+def navHelper (self,p,ch,extend):
+
+    c = self ; h = p.headString().lower()
+
+    if extend:
+        prefix = c.navPrefix + ch
+        return h.startswith(prefix.lower()) and prefix
+
+    if h.startswith(ch):
+        return ch
+
+    # New feature: search for first non-blank character after @x for common x.
+    if ch != '@' and h.startswith('@'):
+        for s in ('button','command','file','thin','asis','nosent','noref'):
+            prefix = '@'+s
+            if h.startswith('@'+s):
+                while 1:
+                    n = len(prefix)
+                    ch2 = n < len(h) and h[n] or ''
+                    if ch2.isspace():
+                        prefix = prefix + ch2
+                    else: break
+                if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
+                    return prefix + ch
+    return ''
+#@nonl
+#@-node:ekr.20061002095711:c.navHelper
+#@-node:ekr.20060923202156:c.onCanvasKey
+#@-node:ekr.20080510072134.5:Do tree navigation in outline mode
+#@-node:ekr.20080510185834.6:Projects
 #@-all
 #@nonl
 #@-node:ekr.20080508083640.10:@thin key-handling-notes.txt

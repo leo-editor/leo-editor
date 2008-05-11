@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,2,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,1,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -551,6 +551,7 @@
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 <v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
 <v t="ekr.20080510112420.3"><vh>@mode outline-Alt-Down</vh></v>
@@ -563,8 +564,10 @@
 <v t="ekr.20080510112420.8"><vh>@mode outline-Alt-Shift-Up</vh></v>
 <v t="ekr.20080510112420.9"><vh>@mode outline-Alt-Home</vh></v>
 <v t="ekr.20080510112420.10"><vh>@mode outline-Alt-End</vh></v>
+<v t="ekr.20080510185834.1"><vh>@mode outline-contract-all</vh></v>
+<v t="ekr.20080510185834.3"><vh>@mode outline-clone-node</vh></v>
+<v t="ekr.20080510185834.4"><vh>@mode outline-paste-node</vh></v>
 </v>
-<v t="ekr.20080510121331.14"><vh>Vim Modes</vh></v>
 <v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -1312,7 +1315,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080510112420.11"><vh>Recent settings</vh>
+<v t="ekr.20080510112420.11" a="E"><vh>Recent settings</vh>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = False</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
@@ -1322,6 +1325,7 @@
 </v>
 <v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 <v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
 <v t="ekr.20080510112420.3"><vh>@mode outline-Alt-Down</vh></v>
@@ -1334,8 +1338,10 @@
 <v t="ekr.20080510112420.8"><vh>@mode outline-Alt-Shift-Up</vh></v>
 <v t="ekr.20080510112420.9"><vh>@mode outline-Alt-Home</vh></v>
 <v t="ekr.20080510112420.10"><vh>@mode outline-Alt-End</vh></v>
+<v t="ekr.20080510185834.1"><vh>@mode outline-contract-all</vh></v>
+<v t="ekr.20080510185834.3"><vh>@mode outline-clone-node</vh></v>
+<v t="ekr.20080510185834.4"><vh>@mode outline-paste-node</vh></v>
 </v>
-<v t="ekr.20080510121331.14"><vh>Vim Modes</vh></v>
 <v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -5881,6 +5887,11 @@ aquamarine1</t>
 
 enter-quick-command-mode = Alt-Shift-C
 
+enter-outline-clone-node-mode   = Ctrl-`
+enter-outline-contract-all-mode = Alt--
+# enter-outline-insert-node-mode  = Ctrl-i # Not good: we want to edit the headline.
+enter-outline-paste-node-mode   = Shift-Ctrl-V
+
 enter-outline-mode = Alt-t
 enter-outline-mode = Ctrl-t
 
@@ -6646,14 +6657,14 @@ expand-pane                 = Alt+Ctrl-=
 focus-to-body               = Alt-D
 # focus-to-tree               = Alt-T
 # toggle-active-pane          = Ctrl-T</t>
-<t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
+<t tx="ekr.20060925060533.3"># clone-node                  = Ctrl-`
 clone-node-to-chapter       = None
 contract-node               = None
 copy-node                   = Shift-Ctrl-c
 copy-node-to-chapter        = None
 create-chapter              = None
 cut-node                    = Shift-Ctrl-x
-contract-all                = Alt--
+# contract-all                = Alt--
 edit-headline               = Ctrl-h
 end-edit-headline           ! tree = Return     # Esc is also possible.
 delete-node                 = None
@@ -6671,7 +6682,7 @@ move-outline-down           = Ctrl-D
 move-outline-left           = Ctrl-L
 move-outline-right          = Ctrl-R
 move-outline-up             = Ctrl-U
-paste-node                  = Shift-Ctrl-V
+# paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
 remove-chapter              = None
 select-chapter              = None</t>
@@ -6711,6 +6722,7 @@ open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
 run-unit-tests              = None
 run-unit-tests-locally      = Alt-4
+set-command-state           = Escape
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -8699,9 +8711,6 @@ scroll-up-extend-selection          = Shift-PageUp
 --&gt; enter-outline-mode
 </t>
 <t tx="ekr.20080510112420.11"></t>
-<t tx="ekr.20080510121331.14">@color
-
-# Important: input state is **not** a mode.</t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
 beginning-of-line           = a
@@ -8709,11 +8718,17 @@ end-of-line                 = e
 find-character              = f
 # find-word                 = Shift-f
 set-insert-state            = i
+kill-line                   = k
 enter-outline-mode          = o
 search-with-present-options = s
+# toggle-from-minibuffer    = t
 forward-word                = w
 back-word                   = Shift-w
 delete-char                 = x
+yank                        = y
+undo                        = z
+redo                        = Shift-z
+full-command                = :
 
 # cursor movement keys...
     # back-char           = h
@@ -8785,6 +8800,15 @@ delete-char                 = x
     # :42s/foo/bar Substitute on line 42
     # :%s/foo/bar Substitute on entire file.
     # :y Yank the current line.
+</t>
+<t tx="ekr.20080510185834.1">--&gt; contract-all
+--&gt; enter-outline-mode
+</t>
+<t tx="ekr.20080510185834.3">--&gt; clone-node
+--&gt; enter-outline-mode
+</t>
+<t tx="ekr.20080510185834.4">--&gt; paste-node
+--&gt; enter-outline-mode
 </t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
