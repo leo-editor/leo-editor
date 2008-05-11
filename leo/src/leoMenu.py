@@ -1600,6 +1600,7 @@ class leoMenu:
         accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
         i = 0 ; n = len(accel_ch)
         for name in c.recentFiles[:n]:
+            if name.strip() == "": continue  # happens with empty list/new file
             def recentFilesCallback (event=None,c=c,name=name):
                 # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)

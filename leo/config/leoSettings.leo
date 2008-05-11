@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="10" height="933" width="1278"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3,13,0,0,11"><vh>Startup</vh>
+<v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -88,7 +88,8 @@
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="tbrown.20080511114526.2"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -289,7 +290,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413" a="E"><vh>File options</vh>
+<v t="ekr.20061003173413"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -454,7 +455,7 @@
 <v t="ekr.20060923114638.11"><vh>@mode emacs</vh></v>
 <v t="ekr.20060923114638.12"><vh>@mode extract</vh></v>
 <v t="ekr.20060923114638.13"><vh>@mode file</vh></v>
-<v t="ekr.20060923114638.14" a="M"><vh>@mode gui</vh></v>
+<v t="ekr.20060923114638.14"><vh>@mode gui</vh></v>
 <v t="ekr.20060923114638.15"><vh>@mode help</vh></v>
 <v t="ekr.20060923114638.16"><vh>@mode kill</vh></v>
 <v t="ekr.20060923114638.17"><vh>@mode modes</vh></v>
@@ -502,7 +503,7 @@
 <v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.11"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
@@ -541,7 +542,7 @@
 <v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.11"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
@@ -562,7 +563,7 @@
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
@@ -576,9 +577,9 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
-<v t="ekr.20070925144534.1" a="E"><vh>@menu &amp;File</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
 <v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
@@ -1085,7 +1086,7 @@
 </v>
 </v>
 <v t="bobjack.20080507123337.2"><vh>@popup_menus</vh>
-<v t="bobjack.20080507123337.3" a="E"><vh>Main Context Menus</vh>
+<v t="bobjack.20080507123337.3"><vh>Main Context Menus</vh>
 <v t="bobjack.20080507123337.4"><vh>@popup body</vh>
 <v t="bobjack.20080507123337.5"><vh>@item &amp;</vh></v>
 <v t="bobjack.20080507123337.6"><vh>@item -</vh></v>
@@ -1108,7 +1109,7 @@
 <v t="bobjack.20080507123337.20"><vh>@popup find-text</vh>
 <v t="bobjack.20080507123337.21"><vh>@item &amp;</vh></v>
 </v>
-<v t="bobjack.20080507123337.22" a="E"><vh>@popup change-text</vh>
+<v t="bobjack.20080507123337.22"><vh>@popup change-text</vh>
 <v t="bobjack.20080507123337.23"><vh>@item &amp;</vh></v>
 </v>
 <v t="bobjack.20080507123337.24"><vh>@popup canvas</vh>
@@ -1130,7 +1131,7 @@
 <v t="bobjack.20080507123337.38"><vh>@item rclick-select-all</vh></v>
 </v>
 <v t="bobjack.20080507123337.39"><vh>@popup recent-files-menu</vh>
-<v t="bobjack.20080507123337.40" a="E"><vh>@menu Recent Files</vh>
+<v t="bobjack.20080507123337.40"><vh>@menu Recent Files</vh>
 <v t="bobjack.20080507123337.41"><vh>@item *</vh></v>
 </v>
 </v>
@@ -1151,7 +1152,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1159,7 +1160,7 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
+<v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
 <v t="ekr.20080328105334.4"><vh>@data cleo_color_file_node_list</vh></v>
@@ -1367,7 +1368,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-Shift-C)</vh></v>
 </v>
@@ -1379,7 +1380,7 @@
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
@@ -8810,6 +8811,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 #  REPLACE: /mnt/usr1/
 #     WITH: /
 </t>
+<t tx="tbrown.20080511114526.2"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
