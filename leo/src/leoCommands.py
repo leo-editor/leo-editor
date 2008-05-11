@@ -2907,8 +2907,7 @@ class baseCommands:
             return
 
         if k:
-            # New in Leo 4.5: don't allow command mode in headlines.
-            k.setDefaultUnboundKeyAction(allowCommandState=False)
+            k.setDefaultUnboundKeyAction()
             k.showStateAndMode()
 
         tree.editLabel(c.currentPosition())
