@@ -1794,7 +1794,11 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051022144825:focusTo...
     def focusToBody (self,event):
         '''Put the keyboard focus in Leo's body pane.'''
-        self.c.bodyWantsFocusNow()
+        c = self.c ; k = c.k
+        c.bodyWantsFocusNow()
+        if k:
+            k.setDefaultInputState()
+            k.showStateAndMode()
 
     def focusToLog (self,event):
         '''Put the keyboard focus in Leo's log pane.'''
@@ -2920,44 +2924,52 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(w1)
             self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.135:deleteSpaces
-    #@+node:ekr.20050920084036.138:insertNewLine
+    #@+node:ekr.20050920084036.138:insertNewLine (changed)
     def insertNewLine (self,event):
 
         '''Insert a newline at the cursor.'''
 
-        w = self.editWidget(event)
+        c = self.c ; k = c.k ; w = self.editWidget(event)
         if not w: return
-        wname = g.app.gui.widget_name(w)
-        if wname.startswith('head'): return
 
-        self.beginCommand(undoType='insert-newline')
+        name = c.widget_name(w)
+        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
 
-        i = w.getInsertPoint()
-        w.insert(i,'\n')
-        w.setInsertPoint(i+1)
+        self.beginCommand(undoType='newline')
 
-        self.endCommand(changed=True,setLabel=False)
+        # New in Leo 4.5: use the same logic as in selfInsertCommand.
+        self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+        k.setInputState('insert')
+
+        self.endCommand()
 
     insertNewline = insertNewLine
-    #@-node:ekr.20050920084036.138:insertNewLine
-    #@+node:ekr.20050920084036.86:insertNewLineAndTab
+    #@-node:ekr.20050920084036.138:insertNewLine (changed)
+    #@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
     def insertNewLineAndTab (self,event):
 
         '''Insert a newline and tab at the cursor.'''
 
-        w = self.editWidget(event)
+        c = self.c ; k = c.k
+        w = self.editWidget(event) ; p = c.currentPosition()
         if not w: return
-        wname = g.app.gui.widget_name(w)
-        if wname.startswith('head'): return
+        name = c.widget_name(w)
+        if name.startswith('head'): return
 
         self.beginCommand(undoType='insert-newline-and-indent')
 
-        i = w.getInsertPoint()
-        w.insert(i,'\n\t')
-        w.setInsertPoint(i+2)
+        # New in Leo 4.5: use the same logic as in selfInsertCommand.
+        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+        self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+        c.k.self.updateTab(p,w)
+        c.k.setInputState('insert')
+
+        # i = w.getInsertPoint()
+        # w.insert(i,'\n\t')
+        # w.setInsertPoint(i+2)
 
         self.endCommand(changed=True,setLabel=False)
-    #@-node:ekr.20050920084036.86:insertNewLineAndTab
+    #@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
     #@+node:ekr.20050920084036.139:insertParentheses
     def insertParentheses (self,event):
 

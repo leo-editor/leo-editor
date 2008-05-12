@@ -5336,7 +5336,8 @@ z
 </t>
 <t tx="ekr.20080511121411.1">@language python
 
-if a:</t>
+if a:
+    # test.</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

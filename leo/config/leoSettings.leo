@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,6"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -551,7 +551,6 @@
 </v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20080511113403.1"><vh>@mode newline-insert</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -1297,7 +1296,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080512082834.2"><vh>Unused settings</vh>
+<v t="ekr.20080512082834.2" a="E"><vh>Unused settings</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 <v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
@@ -1317,6 +1316,7 @@
 <v t="ekr.20080511121918.1"><vh>@mode outline-cut-node</vh></v>
 </v>
 <v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
+<v t="ekr.20080511113403.1"><vh>@@mode newline-insert</vh></v>
 </v>
 <v t="ekr.20080510112420.11"><vh>Recent settings</vh>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
@@ -1327,7 +1327,6 @@
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20080511113403.1"><vh>@mode newline-insert</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -6639,9 +6638,10 @@ move-past-close-extend-selection    = None
 select-all                          = Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.</t>
 <t tx="ekr.20060925060533.2">contract-pane               = Alt+Ctrl+-
 expand-pane                 = Alt+Ctrl-=
-focus-to-body               = Alt-D
-focus-to-tree               = Alt-T
-focus-to-tree               = Ctrl-T
+focus-to-body               = Alt-d
+focus-to-tree               = Alt-t
+set-command-state           = Ctrl-t
+# set-command-state           = Escape # Hard to type, interferes with dismissing dialogs.
 # toggle-active-pane          = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 clone-node-to-chapter       = None
@@ -6707,7 +6707,6 @@ open-spell-tab              = F7
 redo                        = Shift-Ctrl-Z
 run-unit-tests              = None
 run-unit-tests-locally      = Alt-4
-set-command-state           = Escape
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -8651,14 +8650,28 @@ scroll-up-extend-selection          = Shift-PageUp
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
 beginning-of-line           = a
+# unused                    = b
+# unused                    = c
+# unused                    = d
 end-of-line                 = e
 find-character              = f
 # find-word                 = Shift-f
+# unused                    = g
+# unused                    = h
 set-insert-state            = i
+# unused                    = j
 kill-line                   = k
-enter-outline-mode          = o
+select-all                  = l
+# unused                    = m
+# unused                    = n
+focus-to-tree               = o
+# unused                    = p
+# unused                    = q
+# unused                    = r
 search-with-present-options = s
 # toggle-from-minibuffer    = t
+# unused                    = u
+toggle-extend-mode          = v
 forward-word                = w
 back-word                   = Shift-w
 delete-char                 = x
@@ -8764,7 +8777,8 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
 end-edit-headline           ! tree = Return # Esc is also possible.
-enter-newline-insert-mode   ! body = Return
+newline                     ! body = Return
+# enter-newline-insert-mode ! body = Return
 
 back-char                   ! text = LtArrow
 forward-char                ! text = RtArrow

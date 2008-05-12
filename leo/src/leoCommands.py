@@ -2907,7 +2907,7 @@ class baseCommands:
             return
 
         if k:
-            k.setDefaultUnboundKeyAction()
+            k.setDefaultInputState()
             k.showStateAndMode()
 
         tree.editLabel(c.currentPosition())
@@ -5766,7 +5766,7 @@ class baseCommands:
     def get_focus (self):
 
         c = self
-        return g.app.gui.get_focus(c)
+        return g.app.gui and g.app.gui.get_focus(c)
 
     def get_requested_focus (self):
 
@@ -5785,7 +5785,7 @@ class baseCommands:
 
         if force: # New in Leo 4.4.2: safer.
             c.hasFocusWidget = c.requestedFocusWidget = w
-            g.app.gui.set_focus(c,w)
+            g.app.gui and g.app.gui.set_focus(c,w)
             c.traceFocus(w)
         else: # An optimization.
             c.requestedFocusWidget = w
@@ -6808,7 +6808,7 @@ class baseCommands:
             c.frame.tree.editLabel(p,selectAll=selectAll)
 
             if k:
-                k.setDefaultUnboundKeyAction()
+                k.setDefaultInputState()
                 k.showStateAndMode()
     #@-node:ekr.20031218072017.2991:c.editPosition
     #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
@@ -6816,8 +6816,12 @@ class baseCommands:
 
     def endEditing(self):
 
-        c = self
+        c = self ; k = c.k
         c.frame.tree.endEditLabel()
+
+        if k:
+            k.setDefaultInputState()
+            k.showStateAndMode()
     #@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     #@+node:ekr.20031218072017.2997:c.selectPosition
     def selectPosition(self,p,updateBeadList=True):
@@ -6860,6 +6864,8 @@ class baseCommands:
         If ch is uppercase, search all headlines; otherwise search only visible headlines.
         This is modelled on Windows explorer.'''
 
+        # g.trace(event and event.char)
+
         if not event or not event.char or not event.keysym.isalnum():
             return
         c  = self ; p = c.currentPosition() ; p1 = p.copy()
@@ -6896,7 +6902,6 @@ class baseCommands:
             c.navTime = None
             c.navPrefix = ''
         c.treeWantsFocusNow()
-    #@nonl
     #@+node:ekr.20061002095711.1:c.navQuickKey
     def navQuickKey (self):
 

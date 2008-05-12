@@ -69,12 +69,14 @@ class leoTkinterBody (leoFrame.leoBody):
         w.bind('<Key>', k.masterKeyHandler)
 
         def onFocusOut(event,c=c):
+            c.k.setDefaultInputState()
             self.setEditorColors(
                 bg=c.k.unselected_body_bg_color,
                 fg=c.k.unselected_body_fg_color)
+            c.k.showStateAndMode()
 
         def onFocusIn(event,c=c):
-            c.k.setInputState(k.unboundKeyAction)
+            c.k.setDefaultInputState()
 
         w.bind('<FocusOut>', onFocusOut)
         w.bind('<FocusIn>', onFocusIn)

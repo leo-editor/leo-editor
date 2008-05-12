@@ -1853,12 +1853,12 @@ class leoFrame:
             finally:
                 c.endUpdate()
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand
-    #@+node:ekr.20031218072017.3982:endEditLabelCommand
+    #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
 
         '''End editing of a headline and move focus to the body pane.'''
 
-        frame = self ; c = frame.c
+        frame = self ; c = frame.c ; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
         else:
@@ -1868,7 +1868,13 @@ class leoFrame:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@-node:ekr.20031218072017.3982:endEditLabelCommand
+
+            # New in Leo 4.5.
+            if k:
+                k.setDefaultInputState()
+                k.showStateAndMode()
+
+    #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
     #@+node:ekr.20031218072017.3983:insertHeadlineTime
     def insertHeadlineTime (self,event=None):
 
@@ -2420,13 +2426,12 @@ class leoTree:
 
         self.setEditPosition(None) # That is, self._editPosition = None
 
-        # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-        # if k:
-            # k.setDefaultUnboundKeyAction()
-            # k.showStateAndMode() # Destroys UNL info.
-
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
+
+        if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+            k.setDefaultInputState()
+            k.showStateAndMode()
 
         if 0: # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()

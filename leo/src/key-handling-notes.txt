@@ -871,7 +871,7 @@ def editHeadline (self,event=None):
         return
 
     if k:
-        k.setDefaultUnboundKeyAction()
+        k.setDefaultInputState()
         k.showStateAndMode()
 
     tree.editLabel(c.currentPosition())
@@ -921,14 +921,18 @@ def setDefaultUnboundKeyAction (self,allowCommandState=True):
     defaultAction.lower()
 
     if defaultAction == 'command' and not allowCommandState:
-        self.unboundAction = 'insert'
+        self.unboundKeyAction = 'insert'
     elif defaultAction in ('command','insert','overwrite'):
         self.unboundKeyAction = defaultAction
     else:
         g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
         self.unboundKeyAction = 'insert'
 
-    k.setInputState(self.unboundKeyAction)
+    # g.trace(self.unboundKeyAction)
+
+    self.defaultUnboundKeyAction = self.unboundKeyAction
+
+    k.setInputState(self.defaultUnboundKeyAction)
 #@-node:ekr.20061031131434.82:setDefaultUnboundKeyAction
 #@+node:ekr.20061031131434.110:k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
@@ -1039,7 +1043,7 @@ def toggleInputState (self,event=None):
     k.setInputState(state)
 #@-node:ekr.20061031131434.124:toggle-input-state
 #@+node:ekr.20061031131434.130:keyboardQuit
-def keyboardQuit (self,event,hideTabs=True,setDefaultUnboundKeyAction=True):
+def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
 
     '''This method clears the state and the minibuffer label.
 
@@ -1066,8 +1070,10 @@ def keyboardQuit (self,event,hideTabs=True,setDefaultUnboundKeyAction=True):
     k.clearState()
     k.resetLabel()
 
-    if setDefaultUnboundKeyAction: k.setDefaultUnboundKeyAction()
-    k.showStateAndMode()
+    # Now done in end-editing
+        # k.setDefaultInputState()
+        # k.showStateAndMode()
+
     c.endEditing()
     c.bodyWantsFocus()
 #@-node:ekr.20061031131434.130:keyboardQuit
@@ -1093,7 +1099,7 @@ for key,name in (
     ('all',None),
 ):
     if (
-        key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
         name and w_name.startswith(name) or
         key in ('text','all') and g.app.gui.isTextWidget(w) or
         key in ('button','all')
@@ -1132,7 +1138,7 @@ def handleMiniBindings (self,event,state,stroke):
                 if b:
                     if b.commandName not in k.singleLineCommandList:
                         if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True,setDefaultUnboundKeyAction=True)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
                     else:
                         if trace: g.trace(repr(stroke),'mini binding',b.commandName)
                         c.minibufferWantsFocusNow() # New in Leo 4.5.
@@ -1148,11 +1154,23 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self
+    k = self ; c = k.c
     modesTuple = ('insert','overwrite')
     trace = False
 
-    if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+    assert not stroke # Unbound keys never have a stroke.
+
+    if trace:
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
         # insert/overwrite normal character.  <Return> is *not* a normal character.
         if trace: g.trace('plain key in insert mode',repr(stroke))
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
@@ -1168,48 +1186,29 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 
     else:
         if trace: g.trace(repr(stroke),'no func')
-        # New in Leo 4.5: any unbound special key terminates all modes.
-        # k.keyboardQuit()
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
 #@-node:ekr.20080510095819.1:handleUnboudKeys
 #@+node:ekr.20061031131434.133:setInputState
-def setInputState (self,state,showState=False):
+def setInputState (self,state): # ,showState=False):
 
-    k = self ; c = k.c
-    body = c.frame.body ; w = body.bodyCtrl
-
+    k = self
     k.unboundKeyAction = state
     k.showStateAndMode()
 
-    if state not in ('insert','command','overwrite'):
-        g.trace('bad input state',state)
 
-    if self.inited and w:
-        if state == 'insert':
-            bg = k.insert_mode_bg_color
-            fg = k.insert_mode_fg_color
-        elif state == 'command':
-            bg = k.command_mode_bg_color
-            fg = k.command_mode_fg_color
-        elif state == 'overwrite':
-            bg = k.overwrite_mode_bg_color
-            fg = k.overwrite_mode_fg_color
-        else:
-            bg = fg = 'red'
-
-        # g.trace(id(w),bg,fg,self)
-
-        body.setEditorColors(bg=bg,fg=fg)
 #@-node:ekr.20061031131434.133:setInputState
 #@+node:ekr.20061031131434.192:showStateAndMode
 def showStateAndMode(self):
 
-    k = self ; c = k.c ; w = self.widget
-    if not w: return
+    k = self ; c = k.c
 
     trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
+    inOutline = False
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    # g.trace(w and w.widgetName)
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -1218,6 +1217,9 @@ def showStateAndMode(self):
             assert mode.endswith('-mode')
             mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
+    elif w and w.widgetName.lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
     else:
         s = '%s State' % state.capitalize()
 
@@ -1225,8 +1227,7 @@ def showStateAndMode(self):
         if trace: g.trace(s,g.callers(5))
         k.setLabelBlue(label=s,protect=True)
 
-    # Restore the focus.
-    # c.restoreFocus()
+    k.showStateColors(inOutline=inOutline)
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@-node:ekr.20080510145650.1:Found: unboundKeyAction
 #@+node:ekr.20080510072134.5:Do tree navigation in outline mode
@@ -1236,6 +1237,8 @@ def onCanvasKey (self,event):
     '''Navigate to the next headline starting with ch = event.char.
     If ch is uppercase, search all headlines; otherwise search only visible headlines.
     This is modelled on Windows explorer.'''
+
+    # g.trace(event and event.char)
 
     if not event or not event.char or not event.keysym.isalnum():
         return
@@ -1273,7 +1276,6 @@ def onCanvasKey (self,event):
         c.navTime = None
         c.navPrefix = ''
     c.treeWantsFocusNow()
-#@nonl
 #@+node:ekr.20061002095711.1:c.navQuickKey
 def navQuickKey (self):
 
