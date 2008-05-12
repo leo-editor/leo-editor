@@ -1869,11 +1869,8 @@ class leoFrame:
             else:
                 c.bodyWantsFocusNow()
 
-            # New in Leo 4.5.
-            if k:
-                k.setDefaultInputState()
-                k.showStateAndMode()
-
+            # Important: c.endEditing handles state and coloring.
+            # Don't call showStateAndMode here.
     #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
     #@+node:ekr.20031218072017.3983:insertHeadlineTime
     def insertHeadlineTime (self,event=None):

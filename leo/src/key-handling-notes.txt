@@ -1041,6 +1041,7 @@ def toggleInputState (self,event=None):
         state = g.choose(state=='command','insert','command') # prefer insert to overwrite.
 
     k.setInputState(state)
+    k.showStateAndMode()
 #@-node:ekr.20061031131434.124:toggle-input-state
 #@+node:ekr.20061031131434.130:keyboardQuit
 def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
@@ -1189,26 +1190,28 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
         return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
 #@-node:ekr.20080510095819.1:handleUnboudKeys
 #@+node:ekr.20061031131434.133:setInputState
-def setInputState (self,state): # ,showState=False):
+def setInputState (self,state):
 
     k = self
     k.unboundKeyAction = state
-    k.showStateAndMode()
+
 
 
 #@-node:ekr.20061031131434.133:setInputState
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self):
+def showStateAndMode(self,w=None):
 
     k = self ; c = k.c
-
     trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
+    if not g.app.gui: return
 
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -1217,7 +1220,7 @@ def showStateAndMode(self):
             assert mode.endswith('-mode')
             mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and w.widgetName.lower().startswith('canvas'):
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
         s = 'In Outline'
         inOutline = True
     else:
@@ -1227,7 +1230,8 @@ def showStateAndMode(self):
         if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
-    k.showStateColors(inOutline=inOutline)
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@-node:ekr.20080510145650.1:Found: unboundKeyAction
 #@+node:ekr.20080510072134.5:Do tree navigation in outline mode
@@ -1843,17 +1847,19 @@ def openWithFileName(fileName,old_c,
 #@-node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
 #@+node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self):
+def showStateAndMode(self,w=None):
 
     k = self ; c = k.c
-
     trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
+    if not g.app.gui: return
 
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -1862,7 +1868,7 @@ def showStateAndMode(self):
             assert mode.endswith('-mode')
             mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and w.widgetName.lower().startswith('canvas'):
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
         s = 'In Outline'
         inOutline = True
     else:
@@ -1872,7 +1878,8 @@ def showStateAndMode(self):
         if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
-    k.showStateColors(inOutline=inOutline)
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
@@ -2010,17 +2017,19 @@ def reinitMode (self,modeName):
 #@-node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
 #@+node:ekr.20080512091707.1:Reset input state in end-edit-headline
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self):
+def showStateAndMode(self,w=None):
 
     k = self ; c = k.c
-
     trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
+    if not g.app.gui: return
 
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -2029,7 +2038,7 @@ def showStateAndMode(self):
             assert mode.endswith('-mode')
             mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and w.widgetName.lower().startswith('canvas'):
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
         s = 'In Outline'
         inOutline = True
     else:
@@ -2039,7 +2048,8 @@ def showStateAndMode(self):
         if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
-    k.showStateColors(inOutline=inOutline)
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
 def endEditLabelCommand (self,event=None):
@@ -2057,11 +2067,8 @@ def endEditLabelCommand (self,event=None):
         else:
             c.bodyWantsFocusNow()
 
-        # New in Leo 4.5.
-        if k:
-            k.setDefaultInputState()
-            k.showStateAndMode()
-
+        # Important: c.endEditing handles state and coloring.
+        # Don't call showStateAndMode here.
 #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
 #@+node:ekr.20061031131434.82:setDefaultUnboundKeyAction
 def setDefaultUnboundKeyAction (self,allowCommandState=True):
@@ -2270,130 +2277,6 @@ def createInverseCommandsDict (self):
 #@-node:ekr.20061031131434.81:createInverseCommandsDict
 #@-node:ekr.20061031131434.80:k.finishCreate & helpers
 #@-node:ekr.20080511041907.3:Body colors
-#@+node:ekr.20080512091707.2:Body changes color when headline mode changes
-#@+node:ekr.20060606090542:setEditorColors
-def setEditorColors (self,bg,fg):
-
-    c = self.c ; d = self.editorWidgets
-
-    for key in d.keys():
-        w2 = d.get(key)
-        # g.trace(id(w2),bg,fg)
-        try:
-            w2.configure(bg=bg,fg=fg)
-        except Exception:
-            g.es_exception()
-#@-node:ekr.20060606090542:setEditorColors
-#@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self):
-
-    k = self ; c = k.c
-
-    trace = False
-    state = k.unboundKeyAction
-    mode = k.getStateKind()
-    inOutline = False
-
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
-
-    if mode:
-        if mode in ('getArg','getFileName','full-command'):
-            s = None
-        else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
-            s = '%s Mode' % mode.capitalize()
-    elif w and w.widgetName.lower().startswith('canvas'):
-        s = 'In Outline'
-        inOutline = True
-    else:
-        s = '%s State' % state.capitalize()
-
-    if s:
-        if trace: g.trace(s)
-        k.setLabelBlue(label=s,protect=True)
-
-    k.showStateColors(inOutline=inOutline)
-#@-node:ekr.20061031131434.192:showStateAndMode
-#@+node:ekr.20061031131434.123:set-xxx-State
-def setCommandState (self,event):
-    '''Enter the 'command' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('command')
-
-def setInsertState (self,event):
-    '''Enter the 'insert' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('insert')
-
-def setOverwriteState (self,event):
-    '''Enter the 'overwrite' editing state.'''
-    # g.trace(g.callers())
-    k = self
-    k.setInputState('overwrite')
-#@-node:ekr.20061031131434.123:set-xxx-State
-#@+node:ekr.20061031131434.133:setInputState
-def setInputState (self,state): # ,showState=False):
-
-    k = self
-    k.unboundKeyAction = state
-    k.showStateAndMode()
-
-
-#@-node:ekr.20061031131434.133:setInputState
-#@+node:ekr.20080512115455.1:showStateColors
-def showStateColors (self,inOutline=False):
-
-    k = self ; c = k.c ; state = k.unboundKeyAction
-
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-        return
-
-    body = c.frame.body ; bodyCtrl = body.bodyCtrl
-    # g.trace(w and w.widgetName)
-
-    if state not in ('insert','command','overwrite'):
-        g.trace('bad input state',state)
-
-    if 0: # This is done by the body's FocusOut handler.
-        if inOutline:
-            bg=k.unselected_body_bg_color
-            fg=k.unselected_body_fg_color
-            try:
-                bodyCtrl.configure(bg=bg,fg=fg)
-            except Exception:
-                g.es_exception()
-
-    if inOutline and w == bodyCtrl:
-        return
-
-    if state == 'insert':
-        bg = k.insert_mode_bg_color
-        fg = k.insert_mode_fg_color
-    elif state == 'command':
-        bg = k.command_mode_bg_color
-        fg = k.command_mode_fg_color
-    elif state == 'overwrite':
-        bg = k.overwrite_mode_bg_color
-        fg = k.overwrite_mode_fg_color
-    else:
-        bg = fg = 'red'
-
-    # g.trace(id(w),bg,fg,self)
-
-    if w == bodyCtrl:
-        body.setEditorColors(bg=bg,fg=fg)
-    else:
-        try:
-            w.configure(bg=bg,fg=fg)
-        except Exception:
-            g.es_exception()
-#@-node:ekr.20080512115455.1:showStateColors
-#@-node:ekr.20080512091707.2:Body changes color when headline mode changes
 #@+node:ekr.20080512125926.1:Fixed headline bugs
 @nocolor
 
@@ -3066,6 +2949,7 @@ def insertNewLine (self,event):
     # New in Leo 4.5: use the same logic as in selfInsertCommand.
     self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
     k.setInputState('insert')
+    k.showStateAndMode()
 
     self.endCommand()
 
@@ -3087,8 +2971,9 @@ def insertNewLineAndTab (self,event):
     # New in Leo 4.5: use the same logic as in selfInsertCommand.
     oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
     self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
-    c.k.self.updateTab(p,w)
-    c.k.setInputState('insert')
+    k.self.updateTab(p,w)
+    k.setInputState('insert')
+    k.showStateAndMode()
 
     # i = w.getInsertPoint()
     # w.insert(i,'\n\t')
@@ -3553,7 +3438,6 @@ def editPosition(self,p,selectAll=False):
 
         if k:
             if selectAll:
-                g.trace('insert state')
                 k.setInputState('insert')
             else:
                 k.setDefaultInputState()
@@ -3607,17 +3491,19 @@ def createBindings (self,w=None):
         w.bind(kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self):
+def showStateAndMode(self,w=None):
 
     k = self ; c = k.c
-
     trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
+    if not g.app.gui: return
 
-    w = g.app.gui and g.app.gui.get_focus(c)
-    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -3626,7 +3512,7 @@ def showStateAndMode(self):
             assert mode.endswith('-mode')
             mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and w.widgetName.lower().startswith('canvas'):
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
         s = 'In Outline'
         inOutline = True
     else:
@@ -3636,9 +3522,384 @@ def showStateAndMode(self):
         if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
-    k.showStateColors(inOutline=inOutline)
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@-node:ekr.20080512153146.2:New nodes should edit text in input mode
+#@+node:ekr.20080512155222.1:Autocompletion should stay in insert/overwrite mode
+#@+node:ekr.20061031131434.130:keyboardQuit
+def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    # Now done in end-editing
+        # k.setDefaultInputState()
+        # k.showStateAndMode()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+#@-node:ekr.20061031131434.130:keyboardQuit
+#@+node:ekr.20061031131434.34:finish
+def finish (self):
+
+    c = self.c ; k = self.k
+
+    state = k.unboundKeyAction
+    # Keyboard quit does a lot of good things, but we must stay in the present mode.
+    k.keyboardQuit(event=None)
+    k.unboundKeyAction = state
+    k.showStateAndMode()
+
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
+    self.clear()
+    self.object = None
+#@-node:ekr.20061031131434.34:finish
+#@-node:ekr.20080512155222.1:Autocompletion should stay in insert/overwrite mode
+#@+node:ekr.20080512091707.2:Body changes color when headline mode changes
+#@+node:ekr.20060606090542:setEditorColors
+def setEditorColors (self,bg,fg):
+
+    c = self.c ; d = self.editorWidgets
+
+    for key in d.keys():
+        w2 = d.get(key)
+        # g.trace(id(w2),bg,fg)
+        try:
+            w2.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@-node:ekr.20060606090542:setEditorColors
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s)
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20061031131434.123:set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+    k.showStateAndMode()
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+    k.showStateAndMode()
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+    k.showStateAndMode()
+#@-node:ekr.20061031131434.123:set-xxx-State
+#@+node:ekr.20061031131434.133:setInputState
+def setInputState (self,state):
+
+    k = self
+    k.unboundKeyAction = state
+
+
+
+#@-node:ekr.20061031131434.133:setInputState
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # w = g.app.gui and g.app.gui.get_focus(c)
+    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+        # return
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if 0: # This is done by the body's FocusOut handler.
+        if inOutline:
+            bg=k.unselected_body_bg_color
+            fg=k.unselected_body_fg_color
+            try:
+                bodyCtrl.configure(bg=bg,fg=fg)
+            except Exception:
+                g.es_exception()
+
+    if inOutline and w == bodyCtrl:
+        return # Don't recolor the body.
+
+    # if not inOutline and w != bodyCtrl:
+        # return # Don't recolor the headline.
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@nonl
+#@-node:ekr.20080512115455.1:showStateColors
+#@-node:ekr.20080512091707.2:Body changes color when headline mode changes
+#@+node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    if k:
+        k.setDefaultInputState()
+        # Recolor the *body* text, **not** the headline.
+        k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20040803072955.126:endEditLabel
+def endEditLabel (self):
+
+    '''End editing of a headline and update p.headString().'''
+
+    c = self.c ; k = c.k ; p = c.currentPosition()
+
+    self.setEditPosition(None) # That is, self._editPosition = None
+
+    # Important: this will redraw if necessary.
+    self.onHeadChanged(p)
+
+    if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    if 0: # This interferes with the find command and interferes with focus generally!
+        c.bodyWantsFocus()
+#@-node:ekr.20040803072955.126:endEditLabel
+#@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
+def endEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and move focus to the body pane.'''
+
+    frame = self ; c = frame.c ; k = c.k
+    if g.app.batchMode:
+        c.notValidInBatchMode("End Edit Headline")
+    else:
+        c.endEditing()
+        # g.trace('setting focus')
+        if c.config.getBool('stayInTreeAfterEditHeadline'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+
+        # Important: c.endEditing handles state and coloring.
+        # Don't call showStateAndMode here.
+#@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
+#@+node:ekr.20040803072955.136:setSelectedLabelState
+trace_n = 0
+
+def setSelectedLabelState (self,p): # selected, disabled
+
+    c = self.c
+
+    # g.trace(p,c.edit_widget(p))
+
+
+    if p and c.edit_widget(p):
+
+        if 0:
+            g.trace(self.trace_n,c.edit_widget(p),p)
+            # g.trace(g.callers(6))
+            self.trace_n += 1
+
+        self.setDisabledHeadlineColors(p)
+#@-node:ekr.20040803072955.136:setSelectedLabelState
+#@+node:ekr.20040803072955.139:setDisabledHeadlineColors
+def setDisabledHeadlineColors (self,p):
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if False or (self.trace and self.verbose):
+        # if not self.redrawing:
+            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+            # import traceback ; traceback.print_stack(limit=6)
+
+    fg = self.headline_text_selected_foreground_color or 'black'
+    bg = self.headline_text_selected_background_color or 'grey80'
+    selfg = self.headline_text_editing_selection_foreground_color
+    selbg = self.headline_text_editing_selection_background_color
+
+    try:
+        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+    except:
+        g.es_exception()
+#@-node:ekr.20040803072955.139:setDisabledHeadlineColors
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+
+    if trace: g.trace(w, state, mode, g.callers(5))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s)
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # w = g.app.gui and g.app.gui.get_focus(c)
+    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+        # return
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if 0: # This is done by the body's FocusOut handler.
+        if inOutline:
+            bg=k.unselected_body_bg_color
+            fg=k.unselected_body_fg_color
+            try:
+                bodyCtrl.configure(bg=bg,fg=fg)
+            except Exception:
+                g.es_exception()
+
+    if inOutline and w == bodyCtrl:
+        return # Don't recolor the body.
+
+    # if not inOutline and w != bodyCtrl:
+        # return # Don't recolor the headline.
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@nonl
+#@-node:ekr.20080512115455.1:showStateColors
+#@-node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
 #@-node:ekr.20080510185834.6:Projects
 #@-all
 #@nonl

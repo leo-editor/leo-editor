@@ -2450,6 +2450,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c
 
+        # g.trace(p,c.edit_widget(p))
+
 
         if p and c.edit_widget(p):
 
@@ -2473,8 +2475,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c ; w = c.edit_widget(p)
 
-        if self.trace and self.verbose:
-            if not self.redrawing:
+        if False or (self.trace and self.verbose):
+            # if not self.redrawing:
                 g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
                 # import traceback ; traceback.print_stack(limit=6)
 

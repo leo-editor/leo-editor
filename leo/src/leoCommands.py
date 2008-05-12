@@ -6810,7 +6810,6 @@ class baseCommands:
 
             if k:
                 if selectAll:
-                    g.trace('insert state')
                     k.setInputState('insert')
                 else:
                     k.setDefaultInputState()
@@ -6823,11 +6822,15 @@ class baseCommands:
     def endEditing(self):
 
         c = self ; k = c.k
+
         c.frame.tree.endEditLabel()
+
+        c.frame.tree.setSelectedLabelState(p=c.currentPosition())
 
         if k:
             k.setDefaultInputState()
-            k.showStateAndMode()
+            # Recolor the *body* text, **not** the headline.
+            k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     #@+node:ekr.20031218072017.2997:c.selectPosition
     def selectPosition(self,p,updateBeadList=True):

@@ -732,7 +732,11 @@ class autoCompleterClass:
 
         c = self.c ; k = self.k
 
+        state = k.unboundKeyAction
+        # Keyboard quit does a lot of good things, but we must stay in the present mode.
         k.keyboardQuit(event=None)
+        k.unboundKeyAction = state
+        k.showStateAndMode()
 
         for name in (self.tabName,'Modules','Info'):
             c.frame.log.deleteTab(name)
@@ -2898,18 +2902,21 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('command')
+        k.showStateAndMode()
 
     def setInsertState (self,event):
         '''Enter the 'insert' editing state.'''
         # g.trace(g.callers())
         k = self
         k.setInputState('insert')
+        k.showStateAndMode()
 
     def setOverwriteState (self,event):
         '''Enter the 'overwrite' editing state.'''
         # g.trace(g.callers())
         k = self
         k.setInputState('overwrite')
+        k.showStateAndMode()
     #@-node:ekr.20061031131434.123:set-xxx-State
     #@+node:ekr.20061031131434.124:toggle-input-state
     def toggleInputState (self,event=None):
@@ -2928,6 +2935,7 @@ class keyHandlerClass:
             state = g.choose(state=='command','insert','command') # prefer insert to overwrite.
 
         k.setInputState(state)
+        k.showStateAndMode()
     #@-node:ekr.20061031131434.124:toggle-input-state
     #@-node:ekr.20061031131434.114:Externally visible commands
     #@+node:ekr.20061031131434.125:Externally visible helpers
@@ -4509,11 +4517,11 @@ class keyHandlerClass:
     #@nonl
     #@-node:ekr.20080511122507.4:setDefaultInputState
     #@+node:ekr.20061031131434.133:setInputState
-    def setInputState (self,state): # ,showState=False):
+    def setInputState (self,state):
 
         k = self
         k.unboundKeyAction = state
-        k.showStateAndMode()
+
 
 
     #@-node:ekr.20061031131434.133:setInputState
@@ -4532,17 +4540,19 @@ class keyHandlerClass:
         # k.showStateAndMode()
     #@-node:ekr.20061031131434.199:setState
     #@+node:ekr.20061031131434.192:showStateAndMode
-    def showStateAndMode(self):
+    def showStateAndMode(self,w=None):
 
         k = self ; c = k.c
-
         trace = False
         state = k.unboundKeyAction
         mode = k.getStateKind()
         inOutline = False
+        if not g.app.gui: return
 
-        w = g.app.gui and g.app.gui.get_focus(c)
-        if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+        if not w:
+            w = g.app.gui.get_focus(c)
+
+        if trace: g.trace(w, state, mode, g.callers(5))
 
         if mode:
             if mode in ('getArg','getFileName','full-command'):
@@ -4551,7 +4561,7 @@ class keyHandlerClass:
                 assert mode.endswith('-mode')
                 mode = mode[:-5]
                 s = '%s Mode' % mode.capitalize()
-        elif w and w.widgetName.lower().startswith('canvas'):
+        elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
             s = 'In Outline'
             inOutline = True
         else:
@@ -4561,19 +4571,20 @@ class keyHandlerClass:
             if trace: g.trace(s)
             k.setLabelBlue(label=s,protect=True)
 
-        k.showStateColors(inOutline=inOutline)
+        if w and g.app.gui.isTextWidget(w):
+            k.showStateColors(inOutline,w)
     #@-node:ekr.20061031131434.192:showStateAndMode
     #@+node:ekr.20080512115455.1:showStateColors
-    def showStateColors (self,inOutline=False):
+    def showStateColors (self,inOutline,w):
 
         k = self ; c = k.c ; state = k.unboundKeyAction
 
-        w = g.app.gui and g.app.gui.get_focus(c)
-        if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-            return
+        # w = g.app.gui and g.app.gui.get_focus(c)
+        # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+            # return
 
         body = c.frame.body ; bodyCtrl = body.bodyCtrl
-        # g.trace(w and w.widgetName)
+        # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
 
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
@@ -4588,7 +4599,10 @@ class keyHandlerClass:
                     g.es_exception()
 
         if inOutline and w == bodyCtrl:
-            return
+            return # Don't recolor the body.
+
+        # if not inOutline and w != bodyCtrl:
+            # return # Don't recolor the headline.
 
         if state == 'insert':
             bg = k.insert_mode_bg_color
@@ -4611,6 +4625,7 @@ class keyHandlerClass:
                 w.configure(bg=bg,fg=fg)
             except Exception:
                 g.es_exception()
+    #@nonl
     #@-node:ekr.20080512115455.1:showStateColors
     #@-node:ekr.20061031131434.193:States
     #@+node:ekr.20061031131434.200:universalDispatcher & helpers
