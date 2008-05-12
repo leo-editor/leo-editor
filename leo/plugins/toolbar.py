@@ -19,7 +19,10 @@ the default iconBar is also in *c.frame.iconBar*
 
 Any widget may be added to an iconBar but:
 
-** ALL WIDGETS TO BE ADDED TO ICONBARS SHOULD HAVE c.frame.top AS THE PARENT. **
+    - All widgets must have c.frame.top as the parent.
+
+    - Widgets can not be packed into the bars directly, they must be added
+      through c.addIconWidget or through <bar>.addWidget
 
 This will break some code but it can't be helped.
 
@@ -49,8 +52,8 @@ barName=<name of bar>. If no barName is supplied 'iconbar' will be used.
         creates and returns an icon button but does not pack it. Any barName
         will be ignored.
 
-    addIconWidget(widget, barName='iconbar'):
-        Adds any widget to the named iconBar.
+    addIconWidget(widget, barName='iconbar', index=None):
+        Adds any widget to the named iconBar in the positon indecated by index.
 
 The iconBars themsleves have the following public methods. Thes should be used
 in preferenct to the above methods.
@@ -77,13 +80,17 @@ in preferenct to the above methods.
         want to add several widgets, you can then call repackButtons() just
         once.
 
+        If index is None or invalid the widget will be packed at the end
+        of the iconBar.
+
     removeWidget(widget, repack=True)
          removes the widget from the list and optionally repacks the iconBar.
 
-    pack() aka show()
-        Makes the toolbar visible if it is not already visible.
+    show(show=True)
+        Makes the toolbar visible if it is not already visible or vice versa
+        if show is False.
 
-    unpack() aka hide()
+    hide()
         Makes the toolbar invisible if it was not already invisible.
 
 The iconbars also have the following public properties.
@@ -194,6 +201,7 @@ import leoTkinterTree
 
 requiredIvars = (
     ('commandList', (list, tuple)),
+    ('commandPrefix', basestring),
 )
 #@nonl
 #@-node:bobjack.20080424195922.85:<< required ivars >>
@@ -264,8 +272,11 @@ def onCreate (tag, keys):
 
     controller = controllers.get(c)
     if not controller:
+
         controllers[c] = controller = pluginController(c)
         controller.onCreate()
+
+        c.theToolbarController = controller
 
 
 
@@ -342,14 +353,13 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         keys['barname'] gives the name of the toolbar to be uses if it is present
         outherwise 'iconbar' is used.
 
+        If the iconBar does not exist it will be created.
+
         """
-
-
 
         if 'barName' in keys:
             barName = keys['barName']
             del keys['barName']
-
         else:
              barName = 'iconbar'
 
@@ -366,20 +376,32 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         keys['barname'] gives the name of the toolbar or the
         tollbar named 'iconbar' is used.
 
+        If the iconBar does not exist it will be created.
+
         """
-        return self.iconBar.getButton(*args,**keys)
+        if 'barName' in keys:
+            barName = keys['barName']
+            del keys['barName']
+
+        else:
+             barName = 'iconbar'
+
+        bar = self.createIconBar(barName)
+
+        if bar:
+            return bar.getButton(*args,**keys)
 
     createIconButton = getIconButton
     #@nonl
     #@-node:bobjack.20080503151427.2:getIconButton
     #@+node:bobjack.20080501055450.16:addIconWidget
-    def addIconWidget (self, widget, barName='iconbar'):
+    def addIconWidget (self, widget, barName='iconbar', index=None):
 
         """Adds a widget to the named toolbar."""
 
         bar = self.createIconBar(barName)
         if bar:
-            return bar.addWidget(widget)
+            return bar.addWidget(widget, index=index)
     #@-node:bobjack.20080501055450.16:addIconWidget
     #@+node:bobjack.20080429153129.31:clearIconBar
     def clearIconBar (self, barName='iconbar'):
@@ -393,12 +415,9 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         """Create and display new iconBar.
 
-        If the iconbar exists it will be shown, if it is not shown already,
-        and returned.
+        If the iconbar exists it will returned.
 
         Otherwise a new toolbar will be created, shown and returned.
-
-        The bar will not be placed in self.iconBars if it is a slave bar.
 
         """
 
@@ -1884,9 +1903,12 @@ class ToolbarTkIconBarClass(iconbar, object):
         return btn
     #@-node:bobjack.20080426064755.76:getButton
     #@+node:bobjack.20080429153129.36:pack (show)
-    def pack (self):
+    def pack (self, show=True):
 
         """Show the icon bar by repacking it"""
+
+        if not show:
+            return self.hide()
 
         if not self.visible:
             self.outerFrame.pack(fill="x", pady=2)
@@ -2018,6 +2040,43 @@ class ToolbarTkIconBarClass(iconbar, object):
     #@-others
 #@-node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
 #@-node:bobjack.20080424190906.6:Module-level
+#@+node:bobjack.20080511121543.9:class toolbarCommandClass
+class toolbarCommandClass(object):
+
+    """Base class for all commands defined in the toolbar.py plugin."""
+
+    def __init__(self, controller, commandName, **keys):
+
+        self.c = controller.c
+        self.commandName = commandName
+        self._controller = None
+
+        self.keys = keys
+
+        self.wrappedDoCommand = self.c.universallCallback(self.doCommand)
+
+
+    def __call__(self, event):
+
+        self.wrappedDoCommand(event)
+
+
+
+
+
+#@+node:bobjack.20080511121543.10:Properties
+#@+node:bobjack.20080511121543.11:controller
+def getController(self):
+    controller = self._controller
+    if controller:
+        self._controller = controller = self.c.theToolbarController
+    return controller
+
+
+controller = property(getController)
+#@-node:bobjack.20080511121543.11:controller
+#@-node:bobjack.20080511121543.10:Properties
+#@-node:bobjack.20080511121543.9:class toolbarCommandClass
 #@+node:bobjack.20080424195922.12:class pluginController
 class pluginController(object):
 
@@ -2030,7 +2089,6 @@ class pluginController(object):
         'toolbar-add-script-button',
         'toolbar-show-iconbar-menu',
         'toggle-iconbar',
-        'toolbar-toggle-iconbar',
     )
 
     #@    @+others
@@ -2047,6 +2105,13 @@ class pluginController(object):
 
         self.c = c
 
+        self.commandPrefix = 'toolbar'
+        self.commandsDict = None
+
+
+
+
+
 
     #@+node:bobjack.20080424195922.14:onCreate
     def onCreate(self):
@@ -2056,9 +2121,6 @@ class pluginController(object):
         self.registerCommands()
         self.setDefaultContextMenus()
 
-
-        setattr(c, 'the%sController'%__plugin_id__, self)
-
     #@-node:bobjack.20080424195922.14:onCreate
     #@+node:bobjack.20080424195922.15:onClose
     def onClose(self):
@@ -2066,27 +2128,54 @@ class pluginController(object):
 
         return
     #@-node:bobjack.20080424195922.15:onClose
-    #@+node:bobjack.20080424195922.16:createCommandCallbacks
-    def createCommandCallbacks(self, commands):
+    #@+node:bobjack.20080512063725.2:getPublicCommands
+    def getPublicCommands(self):
 
-        """Create command callbacks for the list of `commands`.
+        """Create command instances for public commands provided by this plugin.
 
-        Returns a list of tuples
-
-            (command, methodName, callback)
+        Returns a dictionary {commandName: commandInstance, ...}
 
         """
+        if self.commandsDict:
+            return self.commandsDict
 
-        lst = []
-        for command in commands:
+        commandsDict = {}
 
-            methodName = command.replace('-','_')
-            function = getattr(self, methodName)
+        for commandName in self.commandList:
+            #@        << get className from commandName >>
+            #@+node:bobjack.20080512063725.3:<< get className from commandName >>
+            # change my-command-name to myCommandNameCommandClass
 
-            lst.append((command, methodName, function))
+            className = commandName.split('-')
 
-        return lst
-    #@-node:bobjack.20080424195922.16:createCommandCallbacks
+            if className[0] == self.commandPrefix:
+                alias = ''
+                del className[0]
+            else:
+                alias = commandName
+                commandName = self.commandPrefix + '-' + commandName
+
+            for i in range(1, len(className)):
+                className[i] = className[i].capitalize()
+
+            className = ''.join(className) + 'CommandClass'
+            #@nonl
+            #@-node:bobjack.20080512063725.3:<< get className from commandName >>
+            #@nl
+            klass = getattr(self, className)
+
+            cmd = klass(self, commandName)
+            cmd.alias = [alias]
+
+            commandsDict[commandName] = cmd
+            if alias:
+                commandsDict[alias] = cmd
+
+        self.commandsDict = commandsDict
+
+        return commandsDict
+
+    #@-node:bobjack.20080512063725.2:getPublicCommands
     #@+node:bobjack.20080424195922.17:registerCommands
     def registerCommands(self):
 
@@ -2094,10 +2183,11 @@ class pluginController(object):
 
         c = self.c
 
-        commandList = self.createCommandCallbacks(self.getCommandList())
+        commandDict = self.getPublicCommands()
 
-        for cmd, methodName, function in commandList:
-            c.k.registerCommand(cmd, shortcut=None, func=function, wrap=True)   
+        for commandName, cmd in commandDict.iteritems():
+            c.k.registerCommand(commandName, shortcut=None, func=cmd)   
+
     #@-node:bobjack.20080424195922.17:registerCommands
     #@+node:bobjack.20080424195922.19:getCommandList
     def getCommandList(self):
@@ -2127,197 +2217,224 @@ class pluginController(object):
     #@-node:bobjack.20080510064957.112:setDeafaultContextMenus
     #@-node:bobjack.20080424195922.13:__init__
     #@+node:bobjack.20080428114659.20:Generator Commands
-    #@+node:bobjack.20080428114659.21:toolbar_show_iconbar_menu
-    def toolbar_show_iconbar_menu(self, keywords):
+    #@+node:bobjack.20080428114659.21:toolbar-show-iconbar-menu
+    class showIconbarMenuCommandClass(toolbarCommandClass):
 
         """Create a menu to show  hidden toolbars."""
 
-        c = self.c
-        frame = c.frame
+        #@    @+others
+        #@-others
 
-        try:
-            menu_table = keywords['rc_menu_table']
-            bar = keywords['bar']
-        except Exception:
-            g.es_error('Command only for use in iconBar menus')
-            return
+        def doCommand(self, keywords):
 
-        barName = bar and bar.barName or ''
+            c = self.c
+            frame = c.frame
 
-        names = frame.iconBars.keys()
+            try:
+                menu_table = keywords['rc_menu_table']
+                bar = keywords['bar']
+            except Exception:
+                g.es_error('Command only for use in iconBar menus')
+                return
 
-        items = []
-        while names:
-            name = names.pop(0)
+            barName = bar and bar.barName or ''
 
-            if name == barName:
-                continue
+            names = frame.iconBars.keys()
 
-            bar = frame.iconBars[name]
+            items = []
+            while names:
+                name = names.pop(0)
 
-            if not bar.visible:
+                if name == barName:
+                    continue
 
-                def show_iconbar_cb(c, keywords, bar=bar):
-                    bar.show()
+                bar = frame.iconBars[name]
 
-                items.append((name, show_iconbar_cb))
+                if not bar.visible:
 
-        if items:
-            items = [('Show', items)]
-            menu_table[:0] = items  
+                    def show_iconbar_cb(c, keywords, bar=bar):
+                        bar.show()
 
-    #@-node:bobjack.20080428114659.21:toolbar_show_iconbar_menu
-    #@+node:bobjack.20080503040740.4:toolbar_toggle_iconbar
-    def toolbar_toggle_iconbar(self, keywords):
+                    items.append((name, show_iconbar_cb))
+
+            if items:
+                items = [('Show', items)]
+                menu_table[:0] = items  
+    #@-node:bobjack.20080428114659.21:toolbar-show-iconbar-menu
+    #@+node:bobjack.20080503040740.4:toolbar-toggle-iconbar
+    class toggleIconbarCommandClass(toolbarCommandClass):
+
         """Minibuffer command to toggle the visibility of an iconBar."""
 
-        c = self.c
-        frame = c.frame
+        #@    @+others
+        #@-others
 
-        try:
-            phase = keywords['rc_phase']
-        except KeyError:
-            phase = 'minibuffer'
+        def doCommand(self, keywords):
 
-        try:
-            bar = keywords['bar']
-            inBar = True
-        except KeyError:
-            inBar = False
-            bar = frame.iconBar
+            c = self.c
+            frame = c.frame
 
-        barShow = "Show IconBar\nicon=Tango/16x16/actions/add.png"
-        barHide = "Hide IconBar\nicon=Tango/16x16/actions/remove.png"
+            try:
+                phase = keywords['rc_phase']
+            except KeyError:
+                phase = 'minibuffer'
 
-        visible = bar.visible
+            try:
+                bar = keywords['bar']
+                inBar = True
+            except KeyError:
+                inBar = False
+                bar = frame.iconBar
 
-        if phase == 'generate':
+            barShow = "Show IconBar\nicon=Tango/16x16/actions/add.png"
+            barHide = "Hide IconBar\nicon=Tango/16x16/actions/remove.png"
 
-            label = visible and barHide or barShow
-            menu_table = keywords['rc_menu_table']
-            menu_table[:0] =  [(label, 'toggle-iconbar')]
+            visible = bar.visible
 
-        elif phase in ['invoke', 'minibuffer']:
+            if phase == 'generate':
 
-            bar.visible = not visible
+                label = visible and barHide or barShow
+                menu_table = keywords['rc_menu_table']
+                menu_table[:0] =  [(label, 'toggle-iconbar')]
 
-    toggle_iconbar = toolbar_toggle_iconbar
+            elif phase in ['invoke', 'minibuffer']:
 
-    #@-node:bobjack.20080503040740.4:toolbar_toggle_iconbar
+                bar.visible = not visible
+
+    #@-node:bobjack.20080503040740.4:toolbar-toggle-iconbar
     #@-node:bobjack.20080428114659.20:Generator Commands
     #@+node:bobjack.20080426190702.2:Invocation Commands
-    #@+node:bobjack.20080426190702.3:toolbar_delete_button
-    def toolbar_delete_button(self, keywords):
-        """Minibuffer command to delete a toolbar button.
+    #@+node:bobjack.20080426190702.3:toolbar-delete-button
+    class deleteButtonCommandClass(toolbarCommandClass):
+        """Command to delete a toolbar button.
 
         For use only in rClick menus attached to toolbar buttons.
 
         """
 
-        try:
-           keywords['event'].widget.deleteButton()
+        #@    @+others
+        #@-others
 
-        except Exception, e:
-            g.es_error(e)
-            g.es_error('failed to delete button')
+        def doCommand(self, keywords):
+            """Minibuffer command to delete a toolbar button.
+
+            For use only in rClick menus attached to toolbar buttons.
+
+            """
+
+            try:
+               keywords['event'].widget.deleteButton()
+
+            except Exception, e:
+                g.es_error(e)
+                g.es_error('failed to delete button')
+
+    #@-node:bobjack.20080426190702.3:toolbar-delete-button
+    #@+node:bobjack.20080428114659.11:toolbar-add-iconbar
+    class addIconbarCommandClass(toolbarCommandClass):
+
+        """Command to add a new iconBar."""
+
+        #@    @+others
+        #@+node:bobjack.20080429153129.21:uniqueBarName
+        def uniqueBarName(self, prefix):
+
+            iconBars = self.c.frame.iconBars
+
+            if not prefix in iconBars:
+                return prefix
+
+            for i in range(1,100):
+                barName = '%s.%s' %(prefix, i)
+                if barName not in iconBars:
+                    return barName
+
+        #@-node:bobjack.20080429153129.21:uniqueBarName
+        #@-others
+
+        def doCommand(self, keywords):
+
+            c = self.c
+            frame = c.frame
+
+            try:
+                bar = keywords['bar']
+                barName = bar.barName 
+            except KeyError:
+                 barName = 'iconbar'
+
+            newbarName = self.uniqueBarName(barName)
+
+            frame.createIconBar(newbarName)
 
 
 
+    #@-node:bobjack.20080428114659.11:toolbar-add-iconbar
+    #@+node:bobjack.20080428114659.16:toolbar-hide-iconbar
+    class hideIconbarCommandClass(toolbarCommandClass):
 
-
-    #@-node:bobjack.20080426190702.3:toolbar_delete_button
-    #@+node:bobjack.20080428114659.11:toolbar_add_iconbar
-    def toolbar_add_iconbar(self, keywords):
-        """Minibuffer command to add a new iconBar."""
-
-        c = self.c
-        frame = c.frame
-
-        try:
-            bar = keywords['bar']
-            barName = bar.barName 
-        except KeyError:
-             barName = 'iconbar'
-
-        newbarName = self.uniqueBarName(barName)
-
-        frame.createIconBar(newbarName)
-
-
-
-
-
-
-    #@-node:bobjack.20080428114659.11:toolbar_add_iconbar
-    #@+node:bobjack.20080428114659.16:toolbar_hide_iconbar
-    def toolbar_hide_iconbar(self, keywords):
         """Minibuffer command to hide an iconBar.
 
         This is only for use in context menus attached to iconBars.
+
         """
 
-        c = self.c
-        frame = c.frame
+        #@    @+others
+        #@-others
 
-        try:
-            bar = keywords['bar']
-        except KeyError:
-            bar = frame.iconBars['iconbar']
+        def doCommand(self, keywords):
 
-        bar.hide()
+            c = self.c
+            frame = c.frame
 
-    #@-node:bobjack.20080428114659.16:toolbar_hide_iconbar
-    #@+node:bobjack.20080428114659.17:toolbar_add_script_button
-    def toolbar_add_script_button(self, keywords):
+            try:
+                bar = keywords['bar']
+            except KeyError:
+                bar = frame.iconBars['iconbar']
+
+            bar.hide()
+
+    #@-node:bobjack.20080428114659.16:toolbar-hide-iconbar
+    #@+node:bobjack.20080428114659.17:toolbar-add-script-button
+    class addScriptButtonCommandClass(toolbarCommandClass):
 
         """Add a script-button to the selected iconBar.
 
-        This is for use in iconBar rClick menus, but may also be used as a minibufer
-        command, in which case it will always add the script button to the iconBar
-        named 'iconbar' if it exists.
+        This command is for use in in iconBar rClick menus, the script-button will
+        be added to the bar that recieved the click.
+
+        It may also be used as a minibufer command, in which case a script-button
+        will be added to the default 'iconbar'.
 
         """
+        #@    @+others
+        #@-others
 
-        c = self.c
-        frame = c.frame
-        iconBars = frame.iconBars
+        def doCommand(self, keywords):
 
-        try:
-            bar = keywords['bar']
-            barName = bar.barName
-        except KeyError:
-            bar = iconBars['iconbar']
-            barName = 'iconbar'
+            c = self.c
+            frame = c.frame
+            iconBars = frame.iconBars
 
-        oldIconBar = frame.iconBar
+            try:
+                bar = keywords['bar']
+                barName = bar.barName
+            except KeyError:
+                bar = iconBars['iconbar']
+                barName = 'iconbar'
 
-        try:
-            frame.iconBar = bar
-            sm = c.theScriptingController
-            sm.createScriptButtonIconButton(barName) 
-        finally:
-            frame.iconBar = oldIconBar
+            oldIconBar = frame.iconBar
 
-    add_script_button = toolbar_add_script_button
+            try:
+                frame.iconBar = bar
+                sm = c.theScriptingController
+                sm.createScriptButtonIconButton(barName) 
+            finally:
+                frame.iconBar = oldIconBar
 
-
-    #@-node:bobjack.20080428114659.17:toolbar_add_script_button
+    #@-node:bobjack.20080428114659.17:toolbar-add-script-button
     #@-node:bobjack.20080426190702.2:Invocation Commands
     #@+node:bobjack.20080429153129.28:Utility
-    #@+node:bobjack.20080429153129.21:uniqueBarName
-    def uniqueBarName(self, prefix):
-
-        iconBars = self.c.frame.iconBars
-
-        if not prefix in iconBars:
-            return prefix
-
-        for i in range(1,100):
-            barName = '%s.%s' %(prefix, i)
-            if barName not in iconBars:
-                return barName
-
-    #@-node:bobjack.20080429153129.21:uniqueBarName
     #@-node:bobjack.20080429153129.28:Utility
     #@-others
 
