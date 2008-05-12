@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="89" left="238" height="749" width="930"/>
+	<global_window_position top="89" left="400" height="749" width="795"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,1,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -63,7 +63,7 @@
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = False</vh></v>
+<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
@@ -115,13 +115,14 @@
 <v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
 <v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
 <v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = MistyRose1</vh></v>
-<v t="ekr.20060822101942"><vh>@color command_mode_bg_color = None</vh></v>
+<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
 <v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = None</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = None</vh></v>
+<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = white</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
 <v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = None</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
 </v>
 <v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
 <v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = #ffffec</vh></v>
@@ -352,7 +353,7 @@
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = False</vh></v>
+<v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060122105527.5" annotate="7d71002e"><vh>@bool useCmdMenu = True</vh></v>
@@ -453,7 +454,7 @@
 <v t="ekr.20060923114638.11"><vh>@mode emacs</vh></v>
 <v t="ekr.20060923114638.12"><vh>@mode extract</vh></v>
 <v t="ekr.20060923114638.13"><vh>@mode file</vh></v>
-<v t="ekr.20060923114638.14" a="M"><vh>@mode gui</vh></v>
+<v t="ekr.20060923114638.14"><vh>@mode gui</vh></v>
 <v t="ekr.20060923114638.15"><vh>@mode help</vh></v>
 <v t="ekr.20060923114638.16"><vh>@mode kill</vh></v>
 <v t="ekr.20060923114638.17"><vh>@mode modes</vh></v>
@@ -501,7 +502,7 @@
 <v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.11"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
@@ -540,7 +541,7 @@
 <v t="ekr.20070810180015.8"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20070810180015.9"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20070810180015.10"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20070810180015.11" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070810180015.11"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20070810180015.12"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
 <v t="ekr.20070810180015.13"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20070810180015.14"><vh>@shortcuts Outline operations</vh></v>
@@ -550,39 +551,20 @@
 </v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20060603215208.4"><vh>Modes</vh>
-<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
-<v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
-<v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
-<v t="ekr.20080510112420.3"><vh>@mode outline-Alt-Down</vh></v>
-<v t="ekr.20080510112420.2"><vh>@mode outline-Alt-Left</vh></v>
-<v t="ekr.20080510112420.1"><vh>@mode outline-alt-Right</vh></v>
-<v t="ekr.20080510112420.4"><vh>@mode outline-Alt-Up</vh></v>
-<v t="ekr.20080510112420.5"><vh>@mode outline-Alt-Shift-Down</vh></v>
-<v t="ekr.20080510112420.6"><vh>@mode outline-Alt-Shift-Left</vh></v>
-<v t="ekr.20080510112420.7"><vh>@mode outline-Alt-Shift-Right</vh></v>
-<v t="ekr.20080510112420.8"><vh>@mode outline-Alt-Shift-Up</vh></v>
-<v t="ekr.20080510112420.9"><vh>@mode outline-Alt-Home</vh></v>
-<v t="ekr.20080510112420.10"><vh>@mode outline-Alt-End</vh></v>
-<v t="ekr.20080510185834.1"><vh>@mode outline-contract-all</vh></v>
-<v t="ekr.20080510185834.3"><vh>@mode outline-clone-node</vh></v>
-<v t="ekr.20080510185834.4"><vh>@mode outline-paste-node</vh></v>
-</v>
-<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20080511113403.1"><vh>@mode newline-insert</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
-<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
-<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
 </v>
 <v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
@@ -1315,17 +1297,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080510112420.11" a="E"><vh>Recent settings</vh>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = False</vh></v>
-<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
-<v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-</v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20080512082834.2"><vh>Unused settings</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
-<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 <v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
 <v t="ekr.20080510112420.3"><vh>@mode outline-Alt-Down</vh></v>
@@ -1341,22 +1314,33 @@
 <v t="ekr.20080510185834.1"><vh>@mode outline-contract-all</vh></v>
 <v t="ekr.20080510185834.3"><vh>@mode outline-clone-node</vh></v>
 <v t="ekr.20080510185834.4"><vh>@mode outline-paste-node</vh></v>
+<v t="ekr.20080511121918.1"><vh>@mode outline-cut-node</vh></v>
 </v>
-<v t="ekr.20060603215208.17" a="E"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
+</v>
+<v t="ekr.20080510112420.11"><vh>Recent settings</vh>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
+<v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
+<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
+<v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+</v>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20080511113403.1"><vh>@mode newline-insert</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
-<v t="ekr.20060608191518.2"><vh>@shortcuts Enter modes</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 <v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
-<v t="ekr.20070613133747" a="M"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
 <v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -5814,7 +5798,6 @@ sort-siblings           = s
 # enter-move-outline-mode = Shift-o
 # enter-toggle-find-mode  = t
 # enter-extract-mode      = x</t>
-<t tx="ekr.20060603215208.17"></t>
 <t tx="ekr.20060603215208.19"># Quick finds
 backward-find-character                     = Alt-Q
 backward-find-character-extend-selection    = Alt-Shift-Q
@@ -5868,7 +5851,9 @@ overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20060605081712">Recommended:
     
 white                   if top_level_unbound_key_action is command
-a color like MistyRose1 if top_level_unbound_key_action is insert or overwrite.</t>
+a color like MistyRose1 if top_level_unbound_key_action is insert or overwrite.
+
+#f2fdff</t>
 <t tx="ekr.20060605081712.3">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060606085536">Overrides body_text_background_color.
 
@@ -5889,8 +5874,9 @@ enter-quick-command-mode = Alt-Shift-C
 
 enter-outline-clone-node-mode   = Ctrl-`
 enter-outline-contract-all-mode = Alt--
+enter-outline-cut-node-mode     = Shift-Ctrl-x
 # enter-outline-insert-node-mode  = Ctrl-i # Not good: we want to edit the headline.
-enter-outline-paste-node-mode   = Shift-Ctrl-V
+enter-outline-paste-node-mode   = Shift-Ctrl-v
 
 enter-outline-mode = Alt-t
 enter-outline-mode = Ctrl-t
@@ -5946,7 +5932,6 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060807103220.9">This is the format of the year node headline if a whole year is inserted.</t>
 <t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
 <t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
-<t tx="ekr.20060822101942">Overrides body_text_background_color.</t>
 <t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060822101942.2">Overrides body_text_background_color.</t>
 <t tx="ekr.20060826152759"></t>
@@ -6655,18 +6640,18 @@ select-all                          = Alt-Shift-A  # Shift-Ctrl-A: beginning-of-
 <t tx="ekr.20060925060533.2">contract-pane               = Alt+Ctrl+-
 expand-pane                 = Alt+Ctrl-=
 focus-to-body               = Alt-D
-# focus-to-tree               = Alt-T
+focus-to-tree               = Alt-T
+focus-to-tree               = Ctrl-T
 # toggle-active-pane          = Ctrl-T</t>
-<t tx="ekr.20060925060533.3"># clone-node                  = Ctrl-`
+<t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 clone-node-to-chapter       = None
 contract-node               = None
 copy-node                   = Shift-Ctrl-c
 copy-node-to-chapter        = None
 create-chapter              = None
 cut-node                    = Shift-Ctrl-x
-# contract-all                = Alt--
+contract-all                = Alt--
 edit-headline               = Ctrl-h
-end-edit-headline           ! tree = Return     # Esc is also possible.
 delete-node                 = None
 demote                      = Ctrl-}
 expand-next-level           = None
@@ -6682,7 +6667,7 @@ move-outline-down           = Ctrl-D
 move-outline-left           = Ctrl-L
 move-outline-right          = Ctrl-R
 move-outline-up             = Ctrl-U
-# paste-node                  = Shift-Ctrl-V
+paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
 remove-chapter              = None
 select-chapter              = None</t>
@@ -8552,19 +8537,8 @@ move-outline-up     -&gt; same = Shift-Up
 
 # goto-first-visible-node -&gt; same = Home
 # goto-last-visible-node  -&gt; same = End</t>
-<t tx="ekr.20080510072134.2">cycle-focus         = Ctrl-tab
-cycle-all-focus     = Ctrl-Shift-tab
-
-# Body editing keys.
-back-char               = LtArrow
-forward-char            = RtArrow
-next-line                   = DnArrow
-previous-line               = UpArrow
-
-back-char-extend-selection      = Shift-LtArrow
-forward-char-extend-selection   = Shift-RtArrow
-next-line-extend-selection      = Shift-DnArrow
-previous-line-extend-selection  = Shift-UpArrow
+<t tx="ekr.20080510072134.2">cycle-focus                         = Ctrl-tab
+cycle-all-focus                     = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
@@ -8584,49 +8558,12 @@ scroll-down-extend-selection        = Shift-PageDn
 scroll-up                           = PageUp
 scroll-up-extend-selection          = Shift-PageUp
 
-# Alt arrow/home/end/page keys always refer to the tree.
-# But maybe it's better *always* to go to outline mode???
-
-# These are now handled by modes that redirect to outline-mode.
-
-    # contract-or-go-left         = Alt-LtArrow
-    # expand-and-go-right         = Alt-RtArrow
-    # goto-next-visible           = Alt-DnArrow
-    # goto-prev-visible           = Alt-UpArrow
-    # move-outline-down           = Alt-Shift-DnArrow
-    # move-outline-left           = Alt-Shift-LtArrow
-    # move-outline-right          = Alt-Shift-RtArrow
-    # move-outline-up             = Alt-Shift-UpArrow    
-    # goto-first-node             = None
-    # goto-first-visible-node     = Alt-Home
-    # goto-last-visible-node      = Alt-End
-
 # No longer bound anywhere.
 
     # scroll-outline-down-page    = Alt-PageDn
     # scroll-outline-left         = Alt+Ctrl+LtArrow
     # scroll-outline-right        = Alt+Ctrl+RtArrow
     # scroll-outline-up-page      = Alt-PageUp
-    
-# These are now bound **only** in outline mode.
-
-    # contract-or-go-left       ! tree = LtArrow
-    # expand-and-go-right       ! tree = RtArrow
-    # goto-first-sibling        ! tree = Alt-Ctrl-UpArrow
-    # goto-last-sibling         ! tree = Alt-Ctrl-DnArrow
-    # goto-next-visible         ! tree = DnArrow
-    # goto-prev-visible         ! tree = UpArrow
-    
-    # move-outline-down         ! tree = Shift-DnArrow
-    # move-outline-left         ! tree = Shift-LtArrow
-    # move-outline-right        ! tree = Shift-RtArrow
-    # move-outline-up           ! tree = Shift-UpArrow
-    
-    # goto-first-visible-node   ! tree = Home
-    # goto-last-visible-node    ! tree = End
-    
-    # scroll-outline-down-page      ! tree = PageDn
-    # scroll-outline-up-page        ! tree = PageUp
 
 # Minibuffer bindings are no longer needed.
 
@@ -8729,6 +8666,7 @@ yank                        = y
 undo                        = z
 redo                        = Shift-z
 full-command                = :
+enter-newline-insert-mode   ! body = Return
 
 # cursor movement keys...
     # back-char           = h
@@ -8810,6 +8748,57 @@ full-command                = :
 <t tx="ekr.20080510185834.4">--&gt; paste-node
 --&gt; enter-outline-mode
 </t>
+<t tx="ekr.20080511041907.1">#f9f0f4 light pink
+#fbfdfd very light blue
+
+For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
+<t tx="ekr.20080511041907.2"></t>
+<t tx="ekr.20080511113403.1"># A kludgy "mode" that inserts a newline and enters insert state.
+--&gt; newline
+--&gt; set-insert-state
+</t>
+<t tx="ekr.20080511121918.1">--&gt; cut-node
+--&gt; enter-outline-mode
+</t>
+<t tx="ekr.20080512082834.1"># Now that we know what commands are single-line editing commands,
+# Only &lt;return&gt; and arrow keys need per-pane bindings.
+
+end-edit-headline           ! tree = Return # Esc is also possible.
+enter-newline-insert-mode   ! body = Return
+
+back-char                   ! text = LtArrow
+forward-char                ! text = RtArrow
+next-line                   ! text = DnArrow
+previous-line               ! text = UpArrow
+
+back-char-extend-selection      ! text = Shift-LtArrow
+forward-char-extend-selection   ! text = Shift-RtArrow
+next-line-extend-selection      ! text = Shift-DnArrow
+previous-line-extend-selection  ! text = Shift-UpArrow
+
+contract-or-go-left         ! tree = LtArrow
+expand-and-go-right         ! tree = RtArrow
+goto-next-visible           ! tree = DnArrow
+goto-prev-visible           ! tree = UpArrow
+move-outline-down           ! tree = Shift-DnArrow
+move-outline-left           ! tree = Shift-LtArrow
+move-outline-right          ! tree = Shift-RtArrow
+move-outline-up             ! tree = Shift-UpArrow    
+goto-first-visible-node     ! tree= Home
+goto-last-visible-node      ! tree= End
+
+contract-or-go-left         = Alt-LtArrow
+expand-and-go-right         = Alt-RtArrow
+goto-next-visible           = Alt-DnArrow
+goto-prev-visible           = Alt-UpArrow
+move-outline-down           = Alt-Shift-DnArrow
+move-outline-left           = Alt-Shift-LtArrow
+move-outline-right          = Alt-Shift-RtArrow
+move-outline-up             = Alt-Shift-UpArrow    
+goto-first-visible-node     = Alt-Home
+goto-last-visible-node      = Alt-End
+</t>
+<t tx="ekr.20080512082834.2"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
