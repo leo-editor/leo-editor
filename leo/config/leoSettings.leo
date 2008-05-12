@@ -89,7 +89,6 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
-<v t="tbrown.20080511114526.2"><vh>@bool fixedWindow = True</vh></v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -8811,7 +8810,6 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 #  REPLACE: /mnt/usr1/
 #     WITH: /
 </t>
-<t tx="tbrown.20080511114526.2"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
