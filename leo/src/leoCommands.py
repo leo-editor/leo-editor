@@ -1057,7 +1057,10 @@ class baseCommands:
     #@-node:ekr.20031218072017.2083:c.updateRecentFiles
     #@+node:tbrown.20080509212202.6:cleanRecentFiles
     def cleanRecentFiles(self,event=None):
-        dat = self.config.getData('path-demangle')
+
+        c = self
+
+        dat = c.config.getData('path-demangle')
         if not dat:
             g.es('No @data path-demangle setting')
             return
@@ -1073,25 +1076,40 @@ class baseCommands:
                 changes.append((replace, with_))
                 g.es('%s -> %s' % changes[-1])
 
-        orig = [i for i in self.recentFiles if i.startswith("/")]
-        self.clearRecentFiles()
+        orig = [i for i in c.recentFiles if i.startswith("/")]
+        c.clearRecentFiles()
 
         for i in orig:
             t = i
-            for c in changes:
-                t = t.replace(*c)
+            for change in changes:
+                t = t.replace(*change)
 
-            self.updateRecentFiles(t)
+            c.updateRecentFiles(t)
+
+        # code below copied from clearRecentFiles
+        g.app.config.recentFiles = [] # New in Leo 4.3.
+        g.app.config.appendToRecentFiles(c.recentFiles)
+        g.app.config.recentFileMessageWritten = False # Force the write message.
+        g.app.config.writeRecentFilesFile(c)
     #@-node:tbrown.20080509212202.6:cleanRecentFiles
     #@+node:tbrown.20080509212202.8:sortRecentFiles
     def sortRecentFiles(self,event=None):
-        orig = self.recentFiles[:]
-        self.clearRecentFiles()
+
+        c = self
+
+        orig = c.recentFiles[:]
+        c.clearRecentFiles()
         import os
         orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
             os.path.basename(a).lower()))
         for i in orig:
-            self.updateRecentFiles(i)
+            c.updateRecentFiles(i)
+
+        # code below copied from clearRecentFiles
+        g.app.config.recentFiles = [] # New in Leo 4.3.
+        g.app.config.appendToRecentFiles(c.recentFiles)
+        g.app.config.recentFileMessageWritten = False # Force the write message.
+        g.app.config.writeRecentFilesFile(c)
     #@-node:tbrown.20080509212202.8:sortRecentFiles
     #@-node:ekr.20031218072017.2079:Recent Files submenu & allies
     #@+node:ekr.20031218072017.2838:Read/Write submenu
