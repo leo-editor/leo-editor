@@ -68,6 +68,17 @@ class leoTkinterBody (leoFrame.leoBody):
 
         w.bind('<Key>', k.masterKeyHandler)
 
+        def onFocusOut(event,c=c):
+            self.setEditorColors(
+                bg=c.k.unselected_body_bg_color,
+                fg=c.k.unselected_body_fg_color)
+
+        def onFocusIn(event,c=c):
+            c.k.setInputState(k.unboundKeyAction)
+
+        w.bind('<FocusOut>', onFocusOut)
+        w.bind('<FocusIn>', onFocusIn)
+
         table = [
             ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
             ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),

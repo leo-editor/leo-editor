@@ -1555,6 +1555,7 @@ class keyHandlerClass:
         # g.trace('base keyHandler',g.callers())
 
         self.c = c
+        self.inited = False # Set at end of finishCreate.
         self.widget = c.frame.miniBufferWidget
         self.useGlobalKillbuffer = useGlobalKillbuffer
         self.useGlobalRegisters = useGlobalRegisters
@@ -1689,12 +1690,15 @@ class keyHandlerClass:
         k.insert_mode_fg_color = c.config.getColor('insert_mode_fg_color') or fg
         k.overwrite_mode_bg_color = c.config.getColor('overwrite_mode_bg_color') or bg
         k.overwrite_mode_fg_color = c.config.getColor('overwrite_mode_fg_color') or fg
+        k.unselected_body_bg_color = c.config.getColor('unselected_body_bg_color') or bg
+        k.unselected_body_fg_color = c.config.getColor('unselected_body_fg_color') or bg    
 
-        # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color,k)
+        # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
+
+        self.inited = True
 
         k.setInputState(self.unboundKeyAction)
         k.resetLabel()
-    #@nonl
     #@+node:ekr.20061031131434.81:createInverseCommandsDict
     def createInverseCommandsDict (self):
 
@@ -2989,7 +2993,7 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui  = g.app.gui
         state = k.getState('getArg')
         keysym = gui.eventKeysym(event)
-        trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
+        trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
         if trace: g.trace(
             'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
             'completion', state==0 and completion or state!=0 and k.arg_completion)
@@ -3266,16 +3270,18 @@ class keyHandlerClass:
 
         #@    << handle special cases for plain keys >>
         #@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-        if isPlain:
+        if isPlain and k.unboundKeyAction in ('insert','overwrite'):
 
-            if k.unboundKeyAction in ('insert','overwrite'):
+            for key in (k.unboundKeyAction,'body','log','text','all'):
+                # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+                d = k.masterBindingsDict.get(key,{})
+                if d:
+                    b = d.get(stroke)
+                    if b and b.commandName == 'auto-complete':
+                        return k.masterCommand(event,b.func,b.stroke,b.commandName)
 
-                if trace: g.trace('plain key in insert mode')
-                return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-            else:
-                g.trace('plain key in command mode',stroke)
-
+            if trace: g.trace('plain key in %s mode' % (k.unboundKeyAction),stroke)
+            return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
         #@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
         #@nl
 
@@ -3349,7 +3355,12 @@ class keyHandlerClass:
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
-        trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
+        trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+        # Special case for bindings handled in k.getArg:
+        if state in ('getArg','full-command'):
+            if stroke in ('BackSpace','Return','Tab','Escape'):
+                return False
 
         if not state.startswith('auto-'):
             # New in Leo 4.5: ignore plain key binding in the minibuffer.
@@ -3564,9 +3575,9 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; w = self.widget
         if not w: return
-        trace = self.trace_minibuffer and not g.app.unitTesting
+        trace = False or self.trace_minibuffer and not g.app.unitTesting
 
-        if trace: g.trace('len(s)',len(s),g.callers())
+        if trace: g.trace('protect',protect,s)
 
         w.setAllText(s)
         n = len(s)
@@ -3794,7 +3805,7 @@ class keyHandlerClass:
                     k.modeHelp(event)
                 else:
                     c.frame.log.hideTab('Mode')
-                c.minibufferWantsFocus()
+                #### c.minibufferWantsFocus()
         elif not func:
             g.trace('No func: improper key binding')
             return 'break'
@@ -3867,7 +3878,7 @@ class keyHandlerClass:
         else:
             k.setLabelBlue(modeName+': ',protect=True)
             k.showStateAndMode()
-            c.minibufferWantsFocus()
+            #### c.minibufferWantsFocus()
     #@-node:ekr.20061031131434.163:initMode
     #@+node:ekr.20061031131434.164:reinitMode
     def reinitMode (self,modeName):
@@ -3885,7 +3896,7 @@ class keyHandlerClass:
         else:
             # Do not set the status line here.
             k.setLabelBlue(modeName+': ',protect=True)
-            c.minibufferWantsFocus()
+            #### c.minibufferWantsFocus()
     #@-node:ekr.20061031131434.164:reinitMode
     #@+node:ekr.20061031131434.165:modeHelp
     def modeHelp (self,event):
@@ -4223,32 +4234,6 @@ class keyHandlerClass:
              g.trace(bunch.pane,shortcut,bunch.commandName,gui.widget_name(w))
     #@-node:ekr.20061031131434.180:traceBinding
     #@-node:ekr.20061031131434.167:Shared helpers
-    #@+node:ekr.20061031131434.133:setInputState
-    def setInputState (self,state,showState=False):
-
-        k = self ; c = k.c ; body = c.frame.body ; w = body.bodyCtrl
-
-        # g.trace(state)
-        k.unboundKeyAction = state
-        k.showStateAndMode()
-
-        if state not in ('insert','command','overwrite'):
-            g.trace('bad input state',state)
-
-        if w:
-            if state == 'insert':
-                bg = k.insert_mode_bg_color ; fg = k.insert_mode_fg_color
-            elif state == 'command':
-                bg = k.command_mode_bg_color ; fg = k.command_mode_fg_color
-            elif state == 'overwrite':
-                bg = k.overwrite_mode_bg_color, fg = k.overwrite_mode_fg_color
-            else:
-                bg = fg = 'red'
-
-            # g.trace(id(w),bg,fg,self)
-
-            body.setEditorColors(bg=bg,fg=fg)
-    #@-node:ekr.20061031131434.133:setInputState
     #@+node:ekr.20061031131434.181:Shortcuts (keyHandler)
     #@+node:ekr.20061031131434.182:isPlainKey
     def isPlainKey (self,shortcut):
@@ -4423,42 +4408,6 @@ class keyHandlerClass:
         return g.choose(brief,s,'<%s>' % s)
     #@-node:ekr.20061031131434.191:k.prettyPrintKey
     #@-node:ekr.20061031131434.181:Shortcuts (keyHandler)
-    #@+node:ekr.20061031131434.192:showStateAndMode
-    def showStateAndMode(self):
-
-        k = self ; w = self.widget
-        if not w: return
-
-        state = k.unboundKeyAction
-        mode = k.getStateKind()
-
-        if mode:
-            k.setLabelBlue(label='%s Mode' % (mode.capitalize()),protect=True)
-        else:
-            k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
-
-
-        if 0: # Now done in the minibuffer.
-
-            k = self ; c = k.c ; frame = c.frame
-            state = k.unboundKeyAction
-            mode = k.getStateKind()
-
-            if hasattr(frame,'clearStatusLine') and not state.capitalize()=='Insert':
-                frame.clearStatusLine()
-                put = frame.putStatusLine
-                put('Key state: ',color='blue')
-                put('%s' % state.capitalize())
-                if mode:
-                    # put(' mode: ',color='blue')
-                    if mode.endswith('-mode'): mode = mode[:-5]
-                    mode = mode.replace('-',' ').capitalize()
-                    put(' Mode: ',color='blue')
-                    put(mode)
-
-                # Restore the focus.
-                c.restoreFocus()
-    #@-node:ekr.20061031131434.192:showStateAndMode
     #@+node:ekr.20061031131434.193:States
     #@+node:ekr.20061031131434.194:clearState
     def clearState (self):
@@ -4468,11 +4417,6 @@ class keyHandlerClass:
         k.state.n = None
         k.state.handler = None
     #@-node:ekr.20061031131434.194:clearState
-    #@+node:ekr.20061031131434.195:getStateHandler
-    def getStateHandler (self):
-
-        return self.state.handler
-    #@-node:ekr.20061031131434.195:getStateHandler
     #@+node:ekr.20061031131434.196:getState
     def getState (self,kind):
 
@@ -4481,6 +4425,11 @@ class keyHandlerClass:
         # g.trace(state,'returns',val)
         return val
     #@-node:ekr.20061031131434.196:getState
+    #@+node:ekr.20061031131434.195:getStateHandler
+    def getStateHandler (self):
+
+        return self.state.handler
+    #@-node:ekr.20061031131434.195:getStateHandler
     #@+node:ekr.20061031131434.197:getStateKind
     def getStateKind (self):
 
@@ -4496,6 +4445,42 @@ class keyHandlerClass:
         else:
             return k.state.kind and k.state.n != None
     #@-node:ekr.20061031131434.198:inState
+    #@+node:ekr.20080511122507.4:setDefaultInputState
+    def setDefaultInputState (self):
+
+        k = self
+        k.setInputState(k.unboundAction)
+    #@nonl
+    #@-node:ekr.20080511122507.4:setDefaultInputState
+    #@+node:ekr.20061031131434.133:setInputState
+    def setInputState (self,state,showState=False):
+
+        k = self ; c = k.c
+        body = c.frame.body ; w = body.bodyCtrl
+
+        k.unboundKeyAction = state
+        k.showStateAndMode()
+
+        if state not in ('insert','command','overwrite'):
+            g.trace('bad input state',state)
+
+        if self.inited and w:
+            if state == 'insert':
+                bg = k.insert_mode_bg_color
+                fg = k.insert_mode_fg_color
+            elif state == 'command':
+                bg = k.command_mode_bg_color
+                fg = k.command_mode_fg_color
+            elif state == 'overwrite':
+                bg = k.overwrite_mode_bg_color
+                fg = k.overwrite_mode_fg_color
+            else:
+                bg = fg = 'red'
+
+            # g.trace(id(w),bg,fg,self)
+
+            body.setEditorColors(bg=bg,fg=fg)
+    #@-node:ekr.20061031131434.133:setInputState
     #@+node:ekr.20061031131434.199:setState
     def setState (self,kind,n,handler=None):
 
@@ -4510,6 +4495,33 @@ class keyHandlerClass:
 
         # k.showStateAndMode()
     #@-node:ekr.20061031131434.199:setState
+    #@+node:ekr.20061031131434.192:showStateAndMode
+    def showStateAndMode(self):
+
+        k = self ; c = k.c ; w = self.widget
+        if not w: return
+
+        trace = False
+        state = k.unboundKeyAction
+        mode = k.getStateKind()
+
+        if mode:
+            if mode in ('getArg','getFileName','full-command'):
+                s = None
+            else:
+                assert mode.endswith('-mode')
+                mode = mode[:-5]
+                s = '%s Mode' % mode.capitalize()
+        else:
+            s = '%s State' % state.capitalize()
+
+        if s:
+            if trace: g.trace(s,g.callers(5))
+            k.setLabelBlue(label=s,protect=True)
+
+        # Restore the focus.
+        # c.restoreFocus()
+    #@-node:ekr.20061031131434.192:showStateAndMode
     #@-node:ekr.20061031131434.193:States
     #@+node:ekr.20061031131434.200:universalDispatcher & helpers
     def universalDispatcher (self,event):

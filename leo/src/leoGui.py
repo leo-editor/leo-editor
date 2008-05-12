@@ -422,7 +422,9 @@ class leoGui:
     def widget_name (self,w):
 
         # First try the widget's getName method.
-        if hasattr(w,'getName'):
+        if not 'w':
+            return '<no widget>'
+        elif hasattr(w,'getName'):
             return w.getName()
         elif hasattr(w,'_name'):
             return w._name
@@ -544,7 +546,7 @@ class nullGui(leoGui):
         return self.clipboardContents
 
     def get_focus(self,frame):
-        return self.focusWidget or frame.body.bodyCtrl
+        return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
 
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         return g.app.config.defaultFont
