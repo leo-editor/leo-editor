@@ -69,7 +69,8 @@ class leoTkinterBody (leoFrame.leoBody):
         w.bind('<Key>', k.masterKeyHandler)
 
         def onFocusOut(event,c=c):
-            c.k.setDefaultInputState()
+            # This interferes with inserting new nodes.
+                # c.k.setDefaultInputState()
             self.setEditorColors(
                 bg=c.k.unselected_body_bg_color,
                 fg=c.k.unselected_body_fg_color)

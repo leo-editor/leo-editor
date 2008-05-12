@@ -4542,7 +4542,7 @@ class keyHandlerClass:
         inOutline = False
 
         w = g.app.gui and g.app.gui.get_focus(c)
-        # g.trace(w and w.widgetName)
+        if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
 
         if mode:
             if mode in ('getArg','getFileName','full-command'):
@@ -4558,7 +4558,7 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
 
         if s:
-            if trace: g.trace(s,g.callers(5))
+            if trace: g.trace(s)
             k.setLabelBlue(label=s,protect=True)
 
         k.showStateColors(inOutline=inOutline)

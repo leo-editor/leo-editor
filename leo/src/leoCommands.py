@@ -6805,10 +6805,16 @@ class baseCommands:
 
         if p:
             c.selectPosition(p)
+
             c.frame.tree.editLabel(p,selectAll=selectAll)
 
             if k:
-                k.setDefaultInputState()
+                if selectAll:
+                    g.trace('insert state')
+                    k.setInputState('insert')
+                else:
+                    k.setDefaultInputState()
+
                 k.showStateAndMode()
     #@-node:ekr.20031218072017.2991:c.editPosition
     #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)

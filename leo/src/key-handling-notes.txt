@@ -1208,7 +1208,7 @@ def showStateAndMode(self):
     inOutline = False
 
     w = g.app.gui and g.app.gui.get_focus(c)
-    # g.trace(w and w.widgetName)
+    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -1224,7 +1224,7 @@ def showStateAndMode(self):
         s = '%s State' % state.capitalize()
 
     if s:
-        if trace: g.trace(s,g.callers(5))
+        if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
     k.showStateColors(inOutline=inOutline)
@@ -1853,7 +1853,7 @@ def showStateAndMode(self):
     inOutline = False
 
     w = g.app.gui and g.app.gui.get_focus(c)
-    # g.trace(w and w.widgetName)
+    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -1869,7 +1869,7 @@ def showStateAndMode(self):
         s = '%s State' % state.capitalize()
 
     if s:
-        if trace: g.trace(s,g.callers(5))
+        if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
     k.showStateColors(inOutline=inOutline)
@@ -2020,7 +2020,7 @@ def showStateAndMode(self):
     inOutline = False
 
     w = g.app.gui and g.app.gui.get_focus(c)
-    # g.trace(w and w.widgetName)
+    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -2036,7 +2036,7 @@ def showStateAndMode(self):
         s = '%s State' % state.capitalize()
 
     if s:
-        if trace: g.trace(s,g.callers(5))
+        if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
     k.showStateColors(inOutline=inOutline)
@@ -2181,7 +2181,8 @@ def createBindings (self,w=None):
     w.bind('<Key>', k.masterKeyHandler)
 
     def onFocusOut(event,c=c):
-        c.k.setDefaultInputState()
+        # This interferes with inserting new nodes.
+            # c.k.setDefaultInputState()
         self.setEditorColors(
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
@@ -2294,7 +2295,7 @@ def showStateAndMode(self):
     inOutline = False
 
     w = g.app.gui and g.app.gui.get_focus(c)
-    # g.trace(w and w.widgetName)
+    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
 
     if mode:
         if mode in ('getArg','getFileName','full-command'):
@@ -2310,7 +2311,7 @@ def showStateAndMode(self):
         s = '%s State' % state.capitalize()
 
     if s:
-        if trace: g.trace(s,g.callers(5))
+        if trace: g.trace(s)
         k.setLabelBlue(label=s,protect=True)
 
     k.showStateColors(inOutline=inOutline)
@@ -3499,6 +3500,145 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 #@-node:ekr.20080510095819.1:handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@-node:ekr.20080512151204.1:Don't honor command-mode keys if not in text widget
+#@+node:ekr.20080512153146.2:New nodes should edit text in input mode
+#@+node:ekr.20031218072017.1761:c.insertHeadline
+def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
+
+    '''Insert a node after the presently selected node.'''
+
+    c = self ; u = c.undoer
+    current = c.currentPosition()
+
+    if not current: return
+
+    c.beginUpdate()
+    try:
+        undoData = c.undoer.beforeInsertNode(current)
+        # Make sure the new node is visible when hoisting.
+        if (as_child or
+            (current.hasChildren() and current.isExpanded()) or
+            (c.hoistStack and current == c.hoistStack[-1].p)
+        ):
+            if c.config.getBool('insert_new_nodes_at_end'):
+                p = current.insertAsLastChild()
+            else:
+                p = current.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(p)
+        c.setChanged(True)
+        u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate()
+    c.beginUpdate()
+    try:
+        c.editPosition(p,selectAll=True)
+    finally:
+        c.endUpdate(False)
+
+    return p # for mod_labels plugin.
+#@-node:ekr.20031218072017.1761:c.insertHeadline
+#@+node:ekr.20031218072017.2991:c.editPosition
+# Selects v: sets the focus to p and edits p.
+
+def editPosition(self,p,selectAll=False):
+
+    c = self ; k = c.k
+
+    if p:
+        c.selectPosition(p)
+
+        c.frame.tree.editLabel(p,selectAll=selectAll)
+
+        if k:
+            if selectAll:
+                g.trace('insert state')
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            k.showStateAndMode()
+#@-node:ekr.20031218072017.2991:c.editPosition
+#@+node:ekr.20031218072017.838:tkBody.createBindings
+def createBindings (self,w=None):
+
+    '''(tkBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    frame = self.frame ; c = self.c ; k = c.k
+    if not w: w = self.bodyCtrl
+
+    w.bind('<Key>', k.masterKeyHandler)
+
+    def onFocusOut(event,c=c):
+        # This interferes with inserting new nodes.
+            # c.k.setDefaultInputState()
+        self.setEditorColors(
+            bg=c.k.unselected_body_bg_color,
+            fg=c.k.unselected_body_fg_color)
+        c.k.showStateAndMode()
+
+    def onFocusIn(event,c=c):
+        c.k.setDefaultInputState()
+
+    w.bind('<FocusOut>', onFocusOut)
+    w.bind('<FocusIn>', onFocusIn)
+
+    table = [
+        ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    ]
+
+    table2 = (
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,func,handler in table:
+        def bodyClickCallback(event,handler=handler,func=func):
+            return handler(event,func)
+
+        w.bind(kind,bodyClickCallback)
+#@-node:ekr.20031218072017.838:tkBody.createBindings
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self):
+
+    k = self ; c = k.c
+
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    if trace: g.trace(w and w.widgetName, state, mode, g.callers(5))
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and w.widgetName.lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s)
+        k.setLabelBlue(label=s,protect=True)
+
+    k.showStateColors(inOutline=inOutline)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20080512153146.2:New nodes should edit text in input mode
 #@-node:ekr.20080510185834.6:Projects
 #@-all
 #@nonl
