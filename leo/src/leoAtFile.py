@@ -573,6 +573,8 @@ class atFile:
             #c.setBodyString(p,'')
             p.clearDirty()
             c.setChanged(oldChanged)
+        else:
+            g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
     #@+node:ekr.20041005105605.27:readOpenFile
     def readOpenFile(self,root,theFile,fileName):
