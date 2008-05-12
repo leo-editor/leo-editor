@@ -1325,6 +1325,2180 @@ def navHelper (self,p,ch,extend):
 #@-node:ekr.20061002095711:c.navHelper
 #@-node:ekr.20060923202156:c.onCanvasKey
 #@-node:ekr.20080510072134.5:Do tree navigation in outline mode
+#@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
+#@+node:ekr.20031218072017.2950:c.begin/endUpdate
+@
+**Important** These methods ensure that exactly zero or one (depending on the
+argument to endUpdate) redraws exist within the section of code bounded by
+c.beginUpdate and c.endUpdate. This greatly simplifies and clarifies the code.
+
+Callers should ensure that every beginUpdate is matched with an endUpdate by
+using the following pattern:
+    c.beginUpdate()
+    try:
+        << whatever >>
+    finally:
+        c.endUpdate()
+@c
+
+def beginUpdate(self):
+
+    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+    until the matching call to endUpdate.'''
+
+    c = self
+    if c.frame and c.frame.tree:
+        c.frame.tree.beginUpdate()
+
+def endUpdate(self,flag=True,scroll=True):
+
+    '''Redraw the screen if flag is True.'''
+
+    c = self
+    if c.frame and c.frame.tree:
+        c.frame.tree.endUpdate(flag,scroll=scroll)
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@-node:ekr.20031218072017.2950:c.begin/endUpdate
+#@+node:ekr.20031218072017.2951:c.bringToFront
+def bringToFront(self,set_focus=True):
+
+    # g.trace(g.callers())
+
+    c = self
+    c.frame.deiconify()
+
+    if set_focus:
+        c.frame.body.setFocus()
+
+BringToFront = bringToFront # Compatibility with old scripts
+#@-node:ekr.20031218072017.2951:c.bringToFront
+#@+node:ekr.20060205103842:c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget or c.hasFocusWidget or g.app.gui.get_focus(c)
+
+def request_focus(self,w):
+
+    c = self
+    if w: c.requestedFocusWidget = w
+    c.traceFocus(w)
+
+def set_focus (self,w,force=False):
+
+    c = self
+
+    if force: # New in Leo 4.4.2: safer.
+        c.hasFocusWidget = c.requestedFocusWidget = w
+        g.app.gui and g.app.gui.set_focus(c,w)
+        c.traceFocus(w)
+    else: # An optimization.
+        c.requestedFocusWidget = w
+        c.masterFocusHandler()
+#@-node:ekr.20060205103842:c.get/request/set_focus
+#@+node:ekr.20060210103358:c.invalidateFocus
+def invalidateFocus (self):
+
+    '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+    c = self
+    c.requestedFocusWidget = None
+    c.hasFocusWidget = None
+    # g.trace(g.callers())
+#@-node:ekr.20060210103358:c.invalidateFocus
+#@+node:ekr.20060207140352:c.masterFocusHandler
+def masterFocusHandler (self):
+
+    c = self
+    trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+    # Give priority to later requests, but default to previously set widget.
+    w = c.requestedFocusWidget or c.hasFocusWidget
+
+    if trace: print \
+        'requested',c.widget_name(c.requestedFocusWidget),\
+        'present',c.widget_name(c.hasFocusWidget)
+
+    if c.hasFocusWidget and (
+        not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+        if trace: print 'no change.',c.widget_name(w)
+        c.requestedFocusWidget = None
+    elif w:
+        # Ignore whatever g.app.gui.get_focus might say.
+        ok = g.app.gui.set_focus(c,w)
+        if ok: c.hasFocusWidget = w
+        c.requestedFocusWidget = None
+    else:
+        # This is not an error: it can arise because of a call to k.invalidateFocus.
+        if trace: print '*'*20,'oops: moving to body pane.'
+        c.bodyWantsFocusNow()
+
+restoreRequestedFocus = masterFocusHandler
+#@-node:ekr.20060207140352:c.masterFocusHandler
+#@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
+def recolor(self):
+
+    c = self
+    c.frame.body.recolor(c.currentPosition())
+
+def requestRecolor (self):
+
+    c = self
+    c.frame.requestRecolorFlag = True
+#@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
+#@+node:ekr.20051216171520:c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.currentPosition()
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@-node:ekr.20051216171520:c.recolor_now
+#@+node:ekr.20031218072017.2954:c.redraw and c.redraw_now
+def redraw (self):
+    c = self
+    c.beginUpdate()
+    c.endUpdate()
+
+def redraw_now (self):
+
+    c = self
+
+    if g.app.quitting or not c.exists or not hasattr(c.frame,'top'):
+        return # nullFrame's do not have a top frame.
+
+    c.frame.tree.redraw_now()
+    if 0: # Interferes with new colorizer.
+        c.frame.top.update_idletasks()
+
+    if c.frame.requestRecolorFlag:
+        c.frame.requestRecolorFlag = False
+        c.recolor()
+
+# Compatibility with old scripts
+force_redraw = redraw_now
+#@-node:ekr.20031218072017.2954:c.redraw and c.redraw_now
+#@+node:ekr.20060208143543:c.restoreFocus
+def restoreFocus (self):
+
+    '''Ensure that the focus eventually gets restored.'''
+
+    c =self
+    trace = not g.app.unitTesting and c.config.getBool('trace_focus')
+
+    if c.requestedFocusWidget:
+        c.hasFocusWidget = None # Force an update
+    elif c.hasFocusWidget:
+        c.requestedFocusWidget = c.hasFocusWidget
+        c.hasFocusWidget = None # Force an update
+    else:
+        # Should not happen, except during unit testing.
+        # c.masterFocusHandler sets c.hasFocusWidget,
+        # so if it is not set here it is because this method cleared it.
+        if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
+        c.bodyWantsFocusNow()
+
+    if c.inCommand:
+        if trace: g.trace('expecting later call to c.masterFocusHandler')
+        # A call to c.masterFocusHandler will surely happen.
+    else:
+        c.masterFocusHandler() # Do it now.
+#@-node:ekr.20060208143543:c.restoreFocus
+#@+node:ekr.20060207142332:c.traceFocus
+trace_focus_count = 0
+
+def traceFocus (self,w):
+
+    c = self
+
+    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        c.trace_focus_count += 1
+        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+#@-node:ekr.20060207142332:c.traceFocus
+#@+node:ekr.20060205111103:c.widget_name
+def widget_name (self,widget):
+
+    c = self
+
+    return g.app.gui and g.app.gui.widget_name(widget) or ''
+#@-node:ekr.20060205111103:c.widget_name
+#@+node:ekr.20050120092028:c.xWantsFocus
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+def headlineWantsFocus(self,p):
+    c = self
+    c.request_focus(p and c.edit_widget(p))
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocus()
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@-node:ekr.20050120092028:c.xWantsFocus
+#@+node:ekr.20060210102201:c.xWantsFocusNow
+def bodyWantsFocusNow(self):
+    c = self ; body = c.frame.body
+    #g.trace(body and body.bodyCtrl)
+    c.set_focus(body and body.bodyCtrl,force=True)
+
+def headlineWantsFocusNow(self,p):
+    c = self
+    c.set_focus(p and c.edit_widget(p),force=True)
+
+def logWantsFocusNow(self):
+    c = self ; log = c.frame.log
+    c.set_focus(log and log.logCtrl,force=True)
+
+def minibufferWantsFocusNow(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocusNow()
+
+def treeWantsFocusNow(self):
+    c = self ; tree = c.frame.tree
+    c.set_focus(tree and tree.canvas,force=True)
+
+def widgetWantsFocusNow(self,w):
+    c = self ; c.set_focus(w,force=True)
+#@-node:ekr.20060210102201:c.xWantsFocusNow
+#@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
+#@+node:ekr.20080509145618.1:Config...
+#@+node:ekr.20080510055530.4:@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert
+@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.
+#@nonl
+#@-node:ekr.20080510055530.4:@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert
+#@+node:ekr.20060102103625:createModeCommand (parserBaseClass)
+def createModeCommand (self,name,modeDict):
+
+    commandName = 'enter-' + name
+    commandName = commandName.replace(' ','-')
+
+    # g.trace(name,len(modeDict.keys()))
+
+    # Save the info for k.finishCreate and k.makeAllBindings.
+    d = g.app.config.modeCommandsDict
+
+    # New in 4.4.1 b2: silently allow redefinitions of modes.
+    d [commandName] = modeDict
+#@-node:ekr.20060102103625:createModeCommand (parserBaseClass)
+#@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
+def doMode(self,p,kind,name,val):
+
+    '''Parse an @mode node and create the enter-<name>-mode command.'''
+
+    # __pychecker__ = '--no-argsused' # val not used.
+
+    c = self.c ; k = c.k
+
+    # g.trace('%20s' % (name),c.fileName())
+    << Compute modeName >>
+
+    # Create a local shortcutsDict.
+    old_d = self.shortcutsDict
+    d = self.shortcutsDict = {}
+
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            if not name:
+                # An entry command: put it in the special *entry-commands* key.
+                aList = d.get('*entry-commands*',[])
+                aList.append(bunch.entryCommandName)
+                d ['*entry-commands*'] = aList
+            elif bunch is not None:
+                # A regular shortcut.
+                bunch.val = k.strokeFromSetting(bunch.val)
+                bunch.pane = modeName
+                bunchList = d.get(name,[])
+                # Important: use previous bindings if possible.
+                key2,bunchList2 = c.config.getShortcut(name)
+                bunchList3 = [b for b in bunchList2 if b.pane != modeName]
+                if bunchList3:
+                    # g.trace('inheriting',[b.val for b in bunchList3])
+                    bunchList.extend(bunchList3)
+                bunchList.append(bunch)
+                d [name] = bunchList
+                self.set(p,"shortcut",name,bunchList)
+                self.setShortcut(name,bunchList)
+
+    # Restore the global shortcutsDict.
+    self.shortcutsDict = old_d
+
+    # Create the command, but not any bindings to it.
+    self.createModeCommand(modeName,d)
+#@+node:ekr.20060618110649:<< Compute modeName >>
+name = name.strip().lower()
+j = name.find(' ')
+if j > -1: name = name[:j]
+if name.endswith('mode'):
+    name = name[:-4].strip()
+if name.endswith('-'):
+    name = name[:-1]
+modeName = name + '-mode'
+#@-node:ekr.20060618110649:<< Compute modeName >>
+#@-node:ekr.20060102103625.1:doMode (ParserBaseClass)
+#@-node:ekr.20080509145618.1:Config...
+#@+node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
+@
+Possibilities:
+
+- Eliminate the code and the setting entirely.
+- Encapsulate the code in c.setInitialFocus.
+#@nonl
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k:
+            k.setDefaultInputState()
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@-node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
+#@+node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self):
+
+    k = self ; c = k.c
+
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    # g.trace(w and w.widgetName)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and w.widgetName.lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s,g.callers(5))
+        k.setLabelBlue(label=s,protect=True)
+
+    k.showStateColors(inOutline=inOutline)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20061031131434.162:generalModeHandler
+def generalModeHandler (self,event,
+    commandName=None,func=None,modeName=None,nextMode=None):
+
+    '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+
+    k = self ; c = k.c
+    state = k.getState(modeName)
+    trace = False or c.config.getBool('trace_modes')
+
+    if trace: g.trace(modeName,'state',state)
+
+    if state == 0:
+        # self.initMode(event,modeName)
+        k.inputModeName = modeName
+        k.modeWidget = event and event.widget
+        k.setState(modeName,1,handler=k.generalModeHandler)
+        self.initMode(event,modeName)
+        if not k.silentMode:
+            if c.config.getBool('showHelpWhenEnteringModes'):
+                k.modeHelp(event)
+            else:
+                c.frame.log.hideTab('Mode')
+            #### c.minibufferWantsFocus()
+    elif not func:
+        g.trace('No func: improper key binding')
+        return 'break'
+    else:
+        if commandName == 'mode-help':
+            func(event)
+        else:
+            savedModeName = k.inputModeName # Remember this: it may be cleared.
+            self.endMode(event)
+            if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
+            # New in 4.4.1 b1: pass an event describing the original widget.
+            if event:
+                event.widget = k.modeWidget
+            else:
+                event = g.Bunch(widget = k.modeWidget)
+            if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
+            func(event)
+            if nextMode in (None,'none'):
+                # Do *not* clear k.inputModeName or the focus here.
+                # func may have put us in *another* mode.
+                pass
+            elif nextMode == 'same':
+                silent = k.silentMode
+                k.setState(modeName,1,handler=k.generalModeHandler)
+                self.reinitMode(modeName) # Re-enter this mode.
+                k.silentMode = silent
+            else:
+                k.silentMode = False # All silent modes must do --> set-silent-mode.
+                self.initMode(event,nextMode) # Enter another mode.
+
+    return 'break'
+#@-node:ekr.20061031131434.162:generalModeHandler
+#@+node:ekr.20061031131434.163:initMode
+def initMode (self,event,modeName):
+
+    k = self ; c = k.c
+    trace = c.config.getBool('trace_modes')
+    if trace: g.trace(modeName)
+
+    if not modeName:
+        g.trace('oops: no modeName')
+        return
+
+    d = g.app.config.modeCommandsDict.get('enter-'+modeName)
+    if not d:
+        self.badMode(modeName)
+        return
+    else:
+        k.modeBindingsDict = d
+
+    k.inputModeName = modeName
+    k.silentMode = False
+
+    entryCommands = d.get('*entry-commands*',[])
+    if entryCommands:
+        for commandName in entryCommands:
+            if trace: g.trace('entry command:',commandName)
+            k.simulateCommand(commandName)
+            # New in Leo 4.5: a startup command can immediately transfer to another mode.
+            if commandName.startswith('enter-'):
+                if trace: g.trace('redirect to mode',commandName)
+                return
+
+    # Create bindings after we know whether we are in silent mode.
+    w = g.choose(k.silentMode,k.modeWidget,k.widget)
+    k.createModeBindings(modeName,d,w)
+
+    if k.silentMode:
+        k.showStateAndMode()
+    else:
+        k.setLabelBlue(modeName+': ',protect=True)
+        k.showStateAndMode()
+        #### c.minibufferWantsFocus()
+#@-node:ekr.20061031131434.163:initMode
+#@+node:ekr.20061031170011.8:setLabel
+def setLabel (self,s,protect=False):
+
+    k = self ; c = k.c ; w = self.widget
+    if not w: return
+    trace = False or self.trace_minibuffer and not g.app.unitTesting
+
+    if trace: g.trace('protect',protect,s)
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+    c.masterFocusHandler() # Restore to the previously requested focus.
+
+    if protect:
+        k.mb_prefix = s
+#@-node:ekr.20061031170011.8:setLabel
+#@+node:ekr.20061031131434.164:reinitMode
+def reinitMode (self,modeName):
+
+    k = self ; c = k.c
+
+    d = k.modeBindingsDict
+
+    k.inputModeName = modeName
+    w = g.choose(k.silentMode,k.modeWidget,k.widget)
+    k.createModeBindings(modeName,d,w)
+
+    if k.silentMode:
+        k.showStateAndMode()
+    else:
+        # Do not set the status line here.
+        k.setLabelBlue(modeName+': ',protect=True)
+        #### c.minibufferWantsFocus()
+#@-node:ekr.20061031131434.164:reinitMode
+#@-node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
+#@+node:ekr.20080512091707.1:Reset input state in end-edit-headline
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self):
+
+    k = self ; c = k.c
+
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    # g.trace(w and w.widgetName)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and w.widgetName.lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s,g.callers(5))
+        k.setLabelBlue(label=s,protect=True)
+
+    k.showStateColors(inOutline=inOutline)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
+def endEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and move focus to the body pane.'''
+
+    frame = self ; c = frame.c ; k = c.k
+    if g.app.batchMode:
+        c.notValidInBatchMode("End Edit Headline")
+    else:
+        c.endEditing()
+        # g.trace('setting focus')
+        if c.config.getBool('stayInTreeAfterEditHeadline'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+
+        # New in Leo 4.5.
+        if k:
+            k.setDefaultInputState()
+            k.showStateAndMode()
+
+#@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
+#@+node:ekr.20061031131434.82:setDefaultUnboundKeyAction
+def setDefaultUnboundKeyAction (self,allowCommandState=True):
+
+    k = self ; c = k.c
+
+    # g.trace(g.callers())
+
+    defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
+    defaultAction.lower()
+
+    if defaultAction == 'command' and not allowCommandState:
+        self.unboundKeyAction = 'insert'
+    elif defaultAction in ('command','insert','overwrite'):
+        self.unboundKeyAction = defaultAction
+    else:
+        g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
+        self.unboundKeyAction = 'insert'
+
+    # g.trace(self.unboundKeyAction)
+
+    self.defaultUnboundKeyAction = self.unboundKeyAction
+
+    k.setInputState(self.defaultUnboundKeyAction)
+#@-node:ekr.20061031131434.82:setDefaultUnboundKeyAction
+#@+node:ekr.20080511122507.4:setDefaultInputState
+def setDefaultInputState (self):
+
+    k = self
+    k.setInputState(k.defaultUnboundKeyAction)
+#@nonl
+#@-node:ekr.20080511122507.4:setDefaultInputState
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20061031131434.130:keyboardQuit
+def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    # Now done in end-editing
+        # k.setDefaultInputState()
+        # k.showStateAndMode()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+#@-node:ekr.20061031131434.130:keyboardQuit
+#@-node:ekr.20080512091707.1:Reset input state in end-edit-headline
+#@+node:ekr.20080511041907.3:Body colors
+#@+node:ekr.20031218072017.838:tkBody.createBindings
+def createBindings (self,w=None):
+
+    '''(tkBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    frame = self.frame ; c = self.c ; k = c.k
+    if not w: w = self.bodyCtrl
+
+    w.bind('<Key>', k.masterKeyHandler)
+
+    def onFocusOut(event,c=c):
+        c.k.setDefaultInputState()
+        self.setEditorColors(
+            bg=c.k.unselected_body_bg_color,
+            fg=c.k.unselected_body_fg_color)
+        c.k.showStateAndMode()
+
+    def onFocusIn(event,c=c):
+        c.k.setDefaultInputState()
+
+    w.bind('<FocusOut>', onFocusOut)
+    w.bind('<FocusIn>', onFocusIn)
+
+    table = [
+        ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    ]
+
+    table2 = (
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,func,handler in table:
+        def bodyClickCallback(event,handler=handler,func=func):
+            return handler(event,func)
+
+        w.bind(kind,bodyClickCallback)
+#@-node:ekr.20031218072017.838:tkBody.createBindings
+#@+node:ekr.20061031131434.80:k.finishCreate & helpers
+def finishCreate (self):
+
+    '''Complete the construction of the keyHandler class.
+    c.commandsDict has been created when this is called.'''
+
+    k = self ; c = k.c
+    # g.trace('keyHandler')
+    k.createInverseCommandsDict()
+
+    # Important: bindings exist even if c.showMiniBuffer is False.
+    k.makeAllBindings()
+
+    # Set mode colors used by k.setInputState.
+    bg = c.config.getColor('body_text_background_color') or 'white'
+    fg = c.config.getColor('body_text_foreground_color') or 'black'
+
+    k.command_mode_bg_color = c.config.getColor('command_mode_bg_color') or bg
+    k.command_mode_fg_color = c.config.getColor('command_mode_fg_color') or fg
+    k.insert_mode_bg_color = c.config.getColor('insert_mode_bg_color') or bg
+    k.insert_mode_fg_color = c.config.getColor('insert_mode_fg_color') or fg
+    k.overwrite_mode_bg_color = c.config.getColor('overwrite_mode_bg_color') or bg
+    k.overwrite_mode_fg_color = c.config.getColor('overwrite_mode_fg_color') or fg
+    k.unselected_body_bg_color = c.config.getColor('unselected_body_bg_color') or bg
+    k.unselected_body_fg_color = c.config.getColor('unselected_body_fg_color') or bg    
+
+    # g.trace(k.insert_mode_bg_color,k.insert_mode_fg_color)
+
+    self.inited = True
+
+    k.setDefaultInputState()
+    k.resetLabel()
+#@+node:ekr.20061031131434.81:createInverseCommandsDict
+def createInverseCommandsDict (self):
+
+    '''Add entries to k.inverseCommandsDict using c.commandDict.
+
+    c.commandsDict:        keys are command names, values are funcions f.
+    k.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+    '''
+
+    k = self ; c = k.c
+
+    for name in c.commandsDict.keys():
+        f = c.commandsDict.get(name)
+        try:
+            k.inverseCommandsDict [f.__name__] = name
+            # g.trace('%24s = %s' % (f.__name__,name))
+
+        except Exception:
+            g.es_exception()
+            g.trace(repr(name),repr(f),g.callers())
+#@-node:ekr.20061031131434.81:createInverseCommandsDict
+#@-node:ekr.20061031131434.80:k.finishCreate & helpers
+#@-node:ekr.20080511041907.3:Body colors
+#@+node:ekr.20080512091707.2:Body changes color when headline mode changes
+#@+node:ekr.20060606090542:setEditorColors
+def setEditorColors (self,bg,fg):
+
+    c = self.c ; d = self.editorWidgets
+
+    for key in d.keys():
+        w2 = d.get(key)
+        # g.trace(id(w2),bg,fg)
+        try:
+            w2.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@-node:ekr.20060606090542:setEditorColors
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self):
+
+    k = self ; c = k.c
+
+    trace = False
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    # g.trace(w and w.widgetName)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and w.widgetName.lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        if trace: g.trace(s,g.callers(5))
+        k.setLabelBlue(label=s,protect=True)
+
+    k.showStateColors(inOutline=inOutline)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20061031131434.123:set-xxx-State
+def setCommandState (self,event):
+    '''Enter the 'command' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('command')
+
+def setInsertState (self,event):
+    '''Enter the 'insert' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('insert')
+
+def setOverwriteState (self,event):
+    '''Enter the 'overwrite' editing state.'''
+    # g.trace(g.callers())
+    k = self
+    k.setInputState('overwrite')
+#@-node:ekr.20061031131434.123:set-xxx-State
+#@+node:ekr.20061031131434.133:setInputState
+def setInputState (self,state): # ,showState=False):
+
+    k = self
+    k.unboundKeyAction = state
+    k.showStateAndMode()
+
+
+#@-node:ekr.20061031131434.133:setInputState
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline=False):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    w = g.app.gui and g.app.gui.get_focus(c)
+    if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+        return
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    # g.trace(w and w.widgetName)
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if 0: # This is done by the body's FocusOut handler.
+        if inOutline:
+            bg=k.unselected_body_bg_color
+            fg=k.unselected_body_fg_color
+            try:
+                bodyCtrl.configure(bg=bg,fg=fg)
+            except Exception:
+                g.es_exception()
+
+    if inOutline and w == bodyCtrl:
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@-node:ekr.20080512115455.1:showStateColors
+#@-node:ekr.20080512091707.2:Body changes color when headline mode changes
+#@+node:ekr.20080512125926.1:Fixed headline bugs
+@nocolor
+
+- Unbound keys valid in command mode.
+- Insert mode does not persist.
+
+@color
+#@nonl
+#@+node:ekr.20061031131434.128:getArg
+def getArg (self,event,
+    returnKind=None,returnState=None,handler=None,
+    prefix=None,tabList=[],completion=True,oneCharacter=False,
+    stroke=None, # New in 4.4.1.
+    useMinibuffer=True # New in 4.4.1
+):
+
+    '''Accumulate an argument until the user hits return (or control-g).
+    Enter the given return state when done.
+    The prefix does not form the arg.  The prefix defaults to the k.getLabel().
+    '''
+
+    k = self ; c = k.c ; gui  = g.app.gui
+    state = k.getState('getArg')
+    keysym = gui.eventKeysym(event)
+    trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
+    if trace: g.trace(
+        'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
+        'completion', state==0 and completion or state!=0 and k.arg_completion)
+    if state == 0:
+        k.arg = ''
+        << init altX vars >>
+        # Set the states.
+        bodyCtrl = c.frame.body.bodyCtrl
+        c.widgetWantsFocus(bodyCtrl)
+        k.afterGetArgState=returnKind,returnState,handler
+        k.setState('getArg',1,k.getArg)
+        k.afterArgWidget = event and event.widget or c.frame.body.bodyCtrl
+        if useMinibuffer: c.minibufferWantsFocusNow()
+    elif keysym == 'Escape':
+        k.keyboardQuit(event)
+    elif keysym == 'Return' or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        if stroke and stroke in k.getArgEscapes: k.getArgEscape = stroke
+        if k.oneCharacterArg:
+            k.arg = event.char
+        else:
+            k.arg = k.getLabel(ignorePrompt=True)
+        kind,n,handler = k.afterGetArgState
+        if kind: k.setState(kind,n,handler)
+        c.frame.log.deleteTab('Completion')
+        trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
+        if handler: handler(event)
+    elif keysym == 'Tab':
+        k.doTabCompletion(k.argTabList,k.arg_completion)
+    elif keysym == 'BackSpace':
+        k.doBackSpace(k.argTabList,k.arg_completion)
+        c.minibufferWantsFocus()
+    else:
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+    return 'break'
+#@+node:ekr.20061031131434.129:<< init altX vars >>
+k.argTabList = tabList and tabList[:] or []
+k.arg_completion = completion
+# g.trace('completion',completion,'tabList',tabList)
+
+k.mb_prefix = prefix or k.getLabel()
+k.mb_prompt = prefix or ''
+k.mb_tabList = []
+
+# Clear the list: any non-tab indicates that a new prefix is in effect.
+k.mb_tabListPrefix = k.getLabel()
+k.oneCharacterArg = oneCharacter
+#@-node:ekr.20061031131434.129:<< init altX vars >>
+#@-node:ekr.20061031131434.128:getArg
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False
+
+    if trace: g.trace('stroke',stroke)
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    else:
+        # Let tkinter handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
+        return None
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    # g.trace('event.keysym_num',event.keysym_num,event,dir(event))
+
+    << define vars >>
+    if keysym in special_keys: return None
+
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = (False or self.trace_masterKeyHandlerGC) and not g.app.unitTesting
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event: event = gui.leoKeyEvent(event,c)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if True or trace: g.trace('calling generalModeHandler')
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+
+# elif k.unboundKeyAction == 'command':
+    # # In command mode we must disallow all keys except those actually bound in command-state.
+    # # That is, we cannot use general per-pane mode bindings.
+    # for key,name in (
+        # # Order here is similar to bindtags order.
+        # ('command',None),
+        # ('button',None),
+        # ('body','body'),
+        # ('text','head'), # Important: text bindings in head before tree bindings.
+        # ('tree','head'),
+        # ('tree','canvas'),
+        # ('log', 'log'),
+        # ('text','log'),
+        # ('text',None),
+        # ('all',None),
+    # ):
+        # if (
+            # name and w_name.startswith(name) or
+            # key in ('text','all') and g.app.gui.isTextWidget(w) or
+            # key in ('button','all')
+        # ):
+            # d = k.masterBindingsDict.get(key,{})
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # if d:
+                # b = d.get(stroke)
+                # if b:
+                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    # else:
+        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
+        # return 'break' # Disallow all unbound plain keys in command mode.
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+# g.trace('button',k.masterBindingsDict.get('button'))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:k.callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:k.callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    trace = False
+
+    assert not stroke # Unbound keys never have a stroke.
+
+    if trace:
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@-node:ekr.20080512125926.1:Fixed headline bugs
+#@+node:ekr.20080512144457.1:newline does not stick
+#@+node:ekr.20051125080855:selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    w = self.editWidget(event)
+    if not w: return 'break'
+    << set local vars >>
+    #g.trace('ch',repr(ch))
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+        if inBrackets and self.flashMatchingBrackets:
+
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    # g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return 'break'
+#@+node:ekr.20061103114242:<< set local vars >>
+c = self.c
+p = c.currentPosition()
+gui = g.app.gui
+ch = gui.eventChar(event)
+keysym = gui.eventKeysym(event)
+if keysym == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if keysym == 'Tab': # Support for wx_alt_gui plugin.
+    ch = '\t'
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.bodyString() or ''
+undoType = 'Typing'
+trace = c.config.getBool('trace_masterCommand')
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
+if trace: g.trace(name,repr(ch),ch and ch in brackets)
+#@nonl
+#@-node:ekr.20061103114242:<< set local vars >>
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    c = self.c ; p = c.currentPosition()
+    i,j = oldSel ; ch = '\n'
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+        if (
+            (allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p)) and
+            undoType != "Change"
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@nonl
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@+node:ekr.20060804095512:initBracketMatcher
+def initBracketMatcher (self,c):
+
+    self.openBracketsList  = c.config.getString('open_flash_brackets')  or '([{'
+    self.closeBracketsList = c.config.getString('close_flash_brackets') or ')]}'
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+#@-node:ekr.20060804095512:initBracketMatcher
+#@+node:ekr.20060627083506:flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in xrange(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in xrange(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+#@-node:ekr.20060627083506:flashMatchingBracketsHelper
+#@+node:ekr.20060627091557:flashCharacter
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 2
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+#@-node:ekr.20060627091557:flashCharacter
+#@+node:ekr.20051027172949:updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = g.scanDirectives(c,p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@-node:ekr.20051027172949:updateAutomatchBracket
+#@+node:ekr.20051026171121.1:udpateAutoIndent
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = g.scanDirectives(c,p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.scanColorDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@-node:ekr.20051026171121.1:udpateAutoIndent
+#@+node:ekr.20051026092433:updateTab
+def updateTab (self,p,w):
+
+    c = self.c
+    d = g.scanDirectives(c,p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        w.delete(i,j)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start = g.skip_to_start_of_line(s,i)
+        s2 = s[start:i]
+
+        # Compute n, the number of spaces to insert.
+        width = g.computeWidth(s2,tab_width)
+        n = abs(tab_width) - (width % abs(tab_width))
+        # g.trace('n',n)
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+#@nonl
+#@-node:ekr.20051026092433:updateTab
+#@-node:ekr.20051125080855:selfInsertCommand, helpers
+#@+node:ekr.20050920084036.138:insertNewLine (changed)
+def insertNewLine (self,event):
+
+    '''Insert a newline at the cursor.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    name = c.widget_name(w)
+    oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+
+    self.beginCommand(undoType='newline')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    k.setInputState('insert')
+
+    self.endCommand()
+
+insertNewline = insertNewLine
+#@-node:ekr.20050920084036.138:insertNewLine (changed)
+#@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+def insertNewLineAndTab (self,event):
+
+    '''Insert a newline and tab at the cursor.'''
+
+    c = self.c ; k = c.k
+    w = self.editWidget(event) ; p = c.currentPosition()
+    if not w: return
+    name = c.widget_name(w)
+    if name.startswith('head'): return
+
+    self.beginCommand(undoType='insert-newline-and-indent')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    c.k.self.updateTab(p,w)
+    c.k.setInputState('insert')
+
+    # i = w.getInsertPoint()
+    # w.insert(i,'\n\t')
+    # w.setInsertPoint(i+2)
+
+    self.endCommand(changed=True,setLabel=False)
+#@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+#@-node:ekr.20080512144457.1:newline does not stick
+#@+node:ekr.20080512151204.1:Don't honor command-mode keys if not in text widget
+#@+node:ekr.20060923202156:c.onCanvasKey
+def onCanvasKey (self,event):
+
+    '''Navigate to the next headline starting with ch = event.char.
+    If ch is uppercase, search all headlines; otherwise search only visible headlines.
+    This is modelled on Windows explorer.'''
+
+    # g.trace(event and event.char)
+
+    if not event or not event.char or not event.keysym.isalnum():
+        return
+    c  = self ; p = c.currentPosition() ; p1 = p.copy()
+    invisible = c.config.getBool('invisible_outline_navigation')
+    ch = event.char
+    allFlag = ch.isupper() and invisible # all is a global (!?)
+    if not invisible: ch = ch.lower()
+    found = False
+    extend = self.navQuickKey()
+    attempts = g.choose(extend,(True,False),(False,))
+    for extend2 in attempts:
+        p = p1.copy()
+        while 1:
+            if allFlag:
+                p.moveToThreadNext()
+            else:
+                p.moveToVisNext(c)
+            if not p:
+                p = c.rootPosition()
+            if p == p1: # Never try to match the same position.
+                # g.trace('failed',extend2)
+                found = False ; break
+            newPrefix = c.navHelper(p,ch,extend2)
+            if newPrefix:
+                found = True ; break
+        if found: break
+    if found:
+        if allFlag: c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.navTime = time.clock()
+        c.navPrefix = newPrefix
+        # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.headString())
+    else:
+        c.navTime = None
+        c.navPrefix = ''
+    c.treeWantsFocusNow()
+#@+node:ekr.20061002095711.1:c.navQuickKey
+def navQuickKey (self):
+
+    '''return true if there are two quick outline navigation keys
+    in quick succession.
+
+    Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
+
+    c = self
+
+    deltaTime = c.config.getFloat('outline_nav_extend_delay')
+
+    if deltaTime in (None,0.0):
+        return False
+    else:
+        nearTime = c.navTime and time.clock() - c.navTime < deltaTime
+        return nearTime
+#@nonl
+#@-node:ekr.20061002095711.1:c.navQuickKey
+#@+node:ekr.20061002095711:c.navHelper
+def navHelper (self,p,ch,extend):
+
+    c = self ; h = p.headString().lower()
+
+    if extend:
+        prefix = c.navPrefix + ch
+        return h.startswith(prefix.lower()) and prefix
+
+    if h.startswith(ch):
+        return ch
+
+    # New feature: search for first non-blank character after @x for common x.
+    if ch != '@' and h.startswith('@'):
+        for s in ('button','command','file','thin','asis','nosent','noref'):
+            prefix = '@'+s
+            if h.startswith('@'+s):
+                while 1:
+                    n = len(prefix)
+                    ch2 = n < len(h) and h[n] or ''
+                    if ch2.isspace():
+                        prefix = prefix + ch2
+                    else: break
+                if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
+                    return prefix + ch
+    return ''
+#@nonl
+#@-node:ekr.20061002095711:c.navHelper
+#@-node:ekr.20060923202156:c.onCanvasKey
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    # g.trace('event.keysym_num',event.keysym_num,event,dir(event))
+
+    << define vars >>
+    if keysym in special_keys: return None
+
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = (False or self.trace_masterKeyHandlerGC) and not g.app.unitTesting
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event: event = gui.leoKeyEvent(event,c)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if True or trace: g.trace('calling generalModeHandler')
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+
+# elif k.unboundKeyAction == 'command':
+    # # In command mode we must disallow all keys except those actually bound in command-state.
+    # # That is, we cannot use general per-pane mode bindings.
+    # for key,name in (
+        # # Order here is similar to bindtags order.
+        # ('command',None),
+        # ('button',None),
+        # ('body','body'),
+        # ('text','head'), # Important: text bindings in head before tree bindings.
+        # ('tree','head'),
+        # ('tree','canvas'),
+        # ('log', 'log'),
+        # ('text','log'),
+        # ('text',None),
+        # ('all',None),
+    # ):
+        # if (
+            # name and w_name.startswith(name) or
+            # key in ('text','all') and g.app.gui.isTextWidget(w) or
+            # key in ('button','all')
+        # ):
+            # d = k.masterBindingsDict.get(key,{})
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # if d:
+                # b = d.get(stroke)
+                # if b:
+                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    # else:
+        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
+        # return 'break' # Disallow all unbound plain keys in command mode.
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+# g.trace('button',k.masterBindingsDict.get('button'))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:k.callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:k.callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    trace = False
+
+    assert not stroke # Unbound keys never have a stroke.
+
+    if trace:
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@-node:ekr.20080512151204.1:Don't honor command-mode keys if not in text widget
 #@-node:ekr.20080510185834.6:Projects
 #@-all
 #@nonl
