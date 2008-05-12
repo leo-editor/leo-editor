@@ -1111,7 +1111,12 @@ for key,name in (
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
-    trace = False or self.trace_masterKeyHandler and not g.app.unitTesting
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
 
     if not state.startswith('auto-'):
         # New in Leo 4.5: ignore plain key binding in the minibuffer.
@@ -1170,22 +1175,25 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 #@+node:ekr.20061031131434.133:setInputState
 def setInputState (self,state,showState=False):
 
-    k = self ; c = k.c ; body = c.frame.body ; w = body.bodyCtrl
+    k = self ; c = k.c
+    body = c.frame.body ; w = body.bodyCtrl
 
-    # g.trace(state)
     k.unboundKeyAction = state
     k.showStateAndMode()
 
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    if w:
+    if self.inited and w:
         if state == 'insert':
-            bg = k.insert_mode_bg_color ; fg = k.insert_mode_fg_color
+            bg = k.insert_mode_bg_color
+            fg = k.insert_mode_fg_color
         elif state == 'command':
-            bg = k.command_mode_bg_color ; fg = k.command_mode_fg_color
+            bg = k.command_mode_bg_color
+            fg = k.command_mode_fg_color
         elif state == 'overwrite':
-            bg = k.overwrite_mode_bg_color, fg = k.overwrite_mode_fg_color
+            bg = k.overwrite_mode_bg_color
+            fg = k.overwrite_mode_fg_color
         else:
             bg = fg = 'red'
 
@@ -1196,38 +1204,29 @@ def setInputState (self,state,showState=False):
 #@+node:ekr.20061031131434.192:showStateAndMode
 def showStateAndMode(self):
 
-    k = self ; w = self.widget
+    k = self ; c = k.c ; w = self.widget
     if not w: return
 
+    trace = False
     state = k.unboundKeyAction
     mode = k.getStateKind()
 
     if mode:
-        k.setLabelBlue(label='%s Mode' % (mode.capitalize()),protect=True)
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
     else:
-        k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
+        s = '%s State' % state.capitalize()
 
+    if s:
+        if trace: g.trace(s,g.callers(5))
+        k.setLabelBlue(label=s,protect=True)
 
-    if 0: # Now done in the minibuffer.
-
-        k = self ; c = k.c ; frame = c.frame
-        state = k.unboundKeyAction
-        mode = k.getStateKind()
-
-        if hasattr(frame,'clearStatusLine') and not state.capitalize()=='Insert':
-            frame.clearStatusLine()
-            put = frame.putStatusLine
-            put('Key state: ',color='blue')
-            put('%s' % state.capitalize())
-            if mode:
-                # put(' mode: ',color='blue')
-                if mode.endswith('-mode'): mode = mode[:-5]
-                mode = mode.replace('-',' ').capitalize()
-                put(' Mode: ',color='blue')
-                put(mode)
-
-            # Restore the focus.
-            c.restoreFocus()
+    # Restore the focus.
+    # c.restoreFocus()
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@-node:ekr.20080510145650.1:Found: unboundKeyAction
 #@+node:ekr.20080510072134.5:Do tree navigation in outline mode

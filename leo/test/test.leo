@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="74" left="120" height="800" width="898"/>
+	<global_window_position top="74" left="318" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -535,10 +535,6 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080510193930.2"><vh>Tree settings</vh>
-<v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20080510193930.1"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-</v>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -625,10 +621,6 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20080510193930.2"><vh>Tree settings</vh>
-<v t="ekr.20080510170551.1"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20080510193930.1"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-</v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -876,6 +868,7 @@
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080510190406.1"><vh>test of sort lines</vh></v>
+<v t="ekr.20080511121411.1"><vh>indentation test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5330,23 +5323,20 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 </t>
 <t tx="ekr.20080503195928.1"></t>
 <t tx="ekr.20080503202744.3">import rope.base.project
-
+abcdefghijklmnopqrstuvwxyz
 
 myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
 
 print myproject</t>
-<t tx="ekr.20080510170551.1"></t>
 <t tx="ekr.20080510190406.1">a
 d
 x
 y
 z
 </t>
-<t tx="ekr.20080510193930.1">True: Focus moves to outline pane after editing a headline.
+<t tx="ekr.20080511121411.1">@language python
 
-False: (legacy operation) Focus moves to body pane after editing a headline.
-       </t>
-<t tx="ekr.20080510193930.2"></t>
+if a:</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
