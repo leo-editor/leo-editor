@@ -6830,7 +6830,7 @@ class baseCommands:
 
         c.frame.tree.setSelectedLabelState(p=c.currentPosition())
 
-        # Don't do this.
+        # The following code would be wrong; c.endEditing is a utility method.
         # if k:
             # k.setDefaultInputState()
             # # Recolor the *body* text, **not** the headline.
