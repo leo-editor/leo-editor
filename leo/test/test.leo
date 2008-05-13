@@ -869,7 +869,7 @@
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
-<v t="ekr.20080513131902.1"><vh>@thin c_plus_plus_test.cpp</vh></v>
+<v t="ekr.20080513131902.1"><vh>@@thin c_plus_plus_test.cpp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5331,6 +5331,14 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
 
 print myproject</t>
+<t tx="ekr.20080513131902.1">@language cplusplus
+
+@doc
+This is a comment
+@c
+
+// A comment.
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
