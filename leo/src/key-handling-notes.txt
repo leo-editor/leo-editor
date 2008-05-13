@@ -4612,28 +4612,38 @@ def showStateColors (self,inOutline,w):
 #@nonl
 #@-node:ekr.20080512115455.1:showStateColors
 #@-node:ekr.20080513130956.1:Don't recolor the minibuffer widget
+#@+node:ekr.20080513174131.2:Fixed unbounded loop in autocompleter.findAnchor
+#@+node:ekr.20061031131434.32:findAnchor
+def findAnchor (self,w):
+
+    '''Returns (j,word) where j is a Python index.'''
+
+    i = j = w.getInsertPoint()
+    s = w.getAllText()
+
+    # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
+    while i > 1 and s[i-1] == '.':
+        i,j = g.getWord(s,i-2)
+
+    word = s[i:j]
+    if word == '.': word = None
+
+    # g.trace(i,j,repr(word))
+    return j,word
+#@nonl
+#@-node:ekr.20061031131434.32:findAnchor
+#@-node:ekr.20080513174131.2:Fixed unbounded loop in autocompleter.findAnchor
 #@-node:ekr.20080513061733.4:Recent projects
 #@+node:ekr.20080510121331.18:To do
 @nocolor
 
-First:
-
-- add empty bindings for clean-recent-files and sort-recent-files.
-- Fix failed unit tests.
-
-- Typing . at the start of a line with auto-completer enabled hangs leo(!)
-  This happens in the trunk too.
-
-- Posting: why doesn't vim use <Return> to switch to insert mode?
-
-Next:
-
-- Toggle-insert-command-states.
 - Munge mode names to create mode prompt.
-- Support vim-specific features like '.', etc.
+- Fix failed unit tests.
+- Toggle-insert-command-states.
 
-- Can the minibuffer replace vim modes?
-#@nonl
+Later or never:
+
+- Support vim-specific features like '.', etc.
 #@+node:ekr.20080512125926.3:What I did
 @nocolor
 
@@ -4679,8 +4689,32 @@ Next:
 - Body pane is yellow initially, and prompt is "In Tree", but focus is in body!
 - Initial body pane color should be yellow if outline has focus initially.
 - Make sure minibuffer keeps its blue color.
-#@nonl
+- add empty bindings for clean-recent-files and sort-recent-files.
+- Dot in insert mode when there are no autocompletions to suggest goes to command mode.
+- Typing . at the start of a line with auto-completer enabled hangs leo(!)
+  This happens in the trunk too.
 #@-node:ekr.20080512125926.3:What I did
+#@+node:ekr.20080513174131.1:Design for simplified drawing & focus
+@nocolor
+
+- Command encloses all calls in c.outerBeginUpdate, c.outerEndUpdate.
+
+- Use newDrawing to select between old and new code.
+
+- New version of c.beginUpdate does nothing.
+
+- New version of c.endUpdate sets c._requestRedrawFlag if flag arg is True.
+
+- New versions of c.xWantsFocus sets c._requestedWidgetFlag.
+
+- New version of c.k.showStateAndFocus sets c._requestedMinibufferPrompt.
+
+- New version of c.selectPosition sets c._requestedPosition. c._requested.
+
+- c.update updates everything based on requests.
+
+- c.update may be called anytime.
+#@-node:ekr.20080513174131.1:Design for simplified drawing & focus
 #@-node:ekr.20080510121331.18:To do
 #@-all
 #@nonl
