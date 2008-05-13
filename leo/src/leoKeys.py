@@ -730,13 +730,10 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.34:finish
     def finish (self):
 
-        c = self.c ; k = self.k
+        c = self.c ; k = c.k
 
-        state = k.unboundKeyAction
-        # Keyboard quit does a lot of good things, but we must stay in the present mode.
-        k.keyboardQuit(event=None)
-        k.unboundKeyAction = state
-        k.showStateAndMode()
+        k.keyboardQuit(event=None,setDefaultStatus=False)
+            # Stay in the present input state.
 
         for name in (self.tabName,'Modules','Info'):
             c.frame.log.deleteTab(name)
@@ -3065,7 +3062,7 @@ class keyHandlerClass:
         return 'break'
     #@-node:ekr.20061031131434.128:getArg
     #@+node:ekr.20061031131434.130:keyboardQuit
-    def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
+    def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
 
         '''This method clears the state and the minibuffer label.
 
@@ -3092,12 +3089,13 @@ class keyHandlerClass:
         k.clearState()
         k.resetLabel()
 
-        # Now done in end-editing
-            # k.setDefaultInputState()
-            # k.showStateAndMode()
-
         c.endEditing()
         c.bodyWantsFocus()
+
+        if setDefaultStatus:
+            # At present, only the auto-completer suppresses this.
+            k.setDefaultInputState()
+            k.showStateAndMode()
     #@-node:ekr.20061031131434.130:keyboardQuit
     #@+node:ekr.20061031131434.131:k.registerCommand
     def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False):
@@ -4554,8 +4552,10 @@ class keyHandlerClass:
         inOutline = False
         if not g.app.gui: return
 
+
         if not w:
             w = g.app.gui.get_focus(c)
+            if not w: return
 
         # g.trace(w, state, mode)
 
@@ -4573,7 +4573,7 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
 
         if s:
-            # g.trace(s,g.callers(5))
+            # g.trace(s,w,g.callers(4))
             k.setLabelBlue(label=s,protect=True)
 
         if w and g.app.gui.isTextWidget(w):
