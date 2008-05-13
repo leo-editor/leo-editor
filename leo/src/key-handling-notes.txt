@@ -1672,179 +1672,6 @@ modeName = name + '-mode'
 #@-node:ekr.20060618110649:<< Compute modeName >>
 #@-node:ekr.20060102103625.1:doMode (ParserBaseClass)
 #@-node:ekr.20080509145618.1:Config...
-#@+node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
-@
-Possibilities:
-
-- Eliminate the code and the setting entirely.
-- Encapsulate the code in c.setInitialFocus.
-#@nonl
-#@+node:ekr.20031218072017.1623:new
-def new (self,event=None,gui=None):
-
-    '''Create a new Leo window.'''
-
-    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=self,c=c,new_c=c)
-    # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-    return c # For unit test.
-#@-node:ekr.20031218072017.1623:new
-#@+node:ekr.20031218072017.2821:open
-def open (self,event=None):
-
-    '''Open a Leo window containing the contents of a .leo file.'''
-
-    c = self
-    << Set closeFlag if the only open window is empty >>
-
-    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",
-        filetypes = [("Leo files","*.leo"), ("All files","*")],
-        defaultextension = ".leo")
-    c.bringToFront()
-
-    ok = False
-    if fileName and len(fileName) > 0:
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            g.setGlobalOpenDir(fileName)
-        if ok and closeFlag:
-            g.app.destroyWindow(c.frame)
-
-    # openWithFileName sets focus if ok.
-    if not ok:
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
-@c
-
-closeFlag = (
-    c.frame.startupWindow and # The window was open on startup
-    not c.changed and not c.frame.saved and # The window has never been changed
-    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:open
-#@+node:ekr.20031218072017.2052:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
-
-    """Create a Leo Frame for the indicated fileName if the file exists."""
-
-    if not fileName or len(fileName) == 0:
-        return False, None
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    # Create a full, normalized, Unicode path name, preserving case.
-    relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
-    # g.trace(relativeFileName,'-->',fileName)
-
-    # If the file is already open just bring its window to the front.
-    theList = app.windowList
-    for frame in theList:
-        if munge(fileName) == munge(frame.c.mFileName):
-            frame.bringToFront()
-            frame.c.setLog()
-            return True, frame
-    if old_c:
-        # New in 4.4: We must read the file *twice*.
-        # The first time sets settings for the later call to c.finishCreate.
-        # g.trace('***** prereading',fileName)
-        c2 = g.app.config.openSettingsFile(fileName)
-        if c2: g.app.config.updateSettings(c2,localFlag=True)
-        g.doHook('open0')
-
-    # Open the file in binary mode to allow 0x1a in bodies & headlines.
-    theFile,isZipped = g.openLeoOrZipFile(fileName)
-    if not theFile: return False, None
-    c,frame = app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        gui=gui)
-    assert frame.c == c and c.frame == frame
-    c.isZipped = isZipped
-    frame.log.enable(enableLog)
-    g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    c.beginUpdate()
-    try:
-        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-            c.setLog()
-            app.lockLog()
-            frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-        # Bug fix in 4.4.
-        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        p = c.currentPosition()
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(relativeFileName or fileName)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        assert frame.c == c and c.frame == frame
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.chapterController:
-            c.chapterController.finishCreate()
-        k = c.k
-        if k:
-            k.setDefaultInputState()
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-    return True, frame
-#@nonl
-#@-node:ekr.20031218072017.2052:g.openWithFileName
-#@-node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
 #@+node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
 #@+node:ekr.20061031131434.192:showStateAndMode
 def showStateAndMode(self,w=None):
@@ -3637,6 +3464,7 @@ def setCommandState (self,event):
     # g.trace(g.callers())
     k = self
     k.setInputState('command')
+    k.c.bodyWantsFocusNow()
     k.showStateAndMode()
 
 def setInsertState (self,event):
@@ -3644,6 +3472,7 @@ def setInsertState (self,event):
     # g.trace(g.callers())
     k = self
     k.setInputState('insert')
+    k.c.bodyWantsFocusNow()
     k.showStateAndMode()
 
 def setOverwriteState (self,event):
@@ -3651,6 +3480,7 @@ def setOverwriteState (self,event):
     # g.trace(g.callers())
     k = self
     k.setInputState('overwrite')
+    k.c.bodyWantsFocusNow()
     k.showStateAndMode()
 #@-node:ekr.20061031131434.123:set-xxx-State
 #@+node:ekr.20061031131434.133:setInputState
@@ -3901,6 +3731,63 @@ def showStateColors (self,inOutline,w):
 #@-node:ekr.20080512115455.1:showStateColors
 #@-node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
 #@-node:ekr.20080510185834.6:Projects
+#@+node:ekr.20080512195927.1:Find character crosses lines
+#@+node:ekr.20060925151926:backward/findCharacter & helper
+def backwardFindCharacter (self,event):
+    return self.findCharacterHelper(event,backward=True,extend=False)
+
+def backwardFindCharacterExtendSelection (self,event):
+    return self.findCharacterHelper(event,backward=True,extend=True)
+
+def findCharacter (self,event):
+    return self.findCharacterHelper(event,backward=False,extend=False)
+
+def findCharacterExtendSelection (self,event):
+    return self.findCharacterHelper(event,backward=False,extend=True)
+#@nonl
+#@+node:ekr.20060417194232.1:findCharacterHelper
+def findCharacterHelper (self,event,backward,extend):
+
+    '''Put the cursor at the next occurance of a character on a line.'''
+
+    c = self.c ; k = c.k ; tag = 'find-char' ; state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+        self.event = event
+        self.backward = backward ; self.extend = extend
+        self.insert = w.getInsertPoint()
+        s = '%s character%s: ' % (
+            g.choose(backward,'Backward find','Find'),
+            g.choose(extend,' & extend',''))
+        k.setLabelBlue(s,protect=True)
+        # Get the arg without touching the focus.
+        k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
+    else:
+        event = self.event ; w = self.w
+        backward = self.backward ; extend = self.extend
+        ch = k.arg ; s = w.getAllText()
+        ins = w.toPythonIndex(self.insert)
+        i = ins + g.choose(backward,-1,+1) # skip the present character.
+        if backward:
+            # start = s.rfind('\n',0,i)
+            # if start == -1: start = 0
+            start = 0
+            j = s.rfind(ch,start,max(start,i)) # Skip the character at the cursor.
+            if j > -1: self.moveToHelper(event,j,extend)
+        else:
+            # end = s.find('\n',i)
+            # if end == -1: end = len(s)
+            end = len(s)
+            j = s.find(ch,min(i,end),end) # Skip the character at the cursor.
+            if j > -1: self.moveToHelper(event,j,extend)
+        k.resetLabel()
+        k.clearState()
+#@nonl
+#@-node:ekr.20060417194232.1:findCharacterHelper
+#@-node:ekr.20060925151926:backward/findCharacter & helper
+#@-node:ekr.20080512195927.1:Find character crosses lines
 #@-all
 #@nonl
 #@-node:ekr.20080508083640.10:@thin key-handling-notes.txt

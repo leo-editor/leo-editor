@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6,6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="8,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -117,7 +117,7 @@
 <v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
 <v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
 <v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = white</vh></v>
+<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
 <v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
 <v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
 <v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
@@ -1296,7 +1296,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080512082834.2" a="E"><vh>Unused settings</vh>
+<v t="ekr.20080512082834.2"><vh>Unused settings</vh>
 <v t="ekr.20060603215208.4"><vh>Modes</vh>
 <v t="ekr.20060603215208.16"><vh>@@mode quick-command (Alt-Shift-C)</vh></v>
 <v t="ekr.20080510072134.1"><vh>@mode outline (Alt-t)</vh></v>
@@ -1326,7 +1326,7 @@
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -1341,6 +1341,25 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20041213105007.2" a="E"><vh>Body pane colors</vh>
+<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
+<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
+<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
+<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
+<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+</v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20041119034357.1">@nocolor
@@ -5831,7 +5850,6 @@ change                              = Ctrl-=
 change-all                          = None  # Not recommended to bind this to a shortcut.
 change-then-find                    = Ctrl--</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
-keyboard-quit           = Ctrl-g
 negative-argument       = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
 universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
@@ -5932,7 +5950,10 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
 <t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
 <t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060822101942.2">Overrides body_text_background_color.</t>
+<t tx="ekr.20060822101942.2">Overrides body_text_background_color.
+
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
 <t tx="ekr.20060826152759"></t>
 <t tx="ekr.20060827102902"></t>
 <t tx="ekr.20060827102902.1"></t>
@@ -6640,7 +6661,9 @@ select-all                          = Alt-Shift-A  # Shift-Ctrl-A: beginning-of-
 expand-pane                 = Alt+Ctrl-=
 focus-to-body               = Alt-d
 focus-to-tree               = Alt-t
-set-command-state           = Ctrl-t
+focus-to-tree               = Ctrl-t
+keyboard-quit               = Ctrl-g
+# set-command-state           = Ctrl-t
 # set-command-state           = Escape # Hard to type, interferes with dismissing dialogs.
 # toggle-active-pane          = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
