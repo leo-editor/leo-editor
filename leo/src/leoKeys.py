@@ -2902,6 +2902,7 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('command')
+        k.c.bodyWantsFocusNow()
         k.showStateAndMode()
 
     def setInsertState (self,event):
@@ -2909,6 +2910,7 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('insert')
+        k.c.bodyWantsFocusNow()
         k.showStateAndMode()
 
     def setOverwriteState (self,event):
@@ -2916,6 +2918,7 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('overwrite')
+        k.c.bodyWantsFocusNow()
         k.showStateAndMode()
     #@-node:ekr.20061031131434.123:set-xxx-State
     #@+node:ekr.20061031131434.124:toggle-input-state
