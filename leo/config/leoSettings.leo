@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1172,7 +1172,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -2276,6 +2276,7 @@ check-all-python-code               = None
 check-outline                       = None
 check-python-code                   = None
 clean-lines                         = None
+clean-recent-files                  = None
 clear-extend-mode                   = None
 clear-kill-ring                     = None
 clear-recent-files                  = None
@@ -2843,6 +2844,7 @@ move-past-close-extend-selection    = None
 <t tx="ekr.20060112093227.2"># name-last-kbd-macro               = None
 negative-argument                   = None
 new                                 = None
+newline                             = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
@@ -2966,6 +2968,7 @@ sort-children                       = None
 sort-columns                        = None
 sort-fields                         = None
 sort-lines                          = None
+sort-recent-files                   = None
 sort-siblings                       = None
 spell-change                        = None
 spell-change-then-find              = None
@@ -5513,7 +5516,7 @@ yank                        = y
 undo                        = z
 redo                        = Shift-z
 full-command                = :
-enter-newline-insert-mode   ! body = Return
+# enter-newline-insert-mode   ! body = Return
 
 # cursor movement keys...
     # back-char           = h
