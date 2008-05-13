@@ -5790,6 +5790,9 @@ class baseCommands:
         else: # An optimization.
             c.requestedFocusWidget = w
             c.masterFocusHandler()
+
+        # Can't do this: it interferes with too much.
+        # if c.k: c.k.showStateAndMode(w)
     #@-node:ekr.20060205103842:c.get/request/set_focus
     #@+node:ekr.20060210103358:c.invalidateFocus
     def invalidateFocus (self):
@@ -6827,10 +6830,11 @@ class baseCommands:
 
         c.frame.tree.setSelectedLabelState(p=c.currentPosition())
 
-        if k:
-            k.setDefaultInputState()
-            # Recolor the *body* text, **not** the headline.
-            k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        # Don't do this.
+        # if k:
+            # k.setDefaultInputState()
+            # # Recolor the *body* text, **not** the headline.
+            # k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     #@+node:ekr.20031218072017.2997:c.selectPosition
     def selectPosition(self,p,updateBeadList=True):

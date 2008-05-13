@@ -1869,8 +1869,10 @@ class leoFrame:
             else:
                 c.bodyWantsFocusNow()
 
-            # Important: c.endEditing handles state and coloring.
-            # Don't call showStateAndMode here.
+                if k:
+                    k.setDefaultInputState()
+                    # Recolor the *body* text, **not** the headline.
+                    k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
     #@+node:ekr.20031218072017.3983:insertHeadlineTime
     def insertHeadlineTime (self,event=None):

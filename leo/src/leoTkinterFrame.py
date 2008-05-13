@@ -1558,7 +1558,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             w = c.get_focus()
             if w != c.frame.body.bodyCtrl:
                 frame.tree.OnDeactivate()
-            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()
         except:
             g.es_event_exception("activate body")
 
@@ -1598,6 +1598,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
                 self.OnActivateBody(event=event)
+                c.k.showStateAndMode()
             g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodyclick")
@@ -1608,6 +1609,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
                 pass # By default Leo does nothing.
+                c.k.showStateAndMode()
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")

@@ -765,6 +765,9 @@
 <v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
 <v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
 </v>
+<v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
+<v t="ekr.20070926095117"><vh>mungeKey</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20070417092935.1"><vh>Scripts</vh>
@@ -1589,7 +1592,7 @@
 <v t="ekr.20061101121602.302"><vh>@test newline-and-indent</vh>
 <v t="ekr.20061101121602.303"><vh>work</vh></v>
 <v t="ekr.20061101121602.304"><vh>before sel=2.6,2.6</vh></v>
-<v t="ekr.20061101121602.305"><vh>after sel=3.1,3.1</vh></v>
+<v t="ekr.20061101121602.305"><vh>after sel=3.4,3.4</vh></v>
 </v>
 <v t="ekr.20070315065720"><vh>@test next-line</vh>
 <v t="ekr.20070315065720.1"><vh>work</vh></v>
@@ -1961,14 +1964,11 @@
 <v t="ekr.20060203181203.3"><vh>@@test strokeFromEvent (no longer used)</vh></v>
 <v t="ekr.20071113145804.34"><vh>@test isPlainKey</vh></v>
 <v t="ekr.20061104172236.24"><vh>@test k.autoCompleterClass.calltip</vh></v>
-<v t="ekr.20060208195054"><vh>@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
-<v t="ekr.20070926095117"><vh>mungeKey</vh></v>
-</v>
 <v t="ekr.20060328091154"><vh>@test k.registerCommand</vh></v>
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
@@ -2027,7 +2027,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -15193,7 +15193,7 @@ last line
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.303">first line
 line 1
-	
+    
     line a
         line b
 line c
@@ -15208,7 +15208,7 @@ last line
 </t>
 <t tx="ekr.20061101121602.305">first line
 line 1
-	
+    
     line a
         line b
 line c

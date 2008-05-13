@@ -2902,7 +2902,8 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('command')
-        k.c.bodyWantsFocusNow()
+        # This command is also valid in headlines.
+        # k.c.bodyWantsFocusNow()
         k.showStateAndMode()
 
     def setInsertState (self,event):
@@ -2910,7 +2911,8 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('insert')
-        k.c.bodyWantsFocusNow()
+        # This command is also valid in headlines.
+        # k.c.bodyWantsFocusNow()
         k.showStateAndMode()
 
     def setOverwriteState (self,event):
@@ -2918,7 +2920,8 @@ class keyHandlerClass:
         # g.trace(g.callers())
         k = self
         k.setInputState('overwrite')
-        k.c.bodyWantsFocusNow()
+        # This command is also valid in headlines.
+        # k.c.bodyWantsFocusNow()
         k.showStateAndMode()
     #@-node:ekr.20061031131434.123:set-xxx-State
     #@+node:ekr.20061031131434.124:toggle-input-state
@@ -4546,7 +4549,6 @@ class keyHandlerClass:
     def showStateAndMode(self,w=None):
 
         k = self ; c = k.c
-        trace = False
         state = k.unboundKeyAction
         mode = k.getStateKind()
         inOutline = False
@@ -4555,7 +4557,7 @@ class keyHandlerClass:
         if not w:
             w = g.app.gui.get_focus(c)
 
-        if trace: g.trace(w, state, mode, g.callers(5))
+        # g.trace(w, state, mode)
 
         if mode:
             if mode in ('getArg','getFileName','full-command'):
@@ -4571,7 +4573,7 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
 
         if s:
-            if trace: g.trace(s)
+            # g.trace(s,g.callers(5))
             k.setLabelBlue(label=s,protect=True)
 
         if w and g.app.gui.isTextWidget(w):

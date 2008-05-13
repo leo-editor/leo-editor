@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="8,9"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -117,7 +117,7 @@
 <v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
 <v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
 <v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
+<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = white</vh></v>
 <v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
 <v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
 <v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
@@ -1323,7 +1323,6 @@
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
@@ -1341,25 +1340,10 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
-<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
-<v t="ekr.20041213105007.2" a="E"><vh>Body pane colors</vh>
-<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = Gray80</vh></v>
-<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
-<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
-<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+<v t="ekr.20080513060549.1" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20080513060549.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
 </v>
-<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20041119034357.1">@nocolor
@@ -5952,6 +5936,7 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060822101942.2">Overrides body_text_background_color.
 
+#fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
 <t tx="ekr.20060826152759"></t>
@@ -6657,15 +6642,16 @@ move-past-close-extend-selection    = None
 # previous-line-extend-selection    = Ctrl-Shift-P
 #select-all                         =  Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.
 select-all                          = Alt-Shift-A  # Shift-Ctrl-A: beginning-of-line-extend-selection.</t>
-<t tx="ekr.20060925060533.2">contract-pane               = Alt+Ctrl+-
-expand-pane                 = Alt+Ctrl-=
-focus-to-body               = Alt-d
-focus-to-tree               = Alt-t
-focus-to-tree               = Ctrl-t
-keyboard-quit               = Ctrl-g
-# set-command-state           = Ctrl-t
-# set-command-state           = Escape # Hard to type, interferes with dismissing dialogs.
-# toggle-active-pane          = Ctrl-T</t>
+<t tx="ekr.20060925060533.2">contract-pane       = Alt+Ctrl+-
+expand-pane         = Alt+Ctrl-=
+focus-to-body       = Alt-d
+focus-to-tree       = Alt-t
+toggle-active-pane  = Ctrl-t
+keyboard-quit       = Ctrl-g
+
+# Possible alternatives.
+# keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
+# focus-to-tree     = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 clone-node-to-chapter       = None
 contract-node               = None
@@ -8836,6 +8822,22 @@ goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
 </t>
 <t tx="ekr.20080512082834.2"></t>
+<t tx="ekr.20080513060549.1"></t>
+<t tx="ekr.20080513060549.2">Overrides body_text_background_color.
+
+#fdf5f5 A light pink.
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
+<t tx="ekr.20080513060549.3">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

@@ -2964,7 +2964,7 @@ class editCommandsClass (baseEditCommandsClass):
         # New in Leo 4.5: use the same logic as in selfInsertCommand.
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
-        k.self.updateTab(p,w)
+        self.updateTab(p,w)
         k.setInputState('insert')
         k.showStateAndMode()
 
