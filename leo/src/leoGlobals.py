@@ -1962,6 +1962,8 @@ def openWithFileName(fileName,old_c,
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
+        if k:
+            k.showStateAndMode()
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
