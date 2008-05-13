@@ -4613,6 +4613,8 @@ class keyHandlerClass:
 
         if inOutline and w == bodyCtrl:
             return # Don't recolor the body.
+        if w == c.frame.miniBufferWidget:
+            return # Don't recolor the minibuffer.
 
         # if not inOutline and w != bodyCtrl:
             # return # Don't recolor the headline.
