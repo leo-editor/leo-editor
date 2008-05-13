@@ -2178,13 +2178,15 @@ class editCommandsClass (baseEditCommandsClass):
             ins = w.toPythonIndex(self.insert)
             i = ins + g.choose(backward,-1,+1) # skip the present character.
             if backward:
-                start = s.rfind('\n',0,i)
-                if start == -1: start = 0
+                # start = s.rfind('\n',0,i)
+                # if start == -1: start = 0
+                start = 0
                 j = s.rfind(ch,start,max(start,i)) # Skip the character at the cursor.
                 if j > -1: self.moveToHelper(event,j,extend)
             else:
-                end = s.find('\n',i)
-                if end == -1: end = len(s)
+                # end = s.find('\n',i)
+                # if end == -1: end = len(s)
+                end = len(s)
                 j = s.find(ch,min(i,end),end) # Skip the character at the cursor.
                 if j > -1: self.moveToHelper(event,j,extend)
             k.resetLabel()
@@ -3865,28 +3867,36 @@ class editCommandsClass (baseEditCommandsClass):
     def beginningOfLine (self,event):
         '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
         w = self.editWidget(event)
-        i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        i,junk = g.getLine(s,ins)
+        if i > 0 and i == ins:
+            i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=False)
 
     def beginningOfLineExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the start of the line.'''
         w = self.editWidget(event)
-        i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        i,junk = g.getLine(s,ins)
+        if i > 0 and i == ins:
+            i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=True)
 
     def endOfLine (self,event): # passed
         '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
         w = self.editWidget(event)
-        s = w.getAllText()
-        junk,i = g.getLine(s,w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        junk,i = g.getLine(s,ins)
+        if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=False)
 
     def endOfLineExtendSelection (self,event): # passed
         '''Extend the selection by moving the cursor to the end of the line.'''
         w = self.editWidget(event)
-        s = w.getAllText()
-        junk,i = g.getLine(s,w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        junk,i = g.getLine(s,ins)
+        if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=True)
 
