@@ -3485,6 +3485,8 @@ def showStateColors (self,inOutline,w):
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
+    if w == c.frame.miniBufferWidget:
+        return # Don't recolor the minibuffer.
 
     # if not inOutline and w != bodyCtrl:
         # return # Don't recolor the headline.
@@ -3907,6 +3909,8 @@ def showStateColors (self,inOutline,w):
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
+    if w == c.frame.miniBufferWidget:
+        return # Don't recolor the minibuffer.
 
     # if not inOutline and w != bodyCtrl:
         # return # Don't recolor the headline.
@@ -4551,18 +4555,76 @@ def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
         k.showStateAndMode()
 #@-node:ekr.20061031131434.130:keyboardQuit
 #@-node:ekr.20080513091809.1:Make sure keyboard-quit enters default mode, except during auto-completion
+#@+node:ekr.20080513130956.1:Don't recolor the minibuffer widget
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # w = g.app.gui and g.app.gui.get_focus(c)
+    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+        # return
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if 0: # This is done by the body's FocusOut handler.
+        if inOutline:
+            bg=k.unselected_body_bg_color
+            fg=k.unselected_body_fg_color
+            try:
+                bodyCtrl.configure(bg=bg,fg=fg)
+            except Exception:
+                g.es_exception()
+
+    if inOutline and w == bodyCtrl:
+        return # Don't recolor the body.
+    if w == c.frame.miniBufferWidget:
+        return # Don't recolor the minibuffer.
+
+    # if not inOutline and w != bodyCtrl:
+        # return # Don't recolor the headline.
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@nonl
+#@-node:ekr.20080512115455.1:showStateColors
+#@-node:ekr.20080513130956.1:Don't recolor the minibuffer widget
 #@-node:ekr.20080513061733.4:Recent projects
 #@+node:ekr.20080510121331.18:To do
 @nocolor
 
 First:
 
-- Make sure minibuffer keeps its blue color.
 - add empty bindings for clean-recent-files and sort-recent-files.
 - Fix failed unit tests.
 
 - Typing . at the start of a line with auto-completer enabled hangs leo(!)
   This happens in the trunk too.
+
+- Posting: why doesn't vim use <Return> to switch to insert mode?
 
 Next:
 
@@ -4616,6 +4678,7 @@ Next:
 - Control-g doesn't restore default input state, or doesn't recolor the body.
 - Body pane is yellow initially, and prompt is "In Tree", but focus is in body!
 - Initial body pane color should be yellow if outline has focus initially.
+- Make sure minibuffer keeps its blue color.
 #@nonl
 #@-node:ekr.20080512125926.3:What I did
 #@-node:ekr.20080510121331.18:To do
