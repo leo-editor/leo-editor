@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -19547,6 +19547,7 @@ deprecated. The ``new_c`` key is also deprecated. Plugins should use the ``c`` k
 ============================= ======== =================================== =============================
 Event name (tag argument)     Stop?    When called                         Keys in keywords dict
 ============================= ======== =================================== =============================
+'after-auto'                           after each @auto file loaded        c,p (note 14)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
 'before-create-leo-frame'              before frame.finishCreate           c
@@ -19697,7 +19698,9 @@ Event name (tag argument)     Stop?    When called                         Keys 
     This hook gives plugins the chance to clean up after themselves when Leo shuts down.
 
 13. New in Leo 4.4: Leo calls the 'headkey1' and 'headkey2' hooks only when the user completes
-    the editing of a headline, and ch is always '\r', regardless of platform.</t>
+    the editing of a headline, and ch is always '\r', regardless of platform.
+    
+14. p is the new node (position) containing '@auto filename.ext'</t>
 <t tx="ekr.20050903075144">A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
 existing commands work, or change any other aspect of Leo's look and feel.

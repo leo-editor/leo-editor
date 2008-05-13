@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -623,7 +623,7 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
 <v t="ekr.20070504131950"><vh>getNewObjects</vh>
@@ -869,6 +869,7 @@
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20080513131902.1"><vh>@thin c_plus_plus_test.cpp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk

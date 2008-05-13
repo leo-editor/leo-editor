@@ -5573,7 +5573,7 @@ def createRecentFilesMenuItems (self):
 
     # Delete all previous entries.
     if len( recentFilesMenu.getMenuComponents() ) != 0:
-        deferable = lambda :self.delete_range(recentFilesMenu,0,len(c.recentFiles)+2)
+        deferable = lambda : self.deleteRecentFileMenuItems(recentFilesMenu)
         if not swing.SwingUtilities.isEventDispatchThread():
             dc = DefCallable( deferable )
             ft = dc.wrappedAsFutureTask()
