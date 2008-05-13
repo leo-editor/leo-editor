@@ -392,7 +392,8 @@ class autoCompleterClass:
     def abort (self):
 
         k = self.k
-        k.keyboardQuit(event=None)
+        k.keyboardQuit(event=None,setDefaultStatus=False)
+            # Stay in the present input state.
         self.exit(restore=True)
 
     def exit (self,restore=False): # Called from keyboard-quit.
@@ -704,7 +705,8 @@ class autoCompleterClass:
         i = j = w.getInsertPoint()
         s = w.getAllText()
 
-        while i > 0 and s[i-1] == '.':
+        # New in Leo 4.5: Fix a hanger by stopping when i <= 1.
+        while i > 1 and s[i-1] == '.':
             i,j = g.getWord(s,i-2)
 
         word = s[i:j]
