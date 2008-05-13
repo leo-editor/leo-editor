@@ -20,3 +20,4 @@ leo/*.zip
 leo/doc/leoTechReport.*
 leo/test/dirty-test.py
 
+test/c_plus_plus_test.cpp
