@@ -74,7 +74,11 @@ class leoTkinterBody (leoFrame.leoBody):
             self.setEditorColors(
                 bg=c.k.unselected_body_bg_color,
                 fg=c.k.unselected_body_fg_color)
+            # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+            oldState = k.unboundKeyAction
+            k.unboundKeyAction = k.defaultUnboundKeyAction
             c.k.showStateAndMode()
+            k.unboundKeyAction = oldState
 
         def onFocusIn(event,c=c):
             c.k.setDefaultInputState()
