@@ -1044,7 +1044,7 @@ def toggleInputState (self,event=None):
     k.showStateAndMode()
 #@-node:ekr.20061031131434.124:toggle-input-state
 #@+node:ekr.20061031131434.130:keyboardQuit
-def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
+def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
 
     '''This method clears the state and the minibuffer label.
 
@@ -1071,12 +1071,13 @@ def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True)
     k.clearState()
     k.resetLabel()
 
-    # Now done in end-editing
-        # k.setDefaultInputState()
-        # k.showStateAndMode()
-
     c.endEditing()
     c.bodyWantsFocus()
+
+    if setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
 #@-node:ekr.20061031131434.130:keyboardQuit
 #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
 keyStatesTuple = ('command','insert','overwrite')
@@ -1207,8 +1208,10 @@ def showStateAndMode(self,w=None):
     inOutline = False
     if not g.app.gui: return
 
+
     if not w:
         w = g.app.gui.get_focus(c)
+        if not w: return
 
     # g.trace(w, state, mode)
 
@@ -1226,7 +1229,7 @@ def showStateAndMode(self,w=None):
         s = '%s State' % state.capitalize()
 
     if s:
-        # g.trace(s,g.callers(5))
+        # g.trace(s,w,g.callers(4))
         k.setLabelBlue(label=s,protect=True)
 
     if w and g.app.gui.isTextWidget(w):
@@ -1684,8 +1687,10 @@ def showStateAndMode(self,w=None):
     inOutline = False
     if not g.app.gui: return
 
+
     if not w:
         w = g.app.gui.get_focus(c)
+        if not w: return
 
     # g.trace(w, state, mode)
 
@@ -1703,7 +1708,7 @@ def showStateAndMode(self,w=None):
         s = '%s State' % state.capitalize()
 
     if s:
-        # g.trace(s,g.callers(5))
+        # g.trace(s,w,g.callers(4))
         k.setLabelBlue(label=s,protect=True)
 
     if w and g.app.gui.isTextWidget(w):
@@ -1853,8 +1858,10 @@ def showStateAndMode(self,w=None):
     inOutline = False
     if not g.app.gui: return
 
+
     if not w:
         w = g.app.gui.get_focus(c)
+        if not w: return
 
     # g.trace(w, state, mode)
 
@@ -1872,7 +1879,7 @@ def showStateAndMode(self,w=None):
         s = '%s State' % state.capitalize()
 
     if s:
-        # g.trace(s,g.callers(5))
+        # g.trace(s,w,g.callers(4))
         k.setLabelBlue(label=s,protect=True)
 
     if w and g.app.gui.isTextWidget(w):
@@ -1969,7 +1976,7 @@ def handleMiniBindings (self,event,state,stroke):
     return False
 #@-node:ekr.20061031131434.152:handleMiniBindings
 #@+node:ekr.20061031131434.130:keyboardQuit
-def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True):
+def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
 
     '''This method clears the state and the minibuffer label.
 
@@ -1996,12 +2003,13 @@ def keyboardQuit (self,event,hideTabs=True):  #,setDefaultUnboundKeyAction=True)
     k.clearState()
     k.resetLabel()
 
-    # Now done in end-editing
-        # k.setDefaultInputState()
-        # k.showStateAndMode()
-
     c.endEditing()
     c.bodyWantsFocus()
+
+    if setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
 #@-node:ekr.20061031131434.130:keyboardQuit
 #@-node:ekr.20080512091707.1:Reset input state in end-edit-headline
 #@+node:ekr.20080511041907.3:Body colors
@@ -2022,7 +2030,11 @@ def createBindings (self,w=None):
         self.setEditorColors(
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
+        # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        oldState = k.unboundKeyAction
+        k.unboundKeyAction = k.defaultUnboundKeyAction
         c.k.showStateAndMode()
+        k.unboundKeyAction = oldState
 
     def onFocusIn(event,c=c):
         c.k.setDefaultInputState()
@@ -3290,7 +3302,11 @@ def createBindings (self,w=None):
         self.setEditorColors(
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
+        # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        oldState = k.unboundKeyAction
+        k.unboundKeyAction = k.defaultUnboundKeyAction
         c.k.showStateAndMode()
+        k.unboundKeyAction = oldState
 
     def onFocusIn(event,c=c):
         c.k.setDefaultInputState()
@@ -3328,8 +3344,10 @@ def showStateAndMode(self,w=None):
     inOutline = False
     if not g.app.gui: return
 
+
     if not w:
         w = g.app.gui.get_focus(c)
+        if not w: return
 
     # g.trace(w, state, mode)
 
@@ -3347,7 +3365,7 @@ def showStateAndMode(self,w=None):
         s = '%s State' % state.capitalize()
 
     if s:
-        # g.trace(s,g.callers(5))
+        # g.trace(s,w,g.callers(4))
         k.setLabelBlue(label=s,protect=True)
 
     if w and g.app.gui.isTextWidget(w):
@@ -3377,8 +3395,10 @@ def showStateAndMode(self,w=None):
     inOutline = False
     if not g.app.gui: return
 
+
     if not w:
         w = g.app.gui.get_focus(c)
+        if not w: return
 
     # g.trace(w, state, mode)
 
@@ -3396,7 +3416,7 @@ def showStateAndMode(self,w=None):
         s = '%s State' % state.capitalize()
 
     if s:
-        # g.trace(s,g.callers(5))
+        # g.trace(s,w,g.callers(4))
         k.setLabelBlue(label=s,protect=True)
 
     if w and g.app.gui.isTextWidget(w):
@@ -3551,6 +3571,987 @@ def findCharacterHelper (self,event,backward,extend):
 #@-node:ekr.20060925151926:backward/findCharacter & helper
 #@-node:ekr.20080512195927.1:Find character crosses lines
 #@-node:ekr.20080510185834.6:Projects
+#@+node:ekr.20080513061733.4:Recent projects
+#@+node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
+@
+Possibilities:
+
+- Eliminate the code and the setting entirely.
+- Encapsulate the code in c.setInitialFocus.
+#@nonl
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k:
+            k.setDefaultInputState()
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+        if k:
+            k.showStateAndMode()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@-node:ekr.20080512053319.8:Found: outline_pane_has_initial_focus
+#@+node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20040803072955.126:endEditLabel
+def endEditLabel (self):
+
+    '''End editing of a headline and update p.headString().'''
+
+    c = self.c ; k = c.k ; p = c.currentPosition()
+
+    self.setEditPosition(None) # That is, self._editPosition = None
+
+    # Important: this will redraw if necessary.
+    self.onHeadChanged(p)
+
+    if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    if 0: # This interferes with the find command and interferes with focus generally!
+        c.bodyWantsFocus()
+#@-node:ekr.20040803072955.126:endEditLabel
+#@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
+def endEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and move focus to the body pane.'''
+
+    frame = self ; c = frame.c ; k = c.k
+    if g.app.batchMode:
+        c.notValidInBatchMode("End Edit Headline")
+    else:
+        c.endEditing()
+        # g.trace('setting focus')
+        if c.config.getBool('stayInTreeAfterEditHeadline'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+
+            if k:
+                k.setDefaultInputState()
+                # Recolor the *body* text, **not** the headline.
+                k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
+#@+node:ekr.20040803072955.136:setSelectedLabelState
+trace_n = 0
+
+def setSelectedLabelState (self,p): # selected, disabled
+
+    c = self.c
+
+    # g.trace(p,c.edit_widget(p))
+
+
+    if p and c.edit_widget(p):
+
+        if 0:
+            g.trace(self.trace_n,c.edit_widget(p),p)
+            # g.trace(g.callers(6))
+            self.trace_n += 1
+
+        self.setDisabledHeadlineColors(p)
+#@-node:ekr.20040803072955.136:setSelectedLabelState
+#@+node:ekr.20040803072955.139:setDisabledHeadlineColors
+def setDisabledHeadlineColors (self,p):
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if False or (self.trace and self.verbose):
+        # if not self.redrawing:
+            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+            # import traceback ; traceback.print_stack(limit=6)
+
+    fg = self.headline_text_selected_foreground_color or 'black'
+    bg = self.headline_text_selected_background_color or 'grey80'
+    selfg = self.headline_text_editing_selection_foreground_color
+    selbg = self.headline_text_editing_selection_background_color
+
+    try:
+        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+    except:
+        g.es_exception()
+#@-node:ekr.20040803072955.139:setDisabledHeadlineColors
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    # w = g.app.gui and g.app.gui.get_focus(c)
+    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
+        # return
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    if 0: # This is done by the body's FocusOut handler.
+        if inOutline:
+            bg=k.unselected_body_bg_color
+            fg=k.unselected_body_fg_color
+            try:
+                bodyCtrl.configure(bg=bg,fg=fg)
+            except Exception:
+                g.es_exception()
+
+    if inOutline and w == bodyCtrl:
+        return # Don't recolor the body.
+
+    # if not inOutline and w != bodyCtrl:
+        # return # Don't recolor the headline.
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@nonl
+#@-node:ekr.20080512115455.1:showStateColors
+#@-node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
+#@+node:ekr.20080513061733.1:Confusing status after save when focus is in headline
+# Clicking in body doesn't change color and minibuffer prompt properly.
+#@nonl
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    c.beginUpdate()
+    try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.fileCommands.save(c.mFileName)
+                c.updateRecentFiles(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@nonl
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20060205103842:c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget or c.hasFocusWidget or g.app.gui.get_focus(c)
+
+def request_focus(self,w):
+
+    c = self
+    if w: c.requestedFocusWidget = w
+    c.traceFocus(w)
+
+def set_focus (self,w,force=False):
+
+    c = self
+
+    if force: # New in Leo 4.4.2: safer.
+        c.hasFocusWidget = c.requestedFocusWidget = w
+        g.app.gui and g.app.gui.set_focus(c,w)
+        c.traceFocus(w)
+    else: # An optimization.
+        c.requestedFocusWidget = w
+        c.masterFocusHandler()
+
+    # Can't do this: it interferes with too much.
+    # if c.k: c.k.showStateAndMode(w)
+#@-node:ekr.20060205103842:c.get/request/set_focus
+#@+node:ekr.20031218072017.3977:OnBodyClick, OnBodyRClick (Events)
+def OnBodyClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+            self.OnActivateBody(event=event)
+            c.k.showStateAndMode()
+        g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+            pass # By default Leo does nothing.
+            c.k.showStateAndMode()
+        g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("iconrclick")
+#@-node:ekr.20031218072017.3977:OnBodyClick, OnBodyRClick (Events)
+#@+node:ekr.20031218072017.3975:OnActivateBody (tkFrame)
+def OnActivateBody (self,event=None):
+
+    # __pychecker__ = '--no-argsused' # event not used.
+
+    try:
+        frame = self ; c = frame.c
+        c.setLog()
+        w = c.get_focus()
+        if w != c.frame.body.bodyCtrl:
+            frame.tree.OnDeactivate()
+        c.bodyWantsFocusNow()
+    except:
+        g.es_event_exception("activate body")
+
+    return 'break'
+#@-node:ekr.20031218072017.3975:OnActivateBody (tkFrame)
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20080513061733.1:Confusing status after save when focus is in headline
+#@+node:ekr.20080513061733.2:c.endEditing should *not* call showStateAndFocus
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
+def endEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and move focus to the body pane.'''
+
+    frame = self ; c = frame.c ; k = c.k
+    if g.app.batchMode:
+        c.notValidInBatchMode("End Edit Headline")
+    else:
+        c.endEditing()
+        # g.trace('setting focus')
+        if c.config.getBool('stayInTreeAfterEditHeadline'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+
+            if k:
+                k.setDefaultInputState()
+                # Recolor the *body* text, **not** the headline.
+                k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20080513061733.2:c.endEditing should *not* call showStateAndFocus
+#@+node:ekr.20080513061733.5:Set status report correctly on initial load
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    # print 'leo.py:run','fileName',fileName
+    if not jyLeo and not isValidPython(): return
+    << import leoGlobals and leoApp >>
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    if pymacs:
+        script = windowFlag = False
+    else:
+        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    verbose = script is None
+    g.app.batchMode = script is not None
+    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    << import leoNodes and leoConfig >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+
+    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+
+    ### This is a hack.
+    ### The jyleo script in test.leo sets the cwd to g.app.loadDir
+    ### Eventually, we will have to compute the equivalent here.
+
+    path = os.path.join(os.getcwd()) ### ,'..','src')
+    if path not in sys.path:
+        print 'appending %s to sys.path' % path
+        sys.path.append(path)
+    if 0:
+        print 'sys.path...'
+        for s in sys.path: print s
+
+# Import leoGlobals, but do NOT set g.
+import leoGlobals
+import leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+import leoNodes
+import leoConfig
+
+# try:
+    # import leoNodes
+# except ImportError:
+    # print "Error importing leoNodes.py"
+    # import traceback ; traceback.print_exc()
+
+# try:
+    # import leoConfig
+# except ImportError:
+    # print "Error importing leoConfig.py"
+    # import traceback ; traceback.print_exc()
+#@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_normpath(g.os_path_abspath(fileName))
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    theList = app.windowList
+    for frame in theList:
+        if munge(fileName) == munge(frame.c.mFileName):
+            frame.bringToFront()
+            frame.c.setLog()
+            return True, frame
+    if old_c:
+        # New in 4.4: We must read the file *twice*.
+        # The first time sets settings for the later call to c.finishCreate.
+        # g.trace('***** prereading',fileName)
+        c2 = g.app.config.openSettingsFile(fileName)
+        if c2: g.app.config.updateSettings(c2,localFlag=True)
+        g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile: return False, None
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    c.beginUpdate()
+    try:
+        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+            c.setLog()
+            app.lockLog()
+            frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+        # Bug fix in 4.4.
+        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+        p = c.currentPosition()
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(relativeFileName or fileName)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        assert frame.c == c and c.frame == frame
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.chapterController:
+            c.chapterController.finishCreate()
+        k = c.k
+        if k:
+            k.setDefaultInputState()
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+        if k:
+            k.showStateAndMode()
+    return True, frame
+#@nonl
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode)
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        else:
+            assert mode.endswith('-mode')
+            mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20031218072017.838:tkBody.createBindings
+def createBindings (self,w=None):
+
+    '''(tkBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    frame = self.frame ; c = self.c ; k = c.k
+    if not w: w = self.bodyCtrl
+
+    w.bind('<Key>', k.masterKeyHandler)
+
+    def onFocusOut(event,c=c):
+        # This interferes with inserting new nodes.
+            # c.k.setDefaultInputState()
+        self.setEditorColors(
+            bg=c.k.unselected_body_bg_color,
+            fg=c.k.unselected_body_fg_color)
+        # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        oldState = k.unboundKeyAction
+        k.unboundKeyAction = k.defaultUnboundKeyAction
+        c.k.showStateAndMode()
+        k.unboundKeyAction = oldState
+
+    def onFocusIn(event,c=c):
+        c.k.setDefaultInputState()
+
+    w.bind('<FocusOut>', onFocusOut)
+    w.bind('<FocusIn>', onFocusIn)
+
+    table = [
+        ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    ]
+
+    table2 = (
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,func,handler in table:
+        def bodyClickCallback(event,handler=handler,func=func):
+            return handler(event,func)
+
+        w.bind(kind,bodyClickCallback)
+#@-node:ekr.20031218072017.838:tkBody.createBindings
+#@-node:ekr.20080513061733.5:Set status report correctly on initial load
+#@+node:ekr.20080512155222.1:Autocompletion should stay in insert/overwrite mode
+#@+node:ekr.20061031131434.130:keyboardQuit
+def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+
+    if setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
+#@-node:ekr.20061031131434.130:keyboardQuit
+#@+node:ekr.20061031131434.34:finish
+def finish (self):
+
+    c = self.c ; k = c.k
+
+    k.keyboardQuit(event=None,setDefaultStatus=False)
+        # Stay in the present input state.
+
+    for name in (self.tabName,'Modules','Info'):
+        c.frame.log.deleteTab(name)
+
+    c.frame.body.onBodyChanged('Typing')
+    c.recolor()
+    self.clear()
+    self.object = None
+#@-node:ekr.20061031131434.34:finish
+#@-node:ekr.20080512155222.1:Autocompletion should stay in insert/overwrite mode
+#@+node:ekr.20080513091809.1:Make sure keyboard-quit enters default mode, except during auto-completion
+#@+node:ekr.20061031131434.130:keyboardQuit
+def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
+
+    '''This method clears the state and the minibuffer label.
+
+    k.endCommand handles all other end-of-command chores.'''
+
+    k = self ; c = k.c
+
+    if g.app.quitting:
+        return
+
+    if hideTabs:
+        k.autoCompleter.exit()
+        c.frame.log.deleteTab('Mode')
+        c.frame.log.hideTab('Completion')
+
+    # Completely clear the mode.
+    if k.inputModeName:
+        k.endMode(event)
+
+    # Complete clear the state.
+    k.state.kind = None
+    k.state.n = None
+
+    k.clearState()
+    k.resetLabel()
+
+    c.endEditing()
+    c.bodyWantsFocus()
+
+    if setDefaultStatus:
+        # At present, only the auto-completer suppresses this.
+        k.setDefaultInputState()
+        k.showStateAndMode()
+#@-node:ekr.20061031131434.130:keyboardQuit
+#@-node:ekr.20080513091809.1:Make sure keyboard-quit enters default mode, except during auto-completion
+#@-node:ekr.20080513061733.4:Recent projects
 #@-all
 #@nonl
 #@-node:ekr.20080508083640.10:@thin key-handling-notes.txt
