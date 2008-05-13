@@ -4552,6 +4552,73 @@ def keyboardQuit (self,event,hideTabs=True,setDefaultStatus=True):
 #@-node:ekr.20061031131434.130:keyboardQuit
 #@-node:ekr.20080513091809.1:Make sure keyboard-quit enters default mode, except during auto-completion
 #@-node:ekr.20080513061733.4:Recent projects
+#@+node:ekr.20080510121331.18:To do
+@nocolor
+
+First:
+
+- Make sure minibuffer keeps its blue color.
+- add empty bindings for clean-recent-files and sort-recent-files.
+- Fix failed unit tests.
+
+- Typing . at the start of a line with auto-completer enabled hangs leo(!)
+  This happens in the trunk too.
+
+Next:
+
+- Toggle-insert-command-states.
+- Munge mode names to create mode prompt.
+- Support vim-specific features like '.', etc.
+
+- Can the minibuffer replace vim modes?
+#@nonl
+#@+node:ekr.20080512125926.3:What I did
+@nocolor
+
+- Changed cycle-focus and cycle-all-focus commands.
+- Removed Alt-T binding for focus-to-outline
+- Paste in minibuffer (find/change) does not work.
+  Added cut-text, copy-text, paste-text to list of single-line commands.  
+- Bug: don't enter edit-headline in command mode.
+- Bug: can't enter period in find.  Period is bound to auto-complete(!)
+- Indicate input mode in mini-buffer.
+- Ignore plain-key bindings in insert-mode.
+- Enter outline mode after clone/copy-outline/Collapse all.
+- Bound escape to set-command-mode.
+- end-edit-headline should switch to body pane.
+  Just set @bool stayInTreeAfterEditHeadline = False
+- Enter command mode when editing headlines.
+- Fix autocompletion.
+- Don't allow unbound plain keys in command mode.
+- State prompt (and Find prompt) in minibuffer is not protected.
+- Tab completion wipes out full-command.
+- Modes no longer put focus in minibuffer.
+- Strip '-mode' from mode message in minibuffer.
+- Show "In outline" in showStateAndMode.
+- focus-to-body now enters default input state.
+- End editing of headline leaves *body* in insert mode.
+    - The actual bug was in k.setDefaultInputAction. It must use k.defaultUnboundKeyAction.
+- Fixed bug: body pane changes color when headline mode changes.
+- Python indentation now works.
+- Ignore all unbound plain keys valid in command mode, except for plain auto-complete key.
+- Insert mode does now persists in headline.
+- Handled outline navigation.
+- Don't honor command-mode keys if in tree.
+- Reorganized and simplified leoSettings.leo.
+- find-char should extend past line.
+- Extended a, e commands: go further if at beginning/end of line.
+- **Sometimes** the focus is both in the body pane and outline pane.
+  For example, after save outline.
+- Made legacy (insert mode) operation the default.
+- All unit tests pass in legacy mode.
+- Moving outlines with alt-shift-arrow keys messed up state reports.
+- Autocompletion doesn't restore 'insert' mode when 'command' mode is the default.
+- Control-g doesn't restore default input state, or doesn't recolor the body.
+- Body pane is yellow initially, and prompt is "In Tree", but focus is in body!
+- Initial body pane color should be yellow if outline has focus initially.
+#@nonl
+#@-node:ekr.20080512125926.3:What I did
+#@-node:ekr.20080510121331.18:To do
 #@-all
 #@nonl
 #@-node:ekr.20080508083640.10:@thin key-handling-notes.txt
