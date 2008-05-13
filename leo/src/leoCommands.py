@@ -3492,7 +3492,7 @@ class baseCommands:
         newChildren = parent_v.t.children[:]
 
         def key (self):
-            return self.headString().lower()
+            return (self.headString().lower(), self)
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)
