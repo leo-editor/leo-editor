@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -870,6 +870,7 @@
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080510190406.1"><vh>test of sort lines</vh></v>
 <v t="ekr.20080511121411.1"><vh>indentation test</vh></v>
+<v t="ekr.20080514091329.1"><vh>Print mode info</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5340,6 +5341,9 @@ z
 if a:
     # test.</t>
 <t tx="ekr.20080513084205.2"></t>
+<t tx="ekr.20080514091329.1">
+d = g.app.config.modeCommandsDict
+print d.keys()</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

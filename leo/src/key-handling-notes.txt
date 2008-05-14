@@ -1160,16 +1160,17 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     modesTuple = ('insert','overwrite')
     trace = False
 
-    assert not stroke # Unbound keys never have a stroke.
-
     if trace:
+        # if stroke: g.trace('***unexpected stroke***')
         g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
-        c.onCanvasKey(event)
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -1200,14 +1201,13 @@ def setInputState (self,state):
 
 #@-node:ekr.20061031131434.133:setInputState
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -1218,6 +1218,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -1604,18 +1606,22 @@ overwrite: Leo replaces the character at the cursor.
 #@nonl
 #@-node:ekr.20080510055530.4:@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert
 #@+node:ekr.20060102103625:createModeCommand (parserBaseClass)
-def createModeCommand (self,name,modeDict):
+def createModeCommand (self,modeName,name,modeDict):
 
-    commandName = 'enter-' + name
-    commandName = commandName.replace(' ','-')
+    modeName = 'enter-' + modeName.replace(' ','-')
 
-    # g.trace(name,len(modeDict.keys()))
+    i = name.find('::')
+    if i > -1:
+        # The prompt is everything after the '::'
+        prompt = name[i+2:].strip()
+        modeDict ['*command-prompt*'] = prompt
+        g.trace('modeName',modeName,'*command-prompt*',prompt)
 
     # Save the info for k.finishCreate and k.makeAllBindings.
     d = g.app.config.modeCommandsDict
 
     # New in 4.4.1 b2: silently allow redefinitions of modes.
-    d [commandName] = modeDict
+    d [modeName] = modeDict
 #@-node:ekr.20060102103625:createModeCommand (parserBaseClass)
 #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
 def doMode(self,p,kind,name,val):
@@ -1624,10 +1630,10 @@ def doMode(self,p,kind,name,val):
 
     # __pychecker__ = '--no-argsused' # val not used.
 
-    c = self.c ; k = c.k
+    c = self.c ; k = c.k ; name1 = name
 
     # g.trace('%20s' % (name),c.fileName())
-    << Compute modeName >>
+    modeName = self.computeModeName(name)
 
     # Create a local shortcutsDict.
     old_d = self.shortcutsDict
@@ -1664,29 +1670,18 @@ def doMode(self,p,kind,name,val):
     self.shortcutsDict = old_d
 
     # Create the command, but not any bindings to it.
-    self.createModeCommand(modeName,d)
-#@+node:ekr.20060618110649:<< Compute modeName >>
-name = name.strip().lower()
-j = name.find(' ')
-if j > -1: name = name[:j]
-if name.endswith('mode'):
-    name = name[:-4].strip()
-if name.endswith('-'):
-    name = name[:-1]
-modeName = name + '-mode'
-#@-node:ekr.20060618110649:<< Compute modeName >>
+    self.createModeCommand(modeName,name1,d)
 #@-node:ekr.20060102103625.1:doMode (ParserBaseClass)
 #@-node:ekr.20080509145618.1:Config...
 #@+node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -1697,6 +1692,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -1716,7 +1713,7 @@ def showStateAndMode(self,w=None):
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@+node:ekr.20061031131434.162:generalModeHandler
 def generalModeHandler (self,event,
-    commandName=None,func=None,modeName=None,nextMode=None):
+    commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
     '''Handle a mode defined by an @mode node in leoSettings.leo.'''
 
@@ -1727,8 +1724,8 @@ def generalModeHandler (self,event,
     if trace: g.trace(modeName,'state',state)
 
     if state == 0:
-        # self.initMode(event,modeName)
         k.inputModeName = modeName
+        k.modePrompt = prompt or modeName
         k.modeWidget = event and event.widget
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
@@ -1737,7 +1734,6 @@ def generalModeHandler (self,event,
                 k.modeHelp(event)
             else:
                 c.frame.log.hideTab('Mode')
-            #### c.minibufferWantsFocus()
     elif not func:
         g.trace('No func: improper key binding')
         return 'break'
@@ -1775,7 +1771,6 @@ def initMode (self,event,modeName):
 
     k = self ; c = k.c
     trace = c.config.getBool('trace_modes')
-    if trace: g.trace(modeName)
 
     if not modeName:
         g.trace('oops: no modeName')
@@ -1787,6 +1782,8 @@ def initMode (self,event,modeName):
         return
     else:
         k.modeBindingsDict = d
+        prompt = d.get('*command-prompt*') or modeName
+        if trace: g.trace('modeName',modeName,prompt,'d.keys()',d.keys())
 
     k.inputModeName = modeName
     k.silentMode = False
@@ -1805,12 +1802,14 @@ def initMode (self,event,modeName):
     w = g.choose(k.silentMode,k.modeWidget,k.widget)
     k.createModeBindings(modeName,d,w)
 
-    if k.silentMode:
-        k.showStateAndMode()
-    else:
-        k.setLabelBlue(modeName+': ',protect=True)
-        k.showStateAndMode()
-        #### c.minibufferWantsFocus()
+    k.showStateAndMode(prompt=prompt)
+
+    # if k.silentMode:
+        # k.showStateAndMode(prompt=prompt)
+    # else:
+        # # k.setLabelBlue(modeName+': ',protect=True)
+        # k.setLabelBlue(prompt+' ',protect=True)
+        # k.showStateAndMode(prompt=prompt)
 #@-node:ekr.20061031131434.163:initMode
 #@+node:ekr.20061031170011.8:setLabel
 def setLabel (self,s,protect=False):
@@ -1850,14 +1849,13 @@ def reinitMode (self,modeName):
 #@-node:ekr.20080512061556.1:Modes no longer put focus in minibuffer
 #@+node:ekr.20080512091707.1:Reset input state in end-edit-headline
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -1868,6 +1866,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -2314,7 +2314,7 @@ else:
     if d:
         b = d.get(stroke)
         if b:
-            if True or trace: g.trace('calling generalModeHandler')
+            if trace: g.trace('calling generalModeHandler')
             k.generalModeHandler (event,
                 commandName=b.commandName,func=b.func,
                 modeName=state,nextMode=b.nextMode)
@@ -2500,16 +2500,17 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     modesTuple = ('insert','overwrite')
     trace = False
 
-    assert not stroke # Unbound keys never have a stroke.
-
     if trace:
+        # if stroke: g.trace('***unexpected stroke***')
         g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
-        c.onCanvasKey(event)
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -3008,7 +3009,7 @@ else:
     if d:
         b = d.get(stroke)
         if b:
-            if True or trace: g.trace('calling generalModeHandler')
+            if trace: g.trace('calling generalModeHandler')
             k.generalModeHandler (event,
                 commandName=b.commandName,func=b.func,
                 modeName=state,nextMode=b.nextMode)
@@ -3194,16 +3195,17 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
     modesTuple = ('insert','overwrite')
     trace = False
 
-    assert not stroke # Unbound keys never have a stroke.
-
     if trace:
+        # if stroke: g.trace('***unexpected stroke***')
         g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
-        c.onCanvasKey(event)
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -3336,14 +3338,13 @@ def createBindings (self,w=None):
         w.bind(kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -3354,6 +3355,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -3387,14 +3390,13 @@ def setEditorColors (self,bg,fg):
             g.es_exception()
 #@-node:ekr.20060606090542:setEditorColors
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -3405,6 +3407,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -3833,14 +3837,13 @@ def setDisabledHeadlineColors (self,p):
         g.es_exception()
 #@-node:ekr.20040803072955.139:setDisabledHeadlineColors
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -3851,6 +3854,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -4027,14 +4032,13 @@ def OnActivateBody (self,event=None):
     return 'break'
 #@-node:ekr.20031218072017.3975:OnActivateBody (tkFrame)
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -4045,6 +4049,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -4103,14 +4109,13 @@ def endEditLabelCommand (self,event=None):
                 k.showStateAndMode(w=c.frame.body.bodyCtrl)
 #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -4121,6 +4126,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -4347,14 +4354,13 @@ def openWithFileName(fileName,old_c,
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
 #@+node:ekr.20061031131434.192:showStateAndMode
-def showStateAndMode(self,w=None):
+def showStateAndMode(self,w=None,prompt=None):
 
     k = self ; c = k.c
     state = k.unboundKeyAction
     mode = k.getStateKind()
     inOutline = False
     if not g.app.gui: return
-
 
     if not w:
         w = g.app.gui.get_focus(c)
@@ -4365,6 +4371,8 @@ def showStateAndMode(self,w=None):
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
+        elif prompt:
+            s = prompt
         else:
             assert mode.endswith('-mode')
             mode = mode[:-5]
@@ -4641,6 +4649,8 @@ def editLabel (self,p,selectAll=False):
 #@+node:ekr.20080510121331.18:To do
 @nocolor
 
+* Major bug: clicking headline when focus is in minbuffer doesn't change selection (body text) properly.
+- changing find settings from key-strokes doesn't work.
 - Munge mode names to create mode prompt.
 - Fix failed unit tests.
 - Toggle-insert-command-states.
