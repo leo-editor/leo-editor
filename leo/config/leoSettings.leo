@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,1"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -427,6 +427,7 @@
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
+<v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -1172,8 +1173,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
+<v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
@@ -5483,7 +5485,7 @@ scroll-up-extend-selection          = Shift-PageUp
 beginning-of-line           = a
 # unused                    = b
 # unused                    = c
-# unused                    = d
+enter-d-mode                = d
 end-of-line                 = e
 find-character              = f
 # find-word                 = Shift-f
@@ -5729,6 +5731,17 @@ probably find that your bindings are much easier to understand.
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
+<t tx="ekr.20080514084054.1">--&gt; set-silent-mode
+  # Suppress mode help.
+# --&gt; mode-help
+   # Show mode help initially.
+
+# keyboard-quit       = Ctrl-g # not needed, but a good reminder
+# keyboard-quit       = Return 
+
+kill-line       = d
+delete-char     = c
+</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
