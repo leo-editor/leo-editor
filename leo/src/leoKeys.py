@@ -3225,7 +3225,7 @@ class keyHandlerClass:
         if keysym in special_keys: return None
 
         trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-        traceGC = (False or self.trace_masterKeyHandlerGC) and not g.app.unitTesting
+        traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))

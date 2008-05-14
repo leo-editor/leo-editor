@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -3699,7 +3699,20 @@ find-all                            = None
 find-prev                           = F2
 change                              = Ctrl-=
 change-all                          = None  # Not recommended to bind this to a shortcut.
-change-then-find                    = Ctrl--</t>
+change-then-find                    = Ctrl--
+
+set-find-everywhere                 = Alt-Ctrl-e
+set-find-node-only                  = Alt-Ctrl-n
+set-find-suboutline-only            = Alt-Ctrl-s
+toggle-find-ignore-case-option      = Alt-Ctrl-i
+toggle-find-in-body-option          = Alt-Ctrl-b
+toggle-find-in-headline-option      = Alt-Ctrl-h
+toggle-find-mark-changes-option     = Alt-Ctrl-c
+toggle-find-mark-finds-option       = Alt-Ctrl-f
+toggle-find-regex-option            = Alt-Ctrl-x
+toggle-find-reverse-option          = Alt-Ctrl-r
+toggle-find-word-option             = Alt-Ctrl-w
+toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
 negative-argument       = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
@@ -5437,19 +5450,7 @@ scroll-up-extend-selection          = Shift-PageUp
     # find-prev                           ! mini = F2
     # change                              ! mini  =Ctrl-=
     # change-then-find                    ! mini = Ctrl--
-    
-    # set-find-everywhere                 ! mini = Alt-Ctrl-e
-    # set-find-node-only                  ! mini = Alt-Ctrl-n
-    # set-find-suboutline-only            ! mini = Alt-Ctrl-s
-    # toggle-find-ignore-case-option      ! mini = Alt-Ctrl-i
-    # toggle-find-in-body-option          ! mini = Alt-Ctrl-b
-    # toggle-find-in-headline-option      ! mini = Alt-Ctrl-h
-    # toggle-find-mark-changes-option     ! mini = Alt-Ctrl-c
-    # toggle-find-mark-finds-option       ! mini = Alt-Ctrl-f
-    # toggle-find-regex-option            ! mini = Alt-Ctrl-x
-    # toggle-find-reverse-option          ! mini = Alt-Ctrl-r
-    # toggle-find-word-option             ! mini = Alt-Ctrl-w
-    # toggle-find-wrap-around-option      ! mini = Alt-Ctrl-a</t>
+</t>
 <t tx="ekr.20080510112420.1">--&gt; expand-and-go-right
 --&gt; enter-outline-mode
 </t>

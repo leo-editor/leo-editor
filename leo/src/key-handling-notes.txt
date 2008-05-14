@@ -4,8 +4,6 @@
 #@+node:ekr.20080510121331.18:To do
 @nocolor
 
-* Bug: changing find settings from key-strokes doesn't work.
-
 - Fix failed unit tests when command-mode is the default.
 - Toggle-insert-command-states.
 
@@ -62,27 +60,6 @@ Later or never:
 - Typing . at the start of a line with auto-completer enabled hangs leo(!)
   This happens in the trunk too.
 #@-node:ekr.20080512125926.3:What I did
-#@+node:ekr.20080513174131.1:Design for simplified drawing & focus
-@nocolor
-
-- Command encloses all calls in c.outerBeginUpdate, c.outerEndUpdate.
-
-- Use newDrawing to select between old and new code.
-
-- New version of c.beginUpdate does nothing.
-
-- New version of c.endUpdate sets c._requestRedrawFlag if flag arg is True.
-
-- New versions of c.xWantsFocus sets c._requestedWidgetFlag.
-
-- New version of c.k.showStateAndFocus sets c._requestedMinibufferPrompt.
-
-- New version of c.selectPosition sets c._requestedPosition. c._requested.
-
-- c.update updates everything based on requests.
-
-- c.update may be called anytime.
-#@-node:ekr.20080513174131.1:Design for simplified drawing & focus
 #@+node:ekr.20080513083459.2:Failed unit tests
 ======================================================================
 FAIL: @test typing and undo in headline - at end
@@ -2368,7 +2345,7 @@ def masterKeyHandler (self,event,stroke=None):
     if keysym in special_keys: return None
 
     trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-    traceGC = (False or self.trace_masterKeyHandlerGC) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
@@ -3063,7 +3040,7 @@ def masterKeyHandler (self,event,stroke=None):
     if keysym in special_keys: return None
 
     trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
-    traceGC = (False or self.trace_masterKeyHandlerGC) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     if traceGC: g.printNewObjects('masterKey 1')
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
