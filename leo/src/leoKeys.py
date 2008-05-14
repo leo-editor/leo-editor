@@ -3954,15 +3954,7 @@ class keyHandlerClass:
         # Create bindings after we know whether we are in silent mode.
         w = g.choose(k.silentMode,k.modeWidget,k.widget)
         k.createModeBindings(modeName,d,w)
-
         k.showStateAndMode(prompt=prompt)
-
-        # if k.silentMode:
-            # k.showStateAndMode(prompt=prompt)
-        # else:
-            # # k.setLabelBlue(modeName+': ',protect=True)
-            # k.setLabelBlue(prompt+' ',protect=True)
-            # k.showStateAndMode(prompt=prompt)
     #@-node:ekr.20061031131434.163:initMode
     #@+node:ekr.20061031131434.164:reinitMode
     def reinitMode (self,modeName):
@@ -4574,16 +4566,19 @@ class keyHandlerClass:
 
         # g.trace(w, state, mode)
 
+        wname = g.app.gui.widget_name(w).lower()
+
         if mode:
             if mode in ('getArg','getFileName','full-command'):
                 s = None
             elif prompt:
                 s = prompt
             else:
-                assert mode.endswith('-mode')
-                mode = mode[:-5]
+                mode = mode.strip()
+                if mode.endswith('-mode'):
+                    mode = mode[:-5]
                 s = '%s Mode' % mode.capitalize()
-        elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+        elif w and (wname.startswith('canvas') or wname.startswith('head')):
             s = 'In Outline'
             inOutline = True
         else:
@@ -4606,7 +4601,7 @@ class keyHandlerClass:
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        # g.trace(state,w,g.app.gui.widget_name(w))
+        # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
         if inOutline and w == bodyCtrl:
             return # Don't recolor the body.

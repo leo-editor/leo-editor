@@ -381,6 +381,7 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas.bind('<Key>',k.masterKeyHandler)
         canvas.bind('<Button-1>',self.onTreeClick)
         canvas.bind('<Button-3>',self.onTreeRightClick)
+        # canvas.bind('<FocusIn>',self.onFocusIn)
 
         #@    << make bindings for tagged items on the canvas >>
         #@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
@@ -1963,7 +1964,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 # An important detail.
                 # The *canvas* (not the headline) gets the focus so that
                 # tree bindings take priority over text bindings.
-                c.treeWantsFocus()
+                c.treeWantsFocusNow() # Now. New in Leo 4.5.
                 self.active = False
                 returnVal = 'break'
             #@nonl
@@ -1974,6 +1975,15 @@ class leoTkinterTree (leoFrame.leoTree):
 
         return returnVal
     #@-node:ekr.20040803072955.105:OnActivateHeadline (tkTree)
+    #@+node:ekr.20080514114704.2:onFocuIn (tkTree) New in Leo 4.5
+    # def onFocusIn (self,event):
+
+        # c = self.c
+        # # p = c.currentPosition()
+        # # self.select(p)
+        # c.k.showStateAndMode()
+
+    #@-node:ekr.20080514114704.2:onFocuIn (tkTree) New in Leo 4.5
     #@+node:ekr.20040803072955.84:Text Box...
     #@+node:ekr.20040803072955.85:configureTextState
     def configureTextState (self,p):
@@ -2013,7 +2023,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 g.trace('*'*20,'oops')
         if not p: return 'break'
 
-        # g.trace(g.app.gui.widget_name(w)) #p.headString())
+        # g.trace(g.app.gui.widget_name(w),p and p.headString())
 
         c.setLog()
 

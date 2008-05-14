@@ -4,10 +4,9 @@
 #@+node:ekr.20080510121331.18:To do
 @nocolor
 
-* Major bug: clicking headline when focus is in minbuffer doesn't change selection (body text) properly.
 * Bug: changing find settings from key-strokes doesn't work.
 
-- Fix failed unit tests.
+- Fix failed unit tests when command-mode is the default.
 - Toggle-insert-command-states.
 
 Later or never:
@@ -1345,16 +1344,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -1819,16 +1821,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -1931,15 +1936,7 @@ def initMode (self,event,modeName):
     # Create bindings after we know whether we are in silent mode.
     w = g.choose(k.silentMode,k.modeWidget,k.widget)
     k.createModeBindings(modeName,d,w)
-
     k.showStateAndMode(prompt=prompt)
-
-    # if k.silentMode:
-        # k.showStateAndMode(prompt=prompt)
-    # else:
-        # # k.setLabelBlue(modeName+': ',protect=True)
-        # k.setLabelBlue(prompt+' ',protect=True)
-        # k.showStateAndMode(prompt=prompt)
 #@-node:ekr.20061031131434.163:initMode
 #@+node:ekr.20061031170011.8:setLabel
 def setLabel (self,s,protect=False):
@@ -1993,16 +1990,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -2161,12 +2161,14 @@ def createBindings (self,w=None):
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
         # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        # But we suppress coloring in the widget.
         oldState = k.unboundKeyAction
         k.unboundKeyAction = k.defaultUnboundKeyAction
-        c.k.showStateAndMode()
+        c.k.showStateAndMode(w=c.frame.tree.canvas)
         k.unboundKeyAction = oldState
 
     def onFocusIn(event,c=c):
+        # g.trace('callback')
         c.k.setDefaultInputState()
 
     w.bind('<FocusOut>', onFocusOut)
@@ -3435,12 +3437,14 @@ def createBindings (self,w=None):
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
         # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        # But we suppress coloring in the widget.
         oldState = k.unboundKeyAction
         k.unboundKeyAction = k.defaultUnboundKeyAction
-        c.k.showStateAndMode()
+        c.k.showStateAndMode(w=c.frame.tree.canvas)
         k.unboundKeyAction = oldState
 
     def onFocusIn(event,c=c):
+        # g.trace('callback')
         c.k.setDefaultInputState()
 
     w.bind('<FocusOut>', onFocusOut)
@@ -3482,16 +3486,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -3534,16 +3541,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -3603,7 +3613,7 @@ def showStateColors (self,inOutline,w):
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    # g.trace(state,w,g.app.gui.widget_name(w))
+    # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
@@ -3981,16 +3991,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -4013,7 +4026,7 @@ def showStateColors (self,inOutline,w):
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    # g.trace(state,w,g.app.gui.widget_name(w))
+    # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
@@ -4176,16 +4189,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -4253,16 +4269,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -4498,16 +4517,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -4538,12 +4560,14 @@ def createBindings (self,w=None):
             bg=c.k.unselected_body_bg_color,
             fg=c.k.unselected_body_fg_color)
         # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        # But we suppress coloring in the widget.
         oldState = k.unboundKeyAction
         k.unboundKeyAction = k.defaultUnboundKeyAction
-        c.k.showStateAndMode()
+        c.k.showStateAndMode(w=c.frame.tree.canvas)
         k.unboundKeyAction = oldState
 
     def onFocusIn(event,c=c):
+        # g.trace('callback')
         c.k.setDefaultInputState()
 
     w.bind('<FocusOut>', onFocusOut)
@@ -4674,7 +4698,7 @@ def showStateColors (self,inOutline,w):
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    # g.trace(state,w,g.app.gui.widget_name(w))
+    # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
@@ -4957,15 +4981,7 @@ def initMode (self,event,modeName):
     # Create bindings after we know whether we are in silent mode.
     w = g.choose(k.silentMode,k.modeWidget,k.widget)
     k.createModeBindings(modeName,d,w)
-
     k.showStateAndMode(prompt=prompt)
-
-    # if k.silentMode:
-        # k.showStateAndMode(prompt=prompt)
-    # else:
-        # # k.setLabelBlue(modeName+': ',protect=True)
-        # k.setLabelBlue(prompt+' ',protect=True)
-        # k.showStateAndMode(prompt=prompt)
 #@-node:ekr.20061031131434.163:initMode
 #@+node:ekr.20061031131434.164:reinitMode
 def reinitMode (self,modeName):
@@ -5143,15 +5159,7 @@ def initMode (self,event,modeName):
     # Create bindings after we know whether we are in silent mode.
     w = g.choose(k.silentMode,k.modeWidget,k.widget)
     k.createModeBindings(modeName,d,w)
-
     k.showStateAndMode(prompt=prompt)
-
-    # if k.silentMode:
-        # k.showStateAndMode(prompt=prompt)
-    # else:
-        # # k.setLabelBlue(modeName+': ',protect=True)
-        # k.setLabelBlue(prompt+' ',protect=True)
-        # k.showStateAndMode(prompt=prompt)
 #@-node:ekr.20061031131434.163:initMode
 #@+node:ekr.20061031131434.166:modeHelpHelper
 def modeHelpHelper (self,d):
@@ -5270,16 +5278,19 @@ def showStateAndMode(self,w=None,prompt=None):
 
     # g.trace(w, state, mode)
 
+    wname = g.app.gui.widget_name(w).lower()
+
     if mode:
         if mode in ('getArg','getFileName','full-command'):
             s = None
         elif prompt:
             s = prompt
         else:
-            assert mode.endswith('-mode')
-            mode = mode[:-5]
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
             s = '%s Mode' % mode.capitalize()
-    elif w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
         s = 'In Outline'
         inOutline = True
     else:
@@ -5294,6 +5305,372 @@ def showStateAndMode(self,w=None,prompt=None):
 #@-node:ekr.20061031131434.192:showStateAndMode
 #@-node:ekr.20080514084054.3:changed
 #@-node:ekr.20080514084054.2:Munged mode names to create mode prompt
+#@+node:ekr.20080514114704.1:Fixed an unusual headline click problem
+@
+
+This happens when focus is in the minibuffer and the user clicks a headline.
+
+The fix was to add a "don't color" arg to showStateAndMode.
+
+I also changed treeWantsFocus to treeWantsFocusNow in OnActivateHeadline.
+#@nonl
+#@+node:ekr.20051022141020:onTreeClick
+def onTreeClick (self,event=None):
+
+    '''Handle an event in the tree canvas, outside of any tree widget.'''
+
+    c = self.c
+
+    # New in Leo 4.4.2: a kludge: disable later event handling after a double-click.
+    # This allows focus to stick in newly-opened files opened by double-clicking an @url node.
+    if c.doubleClickFlag:
+        c.doubleClickFlag = False
+    else:
+        c.treeWantsFocusNow()
+
+    g.app.gui.killPopupMenu()
+
+    return 'break'
+#@-node:ekr.20051022141020:onTreeClick
+#@+node:ekr.20040803072955.87:onHeadlineClick
+def onHeadlineClick (self,event,p=None):
+
+    # g.trace('p',p)
+    c = self.c ; w = event.widget
+
+    if not p:
+        try:
+            p = w.leo_position
+        except AttributeError:
+            g.trace('*'*20,'oops')
+    if not p: return 'break'
+
+    # g.trace(g.app.gui.widget_name(w),p and p.headString())
+
+    c.setLog()
+
+    try:
+        if not g.doHook("headclick1",c=c,p=p,v=p,event=event):
+            returnVal = self.OnActivateHeadline(p)
+        g.doHook("headclick2",c=c,p=p,v=p,event=event)
+    except:
+        returnVal = 'break'
+        g.es_event_exception("headclick")
+
+    # 'continue' is sometimes correct here.
+    # 'break' would make it impossible to unselect the headline text.
+    # g.trace('returnVal',returnVal,'stayInTree',self.stayInTree)
+    return returnVal
+#@-node:ekr.20040803072955.87:onHeadlineClick
+#@+node:ekr.20040803072955.105:OnActivateHeadline (tkTree)
+def OnActivateHeadline (self,p,event=None):
+
+    '''Handle common process when any part of a headline is clicked.'''
+
+    # g.trace(p.headString())
+
+    returnVal = 'break' # Default: do nothing more.
+    trace = False
+
+    try:
+        c = self.c
+        c.setLog()
+        << activate this window >>
+    except:
+        g.es_event_exception("activate tree")
+
+    return returnVal
+#@+node:ekr.20040803072955.106:<< activate this window >>
+if p == c.currentPosition():
+
+    if trace: g.trace('current','active',self.active)
+    self.editLabel(p) # sets focus.
+    # If we are active, pass the event along so the click gets handled.
+    # Otherwise, do *not* pass the event along so the focus stays the same.
+    returnVal = g.choose(self.active,'continue','break')
+    self.active = True
+else:
+    if trace: g.trace("not current")
+    self.select(p,scroll=False)
+    w  = c.frame.body.bodyCtrl
+    if c.frame.findPanel:
+        c.frame.findPanel.handleUserClick(p)
+    if p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+    # An important detail.
+    # The *canvas* (not the headline) gets the focus so that
+    # tree bindings take priority over text bindings.
+    c.treeWantsFocusNow() # Now. New in Leo 4.5.
+    self.active = False
+    returnVal = 'break'
+#@nonl
+#@-node:ekr.20040803072955.106:<< activate this window >>
+#@-node:ekr.20040803072955.105:OnActivateHeadline (tkTree)
+#@+node:ekr.20040803072955.128:leoTree.select & helper
+tree_select_lockout = False
+
+def select (self,p,updateBeadList=True,scroll=True):
+
+    '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        val = 'break'
+        self.tree_select_lockout = True
+        val = self.treeSelectHelper(p,updateBeadList,scroll)
+    finally:
+        self.tree_select_lockout = False
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def treeSelectHelper (self,p,updateBeadList,scroll):
+
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    old_p = c.currentPosition()
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    # g.trace('      ===',id(w),p and p.headString())
+    if self.trace_select and not g.app.unitTesting: g.trace('tree',g.callers())
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.currentPosition() here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p,updateBeadList) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if not body: g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+
+yview = body.getYScrollPosition()
+insertSpot = c.frame.body.getInsertPoint()
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p) # 12/17/04
+
+if c.edit_widget(old_p):
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.headString()
+frame.setWrap(p)
+
+# Always do this.  Otherwise there can be problems with trailing newlines.
+
+s = g.toUnicode(p.v.t._bodyString,"utf-8")
+old_s = w.getAllText()
+
+if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+    pass
+else:
+    # This destroys all color tags, so do a full recolor.
+    w.setAllText(s)
+    self.frame.body.recolor_now(p) # recolor now uses p.copy(), so this is safe.
+
+if p.v and p.v.t.scrollBarSpot != None:
+    first,last = p.v.t.scrollBarSpot
+    w.setYScrollPosition(first)
+
+if p.v and p.v.t.insertSpot != None:
+    spot = p.v.t.insertSpot
+    w.setInsertPoint(spot)
+    w.see(spot)
+else:
+    w.setInsertPoint(0)
+
+# g.trace("select:",p.headString())
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+# g.trace('selecting',p,'edit_widget',c.edit_widget(p))
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
+
+    if inOutline and w == bodyCtrl:
+        return # Don't recolor the body.
+    if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        # Don't recolor the minibuffer, log panes, etc.
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@-node:ekr.20080512115455.1:showStateColors
+#@+node:ekr.20031218072017.838:tkBody.createBindings
+def createBindings (self,w=None):
+
+    '''(tkBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    frame = self.frame ; c = self.c ; k = c.k
+    if not w: w = self.bodyCtrl
+
+    w.bind('<Key>', k.masterKeyHandler)
+
+    def onFocusOut(event,c=c):
+        # This interferes with inserting new nodes.
+            # c.k.setDefaultInputState()
+        self.setEditorColors(
+            bg=c.k.unselected_body_bg_color,
+            fg=c.k.unselected_body_fg_color)
+        # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        # But we suppress coloring in the widget.
+        oldState = k.unboundKeyAction
+        k.unboundKeyAction = k.defaultUnboundKeyAction
+        c.k.showStateAndMode(w=c.frame.tree.canvas)
+        k.unboundKeyAction = oldState
+
+    def onFocusIn(event,c=c):
+        # g.trace('callback')
+        c.k.setDefaultInputState()
+
+    w.bind('<FocusOut>', onFocusOut)
+    w.bind('<FocusIn>', onFocusIn)
+
+    table = [
+        ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    ]
+
+    table2 = (
+        ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    )
+
+    if c.config.getBool('allow_middle_button_paste'):
+        table.extend(table2)
+
+    for kind,func,handler in table:
+        def bodyClickCallback(event,handler=handler,func=func):
+            return handler(event,func)
+
+        w.bind(kind,bodyClickCallback)
+#@-node:ekr.20031218072017.838:tkBody.createBindings
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode)
+
+    wname = g.app.gui.widget_name(w).lower()
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20080514114704.1:Fixed an unusual headline click problem
 #@-node:ekr.20080513061733.4:Recent projects
 #@-all
 #@nonl
