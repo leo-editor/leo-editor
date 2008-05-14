@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -430,7 +430,7 @@
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
@@ -1177,7 +1177,7 @@
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
 <v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
@@ -3833,6 +3833,7 @@ False: Do not write uA's.</t>
 
 back-word                           = Alt-b  
 back-word-extend-selection          = Alt-Shift-b
+back-to-indentation                 = Ctrl-space
 beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = Ctrl-Shift-a
 end-of-line                         = Ctrl-e
