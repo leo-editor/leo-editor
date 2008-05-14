@@ -1536,7 +1536,6 @@ class editCommandsClass (baseEditCommandsClass):
             'move-past-close':                      self.movePastClose,
             'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
             'newline-and-indent':                   self.insertNewLineAndTab,
-            'newline':                              self.insertNewline,
             'next-line':                            self.nextLine,
             'next-line-extend-selection':           self.nextLineExtendSelection,
             'previous-line':                        self.prevLine,
