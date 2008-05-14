@@ -3464,32 +3464,18 @@ def showStateColors (self,inOutline,w):
 
     k = self ; c = k.c ; state = k.unboundKeyAction
 
-    # w = g.app.gui and g.app.gui.get_focus(c)
-    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-        # return
-
     body = c.frame.body ; bodyCtrl = body.bodyCtrl
-    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
 
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    if 0: # This is done by the body's FocusOut handler.
-        if inOutline:
-            bg=k.unselected_body_bg_color
-            fg=k.unselected_body_fg_color
-            try:
-                bodyCtrl.configure(bg=bg,fg=fg)
-            except Exception:
-                g.es_exception()
+    # g.trace(state,w,g.app.gui.widget_name(w))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
-    if w == c.frame.miniBufferWidget:
-        return # Don't recolor the minibuffer.
-
-    # if not inOutline and w != bodyCtrl:
-        # return # Don't recolor the headline.
+    if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        # Don't recolor the minibuffer, log panes, etc.
+        return
 
     if state == 'insert':
         bg = k.insert_mode_bg_color
@@ -3512,7 +3498,6 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             g.es_exception()
-#@nonl
 #@-node:ekr.20080512115455.1:showStateColors
 #@-node:ekr.20080512091707.2:Body changes color when headline mode changes
 #@+node:ekr.20080512195927.1:Find character crosses lines
@@ -3888,32 +3873,18 @@ def showStateColors (self,inOutline,w):
 
     k = self ; c = k.c ; state = k.unboundKeyAction
 
-    # w = g.app.gui and g.app.gui.get_focus(c)
-    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-        # return
-
     body = c.frame.body ; bodyCtrl = body.bodyCtrl
-    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
 
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    if 0: # This is done by the body's FocusOut handler.
-        if inOutline:
-            bg=k.unselected_body_bg_color
-            fg=k.unselected_body_fg_color
-            try:
-                bodyCtrl.configure(bg=bg,fg=fg)
-            except Exception:
-                g.es_exception()
+    # g.trace(state,w,g.app.gui.widget_name(w))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
-    if w == c.frame.miniBufferWidget:
-        return # Don't recolor the minibuffer.
-
-    # if not inOutline and w != bodyCtrl:
-        # return # Don't recolor the headline.
+    if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        # Don't recolor the minibuffer, log panes, etc.
+        return
 
     if state == 'insert':
         bg = k.insert_mode_bg_color
@@ -3936,7 +3907,6 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             g.es_exception()
-#@nonl
 #@-node:ekr.20080512115455.1:showStateColors
 #@-node:ekr.20080512155953.2:Return in headline should color headline neutral, color body pane blue
 #@+node:ekr.20080513061733.1:Confusing status after save when focus is in headline
@@ -4561,32 +4531,18 @@ def showStateColors (self,inOutline,w):
 
     k = self ; c = k.c ; state = k.unboundKeyAction
 
-    # w = g.app.gui and g.app.gui.get_focus(c)
-    # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-        # return
-
     body = c.frame.body ; bodyCtrl = body.bodyCtrl
-    # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
 
     if state not in ('insert','command','overwrite'):
         g.trace('bad input state',state)
 
-    if 0: # This is done by the body's FocusOut handler.
-        if inOutline:
-            bg=k.unselected_body_bg_color
-            fg=k.unselected_body_fg_color
-            try:
-                bodyCtrl.configure(bg=bg,fg=fg)
-            except Exception:
-                g.es_exception()
+    # g.trace(state,w,g.app.gui.widget_name(w))
 
     if inOutline and w == bodyCtrl:
         return # Don't recolor the body.
-    if w == c.frame.miniBufferWidget:
-        return # Don't recolor the minibuffer.
-
-    # if not inOutline and w != bodyCtrl:
-        # return # Don't recolor the headline.
+    if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        # Don't recolor the minibuffer, log panes, etc.
+        return
 
     if state == 'insert':
         bg = k.insert_mode_bg_color
@@ -4609,7 +4565,6 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             g.es_exception()
-#@nonl
 #@-node:ekr.20080512115455.1:showStateColors
 #@-node:ekr.20080513130956.1:Don't recolor the minibuffer widget
 #@+node:ekr.20080513174131.2:Fixed unbounded loop in autocompleter.findAnchor
@@ -4633,6 +4588,55 @@ def findAnchor (self,w):
 #@nonl
 #@-node:ekr.20061031131434.32:findAnchor
 #@-node:ekr.20080513174131.2:Fixed unbounded loop in autocompleter.findAnchor
+#@+node:ekr.20080514062808.1:Color headline when editing
+#@+node:ekr.20031218072017.2886:c.editHeadline
+def editHeadline (self,event=None):
+
+    '''Begin editing the headline of the selected node.'''
+
+    c = self ; k = c.k ; tree = c.frame.tree
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Edit Headline")
+        return
+
+    if k:
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    tree.editLabel(c.currentPosition())
+#@-node:ekr.20031218072017.2886:c.editHeadline
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = not g.app.unitTesting and (False or self.trace_edit)
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        c.beginUpdate()
+        try:
+            self.endEditLabel()
+        finally:
+            c.endUpdate(True)
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+
+    if trace: g.trace(c.edit_widget(p))
+
+    w = c.edit_widget(p)
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@-node:ekr.20080514062808.1:Color headline when editing
 #@-node:ekr.20080513061733.4:Recent projects
 #@+node:ekr.20080510121331.18:To do
 @nocolor
@@ -4715,6 +4719,52 @@ Later or never:
 
 - c.update may be called anytime.
 #@-node:ekr.20080513174131.1:Design for simplified drawing & focus
+#@+node:ekr.20080513083459.2:Failed unit tests
+======================================================================
+FAIL: @test typing and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 23, in <module>
+AssertionError: oops2: got: Test headline abc
+
+======================================================================
+FAIL: @test selecting new node retains typing in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test typing in headline recomputes width
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: 15 15
+
+======================================================================
+FAIL: @test typing in empty body text redraws the screen (and icon)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: expected "a", got: u''
+
+----------------------------------------------------------------------
+Ran 561 tests in 178.265s
+
+FAILED (failures=4)
+#@-node:ekr.20080513083459.2:Failed unit tests
 #@-node:ekr.20080510121331.18:To do
 #@-all
 #@nonl

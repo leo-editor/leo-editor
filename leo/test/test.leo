@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -544,9 +544,7 @@
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
-<v t="ekr.20080513084205.2"><vh>Settings for vim operation</vh>
-<v t="ekr.20080513084205.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-</v>
+<v t="ekr.20080513084205.2"><vh>Settings for vim operation</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
@@ -624,9 +622,6 @@
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20080513084205.2"><vh>Settings for vim operation</vh>
-<v t="ekr.20080513084205.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-</v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
@@ -875,7 +870,6 @@
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080510190406.1"><vh>test of sort lines</vh></v>
 <v t="ekr.20080511121411.1"><vh>indentation test</vh></v>
-<v t="ekr.20080513182154.1"><vh>Autocompleter hang: dot at start of empty text</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5346,8 +5340,6 @@ z
 if a:
     # test.</t>
 <t tx="ekr.20080513084205.2"></t>
-<t tx="ekr.20080513084205.3"></t>
-<t tx="ekr.20080513182154.1"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
