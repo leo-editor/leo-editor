@@ -1702,13 +1702,13 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
 
-        c = self.c ;  w = event.widget
+        c = self.c ; k = c.k ; w = event.widget
 
 
         body = c.frame.body.bodyCtrl
         log  = c.frame.log.logCtrl
         tree = c.frame.tree.canvas
-        panes = [body,log] # ,tree]
+        panes = [body,log,tree]
 
         if w in panes:
             i = panes.index(w) + 1
@@ -1722,7 +1722,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
-        c.k.newMinibufferWidget = pane
+        k.newMinibufferWidget = pane
+        k.showStateAndMode()
     #@nonl
     #@-node:ekr.20051022144825.1:cycleFocus
     #@+node:ekr.20060613090701:cycleAllFocus
@@ -1771,15 +1772,17 @@ class editCommandsClass (baseEditCommandsClass):
                     pane = c.frame.log.logCtrl
                 elif self.logWidgetCount > n:
                     self.logWidgetCount = 0
-                    ### pane = c.frame.tree.canvas
-                    pane = c.frame.body.bodyCtrl
+                    pane = c.frame.tree.canvas
+                    # Use this to skip the tree pane.
+                    #pane = c.frame.body.bodyCtrl
                 else:
                     c.frame.log.cycleTabFocus()
                     pane = c.frame.log.logCtrl
             else:
                 self.logWidgetCount = 0
-                ### pane = c.frame.tree.canvas
-                pane = c.frame.body.bodyCtrl
+                pane = c.frame.tree.canvas
+                # Use this to skip the tree pane.
+                # pane = c.frame.body.bodyCtrl
         else:
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0
@@ -1789,6 +1792,7 @@ class editCommandsClass (baseEditCommandsClass):
         if pane:
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
+            k.showStateAndMode()
     #@nonl
     #@-node:ekr.20060613090701:cycleAllFocus
     #@+node:ekr.20051022144825:focusTo...

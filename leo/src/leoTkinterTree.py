@@ -2418,10 +2418,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if trace: g.trace(c.edit_widget(p))
 
-        if p and c.edit_widget(p):
+        w = c.edit_widget(p)
+        if p and w:
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             c.headlineWantsFocus(p) # Make sure the focus sticks.
+            c.k.showStateAndMode(w)
     #@-node:ekr.20040803072955.127:tree.editLabel
     #@+node:ekr.20040803072955.134:tree.set...LabelState
     #@+node:ekr.20040803072955.135:setEditLabelState

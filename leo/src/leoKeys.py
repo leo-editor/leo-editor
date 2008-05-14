@@ -4594,32 +4594,18 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; state = k.unboundKeyAction
 
-        # w = g.app.gui and g.app.gui.get_focus(c)
-        # if not w or not g.app.gui or not g.app.gui.isTextWidget(w) or not self.inited:
-            # return
-
         body = c.frame.body ; bodyCtrl = body.bodyCtrl
-        # g.trace('inOutline',inOutline,'state',state,w,g.callers(5))
 
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        if 0: # This is done by the body's FocusOut handler.
-            if inOutline:
-                bg=k.unselected_body_bg_color
-                fg=k.unselected_body_fg_color
-                try:
-                    bodyCtrl.configure(bg=bg,fg=fg)
-                except Exception:
-                    g.es_exception()
+        # g.trace(state,w,g.app.gui.widget_name(w))
 
         if inOutline and w == bodyCtrl:
             return # Don't recolor the body.
-        if w == c.frame.miniBufferWidget:
-            return # Don't recolor the minibuffer.
-
-        # if not inOutline and w != bodyCtrl:
-            # return # Don't recolor the headline.
+        if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+            # Don't recolor the minibuffer, log panes, etc.
+            return
 
         if state == 'insert':
             bg = k.insert_mode_bg_color
@@ -4642,7 +4628,6 @@ class keyHandlerClass:
                 w.configure(bg=bg,fg=fg)
             except Exception:
                 g.es_exception()
-    #@nonl
     #@-node:ekr.20080512115455.1:showStateColors
     #@-node:ekr.20061031131434.193:States
     #@+node:ekr.20061031131434.200:universalDispatcher & helpers
