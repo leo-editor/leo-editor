@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -65,9 +65,6 @@
 </v>
 </v>
 <v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
-<v t="ekr.20080513085509.1"><vh>Settings for vim operation</vh>
-<v t="ekr.20080513085509.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-</v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -2147,6 +2144,11 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20555,7 +20557,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
-<t tx="ekr.20080513085509.1"></t>
-<t tx="ekr.20080513085509.2"></t>
+<t tx="ekr.20080514113943.1"></t>
 </tnodes>
 </leo_file>
