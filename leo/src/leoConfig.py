@@ -86,19 +86,43 @@ class parserBaseClass:
             'strings':      self.doStrings,
         }
     #@-node:ekr.20041119204700: ctor (parserBaseClass)
+    #@+node:ekr.20080514084054.4:computeModeName (parserBaseClass)
+    def computeModeName (self,name):
+
+        s = name.strip().lower()
+        j = s.find(' ')
+        if j > -1: s = s[:j]
+        if s.endswith('mode'):
+            s = s[:-4].strip()
+        if s.endswith('-'):
+            s = s[:-1]
+
+        i = s.find('::')
+        if i > -1:
+            # The actual mode name is everything up to the "::"
+            # The prompt is everything after the prompt.
+            s = s[:i]
+
+        modeName = s + '-mode'
+        return modeName
+    #@-node:ekr.20080514084054.4:computeModeName (parserBaseClass)
     #@+node:ekr.20060102103625:createModeCommand (parserBaseClass)
-    def createModeCommand (self,name,modeDict):
+    def createModeCommand (self,modeName,name,modeDict):
 
-        commandName = 'enter-' + name
-        commandName = commandName.replace(' ','-')
+        modeName = 'enter-' + modeName.replace(' ','-')
 
-        # g.trace(name,len(modeDict.keys()))
+        i = name.find('::')
+        if i > -1:
+            # The prompt is everything after the '::'
+            prompt = name[i+2:].strip()
+            modeDict ['*command-prompt*'] = prompt
+            g.trace('modeName',modeName,'*command-prompt*',prompt)
 
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict
 
         # New in 4.4.1 b2: silently allow redefinitions of modes.
-        d [commandName] = modeDict
+        d [modeName] = modeDict
     #@-node:ekr.20060102103625:createModeCommand (parserBaseClass)
     #@+node:ekr.20041120103012:error
     def error (self,s):
@@ -454,21 +478,10 @@ class parserBaseClass:
 
         # __pychecker__ = '--no-argsused' # val not used.
 
-        c = self.c ; k = c.k
+        c = self.c ; k = c.k ; name1 = name
 
         # g.trace('%20s' % (name),c.fileName())
-        #@    << Compute modeName >>
-        #@+node:ekr.20060618110649:<< Compute modeName >>
-        name = name.strip().lower()
-        j = name.find(' ')
-        if j > -1: name = name[:j]
-        if name.endswith('mode'):
-            name = name[:-4].strip()
-        if name.endswith('-'):
-            name = name[:-1]
-        modeName = name + '-mode'
-        #@-node:ekr.20060618110649:<< Compute modeName >>
-        #@nl
+        modeName = self.computeModeName(name)
 
         # Create a local shortcutsDict.
         old_d = self.shortcutsDict
@@ -505,7 +518,7 @@ class parserBaseClass:
         self.shortcutsDict = old_d
 
         # Create the command, but not any bindings to it.
-        self.createModeCommand(modeName,d)
+        self.createModeCommand(modeName,name1,d)
     #@-node:ekr.20060102103625.1:doMode (ParserBaseClass)
     #@+node:ekr.20070411101643.1:doOpenWith (ParserBaseClass)
     def doOpenWith (self,p,kind,name,val):
@@ -1085,7 +1098,9 @@ class configClass:
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
-        self.modeCommandsDict = {} # For use by @mode logic. Keys are command names, values are g.Bunches.
+        self.modeCommandsDict = {}
+            # For use by @mode logic. Keys are command names, values are g.Bunches.
+            # A special key: *mode-prompt* it the prompt to be given.
         self.myGlobalConfigFile = None
         self.myHomeConfigFile = None
         self.machineConfigFile = None

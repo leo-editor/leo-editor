@@ -1594,6 +1594,7 @@ class keyHandlerClass:
         self.inputModeName = '' # The name of the input mode, or None.
         self.inverseCommandsDict = {}
             # Completed in k.finishCreate, but leoCommands.getPublicCommands adds entries first.
+        self.modePrompt = '' # The mode promopt.
         self.negativeArg = False
         self.newMinibufferWidget = None # Usually the minibuffer restores focus.  This overrides this default.
         self.regx = g.bunch(iter=None,key=None)
@@ -3264,7 +3265,7 @@ class keyHandlerClass:
                 if d:
                     b = d.get(stroke)
                     if b:
-                        if True or trace: g.trace('calling generalModeHandler')
+                        if trace: g.trace('calling generalModeHandler')
                         k.generalModeHandler (event,
                             commandName=b.commandName,func=b.func,
                             modeName=state,nextMode=b.nextMode)
@@ -3464,16 +3465,17 @@ class keyHandlerClass:
         modesTuple = ('insert','overwrite')
         trace = False
 
-        assert not stroke # Unbound keys never have a stroke.
-
         if trace:
+            # if stroke: g.trace('***unexpected stroke***')
             g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.
-            c.onCanvasKey(event)
+            w = g.app.gui.get_focus(c)
+            if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+                c.onCanvasKey(event)
             return 'break'
 
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -3798,7 +3800,9 @@ class keyHandlerClass:
         # g.trace(g.dictToString(d))
 
         for commandName in d.keys():
-            if commandName == '*entry-commands*': continue
+            if commandName in ('*entry-commands*','*command-prompt*'):
+                # These are special-purpose dictionary entries.
+                continue
             func = c.commandsDict.get(commandName)
             if not func:
                 g.es_print('no such command:',commandName,'Referenced from',modeName)
@@ -3862,7 +3866,7 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.161:exitNamedMode
     #@+node:ekr.20061031131434.162:generalModeHandler
     def generalModeHandler (self,event,
-        commandName=None,func=None,modeName=None,nextMode=None):
+        commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
         '''Handle a mode defined by an @mode node in leoSettings.leo.'''
 
@@ -3873,8 +3877,8 @@ class keyHandlerClass:
         if trace: g.trace(modeName,'state',state)
 
         if state == 0:
-            # self.initMode(event,modeName)
             k.inputModeName = modeName
+            k.modePrompt = prompt or modeName
             k.modeWidget = event and event.widget
             k.setState(modeName,1,handler=k.generalModeHandler)
             self.initMode(event,modeName)
@@ -3883,7 +3887,6 @@ class keyHandlerClass:
                     k.modeHelp(event)
                 else:
                     c.frame.log.hideTab('Mode')
-                #### c.minibufferWantsFocus()
         elif not func:
             g.trace('No func: improper key binding')
             return 'break'
@@ -3921,7 +3924,6 @@ class keyHandlerClass:
 
         k = self ; c = k.c
         trace = c.config.getBool('trace_modes')
-        if trace: g.trace(modeName)
 
         if not modeName:
             g.trace('oops: no modeName')
@@ -3933,6 +3935,8 @@ class keyHandlerClass:
             return
         else:
             k.modeBindingsDict = d
+            prompt = d.get('*command-prompt*') or modeName
+            if trace: g.trace('modeName',modeName,prompt,'d.keys()',d.keys())
 
         k.inputModeName = modeName
         k.silentMode = False
@@ -3951,12 +3955,14 @@ class keyHandlerClass:
         w = g.choose(k.silentMode,k.modeWidget,k.widget)
         k.createModeBindings(modeName,d,w)
 
-        if k.silentMode:
-            k.showStateAndMode()
-        else:
-            k.setLabelBlue(modeName+': ',protect=True)
-            k.showStateAndMode()
-            #### c.minibufferWantsFocus()
+        k.showStateAndMode(prompt=prompt)
+
+        # if k.silentMode:
+            # k.showStateAndMode(prompt=prompt)
+        # else:
+            # # k.setLabelBlue(modeName+': ',protect=True)
+            # k.setLabelBlue(prompt+' ',protect=True)
+            # k.showStateAndMode(prompt=prompt)
     #@-node:ekr.20061031131434.163:initMode
     #@+node:ekr.20061031131434.164:reinitMode
     def reinitMode (self,modeName):
@@ -3976,7 +3982,7 @@ class keyHandlerClass:
             k.setLabelBlue(modeName+': ',protect=True)
             #### c.minibufferWantsFocus()
     #@-node:ekr.20061031131434.164:reinitMode
-    #@+node:ekr.20061031131434.165:modeHelp
+    #@+node:ekr.20061031131434.165:modeHelp & helper
     def modeHelp (self,event):
 
         '''The mode-help command.
@@ -3988,7 +3994,7 @@ class keyHandlerClass:
 
         c.endEditing()
 
-        # g.trace(k.inputModeName)
+        g.trace(k.inputModeName)
 
         if k.inputModeName:
             d = g.app.config.modeCommandsDict.get('enter-'+k.inputModeName)
@@ -4007,7 +4013,7 @@ class keyHandlerClass:
 
         data = [] ; n = 20
         for key in keys:
-            if key != '*entry-commands*':
+            if key not in ( '*entry-commands*','*command-prompt*'):
                 bunchList = d.get(key)
                 for bunch in bunchList:
                     shortcut = bunch.val
@@ -4027,7 +4033,7 @@ class keyHandlerClass:
         for s1,s2 in data:
             g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
     #@-node:ekr.20061031131434.166:modeHelpHelper
-    #@-node:ekr.20061031131434.165:modeHelp
+    #@-node:ekr.20061031131434.165:modeHelp & helper
     #@-node:ekr.20061031131434.156:Modes
     #@+node:ekr.20061031131434.167:Shared helpers
     #@+node:ekr.20061031131434.175:k.computeCompletionList
@@ -4554,14 +4560,13 @@ class keyHandlerClass:
         # k.showStateAndMode()
     #@-node:ekr.20061031131434.199:setState
     #@+node:ekr.20061031131434.192:showStateAndMode
-    def showStateAndMode(self,w=None):
+    def showStateAndMode(self,w=None,prompt=None):
 
         k = self ; c = k.c
         state = k.unboundKeyAction
         mode = k.getStateKind()
         inOutline = False
         if not g.app.gui: return
-
 
         if not w:
             w = g.app.gui.get_focus(c)
@@ -4572,6 +4577,8 @@ class keyHandlerClass:
         if mode:
             if mode in ('getArg','getFileName','full-command'):
                 s = None
+            elif prompt:
+                s = prompt
             else:
                 assert mode.endswith('-mode')
                 mode = mode[:-5]
