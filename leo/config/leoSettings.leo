@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -62,7 +62,7 @@
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -89,8 +89,8 @@
 </v>
 </v>
 <v t="ekr.20080513060549.1"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20080513060549.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
 </v>
 <v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
@@ -121,7 +121,7 @@
 <v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = white</vh></v>
 <v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
 <v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = white</vh></v>
+<v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
 <v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
 <v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
 <v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
@@ -356,7 +356,7 @@
 <v t="ekr.20060216170801"><vh>@bool enable_calltips = False</vh></v>
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
 <v t="ekr.20060122105527.7" annotate="7d71002e"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
@@ -2844,7 +2844,6 @@ move-past-close-extend-selection    = None
 <t tx="ekr.20060112093227.2"># name-last-kbd-macro               = None
 negative-argument                   = None
 new                                 = None
-newline                             = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
@@ -3766,11 +3765,6 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
 <t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
 <t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060822101942.2">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
 <t tx="ekr.20060826152759"></t>
 <t tx="ekr.20060827102902"></t>
 <t tx="ekr.20060827102902.1"></t>
@@ -3904,7 +3898,6 @@ delete-char                         = Delete
 delete-comments                     = Ctrl-parenright
 delete-spaces                       = None
 indent-region                       = Ctrl-]
-insert-newline                      = None # = Return # for MacOs X.
 kill-line                           = Ctrl-k
 newline-and-indent                  = Ctrl-j
 paste-text                          = Ctrl-v
@@ -5615,7 +5608,7 @@ For some reason, colors in the text widget do not match the colors in the canvas
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
 end-edit-headline           ! tree = Return # Esc is also possible.
-newline                     ! body = Return
+insert-newline              ! body = Return
 # enter-newline-insert-mode ! body = Return
 
 back-char                   ! text = LtArrow
@@ -5652,11 +5645,6 @@ goto-last-visible-node      = Alt-End
 </t>
 <t tx="ekr.20080512082834.2"></t>
 <t tx="ekr.20080513060549.1"></t>
-<t tx="ekr.20080513060549.2">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
 <t tx="ekr.20080513060549.3">@nocolor
 
 This setting determines the initial binding for otherwise-unbound keystrokes
@@ -5699,6 +5687,48 @@ sort-siblings           = s
 # enter-move-outline-mode = Shift-o
 # enter-toggle-find-mode  = t
 # enter-extract-mode      = x</t>
+<t tx="ekr.20080514065934.1">@nocolor
+
+- By default, that is, with the settings in the new version of leoSettings.leo,
+Leo will work pretty much as it always has. To enable vim-like bindings, put the
+following in the @settings tree in myLeoSettings.leo:
+
+    @strings [command,insert, overwrite] top_level_unbound_key_action = command
+
+- I like the following setting even in "legacy" operation, and I especially
+recommend it, or something like it, for when using vim-like bindings:
+
+    @color insert_mode_bg_color = #fdf5f5
+
+It's a soft pink that contrasts nicely with the soft yellow color gets shown in
+the body pane when the body pane does *not* have focus.
+
+- *Important*: the new default setting for @bool stayInTreeAfterEditHeadline is False.
+  This allows the &lt;Return&gt; key to switch into the body pane anywhere in the outline.
+
+- vim-like bindings are defined in leoSettings.leo in the node:
+
+    @shortcuts Vim plain keys
+
+Play with these as you will. For multi-key sequences, like 'dd', you would have
+to define a 'd' mode that handles the follow-on characters after the first d. On
+my list: munge mode names so they make pleasing prompts in the minibuffer. Maybe
+today.
+
+I'd like to offer a $100 prize for the best vim simulation. This would require
+modes for all plain keys that have more than one continuation. I might be
+tempted to add more vim-like features, especially support for vim '.', if I knew
+that people were really using heavy-duty vim bindings.
+
+If you define your own key bindings in myLeoSettings.leo, I highly recommend
+basing them on the new bindings in the '@keys EKR bindings' tree. You will
+probably find that your bindings are much easier to understand.
+</t>
+<t tx="ekr.20080514082950.2">Overrides body_text_background_color.
+
+#fdf5f5 A light pink.
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
