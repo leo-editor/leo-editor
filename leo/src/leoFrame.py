@@ -2660,7 +2660,7 @@ class leoTree:
 
     def treeSelectHelper (self,p,updateBeadList,scroll):
 
-        c = self.c ; frame = c.frame ; trace = False
+        c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         old_p = c.currentPosition()
 
@@ -2706,7 +2706,7 @@ class leoTree:
             s = g.toUnicode(p.v.t._bodyString,"utf-8")
             old_s = w.getAllText()
 
-            if True and p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+            if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
                 pass
             else:
                 # This destroys all color tags, so do a full recolor.
