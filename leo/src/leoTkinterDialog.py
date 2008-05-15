@@ -168,7 +168,6 @@ class leoTkinterDialog:
 
         if c:
             c.widgetWantsFocusNow(self.focus_widget)
-            c.outerUpdate()
 
         self.root.wait_window(self.top)
 

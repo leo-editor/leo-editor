@@ -82,10 +82,13 @@ globalDirectiveList = [
 
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
+
+# "compile-time" constants.
+# It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
     # True: unify vnodes and tnodes into a single vnode.
-    # Warning: this is a "compile-time" constant:
-    # it makes absolutely no sense to change this after Leo loads.
+newDrawing = True
+    # True: use c.outerUpdate to complete drawing, focus, recoloring.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp

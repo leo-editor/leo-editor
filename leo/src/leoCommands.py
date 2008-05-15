@@ -57,8 +57,6 @@ import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
 #@nl
 
-newDrawing = False
-
 #@+others
 #@+node:ekr.20041118104831:class commands
 class baseCommands:
@@ -70,15 +68,13 @@ class baseCommands:
 
         c = self
 
-        if newDrawing:
+        if g.newDrawing:
             self.requestedFocusWidget = None
             c.requestRecolorFlag = False
             self.requestRedrawFlag = False
             self.requestRedrawScrollFlag = False
-            # self.requestedMinibufferPrompt = ''
-            # self.requestedMinibufferProtect = False
-            # self.requestedPosition = None
             self.requestedIconify = '' # 'iconify','deiconify'
+            g.es('Using new drawing code',color='red')
 
         # g.trace('Commands')
         self.exists = True # Indicate that this class exists and has not been destroyed.
@@ -5817,11 +5813,7 @@ class baseCommands:
     #@-node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
     #@+node:ekr.20080514131122.4:Legacy code
-    if not newDrawing:
-
-        def outerUpdate (self):
-            c = self
-            pass
+    if not g.newDrawing:
 
         #@    @+others
         #@+node:ekr.20031218072017.2950:c.begin/endUpdate
@@ -6093,7 +6085,7 @@ class baseCommands:
         #@-others
     #@-node:ekr.20080514131122.4:Legacy code
     #@+node:ekr.20080514131122.6:New code
-    if newDrawing:
+    if g.newDrawing:
 
         #@    @+others
         #@+node:ekr.20080514131122.7:c.begin/endUpdate
@@ -6118,6 +6110,19 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
+        #@+node:ekr.20080515053412.1:c.bind
+        def bind (self,w,pattern,func):
+
+            c = self
+
+            def bindCallback(event,c=c,func=func):
+                val = func(event)
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            w.bind(pattern,bindCallback)
+        #@-node:ekr.20080515053412.1:c.bind
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6393,6 +6398,11 @@ class baseCommands:
         treeWantsFocusNow = treeWantsFocus
         #@-node:ekr.20080514131122.19:c.xWantsFocusNow 
         #@-others
+
+    else:
+
+        def outerUpdate (self):
+            pass
     #@-node:ekr.20080514131122.6:New code
     #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
     #@+node:ekr.20031218072017.2955:Enabling Menu Items

@@ -10,7 +10,6 @@ These classes should be overridden to create frames for a particular gui."""
 
 import leoGlobals as g
 import leoColor
-import leoCommands # only for leoCommands.newDrawing
 import leoMenu
 import leoNodes
 import leoUndo
@@ -794,7 +793,7 @@ class leoBody:
         return self.colorizer.updateSyntaxColorer(p.copy())
 
 
-    if leoCommands.newDrawing:
+    if g.newDrawing:
 
         def recolor(self,p,incremental=False):
             self.c.requestRecolorFlag = True
