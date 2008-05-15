@@ -1908,6 +1908,7 @@ def openWithFileName(fileName,old_c,
         if munge(fileName) == munge(frame.c.mFileName):
             frame.bringToFront()
             frame.c.setLog()
+            frame.c.outerUpdate()
             return True, frame
     if old_c:
         # New in 4.4: We must read the file *twice*.
@@ -1967,6 +1968,7 @@ def openWithFileName(fileName,old_c,
             c.bodyWantsFocusNow()
         if k:
             k.showStateAndMode()
+
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
