@@ -1432,6 +1432,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         frame.log.setColorFromConfig()
 
         c.redraw_now()
+
+    #@nonl
     #@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
     #@+node:ekr.20031218072017.1625:setInitialWindowGeometry (tkFrame)
     def setInitialWindowGeometry(self):
