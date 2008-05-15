@@ -3187,14 +3187,14 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
     master_key_count = 0
 
-    def masterKeyHandler (self,event,stroke=None):
-        c = self.c
-        val = self.masterKeyHandlerHelper(event,stroke)
-        # Careful: the stroke may destroy c.
-        if c.exists: self.c.outerUpdate()
-        return val
+    # def masterKeyHandler (self,event,stroke=None):
+        # c = self.c
+        # val = self.masterKeyHandlerHelper(event,stroke)
+        # # Careful: the stroke may destroy c.
+        # if c.exists: self.c.outerUpdate()
+        # return val
 
-    def masterKeyHandlerHelper (self,event,stroke):
+    def masterKeyHandler (self,event,stroke=None):
 
         '''This is the handler for almost all key bindings.'''
 
