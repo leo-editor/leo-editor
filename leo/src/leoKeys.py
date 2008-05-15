@@ -3187,13 +3187,6 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
     master_key_count = 0
 
-    # def masterKeyHandler (self,event,stroke=None):
-        # c = self.c
-        # val = self.masterKeyHandlerHelper(event,stroke)
-        # # Careful: the stroke may destroy c.
-        # if c.exists: self.c.outerUpdate()
-        # return val
-
     def masterKeyHandler (self,event,stroke=None):
 
         '''This is the handler for almost all key bindings.'''
@@ -3505,13 +3498,13 @@ class keyHandlerClass:
     #@-node:ekr.20080510095819.1:handleUnboudKeys
     #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
     #@+node:ekr.20061031131434.153:masterClickHandler
-    def masterClickHandler (self,event,func=None):
-        k = self ; c = k.c
-        val = self.masterClickHandlerHelper(event,func)
-        if c.exists: c.outerUpdate()
-        return val
+    # def masterClickHandler (self,event,func=None):
+        # k = self ; c = k.c
+        # val = self.masterClickHandlerHelper(event,func)
+        # if c.exists: c.outerUpdate()
+        # return val
 
-    def masterClickHandlerHelper (self,event,func):
+    def masterClickHandler (self,event,func=None):
 
         g.app.gui.killPopupMenu()
 
@@ -3563,13 +3556,13 @@ class keyHandlerClass:
     masterDoubleClick3Handler = masterClickHandler
     #@-node:ekr.20061031131434.153:masterClickHandler
     #@+node:ekr.20061031131434.154:masterDoubleClickHandler
-    def masterDoubleClickHandler (self,event,func=None):
-        k = self ; c = k.c
-        val = self.masterDoubleClickHandlerHelper(event,func)
-        if c.exists: c.outerUpdate()
-        return val
+    # def masterDoubleClickHandler (self,event,func=None):
+        # k = self ; c = k.c
+        # val = self.masterDoubleClickHandlerHelper(event,func)
+        # if c.exists: c.outerUpdate()
+        # return val
 
-    def masterDoubleClickHandlerHelper (self,event,func):
+    def masterDoubleClickHandler (self,event,func=None):
 
         k = self ; c = k.c ; w = event and event.widget
 
@@ -3589,13 +3582,13 @@ class keyHandlerClass:
             return 'break'
     #@-node:ekr.20061031131434.154:masterDoubleClickHandler
     #@+node:ekr.20061031131434.155:masterMenuHandler
-    def masterMenuHandler (self,stroke,func,commandName):
-        k = self ; c = k.c
-        val = self.masterMenuHandlerHelper(stroke,func,commandName)
-        if c.exists: c.outerUpdate()
-        return val
+    # def masterMenuHandler (self,stroke,func,commandName):
+        # k = self ; c = k.c
+        # val = self.masterMenuHandlerHelper(stroke,func,commandName)
+        # if c.exists: c.outerUpdate()
+        # return val
 
-    def masterMenuHandlerHelper (self,stroke,func,commandName):
+    def masterMenuHandler (self,stroke,func,commandName):
 
         k = self ; c = k.c ; w = c.frame.getFocus()
 
