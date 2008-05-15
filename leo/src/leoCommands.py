@@ -5856,6 +5856,11 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20031218072017.2950:c.begin/endUpdate
+        #@+node:ekr.20080515053412.53:c.bind (new)
+        def bind (self,w,pattern,func):
+
+            w.bind(pattern,func)
+        #@-node:ekr.20080515053412.53:c.bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
 
