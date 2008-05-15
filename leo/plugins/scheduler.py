@@ -310,7 +310,7 @@ def endRecord(event,c):
         bottom = Tk.Scrollbar(f,orient="horizontal")
         bottom.pack(side="bottom",fill=Tk.X)
         timepanel.lb = Tk.Listbox(f,background='white')
-        timepanel.lb.bind('<ButtonRelease-1>',set_time)
+        c.bind(timepanel.lb,'<ButtonRelease-1>',set_time)
         timepanel.lb.pack(side="left",fill="both")
         right = Tk.Scrollbar(f)
         right.pack(side="right",fill="y")

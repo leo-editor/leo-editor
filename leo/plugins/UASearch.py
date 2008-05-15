@@ -106,7 +106,7 @@ def addPMenu (tag,keywords):
     #@nonl
     #@-node:ekr.20040915075808:<< define callbacks >>
     #@nl
-    b.bind('<Button-1>',firesearch)
+    c.bind(b,'<Button-1>',firesearch)
 #@-node:ekr.20040915075530.3:addPMenu
 #@+node:ekr.20040915081837:found
 def found (porv,name):

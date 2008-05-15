@@ -137,7 +137,7 @@ def registerPopupMenu (tag,keywords):
     else:
         if not binding.startswith('<'): binding = '<%s>' % binding # Add < and >
         c.keyHandler.registerCommand ('fast-goto-node',None,popper,pane='all',verbose=True)
-        c.frame.top.bind(binding,popper)
+        c.bind(c.frame.top,binding,popper)
 #@nonl
 #@-node:mork.20041018091414.19:registerPopupMenu
 #@+node:mork.20041018091414.21:loadLanguages (not used)
@@ -199,9 +199,9 @@ def pop (event,c):
         menu.configure(activeforeground='blue',activebackground='white')
         def em (event):
             smenu.focus_set()
-        menu.bind('<Expose>',em)
+        c.bind(menu,'<Expose>',em)
 
-    smenu.bind('<Left>',lambda event,c=c: disappear(event,c))
+    c.bind(smenu,'<Left>',lambda event,c=c: disappear(event,c))
 
     ancmenu = getAncestorsMenu(smenu,c)
     if ancmenu:

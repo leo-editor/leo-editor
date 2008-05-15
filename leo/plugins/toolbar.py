@@ -640,7 +640,7 @@ class ToolbarIconButton(Tk.Button, object):
         Tk.Button.__init__(self, c.frame.top, **kws)
 
 
-        self.bind('<Button-3>', self.onRightClick)
+        c.bind(self,'<Button-3>', self.onRightClick)
 
 
     #@-node:bobjack.20080506182829.24:__init__
@@ -1342,8 +1342,8 @@ class ToolbarTkIconBarClass(iconbar, object):
             height="5m",relief="flat",
         )
         w.leoIconBar = self
-        w.bind('<Button-3>', self.onRightClick)
-        w.bind('<Configure>', self.onConfigure)
+        c.bind(w,'<Button-3>', self.onRightClick)
+        c.bind(w,'<Configure>', self.onConfigure)
 
         self.show()
         c.frame.top.update_idletasks()
@@ -1731,6 +1731,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         """
 
         try:
+            c = self.c
             #@        << remove from current bar >>
             #@+node:bobjack.20080508125414.13:<< remove from current bar >>
             try:
@@ -1772,8 +1773,8 @@ class ToolbarTkIconBarClass(iconbar, object):
             #@        << bind widget and drag handles >>
             #@+node:bobjack.20080506090043.2:<< bind widget and drag handles >>
 
-            widget.bind('<ButtonPress-1>', barHead.onPress)
-            widget.bind('<ButtonRelease-1>', barHead.onRelease)
+            c.bind(widget,'<ButtonPress-1>', barHead.onPress)
+            c.bind(widget,'<ButtonRelease-1>', barHead.onRelease)
 
             try:
                 drag = widget.leoDragHandle
@@ -1790,8 +1791,8 @@ class ToolbarTkIconBarClass(iconbar, object):
                     dw.leoSubWindow = True
                     dw.leoDragMaster = widget
 
-                    dw.bind('<ButtonPress-1>', barHead.onPress )
-                    dw.bind('<ButtonRelease-1>', barHead.onRelease)
+                    c.bind(dw,'<ButtonPress-1>', barHead.onPress )
+                    c.bind(dw,'<ButtonRelease-1>', barHead.onRelease)
 
             widget.c = self.c
             widget.leoIconBar = barHead
