@@ -86,8 +86,8 @@ unitTesting = False # A synonym for app.unitTesting.
 # "compile-time" constants.
 # It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
-    # True: unify vnodes and tnodes into a single vnode.
-newDrawing = True
+    # True: (Not recommended) unify vnodes and tnodes into a single vnode.
+newDrawing = False
     # True: use c.outerUpdate to complete drawing, focus, recoloring.
 
 #@+others
