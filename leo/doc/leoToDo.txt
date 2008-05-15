@@ -2,81 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
-#@+node:ekr.20080411091507.1:Docs
-#@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
-@nocolor
-
-I'm updating my local copy of the trunk to add support for the
-AutoHotkey language to Leo.  It appears that the documentation in the
-leoNotes.txt file for adding support for a new language is outdated.
-Here is what I've done.  Is anything else necessary?
-
-The following structures were updated in leoApp.py:
-  self.language_delims_dict
-  self.language_extension_dict
-  self.extension_dict
-
-and an ahk.xml and ahk.py file was added to the leo\modes directory.
-
-With these changes I get correct syntax highlighting using "@language
-ahk" and by also setting the language as the default language in
-myLeoSettings.leo.  Is it also necessary to test:
-  "Test workings of the Preferences Panel by..." and
-  "Test the leoconfig.txt by setting default_target_language..." and
-  "Create an @root node and verify that you can tangle it."?
-#@-node:ekr.20080417213809.1:Update the docs re adding support for a new language
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20071211093323:more screen shots on Leo's web site
-#@-node:ekr.20071211093323:more screen shots on Leo's web site
-#@+node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20070929125944:Emulate Orange's download philosophy
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4543089
-By: billp9619
-
-from the download page:
-
-If it's the first time you hear about Python, this is the installation for you.
-The packages includes complete Orange, Python, Windows Extensions for Python
-(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
-
-Leo should copy this download philosophy.
-
-
-
-#@-node:ekr.20070929125944:Emulate Orange's download philosophy
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20071029082025:Improve distribution
-#@-node:ekr.20080411091507.1:Docs
-#@+node:ekr.20080425054202.2:Early in release
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
-# The start of this project is in leo.repo/leo-working.
-#@nonl
-#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@-node:ekr.20080124083629.1:Improve @path handling
-#@-node:ekr.20080425054202.2:Early in release
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
@@ -471,8 +396,58 @@ I.e. when $PWD == $HOME, a command like
 will read mySettings.leo and leoSettings.leo twice. 
 #@nonl
 #@-node:ekr.20080509153731.1:Fix bug: myLeoSettings.leo sometimes read twice
+#@+node:ekr.20080129103436:Solve Kent's @menu problem
+@nocolor
+
+http://sourceforge.net/forum/forum.php?thread_id=1858451&forum_id=10228
+
+I'm interested in using @settings to create application 
+specific mini-editors. I think there's great promise in  
+@settings nodes which create an environment with buttons 
+and menu choices to work with specific file types, or other 
+niche applications. The menus and buttons will expose a 
+set of capabilities, and unneeded capabilities will be hidden. 
+
+However, if I create a @settings->@menus->@menu node in a file, open 
+the file, then open another Leo file, the next file opens with the 
+redefined menu. 
+#@nonl
+#@-node:ekr.20080129103436:Solve Kent's @menu problem
+#@+node:ekr.20071211142600.3:Fix config bugs
+#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@+node:ekr.20061014050154.2:Binding to None clears all bindings
+#@-node:ekr.20061014050154.2:Binding to None clears all bindings
+#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+#@-node:ekr.20071211142600.3:Fix config bugs
 #@-node:ekr.20080411091507.10:Bugs
-#@+node:ekr.20080218110223.1:Files
+#@+node:ekr.20080425054202.2:Early in release
+#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
+# The start of this project is in leo.repo/leo-working.
+#@nonl
+#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@-node:ekr.20080124083629.1:Improve @path handling
+#@+node:ekr.20080515170809.1:Files
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -530,22 +505,6 @@ these provided that headlines appear somewhere.
 So that's clean.  This will happen in Leo 4.5. 
 #@nonl
 #@-node:ekr.20080311135649.2:Allow different .leo formats
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-#@-node:ekr.20080218110223.1:Files
-#@+node:ekr.20071211142600.2:Config & key handling
-#@+node:ekr.20080311135649.5:List the special cases in the config code
-#@-node:ekr.20080311135649.5:List the special cases in the config code
-#@+node:ekr.20080225103954:Add 'else' clause to if-platform
-@nocolor
-
-**OR** put 'else' (default) first, and have @ifplatform only override parts.
-
-@ifplatform isn't very useful without @else or some other kind of default.
-#@nonl
-#@-node:ekr.20080225103954:Add 'else' clause to if-platform
 #@+node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 @nocolor
 
@@ -555,149 +514,8 @@ Create a simple template myLeoSettings.leo in $HOME when you try to
 open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-#@+node:ekr.20071211142600.3:Clean up config mess
-#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@+node:ekr.20080129103436:Solve Kent's @menu problem
-@nocolor
-
-http://sourceforge.net/forum/forum.php?thread_id=1858451&forum_id=10228
-
-I'm interested in using @settings to create application 
-specific mini-editors. I think there's great promise in  
-@settings nodes which create an environment with buttons 
-and menu choices to work with specific file types, or other 
-niche applications. The menus and buttons will expose a 
-set of capabilities, and unneeded capabilities will be hidden. 
-
-However, if I create a @settings->@menus->@menu node in a file, open 
-the file, then open another Leo file, the next file opens with the 
-redefined menu. 
-#@nonl
-#@-node:ekr.20080129103436:Solve Kent's @menu problem
-#@+node:ekr.20061014050154.2:Binding to None clears all bindings
-#@-node:ekr.20061014050154.2:Binding to None clears all bindings
-#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-#@-node:ekr.20071211142600.3:Clean up config mess
-#@+node:ekr.20080411091507.7:key-handling
-#@+node:ekr.20070824094005:Requests
-@nocolor
-
-> Some of the features I've grown to like with VIM are search-and-replace within the current selection, easy keyboard navigation, and to some extent macro recording and running.
-
-Thanks for these comments.  I'll keep them in mind as I design the vim-like code.
-
-Edward
-#@nonl
-#@-node:ekr.20070824094005:Requests
-#@+node:ekr.20070814083528.1:Design post
-@nocolor
-
-http://sourceforge.net/forum/forum.php?thread_id=1800079&forum_id=10226
-
-Recent posts have discussed @menu trees and resolving cvs conflicts. The third of my recent ruminations concerns adding support for vim-like key bindings. 
-
-Earlier work involving input modes (@mode nodes in settings file) probably is not completely sufficient to implement plain-key key bindings in a way that would truly be vim-like. 
-
-Most of the issues are implementation issues: Leo's key-handling code is very complicated. The trick is to handle both vim and emacs styles compatibly. 
-
-The user must be able to specify vim-like key bindings without using @mode nodes. That is, top-level vim key bindings must always be available. Vim has an enormous number of key bindings: the user must be able to specify which are in effect. 
-
-My strategy will be as follows: 
-
-1. Create enter-vim-mode and exit-vim-mode commands, and create the setting: 
-
-@bool vim-mode-by-default = False 
-
-This will allow the user to specify vim mode as the default mode if desired. 
-
-2. Create **vim-edit** commands as needed in order to handler user interaction. For example, dd deletes the present line while d5 deletes 5 lines. Rather than trying to simulate this effect using the present mechanisms, the vim-delete command will prompt for the number of characters or lines to delete. 
-
-Give the complex nature of vims c and d commands (and others) it will probably be necessary to create a vim-edit class in leoEditCommands.py. This class will handle all the ways of specifying a range of characters to which the various commands will apply. It's not clear exactly how much work will be needed, but my guess is that it will, in fact, be easiest to handle vim-like interactions with new code. 
-
-3. Vim's ':' command will simply invoke Leo's minibuffer. This isn't precisely the same as Vim's status line: it is significantly better. Otoh, we will want a way to simulate the actual spelling of vim's ':' commands. Possible @abbreviation nodes can be pressed into service. 
-
-4. Internally, it will be quite a trick to allow top-level vim-like plain-key bindings in all text widgets. I'm not sure how to do this, but it is essential. 
-
-I am quite eager to get something truly vim-like working. It promises to increase my editing speed substantially. It also should appeal strongly to present vim users. 
-#@nonl
-#@-node:ekr.20070814083528.1:Design post
-#@+node:ekr.20071026140857:Posting re vim bindings
-@nocolor
-
-> I'm looking forward to this.
-
-Excellent.  You can help with the testing :-)
-
-Leo looks like a perfect match for the vim approach.  Indeed, vim typically uses a 1 or 2 level concatenation scheme (preceded by a repeat count).  This is kinda like a utf-8 encoding :-)  That is, it is a variable-length encoding of the command.
-
-This is a very powerful approach, one that vim doesn't really exploit (because it doesn't need to). But Leo absolutely needs this power of some extra levels.  Something like this:
-
-i input mode
-
-f focus commands
-..fb focus to body
-..fo focus to outline
-..fl focus to log
-..ft toggle body pane focus
-
-o outline commands
-..om outline move, i.e., actually move the nodes.
-..og outline go, i.e., select nodes without changing the outline
-..od outline delete
-..oh outline edit headline
-
-s search commands
-..so search options
-...soi toggle ignore-case checkbox
-...sow toggle word checkbox
-...etc!
-..st search using search tab
-..sf forward incremental search
-..sb backward incremental search
-
-x minibuffer commands
-
-w file commands
-..ws save outline
-..wq quit
-
-escape: universal escape, like ctrl-g now.
-
-Do you see?  Just one extra level allows 10+ times the number of key bindings.  This is a perfect match for Leo's complex environment.
-
-Naturally, Leo will allow the user to specify these bindings using nodes in the @settings tree. Indeed, this is truly an exciting prospect.
-
-Edward
-
-P.S.  I've glossed over the details of which single characters (like d for delete character) should be reserved for common editing and cursor-movement commands.  That's the beauty of creating these bindings with user settings: no need to argue :-)  And that's the beauty of arbitrarily deep key binding trees: there are plenty of keys to go around.
-
-EKR
-#@-node:ekr.20071026140857:Posting re vim bindings
-#@+node:ekr.20070613181147:(maybe) Improve key handling
-# The idea is to use a single <Key binding> and
-# use w.event_generate(key) to create a table
-# that associates Tk key numbers with bindings:
-
-    if event.char:
-        if 0:
-            import Tkinter as Tk
-            w = Tk.Text()
-            def foo (event):
-                g.trace(event)
-            w.bind('<Key>',foo)
-            for prefix in ('Alt-Key-','Shift-Key-'):
-                key = '<%s%s>' % (prefix,event.char.strip())
-                g.trace(key)
-                w.event_generate('a')
-        if 0:
-            for z in ('char','keysym','keycode','keysym_num','state',):
-                a = getattr(event,z)
-                print z,repr(a)
-#@-node:ekr.20070613181147:(maybe) Improve key handling
-#@-node:ekr.20080411091507.7:key-handling
-#@-node:ekr.20071211142600.2:Config & key handling
+#@-node:ekr.20080515170809.1:Files
+#@-node:ekr.20080425054202.2:Early in release
 #@+node:ekr.20080425054202.3:ASAP
 #@+node:ekr.20071110071126.2:Better isearch
 #@-node:ekr.20071110071126.2:Better isearch
@@ -1248,6 +1066,55 @@ for p in c.allNodes_iter():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20080425054202.3:ASAP
+#@+node:ekr.20080411091507.1:Docs
+#@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
+@nocolor
+
+I'm updating my local copy of the trunk to add support for the
+AutoHotkey language to Leo.  It appears that the documentation in the
+leoNotes.txt file for adding support for a new language is outdated.
+Here is what I've done.  Is anything else necessary?
+
+The following structures were updated in leoApp.py:
+  self.language_delims_dict
+  self.language_extension_dict
+  self.extension_dict
+
+and an ahk.xml and ahk.py file was added to the leo\modes directory.
+
+With these changes I get correct syntax highlighting using "@language
+ahk" and by also setting the language as the default language in
+myLeoSettings.leo.  Is it also necessary to test:
+  "Test workings of the Preferences Panel by..." and
+  "Test the leoconfig.txt by setting default_target_language..." and
+  "Create an @root node and verify that you can tangle it."?
+#@-node:ekr.20080417213809.1:Update the docs re adding support for a new language
+#@+node:ekr.20080323093939.3:Update Leo's intro pages
+#@-node:ekr.20080323093939.3:Update Leo's intro pages
+#@+node:ekr.20071211093323:more screen shots on Leo's web site
+#@-node:ekr.20071211093323:more screen shots on Leo's web site
+#@+node:ekr.20071029082025:Improve distribution
+#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4543089
+By: billp9619
+
+from the download page:
+
+If it's the first time you hear about Python, this is the installation for you.
+The packages includes complete Orange, Python, Windows Extensions for Python
+(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
+
+Leo should copy this download philosophy.
+
+
+
+#@-node:ekr.20070929125944:Emulate Orange's download philosophy
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20071029082025:Improve distribution
+#@-node:ekr.20080411091507.1:Docs
 #@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
@@ -1938,87 +1805,6 @@ Remove all references to pluginsManager.txt.
 #@-node:ekr.20071021125124:Revise plugins manager plugin
 #@+node:ekr.20070220082124:Make sure Leo can generate Latex
 #@-node:ekr.20070220082124:Make sure Leo can generate Latex
-#@+node:ekr.20071215101531:Reorg drawing/focus code?
-@nocolor
-
-** Dangerous!  Complex!
-    * This could be a very bad idea.
-    - Make *sure* everything works before making massive code changes!
-    - Make a separate bzr branch for this.
-
-Changing position
-    - Affects both redraw and focus.
-
-Drawing
-    - Most redraws happen at end-of-command.
-    - Must allow immediate redraws: make list of exceptions.
-    ** Don't eliminate begin/endUpdate pairs until *sure* everything works.
-        - Experiment by making begin/endUpdate do nothing.
-
-Focus
-    - Most focus changes happen at end-of-command.
-    - Must allow immediate focus changes: make list of exceptions.
-    ** The present focus code seems too complex, **but it works**.
-    - Clean up focus code: use treeFocusHelper everywhere
-
-@color
-#@nonl
-#@+node:ekr.20071215114036:Possible code
-@color
-
-@ notes:
-
-- Calls to request_x emphasize that the action is not to be taken immediately.
-- Calls to redraw, set_focus and setCurrentPosition emphasize that the action will happen eventually.
-- Calls to actual_x are for special situations.
-@c
-
-Add c ivars: requested_draw, requested_position, requested_focus.
-
-c methods:
-
-def update (self):
-    '''Honor all requests for drawing, focus and position.'''
-    c = self
-    if c.requested_position(): # First.
-        c.actual_selectPosition(c.requested_positiion)
-        c.requested_position = None
-    if c.requested_draw: # Second.
-        c.actual_draw()
-        c.requested_draw = False
-    if c.requested_focus: # Third.
-        c.actual_set_focus()
-        c.requested_focus = None
-
-def request_draw (self,flag = True):
-    self.requested_draw = flag
-draw = redraw = request_redraw
-
-def begin_update(self):
-    pass
-end_update = request_redraw
-
-def actual_draw (self):
-    << do the actual redraw >>
-redraw_now = actual_draw
-
-def request_currentPosition (self,p):
-    self.requested_draw = p.copy()
-setCurrentPosition = request_currentPosition
-
-def actual_setCurrentPosition (self,p):
-    << select position p >>
-
-def request_focus (self,w):
-    self.requested_focus = w
-set_focus = request_focus
-
-def actual_set_focus (self,w):
-    << set the focus to w >>
-set_focus_now = actual_set_focus
-#@nonl
-#@-node:ekr.20071215114036:Possible code
-#@-node:ekr.20071215101531:Reorg drawing/focus code?
 #@+node:ekr.20070703111455.3:Minor
 # some of these can wait till much later.
 #@nonl
