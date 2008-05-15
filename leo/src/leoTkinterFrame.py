@@ -66,7 +66,7 @@ class leoTkinterBody (leoFrame.leoBody):
         frame = self.frame ; c = self.c ; k = c.k
         if not w: w = self.bodyCtrl
 
-        w.bind('<Key>', k.masterKeyHandler)
+        c.bind(w,'<Key>', k.masterKeyHandler)
 
         def onFocusOut(event,c=c):
             # This interferes with inserting new nodes.
