@@ -532,12 +532,6 @@ class leoGtkTree (leoFrame.leoTree):
                     def PropagateMouseWheel(e):
                         canvas.event_generate("<MouseWheel>")
                         return "break"
-
-                    ### 
-                    # instance_tag = w.bindtags()[0]
-                    # w.bind_class(instance_tag, "<Button-4>", PropagateButton4)
-                    # w.bind_class(instance_tag, "<Button-5>", PropagateButton5)
-                    # w.bind_class(instance_tag, "<MouseWheel>",PropagateMouseWheel)
                     #@-node:ekr.20080112145409.335:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
                     #@nl
 
