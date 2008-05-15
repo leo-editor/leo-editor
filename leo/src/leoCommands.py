@@ -6115,7 +6115,7 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.bind
+        #@+node:ekr.20080515053412.1:c.bind & c.bind2
         def bind (self,w,pattern,func):
 
             c = self
@@ -6127,7 +6127,19 @@ class baseCommands:
                 return val
 
             w.bind(pattern,bindCallback)
-        #@-node:ekr.20080515053412.1:c.bind
+
+        def bind2 (self,w,pattern,func,extra):
+
+            c = self
+
+            def bindCallback(event,c=c,func=func):
+                val = func(event)
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            w.bind(pattern,bindCallback,extra)
+        #@-node:ekr.20080515053412.1:c.bind & c.bind2
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 
