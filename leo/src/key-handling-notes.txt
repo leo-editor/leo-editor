@@ -1,7 +1,7 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20080508083640.10:@thin key-handling-notes.txt
 #@+all
-#@+node:ekr.20080510121331.18:To do
+#@+node:ekr.20080510121331.18:Vim to-do
 @nocolor
 
 - Fix failed unit tests when command-mode is the default.
@@ -107,7 +107,7 @@ Ran 561 tests in 178.265s
 
 FAILED (failures=4)
 #@-node:ekr.20080513083459.2:Failed unit tests
-#@-node:ekr.20080510121331.18:To do
+#@-node:ekr.20080510121331.18:Vim to-do
 #@+node:ekr.20080508083640.11:Notes
 #@+node:ekr.20080509145618.2:Old/obsolete
 #@+node:ekr.20080508083640.12:Requests (old)
@@ -2670,13 +2670,6 @@ def handleDefaultChar(self,event,stroke):
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
-# def masterKeyHandler (self,event,stroke=None):
-    # c = self.c
-    # val = self.masterKeyHandlerHelper(event,stroke)
-    # # Careful: the stroke may destroy c.
-    # if c.exists: self.c.outerUpdate()
-    # return val
-
 def masterKeyHandler (self,event,stroke=None):
 
     '''This is the handler for almost all key bindings.'''
@@ -3371,13 +3364,6 @@ def navHelper (self,p,ch,extend):
 #@-node:ekr.20060923202156:c.onCanvasKey
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
-
-# def masterKeyHandler (self,event,stroke=None):
-    # c = self.c
-    # val = self.masterKeyHandlerHelper(event,stroke)
-    # # Careful: the stroke may destroy c.
-    # if c.exists: self.c.outerUpdate()
-    # return val
 
 def masterKeyHandler (self,event,stroke=None):
 
@@ -4141,6 +4127,7 @@ def openWithFileName(fileName,old_c,
         if munge(fileName) == munge(frame.c.mFileName):
             frame.bringToFront()
             frame.c.setLog()
+            frame.c.outerUpdate()
             return True, frame
     if old_c:
         # New in 4.4: We must read the file *twice*.
@@ -4200,6 +4187,7 @@ def openWithFileName(fileName,old_c,
             c.bodyWantsFocusNow()
         if k:
             k.showStateAndMode()
+
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
@@ -4767,6 +4755,7 @@ def openWithFileName(fileName,old_c,
         if munge(fileName) == munge(frame.c.mFileName):
             frame.bringToFront()
             frame.c.setLog()
+            frame.c.outerUpdate()
             return True, frame
     if old_c:
         # New in 4.4: We must read the file *twice*.
@@ -4826,6 +4815,7 @@ def openWithFileName(fileName,old_c,
             c.bodyWantsFocusNow()
         if k:
             k.showStateAndMode()
+
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
@@ -6005,8 +5995,10 @@ def showStateAndMode(self,w=None,prompt=None):
 #@+node:ekr.20080514131122.2:New drawing/focus code
 @nocolor
 
-- Create and test c.bind.
-- Remove new wrappers from k.masterX.
+- Change x.bind to c.bind in all plugins.
+
+After testing complete:
+
 
 What I did:
 
@@ -6014,10 +6006,24 @@ What I did:
 - Call outerUpdate from event handlers.
 - Call outerUpdate after calling k.masterKeyHandlerHelper.
 - Created new versions of leoBody.color methods.
+- Created and test c.bind.
+- Reviewed all uses of c.redraw_now(): added calls to c.outerUpdate where needed.
+- Removed new wrappers from k.masterX.
+- There is a slight wiggle when opening files.  It happens with the old code.
 
 @color
 #@nonl
-#@+node:ekr.20080515101324.1:Notes
+#@+node:ekr.20080515170754.1:Notes
+@nocolor
+
+c.redraw_now is a bit of a problem.  Sometimes it can be replaced by c.redraw, sometimes not. I have been super conservative: I've left all calls to c.redraw_now alone, and added calls to c.outerUpdate as needed.
+
+Later, when preliminary testing is complete, c.redraw_now() can call c.outerUpdate automatically.
+
+c.bind(w,a,b) can call g.app.gui.bind(w,a,b) to avoid a gui-related case statement.
+
+@color
+#@nonl
 #@+node:ekr.20080513174131.1:Design for simplified drawing & focus
 @nocolor
 
@@ -6044,126 +6050,7 @@ key-handling branch.
 
 This is a higly speculative project.  Previous attempts have failed...
 #@-node:ekr.20080513174131.1:Design for simplified drawing & focus
-#@+node:ekr.20080514131122.22:Failed unit tests with g.newDrawing = True
-======================================================================
-FAIL: @test paste at end of headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError: Expected: Test headline abcABC, got Test headline abc
-
-======================================================================
-FAIL: @test typing and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 23, in <module>
-AssertionError: oops2: got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: oops2 got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - with selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test selecting new node retains typing in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in headline recomputes width (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: 15 15
-
-======================================================================
-FAIL: @test selecting new node retains paste in headline (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: expected "a", got: u''
-
-======================================================================
-FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 16, in <module>
-AssertionError: too many redraws: 1
-
-======================================================================
-FAIL: @test Select a node when file is first loaded (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 12, in <module>
-AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
-
-======================================================================
-FAIL: @test delete node (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: fail 1
-
-----------------------------------------------------------------------
-Ran 562 tests in 145.375s
-
-FAILED (failures=11)
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
-
-C:\leo.repo\key-handling\leo>
-#@nonl
-#@-node:ekr.20080514131122.22:Failed unit tests with g.newDrawing = True
+#@-node:ekr.20080515170754.1:Notes
 #@+node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
 ([ ]+)w.bind\((.*)\)(.*)$
 \1c.bind(w,\2)\3
@@ -6175,7 +6062,6 @@ w.bind\(.*,.*,.*$
 [-w]\.bind\(
 #@nonl
 #@-node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
-#@-node:ekr.20080515101324.1:Notes
 #@+node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
 def bind (self,*args,**keys):
 
@@ -7243,13 +7129,6 @@ def editLabel (self,p,selectAll=False):
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
-# def masterKeyHandler (self,event,stroke=None):
-    # c = self.c
-    # val = self.masterKeyHandlerHelper(event,stroke)
-    # # Careful: the stroke may destroy c.
-    # if c.exists: self.c.outerUpdate()
-    # return val
-
 def masterKeyHandler (self,event,stroke=None):
 
     '''This is the handler for almost all key bindings.'''
@@ -7557,13 +7436,13 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 #@-node:ekr.20080510095819.1:handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20061031131434.153:masterClickHandler
-def masterClickHandler (self,event,func=None):
-    k = self ; c = k.c
-    val = self.masterClickHandlerHelper(event,func)
-    if c.exists: c.outerUpdate()
-    return val
+# def masterClickHandler (self,event,func=None):
+    # k = self ; c = k.c
+    # val = self.masterClickHandlerHelper(event,func)
+    # if c.exists: c.outerUpdate()
+    # return val
 
-def masterClickHandlerHelper (self,event,func):
+def masterClickHandler (self,event,func=None):
 
     g.app.gui.killPopupMenu()
 
@@ -7615,13 +7494,13 @@ masterClick3Handler = masterClickHandler
 masterDoubleClick3Handler = masterClickHandler
 #@-node:ekr.20061031131434.153:masterClickHandler
 #@+node:ekr.20061031131434.154:masterDoubleClickHandler
-def masterDoubleClickHandler (self,event,func=None):
-    k = self ; c = k.c
-    val = self.masterDoubleClickHandlerHelper(event,func)
-    if c.exists: c.outerUpdate()
-    return val
+# def masterDoubleClickHandler (self,event,func=None):
+    # k = self ; c = k.c
+    # val = self.masterDoubleClickHandlerHelper(event,func)
+    # if c.exists: c.outerUpdate()
+    # return val
 
-def masterDoubleClickHandlerHelper (self,event,func):
+def masterDoubleClickHandler (self,event,func=None):
 
     k = self ; c = k.c ; w = event and event.widget
 
@@ -7641,13 +7520,13 @@ def masterDoubleClickHandlerHelper (self,event,func):
         return 'break'
 #@-node:ekr.20061031131434.154:masterDoubleClickHandler
 #@+node:ekr.20061031131434.155:masterMenuHandler
-def masterMenuHandler (self,stroke,func,commandName):
-    k = self ; c = k.c
-    val = self.masterMenuHandlerHelper(stroke,func,commandName)
-    if c.exists: c.outerUpdate()
-    return val
+# def masterMenuHandler (self,stroke,func,commandName):
+    # k = self ; c = k.c
+    # val = self.masterMenuHandlerHelper(stroke,func,commandName)
+    # if c.exists: c.outerUpdate()
+    # return val
 
-def masterMenuHandlerHelper (self,stroke,func,commandName):
+def masterMenuHandler (self,stroke,func,commandName):
 
     k = self ; c = k.c ; w = c.frame.getFocus()
 
