@@ -233,6 +233,7 @@ class baseTextWidget:
                 self.leoWidget = w
                 self.widget = w
 
+        c.outerUpdate()
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)
         c.outerUpdate()

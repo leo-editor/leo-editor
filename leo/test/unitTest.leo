@@ -2027,7 +2027,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2149,6 +2149,109 @@
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 <v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+</v>
+<v t="ekr.20080515101718.1"><vh>Fail when using newDrawing</vh>
+<v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
+<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051109091731"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
+<v t="ekr.20060208072415"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
+<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+</v>
+<v t="ekr.20040712101754.182"><vh>parent</vh>
+<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+</v>
+</v>
+<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
+<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
+<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
+</v>
+<v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
+<v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@test consistency of back/next links</vh></v>
+<v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
+<v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
+<v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
+<v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
+<v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links</vh></v>
+<v t="ekr.20040712101754.207" annotate="7d71002e"><vh>@test consistency of threadBack/Next links</vh></v>
+<v t="ekr.20040712101754.209" annotate="7d71002e"><vh>@test hasNextBack</vh></v>
+<v t="ekr.20040712101754.210" annotate="7d71002e"><vh>@test hasParentChild</vh></v>
+<v t="ekr.20040712101754.211" annotate="7d71002e"><vh>@test hasThreadNextBack</vh></v>
+<v t="ekr.20040722055040" annotate="7d71002e"><vh>@test isAncestorOf</vh></v>
+<v t="ekr.20041013062906" annotate="7d71002e"><vh>@test onHyperLinkControlClick</vh></v>
+<v t="ekr.20040712101754.199" annotate="7d71002e"><vh>@test p.comparisons</vh></v>
+<v t="ekr.20060106211922" annotate="7d71002e"><vh>@test p.isCurrentPosition</vh></v>
+<v t="ekr.20060106211922.1" annotate="7d71002e"><vh>@test p.isRootPosition</vh></v>
+<v t="ekr.20040712101754.188" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
+<v t="ekr.20040712101754.189"><vh>child1</vh>
+<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.191"><vh>b</vh></v>
+</v>
+<v t="ekr.20040712101754.192"><vh>c</vh></v>
+<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.191"><vh>b</vh></v>
+</v>
+<v t="ekr.20040712101754.193"><vh>d</vh>
+<v t="ekr.20040712101754.194"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20040712101754.195"><vh>child2</vh></v>
+<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
+<v t="ekr.20040712101754.200" a="M" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
+<v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
+<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+</v>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
+<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
+<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
+<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
+<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
+<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
+<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
+<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
+<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
+<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
+</v>
+<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
+<v t="ekr.20070611071101"><vh>@@test visback</vh>
+<v t="ekr.20070611071101.1"><vh>a</vh>
+<v t="ekr.20070611071101.2"><vh>b</vh>
+<v t="ekr.20070611071101.3"><vh>c2</vh></v>
+</v>
+</v>
+<v t="ekr.20070611071101.4"><vh>limit</vh>
+<v t="ekr.20070611071101.5"><vh>d</vh></v>
+</v>
+<v t="ekr.20070611071954"><vh>e</vh></v>
+</v>
+<v t="ekr.20040712101754.177"><vh>@test convertTreeToString and allies</vh>
+<v t="ekr.20040712101754.178"><vh>File Conversion</vh>
+<v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
+<v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
+</v>
+</v>
+<v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -12723,9 +12826,11 @@ ab</t>
 g.es_print('Test of @command')
 g.app.unitTestDict ['unit-test-command1'] = True</t>
 <t tx="ekr.20051107115231.9">c.redraw_now() # To make node visible
+c.outerUpdate()
 
 c2 = c.new()
 p2 = c2.currentPosition()
+# c.outerUpdate()
 
 try:
     # This fails, but it is possible to edit the headline.
@@ -12949,6 +13054,7 @@ c.selectPosition(p)
 c.bodyWantsFocusNow()
 paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
+c.outerUpdate()
 n = c.frame.body.colorizer.count
 if 1:
     event = g.Bunch(widget=c.frame.body.bodyCtrl)
@@ -12961,6 +13067,7 @@ else:
 try:
     # There is no colorizer to test for wx.
     if g.app.gui.guiName() == 'tkinter':
+        c.outerUpdate() # Force the coloring before doing the test.
         assert c.frame.body.colorizer.count &gt; n, 'did not recolor text'
 finally:
     if 1:
@@ -13096,8 +13203,9 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
-n = c.frame.tree.redrawCount
+c.outerUpdate()
 c.bodyWantsFocusNow()
+n = c.frame.tree.redrawCount
 try:
     c.frame.body.bodyCtrl.event_generate('a')
     n2 = c.frame.tree.redrawCount
@@ -13357,9 +13465,11 @@ h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
-c.redraw_now() # To make node visible
-n = c.frame.tree.redrawCount
 c.bodyWantsFocusNow()
+c.redraw_now() # To make node visible
+c.outerUpdate()
+n = c.frame.tree.redrawCount
+
 assert not p.bodyString(), 'oops1'
 try:
     # print 'before insert a',c.currentPosition()
@@ -13369,6 +13479,7 @@ try:
     assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
     if g.app.gui.guiName() != 'nullGui':
         n2 = c.frame.tree.redrawCount
+        c.outerUpdate() # Force the coloring before doing the test.
         assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
 finally:
     if 1:
@@ -13385,7 +13496,8 @@ try:
     c.bodyWantsFocusNow()
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
-    w.event_generate('&lt;Delete&gt;')
+    c.outerUpdate() # This fixed the problem.
+    w.event_generate('&lt;Delete&gt;') # Calls c.outerUpdate()
     assert p.bodyString() == s[:-1],'oops1: expected "AB", got %s' % p.bodyString()
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
@@ -20400,24 +20512,30 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
+    c.outerUpdate() # This call is required so the expansion actually happens.
     c.setCurrentPosition(p3)
     c.deleteOutline()
+    c.outerUpdate()
     p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1'
+    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
     assert p.next().headString() == 'C', 'fail 2'
     c.undoer.undo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.back() == p2, 'fail 4'
     assert p.next() == p4, 'fail 5'
     c.undoer.redo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.headString() == 'A', 'fail 1-2'
     assert p.next().headString() == 'C', 'fail 2-2'
     c.undoer.undo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.back() == p2, 'fail 4-2'
     assert p.next() == p4, 'fail 5-2'
     c.undoer.redo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.headString() == 'A', 'fail 1-3'
     assert p.next().headString() == 'C', 'fail 2-3'
@@ -20558,5 +20676,6 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 <t tx="ekr.20080514113943.1"></t>
+<t tx="ekr.20080515101718.1"></t>
 </tnodes>
 </leo_file>

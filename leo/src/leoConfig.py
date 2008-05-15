@@ -116,7 +116,7 @@ class parserBaseClass:
             # The prompt is everything after the '::'
             prompt = name[i+2:].strip()
             modeDict ['*command-prompt*'] = prompt
-            g.trace('modeName',modeName,'*command-prompt*',prompt)
+            # g.trace('modeName',modeName,'*command-prompt*',prompt)
 
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict

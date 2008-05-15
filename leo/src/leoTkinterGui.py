@@ -567,6 +567,8 @@ class tkinterGui(leoGui.leoGui):
                 def visibilityCallback(event,self=self,w=w):
                     try: self.leoIcon.attach(w.winfo_id())
                     except: pass
+
+                # No commander is available here, and we don't need to call c.outerUpdate.
                 w.bind("<Visibility>",visibilityCallback)
 
                 if not self.leoIcon:
@@ -663,7 +665,7 @@ class tkinterGui(leoGui.leoGui):
             Pmw = g.importExtension('Pmw',pluginName='gui.makeScriptButton',verbose=False)
             if Pmw:
                 balloon = Pmw.Balloon(b,initwait=100)
-                balloon.bind(b,balloonText)
+                c.bind(balloon,b,balloonText)
 
         if sys.platform == "win32":
             width = int(len(buttonText) * 0.9)
@@ -693,7 +695,7 @@ class tkinterGui(leoGui.leoGui):
         #@-node:ekr.20060621164312.2:<< define the callbacks for b >>
         #@nl
         b.configure(command=executeScriptCallback)
-        b.bind('<Button-3>',deleteButtonCallback)
+        c.bind(b,'<Button-3>',deleteButtonCallback)
         if shortcut:
             #@        << bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20060621164312.3:<< bind the shortcut to executeScriptCallback >>

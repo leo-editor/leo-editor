@@ -104,7 +104,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
 
         g.trace(bind_shortcut,g.callers())
 
-        return self.top.bind(bind_shortcut,callback)
+        c = self.c
+
+        return c.bind(self.top,bind_shortcut,callback)
     #@-node:ekr.20031218072017.4108:bind (not called)
     #@+node:ekr.20031218072017.4109:delete
     def delete (self,menu,realItemName):

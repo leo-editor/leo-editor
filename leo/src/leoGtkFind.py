@@ -184,10 +184,10 @@ class gtkFindTab (leoFind.findTab):
         def insertFindTab(event,w=ftxt): return insertTab(w)
         def insertChangeTab(event,w=ctxt): return insertTab(w)
 
-        ftxt.bind("<Tab>",toChange)
-        ctxt.bind("<Tab>",toFind)
-        ftxt.bind("<Control-Tab>",insertFindTab)
-        ctxt.bind("<Control-Tab>",insertChangeTab)
+        c.bind(ftxt,"<Tab>",toChange)
+        c.bind(ctxt,"<Tab>",toFind)
+        c.bind(ftxt,"<Control-Tab>",insertFindTab)
+        c.bind(ctxt,"<Control-Tab>",insertChangeTab)
         #@-node:ekr.20080112173119.30:<< Bind Tab and control-tab >>
         #@nl
 
@@ -253,7 +253,7 @@ class gtkFindTab (leoFind.findTab):
                 box = underlinedTkButton(
                     "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 if val == None: box.button.configure(state="disabled")
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
@@ -261,7 +261,7 @@ class gtkFindTab (leoFind.findTab):
                 box = underlinedTkButton(
                     "check",columns[i],anchor="w",text=name,variable=var,background=bg)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
                 if var is None: box.button.configure(state="disabled")
@@ -331,7 +331,7 @@ class gtkFindTab (leoFind.findTab):
 
         for w in (self.find_ctrl,self.change_ctrl):
             for event, callback in table:
-                w.bind(event,callback)
+                c.bind(w,event,callback)
     #@-node:ekr.20080112173119.33:createBindings (tkFindTab)
     #@+node:ekr.20080112173119.34:tkFindTab.init
     def init (self,c):
@@ -470,11 +470,11 @@ class gtkSpellTab:
                     shortcut = k.shortcutFromSetting(accel)
                     if shortcut:
                         # g.trace(shortcut,commandName)
-                        w.bind(shortcut,func)
+                        c.bind(w,shortcut,func)
 
-        self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-        self.listBox.bind("<Button-1>",self.onSelectListBox)
-        self.listBox.bind("<Map>",self.onMap)
+        c.bind(self.listBox,"<Double-1>",self.onChangeThenFindButton)
+        c.bind(self.listBox,"<Button-1>",self.onSelectListBox)
+        c.bind(self.listBox,"<Map>",self.onMap)
     #@nonl
     #@-node:ekr.20080112173119.43:createBindings
     #@+node:ekr.20080112173119.44:createFrame

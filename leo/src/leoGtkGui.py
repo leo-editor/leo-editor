@@ -591,7 +591,7 @@ class gtkGui(leoGui.leoGui):
     # def visibilityCallback(event,self=self,w=w):
         # try: self.leoIcon.attach(w.winfo_id())
         # except: pass
-    # w.bind("<Visibility>",visibilityCallback)
+    # c.bind(w,"<Visibility>",visibilityCallback)
 
     # if not self.leoIcon:
         # # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.
@@ -687,7 +687,7 @@ class gtkGui(leoGui.leoGui):
             # Pmw = g.importExtension('Pmw',pluginName='gui.makeScriptButton',verbose=False)
             # if Pmw:
                 # balloon = Pmw.Balloon(b,initwait=100)
-                # balloon.bind(b,balloonText)
+                # c.bind(balloon,b,balloonText)
 
         # if sys.platform == "win32":
             # width = int(len(buttonText) * 0.9)
@@ -717,7 +717,7 @@ class gtkGui(leoGui.leoGui):
         #@-node:ekr.20080112145409.476:<< define the callbacks for b >>
         #@nl
         b.configure(command=executeScriptCallback)
-        b.bind('<3>',deleteButtonCallback)
+        c.bind(b,'<3>',deleteButtonCallback)
         if shortcut:
             #@        << bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20080112145409.477:<< bind the shortcut to executeScriptCallback >>

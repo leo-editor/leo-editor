@@ -6,6 +6,7 @@
 
 - Fix failed unit tests when command-mode is the default.
 - Toggle-insert-command-states.
+- Unit tests assume that c.redraw_now() does an immediate redraw.
 
 Later or never:
 
@@ -2058,7 +2059,7 @@ def createModeCommand (self,modeName,name,modeDict):
         # The prompt is everything after the '::'
         prompt = name[i+2:].strip()
         modeDict ['*command-prompt*'] = prompt
-        g.trace('modeName',modeName,'*command-prompt*',prompt)
+        # g.trace('modeName',modeName,'*command-prompt*',prompt)
 
     # Save the info for k.finishCreate and k.makeAllBindings.
     d = g.app.config.modeCommandsDict
@@ -2482,8 +2483,8 @@ def createBindings (self,w=None):
         # g.trace('callback')
         c.k.setDefaultInputState()
 
-    w.bind('<FocusOut>', onFocusOut)
-    w.bind('<FocusIn>', onFocusIn)
+    c.bind(w,'<FocusOut>', onFocusOut)
+    c.bind(w,'<FocusIn>', onFocusIn)
 
     table = [
         ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -2504,7 +2505,7 @@ def createBindings (self,w=None):
         def bodyClickCallback(event,handler=handler,func=func):
             return handler(event,func)
 
-        w.bind(kind,bodyClickCallback)
+        c.bind(w,kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@+node:ekr.20061031131434.80:k.finishCreate & helpers
 def finishCreate (self):
@@ -3772,8 +3773,8 @@ def createBindings (self,w=None):
         # g.trace('callback')
         c.k.setDefaultInputState()
 
-    w.bind('<FocusOut>', onFocusOut)
-    w.bind('<FocusIn>', onFocusIn)
+    c.bind(w,'<FocusOut>', onFocusOut)
+    c.bind(w,'<FocusIn>', onFocusIn)
 
     table = [
         ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -3794,7 +3795,7 @@ def createBindings (self,w=None):
         def bodyClickCallback(event,handler=handler,func=func):
             return handler(event,func)
 
-        w.bind(kind,bodyClickCallback)
+        c.bind(w,kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@+node:ekr.20061031131434.192:showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
@@ -4896,8 +4897,8 @@ def createBindings (self,w=None):
         # g.trace('callback')
         c.k.setDefaultInputState()
 
-    w.bind('<FocusOut>', onFocusOut)
-    w.bind('<FocusIn>', onFocusIn)
+    c.bind(w,'<FocusOut>', onFocusOut)
+    c.bind(w,'<FocusIn>', onFocusIn)
 
     table = [
         ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -4918,7 +4919,7 @@ def createBindings (self,w=None):
         def bodyClickCallback(event,handler=handler,func=func):
             return handler(event,func)
 
-        w.bind(kind,bodyClickCallback)
+        c.bind(w,kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@-node:ekr.20080513061733.5:Set status report correctly on initial load
 #@+node:ekr.20080512155222.1:Autocompletion should stay in insert/overwrite mode
@@ -5527,7 +5528,7 @@ def createModeCommand (self,modeName,name,modeDict):
         # The prompt is everything after the '::'
         prompt = name[i+2:].strip()
         modeDict ['*command-prompt*'] = prompt
-        g.trace('modeName',modeName,'*command-prompt*',prompt)
+        # g.trace('modeName',modeName,'*command-prompt*',prompt)
 
     # Save the info for k.finishCreate and k.makeAllBindings.
     d = g.app.config.modeCommandsDict
@@ -5935,8 +5936,8 @@ def createBindings (self,w=None):
         # g.trace('callback')
         c.k.setDefaultInputState()
 
-    w.bind('<FocusOut>', onFocusOut)
-    w.bind('<FocusIn>', onFocusIn)
+    c.bind(w,'<FocusOut>', onFocusOut)
+    c.bind(w,'<FocusIn>', onFocusIn)
 
     table = [
         ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -5957,7 +5958,7 @@ def createBindings (self,w=None):
         def bodyClickCallback(event,handler=handler,func=func):
             return handler(event,func)
 
-        w.bind(kind,bodyClickCallback)
+        c.bind(w,kind,bodyClickCallback)
 #@-node:ekr.20031218072017.838:tkBody.createBindings
 #@+node:ekr.20061031131434.192:showStateAndMode
 def showStateAndMode(self,w=None,prompt=None):
@@ -6016,15 +6017,7 @@ What I did:
 
 @color
 #@nonl
-#@+node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
-([ ]+)w.bind\((.*)\)(.*)$
-\1c.bind(w,\2)\3
-
-# Bind w.bind with more than two args (none found)
-
-w.bind\(.*,.*,.*$
-#@nonl
-#@-node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
+#@+node:ekr.20080515101324.1:Notes
 #@+node:ekr.20080513174131.1:Design for simplified drawing & focus
 @nocolor
 
@@ -6051,345 +6044,144 @@ key-handling branch.
 
 This is a higly speculative project.  Previous attempts have failed...
 #@-node:ekr.20080513174131.1:Design for simplified drawing & focus
-#@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
-#@+node:ekr.20031218072017.2991:c.editPosition
-# Selects v: sets the focus to p and edits p.
+#@+node:ekr.20080514131122.22:Failed unit tests with g.newDrawing = True
+======================================================================
+FAIL: @test paste at end of headline
 
-def editPosition(self,p,selectAll=False):
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError: Expected: Test headline abcABC, got Test headline abc
 
-    c = self ; k = c.k
+======================================================================
+FAIL: @test typing and undo in headline - at end
 
-    if p:
-        c.selectPosition(p)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 23, in <module>
+AssertionError: oops2: got: Test headline abc
 
-        c.frame.tree.editLabel(p,selectAll=selectAll)
+======================================================================
+FAIL: @test paste and undo in headline - at end
 
-        if k:
-            if selectAll:
-                k.setInputState('insert')
-            else:
-                k.setDefaultInputState()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: oops2 got: Test headline abc
 
-            k.showStateAndMode()
-#@-node:ekr.20031218072017.2991:c.editPosition
-#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
-# Ends the editing in the outline.
+======================================================================
+FAIL: @test paste and undo in headline - with selection
 
-def endEditing(self):
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
 
-    c = self ; k = c.k
+======================================================================
+FAIL: @test selecting new node retains typing in headline
 
-    c.frame.tree.endEditLabel()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
 
-    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+======================================================================
+FAIL: @test typing in headline recomputes width (no real problem)
 
-    # The following code would be wrong; c.endEditing is a utility method.
-    # if k:
-        # k.setDefaultInputState()
-        # # Recolor the *body* text, **not** the headline.
-        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
-#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
-#@+node:ekr.20031218072017.2997:c.selectPosition
-def selectPosition(self,p,updateBeadList=True):
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: 15 15
 
-    """Select a new position."""
+======================================================================
+FAIL: @test selecting new node retains paste in headline (no real problem)
 
-    c = self ; cc = c.chapterController
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError
 
-    if cc:
-        cc.selectChapterForPosition(p)
+======================================================================
+FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
 
-    # g.trace(p.headString(),g.callers())
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: expected "a", got: u''
 
-    c.frame.tree.select(p,updateBeadList)
+======================================================================
+FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
 
-    # New in Leo 4.4.2.
-    c.setCurrentPosition(p)
-        # Do *not* test whether the position exists!
-        # We may be in the midst of an undo.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 16, in <module>
+AssertionError: too many redraws: 1
 
-selectVnode = selectPosition
-#@-node:ekr.20031218072017.2997:c.selectPosition
-#@+node:ekr.20031218072017.2998:c.selectVnodeWithEditing
-# Selects the given node and enables editing of the headline if editFlag is True.
+======================================================================
+FAIL: @test Select a node when file is first loaded (no real problem)
 
-def selectVnodeWithEditing(self,v,editFlag):
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 12, in <module>
+AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
 
-    c = self
-    if editFlag:
-        c.editPosition(v)
-    else:
-        c.selectVnode(v)
+======================================================================
+FAIL: @test delete node (no real problem)
 
-selectPositionWithEditing = selectVnodeWithEditing
-#@-node:ekr.20031218072017.2998:c.selectVnodeWithEditing
-#@+node:ekr.20060923202156:c.onCanvasKey
-def onCanvasKey (self,event):
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: fail 1
 
-    '''Navigate to the next headline starting with ch = event.char.
-    If ch is uppercase, search all headlines; otherwise search only visible headlines.
-    This is modelled on Windows explorer.'''
+----------------------------------------------------------------------
+Ran 562 tests in 145.375s
 
-    # g.trace(event and event.char)
+FAILED (failures=11)
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
 
-    if not event or not event.char or not event.keysym.isalnum():
-        return
-    c  = self ; p = c.currentPosition() ; p1 = p.copy()
-    invisible = c.config.getBool('invisible_outline_navigation')
-    ch = event.char
-    allFlag = ch.isupper() and invisible # all is a global (!?)
-    if not invisible: ch = ch.lower()
-    found = False
-    extend = self.navQuickKey()
-    attempts = g.choose(extend,(True,False),(False,))
-    for extend2 in attempts:
-        p = p1.copy()
-        while 1:
-            if allFlag:
-                p.moveToThreadNext()
-            else:
-                p.moveToVisNext(c)
-            if not p:
-                p = c.rootPosition()
-            if p == p1: # Never try to match the same position.
-                # g.trace('failed',extend2)
-                found = False ; break
-            newPrefix = c.navHelper(p,ch,extend2)
-            if newPrefix:
-                found = True ; break
-        if found: break
-    if found:
-        if allFlag: c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.navTime = time.clock()
-        c.navPrefix = newPrefix
-        # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.headString())
-    else:
-        c.navTime = None
-        c.navPrefix = ''
-    c.treeWantsFocusNow()
-#@+node:ekr.20061002095711.1:c.navQuickKey
-def navQuickKey (self):
-
-    '''return true if there are two quick outline navigation keys
-    in quick succession.
-
-    Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
-
-    c = self
-
-    deltaTime = c.config.getFloat('outline_nav_extend_delay')
-
-    if deltaTime in (None,0.0):
-        return False
-    else:
-        nearTime = c.navTime and time.clock() - c.navTime < deltaTime
-        return nearTime
+C:\leo.repo\key-handling\leo>
 #@nonl
-#@-node:ekr.20061002095711.1:c.navQuickKey
-#@+node:ekr.20061002095711:c.navHelper
-def navHelper (self,p,ch,extend):
+#@-node:ekr.20080514131122.22:Failed unit tests with g.newDrawing = True
+#@+node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
+([ ]+)w.bind\((.*)\)(.*)$
+\1c.bind(w,\2)\3
 
-    c = self ; h = p.headString().lower()
+# Bind w.bind with more than two args (none found)
 
-    if extend:
-        prefix = c.navPrefix + ch
-        return h.startswith(prefix.lower()) and prefix
+w.bind\(.*,.*,.*$
 
-    if h.startswith(ch):
-        return ch
-
-    # New feature: search for first non-blank character after @x for common x.
-    if ch != '@' and h.startswith('@'):
-        for s in ('button','command','file','thin','asis','nosent','noref'):
-            prefix = '@'+s
-            if h.startswith('@'+s):
-                while 1:
-                    n = len(prefix)
-                    ch2 = n < len(h) and h[n] or ''
-                    if ch2.isspace():
-                        prefix = prefix + ch2
-                    else: break
-                if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
-                    return prefix + ch
-    return ''
+[-w]\.bind\(
 #@nonl
-#@-node:ekr.20061002095711:c.navHelper
-#@-node:ekr.20060923202156:c.onCanvasKey
-#@-node:ekr.20031218072017.2990:Selecting & Updating (commands)
-#@+node:ekr.20040803072955.125:Selecting & editing... (tkTree)
-#@+node:ekr.20040803072955.142:dimEditLabel, undimEditLabel
-# Convenience methods so the caller doesn't have to know the present edit node.
-
-def dimEditLabel (self):
-
-    p = self.c.currentPosition()
-    self.setSelectedLabelState(p)
-
-def undimEditLabel (self):
-
-    p = self.c.currentPosition()
-    self.setSelectedLabelState(p)
-#@-node:ekr.20040803072955.142:dimEditLabel, undimEditLabel
-#@+node:ekr.20040803072955.127:tree.editLabel
-def editLabel (self,p,selectAll=False):
-
-    """Start editing p's headline."""
+#@-node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
+#@-node:ekr.20080515101324.1:Notes
+#@+node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
+def bind (self,*args,**keys):
 
     c = self.c
-    trace = (False or self.trace_edit) and not g.app.unitTesting
-
-    if p and p != self.editPosition():
-
-        if trace:
-            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
-
-        c.beginUpdate()
-        try:
-            self.endEditLabel()
-        finally:
-            c.endUpdate(True)
-            c.outerUpdate()
-
-    self.setEditPosition(p) # That is, self._editPosition = p
-
-    if trace: g.trace(c.edit_widget(p))
-
-    w = c.edit_widget(p)
-    if p and w:
-        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-        c.headlineWantsFocus(p) # Make sure the focus sticks.
-        c.k.showStateAndMode(w)
-#@-node:ekr.20040803072955.127:tree.editLabel
-#@+node:ekr.20040803072955.134:tree.set...LabelState
-#@+node:ekr.20040803072955.135:setEditLabelState
-def setEditLabelState (self,p,selectAll=False): # selected, editing
-
-    c = self.c ; w = c.edit_widget(p)
-
-    if p and w:
-        # g.trace('*****',g.callers())
-        c.widgetWantsFocusNow(w)
-        self.setEditHeadlineColors(p)
-        selectAll = selectAll or self.select_all_text_when_editing_headlines
-        if selectAll:
-            w.setSelectionRange(0,'end',insert='end')
-        else:
-            w.setInsertPoint('end') # Clears insert point.
-    else:
-        g.trace('no edit_widget')
-
-setNormalLabelState = setEditLabelState # For compatibility.
-#@-node:ekr.20040803072955.135:setEditLabelState
-#@+node:ekr.20040803072955.136:setSelectedLabelState
-trace_n = 0
-
-def setSelectedLabelState (self,p): # selected, disabled
-
-    c = self.c
-
-    # g.trace(p,c.edit_widget(p))
-
-
-    if p and c.edit_widget(p):
-
-        if 0:
-            g.trace(self.trace_n,c.edit_widget(p),p)
-            # g.trace(g.callers(6))
-            self.trace_n += 1
-
-        self.setDisabledHeadlineColors(p)
-#@-node:ekr.20040803072955.136:setSelectedLabelState
-#@+node:ekr.20040803072955.138:setUnselectedLabelState
-def setUnselectedLabelState (self,p): # not selected.
-
-    c = self.c
-
-    if p and c.edit_widget(p):
-        self.setUnselectedHeadlineColors(p)
-#@-node:ekr.20040803072955.138:setUnselectedLabelState
-#@+node:ekr.20040803072955.139:setDisabledHeadlineColors
-def setDisabledHeadlineColors (self,p):
-
-    c = self.c ; w = c.edit_widget(p)
-
-    if False or (self.trace and self.verbose):
-        # if not self.redrawing:
-            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
-            # import traceback ; traceback.print_stack(limit=6)
-
-    fg = self.headline_text_selected_foreground_color or 'black'
-    bg = self.headline_text_selected_background_color or 'grey80'
-    selfg = self.headline_text_editing_selection_foreground_color
-    selbg = self.headline_text_editing_selection_background_color
-
-    try:
-        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
-            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
-    except:
-        g.es_exception()
-#@-node:ekr.20040803072955.139:setDisabledHeadlineColors
-#@+node:ekr.20040803072955.140:setEditHeadlineColors
-def setEditHeadlineColors (self,p):
-
-    c = self.c ; w = c.edit_widget(p)
-
-    if self.trace and self.verbose:
-        if not self.redrawing:
-            print "%10s %d %s" % ("edit",id(2),p.headString())
-
-    fg    = self.headline_text_editing_foreground_color or 'black'
-    bg    = self.headline_text_editing_background_color or 'white'
-    selfg = self.headline_text_editing_selection_foreground_color or 'white'
-    selbg = self.headline_text_editing_selection_background_color or 'black'
-
-    try: # Use system defaults for selection foreground/background
-        w.configure(state="normal",highlightthickness=1,
-        fg=fg,bg=bg,selectforeground=selfg,selectbackground=selbg)
-    except:
-        g.es_exception()
-#@-node:ekr.20040803072955.140:setEditHeadlineColors
-#@+node:ekr.20040803072955.141:setUnselectedHeadlineColors
-def setUnselectedHeadlineColors (self,p):
-
-    c = self.c ; w = c.edit_widget(p)
-
-    if self.trace and self.verbose:
-        if not self.redrawing:
-            print "%10s %d %s" % ("unselect",id(w),p.headString())
-            # import traceback ; traceback.print_stack(limit=6)
-
-    fg = self.headline_text_unselected_foreground_color or 'black'
-    bg = self.headline_text_unselected_background_color or 'white'
-
-    try:
-        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
-            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
-    except:
-        g.es_exception()
-#@-node:ekr.20040803072955.141:setUnselectedHeadlineColors
-#@-node:ekr.20040803072955.134:tree.set...LabelState
-#@+node:ekr.20060207101443:tree.setHeadline (tkTree)
-def setHeadline (self,p,s):
-
-    '''Set the actual text of the headline widget.
-
-    This is called from the undo/redo logic to change the text before redrawing.'''
-
-    w = self.edit_widget(p)
-    if w:
-        w.configure(state='normal')
-        w.delete(0,'end')
-        if s.endswith('\n') or s.endswith('\r'):
-            s = s[:-1]
-        w.insert(0,s)
-        self.revertHeadline = s
-        # g.trace(repr(s),w.getAllText())
-    else:
-        g.trace('-'*20,'oops')
-#@-node:ekr.20060207101443:tree.setHeadline (tkTree)
-#@-node:ekr.20040803072955.125:Selecting & editing... (tkTree)
+    return self.bodyCtrl.bind(*args,**keys)
+#@-node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
 #@+node:ekr.20080515053412.52:Changed
 #@+node:ekr.20031218072017.2812:c.__init__
 def __init__(self,frame,fileName,relativeFileName=None):
@@ -7871,126 +7663,6 @@ def masterMenuHandlerHelper (self,stroke,func,commandName):
 #@-node:ekr.20061031131434.155:masterMenuHandler
 #@-node:ekr.20061031131434.145:Master event handlers (keyHandler)
 #@-node:ekr.20080515053412.52:Changed
-#@+node:ekr.20080514131122.22:Failed unit ests
-======================================================================
-FAIL: @test paste at end of headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError: Expected: Test headline abcABC, got Test headline abc
-
-======================================================================
-FAIL: @test typing and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 23, in <module>
-AssertionError: oops2: got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: oops2 got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - with selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test selecting new node retains typing in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in headline recomputes width (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: 15 15
-
-======================================================================
-FAIL: @test selecting new node retains paste in headline (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: expected "a", got: u''
-
-======================================================================
-FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 16, in <module>
-AssertionError: too many redraws: 1
-
-======================================================================
-FAIL: @test Select a node when file is first loaded (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 12, in <module>
-AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
-
-======================================================================
-FAIL: @test delete node (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: fail 1
-
-----------------------------------------------------------------------
-Ran 562 tests in 145.375s
-
-FAILED (failures=11)
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
-
-C:\leo.repo\key-handling\leo>
-#@nonl
-#@-node:ekr.20080514131122.22:Failed unit ests
 #@-node:ekr.20080514131122.2:New drawing/focus code
 #@-all
 #@nonl

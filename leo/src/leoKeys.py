@@ -2364,7 +2364,7 @@ class keyHandlerClass:
                 aList.append(w)
                 k.masterGuiBindingsDict [bindStroke] = aList
                 try:
-                    w.bind(bindStroke,masterBindKeyCallback)
+                    c.bind(w,bindStroke,masterBindKeyCallback)
                     # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
                 except Exception:
                     if self.trace_bind_key_exceptions:

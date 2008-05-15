@@ -181,6 +181,8 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
 
         # g.trace('legacy')
 
+        c = self.c
+
         # Create the find panel...
         outer = Tk.Frame(self.frame,relief="groove",bd=2)
         outer.pack(padx=2,pady=2)
@@ -228,10 +230,10 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
         def insertFindTab(event,w=ftxt): return insertTab(w)
         def insertChangeTab(event,w=ctxt): return insertTab(w)
 
-        ftxt.bind("<Tab>",toChange)
-        ctxt.bind("<Tab>",toFind)
-        ftxt.bind("<Control-Tab>",insertFindTab)
-        ctxt.bind("<Control-Tab>",insertChangeTab)
+        c.bind(ftxt,"<Tab>",toChange)
+        c.bind(ctxt,"<Tab>",toFind)
+        c.bind(ftxt,"<Control-Tab>",insertFindTab)
+        c.bind(ctrxt,"<Control-Tab>",insertChangeTab)
         #@-node:ekr.20041026092141:<< Bind Tab and control-tab >>
         #@nl
 
@@ -295,14 +297,14 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
             for var,name,val in radioLists[i]:
                 box = underlinedTkButton("radio",columns[i],anchor="w",text=name,variable=var,value=val)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 if val == None: box.button.configure(state="disabled")
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
             for name,var in checkLists[i]:
                 box = underlinedTkButton("check",columns[i],anchor="w",text=name,variable=var)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
                 if var is None: box.button.configure(state="disabled")
@@ -372,20 +374,21 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
 
         # Legacy bindings.  Can be overwritten in subclasses.
 
+        c = self.c
         # g.trace('legacy')
 
         def findButtonCallback2(event,self=self):
             self.findButton()
             return 'break'
 
-        for widget in (self.find_ctrl, self.change_ctrl):
-            widget.bind ("<Button-1>",  self.resetWrap)
-            widget.bind("<Key>",        self.resetWrap)
-            widget.bind("<Control-a>",  self.selectAllFindText)
+        for w in (self.find_ctrl, self.change_ctrl):
+            c.bind(w, "<Button-1>",  self.resetWrap)
+            c.bind(w, "<Key>",        self.resetWrap)
+            c.bind(w,"<Control-a>",  self.selectAllFindText)
 
-        for widget in (self.find_ctrl, self.change_ctrl):
-            widget.bind("<Key-Return>", findButtonCallback2)
-            widget.bind("<Key-Escape>", self.onCloseWindow)
+        for w in (self.find_ctrl, self.change_ctrl):
+            c.bind(w, "<Key-Return>", findButtonCallback2)
+            c.bind(w, "<Key-Escape>", self.onCloseWindow)
     #@-node:ekr.20060207080537:find.createBindings
     #@-node:ekr.20031218072017.3898:Birth & death
     #@+node:ekr.20031218072017.3906:onCloseWindow
@@ -519,10 +522,10 @@ class tkFindTab (leoFind.findTab):
         def insertFindTab(event,w=ftxt): return insertTab(w)
         def insertChangeTab(event,w=ctxt): return insertTab(w)
 
-        ftxt.bind("<Tab>",toChange)
-        ctxt.bind("<Tab>",toFind)
-        ftxt.bind("<Control-Tab>",insertFindTab)
-        ctxt.bind("<Control-Tab>",insertChangeTab)
+        c.bind(ftxt,"<Tab>",toChange)
+        c.bind(ctxt,"<Tab>",toFind)
+        c.bind(ftxt,"<Control-Tab>",insertFindTab)
+        c.bind(ctxt,"<Control-Tab>",insertChangeTab)
         #@-node:ekr.20051020120306.16:<< Bind Tab and control-tab >>
         #@nl
 
@@ -588,7 +591,7 @@ class tkFindTab (leoFind.findTab):
                 box = underlinedTkButton(
                     "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 if val == None: box.button.configure(state="disabled")
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
@@ -596,7 +599,7 @@ class tkFindTab (leoFind.findTab):
                 box = underlinedTkButton(
                     "check",columns[i],anchor="w",text=name,variable=var,background=bg)
                 box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
+                c.bind(box.button,"<Button-1>", self.resetWrap)
                 box.bindHotKey(ftxt)
                 box.bindHotKey(ctxt)
                 if var is None: box.button.configure(state="disabled")
@@ -679,7 +682,7 @@ class tkFindTab (leoFind.findTab):
 
         for w in (self.find_ctrl,self.change_ctrl):
             for event, callback in table:
-                w.bind(event,callback)
+                c.bind(w,event,callback)
     #@-node:ekr.20051023181449:createBindings (tkFindTab)
     #@+node:bobjack.20080401211408.2:onRightClick
     def onRightClick(self, event):
@@ -824,7 +827,7 @@ class tkSpellTab:
                     shortcut = k.shortcutFromSetting(accel)
                     if shortcut:
                         # g.trace(shortcut,commandName)
-                        w.bind(shortcut,func)
+                        c.bind(w,shortcut,func)
 
         for binding,func in (
             ("<Double-1>",  self.onChangeThenFindButton),
@@ -834,7 +837,7 @@ class tkSpellTab:
             # ("<Up>",        self.up),
             # ("<Down>",      self.down),
         ):
-            self.listBox.bind(binding,func)
+            c.bind(self.listBox,binding,func)
     #@-node:ekr.20051025120920:createBindings
     #@+node:ekr.20070212132230.2:createFrame
     def createFrame (self):

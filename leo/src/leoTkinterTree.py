@@ -275,7 +275,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.expandedVisibleArea = None
 
         if self.allocateOnlyVisibleNodes:
-            self.frame.bar1.bind("<Button-1-ButtonRelease>", self.redraw_now)
+            c.bind(self.frame.bar1,"<Button-1-ButtonRelease>", self.redraw_now)
         #@-node:ekr.20040803072955.18:<< old ivars >>
         #@nl
         #@    << inject callbacks into the position class >>
@@ -350,12 +350,12 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20060131173440:tkTree.setBindingsHelper
     def setBindingsHelper (self):
 
-        tree = self ; k = self.c.k
+        tree = self ; c = tree.c ; k = c.k
 
         self.bindingWidget = w = g.app.gui.plainTextWidget(
             self.canvas,name='bindingWidget')
 
-        w.bind('<Key>',k.masterKeyHandler)
+        c.bind(w,'<Key>',k.masterKeyHandler)
 
         table = [
             ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
@@ -368,7 +368,7 @@ class leoTkinterTree (leoFrame.leoTree):
             def treeBindingCallback(event,handler=handler,func=func):
                 # g.trace('func',func)
                 return handler(event,func)
-            w.bind(a,treeBindingCallback)
+            c.bind(w,a,treeBindingCallback)
 
         self.textBindings = w.bindtags()
     #@-node:ekr.20060131173440:tkTree.setBindingsHelper
@@ -376,12 +376,12 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20070327103016:tkTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
-        k = self.c.k
+        c = self.c ; k = c.k
 
-        canvas.bind('<Key>',k.masterKeyHandler)
-        canvas.bind('<Button-1>',self.onTreeClick)
-        canvas.bind('<Button-3>',self.onTreeRightClick)
-        # canvas.bind('<FocusIn>',self.onFocusIn)
+        c.bind(canvas,'<Key>',k.masterKeyHandler)
+        c.bind(canvas,'<Button-1>',self.onTreeClick)
+        c.bind(canvas,'<Button-3>',self.onTreeRightClick)
+        # c.bind(canvas,'<FocusIn>',self.onFocusIn)
 
         #@    << make bindings for tagged items on the canvas >>
         #@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
