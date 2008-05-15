@@ -57,7 +57,7 @@ import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
 #@nl
 
-newDrawing = True
+newDrawing = False
 
 #@+others
 #@+node:ekr.20041118104831:class commands
