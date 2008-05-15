@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,13,1"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -448,7 +448,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
@@ -956,6 +956,72 @@
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
 </v>
+<v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
+<v t="ekr.20080515053412.4" a="E"><vh>Main Context Menus</vh>
+<v t="ekr.20080515053412.5"><vh>@popup body</vh>
+<v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
+<v t="ekr.20080515053412.7"><vh>@item -</vh></v>
+<v t="ekr.20080515053412.8"><vh>@menu Block Operations</vh>
+<v t="ekr.20080515053412.9"><vh>@item indent-region</vh></v>
+<v t="ekr.20080515053412.10"><vh>@item dedent-region</vh></v>
+<v t="ekr.20080515053412.11"><vh>@item -</vh></v>
+<v t="ekr.20080515053412.12"><vh>@item add-comments</vh></v>
+<v t="ekr.20080515053412.13"><vh>@item delete-comments</vh></v>
+</v>
+<v t="ekr.20080515053412.14"><vh>@item &amp;</vh></v>
+<v t="ekr.20080515053412.15"><vh>@item -</vh></v>
+<v t="ekr.20080515053412.16"><vh>@item match-brackets</vh></v>
+<v t="ekr.20080515053412.17"><vh>@item execute-script</vh></v>
+<v t="ekr.20080515053412.18"><vh>@item *</vh></v>
+</v>
+<v t="ekr.20080515053412.19"><vh>@popup log</vh>
+<v t="ekr.20080515053412.20"><vh>@item &amp;</vh></v>
+</v>
+<v t="ekr.20080515053412.21"><vh>@popup find-text</vh>
+<v t="ekr.20080515053412.22"><vh>@item &amp;</vh></v>
+</v>
+<v t="ekr.20080515053412.23"><vh>@popup change-text</vh>
+<v t="ekr.20080515053412.24"><vh>@item &amp;</vh></v>
+</v>
+<v t="ekr.20080515053412.25"><vh>@popup canvas</vh>
+<v t="ekr.20080515053412.26"><vh>@item &amp;</vh></v>
+<v t="ekr.20080515053412.27"><vh>@item -</vh></v>
+<v t="ekr.20080515053412.28"><vh>@item *create-chapter</vh></v>
+<v t="ekr.20080515053412.29"><vh>@item *remove-chapter</vh></v>
+</v>
+<v t="ekr.20080515053412.30"><vh>@popup headline</vh></v>
+<v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
+<v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
+</v>
+<v t="ekr.20080515053412.33"><vh>Fragments</vh>
+<v t="ekr.20080515053412.34" a="E"><vh>@popup edit-menu</vh>
+<v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
+<v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
+<v t="ekr.20080515053412.37"><vh>@item rclick-paste-text</vh></v>
+<v t="ekr.20080515053412.38"><vh>@item -</vh></v>
+<v t="ekr.20080515053412.39"><vh>@item rclick-select-all</vh></v>
+</v>
+<v t="ekr.20080515053412.40" a="E"><vh>@popup recent-files-menu</vh>
+<v t="ekr.20080515053412.41"><vh>@menu Recent Files</vh>
+<v t="ekr.20080515053412.42"><vh>@item *</vh></v>
+</v>
+</v>
+<v t="ekr.20080515053412.43"><vh>@popup to-chapter-fragment</vh>
+<v t="ekr.20080515053412.44"><vh>@menu Clone to Chapter</vh>
+<v t="ekr.20080515053412.45"><vh>@item *</vh></v>
+</v>
+<v t="ekr.20080515053412.46"><vh>@menu Copy to Chapter</vh>
+<v t="ekr.20080515053412.47"><vh>@item *</vh></v>
+</v>
+<v t="ekr.20080515053412.48"><vh>@menu Move to Chapter</vh>
+<v t="ekr.20080515053412.49"><vh>@item *</vh></v>
+</v>
+<v t="ekr.20080515053412.50"><vh>@menu Goto to Chapter</vh>
+<v t="ekr.20080515053412.51"><vh>@item *</vh></v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
@@ -1173,7 +1239,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
@@ -5743,6 +5809,93 @@ probably find that your bindings are much easier to understand.
 kill-line       = d
 delete-char     = c
 </t>
+<t tx="ekr.20080515053412.3"></t>
+<t tx="ekr.20080515053412.4"></t>
+<t tx="ekr.20080515053412.5">@popup body is the default menu for
+right clicks in the body pane.
+</t>
+<t tx="ekr.20080515053412.6">edit-menu
+
+# This will include the contents of @popup edit-text </t>
+<t tx="ekr.20080515053412.7"></t>
+<t tx="ekr.20080515053412.8"></t>
+<t tx="ekr.20080515053412.9">Indent</t>
+<t tx="ekr.20080515053412.10">Dedent</t>
+<t tx="ekr.20080515053412.11"></t>
+<t tx="ekr.20080515053412.12"></t>
+<t tx="ekr.20080515053412.13"></t>
+<t tx="ekr.20080515053412.14">recent-files-menu
+
+# This will include a copy of @popup recent-files-menu</t>
+<t tx="ekr.20080515053412.15"></t>
+<t tx="ekr.20080515053412.16"></t>
+<t tx="ekr.20080515053412.17"></t>
+<t tx="ekr.20080515053412.18">rclick-gen-context-sensitive-
+commands
+
+# This is an example of a menu generator command. It will scan the
+body text for
+# occuurances of hyperlinks, or section headings in the current line
+- Hide quoted text -
+or in the
+# selected text and append items to the menu that will invoke a
+webbrowser or
+# jump to the section as appropriate.
+</t>
+<t tx="ekr.20080515053412.19">@popup log is the default menu for
+right clicks in the log pane.</t>
+<t tx="ekr.20080515053412.20">edit-menu</t>
+<t tx="ekr.20080515053412.21">@popup find-text is the default menu
+for right clicks in the find text entry in the find panel.</t>
+<t tx="ekr.20080515053412.22">edit-menu</t>
+<t tx="ekr.20080515053412.23">@popup change-text is the default
+menu for right clicks in the change text entry in the find panel.</t>
+<t tx="ekr.20080515053412.24">find-text</t>
+<t tx="ekr.20080515053412.25">@popup canvas is the default menu
+for right clicks in the tree canvas that occur outside any other tree
+widget.</t>
+<t tx="ekr.20080515053412.26">to-chapter-fragment</t>
+<t tx="ekr.20080515053412.27"></t>
+<t tx="ekr.20080515053412.28"></t>
+<t tx="ekr.20080515053412.29"></t>
+<t tx="ekr.20080515053412.30">@popup headline is the default menu
+for right clicks in the text part of the headline.</t>
+<t tx="ekr.20080515053412.31">@popup iconbox is the default menu
+for right clicks in the icon box pane.  This will normally be
+overridden by the cleo menu.</t>
+<t tx="ekr.20080515053412.32">@popup plusbox is the default menu
+for right clicks on the plusbox.</t>
+<t tx="ekr.20080515053412.33"></t>
+<t tx="ekr.20080515053412.34"></t>
+<t tx="ekr.20080515053412.35">Cut
+
+icon = Tango/16x16/actions/editcut.png</t>
+<t tx="ekr.20080515053412.36">Copy
+
+icon = Tango/16x16/actions/editcopy.png</t>
+<t tx="ekr.20080515053412.37">Paste
+
+icon = Tango/16x16/actions/editpaste.png</t>
+<t tx="ekr.20080515053412.38"></t>
+<t tx="ekr.20080515053412.39">Select All
+#First line must be blank as we want to work out the
+#label based on the command, key = value pairs may follow.</t>
+<t tx="ekr.20080515053412.40">@popup recent-files-menu is a
+fragment meant to be included in other menus.
+
+It consists of a single cascade menu which opens to show a list of
+recent files. </t>
+<t tx="ekr.20080515053412.41"></t>
+<t tx="ekr.20080515053412.42">rclick-gen-recent-files-list</t>
+<t tx="ekr.20080515053412.43"></t>
+<t tx="ekr.20080515053412.44"></t>
+<t tx="ekr.20080515053412.45">clone-node-to-chapter-menu</t>
+<t tx="ekr.20080515053412.46"></t>
+<t tx="ekr.20080515053412.47">copy-node-to-chapter-menu</t>
+<t tx="ekr.20080515053412.48"></t>
+<t tx="ekr.20080515053412.49">move-node-to-chapter-menu</t>
+<t tx="ekr.20080515053412.50"></t>
+<t tx="ekr.20080515053412.51">select-chapter-menu</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
