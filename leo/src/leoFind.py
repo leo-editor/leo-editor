@@ -774,7 +774,7 @@ class leoFind:
                 if self.ignore_case: flags |= re.IGNORECASE
                 self.re_obj = re.compile(self.find_text,flags)
             except Exception:
-                g.es('invalid regular expression:',pattern,color='blue')
+                g.es('invalid regular expression:',self.find_text,color='blue')
                 self.errors += 1 # Abort the search.
                 return None,None
 
@@ -877,15 +877,6 @@ class leoFind:
         if not re_obj:
             g.trace('can not happen: no re_obj')
             return -1,-1
-
-        # try:
-            # flags = re.MULTILINE
-            # if nocase: flags |= re.IGNORECASE
-            # re_obj = re.compile(pattern,flags)
-        # except Exception:
-            # g.es('invalid regular expression:',pattern,color='blue')
-            # self.errors += 1 # Abort the search.
-            # return -1, -1
 
         if backwards: # Scan to the last match.  We must use search here.
             last_mo = None ; i = 0
