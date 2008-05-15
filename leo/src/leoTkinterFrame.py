@@ -1159,7 +1159,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
             except:
                 n = g.app.iconWidgetCount = 1
 
-            if not command:
+            if command:
+                def commandCallBack(c=c,command=command):
+                    val = command()
+                    if c.exists:
+                        c.bodyWantsFocus()
+                        c.outerUpdate()
+                    return val
+            else:
                 def commandCallback():
                     print "command for widget %s" % (n)
                 command = commandCallback
@@ -1229,6 +1236,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         def deleteButton (self,w):
 
             w.pack_forget()
+            self.c.bodyWantsFocus()
+            self.c.outerUpdate()
         #@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
         #@+node:ekr.20041223114821:getFrame
         def getFrame (self):

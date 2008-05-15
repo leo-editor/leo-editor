@@ -652,10 +652,13 @@ class tkFindTab (leoFind.findTab):
 
         def findButtonBindingCallback(event=None,self=self):
             self.findButton()
+            c.outerUpdate()
             return 'break'
 
         def rightClickCallback(event=None):
-            return k.masterClick3Handler(event, self.onRightClick)
+            val = k.masterClick3Handler(event, self.onRightClick)
+            c.outerUpdate()
+            return val
 
         table = [
             ('<Button-1>',  k.masterClickHandler),

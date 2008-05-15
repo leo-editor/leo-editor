@@ -57,7 +57,7 @@ import token    # for Check Python command
 #@-node:ekr.20040712045933:<< imports  >> (leoCommands)
 #@nl
 
-newDrawing = False
+newDrawing = True
 
 #@+others
 #@+node:ekr.20041118104831:class commands
@@ -72,11 +72,12 @@ class baseCommands:
 
         if newDrawing:
             self.requestedFocusWidget = None
+            c.requestRecolorFlag = False
             self.requestRedrawFlag = False
             self.requestRedrawScrollFlag = False
-            self.requestedMinibufferPrompt = ''
-            self.requestedMinibufferProtect = False
-            self.requestedPosition = None
+            # self.requestedMinibufferPrompt = ''
+            # self.requestedMinibufferProtect = False
+            # self.requestedPosition = None
             self.requestedIconify = '' # 'iconify','deiconify'
 
         # g.trace('Commands')
@@ -5947,6 +5948,11 @@ class baseCommands:
 
         restoreRequestedFocus = masterFocusHandler
         #@-node:ekr.20060207140352:c.masterFocusHandler
+        #@+node:ekr.20080514131122.21:c.outerUpdate
+        def outerUpdate (self):
+
+            pass
+        #@-node:ekr.20080514131122.21:c.outerUpdate
         #@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
         def recolor(self):
 
@@ -6107,7 +6113,7 @@ class baseCommands:
             if flag:
                 c.requestRedrawFlag = True
                 c.requestRedrawScrollFlag = scroll
-                g.trace('flag is True','scroll',scroll,c)
+                # g.trace('flag is True','scroll',scroll,c)
 
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
@@ -6150,8 +6156,9 @@ class baseCommands:
 
             '''Indicate that the focus is in an invalid location, or is unknown.'''
 
-            c = self
-            c.requestedFocusWidget = None
+            # c = self
+            # c.requestedFocusWidget = None
+            pass
         #@nonl
         #@-node:ekr.20080514131122.10:c.invalidateFocus
         #@+node:ekr.20080514131122.11:c.masterFocusHandler
@@ -6210,49 +6217,63 @@ class baseCommands:
         #@+node:ekr.20080514131122.20:c.outerUpdate
         def outerUpdate (self):
 
-            c = self
+            c = self ; aList = []
 
-            g.trace(c.requestRedrawFlag)
+            if not c.exists or not c.k:
+                return
 
             if c.requestedIconify == 'iconify':
-                if trace: g.trace('iconify')
+                aList.append('iconify')
                 c.frame.iconify()
-            elif c.requestedIconify == 'deiconify':
-                if trace: g.trace('deiconify')
+
+            if c.requestedIconify == 'deiconify':
+                aList.append('deiconify')
                 c.frame.deiconify()
 
-            if c.requestedMinibufferPrompt is not None:
-                c.k.setLabel (c.requestedMinibufferPrompt,protect=c.requestedMinibufferProtect)
+            # if c.requestedMinibufferPrompt:
+                # aList.append('prompt %s: %s' % (
+                    # g.choose(c.requestedMinibufferProtect),'protect',''),
+                    # c.requestedMinibufferPrompt)
+                # c.k.setLabel(c.requestedMinibufferPrompt,
+                    # protect=c.requestedMinibufferProtect)
 
-            if self.requestedPosition:
-                c.selectPosition(self.requestedPosition)
+            # if self.requestedPosition:
+                # aList.append('position: %s' % (self.requestedPosition))
+                # c.selectPosition(self.requestedPosition)
 
             if c.requestRedrawFlag:
-                g.trace('redraw','scroll',c.requestRedrawScrollFlag)
+                aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
                 c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
 
+            if c.requestRecolorFlag:
+                aList.append('%srecolor' % (
+                    g.choose(c.incrementalRecolorFlag,'','full ')))
+                c.recolor_now(incremental=c.incrementalRecolorFlag)
+
             if c.requestedFocusWidget:
+                aList.append('focus: %s' % (
+                    g.app.gui.widget_name(c.requestedFocusWidget)))
                 c.set_focus(c.requestedFocusWidget)
 
+            # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+
+            c.incrementalRecolorFlag = False
+            c.requestRecolorFlag = None
             c.requestRedrawFlag = False
             c.requestedFocusWidget = None
             c.requestedIconify = ''
-            c.requestedMinibufferPrompt = ''
-            c.requestedMinibufferProtect = False
-            c.requestedPosition = None
+            # c.requestedMinibufferPrompt = ''
+            # c.requestedMinibufferProtect = False
+            # c.requestedPosition = None
             c.requestedRedrawScrollFlag = False
         #@-node:ekr.20080514131122.20:c.outerUpdate
         #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
-        def recolor(self):
-
-            c = self
-            # c.frame.body.recolor(c.currentPosition())
-            c.requestRecolor()
-
         def requestRecolor (self):
 
             c = self
             c.frame.requestRecolorFlag = True
+
+        recolor = requestRecolor
         #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
         #@+node:ekr.20080514131122.13:c.recolor_now
         def recolor_now(self,p=None,incremental=False,interruptable=True):
@@ -6292,7 +6313,7 @@ class baseCommands:
 
             '''Ensure that the focus eventually gets restored.'''
             pass
-            g.trace(g.callers(5))
+            # g.trace(g.callers(5))
 
             # c =self
             # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
@@ -6337,6 +6358,7 @@ class baseCommands:
         def bodyWantsFocus(self):
             c = self ; body = c.frame.body
             c.request_focus(body and body.bodyCtrl)
+
         def headlineWantsFocus(self,p):
             c = self
             c.request_focus(p and c.edit_widget(p))
@@ -6357,36 +6379,18 @@ class baseCommands:
             c = self ; c.request_focus(w)
         #@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
         #@+node:ekr.20080514131122.19:c.xWantsFocusNow 
-        # def bodyWantsFocusNow(self):
-            # c = self ; body = c.frame.body
-            # c.set_focus(body and body.bodyCtrl,force=True)
+        # widgetWantsFocusNow does an automatic update.
+        def widgetWantsFocusNow(self,w):
+            c = self
+            c.request_focus(w)
+            c.outerUpdate()
 
-        # def headlineWantsFocusNow(self,p):
-            # c = self
-            # c.set_focus(p and c.edit_widget(p),force=True)
-
-        # def logWantsFocusNow(self):
-            # c = self ; log = c.frame.log
-            # c.set_focus(log and log.logCtrl,force=True)
-
-        # def minibufferWantsFocusNow(self):
-            # c = self ; k = c.k
-            # if k: k.minibufferWantsFocusNow()
-
-        # def treeWantsFocusNow(self):
-            # c = self ; tree = c.frame.tree
-            # c.set_focus(tree and tree.canvas,force=True)
-
-        # def widgetWantsFocusNow(self,w):
-            # c = self ; c.set_focus(w,force=True)
-
+        # All other "Now" methods wait.
         bodyWantsFocusNow = bodyWantsFocus
         headlineWantsFocusNow = headlineWantsFocus
         logWantsFocusNow = logWantsFocus
         minibufferWantsFocusNow = minibufferWantsFocus
         treeWantsFocusNow = treeWantsFocus
-        widgetWantsFocusNow = widgetWantsFocus
-        #@nonl
         #@-node:ekr.20080514131122.19:c.xWantsFocusNow 
         #@-others
     #@-node:ekr.20080514131122.6:New code

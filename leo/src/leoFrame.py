@@ -10,6 +10,7 @@ These classes should be overridden to create frames for a particular gui."""
 
 import leoGlobals as g
 import leoColor
+import leoCommands # only for leoCommands.newDrawing
 import leoMenu
 import leoNodes
 import leoUndo
@@ -90,6 +91,7 @@ class baseTextWidget:
         #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
         if keysym:
             c.k.masterKeyHandler(event,stroke=keysym)
+            c.outerUpdate()
     #@nonl
     #@-node:ekr.20070228074312.2:baseTextWidget.onChar
     #@+node:ekr.20070228074312.3:Do-nothing
@@ -234,6 +236,7 @@ class baseTextWidget:
 
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)
+        c.outerUpdate()
     #@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
     #@+node:ekr.20070228074312.16:flashCharacter (to do)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
@@ -781,23 +784,30 @@ class leoBody:
     def scheduleIdleTimeRoutine (self,function,*args,**keys): self.oops()
     #@-node:ekr.20061109173122:leoBody: must be defined in subclasses
     #@+node:ekr.20061109173021:leoBody: must be defined in the base class
-    #@+node:ekr.20031218072017.3677:Coloring
+    #@+node:ekr.20031218072017.3677:Coloring (leoBody)
     def getColorizer(self):
 
         return self.colorizer
 
-    def recolor_now(self,p,incremental=False):
-
-        self.colorizer.colorize(p.copy(),incremental)
-
-    def recolor(self,p,incremental=False):
-
-        self.colorizer.colorize(p.copy(),incremental)
-
     def updateSyntaxColorer(self,p):
 
         return self.colorizer.updateSyntaxColorer(p.copy())
-    #@-node:ekr.20031218072017.3677:Coloring
+
+
+    if leoCommands.newDrawing:
+
+        def recolor(self,p,incremental=False):
+            self.c.requestRecolorFlag = True
+            self.c.incrementalRecolorFlag = incremental
+    else:
+
+        def recolor(self,p,incremental=False):
+            self.colorizer.colorize(p.copy(),incremental)
+
+    recolor_now = recolor
+
+
+    #@-node:ekr.20031218072017.3677:Coloring (leoBody)
     #@+node:ekr.20060528100747:Editors (leoBody)
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
 

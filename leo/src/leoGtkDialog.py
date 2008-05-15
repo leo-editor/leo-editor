@@ -167,7 +167,9 @@ class leoGtkDialog:
         if self.focus_widget == None:
             self.focus_widget = self.top
 
-        c and c.widgetWantsFocusNow(self.focus_widget)
+        if c:
+            c.widgetWantsFocusNow(self.focus_widget)
+            c.outerUpdate()
 
         self.root.wait_window(self.top)
 

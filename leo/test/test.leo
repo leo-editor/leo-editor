@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="74" left="318" height="800" width="898"/>
+	<global_window_position top="74" left="372" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -871,6 +871,7 @@
 <v t="ekr.20080510190406.1"><vh>test of sort lines</vh></v>
 <v t="ekr.20080511121411.1"><vh>indentation test</vh></v>
 <v t="ekr.20080514091329.1"><vh>Print mode info</vh></v>
+<v t="ekr.20080514202621.1"><vh>abc</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5343,7 +5344,10 @@ if a:
 <t tx="ekr.20080513084205.2"></t>
 <t tx="ekr.20080514091329.1">
 d = g.app.config.modeCommandsDict
-print d.keys()</t>
+print d.keys()
+
+</t>
+<t tx="ekr.20080514202621.1"># a</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

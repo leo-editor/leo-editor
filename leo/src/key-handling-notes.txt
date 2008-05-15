@@ -1570,6 +1570,11 @@ def masterFocusHandler (self):
 
 restoreRequestedFocus = masterFocusHandler
 #@-node:ekr.20060207140352:c.masterFocusHandler
+#@+node:ekr.20080514131122.21:c.outerUpdate
+def outerUpdate (self):
+
+    pass
+#@-node:ekr.20080514131122.21:c.outerUpdate
 #@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
 def recolor(self):
 
@@ -1729,7 +1734,7 @@ def endUpdate(self,flag=True,scroll=True):
     if flag:
         c.requestRedrawFlag = True
         c.requestRedrawScrollFlag = scroll
-        g.trace('flag is True','scroll',scroll,c)
+        # g.trace('flag is True','scroll',scroll,c)
 
 BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
@@ -1772,8 +1777,9 @@ def invalidateFocus (self):
 
     '''Indicate that the focus is in an invalid location, or is unknown.'''
 
-    c = self
-    c.requestedFocusWidget = None
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
 #@nonl
 #@-node:ekr.20080514131122.10:c.invalidateFocus
 #@+node:ekr.20080514131122.11:c.masterFocusHandler
@@ -1832,49 +1838,63 @@ restoreRequestedFocus = masterFocusHandler
 #@+node:ekr.20080514131122.20:c.outerUpdate
 def outerUpdate (self):
 
-    c = self
+    c = self ; aList = []
 
-    g.trace(c.requestRedrawFlag)
+    if not c.exists or not c.k:
+        return
 
     if c.requestedIconify == 'iconify':
-        if trace: g.trace('iconify')
+        aList.append('iconify')
         c.frame.iconify()
-    elif c.requestedIconify == 'deiconify':
-        if trace: g.trace('deiconify')
+
+    if c.requestedIconify == 'deiconify':
+        aList.append('deiconify')
         c.frame.deiconify()
 
-    if c.requestedMinibufferPrompt is not None:
-        c.k.setLabel (c.requestedMinibufferPrompt,protect=c.requestedMinibufferProtect)
+    # if c.requestedMinibufferPrompt:
+        # aList.append('prompt %s: %s' % (
+            # g.choose(c.requestedMinibufferProtect),'protect',''),
+            # c.requestedMinibufferPrompt)
+        # c.k.setLabel(c.requestedMinibufferPrompt,
+            # protect=c.requestedMinibufferProtect)
 
-    if self.requestedPosition:
-        c.selectPosition(self.requestedPosition)
+    # if self.requestedPosition:
+        # aList.append('position: %s' % (self.requestedPosition))
+        # c.selectPosition(self.requestedPosition)
 
     if c.requestRedrawFlag:
-        g.trace('redraw','scroll',c.requestRedrawScrollFlag)
+        aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
         c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
 
+    if c.requestRecolorFlag:
+        aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
     if c.requestedFocusWidget:
+        aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
         c.set_focus(c.requestedFocusWidget)
 
+    # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
     c.requestRedrawFlag = False
     c.requestedFocusWidget = None
     c.requestedIconify = ''
-    c.requestedMinibufferPrompt = ''
-    c.requestedMinibufferProtect = False
-    c.requestedPosition = None
+    # c.requestedMinibufferPrompt = ''
+    # c.requestedMinibufferProtect = False
+    # c.requestedPosition = None
     c.requestedRedrawScrollFlag = False
 #@-node:ekr.20080514131122.20:c.outerUpdate
 #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
-def recolor(self):
-
-    c = self
-    # c.frame.body.recolor(c.currentPosition())
-    c.requestRecolor()
-
 def requestRecolor (self):
 
     c = self
     c.frame.requestRecolorFlag = True
+
+recolor = requestRecolor
 #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
 #@+node:ekr.20080514131122.13:c.recolor_now
 def recolor_now(self,p=None,incremental=False,interruptable=True):
@@ -1914,7 +1934,7 @@ def restoreFocus (self):
 
     '''Ensure that the focus eventually gets restored.'''
     pass
-    g.trace(g.callers(5))
+    # g.trace(g.callers(5))
 
     # c =self
     # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
@@ -1959,6 +1979,7 @@ def widget_name (self,widget):
 def bodyWantsFocus(self):
     c = self ; body = c.frame.body
     c.request_focus(body and body.bodyCtrl)
+
 def headlineWantsFocus(self,p):
     c = self
     c.request_focus(p and c.edit_widget(p))
@@ -1979,36 +2000,18 @@ def widgetWantsFocus(self,w):
     c = self ; c.request_focus(w)
 #@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
 #@+node:ekr.20080514131122.19:c.xWantsFocusNow 
-# def bodyWantsFocusNow(self):
-    # c = self ; body = c.frame.body
-    # c.set_focus(body and body.bodyCtrl,force=True)
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
 
-# def headlineWantsFocusNow(self,p):
-    # c = self
-    # c.set_focus(p and c.edit_widget(p),force=True)
-
-# def logWantsFocusNow(self):
-    # c = self ; log = c.frame.log
-    # c.set_focus(log and log.logCtrl,force=True)
-
-# def minibufferWantsFocusNow(self):
-    # c = self ; k = c.k
-    # if k: k.minibufferWantsFocusNow()
-
-# def treeWantsFocusNow(self):
-    # c = self ; tree = c.frame.tree
-    # c.set_focus(tree and tree.canvas,force=True)
-
-# def widgetWantsFocusNow(self,w):
-    # c = self ; c.set_focus(w,force=True)
-
+# All other "Now" methods wait.
 bodyWantsFocusNow = bodyWantsFocus
 headlineWantsFocusNow = headlineWantsFocus
 logWantsFocusNow = logWantsFocus
 minibufferWantsFocusNow = minibufferWantsFocus
 treeWantsFocusNow = treeWantsFocus
-widgetWantsFocusNow = widgetWantsFocus
-#@nonl
 #@-node:ekr.20080514131122.19:c.xWantsFocusNow 
 #@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
@@ -2648,6 +2651,13 @@ def handleDefaultChar(self,event,stroke):
 master_key_count = 0
 
 def masterKeyHandler (self,event,stroke=None):
+    c = self.c
+    val = self.masterKeyHandlerHelper(event,stroke)
+    # Careful: the stroke may destroy c.
+    if c.exists: self.c.outerUpdate()
+    return val
+
+def masterKeyHandlerHelper (self,event,stroke):
 
     '''This is the handler for almost all key bindings.'''
 
@@ -3343,6 +3353,13 @@ def navHelper (self,p,ch,extend):
 master_key_count = 0
 
 def masterKeyHandler (self,event,stroke=None):
+    c = self.c
+    val = self.masterKeyHandlerHelper(event,stroke)
+    # Careful: the stroke may destroy c.
+    if c.exists: self.c.outerUpdate()
+    return val
+
+def masterKeyHandlerHelper (self,event,stroke):
 
     '''This is the handler for almost all key bindings.'''
 
@@ -5064,7 +5081,7 @@ def editLabel (self,p,selectAll=False):
     """Start editing p's headline."""
 
     c = self.c
-    trace = not g.app.unitTesting and (False or self.trace_edit)
+    trace = (False or self.trace_edit) and not g.app.unitTesting
 
     if p and p != self.editPosition():
 
@@ -5076,6 +5093,7 @@ def editLabel (self,p,selectAll=False):
             self.endEditLabel()
         finally:
             c.endUpdate(True)
+            c.outerUpdate()
 
     self.setEditPosition(p) # That is, self._editPosition = p
 
@@ -5619,6 +5637,7 @@ def onTreeClick (self,event=None):
         c.treeWantsFocusNow()
 
     g.app.gui.killPopupMenu()
+    c.outerUpdate()
 
     return 'break'
 #@-node:ekr.20051022141020:onTreeClick
@@ -5695,6 +5714,7 @@ else:
     # The *canvas* (not the headline) gets the focus so that
     # tree bindings take priority over text bindings.
     c.treeWantsFocusNow() # Now. New in Leo 4.5.
+    c.outerUpdate()
     self.active = False
     returnVal = 'break'
 #@nonl
@@ -5963,6 +5983,20 @@ def showStateAndMode(self,w=None,prompt=None):
 #@-node:ekr.20080514114704.1:Fixed an unusual headline click problem
 #@-node:ekr.20080513061733.4:Recent projects
 #@+node:ekr.20080514131122.2:New drawing/focus code
+@nocolor
+
+- Dialogs do not handle keys properly.
+- Redraw spoils editing click.
+
+What I did:
+
+- Created new version of all c.Drawing methods when newDrawing is True.
+- Call outerUpdate from event handlers.
+- Call outerUpdate after calling k.masterKeyHandlerHelper.
+- Created new versions of leoBody.color methods.
+
+@color
+#@nonl
 #@+node:ekr.20080513174131.1:Design for simplified drawing & focus
 @nocolor
 
@@ -6118,11 +6152,12 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     if newDrawing:
         self.requestedFocusWidget = None
+        c.requestRecolorFlag = False
         self.requestRedrawFlag = False
         self.requestRedrawScrollFlag = False
-        self.requestedMinibufferPrompt = ''
-        self.requestedMinibufferProtect = False
-        self.requestedPosition = None
+        # self.requestedMinibufferPrompt = ''
+        # self.requestedMinibufferProtect = False
+        # self.requestedPosition = None
         self.requestedIconify = '' # 'iconify','deiconify'
 
     # g.trace('Commands')
@@ -6371,6 +6406,11 @@ def masterFocusHandler (self):
 
 restoreRequestedFocus = masterFocusHandler
 #@-node:ekr.20060207140352:c.masterFocusHandler
+#@+node:ekr.20080514131122.21:c.outerUpdate
+def outerUpdate (self):
+
+    pass
+#@-node:ekr.20080514131122.21:c.outerUpdate
 #@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
 def recolor(self):
 
@@ -6530,7 +6570,7 @@ def endUpdate(self,flag=True,scroll=True):
     if flag:
         c.requestRedrawFlag = True
         c.requestRedrawScrollFlag = scroll
-        g.trace('flag is True','scroll',scroll,c)
+        # g.trace('flag is True','scroll',scroll,c)
 
 BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
@@ -6573,8 +6613,9 @@ def invalidateFocus (self):
 
     '''Indicate that the focus is in an invalid location, or is unknown.'''
 
-    c = self
-    c.requestedFocusWidget = None
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
 #@nonl
 #@-node:ekr.20080514131122.10:c.invalidateFocus
 #@+node:ekr.20080514131122.11:c.masterFocusHandler
@@ -6633,49 +6674,63 @@ restoreRequestedFocus = masterFocusHandler
 #@+node:ekr.20080514131122.20:c.outerUpdate
 def outerUpdate (self):
 
-    c = self
+    c = self ; aList = []
 
-    g.trace(c.requestRedrawFlag)
+    if not c.exists or not c.k:
+        return
 
     if c.requestedIconify == 'iconify':
-        if trace: g.trace('iconify')
+        aList.append('iconify')
         c.frame.iconify()
-    elif c.requestedIconify == 'deiconify':
-        if trace: g.trace('deiconify')
+
+    if c.requestedIconify == 'deiconify':
+        aList.append('deiconify')
         c.frame.deiconify()
 
-    if c.requestedMinibufferPrompt is not None:
-        c.k.setLabel (c.requestedMinibufferPrompt,protect=c.requestedMinibufferProtect)
+    # if c.requestedMinibufferPrompt:
+        # aList.append('prompt %s: %s' % (
+            # g.choose(c.requestedMinibufferProtect),'protect',''),
+            # c.requestedMinibufferPrompt)
+        # c.k.setLabel(c.requestedMinibufferPrompt,
+            # protect=c.requestedMinibufferProtect)
 
-    if self.requestedPosition:
-        c.selectPosition(self.requestedPosition)
+    # if self.requestedPosition:
+        # aList.append('position: %s' % (self.requestedPosition))
+        # c.selectPosition(self.requestedPosition)
 
     if c.requestRedrawFlag:
-        g.trace('redraw','scroll',c.requestRedrawScrollFlag)
+        aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
         c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
 
+    if c.requestRecolorFlag:
+        aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
     if c.requestedFocusWidget:
+        aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
         c.set_focus(c.requestedFocusWidget)
 
+    # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
     c.requestRedrawFlag = False
     c.requestedFocusWidget = None
     c.requestedIconify = ''
-    c.requestedMinibufferPrompt = ''
-    c.requestedMinibufferProtect = False
-    c.requestedPosition = None
+    # c.requestedMinibufferPrompt = ''
+    # c.requestedMinibufferProtect = False
+    # c.requestedPosition = None
     c.requestedRedrawScrollFlag = False
 #@-node:ekr.20080514131122.20:c.outerUpdate
 #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
-def recolor(self):
-
-    c = self
-    # c.frame.body.recolor(c.currentPosition())
-    c.requestRecolor()
-
 def requestRecolor (self):
 
     c = self
     c.frame.requestRecolorFlag = True
+
+recolor = requestRecolor
 #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
 #@+node:ekr.20080514131122.13:c.recolor_now
 def recolor_now(self,p=None,incremental=False,interruptable=True):
@@ -6715,7 +6770,7 @@ def restoreFocus (self):
 
     '''Ensure that the focus eventually gets restored.'''
     pass
-    g.trace(g.callers(5))
+    # g.trace(g.callers(5))
 
     # c =self
     # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
@@ -6760,6 +6815,7 @@ def widget_name (self,widget):
 def bodyWantsFocus(self):
     c = self ; body = c.frame.body
     c.request_focus(body and body.bodyCtrl)
+
 def headlineWantsFocus(self,p):
     c = self
     c.request_focus(p and c.edit_widget(p))
@@ -6780,74 +6836,713 @@ def widgetWantsFocus(self,w):
     c = self ; c.request_focus(w)
 #@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
 #@+node:ekr.20080514131122.19:c.xWantsFocusNow 
-# def bodyWantsFocusNow(self):
-    # c = self ; body = c.frame.body
-    # c.set_focus(body and body.bodyCtrl,force=True)
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
 
-# def headlineWantsFocusNow(self,p):
-    # c = self
-    # c.set_focus(p and c.edit_widget(p),force=True)
-
-# def logWantsFocusNow(self):
-    # c = self ; log = c.frame.log
-    # c.set_focus(log and log.logCtrl,force=True)
-
-# def minibufferWantsFocusNow(self):
-    # c = self ; k = c.k
-    # if k: k.minibufferWantsFocusNow()
-
-# def treeWantsFocusNow(self):
-    # c = self ; tree = c.frame.tree
-    # c.set_focus(tree and tree.canvas,force=True)
-
-# def widgetWantsFocusNow(self,w):
-    # c = self ; c.set_focus(w,force=True)
-
+# All other "Now" methods wait.
 bodyWantsFocusNow = bodyWantsFocus
 headlineWantsFocusNow = headlineWantsFocus
 logWantsFocusNow = logWantsFocus
 minibufferWantsFocusNow = minibufferWantsFocus
 treeWantsFocusNow = treeWantsFocus
-widgetWantsFocusNow = widgetWantsFocus
-#@nonl
 #@-node:ekr.20080514131122.19:c.xWantsFocusNow 
 #@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
-#@+node:ekr.20080514131122.20:c.outerUpdate
-def outerUpdate (self):
+#@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
+#@+node:ekr.20031218072017.2991:c.editPosition
+# Selects v: sets the focus to p and edits p.
+
+def editPosition(self,p,selectAll=False):
+
+    c = self ; k = c.k
+
+    if p:
+        c.selectPosition(p)
+
+        c.frame.tree.editLabel(p,selectAll=selectAll)
+
+        if k:
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            k.showStateAndMode()
+#@-node:ekr.20031218072017.2991:c.editPosition
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p,updateBeadList=True):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.frame.tree.select(p,updateBeadList)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20031218072017.2998:c.selectVnodeWithEditing
+# Selects the given node and enables editing of the headline if editFlag is True.
+
+def selectVnodeWithEditing(self,v,editFlag):
+
+    c = self
+    if editFlag:
+        c.editPosition(v)
+    else:
+        c.selectVnode(v)
+
+selectPositionWithEditing = selectVnodeWithEditing
+#@-node:ekr.20031218072017.2998:c.selectVnodeWithEditing
+#@+node:ekr.20060923202156:c.onCanvasKey
+def onCanvasKey (self,event):
+
+    '''Navigate to the next headline starting with ch = event.char.
+    If ch is uppercase, search all headlines; otherwise search only visible headlines.
+    This is modelled on Windows explorer.'''
+
+    # g.trace(event and event.char)
+
+    if not event or not event.char or not event.keysym.isalnum():
+        return
+    c  = self ; p = c.currentPosition() ; p1 = p.copy()
+    invisible = c.config.getBool('invisible_outline_navigation')
+    ch = event.char
+    allFlag = ch.isupper() and invisible # all is a global (!?)
+    if not invisible: ch = ch.lower()
+    found = False
+    extend = self.navQuickKey()
+    attempts = g.choose(extend,(True,False),(False,))
+    for extend2 in attempts:
+        p = p1.copy()
+        while 1:
+            if allFlag:
+                p.moveToThreadNext()
+            else:
+                p.moveToVisNext(c)
+            if not p:
+                p = c.rootPosition()
+            if p == p1: # Never try to match the same position.
+                # g.trace('failed',extend2)
+                found = False ; break
+            newPrefix = c.navHelper(p,ch,extend2)
+            if newPrefix:
+                found = True ; break
+        if found: break
+    if found:
+        if allFlag: c.frame.tree.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.navTime = time.clock()
+        c.navPrefix = newPrefix
+        # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.headString())
+    else:
+        c.navTime = None
+        c.navPrefix = ''
+    c.treeWantsFocusNow()
+#@+node:ekr.20061002095711.1:c.navQuickKey
+def navQuickKey (self):
+
+    '''return true if there are two quick outline navigation keys
+    in quick succession.
+
+    Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.'''
 
     c = self
 
-    g.trace(c.requestRedrawFlag)
+    deltaTime = c.config.getFloat('outline_nav_extend_delay')
+
+    if deltaTime in (None,0.0):
+        return False
+    else:
+        nearTime = c.navTime and time.clock() - c.navTime < deltaTime
+        return nearTime
+#@nonl
+#@-node:ekr.20061002095711.1:c.navQuickKey
+#@+node:ekr.20061002095711:c.navHelper
+def navHelper (self,p,ch,extend):
+
+    c = self ; h = p.headString().lower()
+
+    if extend:
+        prefix = c.navPrefix + ch
+        return h.startswith(prefix.lower()) and prefix
+
+    if h.startswith(ch):
+        return ch
+
+    # New feature: search for first non-blank character after @x for common x.
+    if ch != '@' and h.startswith('@'):
+        for s in ('button','command','file','thin','asis','nosent','noref'):
+            prefix = '@'+s
+            if h.startswith('@'+s):
+                while 1:
+                    n = len(prefix)
+                    ch2 = n < len(h) and h[n] or ''
+                    if ch2.isspace():
+                        prefix = prefix + ch2
+                    else: break
+                if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
+                    return prefix + ch
+    return ''
+#@nonl
+#@-node:ekr.20061002095711:c.navHelper
+#@-node:ekr.20060923202156:c.onCanvasKey
+#@-node:ekr.20031218072017.2990:Selecting & Updating (commands)
+#@+node:ekr.20040803072955.125:Selecting & editing... (tkTree)
+#@+node:ekr.20040803072955.142:dimEditLabel, undimEditLabel
+# Convenience methods so the caller doesn't have to know the present edit node.
+
+def dimEditLabel (self):
+
+    p = self.c.currentPosition()
+    self.setSelectedLabelState(p)
+
+def undimEditLabel (self):
+
+    p = self.c.currentPosition()
+    self.setSelectedLabelState(p)
+#@-node:ekr.20040803072955.142:dimEditLabel, undimEditLabel
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = (False or self.trace_edit) and not g.app.unitTesting
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        c.beginUpdate()
+        try:
+            self.endEditLabel()
+        finally:
+            c.endUpdate(True)
+            c.outerUpdate()
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+
+    if trace: g.trace(c.edit_widget(p))
+
+    w = c.edit_widget(p)
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@+node:ekr.20040803072955.134:tree.set...LabelState
+#@+node:ekr.20040803072955.135:setEditLabelState
+def setEditLabelState (self,p,selectAll=False): # selected, editing
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if p and w:
+        # g.trace('*****',g.callers())
+        c.widgetWantsFocusNow(w)
+        self.setEditHeadlineColors(p)
+        selectAll = selectAll or self.select_all_text_when_editing_headlines
+        if selectAll:
+            w.setSelectionRange(0,'end',insert='end')
+        else:
+            w.setInsertPoint('end') # Clears insert point.
+    else:
+        g.trace('no edit_widget')
+
+setNormalLabelState = setEditLabelState # For compatibility.
+#@-node:ekr.20040803072955.135:setEditLabelState
+#@+node:ekr.20040803072955.136:setSelectedLabelState
+trace_n = 0
+
+def setSelectedLabelState (self,p): # selected, disabled
+
+    c = self.c
+
+    # g.trace(p,c.edit_widget(p))
+
+
+    if p and c.edit_widget(p):
+
+        if 0:
+            g.trace(self.trace_n,c.edit_widget(p),p)
+            # g.trace(g.callers(6))
+            self.trace_n += 1
+
+        self.setDisabledHeadlineColors(p)
+#@-node:ekr.20040803072955.136:setSelectedLabelState
+#@+node:ekr.20040803072955.138:setUnselectedLabelState
+def setUnselectedLabelState (self,p): # not selected.
+
+    c = self.c
+
+    if p and c.edit_widget(p):
+        self.setUnselectedHeadlineColors(p)
+#@-node:ekr.20040803072955.138:setUnselectedLabelState
+#@+node:ekr.20040803072955.139:setDisabledHeadlineColors
+def setDisabledHeadlineColors (self,p):
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if False or (self.trace and self.verbose):
+        # if not self.redrawing:
+            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+            # import traceback ; traceback.print_stack(limit=6)
+
+    fg = self.headline_text_selected_foreground_color or 'black'
+    bg = self.headline_text_selected_background_color or 'grey80'
+    selfg = self.headline_text_editing_selection_foreground_color
+    selbg = self.headline_text_editing_selection_background_color
+
+    try:
+        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+    except:
+        g.es_exception()
+#@-node:ekr.20040803072955.139:setDisabledHeadlineColors
+#@+node:ekr.20040803072955.140:setEditHeadlineColors
+def setEditHeadlineColors (self,p):
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if self.trace and self.verbose:
+        if not self.redrawing:
+            print "%10s %d %s" % ("edit",id(2),p.headString())
+
+    fg    = self.headline_text_editing_foreground_color or 'black'
+    bg    = self.headline_text_editing_background_color or 'white'
+    selfg = self.headline_text_editing_selection_foreground_color or 'white'
+    selbg = self.headline_text_editing_selection_background_color or 'black'
+
+    try: # Use system defaults for selection foreground/background
+        w.configure(state="normal",highlightthickness=1,
+        fg=fg,bg=bg,selectforeground=selfg,selectbackground=selbg)
+    except:
+        g.es_exception()
+#@-node:ekr.20040803072955.140:setEditHeadlineColors
+#@+node:ekr.20040803072955.141:setUnselectedHeadlineColors
+def setUnselectedHeadlineColors (self,p):
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if self.trace and self.verbose:
+        if not self.redrawing:
+            print "%10s %d %s" % ("unselect",id(w),p.headString())
+            # import traceback ; traceback.print_stack(limit=6)
+
+    fg = self.headline_text_unselected_foreground_color or 'black'
+    bg = self.headline_text_unselected_background_color or 'white'
+
+    try:
+        w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg,
+            selectbackground=bg,selectforeground=fg,highlightbackground=bg)
+    except:
+        g.es_exception()
+#@-node:ekr.20040803072955.141:setUnselectedHeadlineColors
+#@-node:ekr.20040803072955.134:tree.set...LabelState
+#@+node:ekr.20060207101443:tree.setHeadline (tkTree)
+def setHeadline (self,p,s):
+
+    '''Set the actual text of the headline widget.
+
+    This is called from the undo/redo logic to change the text before redrawing.'''
+
+    w = self.edit_widget(p)
+    if w:
+        w.configure(state='normal')
+        w.delete(0,'end')
+        if s.endswith('\n') or s.endswith('\r'):
+            s = s[:-1]
+        w.insert(0,s)
+        self.revertHeadline = s
+        # g.trace(repr(s),w.getAllText())
+    else:
+        g.trace('-'*20,'oops')
+#@-node:ekr.20060207101443:tree.setHeadline (tkTree)
+#@-node:ekr.20040803072955.125:Selecting & editing... (tkTree)
+#@+node:ekr.20031218072017.3677:Coloring (leoBody)
+def getColorizer(self):
+
+    return self.colorizer
+
+def updateSyntaxColorer(self,p):
+
+    return self.colorizer.updateSyntaxColorer(p.copy())
+
+
+if leoCommands.newDrawing:
+
+    def recolor(self,p,incremental=False):
+        self.c.requestRecolorFlag = True
+        self.c.incrementalRecolorFlag = incremental
+else:
+
+    def recolor(self,p,incremental=False):
+        self.colorizer.colorize(p.copy(),incremental)
+
+recolor_now = recolor
+
+
+#@-node:ekr.20031218072017.3677:Coloring (leoBody)
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = []
+
+    if not c.exists or not c.k:
+        return
 
     if c.requestedIconify == 'iconify':
-        if trace: g.trace('iconify')
+        aList.append('iconify')
         c.frame.iconify()
-    elif c.requestedIconify == 'deiconify':
-        if trace: g.trace('deiconify')
+
+    if c.requestedIconify == 'deiconify':
+        aList.append('deiconify')
         c.frame.deiconify()
 
-    if c.requestedMinibufferPrompt is not None:
-        c.k.setLabel (c.requestedMinibufferPrompt,protect=c.requestedMinibufferProtect)
+    # if c.requestedMinibufferPrompt:
+        # aList.append('prompt %s: %s' % (
+            # g.choose(c.requestedMinibufferProtect),'protect',''),
+            # c.requestedMinibufferPrompt)
+        # c.k.setLabel(c.requestedMinibufferPrompt,
+            # protect=c.requestedMinibufferProtect)
 
-    if self.requestedPosition:
-        c.selectPosition(self.requestedPosition)
+    # if self.requestedPosition:
+        # aList.append('position: %s' % (self.requestedPosition))
+        # c.selectPosition(self.requestedPosition)
 
     if c.requestRedrawFlag:
-        g.trace('redraw','scroll',c.requestRedrawScrollFlag)
+        aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
         c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
 
+    if c.requestRecolorFlag:
+        aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
     if c.requestedFocusWidget:
+        aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
         c.set_focus(c.requestedFocusWidget)
 
+    # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
     c.requestRedrawFlag = False
     c.requestedFocusWidget = None
     c.requestedIconify = ''
-    c.requestedMinibufferPrompt = ''
-    c.requestedMinibufferProtect = False
-    c.requestedPosition = None
+    # c.requestedMinibufferPrompt = ''
+    # c.requestedMinibufferProtect = False
+    # c.requestedPosition = None
     c.requestedRedrawScrollFlag = False
 #@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.22:Failed unit ests
+======================================================================
+FAIL: @test paste at end of headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError: Expected: Test headline abcABC, got Test headline abc
+
+======================================================================
+FAIL: @test typing and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 23, in <module>
+AssertionError: oops2: got: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: oops2 got: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - with selection
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test selecting new node retains typing in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test typing in headline recomputes width (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: 15 15
+
+======================================================================
+FAIL: @test selecting new node retains paste in headline (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: expected "a", got: u''
+
+======================================================================
+FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 16, in <module>
+AssertionError: too many redraws: 1
+
+======================================================================
+FAIL: @test Select a node when file is first loaded (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 12, in <module>
+AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
+
+======================================================================
+FAIL: @test delete node (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: fail 1
+
+----------------------------------------------------------------------
+Ran 562 tests in 145.375s
+
+FAILED (failures=11)
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
+
+C:\leo.repo\key-handling\leo>
+#@nonl
+#@-node:ekr.20080514131122.22:Failed unit ests
+#@+node:ekr.20041223102225:class tkIconBarClass
+class tkIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20041223102225.1: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+
+    self.buttons = {}
+    self.iconFrame = w = Tk.Frame(parentFrame,height="5m",bd=2,relief="groove")
+    self.c.frame.iconFrame = self.iconFrame
+    self.font = None
+    self.parentFrame = parentFrame
+    self.visible = False
+    self.show()
+#@-node:ekr.20041223102225.1: ctor
+#@+node:ekr.20031218072017.3958:add
+def add(self,*args,**keys):
+
+    """Add a button containing text or a picture to the icon bar.
+
+    Pictures take precedence over text"""
+
+    c = self.c ; f = self.iconFrame
+    text = keys.get('text')
+    imagefile = keys.get('imagefile')
+    image = keys.get('image')
+    command = keys.get('command')
+    bg = keys.get('bg')
+
+    if not imagefile and not image and not text: return
+
+    # First define n.
+    try:
+        g.app.iconWidgetCount += 1
+        n = g.app.iconWidgetCount
+    except:
+        n = g.app.iconWidgetCount = 1
+
+    if command:
+        def commandCallBack(c=c,command=command):
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+    else:
+        def commandCallback():
+            print "command for widget %s" % (n)
+        command = commandCallback
+
+    if imagefile or image:
+        << create a picture >>
+    elif text:
+        b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
+        if not self.font:
+            self.font = c.config.getFontFromParams(
+                "button_text_font_family", "button_text_font_size",
+                "button_text_font_slant",  "button_text_font_weight",)
+        b.configure(font=self.font)
+        # elif sys.platform.startswith('win'):
+            # width = max(6,len(text))
+            # b.configure(width=width,font=('verdana',7,'bold'))
+        if bg: b.configure(bg=bg)
+        b.pack(side="left", fill="none")
+        return b
+
+    return None
+#@+node:ekr.20031218072017.3959:<< create a picture >>
+try:
+    if imagefile:
+        # Create the image.  Throws an exception if file not found
+        imagefile = g.os_path_join(g.app.loadDir,imagefile)
+        imagefile = g.os_path_normpath(imagefile)
+        image = Tk.PhotoImage(master=g.app.root,file=imagefile)
+
+        # Must keep a reference to the image!
+        try:
+            refs = g.app.iconImageRefs
+        except:
+            refs = g.app.iconImageRefs = []
+
+        refs.append((imagefile,image),)
+
+    if not bg:
+        bg = f.cget("bg")
+
+    b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
+    b.pack(side="left",fill="y")
+    return b
+
+except:
+    g.es_exception()
+    return None
+#@-node:ekr.20031218072017.3959:<< create a picture >>
+#@-node:ekr.20031218072017.3958:add
+#@+node:ekr.20031218072017.3956:clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    f = self.iconFrame
+
+    for slave in f.pack_slaves():
+        slave.destroy()
+    self.visible = False
+
+    f.configure(height="5m") # The default height.
+    g.app.iconWidgetCount = 0
+    g.app.iconImageRefs = []
+#@-node:ekr.20031218072017.3956:clear
+#@+node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
+def deleteButton (self,w):
+
+    w.pack_forget()
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
+#@+node:ekr.20041223114821:getFrame
+def getFrame (self):
+
+    return self.iconFrame
+#@-node:ekr.20041223114821:getFrame
+#@+node:ekr.20041223102225.2:pack (show)
+def pack (self):
+
+    """Show the icon bar by repacking it"""
+
+    if not self.visible:
+        self.visible = True
+        self.iconFrame.pack(fill="x",pady=2)
+
+show = pack
+#@-node:ekr.20041223102225.2:pack (show)
+#@+node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
+def setCommandForButton(self,b,command):
+
+    b.configure(command=command)
+#@-node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
+#@+node:ekr.20031218072017.3955:unpack (hide)
+def unpack (self):
+
+    """Hide the icon bar by unpacking it.
+
+    A later call to show will repack it in a new location."""
+
+    if self.visible:
+        self.visible = False
+        self.iconFrame.pack_forget()
+
+hide = unpack
+#@-node:ekr.20031218072017.3955:unpack (hide)
+#@-node:ekr.20041223102225:class tkIconBarClass
 #@-node:ekr.20080514131122.2:New drawing/focus code
 #@-all
 #@nonl
