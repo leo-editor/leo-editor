@@ -718,7 +718,6 @@ class leoFind:
         self.restore(data)
         c.redraw_now()
         g.es("found",count,"matches")
-
     #@-node:ekr.20031218072017.3073:findAll
     #@+node:ekr.20031218072017.3074:findNext
     def findNext(self,initFlag=True):
