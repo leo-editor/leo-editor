@@ -1482,6 +1482,11 @@ def endUpdate(self,flag=True,scroll=True):
 BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
 #@-node:ekr.20031218072017.2950:c.begin/endUpdate
+#@+node:ekr.20080515053412.53:c.bind (new)
+def bind (self,w,pattern,func):
+
+    w.bind(pattern,func)
+#@-node:ekr.20080515053412.53:c.bind (new)
 #@+node:ekr.20031218072017.2951:c.bringToFront
 def bringToFront(self,set_focus=True):
 
@@ -2458,7 +2463,7 @@ def createBindings (self,w=None):
     frame = self.frame ; c = self.c ; k = c.k
     if not w: w = self.bodyCtrl
 
-    w.bind('<Key>', k.masterKeyHandler)
+    c.bind(w,'<Key>', k.masterKeyHandler)
 
     def onFocusOut(event,c=c):
         # This interferes with inserting new nodes.
@@ -2664,14 +2669,14 @@ def handleDefaultChar(self,event,stroke):
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
-def masterKeyHandler (self,event,stroke=None):
-    c = self.c
-    val = self.masterKeyHandlerHelper(event,stroke)
-    # Careful: the stroke may destroy c.
-    if c.exists: self.c.outerUpdate()
-    return val
+# def masterKeyHandler (self,event,stroke=None):
+    # c = self.c
+    # val = self.masterKeyHandlerHelper(event,stroke)
+    # # Careful: the stroke may destroy c.
+    # if c.exists: self.c.outerUpdate()
+    # return val
 
-def masterKeyHandlerHelper (self,event,stroke):
+def masterKeyHandler (self,event,stroke=None):
 
     '''This is the handler for almost all key bindings.'''
 
@@ -3366,14 +3371,14 @@ def navHelper (self,p,ch,extend):
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
-def masterKeyHandler (self,event,stroke=None):
-    c = self.c
-    val = self.masterKeyHandlerHelper(event,stroke)
-    # Careful: the stroke may destroy c.
-    if c.exists: self.c.outerUpdate()
-    return val
+# def masterKeyHandler (self,event,stroke=None):
+    # c = self.c
+    # val = self.masterKeyHandlerHelper(event,stroke)
+    # # Careful: the stroke may destroy c.
+    # if c.exists: self.c.outerUpdate()
+    # return val
 
-def masterKeyHandlerHelper (self,event,stroke):
+def masterKeyHandler (self,event,stroke=None):
 
     '''This is the handler for almost all key bindings.'''
 
@@ -3748,7 +3753,7 @@ def createBindings (self,w=None):
     frame = self.frame ; c = self.c ; k = c.k
     if not w: w = self.bodyCtrl
 
-    w.bind('<Key>', k.masterKeyHandler)
+    c.bind(w,'<Key>', k.masterKeyHandler)
 
     def onFocusOut(event,c=c):
         # This interferes with inserting new nodes.
@@ -4872,7 +4877,7 @@ def createBindings (self,w=None):
     frame = self.frame ; c = self.c ; k = c.k
     if not w: w = self.bodyCtrl
 
-    w.bind('<Key>', k.masterKeyHandler)
+    c.bind(w,'<Key>', k.masterKeyHandler)
 
     def onFocusOut(event,c=c):
         # This interferes with inserting new nodes.
@@ -5911,7 +5916,7 @@ def createBindings (self,w=None):
     frame = self.frame ; c = self.c ; k = c.k
     if not w: w = self.bodyCtrl
 
-    w.bind('<Key>', k.masterKeyHandler)
+    c.bind(w,'<Key>', k.masterKeyHandler)
 
     def onFocusOut(event,c=c):
         # This interferes with inserting new nodes.
@@ -6000,6 +6005,7 @@ def showStateAndMode(self,w=None,prompt=None):
 @nocolor
 
 - Create and test c.bind.
+- Remove new wrappers from k.masterX.
 
 What I did:
 
@@ -6010,6 +6016,15 @@ What I did:
 
 @color
 #@nonl
+#@+node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
+([ ]+)w.bind\((.*)\)(.*)$
+\1c.bind(w,\2)\3
+
+# Bind w.bind with more than two args (none found)
+
+w.bind\(.*,.*,.*$
+#@nonl
+#@-node:ekr.20080515053412.54:regex: replace w.bind by c.bind(w...)
 #@+node:ekr.20080513174131.1:Design for simplified drawing & focus
 @nocolor
 
@@ -6036,259 +6051,6 @@ key-handling branch.
 
 This is a higly speculative project.  Previous attempts have failed...
 #@-node:ekr.20080513174131.1:Design for simplified drawing & focus
-#@+node:ekr.20031218072017.1934:run
-def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
-
-    """Initialize and run Leo"""
-
-    # __pychecker__ = '--no-argsused' # keywords not used.
-
-    # print 'leo.py:run','fileName',fileName
-    if not jyLeo and not isValidPython(): return
-    << import leoGlobals and leoApp >>
-    g.computeStandardDirectories()
-    adjustSysPath(g)
-    if pymacs:
-        script = windowFlag = False
-    else:
-        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
-    verbose = script is None
-    g.app.batchMode = script is not None
-    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
-    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
-    << import leoNodes and leoConfig >>
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-    g.app.config = leoConfig.configClass()
-    fileName,relativeFileName = completeFileName(fileName)
-    reportDirectories(verbose)
-    # Read settings *after* setting g.app.config.
-    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
-    g.app.config.readSettingsFiles(fileName,verbose)
-    g.app.setEncoding()
-    if pymacs:
-        createNullGuiWithScript(None)
-    elif jyLeo:
-        import leoSwingGui
-        g.app.gui = leoSwingGui.swingGui()
-    elif script:
-        if windowFlag:
-            g.app.createTkGui() # Creates global windows.
-            g.app.gui.setScript(script)
-            sys.args = []
-        else:
-            createNullGuiWithScript(script)
-        fileName = None
-    # Load plugins. Plugins may create g.app.gui.
-    g.doHook("start1")
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # Create the default gui if needed.
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
-    # Initialize tracing and statistics.
-    g.init_sherlock(args)
-    if g.app and g.app.use_psyco: startPsyco()
-    # Clear g.app.initing _before_ creating the frame.
-    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-    # Create the main frame.  Show it and all queued messages.
-    c,frame = createFrame(fileName,relativeFileName)
-    if not frame: return
-    g.app.trace_gc          = c.config.getBool('trace_gc')
-    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
-    if g.app.disableSave:
-        g.es("disabling save commands",color="red")
-    g.app.writeWaitingLog()
-    p = c.currentPosition()
-    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if c.config.getBool('allow_idle_time_hook'):
-        g.enableIdleTimeHook()
-    if not fileName:
-        c.redraw_now()
-    # Respect c's focus wishes if posssible.
-    w = g.app.gui.get_focus(c)
-    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
-        c.bodyWantsFocus()
-        c.k.showStateAndMode(w)
-    c.outerUpdate()
-    g.app.gui.runMainLoop()
-#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
-if jyLeo:
-
-    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
-
-    ### This is a hack.
-    ### The jyleo script in test.leo sets the cwd to g.app.loadDir
-    ### Eventually, we will have to compute the equivalent here.
-
-    path = os.path.join(os.getcwd()) ### ,'..','src')
-    if path not in sys.path:
-        print 'appending %s to sys.path' % path
-        sys.path.append(path)
-    if 0:
-        print 'sys.path...'
-        for s in sys.path: print s
-
-# Import leoGlobals, but do NOT set g.
-import leoGlobals
-import leoApp
-
-# Create the app.
-leoGlobals.app = leoApp.LeoApp()
-
-# **now** we can set g.
-g = leoGlobals
-assert(g.app)
-
-if jyLeo:
-    startJyleo(g)
-#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
-#@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
-import leoNodes
-import leoConfig
-
-# try:
-    # import leoNodes
-# except ImportError:
-    # print "Error importing leoNodes.py"
-    # import traceback ; traceback.print_exc()
-
-# try:
-    # import leoConfig
-# except ImportError:
-    # print "Error importing leoConfig.py"
-    # import traceback ; traceback.print_exc()
-#@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
-#@-node:ekr.20031218072017.1934:run
-#@+node:ekr.20031218072017.2812:c.__init__
-def __init__(self,frame,fileName,relativeFileName=None):
-
-    c = self
-
-    if g.newDrawing:
-        self.requestedFocusWidget = None
-        c.requestRecolorFlag = False
-        self.requestRedrawFlag = False
-        self.requestRedrawScrollFlag = False
-        self.requestedIconify = '' # 'iconify','deiconify'
-        g.es('Using new drawing code',color='red')
-
-    # g.trace('Commands')
-    self.exists = True # Indicate that this class exists and has not been destroyed.
-        # Do this early in the startup process so we can call hooks.
-
-    # Init ivars with self.x instead of c.x to keep Pychecker happy
-    self.chapterController = None
-    self.frame = frame
-
-    self.hiddenRootNode = leoNodes.vnode(context=c)
-    self.hiddenRootNode.setHeadString('<hidden root vnode>')
-    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
-    self.isZipped = False # May be set to True by g.openWithFileName.
-    self.mFileName = fileName
-        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-    self.mRelativeFileName = relativeFileName
-
-    # g.trace(c) # Do this after setting c.mFileName.
-    c.initIvars()
-    self.nodeHistory = nodeHistory(c)
-
-    self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
-    self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
-    self.showMinibuffer = c.config.getBool('useMinibuffer')
-    self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
-    self.fixed = c.config.getBool('fixedWindow',False)
-        # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
-    self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
-    if self.fixedWindowPosition:
-        try:
-            w,h,l,t = self.fixedWindowPosition
-            self.fixedWindowPosition = int(w),int(h),int(l),int(t)
-        except Exception:
-            g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
-    else:
-        self.windowPosition = 500,700,50,50 # width,height,left,top.
-
-    # initialize the sub-commanders.
-    # c.finishCreate creates the sub-commanders for edit commands.
-    self.fileCommands   = leoFileCommands.fileCommands(c)
-    self.atFileCommands = leoAtFile.atFile(c)
-    self.importCommands = leoImport.leoImportCommands(c)
-    self.tangleCommands = leoTangle.tangleCommands(c)
-    leoEditCommands.createEditCommanders(c)
-
-    if 0:
-        print ; print "*** using Null undoer ***" ; print
-        self.undoer = leoUndo.nullUndoer(self)
-    else:
-        self.undoer = leoUndo.undoer(self)
-#@-node:ekr.20031218072017.2812:c.__init__
-#@+node:ekr.20031218072017.2817: doCommand
-command_count = 0
-
-def doCommand (self,command,label,event=None):
-
-    """Execute the given command, invoking hooks and catching exceptions.
-
-    The code assumes that the "command1" hook has completely handled the command if
-    g.doHook("command1") returns False.
-    This provides a simple mechanism for overriding commands."""
-
-    c = self ; p = c.currentPosition()
-    commandName = command and command.__name__
-    c.setLog()
-
-    self.command_count += 1
-    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
-        g.trace(commandName)
-
-    # The presence of this message disables all commands.
-    if c.disableCommandsMessage:
-        g.es(c.disableCommandsMessage,color='blue')
-        return 'break' # Inhibit all other handlers.
-
-    if c.exists and c.inCommand and not g.unitTesting:
-        # g.trace('inCommand',c)
-        g.es('ignoring command: already executing a command.',color='red')
-        return 'break'
-
-    if label and event is None: # Do this only for legacy commands.
-        if label == "cantredo": label = "redo"
-        if label == "cantundo": label = "undo"
-        g.app.commandName = label
-
-    if not g.doHook("command1",c=c,p=p,v=p,label=label):
-        try:
-            c.inCommand = True
-            val = command(event)
-            if c and c.exists: # Be careful: the command could destroy c.
-                c.inCommand = False
-                c.k.funcReturn = val
-            # else: print 'c no longer exists',c
-        except:
-            c.inCommand = False
-            if g.app.unitTesting:
-                raise
-            else:
-                g.es("exception executing command")
-                print "exception executing command"
-                g.es_exception(c=c)
-                if c and c.exists and hasattr(c,'frame'):
-                    c.redraw_now()
-
-        if c and c.exists:
-            if c.requestCloseWindow:
-                g.trace('Closing window after command')
-                c.requestCloseWindow = False
-                g.app.closeLeoWindow(c.frame)
-            else:
-                c.outerUpdate()
-
-    # Be careful: the command could destroy c.
-    if c and c.exists:
-        p = c.currentPosition()
-        g.doHook("command2",c=c,p=p,v=p,label=label)
-
-    return "break" # Inhibit all other handlers.
-#@-node:ekr.20031218072017.2817: doCommand
 #@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
 #@+node:ekr.20031218072017.2991:c.editPosition
 # Selects v: sets the focus to p and edits p.
@@ -6628,6 +6390,260 @@ def setHeadline (self,p,s):
         g.trace('-'*20,'oops')
 #@-node:ekr.20060207101443:tree.setHeadline (tkTree)
 #@-node:ekr.20040803072955.125:Selecting & editing... (tkTree)
+#@+node:ekr.20080515053412.52:Changed
+#@+node:ekr.20031218072017.2812:c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    c = self
+
+    if g.newDrawing:
+        self.requestedFocusWidget = None
+        c.requestRecolorFlag = False
+        self.requestRedrawFlag = False
+        self.requestRedrawScrollFlag = False
+        self.requestedIconify = '' # 'iconify','deiconify'
+        g.es('Using new drawing code',color='red')
+
+    # g.trace('Commands')
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep Pychecker happy
+    self.chapterController = None
+    self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    # g.trace(c) # Do this after setting c.mFileName.
+    c.initIvars()
+    self.nodeHistory = nodeHistory(c)
+
+    self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
+    self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
+    self.showMinibuffer = c.config.getBool('useMinibuffer')
+    self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
+    self.fixed = c.config.getBool('fixedWindow',False)
+        # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
+    self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
+    if self.fixedWindowPosition:
+        try:
+            w,h,l,t = self.fixedWindowPosition
+            self.fixedWindowPosition = int(w),int(h),int(l),int(t)
+        except Exception:
+            g.es_print('bad @data fixedWindowPosition',repr(self.fixedWindowPosition),color='red')
+    else:
+        self.windowPosition = 500,700,50,50 # width,height,left,top.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+
+    if 0:
+        print ; print "*** using Null undoer ***" ; print
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+#@-node:ekr.20031218072017.2812:c.__init__
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    # print 'leo.py:run','fileName',fileName
+    if not jyLeo and not isValidPython(): return
+    << import leoGlobals and leoApp >>
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    if pymacs:
+        script = windowFlag = False
+    else:
+        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    verbose = script is None
+    g.app.batchMode = script is not None
+    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    << import leoNodes and leoConfig >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+
+    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+
+    ### This is a hack.
+    ### The jyleo script in test.leo sets the cwd to g.app.loadDir
+    ### Eventually, we will have to compute the equivalent here.
+
+    path = os.path.join(os.getcwd()) ### ,'..','src')
+    if path not in sys.path:
+        print 'appending %s to sys.path' % path
+        sys.path.append(path)
+    if 0:
+        print 'sys.path...'
+        for s in sys.path: print s
+
+# Import leoGlobals, but do NOT set g.
+import leoGlobals
+import leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+import leoNodes
+import leoConfig
+
+# try:
+    # import leoNodes
+# except ImportError:
+    # print "Error importing leoNodes.py"
+    # import traceback ; traceback.print_exc()
+
+# try:
+    # import leoConfig
+# except ImportError:
+    # print "Error importing leoConfig.py"
+    # import traceback ; traceback.print_exc()
+#@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20031218072017.2817: doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.currentPosition()
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: print 'c no longer exists',c
+        except:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es("exception executing command")
+                print "exception executing command"
+                g.es_exception(c=c)
+                if c and c.exists and hasattr(c,'frame'):
+                    c.redraw_now()
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.currentPosition()
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return "break" # Inhibit all other handlers.
+#@-node:ekr.20031218072017.2817: doCommand
 #@+node:ekr.20031218072017.3677:Coloring (leoBody)
 def getColorizer(self):
 
@@ -6652,335 +6668,6 @@ recolor_now = recolor
 
 
 #@-node:ekr.20031218072017.3677:Coloring (leoBody)
-#@+node:ekr.20080514131122.20:c.outerUpdate
-def outerUpdate (self):
-
-    c = self ; aList = []
-
-    if not c.exists or not c.k:
-        return
-
-    if c.requestedIconify == 'iconify':
-        aList.append('iconify')
-        c.frame.iconify()
-
-    if c.requestedIconify == 'deiconify':
-        aList.append('deiconify')
-        c.frame.deiconify()
-
-    # if c.requestedMinibufferPrompt:
-        # aList.append('prompt %s: %s' % (
-            # g.choose(c.requestedMinibufferProtect),'protect',''),
-            # c.requestedMinibufferPrompt)
-        # c.k.setLabel(c.requestedMinibufferPrompt,
-            # protect=c.requestedMinibufferProtect)
-
-    # if self.requestedPosition:
-        # aList.append('position: %s' % (self.requestedPosition))
-        # c.selectPosition(self.requestedPosition)
-
-    if c.requestRedrawFlag:
-        aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
-        c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
-
-    if c.requestRecolorFlag:
-        aList.append('%srecolor' % (
-            g.choose(c.incrementalRecolorFlag,'','full ')))
-        c.recolor_now(incremental=c.incrementalRecolorFlag)
-
-    if c.requestedFocusWidget:
-        aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
-
-    # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
-
-    c.incrementalRecolorFlag = False
-    c.requestRecolorFlag = None
-    c.requestRedrawFlag = False
-    c.requestedFocusWidget = None
-    c.requestedIconify = ''
-    # c.requestedMinibufferPrompt = ''
-    # c.requestedMinibufferProtect = False
-    # c.requestedPosition = None
-    c.requestedRedrawScrollFlag = False
-#@-node:ekr.20080514131122.20:c.outerUpdate
-#@+node:ekr.20080514131122.22:Failed unit ests
-======================================================================
-FAIL: @test paste at end of headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError: Expected: Test headline abcABC, got Test headline abc
-
-======================================================================
-FAIL: @test typing and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 23, in <module>
-AssertionError: oops2: got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: oops2 got: Test headline abc
-
-======================================================================
-FAIL: @test paste and undo in headline - with selection
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test selecting new node retains typing in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in headline recomputes width (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: 15 15
-
-======================================================================
-FAIL: @test selecting new node retains paste in headline (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: expected "a", got: u''
-
-======================================================================
-FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 16, in <module>
-AssertionError: too many redraws: 1
-
-======================================================================
-FAIL: @test Select a node when file is first loaded (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 12, in <module>
-AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
-
-======================================================================
-FAIL: @test delete node (no real problem)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: fail 1
-
-----------------------------------------------------------------------
-Ran 562 tests in 145.375s
-
-FAILED (failures=11)
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
-
-C:\leo.repo\key-handling\leo>
-#@nonl
-#@-node:ekr.20080514131122.22:Failed unit ests
-#@+node:ekr.20041223102225:class tkIconBarClass
-class tkIconBarClass:
-
-    '''A class representing the singleton Icon bar'''
-
-    @others
-#@+node:ekr.20041223102225.1: ctor
-def __init__ (self,c,parentFrame):
-
-    self.c = c
-
-    self.buttons = {}
-    self.iconFrame = w = Tk.Frame(parentFrame,height="5m",bd=2,relief="groove")
-    self.c.frame.iconFrame = self.iconFrame
-    self.font = None
-    self.parentFrame = parentFrame
-    self.visible = False
-    self.show()
-#@-node:ekr.20041223102225.1: ctor
-#@+node:ekr.20031218072017.3958:add
-def add(self,*args,**keys):
-
-    """Add a button containing text or a picture to the icon bar.
-
-    Pictures take precedence over text"""
-
-    c = self.c ; f = self.iconFrame
-    text = keys.get('text')
-    imagefile = keys.get('imagefile')
-    image = keys.get('image')
-    command = keys.get('command')
-    bg = keys.get('bg')
-
-    if not imagefile and not image and not text: return
-
-    # First define n.
-    try:
-        g.app.iconWidgetCount += 1
-        n = g.app.iconWidgetCount
-    except:
-        n = g.app.iconWidgetCount = 1
-
-    if command:
-        def commandCallBack(c=c,command=command):
-            val = command()
-            if c.exists:
-                c.bodyWantsFocus()
-                c.outerUpdate()
-            return val
-    else:
-        def commandCallback():
-            print "command for widget %s" % (n)
-        command = commandCallback
-
-    if imagefile or image:
-        << create a picture >>
-    elif text:
-        b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
-        if not self.font:
-            self.font = c.config.getFontFromParams(
-                "button_text_font_family", "button_text_font_size",
-                "button_text_font_slant",  "button_text_font_weight",)
-        b.configure(font=self.font)
-        # elif sys.platform.startswith('win'):
-            # width = max(6,len(text))
-            # b.configure(width=width,font=('verdana',7,'bold'))
-        if bg: b.configure(bg=bg)
-        b.pack(side="left", fill="none")
-        return b
-
-    return None
-#@+node:ekr.20031218072017.3959:<< create a picture >>
-try:
-    if imagefile:
-        # Create the image.  Throws an exception if file not found
-        imagefile = g.os_path_join(g.app.loadDir,imagefile)
-        imagefile = g.os_path_normpath(imagefile)
-        image = Tk.PhotoImage(master=g.app.root,file=imagefile)
-
-        # Must keep a reference to the image!
-        try:
-            refs = g.app.iconImageRefs
-        except:
-            refs = g.app.iconImageRefs = []
-
-        refs.append((imagefile,image),)
-
-    if not bg:
-        bg = f.cget("bg")
-
-    b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
-    b.pack(side="left",fill="y")
-    return b
-
-except:
-    g.es_exception()
-    return None
-#@-node:ekr.20031218072017.3959:<< create a picture >>
-#@-node:ekr.20031218072017.3958:add
-#@+node:ekr.20031218072017.3956:clear
-def clear(self):
-
-    """Destroy all the widgets in the icon bar"""
-
-    f = self.iconFrame
-
-    for slave in f.pack_slaves():
-        slave.destroy()
-    self.visible = False
-
-    f.configure(height="5m") # The default height.
-    g.app.iconWidgetCount = 0
-    g.app.iconImageRefs = []
-#@-node:ekr.20031218072017.3956:clear
-#@+node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
-def deleteButton (self,w):
-
-    w.pack_forget()
-    self.c.bodyWantsFocus()
-    self.c.outerUpdate()
-#@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
-#@+node:ekr.20041223114821:getFrame
-def getFrame (self):
-
-    return self.iconFrame
-#@-node:ekr.20041223114821:getFrame
-#@+node:ekr.20041223102225.2:pack (show)
-def pack (self):
-
-    """Show the icon bar by repacking it"""
-
-    if not self.visible:
-        self.visible = True
-        self.iconFrame.pack(fill="x",pady=2)
-
-show = pack
-#@-node:ekr.20041223102225.2:pack (show)
-#@+node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
-def setCommandForButton(self,b,command):
-
-    b.configure(command=command)
-#@-node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
-#@+node:ekr.20031218072017.3955:unpack (hide)
-def unpack (self):
-
-    """Hide the icon bar by unpacking it.
-
-    A later call to show will repack it in a new location."""
-
-    if self.visible:
-        self.visible = False
-        self.iconFrame.pack_forget()
-
-hide = unpack
-#@-node:ekr.20031218072017.3955:unpack (hide)
-#@-node:ekr.20041223102225:class tkIconBarClass
 #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
 #@+node:ekr.20080514131122.4:Legacy code
 if not g.newDrawing:
@@ -7021,6 +6708,11 @@ def endUpdate(self,flag=True,scroll=True):
 BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
 #@-node:ekr.20031218072017.2950:c.begin/endUpdate
+#@+node:ekr.20080515053412.53:c.bind (new)
+def bind (self,w,pattern,func):
+
+    w.bind(pattern,func)
+#@-node:ekr.20080515053412.53:c.bind (new)
 #@+node:ekr.20031218072017.2951:c.bringToFront
 def bringToFront(self,set_focus=True):
 
@@ -7568,6 +7260,737 @@ treeWantsFocusNow = treeWantsFocus
 #@-node:ekr.20080514131122.19:c.xWantsFocusNow 
 #@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
+#@+node:ekr.20041223102225:class tkIconBarClass
+class tkIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20041223102225.1: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+
+    self.buttons = {}
+    self.iconFrame = w = Tk.Frame(parentFrame,height="5m",bd=2,relief="groove")
+    self.c.frame.iconFrame = self.iconFrame
+    self.font = None
+    self.parentFrame = parentFrame
+    self.visible = False
+    self.show()
+#@-node:ekr.20041223102225.1: ctor
+#@+node:ekr.20031218072017.3958:add
+def add(self,*args,**keys):
+
+    """Add a button containing text or a picture to the icon bar.
+
+    Pictures take precedence over text"""
+
+    c = self.c ; f = self.iconFrame
+    text = keys.get('text')
+    imagefile = keys.get('imagefile')
+    image = keys.get('image')
+    command = keys.get('command')
+    bg = keys.get('bg')
+
+    if not imagefile and not image and not text: return
+
+    # First define n.
+    try:
+        g.app.iconWidgetCount += 1
+        n = g.app.iconWidgetCount
+    except:
+        n = g.app.iconWidgetCount = 1
+
+    if command:
+        def commandCallBack(c=c,command=command):
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+    else:
+        def commandCallback():
+            print "command for widget %s" % (n)
+        command = commandCallback
+
+    if imagefile or image:
+        << create a picture >>
+    elif text:
+        b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
+        if not self.font:
+            self.font = c.config.getFontFromParams(
+                "button_text_font_family", "button_text_font_size",
+                "button_text_font_slant",  "button_text_font_weight",)
+        b.configure(font=self.font)
+        # elif sys.platform.startswith('win'):
+            # width = max(6,len(text))
+            # b.configure(width=width,font=('verdana',7,'bold'))
+        if bg: b.configure(bg=bg)
+        b.pack(side="left", fill="none")
+        return b
+
+    return None
+#@+node:ekr.20031218072017.3959:<< create a picture >>
+try:
+    if imagefile:
+        # Create the image.  Throws an exception if file not found
+        imagefile = g.os_path_join(g.app.loadDir,imagefile)
+        imagefile = g.os_path_normpath(imagefile)
+        image = Tk.PhotoImage(master=g.app.root,file=imagefile)
+
+        # Must keep a reference to the image!
+        try:
+            refs = g.app.iconImageRefs
+        except:
+            refs = g.app.iconImageRefs = []
+
+        refs.append((imagefile,image),)
+
+    if not bg:
+        bg = f.cget("bg")
+
+    b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
+    b.pack(side="left",fill="y")
+    return b
+
+except:
+    g.es_exception()
+    return None
+#@-node:ekr.20031218072017.3959:<< create a picture >>
+#@-node:ekr.20031218072017.3958:add
+#@+node:ekr.20031218072017.3956:clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    f = self.iconFrame
+
+    for slave in f.pack_slaves():
+        slave.destroy()
+    self.visible = False
+
+    f.configure(height="5m") # The default height.
+    g.app.iconWidgetCount = 0
+    g.app.iconImageRefs = []
+#@-node:ekr.20031218072017.3956:clear
+#@+node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
+def deleteButton (self,w):
+
+    w.pack_forget()
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
+#@+node:ekr.20041223114821:getFrame
+def getFrame (self):
+
+    return self.iconFrame
+#@-node:ekr.20041223114821:getFrame
+#@+node:ekr.20041223102225.2:pack (show)
+def pack (self):
+
+    """Show the icon bar by repacking it"""
+
+    if not self.visible:
+        self.visible = True
+        self.iconFrame.pack(fill="x",pady=2)
+
+show = pack
+#@-node:ekr.20041223102225.2:pack (show)
+#@+node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
+def setCommandForButton(self,b,command):
+
+    b.configure(command=command)
+#@-node:ekr.20061213092103:setCommandForButton (new in Leo 4.4.3)
+#@+node:ekr.20031218072017.3955:unpack (hide)
+def unpack (self):
+
+    """Hide the icon bar by unpacking it.
+
+    A later call to show will repack it in a new location."""
+
+    if self.visible:
+        self.visible = False
+        self.iconFrame.pack_forget()
+
+hide = unpack
+#@-node:ekr.20031218072017.3955:unpack (hide)
+#@-node:ekr.20041223102225:class tkIconBarClass
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = (False or self.trace_edit) and not g.app.unitTesting
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        c.beginUpdate()
+        try:
+            self.endEditLabel()
+        finally:
+            c.endUpdate(True)
+            c.outerUpdate()
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+
+    if trace: g.trace(c.edit_widget(p))
+
+    w = c.edit_widget(p)
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@+node:ekr.20061031131434.145:Master event handlers (keyHandler)
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+# def masterKeyHandler (self,event,stroke=None):
+    # c = self.c
+    # val = self.masterKeyHandlerHelper(event,stroke)
+    # # Careful: the stroke may destroy c.
+    # if c.exists: self.c.outerUpdate()
+    # return val
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    # g.trace('event.keysym_num',event.keysym_num,event,dir(event))
+
+    << define vars >>
+    if keysym in special_keys: return None
+
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event: event = gui.leoKeyEvent(event,c)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler')
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+
+# elif k.unboundKeyAction == 'command':
+    # # In command mode we must disallow all keys except those actually bound in command-state.
+    # # That is, we cannot use general per-pane mode bindings.
+    # for key,name in (
+        # # Order here is similar to bindtags order.
+        # ('command',None),
+        # ('button',None),
+        # ('body','body'),
+        # ('text','head'), # Important: text bindings in head before tree bindings.
+        # ('tree','head'),
+        # ('tree','canvas'),
+        # ('log', 'log'),
+        # ('text','log'),
+        # ('text',None),
+        # ('all',None),
+    # ):
+        # if (
+            # name and w_name.startswith(name) or
+            # key in ('text','all') and g.app.gui.isTextWidget(w) or
+            # key in ('button','all')
+        # ):
+            # d = k.masterBindingsDict.get(key,{})
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # if d:
+                # b = d.get(stroke)
+                # if b:
+                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    # else:
+        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
+        # return 'break' # Disallow all unbound plain keys in command mode.
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+# g.trace('button',k.masterBindingsDict.get('button'))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:k.callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:k.callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    trace = False
+
+    if trace:
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@+node:ekr.20061031131434.153:masterClickHandler
+def masterClickHandler (self,event,func=None):
+    k = self ; c = k.c
+    val = self.masterClickHandlerHelper(event,func)
+    if c.exists: c.outerUpdate()
+    return val
+
+def masterClickHandlerHelper (self,event,func):
+
+    g.app.gui.killPopupMenu()
+
+    k = self ; c = k.c ; gui = g.app.gui
+    if not event: return
+    w = event.widget ; wname = c.widget_name(w)
+    trace = not g.app.unitTesting and (False or k.trace_masterClickHandler)
+
+    if trace: g.trace(wname,func and func.__name__)
+    # c.frame.body.colorizer.interrupt() # New in 4.4.1
+
+    # A click outside the minibuffer terminates any state.
+    if k.inState() and w != c.frame.miniBufferWidget:
+        if not c.widget_name(w).startswith('log'):
+            k.keyboardQuit(event,hideTabs=False)
+            # k.endMode(event) # Less drastic than keyboard-quit.
+            w and c.widgetWantsFocusNow(w)
+            if trace: g.trace('inState: break')
+            return 'break'
+
+    # Update the selection point immediately for updateStatusLine.
+    k.previousSelection = None
+    if wname.startswith('body'):
+        c.frame.body.onClick(event) # New in Leo 4.4.2.
+    elif wname.startswith('mini'):
+        x,y = gui.eventXY(event)
+        x = w.xyToPythonIndex(x,y)
+        i,j = k.getEditableTextRange()
+        if i <= x <= j:
+            w.setSelectionRange(x,x,insert=x)
+        else:
+            if trace: g.trace('2: break')
+            return 'break'
+    if event and func:
+        if trace: g.trace(func.__name__)
+        val = func(event) # Don't even *think* of overriding this.
+        c.masterFocusHandler()
+        if trace: g.trace('val:',val,g.callers())
+        return val
+    else:
+        # All tree callbacks have a func, so we can't be in the tree.
+        # g.trace('*'*20,'auto-deactivate tree: %s' % wname)
+        c.frame.tree.OnDeactivate()
+        c.widgetWantsFocusNow(w)
+        if trace: g.trace('end: None')
+        return None
+
+masterClick3Handler = masterClickHandler
+masterDoubleClick3Handler = masterClickHandler
+#@-node:ekr.20061031131434.153:masterClickHandler
+#@+node:ekr.20061031131434.154:masterDoubleClickHandler
+def masterDoubleClickHandler (self,event,func=None):
+    k = self ; c = k.c
+    val = self.masterDoubleClickHandlerHelper(event,func)
+    if c.exists: c.outerUpdate()
+    return val
+
+def masterDoubleClickHandlerHelper (self,event,func):
+
+    k = self ; c = k.c ; w = event and event.widget
+
+    if c.config.getBool('trace_masterClickHandler'):
+        g.trace(c.widget_name(w),func and func.__name__)
+
+    if event and func:
+        # Don't event *think* of overriding this.
+        return func(event)
+    else:
+        gui = g.app.gui
+        x,y = gui.eventXY(event)
+        i = w.xyToPythonIndex(x,y)
+        s = w.getAllText()
+        start,end = g.getWord(s,i)
+        w.setSelectionRange(start,end)
+        return 'break'
+#@-node:ekr.20061031131434.154:masterDoubleClickHandler
+#@+node:ekr.20061031131434.155:masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+    k = self ; c = k.c
+    val = self.masterMenuHandlerHelper(stroke,func,commandName)
+    if c.exists: c.outerUpdate()
+    return val
+
+def masterMenuHandlerHelper (self,stroke,func,commandName):
+
+    k = self ; c = k.c ; w = c.frame.getFocus()
+
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
+
+    # Create a minimal event for commands that require them.
+    event = g.Bunch(c=c,char='',keysym='',widget=w)
+
+    if stroke:
+        return k.masterKeyHandler(event,stroke=stroke)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+#@-node:ekr.20061031131434.155:masterMenuHandler
+#@-node:ekr.20061031131434.145:Master event handlers (keyHandler)
+#@-node:ekr.20080515053412.52:Changed
+#@+node:ekr.20080514131122.22:Failed unit ests
+======================================================================
+FAIL: @test paste at end of headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError: Expected: Test headline abcABC, got Test headline abc
+
+======================================================================
+FAIL: @test typing and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 23, in <module>
+AssertionError: oops2: got: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - at end
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: oops2 got: Test headline abc
+
+======================================================================
+FAIL: @test paste and undo in headline - with selection
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test selecting new node retains typing in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 20, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test typing in headline recomputes width (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError: 15 15
+
+======================================================================
+FAIL: @test selecting new node retains paste in headline (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 21, in <module>
+AssertionError
+
+======================================================================
+FAIL: @test typing in empty body text redraws the screen (and icon) (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: expected "a", got: u''
+
+======================================================================
+FAIL: @test typing in non-empty body text does not redraw the screen (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 16, in <module>
+AssertionError: too many redraws: 1
+
+======================================================================
+FAIL: @test Select a node when file is first loaded (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 12, in <module>
+AssertionError: c.edit_widget(p) failed: <pos 34215600 childIndex: 5 lvl: 3 [3] @test Select a node when file is first loaded>
+
+======================================================================
+FAIL: @test delete node (no real problem)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
+    exec script + '\n' in d
+  File "<string>", line 18, in <module>
+AssertionError: fail 1
+
+----------------------------------------------------------------------
+Ran 562 tests in 145.375s
+
+FAILED (failures=11)
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
+
+C:\leo.repo\key-handling\leo>
+#@nonl
+#@-node:ekr.20080514131122.22:Failed unit ests
 #@-node:ekr.20080514131122.2:New drawing/focus code
 #@-all
 #@nonl
