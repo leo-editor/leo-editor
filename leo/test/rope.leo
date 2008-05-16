@@ -3,2569 +3,14 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="20" left="20" height="600" width="800"/>
+	<global_window_position top="-4" left="362" height="720" width="800"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080516150804.1" str_leo_pos="1"><vh>@chapters</vh></v>
-<v t="ekr.20080516150804.3" a="E"><vh>rope-0.8.2</vh>
-<v t="ekr.20080516150804.4"><vh>rope-0.8.2\setup.py</vh>
-<v t="ekr.20080516150804.5"><vh>setup declarations</vh></v>
-<v t="ekr.20080516150804.6"><vh>make_temps</vh></v>
-<v t="ekr.20080516150804.7"><vh>remove_temps</vh></v>
-<v t="ekr.20080516150804.8"><vh>get_long_description</vh></v>
-</v>
-<v t="ekr.20080516150804.9"><vh>rope-0.8.2\docs</vh></v>
-<v t="ekr.20080516150804.10"><vh>rope-0.8.2\rope</vh>
-<v t="ekr.20080516150804.11"><vh>rope-0.8.2\rope\__init__.py</vh>
-<v t="ekr.20080516150804.12"><vh>__init__ declarations</vh></v>
-</v>
-<v t="ekr.20080516150804.13"><vh>rope-0.8.2\rope\base</vh>
-<v t="ekr.20080516150804.14"><vh>base\arguments.py</vh>
-<v t="ekr.20080516150804.15"><vh>arguments declarations</vh></v>
-<v t="ekr.20080516150804.16"><vh>class Arguments</vh>
-<v t="ekr.20080516150804.17"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.18"><vh>get_arguments</vh></v>
-<v t="ekr.20080516150804.19"><vh>get_pynames</vh></v>
-<v t="ekr.20080516150804.20"><vh>get_instance_pyname</vh></v>
-<v t="ekr.20080516150804.21"><vh>_evaluate</vh></v>
-</v>
-<v t="ekr.20080516150804.22"><vh>create_arguments</vh></v>
-<v t="ekr.20080516150804.23"><vh>class ObjectArguments</vh>
-<v t="ekr.20080516150804.24"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.25"><vh>get_arguments</vh></v>
-<v t="ekr.20080516150804.26"><vh>get_pynames</vh></v>
-<v t="ekr.20080516150804.27"><vh>get_instance_pyname</vh></v>
-</v>
-<v t="ekr.20080516150804.28"><vh>class MixedArguments</vh>
-<v t="ekr.20080516150804.29"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.30"><vh>get_pynames</vh></v>
-<v t="ekr.20080516150804.31"><vh>get_arguments</vh></v>
-<v t="ekr.20080516150804.32"><vh>get_instance_pyname</vh></v>
-</v>
-<v t="ekr.20080516150804.33"><vh>_is_method_call</vh></v>
-</v>
-<v t="ekr.20080516150804.34"><vh>base\ast.py</vh>
-<v t="ekr.20080516150804.35"><vh>ast declarations</vh></v>
-<v t="ekr.20080516150804.36"><vh>parse</vh></v>
-<v t="ekr.20080516150804.37"><vh>walk</vh></v>
-<v t="ekr.20080516150804.38"><vh>get_child_nodes</vh></v>
-<v t="ekr.20080516150804.39"><vh>call_for_nodes</vh></v>
-<v t="ekr.20080516150804.40"><vh>get_children</vh></v>
-</v>
-<v t="ekr.20080516150804.41"><vh>base\astutils.py</vh>
-<v t="ekr.20080516150804.42"><vh>astutils declarations</vh></v>
-<v t="ekr.20080516150804.43"><vh>get_name_levels</vh></v>
-<v t="ekr.20080516150804.44"><vh>class _NodeNameCollector</vh>
-<v t="ekr.20080516150804.45"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.46"><vh>_add_node</vh></v>
-<v t="ekr.20080516150804.47"><vh>_added</vh></v>
-<v t="ekr.20080516150804.48"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.49"><vh>_Tuple</vh></v>
-<v t="ekr.20080516150804.50"><vh>_Subscript</vh></v>
-<v t="ekr.20080516150804.51"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.52"><vh>_Slice</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.53"><vh>base\builtins.py</vh>
-<v t="ekr.20080516150804.54"><vh>builtins declarations</vh></v>
-<v t="ekr.20080516150804.55"><vh>class BuiltinModule</vh>
-<v t="ekr.20080516150804.56"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.57"><vh>get_attributes</vh></v>
-<v t="ekr.20080516150804.58"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.59"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.60"><vh>_calculate_attributes</vh></v>
-<v t="ekr.20080516150804.61"><vh>module</vh></v>
-</v>
-<v t="ekr.20080516150804.62"><vh>class _BuiltinElement</vh>
-<v t="ekr.20080516150804.63"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.64"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.65"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.66"><vh>parent</vh></v>
-</v>
-<v t="ekr.20080516150804.67"><vh>class BuiltinClass</vh>
-<v t="ekr.20080516150804.68"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.69"><vh>get_attributes</vh></v>
-</v>
-<v t="ekr.20080516150804.70"><vh>class BuiltinFunction</vh>
-<v t="ekr.20080516150804.71"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.72"><vh>get_returned_object</vh></v>
-<v t="ekr.20080516150804.73"><vh>get_param_names</vh></v>
-</v>
-<v t="ekr.20080516150804.74"><vh>_object_attributes</vh></v>
-<v t="ekr.20080516150804.75"><vh>_create_builtin_type_getter</vh></v>
-<v t="ekr.20080516150804.76"><vh>_create_builtin_getter</vh></v>
-<v t="ekr.20080516150804.77"><vh>class _CallContext</vh>
-<v t="ekr.20080516150804.78"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.79"><vh>_get_scope_and_pyname</vh></v>
-<v t="ekr.20080516150804.80"><vh>get_argument</vh></v>
-<v t="ekr.20080516150804.81"><vh>get_pyname</vh></v>
-<v t="ekr.20080516150804.82"><vh>get_arguments</vh></v>
-<v t="ekr.20080516150804.83"><vh>get_pynames</vh></v>
-<v t="ekr.20080516150804.84"><vh>get_per_name</vh></v>
-<v t="ekr.20080516150804.85"><vh>save_per_name</vh></v>
-</v>
-<v t="ekr.20080516150804.86"><vh>class _AttributeCollector</vh>
-<v t="ekr.20080516150804.87"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.88"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.89"><vh>__setitem__</vh></v>
-</v>
-<v t="ekr.20080516150804.90"><vh>class List</vh>
-<v t="ekr.20080516150804.91"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.92"><vh>_new_list</vh></v>
-<v t="ekr.20080516150804.93"><vh>_list_add</vh></v>
-<v t="ekr.20080516150804.94"><vh>_self_set</vh></v>
-<v t="ekr.20080516150804.95"><vh>_list_get</vh></v>
-<v t="ekr.20080516150804.96"><vh>_iterator_get</vh></v>
-<v t="ekr.20080516150804.97"><vh>_self_get</vh></v>
-</v>
-<v t="ekr.20080516150804.98"><vh>class Dict</vh>
-<v t="ekr.20080516150804.99"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.100"><vh>_new_dict</vh></v>
-<v t="ekr.20080516150804.101"><vh>_dict_add</vh></v>
-<v t="ekr.20080516150804.102"><vh>_item_get</vh></v>
-<v t="ekr.20080516150804.103"><vh>_value_get</vh></v>
-<v t="ekr.20080516150804.104"><vh>_key_get</vh></v>
-<v t="ekr.20080516150804.105"><vh>_value_list</vh></v>
-<v t="ekr.20080516150804.106"><vh>_key_list</vh></v>
-<v t="ekr.20080516150804.107"><vh>_item_list</vh></v>
-<v t="ekr.20080516150804.108"><vh>_value_iter</vh></v>
-<v t="ekr.20080516150804.109"><vh>_key_iter</vh></v>
-<v t="ekr.20080516150804.110"><vh>_item_iter</vh></v>
-<v t="ekr.20080516150804.111"><vh>_self_get</vh></v>
-<v t="ekr.20080516150804.112"><vh>_self_set</vh></v>
-</v>
-<v t="ekr.20080516150804.113"><vh>class Tuple</vh>
-<v t="ekr.20080516150804.114"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.115"><vh>get_holding_objects</vh></v>
-<v t="ekr.20080516150804.116"><vh>_new_tuple</vh></v>
-</v>
-<v t="ekr.20080516150804.117"><vh>class Set</vh>
-<v t="ekr.20080516150804.118"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.119"><vh>_new_set</vh></v>
-<v t="ekr.20080516150804.120"><vh>_set_add</vh></v>
-<v t="ekr.20080516150804.121"><vh>_self_set</vh></v>
-<v t="ekr.20080516150804.122"><vh>_set_get</vh></v>
-<v t="ekr.20080516150804.123"><vh>_iterator_get</vh></v>
-<v t="ekr.20080516150804.124"><vh>_self_get</vh></v>
-</v>
-<v t="ekr.20080516150804.125"><vh>class Str</vh>
-<v t="ekr.20080516150804.126"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.127"><vh>get_doc</vh></v>
-</v>
-<v t="ekr.20080516150804.128"><vh>class BuiltinName</vh>
-<v t="ekr.20080516150804.129"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.130"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.131"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.132"><vh>class Iterator</vh>
-<v t="ekr.20080516150804.133"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.134"><vh>get_attributes</vh></v>
-<v t="ekr.20080516150804.135"><vh>get_returned_object</vh></v>
-</v>
-<v t="ekr.20080516150804.136"><vh>class Generator</vh>
-<v t="ekr.20080516150804.137"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.138"><vh>get_attributes</vh></v>
-<v t="ekr.20080516150804.139"><vh>get_returned_object</vh></v>
-</v>
-<v t="ekr.20080516150804.140"><vh>class File</vh>
-<v t="ekr.20080516150804.141"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.142"><vh>class Property</vh>
-<v t="ekr.20080516150804.143"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.144"><vh>get_property_object</vh></v>
-</v>
-<v t="ekr.20080516150804.145"><vh>_property_function</vh></v>
-<v t="ekr.20080516150804.146"><vh>class Lambda</vh>
-<v t="ekr.20080516150804.147"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.148"><vh>get_returned_object</vh></v>
-<v t="ekr.20080516150804.149"><vh>get_pattributes</vh></v>
-</v>
-<v t="ekr.20080516150804.150"><vh>class BuiltinObject</vh>
-<v t="ekr.20080516150804.151"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.152"><vh>class BuiltinType</vh>
-<v t="ekr.20080516150804.153"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.154"><vh>_infer_sequence_for_pyname</vh></v>
-<v t="ekr.20080516150804.155"><vh>_create_builtin</vh></v>
-<v t="ekr.20080516150804.156"><vh>_range_function</vh></v>
-<v t="ekr.20080516150804.157"><vh>_reversed_function</vh></v>
-<v t="ekr.20080516150804.158"><vh>_sorted_function</vh></v>
-<v t="ekr.20080516150804.159"><vh>_super_function</vh></v>
-<v t="ekr.20080516150804.160"><vh>_zip_function</vh></v>
-<v t="ekr.20080516150804.161"><vh>_enumerate_function</vh></v>
-<v t="ekr.20080516150804.162"><vh>_iter_function</vh></v>
-<v t="ekr.20080516150804.163"><vh>_input_function</vh></v>
-</v>
-<v t="ekr.20080516150804.164"><vh>base\change.py</vh>
-<v t="ekr.20080516150804.165"><vh>change declarations</vh></v>
-<v t="ekr.20080516150804.166"><vh>class Change</vh>
-<v t="ekr.20080516150804.167"><vh>do</vh></v>
-<v t="ekr.20080516150804.168"><vh>undo</vh></v>
-<v t="ekr.20080516150804.169"><vh>get_description</vh></v>
-<v t="ekr.20080516150804.170"><vh>get_changed_resources</vh></v>
-</v>
-<v t="ekr.20080516150804.171"><vh>class ChangeSet</vh>
-<v t="ekr.20080516150804.172"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.173"><vh>do</vh></v>
-<v t="ekr.20080516150804.174"><vh>undo</vh></v>
-<v t="ekr.20080516150804.175"><vh>add_change</vh></v>
-<v t="ekr.20080516150804.176"><vh>get_description</vh></v>
-<v t="ekr.20080516150804.177"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.178"><vh>get_changed_resources</vh></v>
-</v>
-<v t="ekr.20080516150804.179"><vh>_handle_job_set</vh></v>
-<v t="ekr.20080516150804.180"><vh>class ChangeContents</vh>
-<v t="ekr.20080516150804.181"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.182"><vh>do</vh></v>
-<v t="ekr.20080516150804.183"><vh>undo</vh></v>
-<v t="ekr.20080516150804.184"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.185"><vh>get_description</vh></v>
-<v t="ekr.20080516150804.186"><vh>get_changed_resources</vh></v>
-</v>
-<v t="ekr.20080516150804.187"><vh>class MoveResource</vh>
-<v t="ekr.20080516150804.188"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.189"><vh>do</vh></v>
-<v t="ekr.20080516150804.190"><vh>undo</vh></v>
-<v t="ekr.20080516150804.191"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.192"><vh>get_description</vh></v>
-<v t="ekr.20080516150804.193"><vh>get_changed_resources</vh></v>
-</v>
-<v t="ekr.20080516150804.194"><vh>class CreateResource</vh>
-<v t="ekr.20080516150804.195"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.196"><vh>do</vh></v>
-<v t="ekr.20080516150804.197"><vh>undo</vh></v>
-<v t="ekr.20080516150804.198"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.199"><vh>get_description</vh></v>
-<v t="ekr.20080516150804.200"><vh>get_changed_resources</vh></v>
-<v t="ekr.20080516150804.201"><vh>_get_child_path</vh></v>
-</v>
-<v t="ekr.20080516150804.202"><vh>class CreateFolder</vh>
-<v t="ekr.20080516150804.203"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.204"><vh>class CreateFile</vh>
-<v t="ekr.20080516150804.205"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.206"><vh>class RemoveResource</vh>
-<v t="ekr.20080516150804.207"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.208"><vh>do</vh></v>
-<v t="ekr.20080516150804.209"><vh>undo</vh></v>
-<v t="ekr.20080516150804.210"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.211"><vh>get_changed_resources</vh></v>
-</v>
-<v t="ekr.20080516150804.212"><vh>count_changes</vh></v>
-<v t="ekr.20080516150804.213"><vh>create_job_set</vh></v>
-<v t="ekr.20080516150804.214"><vh>class _ResourceOperations</vh>
-<v t="ekr.20080516150804.215"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.216"><vh>_get_fscommands</vh></v>
-<v t="ekr.20080516150804.217"><vh>write_file</vh></v>
-<v t="ekr.20080516150804.218"><vh>move</vh></v>
-<v t="ekr.20080516150804.219"><vh>create</vh></v>
-<v t="ekr.20080516150804.220"><vh>remove</vh></v>
-<v t="ekr.20080516150804.221"><vh>_create_resource</vh></v>
-</v>
-<v t="ekr.20080516150804.222"><vh>_get_destination_for_move</vh></v>
-<v t="ekr.20080516150804.223"><vh>class ChangeToData</vh>
-<v t="ekr.20080516150804.224"><vh>convertChangeSet</vh></v>
-<v t="ekr.20080516150804.225"><vh>convertChangeContents</vh></v>
-<v t="ekr.20080516150804.226"><vh>convertMoveResource</vh></v>
-<v t="ekr.20080516150804.227"><vh>convertCreateResource</vh></v>
-<v t="ekr.20080516150804.228"><vh>convertRemoveResource</vh></v>
-<v t="ekr.20080516150804.229"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.230"><vh>class DataToChange</vh>
-<v t="ekr.20080516150804.231"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.232"><vh>makeChangeSet</vh></v>
-<v t="ekr.20080516150804.233"><vh>makeChangeContents</vh></v>
-<v t="ekr.20080516150804.234"><vh>makeMoveResource</vh></v>
-<v t="ekr.20080516150804.235"><vh>makeCreateResource</vh></v>
-<v t="ekr.20080516150804.236"><vh>makeRemoveResource</vh></v>
-<v t="ekr.20080516150804.237"><vh>__call__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.238"><vh>base\codeanalyze.py</vh>
-<v t="ekr.20080516150804.239"><vh>codeanalyze declarations</vh></v>
-<v t="ekr.20080516150804.240"><vh>class ChangeCollector</vh>
-<v t="ekr.20080516150804.241"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.242"><vh>add_change</vh></v>
-<v t="ekr.20080516150804.243"><vh>get_changed</vh></v>
-</v>
-<v t="ekr.20080516150804.244"><vh>class Lines</vh>
-<v t="ekr.20080516150804.245"><vh>get_line</vh></v>
-<v t="ekr.20080516150804.246"><vh>length</vh></v>
-</v>
-<v t="ekr.20080516150804.247"><vh>class SourceLinesAdapter</vh>
-<v t="ekr.20080516150804.248"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.249"><vh>_initialize_line_starts</vh></v>
-<v t="ekr.20080516150804.250"><vh>get_line</vh></v>
-<v t="ekr.20080516150804.251"><vh>length</vh></v>
-<v t="ekr.20080516150804.252"><vh>get_line_number</vh></v>
-<v t="ekr.20080516150804.253"><vh>get_line_start</vh></v>
-<v t="ekr.20080516150804.254"><vh>get_line_end</vh></v>
-</v>
-<v t="ekr.20080516150804.255"><vh>class ArrayLinesAdapter</vh>
-<v t="ekr.20080516150804.256"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.257"><vh>get_line</vh></v>
-<v t="ekr.20080516150804.258"><vh>length</vh></v>
-</v>
-<v t="ekr.20080516150804.259"><vh>class LinesToReadline</vh>
-<v t="ekr.20080516150804.260"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.261"><vh>readline</vh></v>
-<v t="ekr.20080516150804.262"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.263"><vh>class _CustomGenerator</vh>
-<v t="ekr.20080516150804.264"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.265"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.266"><vh>_analyze_line</vh></v>
-</v>
-<v t="ekr.20080516150804.267"><vh>custom_generator</vh></v>
-<v t="ekr.20080516150804.268"><vh>class LogicalLineFinder</vh>
-<v t="ekr.20080516150804.269"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.270"><vh>logical_line_in</vh></v>
-<v t="ekr.20080516150804.271"><vh>generate_starts</vh></v>
-<v t="ekr.20080516150804.272"><vh>generate_regions</vh></v>
-<v t="ekr.20080516150804.273"><vh>_block_logical_line</vh></v>
-<v t="ekr.20080516150804.274"><vh>_calculate_logical</vh></v>
-<v t="ekr.20080516150804.275"><vh>_logical_lines</vh></v>
-<v t="ekr.20080516150804.276"><vh>_first_non_blank</vh></v>
-</v>
-<v t="ekr.20080516150804.277"><vh>tokenizer_generator</vh></v>
-<v t="ekr.20080516150804.278"><vh>class CachingLogicalLineFinder</vh>
-<v t="ekr.20080516150804.279"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.280"><vh>starts</vh></v>
-<v t="ekr.20080516150804.281"><vh>ends</vh></v>
-<v t="ekr.20080516150804.282"><vh>_init_logicals</vh></v>
-<v t="ekr.20080516150804.283"><vh>logical_line_in</vh></v>
-<v t="ekr.20080516150804.284"><vh>generate_starts</vh></v>
-</v>
-<v t="ekr.20080516150804.285"><vh>get_block_start</vh></v>
-<v t="ekr.20080516150804.286"><vh>get_block_start_patterns</vh></v>
-<v t="ekr.20080516150804.287"><vh>count_line_indents</vh></v>
-<v t="ekr.20080516150804.288"><vh>get_string_pattern</vh></v>
-<v t="ekr.20080516150804.289"><vh>get_comment_pattern</vh></v>
-</v>
-<v t="ekr.20080516150804.290"><vh>base\default_config.py</vh>
-<v t="ekr.20080516150804.291"><vh>set_prefs</vh></v>
-<v t="ekr.20080516150804.292"><vh>project_opened</vh></v>
-</v>
-<v t="ekr.20080516150804.293"><vh>base\evaluate.py</vh>
-<v t="ekr.20080516150804.294"><vh>evaluate declarations</vh></v>
-<v t="ekr.20080516150804.295"><vh>get_primary_and_pyname_at</vh></v>
-<v t="ekr.20080516150804.296"><vh>get_pyname_at</vh></v>
-<v t="ekr.20080516150804.297"><vh>get_statement_result</vh></v>
-<v t="ekr.20080516150804.298"><vh>get_primary_and_result</vh></v>
-<v t="ekr.20080516150804.299"><vh>get_pyname_in_scope</vh></v>
-<v t="ekr.20080516150804.300"><vh>get_primary_and_pyname_in_scope</vh></v>
-<v t="ekr.20080516150804.301"><vh>get_string_result</vh></v>
-<v t="ekr.20080516150804.302"><vh>class ScopeNameFinder</vh>
-<v t="ekr.20080516150804.303"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.304"><vh>_is_defined_in_class_body</vh></v>
-<v t="ekr.20080516150804.305"><vh>_is_function_name_in_function_header</vh></v>
-<v t="ekr.20080516150804.306"><vh>get_pyname_at</vh></v>
-<v t="ekr.20080516150804.307"><vh>get_primary_and_pyname_at</vh></v>
-<v t="ekr.20080516150804.308"><vh>get_enclosing_function</vh></v>
-<v t="ekr.20080516150804.309"><vh>_find_module</vh></v>
-</v>
-<v t="ekr.20080516150804.310"><vh>class StatementEvaluator</vh>
-<v t="ekr.20080516150804.311"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.312"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.313"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.314"><vh>_Call</vh></v>
-<v t="ekr.20080516150804.315"><vh>_Str</vh></v>
-<v t="ekr.20080516150804.316"><vh>_Num</vh></v>
-<v t="ekr.20080516150804.317"><vh>_get_builtin_name</vh></v>
-<v t="ekr.20080516150804.318"><vh>_BinOp</vh></v>
-<v t="ekr.20080516150804.319"><vh>_BoolOp</vh></v>
-<v t="ekr.20080516150804.320"><vh>_Repr</vh></v>
-<v t="ekr.20080516150804.321"><vh>_UnaryOp</vh></v>
-<v t="ekr.20080516150804.322"><vh>_Compare</vh></v>
-<v t="ekr.20080516150804.323"><vh>_Dict</vh></v>
-<v t="ekr.20080516150804.324"><vh>_List</vh></v>
-<v t="ekr.20080516150804.325"><vh>_ListComp</vh></v>
-<v t="ekr.20080516150804.326"><vh>_GeneratorExp</vh></v>
-<v t="ekr.20080516150804.327"><vh>_what_does_comprehension_hold</vh></v>
-<v t="ekr.20080516150804.328"><vh>_make_comprehension_scope</vh></v>
-<v t="ekr.20080516150804.329"><vh>_Tuple</vh></v>
-<v t="ekr.20080516150804.330"><vh>_get_object_for_node</vh></v>
-<v t="ekr.20080516150804.331"><vh>_get_primary_and_object_for_node</vh></v>
-<v t="ekr.20080516150804.332"><vh>_Subscript</vh></v>
-<v t="ekr.20080516150804.333"><vh>_call_function</vh></v>
-<v t="ekr.20080516150804.334"><vh>_Lambda</vh></v>
-</v>
-<v t="ekr.20080516150804.335"><vh>_get_evaluated_names</vh></v>
-</v>
-<v t="ekr.20080516150804.336"><vh>base\exceptions.py</vh>
-<v t="ekr.20080516150804.337"><vh>class RopeError</vh></v>
-<v t="ekr.20080516150804.338"><vh>class ResourceNotFoundError</vh></v>
-<v t="ekr.20080516150804.339"><vh>class RefactoringError</vh></v>
-<v t="ekr.20080516150804.340"><vh>class InterruptedTaskError</vh></v>
-<v t="ekr.20080516150804.341"><vh>class HistoryError</vh></v>
-<v t="ekr.20080516150804.342"><vh>class ModuleNotFoundError</vh></v>
-<v t="ekr.20080516150804.343"><vh>class AttributeNotFoundError</vh></v>
-<v t="ekr.20080516150804.344"><vh>class NameNotFoundError</vh></v>
-<v t="ekr.20080516150804.345"><vh>class BadIdentifierError</vh></v>
-<v t="ekr.20080516150804.346"><vh>class ModuleSyntaxError</vh>
-<v t="ekr.20080516150804.347"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.348"><vh>class ModuleDecodeError</vh>
-<v t="ekr.20080516150804.349"><vh>__init__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.350"><vh>base\fscommands.py</vh>
-<v t="ekr.20080516150804.351"><vh>fscommands declarations</vh></v>
-<v t="ekr.20080516150804.352"><vh>create_fscommands</vh></v>
-<v t="ekr.20080516150804.353"><vh>class FileSystemCommands</vh>
-<v t="ekr.20080516150804.354"><vh>create_file</vh></v>
-<v t="ekr.20080516150804.355"><vh>create_folder</vh></v>
-<v t="ekr.20080516150804.356"><vh>move</vh></v>
-<v t="ekr.20080516150804.357"><vh>remove</vh></v>
-<v t="ekr.20080516150804.358"><vh>write</vh></v>
-</v>
-<v t="ekr.20080516150804.359"><vh>class SubversionCommands</vh>
-<v t="ekr.20080516150804.360"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.361"><vh>create_file</vh></v>
-<v t="ekr.20080516150804.362"><vh>create_folder</vh></v>
-<v t="ekr.20080516150804.363"><vh>move</vh></v>
-<v t="ekr.20080516150804.364"><vh>remove</vh></v>
-<v t="ekr.20080516150804.365"><vh>write</vh></v>
-</v>
-<v t="ekr.20080516150804.366"><vh>class MercurialCommands</vh>
-<v t="ekr.20080516150804.367"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.368"><vh>_import_mercurial</vh></v>
-<v t="ekr.20080516150804.369"><vh>create_file</vh></v>
-<v t="ekr.20080516150804.370"><vh>create_folder</vh></v>
-<v t="ekr.20080516150804.371"><vh>move</vh></v>
-<v t="ekr.20080516150804.372"><vh>remove</vh></v>
-<v t="ekr.20080516150804.373"><vh>write</vh></v>
-</v>
-<v t="ekr.20080516150804.374"><vh>class GITCommands</vh>
-<v t="ekr.20080516150804.375"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.376"><vh>create_file</vh></v>
-<v t="ekr.20080516150804.377"><vh>create_folder</vh></v>
-<v t="ekr.20080516150804.378"><vh>move</vh></v>
-<v t="ekr.20080516150804.379"><vh>remove</vh></v>
-<v t="ekr.20080516150804.380"><vh>write</vh></v>
-<v t="ekr.20080516150804.381"><vh>_do</vh></v>
-<v t="ekr.20080516150804.382"><vh>_in_dir</vh></v>
-</v>
-<v t="ekr.20080516150804.383"><vh>_execute</vh></v>
-<v t="ekr.20080516150804.384"><vh>unicode_to_file_data</vh></v>
-<v t="ekr.20080516150804.385"><vh>file_data_to_unicode</vh></v>
-<v t="ekr.20080516150804.386"><vh>_decode_data</vh></v>
-<v t="ekr.20080516150804.387"><vh>read_file_coding</vh></v>
-<v t="ekr.20080516150804.388"><vh>read_str_coding</vh></v>
-<v t="ekr.20080516150804.389"><vh>_find_coding</vh></v>
-</v>
-<v t="ekr.20080516150804.390"><vh>base\history.py</vh>
-<v t="ekr.20080516150804.391"><vh>history declarations</vh></v>
-<v t="ekr.20080516150804.392"><vh>class History</vh>
-<v t="ekr.20080516150804.393"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.394"><vh>_load_history</vh></v>
-<v t="ekr.20080516150804.395"><vh>do</vh></v>
-<v t="ekr.20080516150804.396"><vh>_remove_extra_items</vh></v>
-<v t="ekr.20080516150804.397"><vh>_is_change_interesting</vh></v>
-<v t="ekr.20080516150804.398"><vh>undo</vh></v>
-<v t="ekr.20080516150804.399"><vh>redo</vh></v>
-<v t="ekr.20080516150804.400"><vh>_move_front</vh></v>
-<v t="ekr.20080516150804.401"><vh>_find_dependencies</vh></v>
-<v t="ekr.20080516150804.402"><vh>_perform_undos</vh></v>
-<v t="ekr.20080516150804.403"><vh>_perform_redos</vh></v>
-<v t="ekr.20080516150804.404"><vh>contents_before_current_change</vh></v>
-<v t="ekr.20080516150804.405"><vh>_search_for_change_contents</vh></v>
-<v t="ekr.20080516150804.406"><vh>write</vh></v>
-<v t="ekr.20080516150804.407"><vh>get_file_undo_list</vh></v>
-<v t="ekr.20080516150804.408"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.409"><vh>tobe_undone</vh></v>
-<v t="ekr.20080516150804.410"><vh>tobe_redone</vh></v>
-<v t="ekr.20080516150804.411"><vh>max_undos</vh></v>
-<v t="ekr.20080516150804.412"><vh>save</vh></v>
-<v t="ekr.20080516150804.413"><vh>compress</vh></v>
-<v t="ekr.20080516150804.414"><vh>clear</vh></v>
-</v>
-<v t="ekr.20080516150804.415"><vh>class _FindChangeDependencies</vh>
-<v t="ekr.20080516150804.416"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.417"><vh>find_dependencies</vh></v>
-<v t="ekr.20080516150804.418"><vh>_depends_on</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.419"><vh>base\libutils.py</vh>
-<v t="ekr.20080516150804.420"><vh>libutils declarations</vh></v>
-<v t="ekr.20080516150804.421"><vh>path_to_resource</vh></v>
-<v t="ekr.20080516150804.422"><vh>report_change</vh></v>
-<v t="ekr.20080516150804.423"><vh>analyze_modules</vh></v>
-</v>
-<v t="ekr.20080516150804.424"><vh>base\prefs.py</vh>
-<v t="ekr.20080516150804.425"><vh>class Prefs</vh>
-<v t="ekr.20080516150804.426"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.427"><vh>set</vh></v>
-<v t="ekr.20080516150804.428"><vh>add</vh></v>
-<v t="ekr.20080516150804.429"><vh>get</vh></v>
-<v t="ekr.20080516150804.430"><vh>add_callback</vh></v>
-<v t="ekr.20080516150804.431"><vh>__setitem__</vh></v>
-<v t="ekr.20080516150804.432"><vh>__getitem__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.433"><vh>base\project.py</vh>
-<v t="ekr.20080516150804.434"><vh>project declarations</vh></v>
-<v t="ekr.20080516150804.435"><vh>class _Project</vh>
-<v t="ekr.20080516150804.436"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.437"><vh>get_resource</vh></v>
-<v t="ekr.20080516150804.438"><vh>validate</vh></v>
-<v t="ekr.20080516150804.439"><vh>add_observer</vh></v>
-<v t="ekr.20080516150804.440"><vh>remove_observer</vh></v>
-<v t="ekr.20080516150804.441"><vh>do</vh></v>
-<v t="ekr.20080516150804.442"><vh>get_pycore</vh></v>
-<v t="ekr.20080516150804.443"><vh>get_file</vh></v>
-<v t="ekr.20080516150804.444"><vh>get_folder</vh></v>
-<v t="ekr.20080516150804.445"><vh>is_ignored</vh></v>
-<v t="ekr.20080516150804.446"><vh>get_prefs</vh></v>
-<v t="ekr.20080516150804.447"><vh>_get_resource_path</vh></v>
-<v t="ekr.20080516150804.448"><vh>_get_history</vh></v>
-<v t="ekr.20080516150804.449"><vh>close</vh></v>
-</v>
-<v t="ekr.20080516150804.450"><vh>class Project</vh>
-<v t="ekr.20080516150804.451"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.452"><vh>get_files</vh></v>
-<v t="ekr.20080516150804.453"><vh>_get_resource_path</vh></v>
-<v t="ekr.20080516150804.454"><vh>_init_ropefolder</vh></v>
-<v t="ekr.20080516150804.455"><vh>_init_prefs</vh></v>
-<v t="ekr.20080516150804.456"><vh>_default_config</vh></v>
-<v t="ekr.20080516150804.457"><vh>_init_other_parts</vh></v>
-<v t="ekr.20080516150804.458"><vh>is_ignored</vh></v>
-<v t="ekr.20080516150804.459"><vh>sync</vh></v>
-<v t="ekr.20080516150804.460"><vh>close</vh></v>
-<v t="ekr.20080516150804.461"><vh>set</vh></v>
-<v t="ekr.20080516150804.462"><vh>ropefolder</vh></v>
-<v t="ekr.20080516150804.463"><vh>validate</vh></v>
-</v>
-<v t="ekr.20080516150804.464"><vh>class NoProject</vh>
-<v t="ekr.20080516150804.465"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.466"><vh>_get_resource_path</vh></v>
-<v t="ekr.20080516150804.467"><vh>get_resource</vh></v>
-<v t="ekr.20080516150804.468"><vh>get_files</vh></v>
-</v>
-<v t="ekr.20080516150804.469"><vh>get_no_project</vh></v>
-<v t="ekr.20080516150804.470"><vh>class _FileListCacher</vh>
-<v t="ekr.20080516150804.471"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.472"><vh>get_files</vh></v>
-<v t="ekr.20080516150804.473"><vh>observer</vh></v>
-<v t="ekr.20080516150804.474"><vh>_updated_resources</vh></v>
-<v t="ekr.20080516150804.475"><vh>_update_folder</vh></v>
-<v t="ekr.20080516150804.476"><vh>_init_observer</vh></v>
-<v t="ekr.20080516150804.477"><vh>_changed</vh></v>
-<v t="ekr.20080516150804.478"><vh>_moved</vh></v>
-<v t="ekr.20080516150804.479"><vh>_created</vh></v>
-<v t="ekr.20080516150804.480"><vh>_removed</vh></v>
-<v t="ekr.20080516150804.481"><vh>_validate</vh></v>
-</v>
-<v t="ekr.20080516150804.482"><vh>class _DataFiles</vh>
-<v t="ekr.20080516150804.483"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.484"><vh>read_data</vh></v>
-<v t="ekr.20080516150804.485"><vh>write_data</vh></v>
-<v t="ekr.20080516150804.486"><vh>add_write_hook</vh></v>
-<v t="ekr.20080516150804.487"><vh>write</vh></v>
-<v t="ekr.20080516150804.488"><vh>_can_compress</vh></v>
-<v t="ekr.20080516150804.489"><vh>_import_old_files</vh></v>
-<v t="ekr.20080516150804.490"><vh>_get_opener</vh></v>
-<v t="ekr.20080516150804.491"><vh>_get_file</vh></v>
-</v>
-<v t="ekr.20080516150804.492"><vh>_realpath</vh></v>
-</v>
-<v t="ekr.20080516150804.493"><vh>base\pycore.py</vh>
-<v t="ekr.20080516150804.494"><vh>pycore declarations</vh></v>
-<v t="ekr.20080516150804.495"><vh>class PyCore</vh>
-<v t="ekr.20080516150804.496"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.497"><vh>_init_python_files</vh></v>
-<v t="ekr.20080516150804.498"><vh>_init_resource_observer</vh></v>
-<v t="ekr.20080516150804.499"><vh>_init_source_folders</vh></v>
-<v t="ekr.20080516150804.500"><vh>_init_automatic_soa</vh></v>
-<v t="ekr.20080516150804.501"><vh>automatic_soa</vh></v>
-<v t="ekr.20080516150804.502"><vh>_file_changed_for_soa</vh></v>
-<v t="ekr.20080516150804.503"><vh>is_python_file</vh></v>
-<v t="ekr.20080516150804.504"><vh>get_module</vh></v>
-<v t="ekr.20080516150804.505"><vh>_builtin_module</vh></v>
-<v t="ekr.20080516150804.506"><vh>get_relative_module</vh></v>
-<v t="ekr.20080516150804.507"><vh>get_string_module</vh></v>
-<v t="ekr.20080516150804.508"><vh>get_string_scope</vh></v>
-<v t="ekr.20080516150804.509"><vh>_invalidate_resource_cache</vh></v>
-<v t="ekr.20080516150804.510"><vh>_find_module_in_source_folder</vh></v>
-<v t="ekr.20080516150804.511"><vh>get_python_path_folders</vh></v>
-<v t="ekr.20080516150804.512"><vh>find_module</vh></v>
-<v t="ekr.20080516150804.513"><vh>find_relative_module</vh></v>
-<v t="ekr.20080516150804.514"><vh>_find_module_resource_list</vh></v>
-<v t="ekr.20080516150804.515"><vh>get_source_folders</vh></v>
-<v t="ekr.20080516150804.516"><vh>resource_to_pyobject</vh></v>
-<v t="ekr.20080516150804.517"><vh>get_python_files</vh></v>
-<v t="ekr.20080516150804.518"><vh>_is_package</vh></v>
-<v t="ekr.20080516150804.519"><vh>_find_source_folders</vh></v>
-<v t="ekr.20080516150804.520"><vh>run_module</vh></v>
-<v t="ekr.20080516150804.521"><vh>analyze_module</vh></v>
-<v t="ekr.20080516150804.522"><vh>get_classes</vh></v>
-<v t="ekr.20080516150804.523"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080516150804.524"><vh>class _ModuleCache</vh>
-<v t="ekr.20080516150804.525"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.526"><vh>_invalidate_resource</vh></v>
-<v t="ekr.20080516150804.527"><vh>get_pymodule</vh></v>
-<v t="ekr.20080516150804.528"><vh>forget_all_data</vh></v>
-<v t="ekr.20080516150804.529"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080516150804.530"><vh>class _ExtensionCache</vh>
-<v t="ekr.20080516150804.531"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.532"><vh>get_pymodule</vh></v>
-<v t="ekr.20080516150804.533"><vh>allowed</vh></v>
-</v>
-<v t="ekr.20080516150804.534"><vh>perform_soa_on_changed_scopes</vh></v>
-<v t="ekr.20080516150804.535"><vh>class _TextChangeDetector</vh>
-<v t="ekr.20080516150804.536"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.537"><vh>_set_diffs</vh></v>
-<v t="ekr.20080516150804.538"><vh>is_changed</vh></v>
-<v t="ekr.20080516150804.539"><vh>consume_changes</vh></v>
-<v t="ekr.20080516150804.540"><vh>_get_changed</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.541"><vh>base\pynames.py</vh>
-<v t="ekr.20080516150804.542"><vh>pynames declarations</vh></v>
-<v t="ekr.20080516150804.543"><vh>class PyName</vh>
-<v t="ekr.20080516150804.544"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.545"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.546"><vh>class DefinedName</vh>
-<v t="ekr.20080516150804.547"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.548"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.549"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.550"><vh>class AssignedName</vh></v>
-<v t="ekr.20080516150804.551"><vh>class UnboundName</vh>
-<v t="ekr.20080516150804.552"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.553"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.554"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.555"><vh>class AssignmentValue</vh>
-<v t="ekr.20080516150804.556"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.557"><vh>get_lineno</vh></v>
-</v>
-<v t="ekr.20080516150804.558"><vh>class EvaluatedName</vh>
-<v t="ekr.20080516150804.559"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.560"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.561"><vh>get_definition_location</vh></v>
-<v t="ekr.20080516150804.562"><vh>invalidate</vh></v>
-</v>
-<v t="ekr.20080516150804.563"><vh>class ParameterName</vh></v>
-<v t="ekr.20080516150804.564"><vh>class ImportedModule</vh>
-<v t="ekr.20080516150804.565"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.566"><vh>_current_folder</vh></v>
-<v t="ekr.20080516150804.567"><vh>_get_pymodule</vh></v>
-<v t="ekr.20080516150804.568"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.569"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.570"><vh>class ImportedName</vh>
-<v t="ekr.20080516150804.571"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.572"><vh>_get_imported_pyname</vh></v>
-<v t="ekr.20080516150804.573"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.574"><vh>get_definition_location</vh></v>
-</v>
-<v t="ekr.20080516150804.575"><vh>_get_concluded_data</vh></v>
-<v t="ekr.20080516150804.576"><vh>_circular_inference</vh></v>
-<v t="ekr.20080516150804.577"><vh>class _Inferred</vh>
-<v t="ekr.20080516150804.578"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.579"><vh>get</vh></v>
-<v t="ekr.20080516150804.580"><vh>set</vh></v>
-<v t="ekr.20080516150804.581"><vh>_get</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.582"><vh>base\pynamesdef.py</vh>
-<v t="ekr.20080516150804.583"><vh>pynamesdef declarations</vh></v>
-<v t="ekr.20080516150804.584"><vh>class AssignedName</vh>
-<v t="ekr.20080516150804.585"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.586"><vh>_get_inferred</vh></v>
-<v t="ekr.20080516150804.587"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.588"><vh>get_definition_location</vh></v>
-<v t="ekr.20080516150804.589"><vh>invalidate</vh></v>
-</v>
-<v t="ekr.20080516150804.590"><vh>class ParameterName</vh>
-<v t="ekr.20080516150804.591"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.592"><vh>get_object</vh></v>
-<v t="ekr.20080516150804.593"><vh>get_objects</vh></v>
-<v t="ekr.20080516150804.594"><vh>get_definition_location</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.595"><vh>base\pyobjects.py</vh>
-<v t="ekr.20080516150804.596"><vh>pyobjects declarations</vh></v>
-<v t="ekr.20080516150804.597"><vh>class PyObject</vh>
-<v t="ekr.20080516150804.598"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.599"><vh>get_attributes</vh></v>
-<v t="ekr.20080516150804.600"><vh>get_attribute</vh></v>
-<v t="ekr.20080516150804.601"><vh>get_type</vh></v>
-<v t="ekr.20080516150804.602"><vh>__getitem__</vh></v>
-<v t="ekr.20080516150804.603"><vh>__contains__</vh></v>
-<v t="ekr.20080516150804.604"><vh>__eq__</vh></v>
-<v t="ekr.20080516150804.605"><vh>__hash__</vh></v>
-<v t="ekr.20080516150804.606"><vh>__iter__</vh></v>
-<v t="ekr.20080516150804.607"><vh>_get_base_type</vh></v>
-</v>
-<v t="ekr.20080516150804.608"><vh>get_base_type</vh></v>
-<v t="ekr.20080516150804.609"><vh>get_unknown</vh></v>
-<v t="ekr.20080516150804.610"><vh>class AbstractClass</vh>
-<v t="ekr.20080516150804.611"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.612"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.613"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.614"><vh>get_superclasses</vh></v>
-</v>
-<v t="ekr.20080516150804.615"><vh>class AbstractFunction</vh>
-<v t="ekr.20080516150804.616"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.617"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.618"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.619"><vh>get_param_names</vh></v>
-<v t="ekr.20080516150804.620"><vh>get_returned_object</vh></v>
-</v>
-<v t="ekr.20080516150804.621"><vh>class AbstractModule</vh>
-<v t="ekr.20080516150804.622"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.623"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.624"><vh>get_resource</vh></v>
-</v>
-<v t="ekr.20080516150804.625"><vh>class PyDefinedObject</vh>
-<v t="ekr.20080516150804.626"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.627"><vh>_get_structural_attributes</vh></v>
-<v t="ekr.20080516150804.628"><vh>_get_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.629"><vh>get_attributes</vh></v>
-<v t="ekr.20080516150804.630"><vh>get_attribute</vh></v>
-<v t="ekr.20080516150804.631"><vh>get_scope</vh></v>
-<v t="ekr.20080516150804.632"><vh>get_module</vh></v>
-<v t="ekr.20080516150804.633"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.634"><vh>_get_defined_objects</vh></v>
-<v t="ekr.20080516150804.635"><vh>_create_structural_attributes</vh></v>
-<v t="ekr.20080516150804.636"><vh>_create_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.637"><vh>get_ast</vh></v>
-<v t="ekr.20080516150804.638"><vh>_create_scope</vh></v>
-</v>
-<v t="ekr.20080516150804.639"><vh>class PyFunction</vh></v>
-<v t="ekr.20080516150804.640"><vh>class PyClass</vh></v>
-<v t="ekr.20080516150804.641"><vh>class _ConcludedData</vh>
-<v t="ekr.20080516150804.642"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.643"><vh>set</vh></v>
-<v t="ekr.20080516150804.644"><vh>get</vh></v>
-<v t="ekr.20080516150804.645"><vh>_invalidate</vh></v>
-<v t="ekr.20080516150804.646"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080516150804.647"><vh>class _PyModule</vh>
-<v t="ekr.20080516150804.648"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.649"><vh>_get_concluded_data</vh></v>
-<v t="ekr.20080516150804.650"><vh>_forget_concluded_data</vh></v>
-<v t="ekr.20080516150804.651"><vh>get_resource</vh></v>
-</v>
-<v t="ekr.20080516150804.652"><vh>class PyModule</vh></v>
-<v t="ekr.20080516150804.653"><vh>class PyPackage</vh></v>
-<v t="ekr.20080516150804.654"><vh>class IsBeingInferredError</vh></v>
-</v>
-<v t="ekr.20080516150804.655"><vh>base\pyobjectsdef.py</vh>
-<v t="ekr.20080516150804.656"><vh>pyobjectsdef declarations</vh></v>
-<v t="ekr.20080516150804.657"><vh>class PyFunction</vh>
-<v t="ekr.20080516150804.658"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.659"><vh>_create_structural_attributes</vh></v>
-<v t="ekr.20080516150804.660"><vh>_create_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.661"><vh>_create_scope</vh></v>
-<v t="ekr.20080516150804.662"><vh>_infer_parameters</vh></v>
-<v t="ekr.20080516150804.663"><vh>_infer_returned</vh></v>
-<v t="ekr.20080516150804.664"><vh>_handle_special_args</vh></v>
-<v t="ekr.20080516150804.665"><vh>_set_parameter_pyobjects</vh></v>
-<v t="ekr.20080516150804.666"><vh>get_parameters</vh></v>
-<v t="ekr.20080516150804.667"><vh>get_parameter</vh></v>
-<v t="ekr.20080516150804.668"><vh>get_returned_object</vh></v>
-<v t="ekr.20080516150804.669"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.670"><vh>get_param_names</vh></v>
-<v t="ekr.20080516150804.671"><vh>get_kind</vh></v>
-<v t="ekr.20080516150804.672"><vh>decorators</vh></v>
-</v>
-<v t="ekr.20080516150804.673"><vh>class PyClass</vh>
-<v t="ekr.20080516150804.674"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.675"><vh>get_superclasses</vh></v>
-<v t="ekr.20080516150804.676"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.677"><vh>_create_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.678"><vh>_get_bases</vh></v>
-<v t="ekr.20080516150804.679"><vh>_create_scope</vh></v>
-</v>
-<v t="ekr.20080516150804.680"><vh>class PyModule</vh>
-<v t="ekr.20080516150804.681"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.682"><vh>_init_source</vh></v>
-<v t="ekr.20080516150804.683"><vh>_create_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.684"><vh>_create_scope</vh></v>
-<v t="ekr.20080516150804.685"><vh>lines</vh></v>
-<v t="ekr.20080516150804.686"><vh>logical_lines</vh></v>
-</v>
-<v t="ekr.20080516150804.687"><vh>class PyPackage</vh>
-<v t="ekr.20080516150804.688"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.689"><vh>_create_structural_attributes</vh></v>
-<v t="ekr.20080516150804.690"><vh>_create_concluded_attributes</vh></v>
-<v t="ekr.20080516150804.691"><vh>_get_child_resources</vh></v>
-<v t="ekr.20080516150804.692"><vh>_get_init_dot_py</vh></v>
-<v t="ekr.20080516150804.693"><vh>_create_scope</vh></v>
-<v t="ekr.20080516150804.694"><vh>get_module</vh></v>
-</v>
-<v t="ekr.20080516150804.695"><vh>class _AssignVisitor</vh>
-<v t="ekr.20080516150804.696"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.697"><vh>_Assign</vh></v>
-<v t="ekr.20080516150804.698"><vh>_assigned</vh></v>
-<v t="ekr.20080516150804.699"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.700"><vh>_Tuple</vh></v>
-<v t="ekr.20080516150804.701"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.702"><vh>_Subscript</vh></v>
-<v t="ekr.20080516150804.703"><vh>_Slice</vh></v>
-</v>
-<v t="ekr.20080516150804.704"><vh>class _ScopeVisitor</vh>
-<v t="ekr.20080516150804.705"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.706"><vh>get_module</vh></v>
-<v t="ekr.20080516150804.707"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.708"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.709"><vh>_Assign</vh></v>
-<v t="ekr.20080516150804.710"><vh>_AugAssign</vh></v>
-<v t="ekr.20080516150804.711"><vh>_For</vh></v>
-<v t="ekr.20080516150804.712"><vh>_assigned</vh></v>
-<v t="ekr.20080516150804.713"><vh>_update_evaluated</vh></v>
-<v t="ekr.20080516150804.714"><vh>_With</vh></v>
-<v t="ekr.20080516150804.715"><vh>_excepthandler</vh></v>
-<v t="ekr.20080516150804.716"><vh>_ExceptHandler</vh></v>
-<v t="ekr.20080516150804.717"><vh>_Import</vh></v>
-<v t="ekr.20080516150804.718"><vh>_ImportFrom</vh></v>
-<v t="ekr.20080516150804.719"><vh>_is_ignored_import</vh></v>
-<v t="ekr.20080516150804.720"><vh>_Global</vh></v>
-</v>
-<v t="ekr.20080516150804.721"><vh>class _GlobalVisitor</vh>
-<v t="ekr.20080516150804.722"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.723"><vh>class _ClassVisitor</vh>
-<v t="ekr.20080516150804.724"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.725"><vh>_FunctionDef</vh></v>
-</v>
-<v t="ekr.20080516150804.726"><vh>class _FunctionVisitor</vh>
-<v t="ekr.20080516150804.727"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.728"><vh>_Return</vh></v>
-<v t="ekr.20080516150804.729"><vh>_Yield</vh></v>
-</v>
-<v t="ekr.20080516150804.730"><vh>class _ClassInitVisitor</vh>
-<v t="ekr.20080516150804.731"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.732"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.733"><vh>_Tuple</vh></v>
-<v t="ekr.20080516150804.734"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.735"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.736"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.737"><vh>_For</vh></v>
-<v t="ekr.20080516150804.738"><vh>_With</vh></v>
-</v>
-<v t="ekr.20080516150804.739"><vh>class StarImport</vh>
-<v t="ekr.20080516150804.740"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.741"><vh>get_names</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.742"><vh>base\pyscopes.py</vh>
-<v t="ekr.20080516150804.743"><vh>pyscopes declarations</vh></v>
-<v t="ekr.20080516150804.744"><vh>class Scope</vh>
-<v t="ekr.20080516150804.745"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.746"><vh>get_names</vh></v>
-<v t="ekr.20080516150804.747"><vh>get_defined_names</vh></v>
-<v t="ekr.20080516150804.748"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.749"><vh>__getitem__</vh></v>
-<v t="ekr.20080516150804.750"><vh>__contains__</vh></v>
-<v t="ekr.20080516150804.751"><vh>get_scopes</vh></v>
-<v t="ekr.20080516150804.752"><vh>lookup</vh></v>
-<v t="ekr.20080516150804.753"><vh>get_propagated_names</vh></v>
-<v t="ekr.20080516150804.754"><vh>_propagated_lookup</vh></v>
-<v t="ekr.20080516150804.755"><vh>_create_scopes</vh></v>
-<v t="ekr.20080516150804.756"><vh>_get_global_scope</vh></v>
-<v t="ekr.20080516150804.757"><vh>get_start</vh></v>
-<v t="ekr.20080516150804.758"><vh>get_body_start</vh></v>
-<v t="ekr.20080516150804.759"><vh>get_end</vh></v>
-<v t="ekr.20080516150804.760"><vh>get_logical_end</vh></v>
-<v t="ekr.20080516150804.761"><vh>get_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.762"><vh>class GlobalScope</vh>
-<v t="ekr.20080516150804.763"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.764"><vh>get_start</vh></v>
-<v t="ekr.20080516150804.765"><vh>get_kind</vh></v>
-<v t="ekr.20080516150804.766"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.767"><vh>get_names</vh></v>
-<v t="ekr.20080516150804.768"><vh>get_inner_scope_for_line</vh></v>
-<v t="ekr.20080516150804.769"><vh>get_inner_scope_for_offset</vh></v>
-<v t="ekr.20080516150804.770"><vh>_get_scope_finder</vh></v>
-<v t="ekr.20080516150804.771"><vh>builtin_names</vh></v>
-</v>
-<v t="ekr.20080516150804.772"><vh>class FunctionScope</vh>
-<v t="ekr.20080516150804.773"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.774"><vh>_get_names</vh></v>
-<v t="ekr.20080516150804.775"><vh>_visit_function</vh></v>
-<v t="ekr.20080516150804.776"><vh>_get_returned_asts</vh></v>
-<v t="ekr.20080516150804.777"><vh>_is_generator</vh></v>
-<v t="ekr.20080516150804.778"><vh>get_names</vh></v>
-<v t="ekr.20080516150804.779"><vh>_create_scopes</vh></v>
-<v t="ekr.20080516150804.780"><vh>get_kind</vh></v>
-<v t="ekr.20080516150804.781"><vh>invalidate_data</vh></v>
-</v>
-<v t="ekr.20080516150804.782"><vh>class ClassScope</vh>
-<v t="ekr.20080516150804.783"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.784"><vh>get_kind</vh></v>
-<v t="ekr.20080516150804.785"><vh>get_propagated_names</vh></v>
-</v>
-<v t="ekr.20080516150804.786"><vh>class _HoldingScopeFinder</vh>
-<v t="ekr.20080516150804.787"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.788"><vh>get_indents</vh></v>
-<v t="ekr.20080516150804.789"><vh>get_location</vh></v>
-<v t="ekr.20080516150804.790"><vh>_get_scope_indents</vh></v>
-<v t="ekr.20080516150804.791"><vh>get_holding_scope</vh></v>
-<v t="ekr.20080516150804.792"><vh>_is_empty_line</vh></v>
-<v t="ekr.20080516150804.793"><vh>_get_body_indents</vh></v>
-<v t="ekr.20080516150804.794"><vh>get_holding_scope_for_offset</vh></v>
-<v t="ekr.20080516150804.795"><vh>find_scope_end</vh></v>
-<v t="ekr.20080516150804.796"><vh>lines</vh></v>
-<v t="ekr.20080516150804.797"><vh>code</vh></v>
-<v t="ekr.20080516150804.798"><vh>logical_lines</vh></v>
-</v>
-<v t="ekr.20080516150804.799"><vh>class TemporaryScope</vh>
-<v t="ekr.20080516150804.800"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.801"><vh>get_names</vh></v>
-<v t="ekr.20080516150804.802"><vh>get_defined_names</vh></v>
-<v t="ekr.20080516150804.803"><vh>_create_scopes</vh></v>
-<v t="ekr.20080516150804.804"><vh>get_kind</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.805"><vh>base\resourceobserver.py</vh>
-<v t="ekr.20080516150804.806"><vh>resourceobserver declarations</vh></v>
-<v t="ekr.20080516150804.807"><vh>class ResourceObserver</vh>
-<v t="ekr.20080516150804.808"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.809"><vh>resource_changed</vh></v>
-<v t="ekr.20080516150804.810"><vh>resource_moved</vh></v>
-<v t="ekr.20080516150804.811"><vh>resource_created</vh></v>
-<v t="ekr.20080516150804.812"><vh>resource_removed</vh></v>
-<v t="ekr.20080516150804.813"><vh>validate</vh></v>
-</v>
-<v t="ekr.20080516150804.814"><vh>class FilteredResourceObserver</vh>
-<v t="ekr.20080516150804.815"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.816"><vh>add_resource</vh></v>
-<v t="ekr.20080516150804.817"><vh>remove_resource</vh></v>
-<v t="ekr.20080516150804.818"><vh>clear_resources</vh></v>
-<v t="ekr.20080516150804.819"><vh>resource_changed</vh></v>
-<v t="ekr.20080516150804.820"><vh>_update_changes_caused_by_changed</vh></v>
-<v t="ekr.20080516150804.821"><vh>_update_changes_caused_by_moved</vh></v>
-<v t="ekr.20080516150804.822"><vh>_is_parent_changed</vh></v>
-<v t="ekr.20080516150804.823"><vh>resource_moved</vh></v>
-<v t="ekr.20080516150804.824"><vh>resource_created</vh></v>
-<v t="ekr.20080516150804.825"><vh>_update_changes_caused_by_created</vh></v>
-<v t="ekr.20080516150804.826"><vh>resource_removed</vh></v>
-<v t="ekr.20080516150804.827"><vh>_perform_changes</vh></v>
-<v t="ekr.20080516150804.828"><vh>validate</vh></v>
-<v t="ekr.20080516150804.829"><vh>_search_resource_creations</vh></v>
-<v t="ekr.20080516150804.830"><vh>_search_resource_moves</vh></v>
-<v t="ekr.20080516150804.831"><vh>_search_resource_changes</vh></v>
-<v t="ekr.20080516150804.832"><vh>_is_changed</vh></v>
-<v t="ekr.20080516150804.833"><vh>_calculate_new_resource</vh></v>
-</v>
-<v t="ekr.20080516150804.834"><vh>class ChangeIndicator</vh>
-<v t="ekr.20080516150804.835"><vh>get_indicator</vh></v>
-</v>
-<v t="ekr.20080516150804.836"><vh>class _Changes</vh>
-<v t="ekr.20080516150804.837"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.838"><vh>add_changed</vh></v>
-<v t="ekr.20080516150804.839"><vh>add_removed</vh></v>
-<v t="ekr.20080516150804.840"><vh>add_created</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.841"><vh>base\resources.py</vh>
-<v t="ekr.20080516150804.842"><vh>resources declarations</vh></v>
-<v t="ekr.20080516150804.843"><vh>class Resource</vh>
-<v t="ekr.20080516150804.844"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.845"><vh>move</vh></v>
-<v t="ekr.20080516150804.846"><vh>remove</vh></v>
-<v t="ekr.20080516150804.847"><vh>is_folder</vh></v>
-<v t="ekr.20080516150804.848"><vh>create</vh></v>
-<v t="ekr.20080516150804.849"><vh>exists</vh></v>
-<v t="ekr.20080516150804.850"><vh>parent</vh></v>
-<v t="ekr.20080516150804.851"><vh>path</vh></v>
-<v t="ekr.20080516150804.852"><vh>name</vh></v>
-<v t="ekr.20080516150804.853"><vh>real_path</vh></v>
-<v t="ekr.20080516150804.854"><vh>_get_destination_for_move</vh></v>
-<v t="ekr.20080516150804.855"><vh>__eq__</vh></v>
-<v t="ekr.20080516150804.856"><vh>__hash__</vh></v>
-<v t="ekr.20080516150804.857"><vh>_perform_change</vh></v>
-</v>
-<v t="ekr.20080516150804.858"><vh>class File</vh>
-<v t="ekr.20080516150804.859"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.860"><vh>read</vh></v>
-<v t="ekr.20080516150804.861"><vh>read_bytes</vh></v>
-<v t="ekr.20080516150804.862"><vh>write</vh></v>
-<v t="ekr.20080516150804.863"><vh>is_folder</vh></v>
-<v t="ekr.20080516150804.864"><vh>create</vh></v>
-</v>
-<v t="ekr.20080516150804.865"><vh>class Folder</vh>
-<v t="ekr.20080516150804.866"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.867"><vh>is_folder</vh></v>
-<v t="ekr.20080516150804.868"><vh>get_children</vh></v>
-<v t="ekr.20080516150804.869"><vh>create_file</vh></v>
-<v t="ekr.20080516150804.870"><vh>create_folder</vh></v>
-<v t="ekr.20080516150804.871"><vh>_get_child_path</vh></v>
-<v t="ekr.20080516150804.872"><vh>get_child</vh></v>
-<v t="ekr.20080516150804.873"><vh>has_child</vh></v>
-<v t="ekr.20080516150804.874"><vh>get_files</vh></v>
-<v t="ekr.20080516150804.875"><vh>get_folders</vh></v>
-<v t="ekr.20080516150804.876"><vh>contains</vh></v>
-<v t="ekr.20080516150804.877"><vh>create</vh></v>
-</v>
-<v t="ekr.20080516150804.878"><vh>class _ResourceMatcher</vh>
-<v t="ekr.20080516150804.879"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.880"><vh>set_patterns</vh></v>
-<v t="ekr.20080516150804.881"><vh>_add_pattern</vh></v>
-<v t="ekr.20080516150804.882"><vh>does_match</vh></v>
-<v t="ekr.20080516150804.883"><vh>compiled_patterns</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.884"><vh>base\simplify.py</vh>
-<v t="ekr.20080516150804.885"><vh>simplify declarations</vh></v>
-<v t="ekr.20080516150804.886"><vh>real_code</vh></v>
-<v t="ekr.20080516150804.887"><vh>ignored_regions</vh></v>
-</v>
-<v t="ekr.20080516150804.888"><vh>base\taskhandle.py</vh>
-<v t="ekr.20080516150804.889"><vh>taskhandle declarations</vh></v>
-<v t="ekr.20080516150804.890"><vh>class TaskHandle</vh>
-<v t="ekr.20080516150804.891"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.892"><vh>stop</vh></v>
-<v t="ekr.20080516150804.893"><vh>current_jobset</vh></v>
-<v t="ekr.20080516150804.894"><vh>add_observer</vh></v>
-<v t="ekr.20080516150804.895"><vh>is_stopped</vh></v>
-<v t="ekr.20080516150804.896"><vh>get_jobsets</vh></v>
-<v t="ekr.20080516150804.897"><vh>create_jobset</vh></v>
-<v t="ekr.20080516150804.898"><vh>_inform_observers</vh></v>
-</v>
-<v t="ekr.20080516150804.899"><vh>class JobSet</vh>
-<v t="ekr.20080516150804.900"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.901"><vh>started_job</vh></v>
-<v t="ekr.20080516150804.902"><vh>finished_job</vh></v>
-<v t="ekr.20080516150804.903"><vh>check_status</vh></v>
-<v t="ekr.20080516150804.904"><vh>get_active_job_name</vh></v>
-<v t="ekr.20080516150804.905"><vh>get_percent_done</vh></v>
-<v t="ekr.20080516150804.906"><vh>get_name</vh></v>
-</v>
-<v t="ekr.20080516150804.907"><vh>class NullTaskHandle</vh>
-<v t="ekr.20080516150804.908"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.909"><vh>is_stopped</vh></v>
-<v t="ekr.20080516150804.910"><vh>stop</vh></v>
-<v t="ekr.20080516150804.911"><vh>create_jobset</vh></v>
-<v t="ekr.20080516150804.912"><vh>get_jobsets</vh></v>
-<v t="ekr.20080516150804.913"><vh>add_observer</vh></v>
-</v>
-<v t="ekr.20080516150804.914"><vh>class NullJobSet</vh>
-<v t="ekr.20080516150804.915"><vh>started_job</vh></v>
-<v t="ekr.20080516150804.916"><vh>finished_job</vh></v>
-<v t="ekr.20080516150804.917"><vh>check_status</vh></v>
-<v t="ekr.20080516150804.918"><vh>get_active_job_name</vh></v>
-<v t="ekr.20080516150804.919"><vh>get_percent_done</vh></v>
-<v t="ekr.20080516150804.920"><vh>get_name</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.921"><vh>base\utils.py</vh>
-<v t="ekr.20080516150804.922"><vh>cacheit</vh></v>
-<v t="ekr.20080516150804.923"><vh>prevent_recursion</vh></v>
-<v t="ekr.20080516150804.924"><vh>ignore_exception</vh></v>
-<v t="ekr.20080516150804.925"><vh>cached</vh></v>
-<v t="ekr.20080516150804.926"><vh>class _Cached</vh>
-<v t="ekr.20080516150804.927"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.928"><vh>__call__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.929"><vh>base\worder.py</vh>
-<v t="ekr.20080516150804.930"><vh>worder declarations</vh></v>
-<v t="ekr.20080516150804.931"><vh>get_name_at</vh></v>
-<v t="ekr.20080516150804.932"><vh>class Worder</vh>
-<v t="ekr.20080516150804.933"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.934"><vh>_init_ignores</vh></v>
-<v t="ekr.20080516150804.935"><vh>_context_call</vh></v>
-<v t="ekr.20080516150804.936"><vh>get_primary_at</vh></v>
-<v t="ekr.20080516150804.937"><vh>get_word_at</vh></v>
-<v t="ekr.20080516150804.938"><vh>get_primary_range</vh></v>
-<v t="ekr.20080516150804.939"><vh>get_splitted_primary_before</vh></v>
-<v t="ekr.20080516150804.940"><vh>get_word_range</vh></v>
-<v t="ekr.20080516150804.941"><vh>is_function_keyword_parameter</vh></v>
-<v t="ekr.20080516150804.942"><vh>is_a_class_or_function_name_in_header</vh></v>
-<v t="ekr.20080516150804.943"><vh>is_from_statement_module</vh></v>
-<v t="ekr.20080516150804.944"><vh>is_from_aliased</vh></v>
-<v t="ekr.20080516150804.945"><vh>find_parens_start_from_inside</vh></v>
-<v t="ekr.20080516150804.946"><vh>is_a_name_after_from_import</vh></v>
-<v t="ekr.20080516150804.947"><vh>is_from_statement</vh></v>
-<v t="ekr.20080516150804.948"><vh>get_from_aliased</vh></v>
-<v t="ekr.20080516150804.949"><vh>is_import_statement</vh></v>
-<v t="ekr.20080516150804.950"><vh>is_assigned_here</vh></v>
-<v t="ekr.20080516150804.951"><vh>is_a_function_being_called</vh></v>
-<v t="ekr.20080516150804.952"><vh>get_word_parens_range</vh></v>
-<v t="ekr.20080516150804.953"><vh>is_name_assigned_in_class_body</vh></v>
-<v t="ekr.20080516150804.954"><vh>is_on_function_call_keyword</vh></v>
-<v t="ekr.20080516150804.955"><vh>_find_parens_start</vh></v>
-<v t="ekr.20080516150804.956"><vh>get_parameters</vh></v>
-<v t="ekr.20080516150804.957"><vh>get_from_module</vh></v>
-<v t="ekr.20080516150804.958"><vh>is_assigned_in_a_tuple_assignment</vh></v>
-<v t="ekr.20080516150804.959"><vh>get_assignment_type</vh></v>
-<v t="ekr.20080516150804.960"><vh>get_function_and_args_in_header</vh></v>
-<v t="ekr.20080516150804.961"><vh>find_function_offset</vh></v>
-</v>
-<v t="ekr.20080516150804.962"><vh>class _RealFinder</vh>
-<v t="ekr.20080516150804.963"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.964"><vh>_find_word_start</vh></v>
-<v t="ekr.20080516150804.965"><vh>_find_word_end</vh></v>
-<v t="ekr.20080516150804.966"><vh>_find_last_non_space_char</vh></v>
-<v t="ekr.20080516150804.967"><vh>get_word_at</vh></v>
-<v t="ekr.20080516150804.968"><vh>_get_fixed_offset</vh></v>
-<v t="ekr.20080516150804.969"><vh>_is_id_char</vh></v>
-<v t="ekr.20080516150804.970"><vh>_find_string_start</vh></v>
-<v t="ekr.20080516150804.971"><vh>_find_parens_start</vh></v>
-<v t="ekr.20080516150804.972"><vh>_find_atom_start</vh></v>
-<v t="ekr.20080516150804.973"><vh>_find_primary_without_dot_start</vh></v>
-<v t="ekr.20080516150804.974"><vh>_find_primary_start</vh></v>
-<v t="ekr.20080516150804.975"><vh>get_primary_at</vh></v>
-<v t="ekr.20080516150804.976"><vh>get_splitted_primary_before</vh></v>
-<v t="ekr.20080516150804.977"><vh>_get_line_start</vh></v>
-<v t="ekr.20080516150804.978"><vh>_get_line_end</vh></v>
-<v t="ekr.20080516150804.979"><vh>is_name_assigned_in_class_body</vh></v>
-<v t="ekr.20080516150804.980"><vh>is_a_class_or_function_name_in_header</vh></v>
-<v t="ekr.20080516150804.981"><vh>_find_first_non_space_char</vh></v>
-<v t="ekr.20080516150804.982"><vh>is_a_function_being_called</vh></v>
-<v t="ekr.20080516150804.983"><vh>_find_import_end</vh></v>
-<v t="ekr.20080516150804.984"><vh>is_import_statement</vh></v>
-<v t="ekr.20080516150804.985"><vh>is_from_statement</vh></v>
-<v t="ekr.20080516150804.986"><vh>is_from_statement_module</vh></v>
-<v t="ekr.20080516150804.987"><vh>is_a_name_after_from_import</vh></v>
-<v t="ekr.20080516150804.988"><vh>get_from_module</vh></v>
-<v t="ekr.20080516150804.989"><vh>is_from_aliased</vh></v>
-<v t="ekr.20080516150804.990"><vh>get_from_aliased</vh></v>
-<v t="ekr.20080516150804.991"><vh>is_function_keyword_parameter</vh></v>
-<v t="ekr.20080516150804.992"><vh>is_on_function_call_keyword</vh></v>
-<v t="ekr.20080516150804.993"><vh>find_parens_start_from_inside</vh></v>
-<v t="ekr.20080516150804.994"><vh>is_assigned_here</vh></v>
-<v t="ekr.20080516150804.995"><vh>get_assignment_type</vh></v>
-<v t="ekr.20080516150804.996"><vh>get_primary_range</vh></v>
-<v t="ekr.20080516150804.997"><vh>get_word_range</vh></v>
-<v t="ekr.20080516150804.998"><vh>get_word_parens_range</vh></v>
-<v t="ekr.20080516150804.999"><vh>get_parameters</vh></v>
-<v t="ekr.20080516150804.1000"><vh>is_assigned_in_a_tuple_assignment</vh></v>
-<v t="ekr.20080516150804.1001"><vh>get_function_and_args_in_header</vh></v>
-<v t="ekr.20080516150804.1002"><vh>find_function_offset</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1003"><vh>base\__init__.py</vh>
-<v t="ekr.20080516150804.1004"><vh>__init__ declarations</vh></v>
-</v>
-<v t="ekr.20080516150804.1005"><vh>base\oi</vh>
-<v t="ekr.20080516150804.1006"><vh>base\oi\doa.py</vh>
-<v t="ekr.20080516150804.1007"><vh>doa declarations</vh></v>
-<v t="ekr.20080516150804.1008"><vh>class PythonFileRunner</vh>
-<v t="ekr.20080516150804.1009"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1010"><vh>run</vh></v>
-<v t="ekr.20080516150804.1011"><vh>_init_data_receiving</vh></v>
-<v t="ekr.20080516150804.1012"><vh>_receive_information</vh></v>
-<v t="ekr.20080516150804.1013"><vh>wait_process</vh></v>
-<v t="ekr.20080516150804.1014"><vh>kill_process</vh></v>
-<v t="ekr.20080516150804.1015"><vh>add_finishing_observer</vh></v>
-</v>
-<v t="ekr.20080516150804.1016"><vh>class _MessageReceiver</vh>
-<v t="ekr.20080516150804.1017"><vh>receive_data</vh></v>
-<v t="ekr.20080516150804.1018"><vh>get_send_info</vh></v>
-</v>
-<v t="ekr.20080516150804.1019"><vh>class _SocketReceiver</vh>
-<v t="ekr.20080516150804.1020"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1021"><vh>get_send_info</vh></v>
-<v t="ekr.20080516150804.1022"><vh>receive_data</vh></v>
-</v>
-<v t="ekr.20080516150804.1023"><vh>class _FIFOReceiver</vh>
-<v t="ekr.20080516150804.1024"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1025"><vh>_get_file_name</vh></v>
-<v t="ekr.20080516150804.1026"><vh>get_send_info</vh></v>
-<v t="ekr.20080516150804.1027"><vh>receive_data</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1028"><vh>base\oi\memorydb.py</vh>
-<v t="ekr.20080516150804.1029"><vh>memorydb declarations</vh></v>
-<v t="ekr.20080516150804.1030"><vh>class MemoryDB</vh>
-<v t="ekr.20080516150804.1031"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1032"><vh>_load_files</vh></v>
-<v t="ekr.20080516150804.1033"><vh>keys</vh></v>
-<v t="ekr.20080516150804.1034"><vh>__contains__</vh></v>
-<v t="ekr.20080516150804.1035"><vh>__getitem__</vh></v>
-<v t="ekr.20080516150804.1036"><vh>create</vh></v>
-<v t="ekr.20080516150804.1037"><vh>rename</vh></v>
-<v t="ekr.20080516150804.1038"><vh>__delitem__</vh></v>
-<v t="ekr.20080516150804.1039"><vh>write</vh></v>
-<v t="ekr.20080516150804.1040"><vh>compress</vh></v>
-<v t="ekr.20080516150804.1041"><vh>persist</vh></v>
-</v>
-<v t="ekr.20080516150804.1042"><vh>class FileInfo</vh>
-<v t="ekr.20080516150804.1043"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1044"><vh>create_scope</vh></v>
-<v t="ekr.20080516150804.1045"><vh>keys</vh></v>
-<v t="ekr.20080516150804.1046"><vh>__contains__</vh></v>
-<v t="ekr.20080516150804.1047"><vh>__getitem__</vh></v>
-<v t="ekr.20080516150804.1048"><vh>__delitem__</vh></v>
-</v>
-<v t="ekr.20080516150804.1049"><vh>class ScopeInfo</vh>
-<v t="ekr.20080516150804.1050"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1051"><vh>get_per_name</vh></v>
-<v t="ekr.20080516150804.1052"><vh>save_per_name</vh></v>
-<v t="ekr.20080516150804.1053"><vh>get_returned</vh></v>
-<v t="ekr.20080516150804.1054"><vh>get_call_infos</vh></v>
-<v t="ekr.20080516150804.1055"><vh>add_call</vh></v>
-<v t="ekr.20080516150804.1056"><vh>__getstate__</vh></v>
-<v t="ekr.20080516150804.1057"><vh>__setstate__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1058"><vh>base\oi\objectdb.py</vh>
-<v t="ekr.20080516150804.1059"><vh>objectdb declarations</vh></v>
-<v t="ekr.20080516150804.1060"><vh>class ObjectDB</vh>
-<v t="ekr.20080516150804.1061"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1062"><vh>validate_files</vh></v>
-<v t="ekr.20080516150804.1063"><vh>validate_file</vh></v>
-<v t="ekr.20080516150804.1064"><vh>file_moved</vh></v>
-<v t="ekr.20080516150804.1065"><vh>get_files</vh></v>
-<v t="ekr.20080516150804.1066"><vh>get_returned</vh></v>
-<v t="ekr.20080516150804.1067"><vh>get_pername</vh></v>
-<v t="ekr.20080516150804.1068"><vh>get_callinfos</vh></v>
-<v t="ekr.20080516150804.1069"><vh>add_callinfo</vh></v>
-<v t="ekr.20080516150804.1070"><vh>add_pername</vh></v>
-<v t="ekr.20080516150804.1071"><vh>add_file_list_observer</vh></v>
-<v t="ekr.20080516150804.1072"><vh>write</vh></v>
-<v t="ekr.20080516150804.1073"><vh>_get_scope_info</vh></v>
-<v t="ekr.20080516150804.1074"><vh>_file_removed</vh></v>
-<v t="ekr.20080516150804.1075"><vh>_file_added</vh></v>
-<v t="ekr.20080516150804.1076"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080516150804.1077"><vh>class _NullScopeInfo</vh>
-<v t="ekr.20080516150804.1078"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1079"><vh>get_per_name</vh></v>
-<v t="ekr.20080516150804.1080"><vh>save_per_name</vh></v>
-<v t="ekr.20080516150804.1081"><vh>get_returned</vh></v>
-<v t="ekr.20080516150804.1082"><vh>get_call_infos</vh></v>
-<v t="ekr.20080516150804.1083"><vh>add_call</vh></v>
-</v>
-<v t="ekr.20080516150804.1084"><vh>class FileInfo</vh>
-<v t="ekr.20080516150804.1085"><vh>create_scope</vh></v>
-</v>
-<v t="ekr.20080516150804.1086"><vh>class FileDict</vh>
-<v t="ekr.20080516150804.1087"><vh>create</vh></v>
-<v t="ekr.20080516150804.1088"><vh>rename</vh></v>
-</v>
-<v t="ekr.20080516150804.1089"><vh>class ScopeInfo</vh>
-<v t="ekr.20080516150804.1090"><vh>get_per_name</vh></v>
-<v t="ekr.20080516150804.1091"><vh>save_per_name</vh></v>
-<v t="ekr.20080516150804.1092"><vh>get_returned</vh></v>
-<v t="ekr.20080516150804.1093"><vh>get_call_infos</vh></v>
-<v t="ekr.20080516150804.1094"><vh>add_call</vh></v>
-</v>
-<v t="ekr.20080516150804.1095"><vh>class CallInfo</vh>
-<v t="ekr.20080516150804.1096"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1097"><vh>get_parameters</vh></v>
-<v t="ekr.20080516150804.1098"><vh>get_returned</vh></v>
-</v>
-<v t="ekr.20080516150804.1099"><vh>class FileListObserver</vh>
-<v t="ekr.20080516150804.1100"><vh>added</vh></v>
-<v t="ekr.20080516150804.1101"><vh>removed</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1102"><vh>base\oi\objectinfo.py</vh>
-<v t="ekr.20080516150804.1103"><vh>objectinfo declarations</vh></v>
-<v t="ekr.20080516150804.1104"><vh>class ObjectInfoManager</vh>
-<v t="ekr.20080516150804.1105"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1106"><vh>_init_objectdb</vh></v>
-<v t="ekr.20080516150804.1107"><vh>_init_validation</vh></v>
-<v t="ekr.20080516150804.1108"><vh>_resource_changed</vh></v>
-<v t="ekr.20080516150804.1109"><vh>_resource_moved</vh></v>
-<v t="ekr.20080516150804.1110"><vh>get_returned</vh></v>
-<v t="ekr.20080516150804.1111"><vh>get_exact_returned</vh></v>
-<v t="ekr.20080516150804.1112"><vh>_args_to_textual</vh></v>
-<v t="ekr.20080516150804.1113"><vh>get_parameter_objects</vh></v>
-<v t="ekr.20080516150804.1114"><vh>get_passed_objects</vh></v>
-<v t="ekr.20080516150804.1115"><vh>doa_data_received</vh></v>
-<v t="ekr.20080516150804.1116"><vh>function_called</vh></v>
-<v t="ekr.20080516150804.1117"><vh>save_per_name</vh></v>
-<v t="ekr.20080516150804.1118"><vh>get_per_name</vh></v>
-<v t="ekr.20080516150804.1119"><vh>_save_data</vh></v>
-<v t="ekr.20080516150804.1120"><vh>_get_scope</vh></v>
-<v t="ekr.20080516150804.1121"><vh>sync</vh></v>
-<v t="ekr.20080516150804.1122"><vh>__str__</vh></v>
-</v>
-<v t="ekr.20080516150804.1123"><vh>class TextualValidation</vh>
-<v t="ekr.20080516150804.1124"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1125"><vh>is_value_valid</vh></v>
-<v t="ekr.20080516150804.1126"><vh>is_more_valid</vh></v>
-<v t="ekr.20080516150804.1127"><vh>is_file_valid</vh></v>
-<v t="ekr.20080516150804.1128"><vh>is_scope_valid</vh></v>
-</v>
-<v t="ekr.20080516150804.1129"><vh>class _FileListObserver</vh>
-<v t="ekr.20080516150804.1130"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1131"><vh>removed</vh></v>
-<v t="ekr.20080516150804.1132"><vh>added</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1133"><vh>base\oi\runmod.py</vh>
-<v t="ekr.20080516150804.1134"><vh>__rope_start_everything</vh></v>
-</v>
-<v t="ekr.20080516150804.1135"><vh>base\oi\soa.py</vh>
-<v t="ekr.20080516150804.1136"><vh>soa declarations</vh></v>
-<v t="ekr.20080516150804.1137"><vh>analyze_module</vh></v>
-<v t="ekr.20080516150804.1138"><vh>_analyze_node</vh></v>
-<v t="ekr.20080516150804.1139"><vh>class SOIVisitor</vh>
-<v t="ekr.20080516150804.1140"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1141"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1142"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.1143"><vh>_Call</vh></v>
-<v t="ekr.20080516150804.1144"><vh>_args_with_self</vh></v>
-<v t="ekr.20080516150804.1145"><vh>_call</vh></v>
-<v t="ekr.20080516150804.1146"><vh>_parameter_objects</vh></v>
-<v t="ekr.20080516150804.1147"><vh>_Assign</vh></v>
-</v>
-<v t="ekr.20080516150804.1148"><vh>class _SOIAssignVisitor</vh>
-<v t="ekr.20080516150804.1149"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1150"><vh>_added</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1151"><vh>base\oi\soi.py</vh>
-<v t="ekr.20080516150804.1152"><vh>soi declarations</vh></v>
-<v t="ekr.20080516150804.1153"><vh>infer_returned_object</vh></v>
-<v t="ekr.20080516150804.1154"><vh>infer_parameter_objects</vh></v>
-<v t="ekr.20080516150804.1155"><vh>_handle_first_parameter</vh></v>
-<v t="ekr.20080516150804.1156"><vh>infer_assigned_object</vh></v>
-<v t="ekr.20080516150804.1157"><vh>get_passed_objects</vh></v>
-<v t="ekr.20080516150804.1158"><vh>_infer_returned</vh></v>
-<v t="ekr.20080516150804.1159"><vh>_parameter_objects</vh></v>
-<v t="ekr.20080516150804.1160"><vh>_infer_assignment</vh></v>
-<v t="ekr.20080516150804.1161"><vh>_follow_levels</vh></v>
-<v t="ekr.20080516150804.1162"><vh>_follow_pyname</vh></v>
-<v t="ekr.20080516150804.1163"><vh>_follow_evaluations</vh></v>
-<v t="ekr.20080516150804.1164"><vh>_get_lineno_for_node</vh></v>
-<v t="ekr.20080516150804.1165"><vh>_get_attribute</vh></v>
-</v>
-<v t="ekr.20080516150804.1166"><vh>base\oi\transform.py</vh>
-<v t="ekr.20080516150804.1167"><vh>transform declarations</vh></v>
-<v t="ekr.20080516150804.1168"><vh>class PyObjectToTextual</vh>
-<v t="ekr.20080516150804.1169"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1170"><vh>transform</vh></v>
-<v t="ekr.20080516150804.1171"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1172"><vh>PyObject_to_textual</vh></v>
-<v t="ekr.20080516150804.1173"><vh>PyFunction_to_textual</vh></v>
-<v t="ekr.20080516150804.1174"><vh>PyClass_to_textual</vh></v>
-<v t="ekr.20080516150804.1175"><vh>_defined_to_textual</vh></v>
-<v t="ekr.20080516150804.1176"><vh>PyModule_to_textual</vh></v>
-<v t="ekr.20080516150804.1177"><vh>PyPackage_to_textual</vh></v>
-<v t="ekr.20080516150804.1178"><vh>List_to_textual</vh></v>
-<v t="ekr.20080516150804.1179"><vh>Dict_to_textual</vh></v>
-<v t="ekr.20080516150804.1180"><vh>Tuple_to_textual</vh></v>
-<v t="ekr.20080516150804.1181"><vh>Set_to_textual</vh></v>
-<v t="ekr.20080516150804.1182"><vh>Iterator_to_textual</vh></v>
-<v t="ekr.20080516150804.1183"><vh>Generator_to_textual</vh></v>
-<v t="ekr.20080516150804.1184"><vh>Str_to_textual</vh></v>
-<v t="ekr.20080516150804.1185"><vh>File_to_textual</vh></v>
-<v t="ekr.20080516150804.1186"><vh>BuiltinFunction_to_textual</vh></v>
-<v t="ekr.20080516150804.1187"><vh>_get_pymodule_path</vh></v>
-<v t="ekr.20080516150804.1188"><vh>resource_to_path</vh></v>
-</v>
-<v t="ekr.20080516150804.1189"><vh>class TextualToPyObject</vh>
-<v t="ekr.20080516150804.1190"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1191"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1192"><vh>transform</vh></v>
-<v t="ekr.20080516150804.1193"><vh>builtin_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1194"><vh>builtin_str_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1195"><vh>builtin_list_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1196"><vh>builtin_dict_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1197"><vh>builtin_tuple_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1198"><vh>builtin_set_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1199"><vh>builtin_iter_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1200"><vh>builtin_generator_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1201"><vh>builtin_file_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1202"><vh>builtin_function_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1203"><vh>unknown_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1204"><vh>none_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1205"><vh>_module_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1206"><vh>_hierarchical_defined_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1207"><vh>defined_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1208"><vh>instance_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1209"><vh>_get_pymodule</vh></v>
-<v t="ekr.20080516150804.1210"><vh>path_to_resource</vh></v>
-</v>
-<v t="ekr.20080516150804.1211"><vh>class DOITextualToPyObject</vh>
-<v t="ekr.20080516150804.1212"><vh>_function_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1213"><vh>_class_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1214"><vh>defined_to_pyobject</vh></v>
-<v t="ekr.20080516150804.1215"><vh>_find_occurrence</vh></v>
-<v t="ekr.20080516150804.1216"><vh>path_to_resource</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1217"><vh>base\oi\__init__.py</vh>
-<v t="ekr.20080516150804.1218"><vh>__init__ declarations</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080516150804.1219"><vh>rope-0.8.2\rope\contrib</vh>
-<v t="ekr.20080516150804.1220"><vh>contrib\autoimport.py</vh>
-<v t="ekr.20080516150804.1221"><vh>autoimport declarations</vh></v>
-<v t="ekr.20080516150804.1222"><vh>class AutoImport</vh>
-<v t="ekr.20080516150804.1223"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1224"><vh>import_assist</vh></v>
-<v t="ekr.20080516150804.1225"><vh>get_modules</vh></v>
-<v t="ekr.20080516150804.1226"><vh>get_all_names</vh></v>
-<v t="ekr.20080516150804.1227"><vh>get_name_locations</vh></v>
-<v t="ekr.20080516150804.1228"><vh>generate_cache</vh></v>
-<v t="ekr.20080516150804.1229"><vh>generate_modules_cache</vh></v>
-<v t="ekr.20080516150804.1230"><vh>clear_cache</vh></v>
-<v t="ekr.20080516150804.1231"><vh>find_insertion_line</vh></v>
-<v t="ekr.20080516150804.1232"><vh>update_resource</vh></v>
-<v t="ekr.20080516150804.1233"><vh>update_module</vh></v>
-<v t="ekr.20080516150804.1234"><vh>_module_name</vh></v>
-<v t="ekr.20080516150804.1235"><vh>_add_names</vh></v>
-<v t="ekr.20080516150804.1236"><vh>_write</vh></v>
-<v t="ekr.20080516150804.1237"><vh>_changed</vh></v>
-<v t="ekr.20080516150804.1238"><vh>_moved</vh></v>
-<v t="ekr.20080516150804.1239"><vh>_removed</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1240"><vh>contrib\codeassist.py</vh>
-<v t="ekr.20080516150804.1241"><vh>codeassist declarations</vh></v>
-<v t="ekr.20080516150804.1242"><vh>code_assist</vh></v>
-<v t="ekr.20080516150804.1243"><vh>starting_offset</vh></v>
-<v t="ekr.20080516150804.1244"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.1245"><vh>get_calltip</vh></v>
-<v t="ekr.20080516150804.1246"><vh>get_definition_location</vh></v>
-<v t="ekr.20080516150804.1247"><vh>find_occurrences</vh></v>
-<v t="ekr.20080516150804.1248"><vh>class CodeAssistProposal</vh>
-<v t="ekr.20080516150804.1249"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.1250"><vh>class CompletionProposal</vh>
-<v t="ekr.20080516150804.1251"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1252"><vh>__str__</vh></v>
-<v t="ekr.20080516150804.1253"><vh>__repr__</vh></v>
-</v>
-<v t="ekr.20080516150804.1254"><vh>sorted_proposals</vh></v>
-<v t="ekr.20080516150804.1255"><vh>starting_expression</vh></v>
-<v t="ekr.20080516150804.1256"><vh>default_templates</vh></v>
-<v t="ekr.20080516150804.1257"><vh>class _PythonCodeAssist</vh>
-<v t="ekr.20080516150804.1258"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1259"><vh>_find_starting_offset</vh></v>
-<v t="ekr.20080516150804.1260"><vh>_matching_keywords</vh></v>
-<v t="ekr.20080516150804.1261"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1262"><vh>_dotted_completions</vh></v>
-<v t="ekr.20080516150804.1263"><vh>_undotted_completions</vh></v>
-<v t="ekr.20080516150804.1264"><vh>_from_import_completions</vh></v>
-<v t="ekr.20080516150804.1265"><vh>_find_module</vh></v>
-<v t="ekr.20080516150804.1266"><vh>_is_defined_after</vh></v>
-<v t="ekr.20080516150804.1267"><vh>_get_pyname_type</vh></v>
-<v t="ekr.20080516150804.1268"><vh>_code_completions</vh></v>
-<v t="ekr.20080516150804.1269"><vh>_keyword_parameters</vh></v>
-</v>
-<v t="ekr.20080516150804.1270"><vh>class _ProposalSorter</vh>
-<v t="ekr.20080516150804.1271"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1272"><vh>get_sorted_proposal_list</vh></v>
-<v t="ekr.20080516150804.1273"><vh>_proposal_cmp</vh></v>
-<v t="ekr.20080516150804.1274"><vh>_compare_underlined_names</vh></v>
-</v>
-<v t="ekr.20080516150804.1275"><vh>class _Commenter</vh>
-<v t="ekr.20080516150804.1276"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1277"><vh>comment</vh></v>
-<v t="ekr.20080516150804.1278"><vh>_last_non_blank</vh></v>
-<v t="ekr.20080516150804.1279"><vh>_get_block_end</vh></v>
-<v t="ekr.20080516150804.1280"><vh>_fix_incomplete_try_blocks</vh></v>
-<v t="ekr.20080516150804.1281"><vh>_find_matching_deindent</vh></v>
-</v>
-<v t="ekr.20080516150804.1282"><vh>_find_pyname_at</vh></v>
-<v t="ekr.20080516150804.1283"><vh>_get_pymodule</vh></v>
-<v t="ekr.20080516150804.1284"><vh>_get_line_indents</vh></v>
-<v t="ekr.20080516150804.1285"><vh>_logical_start</vh></v>
-<v t="ekr.20080516150804.1286"><vh>class PyDocExtractor</vh>
-<v t="ekr.20080516150804.1287"><vh>get_doc</vh></v>
-<v t="ekr.20080516150804.1288"><vh>get_calltip</vh></v>
-<v t="ekr.20080516150804.1289"><vh>_get_class_docstring</vh></v>
-<v t="ekr.20080516150804.1290"><vh>_get_function_docstring</vh></v>
-<v t="ekr.20080516150804.1291"><vh>_is_method</vh></v>
-<v t="ekr.20080516150804.1292"><vh>_get_single_function_docstring</vh></v>
-<v t="ekr.20080516150804.1293"><vh>_get_super_methods</vh></v>
-<v t="ekr.20080516150804.1294"><vh>_get_function_signature</vh></v>
-<v t="ekr.20080516150804.1295"><vh>_location</vh></v>
-<v t="ekr.20080516150804.1296"><vh>_get_module</vh></v>
-<v t="ekr.20080516150804.1297"><vh>_trim_docstring</vh></v>
-</v>
-<v t="ekr.20080516150804.1298"><vh>class TemplateProposal</vh>
-<v t="ekr.20080516150804.1299"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.1300"><vh>class Template</vh>
-<v t="ekr.20080516150804.1301"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1302"><vh>variables</vh></v>
-<v t="ekr.20080516150804.1303"><vh>substitute</vh></v>
-<v t="ekr.20080516150804.1304"><vh>get_cursor_location</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1305"><vh>contrib\findit.py</vh>
-<v t="ekr.20080516150804.1306"><vh>findit declarations</vh></v>
-<v t="ekr.20080516150804.1307"><vh>find_occurrences</vh></v>
-<v t="ekr.20080516150804.1308"><vh>find_implementations</vh></v>
-<v t="ekr.20080516150804.1309"><vh>class Location</vh></v>
-<v t="ekr.20080516150804.1310"><vh>_find_locations</vh></v>
-</v>
-<v t="ekr.20080516150804.1311"><vh>contrib\generate.py</vh>
-<v t="ekr.20080516150804.1312"><vh>generate declarations</vh></v>
-<v t="ekr.20080516150804.1313"><vh>create_generate</vh></v>
-<v t="ekr.20080516150804.1314"><vh>create_module</vh></v>
-<v t="ekr.20080516150804.1315"><vh>create_package</vh></v>
-<v t="ekr.20080516150804.1316"><vh>class _Generate</vh>
-<v t="ekr.20080516150804.1317"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1318"><vh>_generate_info</vh></v>
-<v t="ekr.20080516150804.1319"><vh>_check_exceptional_conditions</vh></v>
-<v t="ekr.20080516150804.1320"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1321"><vh>get_location</vh></v>
-<v t="ekr.20080516150804.1322"><vh>_get_element_kind</vh></v>
-<v t="ekr.20080516150804.1323"><vh>_get_element</vh></v>
-</v>
-<v t="ekr.20080516150804.1324"><vh>class GenerateFunction</vh>
-<v t="ekr.20080516150804.1325"><vh>_generate_info</vh></v>
-<v t="ekr.20080516150804.1326"><vh>_get_element</vh></v>
-<v t="ekr.20080516150804.1327"><vh>_get_element_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1328"><vh>class GenerateVariable</vh>
-<v t="ekr.20080516150804.1329"><vh>_get_element</vh></v>
-<v t="ekr.20080516150804.1330"><vh>_get_element_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1331"><vh>class GenerateClass</vh>
-<v t="ekr.20080516150804.1332"><vh>_get_element</vh></v>
-<v t="ekr.20080516150804.1333"><vh>_get_element_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1334"><vh>class GenerateModule</vh>
-<v t="ekr.20080516150804.1335"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1336"><vh>get_location</vh></v>
-</v>
-<v t="ekr.20080516150804.1337"><vh>class GeneratePackage</vh>
-<v t="ekr.20080516150804.1338"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1339"><vh>get_location</vh></v>
-</v>
-<v t="ekr.20080516150804.1340"><vh>_add_import_to_module</vh></v>
-<v t="ekr.20080516150804.1341"><vh>class _GenerationInfo</vh>
-<v t="ekr.20080516150804.1342"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1343"><vh>_init_fields</vh></v>
-<v t="ekr.20080516150804.1344"><vh>_get_goal_scope</vh></v>
-<v t="ekr.20080516150804.1345"><vh>_get_goal_module</vh></v>
-<v t="ekr.20080516150804.1346"><vh>_get_source_scope</vh></v>
-<v t="ekr.20080516150804.1347"><vh>get_insertion_lineno</vh></v>
-<v t="ekr.20080516150804.1348"><vh>get_insertion_resource</vh></v>
-<v t="ekr.20080516150804.1349"><vh>get_insertion_offsets</vh></v>
-<v t="ekr.20080516150804.1350"><vh>get_scope_indents</vh></v>
-<v t="ekr.20080516150804.1351"><vh>get_blank_lines</vh></v>
-<v t="ekr.20080516150804.1352"><vh>get_package</vh></v>
-<v t="ekr.20080516150804.1353"><vh>primary_is_found</vh></v>
-<v t="ekr.20080516150804.1354"><vh>element_already_exists</vh></v>
-<v t="ekr.20080516150804.1355"><vh>get_name</vh></v>
-</v>
-<v t="ekr.20080516150804.1356"><vh>class _FunctionGenerationInfo</vh>
-<v t="ekr.20080516150804.1357"><vh>_get_goal_scope</vh></v>
-<v t="ekr.20080516150804.1358"><vh>element_already_exists</vh></v>
-<v t="ekr.20080516150804.1359"><vh>is_static_method</vh></v>
-<v t="ekr.20080516150804.1360"><vh>is_method</vh></v>
-<v t="ekr.20080516150804.1361"><vh>is_constructor</vh></v>
-<v t="ekr.20080516150804.1362"><vh>is_instance</vh></v>
-<v t="ekr.20080516150804.1363"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.1364"><vh>get_passed_args</vh></v>
-<v t="ekr.20080516150804.1365"><vh>_is_id</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1366"><vh>contrib\__init__.py</vh>
-<v t="ekr.20080516150804.1367"><vh>__init__ declarations</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1368"><vh>rope-0.8.2\rope\refactor</vh>
-<v t="ekr.20080516150804.1369"><vh>refactor\change_signature.py</vh>
-<v t="ekr.20080516150804.1370"><vh>change_signature declarations</vh></v>
-<v t="ekr.20080516150804.1371"><vh>class ChangeSignature</vh>
-<v t="ekr.20080516150804.1372"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1373"><vh>_set_name_and_pyname</vh></v>
-<v t="ekr.20080516150804.1374"><vh>_change_calls</vh></v>
-<v t="ekr.20080516150804.1375"><vh>is_method</vh></v>
-<v t="ekr.20080516150804.1376"><vh>get_definition_info</vh></v>
-<v t="ekr.20080516150804.1377"><vh>normalize</vh></v>
-<v t="ekr.20080516150804.1378"><vh>remove</vh></v>
-<v t="ekr.20080516150804.1379"><vh>add</vh></v>
-<v t="ekr.20080516150804.1380"><vh>inline_default</vh></v>
-<v t="ekr.20080516150804.1381"><vh>reorder</vh></v>
-<v t="ekr.20080516150804.1382"><vh>get_changes</vh></v>
-</v>
-<v t="ekr.20080516150804.1383"><vh>class _FunctionChangers</vh>
-<v t="ekr.20080516150804.1384"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1385"><vh>_get_changed_definition_infos</vh></v>
-<v t="ekr.20080516150804.1386"><vh>change_definition</vh></v>
-<v t="ekr.20080516150804.1387"><vh>change_call</vh></v>
-</v>
-<v t="ekr.20080516150804.1388"><vh>class _ArgumentChanger</vh>
-<v t="ekr.20080516150804.1389"><vh>change_definition_info</vh></v>
-<v t="ekr.20080516150804.1390"><vh>change_argument_mapping</vh></v>
-</v>
-<v t="ekr.20080516150804.1391"><vh>class ArgumentNormalizer</vh></v>
-<v t="ekr.20080516150804.1392"><vh>class ArgumentRemover</vh>
-<v t="ekr.20080516150804.1393"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1394"><vh>change_definition_info</vh></v>
-<v t="ekr.20080516150804.1395"><vh>change_argument_mapping</vh></v>
-</v>
-<v t="ekr.20080516150804.1396"><vh>class ArgumentAdder</vh>
-<v t="ekr.20080516150804.1397"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1398"><vh>change_definition_info</vh></v>
-<v t="ekr.20080516150804.1399"><vh>change_argument_mapping</vh></v>
-</v>
-<v t="ekr.20080516150804.1400"><vh>class ArgumentDefaultInliner</vh>
-<v t="ekr.20080516150804.1401"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1402"><vh>change_definition_info</vh></v>
-<v t="ekr.20080516150804.1403"><vh>change_argument_mapping</vh></v>
-</v>
-<v t="ekr.20080516150804.1404"><vh>class ArgumentReorderer</vh>
-<v t="ekr.20080516150804.1405"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1406"><vh>change_definition_info</vh></v>
-</v>
-<v t="ekr.20080516150804.1407"><vh>class _ChangeCallsInModule</vh>
-<v t="ekr.20080516150804.1408"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1409"><vh>get_changed_module</vh></v>
-<v t="ekr.20080516150804.1410"><vh>pymodule</vh></v>
-<v t="ekr.20080516150804.1411"><vh>source</vh></v>
-<v t="ekr.20080516150804.1412"><vh>lines</vh></v>
-</v>
-<v t="ekr.20080516150804.1413"><vh>class _MultipleFinders</vh>
-<v t="ekr.20080516150804.1414"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1415"><vh>find_occurrences</vh></v>
-<v t="ekr.20080516150804.1416"><vh>_cmp_occurrences</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1417"><vh>refactor\encapsulate_field.py</vh>
-<v t="ekr.20080516150804.1418"><vh>encapsulate_field declarations</vh></v>
-<v t="ekr.20080516150804.1419"><vh>class EncapsulateField</vh>
-<v t="ekr.20080516150804.1420"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1421"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1422"><vh>get_field_name</vh></v>
-<v t="ekr.20080516150804.1423"><vh>_is_an_attribute</vh></v>
-<v t="ekr.20080516150804.1424"><vh>_get_defining_class_scope</vh></v>
-<v t="ekr.20080516150804.1425"><vh>_get_defining_scope</vh></v>
-<v t="ekr.20080516150804.1426"><vh>_change_holding_module</vh></v>
-</v>
-<v t="ekr.20080516150804.1427"><vh>class GetterSetterRenameInModule</vh>
-<v t="ekr.20080516150804.1428"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1429"><vh>get_changed_module</vh></v>
-</v>
-<v t="ekr.20080516150804.1430"><vh>class _FindChangesForModule</vh>
-<v t="ekr.20080516150804.1431"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1432"><vh>get_changed_module</vh></v>
-<v t="ekr.20080516150804.1433"><vh>_manage_writes</vh></v>
-<v t="ekr.20080516150804.1434"><vh>_is_assigned_in_a_tuple_assignment</vh></v>
-<v t="ekr.20080516150804.1435"><vh>source</vh></v>
-<v t="ekr.20080516150804.1436"><vh>lines</vh></v>
-<v t="ekr.20080516150804.1437"><vh>worder</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1438"><vh>refactor\extract.py</vh>
-<v t="ekr.20080516150804.1439"><vh>extract declarations</vh></v>
-<v t="ekr.20080516150804.1440"><vh>class _ExtractRefactoring</vh>
-<v t="ekr.20080516150804.1441"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1442"><vh>_fix_start</vh></v>
-<v t="ekr.20080516150804.1443"><vh>_fix_end</vh></v>
-<v t="ekr.20080516150804.1444"><vh>get_changes</vh></v>
-</v>
-<v t="ekr.20080516150804.1445"><vh>class ExtractMethod</vh>
-<v t="ekr.20080516150804.1446"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.1447"><vh>class ExtractVariable</vh>
-<v t="ekr.20080516150804.1448"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.1449"><vh>class _ExtractInfo</vh>
-<v t="ekr.20080516150804.1450"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1451"><vh>_init_parts</vh></v>
-<v t="ekr.20080516150804.1452"><vh>logical_lines</vh></v>
-<v t="ekr.20080516150804.1453"><vh>_init_scope</vh></v>
-<v t="ekr.20080516150804.1454"><vh>_get_scope_region</vh></v>
-<v t="ekr.20080516150804.1455"><vh>_choose_closest_line_end</vh></v>
-<v t="ekr.20080516150804.1456"><vh>one_line</vh></v>
-<v t="ekr.20080516150804.1457"><vh>global_</vh></v>
-<v t="ekr.20080516150804.1458"><vh>method</vh></v>
-<v t="ekr.20080516150804.1459"><vh>indents</vh></v>
-<v t="ekr.20080516150804.1460"><vh>scope_indents</vh></v>
-<v t="ekr.20080516150804.1461"><vh>extracted</vh></v>
-<v t="ekr.20080516150804.1462"><vh>returned</vh></v>
-</v>
-<v t="ekr.20080516150804.1463"><vh>class _ExtractCollector</vh>
-<v t="ekr.20080516150804.1464"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.1465"><vh>class _ExtractPerformer</vh>
-<v t="ekr.20080516150804.1466"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1467"><vh>extract</vh></v>
-<v t="ekr.20080516150804.1468"><vh>_replace_occurrences</vh></v>
-<v t="ekr.20080516150804.1469"><vh>_collect_info</vh></v>
-<v t="ekr.20080516150804.1470"><vh>_find_matches</vh></v>
-<v t="ekr.20080516150804.1471"><vh>_where_to_search</vh></v>
-<v t="ekr.20080516150804.1472"><vh>_find_definition_location</vh></v>
-<v t="ekr.20080516150804.1473"><vh>_find_definition</vh></v>
-</v>
-<v t="ekr.20080516150804.1474"><vh>class _DefinitionLocationFinder</vh>
-<v t="ekr.20080516150804.1475"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1476"><vh>find_lineno</vh></v>
-<v t="ekr.20080516150804.1477"><vh>_find_toplevel</vh></v>
-<v t="ekr.20080516150804.1478"><vh>find_indents</vh></v>
-<v t="ekr.20080516150804.1479"><vh>_get_before_line</vh></v>
-<v t="ekr.20080516150804.1480"><vh>_get_after_scope</vh></v>
-</v>
-<v t="ekr.20080516150804.1481"><vh>class _ExceptionalConditionChecker</vh>
-<v t="ekr.20080516150804.1482"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1483"><vh>base_conditions</vh></v>
-<v t="ekr.20080516150804.1484"><vh>one_line_conditions</vh></v>
-<v t="ekr.20080516150804.1485"><vh>multi_line_conditions</vh></v>
-<v t="ekr.20080516150804.1486"><vh>_is_region_on_a_word</vh></v>
-<v t="ekr.20080516150804.1487"><vh>_is_on_a_word</vh></v>
-</v>
-<v t="ekr.20080516150804.1488"><vh>class _ExtractMethodParts</vh>
-<v t="ekr.20080516150804.1489"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1490"><vh>get_definition</vh></v>
-<v t="ekr.20080516150804.1491"><vh>get_replacement_pattern</vh></v>
-<v t="ekr.20080516150804.1492"><vh>get_body_pattern</vh></v>
-<v t="ekr.20080516150804.1493"><vh>_get_body</vh></v>
-<v t="ekr.20080516150804.1494"><vh>_find_temps</vh></v>
-<v t="ekr.20080516150804.1495"><vh>get_checks</vh></v>
-<v t="ekr.20080516150804.1496"><vh>_create_info_collector</vh></v>
-<v t="ekr.20080516150804.1497"><vh>_get_function_definition</vh></v>
-<v t="ekr.20080516150804.1498"><vh>_get_function_signature</vh></v>
-<v t="ekr.20080516150804.1499"><vh>_get_self_name</vh></v>
-<v t="ekr.20080516150804.1500"><vh>_get_function_call</vh></v>
-<v t="ekr.20080516150804.1501"><vh>_get_comma_form</vh></v>
-<v t="ekr.20080516150804.1502"><vh>_get_call</vh></v>
-<v t="ekr.20080516150804.1503"><vh>_find_function_arguments</vh></v>
-<v t="ekr.20080516150804.1504"><vh>_find_function_returns</vh></v>
-<v t="ekr.20080516150804.1505"><vh>_get_unindented_function_body</vh></v>
-</v>
-<v t="ekr.20080516150804.1506"><vh>class _ExtractVariableParts</vh>
-<v t="ekr.20080516150804.1507"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1508"><vh>get_definition</vh></v>
-<v t="ekr.20080516150804.1509"><vh>get_body_pattern</vh></v>
-<v t="ekr.20080516150804.1510"><vh>get_replacement_pattern</vh></v>
-<v t="ekr.20080516150804.1511"><vh>get_checks</vh></v>
-</v>
-<v t="ekr.20080516150804.1512"><vh>class _FunctionInformationCollector</vh>
-<v t="ekr.20080516150804.1513"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1514"><vh>_read_variable</vh></v>
-<v t="ekr.20080516150804.1515"><vh>_written_variable</vh></v>
-<v t="ekr.20080516150804.1516"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1517"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.1518"><vh>_Assign</vh></v>
-<v t="ekr.20080516150804.1519"><vh>_ClassDef</vh></v>
-</v>
-<v t="ekr.20080516150804.1520"><vh>_get_argnames</vh></v>
-<v t="ekr.20080516150804.1521"><vh>class _VariableReadsAndWritesFinder</vh>
-<v t="ekr.20080516150804.1522"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1523"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.1524"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1525"><vh>_Class</vh></v>
-<v t="ekr.20080516150804.1526"><vh>find_reads_and_writes</vh></v>
-<v t="ekr.20080516150804.1527"><vh>find_reads_for_one_liners</vh></v>
-</v>
-<v t="ekr.20080516150804.1528"><vh>class _UnmatchedBreakOrContinueFinder</vh>
-<v t="ekr.20080516150804.1529"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1530"><vh>_For</vh></v>
-<v t="ekr.20080516150804.1531"><vh>_While</vh></v>
-<v t="ekr.20080516150804.1532"><vh>loop_encountered</vh></v>
-<v t="ekr.20080516150804.1533"><vh>_Break</vh></v>
-<v t="ekr.20080516150804.1534"><vh>_Continue</vh></v>
-<v t="ekr.20080516150804.1535"><vh>check_loop</vh></v>
-<v t="ekr.20080516150804.1536"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1537"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.1538"><vh>has_errors</vh></v>
-</v>
-<v t="ekr.20080516150804.1539"><vh>_get_function_kind</vh></v>
-<v t="ekr.20080516150804.1540"><vh>_parse_text</vh></v>
-<v t="ekr.20080516150804.1541"><vh>_join_lines</vh></v>
-</v>
-<v t="ekr.20080516150804.1542"><vh>refactor\functionutils.py</vh>
-<v t="ekr.20080516150804.1543"><vh>functionutils declarations</vh></v>
-<v t="ekr.20080516150804.1544"><vh>class DefinitionInfo</vh>
-<v t="ekr.20080516150804.1545"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1546"><vh>to_string</vh></v>
-<v t="ekr.20080516150804.1547"><vh>arguments_to_string</vh></v>
-<v t="ekr.20080516150804.1548"><vh>_read</vh></v>
-<v t="ekr.20080516150804.1549"><vh>read</vh></v>
-</v>
-<v t="ekr.20080516150804.1550"><vh>class CallInfo</vh>
-<v t="ekr.20080516150804.1551"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1552"><vh>to_string</vh></v>
-<v t="ekr.20080516150804.1553"><vh>read</vh></v>
-<v t="ekr.20080516150804.1554"><vh>_is_method_call</vh></v>
-<v t="ekr.20080516150804.1555"><vh>_is_class</vh></v>
-<v t="ekr.20080516150804.1556"><vh>_is_method</vh></v>
-<v t="ekr.20080516150804.1557"><vh>_is_classmethod</vh></v>
-</v>
-<v t="ekr.20080516150804.1558"><vh>class ArgumentMapping</vh>
-<v t="ekr.20080516150804.1559"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1560"><vh>to_call_info</vh></v>
-</v>
-<v t="ekr.20080516150804.1561"><vh>class _FunctionParser</vh>
-<v t="ekr.20080516150804.1562"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1563"><vh>get_parameters</vh></v>
-<v t="ekr.20080516150804.1564"><vh>get_instance</vh></v>
-<v t="ekr.20080516150804.1565"><vh>get_function_name</vh></v>
-<v t="ekr.20080516150804.1566"><vh>is_called_as_a_method</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1567"><vh>refactor\inline.py</vh>
-<v t="ekr.20080516150804.1568"><vh>inline declarations</vh></v>
-<v t="ekr.20080516150804.1569"><vh>create_inline</vh></v>
-<v t="ekr.20080516150804.1570"><vh>class _Inliner</vh>
-<v t="ekr.20080516150804.1571"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1572"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1573"><vh>get_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1574"><vh>class InlineMethod</vh>
-<v t="ekr.20080516150804.1575"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1576"><vh>_init_imports</vh></v>
-<v t="ekr.20080516150804.1577"><vh>_get_scope_range</vh></v>
-<v t="ekr.20080516150804.1578"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1579"><vh>_get_removed_range</vh></v>
-<v t="ekr.20080516150804.1580"><vh>_defining_file_changes</vh></v>
-<v t="ekr.20080516150804.1581"><vh>_get_method_replacement</vh></v>
-<v t="ekr.20080516150804.1582"><vh>_is_the_last_method_of_a_class</vh></v>
-<v t="ekr.20080516150804.1583"><vh>_add_imports</vh></v>
-<v t="ekr.20080516150804.1584"><vh>get_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1585"><vh>class InlineVariable</vh>
-<v t="ekr.20080516150804.1586"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1587"><vh>_check_exceptional_conditions</vh></v>
-<v t="ekr.20080516150804.1588"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1589"><vh>_get_changed_module</vh></v>
-<v t="ekr.20080516150804.1590"><vh>get_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1591"><vh>class InlineParameter</vh>
-<v t="ekr.20080516150804.1592"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1593"><vh>_function_location</vh></v>
-<v t="ekr.20080516150804.1594"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1595"><vh>get_kind</vh></v>
-</v>
-<v t="ekr.20080516150804.1596"><vh>_join_lines</vh></v>
-<v t="ekr.20080516150804.1597"><vh>class _DefinitionGenerator</vh>
-<v t="ekr.20080516150804.1598"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1599"><vh>_get_definition_info</vh></v>
-<v t="ekr.20080516150804.1600"><vh>_get_definition_params</vh></v>
-<v t="ekr.20080516150804.1601"><vh>get_function_name</vh></v>
-<v t="ekr.20080516150804.1602"><vh>get_definition</vh></v>
-<v t="ekr.20080516150804.1603"><vh>_calculate_definition</vh></v>
-<v t="ekr.20080516150804.1604"><vh>_replace_returns_with</vh></v>
-<v t="ekr.20080516150804.1605"><vh>_check_nothing_after_return</vh></v>
-<v t="ekr.20080516150804.1606"><vh>_get_return_pattern</vh></v>
-</v>
-<v t="ekr.20080516150804.1607"><vh>class _InlineFunctionCallsForModuleHandle</vh>
-<v t="ekr.20080516150804.1608"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1609"><vh>occurred_inside_skip</vh></v>
-<v t="ekr.20080516150804.1610"><vh>occurred_outside_skip</vh></v>
-<v t="ekr.20080516150804.1611"><vh>_find_end_parens</vh></v>
-<v t="ekr.20080516150804.1612"><vh>_get_pymodule</vh></v>
-<v t="ekr.20080516150804.1613"><vh>_get_source</vh></v>
-<v t="ekr.20080516150804.1614"><vh>_get_lines</vh></v>
-</v>
-<v t="ekr.20080516150804.1615"><vh>_inline_variable</vh></v>
-</v>
-<v t="ekr.20080516150804.1616"><vh>refactor\introduce_factory.py</vh>
-<v t="ekr.20080516150804.1617"><vh>introduce_factory declarations</vh></v>
-<v t="ekr.20080516150804.1618"><vh>class IntroduceFactory</vh>
-<v t="ekr.20080516150804.1619"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1620"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1621"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.1622"><vh>_change_module</vh></v>
-<v t="ekr.20080516150804.1623"><vh>_change_resource</vh></v>
-<v t="ekr.20080516150804.1624"><vh>_get_insertion_offset</vh></v>
-<v t="ekr.20080516150804.1625"><vh>_get_factory_method</vh></v>
-<v t="ekr.20080516150804.1626"><vh>_get_scope_indents</vh></v>
-<v t="ekr.20080516150804.1627"><vh>_new_function_name</vh></v>
-<v t="ekr.20080516150804.1628"><vh>_rename_occurrences</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1629"><vh>refactor\introduce_parameter.py</vh>
-<v t="ekr.20080516150804.1630"><vh>introduce_parameter declarations</vh></v>
-<v t="ekr.20080516150804.1631"><vh>class IntroduceParameter</vh>
-<v t="ekr.20080516150804.1632"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1633"><vh>_get_primary</vh></v>
-<v t="ekr.20080516150804.1634"><vh>_get_name_and_pyname</vh></v>
-<v t="ekr.20080516150804.1635"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1636"><vh>_get_header_offsets</vh></v>
-<v t="ekr.20080516150804.1637"><vh>_change_function_occurances</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1638"><vh>refactor\localtofield.py</vh>
-<v t="ekr.20080516150804.1639"><vh>localtofield declarations</vh></v>
-<v t="ekr.20080516150804.1640"><vh>class LocalToField</vh>
-<v t="ekr.20080516150804.1641"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1642"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1643"><vh>_check_redefinition</vh></v>
-<v t="ekr.20080516150804.1644"><vh>_get_field_name</vh></v>
-<v t="ekr.20080516150804.1645"><vh>_is_a_method_local</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1646"><vh>refactor\method_object.py</vh>
-<v t="ekr.20080516150804.1647"><vh>method_object declarations</vh></v>
-<v t="ekr.20080516150804.1648"><vh>class MethodObject</vh>
-<v t="ekr.20080516150804.1649"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1650"><vh>get_new_class</vh></v>
-<v t="ekr.20080516150804.1651"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1652"><vh>_get_class_insertion_point</vh></v>
-<v t="ekr.20080516150804.1653"><vh>_get_body</vh></v>
-<v t="ekr.20080516150804.1654"><vh>_get_init</vh></v>
-<v t="ekr.20080516150804.1655"><vh>_get_parameter_names</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1656"><vh>refactor\move.py</vh>
-<v t="ekr.20080516150804.1657"><vh>move declarations</vh></v>
-<v t="ekr.20080516150804.1658"><vh>create_move</vh></v>
-<v t="ekr.20080516150804.1659"><vh>class MoveMethod</vh>
-<v t="ekr.20080516150804.1660"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1661"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1662"><vh>get_method_name</vh></v>
-<v t="ekr.20080516150804.1663"><vh>_get_used_imports</vh></v>
-<v t="ekr.20080516150804.1664"><vh>_get_changes_made_by_old_class</vh></v>
-<v t="ekr.20080516150804.1665"><vh>_get_scope_indents</vh></v>
-<v t="ekr.20080516150804.1666"><vh>_get_changes_made_by_new_class</vh></v>
-<v t="ekr.20080516150804.1667"><vh>get_new_method</vh></v>
-<v t="ekr.20080516150804.1668"><vh>_get_unchanged_body</vh></v>
-<v t="ekr.20080516150804.1669"><vh>_get_body</vh></v>
-<v t="ekr.20080516150804.1670"><vh>_get_self_name</vh></v>
-<v t="ekr.20080516150804.1671"><vh>_get_new_header</vh></v>
-<v t="ekr.20080516150804.1672"><vh>_get_passed_arguments_string</vh></v>
-<v t="ekr.20080516150804.1673"><vh>_is_host_used</vh></v>
-</v>
-<v t="ekr.20080516150804.1674"><vh>class MoveGlobal</vh>
-<v t="ekr.20080516150804.1675"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1676"><vh>_check_exceptional_conditions</vh></v>
-<v t="ekr.20080516150804.1677"><vh>_is_global</vh></v>
-<v t="ekr.20080516150804.1678"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1679"><vh>_calculate_changes</vh></v>
-<v t="ekr.20080516150804.1680"><vh>_source_module_changes</vh></v>
-<v t="ekr.20080516150804.1681"><vh>_new_modname</vh></v>
-<v t="ekr.20080516150804.1682"><vh>_dest_module_changes</vh></v>
-<v t="ekr.20080516150804.1683"><vh>_get_moving_element_with_imports</vh></v>
-<v t="ekr.20080516150804.1684"><vh>_get_module_with_imports</vh></v>
-<v t="ekr.20080516150804.1685"><vh>_get_moving_element</vh></v>
-<v t="ekr.20080516150804.1686"><vh>_get_moving_region</vh></v>
-<v t="ekr.20080516150804.1687"><vh>_add_imports2</vh></v>
-</v>
-<v t="ekr.20080516150804.1688"><vh>class MoveModule</vh>
-<v t="ekr.20080516150804.1689"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1690"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1691"><vh>_calculate_changes</vh></v>
-<v t="ekr.20080516150804.1692"><vh>_new_modname</vh></v>
-<v t="ekr.20080516150804.1693"><vh>_new_import</vh></v>
-<v t="ekr.20080516150804.1694"><vh>_change_moving_module</vh></v>
-<v t="ekr.20080516150804.1695"><vh>_change_occurrences_in_module</vh></v>
-</v>
-<v t="ekr.20080516150804.1696"><vh>class _ChangeMoveOccurrencesHandle</vh>
-<v t="ekr.20080516150804.1697"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1698"><vh>occurred_inside_skip</vh></v>
-<v t="ekr.20080516150804.1699"><vh>occurred_outside_skip</vh></v>
-</v>
-<v t="ekr.20080516150804.1700"><vh>class _MoveTools</vh>
-<v t="ekr.20080516150804.1701"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1702"><vh>remove_old_imports</vh></v>
-<v t="ekr.20080516150804.1703"><vh>rename_in_module</vh></v>
-<v t="ekr.20080516150804.1704"><vh>occurs_in_module</vh></v>
-<v t="ekr.20080516150804.1705"><vh>_create_finder</vh></v>
-<v t="ekr.20080516150804.1706"><vh>new_pymodule</vh></v>
-<v t="ekr.20080516150804.1707"><vh>new_source</vh></v>
-<v t="ekr.20080516150804.1708"><vh>add_imports</vh></v>
-</v>
-<v t="ekr.20080516150804.1709"><vh>_add_imports_to_module</vh></v>
-<v t="ekr.20080516150804.1710"><vh>moving_code_with_imports</vh></v>
-<v t="ekr.20080516150804.1711"><vh>class ModuleSkipRenamerHandle</vh>
-<v t="ekr.20080516150804.1712"><vh>occurred_outside_skip</vh></v>
-<v t="ekr.20080516150804.1713"><vh>occurred_inside_skip</vh></v>
-</v>
-<v t="ekr.20080516150804.1714"><vh>class ModuleSkipRenamer</vh>
-<v t="ekr.20080516150804.1715"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1716"><vh>get_changed_module</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1717"><vh>refactor\multiproject.py</vh>
-<v t="ekr.20080516150804.1718"><vh>multiproject declarations</vh></v>
-<v t="ekr.20080516150804.1719"><vh>class MultiProjectRefactoring</vh>
-<v t="ekr.20080516150804.1720"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1721"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.1722"><vh>class _MultiRefactoring</vh>
-<v t="ekr.20080516150804.1723"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1724"><vh>get_all_changes</vh></v>
-<v t="ekr.20080516150804.1725"><vh>__getattr__</vh></v>
-<v t="ekr.20080516150804.1726"><vh>_resources_for_args</vh></v>
-<v t="ekr.20080516150804.1727"><vh>_change_project_resource</vh></v>
-<v t="ekr.20080516150804.1728"><vh>project</vh></v>
-<v t="ekr.20080516150804.1729"><vh>main_refactoring</vh></v>
-</v>
-<v t="ekr.20080516150804.1730"><vh>perform</vh></v>
-</v>
-<v t="ekr.20080516150804.1731"><vh>refactor\occurrences.py</vh>
-<v t="ekr.20080516150804.1732"><vh>occurrences declarations</vh></v>
-<v t="ekr.20080516150804.1733"><vh>class Finder</vh>
-<v t="ekr.20080516150804.1734"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1735"><vh>find_occurrences</vh></v>
-</v>
-<v t="ekr.20080516150804.1736"><vh>create_finder</vh></v>
-<v t="ekr.20080516150804.1737"><vh>class Occurrence</vh>
-<v t="ekr.20080516150804.1738"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1739"><vh>get_word_range</vh></v>
-<v t="ekr.20080516150804.1740"><vh>get_primary_range</vh></v>
-<v t="ekr.20080516150804.1741"><vh>get_pyname</vh></v>
-<v t="ekr.20080516150804.1742"><vh>get_primary_and_pyname</vh></v>
-<v t="ekr.20080516150804.1743"><vh>is_in_import_statement</vh></v>
-<v t="ekr.20080516150804.1744"><vh>is_called</vh></v>
-<v t="ekr.20080516150804.1745"><vh>is_defined</vh></v>
-<v t="ekr.20080516150804.1746"><vh>is_a_fixed_primary</vh></v>
-<v t="ekr.20080516150804.1747"><vh>is_written</vh></v>
-<v t="ekr.20080516150804.1748"><vh>is_unsure</vh></v>
-</v>
-<v t="ekr.20080516150804.1749"><vh>same_pyname</vh></v>
-<v t="ekr.20080516150804.1750"><vh>unsure_pyname</vh></v>
-<v t="ekr.20080516150804.1751"><vh>class PyNameFilter</vh>
-<v t="ekr.20080516150804.1752"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1753"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.1754"><vh>class InHierarchyFilter</vh>
-<v t="ekr.20080516150804.1755"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1756"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1757"><vh>_get_containing_class</vh></v>
-<v t="ekr.20080516150804.1758"><vh>_get_root_classes</vh></v>
-</v>
-<v t="ekr.20080516150804.1759"><vh>class UnsureFilter</vh>
-<v t="ekr.20080516150804.1760"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1761"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.1762"><vh>class NoImportsFilter</vh>
-<v t="ekr.20080516150804.1763"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.1764"><vh>class CallsFilter</vh>
-<v t="ekr.20080516150804.1765"><vh>__call__</vh></v>
-</v>
-<v t="ekr.20080516150804.1766"><vh>class _TextualFinder</vh>
-<v t="ekr.20080516150804.1767"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1768"><vh>find_offsets</vh></v>
-<v t="ekr.20080516150804.1769"><vh>_re_search</vh></v>
-<v t="ekr.20080516150804.1770"><vh>_normal_search</vh></v>
-<v t="ekr.20080516150804.1771"><vh>_is_id_char</vh></v>
-<v t="ekr.20080516150804.1772"><vh>_fast_file_query</vh></v>
-<v t="ekr.20080516150804.1773"><vh>_get_source</vh></v>
-<v t="ekr.20080516150804.1774"><vh>_get_occurrence_pattern</vh></v>
-<v t="ekr.20080516150804.1775"><vh>any</vh></v>
-</v>
-<v t="ekr.20080516150804.1776"><vh>class _OccurrenceToolsCreator</vh>
-<v t="ekr.20080516150804.1777"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1778"><vh>name_finder</vh></v>
-<v t="ekr.20080516150804.1779"><vh>source_code</vh></v>
-<v t="ekr.20080516150804.1780"><vh>word_finder</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1781"><vh>refactor\patchedast.py</vh>
-<v t="ekr.20080516150804.1782"><vh>patchedast declarations</vh></v>
-<v t="ekr.20080516150804.1783"><vh>get_patched_ast</vh></v>
-<v t="ekr.20080516150804.1784"><vh>patch_ast</vh></v>
-<v t="ekr.20080516150804.1785"><vh>node_region</vh></v>
-<v t="ekr.20080516150804.1786"><vh>write_ast</vh></v>
-<v t="ekr.20080516150804.1787"><vh>class MismatchedTokenError</vh></v>
-<v t="ekr.20080516150804.1788"><vh>class _PatchingASTWalker</vh>
-<v t="ekr.20080516150804.1789"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1790"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.1791"><vh>_handle</vh></v>
-<v t="ekr.20080516150804.1792"><vh>_handle_parens</vh></v>
-<v t="ekr.20080516150804.1793"><vh>_eat_surrounding_parens</vh></v>
-<v t="ekr.20080516150804.1794"><vh>_count_needed_parens</vh></v>
-<v t="ekr.20080516150804.1795"><vh>_find_next_statement_start</vh></v>
-<v t="ekr.20080516150804.1796"><vh>_get_op</vh></v>
-<v t="ekr.20080516150804.1797"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.1798"><vh>_Assert</vh></v>
-<v t="ekr.20080516150804.1799"><vh>_Assign</vh></v>
-<v t="ekr.20080516150804.1800"><vh>_AugAssign</vh></v>
-<v t="ekr.20080516150804.1801"><vh>_Repr</vh></v>
-<v t="ekr.20080516150804.1802"><vh>_BinOp</vh></v>
-<v t="ekr.20080516150804.1803"><vh>_BoolOp</vh></v>
-<v t="ekr.20080516150804.1804"><vh>_Break</vh></v>
-<v t="ekr.20080516150804.1805"><vh>_Call</vh></v>
-<v t="ekr.20080516150804.1806"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.1807"><vh>_Compare</vh></v>
-<v t="ekr.20080516150804.1808"><vh>_Delete</vh></v>
-<v t="ekr.20080516150804.1809"><vh>_Num</vh></v>
-<v t="ekr.20080516150804.1810"><vh>_Str</vh></v>
-<v t="ekr.20080516150804.1811"><vh>_Continue</vh></v>
-<v t="ekr.20080516150804.1812"><vh>_Dict</vh></v>
-<v t="ekr.20080516150804.1813"><vh>_Ellipsis</vh></v>
-<v t="ekr.20080516150804.1814"><vh>_Expr</vh></v>
-<v t="ekr.20080516150804.1815"><vh>_Exec</vh></v>
-<v t="ekr.20080516150804.1816"><vh>_For</vh></v>
-<v t="ekr.20080516150804.1817"><vh>_ImportFrom</vh></v>
-<v t="ekr.20080516150804.1818"><vh>_alias</vh></v>
-<v t="ekr.20080516150804.1819"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1820"><vh>_arguments</vh></v>
-<v t="ekr.20080516150804.1821"><vh>_add_args_to_children</vh></v>
-<v t="ekr.20080516150804.1822"><vh>_add_tuple_parameter</vh></v>
-<v t="ekr.20080516150804.1823"><vh>_GeneratorExp</vh></v>
-<v t="ekr.20080516150804.1824"><vh>_comprehension</vh></v>
-<v t="ekr.20080516150804.1825"><vh>_Global</vh></v>
-<v t="ekr.20080516150804.1826"><vh>_If</vh></v>
-<v t="ekr.20080516150804.1827"><vh>_is_elif</vh></v>
-<v t="ekr.20080516150804.1828"><vh>_IfExp</vh></v>
-<v t="ekr.20080516150804.1829"><vh>_Import</vh></v>
-<v t="ekr.20080516150804.1830"><vh>_keyword</vh></v>
-<v t="ekr.20080516150804.1831"><vh>_Lambda</vh></v>
-<v t="ekr.20080516150804.1832"><vh>_List</vh></v>
-<v t="ekr.20080516150804.1833"><vh>_ListComp</vh></v>
-<v t="ekr.20080516150804.1834"><vh>_Module</vh></v>
-<v t="ekr.20080516150804.1835"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.1836"><vh>_Pass</vh></v>
-<v t="ekr.20080516150804.1837"><vh>_Print</vh></v>
-<v t="ekr.20080516150804.1838"><vh>_Raise</vh></v>
-<v t="ekr.20080516150804.1839"><vh>_Return</vh></v>
-<v t="ekr.20080516150804.1840"><vh>_Sliceobj</vh></v>
-<v t="ekr.20080516150804.1841"><vh>_Index</vh></v>
-<v t="ekr.20080516150804.1842"><vh>_Subscript</vh></v>
-<v t="ekr.20080516150804.1843"><vh>_Slice</vh></v>
-<v t="ekr.20080516150804.1844"><vh>_TryFinally</vh></v>
-<v t="ekr.20080516150804.1845"><vh>_TryExcept</vh></v>
-<v t="ekr.20080516150804.1846"><vh>_ExceptHandler</vh></v>
-<v t="ekr.20080516150804.1847"><vh>_excepthandler</vh></v>
-<v t="ekr.20080516150804.1848"><vh>_Tuple</vh></v>
-<v t="ekr.20080516150804.1849"><vh>_UnaryOp</vh></v>
-<v t="ekr.20080516150804.1850"><vh>_Yield</vh></v>
-<v t="ekr.20080516150804.1851"><vh>_While</vh></v>
-<v t="ekr.20080516150804.1852"><vh>_With</vh></v>
-<v t="ekr.20080516150804.1853"><vh>_child_nodes</vh></v>
-</v>
-<v t="ekr.20080516150804.1854"><vh>class _Source</vh>
-<v t="ekr.20080516150804.1855"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1856"><vh>consume</vh></v>
-<v t="ekr.20080516150804.1857"><vh>consume_string</vh></v>
-<v t="ekr.20080516150804.1858"><vh>consume_number</vh></v>
-<v t="ekr.20080516150804.1859"><vh>consume_not_equal</vh></v>
-<v t="ekr.20080516150804.1860"><vh>_good_token</vh></v>
-<v t="ekr.20080516150804.1861"><vh>_skip_comment</vh></v>
-<v t="ekr.20080516150804.1862"><vh>_get_location</vh></v>
-<v t="ekr.20080516150804.1863"><vh>_consume_pattern</vh></v>
-<v t="ekr.20080516150804.1864"><vh>till_token</vh></v>
-<v t="ekr.20080516150804.1865"><vh>get</vh></v>
-<v t="ekr.20080516150804.1866"><vh>rfind_token</vh></v>
-<v t="ekr.20080516150804.1867"><vh>from_offset</vh></v>
-<v t="ekr.20080516150804.1868"><vh>find_backwards</vh></v>
-<v t="ekr.20080516150804.1869"><vh>__getitem__</vh></v>
-<v t="ekr.20080516150804.1870"><vh>__getslice__</vh></v>
-<v t="ekr.20080516150804.1871"><vh>_get_number_pattern</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1872"><vh>refactor\rename.py</vh>
-<v t="ekr.20080516150804.1873"><vh>rename declarations</vh></v>
-<v t="ekr.20080516150804.1874"><vh>class Rename</vh>
-<v t="ekr.20080516150804.1875"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1876"><vh>get_old_name</vh></v>
-<v t="ekr.20080516150804.1877"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1878"><vh>_is_allowed_to_move</vh></v>
-<v t="ekr.20080516150804.1879"><vh>_is_renaming_a_function_local_name</vh></v>
-<v t="ekr.20080516150804.1880"><vh>_is_renaming_a_module</vh></v>
-<v t="ekr.20080516150804.1881"><vh>is_method</vh></v>
-<v t="ekr.20080516150804.1882"><vh>_rename_module</vh></v>
-</v>
-<v t="ekr.20080516150804.1883"><vh>class ChangeOccurrences</vh>
-<v t="ekr.20080516150804.1884"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1885"><vh>get_old_name</vh></v>
-<v t="ekr.20080516150804.1886"><vh>_get_scope_offset</vh></v>
-<v t="ekr.20080516150804.1887"><vh>get_changes</vh></v>
-</v>
-<v t="ekr.20080516150804.1888"><vh>rename_in_module</vh></v>
-</v>
-<v t="ekr.20080516150804.1889"><vh>refactor\restructure.py</vh>
-<v t="ekr.20080516150804.1890"><vh>restructure declarations</vh></v>
-<v t="ekr.20080516150804.1891"><vh>class Restructure</vh>
-<v t="ekr.20080516150804.1892"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1893"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.1894"><vh>_compute_changes</vh></v>
-<v t="ekr.20080516150804.1895"><vh>_add_imports</vh></v>
-<v t="ekr.20080516150804.1896"><vh>_get_import_infos</vh></v>
-<v t="ekr.20080516150804.1897"><vh>make_checks</vh></v>
-<v t="ekr.20080516150804.1898"><vh>_evaluate</vh></v>
-</v>
-<v t="ekr.20080516150804.1899"><vh>replace</vh></v>
-<v t="ekr.20080516150804.1900"><vh>class _ChangeComputer</vh>
-<v t="ekr.20080516150804.1901"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1902"><vh>get_changed</vh></v>
-<v t="ekr.20080516150804.1903"><vh>_is_expression</vh></v>
-<v t="ekr.20080516150804.1904"><vh>_get_matched_text</vh></v>
-<v t="ekr.20080516150804.1905"><vh>_get_node_text</vh></v>
-<v t="ekr.20080516150804.1906"><vh>_auto_indent</vh></v>
-<v t="ekr.20080516150804.1907"><vh>_get_nearest_roots</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1908"><vh>refactor\similarfinder.py</vh>
-<v t="ekr.20080516150804.1909"><vh>similarfinder declarations</vh></v>
-<v t="ekr.20080516150804.1910"><vh>class BadNameInCheckError</vh></v>
-<v t="ekr.20080516150804.1911"><vh>class SimilarFinder</vh>
-<v t="ekr.20080516150804.1912"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1913"><vh>get_matches</vh></v>
-<v t="ekr.20080516150804.1914"><vh>get_match_regions</vh></v>
-<v t="ekr.20080516150804.1915"><vh>_does_match</vh></v>
-</v>
-<v t="ekr.20080516150804.1916"><vh>class RawSimilarFinder</vh>
-<v t="ekr.20080516150804.1917"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1918"><vh>_simple_does_match</vh></v>
-<v t="ekr.20080516150804.1919"><vh>_init_using_ast</vh></v>
-<v t="ekr.20080516150804.1920"><vh>get_matches</vh></v>
-<v t="ekr.20080516150804.1921"><vh>_get_matched_asts</vh></v>
-<v t="ekr.20080516150804.1922"><vh>_create_pattern</vh></v>
-<v t="ekr.20080516150804.1923"><vh>_replace_wildcards</vh></v>
-</v>
-<v t="ekr.20080516150804.1924"><vh>class _ASTMatcher</vh>
-<v t="ekr.20080516150804.1925"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1926"><vh>find_matches</vh></v>
-<v t="ekr.20080516150804.1927"><vh>_check_node</vh></v>
-<v t="ekr.20080516150804.1928"><vh>_check_expression</vh></v>
-<v t="ekr.20080516150804.1929"><vh>_check_statements</vh></v>
-<v t="ekr.20080516150804.1930"><vh>__check_stmt_list</vh></v>
-<v t="ekr.20080516150804.1931"><vh>_match_nodes</vh></v>
-<v t="ekr.20080516150804.1932"><vh>_get_children</vh></v>
-<v t="ekr.20080516150804.1933"><vh>_match_stmts</vh></v>
-<v t="ekr.20080516150804.1934"><vh>_match_wildcard</vh></v>
-</v>
-<v t="ekr.20080516150804.1935"><vh>class Match</vh>
-<v t="ekr.20080516150804.1936"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1937"><vh>get_region</vh></v>
-<v t="ekr.20080516150804.1938"><vh>get_ast</vh></v>
-</v>
-<v t="ekr.20080516150804.1939"><vh>class ExpressionMatch</vh>
-<v t="ekr.20080516150804.1940"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1941"><vh>get_region</vh></v>
-</v>
-<v t="ekr.20080516150804.1942"><vh>class StatementMatch</vh>
-<v t="ekr.20080516150804.1943"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1944"><vh>get_region</vh></v>
-</v>
-<v t="ekr.20080516150804.1945"><vh>class CodeTemplate</vh>
-<v t="ekr.20080516150804.1946"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1947"><vh>_find_names</vh></v>
-<v t="ekr.20080516150804.1948"><vh>get_names</vh></v>
-<v t="ekr.20080516150804.1949"><vh>substitute</vh></v>
-<v t="ekr.20080516150804.1950"><vh>_get_pattern</vh></v>
-</v>
-<v t="ekr.20080516150804.1951"><vh>class _RopeVariable</vh>
-<v t="ekr.20080516150804.1952"><vh>get_var</vh></v>
-<v t="ekr.20080516150804.1953"><vh>is_var</vh></v>
-<v t="ekr.20080516150804.1954"><vh>get_base</vh></v>
-<v t="ekr.20080516150804.1955"><vh>_get_normal</vh></v>
-<v t="ekr.20080516150804.1956"><vh>_get_any</vh></v>
-<v t="ekr.20080516150804.1957"><vh>_is_normal</vh></v>
-<v t="ekr.20080516150804.1958"><vh>_is_var</vh></v>
-</v>
-<v t="ekr.20080516150804.1959"><vh>make_pattern</vh></v>
-<v t="ekr.20080516150804.1960"><vh>_pydefined_to_str</vh></v>
-</v>
-<v t="ekr.20080516150804.1961"><vh>refactor\sourceutils.py</vh>
-<v t="ekr.20080516150804.1962"><vh>sourceutils declarations</vh></v>
-<v t="ekr.20080516150804.1963"><vh>get_indents</vh></v>
-<v t="ekr.20080516150804.1964"><vh>find_minimum_indents</vh></v>
-<v t="ekr.20080516150804.1965"><vh>indent_lines</vh></v>
-<v t="ekr.20080516150804.1966"><vh>fix_indentation</vh></v>
-<v t="ekr.20080516150804.1967"><vh>add_methods</vh></v>
-<v t="ekr.20080516150804.1968"><vh>get_body</vh></v>
-<v t="ekr.20080516150804.1969"><vh>get_body_region</vh></v>
-<v t="ekr.20080516150804.1970"><vh>get_indent</vh></v>
-</v>
-<v t="ekr.20080516150804.1971"><vh>refactor\suites.py</vh>
-<v t="ekr.20080516150804.1972"><vh>suites declarations</vh></v>
-<v t="ekr.20080516150804.1973"><vh>find_visible</vh></v>
-<v t="ekr.20080516150804.1974"><vh>find_visible_for_suite</vh></v>
-<v t="ekr.20080516150804.1975"><vh>ast_suite_tree</vh></v>
-<v t="ekr.20080516150804.1976"><vh>class Suite</vh>
-<v t="ekr.20080516150804.1977"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1978"><vh>get_start</vh></v>
-<v t="ekr.20080516150804.1979"><vh>get_children</vh></v>
-<v t="ekr.20080516150804.1980"><vh>local_start</vh></v>
-<v t="ekr.20080516150804.1981"><vh>local_end</vh></v>
-<v t="ekr.20080516150804.1982"><vh>find_suite</vh></v>
-<v t="ekr.20080516150804.1983"><vh>_get_level</vh></v>
-</v>
-<v t="ekr.20080516150804.1984"><vh>class _SuiteWalker</vh>
-<v t="ekr.20080516150804.1985"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1986"><vh>_If</vh></v>
-<v t="ekr.20080516150804.1987"><vh>_For</vh></v>
-<v t="ekr.20080516150804.1988"><vh>_While</vh></v>
-<v t="ekr.20080516150804.1989"><vh>_With</vh></v>
-<v t="ekr.20080516150804.1990"><vh>_TryFinally</vh></v>
-<v t="ekr.20080516150804.1991"><vh>_TryExcept</vh></v>
-<v t="ekr.20080516150804.1992"><vh>_add_if_like_node</vh></v>
-<v t="ekr.20080516150804.1993"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.1994"><vh>_ClassDef</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.1995"><vh>refactor\topackage.py</vh>
-<v t="ekr.20080516150804.1996"><vh>topackage declarations</vh></v>
-<v t="ekr.20080516150804.1997"><vh>class ModuleToPackage</vh>
-<v t="ekr.20080516150804.1998"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.1999"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.2000"><vh>_transform_relatives_to_absolute</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.2001"><vh>refactor\usefunction.py</vh>
-<v t="ekr.20080516150804.2002"><vh>usefunction declarations</vh></v>
-<v t="ekr.20080516150804.2003"><vh>class UseFunction</vh>
-<v t="ekr.20080516150804.2004"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2005"><vh>_check_returns</vh></v>
-<v t="ekr.20080516150804.2006"><vh>get_changes</vh></v>
-<v t="ekr.20080516150804.2007"><vh>get_function_name</vh></v>
-<v t="ekr.20080516150804.2008"><vh>_restructure</vh></v>
-<v t="ekr.20080516150804.2009"><vh>_find_temps</vh></v>
-<v t="ekr.20080516150804.2010"><vh>_module_name</vh></v>
-<v t="ekr.20080516150804.2011"><vh>_make_pattern</vh></v>
-<v t="ekr.20080516150804.2012"><vh>_get_body</vh></v>
-<v t="ekr.20080516150804.2013"><vh>_make_goal</vh></v>
-<v t="ekr.20080516150804.2014"><vh>_does_return</vh></v>
-<v t="ekr.20080516150804.2015"><vh>_is_expression</vh></v>
-</v>
-<v t="ekr.20080516150804.2016"><vh>find_temps</vh></v>
-<v t="ekr.20080516150804.2017"><vh>_returns_last</vh></v>
-<v t="ekr.20080516150804.2018"><vh>_yield_count</vh></v>
-<v t="ekr.20080516150804.2019"><vh>_return_count</vh></v>
-<v t="ekr.20080516150804.2020"><vh>class _ReturnOrYieldFinder</vh>
-<v t="ekr.20080516150804.2021"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2022"><vh>_Return</vh></v>
-<v t="ekr.20080516150804.2023"><vh>_Yield</vh></v>
-<v t="ekr.20080516150804.2024"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.2025"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.2026"><vh>start_walking</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.2027"><vh>refactor\wildcards.py</vh>
-<v t="ekr.20080516150804.2028"><vh>wildcards declarations</vh></v>
-<v t="ekr.20080516150804.2029"><vh>class Wildcard</vh>
-<v t="ekr.20080516150804.2030"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.2031"><vh>matches</vh></v>
-</v>
-<v t="ekr.20080516150804.2032"><vh>class Suspect</vh>
-<v t="ekr.20080516150804.2033"><vh>__init__</vh></v>
-</v>
-<v t="ekr.20080516150804.2034"><vh>class DefaultWildcard</vh>
-<v t="ekr.20080516150804.2035"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2036"><vh>get_name</vh></v>
-<v t="ekr.20080516150804.2037"><vh>matches</vh></v>
-<v t="ekr.20080516150804.2038"><vh>_check_object</vh></v>
-<v t="ekr.20080516150804.2039"><vh>_check_exact</vh></v>
-</v>
-<v t="ekr.20080516150804.2040"><vh>parse_arg</vh></v>
-<v t="ekr.20080516150804.2041"><vh>class _CheckObject</vh>
-<v t="ekr.20080516150804.2042"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2043"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.2044"><vh>_get_super_classes</vh></v>
-<v t="ekr.20080516150804.2045"><vh>_same_pyobject</vh></v>
-<v t="ekr.20080516150804.2046"><vh>_same_pyname</vh></v>
-<v t="ekr.20080516150804.2047"><vh>_unsure_pyname</vh></v>
-<v t="ekr.20080516150804.2048"><vh>_split_name</vh></v>
-<v t="ekr.20080516150804.2049"><vh>_evaluate_node</vh></v>
-<v t="ekr.20080516150804.2050"><vh>_evaluate</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.2051"><vh>refactor\__init__.py</vh>
-<v t="ekr.20080516150804.2052"><vh>__init__ declarations</vh></v>
-</v>
-<v t="ekr.20080516150804.2053"><vh>rope-0.8.2\rope\refactor\importutils</vh>
-<v t="ekr.20080516150804.2054"><vh>refactor\importutils\actions.py</vh>
-<v t="ekr.20080516150804.2055"><vh>actions declarations</vh></v>
-<v t="ekr.20080516150804.2056"><vh>class ImportInfoVisitor</vh>
-<v t="ekr.20080516150804.2057"><vh>dispatch</vh></v>
-<v t="ekr.20080516150804.2058"><vh>visitEmptyImport</vh></v>
-<v t="ekr.20080516150804.2059"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2060"><vh>visitFromImport</vh></v>
-</v>
-<v t="ekr.20080516150804.2061"><vh>class RelativeToAbsoluteVisitor</vh>
-<v t="ekr.20080516150804.2062"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2063"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2064"><vh>_get_relative_to_absolute_list</vh></v>
-<v t="ekr.20080516150804.2065"><vh>visitFromImport</vh></v>
-</v>
-<v t="ekr.20080516150804.2066"><vh>class FilteringVisitor</vh>
-<v t="ekr.20080516150804.2067"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2068"><vh>_transform_can_select</vh></v>
-<v t="ekr.20080516150804.2069"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2070"><vh>visitFromImport</vh></v>
-</v>
-<v t="ekr.20080516150804.2071"><vh>class RemovingVisitor</vh>
-<v t="ekr.20080516150804.2072"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2073"><vh>dispatch</vh></v>
-</v>
-<v t="ekr.20080516150804.2074"><vh>class AddingVisitor</vh>
-<v t="ekr.20080516150804.2075"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2076"><vh>dispatch</vh></v>
-<v t="ekr.20080516150804.2077"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2078"><vh>visitFromImport</vh></v>
-</v>
-<v t="ekr.20080516150804.2079"><vh>class ExpandStarsVisitor</vh>
-<v t="ekr.20080516150804.2080"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2081"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2082"><vh>visitFromImport</vh></v>
-</v>
-<v t="ekr.20080516150804.2083"><vh>class SelfImportVisitor</vh>
-<v t="ekr.20080516150804.2084"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2085"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2086"><vh>visitFromImport</vh></v>
-<v t="ekr.20080516150804.2087"><vh>_importing_names_from_self</vh></v>
-</v>
-<v t="ekr.20080516150804.2088"><vh>class SortingVisitor</vh>
-<v t="ekr.20080516150804.2089"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2090"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2091"><vh>visitFromImport</vh></v>
-<v t="ekr.20080516150804.2092"><vh>_check_imported_resource</vh></v>
-<v t="ekr.20080516150804.2093"><vh>standard_modules</vh></v>
-</v>
-<v t="ekr.20080516150804.2094"><vh>class LongImportVisitor</vh>
-<v t="ekr.20080516150804.2095"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2096"><vh>visitNormalImport</vh></v>
-<v t="ekr.20080516150804.2097"><vh>_is_long</vh></v>
-</v>
-<v t="ekr.20080516150804.2098"><vh>_is_future</vh></v>
-</v>
-<v t="ekr.20080516150804.2099"><vh>refactor\importutils\importinfo.py</vh>
-<v t="ekr.20080516150804.2100"><vh>class ImportStatement</vh>
-<v t="ekr.20080516150804.2101"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2102"><vh>_get_import_info</vh></v>
-<v t="ekr.20080516150804.2103"><vh>_set_import_info</vh></v>
-<v t="ekr.20080516150804.2104"><vh>get_import_statement</vh></v>
-<v t="ekr.20080516150804.2105"><vh>empty_import</vh></v>
-<v t="ekr.20080516150804.2106"><vh>move</vh></v>
-<v t="ekr.20080516150804.2107"><vh>get_old_location</vh></v>
-<v t="ekr.20080516150804.2108"><vh>get_new_start</vh></v>
-<v t="ekr.20080516150804.2109"><vh>is_changed</vh></v>
-<v t="ekr.20080516150804.2110"><vh>accept</vh></v>
-</v>
-<v t="ekr.20080516150804.2111"><vh>class ImportInfo</vh>
-<v t="ekr.20080516150804.2112"><vh>get_imported_primaries</vh></v>
-<v t="ekr.20080516150804.2113"><vh>get_imported_names</vh></v>
-<v t="ekr.20080516150804.2114"><vh>get_import_statement</vh></v>
-<v t="ekr.20080516150804.2115"><vh>is_empty</vh></v>
-<v t="ekr.20080516150804.2116"><vh>__hash__</vh></v>
-<v t="ekr.20080516150804.2117"><vh>_are_name_and_alias_lists_equal</vh></v>
-<v t="ekr.20080516150804.2118"><vh>__eq__</vh></v>
-<v t="ekr.20080516150804.2119"><vh>get_empty_import</vh></v>
-</v>
-<v t="ekr.20080516150804.2120"><vh>class NormalImport</vh>
-<v t="ekr.20080516150804.2121"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2122"><vh>get_imported_primaries</vh></v>
-<v t="ekr.20080516150804.2123"><vh>get_import_statement</vh></v>
-<v t="ekr.20080516150804.2124"><vh>is_empty</vh></v>
-</v>
-<v t="ekr.20080516150804.2125"><vh>class FromImport</vh>
-<v t="ekr.20080516150804.2126"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2127"><vh>get_imported_primaries</vh></v>
-<v t="ekr.20080516150804.2128"><vh>get_imported_resource</vh></v>
-<v t="ekr.20080516150804.2129"><vh>get_imported_module</vh></v>
-<v t="ekr.20080516150804.2130"><vh>get_import_statement</vh></v>
-<v t="ekr.20080516150804.2131"><vh>is_empty</vh></v>
-<v t="ekr.20080516150804.2132"><vh>is_star_import</vh></v>
-</v>
-<v t="ekr.20080516150804.2133"><vh>class EmptyImport</vh>
-<v t="ekr.20080516150804.2134"><vh>is_empty</vh></v>
-<v t="ekr.20080516150804.2135"><vh>get_imported_primaries</vh></v>
-</v>
-<v t="ekr.20080516150804.2136"><vh>get_module_name</vh></v>
-<v t="ekr.20080516150804.2137"><vh>class ImportContext</vh>
-<v t="ekr.20080516150804.2138"><vh>__init__</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.2139"><vh>refactor\importutils\module_imports.py</vh>
-<v t="ekr.20080516150804.2140"><vh>module_imports declarations</vh></v>
-<v t="ekr.20080516150804.2141"><vh>class ModuleImports</vh>
-<v t="ekr.20080516150804.2142"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2143"><vh>imports</vh></v>
-<v t="ekr.20080516150804.2144"><vh>_get_unbound_names</vh></v>
-<v t="ekr.20080516150804.2145"><vh>remove_unused_imports</vh></v>
-<v t="ekr.20080516150804.2146"><vh>get_used_imports</vh></v>
-<v t="ekr.20080516150804.2147"><vh>get_changed_source</vh></v>
-<v t="ekr.20080516150804.2148"><vh>_get_import_location</vh></v>
-<v t="ekr.20080516150804.2149"><vh>_compare_import_locations</vh></v>
-<v t="ekr.20080516150804.2150"><vh>_remove_imports</vh></v>
-<v t="ekr.20080516150804.2151"><vh>_first_non_blank_line</vh></v>
-<v t="ekr.20080516150804.2152"><vh>add_import</vh></v>
-<v t="ekr.20080516150804.2153"><vh>_get_new_import_blanks</vh></v>
-<v t="ekr.20080516150804.2154"><vh>_get_new_import_lineno</vh></v>
-<v t="ekr.20080516150804.2155"><vh>filter_names</vh></v>
-<v t="ekr.20080516150804.2156"><vh>expand_stars</vh></v>
-<v t="ekr.20080516150804.2157"><vh>remove_duplicates</vh></v>
-<v t="ekr.20080516150804.2158"><vh>get_relative_to_absolute_list</vh></v>
-<v t="ekr.20080516150804.2159"><vh>get_self_import_fix_and_rename_list</vh></v>
-<v t="ekr.20080516150804.2160"><vh>_current_folder</vh></v>
-<v t="ekr.20080516150804.2161"><vh>sort_imports</vh></v>
-<v t="ekr.20080516150804.2162"><vh>_first_import_line</vh></v>
-<v t="ekr.20080516150804.2163"><vh>_compare_imports</vh></v>
-<v t="ekr.20080516150804.2164"><vh>_move_imports</vh></v>
-<v t="ekr.20080516150804.2165"><vh>handle_long_imports</vh></v>
-</v>
-<v t="ekr.20080516150804.2166"><vh>class _OneTimeSelector</vh>
-<v t="ekr.20080516150804.2167"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2168"><vh>__call__</vh></v>
-<v t="ekr.20080516150804.2169"><vh>_get_dotted_tokens</vh></v>
-<v t="ekr.20080516150804.2170"><vh>_can_name_be_added</vh></v>
-</v>
-<v t="ekr.20080516150804.2171"><vh>class _UnboundNameFinder</vh>
-<v t="ekr.20080516150804.2172"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2173"><vh>_visit_child_scope</vh></v>
-<v t="ekr.20080516150804.2174"><vh>_FunctionDef</vh></v>
-<v t="ekr.20080516150804.2175"><vh>_ClassDef</vh></v>
-<v t="ekr.20080516150804.2176"><vh>_Name</vh></v>
-<v t="ekr.20080516150804.2177"><vh>_Attribute</vh></v>
-<v t="ekr.20080516150804.2178"><vh>_get_root</vh></v>
-<v t="ekr.20080516150804.2179"><vh>is_bound</vh></v>
-<v t="ekr.20080516150804.2180"><vh>add_unbound</vh></v>
-</v>
-<v t="ekr.20080516150804.2181"><vh>class _GlobalUnboundNameFinder</vh>
-<v t="ekr.20080516150804.2182"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2183"><vh>_get_root</vh></v>
-<v t="ekr.20080516150804.2184"><vh>is_bound</vh></v>
-<v t="ekr.20080516150804.2185"><vh>add_unbound</vh></v>
-<v t="ekr.20080516150804.2186"><vh>_is_node_interesting</vh></v>
-</v>
-<v t="ekr.20080516150804.2187"><vh>class _LocalUnboundNameFinder</vh>
-<v t="ekr.20080516150804.2188"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2189"><vh>_get_root</vh></v>
-<v t="ekr.20080516150804.2190"><vh>is_bound</vh></v>
-<v t="ekr.20080516150804.2191"><vh>add_unbound</vh></v>
-</v>
-<v t="ekr.20080516150804.2192"><vh>class _GlobalImportFinder</vh>
-<v t="ekr.20080516150804.2193"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2194"><vh>visit_import</vh></v>
-<v t="ekr.20080516150804.2195"><vh>_count_empty_lines_before</vh></v>
-<v t="ekr.20080516150804.2196"><vh>_count_empty_lines_after</vh></v>
-<v t="ekr.20080516150804.2197"><vh>get_separating_line_count</vh></v>
-<v t="ekr.20080516150804.2198"><vh>_get_text</vh></v>
-<v t="ekr.20080516150804.2199"><vh>visit_from</vh></v>
-<v t="ekr.20080516150804.2200"><vh>_get_names</vh></v>
-<v t="ekr.20080516150804.2201"><vh>find_import_statements</vh></v>
-</v>
-</v>
-<v t="ekr.20080516150804.2202"><vh>refactor\importutils\__init__.py</vh>
-<v t="ekr.20080516150804.2203"><vh>__init__ declarations</vh></v>
-<v t="ekr.20080516150804.2204"><vh>class ImportOrganizer</vh>
-<v t="ekr.20080516150804.2205"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2206"><vh>organize_imports</vh></v>
-<v t="ekr.20080516150804.2207"><vh>expand_star_imports</vh></v>
-<v t="ekr.20080516150804.2208"><vh>froms_to_imports</vh></v>
-<v t="ekr.20080516150804.2209"><vh>relatives_to_absolutes</vh></v>
-<v t="ekr.20080516150804.2210"><vh>handle_long_imports</vh></v>
-<v t="ekr.20080516150804.2211"><vh>_perform_command_on_import_tools</vh></v>
-<v t="ekr.20080516150804.2212"><vh>_line_filter</vh></v>
-</v>
-<v t="ekr.20080516150804.2213"><vh>class ImportTools</vh>
-<v t="ekr.20080516150804.2214"><vh>__init__</vh></v>
-<v t="ekr.20080516150804.2215"><vh>get_import</vh></v>
-<v t="ekr.20080516150804.2216"><vh>get_from_import</vh></v>
-<v t="ekr.20080516150804.2217"><vh>module_imports</vh></v>
-<v t="ekr.20080516150804.2218"><vh>froms_to_imports</vh></v>
-<v t="ekr.20080516150804.2219"><vh>expand_stars</vh></v>
-<v t="ekr.20080516150804.2220"><vh>_from_to_normal</vh></v>
-<v t="ekr.20080516150804.2221"><vh>_clean_up_imports</vh></v>
-<v t="ekr.20080516150804.2222"><vh>relatives_to_absolutes</vh></v>
-<v t="ekr.20080516150804.2223"><vh>_is_transformable_to_normal</vh></v>
-<v t="ekr.20080516150804.2224"><vh>organize_imports</vh></v>
-<v t="ekr.20080516150804.2225"><vh>_remove_self_imports</vh></v>
-<v t="ekr.20080516150804.2226"><vh>_rename_in_module</vh></v>
-<v t="ekr.20080516150804.2227"><vh>sort_imports</vh></v>
-<v t="ekr.20080516150804.2228"><vh>handle_long_imports</vh></v>
-</v>
-<v t="ekr.20080516150804.2229"><vh>get_imports</vh></v>
-<v t="ekr.20080516150804.2230"><vh>get_module_imports</vh></v>
-<v t="ekr.20080516150804.2231"><vh>add_import</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20080516155317.1" str_leo_pos="2,1"><vh>Startup</vh>
+<v t="ekr.20080516150804.1"><vh>@chapters</vh></v>
 </v>
 <v t="ekr.20080516150804.2232"><vh>rope-0.8.2\ropetest</vh>
 <v t="ekr.20080516150804.2233"><vh>ropetest\advanced_oi_test.py</vh>
@@ -4434,72 +1879,2558 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080516150804.10" a="E"><vh>rope-0.8.2\rope</vh>
+<v t="ekr.20080516150804.11"><vh>rope-0.8.2\rope\__init__.py</vh>
+<v t="ekr.20080516150804.12"><vh>__init__ declarations</vh></v>
+</v>
+<v t="ekr.20080516150804.13"><vh>rope-0.8.2\rope\base</vh>
+<v t="ekr.20080516150804.1003"><vh>base\__init__.py</vh>
+<v t="ekr.20080516150804.1004"><vh>__init__ declarations</vh></v>
+</v>
+<v t="ekr.20080516150804.14"><vh>base\arguments.py</vh>
+<v t="ekr.20080516150804.15"><vh>arguments declarations</vh></v>
+<v t="ekr.20080516150804.16"><vh>class Arguments</vh>
+<v t="ekr.20080516150804.17"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.18"><vh>get_arguments</vh></v>
+<v t="ekr.20080516150804.19"><vh>get_pynames</vh></v>
+<v t="ekr.20080516150804.20"><vh>get_instance_pyname</vh></v>
+<v t="ekr.20080516150804.21"><vh>_evaluate</vh></v>
+</v>
+<v t="ekr.20080516150804.22"><vh>create_arguments</vh></v>
+<v t="ekr.20080516150804.23"><vh>class ObjectArguments</vh>
+<v t="ekr.20080516150804.24"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.25"><vh>get_arguments</vh></v>
+<v t="ekr.20080516150804.26"><vh>get_pynames</vh></v>
+<v t="ekr.20080516150804.27"><vh>get_instance_pyname</vh></v>
+</v>
+<v t="ekr.20080516150804.28"><vh>class MixedArguments</vh>
+<v t="ekr.20080516150804.29"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.30"><vh>get_pynames</vh></v>
+<v t="ekr.20080516150804.31"><vh>get_arguments</vh></v>
+<v t="ekr.20080516150804.32"><vh>get_instance_pyname</vh></v>
+</v>
+<v t="ekr.20080516150804.33"><vh>_is_method_call</vh></v>
+</v>
+<v t="ekr.20080516150804.34"><vh>base\ast.py</vh>
+<v t="ekr.20080516150804.35"><vh>ast declarations</vh></v>
+<v t="ekr.20080516150804.36"><vh>parse</vh></v>
+<v t="ekr.20080516150804.37"><vh>walk</vh></v>
+<v t="ekr.20080516150804.38"><vh>get_child_nodes</vh></v>
+<v t="ekr.20080516150804.39"><vh>call_for_nodes</vh></v>
+<v t="ekr.20080516150804.40"><vh>get_children</vh></v>
+</v>
+<v t="ekr.20080516150804.41"><vh>base\astutils.py</vh>
+<v t="ekr.20080516150804.42"><vh>astutils declarations</vh></v>
+<v t="ekr.20080516150804.43"><vh>get_name_levels</vh></v>
+<v t="ekr.20080516150804.44"><vh>class _NodeNameCollector</vh>
+<v t="ekr.20080516150804.45"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.46"><vh>_add_node</vh></v>
+<v t="ekr.20080516150804.47"><vh>_added</vh></v>
+<v t="ekr.20080516150804.48"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.49"><vh>_Tuple</vh></v>
+<v t="ekr.20080516150804.50"><vh>_Subscript</vh></v>
+<v t="ekr.20080516150804.51"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.52"><vh>_Slice</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.53"><vh>base\builtins.py</vh>
+<v t="ekr.20080516150804.54"><vh>builtins declarations</vh></v>
+<v t="ekr.20080516150804.55"><vh>class BuiltinModule</vh>
+<v t="ekr.20080516150804.56"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.57"><vh>get_attributes</vh></v>
+<v t="ekr.20080516150804.58"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.59"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.60"><vh>_calculate_attributes</vh></v>
+<v t="ekr.20080516150804.61"><vh>module</vh></v>
+</v>
+<v t="ekr.20080516150804.62"><vh>class _BuiltinElement</vh>
+<v t="ekr.20080516150804.63"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.64"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.65"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.66"><vh>parent</vh></v>
+</v>
+<v t="ekr.20080516150804.67"><vh>class BuiltinClass</vh>
+<v t="ekr.20080516150804.68"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.69"><vh>get_attributes</vh></v>
+</v>
+<v t="ekr.20080516150804.70"><vh>class BuiltinFunction</vh>
+<v t="ekr.20080516150804.71"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.72"><vh>get_returned_object</vh></v>
+<v t="ekr.20080516150804.73"><vh>get_param_names</vh></v>
+</v>
+<v t="ekr.20080516150804.74"><vh>_object_attributes</vh></v>
+<v t="ekr.20080516150804.75"><vh>_create_builtin_type_getter</vh></v>
+<v t="ekr.20080516150804.76"><vh>_create_builtin_getter</vh></v>
+<v t="ekr.20080516150804.77"><vh>class _CallContext</vh>
+<v t="ekr.20080516150804.78"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.79"><vh>_get_scope_and_pyname</vh></v>
+<v t="ekr.20080516150804.80"><vh>get_argument</vh></v>
+<v t="ekr.20080516150804.81"><vh>get_pyname</vh></v>
+<v t="ekr.20080516150804.82"><vh>get_arguments</vh></v>
+<v t="ekr.20080516150804.83"><vh>get_pynames</vh></v>
+<v t="ekr.20080516150804.84"><vh>get_per_name</vh></v>
+<v t="ekr.20080516150804.85"><vh>save_per_name</vh></v>
+</v>
+<v t="ekr.20080516150804.86"><vh>class _AttributeCollector</vh>
+<v t="ekr.20080516150804.87"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.88"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.89"><vh>__setitem__</vh></v>
+</v>
+<v t="ekr.20080516150804.90"><vh>class List</vh>
+<v t="ekr.20080516150804.91"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.92"><vh>_new_list</vh></v>
+<v t="ekr.20080516150804.93"><vh>_list_add</vh></v>
+<v t="ekr.20080516150804.94"><vh>_self_set</vh></v>
+<v t="ekr.20080516150804.95"><vh>_list_get</vh></v>
+<v t="ekr.20080516150804.96"><vh>_iterator_get</vh></v>
+<v t="ekr.20080516150804.97"><vh>_self_get</vh></v>
+</v>
+<v t="ekr.20080516150804.98"><vh>class Dict</vh>
+<v t="ekr.20080516150804.99"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.100"><vh>_new_dict</vh></v>
+<v t="ekr.20080516150804.101"><vh>_dict_add</vh></v>
+<v t="ekr.20080516150804.102"><vh>_item_get</vh></v>
+<v t="ekr.20080516150804.103"><vh>_value_get</vh></v>
+<v t="ekr.20080516150804.104"><vh>_key_get</vh></v>
+<v t="ekr.20080516150804.105"><vh>_value_list</vh></v>
+<v t="ekr.20080516150804.106"><vh>_key_list</vh></v>
+<v t="ekr.20080516150804.107"><vh>_item_list</vh></v>
+<v t="ekr.20080516150804.108"><vh>_value_iter</vh></v>
+<v t="ekr.20080516150804.109"><vh>_key_iter</vh></v>
+<v t="ekr.20080516150804.110"><vh>_item_iter</vh></v>
+<v t="ekr.20080516150804.111"><vh>_self_get</vh></v>
+<v t="ekr.20080516150804.112"><vh>_self_set</vh></v>
+</v>
+<v t="ekr.20080516150804.113"><vh>class Tuple</vh>
+<v t="ekr.20080516150804.114"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.115"><vh>get_holding_objects</vh></v>
+<v t="ekr.20080516150804.116"><vh>_new_tuple</vh></v>
+</v>
+<v t="ekr.20080516150804.117"><vh>class Set</vh>
+<v t="ekr.20080516150804.118"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.119"><vh>_new_set</vh></v>
+<v t="ekr.20080516150804.120"><vh>_set_add</vh></v>
+<v t="ekr.20080516150804.121"><vh>_self_set</vh></v>
+<v t="ekr.20080516150804.122"><vh>_set_get</vh></v>
+<v t="ekr.20080516150804.123"><vh>_iterator_get</vh></v>
+<v t="ekr.20080516150804.124"><vh>_self_get</vh></v>
+</v>
+<v t="ekr.20080516150804.125"><vh>class Str</vh>
+<v t="ekr.20080516150804.126"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.127"><vh>get_doc</vh></v>
+</v>
+<v t="ekr.20080516150804.128"><vh>class BuiltinName</vh>
+<v t="ekr.20080516150804.129"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.130"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.131"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.132"><vh>class Iterator</vh>
+<v t="ekr.20080516150804.133"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.134"><vh>get_attributes</vh></v>
+<v t="ekr.20080516150804.135"><vh>get_returned_object</vh></v>
+</v>
+<v t="ekr.20080516150804.136"><vh>class Generator</vh>
+<v t="ekr.20080516150804.137"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.138"><vh>get_attributes</vh></v>
+<v t="ekr.20080516150804.139"><vh>get_returned_object</vh></v>
+</v>
+<v t="ekr.20080516150804.140"><vh>class File</vh>
+<v t="ekr.20080516150804.141"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.142"><vh>class Property</vh>
+<v t="ekr.20080516150804.143"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.144"><vh>get_property_object</vh></v>
+</v>
+<v t="ekr.20080516150804.145"><vh>_property_function</vh></v>
+<v t="ekr.20080516150804.146"><vh>class Lambda</vh>
+<v t="ekr.20080516150804.147"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.148"><vh>get_returned_object</vh></v>
+<v t="ekr.20080516150804.149"><vh>get_pattributes</vh></v>
+</v>
+<v t="ekr.20080516150804.150"><vh>class BuiltinObject</vh>
+<v t="ekr.20080516150804.151"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.152"><vh>class BuiltinType</vh>
+<v t="ekr.20080516150804.153"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.154"><vh>_infer_sequence_for_pyname</vh></v>
+<v t="ekr.20080516150804.155"><vh>_create_builtin</vh></v>
+<v t="ekr.20080516150804.156"><vh>_range_function</vh></v>
+<v t="ekr.20080516150804.157"><vh>_reversed_function</vh></v>
+<v t="ekr.20080516150804.158"><vh>_sorted_function</vh></v>
+<v t="ekr.20080516150804.159"><vh>_super_function</vh></v>
+<v t="ekr.20080516150804.160"><vh>_zip_function</vh></v>
+<v t="ekr.20080516150804.161"><vh>_enumerate_function</vh></v>
+<v t="ekr.20080516150804.162"><vh>_iter_function</vh></v>
+<v t="ekr.20080516150804.163"><vh>_input_function</vh></v>
+</v>
+<v t="ekr.20080516150804.164"><vh>base\change.py</vh>
+<v t="ekr.20080516150804.165"><vh>change declarations</vh></v>
+<v t="ekr.20080516150804.166"><vh>class Change</vh>
+<v t="ekr.20080516150804.167"><vh>do</vh></v>
+<v t="ekr.20080516150804.168"><vh>undo</vh></v>
+<v t="ekr.20080516150804.169"><vh>get_description</vh></v>
+<v t="ekr.20080516150804.170"><vh>get_changed_resources</vh></v>
+</v>
+<v t="ekr.20080516150804.171"><vh>class ChangeSet</vh>
+<v t="ekr.20080516150804.172"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.173"><vh>do</vh></v>
+<v t="ekr.20080516150804.174"><vh>undo</vh></v>
+<v t="ekr.20080516150804.175"><vh>add_change</vh></v>
+<v t="ekr.20080516150804.176"><vh>get_description</vh></v>
+<v t="ekr.20080516150804.177"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.178"><vh>get_changed_resources</vh></v>
+</v>
+<v t="ekr.20080516150804.179"><vh>_handle_job_set</vh></v>
+<v t="ekr.20080516150804.180"><vh>class ChangeContents</vh>
+<v t="ekr.20080516150804.181"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.182"><vh>do</vh></v>
+<v t="ekr.20080516150804.183"><vh>undo</vh></v>
+<v t="ekr.20080516150804.184"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.185"><vh>get_description</vh></v>
+<v t="ekr.20080516150804.186"><vh>get_changed_resources</vh></v>
+</v>
+<v t="ekr.20080516150804.187"><vh>class MoveResource</vh>
+<v t="ekr.20080516150804.188"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.189"><vh>do</vh></v>
+<v t="ekr.20080516150804.190"><vh>undo</vh></v>
+<v t="ekr.20080516150804.191"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.192"><vh>get_description</vh></v>
+<v t="ekr.20080516150804.193"><vh>get_changed_resources</vh></v>
+</v>
+<v t="ekr.20080516150804.194"><vh>class CreateResource</vh>
+<v t="ekr.20080516150804.195"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.196"><vh>do</vh></v>
+<v t="ekr.20080516150804.197"><vh>undo</vh></v>
+<v t="ekr.20080516150804.198"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.199"><vh>get_description</vh></v>
+<v t="ekr.20080516150804.200"><vh>get_changed_resources</vh></v>
+<v t="ekr.20080516150804.201"><vh>_get_child_path</vh></v>
+</v>
+<v t="ekr.20080516150804.202"><vh>class CreateFolder</vh>
+<v t="ekr.20080516150804.203"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.204"><vh>class CreateFile</vh>
+<v t="ekr.20080516150804.205"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.206"><vh>class RemoveResource</vh>
+<v t="ekr.20080516150804.207"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.208"><vh>do</vh></v>
+<v t="ekr.20080516150804.209"><vh>undo</vh></v>
+<v t="ekr.20080516150804.210"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.211"><vh>get_changed_resources</vh></v>
+</v>
+<v t="ekr.20080516150804.212"><vh>count_changes</vh></v>
+<v t="ekr.20080516150804.213"><vh>create_job_set</vh></v>
+<v t="ekr.20080516150804.214"><vh>class _ResourceOperations</vh>
+<v t="ekr.20080516150804.215"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.216"><vh>_get_fscommands</vh></v>
+<v t="ekr.20080516150804.217"><vh>write_file</vh></v>
+<v t="ekr.20080516150804.218"><vh>move</vh></v>
+<v t="ekr.20080516150804.219"><vh>create</vh></v>
+<v t="ekr.20080516150804.220"><vh>remove</vh></v>
+<v t="ekr.20080516150804.221"><vh>_create_resource</vh></v>
+</v>
+<v t="ekr.20080516150804.222"><vh>_get_destination_for_move</vh></v>
+<v t="ekr.20080516150804.223"><vh>class ChangeToData</vh>
+<v t="ekr.20080516150804.224"><vh>convertChangeSet</vh></v>
+<v t="ekr.20080516150804.225"><vh>convertChangeContents</vh></v>
+<v t="ekr.20080516150804.226"><vh>convertMoveResource</vh></v>
+<v t="ekr.20080516150804.227"><vh>convertCreateResource</vh></v>
+<v t="ekr.20080516150804.228"><vh>convertRemoveResource</vh></v>
+<v t="ekr.20080516150804.229"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.230"><vh>class DataToChange</vh>
+<v t="ekr.20080516150804.231"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.232"><vh>makeChangeSet</vh></v>
+<v t="ekr.20080516150804.233"><vh>makeChangeContents</vh></v>
+<v t="ekr.20080516150804.234"><vh>makeMoveResource</vh></v>
+<v t="ekr.20080516150804.235"><vh>makeCreateResource</vh></v>
+<v t="ekr.20080516150804.236"><vh>makeRemoveResource</vh></v>
+<v t="ekr.20080516150804.237"><vh>__call__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.238"><vh>base\codeanalyze.py</vh>
+<v t="ekr.20080516150804.239"><vh>codeanalyze declarations</vh></v>
+<v t="ekr.20080516150804.240"><vh>class ChangeCollector</vh>
+<v t="ekr.20080516150804.241"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.242"><vh>add_change</vh></v>
+<v t="ekr.20080516150804.243"><vh>get_changed</vh></v>
+</v>
+<v t="ekr.20080516150804.244"><vh>class Lines</vh>
+<v t="ekr.20080516150804.245"><vh>get_line</vh></v>
+<v t="ekr.20080516150804.246"><vh>length</vh></v>
+</v>
+<v t="ekr.20080516150804.247"><vh>class SourceLinesAdapter</vh>
+<v t="ekr.20080516150804.248"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.249"><vh>_initialize_line_starts</vh></v>
+<v t="ekr.20080516150804.250"><vh>get_line</vh></v>
+<v t="ekr.20080516150804.251"><vh>length</vh></v>
+<v t="ekr.20080516150804.252"><vh>get_line_number</vh></v>
+<v t="ekr.20080516150804.253"><vh>get_line_start</vh></v>
+<v t="ekr.20080516150804.254"><vh>get_line_end</vh></v>
+</v>
+<v t="ekr.20080516150804.255"><vh>class ArrayLinesAdapter</vh>
+<v t="ekr.20080516150804.256"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.257"><vh>get_line</vh></v>
+<v t="ekr.20080516150804.258"><vh>length</vh></v>
+</v>
+<v t="ekr.20080516150804.259"><vh>class LinesToReadline</vh>
+<v t="ekr.20080516150804.260"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.261"><vh>readline</vh></v>
+<v t="ekr.20080516150804.262"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.263"><vh>class _CustomGenerator</vh>
+<v t="ekr.20080516150804.264"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.265"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.266"><vh>_analyze_line</vh></v>
+</v>
+<v t="ekr.20080516150804.267"><vh>custom_generator</vh></v>
+<v t="ekr.20080516150804.268"><vh>class LogicalLineFinder</vh>
+<v t="ekr.20080516150804.269"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.270"><vh>logical_line_in</vh></v>
+<v t="ekr.20080516150804.271"><vh>generate_starts</vh></v>
+<v t="ekr.20080516150804.272"><vh>generate_regions</vh></v>
+<v t="ekr.20080516150804.273"><vh>_block_logical_line</vh></v>
+<v t="ekr.20080516150804.274"><vh>_calculate_logical</vh></v>
+<v t="ekr.20080516150804.275"><vh>_logical_lines</vh></v>
+<v t="ekr.20080516150804.276"><vh>_first_non_blank</vh></v>
+</v>
+<v t="ekr.20080516150804.277"><vh>tokenizer_generator</vh></v>
+<v t="ekr.20080516150804.278"><vh>class CachingLogicalLineFinder</vh>
+<v t="ekr.20080516150804.279"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.280"><vh>starts</vh></v>
+<v t="ekr.20080516150804.281"><vh>ends</vh></v>
+<v t="ekr.20080516150804.282"><vh>_init_logicals</vh></v>
+<v t="ekr.20080516150804.283"><vh>logical_line_in</vh></v>
+<v t="ekr.20080516150804.284"><vh>generate_starts</vh></v>
+</v>
+<v t="ekr.20080516150804.285"><vh>get_block_start</vh></v>
+<v t="ekr.20080516150804.286"><vh>get_block_start_patterns</vh></v>
+<v t="ekr.20080516150804.287"><vh>count_line_indents</vh></v>
+<v t="ekr.20080516150804.288"><vh>get_string_pattern</vh></v>
+<v t="ekr.20080516150804.289"><vh>get_comment_pattern</vh></v>
+</v>
+<v t="ekr.20080516150804.290"><vh>base\default_config.py</vh>
+<v t="ekr.20080516150804.291"><vh>set_prefs</vh></v>
+<v t="ekr.20080516150804.292"><vh>project_opened</vh></v>
+</v>
+<v t="ekr.20080516150804.293"><vh>base\evaluate.py</vh>
+<v t="ekr.20080516150804.294"><vh>evaluate declarations</vh></v>
+<v t="ekr.20080516150804.295"><vh>get_primary_and_pyname_at</vh></v>
+<v t="ekr.20080516150804.296"><vh>get_pyname_at</vh></v>
+<v t="ekr.20080516150804.297"><vh>get_statement_result</vh></v>
+<v t="ekr.20080516150804.298"><vh>get_primary_and_result</vh></v>
+<v t="ekr.20080516150804.299"><vh>get_pyname_in_scope</vh></v>
+<v t="ekr.20080516150804.300"><vh>get_primary_and_pyname_in_scope</vh></v>
+<v t="ekr.20080516150804.301"><vh>get_string_result</vh></v>
+<v t="ekr.20080516150804.302"><vh>class ScopeNameFinder</vh>
+<v t="ekr.20080516150804.303"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.304"><vh>_is_defined_in_class_body</vh></v>
+<v t="ekr.20080516150804.305"><vh>_is_function_name_in_function_header</vh></v>
+<v t="ekr.20080516150804.306"><vh>get_pyname_at</vh></v>
+<v t="ekr.20080516150804.307"><vh>get_primary_and_pyname_at</vh></v>
+<v t="ekr.20080516150804.308"><vh>get_enclosing_function</vh></v>
+<v t="ekr.20080516150804.309"><vh>_find_module</vh></v>
+</v>
+<v t="ekr.20080516150804.310"><vh>class StatementEvaluator</vh>
+<v t="ekr.20080516150804.311"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.312"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.313"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.314"><vh>_Call</vh></v>
+<v t="ekr.20080516150804.315"><vh>_Str</vh></v>
+<v t="ekr.20080516150804.316"><vh>_Num</vh></v>
+<v t="ekr.20080516150804.317"><vh>_get_builtin_name</vh></v>
+<v t="ekr.20080516150804.318"><vh>_BinOp</vh></v>
+<v t="ekr.20080516150804.319"><vh>_BoolOp</vh></v>
+<v t="ekr.20080516150804.320"><vh>_Repr</vh></v>
+<v t="ekr.20080516150804.321"><vh>_UnaryOp</vh></v>
+<v t="ekr.20080516150804.322"><vh>_Compare</vh></v>
+<v t="ekr.20080516150804.323"><vh>_Dict</vh></v>
+<v t="ekr.20080516150804.324"><vh>_List</vh></v>
+<v t="ekr.20080516150804.325"><vh>_ListComp</vh></v>
+<v t="ekr.20080516150804.326"><vh>_GeneratorExp</vh></v>
+<v t="ekr.20080516150804.327"><vh>_what_does_comprehension_hold</vh></v>
+<v t="ekr.20080516150804.328"><vh>_make_comprehension_scope</vh></v>
+<v t="ekr.20080516150804.329"><vh>_Tuple</vh></v>
+<v t="ekr.20080516150804.330"><vh>_get_object_for_node</vh></v>
+<v t="ekr.20080516150804.331"><vh>_get_primary_and_object_for_node</vh></v>
+<v t="ekr.20080516150804.332"><vh>_Subscript</vh></v>
+<v t="ekr.20080516150804.333"><vh>_call_function</vh></v>
+<v t="ekr.20080516150804.334"><vh>_Lambda</vh></v>
+</v>
+<v t="ekr.20080516150804.335"><vh>_get_evaluated_names</vh></v>
+</v>
+<v t="ekr.20080516150804.336"><vh>base\exceptions.py</vh>
+<v t="ekr.20080516150804.337"><vh>class RopeError</vh></v>
+<v t="ekr.20080516150804.338"><vh>class ResourceNotFoundError</vh></v>
+<v t="ekr.20080516150804.339"><vh>class RefactoringError</vh></v>
+<v t="ekr.20080516150804.340"><vh>class InterruptedTaskError</vh></v>
+<v t="ekr.20080516150804.341"><vh>class HistoryError</vh></v>
+<v t="ekr.20080516150804.342"><vh>class ModuleNotFoundError</vh></v>
+<v t="ekr.20080516150804.343"><vh>class AttributeNotFoundError</vh></v>
+<v t="ekr.20080516150804.344"><vh>class NameNotFoundError</vh></v>
+<v t="ekr.20080516150804.345"><vh>class BadIdentifierError</vh></v>
+<v t="ekr.20080516150804.346"><vh>class ModuleSyntaxError</vh>
+<v t="ekr.20080516150804.347"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.348"><vh>class ModuleDecodeError</vh>
+<v t="ekr.20080516150804.349"><vh>__init__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.350"><vh>base\fscommands.py</vh>
+<v t="ekr.20080516150804.351"><vh>fscommands declarations</vh></v>
+<v t="ekr.20080516150804.352"><vh>create_fscommands</vh></v>
+<v t="ekr.20080516150804.353"><vh>class FileSystemCommands</vh>
+<v t="ekr.20080516150804.354"><vh>create_file</vh></v>
+<v t="ekr.20080516150804.355"><vh>create_folder</vh></v>
+<v t="ekr.20080516150804.356"><vh>move</vh></v>
+<v t="ekr.20080516150804.357"><vh>remove</vh></v>
+<v t="ekr.20080516150804.358"><vh>write</vh></v>
+</v>
+<v t="ekr.20080516150804.359"><vh>class SubversionCommands</vh>
+<v t="ekr.20080516150804.360"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.361"><vh>create_file</vh></v>
+<v t="ekr.20080516150804.362"><vh>create_folder</vh></v>
+<v t="ekr.20080516150804.363"><vh>move</vh></v>
+<v t="ekr.20080516150804.364"><vh>remove</vh></v>
+<v t="ekr.20080516150804.365"><vh>write</vh></v>
+</v>
+<v t="ekr.20080516150804.366"><vh>class MercurialCommands</vh>
+<v t="ekr.20080516150804.367"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.368"><vh>_import_mercurial</vh></v>
+<v t="ekr.20080516150804.369"><vh>create_file</vh></v>
+<v t="ekr.20080516150804.370"><vh>create_folder</vh></v>
+<v t="ekr.20080516150804.371"><vh>move</vh></v>
+<v t="ekr.20080516150804.372"><vh>remove</vh></v>
+<v t="ekr.20080516150804.373"><vh>write</vh></v>
+</v>
+<v t="ekr.20080516150804.374"><vh>class GITCommands</vh>
+<v t="ekr.20080516150804.375"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.376"><vh>create_file</vh></v>
+<v t="ekr.20080516150804.377"><vh>create_folder</vh></v>
+<v t="ekr.20080516150804.378"><vh>move</vh></v>
+<v t="ekr.20080516150804.379"><vh>remove</vh></v>
+<v t="ekr.20080516150804.380"><vh>write</vh></v>
+<v t="ekr.20080516150804.381"><vh>_do</vh></v>
+<v t="ekr.20080516150804.382"><vh>_in_dir</vh></v>
+</v>
+<v t="ekr.20080516150804.383"><vh>_execute</vh></v>
+<v t="ekr.20080516150804.384"><vh>unicode_to_file_data</vh></v>
+<v t="ekr.20080516150804.385"><vh>file_data_to_unicode</vh></v>
+<v t="ekr.20080516150804.386"><vh>_decode_data</vh></v>
+<v t="ekr.20080516150804.387"><vh>read_file_coding</vh></v>
+<v t="ekr.20080516150804.388"><vh>read_str_coding</vh></v>
+<v t="ekr.20080516150804.389"><vh>_find_coding</vh></v>
+</v>
+<v t="ekr.20080516150804.390"><vh>base\history.py</vh>
+<v t="ekr.20080516150804.391"><vh>history declarations</vh></v>
+<v t="ekr.20080516150804.392"><vh>class History</vh>
+<v t="ekr.20080516150804.393"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.394"><vh>_load_history</vh></v>
+<v t="ekr.20080516150804.395"><vh>do</vh></v>
+<v t="ekr.20080516150804.396"><vh>_remove_extra_items</vh></v>
+<v t="ekr.20080516150804.397"><vh>_is_change_interesting</vh></v>
+<v t="ekr.20080516150804.398"><vh>undo</vh></v>
+<v t="ekr.20080516150804.399"><vh>redo</vh></v>
+<v t="ekr.20080516150804.400"><vh>_move_front</vh></v>
+<v t="ekr.20080516150804.401"><vh>_find_dependencies</vh></v>
+<v t="ekr.20080516150804.402"><vh>_perform_undos</vh></v>
+<v t="ekr.20080516150804.403"><vh>_perform_redos</vh></v>
+<v t="ekr.20080516150804.404"><vh>contents_before_current_change</vh></v>
+<v t="ekr.20080516150804.405"><vh>_search_for_change_contents</vh></v>
+<v t="ekr.20080516150804.406"><vh>write</vh></v>
+<v t="ekr.20080516150804.407"><vh>get_file_undo_list</vh></v>
+<v t="ekr.20080516150804.408"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.409"><vh>tobe_undone</vh></v>
+<v t="ekr.20080516150804.410"><vh>tobe_redone</vh></v>
+<v t="ekr.20080516150804.411"><vh>max_undos</vh></v>
+<v t="ekr.20080516150804.412"><vh>save</vh></v>
+<v t="ekr.20080516150804.413"><vh>compress</vh></v>
+<v t="ekr.20080516150804.414"><vh>clear</vh></v>
+</v>
+<v t="ekr.20080516150804.415"><vh>class _FindChangeDependencies</vh>
+<v t="ekr.20080516150804.416"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.417"><vh>find_dependencies</vh></v>
+<v t="ekr.20080516150804.418"><vh>_depends_on</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.419"><vh>base\libutils.py</vh>
+<v t="ekr.20080516150804.420"><vh>libutils declarations</vh></v>
+<v t="ekr.20080516150804.421"><vh>path_to_resource</vh></v>
+<v t="ekr.20080516150804.422"><vh>report_change</vh></v>
+<v t="ekr.20080516150804.423"><vh>analyze_modules</vh></v>
+</v>
+<v t="ekr.20080516150804.424"><vh>base\prefs.py</vh>
+<v t="ekr.20080516150804.425"><vh>class Prefs</vh>
+<v t="ekr.20080516150804.426"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.427"><vh>set</vh></v>
+<v t="ekr.20080516150804.428"><vh>add</vh></v>
+<v t="ekr.20080516150804.429"><vh>get</vh></v>
+<v t="ekr.20080516150804.430"><vh>add_callback</vh></v>
+<v t="ekr.20080516150804.431"><vh>__setitem__</vh></v>
+<v t="ekr.20080516150804.432"><vh>__getitem__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.433"><vh>base\project.py</vh>
+<v t="ekr.20080516150804.434"><vh>project declarations</vh></v>
+<v t="ekr.20080516150804.435"><vh>class _Project</vh>
+<v t="ekr.20080516150804.436"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.437"><vh>get_resource</vh></v>
+<v t="ekr.20080516150804.438"><vh>validate</vh></v>
+<v t="ekr.20080516150804.439"><vh>add_observer</vh></v>
+<v t="ekr.20080516150804.440"><vh>remove_observer</vh></v>
+<v t="ekr.20080516150804.441"><vh>do</vh></v>
+<v t="ekr.20080516150804.442"><vh>get_pycore</vh></v>
+<v t="ekr.20080516150804.443"><vh>get_file</vh></v>
+<v t="ekr.20080516150804.444"><vh>get_folder</vh></v>
+<v t="ekr.20080516150804.445"><vh>is_ignored</vh></v>
+<v t="ekr.20080516150804.446"><vh>get_prefs</vh></v>
+<v t="ekr.20080516150804.447"><vh>_get_resource_path</vh></v>
+<v t="ekr.20080516150804.448"><vh>_get_history</vh></v>
+<v t="ekr.20080516150804.449"><vh>close</vh></v>
+</v>
+<v t="ekr.20080516150804.450"><vh>class Project</vh>
+<v t="ekr.20080516150804.451"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.452"><vh>get_files</vh></v>
+<v t="ekr.20080516150804.453"><vh>_get_resource_path</vh></v>
+<v t="ekr.20080516150804.454"><vh>_init_ropefolder</vh></v>
+<v t="ekr.20080516150804.455"><vh>_init_prefs</vh></v>
+<v t="ekr.20080516150804.456"><vh>_default_config</vh></v>
+<v t="ekr.20080516150804.457"><vh>_init_other_parts</vh></v>
+<v t="ekr.20080516150804.458"><vh>is_ignored</vh></v>
+<v t="ekr.20080516150804.459"><vh>sync</vh></v>
+<v t="ekr.20080516150804.460"><vh>close</vh></v>
+<v t="ekr.20080516150804.461"><vh>set</vh></v>
+<v t="ekr.20080516150804.462"><vh>ropefolder</vh></v>
+<v t="ekr.20080516150804.463"><vh>validate</vh></v>
+</v>
+<v t="ekr.20080516150804.464"><vh>class NoProject</vh>
+<v t="ekr.20080516150804.465"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.466"><vh>_get_resource_path</vh></v>
+<v t="ekr.20080516150804.467"><vh>get_resource</vh></v>
+<v t="ekr.20080516150804.468"><vh>get_files</vh></v>
+</v>
+<v t="ekr.20080516150804.469"><vh>get_no_project</vh></v>
+<v t="ekr.20080516150804.470"><vh>class _FileListCacher</vh>
+<v t="ekr.20080516150804.471"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.472"><vh>get_files</vh></v>
+<v t="ekr.20080516150804.473"><vh>observer</vh></v>
+<v t="ekr.20080516150804.474"><vh>_updated_resources</vh></v>
+<v t="ekr.20080516150804.475"><vh>_update_folder</vh></v>
+<v t="ekr.20080516150804.476"><vh>_init_observer</vh></v>
+<v t="ekr.20080516150804.477"><vh>_changed</vh></v>
+<v t="ekr.20080516150804.478"><vh>_moved</vh></v>
+<v t="ekr.20080516150804.479"><vh>_created</vh></v>
+<v t="ekr.20080516150804.480"><vh>_removed</vh></v>
+<v t="ekr.20080516150804.481"><vh>_validate</vh></v>
+</v>
+<v t="ekr.20080516150804.482"><vh>class _DataFiles</vh>
+<v t="ekr.20080516150804.483"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.484"><vh>read_data</vh></v>
+<v t="ekr.20080516150804.485"><vh>write_data</vh></v>
+<v t="ekr.20080516150804.486"><vh>add_write_hook</vh></v>
+<v t="ekr.20080516150804.487"><vh>write</vh></v>
+<v t="ekr.20080516150804.488"><vh>_can_compress</vh></v>
+<v t="ekr.20080516150804.489"><vh>_import_old_files</vh></v>
+<v t="ekr.20080516150804.490"><vh>_get_opener</vh></v>
+<v t="ekr.20080516150804.491"><vh>_get_file</vh></v>
+</v>
+<v t="ekr.20080516150804.492"><vh>_realpath</vh></v>
+</v>
+<v t="ekr.20080516150804.493"><vh>base\pycore.py</vh>
+<v t="ekr.20080516150804.494"><vh>pycore declarations</vh></v>
+<v t="ekr.20080516150804.495"><vh>class PyCore</vh>
+<v t="ekr.20080516150804.496"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.497"><vh>_init_python_files</vh></v>
+<v t="ekr.20080516150804.498"><vh>_init_resource_observer</vh></v>
+<v t="ekr.20080516150804.499"><vh>_init_source_folders</vh></v>
+<v t="ekr.20080516150804.500"><vh>_init_automatic_soa</vh></v>
+<v t="ekr.20080516150804.501"><vh>automatic_soa</vh></v>
+<v t="ekr.20080516150804.502"><vh>_file_changed_for_soa</vh></v>
+<v t="ekr.20080516150804.503"><vh>is_python_file</vh></v>
+<v t="ekr.20080516150804.504"><vh>get_module</vh></v>
+<v t="ekr.20080516150804.505"><vh>_builtin_module</vh></v>
+<v t="ekr.20080516150804.506"><vh>get_relative_module</vh></v>
+<v t="ekr.20080516150804.507"><vh>get_string_module</vh></v>
+<v t="ekr.20080516150804.508"><vh>get_string_scope</vh></v>
+<v t="ekr.20080516150804.509"><vh>_invalidate_resource_cache</vh></v>
+<v t="ekr.20080516150804.510"><vh>_find_module_in_source_folder</vh></v>
+<v t="ekr.20080516150804.511"><vh>get_python_path_folders</vh></v>
+<v t="ekr.20080516150804.512"><vh>find_module</vh></v>
+<v t="ekr.20080516150804.513"><vh>find_relative_module</vh></v>
+<v t="ekr.20080516150804.514"><vh>_find_module_resource_list</vh></v>
+<v t="ekr.20080516150804.515"><vh>get_source_folders</vh></v>
+<v t="ekr.20080516150804.516"><vh>resource_to_pyobject</vh></v>
+<v t="ekr.20080516150804.517"><vh>get_python_files</vh></v>
+<v t="ekr.20080516150804.518"><vh>_is_package</vh></v>
+<v t="ekr.20080516150804.519"><vh>_find_source_folders</vh></v>
+<v t="ekr.20080516150804.520"><vh>run_module</vh></v>
+<v t="ekr.20080516150804.521"><vh>analyze_module</vh></v>
+<v t="ekr.20080516150804.522"><vh>get_classes</vh></v>
+<v t="ekr.20080516150804.523"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080516150804.524"><vh>class _ModuleCache</vh>
+<v t="ekr.20080516150804.525"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.526"><vh>_invalidate_resource</vh></v>
+<v t="ekr.20080516150804.527"><vh>get_pymodule</vh></v>
+<v t="ekr.20080516150804.528"><vh>forget_all_data</vh></v>
+<v t="ekr.20080516150804.529"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080516150804.530"><vh>class _ExtensionCache</vh>
+<v t="ekr.20080516150804.531"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.532"><vh>get_pymodule</vh></v>
+<v t="ekr.20080516150804.533"><vh>allowed</vh></v>
+</v>
+<v t="ekr.20080516150804.534"><vh>perform_soa_on_changed_scopes</vh></v>
+<v t="ekr.20080516150804.535"><vh>class _TextChangeDetector</vh>
+<v t="ekr.20080516150804.536"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.537"><vh>_set_diffs</vh></v>
+<v t="ekr.20080516150804.538"><vh>is_changed</vh></v>
+<v t="ekr.20080516150804.539"><vh>consume_changes</vh></v>
+<v t="ekr.20080516150804.540"><vh>_get_changed</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.541"><vh>base\pynames.py</vh>
+<v t="ekr.20080516150804.542"><vh>pynames declarations</vh></v>
+<v t="ekr.20080516150804.543"><vh>class PyName</vh>
+<v t="ekr.20080516150804.544"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.545"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.546"><vh>class DefinedName</vh>
+<v t="ekr.20080516150804.547"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.548"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.549"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.550"><vh>class AssignedName</vh></v>
+<v t="ekr.20080516150804.551"><vh>class UnboundName</vh>
+<v t="ekr.20080516150804.552"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.553"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.554"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.555"><vh>class AssignmentValue</vh>
+<v t="ekr.20080516150804.556"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.557"><vh>get_lineno</vh></v>
+</v>
+<v t="ekr.20080516150804.558"><vh>class EvaluatedName</vh>
+<v t="ekr.20080516150804.559"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.560"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.561"><vh>get_definition_location</vh></v>
+<v t="ekr.20080516150804.562"><vh>invalidate</vh></v>
+</v>
+<v t="ekr.20080516150804.563"><vh>class ParameterName</vh></v>
+<v t="ekr.20080516150804.564"><vh>class ImportedModule</vh>
+<v t="ekr.20080516150804.565"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.566"><vh>_current_folder</vh></v>
+<v t="ekr.20080516150804.567"><vh>_get_pymodule</vh></v>
+<v t="ekr.20080516150804.568"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.569"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.570"><vh>class ImportedName</vh>
+<v t="ekr.20080516150804.571"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.572"><vh>_get_imported_pyname</vh></v>
+<v t="ekr.20080516150804.573"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.574"><vh>get_definition_location</vh></v>
+</v>
+<v t="ekr.20080516150804.575"><vh>_get_concluded_data</vh></v>
+<v t="ekr.20080516150804.576"><vh>_circular_inference</vh></v>
+<v t="ekr.20080516150804.577"><vh>class _Inferred</vh>
+<v t="ekr.20080516150804.578"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.579"><vh>get</vh></v>
+<v t="ekr.20080516150804.580"><vh>set</vh></v>
+<v t="ekr.20080516150804.581"><vh>_get</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.582"><vh>base\pynamesdef.py</vh>
+<v t="ekr.20080516150804.583"><vh>pynamesdef declarations</vh></v>
+<v t="ekr.20080516150804.584"><vh>class AssignedName</vh>
+<v t="ekr.20080516150804.585"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.586"><vh>_get_inferred</vh></v>
+<v t="ekr.20080516150804.587"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.588"><vh>get_definition_location</vh></v>
+<v t="ekr.20080516150804.589"><vh>invalidate</vh></v>
+</v>
+<v t="ekr.20080516150804.590"><vh>class ParameterName</vh>
+<v t="ekr.20080516150804.591"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.592"><vh>get_object</vh></v>
+<v t="ekr.20080516150804.593"><vh>get_objects</vh></v>
+<v t="ekr.20080516150804.594"><vh>get_definition_location</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.595"><vh>base\pyobjects.py</vh>
+<v t="ekr.20080516150804.596"><vh>pyobjects declarations</vh></v>
+<v t="ekr.20080516150804.597"><vh>class PyObject</vh>
+<v t="ekr.20080516150804.598"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.599"><vh>get_attributes</vh></v>
+<v t="ekr.20080516150804.600"><vh>get_attribute</vh></v>
+<v t="ekr.20080516150804.601"><vh>get_type</vh></v>
+<v t="ekr.20080516150804.602"><vh>__getitem__</vh></v>
+<v t="ekr.20080516150804.603"><vh>__contains__</vh></v>
+<v t="ekr.20080516150804.604"><vh>__eq__</vh></v>
+<v t="ekr.20080516150804.605"><vh>__hash__</vh></v>
+<v t="ekr.20080516150804.606"><vh>__iter__</vh></v>
+<v t="ekr.20080516150804.607"><vh>_get_base_type</vh></v>
+</v>
+<v t="ekr.20080516150804.608"><vh>get_base_type</vh></v>
+<v t="ekr.20080516150804.609"><vh>get_unknown</vh></v>
+<v t="ekr.20080516150804.610"><vh>class AbstractClass</vh>
+<v t="ekr.20080516150804.611"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.612"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.613"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.614"><vh>get_superclasses</vh></v>
+</v>
+<v t="ekr.20080516150804.615"><vh>class AbstractFunction</vh>
+<v t="ekr.20080516150804.616"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.617"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.618"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.619"><vh>get_param_names</vh></v>
+<v t="ekr.20080516150804.620"><vh>get_returned_object</vh></v>
+</v>
+<v t="ekr.20080516150804.621"><vh>class AbstractModule</vh>
+<v t="ekr.20080516150804.622"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.623"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.624"><vh>get_resource</vh></v>
+</v>
+<v t="ekr.20080516150804.625"><vh>class PyDefinedObject</vh>
+<v t="ekr.20080516150804.626"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.627"><vh>_get_structural_attributes</vh></v>
+<v t="ekr.20080516150804.628"><vh>_get_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.629"><vh>get_attributes</vh></v>
+<v t="ekr.20080516150804.630"><vh>get_attribute</vh></v>
+<v t="ekr.20080516150804.631"><vh>get_scope</vh></v>
+<v t="ekr.20080516150804.632"><vh>get_module</vh></v>
+<v t="ekr.20080516150804.633"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.634"><vh>_get_defined_objects</vh></v>
+<v t="ekr.20080516150804.635"><vh>_create_structural_attributes</vh></v>
+<v t="ekr.20080516150804.636"><vh>_create_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.637"><vh>get_ast</vh></v>
+<v t="ekr.20080516150804.638"><vh>_create_scope</vh></v>
+</v>
+<v t="ekr.20080516150804.639"><vh>class PyFunction</vh></v>
+<v t="ekr.20080516150804.640"><vh>class PyClass</vh></v>
+<v t="ekr.20080516150804.641"><vh>class _ConcludedData</vh>
+<v t="ekr.20080516150804.642"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.643"><vh>set</vh></v>
+<v t="ekr.20080516150804.644"><vh>get</vh></v>
+<v t="ekr.20080516150804.645"><vh>_invalidate</vh></v>
+<v t="ekr.20080516150804.646"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080516150804.647"><vh>class _PyModule</vh>
+<v t="ekr.20080516150804.648"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.649"><vh>_get_concluded_data</vh></v>
+<v t="ekr.20080516150804.650"><vh>_forget_concluded_data</vh></v>
+<v t="ekr.20080516150804.651"><vh>get_resource</vh></v>
+</v>
+<v t="ekr.20080516150804.652"><vh>class PyModule</vh></v>
+<v t="ekr.20080516150804.653"><vh>class PyPackage</vh></v>
+<v t="ekr.20080516150804.654"><vh>class IsBeingInferredError</vh></v>
+</v>
+<v t="ekr.20080516150804.655"><vh>base\pyobjectsdef.py</vh>
+<v t="ekr.20080516150804.656"><vh>pyobjectsdef declarations</vh></v>
+<v t="ekr.20080516150804.657"><vh>class PyFunction</vh>
+<v t="ekr.20080516150804.658"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.659"><vh>_create_structural_attributes</vh></v>
+<v t="ekr.20080516150804.660"><vh>_create_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.661"><vh>_create_scope</vh></v>
+<v t="ekr.20080516150804.662"><vh>_infer_parameters</vh></v>
+<v t="ekr.20080516150804.663"><vh>_infer_returned</vh></v>
+<v t="ekr.20080516150804.664"><vh>_handle_special_args</vh></v>
+<v t="ekr.20080516150804.665"><vh>_set_parameter_pyobjects</vh></v>
+<v t="ekr.20080516150804.666"><vh>get_parameters</vh></v>
+<v t="ekr.20080516150804.667"><vh>get_parameter</vh></v>
+<v t="ekr.20080516150804.668"><vh>get_returned_object</vh></v>
+<v t="ekr.20080516150804.669"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.670"><vh>get_param_names</vh></v>
+<v t="ekr.20080516150804.671"><vh>get_kind</vh></v>
+<v t="ekr.20080516150804.672"><vh>decorators</vh></v>
+</v>
+<v t="ekr.20080516150804.673"><vh>class PyClass</vh>
+<v t="ekr.20080516150804.674"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.675"><vh>get_superclasses</vh></v>
+<v t="ekr.20080516150804.676"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.677"><vh>_create_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.678"><vh>_get_bases</vh></v>
+<v t="ekr.20080516150804.679"><vh>_create_scope</vh></v>
+</v>
+<v t="ekr.20080516150804.680"><vh>class PyModule</vh>
+<v t="ekr.20080516150804.681"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.682"><vh>_init_source</vh></v>
+<v t="ekr.20080516150804.683"><vh>_create_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.684"><vh>_create_scope</vh></v>
+<v t="ekr.20080516150804.685"><vh>lines</vh></v>
+<v t="ekr.20080516150804.686"><vh>logical_lines</vh></v>
+</v>
+<v t="ekr.20080516150804.687"><vh>class PyPackage</vh>
+<v t="ekr.20080516150804.688"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.689"><vh>_create_structural_attributes</vh></v>
+<v t="ekr.20080516150804.690"><vh>_create_concluded_attributes</vh></v>
+<v t="ekr.20080516150804.691"><vh>_get_child_resources</vh></v>
+<v t="ekr.20080516150804.692"><vh>_get_init_dot_py</vh></v>
+<v t="ekr.20080516150804.693"><vh>_create_scope</vh></v>
+<v t="ekr.20080516150804.694"><vh>get_module</vh></v>
+</v>
+<v t="ekr.20080516150804.695"><vh>class _AssignVisitor</vh>
+<v t="ekr.20080516150804.696"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.697"><vh>_Assign</vh></v>
+<v t="ekr.20080516150804.698"><vh>_assigned</vh></v>
+<v t="ekr.20080516150804.699"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.700"><vh>_Tuple</vh></v>
+<v t="ekr.20080516150804.701"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.702"><vh>_Subscript</vh></v>
+<v t="ekr.20080516150804.703"><vh>_Slice</vh></v>
+</v>
+<v t="ekr.20080516150804.704"><vh>class _ScopeVisitor</vh>
+<v t="ekr.20080516150804.705"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.706"><vh>get_module</vh></v>
+<v t="ekr.20080516150804.707"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.708"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.709"><vh>_Assign</vh></v>
+<v t="ekr.20080516150804.710"><vh>_AugAssign</vh></v>
+<v t="ekr.20080516150804.711"><vh>_For</vh></v>
+<v t="ekr.20080516150804.712"><vh>_assigned</vh></v>
+<v t="ekr.20080516150804.713"><vh>_update_evaluated</vh></v>
+<v t="ekr.20080516150804.714"><vh>_With</vh></v>
+<v t="ekr.20080516150804.715"><vh>_excepthandler</vh></v>
+<v t="ekr.20080516150804.716"><vh>_ExceptHandler</vh></v>
+<v t="ekr.20080516150804.717"><vh>_Import</vh></v>
+<v t="ekr.20080516150804.718"><vh>_ImportFrom</vh></v>
+<v t="ekr.20080516150804.719"><vh>_is_ignored_import</vh></v>
+<v t="ekr.20080516150804.720"><vh>_Global</vh></v>
+</v>
+<v t="ekr.20080516150804.721"><vh>class _GlobalVisitor</vh>
+<v t="ekr.20080516150804.722"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.723"><vh>class _ClassVisitor</vh>
+<v t="ekr.20080516150804.724"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.725"><vh>_FunctionDef</vh></v>
+</v>
+<v t="ekr.20080516150804.726"><vh>class _FunctionVisitor</vh>
+<v t="ekr.20080516150804.727"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.728"><vh>_Return</vh></v>
+<v t="ekr.20080516150804.729"><vh>_Yield</vh></v>
+</v>
+<v t="ekr.20080516150804.730"><vh>class _ClassInitVisitor</vh>
+<v t="ekr.20080516150804.731"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.732"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.733"><vh>_Tuple</vh></v>
+<v t="ekr.20080516150804.734"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.735"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.736"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.737"><vh>_For</vh></v>
+<v t="ekr.20080516150804.738"><vh>_With</vh></v>
+</v>
+<v t="ekr.20080516150804.739"><vh>class StarImport</vh>
+<v t="ekr.20080516150804.740"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.741"><vh>get_names</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.742"><vh>base\pyscopes.py</vh>
+<v t="ekr.20080516150804.743"><vh>pyscopes declarations</vh></v>
+<v t="ekr.20080516150804.744"><vh>class Scope</vh>
+<v t="ekr.20080516150804.745"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.746"><vh>get_names</vh></v>
+<v t="ekr.20080516150804.747"><vh>get_defined_names</vh></v>
+<v t="ekr.20080516150804.748"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.749"><vh>__getitem__</vh></v>
+<v t="ekr.20080516150804.750"><vh>__contains__</vh></v>
+<v t="ekr.20080516150804.751"><vh>get_scopes</vh></v>
+<v t="ekr.20080516150804.752"><vh>lookup</vh></v>
+<v t="ekr.20080516150804.753"><vh>get_propagated_names</vh></v>
+<v t="ekr.20080516150804.754"><vh>_propagated_lookup</vh></v>
+<v t="ekr.20080516150804.755"><vh>_create_scopes</vh></v>
+<v t="ekr.20080516150804.756"><vh>_get_global_scope</vh></v>
+<v t="ekr.20080516150804.757"><vh>get_start</vh></v>
+<v t="ekr.20080516150804.758"><vh>get_body_start</vh></v>
+<v t="ekr.20080516150804.759"><vh>get_end</vh></v>
+<v t="ekr.20080516150804.760"><vh>get_logical_end</vh></v>
+<v t="ekr.20080516150804.761"><vh>get_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.762"><vh>class GlobalScope</vh>
+<v t="ekr.20080516150804.763"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.764"><vh>get_start</vh></v>
+<v t="ekr.20080516150804.765"><vh>get_kind</vh></v>
+<v t="ekr.20080516150804.766"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.767"><vh>get_names</vh></v>
+<v t="ekr.20080516150804.768"><vh>get_inner_scope_for_line</vh></v>
+<v t="ekr.20080516150804.769"><vh>get_inner_scope_for_offset</vh></v>
+<v t="ekr.20080516150804.770"><vh>_get_scope_finder</vh></v>
+<v t="ekr.20080516150804.771"><vh>builtin_names</vh></v>
+</v>
+<v t="ekr.20080516150804.772"><vh>class FunctionScope</vh>
+<v t="ekr.20080516150804.773"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.774"><vh>_get_names</vh></v>
+<v t="ekr.20080516150804.775"><vh>_visit_function</vh></v>
+<v t="ekr.20080516150804.776"><vh>_get_returned_asts</vh></v>
+<v t="ekr.20080516150804.777"><vh>_is_generator</vh></v>
+<v t="ekr.20080516150804.778"><vh>get_names</vh></v>
+<v t="ekr.20080516150804.779"><vh>_create_scopes</vh></v>
+<v t="ekr.20080516150804.780"><vh>get_kind</vh></v>
+<v t="ekr.20080516150804.781"><vh>invalidate_data</vh></v>
+</v>
+<v t="ekr.20080516150804.782"><vh>class ClassScope</vh>
+<v t="ekr.20080516150804.783"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.784"><vh>get_kind</vh></v>
+<v t="ekr.20080516150804.785"><vh>get_propagated_names</vh></v>
+</v>
+<v t="ekr.20080516150804.786"><vh>class _HoldingScopeFinder</vh>
+<v t="ekr.20080516150804.787"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.788"><vh>get_indents</vh></v>
+<v t="ekr.20080516150804.789"><vh>get_location</vh></v>
+<v t="ekr.20080516150804.790"><vh>_get_scope_indents</vh></v>
+<v t="ekr.20080516150804.791"><vh>get_holding_scope</vh></v>
+<v t="ekr.20080516150804.792"><vh>_is_empty_line</vh></v>
+<v t="ekr.20080516150804.793"><vh>_get_body_indents</vh></v>
+<v t="ekr.20080516150804.794"><vh>get_holding_scope_for_offset</vh></v>
+<v t="ekr.20080516150804.795"><vh>find_scope_end</vh></v>
+<v t="ekr.20080516150804.796"><vh>lines</vh></v>
+<v t="ekr.20080516150804.797"><vh>code</vh></v>
+<v t="ekr.20080516150804.798"><vh>logical_lines</vh></v>
+</v>
+<v t="ekr.20080516150804.799"><vh>class TemporaryScope</vh>
+<v t="ekr.20080516150804.800"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.801"><vh>get_names</vh></v>
+<v t="ekr.20080516150804.802"><vh>get_defined_names</vh></v>
+<v t="ekr.20080516150804.803"><vh>_create_scopes</vh></v>
+<v t="ekr.20080516150804.804"><vh>get_kind</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.805"><vh>base\resourceobserver.py</vh>
+<v t="ekr.20080516150804.806"><vh>resourceobserver declarations</vh></v>
+<v t="ekr.20080516150804.807"><vh>class ResourceObserver</vh>
+<v t="ekr.20080516150804.808"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.809"><vh>resource_changed</vh></v>
+<v t="ekr.20080516150804.810"><vh>resource_moved</vh></v>
+<v t="ekr.20080516150804.811"><vh>resource_created</vh></v>
+<v t="ekr.20080516150804.812"><vh>resource_removed</vh></v>
+<v t="ekr.20080516150804.813"><vh>validate</vh></v>
+</v>
+<v t="ekr.20080516150804.814"><vh>class FilteredResourceObserver</vh>
+<v t="ekr.20080516150804.815"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.816"><vh>add_resource</vh></v>
+<v t="ekr.20080516150804.817"><vh>remove_resource</vh></v>
+<v t="ekr.20080516150804.818"><vh>clear_resources</vh></v>
+<v t="ekr.20080516150804.819"><vh>resource_changed</vh></v>
+<v t="ekr.20080516150804.820"><vh>_update_changes_caused_by_changed</vh></v>
+<v t="ekr.20080516150804.821"><vh>_update_changes_caused_by_moved</vh></v>
+<v t="ekr.20080516150804.822"><vh>_is_parent_changed</vh></v>
+<v t="ekr.20080516150804.823"><vh>resource_moved</vh></v>
+<v t="ekr.20080516150804.824"><vh>resource_created</vh></v>
+<v t="ekr.20080516150804.825"><vh>_update_changes_caused_by_created</vh></v>
+<v t="ekr.20080516150804.826"><vh>resource_removed</vh></v>
+<v t="ekr.20080516150804.827"><vh>_perform_changes</vh></v>
+<v t="ekr.20080516150804.828"><vh>validate</vh></v>
+<v t="ekr.20080516150804.829"><vh>_search_resource_creations</vh></v>
+<v t="ekr.20080516150804.830"><vh>_search_resource_moves</vh></v>
+<v t="ekr.20080516150804.831"><vh>_search_resource_changes</vh></v>
+<v t="ekr.20080516150804.832"><vh>_is_changed</vh></v>
+<v t="ekr.20080516150804.833"><vh>_calculate_new_resource</vh></v>
+</v>
+<v t="ekr.20080516150804.834"><vh>class ChangeIndicator</vh>
+<v t="ekr.20080516150804.835"><vh>get_indicator</vh></v>
+</v>
+<v t="ekr.20080516150804.836"><vh>class _Changes</vh>
+<v t="ekr.20080516150804.837"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.838"><vh>add_changed</vh></v>
+<v t="ekr.20080516150804.839"><vh>add_removed</vh></v>
+<v t="ekr.20080516150804.840"><vh>add_created</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.841"><vh>base\resources.py</vh>
+<v t="ekr.20080516150804.842"><vh>resources declarations</vh></v>
+<v t="ekr.20080516150804.843"><vh>class Resource</vh>
+<v t="ekr.20080516150804.844"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.845"><vh>move</vh></v>
+<v t="ekr.20080516150804.846"><vh>remove</vh></v>
+<v t="ekr.20080516150804.847"><vh>is_folder</vh></v>
+<v t="ekr.20080516150804.848"><vh>create</vh></v>
+<v t="ekr.20080516150804.849"><vh>exists</vh></v>
+<v t="ekr.20080516150804.850"><vh>parent</vh></v>
+<v t="ekr.20080516150804.851"><vh>path</vh></v>
+<v t="ekr.20080516150804.852"><vh>name</vh></v>
+<v t="ekr.20080516150804.853"><vh>real_path</vh></v>
+<v t="ekr.20080516150804.854"><vh>_get_destination_for_move</vh></v>
+<v t="ekr.20080516150804.855"><vh>__eq__</vh></v>
+<v t="ekr.20080516150804.856"><vh>__hash__</vh></v>
+<v t="ekr.20080516150804.857"><vh>_perform_change</vh></v>
+</v>
+<v t="ekr.20080516150804.858"><vh>class File</vh>
+<v t="ekr.20080516150804.859"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.860"><vh>read</vh></v>
+<v t="ekr.20080516150804.861"><vh>read_bytes</vh></v>
+<v t="ekr.20080516150804.862"><vh>write</vh></v>
+<v t="ekr.20080516150804.863"><vh>is_folder</vh></v>
+<v t="ekr.20080516150804.864"><vh>create</vh></v>
+</v>
+<v t="ekr.20080516150804.865"><vh>class Folder</vh>
+<v t="ekr.20080516150804.866"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.867"><vh>is_folder</vh></v>
+<v t="ekr.20080516150804.868"><vh>get_children</vh></v>
+<v t="ekr.20080516150804.869"><vh>create_file</vh></v>
+<v t="ekr.20080516150804.870"><vh>create_folder</vh></v>
+<v t="ekr.20080516150804.871"><vh>_get_child_path</vh></v>
+<v t="ekr.20080516150804.872"><vh>get_child</vh></v>
+<v t="ekr.20080516150804.873"><vh>has_child</vh></v>
+<v t="ekr.20080516150804.874"><vh>get_files</vh></v>
+<v t="ekr.20080516150804.875"><vh>get_folders</vh></v>
+<v t="ekr.20080516150804.876"><vh>contains</vh></v>
+<v t="ekr.20080516150804.877"><vh>create</vh></v>
+</v>
+<v t="ekr.20080516150804.878"><vh>class _ResourceMatcher</vh>
+<v t="ekr.20080516150804.879"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.880"><vh>set_patterns</vh></v>
+<v t="ekr.20080516150804.881"><vh>_add_pattern</vh></v>
+<v t="ekr.20080516150804.882"><vh>does_match</vh></v>
+<v t="ekr.20080516150804.883"><vh>compiled_patterns</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.884"><vh>base\simplify.py</vh>
+<v t="ekr.20080516150804.885"><vh>simplify declarations</vh></v>
+<v t="ekr.20080516150804.886"><vh>real_code</vh></v>
+<v t="ekr.20080516150804.887"><vh>ignored_regions</vh></v>
+</v>
+<v t="ekr.20080516150804.888"><vh>base\taskhandle.py</vh>
+<v t="ekr.20080516150804.889"><vh>taskhandle declarations</vh></v>
+<v t="ekr.20080516150804.890"><vh>class TaskHandle</vh>
+<v t="ekr.20080516150804.891"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.892"><vh>stop</vh></v>
+<v t="ekr.20080516150804.893"><vh>current_jobset</vh></v>
+<v t="ekr.20080516150804.894"><vh>add_observer</vh></v>
+<v t="ekr.20080516150804.895"><vh>is_stopped</vh></v>
+<v t="ekr.20080516150804.896"><vh>get_jobsets</vh></v>
+<v t="ekr.20080516150804.897"><vh>create_jobset</vh></v>
+<v t="ekr.20080516150804.898"><vh>_inform_observers</vh></v>
+</v>
+<v t="ekr.20080516150804.899"><vh>class JobSet</vh>
+<v t="ekr.20080516150804.900"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.901"><vh>started_job</vh></v>
+<v t="ekr.20080516150804.902"><vh>finished_job</vh></v>
+<v t="ekr.20080516150804.903"><vh>check_status</vh></v>
+<v t="ekr.20080516150804.904"><vh>get_active_job_name</vh></v>
+<v t="ekr.20080516150804.905"><vh>get_percent_done</vh></v>
+<v t="ekr.20080516150804.906"><vh>get_name</vh></v>
+</v>
+<v t="ekr.20080516150804.907"><vh>class NullTaskHandle</vh>
+<v t="ekr.20080516150804.908"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.909"><vh>is_stopped</vh></v>
+<v t="ekr.20080516150804.910"><vh>stop</vh></v>
+<v t="ekr.20080516150804.911"><vh>create_jobset</vh></v>
+<v t="ekr.20080516150804.912"><vh>get_jobsets</vh></v>
+<v t="ekr.20080516150804.913"><vh>add_observer</vh></v>
+</v>
+<v t="ekr.20080516150804.914"><vh>class NullJobSet</vh>
+<v t="ekr.20080516150804.915"><vh>started_job</vh></v>
+<v t="ekr.20080516150804.916"><vh>finished_job</vh></v>
+<v t="ekr.20080516150804.917"><vh>check_status</vh></v>
+<v t="ekr.20080516150804.918"><vh>get_active_job_name</vh></v>
+<v t="ekr.20080516150804.919"><vh>get_percent_done</vh></v>
+<v t="ekr.20080516150804.920"><vh>get_name</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.921"><vh>base\utils.py</vh>
+<v t="ekr.20080516150804.922"><vh>cacheit</vh></v>
+<v t="ekr.20080516150804.923"><vh>prevent_recursion</vh></v>
+<v t="ekr.20080516150804.924"><vh>ignore_exception</vh></v>
+<v t="ekr.20080516150804.925"><vh>cached</vh></v>
+<v t="ekr.20080516150804.926"><vh>class _Cached</vh>
+<v t="ekr.20080516150804.927"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.928"><vh>__call__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.929"><vh>base\worder.py</vh>
+<v t="ekr.20080516150804.930"><vh>worder declarations</vh></v>
+<v t="ekr.20080516150804.931"><vh>get_name_at</vh></v>
+<v t="ekr.20080516150804.932"><vh>class Worder</vh>
+<v t="ekr.20080516150804.933"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.934"><vh>_init_ignores</vh></v>
+<v t="ekr.20080516150804.935"><vh>_context_call</vh></v>
+<v t="ekr.20080516150804.936"><vh>get_primary_at</vh></v>
+<v t="ekr.20080516150804.937"><vh>get_word_at</vh></v>
+<v t="ekr.20080516150804.938"><vh>get_primary_range</vh></v>
+<v t="ekr.20080516150804.939"><vh>get_splitted_primary_before</vh></v>
+<v t="ekr.20080516150804.940"><vh>get_word_range</vh></v>
+<v t="ekr.20080516150804.941"><vh>is_function_keyword_parameter</vh></v>
+<v t="ekr.20080516150804.942"><vh>is_a_class_or_function_name_in_header</vh></v>
+<v t="ekr.20080516150804.943"><vh>is_from_statement_module</vh></v>
+<v t="ekr.20080516150804.944"><vh>is_from_aliased</vh></v>
+<v t="ekr.20080516150804.945"><vh>find_parens_start_from_inside</vh></v>
+<v t="ekr.20080516150804.946"><vh>is_a_name_after_from_import</vh></v>
+<v t="ekr.20080516150804.947"><vh>is_from_statement</vh></v>
+<v t="ekr.20080516150804.948"><vh>get_from_aliased</vh></v>
+<v t="ekr.20080516150804.949"><vh>is_import_statement</vh></v>
+<v t="ekr.20080516150804.950"><vh>is_assigned_here</vh></v>
+<v t="ekr.20080516150804.951"><vh>is_a_function_being_called</vh></v>
+<v t="ekr.20080516150804.952"><vh>get_word_parens_range</vh></v>
+<v t="ekr.20080516150804.953"><vh>is_name_assigned_in_class_body</vh></v>
+<v t="ekr.20080516150804.954"><vh>is_on_function_call_keyword</vh></v>
+<v t="ekr.20080516150804.955"><vh>_find_parens_start</vh></v>
+<v t="ekr.20080516150804.956"><vh>get_parameters</vh></v>
+<v t="ekr.20080516150804.957"><vh>get_from_module</vh></v>
+<v t="ekr.20080516150804.958"><vh>is_assigned_in_a_tuple_assignment</vh></v>
+<v t="ekr.20080516150804.959"><vh>get_assignment_type</vh></v>
+<v t="ekr.20080516150804.960"><vh>get_function_and_args_in_header</vh></v>
+<v t="ekr.20080516150804.961"><vh>find_function_offset</vh></v>
+</v>
+<v t="ekr.20080516150804.962"><vh>class _RealFinder</vh>
+<v t="ekr.20080516150804.963"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.964"><vh>_find_word_start</vh></v>
+<v t="ekr.20080516150804.965"><vh>_find_word_end</vh></v>
+<v t="ekr.20080516150804.966"><vh>_find_last_non_space_char</vh></v>
+<v t="ekr.20080516150804.967"><vh>get_word_at</vh></v>
+<v t="ekr.20080516150804.968"><vh>_get_fixed_offset</vh></v>
+<v t="ekr.20080516150804.969"><vh>_is_id_char</vh></v>
+<v t="ekr.20080516150804.970"><vh>_find_string_start</vh></v>
+<v t="ekr.20080516150804.971"><vh>_find_parens_start</vh></v>
+<v t="ekr.20080516150804.972"><vh>_find_atom_start</vh></v>
+<v t="ekr.20080516150804.973"><vh>_find_primary_without_dot_start</vh></v>
+<v t="ekr.20080516150804.974"><vh>_find_primary_start</vh></v>
+<v t="ekr.20080516150804.975"><vh>get_primary_at</vh></v>
+<v t="ekr.20080516150804.976"><vh>get_splitted_primary_before</vh></v>
+<v t="ekr.20080516150804.977"><vh>_get_line_start</vh></v>
+<v t="ekr.20080516150804.978"><vh>_get_line_end</vh></v>
+<v t="ekr.20080516150804.979"><vh>is_name_assigned_in_class_body</vh></v>
+<v t="ekr.20080516150804.980"><vh>is_a_class_or_function_name_in_header</vh></v>
+<v t="ekr.20080516150804.981"><vh>_find_first_non_space_char</vh></v>
+<v t="ekr.20080516150804.982"><vh>is_a_function_being_called</vh></v>
+<v t="ekr.20080516150804.983"><vh>_find_import_end</vh></v>
+<v t="ekr.20080516150804.984"><vh>is_import_statement</vh></v>
+<v t="ekr.20080516150804.985"><vh>is_from_statement</vh></v>
+<v t="ekr.20080516150804.986"><vh>is_from_statement_module</vh></v>
+<v t="ekr.20080516150804.987"><vh>is_a_name_after_from_import</vh></v>
+<v t="ekr.20080516150804.988"><vh>get_from_module</vh></v>
+<v t="ekr.20080516150804.989"><vh>is_from_aliased</vh></v>
+<v t="ekr.20080516150804.990"><vh>get_from_aliased</vh></v>
+<v t="ekr.20080516150804.991"><vh>is_function_keyword_parameter</vh></v>
+<v t="ekr.20080516150804.992"><vh>is_on_function_call_keyword</vh></v>
+<v t="ekr.20080516150804.993"><vh>find_parens_start_from_inside</vh></v>
+<v t="ekr.20080516150804.994"><vh>is_assigned_here</vh></v>
+<v t="ekr.20080516150804.995"><vh>get_assignment_type</vh></v>
+<v t="ekr.20080516150804.996"><vh>get_primary_range</vh></v>
+<v t="ekr.20080516150804.997"><vh>get_word_range</vh></v>
+<v t="ekr.20080516150804.998"><vh>get_word_parens_range</vh></v>
+<v t="ekr.20080516150804.999"><vh>get_parameters</vh></v>
+<v t="ekr.20080516150804.1000"><vh>is_assigned_in_a_tuple_assignment</vh></v>
+<v t="ekr.20080516150804.1001"><vh>get_function_and_args_in_header</vh></v>
+<v t="ekr.20080516150804.1002"><vh>find_function_offset</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1005"><vh>base\oi</vh>
+<v t="ekr.20080516150804.1217"><vh>base\oi\__init__.py</vh>
+<v t="ekr.20080516150804.1218"><vh>__init__ declarations</vh></v>
+</v>
+<v t="ekr.20080516150804.1006"><vh>base\oi\doa.py</vh>
+<v t="ekr.20080516150804.1007"><vh>doa declarations</vh></v>
+<v t="ekr.20080516150804.1008"><vh>class PythonFileRunner</vh>
+<v t="ekr.20080516150804.1009"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1010"><vh>run</vh></v>
+<v t="ekr.20080516150804.1011"><vh>_init_data_receiving</vh></v>
+<v t="ekr.20080516150804.1012"><vh>_receive_information</vh></v>
+<v t="ekr.20080516150804.1013"><vh>wait_process</vh></v>
+<v t="ekr.20080516150804.1014"><vh>kill_process</vh></v>
+<v t="ekr.20080516150804.1015"><vh>add_finishing_observer</vh></v>
+</v>
+<v t="ekr.20080516150804.1016"><vh>class _MessageReceiver</vh>
+<v t="ekr.20080516150804.1017"><vh>receive_data</vh></v>
+<v t="ekr.20080516150804.1018"><vh>get_send_info</vh></v>
+</v>
+<v t="ekr.20080516150804.1019"><vh>class _SocketReceiver</vh>
+<v t="ekr.20080516150804.1020"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1021"><vh>get_send_info</vh></v>
+<v t="ekr.20080516150804.1022"><vh>receive_data</vh></v>
+</v>
+<v t="ekr.20080516150804.1023"><vh>class _FIFOReceiver</vh>
+<v t="ekr.20080516150804.1024"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1025"><vh>_get_file_name</vh></v>
+<v t="ekr.20080516150804.1026"><vh>get_send_info</vh></v>
+<v t="ekr.20080516150804.1027"><vh>receive_data</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1028"><vh>base\oi\memorydb.py</vh>
+<v t="ekr.20080516150804.1029"><vh>memorydb declarations</vh></v>
+<v t="ekr.20080516150804.1030"><vh>class MemoryDB</vh>
+<v t="ekr.20080516150804.1031"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1032"><vh>_load_files</vh></v>
+<v t="ekr.20080516150804.1033"><vh>keys</vh></v>
+<v t="ekr.20080516150804.1034"><vh>__contains__</vh></v>
+<v t="ekr.20080516150804.1035"><vh>__getitem__</vh></v>
+<v t="ekr.20080516150804.1036"><vh>create</vh></v>
+<v t="ekr.20080516150804.1037"><vh>rename</vh></v>
+<v t="ekr.20080516150804.1038"><vh>__delitem__</vh></v>
+<v t="ekr.20080516150804.1039"><vh>write</vh></v>
+<v t="ekr.20080516150804.1040"><vh>compress</vh></v>
+<v t="ekr.20080516150804.1041"><vh>persist</vh></v>
+</v>
+<v t="ekr.20080516150804.1042"><vh>class FileInfo</vh>
+<v t="ekr.20080516150804.1043"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1044"><vh>create_scope</vh></v>
+<v t="ekr.20080516150804.1045"><vh>keys</vh></v>
+<v t="ekr.20080516150804.1046"><vh>__contains__</vh></v>
+<v t="ekr.20080516150804.1047"><vh>__getitem__</vh></v>
+<v t="ekr.20080516150804.1048"><vh>__delitem__</vh></v>
+</v>
+<v t="ekr.20080516150804.1049"><vh>class ScopeInfo</vh>
+<v t="ekr.20080516150804.1050"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1051"><vh>get_per_name</vh></v>
+<v t="ekr.20080516150804.1052"><vh>save_per_name</vh></v>
+<v t="ekr.20080516150804.1053"><vh>get_returned</vh></v>
+<v t="ekr.20080516150804.1054"><vh>get_call_infos</vh></v>
+<v t="ekr.20080516150804.1055"><vh>add_call</vh></v>
+<v t="ekr.20080516150804.1056"><vh>__getstate__</vh></v>
+<v t="ekr.20080516150804.1057"><vh>__setstate__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1058"><vh>base\oi\objectdb.py</vh>
+<v t="ekr.20080516150804.1059"><vh>objectdb declarations</vh></v>
+<v t="ekr.20080516150804.1060"><vh>class ObjectDB</vh>
+<v t="ekr.20080516150804.1061"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1062"><vh>validate_files</vh></v>
+<v t="ekr.20080516150804.1063"><vh>validate_file</vh></v>
+<v t="ekr.20080516150804.1064"><vh>file_moved</vh></v>
+<v t="ekr.20080516150804.1065"><vh>get_files</vh></v>
+<v t="ekr.20080516150804.1066"><vh>get_returned</vh></v>
+<v t="ekr.20080516150804.1067"><vh>get_pername</vh></v>
+<v t="ekr.20080516150804.1068"><vh>get_callinfos</vh></v>
+<v t="ekr.20080516150804.1069"><vh>add_callinfo</vh></v>
+<v t="ekr.20080516150804.1070"><vh>add_pername</vh></v>
+<v t="ekr.20080516150804.1071"><vh>add_file_list_observer</vh></v>
+<v t="ekr.20080516150804.1072"><vh>write</vh></v>
+<v t="ekr.20080516150804.1073"><vh>_get_scope_info</vh></v>
+<v t="ekr.20080516150804.1074"><vh>_file_removed</vh></v>
+<v t="ekr.20080516150804.1075"><vh>_file_added</vh></v>
+<v t="ekr.20080516150804.1076"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080516150804.1077"><vh>class _NullScopeInfo</vh>
+<v t="ekr.20080516150804.1078"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1079"><vh>get_per_name</vh></v>
+<v t="ekr.20080516150804.1080"><vh>save_per_name</vh></v>
+<v t="ekr.20080516150804.1081"><vh>get_returned</vh></v>
+<v t="ekr.20080516150804.1082"><vh>get_call_infos</vh></v>
+<v t="ekr.20080516150804.1083"><vh>add_call</vh></v>
+</v>
+<v t="ekr.20080516150804.1084"><vh>class FileInfo</vh>
+<v t="ekr.20080516150804.1085"><vh>create_scope</vh></v>
+</v>
+<v t="ekr.20080516150804.1086"><vh>class FileDict</vh>
+<v t="ekr.20080516150804.1087"><vh>create</vh></v>
+<v t="ekr.20080516150804.1088"><vh>rename</vh></v>
+</v>
+<v t="ekr.20080516150804.1089"><vh>class ScopeInfo</vh>
+<v t="ekr.20080516150804.1090"><vh>get_per_name</vh></v>
+<v t="ekr.20080516150804.1091"><vh>save_per_name</vh></v>
+<v t="ekr.20080516150804.1092"><vh>get_returned</vh></v>
+<v t="ekr.20080516150804.1093"><vh>get_call_infos</vh></v>
+<v t="ekr.20080516150804.1094"><vh>add_call</vh></v>
+</v>
+<v t="ekr.20080516150804.1095"><vh>class CallInfo</vh>
+<v t="ekr.20080516150804.1096"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1097"><vh>get_parameters</vh></v>
+<v t="ekr.20080516150804.1098"><vh>get_returned</vh></v>
+</v>
+<v t="ekr.20080516150804.1099"><vh>class FileListObserver</vh>
+<v t="ekr.20080516150804.1100"><vh>added</vh></v>
+<v t="ekr.20080516150804.1101"><vh>removed</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1102"><vh>base\oi\objectinfo.py</vh>
+<v t="ekr.20080516150804.1103"><vh>objectinfo declarations</vh></v>
+<v t="ekr.20080516150804.1104"><vh>class ObjectInfoManager</vh>
+<v t="ekr.20080516150804.1105"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1106"><vh>_init_objectdb</vh></v>
+<v t="ekr.20080516150804.1107"><vh>_init_validation</vh></v>
+<v t="ekr.20080516150804.1108"><vh>_resource_changed</vh></v>
+<v t="ekr.20080516150804.1109"><vh>_resource_moved</vh></v>
+<v t="ekr.20080516150804.1110"><vh>get_returned</vh></v>
+<v t="ekr.20080516150804.1111"><vh>get_exact_returned</vh></v>
+<v t="ekr.20080516150804.1112"><vh>_args_to_textual</vh></v>
+<v t="ekr.20080516150804.1113"><vh>get_parameter_objects</vh></v>
+<v t="ekr.20080516150804.1114"><vh>get_passed_objects</vh></v>
+<v t="ekr.20080516150804.1115"><vh>doa_data_received</vh></v>
+<v t="ekr.20080516150804.1116"><vh>function_called</vh></v>
+<v t="ekr.20080516150804.1117"><vh>save_per_name</vh></v>
+<v t="ekr.20080516150804.1118"><vh>get_per_name</vh></v>
+<v t="ekr.20080516150804.1119"><vh>_save_data</vh></v>
+<v t="ekr.20080516150804.1120"><vh>_get_scope</vh></v>
+<v t="ekr.20080516150804.1121"><vh>sync</vh></v>
+<v t="ekr.20080516150804.1122"><vh>__str__</vh></v>
+</v>
+<v t="ekr.20080516150804.1123"><vh>class TextualValidation</vh>
+<v t="ekr.20080516150804.1124"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1125"><vh>is_value_valid</vh></v>
+<v t="ekr.20080516150804.1126"><vh>is_more_valid</vh></v>
+<v t="ekr.20080516150804.1127"><vh>is_file_valid</vh></v>
+<v t="ekr.20080516150804.1128"><vh>is_scope_valid</vh></v>
+</v>
+<v t="ekr.20080516150804.1129"><vh>class _FileListObserver</vh>
+<v t="ekr.20080516150804.1130"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1131"><vh>removed</vh></v>
+<v t="ekr.20080516150804.1132"><vh>added</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1133"><vh>base\oi\runmod.py</vh>
+<v t="ekr.20080516150804.1134"><vh>__rope_start_everything</vh></v>
+</v>
+<v t="ekr.20080516150804.1135"><vh>base\oi\soa.py</vh>
+<v t="ekr.20080516150804.1136"><vh>soa declarations</vh></v>
+<v t="ekr.20080516150804.1137"><vh>analyze_module</vh></v>
+<v t="ekr.20080516150804.1138"><vh>_analyze_node</vh></v>
+<v t="ekr.20080516150804.1139"><vh>class SOIVisitor</vh>
+<v t="ekr.20080516150804.1140"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1141"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1142"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.1143"><vh>_Call</vh></v>
+<v t="ekr.20080516150804.1144"><vh>_args_with_self</vh></v>
+<v t="ekr.20080516150804.1145"><vh>_call</vh></v>
+<v t="ekr.20080516150804.1146"><vh>_parameter_objects</vh></v>
+<v t="ekr.20080516150804.1147"><vh>_Assign</vh></v>
+</v>
+<v t="ekr.20080516150804.1148"><vh>class _SOIAssignVisitor</vh>
+<v t="ekr.20080516150804.1149"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1150"><vh>_added</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1151"><vh>base\oi\soi.py</vh>
+<v t="ekr.20080516150804.1152"><vh>soi declarations</vh></v>
+<v t="ekr.20080516150804.1153"><vh>infer_returned_object</vh></v>
+<v t="ekr.20080516150804.1154"><vh>infer_parameter_objects</vh></v>
+<v t="ekr.20080516150804.1155"><vh>_handle_first_parameter</vh></v>
+<v t="ekr.20080516150804.1156"><vh>infer_assigned_object</vh></v>
+<v t="ekr.20080516150804.1157"><vh>get_passed_objects</vh></v>
+<v t="ekr.20080516150804.1158"><vh>_infer_returned</vh></v>
+<v t="ekr.20080516150804.1159"><vh>_parameter_objects</vh></v>
+<v t="ekr.20080516150804.1160"><vh>_infer_assignment</vh></v>
+<v t="ekr.20080516150804.1161"><vh>_follow_levels</vh></v>
+<v t="ekr.20080516150804.1162"><vh>_follow_pyname</vh></v>
+<v t="ekr.20080516150804.1163"><vh>_follow_evaluations</vh></v>
+<v t="ekr.20080516150804.1164"><vh>_get_lineno_for_node</vh></v>
+<v t="ekr.20080516150804.1165"><vh>_get_attribute</vh></v>
+</v>
+<v t="ekr.20080516150804.1166"><vh>base\oi\transform.py</vh>
+<v t="ekr.20080516150804.1167"><vh>transform declarations</vh></v>
+<v t="ekr.20080516150804.1168"><vh>class PyObjectToTextual</vh>
+<v t="ekr.20080516150804.1169"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1170"><vh>transform</vh></v>
+<v t="ekr.20080516150804.1171"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1172"><vh>PyObject_to_textual</vh></v>
+<v t="ekr.20080516150804.1173"><vh>PyFunction_to_textual</vh></v>
+<v t="ekr.20080516150804.1174"><vh>PyClass_to_textual</vh></v>
+<v t="ekr.20080516150804.1175"><vh>_defined_to_textual</vh></v>
+<v t="ekr.20080516150804.1176"><vh>PyModule_to_textual</vh></v>
+<v t="ekr.20080516150804.1177"><vh>PyPackage_to_textual</vh></v>
+<v t="ekr.20080516150804.1178"><vh>List_to_textual</vh></v>
+<v t="ekr.20080516150804.1179"><vh>Dict_to_textual</vh></v>
+<v t="ekr.20080516150804.1180"><vh>Tuple_to_textual</vh></v>
+<v t="ekr.20080516150804.1181"><vh>Set_to_textual</vh></v>
+<v t="ekr.20080516150804.1182"><vh>Iterator_to_textual</vh></v>
+<v t="ekr.20080516150804.1183"><vh>Generator_to_textual</vh></v>
+<v t="ekr.20080516150804.1184"><vh>Str_to_textual</vh></v>
+<v t="ekr.20080516150804.1185"><vh>File_to_textual</vh></v>
+<v t="ekr.20080516150804.1186"><vh>BuiltinFunction_to_textual</vh></v>
+<v t="ekr.20080516150804.1187"><vh>_get_pymodule_path</vh></v>
+<v t="ekr.20080516150804.1188"><vh>resource_to_path</vh></v>
+</v>
+<v t="ekr.20080516150804.1189"><vh>class TextualToPyObject</vh>
+<v t="ekr.20080516150804.1190"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1191"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1192"><vh>transform</vh></v>
+<v t="ekr.20080516150804.1193"><vh>builtin_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1194"><vh>builtin_str_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1195"><vh>builtin_list_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1196"><vh>builtin_dict_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1197"><vh>builtin_tuple_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1198"><vh>builtin_set_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1199"><vh>builtin_iter_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1200"><vh>builtin_generator_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1201"><vh>builtin_file_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1202"><vh>builtin_function_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1203"><vh>unknown_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1204"><vh>none_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1205"><vh>_module_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1206"><vh>_hierarchical_defined_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1207"><vh>defined_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1208"><vh>instance_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1209"><vh>_get_pymodule</vh></v>
+<v t="ekr.20080516150804.1210"><vh>path_to_resource</vh></v>
+</v>
+<v t="ekr.20080516150804.1211"><vh>class DOITextualToPyObject</vh>
+<v t="ekr.20080516150804.1212"><vh>_function_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1213"><vh>_class_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1214"><vh>defined_to_pyobject</vh></v>
+<v t="ekr.20080516150804.1215"><vh>_find_occurrence</vh></v>
+<v t="ekr.20080516150804.1216"><vh>path_to_resource</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20080516150804.1219"><vh>rope-0.8.2\rope\contrib</vh>
+<v t="ekr.20080516150804.1366"><vh>contrib\__init__.py</vh>
+<v t="ekr.20080516150804.1367"><vh>__init__ declarations</vh></v>
+</v>
+<v t="ekr.20080516150804.1220"><vh>contrib\autoimport.py</vh>
+<v t="ekr.20080516150804.1221"><vh>autoimport declarations</vh></v>
+<v t="ekr.20080516150804.1222"><vh>class AutoImport</vh>
+<v t="ekr.20080516150804.1223"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1224"><vh>import_assist</vh></v>
+<v t="ekr.20080516150804.1225"><vh>get_modules</vh></v>
+<v t="ekr.20080516150804.1226"><vh>get_all_names</vh></v>
+<v t="ekr.20080516150804.1227"><vh>get_name_locations</vh></v>
+<v t="ekr.20080516150804.1228"><vh>generate_cache</vh></v>
+<v t="ekr.20080516150804.1229"><vh>generate_modules_cache</vh></v>
+<v t="ekr.20080516150804.1230"><vh>clear_cache</vh></v>
+<v t="ekr.20080516150804.1231"><vh>find_insertion_line</vh></v>
+<v t="ekr.20080516150804.1232"><vh>update_resource</vh></v>
+<v t="ekr.20080516150804.1233"><vh>update_module</vh></v>
+<v t="ekr.20080516150804.1234"><vh>_module_name</vh></v>
+<v t="ekr.20080516150804.1235"><vh>_add_names</vh></v>
+<v t="ekr.20080516150804.1236"><vh>_write</vh></v>
+<v t="ekr.20080516150804.1237"><vh>_changed</vh></v>
+<v t="ekr.20080516150804.1238"><vh>_moved</vh></v>
+<v t="ekr.20080516150804.1239"><vh>_removed</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1240"><vh>contrib\codeassist.py</vh>
+<v t="ekr.20080516150804.1241"><vh>codeassist declarations</vh></v>
+<v t="ekr.20080516150804.1242"><vh>code_assist</vh></v>
+<v t="ekr.20080516150804.1243"><vh>starting_offset</vh></v>
+<v t="ekr.20080516150804.1244"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.1245"><vh>get_calltip</vh></v>
+<v t="ekr.20080516150804.1246"><vh>get_definition_location</vh></v>
+<v t="ekr.20080516150804.1247"><vh>find_occurrences</vh></v>
+<v t="ekr.20080516150804.1248"><vh>class CodeAssistProposal</vh>
+<v t="ekr.20080516150804.1249"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.1250"><vh>class CompletionProposal</vh>
+<v t="ekr.20080516150804.1251"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1252"><vh>__str__</vh></v>
+<v t="ekr.20080516150804.1253"><vh>__repr__</vh></v>
+</v>
+<v t="ekr.20080516150804.1254"><vh>sorted_proposals</vh></v>
+<v t="ekr.20080516150804.1255"><vh>starting_expression</vh></v>
+<v t="ekr.20080516150804.1256"><vh>default_templates</vh></v>
+<v t="ekr.20080516150804.1257"><vh>class _PythonCodeAssist</vh>
+<v t="ekr.20080516150804.1258"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1259"><vh>_find_starting_offset</vh></v>
+<v t="ekr.20080516150804.1260"><vh>_matching_keywords</vh></v>
+<v t="ekr.20080516150804.1261"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1262"><vh>_dotted_completions</vh></v>
+<v t="ekr.20080516150804.1263"><vh>_undotted_completions</vh></v>
+<v t="ekr.20080516150804.1264"><vh>_from_import_completions</vh></v>
+<v t="ekr.20080516150804.1265"><vh>_find_module</vh></v>
+<v t="ekr.20080516150804.1266"><vh>_is_defined_after</vh></v>
+<v t="ekr.20080516150804.1267"><vh>_get_pyname_type</vh></v>
+<v t="ekr.20080516150804.1268"><vh>_code_completions</vh></v>
+<v t="ekr.20080516150804.1269"><vh>_keyword_parameters</vh></v>
+</v>
+<v t="ekr.20080516150804.1270"><vh>class _ProposalSorter</vh>
+<v t="ekr.20080516150804.1271"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1272"><vh>get_sorted_proposal_list</vh></v>
+<v t="ekr.20080516150804.1273"><vh>_proposal_cmp</vh></v>
+<v t="ekr.20080516150804.1274"><vh>_compare_underlined_names</vh></v>
+</v>
+<v t="ekr.20080516150804.1275"><vh>class _Commenter</vh>
+<v t="ekr.20080516150804.1276"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1277"><vh>comment</vh></v>
+<v t="ekr.20080516150804.1278"><vh>_last_non_blank</vh></v>
+<v t="ekr.20080516150804.1279"><vh>_get_block_end</vh></v>
+<v t="ekr.20080516150804.1280"><vh>_fix_incomplete_try_blocks</vh></v>
+<v t="ekr.20080516150804.1281"><vh>_find_matching_deindent</vh></v>
+</v>
+<v t="ekr.20080516150804.1282"><vh>_find_pyname_at</vh></v>
+<v t="ekr.20080516150804.1283"><vh>_get_pymodule</vh></v>
+<v t="ekr.20080516150804.1284"><vh>_get_line_indents</vh></v>
+<v t="ekr.20080516150804.1285"><vh>_logical_start</vh></v>
+<v t="ekr.20080516150804.1286"><vh>class PyDocExtractor</vh>
+<v t="ekr.20080516150804.1287"><vh>get_doc</vh></v>
+<v t="ekr.20080516150804.1288"><vh>get_calltip</vh></v>
+<v t="ekr.20080516150804.1289"><vh>_get_class_docstring</vh></v>
+<v t="ekr.20080516150804.1290"><vh>_get_function_docstring</vh></v>
+<v t="ekr.20080516150804.1291"><vh>_is_method</vh></v>
+<v t="ekr.20080516150804.1292"><vh>_get_single_function_docstring</vh></v>
+<v t="ekr.20080516150804.1293"><vh>_get_super_methods</vh></v>
+<v t="ekr.20080516150804.1294"><vh>_get_function_signature</vh></v>
+<v t="ekr.20080516150804.1295"><vh>_location</vh></v>
+<v t="ekr.20080516150804.1296"><vh>_get_module</vh></v>
+<v t="ekr.20080516150804.1297"><vh>_trim_docstring</vh></v>
+</v>
+<v t="ekr.20080516150804.1298"><vh>class TemplateProposal</vh>
+<v t="ekr.20080516150804.1299"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.1300"><vh>class Template</vh>
+<v t="ekr.20080516150804.1301"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1302"><vh>variables</vh></v>
+<v t="ekr.20080516150804.1303"><vh>substitute</vh></v>
+<v t="ekr.20080516150804.1304"><vh>get_cursor_location</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1305"><vh>contrib\findit.py</vh>
+<v t="ekr.20080516150804.1306"><vh>findit declarations</vh></v>
+<v t="ekr.20080516150804.1307"><vh>find_occurrences</vh></v>
+<v t="ekr.20080516150804.1308"><vh>find_implementations</vh></v>
+<v t="ekr.20080516150804.1309"><vh>class Location</vh></v>
+<v t="ekr.20080516150804.1310"><vh>_find_locations</vh></v>
+</v>
+<v t="ekr.20080516150804.1311"><vh>contrib\generate.py</vh>
+<v t="ekr.20080516150804.1312"><vh>generate declarations</vh></v>
+<v t="ekr.20080516150804.1313"><vh>create_generate</vh></v>
+<v t="ekr.20080516150804.1314"><vh>create_module</vh></v>
+<v t="ekr.20080516150804.1315"><vh>create_package</vh></v>
+<v t="ekr.20080516150804.1316"><vh>class _Generate</vh>
+<v t="ekr.20080516150804.1317"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1318"><vh>_generate_info</vh></v>
+<v t="ekr.20080516150804.1319"><vh>_check_exceptional_conditions</vh></v>
+<v t="ekr.20080516150804.1320"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1321"><vh>get_location</vh></v>
+<v t="ekr.20080516150804.1322"><vh>_get_element_kind</vh></v>
+<v t="ekr.20080516150804.1323"><vh>_get_element</vh></v>
+</v>
+<v t="ekr.20080516150804.1324"><vh>class GenerateFunction</vh>
+<v t="ekr.20080516150804.1325"><vh>_generate_info</vh></v>
+<v t="ekr.20080516150804.1326"><vh>_get_element</vh></v>
+<v t="ekr.20080516150804.1327"><vh>_get_element_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1328"><vh>class GenerateVariable</vh>
+<v t="ekr.20080516150804.1329"><vh>_get_element</vh></v>
+<v t="ekr.20080516150804.1330"><vh>_get_element_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1331"><vh>class GenerateClass</vh>
+<v t="ekr.20080516150804.1332"><vh>_get_element</vh></v>
+<v t="ekr.20080516150804.1333"><vh>_get_element_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1334"><vh>class GenerateModule</vh>
+<v t="ekr.20080516150804.1335"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1336"><vh>get_location</vh></v>
+</v>
+<v t="ekr.20080516150804.1337"><vh>class GeneratePackage</vh>
+<v t="ekr.20080516150804.1338"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1339"><vh>get_location</vh></v>
+</v>
+<v t="ekr.20080516150804.1340"><vh>_add_import_to_module</vh></v>
+<v t="ekr.20080516150804.1341"><vh>class _GenerationInfo</vh>
+<v t="ekr.20080516150804.1342"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1343"><vh>_init_fields</vh></v>
+<v t="ekr.20080516150804.1344"><vh>_get_goal_scope</vh></v>
+<v t="ekr.20080516150804.1345"><vh>_get_goal_module</vh></v>
+<v t="ekr.20080516150804.1346"><vh>_get_source_scope</vh></v>
+<v t="ekr.20080516150804.1347"><vh>get_insertion_lineno</vh></v>
+<v t="ekr.20080516150804.1348"><vh>get_insertion_resource</vh></v>
+<v t="ekr.20080516150804.1349"><vh>get_insertion_offsets</vh></v>
+<v t="ekr.20080516150804.1350"><vh>get_scope_indents</vh></v>
+<v t="ekr.20080516150804.1351"><vh>get_blank_lines</vh></v>
+<v t="ekr.20080516150804.1352"><vh>get_package</vh></v>
+<v t="ekr.20080516150804.1353"><vh>primary_is_found</vh></v>
+<v t="ekr.20080516150804.1354"><vh>element_already_exists</vh></v>
+<v t="ekr.20080516150804.1355"><vh>get_name</vh></v>
+</v>
+<v t="ekr.20080516150804.1356"><vh>class _FunctionGenerationInfo</vh>
+<v t="ekr.20080516150804.1357"><vh>_get_goal_scope</vh></v>
+<v t="ekr.20080516150804.1358"><vh>element_already_exists</vh></v>
+<v t="ekr.20080516150804.1359"><vh>is_static_method</vh></v>
+<v t="ekr.20080516150804.1360"><vh>is_method</vh></v>
+<v t="ekr.20080516150804.1361"><vh>is_constructor</vh></v>
+<v t="ekr.20080516150804.1362"><vh>is_instance</vh></v>
+<v t="ekr.20080516150804.1363"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.1364"><vh>get_passed_args</vh></v>
+<v t="ekr.20080516150804.1365"><vh>_is_id</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080516150804.1368"><vh>rope-0.8.2\rope\refactor</vh>
+<v t="ekr.20080516150804.1369"><vh>refactor\change_signature.py</vh>
+<v t="ekr.20080516150804.1370"><vh>change_signature declarations</vh></v>
+<v t="ekr.20080516150804.1371"><vh>class ChangeSignature</vh>
+<v t="ekr.20080516150804.1372"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1373"><vh>_set_name_and_pyname</vh></v>
+<v t="ekr.20080516150804.1374"><vh>_change_calls</vh></v>
+<v t="ekr.20080516150804.1375"><vh>is_method</vh></v>
+<v t="ekr.20080516150804.1376"><vh>get_definition_info</vh></v>
+<v t="ekr.20080516150804.1377"><vh>normalize</vh></v>
+<v t="ekr.20080516150804.1378"><vh>remove</vh></v>
+<v t="ekr.20080516150804.1379"><vh>add</vh></v>
+<v t="ekr.20080516150804.1380"><vh>inline_default</vh></v>
+<v t="ekr.20080516150804.1381"><vh>reorder</vh></v>
+<v t="ekr.20080516150804.1382"><vh>get_changes</vh></v>
+</v>
+<v t="ekr.20080516150804.1383"><vh>class _FunctionChangers</vh>
+<v t="ekr.20080516150804.1384"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1385"><vh>_get_changed_definition_infos</vh></v>
+<v t="ekr.20080516150804.1386"><vh>change_definition</vh></v>
+<v t="ekr.20080516150804.1387"><vh>change_call</vh></v>
+</v>
+<v t="ekr.20080516150804.1388"><vh>class _ArgumentChanger</vh>
+<v t="ekr.20080516150804.1389"><vh>change_definition_info</vh></v>
+<v t="ekr.20080516150804.1390"><vh>change_argument_mapping</vh></v>
+</v>
+<v t="ekr.20080516150804.1391"><vh>class ArgumentNormalizer</vh></v>
+<v t="ekr.20080516150804.1392"><vh>class ArgumentRemover</vh>
+<v t="ekr.20080516150804.1393"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1394"><vh>change_definition_info</vh></v>
+<v t="ekr.20080516150804.1395"><vh>change_argument_mapping</vh></v>
+</v>
+<v t="ekr.20080516150804.1396"><vh>class ArgumentAdder</vh>
+<v t="ekr.20080516150804.1397"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1398"><vh>change_definition_info</vh></v>
+<v t="ekr.20080516150804.1399"><vh>change_argument_mapping</vh></v>
+</v>
+<v t="ekr.20080516150804.1400"><vh>class ArgumentDefaultInliner</vh>
+<v t="ekr.20080516150804.1401"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1402"><vh>change_definition_info</vh></v>
+<v t="ekr.20080516150804.1403"><vh>change_argument_mapping</vh></v>
+</v>
+<v t="ekr.20080516150804.1404"><vh>class ArgumentReorderer</vh>
+<v t="ekr.20080516150804.1405"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1406"><vh>change_definition_info</vh></v>
+</v>
+<v t="ekr.20080516150804.1407"><vh>class _ChangeCallsInModule</vh>
+<v t="ekr.20080516150804.1408"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1409"><vh>get_changed_module</vh></v>
+<v t="ekr.20080516150804.1410"><vh>pymodule</vh></v>
+<v t="ekr.20080516150804.1411"><vh>source</vh></v>
+<v t="ekr.20080516150804.1412"><vh>lines</vh></v>
+</v>
+<v t="ekr.20080516150804.1413"><vh>class _MultipleFinders</vh>
+<v t="ekr.20080516150804.1414"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1415"><vh>find_occurrences</vh></v>
+<v t="ekr.20080516150804.1416"><vh>_cmp_occurrences</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1417"><vh>refactor\encapsulate_field.py</vh>
+<v t="ekr.20080516150804.1418"><vh>encapsulate_field declarations</vh></v>
+<v t="ekr.20080516150804.1419"><vh>class EncapsulateField</vh>
+<v t="ekr.20080516150804.1420"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1421"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1422"><vh>get_field_name</vh></v>
+<v t="ekr.20080516150804.1423"><vh>_is_an_attribute</vh></v>
+<v t="ekr.20080516150804.1424"><vh>_get_defining_class_scope</vh></v>
+<v t="ekr.20080516150804.1425"><vh>_get_defining_scope</vh></v>
+<v t="ekr.20080516150804.1426"><vh>_change_holding_module</vh></v>
+</v>
+<v t="ekr.20080516150804.1427"><vh>class GetterSetterRenameInModule</vh>
+<v t="ekr.20080516150804.1428"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1429"><vh>get_changed_module</vh></v>
+</v>
+<v t="ekr.20080516150804.1430"><vh>class _FindChangesForModule</vh>
+<v t="ekr.20080516150804.1431"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1432"><vh>get_changed_module</vh></v>
+<v t="ekr.20080516150804.1433"><vh>_manage_writes</vh></v>
+<v t="ekr.20080516150804.1434"><vh>_is_assigned_in_a_tuple_assignment</vh></v>
+<v t="ekr.20080516150804.1435"><vh>source</vh></v>
+<v t="ekr.20080516150804.1436"><vh>lines</vh></v>
+<v t="ekr.20080516150804.1437"><vh>worder</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1438"><vh>refactor\extract.py</vh>
+<v t="ekr.20080516150804.1439"><vh>extract declarations</vh></v>
+<v t="ekr.20080516150804.1440"><vh>class _ExtractRefactoring</vh>
+<v t="ekr.20080516150804.1441"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1442"><vh>_fix_start</vh></v>
+<v t="ekr.20080516150804.1443"><vh>_fix_end</vh></v>
+<v t="ekr.20080516150804.1444"><vh>get_changes</vh></v>
+</v>
+<v t="ekr.20080516150804.1445"><vh>class ExtractMethod</vh>
+<v t="ekr.20080516150804.1446"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.1447"><vh>class ExtractVariable</vh>
+<v t="ekr.20080516150804.1448"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.1449"><vh>class _ExtractInfo</vh>
+<v t="ekr.20080516150804.1450"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1451"><vh>_init_parts</vh></v>
+<v t="ekr.20080516150804.1452"><vh>logical_lines</vh></v>
+<v t="ekr.20080516150804.1453"><vh>_init_scope</vh></v>
+<v t="ekr.20080516150804.1454"><vh>_get_scope_region</vh></v>
+<v t="ekr.20080516150804.1455"><vh>_choose_closest_line_end</vh></v>
+<v t="ekr.20080516150804.1456"><vh>one_line</vh></v>
+<v t="ekr.20080516150804.1457"><vh>global_</vh></v>
+<v t="ekr.20080516150804.1458"><vh>method</vh></v>
+<v t="ekr.20080516150804.1459"><vh>indents</vh></v>
+<v t="ekr.20080516150804.1460"><vh>scope_indents</vh></v>
+<v t="ekr.20080516150804.1461"><vh>extracted</vh></v>
+<v t="ekr.20080516150804.1462"><vh>returned</vh></v>
+</v>
+<v t="ekr.20080516150804.1463"><vh>class _ExtractCollector</vh>
+<v t="ekr.20080516150804.1464"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.1465"><vh>class _ExtractPerformer</vh>
+<v t="ekr.20080516150804.1466"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1467"><vh>extract</vh></v>
+<v t="ekr.20080516150804.1468"><vh>_replace_occurrences</vh></v>
+<v t="ekr.20080516150804.1469"><vh>_collect_info</vh></v>
+<v t="ekr.20080516150804.1470"><vh>_find_matches</vh></v>
+<v t="ekr.20080516150804.1471"><vh>_where_to_search</vh></v>
+<v t="ekr.20080516150804.1472"><vh>_find_definition_location</vh></v>
+<v t="ekr.20080516150804.1473"><vh>_find_definition</vh></v>
+</v>
+<v t="ekr.20080516150804.1474"><vh>class _DefinitionLocationFinder</vh>
+<v t="ekr.20080516150804.1475"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1476"><vh>find_lineno</vh></v>
+<v t="ekr.20080516150804.1477"><vh>_find_toplevel</vh></v>
+<v t="ekr.20080516150804.1478"><vh>find_indents</vh></v>
+<v t="ekr.20080516150804.1479"><vh>_get_before_line</vh></v>
+<v t="ekr.20080516150804.1480"><vh>_get_after_scope</vh></v>
+</v>
+<v t="ekr.20080516150804.1481"><vh>class _ExceptionalConditionChecker</vh>
+<v t="ekr.20080516150804.1482"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1483"><vh>base_conditions</vh></v>
+<v t="ekr.20080516150804.1484"><vh>one_line_conditions</vh></v>
+<v t="ekr.20080516150804.1485"><vh>multi_line_conditions</vh></v>
+<v t="ekr.20080516150804.1486"><vh>_is_region_on_a_word</vh></v>
+<v t="ekr.20080516150804.1487"><vh>_is_on_a_word</vh></v>
+</v>
+<v t="ekr.20080516150804.1488"><vh>class _ExtractMethodParts</vh>
+<v t="ekr.20080516150804.1489"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1490"><vh>get_definition</vh></v>
+<v t="ekr.20080516150804.1491"><vh>get_replacement_pattern</vh></v>
+<v t="ekr.20080516150804.1492"><vh>get_body_pattern</vh></v>
+<v t="ekr.20080516150804.1493"><vh>_get_body</vh></v>
+<v t="ekr.20080516150804.1494"><vh>_find_temps</vh></v>
+<v t="ekr.20080516150804.1495"><vh>get_checks</vh></v>
+<v t="ekr.20080516150804.1496"><vh>_create_info_collector</vh></v>
+<v t="ekr.20080516150804.1497"><vh>_get_function_definition</vh></v>
+<v t="ekr.20080516150804.1498"><vh>_get_function_signature</vh></v>
+<v t="ekr.20080516150804.1499"><vh>_get_self_name</vh></v>
+<v t="ekr.20080516150804.1500"><vh>_get_function_call</vh></v>
+<v t="ekr.20080516150804.1501"><vh>_get_comma_form</vh></v>
+<v t="ekr.20080516150804.1502"><vh>_get_call</vh></v>
+<v t="ekr.20080516150804.1503"><vh>_find_function_arguments</vh></v>
+<v t="ekr.20080516150804.1504"><vh>_find_function_returns</vh></v>
+<v t="ekr.20080516150804.1505"><vh>_get_unindented_function_body</vh></v>
+</v>
+<v t="ekr.20080516150804.1506"><vh>class _ExtractVariableParts</vh>
+<v t="ekr.20080516150804.1507"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1508"><vh>get_definition</vh></v>
+<v t="ekr.20080516150804.1509"><vh>get_body_pattern</vh></v>
+<v t="ekr.20080516150804.1510"><vh>get_replacement_pattern</vh></v>
+<v t="ekr.20080516150804.1511"><vh>get_checks</vh></v>
+</v>
+<v t="ekr.20080516150804.1512"><vh>class _FunctionInformationCollector</vh>
+<v t="ekr.20080516150804.1513"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1514"><vh>_read_variable</vh></v>
+<v t="ekr.20080516150804.1515"><vh>_written_variable</vh></v>
+<v t="ekr.20080516150804.1516"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1517"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.1518"><vh>_Assign</vh></v>
+<v t="ekr.20080516150804.1519"><vh>_ClassDef</vh></v>
+</v>
+<v t="ekr.20080516150804.1520"><vh>_get_argnames</vh></v>
+<v t="ekr.20080516150804.1521"><vh>class _VariableReadsAndWritesFinder</vh>
+<v t="ekr.20080516150804.1522"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1523"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.1524"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1525"><vh>_Class</vh></v>
+<v t="ekr.20080516150804.1526"><vh>find_reads_and_writes</vh></v>
+<v t="ekr.20080516150804.1527"><vh>find_reads_for_one_liners</vh></v>
+</v>
+<v t="ekr.20080516150804.1528"><vh>class _UnmatchedBreakOrContinueFinder</vh>
+<v t="ekr.20080516150804.1529"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1530"><vh>_For</vh></v>
+<v t="ekr.20080516150804.1531"><vh>_While</vh></v>
+<v t="ekr.20080516150804.1532"><vh>loop_encountered</vh></v>
+<v t="ekr.20080516150804.1533"><vh>_Break</vh></v>
+<v t="ekr.20080516150804.1534"><vh>_Continue</vh></v>
+<v t="ekr.20080516150804.1535"><vh>check_loop</vh></v>
+<v t="ekr.20080516150804.1536"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1537"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.1538"><vh>has_errors</vh></v>
+</v>
+<v t="ekr.20080516150804.1539"><vh>_get_function_kind</vh></v>
+<v t="ekr.20080516150804.1540"><vh>_parse_text</vh></v>
+<v t="ekr.20080516150804.1541"><vh>_join_lines</vh></v>
+</v>
+<v t="ekr.20080516150804.1542"><vh>refactor\functionutils.py</vh>
+<v t="ekr.20080516150804.1543"><vh>functionutils declarations</vh></v>
+<v t="ekr.20080516150804.1544"><vh>class DefinitionInfo</vh>
+<v t="ekr.20080516150804.1545"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1546"><vh>to_string</vh></v>
+<v t="ekr.20080516150804.1547"><vh>arguments_to_string</vh></v>
+<v t="ekr.20080516150804.1548"><vh>_read</vh></v>
+<v t="ekr.20080516150804.1549"><vh>read</vh></v>
+</v>
+<v t="ekr.20080516150804.1550"><vh>class CallInfo</vh>
+<v t="ekr.20080516150804.1551"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1552"><vh>to_string</vh></v>
+<v t="ekr.20080516150804.1553"><vh>read</vh></v>
+<v t="ekr.20080516150804.1554"><vh>_is_method_call</vh></v>
+<v t="ekr.20080516150804.1555"><vh>_is_class</vh></v>
+<v t="ekr.20080516150804.1556"><vh>_is_method</vh></v>
+<v t="ekr.20080516150804.1557"><vh>_is_classmethod</vh></v>
+</v>
+<v t="ekr.20080516150804.1558"><vh>class ArgumentMapping</vh>
+<v t="ekr.20080516150804.1559"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1560"><vh>to_call_info</vh></v>
+</v>
+<v t="ekr.20080516150804.1561"><vh>class _FunctionParser</vh>
+<v t="ekr.20080516150804.1562"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1563"><vh>get_parameters</vh></v>
+<v t="ekr.20080516150804.1564"><vh>get_instance</vh></v>
+<v t="ekr.20080516150804.1565"><vh>get_function_name</vh></v>
+<v t="ekr.20080516150804.1566"><vh>is_called_as_a_method</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1567"><vh>refactor\inline.py</vh>
+<v t="ekr.20080516150804.1568"><vh>inline declarations</vh></v>
+<v t="ekr.20080516150804.1569"><vh>create_inline</vh></v>
+<v t="ekr.20080516150804.1570"><vh>class _Inliner</vh>
+<v t="ekr.20080516150804.1571"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1572"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1573"><vh>get_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1574"><vh>class InlineMethod</vh>
+<v t="ekr.20080516150804.1575"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1576"><vh>_init_imports</vh></v>
+<v t="ekr.20080516150804.1577"><vh>_get_scope_range</vh></v>
+<v t="ekr.20080516150804.1578"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1579"><vh>_get_removed_range</vh></v>
+<v t="ekr.20080516150804.1580"><vh>_defining_file_changes</vh></v>
+<v t="ekr.20080516150804.1581"><vh>_get_method_replacement</vh></v>
+<v t="ekr.20080516150804.1582"><vh>_is_the_last_method_of_a_class</vh></v>
+<v t="ekr.20080516150804.1583"><vh>_add_imports</vh></v>
+<v t="ekr.20080516150804.1584"><vh>get_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1585"><vh>class InlineVariable</vh>
+<v t="ekr.20080516150804.1586"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1587"><vh>_check_exceptional_conditions</vh></v>
+<v t="ekr.20080516150804.1588"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1589"><vh>_get_changed_module</vh></v>
+<v t="ekr.20080516150804.1590"><vh>get_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1591"><vh>class InlineParameter</vh>
+<v t="ekr.20080516150804.1592"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1593"><vh>_function_location</vh></v>
+<v t="ekr.20080516150804.1594"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1595"><vh>get_kind</vh></v>
+</v>
+<v t="ekr.20080516150804.1596"><vh>_join_lines</vh></v>
+<v t="ekr.20080516150804.1597"><vh>class _DefinitionGenerator</vh>
+<v t="ekr.20080516150804.1598"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1599"><vh>_get_definition_info</vh></v>
+<v t="ekr.20080516150804.1600"><vh>_get_definition_params</vh></v>
+<v t="ekr.20080516150804.1601"><vh>get_function_name</vh></v>
+<v t="ekr.20080516150804.1602"><vh>get_definition</vh></v>
+<v t="ekr.20080516150804.1603"><vh>_calculate_definition</vh></v>
+<v t="ekr.20080516150804.1604"><vh>_replace_returns_with</vh></v>
+<v t="ekr.20080516150804.1605"><vh>_check_nothing_after_return</vh></v>
+<v t="ekr.20080516150804.1606"><vh>_get_return_pattern</vh></v>
+</v>
+<v t="ekr.20080516150804.1607"><vh>class _InlineFunctionCallsForModuleHandle</vh>
+<v t="ekr.20080516150804.1608"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1609"><vh>occurred_inside_skip</vh></v>
+<v t="ekr.20080516150804.1610"><vh>occurred_outside_skip</vh></v>
+<v t="ekr.20080516150804.1611"><vh>_find_end_parens</vh></v>
+<v t="ekr.20080516150804.1612"><vh>_get_pymodule</vh></v>
+<v t="ekr.20080516150804.1613"><vh>_get_source</vh></v>
+<v t="ekr.20080516150804.1614"><vh>_get_lines</vh></v>
+</v>
+<v t="ekr.20080516150804.1615"><vh>_inline_variable</vh></v>
+</v>
+<v t="ekr.20080516150804.1616"><vh>refactor\introduce_factory.py</vh>
+<v t="ekr.20080516150804.1617"><vh>introduce_factory declarations</vh></v>
+<v t="ekr.20080516150804.1618"><vh>class IntroduceFactory</vh>
+<v t="ekr.20080516150804.1619"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1620"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1621"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.1622"><vh>_change_module</vh></v>
+<v t="ekr.20080516150804.1623"><vh>_change_resource</vh></v>
+<v t="ekr.20080516150804.1624"><vh>_get_insertion_offset</vh></v>
+<v t="ekr.20080516150804.1625"><vh>_get_factory_method</vh></v>
+<v t="ekr.20080516150804.1626"><vh>_get_scope_indents</vh></v>
+<v t="ekr.20080516150804.1627"><vh>_new_function_name</vh></v>
+<v t="ekr.20080516150804.1628"><vh>_rename_occurrences</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1629"><vh>refactor\introduce_parameter.py</vh>
+<v t="ekr.20080516150804.1630"><vh>introduce_parameter declarations</vh></v>
+<v t="ekr.20080516150804.1631"><vh>class IntroduceParameter</vh>
+<v t="ekr.20080516150804.1632"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1633"><vh>_get_primary</vh></v>
+<v t="ekr.20080516150804.1634"><vh>_get_name_and_pyname</vh></v>
+<v t="ekr.20080516150804.1635"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1636"><vh>_get_header_offsets</vh></v>
+<v t="ekr.20080516150804.1637"><vh>_change_function_occurances</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1638"><vh>refactor\localtofield.py</vh>
+<v t="ekr.20080516150804.1639"><vh>localtofield declarations</vh></v>
+<v t="ekr.20080516150804.1640"><vh>class LocalToField</vh>
+<v t="ekr.20080516150804.1641"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1642"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1643"><vh>_check_redefinition</vh></v>
+<v t="ekr.20080516150804.1644"><vh>_get_field_name</vh></v>
+<v t="ekr.20080516150804.1645"><vh>_is_a_method_local</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1646"><vh>refactor\method_object.py</vh>
+<v t="ekr.20080516150804.1647"><vh>method_object declarations</vh></v>
+<v t="ekr.20080516150804.1648"><vh>class MethodObject</vh>
+<v t="ekr.20080516150804.1649"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1650"><vh>get_new_class</vh></v>
+<v t="ekr.20080516150804.1651"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1652"><vh>_get_class_insertion_point</vh></v>
+<v t="ekr.20080516150804.1653"><vh>_get_body</vh></v>
+<v t="ekr.20080516150804.1654"><vh>_get_init</vh></v>
+<v t="ekr.20080516150804.1655"><vh>_get_parameter_names</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1656"><vh>refactor\move.py</vh>
+<v t="ekr.20080516150804.1657"><vh>move declarations</vh></v>
+<v t="ekr.20080516150804.1658"><vh>create_move</vh></v>
+<v t="ekr.20080516150804.1659"><vh>class MoveMethod</vh>
+<v t="ekr.20080516150804.1660"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1661"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1662"><vh>get_method_name</vh></v>
+<v t="ekr.20080516150804.1663"><vh>_get_used_imports</vh></v>
+<v t="ekr.20080516150804.1664"><vh>_get_changes_made_by_old_class</vh></v>
+<v t="ekr.20080516150804.1665"><vh>_get_scope_indents</vh></v>
+<v t="ekr.20080516150804.1666"><vh>_get_changes_made_by_new_class</vh></v>
+<v t="ekr.20080516150804.1667"><vh>get_new_method</vh></v>
+<v t="ekr.20080516150804.1668"><vh>_get_unchanged_body</vh></v>
+<v t="ekr.20080516150804.1669"><vh>_get_body</vh></v>
+<v t="ekr.20080516150804.1670"><vh>_get_self_name</vh></v>
+<v t="ekr.20080516150804.1671"><vh>_get_new_header</vh></v>
+<v t="ekr.20080516150804.1672"><vh>_get_passed_arguments_string</vh></v>
+<v t="ekr.20080516150804.1673"><vh>_is_host_used</vh></v>
+</v>
+<v t="ekr.20080516150804.1674"><vh>class MoveGlobal</vh>
+<v t="ekr.20080516150804.1675"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1676"><vh>_check_exceptional_conditions</vh></v>
+<v t="ekr.20080516150804.1677"><vh>_is_global</vh></v>
+<v t="ekr.20080516150804.1678"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1679"><vh>_calculate_changes</vh></v>
+<v t="ekr.20080516150804.1680"><vh>_source_module_changes</vh></v>
+<v t="ekr.20080516150804.1681"><vh>_new_modname</vh></v>
+<v t="ekr.20080516150804.1682"><vh>_dest_module_changes</vh></v>
+<v t="ekr.20080516150804.1683"><vh>_get_moving_element_with_imports</vh></v>
+<v t="ekr.20080516150804.1684"><vh>_get_module_with_imports</vh></v>
+<v t="ekr.20080516150804.1685"><vh>_get_moving_element</vh></v>
+<v t="ekr.20080516150804.1686"><vh>_get_moving_region</vh></v>
+<v t="ekr.20080516150804.1687"><vh>_add_imports2</vh></v>
+</v>
+<v t="ekr.20080516150804.1688"><vh>class MoveModule</vh>
+<v t="ekr.20080516150804.1689"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1690"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1691"><vh>_calculate_changes</vh></v>
+<v t="ekr.20080516150804.1692"><vh>_new_modname</vh></v>
+<v t="ekr.20080516150804.1693"><vh>_new_import</vh></v>
+<v t="ekr.20080516150804.1694"><vh>_change_moving_module</vh></v>
+<v t="ekr.20080516150804.1695"><vh>_change_occurrences_in_module</vh></v>
+</v>
+<v t="ekr.20080516150804.1696"><vh>class _ChangeMoveOccurrencesHandle</vh>
+<v t="ekr.20080516150804.1697"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1698"><vh>occurred_inside_skip</vh></v>
+<v t="ekr.20080516150804.1699"><vh>occurred_outside_skip</vh></v>
+</v>
+<v t="ekr.20080516150804.1700"><vh>class _MoveTools</vh>
+<v t="ekr.20080516150804.1701"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1702"><vh>remove_old_imports</vh></v>
+<v t="ekr.20080516150804.1703"><vh>rename_in_module</vh></v>
+<v t="ekr.20080516150804.1704"><vh>occurs_in_module</vh></v>
+<v t="ekr.20080516150804.1705"><vh>_create_finder</vh></v>
+<v t="ekr.20080516150804.1706"><vh>new_pymodule</vh></v>
+<v t="ekr.20080516150804.1707"><vh>new_source</vh></v>
+<v t="ekr.20080516150804.1708"><vh>add_imports</vh></v>
+</v>
+<v t="ekr.20080516150804.1709"><vh>_add_imports_to_module</vh></v>
+<v t="ekr.20080516150804.1710"><vh>moving_code_with_imports</vh></v>
+<v t="ekr.20080516150804.1711"><vh>class ModuleSkipRenamerHandle</vh>
+<v t="ekr.20080516150804.1712"><vh>occurred_outside_skip</vh></v>
+<v t="ekr.20080516150804.1713"><vh>occurred_inside_skip</vh></v>
+</v>
+<v t="ekr.20080516150804.1714"><vh>class ModuleSkipRenamer</vh>
+<v t="ekr.20080516150804.1715"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1716"><vh>get_changed_module</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1717"><vh>refactor\multiproject.py</vh>
+<v t="ekr.20080516150804.1718"><vh>multiproject declarations</vh></v>
+<v t="ekr.20080516150804.1719"><vh>class MultiProjectRefactoring</vh>
+<v t="ekr.20080516150804.1720"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1721"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.1722"><vh>class _MultiRefactoring</vh>
+<v t="ekr.20080516150804.1723"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1724"><vh>get_all_changes</vh></v>
+<v t="ekr.20080516150804.1725"><vh>__getattr__</vh></v>
+<v t="ekr.20080516150804.1726"><vh>_resources_for_args</vh></v>
+<v t="ekr.20080516150804.1727"><vh>_change_project_resource</vh></v>
+<v t="ekr.20080516150804.1728"><vh>project</vh></v>
+<v t="ekr.20080516150804.1729"><vh>main_refactoring</vh></v>
+</v>
+<v t="ekr.20080516150804.1730"><vh>perform</vh></v>
+</v>
+<v t="ekr.20080516150804.1731"><vh>refactor\occurrences.py</vh>
+<v t="ekr.20080516150804.1732"><vh>occurrences declarations</vh></v>
+<v t="ekr.20080516150804.1733"><vh>class Finder</vh>
+<v t="ekr.20080516150804.1734"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1735"><vh>find_occurrences</vh></v>
+</v>
+<v t="ekr.20080516150804.1736"><vh>create_finder</vh></v>
+<v t="ekr.20080516150804.1737"><vh>class Occurrence</vh>
+<v t="ekr.20080516150804.1738"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1739"><vh>get_word_range</vh></v>
+<v t="ekr.20080516150804.1740"><vh>get_primary_range</vh></v>
+<v t="ekr.20080516150804.1741"><vh>get_pyname</vh></v>
+<v t="ekr.20080516150804.1742"><vh>get_primary_and_pyname</vh></v>
+<v t="ekr.20080516150804.1743"><vh>is_in_import_statement</vh></v>
+<v t="ekr.20080516150804.1744"><vh>is_called</vh></v>
+<v t="ekr.20080516150804.1745"><vh>is_defined</vh></v>
+<v t="ekr.20080516150804.1746"><vh>is_a_fixed_primary</vh></v>
+<v t="ekr.20080516150804.1747"><vh>is_written</vh></v>
+<v t="ekr.20080516150804.1748"><vh>is_unsure</vh></v>
+</v>
+<v t="ekr.20080516150804.1749"><vh>same_pyname</vh></v>
+<v t="ekr.20080516150804.1750"><vh>unsure_pyname</vh></v>
+<v t="ekr.20080516150804.1751"><vh>class PyNameFilter</vh>
+<v t="ekr.20080516150804.1752"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1753"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.1754"><vh>class InHierarchyFilter</vh>
+<v t="ekr.20080516150804.1755"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1756"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1757"><vh>_get_containing_class</vh></v>
+<v t="ekr.20080516150804.1758"><vh>_get_root_classes</vh></v>
+</v>
+<v t="ekr.20080516150804.1759"><vh>class UnsureFilter</vh>
+<v t="ekr.20080516150804.1760"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1761"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.1762"><vh>class NoImportsFilter</vh>
+<v t="ekr.20080516150804.1763"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.1764"><vh>class CallsFilter</vh>
+<v t="ekr.20080516150804.1765"><vh>__call__</vh></v>
+</v>
+<v t="ekr.20080516150804.1766"><vh>class _TextualFinder</vh>
+<v t="ekr.20080516150804.1767"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1768"><vh>find_offsets</vh></v>
+<v t="ekr.20080516150804.1769"><vh>_re_search</vh></v>
+<v t="ekr.20080516150804.1770"><vh>_normal_search</vh></v>
+<v t="ekr.20080516150804.1771"><vh>_is_id_char</vh></v>
+<v t="ekr.20080516150804.1772"><vh>_fast_file_query</vh></v>
+<v t="ekr.20080516150804.1773"><vh>_get_source</vh></v>
+<v t="ekr.20080516150804.1774"><vh>_get_occurrence_pattern</vh></v>
+<v t="ekr.20080516150804.1775"><vh>any</vh></v>
+</v>
+<v t="ekr.20080516150804.1776"><vh>class _OccurrenceToolsCreator</vh>
+<v t="ekr.20080516150804.1777"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1778"><vh>name_finder</vh></v>
+<v t="ekr.20080516150804.1779"><vh>source_code</vh></v>
+<v t="ekr.20080516150804.1780"><vh>word_finder</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1781"><vh>refactor\patchedast.py</vh>
+<v t="ekr.20080516150804.1782"><vh>patchedast declarations</vh></v>
+<v t="ekr.20080516150804.1783"><vh>get_patched_ast</vh></v>
+<v t="ekr.20080516150804.1784"><vh>patch_ast</vh></v>
+<v t="ekr.20080516150804.1785"><vh>node_region</vh></v>
+<v t="ekr.20080516150804.1786"><vh>write_ast</vh></v>
+<v t="ekr.20080516150804.1787"><vh>class MismatchedTokenError</vh></v>
+<v t="ekr.20080516150804.1788"><vh>class _PatchingASTWalker</vh>
+<v t="ekr.20080516150804.1789"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1790"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.1791"><vh>_handle</vh></v>
+<v t="ekr.20080516150804.1792"><vh>_handle_parens</vh></v>
+<v t="ekr.20080516150804.1793"><vh>_eat_surrounding_parens</vh></v>
+<v t="ekr.20080516150804.1794"><vh>_count_needed_parens</vh></v>
+<v t="ekr.20080516150804.1795"><vh>_find_next_statement_start</vh></v>
+<v t="ekr.20080516150804.1796"><vh>_get_op</vh></v>
+<v t="ekr.20080516150804.1797"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.1798"><vh>_Assert</vh></v>
+<v t="ekr.20080516150804.1799"><vh>_Assign</vh></v>
+<v t="ekr.20080516150804.1800"><vh>_AugAssign</vh></v>
+<v t="ekr.20080516150804.1801"><vh>_Repr</vh></v>
+<v t="ekr.20080516150804.1802"><vh>_BinOp</vh></v>
+<v t="ekr.20080516150804.1803"><vh>_BoolOp</vh></v>
+<v t="ekr.20080516150804.1804"><vh>_Break</vh></v>
+<v t="ekr.20080516150804.1805"><vh>_Call</vh></v>
+<v t="ekr.20080516150804.1806"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.1807"><vh>_Compare</vh></v>
+<v t="ekr.20080516150804.1808"><vh>_Delete</vh></v>
+<v t="ekr.20080516150804.1809"><vh>_Num</vh></v>
+<v t="ekr.20080516150804.1810"><vh>_Str</vh></v>
+<v t="ekr.20080516150804.1811"><vh>_Continue</vh></v>
+<v t="ekr.20080516150804.1812"><vh>_Dict</vh></v>
+<v t="ekr.20080516150804.1813"><vh>_Ellipsis</vh></v>
+<v t="ekr.20080516150804.1814"><vh>_Expr</vh></v>
+<v t="ekr.20080516150804.1815"><vh>_Exec</vh></v>
+<v t="ekr.20080516150804.1816"><vh>_For</vh></v>
+<v t="ekr.20080516150804.1817"><vh>_ImportFrom</vh></v>
+<v t="ekr.20080516150804.1818"><vh>_alias</vh></v>
+<v t="ekr.20080516150804.1819"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1820"><vh>_arguments</vh></v>
+<v t="ekr.20080516150804.1821"><vh>_add_args_to_children</vh></v>
+<v t="ekr.20080516150804.1822"><vh>_add_tuple_parameter</vh></v>
+<v t="ekr.20080516150804.1823"><vh>_GeneratorExp</vh></v>
+<v t="ekr.20080516150804.1824"><vh>_comprehension</vh></v>
+<v t="ekr.20080516150804.1825"><vh>_Global</vh></v>
+<v t="ekr.20080516150804.1826"><vh>_If</vh></v>
+<v t="ekr.20080516150804.1827"><vh>_is_elif</vh></v>
+<v t="ekr.20080516150804.1828"><vh>_IfExp</vh></v>
+<v t="ekr.20080516150804.1829"><vh>_Import</vh></v>
+<v t="ekr.20080516150804.1830"><vh>_keyword</vh></v>
+<v t="ekr.20080516150804.1831"><vh>_Lambda</vh></v>
+<v t="ekr.20080516150804.1832"><vh>_List</vh></v>
+<v t="ekr.20080516150804.1833"><vh>_ListComp</vh></v>
+<v t="ekr.20080516150804.1834"><vh>_Module</vh></v>
+<v t="ekr.20080516150804.1835"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.1836"><vh>_Pass</vh></v>
+<v t="ekr.20080516150804.1837"><vh>_Print</vh></v>
+<v t="ekr.20080516150804.1838"><vh>_Raise</vh></v>
+<v t="ekr.20080516150804.1839"><vh>_Return</vh></v>
+<v t="ekr.20080516150804.1840"><vh>_Sliceobj</vh></v>
+<v t="ekr.20080516150804.1841"><vh>_Index</vh></v>
+<v t="ekr.20080516150804.1842"><vh>_Subscript</vh></v>
+<v t="ekr.20080516150804.1843"><vh>_Slice</vh></v>
+<v t="ekr.20080516150804.1844"><vh>_TryFinally</vh></v>
+<v t="ekr.20080516150804.1845"><vh>_TryExcept</vh></v>
+<v t="ekr.20080516150804.1846"><vh>_ExceptHandler</vh></v>
+<v t="ekr.20080516150804.1847"><vh>_excepthandler</vh></v>
+<v t="ekr.20080516150804.1848"><vh>_Tuple</vh></v>
+<v t="ekr.20080516150804.1849"><vh>_UnaryOp</vh></v>
+<v t="ekr.20080516150804.1850"><vh>_Yield</vh></v>
+<v t="ekr.20080516150804.1851"><vh>_While</vh></v>
+<v t="ekr.20080516150804.1852"><vh>_With</vh></v>
+<v t="ekr.20080516150804.1853"><vh>_child_nodes</vh></v>
+</v>
+<v t="ekr.20080516150804.1854"><vh>class _Source</vh>
+<v t="ekr.20080516150804.1855"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1856"><vh>consume</vh></v>
+<v t="ekr.20080516150804.1857"><vh>consume_string</vh></v>
+<v t="ekr.20080516150804.1858"><vh>consume_number</vh></v>
+<v t="ekr.20080516150804.1859"><vh>consume_not_equal</vh></v>
+<v t="ekr.20080516150804.1860"><vh>_good_token</vh></v>
+<v t="ekr.20080516150804.1861"><vh>_skip_comment</vh></v>
+<v t="ekr.20080516150804.1862"><vh>_get_location</vh></v>
+<v t="ekr.20080516150804.1863"><vh>_consume_pattern</vh></v>
+<v t="ekr.20080516150804.1864"><vh>till_token</vh></v>
+<v t="ekr.20080516150804.1865"><vh>get</vh></v>
+<v t="ekr.20080516150804.1866"><vh>rfind_token</vh></v>
+<v t="ekr.20080516150804.1867"><vh>from_offset</vh></v>
+<v t="ekr.20080516150804.1868"><vh>find_backwards</vh></v>
+<v t="ekr.20080516150804.1869"><vh>__getitem__</vh></v>
+<v t="ekr.20080516150804.1870"><vh>__getslice__</vh></v>
+<v t="ekr.20080516150804.1871"><vh>_get_number_pattern</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1872"><vh>refactor\rename.py</vh>
+<v t="ekr.20080516150804.1873"><vh>rename declarations</vh></v>
+<v t="ekr.20080516150804.1874"><vh>class Rename</vh>
+<v t="ekr.20080516150804.1875"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1876"><vh>get_old_name</vh></v>
+<v t="ekr.20080516150804.1877"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1878"><vh>_is_allowed_to_move</vh></v>
+<v t="ekr.20080516150804.1879"><vh>_is_renaming_a_function_local_name</vh></v>
+<v t="ekr.20080516150804.1880"><vh>_is_renaming_a_module</vh></v>
+<v t="ekr.20080516150804.1881"><vh>is_method</vh></v>
+<v t="ekr.20080516150804.1882"><vh>_rename_module</vh></v>
+</v>
+<v t="ekr.20080516150804.1883"><vh>class ChangeOccurrences</vh>
+<v t="ekr.20080516150804.1884"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1885"><vh>get_old_name</vh></v>
+<v t="ekr.20080516150804.1886"><vh>_get_scope_offset</vh></v>
+<v t="ekr.20080516150804.1887"><vh>get_changes</vh></v>
+</v>
+<v t="ekr.20080516150804.1888"><vh>rename_in_module</vh></v>
+</v>
+<v t="ekr.20080516150804.1889"><vh>refactor\restructure.py</vh>
+<v t="ekr.20080516150804.1890"><vh>restructure declarations</vh></v>
+<v t="ekr.20080516150804.1891"><vh>class Restructure</vh>
+<v t="ekr.20080516150804.1892"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1893"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.1894"><vh>_compute_changes</vh></v>
+<v t="ekr.20080516150804.1895"><vh>_add_imports</vh></v>
+<v t="ekr.20080516150804.1896"><vh>_get_import_infos</vh></v>
+<v t="ekr.20080516150804.1897"><vh>make_checks</vh></v>
+<v t="ekr.20080516150804.1898"><vh>_evaluate</vh></v>
+</v>
+<v t="ekr.20080516150804.1899"><vh>replace</vh></v>
+<v t="ekr.20080516150804.1900"><vh>class _ChangeComputer</vh>
+<v t="ekr.20080516150804.1901"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1902"><vh>get_changed</vh></v>
+<v t="ekr.20080516150804.1903"><vh>_is_expression</vh></v>
+<v t="ekr.20080516150804.1904"><vh>_get_matched_text</vh></v>
+<v t="ekr.20080516150804.1905"><vh>_get_node_text</vh></v>
+<v t="ekr.20080516150804.1906"><vh>_auto_indent</vh></v>
+<v t="ekr.20080516150804.1907"><vh>_get_nearest_roots</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1908"><vh>refactor\similarfinder.py</vh>
+<v t="ekr.20080516150804.1909"><vh>similarfinder declarations</vh></v>
+<v t="ekr.20080516150804.1910"><vh>class BadNameInCheckError</vh></v>
+<v t="ekr.20080516150804.1911"><vh>class SimilarFinder</vh>
+<v t="ekr.20080516150804.1912"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1913"><vh>get_matches</vh></v>
+<v t="ekr.20080516150804.1914"><vh>get_match_regions</vh></v>
+<v t="ekr.20080516150804.1915"><vh>_does_match</vh></v>
+</v>
+<v t="ekr.20080516150804.1916"><vh>class RawSimilarFinder</vh>
+<v t="ekr.20080516150804.1917"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1918"><vh>_simple_does_match</vh></v>
+<v t="ekr.20080516150804.1919"><vh>_init_using_ast</vh></v>
+<v t="ekr.20080516150804.1920"><vh>get_matches</vh></v>
+<v t="ekr.20080516150804.1921"><vh>_get_matched_asts</vh></v>
+<v t="ekr.20080516150804.1922"><vh>_create_pattern</vh></v>
+<v t="ekr.20080516150804.1923"><vh>_replace_wildcards</vh></v>
+</v>
+<v t="ekr.20080516150804.1924"><vh>class _ASTMatcher</vh>
+<v t="ekr.20080516150804.1925"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1926"><vh>find_matches</vh></v>
+<v t="ekr.20080516150804.1927"><vh>_check_node</vh></v>
+<v t="ekr.20080516150804.1928"><vh>_check_expression</vh></v>
+<v t="ekr.20080516150804.1929"><vh>_check_statements</vh></v>
+<v t="ekr.20080516150804.1930"><vh>__check_stmt_list</vh></v>
+<v t="ekr.20080516150804.1931"><vh>_match_nodes</vh></v>
+<v t="ekr.20080516150804.1932"><vh>_get_children</vh></v>
+<v t="ekr.20080516150804.1933"><vh>_match_stmts</vh></v>
+<v t="ekr.20080516150804.1934"><vh>_match_wildcard</vh></v>
+</v>
+<v t="ekr.20080516150804.1935"><vh>class Match</vh>
+<v t="ekr.20080516150804.1936"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1937"><vh>get_region</vh></v>
+<v t="ekr.20080516150804.1938"><vh>get_ast</vh></v>
+</v>
+<v t="ekr.20080516150804.1939"><vh>class ExpressionMatch</vh>
+<v t="ekr.20080516150804.1940"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1941"><vh>get_region</vh></v>
+</v>
+<v t="ekr.20080516150804.1942"><vh>class StatementMatch</vh>
+<v t="ekr.20080516150804.1943"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1944"><vh>get_region</vh></v>
+</v>
+<v t="ekr.20080516150804.1945"><vh>class CodeTemplate</vh>
+<v t="ekr.20080516150804.1946"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1947"><vh>_find_names</vh></v>
+<v t="ekr.20080516150804.1948"><vh>get_names</vh></v>
+<v t="ekr.20080516150804.1949"><vh>substitute</vh></v>
+<v t="ekr.20080516150804.1950"><vh>_get_pattern</vh></v>
+</v>
+<v t="ekr.20080516150804.1951"><vh>class _RopeVariable</vh>
+<v t="ekr.20080516150804.1952"><vh>get_var</vh></v>
+<v t="ekr.20080516150804.1953"><vh>is_var</vh></v>
+<v t="ekr.20080516150804.1954"><vh>get_base</vh></v>
+<v t="ekr.20080516150804.1955"><vh>_get_normal</vh></v>
+<v t="ekr.20080516150804.1956"><vh>_get_any</vh></v>
+<v t="ekr.20080516150804.1957"><vh>_is_normal</vh></v>
+<v t="ekr.20080516150804.1958"><vh>_is_var</vh></v>
+</v>
+<v t="ekr.20080516150804.1959"><vh>make_pattern</vh></v>
+<v t="ekr.20080516150804.1960"><vh>_pydefined_to_str</vh></v>
+</v>
+<v t="ekr.20080516150804.1961"><vh>refactor\sourceutils.py</vh>
+<v t="ekr.20080516150804.1962"><vh>sourceutils declarations</vh></v>
+<v t="ekr.20080516150804.1963"><vh>get_indents</vh></v>
+<v t="ekr.20080516150804.1964"><vh>find_minimum_indents</vh></v>
+<v t="ekr.20080516150804.1965"><vh>indent_lines</vh></v>
+<v t="ekr.20080516150804.1966"><vh>fix_indentation</vh></v>
+<v t="ekr.20080516150804.1967"><vh>add_methods</vh></v>
+<v t="ekr.20080516150804.1968"><vh>get_body</vh></v>
+<v t="ekr.20080516150804.1969"><vh>get_body_region</vh></v>
+<v t="ekr.20080516150804.1970"><vh>get_indent</vh></v>
+</v>
+<v t="ekr.20080516150804.1971"><vh>refactor\suites.py</vh>
+<v t="ekr.20080516150804.1972"><vh>suites declarations</vh></v>
+<v t="ekr.20080516150804.1973"><vh>find_visible</vh></v>
+<v t="ekr.20080516150804.1974"><vh>find_visible_for_suite</vh></v>
+<v t="ekr.20080516150804.1975"><vh>ast_suite_tree</vh></v>
+<v t="ekr.20080516150804.1976"><vh>class Suite</vh>
+<v t="ekr.20080516150804.1977"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1978"><vh>get_start</vh></v>
+<v t="ekr.20080516150804.1979"><vh>get_children</vh></v>
+<v t="ekr.20080516150804.1980"><vh>local_start</vh></v>
+<v t="ekr.20080516150804.1981"><vh>local_end</vh></v>
+<v t="ekr.20080516150804.1982"><vh>find_suite</vh></v>
+<v t="ekr.20080516150804.1983"><vh>_get_level</vh></v>
+</v>
+<v t="ekr.20080516150804.1984"><vh>class _SuiteWalker</vh>
+<v t="ekr.20080516150804.1985"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1986"><vh>_If</vh></v>
+<v t="ekr.20080516150804.1987"><vh>_For</vh></v>
+<v t="ekr.20080516150804.1988"><vh>_While</vh></v>
+<v t="ekr.20080516150804.1989"><vh>_With</vh></v>
+<v t="ekr.20080516150804.1990"><vh>_TryFinally</vh></v>
+<v t="ekr.20080516150804.1991"><vh>_TryExcept</vh></v>
+<v t="ekr.20080516150804.1992"><vh>_add_if_like_node</vh></v>
+<v t="ekr.20080516150804.1993"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.1994"><vh>_ClassDef</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.1995"><vh>refactor\topackage.py</vh>
+<v t="ekr.20080516150804.1996"><vh>topackage declarations</vh></v>
+<v t="ekr.20080516150804.1997"><vh>class ModuleToPackage</vh>
+<v t="ekr.20080516150804.1998"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.1999"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.2000"><vh>_transform_relatives_to_absolute</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.2001"><vh>refactor\usefunction.py</vh>
+<v t="ekr.20080516150804.2002"><vh>usefunction declarations</vh></v>
+<v t="ekr.20080516150804.2003"><vh>class UseFunction</vh>
+<v t="ekr.20080516150804.2004"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2005"><vh>_check_returns</vh></v>
+<v t="ekr.20080516150804.2006"><vh>get_changes</vh></v>
+<v t="ekr.20080516150804.2007"><vh>get_function_name</vh></v>
+<v t="ekr.20080516150804.2008"><vh>_restructure</vh></v>
+<v t="ekr.20080516150804.2009"><vh>_find_temps</vh></v>
+<v t="ekr.20080516150804.2010"><vh>_module_name</vh></v>
+<v t="ekr.20080516150804.2011"><vh>_make_pattern</vh></v>
+<v t="ekr.20080516150804.2012"><vh>_get_body</vh></v>
+<v t="ekr.20080516150804.2013"><vh>_make_goal</vh></v>
+<v t="ekr.20080516150804.2014"><vh>_does_return</vh></v>
+<v t="ekr.20080516150804.2015"><vh>_is_expression</vh></v>
+</v>
+<v t="ekr.20080516150804.2016"><vh>find_temps</vh></v>
+<v t="ekr.20080516150804.2017"><vh>_returns_last</vh></v>
+<v t="ekr.20080516150804.2018"><vh>_yield_count</vh></v>
+<v t="ekr.20080516150804.2019"><vh>_return_count</vh></v>
+<v t="ekr.20080516150804.2020"><vh>class _ReturnOrYieldFinder</vh>
+<v t="ekr.20080516150804.2021"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2022"><vh>_Return</vh></v>
+<v t="ekr.20080516150804.2023"><vh>_Yield</vh></v>
+<v t="ekr.20080516150804.2024"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.2025"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.2026"><vh>start_walking</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.2027"><vh>refactor\wildcards.py</vh>
+<v t="ekr.20080516150804.2028"><vh>wildcards declarations</vh></v>
+<v t="ekr.20080516150804.2029"><vh>class Wildcard</vh>
+<v t="ekr.20080516150804.2030"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.2031"><vh>matches</vh></v>
+</v>
+<v t="ekr.20080516150804.2032"><vh>class Suspect</vh>
+<v t="ekr.20080516150804.2033"><vh>__init__</vh></v>
+</v>
+<v t="ekr.20080516150804.2034"><vh>class DefaultWildcard</vh>
+<v t="ekr.20080516150804.2035"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2036"><vh>get_name</vh></v>
+<v t="ekr.20080516150804.2037"><vh>matches</vh></v>
+<v t="ekr.20080516150804.2038"><vh>_check_object</vh></v>
+<v t="ekr.20080516150804.2039"><vh>_check_exact</vh></v>
+</v>
+<v t="ekr.20080516150804.2040"><vh>parse_arg</vh></v>
+<v t="ekr.20080516150804.2041"><vh>class _CheckObject</vh>
+<v t="ekr.20080516150804.2042"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2043"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.2044"><vh>_get_super_classes</vh></v>
+<v t="ekr.20080516150804.2045"><vh>_same_pyobject</vh></v>
+<v t="ekr.20080516150804.2046"><vh>_same_pyname</vh></v>
+<v t="ekr.20080516150804.2047"><vh>_unsure_pyname</vh></v>
+<v t="ekr.20080516150804.2048"><vh>_split_name</vh></v>
+<v t="ekr.20080516150804.2049"><vh>_evaluate_node</vh></v>
+<v t="ekr.20080516150804.2050"><vh>_evaluate</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.2051"><vh>refactor\__init__.py</vh>
+<v t="ekr.20080516150804.2052"><vh>__init__ declarations</vh></v>
+</v>
+<v t="ekr.20080516150804.2053"><vh>rope-0.8.2\rope\refactor\importutils</vh>
+<v t="ekr.20080516150804.2054"><vh>refactor\importutils\actions.py</vh>
+<v t="ekr.20080516150804.2055"><vh>actions declarations</vh></v>
+<v t="ekr.20080516150804.2056"><vh>class ImportInfoVisitor</vh>
+<v t="ekr.20080516150804.2057"><vh>dispatch</vh></v>
+<v t="ekr.20080516150804.2058"><vh>visitEmptyImport</vh></v>
+<v t="ekr.20080516150804.2059"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2060"><vh>visitFromImport</vh></v>
+</v>
+<v t="ekr.20080516150804.2061"><vh>class RelativeToAbsoluteVisitor</vh>
+<v t="ekr.20080516150804.2062"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2063"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2064"><vh>_get_relative_to_absolute_list</vh></v>
+<v t="ekr.20080516150804.2065"><vh>visitFromImport</vh></v>
+</v>
+<v t="ekr.20080516150804.2066"><vh>class FilteringVisitor</vh>
+<v t="ekr.20080516150804.2067"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2068"><vh>_transform_can_select</vh></v>
+<v t="ekr.20080516150804.2069"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2070"><vh>visitFromImport</vh></v>
+</v>
+<v t="ekr.20080516150804.2071"><vh>class RemovingVisitor</vh>
+<v t="ekr.20080516150804.2072"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2073"><vh>dispatch</vh></v>
+</v>
+<v t="ekr.20080516150804.2074"><vh>class AddingVisitor</vh>
+<v t="ekr.20080516150804.2075"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2076"><vh>dispatch</vh></v>
+<v t="ekr.20080516150804.2077"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2078"><vh>visitFromImport</vh></v>
+</v>
+<v t="ekr.20080516150804.2079"><vh>class ExpandStarsVisitor</vh>
+<v t="ekr.20080516150804.2080"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2081"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2082"><vh>visitFromImport</vh></v>
+</v>
+<v t="ekr.20080516150804.2083"><vh>class SelfImportVisitor</vh>
+<v t="ekr.20080516150804.2084"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2085"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2086"><vh>visitFromImport</vh></v>
+<v t="ekr.20080516150804.2087"><vh>_importing_names_from_self</vh></v>
+</v>
+<v t="ekr.20080516150804.2088"><vh>class SortingVisitor</vh>
+<v t="ekr.20080516150804.2089"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2090"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2091"><vh>visitFromImport</vh></v>
+<v t="ekr.20080516150804.2092"><vh>_check_imported_resource</vh></v>
+<v t="ekr.20080516150804.2093"><vh>standard_modules</vh></v>
+</v>
+<v t="ekr.20080516150804.2094"><vh>class LongImportVisitor</vh>
+<v t="ekr.20080516150804.2095"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2096"><vh>visitNormalImport</vh></v>
+<v t="ekr.20080516150804.2097"><vh>_is_long</vh></v>
+</v>
+<v t="ekr.20080516150804.2098"><vh>_is_future</vh></v>
+</v>
+<v t="ekr.20080516150804.2099"><vh>refactor\importutils\importinfo.py</vh>
+<v t="ekr.20080516150804.2100"><vh>class ImportStatement</vh>
+<v t="ekr.20080516150804.2101"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2102"><vh>_get_import_info</vh></v>
+<v t="ekr.20080516150804.2103"><vh>_set_import_info</vh></v>
+<v t="ekr.20080516150804.2104"><vh>get_import_statement</vh></v>
+<v t="ekr.20080516150804.2105"><vh>empty_import</vh></v>
+<v t="ekr.20080516150804.2106"><vh>move</vh></v>
+<v t="ekr.20080516150804.2107"><vh>get_old_location</vh></v>
+<v t="ekr.20080516150804.2108"><vh>get_new_start</vh></v>
+<v t="ekr.20080516150804.2109"><vh>is_changed</vh></v>
+<v t="ekr.20080516150804.2110"><vh>accept</vh></v>
+</v>
+<v t="ekr.20080516150804.2111"><vh>class ImportInfo</vh>
+<v t="ekr.20080516150804.2112"><vh>get_imported_primaries</vh></v>
+<v t="ekr.20080516150804.2113"><vh>get_imported_names</vh></v>
+<v t="ekr.20080516150804.2114"><vh>get_import_statement</vh></v>
+<v t="ekr.20080516150804.2115"><vh>is_empty</vh></v>
+<v t="ekr.20080516150804.2116"><vh>__hash__</vh></v>
+<v t="ekr.20080516150804.2117"><vh>_are_name_and_alias_lists_equal</vh></v>
+<v t="ekr.20080516150804.2118"><vh>__eq__</vh></v>
+<v t="ekr.20080516150804.2119"><vh>get_empty_import</vh></v>
+</v>
+<v t="ekr.20080516150804.2120"><vh>class NormalImport</vh>
+<v t="ekr.20080516150804.2121"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2122"><vh>get_imported_primaries</vh></v>
+<v t="ekr.20080516150804.2123"><vh>get_import_statement</vh></v>
+<v t="ekr.20080516150804.2124"><vh>is_empty</vh></v>
+</v>
+<v t="ekr.20080516150804.2125"><vh>class FromImport</vh>
+<v t="ekr.20080516150804.2126"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2127"><vh>get_imported_primaries</vh></v>
+<v t="ekr.20080516150804.2128"><vh>get_imported_resource</vh></v>
+<v t="ekr.20080516150804.2129"><vh>get_imported_module</vh></v>
+<v t="ekr.20080516150804.2130"><vh>get_import_statement</vh></v>
+<v t="ekr.20080516150804.2131"><vh>is_empty</vh></v>
+<v t="ekr.20080516150804.2132"><vh>is_star_import</vh></v>
+</v>
+<v t="ekr.20080516150804.2133"><vh>class EmptyImport</vh>
+<v t="ekr.20080516150804.2134"><vh>is_empty</vh></v>
+<v t="ekr.20080516150804.2135"><vh>get_imported_primaries</vh></v>
+</v>
+<v t="ekr.20080516150804.2136"><vh>get_module_name</vh></v>
+<v t="ekr.20080516150804.2137"><vh>class ImportContext</vh>
+<v t="ekr.20080516150804.2138"><vh>__init__</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.2139"><vh>refactor\importutils\module_imports.py</vh>
+<v t="ekr.20080516150804.2140"><vh>module_imports declarations</vh></v>
+<v t="ekr.20080516150804.2141"><vh>class ModuleImports</vh>
+<v t="ekr.20080516150804.2142"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2143"><vh>imports</vh></v>
+<v t="ekr.20080516150804.2144"><vh>_get_unbound_names</vh></v>
+<v t="ekr.20080516150804.2145"><vh>remove_unused_imports</vh></v>
+<v t="ekr.20080516150804.2146"><vh>get_used_imports</vh></v>
+<v t="ekr.20080516150804.2147"><vh>get_changed_source</vh></v>
+<v t="ekr.20080516150804.2148"><vh>_get_import_location</vh></v>
+<v t="ekr.20080516150804.2149"><vh>_compare_import_locations</vh></v>
+<v t="ekr.20080516150804.2150"><vh>_remove_imports</vh></v>
+<v t="ekr.20080516150804.2151"><vh>_first_non_blank_line</vh></v>
+<v t="ekr.20080516150804.2152"><vh>add_import</vh></v>
+<v t="ekr.20080516150804.2153"><vh>_get_new_import_blanks</vh></v>
+<v t="ekr.20080516150804.2154"><vh>_get_new_import_lineno</vh></v>
+<v t="ekr.20080516150804.2155"><vh>filter_names</vh></v>
+<v t="ekr.20080516150804.2156"><vh>expand_stars</vh></v>
+<v t="ekr.20080516150804.2157"><vh>remove_duplicates</vh></v>
+<v t="ekr.20080516150804.2158"><vh>get_relative_to_absolute_list</vh></v>
+<v t="ekr.20080516150804.2159"><vh>get_self_import_fix_and_rename_list</vh></v>
+<v t="ekr.20080516150804.2160"><vh>_current_folder</vh></v>
+<v t="ekr.20080516150804.2161"><vh>sort_imports</vh></v>
+<v t="ekr.20080516150804.2162"><vh>_first_import_line</vh></v>
+<v t="ekr.20080516150804.2163"><vh>_compare_imports</vh></v>
+<v t="ekr.20080516150804.2164"><vh>_move_imports</vh></v>
+<v t="ekr.20080516150804.2165"><vh>handle_long_imports</vh></v>
+</v>
+<v t="ekr.20080516150804.2166"><vh>class _OneTimeSelector</vh>
+<v t="ekr.20080516150804.2167"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2168"><vh>__call__</vh></v>
+<v t="ekr.20080516150804.2169"><vh>_get_dotted_tokens</vh></v>
+<v t="ekr.20080516150804.2170"><vh>_can_name_be_added</vh></v>
+</v>
+<v t="ekr.20080516150804.2171"><vh>class _UnboundNameFinder</vh>
+<v t="ekr.20080516150804.2172"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2173"><vh>_visit_child_scope</vh></v>
+<v t="ekr.20080516150804.2174"><vh>_FunctionDef</vh></v>
+<v t="ekr.20080516150804.2175"><vh>_ClassDef</vh></v>
+<v t="ekr.20080516150804.2176"><vh>_Name</vh></v>
+<v t="ekr.20080516150804.2177"><vh>_Attribute</vh></v>
+<v t="ekr.20080516150804.2178"><vh>_get_root</vh></v>
+<v t="ekr.20080516150804.2179"><vh>is_bound</vh></v>
+<v t="ekr.20080516150804.2180"><vh>add_unbound</vh></v>
+</v>
+<v t="ekr.20080516150804.2181"><vh>class _GlobalUnboundNameFinder</vh>
+<v t="ekr.20080516150804.2182"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2183"><vh>_get_root</vh></v>
+<v t="ekr.20080516150804.2184"><vh>is_bound</vh></v>
+<v t="ekr.20080516150804.2185"><vh>add_unbound</vh></v>
+<v t="ekr.20080516150804.2186"><vh>_is_node_interesting</vh></v>
+</v>
+<v t="ekr.20080516150804.2187"><vh>class _LocalUnboundNameFinder</vh>
+<v t="ekr.20080516150804.2188"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2189"><vh>_get_root</vh></v>
+<v t="ekr.20080516150804.2190"><vh>is_bound</vh></v>
+<v t="ekr.20080516150804.2191"><vh>add_unbound</vh></v>
+</v>
+<v t="ekr.20080516150804.2192"><vh>class _GlobalImportFinder</vh>
+<v t="ekr.20080516150804.2193"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2194"><vh>visit_import</vh></v>
+<v t="ekr.20080516150804.2195"><vh>_count_empty_lines_before</vh></v>
+<v t="ekr.20080516150804.2196"><vh>_count_empty_lines_after</vh></v>
+<v t="ekr.20080516150804.2197"><vh>get_separating_line_count</vh></v>
+<v t="ekr.20080516150804.2198"><vh>_get_text</vh></v>
+<v t="ekr.20080516150804.2199"><vh>visit_from</vh></v>
+<v t="ekr.20080516150804.2200"><vh>_get_names</vh></v>
+<v t="ekr.20080516150804.2201"><vh>find_import_statements</vh></v>
+</v>
+</v>
+<v t="ekr.20080516150804.2202"><vh>refactor\importutils\__init__.py</vh>
+<v t="ekr.20080516150804.2203"><vh>__init__ declarations</vh></v>
+<v t="ekr.20080516150804.2204"><vh>class ImportOrganizer</vh>
+<v t="ekr.20080516150804.2205"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2206"><vh>organize_imports</vh></v>
+<v t="ekr.20080516150804.2207"><vh>expand_star_imports</vh></v>
+<v t="ekr.20080516150804.2208"><vh>froms_to_imports</vh></v>
+<v t="ekr.20080516150804.2209"><vh>relatives_to_absolutes</vh></v>
+<v t="ekr.20080516150804.2210"><vh>handle_long_imports</vh></v>
+<v t="ekr.20080516150804.2211"><vh>_perform_command_on_import_tools</vh></v>
+<v t="ekr.20080516150804.2212"><vh>_line_filter</vh></v>
+</v>
+<v t="ekr.20080516150804.2213"><vh>class ImportTools</vh>
+<v t="ekr.20080516150804.2214"><vh>__init__</vh></v>
+<v t="ekr.20080516150804.2215"><vh>get_import</vh></v>
+<v t="ekr.20080516150804.2216"><vh>get_from_import</vh></v>
+<v t="ekr.20080516150804.2217"><vh>module_imports</vh></v>
+<v t="ekr.20080516150804.2218"><vh>froms_to_imports</vh></v>
+<v t="ekr.20080516150804.2219"><vh>expand_stars</vh></v>
+<v t="ekr.20080516150804.2220"><vh>_from_to_normal</vh></v>
+<v t="ekr.20080516150804.2221"><vh>_clean_up_imports</vh></v>
+<v t="ekr.20080516150804.2222"><vh>relatives_to_absolutes</vh></v>
+<v t="ekr.20080516150804.2223"><vh>_is_transformable_to_normal</vh></v>
+<v t="ekr.20080516150804.2224"><vh>organize_imports</vh></v>
+<v t="ekr.20080516150804.2225"><vh>_remove_self_imports</vh></v>
+<v t="ekr.20080516150804.2226"><vh>_rename_in_module</vh></v>
+<v t="ekr.20080516150804.2227"><vh>sort_imports</vh></v>
+<v t="ekr.20080516150804.2228"><vh>handle_long_imports</vh></v>
+</v>
+<v t="ekr.20080516150804.2229"><vh>get_imports</vh></v>
+<v t="ekr.20080516150804.2230"><vh>get_module_imports</vh></v>
+<v t="ekr.20080516150804.2231"><vh>add_import</vh></v>
+</v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20080516150804.1"></t>
-<t tx="ekr.20080516150804.3"></t>
-<t tx="ekr.20080516150804.4">@language python
-@tabwidth -4
-@others
-make_temps()
-try:
-    setup(name='rope',
-          version=rope.VERSION,
-          description='a python refactoring library...',
-          long_description=get_long_description(),
-          author='Ali Gholami Rudi',
-          author_email='aligrudi@users.sourceforge.net',
-          url='http://rope.sf.net/',
-          packages=['rope', 'rope.base', 'rope.base.oi', 'rope.refactor',
-                    'rope.refactor.importutils', 'rope.contrib'],
-          package_data={'rope': ['docs/*.txt']},
-          license='GNU GPL',
-          classifiers=classifiers)
-finally:
-    remove_temps()
-</t>
-<t tx="ekr.20080516150804.5">import glob
-import os
-import shutil
-from distutils.core import setup
-
-import rope
-
-
-</t>
-<t tx="ekr.20080516150804.6">def make_temps():
-    if not os.path.exists('rope/docs'):
-        os.mkdir('rope/docs')
-    for name in glob.glob('docs/*.txt'):
-        shutil.copy(name, 'rope/docs/')
-
-</t>
-<t tx="ekr.20080516150804.7">def remove_temps():
-    if os.path.exists('rope/docs'):
-        shutil.rmtree('rope/docs')
-
-</t>
-<t tx="ekr.20080516150804.8">classifiers=[
-    'Development Status :: 4 - Beta',
-    'Operating System :: OS Independent',
-    'Environment :: X11 Applications',
-    'Environment :: Win32 (MS Windows)',
-    # Have not been tested on MacOS
-    # 'Environment :: MacOS X',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: GNU General Public License (GPL)',
-    'Natural Language :: English',
-    'Programming Language :: Python',
-    'Topic :: Software Development']
-
-def get_long_description():
-    lines = open('README.txt').read().splitlines(False)
-    end = lines.index('Getting Started')
-    return '\n' + '\n'.join(lines[:end]) + '\n'
-
-</t>
-<t tx="ekr.20080516150804.9"></t>
 <t tx="ekr.20080516150804.10"></t>
 <t tx="ekr.20080516150804.11">@language python
 @tabwidth -4
@@ -38326,5 +38257,6 @@ def test_test_checking_status_when_starting(self):
 
 
 </t>
+<t tx="ekr.20080516155317.1"></t>
 </tnodes>
 </leo_file>
