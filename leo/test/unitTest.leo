@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -97,7 +97,6 @@
 </v>
 <v t="ekr.20050618061835.19"><vh>How about @suite?</vh></v>
 <v t="ekr.20050618061835.20"><vh>Final remarks</vh></v>
-</v>
 </v>
 <v t="ekr.20051104080236" annotate="7d71002e"><vh>Other</vh>
 <v t="ekr.20080405085247.1"><vh>@ignore</vh>
@@ -767,6 +766,12 @@
 </v>
 <v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
 <v t="ekr.20070926095117"><vh>mungeKey</vh></v>
+</v>
+<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -2144,11 +2149,6 @@
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
 </v>
 </vnodes>
 <tnodes>
