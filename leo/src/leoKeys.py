@@ -521,7 +521,7 @@ class autoCompleterClass:
             #@-node:ekr.20061031131434.24:<< remove 's' from s *and* args >>
             #@nl
 
-        s = s.rstrip(')') # Convenient.
+        # s = s.rstrip(')') # Not so convenient.
         #@    << insert the text and set j1 and j2 >>
         #@+node:ekr.20061031131434.25:<< insert the text and set j1 and j2 >>
         junk,j = w.getSelectionRange() # Returns insert point if no selection.
