@@ -422,27 +422,10 @@ redefined menu.
 #@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
 #@-node:ekr.20071211142600.3:Fix config bugs
 #@-node:ekr.20080411091507.10:Bugs
-#@+node:ekr.20080425054202.2:Early in release
 #@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
 # The start of this project is in leo.repo/leo-working.
 #@nonl
 #@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@+node:ekr.20080124083629.1:Improve @path handling
-@nocolor
-
-[quote]
-nested @paths don't do what I expected: 
-
-For a leo file in directory foo: 
-
-@path src 
-....@path tmpl
-
-should refer to foo/src and foo/src/tmpl
-
-using @path src/tmpl works fine though.
-[end quote]
-#@-node:ekr.20080124083629.1:Improve @path handling
 #@+node:ekr.20080515170809.1:Files
 #@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
@@ -515,7 +498,22 @@ open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
 #@-node:ekr.20080515170809.1:Files
-#@-node:ekr.20080425054202.2:Early in release
+#@+node:ekr.20080124083629.1:Improve @path handling
+@nocolor
+
+[quote]
+nested @paths don't do what I expected: 
+
+For a leo file in directory foo: 
+
+@path src 
+....@path tmpl
+
+should refer to foo/src and foo/src/tmpl
+
+using @path src/tmpl works fine though.
+[end quote]
+#@-node:ekr.20080124083629.1:Improve @path handling
 #@+node:ekr.20080425054202.3:ASAP
 #@+node:ekr.20071110071126.2:Better isearch
 #@-node:ekr.20071110071126.2:Better isearch
