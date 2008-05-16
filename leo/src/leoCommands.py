@@ -6252,17 +6252,6 @@ class baseCommands:
                 aList.append('deiconify')
                 c.frame.deiconify()
 
-            # if c.requestedMinibufferPrompt:
-                # aList.append('prompt %s: %s' % (
-                    # g.choose(c.requestedMinibufferProtect),'protect',''),
-                    # c.requestedMinibufferPrompt)
-                # c.k.setLabel(c.requestedMinibufferPrompt,
-                    # protect=c.requestedMinibufferProtect)
-
-            # if self.requestedPosition:
-                # aList.append('position: %s' % (self.requestedPosition))
-                # c.selectPosition(self.requestedPosition)
-
             if c.requestRedrawFlag:
                 aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
                 c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
@@ -6276,6 +6265,10 @@ class baseCommands:
                 aList.append('focus: %s' % (
                     g.app.gui.widget_name(c.requestedFocusWidget)))
                 c.set_focus(c.requestedFocusWidget)
+            else:
+                # We can not set the focus to the body pane:
+                # That would make nested calls to c.outerUpdate significant.
+                pass
 
             # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
 
@@ -6284,9 +6277,6 @@ class baseCommands:
             c.requestRedrawFlag = False
             c.requestedFocusWidget = None
             c.requestedIconify = ''
-            # c.requestedMinibufferPrompt = ''
-            # c.requestedMinibufferProtect = False
-            # c.requestedPosition = None
             c.requestedRedrawScrollFlag = False
         #@-node:ekr.20080514131122.20:c.outerUpdate
         #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
@@ -6309,23 +6299,12 @@ class baseCommands:
         #@-node:ekr.20080514131122.13:c.recolor_now
         #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
         def redraw (self):
-            pass
-            # c = self
-            # c.beginUpdate()
-            # c.endUpdate()
+            c = self
+            c.requestRedrawFlag = True
 
         def redraw_now (self):
-            pass
-
-            # c = self
-            # if g.app.quitting or not c.exists or not hasattr(c.frame,'top'):
-                # return # nullFrame's do not have a top frame.
-            # c.frame.tree.redraw_now()
-            # if 0: # Interferes with new colorizer.
-                # c.frame.top.update_idletasks()
-            # if c.frame.requestRecolorFlag:
-                # c.frame.requestRecolorFlag = False
-                # c.recolor()
+            c = self
+            c.requestRedrawFlag = True
 
         # Compatibility with old scripts
         force_redraw = redraw_now
@@ -6406,6 +6385,8 @@ class baseCommands:
             c = self
             c.request_focus(w)
             c.outerUpdate()
+            # Re-request widget so we don't use the body by default.
+            c.request_focus(w) 
 
         # All other "Now" methods wait.
         bodyWantsFocusNow = bodyWantsFocus
