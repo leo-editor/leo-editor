@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="57" left="298" height="885" width="887"/>
+	<global_window_position top="126" left="262" height="613" width="1072"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -13450,7 +13450,11 @@ for key in keys1:
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
             key.startswith('delete-') and key.endswith('-button') or
-            key.startswith('nav-') and key.endswith('-menu')
+            key.endswith('-menu') or
+            key.startswith('nav-') or
+            key.startswith('toolbar-') or
+            key.startswith('rclick-') or
+            key == 'toggle-iconbar'
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:

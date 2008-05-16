@@ -96,7 +96,7 @@ import os
 #@nonl
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.9"
+__version__ = "1.12"
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
@@ -142,6 +142,8 @@ __version__ = "1.9"
 # 1.11 bobjack:
 # - Added some docstrings.
 # - Moved hook registration to init.
+# 1.12 bobjack:
+#     - bind prev and next buttons together if Tk and toolbar plugin enabled
 # 
 #@-at
 #@-node:ekr.20050219114353.1:<< version history >>
@@ -633,28 +635,13 @@ def init ():
                 btnr.bind('<Button-3>', self.rClickRight)
 
                 if useTkFrame:
-                    #@        << bind and pack prev/next buttons >>
-                    #@+node:bobjack.20080503151427.5:<< bind and pack prev/next buttons >>
-                    def getbuttonCallbacks():
-
-                        def pressCallback(event, bf=bf):
-                            return bf.leoIconBar.onPress(event)
-
-                        def releaseCallback(event, bf=bf):
-                            return bf.leoIconBar.onRelease(event)             
-
-                        return pressCallback, releaseCallback
 
                     for btn in (btnl, btnr):
                         btn.pack(in_=bf, side='left')
-                        press, release = getbuttonCallbacks()
-                        btn.bind('<ButtonPress-1>', press)
-                        btn.bind('<ButtonRelease-1>', release)
-                        btn.leoSubWindow = True
 
-                    self.c.frame.addIconWidget(bf)    
-                    #@-node:bobjack.20080503151427.5:<< bind and pack prev/next buttons >>
-                    #@nl
+                    bf.leoDragHandle = (btnl, btnr)
+                    self.c.frame.addIconWidget(bf)
+
 
                 # Don't dim the button when it is inactive.
                 for b in (self.lt_nav_iconFrame_button,self.rt_nav_iconFrame_button):

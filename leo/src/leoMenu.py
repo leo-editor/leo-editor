@@ -29,6 +29,13 @@ class leoMenu:
         self.menus = {} # Menu dictionary.
         self.menuShortcuts = {}
 
+        # static part of recent files menu
+        self.recentFilesStatic = (
+            ("Clear Recent Files",None,c.clearRecentFiles),
+            ("Clean Recent Files",None,c.cleanRecentFiles),
+            ("Sort Recent Files",None,c.sortRecentFiles),
+            ("-",None,None))
+
         # To aid transition to emacs-style key handling.
         self.useCmdMenu = c.config.getBool('useCmdMenu')
 
@@ -1582,18 +1589,18 @@ class leoMenu:
             return
 
         # Delete all previous entries.
-        self.delete_range(recentFilesMenu,0,len(c.recentFiles)+2)
+        self.deleteRecentFilesMenuItems(recentFilesMenu)
 
-        # Create the first two entries.
-        table = (
-            ("Clear Recent Files",None,c.clearRecentFiles),
-            ("-",None,None))
+        # Create the static entries.
+        table = self.recentFilesStatic
+
         self.createMenuEntries(recentFilesMenu,table)
 
         # Create all the other entries (a maximum of 36).
         accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
         i = 0 ; n = len(accel_ch)
         for name in c.recentFiles[:n]:
+            if name.strip() == "": continue  # happens with empty list/new file
             def recentFilesCallback (event=None,c=c,name=name):
                 # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)
@@ -1601,6 +1608,15 @@ class leoMenu:
             self.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
             i += 1
     #@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
+    #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
+    def deleteRecentFilesMenuItems(self,menu):
+        """Delete recent file menu entries"""
+        toDrop = len(self.c.recentFiles)
+        if hasattr(self, 'recentFilesStatic'):
+            toDrop += len(self.recentFilesStatic)
+        self.delete_range(menu,0,toDrop)
+    #@nonl
+    #@-node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
     #@+node:ekr.20031218072017.4117:defineMenuCallback
     def defineMenuCallback(self,command,name,minibufferCommand):
 
@@ -1761,7 +1777,7 @@ class leoMenu:
     def getMacHelpMenu (self,table):
         return None
 
-    def getManuLabel (self,menu):
+    def getMenuLabel (self,menu):
         # __pychecker__ = '--no-argsused' # menu not used.
         self.oops()
 

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -547,7 +547,7 @@
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
 </v>
-<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
 <v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
@@ -724,7 +724,7 @@
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
-<v t="edreamleo.20080110083531"><vh>gtk stuff</vh>
+<v t="edreamleo.20080110083531" a="E"><vh>gtk stuff</vh>
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
 <v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
@@ -866,9 +866,10 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
 </v>
-<v t="ekr.20080502120646.1" a="E"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
-<v t="ekr.20080503195928.1" a="E"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20080513131902.1"><vh>@@thin c_plus_plus_test.cpp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -877,7 +878,7 @@
 
 createWindow()
 
-gtk.main()</t>
+# gtk.main()</t>
 <t tx="edreamleo.20080110130828">def createWindow():
 
     def onKeyUp(w,event):
@@ -2042,7 +2043,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
-# ipython.py
+ipython.py
 cleo.py
 rClick.py
 toolbar.py
@@ -5330,6 +5331,14 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
 
 print myproject</t>
+<t tx="ekr.20080513131902.1">@language cplusplus
+
+@doc
+This is a comment
+@c
+
+// A comment.
+</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

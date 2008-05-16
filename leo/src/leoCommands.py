@@ -420,6 +420,42 @@ class baseCommands:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@-node:ekr.20051106040126:c.executeMinibufferCommand
+    #@+node:bobjack.20080509080123.2:c.universallCallback
+    def universallCallback(self, function):
+
+        """Create a universal command callback.
+
+        Create and return a callback that wraps a function whith an rCick
+        signature in a callback which addapts standard minibufer cammand
+        callbacks to a compatible format.
+
+        This also serves to allow rClick callback functions to handle
+        minibuffer commands from sources other than rClick menus so allowing
+        a single function to handle calls from all sources.
+
+        A function wrapped in this wrapper can handle rclick generator
+        and invocation commands and commands typed in the minibuffer.
+
+        It will also be able to handle commands from the minibuffer even
+        if rclick is not installed.
+        """
+        def minibufferCallback(event, function=function):
+
+            try:
+                cm = self.theContextMenuController
+                keywords = cm.mb_keywords 
+            except AttributeError:
+                keywords = None
+
+            if keywords:
+                keywords['mb_event'] = event  
+                cm.mb_retval = function(keywords)
+            else:
+                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
+                return function(keywords)
+
+        return minibufferCallback
+    #@-node:bobjack.20080509080123.2:c.universallCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)
@@ -938,7 +974,7 @@ class baseCommands:
         bunch = u.beforeClearRecentFiles()
 
         recentFilesMenu = f.menu.getMenu("Recent Files...")
-        f.menu.delete_range(recentFilesMenu,0,len(c.recentFiles))
+        f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
 
         c.recentFiles = []
         g.app.config.recentFiles = [] # New in Leo 4.3.
@@ -1019,6 +1055,62 @@ class baseCommands:
             for frame in g.app.windowList:
                 frame.menu.createRecentFilesMenuItems()
     #@-node:ekr.20031218072017.2083:c.updateRecentFiles
+    #@+node:tbrown.20080509212202.6:cleanRecentFiles
+    def cleanRecentFiles(self,event=None):
+
+        c = self
+
+        dat = c.config.getData('path-demangle')
+        if not dat:
+            g.es('No @data path-demangle setting')
+            return
+
+        changes = []
+        replace = None
+        for line in dat:
+            text = line.strip()
+            if text.startswith('REPLACE: '):
+                replace = text.split(None, 1)[1].strip()
+            if text.startswith('WITH:') and replace is not None:
+                with_ = text[5:].strip()
+                changes.append((replace, with_))
+                g.es('%s -> %s' % changes[-1])
+
+        orig = [i for i in c.recentFiles if i.startswith("/")]
+        c.clearRecentFiles()
+
+        for i in orig:
+            t = i
+            for change in changes:
+                t = t.replace(*change)
+
+            c.updateRecentFiles(t)
+
+        # code below copied from clearRecentFiles
+        g.app.config.recentFiles = [] # New in Leo 4.3.
+        g.app.config.appendToRecentFiles(c.recentFiles)
+        g.app.config.recentFileMessageWritten = False # Force the write message.
+        g.app.config.writeRecentFilesFile(c)
+    #@-node:tbrown.20080509212202.6:cleanRecentFiles
+    #@+node:tbrown.20080509212202.8:sortRecentFiles
+    def sortRecentFiles(self,event=None):
+
+        c = self
+
+        orig = c.recentFiles[:]
+        c.clearRecentFiles()
+        import os
+        orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
+            os.path.basename(a).lower()))
+        for i in orig:
+            c.updateRecentFiles(i)
+
+        # code below copied from clearRecentFiles
+        g.app.config.recentFiles = [] # New in Leo 4.3.
+        g.app.config.appendToRecentFiles(c.recentFiles)
+        g.app.config.recentFileMessageWritten = False # Force the write message.
+        g.app.config.writeRecentFilesFile(c)
+    #@-node:tbrown.20080509212202.8:sortRecentFiles
     #@-node:ekr.20031218072017.2079:Recent Files submenu & allies
     #@+node:ekr.20031218072017.2838:Read/Write submenu
     #@+node:ekr.20031218072017.2839:readOutlineOnly
@@ -3400,7 +3492,7 @@ class baseCommands:
         newChildren = parent_v.t.children[:]
 
         def key (self):
-            return self.headString().lower()
+            return (self.headString().lower(), self)
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)

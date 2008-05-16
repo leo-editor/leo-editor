@@ -1000,15 +1000,16 @@ class cleoController:
     #@-node:tbrown.20061020145804:left_priority_menu
     #@+node:tbrown.20060903121429.52:priority_menu
     def pricmp(self, a, b):
-        """cmp function for sorting by priority, a and b a (headstring,p)"""
+        """cmp function for sorting by priority, a and b are (headstring,v)"""
         # getat returns 9999 for nodes without priority, so you'll only get -1
         # if a[1] is not a node.  Or even an object.
+
         try:
-            pa = int(self.getat(a[1].v, 'priority'))
+            pa = int(self.getat(a[1], 'priority'))
         except:
             pa = -1
         try:
-            pb = int(self.getat(b[1].v, 'priority'))
+            pb = int(self.getat(b[1], 'priority'))
         except:
             pb = -1
 

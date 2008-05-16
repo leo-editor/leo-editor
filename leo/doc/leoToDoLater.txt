@@ -2118,6 +2118,16 @@ I'll try using .leo_xresources file and see if that works as well.
 #@nonl
 #@-node:ekr.20050713105353.1:Email from Martin Moncrieffe <mcm35@cam.ac.uk>
 #@-node:ekr.20050713105353:Add configuration setting to set menu fonts
+#@+node:ekr.20080225103954:Add 'else' clause to if-platform
+@nocolor
+
+**OR** put 'else' (default) first, and have @ifplatform only override parts.
+
+@ifplatform isn't very useful without @else or some other kind of default.
+
+This is no longer very important because of @ifhostname
+#@nonl
+#@-node:ekr.20080225103954:Add 'else' clause to if-platform
 #@-node:ekr.20041228085245:Options & settings
 #@+node:ekr.20070814070357:Performance
 #@+node:ekr.20061207073104:Convert bottlenecks to pyrex code
