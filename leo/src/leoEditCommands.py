@@ -7215,6 +7215,7 @@ class minibufferFind (baseEditCommandsClass):
         s = k.getShortcutForCommandName(commandName)
         s = k.prettyPrintKey(s)
         s = k.shortcutFromSetting(s)
+        # g.trace('replaceStringShortcut',s)
         self.replaceStringShortcut = s
     #@-node:ekr.20060123125317.2: ctor (minibufferFind)
     #@+node:ekr.20060124140114: Options (minibufferFind)
