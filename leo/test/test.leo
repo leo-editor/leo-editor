@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="74" left="120" height="800" width="898"/>
+	<global_window_position top="10" left="297" height="758" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -611,14 +611,14 @@
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
-<v t="ekr.20070223164126"><vh>Recursive import script</vh>
-<v t="ekr.20070223164126.1"><vh>importFiles</vh></v>
-<v t="ekr.20070223164126.2"><vh>importDir</vh></v>
-<v t="ekr.20070223164126.3"><vh>createLastChildOf</vh></v>
-</v>
 <v t="ekr.20070517070854"><vh>run script in nullGui</vh></v>
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
+<v t="ekr.20080516144858.2"><vh>Recursive import script</vh>
+<v t="ekr.20080516144858.3"><vh>importFiles</vh></v>
+<v t="ekr.20080516144858.4"><vh>importDir</vh></v>
+<v t="ekr.20080516144858.5"><vh>createLastChildOf</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
@@ -869,7 +869,6 @@
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
-<v t="ekr.20080513131902.1"><vh>@@thin c_plus_plus_test.cpp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1186,81 +1185,6 @@ else:
 }
 </t>
 <t tx="ekr.20070127154855.1"></t>
-<t tx="ekr.20070223164126"># An example of running this script:
-    
-import os
-
-@others
-
-types = (".py",) #,".c",".html",".txt")
-
-dir = r'C:\prog\Notabene'
-
-c.beginUpdate()
-try:
-    importFiles(dir,types,recursive=True)
-finally:
-    c.endUpdate()
-
-g.es("done",color="blue")
-</t>
-<t tx="ekr.20070223164126.1">def importFiles (dir,type=None,kind="@file",recursive=False):
-    
-    v = c.currentVnode()
-
-    # Check the params.
-    if kind != "@file" and kind != "@root":
-        g.es("kind must be @file or @root: " + kind)
-        return
-
-    if not g.os_path_exists(dir):
-        g.es("directory does not exist: " + dir)
-        return
-    
-    c.beginUpdate()
-    try:
-        root = createLastChildOf(v,"imported files")
-        try:
-            importDir (dir,type,kind,recursive,root)
-            root.contract()
-        except:
-            g.es_exception()
-    finally:
-        c.endUpdate()</t>
-<t tx="ekr.20070223164126.2">def importDir (dir,types,kind,recursive,root):
-
-    g.es("dir: " + dir,color="blue")
-    
-    try:
-        files = os.listdir(dir)
-        files2 = [] ; dirs =[]
-        for f in files:
-            path = g.os_path_join(dir,f)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if not types or ext in types:
-                    files2.append(path)
-            elif recursive:
-                dirs.append(path)
-        if len(files2) &gt; 0 or len(dirs) &gt; 0:
-            child = createLastChildOf(root,dir)
-            c.selectVnode(child)
-        if len(files2) &gt; 0:
-            c.importCommands.importFilesCommand(files2,kind)
-        if len(dirs) &gt; 0:
-            dirs.sort()
-            for dir in dirs:
-                importDir(dir,types,kind,recursive,child)
-    except:
-        g.es("exception in importFiles script")
-        g.es_exception()
-</t>
-<t tx="ekr.20070223164126.3">def createLastChildOf (v,headline):
-    
-    child = v.insertAsLastChild()
-    child.initHeadString(headline)
-    return child
-</t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070305085403">For MacOS X (darwin) the following are typical defaults:
 
@@ -2044,7 +1968,7 @@ leoTest.doTests (c,all=False)</t>
 plugins_menu.py
 
 ipython.py
-cleo.py
+# cleo.py
 rClick.py
 toolbar.py
 
@@ -5331,13 +5255,80 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
 
 print myproject</t>
-<t tx="ekr.20080513131902.1">@language cplusplus
+<t tx="ekr.20080516144858.2"># An example of running this script:
 
-@doc
-This is a comment
-@c
+import os
 
-// A comment.
+@others
+
+types = (".py",) #,".c",".html",".txt")
+
+dir = r"c:\prog\rope-0.8.2"
+
+c.beginUpdate()
+try:
+    importFiles(dir,types,recursive=True)
+finally:
+    c.endUpdate()
+
+g.es("done",color="blue")
+</t>
+<t tx="ekr.20080516144858.3">def importFiles (dir,type=None,kind="@file",recursive=False):
+
+    v = c.currentVnode()
+
+    # Check the params.
+    if kind != "@file" and kind != "@root":
+        g.es("kind must be @file or @root: " + kind)
+        return
+
+    if not g.os_path_exists(dir):
+        g.es("directory does not exist: " + dir)
+        return
+
+    c.beginUpdate()
+    try:
+        root = createLastChildOf(v,"imported files")
+        try:
+            importDir (dir,type,kind,recursive,root)
+            root.contract()
+        except:
+            g.es_exception()
+    finally:
+        c.endUpdate()</t>
+<t tx="ekr.20080516144858.4">def importDir (dir,types,kind,recursive,root):
+
+    g.es("dir: " + dir,color="blue")
+
+    try:
+        files = os.listdir(dir)
+        files2 = [] ; dirs =[]
+        for f in files:
+            path = g.os_path_join(dir,f)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(f)
+                if not types or ext in types:
+                    files2.append(path)
+            elif recursive:
+                dirs.append(path)
+        if len(files2) &gt; 0 or len(dirs) &gt; 0:
+            child = createLastChildOf(root,dir)
+            c.selectVnode(child)
+        if len(files2) &gt; 0:
+            c.importCommands.importFilesCommand(files2,kind)
+        if len(dirs) &gt; 0:
+            dirs.sort()
+            for dir in dirs:
+                importDir(dir,types,kind,recursive,child)
+    except:
+        g.es("exception in importFiles script")
+        g.es_exception()
+</t>
+<t tx="ekr.20080516144858.5">def createLastChildOf (v,headline):
+
+    child = v.insertAsLastChild()
+    child.initHeadString(headline)
+    return child
 </t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
