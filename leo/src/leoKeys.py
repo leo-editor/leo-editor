@@ -1881,6 +1881,7 @@ class keyHandlerClass:
             # macroCommandsClass
             'call-last-keyboard-macro',
             # search commands
+            # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
             'toggle-find-collapses_nodes',
             'toggle-find-ignore-case-option',
             'toggle-find-in-body-option',
@@ -3443,7 +3444,10 @@ class keyHandlerClass:
                 if d:
                     b = d.get(stroke)
                     if b:
-                        if b.commandName not in k.singleLineCommandList:
+                        if b.commandName == 'replace-string' and state == 'getArg':
+                            if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                            return False # Let getArg handle it.
+                        elif b.commandName not in k.singleLineCommandList:
                             if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
                             k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
                         else:
