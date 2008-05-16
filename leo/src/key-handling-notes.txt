@@ -1,17 +1,211 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20080508083640.10:@thin key-handling-notes.txt
 #@+all
-#@+node:ekr.20080510121331.18:Vim to-do
+#@+node:ekr.20080510121331.18:Vim notes
 @nocolor
 
-- Fix failed unit tests when command-mode is the default.
-- Toggle-insert-command-states.
-- Unit tests assume that c.redraw_now() does an immediate redraw.
+Other possible vim features:
 
-Later or never:
-
+- search-and-replace within the current selection,
+- and to some extent macro recording and running.
 - Support vim-specific features like '.', etc.
-#@+node:ekr.20080512125926.3:What I did
+#@+node:ekr.20080508083640.16:Posting: New key handling
+@nocolor
+
+The "Huge Focus Aha", namely that focus never needs to be in the
+outline pane, continues to clarify and guide my thinking:
+
+1. There is no need for per-pane key bindings.  I'll be discussing
+this in more detail as we go along.  This is itself a major
+simplification.
+
+2. Ville has discovered the heart of the matter: most modes should
+continue until an unknown character is seen.  An **unknown character
+for a mode** is a character for which no explicit binding has been
+made for that mode.  Leo will enter a **main** (or default) mode when
+the user types an unknown (unbound) character in a mode.
+
+The main mode would be normal text-input mode for the emacs-like
+bindings, and a "command" mode for vim-like bindings.  Leo already
+allows the user to specify emacs-like or vim-like defaults via various
+settings.  I forget the details, but they don't much matter in this
+discussion.
+
+There are a few complications with "stay in the mode until an unknown
+character is seen".
+
+A. Some modes, like the minibuffer, and vim input mode, will allow the
+user to enter any unicode character.  Thus, we can't just list the
+"known" bindings of a mode--there can be too many.  To handle this, we
+need to create the distinction between **input modes** and **command
+modes**.  Input modes continue until another mode is explicitly
+requested.  Command modes continue until an unknown (unbound) key
+sequence is seen.
+
+B. Several modes, including the minibuffer and search modes, contain
+implicit bindings for keys like <tab>, <return> and <backspace>.
+Indeed, the user probably need not specify any bindings explicitly for
+such modes.  This creates some interesting complications however.  Let
+us distinguish between *text-editing* commands and *non-text-editing*
+commands.  'beginning-of-line' is a text editing command; 'save-
+outline' is not.  Commands such as sort-lines could be called text-
+editing commands, but they make no sense in a single-line environment
+such as the minibuffer or search/replace commands, so let us
+tentatively call them non-text-editing commands, or rather **multi-
+line-editing** commands.
+
+As I write this, I realize that the distinction between text-editing
+and non-text-editing commands implicitly assumes emacs-like *bindings*
+for commands.  In the vim-like world of plain-key bindings, we could
+imagine *temporarily* entering vim-command mode in the minibuffer, and
+then *returning* to the minibuffer-insert-mode after the temporary vim-
+command mode finished.  This could cause complications.  In general,
+I'd rather stay away from a stack of modes, but only experimentation
+will show what is needed.
+
+C. Regardless of other details, some **basic editing commands/
+bindings** surely must be supported in the minibuffer and search
+commands:  cut, copy, paste, arrow-keys move the cursor, shift-arrow
+keys extend the selection.  In emacs-like operation we can throw in
+all text-editing bindings at essentially no cost.  In vim-like
+operation, we can use the basic bindings, but more complex commands
+would seem to require nested modes.
+
+But the main point is that special-purpose modes will probably use
+some reasonable, standard defaults based on settings for *other*
+modes, plus some standard keys.  In other words, it may be possible to
+dispense with explicit bindings for the minibuffer, etc.
+
+That being so, we are left with a simple scheme:
+
+1. Bindings apply **everywhere** in several senses.  They apply to all
+panes, and bindings for text-editing commands apply in all text
+widgets: the minibuffer, body pane, log pane, headlines, etc.
+
+2. Binding unknown in a mode terminate the mode and return to the main
+or default mode.
+
+3. Non-text-editing commands, including multi-line-editing commands,
+should terminate **single-line modes** such as minibuffer commands
+unless a special case explicitly exists for them.
+
+4. Bindings for **Leo-provided modes** will be created automatically
+using the user's bindings for text-editing commands, plus special
+characters like <tab>, <return> and <backspace>.  Leo provided modes
+are the initial minibuffer mode and secondary minibuffer modes such
+entering search patterns.
+
+5. The only complication is possibly allowing vim-like command sub-
+modes of single-line modes.
+
+The code in k.masterKeyHandler is in the back of my mind as I write
+this.  With luck, the new scheme will be considerably simpler than the
+old, while being more flexible and more general.  Note that the way
+bindings are actually specified is an entirely separate issue, which
+is good because that logic is horrible.  Eliminating per-pane bindings
+will help some, but not a lot.
+
+We may want to allow the user to specify per-pane bindings as before,
+but the bindings will be ignored.  But as I write this it seems like
+this could cause a great deal of confusion.  Perhaps it will be better
+to outlaw the old syntax entirely, or at least issue warnings that per-
+pane bindings no longer have any effect.
+
+This is all very preliminary.  I've written no code.  Your comments
+are welcome now.
+#@-node:ekr.20080508083640.16:Posting: New key handling
+#@+node:ekr.20080509064108.9:Posting: More design notes
+@nocolor
+
+On May 7, 7:05 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
+
+> This post will be a "thinking out loud" discussion of the new design.
+
+I've just spent some time drawing state diagrams that indicate transitions between various states.  It turned out to be more simple than I had feared.
+
+> As I write this, I realize that the distinction between text-editing
+> and non-text-editing commands implicitly assumes emacs-like *bindings*
+> for commands.  
+
+No.  The distinction has nothing to do with bindings, as my post earlier today shows.  In fact, after seeing the final state diagrams, my intention is to be able to support *both* emacs-like and vim-like bindings simultaneously.  Actually, Leo can already do this, or it could if @mode bindings actually worked :-)
+
+The more useful distinction is between commands that change modes and commands that stay in the same mode.  This became clearer as I played with the diagrams.
+
+Ok, let's see if I can summarize what the diagrams are trying to tell me without tying myself up in knots :-)
+
+1. *All* modes are minibuffer modes.  That is, the present mode will always be indicated at the start of the minibuffer.  It would not be good to use the status area because the UNL plugin overwrites the status when changing nodes.
+
+However, not all modes need actually *use* (alter) the minibuffer.  For example, a user-defined outline mode might provide bindings for just the arrow and shift arrow keys.  Nothing the user types would appear in the minibuffer during that mode.
+
+2. @mode nodes define user modes.  These nodes can specify the "prompt" that will appear in the minibuffer while the node is active. For example:
+
+@mode <mode name> @prompt = <prompt>
+
+When a mode is active the minibuffer will contain as a **minibuffer prefix**:
+
+<mode name> mode: <prompt>
+
+As always, the prefix is protected: the user can not erase it by backspacing.
+
+3. Binding are actually a completely separate topic from how Leo handles modes.  However, modes can create "virtual key sequences" that represent a command.  It would be extremely complex to generate those virtual key sequences in menus with the present code base--and probably for *any* version of Leo's config code.  To handle this, @item nodes in @settings trees could specify a "hint" that would look like a real menu shortcut.  Leo would completely ignore such hints: they would be only for cosmetic purposes.  Like this;
+
+@item move-outline-left @hint = A-S-Left or [cmd]o,S-Left
+
+The hint can be any string that makes sense to you.  In this case it signifies that there are two possible ways move an outline left: Alt-Shift-Left in any mode or type o followed by Shift-Left in command mode.
+
+The advantage of this scheme is its simplicity and generality.  The disadvantage is that you, the user, must ensure that the hints make sense and are up-to-date.  I think it will turn out to be very handy.
+
+4. With these preliminaries in place, the actual scheme for switching between modes is relatively straightforward:
+
+A: The default (main) mode will be insert-mode for emacs-like operation and command-mode for vim-like operation.
+
+B: In insert mode, edit-commands executed via menus or by key bindings will cause Leo to remain in insert mode.  All other commands transfer to other modes, with the default mode as the default.  So for emacs-like operation, control (focus) typically stays in the body pane, while for vim-like operation control typically stays in the minibuffer.
+
+BTW, now that all modes can be considered minibuffer modes, we need to distinguish between modes that insert unbound keys (either in the present text pane or in the minibuffer) and those that don't.  For those modes that don't, any unbound key will transfer to the default mode.
+
+C: In general (there may be smallish exceptions), a key stroke that would invoke an unknown command causes control to go to the default mode.
+
+D: In user modes, all commands transfer to the default mode except for explicitly declared "stay-in-this-mode" commands.  This mechanism is already in place.
+
+In short, key **bindings** no longer matter to k.masterKeyHandler.  All that matters is the command that is about to be executed.  This is a very nice simplification: all the old pane-specific logic should just go away.  Actually, it seems like an important Aha.
+
+I now have hopes of putting this all in place in just a few days.
+
+BTW, none of this is a "requirements specification".  That's not how I work :-)  What will emerge will be the result of playing with the code and seeing what works and what doesn't.
+
+Edward
+#@nonl
+#@-node:ekr.20080509064108.9:Posting: More design notes
+#@+node:ekr.20080509145618.4:Used by vim
+@nocolor
+
+Used by vim:
+
+a/A (append after cursor)
+c
+d,dd,D (delete before cursor)
+f/F/t/T
+g,gf,g0,gg,ge,gE
+h,j,k,l (motion commands)
+i/I (insert before cursor, insert at indentation)
+m,m',m` (marks)
+n,N
+o/O (open line) Why not just use <insert?>
+r/R
+x/X (delete after cursor)
+y
+u
+v,V
+w/W
+ZZ,ZQ
+.
+:
+;
++-
+/ (patterns)
+#@nonl
+#@-node:ekr.20080509145618.4:Used by vim
+#@+node:ekr.20080512125926.3:vim bindings: what I did
 @nocolor
 
 - Changed cycle-focus and cycle-all-focus commands.
@@ -60,63 +254,11 @@ Later or never:
 - Dot in insert mode when there are no autocompletions to suggest goes to command mode.
 - Typing . at the start of a line with auto-completer enabled hangs leo(!)
   This happens in the trunk too.
-#@-node:ekr.20080512125926.3:What I did
-#@+node:ekr.20080513083459.2:Failed unit tests
-======================================================================
-FAIL: @test typing and undo in headline - at end
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 23, in <module>
-AssertionError: oops2: got: Test headline abc
-
-======================================================================
-FAIL: @test selecting new node retains typing in headline
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 20, in <module>
-AssertionError
-
-======================================================================
-FAIL: @test typing in headline recomputes width
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 21, in <module>
-AssertionError: 15 15
-
-======================================================================
-FAIL: @test typing in empty body text redraws the screen (and icon)
-
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "C:\leo.repo\key-handling\leo\src\leoTest.py", line 178, in runTest
-    exec script + '\n' in d
-  File "<string>", line 18, in <module>
-AssertionError: expected "a", got: u''
-
-----------------------------------------------------------------------
-Ran 561 tests in 178.265s
-
-FAILED (failures=4)
-#@-node:ekr.20080513083459.2:Failed unit tests
-#@-node:ekr.20080510121331.18:Vim to-do
-#@+node:ekr.20080514131122.2:New drawing/focus code
-@nocolor
-
-- Make bindings for find/change text widgets.
-
-- Handle end-of-autocompleter: tab or return should clear selection.
-
-@color
+- Disabled failed unit tests when command-mode is the default.
 #@nonl
+#@-node:ekr.20080512125926.3:vim bindings: what I did
+#@-node:ekr.20080510121331.18:Vim notes
+#@+node:ekr.20080514131122.2:New drawing/focus code
 #@+node:ekr.20080515173014.2:What I did
 What I did:
 
@@ -1678,396 +1820,6 @@ treeWantsFocusNow = treeWantsFocus
 #@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
 #@-node:ekr.20080514131122.2:New drawing/focus code
-#@+node:ekr.20080508083640.11:Notes
-#@+node:ekr.20080509145618.2:Old/obsolete
-#@+node:ekr.20080508083640.12:Requests (old)
-@nocolor
-
-Some of the features I've grown to like with VIM are:
-
-- search-and-replace within the current selection,
-- easy keyboard navigation
-- and to some extent macro recording and running.
-#@-node:ekr.20080508083640.12:Requests (old)
-#@+node:ekr.20080508083640.13:Design post (old)
-@nocolor
-
-http://sourceforge.net/forum/forum.php?thread_id=1800079&forum_id=10226
-
-Recent posts have discussed @menu trees and resolving cvs conflicts. The third of my recent ruminations concerns adding support for vim-like key bindings. 
-
-Earlier work involving input modes (@mode nodes in settings file) probably is not completely sufficient to implement plain-key key bindings in a way that would truly be vim-like. 
-
-Most of the issues are implementation issues: Leo's key-handling code is very complicated. The trick is to handle both vim and emacs styles compatibly. 
-
-The user must be able to specify vim-like key bindings without using @mode nodes. That is, top-level vim key bindings must always be available. Vim has an enormous number of key bindings: the user must be able to specify which are in effect. 
-
-My strategy will be as follows: 
-
-1. Create enter-vim-mode and exit-vim-mode commands, and create the setting: 
-
-@bool vim-mode-by-default = False 
-
-This will allow the user to specify vim mode as the default mode if desired. 
-
-2. Create **vim-edit** commands as needed in order to handler user interaction. For example, dd deletes the present line while d5 deletes 5 lines. Rather than trying to simulate this effect using the present mechanisms, the vim-delete command will prompt for the number of characters or lines to delete. 
-
-Give the complex nature of vims c and d commands (and others) it will probably be necessary to create a vim-edit class in leoEditCommands.py. This class will handle all the ways of specifying a range of characters to which the various commands will apply. It's not clear exactly how much work will be needed, but my guess is that it will, in fact, be easiest to handle vim-like interactions with new code. 
-
-3. Vim's ':' command will simply invoke Leo's minibuffer. This isn't precisely the same as Vim's status line: it is significantly better. Otoh, we will want a way to simulate the actual spelling of vim's ':' commands. Possible @abbreviation nodes can be pressed into service. 
-
-4. Internally, it will be quite a trick to allow top-level vim-like plain-key bindings in all text widgets. I'm not sure how to do this, but it is essential. 
-
-I am quite eager to get something truly vim-like working. It promises to increase my editing speed substantially. It also should appeal strongly to present vim users. 
-#@nonl
-#@-node:ekr.20080508083640.13:Design post (old)
-#@+node:ekr.20080508094751.1:(obsolete) Auto-change panes  OR unified body/tree panes
-@nocolor
-
-The Huge Focus Aha makes this obsolete.
-
-The idea: if a key binding is only in effect for one pane, and we get the
-binding, maybe we should change to the pane first!
-
-Examples:
-
-copy-node: auto-select tree pane.
-copy_text (when not editing a headline): auto-select body text.
-
-
-Unified body/tree panes
-
-Up/down arrows move between headline and body panes.
-#@nonl
-#@-node:ekr.20080508094751.1:(obsolete) Auto-change panes  OR unified body/tree panes
-#@-node:ekr.20080509145618.2:Old/obsolete
-#@+node:ekr.20080508083640.14:Posting re vim bindings
-@nocolor
-
-> I'm looking forward to this.
-
-Excellent.  You can help with the testing :-)
-
-Leo looks like a perfect match for the vim approach.  Indeed, vim typically uses a 1 or 2 level concatenation scheme (preceded by a repeat count).  This is kinda like a utf-8 encoding :-)  That is, it is a variable-length encoding of the command.
-
-This is a very powerful approach, one that vim doesn't really exploit (because it doesn't need to). But Leo absolutely needs this power of some extra levels.  Something like this:
-
-i input mode
-
-f focus commands
-..fb focus to body
-..fo focus to outline
-..fl focus to log
-..ft toggle body pane focus
-
-o outline commands
-..om outline move, i.e., actually move the nodes.
-..og outline go, i.e., select nodes without changing the outline
-..od outline delete
-..oh outline edit headline
-
-s search commands
-..so search options
-...soi toggle ignore-case checkbox
-...sow toggle word checkbox
-...etc!
-..st search using search tab
-..sf forward incremental search
-..sb backward incremental search
-
-x minibuffer commands
-
-w file commands
-..ws save outline
-..wq quit
-
-escape: universal escape, like ctrl-g now.
-
-Do you see?  Just one extra level allows 10+ times the number of key bindings.  This is a perfect match for Leo's complex environment.
-
-Naturally, Leo will allow the user to specify these bindings using nodes in the @settings tree. Indeed, this is truly an exciting prospect.
-
-Edward
-
-P.S.  I've glossed over the details of which single characters (like d for delete character) should be reserved for common editing and cursor-movement commands.  That's the beauty of creating these bindings with user settings: no need to argue :-)  And that's the beauty of arbitrarily deep key binding trees: there are plenty of keys to go around.
-
-EKR
-#@-node:ekr.20080508083640.14:Posting re vim bindings
-#@+node:ekr.20080508083640.16:Posting: New key handling
-@nocolor
-
-The "Huge Focus Aha", namely that focus never needs to be in the
-outline pane, continues to clarify and guide my thinking:
-
-1. There is no need for per-pane key bindings.  I'll be discussing
-this in more detail as we go along.  This is itself a major
-simplification.
-
-2. Ville has discovered the heart of the matter: most modes should
-continue until an unknown character is seen.  An **unknown character
-for a mode** is a character for which no explicit binding has been
-made for that mode.  Leo will enter a **main** (or default) mode when
-the user types an unknown (unbound) character in a mode.
-
-The main mode would be normal text-input mode for the emacs-like
-bindings, and a "command" mode for vim-like bindings.  Leo already
-allows the user to specify emacs-like or vim-like defaults via various
-settings.  I forget the details, but they don't much matter in this
-discussion.
-
-There are a few complications with "stay in the mode until an unknown
-character is seen".
-
-A. Some modes, like the minibuffer, and vim input mode, will allow the
-user to enter any unicode character.  Thus, we can't just list the
-"known" bindings of a mode--there can be too many.  To handle this, we
-need to create the distinction between **input modes** and **command
-modes**.  Input modes continue until another mode is explicitly
-requested.  Command modes continue until an unknown (unbound) key
-sequence is seen.
-
-B. Several modes, including the minibuffer and search modes, contain
-implicit bindings for keys like <tab>, <return> and <backspace>.
-Indeed, the user probably need not specify any bindings explicitly for
-such modes.  This creates some interesting complications however.  Let
-us distinguish between *text-editing* commands and *non-text-editing*
-commands.  'beginning-of-line' is a text editing command; 'save-
-outline' is not.  Commands such as sort-lines could be called text-
-editing commands, but they make no sense in a single-line environment
-such as the minibuffer or search/replace commands, so let us
-tentatively call them non-text-editing commands, or rather **multi-
-line-editing** commands.
-
-As I write this, I realize that the distinction between text-editing
-and non-text-editing commands implicitly assumes emacs-like *bindings*
-for commands.  In the vim-like world of plain-key bindings, we could
-imagine *temporarily* entering vim-command mode in the minibuffer, and
-then *returning* to the minibuffer-insert-mode after the temporary vim-
-command mode finished.  This could cause complications.  In general,
-I'd rather stay away from a stack of modes, but only experimentation
-will show what is needed.
-
-C. Regardless of other details, some **basic editing commands/
-bindings** surely must be supported in the minibuffer and search
-commands:  cut, copy, paste, arrow-keys move the cursor, shift-arrow
-keys extend the selection.  In emacs-like operation we can throw in
-all text-editing bindings at essentially no cost.  In vim-like
-operation, we can use the basic bindings, but more complex commands
-would seem to require nested modes.
-
-But the main point is that special-purpose modes will probably use
-some reasonable, standard defaults based on settings for *other*
-modes, plus some standard keys.  In other words, it may be possible to
-dispense with explicit bindings for the minibuffer, etc.
-
-That being so, we are left with a simple scheme:
-
-1. Bindings apply **everywhere** in several senses.  They apply to all
-panes, and bindings for text-editing commands apply in all text
-widgets: the minibuffer, body pane, log pane, headlines, etc.
-
-2. Binding unknown in a mode terminate the mode and return to the main
-or default mode.
-
-3. Non-text-editing commands, including multi-line-editing commands,
-should terminate **single-line modes** such as minibuffer commands
-unless a special case explicitly exists for them.
-
-4. Bindings for **Leo-provided modes** will be created automatically
-using the user's bindings for text-editing commands, plus special
-characters like <tab>, <return> and <backspace>.  Leo provided modes
-are the initial minibuffer mode and secondary minibuffer modes such
-entering search patterns.
-
-5. The only complication is possibly allowing vim-like command sub-
-modes of single-line modes.
-
-The code in k.masterKeyHandler is in the back of my mind as I write
-this.  With luck, the new scheme will be considerably simpler than the
-old, while being more flexible and more general.  Note that the way
-bindings are actually specified is an entirely separate issue, which
-is good because that logic is horrible.  Eliminating per-pane bindings
-will help some, but not a lot.
-
-We may want to allow the user to specify per-pane bindings as before,
-but the bindings will be ignored.  But as I write this it seems like
-this could cause a great deal of confusion.  Perhaps it will be better
-to outlaw the old syntax entirely, or at least issue warnings that per-
-pane bindings no longer have any effect.
-
-This is all very preliminary.  I've written no code.  Your comments
-are welcome now.
-#@-node:ekr.20080508083640.16:Posting: New key handling
-#@+node:ekr.20080509064108.9:Posting: More design notes
-@nocolor
-
-On May 7, 7:05 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
-
-> This post will be a "thinking out loud" discussion of the new design.
-
-I've just spent some time drawing state diagrams that indicate transitions between various states.  It turned out to be more simple than I had feared.
-
-> As I write this, I realize that the distinction between text-editing
-> and non-text-editing commands implicitly assumes emacs-like *bindings*
-> for commands.  
-
-No.  The distinction has nothing to do with bindings, as my post earlier today shows.  In fact, after seeing the final state diagrams, my intention is to be able to support *both* emacs-like and vim-like bindings simultaneously.  Actually, Leo can already do this, or it could if @mode bindings actually worked :-)
-
-The more useful distinction is between commands that change modes and commands that stay in the same mode.  This became clearer as I played with the diagrams.
-
-Ok, let's see if I can summarize what the diagrams are trying to tell me without tying myself up in knots :-)
-
-1. *All* modes are minibuffer modes.  That is, the present mode will always be indicated at the start of the minibuffer.  It would not be good to use the status area because the UNL plugin overwrites the status when changing nodes.
-
-However, not all modes need actually *use* (alter) the minibuffer.  For example, a user-defined outline mode might provide bindings for just the arrow and shift arrow keys.  Nothing the user types would appear in the minibuffer during that mode.
-
-2. @mode nodes define user modes.  These nodes can specify the "prompt" that will appear in the minibuffer while the node is active. For example:
-
-@mode <mode name> @prompt = <prompt>
-
-When a mode is active the minibuffer will contain as a **minibuffer prefix**:
-
-<mode name> mode: <prompt>
-
-As always, the prefix is protected: the user can not erase it by backspacing.
-
-3. Binding are actually a completely separate topic from how Leo handles modes.  However, modes can create "virtual key sequences" that represent a command.  It would be extremely complex to generate those virtual key sequences in menus with the present code base--and probably for *any* version of Leo's config code.  To handle this, @item nodes in @settings trees could specify a "hint" that would look like a real menu shortcut.  Leo would completely ignore such hints: they would be only for cosmetic purposes.  Like this;
-
-@item move-outline-left @hint = A-S-Left or [cmd]o,S-Left
-
-The hint can be any string that makes sense to you.  In this case it signifies that there are two possible ways move an outline left: Alt-Shift-Left in any mode or type o followed by Shift-Left in command mode.
-
-The advantage of this scheme is its simplicity and generality.  The disadvantage is that you, the user, must ensure that the hints make sense and are up-to-date.  I think it will turn out to be very handy.
-
-4. With these preliminaries in place, the actual scheme for switching between modes is relatively straightforward:
-
-A: The default (main) mode will be insert-mode for emacs-like operation and command-mode for vim-like operation.
-
-B: In insert mode, edit-commands executed via menus or by key bindings will cause Leo to remain in insert mode.  All other commands transfer to other modes, with the default mode as the default.  So for emacs-like operation, control (focus) typically stays in the body pane, while for vim-like operation control typically stays in the minibuffer.
-
-BTW, now that all modes can be considered minibuffer modes, we need to distinguish between modes that insert unbound keys (either in the present text pane or in the minibuffer) and those that don't.  For those modes that don't, any unbound key will transfer to the default mode.
-
-C: In general (there may be smallish exceptions), a key stroke that would invoke an unknown command causes control to go to the default mode.
-
-D: In user modes, all commands transfer to the default mode except for explicitly declared "stay-in-this-mode" commands.  This mechanism is already in place.
-
-In short, key **bindings** no longer matter to k.masterKeyHandler.  All that matters is the command that is about to be executed.  This is a very nice simplification: all the old pane-specific logic should just go away.  Actually, it seems like an important Aha.
-
-I now have hopes of putting this all in place in just a few days.
-
-BTW, none of this is a "requirements specification".  That's not how I work :-)  What will emerge will be the result of playing with the code and seeing what works and what doesn't.
-
-Edward
-#@nonl
-#@-node:ekr.20080509064108.9:Posting: More design notes
-#@+node:ekr.20080509145618.3:New vim-like bindings
-@nocolor
-
-top-level commands
-
-b/B enter-backward-find-text-mode (quick find)
-d enter-delete-mode
-f/F enter-find-text-mode (quick find)
-i enter-insert-mode
-o enter-outline-mode
-r enter-replace-mode
-s enter-search-mode
-t enter-toggle-options-mode
-: full-command (minibuffer)
-
-d delete commands
-..c character
-..l line
-..n node
-..p paragraph
-..s sentence
-
-m outline-move commands
-..Arrow keys select nodes
-
-o outline commands
-..c cut outline
-..d delete outline
-..m enter-move-outline-mode
-..Arrow keys select nodes
-..Shift-Arrow keys move nodes
-..Shift-ctrl-x: cut outline
-
-s/r search commands (search/replace)
-..st search using search tab
-..sf forward incremental search
-..sb backward incremental search
-
-t toggle options commands
-...i toggle ignore-case checkbox
-...w toggle word checkbox
-...etc!
-
-x minibuffer
-
-: command shortcut mode
-..q quit
-..s save
-etc (like Vim)
-
-
-escape: universal escape, like ctrl-g now.
-
-No longer needed:
-
-f enter-focus-mode (not important: ctrl-/ cycle-focus will work)
-
-f focus commands
-..Ctrl-\ cycle-all-focus
-..b focus to body
-..l focus to log
-..t toggle body pane focus
-
-m enter-outline-move-mode (can use another key to get moves)
-#@nonl
-#@-node:ekr.20080509145618.3:New vim-like bindings
-#@+node:ekr.20080509145618.4:Used by vim
-@nocolor
-
-Used by vim:
-
-a/A (append after cursor)
-c
-d,dd,D (delete before cursor)
-f/F/t/T
-g,gf,g0,gg,ge,gE
-h,j,k,l (motion commands)
-i/I (insert before cursor, insert at indentation)
-m,m',m` (marks)
-n,N
-o/O (open line) Why not just use <insert?>
-r/R
-x/X (delete after cursor)
-y
-u
-v,V
-w/W
-ZZ,ZQ
-.
-:
-;
-+-
-/ (patterns)
-#@nonl
-#@-node:ekr.20080509145618.4:Used by vim
-#@+node:ekr.20080510055530.2:Small improvements
-@nocolor
-
-- no need for <return> binding for end-edit-headline command.
-- no need for Alt-T and Alt-D binding for focus-to-outline and focus-to-body.
-
-Plan:
-
-- Fix mode bugs.
-- Change myLeoSettings.leo.
-#@nonl
-#@-node:ekr.20080510055530.2:Small improvements
-#@-node:ekr.20080508083640.11:Notes
 #@+node:ekr.20080510185834.6:Projects
 #@+node:ekr.20080509064108.8:Classified commands
 #@+node:ekr.20080509064108.6:k.defineSingleLineCommands
@@ -9326,6 +9078,100 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 #@-node:ekr.20080510095819.1:handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@-node:ekr.20080516064950.1:Fixed Shift-Ctrl-r problem after Ctrl-f
+#@+node:ekr.20080516113513.2:Improved end of calltips
+# Added ')' at end.
+#@nonl
+#@+node:ekr.20061031131434.20:calltip
+def calltip (self,obj=None):
+
+    c = self.c
+    w = self.widget
+    isStringMethod = False ; s = None
+    # g.trace(self.leadinWord,obj)
+
+    if self.leadinWord and (not obj or type(obj) == types.BuiltinFunctionType):
+        << try to set s from a Python global function >>
+
+    if not s:
+        << get s using inspect >>
+
+    << remove 'self' from s, but not from args >>
+    if isStringMethod:
+        << remove 's' from s *and* args >>
+
+    # s = s.rstrip(')') # Not so convenient.
+    << insert the text and set j1 and j2 >>
+
+    # End autocompletion mode, putting the insertion point after the suggested calltip.
+    self.finish()
+    c.widgetWantsFocusNow(w)
+    if 1: # Seems to be more useful.
+        w.setSelectionRange(j1,j2,insert=j2)
+    else:
+        w.setInsertPoint(j2)
+    << put the status line >>
+#@+node:ekr.20061031131434.21:<< try to set s from a Python global function >>
+# The first line of the docstring is good enough, except for classes.
+f = __builtins__.get(self.leadinWord)
+doc = f and type(f) != types.ClassType and f.__doc__
+if doc:
+    # g.trace(doc)
+    s = g.splitLines(doc)
+    s = args = s and s [0] or ''
+    i = s.find('(')
+    if i > -1: s = s [i:]
+    else: s = '(' + s
+    s = s and s.strip() or ''
+#@-node:ekr.20061031131434.21:<< try to set s from a Python global function >>
+#@+node:ekr.20061031131434.22:<< get s using inspect >>
+isStringMethod = self.prevObjects and type(self.prevObjects[-1]) == types.StringType
+
+# g.trace(self.prevObjects)
+
+if isStringMethod and hasattr(string,obj.__name__):
+    # A hack. String functions are builtins, and getargspec doesn't handle them.
+    # Get the corresponding string function instead, and remove the s arg later.
+    obj = getattr(string,obj.__name__)
+
+try:
+    s1,s2,s3,s4 = inspect.getargspec(obj)
+except:
+    self.extendSelection('(')
+    self.finish()
+    return # Not a function.  Just '('.
+
+s = args = inspect.formatargspec(s1,s2,s3,s4)
+#@-node:ekr.20061031131434.22:<< get s using inspect >>
+#@+node:ekr.20061031131434.23:<< remove 'self' from s, but not from args >>
+if g.match(s,1,'self,'):
+    s = s[0] + s[6:].strip()
+elif g.match_word(s,1,'self'):
+    s = s[0] + s[5:].strip()
+#@-node:ekr.20061031131434.23:<< remove 'self' from s, but not from args >>
+#@+node:ekr.20061031131434.24:<< remove 's' from s *and* args >>
+if g.match(s,1,'s,'):
+    s = s[0] + s[3:]
+    args = args[0] + args[3:]
+elif g.match_word(s,1,'s'):
+    s = s[0] + s[2:]
+    args = args[0] + args[2:]
+#@-node:ekr.20061031131434.24:<< remove 's' from s *and* args >>
+#@+node:ekr.20061031131434.25:<< insert the text and set j1 and j2 >>
+junk,j = w.getSelectionRange() # Returns insert point if no selection.
+w.insert(j,s)
+c.frame.body.onBodyChanged('Typing')
+j1 = j + 1 ; j2 = j + len(s)
+#@-node:ekr.20061031131434.25:<< insert the text and set j1 and j2 >>
+#@+node:ekr.20061031131434.26:<< put the status line >>
+c.frame.clearStatusLine()
+if obj:
+    name = hasattr(obj,'__name__') and obj.__name__ or repr(obj)
+else:
+    name = self.leadinWord
+c.frame.putStatusLine('%s %s' % (name,args))
+#@-node:ekr.20061031131434.26:<< put the status line >>
+#@-node:ekr.20061031131434.20:calltip
+#@-node:ekr.20080516113513.2:Improved end of calltips
 #@-node:ekr.20080513061733.4:Recent projects
 #@-all
 #@nonl
