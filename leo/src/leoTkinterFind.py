@@ -374,7 +374,7 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
 
         # Legacy bindings.  Can be overwritten in subclasses.
 
-        c = self.c
+        c = self.c ; k = c.k
         # g.trace('legacy')
 
         def findButtonCallback2(event,self=self):
@@ -382,11 +382,10 @@ class leoTkinterFind (leoFind.leoFind,leoTkinterDialog.leoTkinterDialog):
             return 'break'
 
         for w in (self.find_ctrl, self.change_ctrl):
-            c.bind(w, "<Button-1>",  self.resetWrap)
-            c.bind(w, "<Key>",        self.resetWrap)
-            c.bind(w,"<Control-a>",  self.selectAllFindText)
 
-        for w in (self.find_ctrl, self.change_ctrl):
+            c.bind(w, "<Button-1>",  self.resetWrap)
+            c.bind(w, "<Key>",       self.resetWrap)
+            c.bind(w,"<Control-a>",  self.selectAllFindText)
             c.bind(w, "<Key-Return>", findButtonCallback2)
             c.bind(w, "<Key-Escape>", self.onCloseWindow)
     #@-node:ekr.20060207080537:find.createBindings
