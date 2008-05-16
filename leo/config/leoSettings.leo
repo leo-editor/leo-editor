@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,13,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -448,7 +448,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
@@ -1239,7 +1239,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
@@ -3742,7 +3742,7 @@ find-character-extend-selection             = None ### = Alt-Shift-P
 # To start finds and changes...
 search-again                        = None  # similar to search-with-present-options.
 search-with-present-options         = Ctrl-f
-replace-string                      = Ctrl-Shift-r # It's highly useful to define some key-binding for this.
+replace-string                      = Ctrl-Shift-r
 hide-find-tab                       = None
 open-find-tab                       = None
 
@@ -3783,6 +3783,8 @@ toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 negative-argument       = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
 universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+
+
 
 </t>
 <t tx="ekr.20060605081712">Recommended:

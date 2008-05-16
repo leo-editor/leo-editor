@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2027,7 +2027,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2149,109 +2149,6 @@
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 <v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
-</v>
-<v t="ekr.20080515101718.1"><vh>Fail when using newDrawing</vh>
-<v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051109091731"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20060208072415"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
-<v t="ekr.20051107115231.9"><vh>@test Select a node when file is first loaded</vh></v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
-<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
-<v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
-<v t="ekr.20040712101754.184" a="M"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
-<v t="ekr.20040712101754.208" a="M" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
-</v>
-<v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
-<v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20040712101754.204" annotate="7d71002e"><vh>@test consistency of back/next links</vh></v>
-<v t="ekr.20040712101754.201" annotate="7d71002e"><vh>@test consistency of c.allNodes_iter() and p.ThreadNext()</vh></v>
-<v t="ekr.20040712101754.202" annotate="7d71002e"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
-<v t="ekr.20040712101754.203" annotate="7d71002e"><vh>@test consistency of level</vh></v>
-<v t="ekr.20040712101754.205" annotate="7d71002e"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
-<v t="ekr.20040712101754.206" annotate="7d71002e"><vh>@test consistency of parent/child links</vh></v>
-<v t="ekr.20040712101754.207" annotate="7d71002e"><vh>@test consistency of threadBack/Next links</vh></v>
-<v t="ekr.20040712101754.209" annotate="7d71002e"><vh>@test hasNextBack</vh></v>
-<v t="ekr.20040712101754.210" annotate="7d71002e"><vh>@test hasParentChild</vh></v>
-<v t="ekr.20040712101754.211" annotate="7d71002e"><vh>@test hasThreadNextBack</vh></v>
-<v t="ekr.20040722055040" annotate="7d71002e"><vh>@test isAncestorOf</vh></v>
-<v t="ekr.20041013062906" annotate="7d71002e"><vh>@test onHyperLinkControlClick</vh></v>
-<v t="ekr.20040712101754.199" annotate="7d71002e"><vh>@test p.comparisons</vh></v>
-<v t="ekr.20060106211922" annotate="7d71002e"><vh>@test p.isCurrentPosition</vh></v>
-<v t="ekr.20060106211922.1" annotate="7d71002e"><vh>@test p.isRootPosition</vh></v>
-<v t="ekr.20040712101754.188" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
-<v t="ekr.20040712101754.189"><vh>child1</vh>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
-<v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
-<v t="ekr.20040712101754.193"><vh>d</vh>
-<v t="ekr.20040712101754.194"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.195"><vh>child2</vh></v>
-<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
-<v t="ekr.20040802071519.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
-<v t="ekr.20040712101754.200" a="M" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
-<v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
-<v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
-</v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh></v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
-<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
-<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
-</v>
-<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
-<v t="ekr.20070611071101"><vh>@@test visback</vh>
-<v t="ekr.20070611071101.1"><vh>a</vh>
-<v t="ekr.20070611071101.2"><vh>b</vh>
-<v t="ekr.20070611071101.3"><vh>c2</vh></v>
-</v>
-</v>
-<v t="ekr.20070611071101.4"><vh>limit</vh>
-<v t="ekr.20070611071101.5"><vh>d</vh></v>
-</v>
-<v t="ekr.20070611071954"><vh>e</vh></v>
-</v>
-<v t="ekr.20040712101754.177"><vh>@test convertTreeToString and allies</vh>
-<v t="ekr.20040712101754.178"><vh>File Conversion</vh>
-<v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
-<v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
-</v>
-</v>
-<v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -12906,37 +12803,40 @@ finally:
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
 <t tx="ekr.20051107115231.17">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-c.editPosition(p)
-w = c.edit_widget(p)
-# print 'guiName',g.app.gui.guiName()
-try:
-    assert w, 'oops1'
-    wName = g.app.gui.widget_name(w)
-    assert wName.startswith('head'),'w.name:%s' % wName
-    w.setSelectionRange('end','end')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
-    if g.app.gui.guiName() != 'nullGui':
-        assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
-    k.manufactureKeyPressForCommandName(w,'undo')
-    if g.app.gui.guiName() != 'nullGui':
-        assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-    assert p.headString() == h,'oops5 got: %s' % p.headString()
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.redraw_now() # To make node visible
+    c.editPosition(p)
+    w = c.edit_widget(p)
+    # print 'guiName',g.app.gui.guiName()
+    try:
+        assert w, 'oops1'
+        wName = g.app.gui.widget_name(w)
+        assert wName.startswith('head'),'w.name:%s' % wName
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('&lt;Return&gt;')
+        assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
+        k.manufactureKeyPressForCommandName(w,'undo')
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+        assert p.headString() == h,'oops5 got: %s' % p.headString()
+    finally:
+        if 1:
+            p.initHeadString(h)
+            c.frame.tree.setHeadline(p,h)
+            c.redraw_now()
+            c.outerUpdate()</t>
 <t tx="ekr.20051107115231.18">import leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -13021,30 +12921,32 @@ finally:
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
 <t tx="ekr.20051107115231.21">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-tree.editLabel(p)
-w = c.edit_widget(p)
-try:
-    assert w
-    w.setSelectionRange('end','end')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h + 'XYZ'
-    k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.redraw_now() # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('&lt;Return&gt;')
+        assert p.headString() == h + 'XYZ'
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.headString() == h
+    finally:
+        if 1:
+            p.initHeadString(h)
+            c.frame.tree.setHeadline(p,h)
+            c.redraw_now()</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -13403,32 +13305,34 @@ if p:
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leoTest ; u = leoTest.testUtils(c)
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocusNow()
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-if 1: # New code calls pasteText directly.
-    event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    c.frame.pasteText(event)
-else: # old code uses menu.invoke.
-    # Post by hand.
-    menu = c.frame.menu.getMenu('Edit')
-    i = menu.index('Paste')
-    menu.invoke(i)
-# Move around and and make sure it doesn't change.
-try:
-    assert p.bodyString() == paste, 'paste1 failed'
-    c.selectPosition(p.threadBack())
-    assert p.bodyString() == paste, 'stick failed'
+
+if c.k.defaultUnboundKeyAction == 'insert':
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
     c.selectPosition(p)
-    assert p.bodyString() == paste, 'revisit failed'
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()
+    c.bodyWantsFocusNow()
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    if 1: # New code calls pasteText directly.
+        event = g.Bunch(widget=c.frame.body.bodyCtrl)
+        c.frame.pasteText(event)
+    else: # old code uses menu.invoke.
+        # Post by hand.
+        menu = c.frame.menu.getMenu('Edit')
+        i = menu.index('Paste')
+        menu.invoke(i)
+    # Move around and and make sure it doesn't change.
+    try:
+        assert p.bodyString() == paste, 'paste1 failed'
+        c.selectPosition(p.threadBack())
+        assert p.bodyString() == paste, 'stick failed'
+        c.selectPosition(p)
+        assert p.bodyString() == paste, 'revisit failed'
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()
 </t>
 <t tx="ekr.20060208072331">import leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -20675,7 +20579,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
-<t tx="ekr.20080514113943.1"></t>
-<t tx="ekr.20080515101718.1"></t>
+<t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
 </tnodes>
 </leo_file>
