@@ -12727,7 +12727,6 @@ c.outerUpdate()
 
 c2 = c.new()
 p2 = c2.currentPosition()
-# c.outerUpdate()
 
 try:
     # This fails, but it is possible to edit the headline.
@@ -12836,7 +12835,7 @@ if k.defaultUnboundKeyAction == 'insert':
             p.initHeadString(h)
             c.frame.tree.setHeadline(p,h)
             c.redraw_now()
-            c.outerUpdate()</t>
+            # c.outerUpdate()</t>
 <t tx="ekr.20051107115231.18">import leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
