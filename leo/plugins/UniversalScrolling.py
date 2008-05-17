@@ -142,6 +142,7 @@ def addUThreading (tkFrame,parentFrame):
     t.start()
 
     # Replace the canvas bindings.
+    # c is not available.
     canvas.bind( '<Control-Button-1>', scrollDown)
     canvas.bind( '<Shift Button-1>', scrollDown)
     canvas.bind( '<Control-Button-3>', scrollUp)

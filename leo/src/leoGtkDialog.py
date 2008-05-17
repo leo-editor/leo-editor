@@ -167,7 +167,9 @@ class leoGtkDialog:
         if self.focus_widget == None:
             self.focus_widget = self.top
 
-        c and c.widgetWantsFocusNow(self.focus_widget)
+        if c:
+            c.widgetWantsFocusNow(self.focus_widget)
+            c.outerUpdate()
 
         self.root.wait_window(self.top)
 
@@ -327,7 +329,7 @@ class gtkAskLeoID (leoGtkDialog):
         self.answer = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         message = (
             "leoID.txt not found\n\n" +
@@ -429,7 +431,7 @@ class gtkAskOk(leoGtkDialog):
 
         self.text = text
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -470,7 +472,7 @@ class  gtkAskOkCancelNumber (leoGtkDialog):
         self.number_entry = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         self.createFrame(message)
         self.focus_widget = self.number_entry
@@ -568,7 +570,7 @@ class  gtkAskOkCancelString (leoGtkDialog):
         self.number_entry = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         self.createFrame(message)
         self.focus_widget = self.number_entry
@@ -641,7 +643,7 @@ class gtkAskYesNo (leoGtkDialog):
         if g.app.unitTesting: return
 
         self.createTopFrame()
-        self.top.bind("<Key>",self.onKey)
+        c.bind(self.top,"<Key>",self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -693,7 +695,7 @@ class gtkAskYesNoCancel(leoGtkDialog):
         self.defaultButton = defaultButton
 
         self.createTopFrame()
-        self.top.bind("<Key>",self.onKey)
+        c.bind(self.top,"<Key>",self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -768,8 +770,7 @@ class gtkListBoxDialog (leoGtkDialog):
         self.fillbox()
 
         # Make the common bindings after creating self.box.
-
-        self.box.bind("<Double-Button-1>",self.go)
+        c.bind(self.box,"<Double-Button-1>",self.go)
     #@-node:ekr.20080112145409.46:gtkListboxDialog.__init__
     #@+node:ekr.20080112145409.47:addStdButtons
     def addStdButtons (self,frame):

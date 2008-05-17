@@ -726,7 +726,7 @@ def getArg (self,event,
     k = self ; c = k.c ; gui  = g.app.gui
     state = k.getState('getArg')
     keysym = gui.eventKeysym(event)
-    trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
+    trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
     if trace: g.trace(
         'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
         'completion', state==0 and completion or state!=0 and k.arg_completion)
@@ -1072,10 +1072,16 @@ def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
 
-    if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+    # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+    if w and g.app.gui.isTextWidget(w):
         self.w = w
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+        # self.w = w
+    # else:
+        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
@@ -1179,10 +1185,16 @@ def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
 
-    if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+    # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+    if w and g.app.gui.isTextWidget(w):
         self.w = w
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+        # self.w = w
+    # else:
+        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
@@ -1227,7 +1239,7 @@ def getArg (self,event,
     k = self ; c = k.c ; gui  = g.app.gui
     state = k.getState('getArg')
     keysym = gui.eventKeysym(event)
-    trace = False or c.config.getBool('trace_modes') and not g.app.unitTesting
+    trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
     if trace: g.trace(
         'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
         'completion', state==0 and completion or state!=0 and k.arg_completion)
@@ -1319,13 +1331,15 @@ def findCharacterHelper (self,event,backward,extend):
         ins = w.toPythonIndex(self.insert)
         i = ins + g.choose(backward,-1,+1) # skip the present character.
         if backward:
-            start = s.rfind('\n',0,i)
-            if start == -1: start = 0
+            # start = s.rfind('\n',0,i)
+            # if start == -1: start = 0
+            start = 0
             j = s.rfind(ch,start,max(start,i)) # Skip the character at the cursor.
             if j > -1: self.moveToHelper(event,j,extend)
         else:
-            end = s.find('\n',i)
-            if end == -1: end = len(s)
+            # end = s.find('\n',i)
+            # if end == -1: end = len(s)
+            end = len(s)
             j = s.find(ch,min(i,end),end) # Skip the character at the cursor.
             if j > -1: self.moveToHelper(event,j,extend)
         k.resetLabel()
@@ -1890,6 +1904,7 @@ def openWithFileName(fileName,old_c,
         if munge(fileName) == munge(frame.c.mFileName):
             frame.bringToFront()
             frame.c.setLog()
+            frame.c.outerUpdate()
             return True, frame
     if old_c:
         # New in 4.4: We must read the file *twice*.
@@ -1941,11 +1956,15 @@ def openWithFileName(fileName,old_c,
         if c.chapterController:
             c.chapterController.finishCreate()
         k = c.k
-        if k: k.setInputState(k.unboundKeyAction)
+        if k:
+            k.setDefaultInputState()
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
+        if k:
+            k.showStateAndMode()
+
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName
@@ -5245,6 +5264,14 @@ def findSettingsPosition (self,c,setting):
 def __init__(self,frame,fileName,relativeFileName=None):
 
     c = self
+
+    if g.newDrawing:
+        self.requestedFocusWidget = None
+        c.requestRecolorFlag = False
+        self.requestRedrawFlag = False
+        self.requestRedrawScrollFlag = False
+        self.requestedIconify = '' # 'iconify','deiconify'
+        g.es('Using new drawing code',color='red')
 
     # g.trace('Commands')
     self.exists = True # Indicate that this class exists and has not been destroyed.

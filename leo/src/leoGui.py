@@ -422,7 +422,9 @@ class leoGui:
     def widget_name (self,w):
 
         # First try the widget's getName method.
-        if hasattr(w,'getName'):
+        if not 'w':
+            return '<no widget>'
+        elif hasattr(w,'getName'):
             return w.getName()
         elif hasattr(w,'_name'):
             return w._name

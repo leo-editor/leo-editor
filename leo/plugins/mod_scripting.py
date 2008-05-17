@@ -719,7 +719,7 @@ class scriptingController:
 
         if self.gui.guiName() == 'tkinter':
             # Bind right-clicks to deleteButton.
-            b.bind('<3>',deleteButtonCallback)
+            c.bind(b,'<3>',deleteButtonCallback)
 
         # Register the delete-x-button command.
         deleteCommandName= 'delete-%s-button' % commandName

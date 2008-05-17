@@ -3906,7 +3906,7 @@ class ToolbarClass(Tk.Frame):
     #@+node:ekr.20060513122450.152:__init__
     def __init__(self,cc):
 
-        self.cc = cc
+        self.cc = cc ; c = cc.c
 
         Tk.Frame.__init__(self,cc.LeoFrame.split1Pane2)
         f = Tk.Frame(self)
@@ -3943,7 +3943,7 @@ class ToolbarClass(Tk.Frame):
         e=">>"
         # command entry
         self.DbgEntry = Tk.Entry(f)
-        self.DbgEntry.bind("<Key>",self.OnKey)
+        c.bind(self.DbgEntry,"<Key>",self.OnKey)
 
         #---------------------------------------------------
         self.ConfigGif=Tk.PhotoImage(data=DecompressIcon(ConfigData))
@@ -4113,7 +4113,7 @@ class ToolbarClass(Tk.Frame):
         self.Display["state"] = 'disabled'
 
         self.Display["cursor"] = "hand2"
-        self.Display.bind("<Button-1>",self.OnErrorLeftClick)
+        c.bind(self.Display,"<Button-1>",self.OnErrorLeftClick)
 
     #@-node:ekr.20060513122450.160:SyncDisplayToError
     #@+node:ekr.20060513122450.161:SetError
@@ -4180,7 +4180,7 @@ class WatcherClass(Tk.Frame):
 
         self.EditFrame = Tk.Frame(self,relief='groove')
         self.VarEntry = Tk.Entry(self.EditFrame)
-        self.VarEntry.bind("<Key>",self.OnEditKey)
+        c.bind(self.VarEntry,"<Key>",self.OnEditKey)
         self.VarEntry.pack(side="left",fill="x",expand=1)
         self.EditFrame.pack(side="top",fill="x")
 
@@ -4201,10 +4201,10 @@ class WatcherClass(Tk.Frame):
         self.OutBox.pack(side="left",fill="both",expand=1)
 
         self.BoxFrame.pack(fill="both",expand=1)
-        self.InBox.bind("<Delete>",self.OnDelete)
-        self.OutBox.bind("<Delete>",self.OnDelete)
-        self.InBox.bind("<Button-1>",self.OnLeftClick)
-        self.OutBox.bind("<Button-1>",self.OnLeftClick)
+        c.bind(self.InBox,"<Delete>",self.OnDelete)
+        c.bind(self.OutBox,"<Delete>",self.OnDelete)
+        c.bind(self.InBox,"<Button-1>",self.OnLeftClick)
+        c.bind(self.OutBox,"<Button-1>",self.OnLeftClick)
     #@nonl
     #@-node:ekr.20060513122450.167:__init__
     #@+node:ekr.20060513122450.168:OnEditKey
@@ -4346,7 +4346,7 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.176:__init__
     def __init__(self,cc):
 
-        self.cc = cc
+        self.cc = cc ; c = cc.c
         self.bodychanged = False	
         self.visible = False
         coffset = 10
@@ -4375,8 +4375,8 @@ class BreakbarClass(Tk.Text):
         )
 
         self.leowrap = cc.LeoBodyText["wrap"]
-        self.bind("<Button-1>",self.OnLeftClick)
-        self.bind("<Button-3>",self.OnRightClick)
+        c.bind(self,"<Button-1>",self.OnLeftClick)
+        c.bind(self,"<Button-3>",self.OnRightClick)
         self["state"]='disabled'
         cc.LeoBodyText.pack_forget()
         cc.LeoXBodyBar.pack(side="bottom", fill="x")
@@ -4420,10 +4420,10 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.181:Plug
     def Plug(self):
 
-        cc = self.cc
+        cc = self.cc ; c = cc.c
 
-        cc.LeoBodyText.bind(g.angleBrackets("Cut"),self.OnCut)
-        cc.LeoBodyText.bind(g.angleBrackets("Paste"),self.OnPaste)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Cut"),self.OnCut)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Paste"),self.OnPaste)
         cc.LeoYBodyBar.config(command=self.yview)
         cc.LeoBodyText["yscrollcommand"] = self.setForBody
         self["yscrollcommand"] = self.setForBar
@@ -4432,10 +4432,10 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.182:UnPlug
     def UnPlug(self):
 
-        cc = self.cc
+        cc = self.cc ; c = cc.c
 
-        cc.LeoBodyText.bind(g.angleBrackets("Cut"),cc.LeoFrame.OnCut)
-        cc.LeoBodyText.bind(g.angleBrackets("Paste"),cc.LeoFrame.OnPaste)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Cut"),cc.LeoFrame.OnCut)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Paste"),cc.LeoFrame.OnPaste)
         cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
         cc.LeoBodyText["yscrollcommand"] = cc.LeoYBodyBar.set
         self["yscrollcommand"] = None

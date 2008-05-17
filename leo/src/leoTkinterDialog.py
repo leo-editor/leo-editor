@@ -166,7 +166,8 @@ class leoTkinterDialog:
         if self.focus_widget == None:
             self.focus_widget = self.top
 
-        if c: c.widgetWantsFocusNow(self.focus_widget)
+        if c:
+            c.widgetWantsFocusNow(self.focus_widget)
 
         self.root.wait_window(self.top)
 
@@ -326,7 +327,11 @@ class tkinterAskLeoID (leoTkinterDialog):
         self.answer = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        if c:
+            c.bind(self.top,"<Key>", self.onKey)
+        else:
+            g.trace('can not use c.bind')
+            self.top.bind("<Key>", self.onKey)
 
         message = (
             "leoID.txt not found\n\n" +
@@ -428,7 +433,8 @@ class tkinterAskOk(leoTkinterDialog):
 
         self.text = text
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+
+        c.bind(self.top,"<Key>", self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -469,7 +475,7 @@ class  tkinterAskOkCancelNumber (leoTkinterDialog):
         self.number_entry = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         self.createFrame(message)
         self.focus_widget = self.number_entry
@@ -567,7 +573,7 @@ class  tkinterAskOkCancelString (leoTkinterDialog):
         self.number_entry = None
 
         self.createTopFrame()
-        self.top.bind("<Key>", self.onKey)
+        c.bind(self.top,"<Key>", self.onKey)
 
         self.createFrame(message)
         self.focus_widget = self.number_entry
@@ -638,7 +644,7 @@ class tkinterAskYesNo (leoTkinterDialog):
         if g.app.unitTesting: return
 
         self.createTopFrame()
-        self.top.bind("<Key>",self.onKey)
+        c.bind(self.top,"<Key>",self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -690,7 +696,7 @@ class tkinterAskYesNoCancel(leoTkinterDialog):
         self.defaultButton = defaultButton
 
         self.createTopFrame()
-        self.top.bind("<Key>",self.onKey)
+        c.bind(self.top,"<Key>",self.onKey)
 
         if message:
             self.createMessageFrame(message)
@@ -765,8 +771,7 @@ class tkinterListBoxDialog (leoTkinterDialog):
         self.fillbox()
 
         # Make the common bindings after creating self.box.
-
-        self.box.bind("<Double-Button-1>",self.go)
+        c.bind(self.box,"<Double-Button-1>",self.go)
     #@-node:ekr.20031218072017.3890:tkinterListboxDialog.__init__
     #@+node:ekr.20031218072017.3891:addStdButtons
     def addStdButtons (self,frame):

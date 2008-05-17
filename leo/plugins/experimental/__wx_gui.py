@@ -3260,6 +3260,7 @@ if wx:
                     def visibilityCallback(event,self=self,w=w):
                         try: self.leoIcon.attach(w.winfo_id())
                         except: pass
+                    # c is not available.
                     w.bind("<Visibility>",visibilityCallback)
                     if not self.leoIcon:
                         # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.

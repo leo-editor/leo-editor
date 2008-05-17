@@ -246,6 +246,7 @@ class UIHelperClass:
     #@+node:pap.20051010171746.3:addWidgets
     def addWidgets(self):
         """Add the widgets to Leo"""
+        c = self.c
         toolbar = self.c.frame.iconFrame
         if not toolbar: return
         # 
@@ -254,7 +255,7 @@ class UIHelperClass:
         # 
         self.text = Tk.Entry(self._getSizer(self.frame, 24, 130))
         self.text.pack(side="left", padx=3, fill="both", expand=1)
-        self.text.bind("<Return>", self.newItemClicked)
+        c.bind(self.text,"<Return>", self.newItemClicked)
         # 
         self.pseudobutton = Tk.Frame(self._getSizer(self.frame, 24, 142),
             relief="raised", borderwidth=2) 

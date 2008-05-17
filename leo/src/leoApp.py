@@ -240,6 +240,7 @@ class LeoApp:
             frame.lift()
             frame.c.setLog()
             frame.c.bodyWantsFocusNow()
+            frame.c.outerUpdate()
         elif not g.app.unitTesting:
             g.app.finishQuit()
 

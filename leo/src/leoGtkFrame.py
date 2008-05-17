@@ -675,7 +675,7 @@ class leoGtkFrame (leoFrame.leoFrame):
                 self.statusFrame,
                 height=1,state="disabled",bg=bg,relief="groove",name='status-line')
             self.textWidget.pack(side="left",expand=1,fill="x")
-            w.bind("<Button-1>", self.onActivate)
+            c.bind(w,"<Button-1>", self.onActivate)
             self.show()
 
             c.frame.statusFrame = self.statusFrame
@@ -1013,12 +1013,12 @@ class leoGtkFrame (leoFrame.leoFrame):
             # ('<Double-1>',      k.masterDoubleClickHandler),
             # ('<Double-3>',      k.masterDoubleClick3Handler),
         # ):
-            # w.bind(kind,callback)
+            # c.bind(w,kind,callback)
 
         # if 0:
             # if sys.platform.startswith('win'):
                 # # Support Linux middle-button paste easter egg.
-                # w.bind("<Button-2>",frame.OnPaste)
+                # c.bind(w,"<Button-2>",frame.OnPaste)
     #@-node:ekr.20080112145409.107:f.setMinibufferBindings
     #@-node:ekr.20080112145409.103:Minibuffer methods
     #@+node:ekr.20080112145409.108:Configuration (gtkFrame)
@@ -1717,7 +1717,7 @@ class leoGtkBody (leoFrame.leoBody):
         frame = self.frame ; c = self.c ; k = c.k
         if not w: w = self.bodyCtrl
 
-        # w.bind('<Key>', k.masterKeyHandler)
+        # c.bind(w,'<Key>', k.masterKeyHandler)
 
         # for kind,func,handler in (
             # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -1729,7 +1729,7 @@ class leoGtkBody (leoFrame.leoBody):
             # def bodyClickCallback(event,handler=handler,func=func):
                 # return handler(event,func)
 
-            # w.bind(kind,bodyClickCallback)
+            # c.bind(w,kind,bodyClickCallback)
     #@nonl
     #@-node:ekr.20080112145409.153:gtkBody.createBindings
     #@+node:ekr.20080112145409.154:gtkBody.createControl
@@ -2247,7 +2247,7 @@ class leoGtkLog (leoFrame.leoLog):
         # def hullMenuCallback(event):
             # return self.onRightClick(event,menu)
 
-        # self.nb.bind('<Button-3>',hullMenuCallback)
+        # c.bind(self.nb,'<Button-3>',hullMenuCallback)
 
         # self.nb.pack(fill='both',expand=1)
 
@@ -2722,7 +2722,7 @@ class leoGtkLog (leoFrame.leoLog):
             # ('<Button-1>',  k.masterClickHandler),
             # ('<Button-3>',  k.masterClick3Handler),
         # ):
-            # w.bind(kind,handler)
+            # c.bind(w,kind,handler)
 
         # # Clicks in the tab area are harmless: use the old code.
         # def tabMenuRightClickCallback(event,menu=self.menu):
@@ -2731,8 +2731,8 @@ class leoGtkLog (leoFrame.leoLog):
         # def tabMenuClickCallback(event,tabName=tabName):
             # return self.onClick(event,tabName)
 
-        # tab.bind('<Button-1>',tabMenuClickCallback)
-        # tab.bind('<Button-3>',tabMenuRightClickCallback)
+        # c.bind(tab,'<Button-1>',tabMenuClickCallback)
+        # c.bind(tab,'<Button-3>',tabMenuRightClickCallback)
 
         # k.completeAllBindingsForWidget(w)
     #@-node:ekr.20080112145409.240:setTabBindings
@@ -2805,7 +2805,7 @@ class leoGtkLog (leoFrame.leoLog):
         b.pack(side='left')
 
         g.app.gui.set_focus(c,e)
-        e.bind('<Return>',getNameCallback)
+        c.bind(e,'<Return>',getNameCallback)
     #@-node:ekr.20080112145409.245:getTabName
     #@-node:ekr.20080112145409.241:Tab menu callbacks & helpers
     #@-node:ekr.20080112145409.228:Tab (GtkLog)
@@ -2939,7 +2939,7 @@ class leoGtkLog (leoFrame.leoLog):
     #@+node:ekr.20080112145409.251:createFontPicker
     def createFontPicker (self,tabName):
 
-        log = self
+        log = self ; c = self.c
         parent = log.frameDict.get(tabName)
         w = log.textDict.get(tabName)
         w.pack_forget()
@@ -3022,7 +3022,7 @@ class leoGtkLog (leoFrame.leoLog):
         for w in (familyBox,slantBox,weightBox):
             w.configure(selectioncommand=fontCallback)
 
-        sizeEntry.bind('<Return>',fontCallback)
+        c.bind(sizeEntry,'<Return>',fontCallback)
         #@-node:ekr.20080112145409.258:<< create and bind the callbacks >>
         #@nl
         self.createBindings()
@@ -3043,7 +3043,7 @@ class leoGtkLog (leoFrame.leoLog):
 
         w = self.sampleWidget
         for event, callback in table:
-            w.bind(event,callback)
+            c.bind(w,event,callback)
 
         k.completeAllBindingsForWidget(w)
     #@-node:ekr.20080112145409.259:createBindings (fontPicker)
@@ -3273,6 +3273,7 @@ class leoGtkTextWidget(leoFrame.baseTextWidget):
     # def _see(self,i):                   return self.widget.see(i)
     # def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
     # def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+    # def _setForegroundColor(self,color): return self.widget.configure(background=color)
     # def _setFocus(self):                return self.widget.focus_set()
     # def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
     # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)

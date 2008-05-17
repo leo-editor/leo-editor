@@ -132,10 +132,16 @@ class baseEditCommandsClass:
 
         c = self.c ; w = event and event.widget
 
-        if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+        # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+        if w and g.app.gui.isTextWidget(w):
             self.w = w
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+        # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
+            # self.w = w
+        # else:
+            # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
         if self.w:
             c.widgetWantsFocusNow(self.w)
@@ -1695,7 +1701,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
 
-        c = self.c ;  w = event.widget
+        c = self.c ; k = c.k ; w = event.widget
 
 
         body = c.frame.body.bodyCtrl
@@ -1715,7 +1721,8 @@ class editCommandsClass (baseEditCommandsClass):
 
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
-        c.k.newMinibufferWidget = pane
+        k.newMinibufferWidget = pane
+        k.showStateAndMode()
     #@nonl
     #@-node:ekr.20051022144825.1:cycleFocus
     #@+node:ekr.20060613090701:cycleAllFocus
@@ -1765,12 +1772,16 @@ class editCommandsClass (baseEditCommandsClass):
                 elif self.logWidgetCount > n:
                     self.logWidgetCount = 0
                     pane = c.frame.tree.canvas
+                    # Use this to skip the tree pane.
+                    #pane = c.frame.body.bodyCtrl
                 else:
                     c.frame.log.cycleTabFocus()
                     pane = c.frame.log.logCtrl
             else:
                 self.logWidgetCount = 0
                 pane = c.frame.tree.canvas
+                # Use this to skip the tree pane.
+                # pane = c.frame.body.bodyCtrl
         else:
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0
@@ -1780,12 +1791,17 @@ class editCommandsClass (baseEditCommandsClass):
         if pane:
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
+            k.showStateAndMode()
     #@nonl
     #@-node:ekr.20060613090701:cycleAllFocus
     #@+node:ekr.20051022144825:focusTo...
     def focusToBody (self,event):
         '''Put the keyboard focus in Leo's body pane.'''
-        self.c.bodyWantsFocusNow()
+        c = self.c ; k = c.k
+        c.bodyWantsFocusNow()
+        if k:
+            k.setDefaultInputState()
+            k.showStateAndMode()
 
     def focusToLog (self,event):
         '''Put the keyboard focus in Leo's log pane.'''
@@ -2165,13 +2181,15 @@ class editCommandsClass (baseEditCommandsClass):
             ins = w.toPythonIndex(self.insert)
             i = ins + g.choose(backward,-1,+1) # skip the present character.
             if backward:
-                start = s.rfind('\n',0,i)
-                if start == -1: start = 0
+                # start = s.rfind('\n',0,i)
+                # if start == -1: start = 0
+                start = 0
                 j = s.rfind(ch,start,max(start,i)) # Skip the character at the cursor.
                 if j > -1: self.moveToHelper(event,j,extend)
             else:
-                end = s.find('\n',i)
-                if end == -1: end = len(s)
+                # end = s.find('\n',i)
+                # if end == -1: end = len(s)
+                end = len(s)
                 j = s.find(ch,min(i,end),end) # Skip the character at the cursor.
                 if j > -1: self.moveToHelper(event,j,extend)
             k.resetLabel()
@@ -2911,44 +2929,54 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(w1)
             self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.135:deleteSpaces
-    #@+node:ekr.20050920084036.138:insertNewLine
+    #@+node:ekr.20050920084036.138:insertNewLine (changed)
     def insertNewLine (self,event):
 
         '''Insert a newline at the cursor.'''
 
-        w = self.editWidget(event)
+        c = self.c ; k = c.k ; w = self.editWidget(event)
         if not w: return
-        wname = g.app.gui.widget_name(w)
-        if wname.startswith('head'): return
 
-        self.beginCommand(undoType='insert-newline')
+        name = c.widget_name(w)
+        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
 
-        i = w.getInsertPoint()
-        w.insert(i,'\n')
-        w.setInsertPoint(i+1)
+        self.beginCommand(undoType='newline')
 
-        self.endCommand(changed=True,setLabel=False)
+        # New in Leo 4.5: use the same logic as in selfInsertCommand.
+        self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+        k.setInputState('insert')
+        k.showStateAndMode()
+
+        self.endCommand()
 
     insertNewline = insertNewLine
-    #@-node:ekr.20050920084036.138:insertNewLine
-    #@+node:ekr.20050920084036.86:insertNewLineAndTab
+    #@-node:ekr.20050920084036.138:insertNewLine (changed)
+    #@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
     def insertNewLineAndTab (self,event):
 
         '''Insert a newline and tab at the cursor.'''
 
-        w = self.editWidget(event)
+        c = self.c ; k = c.k
+        w = self.editWidget(event) ; p = c.currentPosition()
         if not w: return
-        wname = g.app.gui.widget_name(w)
-        if wname.startswith('head'): return
+        name = c.widget_name(w)
+        if name.startswith('head'): return
 
         self.beginCommand(undoType='insert-newline-and-indent')
 
-        i = w.getInsertPoint()
-        w.insert(i,'\n\t')
-        w.setInsertPoint(i+2)
+        # New in Leo 4.5: use the same logic as in selfInsertCommand.
+        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+        self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+        self.updateTab(p,w)
+        k.setInputState('insert')
+        k.showStateAndMode()
+
+        # i = w.getInsertPoint()
+        # w.insert(i,'\n\t')
+        # w.setInsertPoint(i+2)
 
         self.endCommand(changed=True,setLabel=False)
-    #@-node:ekr.20050920084036.86:insertNewLineAndTab
+    #@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
     #@+node:ekr.20050920084036.139:insertParentheses
     def insertParentheses (self,event):
 
@@ -3842,28 +3870,36 @@ class editCommandsClass (baseEditCommandsClass):
     def beginningOfLine (self,event):
         '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
         w = self.editWidget(event)
-        i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        i,junk = g.getLine(s,ins)
+        if i > 0 and i == ins:
+            i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=False)
 
     def beginningOfLineExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the start of the line.'''
         w = self.editWidget(event)
-        i,junk = g.getLine(w.getAllText(),w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        i,junk = g.getLine(s,ins)
+        if i > 0 and i == ins:
+            i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=True)
 
     def endOfLine (self,event): # passed
         '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
         w = self.editWidget(event)
-        s = w.getAllText()
-        junk,i = g.getLine(s,w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        junk,i = g.getLine(s,ins)
+        if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=False)
 
     def endOfLineExtendSelection (self,event): # passed
         '''Extend the selection by moving the cursor to the end of the line.'''
         w = self.editWidget(event)
-        s = w.getAllText()
-        junk,i = g.getLine(s,w.getInsertPoint())
+        s = w.getAllText() ; ins = w.getInsertPoint()
+        junk,i = g.getLine(s,ins)
+        if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=True)
 
@@ -4854,6 +4890,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         finally:
             c.endUpdate(False)
         c.redraw_now()
+        c.outerUpdate()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
@@ -7178,6 +7215,7 @@ class minibufferFind (baseEditCommandsClass):
         s = k.getShortcutForCommandName(commandName)
         s = k.prettyPrintKey(s)
         s = k.shortcutFromSetting(s)
+        # g.trace('replaceStringShortcut',s)
         self.replaceStringShortcut = s
     #@-node:ekr.20060123125317.2: ctor (minibufferFind)
     #@+node:ekr.20060124140114: Options (minibufferFind)

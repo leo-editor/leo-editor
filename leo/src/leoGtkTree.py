@@ -147,7 +147,7 @@ class leoGtkTree (leoFrame.leoTree):
 
         ###
         # if self.allocateOnlyVisibleNodes:
-            # self.frame.bar1.bind("<B1-ButtonRelease>", self.redraw_now)
+            # c.bind(self.frame.bar1,"<B1-ButtonRelease>", self.redraw_now)
         #@-node:ekr.20080112145409.322:<< old ivars >>
         #@nl
         #@<< inject callbacks into the position class >>
@@ -256,7 +256,7 @@ class leoGtkTree (leoFrame.leoTree):
             #self.bindingWidget = w = g.app.gui.plainTextWidget(
             #    self.canvas,name='bindingWidget')
 
-            #w.bind('<Key>',k.masterKeyHandler)
+            # c.bind(w,'<Key>',k.masterKeyHandler)
 
             table = (
                 ('<Button-1>',  k.masterClickHandler,          tree.onHeadlineClick),
@@ -325,8 +325,8 @@ class leoGtkTree (leoFrame.leoTree):
 
         if 0: ###
 
-            canvas.bind('<Key>',k.masterKeyHandler)
-            canvas.bind('<Button-1>',self.onTreeClick)
+            c.bind(canvas,'<Key>',k.masterKeyHandler)
+            c.bind(canvas,'<Button-1>',self.onTreeClick)
 
             #@        << make bindings for tagged items on the canvas >>
             #@+node:ekr.20080112145409.327:<< make bindings for tagged items on the canvas >>
@@ -532,12 +532,6 @@ class leoGtkTree (leoFrame.leoTree):
                     def PropagateMouseWheel(e):
                         canvas.event_generate("<MouseWheel>")
                         return "break"
-
-                    ### 
-                    # instance_tag = w.bindtags()[0]
-                    # w.bind_class(instance_tag, "<Button-4>", PropagateButton4)
-                    # w.bind_class(instance_tag, "<Button-5>", PropagateButton5)
-                    # w.bind_class(instance_tag, "<MouseWheel>",PropagateMouseWheel)
                     #@-node:ekr.20080112145409.335:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
                     #@nl
 

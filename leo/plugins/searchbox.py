@@ -152,7 +152,7 @@ class SearchBox:
         # Text entry.
         self.search = Tk.Entry(self._getSizer(toolbar, 24, 130))
         self.search.pack(side="right", padx=3, fill="both", expand=1)
-        self.search.bind("<Return>", self.onKey)
+        c.bind(self.search,"<Return>", self.onKey)
         # Store a list of the last searches.
         self.search_list = []
     #@-node:ekr.20040108054555.3:addWidgets

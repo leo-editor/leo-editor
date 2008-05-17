@@ -160,7 +160,12 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         g.enableIdleTimeHook()
     if not fileName:
         c.redraw_now()
-    c.bodyWantsFocus()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
     g.app.gui.runMainLoop()
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20070930060755:utils

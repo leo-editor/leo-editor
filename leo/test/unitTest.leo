@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="126" left="262" height="613" width="1072"/>
+	<global_window_position top="57" left="298" height="885" width="887"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -97,7 +97,6 @@
 </v>
 <v t="ekr.20050618061835.19"><vh>How about @suite?</vh></v>
 <v t="ekr.20050618061835.20"><vh>Final remarks</vh></v>
-</v>
 </v>
 <v t="ekr.20051104080236" annotate="7d71002e"><vh>Other</vh>
 <v t="ekr.20080405085247.1"><vh>@ignore</vh>
@@ -764,6 +763,15 @@
 <v t="ekr.20051202100844.1"><vh>@test &lt;Delete&gt; key</vh></v>
 <v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
 <v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
+</v>
+<v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
+<v t="ekr.20070926095117"><vh>mungeKey</vh></v>
+</v>
+<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1589,7 +1597,7 @@
 <v t="ekr.20061101121602.302"><vh>@test newline-and-indent</vh>
 <v t="ekr.20061101121602.303"><vh>work</vh></v>
 <v t="ekr.20061101121602.304"><vh>before sel=2.6,2.6</vh></v>
-<v t="ekr.20061101121602.305"><vh>after sel=3.1,3.1</vh></v>
+<v t="ekr.20061101121602.305"><vh>after sel=3.4,3.4</vh></v>
 </v>
 <v t="ekr.20070315065720"><vh>@test next-line</vh>
 <v t="ekr.20070315065720.1"><vh>work</vh></v>
@@ -1961,9 +1969,6 @@
 <v t="ekr.20060203181203.3"><vh>@@test strokeFromEvent (no longer used)</vh></v>
 <v t="ekr.20071113145804.34"><vh>@test isPlainKey</vh></v>
 <v t="ekr.20061104172236.24"><vh>@test k.autoCompleterClass.calltip</vh></v>
-<v t="ekr.20060208195054"><vh>@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
-<v t="ekr.20070926095117"><vh>mungeKey</vh></v>
-</v>
 <v t="ekr.20060328091154"><vh>@test k.registerCommand</vh></v>
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -12718,6 +12723,7 @@ ab</t>
 g.es_print('Test of @command')
 g.app.unitTestDict ['unit-test-command1'] = True</t>
 <t tx="ekr.20051107115231.9">c.redraw_now() # To make node visible
+c.outerUpdate()
 
 c2 = c.new()
 p2 = c2.currentPosition()
@@ -12796,37 +12802,40 @@ finally:
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
 <t tx="ekr.20051107115231.17">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-c.editPosition(p)
-w = c.edit_widget(p)
-# print 'guiName',g.app.gui.guiName()
-try:
-    assert w, 'oops1'
-    wName = g.app.gui.widget_name(w)
-    assert wName.startswith('head'),'w.name:%s' % wName
-    w.setSelectionRange('end','end')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
-    if g.app.gui.guiName() != 'nullGui':
-        assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
-    k.manufactureKeyPressForCommandName(w,'undo')
-    if g.app.gui.guiName() != 'nullGui':
-        assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-    assert p.headString() == h,'oops5 got: %s' % p.headString()
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.redraw_now() # To make node visible
+    c.editPosition(p)
+    w = c.edit_widget(p)
+    # print 'guiName',g.app.gui.guiName()
+    try:
+        assert w, 'oops1'
+        wName = g.app.gui.widget_name(w)
+        assert wName.startswith('head'),'w.name:%s' % wName
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('&lt;Return&gt;')
+        assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
+        k.manufactureKeyPressForCommandName(w,'undo')
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+        assert p.headString() == h,'oops5 got: %s' % p.headString()
+    finally:
+        if 1:
+            p.initHeadString(h)
+            c.frame.tree.setHeadline(p,h)
+            c.redraw_now()
+            # c.outerUpdate()</t>
 <t tx="ekr.20051107115231.18">import leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -12911,30 +12920,32 @@ finally:
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
 <t tx="ekr.20051107115231.21">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-tree.editLabel(p)
-w = c.edit_widget(p)
-try:
-    assert w
-    w.setSelectionRange('end','end')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h + 'XYZ'
-    k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.redraw_now() # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('&lt;Return&gt;')
+        assert p.headString() == h + 'XYZ'
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.headString() == h
+    finally:
+        if 1:
+            p.initHeadString(h)
+            c.frame.tree.setHeadline(p,h)
+            c.redraw_now()</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -12944,6 +12955,7 @@ c.selectPosition(p)
 c.bodyWantsFocusNow()
 paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
+c.outerUpdate()
 n = c.frame.body.colorizer.count
 if 1:
     event = g.Bunch(widget=c.frame.body.bodyCtrl)
@@ -12956,6 +12968,7 @@ else:
 try:
     # There is no colorizer to test for wx.
     if g.app.gui.guiName() == 'tkinter':
+        c.outerUpdate() # Force the coloring before doing the test.
         assert c.frame.body.colorizer.count &gt; n, 'did not recolor text'
 finally:
     if 1:
@@ -13091,8 +13104,9 @@ assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.setBodyString(p,'a')
 c.redraw_now() # To make node visible
-n = c.frame.tree.redrawCount
+c.outerUpdate()
 c.bodyWantsFocusNow()
+n = c.frame.tree.redrawCount
 try:
     c.frame.body.bodyCtrl.event_generate('a')
     n2 = c.frame.tree.redrawCount
@@ -13290,32 +13304,34 @@ if p:
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leoTest ; u = leoTest.testUtils(c)
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocusNow()
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-if 1: # New code calls pasteText directly.
-    event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    c.frame.pasteText(event)
-else: # old code uses menu.invoke.
-    # Post by hand.
-    menu = c.frame.menu.getMenu('Edit')
-    i = menu.index('Paste')
-    menu.invoke(i)
-# Move around and and make sure it doesn't change.
-try:
-    assert p.bodyString() == paste, 'paste1 failed'
-    c.selectPosition(p.threadBack())
-    assert p.bodyString() == paste, 'stick failed'
+
+if c.k.defaultUnboundKeyAction == 'insert':
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
     c.selectPosition(p)
-    assert p.bodyString() == paste, 'revisit failed'
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()
+    c.bodyWantsFocusNow()
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    if 1: # New code calls pasteText directly.
+        event = g.Bunch(widget=c.frame.body.bodyCtrl)
+        c.frame.pasteText(event)
+    else: # old code uses menu.invoke.
+        # Post by hand.
+        menu = c.frame.menu.getMenu('Edit')
+        i = menu.index('Paste')
+        menu.invoke(i)
+    # Move around and and make sure it doesn't change.
+    try:
+        assert p.bodyString() == paste, 'paste1 failed'
+        c.selectPosition(p.threadBack())
+        assert p.bodyString() == paste, 'stick failed'
+        c.selectPosition(p)
+        assert p.bodyString() == paste, 'revisit failed'
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()
 </t>
 <t tx="ekr.20060208072331">import leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -13352,9 +13368,11 @@ h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
-c.redraw_now() # To make node visible
-n = c.frame.tree.redrawCount
 c.bodyWantsFocusNow()
+c.redraw_now() # To make node visible
+c.outerUpdate()
+n = c.frame.tree.redrawCount
+
 assert not p.bodyString(), 'oops1'
 try:
     # print 'before insert a',c.currentPosition()
@@ -13364,6 +13382,7 @@ try:
     assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
     if g.app.gui.guiName() != 'nullGui':
         n2 = c.frame.tree.redrawCount
+        c.outerUpdate() # Force the coloring before doing the test.
         assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
 finally:
     if 1:
@@ -13380,7 +13399,8 @@ try:
     c.bodyWantsFocusNow()
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
-    w.event_generate('&lt;Delete&gt;')
+    c.outerUpdate() # This fixed the problem.
+    w.event_generate('&lt;Delete&gt;') # Calls c.outerUpdate()
     assert p.bodyString() == s[:-1],'oops1: expected "AB", got %s' % p.bodyString()
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
@@ -13450,11 +13470,7 @@ for key in keys1:
             key.startswith('enter-') and key.endswith('-mode') or
             key.startswith('press-') and key.endswith('-button') or
             key.startswith('delete-') and key.endswith('-button') or
-            key.endswith('-menu') or
-            key.startswith('nav-') or
-            key.startswith('toolbar-') or
-            key.startswith('rclick-') or
-            key == 'toggle-iconbar'
+            key.startswith('nav-') and key.endswith('-menu')
         ):
             vals2.append(key)
         elif key in buttonKeys or key.lower() in buttonKeys:
@@ -15197,7 +15213,7 @@ last line
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.303">first line
 line 1
-	
+    
     line a
         line b
 line c
@@ -15212,7 +15228,7 @@ last line
 </t>
 <t tx="ekr.20061101121602.305">first line
 line 1
-	
+    
     line a
         line b
 line c
@@ -20399,24 +20415,30 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
+    c.outerUpdate() # This call is required so the expansion actually happens.
     c.setCurrentPosition(p3)
     c.deleteOutline()
+    c.outerUpdate()
     p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1'
+    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
     assert p.next().headString() == 'C', 'fail 2'
     c.undoer.undo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.back() == p2, 'fail 4'
     assert p.next() == p4, 'fail 5'
     c.undoer.redo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.headString() == 'A', 'fail 1-2'
     assert p.next().headString() == 'C', 'fail 2-2'
     c.undoer.undo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.back() == p2, 'fail 4-2'
     assert p.next() == p4, 'fail 5-2'
     c.undoer.redo()
+    c.outerUpdate()
     p = c.currentPosition()
     assert p.headString() == 'A', 'fail 1-3'
     assert p.next().headString() == 'C', 'fail 2-3'
@@ -20556,5 +20578,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
+<t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
 </tnodes>
 </leo_file>

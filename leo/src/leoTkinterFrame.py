@@ -66,7 +66,27 @@ class leoTkinterBody (leoFrame.leoBody):
         frame = self.frame ; c = self.c ; k = c.k
         if not w: w = self.bodyCtrl
 
-        w.bind('<Key>', k.masterKeyHandler)
+        c.bind(w,'<Key>', k.masterKeyHandler)
+
+        def onFocusOut(event,c=c):
+            # This interferes with inserting new nodes.
+                # c.k.setDefaultInputState()
+            self.setEditorColors(
+                bg=c.k.unselected_body_bg_color,
+                fg=c.k.unselected_body_fg_color)
+            # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+            # But we suppress coloring in the widget.
+            oldState = k.unboundKeyAction
+            k.unboundKeyAction = k.defaultUnboundKeyAction
+            c.k.showStateAndMode(w=c.frame.tree.canvas)
+            k.unboundKeyAction = oldState
+
+        def onFocusIn(event,c=c):
+            # g.trace('callback')
+            c.k.setDefaultInputState()
+
+        c.bind(w,'<FocusOut>', onFocusOut)
+        c.bind(w,'<FocusIn>', onFocusIn)
 
         table = [
             ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -87,7 +107,7 @@ class leoTkinterBody (leoFrame.leoBody):
             def bodyClickCallback(event,handler=handler,func=func):
                 return handler(event,func)
 
-            w.bind(kind,bodyClickCallback)
+            c.bind(w,kind,bodyClickCallback)
     #@-node:ekr.20031218072017.838:tkBody.createBindings
     #@+node:ekr.20031218072017.3998:tkBody.createControl
     def createControl (self,parentFrame,p):
@@ -307,11 +327,12 @@ class leoTkinterBody (leoFrame.leoBody):
         if not g.app.unitTesting:
             self.bodyCtrl.after_idle(function,*args,**keys)
     #@-node:ekr.20031218072017.4005:Idle time...
-    #@+node:ekr.20031218072017.4017:Menus
+    #@+node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
     def bind (self,*args,**keys):
 
+        c = self.c
         return self.bodyCtrl.bind(*args,**keys)
-    #@-node:ekr.20031218072017.4017:Menus
+    #@-node:ekr.20031218072017.4017:Menus (tkBody) (May cause problems)
     #@+node:ekr.20070228081242:Text (now in base class)
     # def getAllText (self):              return self.bodyCtrl.getAllText()
     # def getInsertPoint(self):           return self.bodyCtrl.getInsertPoint()
@@ -472,15 +493,15 @@ class leoTkinterFrame (leoFrame.leoFrame):
             f.top.option_readfile(g.app.user_xresources_path)
 
         f.top.protocol("WM_DELETE_WINDOW", f.OnCloseLeoEvent)
-        f.top.bind("<Button-1>", f.OnActivateLeoEvent)
+        c.bind(f.top,"<Button-1>", f.OnActivateLeoEvent)
 
-        f.top.bind("<Control-KeyPress>",f.OnControlKeyDown)
-        f.top.bind("<Control-KeyRelease>",f.OnControlKeyUp)
+        c.bind(f.top,"<Control-KeyPress>",f.OnControlKeyDown)
+        c.bind(f.top,"<Control-KeyRelease>",f.OnControlKeyUp)
 
         # These don't work on Windows. Because of bugs in window managers,
         # there is NO WAY to know which window is on top!
-        # f.top.bind("<Activate>",f.OnActivateLeoEvent)
-        # f.top.bind("<Deactivate>",f.OnDeactivateLeoEvent)
+        # c.bind(f.top,"<Activate>",f.OnActivateLeoEvent)
+        # c.bind(f.top,"<Deactivate>",f.OnDeactivateLeoEvent)
 
         # Create the outer frame, the 'hull' component.
         f.outerFrame = Tk.Frame(top)
@@ -584,7 +605,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20041221071131.1:f.createTkTreeCanvas & callbacks
     def createTkTreeCanvas (self,parentFrame,scrolls,pack):
 
-        frame = self
+        frame = self ; c = frame.c
 
         canvas = Tk.Canvas(parentFrame,name="canvas",
             bd=0,bg="white",relief="flat")
@@ -596,7 +617,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         # Bind mouse wheel event to canvas
         if sys.platform != "win32": # Works on 98, crashes on XP.
-            canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
             if 1: # New in 4.3.
                 #@            << workaround for mouse-wheel problems >>
                 #@+node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
@@ -610,7 +631,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         e.delta = -120
                         return frame.OnMouseWheel(e)
 
-                canvas.bind("<ButtonPress>",mapWheel,add=1)
+                c.bind(canvas,"<ButtonPress>",mapWheel,add=1)
                 #@-node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
                 #@nl
 
@@ -627,11 +648,11 @@ class leoTkinterFrame (leoFrame.leoFrame):
         if pack:
             canvas.pack(expand=1,fill="both")
 
-        canvas.bind("<Button-1>", frame.OnActivateTree)
+        c.bind(canvas,"<Button-1>", frame.OnActivateTree)
 
         # Handle mouse wheel in the outline pane.
         if sys.platform == "linux2": # This crashes tcl83.dll
-            canvas.bind("<MouseWheel>", frame.OnMouseWheel)
+            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
 
         # g.print_bindings("canvas",canvas)
         return canvas
@@ -736,11 +757,13 @@ class leoTkinterFrame (leoFrame.leoFrame):
     #@+node:ekr.20031218072017.3947:bindBar
     def bindBar (self, bar, verticalFlag):
 
+        c = self.c
+
         if verticalFlag == self.splitVerticalFlag:
-            bar.bind("<B1-Motion>", self.onDragMainSplitBar)
+            c.bind(bar,"<B1-Motion>", self.onDragMainSplitBar)
 
         else:
-            bar.bind("<B1-Motion>", self.onDragSecondarySplitBar)
+            c.bind(bar,"<B1-Motion>", self.onDragSecondarySplitBar)
     #@-node:ekr.20031218072017.3947:bindBar
     #@+node:ekr.20031218072017.3949:divideAnySplitter
     # This is the general-purpose placer for splitters.
@@ -962,7 +985,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                 self.statusFrame,
                 height=1,state="disabled",bg=bg,relief="groove",name='status-line')
             self.textWidget.pack(side="left",expand=1,fill="x")
-            w.bind("<Button-1>", self.onActivate)
+            c.bind(w,"<Button-1>", self.onActivate)
             self.show()
 
             c.frame.statusFrame = self.statusFrame
@@ -1059,9 +1082,9 @@ class leoTkinterFrame (leoFrame.leoFrame):
         #@+node:ekr.20071215114822:setBindings (tkStatusLine)
         def setBindings (self):
 
-            k = self.c.keyHandler ; w = self.textWidget
+            c = self.c ; k = c.keyHandler ; w = self.textWidget
 
-            w.bind('<Key>',k.masterKeyHandler)
+            c.bind(w,'<Key>',k.masterKeyHandler)
 
             k.completeAllBindingsForWidget(w)
         #@-node:ekr.20071215114822:setBindings (tkStatusLine)
@@ -1139,7 +1162,14 @@ class leoTkinterFrame (leoFrame.leoFrame):
             except:
                 n = g.app.iconWidgetCount = 1
 
-            if not command:
+            if command:
+                def commandCallBack(c=c,command=command):
+                    val = command()
+                    if c.exists:
+                        c.bodyWantsFocus()
+                        c.outerUpdate()
+                    return val
+            else:
                 def commandCallback():
                     print "command for widget %s" % (n)
                 command = commandCallback
@@ -1209,6 +1239,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         def deleteButton (self,w):
 
             w.pack_forget()
+            self.c.bodyWantsFocus()
+            self.c.outerUpdate()
         #@-node:ekr.20061213091114.1:deleteButton (new in Leo 4.4.3)
         #@+node:ekr.20041223114821:getFrame
         def getFrame (self):
@@ -1319,12 +1351,12 @@ class leoTkinterFrame (leoFrame.leoFrame):
             table.extend(table2)
 
         for kind,callback in table:
-            w.bind(kind,callback)
+            c.bind(w,kind,callback)
 
         if 0:
             if sys.platform.startswith('win'):
                 # Support Linux middle-button paste easter egg.
-                w.bind("<Button-2>",f.OnPaste)
+                c.bind(w,"<Button-2>",f.OnPaste)
     #@-node:ekr.20060203114017:f.setMinibufferBindings
     #@-node:ekr.20051014154752:Minibuffer methods
     #@+node:ekr.20031218072017.3967:Configuration (tkFrame)
@@ -1400,6 +1432,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
         frame.log.setColorFromConfig()
 
         c.redraw_now()
+
+    #@nonl
     #@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
     #@+node:ekr.20031218072017.1625:setInitialWindowGeometry (tkFrame)
     def setInitialWindowGeometry(self):
@@ -1544,7 +1578,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             w = c.get_focus()
             if w != c.frame.body.bodyCtrl:
                 frame.tree.OnDeactivate()
-            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()
         except:
             g.es_event_exception("activate body")
 
@@ -1584,6 +1618,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
                 self.OnActivateBody(event=event)
+                c.k.showStateAndMode()
             g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodyclick")
@@ -1594,6 +1629,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
                 pass # By default Leo does nothing.
+                c.k.showStateAndMode()
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
@@ -2067,7 +2103,7 @@ class leoTkinterLog (leoFrame.leoLog):
         def hullMenuCallback(event):
             return self.onRightClick(event,menu)
 
-        self.nb.bind('<Button-3>',hullMenuCallback)
+        c.bind(self.nb,'<Button-3>',hullMenuCallback)
 
         self.nb.pack(fill='both',expand=1)
         self.selectTab('Log') # Create and activate the default tabs.
@@ -2589,7 +2625,7 @@ class leoTkinterLog (leoFrame.leoLog):
             ('<Button-1>',  k.masterClickHandler),
             ('<Button-3>',  logTextRightClickCallback),
         ):
-            w.bind(kind,handler)
+            c.bind(w,kind,handler)
 
         # Clicks in the tab area are harmless: use the old code.
         def tabMenuRightClickCallback(event,menu=self.menu):
@@ -2598,8 +2634,8 @@ class leoTkinterLog (leoFrame.leoLog):
         def tabMenuClickCallback(event,tabName=tabName):
             return self.onClick(event,tabName)
 
-        tab.bind('<Button-1>',tabMenuClickCallback)
-        tab.bind('<Button-3>',tabMenuRightClickCallback)
+        c.bind(tab,'<Button-1>',tabMenuClickCallback)
+        c.bind(tab,'<Button-3>',tabMenuRightClickCallback)
 
         k.completeAllBindingsForWidget(w)
     #@-node:ekr.20051022162730:setTabBindings
@@ -2619,8 +2655,8 @@ class leoTkinterLog (leoFrame.leoLog):
         def tabMenuClickCallback(event,tabName=tabName):
             return self.onClick(event,tabName)
 
-        tab.bind('<Button-1>',tabMenuClickCallback)
-        tab.bind('<Button-3>',tabMenuRightClickCallback)
+        c.bind(tab,'<Button-1>',tabMenuClickCallback)
+        c.bind(tab,'<Button-3>',tabMenuRightClickCallback)
 
     #@-node:ekr.20071003090546:setCanvasTabBindings
     #@+node:ekr.20051019134106:Tab menu callbacks & helpers
@@ -2696,7 +2732,7 @@ class leoTkinterLog (leoFrame.leoLog):
         b.pack(side='left')
 
         g.app.gui.set_focus(c,e)
-        e.bind('<Return>',getNameCallback)
+        c.bind(e,'<Return>',getNameCallback)
     #@-node:ekr.20051019172811:getTabName
     #@-node:ekr.20051019134106:Tab menu callbacks & helpers
     #@-node:ekr.20051018061932:Tab (TkLog)
@@ -2830,7 +2866,7 @@ class leoTkinterLog (leoFrame.leoLog):
     #@+node:ekr.20051019201809.1:createFontPicker
     def createFontPicker (self,tabName):
 
-        log = self
+        log = self ; c = self.c
         parent = log.frameDict.get(tabName)
         w = log.textDict.get(tabName)
         w.pack_forget()
@@ -2913,7 +2949,7 @@ class leoTkinterLog (leoFrame.leoLog):
         for w in (familyBox,slantBox,weightBox):
             w.configure(selectioncommand=fontCallback)
 
-        sizeEntry.bind('<Return>',fontCallback)
+        c.bind(sizeEntry,'<Return>',fontCallback)
         #@-node:ekr.20051019202328:<< create and bind the callbacks >>
         #@nl
         self.createBindings()
@@ -2934,7 +2970,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
         w = self.sampleWidget
         for event, callback in table:
-            w.bind(event,callback)
+            c.bind(w,event,callback)
 
         k.completeAllBindingsForWidget(w)
     #@-node:ekr.20060726133852:createBindings (fontPicker)
@@ -3109,6 +3145,7 @@ class leoTkTextWidget (Tk.Text):
     # def _see(self,i):                   return self.widget.see(i)
     # def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
     # def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+    # def _setForegroundColor(self,color): return self.widget.configure(background=color)
     # def _setFocus(self):                return self.widget.focus_set()
     # def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
     # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
@@ -3366,13 +3403,18 @@ class leoTkTextWidget (Tk.Text):
 
         Tk.Text.configure(w,state=state)
     #@-node:ekr.20061113151148.20:setAllText
-    #@+node:ekr.20070218122857:setBackgroundColor
+    #@+node:ekr.20070218122857:setBackgroundColor & setForegroundColor
     def setBackgroundColor (self,color):
 
         w = self
         w.configure(background=color)
+
+    def setForegroundColor (self,color):
+
+        w = self
+        w.configure(foreground=color)
     #@nonl
-    #@-node:ekr.20070218122857:setBackgroundColor
+    #@-node:ekr.20070218122857:setBackgroundColor & setForegroundColor
     #@+node:ekr.20061113151148.21:setInsertPoint
     def setInsertPoint (self,i): # tkTextWidget.
 

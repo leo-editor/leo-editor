@@ -82,10 +82,13 @@ globalDirectiveList = [
 
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
+
+# "compile-time" constants.
+# It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
-    # True: unify vnodes and tnodes into a single vnode.
-    # Warning: this is a "compile-time" constant:
-    # it makes absolutely no sense to change this after Leo loads.
+    # True: (Not recommended) unify vnodes and tnodes into a single vnode.
+newDrawing = True
+    # True: use c.outerUpdate to complete drawing, focus, recoloring.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -1905,6 +1908,7 @@ def openWithFileName(fileName,old_c,
         if munge(fileName) == munge(frame.c.mFileName):
             frame.bringToFront()
             frame.c.setLog()
+            frame.c.outerUpdate()
             return True, frame
     if old_c:
         # New in 4.4: We must read the file *twice*.
@@ -1956,11 +1960,15 @@ def openWithFileName(fileName,old_c,
         if c.chapterController:
             c.chapterController.finishCreate()
         k = c.k
-        if k: k.setInputState(k.unboundKeyAction)
+        if k:
+            k.setDefaultInputState()
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
+        if k:
+            k.showStateAndMode()
+
     return True, frame
 #@nonl
 #@-node:ekr.20031218072017.2052:g.openWithFileName

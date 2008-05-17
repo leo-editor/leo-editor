@@ -74,7 +74,7 @@ def addURLPane (tag,keywords):
     ef.pack(expand=1,fill='x')
     b = Tk.Button(x,text='Load')
     b.pack()
-    b.bind('<Button-1>',lambda event,entry=e,c=c: load(event,entry,c))
+    c.bind(b,'<Button-1>',lambda event,entry=e,c=c: load(event,entry,c))
 #@nonl
 #@-node:ekr.20040831115238.1:addURLPane
 #@+node:ekr.20040831115238.2:load

@@ -90,6 +90,7 @@ class baseTextWidget:
         #g.trace('text: keycode %3s keysym %s' % (keycode,keysym))
         if keysym:
             c.k.masterKeyHandler(event,stroke=keysym)
+            c.outerUpdate()
     #@nonl
     #@-node:ekr.20070228074312.2:baseTextWidget.onChar
     #@+node:ekr.20070228074312.3:Do-nothing
@@ -114,6 +115,7 @@ class baseTextWidget:
     def _see(self,i):                   self.oops()
     def _setAllText(self,s):            self.oops()
     def _setBackgroundColor(self,color): self.oops()
+    def _setForegroundColor(self,color): self.oops()
     def _setFocus(self):                self.oops()
     def _setInsertPoint(self,i):        self.oops()
     def _setSelectionRange(self,i,j):   self.oops()
@@ -233,6 +235,7 @@ class baseTextWidget:
 
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)
+        c.outerUpdate()
     #@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
     #@+node:ekr.20070228074312.16:flashCharacter (to do)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
@@ -404,7 +407,7 @@ class baseTextWidget:
         w._setAllText(s)
     #@nonl
     #@-node:ekr.20070228074312.32:setAllText
-    #@+node:ekr.20070228074312.33:setBackgroundColor & SetBackgroundColour
+    #@+node:ekr.20070228074312.33:setBackgroundColor
     def setBackgroundColor (self,color):
 
         w = self
@@ -418,7 +421,22 @@ class baseTextWidget:
 
     SetBackgroundColour = setBackgroundColor
     #@nonl
-    #@-node:ekr.20070228074312.33:setBackgroundColor & SetBackgroundColour
+    #@-node:ekr.20070228074312.33:setBackgroundColor
+    #@+node:ekr.20080510153327.3:setForegroundColor
+    def setForegroundColor (self,color):
+
+        w = self
+
+        # Translate tk colors to wx colors.
+        d = { 'lightgrey': 'light grey', 'lightblue': 'leo blue',}
+
+        color = d.get(color,color)
+
+        return w._setForegroundColor(color)
+
+    SetForegroundColour = setForegroundColor
+    #@nonl
+    #@-node:ekr.20080510153327.3:setForegroundColor
     #@+node:ekr.20070228074312.34:setFocus (baseText)
     def setFocus (self):
 
@@ -626,6 +644,7 @@ class stringTextWidget (baseTextWidget):
         self.ins = i
         self.sel = i,i
     def _setBackgroundColor(self,color): pass
+    def _setForegroundColor(self,color): pass
     def _setFocus(self):                pass
     def _setInsertPoint(self,i):
         if self.trace: g.trace(self,'i',i)
@@ -764,23 +783,30 @@ class leoBody:
     def scheduleIdleTimeRoutine (self,function,*args,**keys): self.oops()
     #@-node:ekr.20061109173122:leoBody: must be defined in subclasses
     #@+node:ekr.20061109173021:leoBody: must be defined in the base class
-    #@+node:ekr.20031218072017.3677:Coloring
+    #@+node:ekr.20031218072017.3677:Coloring (leoBody)
     def getColorizer(self):
 
         return self.colorizer
 
-    def recolor_now(self,p,incremental=False):
-
-        self.colorizer.colorize(p.copy(),incremental)
-
-    def recolor(self,p,incremental=False):
-
-        self.colorizer.colorize(p.copy(),incremental)
-
     def updateSyntaxColorer(self,p):
 
         return self.colorizer.updateSyntaxColorer(p.copy())
-    #@-node:ekr.20031218072017.3677:Coloring
+
+
+    if g.newDrawing:
+
+        def recolor(self,p,incremental=False):
+            self.c.requestRecolorFlag = True
+            self.c.incrementalRecolorFlag = incremental
+    else:
+
+        def recolor(self,p,incremental=False):
+            self.colorizer.colorize(p.copy(),incremental)
+
+    recolor_now = recolor
+
+
+    #@-node:ekr.20031218072017.3677:Coloring (leoBody)
     #@+node:ekr.20060528100747:Editors (leoBody)
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
 
@@ -1836,12 +1862,12 @@ class leoFrame:
             finally:
                 c.endUpdate()
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand
-    #@+node:ekr.20031218072017.3982:endEditLabelCommand
+    #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
 
         '''End editing of a headline and move focus to the body pane.'''
 
-        frame = self ; c = frame.c
+        frame = self ; c = frame.c ; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
         else:
@@ -1851,7 +1877,12 @@ class leoFrame:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@-node:ekr.20031218072017.3982:endEditLabelCommand
+
+                if k:
+                    k.setDefaultInputState()
+                    # Recolor the *body* text, **not** the headline.
+                    k.showStateAndMode(w=c.frame.body.bodyCtrl)
+    #@-node:ekr.20031218072017.3982:frame.endEditLabelCommand
     #@+node:ekr.20031218072017.3983:insertHeadlineTime
     def insertHeadlineTime (self,event=None):
 
@@ -2403,13 +2434,12 @@ class leoTree:
 
         self.setEditPosition(None) # That is, self._editPosition = None
 
-        # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-        # if k:
-            # k.setDefaultUnboundKeyAction()
-            # k.showStateAndMode() # Destroys UNL info.
-
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
+
+        if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+            k.setDefaultInputState()
+            k.showStateAndMode()
 
         if 0: # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()
@@ -2639,7 +2669,7 @@ class leoTree:
 
     def treeSelectHelper (self,p,updateBeadList,scroll):
 
-        c = self.c ; frame = c.frame ; trace = False
+        c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         old_p = c.currentPosition()
 
@@ -2685,7 +2715,7 @@ class leoTree:
             s = g.toUnicode(p.v.t._bodyString,"utf-8")
             old_s = w.getAllText()
 
-            if True and p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+            if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
                 pass
             else:
                 # This destroys all color tags, so do a full recolor.

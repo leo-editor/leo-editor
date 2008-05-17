@@ -275,7 +275,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.expandedVisibleArea = None
 
         if self.allocateOnlyVisibleNodes:
-            self.frame.bar1.bind("<Button-1-ButtonRelease>", self.redraw_now)
+            c.bind(self.frame.bar1,"<Button-1-ButtonRelease>", self.redraw_now)
         #@-node:ekr.20040803072955.18:<< old ivars >>
         #@nl
         #@    << inject callbacks into the position class >>
@@ -350,12 +350,12 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20060131173440:tkTree.setBindingsHelper
     def setBindingsHelper (self):
 
-        tree = self ; k = self.c.k
+        tree = self ; c = tree.c ; k = c.k
 
         self.bindingWidget = w = g.app.gui.plainTextWidget(
             self.canvas,name='bindingWidget')
 
-        w.bind('<Key>',k.masterKeyHandler)
+        c.bind(w,'<Key>',k.masterKeyHandler)
 
         table = [
             ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
@@ -368,7 +368,7 @@ class leoTkinterTree (leoFrame.leoTree):
             def treeBindingCallback(event,handler=handler,func=func):
                 # g.trace('func',func)
                 return handler(event,func)
-            w.bind(a,treeBindingCallback)
+            c.bind(w,a,treeBindingCallback)
 
         self.textBindings = w.bindtags()
     #@-node:ekr.20060131173440:tkTree.setBindingsHelper
@@ -376,11 +376,12 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20070327103016:tkTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
-        k = self.c.k
+        c = self.c ; k = c.k
 
-        canvas.bind('<Key>',k.masterKeyHandler)
-        canvas.bind('<Button-1>',self.onTreeClick)
-        canvas.bind('<Button-3>',self.onTreeRightClick)
+        c.bind(canvas,'<Key>',k.masterKeyHandler)
+        c.bind(canvas,'<Button-1>',self.onTreeClick)
+        c.bind(canvas,'<Button-3>',self.onTreeRightClick)
+        # c.bind(canvas,'<FocusIn>',self.onFocusIn)
 
         #@    << make bindings for tagged items on the canvas >>
         #@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
@@ -1656,6 +1657,7 @@ class leoTkinterTree (leoFrame.leoTree):
             g.doHook("boxclick2",c=c,p=p,v=p,event=event)
         finally:
             c.endUpdate()
+        c.outerUpdate()
     #@-node:ekr.20040803072955.79:onClickBoxClick
     #@+node:bobjack.20080401090801.2:onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
@@ -1678,6 +1680,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         g.doHook('rclick-popup',
             c=self.c, p=p, event=event, context_menu='plusbox')
+
+        c.outerUpdate()
 
         return 'break'
     #@-node:bobjack.20080401090801.4:onPlusBoxRightClick
@@ -1741,6 +1745,8 @@ class leoTkinterTree (leoFrame.leoTree):
             # Must set self.drag_p = None first.
             c.endUpdate(redrawFlag)
             c.recolor_now() # Dragging can affect coloring.
+        c.outerUpdate()
+    #@nonl
     #@-node:ekr.20041111115908:endDrag
     #@+node:ekr.20041111114944:startDrag
     # This precomputes numberOfVisibleNodes(), a significant optimization.
@@ -1873,6 +1879,8 @@ class leoTkinterTree (leoFrame.leoTree):
                 c.frame.findPanel.handleUserClick(p)
         g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
+        c.outerUpdate()
+
         return "break" # disable expanded box handling.
     #@-node:ekr.20040803072955.81:onIconBoxClick
     #@+node:ekr.20040803072955.89:onIconBoxRightClick
@@ -1900,6 +1908,8 @@ class leoTkinterTree (leoFrame.leoTree):
             g.es_event_exception("iconrclick")
 
         self._block_canvas_menu = True
+
+        c.outerUpdate()
         return 'break'
     #@-node:ekr.20040803072955.89:onIconBoxRightClick
     #@+node:ekr.20040803072955.82:onIconBoxDoubleClick
@@ -1922,7 +1932,8 @@ class leoTkinterTree (leoFrame.leoTree):
         except:
             g.es_event_exception("icondclick")
 
-        return 'break' # 11/19/06
+        c.outerUpdate()
+        return 'break'
     #@-node:ekr.20040803072955.82:onIconBoxDoubleClick
     #@-node:ekr.20040803072955.80:Icon Box...
     #@+node:ekr.20040803072955.105:OnActivateHeadline (tkTree)
@@ -1963,7 +1974,8 @@ class leoTkinterTree (leoFrame.leoTree):
                 # An important detail.
                 # The *canvas* (not the headline) gets the focus so that
                 # tree bindings take priority over text bindings.
-                c.treeWantsFocus()
+                c.treeWantsFocusNow() # Now. New in Leo 4.5.
+                c.outerUpdate()
                 self.active = False
                 returnVal = 'break'
             #@nonl
@@ -2013,7 +2025,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 g.trace('*'*20,'oops')
         if not p: return 'break'
 
-        # g.trace(g.app.gui.widget_name(w)) #p.headString())
+        # g.trace(g.app.gui.widget_name(w),p and p.headString())
 
         c.setLog()
 
@@ -2057,6 +2069,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         # 'continue' *is* correct here.
         # 'break' would make it impossible to unselect the headline text.
+
         return 'continue'
     #@-node:ekr.20040803072955.83:onHeadlineRightClick
     #@-node:ekr.20040803072955.84:Text Box...
@@ -2077,6 +2090,7 @@ class leoTkinterTree (leoFrame.leoTree):
             tree.dimEditLabel()
         finally:
             c.endUpdate(False)
+            c.outerUpdate()
     #@-node:ekr.20040803072955.108:tree.OnDeactivate
     #@+node:ekr.20040803072955.110:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -2247,6 +2261,7 @@ class leoTkinterTree (leoFrame.leoTree):
             c.treeWantsFocusNow()
 
         g.app.gui.killPopupMenu()
+        c.outerUpdate()
 
         return 'break'
     #@-node:ekr.20051022141020:onTreeClick
@@ -2260,6 +2275,8 @@ class leoTkinterTree (leoFrame.leoTree):
             return 'break'
 
         g.doHook('rclick-popup', c=self.c, event=event, context_menu='canvas')
+
+        c.outerUpdate()
         return 'break'
     #@-node:bobjack.20080401090801.3:onTreeRightClick
     #@-node:ekr.20040803072955.71:Event handlers (tkTree)
@@ -2401,7 +2418,7 @@ class leoTkinterTree (leoFrame.leoTree):
         """Start editing p's headline."""
 
         c = self.c
-        trace = not g.app.unitTesting and (False or self.trace_edit)
+        trace = (False or self.trace_edit) and not g.app.unitTesting
 
         if p and p != self.editPosition():
 
@@ -2413,15 +2430,18 @@ class leoTkinterTree (leoFrame.leoTree):
                 self.endEditLabel()
             finally:
                 c.endUpdate(True)
+                c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p
 
         if trace: g.trace(c.edit_widget(p))
 
-        if p and c.edit_widget(p):
+        w = c.edit_widget(p)
+        if p and w:
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             c.headlineWantsFocus(p) # Make sure the focus sticks.
+            c.k.showStateAndMode(w)
     #@-node:ekr.20040803072955.127:tree.editLabel
     #@+node:ekr.20040803072955.134:tree.set...LabelState
     #@+node:ekr.20040803072955.135:setEditLabelState
@@ -2450,6 +2470,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c
 
+        # g.trace(p,c.edit_widget(p))
+
 
         if p and c.edit_widget(p):
 
@@ -2473,8 +2495,8 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c = self.c ; w = c.edit_widget(p)
 
-        if self.trace and self.verbose:
-            if not self.redrawing:
+        if False or (self.trace and self.verbose):
+            # if not self.redrawing:
                 g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
                 # import traceback ; traceback.print_stack(limit=6)
 

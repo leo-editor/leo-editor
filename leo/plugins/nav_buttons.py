@@ -264,8 +264,8 @@ def init ():
                 # Create the marks menu generator commands.
                 self.addGeneratorCommands()
 
-                self.top.bind("<Up>",self.up)
-                self.top.bind("<Down>",self.down)
+                c.bind(self.top,"<Up>",self.up)
+                c.bind(self.top,"<Down>",self.down)
             #@-node:edream.110203113231.776: marksDialog.__init__
             #@+node:ekr.20050219131752:addButtons
             def addButtons (self):
@@ -280,7 +280,7 @@ def init ():
                 self.marks_button = btn = c.frame.addIconButton(
                     text="Marks",command=marksButtonCallback)
 
-                btn.bind('<Button-3>', self.rClickMarks)
+                c.bind(btn,'<Button-3>', self.rClickMarks)
             #@-node:ekr.20050219131752:addButtons
             #@+node:bobjack.20080411192347.2:rClickMarks
             def rClickMarks(self, event):
@@ -458,8 +458,8 @@ def init ():
                 self.addGeneratorCommands()
 
 
-                self.top.bind("<Up>",self.up)
-                self.top.bind("<Down>",self.down)
+                c.bind(self.top,"<Up>",self.up)
+                c.bind(self.top,"<Down>",self.down)
             #@-node:edream.110203113231.781:__init__  recentSectionsDialog
             #@+node:ekr.20080311065442.1:addCommand
             def addCommand (self):
@@ -606,7 +606,7 @@ def init ():
                 self.sections_button = btn = c.frame.addIconButton(
                     text="Recent",command=recentButtonCallback)
 
-                #btn.bind('<Button-3>', self.rClickRecent)
+                #c.bind(btn,'<Button-3>', self.rClickRecent)
 
                 # Add left and right arrows to icon bar.
                 self.lt_nav_disabled_image = images.lt_nav_disabled_image
@@ -626,13 +626,13 @@ def init ():
                     image=self.lt_nav_disabled_image,
                     command=c.goPrevVisitedNode)
 
-                btnl.bind('<Button-3>', self.rClickLeft)
+                c.bind(btnl,'<Button-3>', self.rClickLeft)
 
                 self.rt_nav_iconFrame_button = btnr = getButton(
                     image=self.rt_nav_disabled_image,
                     command=c.goNextVisitedNode)
 
-                btnr.bind('<Button-3>', self.rClickRight)
+                c.bind(btnr,'<Button-3>', self.rClickRight)
 
                 if useTkFrame:
 
