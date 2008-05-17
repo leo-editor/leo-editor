@@ -2495,6 +2495,8 @@ def skipString (self,s,i):
 #@-node:ekr.20070711090052.3:Overrides
 #@-node:ekr.20070711090052.1:class phpScanner
 #@-node:ekr.20080502114149.2:Temporary fix for php import bug
+#@+node:ekr.20080517075806.21:Fixed unbounded loop in autocompleter.findAnchor
+#@-node:ekr.20080517075806.21:Fixed unbounded loop in autocompleter.findAnchor
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080506135044.14:Fixed paste outline
@@ -5558,6 +5560,396 @@ def updateFixedStatus (self):
 #@-node:ekr.20080412172151.2:updateFixedStatus
 #@-node:ekr.20080412053100.2:changed
 #@-node:ekr.20080318081653.1:Added support for @bool fixedWindow option
+#@+node:ekr.20080517075806.1:Added new key-handling
+This allows substantially simpler key bindings. Indeed, most per-pane bindings
+have been eliminate.
+#@nonl
+#@+node:ekr.20080517075806.2:Vim notes
+@nocolor
+
+Other possible vim features:
+
+- search-and-replace within the current selection,
+- and to some extent macro recording and running.
+- Support vim-specific features like '.', etc.
+#@+node:ekr.20080517075806.3:Posting: New key handling
+@nocolor
+
+The "Huge Focus Aha", namely that focus never needs to be in the
+outline pane, continues to clarify and guide my thinking:
+
+1. There is no need for per-pane key bindings.  I'll be discussing
+this in more detail as we go along.  This is itself a major
+simplification.
+
+2. Ville has discovered the heart of the matter: most modes should
+continue until an unknown character is seen.  An **unknown character
+for a mode** is a character for which no explicit binding has been
+made for that mode.  Leo will enter a **main** (or default) mode when
+the user types an unknown (unbound) character in a mode.
+
+The main mode would be normal text-input mode for the emacs-like
+bindings, and a "command" mode for vim-like bindings.  Leo already
+allows the user to specify emacs-like or vim-like defaults via various
+settings.  I forget the details, but they don't much matter in this
+discussion.
+
+There are a few complications with "stay in the mode until an unknown
+character is seen".
+
+A. Some modes, like the minibuffer, and vim input mode, will allow the
+user to enter any unicode character.  Thus, we can't just list the
+"known" bindings of a mode--there can be too many.  To handle this, we
+need to create the distinction between **input modes** and **command
+modes**.  Input modes continue until another mode is explicitly
+requested.  Command modes continue until an unknown (unbound) key
+sequence is seen.
+
+B. Several modes, including the minibuffer and search modes, contain
+implicit bindings for keys like <tab>, <return> and <backspace>.
+Indeed, the user probably need not specify any bindings explicitly for
+such modes.  This creates some interesting complications however.  Let
+us distinguish between *text-editing* commands and *non-text-editing*
+commands.  'beginning-of-line' is a text editing command; 'save-
+outline' is not.  Commands such as sort-lines could be called text-
+editing commands, but they make no sense in a single-line environment
+such as the minibuffer or search/replace commands, so let us
+tentatively call them non-text-editing commands, or rather **multi-
+line-editing** commands.
+
+As I write this, I realize that the distinction between text-editing
+and non-text-editing commands implicitly assumes emacs-like *bindings*
+for commands.  In the vim-like world of plain-key bindings, we could
+imagine *temporarily* entering vim-command mode in the minibuffer, and
+then *returning* to the minibuffer-insert-mode after the temporary vim-
+command mode finished.  This could cause complications.  In general,
+I'd rather stay away from a stack of modes, but only experimentation
+will show what is needed.
+
+C. Regardless of other details, some **basic editing commands/
+bindings** surely must be supported in the minibuffer and search
+commands:  cut, copy, paste, arrow-keys move the cursor, shift-arrow
+keys extend the selection.  In emacs-like operation we can throw in
+all text-editing bindings at essentially no cost.  In vim-like
+operation, we can use the basic bindings, but more complex commands
+would seem to require nested modes.
+
+But the main point is that special-purpose modes will probably use
+some reasonable, standard defaults based on settings for *other*
+modes, plus some standard keys.  In other words, it may be possible to
+dispense with explicit bindings for the minibuffer, etc.
+
+That being so, we are left with a simple scheme:
+
+1. Bindings apply **everywhere** in several senses.  They apply to all
+panes, and bindings for text-editing commands apply in all text
+widgets: the minibuffer, body pane, log pane, headlines, etc.
+
+2. Binding unknown in a mode terminate the mode and return to the main
+or default mode.
+
+3. Non-text-editing commands, including multi-line-editing commands,
+should terminate **single-line modes** such as minibuffer commands
+unless a special case explicitly exists for them.
+
+4. Bindings for **Leo-provided modes** will be created automatically
+using the user's bindings for text-editing commands, plus special
+characters like <tab>, <return> and <backspace>.  Leo provided modes
+are the initial minibuffer mode and secondary minibuffer modes such
+entering search patterns.
+
+5. The only complication is possibly allowing vim-like command sub-
+modes of single-line modes.
+
+The code in k.masterKeyHandler is in the back of my mind as I write
+this.  With luck, the new scheme will be considerably simpler than the
+old, while being more flexible and more general.  Note that the way
+bindings are actually specified is an entirely separate issue, which
+is good because that logic is horrible.  Eliminating per-pane bindings
+will help some, but not a lot.
+
+We may want to allow the user to specify per-pane bindings as before,
+but the bindings will be ignored.  But as I write this it seems like
+this could cause a great deal of confusion.  Perhaps it will be better
+to outlaw the old syntax entirely, or at least issue warnings that per-
+pane bindings no longer have any effect.
+
+This is all very preliminary.  I've written no code.  Your comments
+are welcome now.
+#@-node:ekr.20080517075806.3:Posting: New key handling
+#@+node:ekr.20080517075806.4:Posting: More design notes
+@nocolor
+
+On May 7, 7:05 pm, "Edward K. Ream" <edream...@gmail.com> wrote:
+
+> This post will be a "thinking out loud" discussion of the new design.
+
+I've just spent some time drawing state diagrams that indicate transitions between various states.  It turned out to be more simple than I had feared.
+
+> As I write this, I realize that the distinction between text-editing
+> and non-text-editing commands implicitly assumes emacs-like *bindings*
+> for commands.  
+
+No.  The distinction has nothing to do with bindings, as my post earlier today shows.  In fact, after seeing the final state diagrams, my intention is to be able to support *both* emacs-like and vim-like bindings simultaneously.  Actually, Leo can already do this, or it could if @mode bindings actually worked :-)
+
+The more useful distinction is between commands that change modes and commands that stay in the same mode.  This became clearer as I played with the diagrams.
+
+Ok, let's see if I can summarize what the diagrams are trying to tell me without tying myself up in knots :-)
+
+1. *All* modes are minibuffer modes.  That is, the present mode will always be indicated at the start of the minibuffer.  It would not be good to use the status area because the UNL plugin overwrites the status when changing nodes.
+
+However, not all modes need actually *use* (alter) the minibuffer.  For example, a user-defined outline mode might provide bindings for just the arrow and shift arrow keys.  Nothing the user types would appear in the minibuffer during that mode.
+
+2. @mode nodes define user modes.  These nodes can specify the "prompt" that will appear in the minibuffer while the node is active. For example:
+
+@mode <mode name> @prompt = <prompt>
+
+When a mode is active the minibuffer will contain as a **minibuffer prefix**:
+
+<mode name> mode: <prompt>
+
+As always, the prefix is protected: the user can not erase it by backspacing.
+
+3. Binding are actually a completely separate topic from how Leo handles modes.  However, modes can create "virtual key sequences" that represent a command.  It would be extremely complex to generate those virtual key sequences in menus with the present code base--and probably for *any* version of Leo's config code.  To handle this, @item nodes in @settings trees could specify a "hint" that would look like a real menu shortcut.  Leo would completely ignore such hints: they would be only for cosmetic purposes.  Like this;
+
+@item move-outline-left @hint = A-S-Left or [cmd]o,S-Left
+
+The hint can be any string that makes sense to you.  In this case it signifies that there are two possible ways move an outline left: Alt-Shift-Left in any mode or type o followed by Shift-Left in command mode.
+
+The advantage of this scheme is its simplicity and generality.  The disadvantage is that you, the user, must ensure that the hints make sense and are up-to-date.  I think it will turn out to be very handy.
+
+4. With these preliminaries in place, the actual scheme for switching between modes is relatively straightforward:
+
+A: The default (main) mode will be insert-mode for emacs-like operation and command-mode for vim-like operation.
+
+B: In insert mode, edit-commands executed via menus or by key bindings will cause Leo to remain in insert mode.  All other commands transfer to other modes, with the default mode as the default.  So for emacs-like operation, control (focus) typically stays in the body pane, while for vim-like operation control typically stays in the minibuffer.
+
+BTW, now that all modes can be considered minibuffer modes, we need to distinguish between modes that insert unbound keys (either in the present text pane or in the minibuffer) and those that don't.  For those modes that don't, any unbound key will transfer to the default mode.
+
+C: In general (there may be smallish exceptions), a key stroke that would invoke an unknown command causes control to go to the default mode.
+
+D: In user modes, all commands transfer to the default mode except for explicitly declared "stay-in-this-mode" commands.  This mechanism is already in place.
+
+In short, key **bindings** no longer matter to k.masterKeyHandler.  All that matters is the command that is about to be executed.  This is a very nice simplification: all the old pane-specific logic should just go away.  Actually, it seems like an important Aha.
+
+I now have hopes of putting this all in place in just a few days.
+
+BTW, none of this is a "requirements specification".  That's not how I work :-)  What will emerge will be the result of playing with the code and seeing what works and what doesn't.
+
+Edward
+#@nonl
+#@-node:ekr.20080517075806.4:Posting: More design notes
+#@+node:ekr.20080517075806.5:Used by vim
+@nocolor
+
+Used by vim:
+
+a/A (append after cursor)
+c
+d,dd,D (delete before cursor)
+f/F/t/T
+g,gf,g0,gg,ge,gE
+h,j,k,l (motion commands)
+i/I (insert before cursor, insert at indentation)
+m,m',m` (marks)
+n,N
+o/O (open line) Why not just use <insert?>
+r/R
+x/X (delete after cursor)
+y
+u
+v,V
+w/W
+ZZ,ZQ
+.
+:
+;
++-
+/ (patterns)
+#@nonl
+#@-node:ekr.20080517075806.5:Used by vim
+#@+node:ekr.20080517075806.6:vim bindings: what I did
+@nocolor
+
+- Changed cycle-focus and cycle-all-focus commands.
+- Removed Alt-T binding for focus-to-outline
+- Paste in minibuffer (find/change) does not work.
+  Added cut-text, copy-text, paste-text to list of single-line commands.  
+- Bug: don't enter edit-headline in command mode.
+- Bug: can't enter period in find.  Period is bound to auto-complete(!)
+- Indicate input mode in mini-buffer.
+- Ignore plain-key bindings in insert-mode.
+- Enter outline mode after clone/copy-outline/Collapse all.
+- Bound escape to set-command-mode.
+- end-edit-headline should switch to body pane.
+  Just set @bool stayInTreeAfterEditHeadline = False
+- Enter command mode when editing headlines.
+- Fix autocompletion.
+- Don't allow unbound plain keys in command mode.
+- State prompt (and Find prompt) in minibuffer is not protected.
+- Tab completion wipes out full-command.
+- Modes no longer put focus in minibuffer.
+- Strip '-mode' from mode message in minibuffer.
+- Show "In outline" in showStateAndMode.
+- focus-to-body now enters default input state.
+- End editing of headline leaves *body* in insert mode.
+    - The actual bug was in k.setDefaultInputAction. It must use k.defaultUnboundKeyAction.
+- Fixed bug: body pane changes color when headline mode changes.
+- Python indentation now works.
+- Ignore all unbound plain keys valid in command mode, except for plain auto-complete key.
+- Insert mode does now persists in headline.
+- Handled outline navigation.
+- Don't honor command-mode keys if in tree.
+- Reorganized and simplified leoSettings.leo.
+- find-char should extend past line.
+- Extended a, e commands: go further if at beginning/end of line.
+- **Sometimes** the focus is both in the body pane and outline pane.
+  For example, after save outline.
+- Made legacy (insert mode) operation the default.
+- All unit tests pass in legacy mode.
+- Moving outlines with alt-shift-arrow keys messed up state reports.
+- Autocompletion doesn't restore 'insert' mode when 'command' mode is the default.
+- Control-g doesn't restore default input state, or doesn't recolor the body.
+- Body pane is yellow initially, and prompt is "In Tree", but focus is in body!
+- Initial body pane color should be yellow if outline has focus initially.
+- Make sure minibuffer keeps its blue color.
+- add empty bindings for clean-recent-files and sort-recent-files.
+- Dot in insert mode when there are no autocompletions to suggest goes to command mode.
+- Typing . at the start of a line with auto-completer enabled hangs leo(!)
+  This happens in the trunk too.
+- Disabled failed unit tests when command-mode is the default.
+#@nonl
+#@-node:ekr.20080517075806.6:vim bindings: what I did
+#@-node:ekr.20080517075806.2:Vim notes
+#@-node:ekr.20080517075806.1:Added new key-handling
+#@+node:ekr.20080517075806.7:New drawing/focus code
+#@+node:ekr.20080517075806.9:Notes
+@nocolor
+
+c.redraw_now is a bit of a problem.  Sometimes it can be replaced by c.redraw, sometimes not. I have been super conservative: I've left all calls to c.redraw_now alone, and added calls to c.outerUpdate as needed.
+
+Later, when preliminary testing is complete, c.redraw_now() can call c.outerUpdate automatically.
+
+c.bind(w,a,b) can call g.app.gui.bind(w,a,b) to avoid a gui-related case statement.
+
+@color
+#@nonl
+#@+node:ekr.20080517075806.8:What I did
+What I did:
+
+- Created new version of all c.Drawing methods when g.newDrawing is True.
+- Call outerUpdate from event handlers.
+- Call outerUpdate after calling k.masterKeyHandlerHelper.
+- Created new versions of leoBody.color methods.
+- Created and test c.bind.
+- Reviewed all uses of c.redraw_now(): added calls to c.outerUpdate where needed.
+- Removed new wrappers from k.masterX.
+- There is a slight wiggle when opening files.  It happens with the old code.
+- Add c.bind2 with 3 args.
+- Added call to c.outerUpdate to g.app.closeLeoWindow.
+- Fixed major bug: c.redraw and c.redraw_now must request a redraw.
+
+Changed x.bind to c.bind or c.bind2 in the following plugins:
+
+EditAttributes.py
+UASearch.py
+URLloader.py
+UniversalScrolling.py
+fastGotoNode.py
+ironPythonGui.py
+mod_scripting.py
+nav_buttons.py
+newButtons.py
+nodebar.py
+pie_menus.py
+plugins_menu.py
+scheduler.py
+searchbox.py
+toolbar.py
+xcc_nodes.py
+#@nonl
+#@-node:ekr.20080517075806.8:What I did
+#@+node:ekr.20080517075806.10:Design for simplified drawing & focus
+@nocolor
+
+- c.outerUpdate actually updates everything, using c.requestedRedraw,
+  c.requestedWidget, c.requestedMinibufferPrompt. c.outerUpdate may be called
+  anytime to force an immediate update. The master command handler calls
+  outerUpdate, as do all event handlers that make any requests.
+
+- g.newDrawing selects between old and new code. When g.newDrawing is False,
+  c.outerUpdate does nothing. When g.newDrawing is True, many of Leo's drawing
+  methods simply make requests:
+
+    - c.beginUpdate does nothing.
+    - c.endUpdate sets c.requestRedrawFlag to request a redraw.
+    - c.xWantsFocus set c.requestedFocusWidget.
+    - c.k.showStateAndFocus sets c.requestedMinibufferPrompt.
+    - c.selectPosition sets c.requestedPosition.
+    - c.recolor() sets c.frame.requestRecolorFlag.
+
+This design might substantially simplify some very complex code. My intention is
+to make *no* changes to the code base except for calls to c.outerUpdate. Thus,
+it will be easy to see what has changed. The experiment can be done in the
+key-handling branch.
+
+This is a higly speculative project.  Previous attempts have failed...
+#@-node:ekr.20080517075806.10:Design for simplified drawing & focus
+#@-node:ekr.20080517075806.9:Notes
+#@+node:ekr.20080517075806.12:Menus (tkBody) (May cause problems)
+def bind (self,*args,**keys):
+
+    c = self.c
+    return self.bodyCtrl.bind(*args,**keys)
+#@-node:ekr.20080517075806.12:Menus (tkBody) (May cause problems)
+#@+node:ekr.20080517075806.13:Projects
+#@+node:ekr.20080517075806.14:Classified commands
+#@-node:ekr.20080517075806.14:Classified commands
+#@+node:ekr.20080517075806.15:@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert
+@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.
+#@nonl
+#@-node:ekr.20080517075806.15:@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert
+#@+node:ekr.20080517075806.16:Modes no longer put focus in minibuffer
+#@-node:ekr.20080517075806.16:Modes no longer put focus in minibuffer
+#@+node:ekr.20080517075806.17:Reset input state in end-edit-headline
+#@-node:ekr.20080517075806.17:Reset input state in end-edit-headline
+#@+node:ekr.20080517075806.18:Don't honor command-mode keys if not in text widget
+#@-node:ekr.20080517075806.18:Don't honor command-mode keys if not in text widget
+#@+node:ekr.20080517075806.20:Make sure keyboard-quit enters default mode, except during auto-completion
+#@-node:ekr.20080517075806.20:Make sure keyboard-quit enters default mode, except during auto-completion
+#@+node:ekr.20080517075806.22:Munged mode names to create mode prompt
+@nocolor
+
+In @mode aString, everything before the first :: is the mode name, and everything after is the prompt that appears in the minibuffer.  If there is no ::, the prompt is the same as the mode name.
+#@nonl
+#@-node:ekr.20080517075806.22:Munged mode names to create mode prompt
+#@+node:ekr.20080517075806.23:Fixed an unusual headline click problem
+@
+
+This happens when focus is in the minibuffer and the user clicks a headline.
+
+The fix was to add a "don't color" arg to showStateAndMode.
+
+I also changed treeWantsFocus to treeWantsFocusNow in OnActivateHeadline.
+#@nonl
+#@-node:ekr.20080517075806.23:Fixed an unusual headline click problem
+#@-node:ekr.20080517075806.13:Projects
+#@-node:ekr.20080517075806.7:New drawing/focus code
+#@+node:ekr.20080517075806.24:Improved end of calltips
+# Added ')' at end.
+#@nonl
+#@-node:ekr.20080517075806.24:Improved end of calltips
+#@+node:ekr.20080517075806.19:Find character crosses lines
+#@-node:ekr.20080517075806.19:Find character crosses lines
 #@-node:ekr.20080408060320.783:Features
 #@-node:ekr.20080408060320.4:4.5 a1
 #@-all
