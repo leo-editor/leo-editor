@@ -2937,8 +2937,11 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c ; k = c.k ; w = self.editWidget(event)
         if not w: return
 
+        assert g.app.gui.isTextWidget(w)
         name = c.widget_name(w)
-        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+        if name.startswith('head'): return
+
+        oldSel =  w.getSelectionRange()
 
         self.beginCommand(undoType='newline')
 
@@ -2959,21 +2962,19 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c ; k = c.k
         w = self.editWidget(event) ; p = c.currentPosition()
         if not w: return
+
+        assert g.app.gui.isTextWidget(w)
         name = c.widget_name(w)
         if name.startswith('head'): return
 
         self.beginCommand(undoType='insert-newline-and-indent')
 
         # New in Leo 4.5: use the same logic as in selfInsertCommand.
-        oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+        oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
         self.updateTab(p,w)
         k.setInputState('insert')
         k.showStateAndMode()
-
-        # i = w.getInsertPoint()
-        # w.insert(i,'\n\t')
-        # w.setInsertPoint(i+2)
 
         self.endCommand(changed=True,setLabel=False)
     #@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
