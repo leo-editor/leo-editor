@@ -5322,11 +5322,37 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 </t>
 <t tx="ekr.20080503195928.1"></t>
 <t tx="ekr.20080503202744.3">import rope.base.project
-abcdefghijklmnopqrstuvwxyz
+import rope.contrib.codeassist as codeassist
+import leoGlobals as g
+import leoCommands
+c2 = leoCommands.Commands(frame=c.frame,fileName='xyz-file')
 
-myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
+class leoFSCommands (object):
+    def create_file(self,path):         g.trace(path)
+    def create_folder(self,path):       g.trace(path)
+    def move (self,path,new_location):  g.trace(path,new_location)
+    def remove (self,path):             g.trace(path)
+    def write (self,path,data):         g.trace(path,data)
 
-print myproject</t>
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','..'))
+    # Make the trunk folder a project
+project = rope.base.project.Project(path,fscommands=leoFSCommands)
+s = p.bodyString() # Could simulate a write to allow @others.
+
+print '*' * 40
+for pattern in (
+    # 'g.', # works.
+    # 'g.trace(', # weird.
+    # 'rope.base.', # works.
+    'g.list', # works: gives g.listToString
+    'c2.de', # works.
+):
+    i = s.find(pattern)
+    if i &gt; -1:
+        proposals = codeassist.code_assist(project,s,i+len(pattern))
+        print '-' * 20
+        print 'pattern:',pattern
+        print g.listToString(proposals)</t>
 <t tx="ekr.20080513084205.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python

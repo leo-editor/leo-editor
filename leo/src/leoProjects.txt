@@ -2497,6 +2497,93 @@ def skipString (self,s,i):
 #@-node:ekr.20080502114149.2:Temporary fix for php import bug
 #@+node:ekr.20080517075806.21:Fixed unbounded loop in autocompleter.findAnchor
 #@-node:ekr.20080517075806.21:Fixed unbounded loop in autocompleter.findAnchor
+#@+node:ekr.20080517184420.1:Fixed insert-newline bug
+exception executing command
+Traceback (most recent call last):
+ File "C:\_Proj\Leo\key-handling\leo\src\leoCommands.py", line 298, in doCommand
+   val = command(event)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 2946, in insertNewLine
+   self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 3104, in insertNewlineHelper
+   w.setInsertPoint(i+1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+truncating headline to one line
+#@+node:ekr.20050920084036.138:insertNewLine (changed)
+def insertNewLine (self,event):
+
+    '''Insert a newline at the cursor.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    assert g.app.gui.isTextWidget(w)
+    name = c.widget_name(w)
+    if name.startswith('head'): return
+
+    oldSel =  w.getSelectionRange()
+
+    self.beginCommand(undoType='newline')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    k.setInputState('insert')
+    k.showStateAndMode()
+
+    self.endCommand()
+
+insertNewline = insertNewLine
+#@-node:ekr.20050920084036.138:insertNewLine (changed)
+#@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+def insertNewLineAndTab (self,event):
+
+    '''Insert a newline and tab at the cursor.'''
+
+    c = self.c ; k = c.k
+    w = self.editWidget(event) ; p = c.currentPosition()
+    if not w: return
+
+    assert g.app.gui.isTextWidget(w)
+    name = c.widget_name(w)
+    if name.startswith('head'): return
+
+    self.beginCommand(undoType='insert-newline-and-indent')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    oldSel = w.getSelectionRange()
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    self.updateTab(p,w)
+    k.setInputState('insert')
+    k.showStateAndMode()
+
+    self.endCommand(changed=True,setLabel=False)
+#@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    c = self.c ; p = c.currentPosition()
+    i,j = oldSel ; ch = '\n'
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+        if (
+            (allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p)) and
+            undoType != "Change"
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@nonl
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@-node:ekr.20080517184420.1:Fixed insert-newline bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080506135044.14:Fixed paste outline
