@@ -635,8 +635,6 @@ def fail ():
 #@+node:ekr.20051104075904.42:runLeoTest
 def runLeoTest(c,path,verbose=False,full=False):
 
-    print 'runLeoTest',g,g.app
-
     frame = None ; ok = False ; old_gui = g.app.gui
 
     # Do not set or clear g.app.unitTesting: that is only done in leoTest.runTest.
