@@ -2486,6 +2486,9 @@ class leoTree:
             """Callback injected into position class."""
 
             p = self
+            if not c or not c.exists:
+                return
+
             try:
                 if not g.doHook("hypercclick1",c=c,p=p,v=p,event=event):
                     c.beginUpdate()
