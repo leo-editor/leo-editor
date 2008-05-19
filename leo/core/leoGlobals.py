@@ -397,6 +397,7 @@ def comment_delims_from_extension(filename):
     """
     Return the comment delims corresponding to the filename's extension.
 
+    >>> import leo.core.leoGlobals as g
     >>> g.comment_delims_from_extension(".py")
     ('#', None, None)
 
@@ -1799,22 +1800,23 @@ def is_sentinel (line,delims):
 
     Return True if line starts with a sentinel comment.
 
-    >>> py_delims = comment_delims_from_extension('.py')
-    >>> is_sentinel("#@+node",py_delims)
+    >>> import leo.core.leoGlobals as g
+    >>> py_delims = g.comment_delims_from_extension('.py')
+    >>> g.is_sentinel("#@+node",py_delims)
     True
-    >>> is_sentinel("#comment",py_delims)
+    >>> g.is_sentinel("#comment",py_delims)
     False
 
-    >>> c_delims = comment_delims_from_extension('.c')
-    >>> is_sentinel("//@+node",c_delims)
+    >>> c_delims = g.comment_delims_from_extension('.c')
+    >>> g.is_sentinel("//@+node",c_delims)
     True
-    >>> is_sentinel("//comment",c_delims)
+    >>> g.is_sentinel("//comment",c_delims)
     False
 
-    >>> html_delims = comment_delims_from_extension('.html')
-    >>> is_sentinel("<!--@+node-->",html_delims)
+    >>> html_delims = g.comment_delims_from_extension('.html')
+    >>> g.is_sentinel("<!--@+node-->",html_delims)
     True
-    >>> is_sentinel("<!--comment-->",html_delims)
+    >>> g.is_sentinel("<!--comment-->",html_delims)
     False
 
     """
