@@ -2268,7 +2268,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:bobjack.20080401090801.3:onTreeRightClick
     def onTreeRightClick(self, event=None):
 
-        #g.trace()
+        if not c.exists: return
 
         if self._block_canvas_menu:
             self._block_canvas_menu = False
