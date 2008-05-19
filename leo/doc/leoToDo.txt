@@ -22,6 +22,31 @@ the file, then open another Leo file, the next file opens with the
 redefined menu. 
 #@nonl
 #@-node:ekr.20080129103436:Solve Kent's @menu problem
+#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
+
+'ve just downloaded leo and been very impressed.  Probably I'll use
+leo mostly for editing text (as opposed to programs).  Which means
+I've turned on text wrapping.
+
+But now, up and down arrows take me to the next line in the file, not
+the next line on the screen.  That means I'm always reaching for the
+mouse.
+
+Is there a way I can change the arrow key behaviour?
+Or should I be editing paragraphs differently (i.e., without text
+wrapping)? 
+
+Reply:
+
+I have a vague memory of writing code to get the behavior you describe, but
+all details are fuzzy.  I know what you are talking about--it may be one of
+the details I've learned to put up with.  In that case, a new option and new
+code will be a substantial improvement.  Thanks for this report. 
+#@nonl
+#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
 #@+node:ekr.20080517102922.1:Files bugs 7
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
@@ -429,6 +454,27 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files
+#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
+
+> Let us define p.fileLevel() for any position p as follows:  p.fileLevel() is
+> 0 if p is not a descendant of any kind of @file node.  Otherwise, suppose
+> root is the position of the enclosing @file node (or @thin node, etc.)
+> p.fileLevel() is p.level() - root.level() and the "effective" column is the
+> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
+> the status line.
+
+> Anyone want to try?
+
+> Edward
+
+I must admit I lack knowledge to implement this (I've got no
+experience with Python GUI programming at all). Would this feature
+appear in the next leo release?
+#@nonl
+#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
 #@+node:ekr.20080124083629.1:Improve @path handling
 @nocolor
 
