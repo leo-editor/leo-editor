@@ -3468,12 +3468,12 @@ def setToBeTranslated (self,s,n):
 #@-node:setToBeTranslated
 #@-node:@@button print g.es stats
 #@+node:@@button change leo imports
-change = True # True: actually make the changes.
+change = False # True: actually make the changes.
 trace = True
 
 print '-' * 40
 
-tag = 'import leo' ; n = len(tag)
+tag = 'import leo' ; n = len('import ')
 
 for p in p.self_and_subtree_iter():
     result = []
@@ -3483,9 +3483,14 @@ for p in p.self_and_subtree_iter():
             # Do nothing if we have already done the translation.
             i2 = s.find('<<') ; i3 = s.find('import leo.core')
             if i2 == -1 and i3 == -1:
-                ch = s[i+n:i+n+1]
-                ch = g.choose(ch.isspace(),'leo',ch.lower()) # special case: import leo.
-                s = s[:i] + 'import leo.core.' + ch + s[i+n+1:]
+                i += n
+                j = g.skip_c_id(s,i)
+                word = s[i:j]
+                rest = s[j:]
+                if rest.strip().startswith('as'):
+                    s = s[:i] + 'leo.core.' + word + rest
+                else:
+                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
                 if trace:
                     print p.headString()
                     j,k=g.getLine(s,i) ; print s[j:k]
@@ -3494,7 +3499,6 @@ for p in p.self_and_subtree_iter():
 
     if change and result != p.bodyString():
         c.setBodyString(p,result)
-
 
 #@-node:@@button change leo imports
 #@+node:c2py  Convert C code to Python syntax
