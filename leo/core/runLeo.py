@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2605:@thin leo.py 
+#@+node:ekr.20031218072017.2605:@thin runLeo.py 
 #@@first
 
 """Entry point for Leo in Python."""
@@ -441,5 +441,5 @@ if __name__ == "__main__":
         run(getFileName())
     else:
         run()
-#@-node:ekr.20031218072017.2605:@thin leo.py 
+#@-node:ekr.20031218072017.2605:@thin runLeo.py 
 #@-leo
