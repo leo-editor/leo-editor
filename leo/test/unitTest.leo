@@ -807,7 +807,7 @@
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
+<v t="ekr.20040712101754.2" a="E" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
 <v t="ekr.20040712101754.4"><vh>@test LeoPyRef.leo</vh></v>
@@ -817,7 +817,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
+<v t="ekr.20050120095423" a="E" annotate="7d71002e"><vh>Unit tests for plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
@@ -847,15 +847,15 @@
 </v>
 <v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
 </v>
-<v t="ekr.20050120095423.6"><vh>@suite test syntax of all plugins</vh>
-<v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
+<v t="ekr.20050120095423.6" a="E"><vh>@suite test syntax of all plugins</vh>
+<v t="ekr.20050120095423.7" a="E"><vh>class parseFileTestCase</vh>
 <v t="ekr.20050120095423.8"><vh>__init__</vh></v>
 <v t="ekr.20050120095423.9"><vh>runTest</vh></v>
 <v t="ekr.20050120095423.10"><vh>shortDescription</vh></v>
 </v>
 </v>
 <v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
-<v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
+<v t="ekr.20061106201509.1" a="E"><vh>detect_urls.py</vh>
 <v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
 <v t="ekr.20061106201509.3"><vh>@test colorizerURLs</vh></v>
 </v>
@@ -882,7 +882,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -2032,7 +2032,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2150,7 +2150,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080519111546.2"><vh>@button change leo imports</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4557,7 +4556,7 @@ if sys.platform.lower().startswith('win'):
     version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
     if g.CheckVersion(version, "2.3"):
     
-        path = g.os_path_join(g.app.loadDir,"..","src")
+        path = g.os_path_join(g.app.loadDir,"..","core")
         modules = leoTest.importAllModulesInPath(path)
         suite = leoTest.createUnitTestsFromDoctests(modules)
                                  
@@ -20585,38 +20584,5 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 <t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
-<t tx="ekr.20080519111546.2">change = True # True: actually make the changes.
-trace = True
-
-print '-' * 40
-
-tag = 'import leo' ; n = len('import ')
-
-for p in p.self_and_subtree_iter():
-    result = []
-    for s in g.splitlines(p.bodyString()):
-        i = s.find(tag,0)
-        if i &gt; -1:
-            # Do nothing if we have already done the translation.
-            i2 = s.find('&lt;&lt;') ; i3 = s.find('import leo.core')
-            if i2 == -1 and i3 == -1:
-                i += n
-                j = g.skip_c_id(s,i)
-                word = s[i:j]
-                rest = s[j:]
-                if rest.strip().startswith('as'):
-                    s = s[:i] + 'leo.core.' + word + rest
-                else:
-                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
-                if trace:
-                    print p.headString()
-                    j,k=g.getLine(s,i) ; print s[j:k]
-        result.append(s)
-    result = ''.join(result)
-
-    if change and result != p.bodyString():
-        c.setBodyString(p,result)
-
-</t>
 </tnodes>
 </leo_file>
