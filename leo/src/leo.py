@@ -95,6 +95,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     verbose = script is None
     g.app.batchMode = script is not None
     g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
+    setOneConfigSettings(g)
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
     #@    << import leoNodes and leoConfig >>
     #@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
@@ -391,6 +392,27 @@ def reportDirectories(verbose):
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
 #@-node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20080519162425.2:setOneConfigSettings
+def setOneConfigSettings(g):
+
+    '''Set g.app.oneConfigMode and g.app.oneConfigFile if sys.argv
+    contains an argument of the form "--one-config=fileName".'''
+
+    tag = '--one-config=' ; n = len(tag)
+
+    for s in sys.argv:
+        if s.startswith(tag):
+            fileName = s[n:].strip()
+            path = g.os_path_join(os.getcwd(),fileName)
+            if g.os_path_exists(path):
+                sys.argv.remove(s)
+                g.app.oneConfigMode = True
+                g.app.oneConfigFile = path
+                return
+    else:
+        g.app.oneConfigMode = False
+        g.app.oneConfigFile = None
+#@-node:ekr.20080519162425.2:setOneConfigSettings
 #@+node:ekr.20070930194949:startJyleo (leo.py)
 def startJyleo (g):
 
