@@ -178,7 +178,7 @@ def init ():
 
         try:
             import Tkinter as Tk
-            from leoTkinterDialog import tkinterListBoxDialog
+            from leo.core.leoTkinterDialog import tkinterListBoxDialog
 
         except ImportError:
             Tk = None
