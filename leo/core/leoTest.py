@@ -161,6 +161,8 @@ class generalTestCase(unittest.TestCase):
         script = g.getScript(c,p).strip()
         self.assert_(script)
 
+        # import leo.core.leoGlobals as g
+
         # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
@@ -197,6 +199,7 @@ def makeTestSuite (c,p):
 
     """Create a suite of test cases by executing the script in an @suite node."""
 
+    # import leo.core.leoGlobals as g
     p = p.copy()
 
     h = p.headString()
