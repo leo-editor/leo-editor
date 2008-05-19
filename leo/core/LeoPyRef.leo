@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="33" left="64" height="896" width="1045"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -76,14 +76,13 @@
 marks="ekr.20060417194232.2,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"
-marks="ekr.20080404074921.2,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
+<v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes...</vh>
-<v t="ekr.20031218072017.2605"><vh>@thin leo.py </vh></v>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
