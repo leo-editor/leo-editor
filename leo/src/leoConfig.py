@@ -1677,8 +1677,7 @@ class configClass:
         #@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
         #@nl
 
-        # Init settings from leoSettings.leo and myLeoSettings.leo files.
-        for path,localFlag in (
+        allConfigFiles = (
             (self.globalConfigFile,False),
             (self.homeFile,False),
             (localConfigFile,False),
@@ -1687,7 +1686,12 @@ class configClass:
             (self.machineConfigFile,False),
             (myLocalConfigFile,False),
             (fileName,True),
-        ):
+        )
+        if g.app.oneConfigMode:
+            allConfigFiles = ((g.app.oneConfigFile,False),)
+
+        # Init settings from leoSettings.leo and myLeoSettings.leo files.
+        for path,localFlag in allConfigFiles:
             if path and path.lower() not in seen:
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
