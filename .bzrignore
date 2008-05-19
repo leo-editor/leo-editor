@@ -22,3 +22,4 @@ leo/test/dirty-test.py
 
 test/c_plus_plus_test.cpp
 test/ropeProject/*.*
+leoPy.leo
