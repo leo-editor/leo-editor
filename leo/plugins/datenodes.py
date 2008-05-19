@@ -30,8 +30,8 @@ __version__ = "0.6"
 
 #@<< imports >>
 #@+node:gfunch.20041207100416.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import calendar
 import codecs

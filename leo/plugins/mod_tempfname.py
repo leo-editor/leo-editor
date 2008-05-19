@@ -11,10 +11,10 @@ makes it easier to see which temporary file is related to which outline node."""
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoCommands
+import leo.core.leoCommands as leoCommands
 import getpass
 import os
 import tempfile

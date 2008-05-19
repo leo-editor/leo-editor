@@ -13,13 +13,13 @@ Run the unit tests in test.leo using the Execute Script command.'''
 
 #@<< leoTest imports >>
 #@+node:ekr.20051104075904.1:<< leoTest imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoColor
-import leoCommands
-import leoFrame
-import leoGui
-import leoNodes
+import leo.core.leoColor as leoColor
+import leo.core.leoCommands as leoCommands
+import leo.core.leoFrame as leoFrame
+import leo.core.leoGui as leoGui
+import leo.core.leoNodes as leoNodes
 
 import doctest
 import glob
@@ -48,7 +48,7 @@ except ImportError:
 # print 'leoTest.py.__file__',__file__
 
 if g.app: # Make sure we can import this module stand-alone.
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     newAtFile = leoPlugins.isLoaded("___proto_atFile")
 else:
     newAtFile = False
@@ -136,7 +136,7 @@ class generalTestCase(unittest.TestCase):
         # __pychecker__ = '--no-argsused'
             #  msg needed so signature matches base class.
 
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
 
         g.app.unitTestDict["fail"] = g.callers()
     #@-node:ekr.20051104075904.7: fail
@@ -252,7 +252,7 @@ def runTimerOnNode (c,p,count):
     g.app.unitTestDict = {'c':c,'p':p and p.copy()}
 
     # This looks like the best we can do.
-    setup = 'import leoGlobals as g; c = g.app.unitTestDict.get("c"); p = g.app.unitTestDict.get("p")'
+    setup = 'import leo.core.leoGlobals as g; c = g.app.unitTestDict.get("c"); p = g.app.unitTestDict.get("p")'
 
     t = timeit.Timer(s,setup)
 
@@ -628,12 +628,14 @@ def fail ():
     # __pychecker__ = '--no-argsused'
         #  msg needed so signature matches base class.
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
 #@-node:ekr.20051104075904.41: fail
 #@+node:ekr.20051104075904.42:runLeoTest
 def runLeoTest(c,path,verbose=False,full=False):
+
+    print 'runLeoTest',g,g.app
 
     frame = None ; ok = False ; old_gui = g.app.gui
 
@@ -1005,7 +1007,7 @@ class editBodyTestCase(unittest.TestCase):
         # __pychecker__ = '--no-argsused'
             #  msg needed so signature matches base class.
 
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
 
         g.app.unitTestDict["fail"] = g.callers()
     #@-node:ekr.20051104075904.72: fail
@@ -1154,7 +1156,7 @@ class importExportTestCase(unittest.TestCase):
         # __pychecker__ = '--no-argsused'
             #  msg needed so signature matches base class.
 
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
 
         g.app.unitTestDict["fail"] = g.callers()
     #@-node:ekr.20051104075904.81: fail

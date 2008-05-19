@@ -31,9 +31,9 @@ __version__ = ".4"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040915075530.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterFrame as leoTkinterFrame
 
 Tk        = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
 Pmw       = g.importExtension("Pmw",      pluginName=__name__,verbose=True)

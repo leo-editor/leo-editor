@@ -15,8 +15,8 @@ Related plugins:  color_markup.py; rClick.py
 #@nl
 #@@language python
 #@@tabwidth -4
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import re
 url_regex = re.compile(r"""(http|https|ftp)://[^\s'"]+[\w=/]""")
 

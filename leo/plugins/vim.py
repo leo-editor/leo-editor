@@ -187,8 +187,8 @@ __version__ = "1.13"
 #@nl
 #@<< imports >>
 #@+node:ekr.20050226184411.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import sys
 

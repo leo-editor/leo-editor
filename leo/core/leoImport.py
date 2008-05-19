@@ -10,8 +10,8 @@
 #@@encoding utf-8
     # Required so the unit test that simulates an @auto leoImport.py will work!
 
-import leoGlobals as g
-import leoTest
+import leo.core.leoGlobals as g
+import leo.core.leoTest as leoTest
 import string
 
 #@<< class leoImportCommands >>

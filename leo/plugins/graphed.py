@@ -24,9 +24,9 @@ __version__ = "0.4"
 
 #@<< imports >>
 #@+node:ekr.20071004090250.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterTree
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterTree as leoTkinterTree
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 

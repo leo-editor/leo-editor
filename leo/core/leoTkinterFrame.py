@@ -9,14 +9,14 @@
 
 #@<< imports >>
 #@+node:ekr.20041221070525:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoChapters
-import leoColor
-import leoFrame
-import leoNodes
-import leoTkinterMenu
-import leoTkinterTree
+import leo.core.leoChapters as leoChapters
+import leo.core.leoColor as leoColor
+import leo.core.leoFrame as leoFrame
+import leo.core.leoNodes as leoNodes
+import leo.core.leoTkinterMenu as leoTkinterMenu
+import leo.core.leoTkinterTree as leoTkinterTree
 
 import Tkinter as Tk
 import tkFont
@@ -1432,8 +1432,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         frame.log.setColorFromConfig()
 
         c.redraw_now()
-
-    #@nonl
     #@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
     #@+node:ekr.20031218072017.1625:setInitialWindowGeometry (tkFrame)
     def setInitialWindowGeometry(self):

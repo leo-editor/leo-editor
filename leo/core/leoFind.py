@@ -6,7 +6,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import re
 
 #@<< Theory of operation of find/change >>
@@ -1669,7 +1669,7 @@ class nullFindTab (findTab):
         # A plainTextWidget must be a stringTextWidget
         plainTextWidget = g.app.gui.plainTextWidget
 
-        import leoFrame
+        import leo.core.leoFrame as leoFrame
         assert issubclass(plainTextWidget,leoFrame.stringTextWidget)
 
         self.find_ctrl   = plainTextWidget(c,name='find-text')

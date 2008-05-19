@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 # Tangle and Untangle.
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import os
 import string
 

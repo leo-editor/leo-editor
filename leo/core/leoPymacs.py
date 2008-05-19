@@ -67,10 +67,10 @@ def init ():
         inited = True
 
     # Create the dummy app
-    import leo 
+    import leo.core.leo as leo 
     leo.run(pymacs=True)
 
-    import leoGlobals
+    import leo.core.leoGlobals as leoGlobals
     global g ; g = leoGlobals
 
     # These traces show up in the pymacs buffer.

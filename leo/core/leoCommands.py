@@ -13,20 +13,22 @@
 
 #@<< imports >>
 #@+node:ekr.20040712045933:<< imports  >> (leoCommands)
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
     # print "enabled psyco classes",__file__
     try: from psyco.classes import *
     except ImportError: pass
 
-import leoAtFile
-import leoEditCommands
-import leoFileCommands
-import leoImport
-import leoNodes
-import leoTangle
-import leoUndo
+# These imports are now done in the ctor and c.finishCreate.
+    # import leo.core.leoAtFile as leoAtFile
+    # import leo.core.leoEditCommands as leoEditCommands
+    # import leo.core.leoFileCommands as leoFileCommands
+    # import leo.core.leoImport as leoImport
+    # import leo.core.leoTangle as leoTangle
+    # import leo.core.leoUndo as leoUndo
+
+import leo.core.leoNodes as leoNodes
 
 import keyword
 import os
@@ -114,6 +116,15 @@ class baseCommands:
 
         # initialize the sub-commanders.
         # c.finishCreate creates the sub-commanders for edit commands.
+
+        # Break circular import dependencies by importing here.
+        import leo.core.leoAtFile as leoAtFile
+        import leo.core.leoEditCommands as leoEditCommands
+        import leo.core.leoFileCommands as leoFileCommands
+        import leo.core.leoImport as leoImport
+        import leo.core.leoTangle as leoTangle
+        import leo.core.leoUndo as leoUndo
+
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
@@ -235,6 +246,7 @@ class baseCommands:
 
         if initEditCommanders:
             # A 'real' .leo file.
+            import leo.core.leoEditCommands as leoEditCommands
             c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
             k.finishCreate()
         else:

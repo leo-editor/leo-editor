@@ -6,8 +6,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
-import leoMenu
+import leo.core.leoGlobals as g
+import leo.core.leoMenu as leoMenu
 import Tkinter as Tk
 import tkFont
 

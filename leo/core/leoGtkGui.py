@@ -11,16 +11,16 @@
 
 #@<< imports >>
 #@+node:ekr.20080112145409.436:<< imports >>
-import leoGlobals as g
-import leoGui
+import leo.core.leoGlobals as g
+import leo.core.leoGui as leoGui
 
 import gtk
 import os
 import string
 import sys
 
-import leoFrame
-import leoGtkFrame
+import leo.core.leoFrame as leoFrame
+import leo.core.leoGtkFrame as leoGtkFrame
 #@-node:ekr.20080112145409.436:<< imports >>
 #@nl
 
@@ -47,7 +47,7 @@ class gtkGui(leoGui.leoGui):
     #@+node:ekr.20080112145409.439:createKeyHandlerClass (gtkGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        import leoGtkKeys # Do this here to break any circular dependency.
+        import leo.core.leoGtkKeys as leoGtkKeys # Do this here to break any circular dependency.
 
         return leoGtkKeys.gtkKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@-node:ekr.20080112145409.439:createKeyHandlerClass (gtkGui)

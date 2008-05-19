@@ -80,8 +80,8 @@ __version__ = '0.9'
 #@nl
 #@<< imports >>
 #@+node:ekr.20080201143145.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import sys
 
@@ -203,7 +203,7 @@ class ipythonController:
         try:
             api = IPython.ipapi
             leox = leoInterface(c,g) # inject leox into the namespace.
-            
+
             existing_ip = api.get()
             if existing_ip is None:
                 args = c.config.getString('ipython_argv')
@@ -213,7 +213,7 @@ class ipythonController:
                     # force str instead of unicode
                     argv = [str(s) for s in args.split()] 
                 sys.argv = argv
-                
+
                 self.message('Creating IPython shell.')
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
@@ -226,10 +226,10 @@ class ipythonController:
                 #
                 # Obviously you still need to run launch-ipython (Alt-Shift-I) to make 
                 # the document visible for ILeo
- 
+
                 self.message('Reusing existing IPython shell')
                 gIP = existing_ip                
-                
+
             ipy_leo_m = gIP.load('ipy_leo')
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
@@ -237,7 +237,7 @@ class ipythonController:
             if existing_ip is None:
                 # Does not return until IPython closes!
                 ses.mainloop()
-                
+
         except Exception:
             self.error('exception creating IPython shell')
             g.es_exception()

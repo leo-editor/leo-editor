@@ -6,7 +6,7 @@
 
 """Leo's base compare class."""
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import filecmp
 import os
 import string

@@ -48,7 +48,8 @@ __version__ = "0.15"
 #@+at
 # 
 # 0.13 EKR:
-# - use import leoGlobals and import leoPlugins rather from x import *
+# - use import leo.core.leoGlobals as leoGlobals and import leoPlugins rather 
+# from x import *
 # - Made positions explicit and use position iterators.
 # - Support @arg nodes.
 # - Support @run # comment (or #comment)
@@ -66,8 +67,8 @@ __version__ = "0.15"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040910070811.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import string

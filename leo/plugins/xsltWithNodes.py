@@ -25,9 +25,9 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 #@<< imports >>
 #@+node:mork.20041025113509:<< imports >>
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
 try:
@@ -391,9 +391,9 @@ r'''
 <t tx="mork.20041015144717">@path /boboo/leo-4.2-final/plugins</t>
 <t tx="mork.20041015144717.1">import Tkinter as Tk
 import tktable as tktab
-import leoGlobals as g
+import leo.core.leoGlobals as g
 from leoPlugins import *
-import leoNodes
+import leo.core.leoNodes as leoNodes
 import csv
 import cStringIO
 import weakref

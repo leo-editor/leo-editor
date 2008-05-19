@@ -4714,7 +4714,7 @@ def computeHomeDir():
 
     """Returns the user's home directory."""
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
@@ -5400,6 +5400,15 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     # initialize the sub-commanders.
     # c.finishCreate creates the sub-commanders for edit commands.
+
+    # Break circular import dependencies by importing here.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoUndo as leoUndo
+
     self.fileCommands   = leoFileCommands.fileCommands(c)
     self.atFileCommands = leoAtFile.atFile(c)
     self.importCommands = leoImport.leoImportCommands(c)
@@ -5634,7 +5643,7 @@ def updateFixedStatus (self):
     c = self.c
     p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
     if p:
-        import leoConfig
+        import leo.core.leoConfig as leoConfig
         parser = leoConfig.settingsTreeParser(c)
         kind,name,val = parser.parseHeadline(p.headString())
         if val and val.lower() in ('true','1'):

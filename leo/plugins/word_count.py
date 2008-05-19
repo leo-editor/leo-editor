@@ -33,8 +33,8 @@ The Word Count... menu has a shortcut key of 'W'.
 #@nl
 #@<< imports >>
 #@+node:danr7.20061010105952.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import tkMessageBox
 
 #@-node:danr7.20061010105952.4:<< imports >>

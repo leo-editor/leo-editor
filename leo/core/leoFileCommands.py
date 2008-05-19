@@ -6,14 +6,14 @@
 
 #@<< imports >>
 #@+node:ekr.20050405141130:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
     # print "enabled psyco classes",__file__
     try: from psyco.classes import *
     except ImportError: pass
 
-import leoNodes
+import leo.core.leoNodes as leoNodes
 
 import binascii
 import cStringIO
@@ -2074,7 +2074,7 @@ class baseFileCommands:
         c = self.c
         p = g.app.config.findSettingsPosition(c,'@bool fixedWindow')
         if p:
-            import leoConfig
+            import leo.core.leoConfig as leoConfig
             parser = leoConfig.settingsTreeParser(c)
             kind,name,val = parser.parseHeadline(p.headString())
             if val and val.lower() in ('true','1'):

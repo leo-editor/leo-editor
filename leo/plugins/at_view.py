@@ -55,8 +55,8 @@ __version__ = "0.7"
 #@nl
 #@<< imports >>
 #@+node:ktenney.20041211072654.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
 win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)

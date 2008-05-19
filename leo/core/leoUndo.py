@@ -68,7 +68,7 @@
 #@-node:ekr.20031218072017.2413:<< How Leo implements unlimited undo >>
 #@nl
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import string
 
 #@+others

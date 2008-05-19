@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 if not g.app.unitTesting: # Not for unit testing.
 

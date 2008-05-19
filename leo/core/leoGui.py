@@ -14,9 +14,9 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
-import leoFind # for nullFindTab.
-import leoFrame # for nullGui.
+import leo.core.leoGlobals as g
+import leo.core.leoFind as leoFind # for nullFindTab.
+import leo.core.leoFrame as leoFrame # for nullGui.
 
 #@+others
 #@+node:ekr.20031218072017.3720:class leoGui
@@ -249,7 +249,7 @@ class leoGui:
 
         self.oops()
 
-        # import leoKeys # Do this here to break a circular dependency.
+        # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         # return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@nonl
@@ -490,7 +490,7 @@ class nullGui(leoGui):
     #@+node:ekr.20070123092623:nullGui.createKeyHandlerClass
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        import leoKeys # Do this here to break a circular dependency.
+        import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@nonl

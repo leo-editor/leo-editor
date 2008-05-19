@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@-others
@@ -20,7 +20,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
         #@+node:edream.110203113231.917:<< override the LeoFrame class >>
         # print "overriding LeoFrame class"
 
-        import leoFrame
+        import leo.core.leoFrame as leoFrame
 
         assert(leoFrame.leoCoreFrame.instances==0)
 
@@ -41,7 +41,7 @@ if not g.app.unitTesting: # Not for unit testing: overrides core methods.
     if 0:
         #@        << override methods of the LeoApp class >>
         #@+node:edream.110203113231.918:<< override methods of the LeoApp class >>
-        import leoApp
+        import leo.core.leoApp as leoApp
 
         # print "overriding g.app.closeLeoWindow"
 

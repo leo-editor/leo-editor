@@ -24,8 +24,8 @@ Translate a few menu items into Simplified Chinese
 # Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
 # All the headlines appear as "??".
 
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 #@+others
 #@+node:ekr.20040828105233.1:onMenu

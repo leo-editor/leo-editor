@@ -6,8 +6,8 @@
 
 #@<< imports >>
 #@+node:ekr.20041227063801:<< imports >>
-import leoGlobals as g
-import leoGui
+import leo.core.leoGlobals as g
+import leo.core.leoGui as leoGui
 
 import sys
 #@-node:ekr.20041227063801:<< imports >>

@@ -19,7 +19,7 @@ header. This is achieved by using the @auto-newsitem headline.
 
 from autotrees import BaseTreeHandler, TreeNode
 import feedparser
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import nntplib
 import sets
 

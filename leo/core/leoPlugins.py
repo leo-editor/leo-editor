@@ -18,7 +18,7 @@ After startup:
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import glob
 
 handlers = {}
@@ -419,7 +419,7 @@ class baseLeoPlugin(object):
 
     - import the base class::
 
-        from leoPlugins import leoBasePlugin
+        from leoPlugins import leo.core.leoBasePlugin as leoBasePlugin
 
     - create a class which inherits from leoBasePlugin::
 
@@ -516,7 +516,7 @@ class baseLeoPlugin(object):
     #@nl
     #@    <<baseLeoPlugin declarations>>
     #@+node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     #@-node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
     #@nl
     #@    @+others

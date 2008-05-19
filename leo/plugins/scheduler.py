@@ -29,9 +29,9 @@ out any scheduled commands/messages.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.7:<< imports >>
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 

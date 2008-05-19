@@ -15,10 +15,12 @@
 
 #@<< imports >>
 #@+node:ekr.20050208101229:<< imports >>
-import leoGlobals as g # So code can use g below.
+if 0:
+    # This is now done in run.
+    import leoGlobals as g # So code can use g below.
 
 # Don't import this here: it messes up Leo's startup code.
-# import leoTest
+# import leo.core.leoTest as leoTest
 
 try:
     import gc
@@ -80,6 +82,7 @@ globalDirectiveList = [
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
 
+g = None # Set by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 
@@ -104,7 +107,7 @@ def createStandAloneTkApp(pluginName=''):
         import Tkinter as Tk
         Pmw = g.importExtension('Pmw',pluginName=pluginName,verbose=True)
         if Tk and Pmw:
-            import leoApp, leoGui
+            import leo.core.leoApp as leoApp, leoGui
             g.app = leoApp.LeoApp()
             g.app.root = Tk.Tk()
             Pmw.initialise(g.app.root)
@@ -136,7 +139,7 @@ def createTopologyList (c,root=None,useHeadlines=False):
 #@+node:ekr.20041117155521:computeGlobalConfigDir
 def computeGlobalConfigDir():
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
 
@@ -162,7 +165,7 @@ def computeHomeDir():
 
     """Returns the user's home directory."""
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     encoding = g.startupEncoding()
     # dotDir = g.os_path_abspath('./',encoding)
@@ -194,7 +197,7 @@ def computeLeoDir ():
     if theDir not in sys.path:
         sys.path.append(theDir)
 
-    if 0: # This is required so we can do import leo (as a package)
+    if 0: # This is required so we can do import leo.core.leo as leo (as a package)
         theParentDir = g.os_path_dirname(theDir)
         if theParentDir not in sys.path:
             sys.path.append(theParentDir)
@@ -206,7 +209,7 @@ def computeLoadDir():
 
     """Returns the directory containing leo.py."""
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     import sys
 
     try:
@@ -287,7 +290,7 @@ def computeStandardDirectories():
 #@+node:ekr.20041117151301.1:startupEncoding
 def startupEncoding ():
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     import sys
 
     if sys.platform=="win32": # "mbcs" exists only on Windows.
@@ -1317,28 +1320,28 @@ def rawPrint(s):
 if 0: # Test code: may be executed in the child node.
     #@    << test code >>
     #@+node:ekr.20031218072017.3123:<< test code >>
-    import leoGlobals as g ; import sys
+    import leo.core.leoGlobals as g ; import sys
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
 
     # stderr
-    import leoGlobals as g ; import sys
+    import leo.core.leoGlobals as g ; import sys
     g.redirectStderr()
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
 
-    import leoGlobals as g ; import sys
+    import leo.core.leoGlobals as g ; import sys
     g.restoreStderr()
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
 
     # stdout
-    import leoGlobals as g ; import sys
+    import leo.core.leoGlobals as g ; import sys
     g.restoreStdout()
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
 
-    import leoGlobals as g ; import sys
+    import leo.core.leoGlobals as g ; import sys
     g.redirectStdout()
     print >> sys.stdout, "stdout isRedirected:", g.stdOutIsRedirected()
     print >> sys.stderr, "stderr isRedirected:", g.stdErrIsRedirected()
@@ -2551,7 +2554,7 @@ def doHook(tag,*args,**keywords):
     c = keywords.get("c")
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
-        import leoPlugins
+        import leo.core.leoPlugins as leoPlugins
         g.app.hookFunction = f = leoPlugins.doPlugins
 
     try:
@@ -2726,12 +2729,6 @@ def es_print(s,*args,**keys):
 
     if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
         g.es(s,*args,**keys)
-#@+node:ekr.20070621092938:@@test g.es_print
-if g.unitTesting:
-    g.es_print('\ntest of es_print: Ă',color='red',newline=False)
-    g.es_print('after')
-    g.es_print('done')
-#@-node:ekr.20070621092938:@@test g.es_print
 #@-node:ekr.20050707064040:es_print
 #@+node:ekr.20050707065530:es_trace
 def es_trace(s,*args,**keys):
@@ -3775,8 +3772,8 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
 
     # __pychecker__ = '--no-argsused' # firstNode is not used.
 
-    import leoTest
-    import leoGlobals as g
+    import leo.core.leoTest as leoTest
+    import leo.core.leoGlobals as g
 
     # Find the scripts.
     p = c.currentPosition()
@@ -4204,6 +4201,9 @@ virtual_event_name = angleBrackets
 
 def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=False):
 
+    # CheckVersion is called early in the startup process.
+    # import leo.core.leoGlobals as g
+
     vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)] ; n1 = len(vals1)
     vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)] ; n2 = len(vals2)
     n = max(n1,n2)
@@ -4223,7 +4223,6 @@ def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=Fa
         # print '%10s' % (repr(vals1)),'%2s' % (condition),'%10s' % (repr(vals2)),result
         print '%7s' % (s1),'%2s' % (condition),'%7s' % (s2),result
     return result
-#@nonl
 #@+node:ekr.20070120123930:CheckVersionToInt
 def CheckVersionToInt (s):
 
@@ -4837,7 +4836,7 @@ class mulderUpdateAlgorithm:
 
         """Strip blanks and tabs from lines containing only blanks and tabs.
 
-        >>> import leoGlobals as g
+        >>> import leo.core.leoGlobals as g
         >>> s = "a\\n \\t\\n\\t\\t \\t\\nb"
         >>> theLines = g.splitLines(s)
         >>> theLines

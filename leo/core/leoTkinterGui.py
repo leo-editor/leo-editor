@@ -11,12 +11,12 @@
 
 #@<< imports >>
 #@+node:ekr.20041228050845:<< imports >>
-import leoGlobals as g
-import leoGui
-import leoTkinterComparePanel
-import leoTkinterDialog
-import leoTkinterFind
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+import leo.core.leoGui as leoGui
+import leo.core.leoTkinterComparePanel as leoTkinterComparePanel
+import leo.core.leoTkinterDialog as leoTkinterDialog
+import leo.core.leoTkinterFind as leoTkinterFind
+import leo.core.leoTkinterFrame as leoTkinterFrame
 import tkFont
 import tkFileDialog
 import os
@@ -59,7 +59,7 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20061031172934:createKeyHandlerClass (tkGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        import leoTkinterKeys # Do this here to break any circular dependency.
+        import leo.core.leoTkinterKeys as leoTkinterKeys # Do this here to break any circular dependency.
 
         return leoTkinterKeys.tkinterKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@nonl

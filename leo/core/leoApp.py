@@ -7,7 +7,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import os
 import sys
 
@@ -34,6 +34,7 @@ class LeoApp:
             # 1: full traces in g.es_exception.
             # 2: call pdb.set_trace in g.es_exception, etc.
         self.disableSave = False
+        self.enableUnitTest = True
         self.extensionsDir = None
         self.globalConfigDir = None # The directory that is assumed to contain the global configuration files.
         self.globalOpenDir = None # The directory last used to open a file.
@@ -254,7 +255,7 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
-        import leoTkinterGui # Do this import after app module is fully imported.
+        import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
 
         g.app.gui = leoTkinterGui.tkinterGui()
         g.app.root = g.app.gui.createRootWindow()
@@ -566,7 +567,7 @@ class LeoApp:
 
         app = self
 
-        import leoCommands
+        import leo.core.leoCommands as leoCommands
 
         if not fileName: fileName = ''
         if not relativeFileName: relativeFileName = ''

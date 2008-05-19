@@ -176,8 +176,10 @@
 # 
 # - Eliminated * imports:
 #     ``* imports`` are bad style in complex code.
-#     Replaced ``from leoPlugins import *`` by ``import leoPlugins``
-#     Replaced ``from leoGlobals import *`` by ``import leoGlobals as g``
+#     Replaced ``from leoPlugins import *`` by ``import leo.core.leoPlugins as 
+# leoPlugins``
+#     Replaced ``from leoGlobals import *`` by ``import leo.core.leoGlobals as 
+# g``
 #     Replaced ``from Tkinter import *`` by import Tkinter as Tk.
 #         Replaced Tk constants like END, FLAT, NW, etc. by 'end','flat','nw', 
 # etc.
@@ -257,8 +259,8 @@
 #@+node:ekr.20060513122450.4:<< imports >>
 # from leoPlugins import *
 # from leoGlobals import *
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 # from Tkinter import *
 import Tkinter as Tk

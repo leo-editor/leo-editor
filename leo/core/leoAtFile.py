@@ -16,14 +16,14 @@
 
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
     # print "enabled psyco classes",__file__
     try: from psyco.classes import *
     except ImportError: pass
 
-import leoNodes
+import leo.core.leoNodes as leoNodes
 import os
 import string
 import time

@@ -6,7 +6,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 # To do later or never: Make body editors persistent. Create @body-editor node?
 

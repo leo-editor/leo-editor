@@ -8,11 +8,11 @@ These classes should be overridden to create frames for a particular gui."""
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
-import leoColor
-import leoMenu
-import leoNodes
-import leoUndo
+import leo.core.leoGlobals as g
+import leo.core.leoColor as leoColor
+import leo.core.leoMenu as leoMenu
+import leo.core.leoNodes as leoNodes
+import leo.core.leoUndo as leoUndo
 
 import re
 

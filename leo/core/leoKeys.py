@@ -8,8 +8,11 @@
 
 #@<< imports >>
 #@+node:ekr.20061031131434.1:<< imports >>
-import leoGlobals as g
-import leoEditCommands
+import leo.core.leoGlobals as g
+
+# This creates a circular dependency.
+# We break this by doing the import in k.endCommand.
+# import leo.core.leoEditCommands as leoEditCommands
 
 import glob
 import inspect
@@ -2646,6 +2649,9 @@ class keyHandlerClass:
                 # __pychecker__ = '--no-classattr --no-objattrs'
                     # initAllEditCommanders *does* exist.
                 k.commandName = None
+
+                # Do the import here to break a circular dependency at the top level.
+                import leo.core.leoEditCommands as leoEditCommands
                 leoEditCommands.initAllEditCommanders(c)
                 try:
                     bodyCtrl.tag_delete('color')

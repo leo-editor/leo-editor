@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:edream.110203113231.733:onStart

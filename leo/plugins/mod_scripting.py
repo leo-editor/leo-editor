@@ -110,8 +110,8 @@ most brilliant idea in Leo's history. """
 #@nl
 #@<< imports >>
 #@+node:ekr.20060328125248.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
@@ -443,7 +443,7 @@ class scriptingController:
                         f.write('  rpdb2.start_embedded_debugger(pwd="",fAllowUnencrypted=True) # Hard breakpoint.\n')
                     # f.write('# Remove all previous variables.\n')
                     f.write('# Predefine c, g and p.\n')
-                    f.write('import leoGlobals as g\n')
+                    f.write('import leo.core.leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
                     f.write('p = c.currentPosition()\n')
                     f.write('# Actual script starts here.\n')
@@ -456,7 +456,7 @@ class scriptingController:
                 g.app.scriptDict ['c'] = c
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules ['leoScriptModule'] # Essential.
-                import leoScriptModule      
+                import leo.core.leoScriptModule as leoScriptModule      
             else:
                 g.es('No debugger active',color='blue')
 

@@ -35,7 +35,7 @@ The code is based on code found in Python's IDLE program.'''
 #@nl
 #@<< imports >>
 #@+node:ekr.20040928101836:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
     # print "enabled psyco classes",__file__
@@ -44,7 +44,7 @@ if g.app and g.app.use_psyco:
 
 Pmw = g.importExtension("Pmw",pluginName='LeoTkinterTree',verbose=True,required=True)
 
-import leoFrame
+import leo.core.leoFrame as leoFrame
 import Tkinter as Tk
 import tkFont
 import sys

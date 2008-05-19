@@ -11,12 +11,12 @@
 
 #@<< imports >>
 #@+node:ekr.20080112171315:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 import gtk
 import gobject
 
-import leoMenu
+import leo.core.leoMenu as leoMenu
 #@-node:ekr.20080112171315:<< imports >>
 #@nl
 
@@ -259,7 +259,7 @@ class leoGtkMenu(leoMenu.leoMenu):
             top = self.getMenu('top')
             oline = self.getMenu('Outline')
             ind = top.getComponentIndex(oline) + 1
-            import leoGtkPluginManager
+            import leo.core.leoGtkPluginManager as leoGtkPluginManager
             self.plugin_menu = pmenu = leoGtkPluginManager.createPluginsMenu()
             #self.plugin_menu = pmenu = gtk.JMenu( "Plugins" )
             top.add(pmenu,ind)
@@ -276,7 +276,7 @@ class leoGtkMenu(leoMenu.leoMenu):
         #@+node:ekr.20080112145409.183:createPluginManager
         def createPluginManager (self,event):
 
-            import leoGtkPluginManager as lspm
+            import leo.core.leoGtkPluginManager as lspm
             lspm.topLevelMenu()
 
         #@-node:ekr.20080112145409.183:createPluginManager

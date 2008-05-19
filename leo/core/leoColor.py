@@ -27,7 +27,7 @@ These are:
 
 It is recommened that these functions should be used thus:
 
-    import leoColor    
+    import leo.core.leoColor as leoColor    
     leoColor.getRGB(name, default)
 
 rather than:
@@ -44,7 +44,7 @@ will return None.
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import re
 import string
 

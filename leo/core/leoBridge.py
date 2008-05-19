@@ -23,7 +23,7 @@
 # configuration settings in .leo files, etc.
 # 
 # Host programs will use the leoBridge module like this::
-#     import leoBridge
+#     import leo.core.leoBridge as leoBridge
 #     bridge = leoBridge.controller(gui='nullGui',verbose=False)
 #     if bridge.isOpen():
 #         g = bridge.globals()
@@ -41,8 +41,8 @@
 # 
 # - As shown above, the host program should gain access to Leo's leoGlobals 
 # module
-# using bridge.globals(). The host program should not import leoGlobals 
-# directly.
+# using bridge.globals(). The host program should not import 
+# leo.core.leoGlobals as leoGlobals directly.
 # 
 # - bridge.openLeoFile(path) returns a completely standard Leo commander. Host
 # programs can use these commanders as described in Leo's scripting chapter.
@@ -108,13 +108,13 @@ class bridgeController:
         #@+node:ekr.20070227093629.1:<< import leoGlobals and leoApp >>
         # Import leoGlobals, but do NOT set g.
         try:
-            import leoGlobals
+            import leo.core.leoGlobals as leoGlobals
         except ImportError:
             print "Error importing leoGlobals.py"
 
         # Create the application object.
         try:
-            import leoApp
+            import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
             print "Error importing leoApp.py"
@@ -130,13 +130,13 @@ class bridgeController:
         #@    << import leoNodes and leoConfig >>
         #@+node:ekr.20070227093629.2:<< import leoNodes and leoConfig >>
         try:
-            import leoNodes
+            import leo.core.leoNodes as leoNodes
         except ImportError:
             print "Error importing leoNodes.py"
             import traceback ; traceback.print_exc()
 
         try:
-            import leoConfig
+            import leo.core.leoConfig as leoConfig
         except ImportError:
             print "Error importing leoConfig.py"
             import traceback ; traceback.print_exc()
@@ -180,8 +180,8 @@ class bridgeController:
         g = self.g
 
         if self.guiName == 'nullGui':
-            import leoGui
-            import leoFrame
+            import leo.core.leoGui as leoGui
+            import leo.core.leoFrame as leoFrame
             g.app.gui = leoGui.nullGui("nullGui")
             # print 'createGui:','g.app:',id(g.app),g.app
             # print 'createGui:','g.app.gui',g.app.gui
@@ -207,12 +207,12 @@ class bridgeController:
     """
         try:
             # This will fail if True/False are not defined.
-            import leoGlobals as g
+            import leo.core.leoGlobals as g
         except ImportError:
-            print "isValidPython: can not import leoGlobals"
+            print "isValidPython: can not import leo.core.leoGlobals as leoGlobals"
             return 0
         except:
-            print "isValidPytyhon: unexpected exception: import leoGlobals.py as g"
+            print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g"
             import traceback ; traceback.print_exc()
             return 0
         try:

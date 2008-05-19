@@ -6,9 +6,9 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
-import leoCompare
-import leoTkinterDialog
+import leo.core.leoGlobals as g
+import leo.core.leoCompare as leoCompare
+import leo.core.leoTkinterDialog as leoTkinterDialog
 import Tkinter as Tk
 import tkFileDialog
 

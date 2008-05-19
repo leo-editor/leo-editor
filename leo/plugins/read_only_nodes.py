@@ -59,8 +59,8 @@ Davide Salomoni
 #@<< imports >>
 #@+node:ekr.20050311091110.1:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import cStringIO
 import ftplib

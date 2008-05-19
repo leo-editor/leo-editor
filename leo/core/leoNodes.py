@@ -20,7 +20,7 @@ if use_zodb:
 else:
     ZODB = None
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
     # print "enabled psyco classes",__file__

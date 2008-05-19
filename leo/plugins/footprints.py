@@ -29,9 +29,9 @@ __plugin_name__ = "Footprints"
 #@nl
 #@<< imports >>
 #@+node:pap.20041020001240.2:<< imports >>
-import leoGlobals as g 
-import leoPlugins 
-import leoTkinterTree 
+import leo.core.leoGlobals as g 
+import leo.core.leoPlugins as leoPlugins 
+import leo.core.leoTkinterTree as leoTkinterTree 
 
 try: 
     import Tkinter as Tk 

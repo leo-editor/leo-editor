@@ -27,11 +27,11 @@ Feedback on this plugin can be sent to::
 
 #@<< imports >>
 #@+node:ekr.20050301083306.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoImport
-import leoCommands
+import leo.core.leoImport as leoImport
+import leo.core.leoCommands as leoCommands
 
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 

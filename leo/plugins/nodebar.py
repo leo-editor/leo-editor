@@ -8,8 +8,8 @@ value in being able to quickly execute commands they do not use very often"""
 
 #@<< imports >>
 #@+node:ekr.20041030084334:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 load_ok=True
 try:

@@ -11,12 +11,12 @@ Modelled after Emacs and Vim commands.'''
 #@+node:ekr.20050710151017:<< imports >>
 # __pychecker__ = '--no-import'
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoFind
-import leoKeys
-import leoPlugins
-import leoTest
+import leo.core.leoFind as leoFind
+import leo.core.leoKeys as leoKeys
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTest as leoTest
 
 import cPickle
 import difflib
@@ -4912,9 +4912,9 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createHiddenCommander(self,fileName):
 
         # Read the file into a hidden commander (Similar to g.openWithFileName).
-        import leoGui
-        import leoFrame
-        import leoCommands
+        import leo.core.leoGui as leoGui
+        import leo.core.leoFrame as leoFrame
+        import leo.core.leoCommands as leoCommands
 
         nullGui = leoGui.nullGui('nullGui')
         frame = leoFrame.nullFrame('nullFrame',nullGui,useNullUndoer=True)
@@ -5283,12 +5283,6 @@ class helpCommandsClass (baseEditCommandsClass):
             # Remove indentation from indentation of this function.
             s = g.adjustTripleString(s,c.tab_width)
             g.es_print('',s)
-    #@+node:ekr.20060226132000:test_aproposAutocompletion
-    if g.unitTesting:
-
-        c,p = g.getTestVars() # Optional: prevents pychecker warnings.
-        c.helpCommands.aproposAutocompletion()
-    #@-node:ekr.20060226132000:test_aproposAutocompletion
     #@-node:ekr.20060226131603.1:aproposAutocompletion
     #@+node:ekr.20060205170335:aproposBindings
     def aproposBindings (self,event=None):

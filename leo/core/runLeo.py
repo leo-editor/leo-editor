@@ -51,8 +51,9 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     # __pychecker__ = '--no-argsused' # keywords not used.
 
+    import pdb ; pdb = pdb.set_trace
+
     # print 'leo.py:run','fileName',fileName
-    if not jyLeo and not isValidPython(): return
     #@    << import leoGlobals and leoApp >>
     #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
     if jyLeo:
@@ -72,8 +73,12 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
             for s in sys.path: print s
 
     # Import leoGlobals, but do NOT set g.
-    import leoGlobals
-    import leoApp
+    import leo.core.leoGlobals as leoGlobals
+
+    # Set leoGlobals.g, rather than in leoGlobals.py.
+    leoGlobals.g = leoGlobals
+
+    import leo.core.leoApp as leoApp
 
     # Create the app.
     leoGlobals.app = leoApp.LeoApp()
@@ -86,6 +91,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
         startJyleo(g)
     #@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
     #@nl
+    if not jyLeo and not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath(g)
     if pymacs:
@@ -96,23 +102,26 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.batchMode = script is not None
     g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
-    #@    << import leoNodes and leoConfig >>
-    #@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
-    import leoNodes
-    import leoConfig
+    #@    << import other early files >>
+    #@+node:ekr.20041219072416.1:<< import other early files>>
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
 
     # try:
-        # import leoNodes
+        # import leo.core.leoNodes as leoNodes
     # except ImportError:
         # print "Error importing leoNodes.py"
         # import traceback ; traceback.print_exc()
 
     # try:
-        # import leoConfig
+        # import leo.core.leoConfig as leoConfig
     # except ImportError:
         # print "Error importing leoConfig.py"
         # import traceback ; traceback.print_exc()
-    #@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+    #@-node:ekr.20041219072416.1:<< import other early files>>
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
@@ -125,7 +134,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if pymacs:
         createNullGuiWithScript(None)
     elif jyLeo:
-        import leoSwingGui
+        import leo.core.leoSwingGui as leoSwingGui
         g.app.gui = leoSwingGui.swingGui()
     elif script:
         if windowFlag:
@@ -187,7 +196,7 @@ def adjustSysPath (g):
 #@+node:ekr.20041124083125:completeFileName (leo.py)
 def completeFileName (fileName):
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     if not (fileName and fileName.strip()):
         return None,None
@@ -215,7 +224,7 @@ def createFrame (fileName,relativeFileName):
 
     """Create a LeoFrame during Leo's startup process."""
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -254,8 +263,8 @@ def createFrame (fileName,relativeFileName):
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
 def createNullGuiWithScript (script):
 
-    import leoGlobals as g
-    import leoGui
+    import leo.core.leoGlobals as g
+    import leo.core.leoGui as leoGui
 
     g.app.batchMode = True
     g.app.gui = leoGui.nullGui("nullGui")
@@ -264,7 +273,7 @@ def createNullGuiWithScript (script):
 #@+node:ekr.20031218072017.1939:getBatchScript
 def getBatchScript ():
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     windowFlag = False
 
     name = None ; i = 1 # Skip the dummy first arg.
@@ -329,12 +338,12 @@ You may download Python from http://python.org/download/
 """
     try:
         # This will fail if True/False are not defined.
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
     except ImportError:
-        print "isValidPython: can not import leoGlobals"
+        print "isValidPython: can not import leo.core.leoGlobals"
         return 0
     except:
-        print "isValidPytyhon: unexpected exception: import leoGlobals.py as g"
+        print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals"
         traceback.print_exc()
         return 0
     try:
@@ -354,7 +363,7 @@ You may download Python from http://python.org/download/
 #@nonl
 # To gather statistics, do the following in a Python window, not idle:
 # 
-#     import leo
+#     import leo.core.leo as leo
 #     leo.profile_leo()  (this runs leo)
 #     load leoDocs.leo (it is very slow)
 #     quit Leo.
@@ -366,7 +375,7 @@ def profile_leo ():
     """Gather and print statistics about Leo"""
 
     import profile, pstats
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     # name = "c:/prog/test/leoProfile.txt"
     name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
@@ -381,7 +390,7 @@ def profile_leo ():
 #@+node:ekr.20041130093254:reportDirectories
 def reportDirectories(verbose):
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     if verbose:
         for kind,theDir in (
@@ -394,8 +403,8 @@ def reportDirectories(verbose):
 #@+node:ekr.20070930194949:startJyleo (leo.py)
 def startJyleo (g):
 
-    import leoSwingFrame
-    import leoSwingUtils
+    import leo.core.leoSwingFrame as leoSwingFrame
+    import leo.core.leoSwingUtils as leoSwingUtils
     import java.awt as awt
 
     if 1:
@@ -413,7 +422,7 @@ def startJyleo (g):
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     try:
         import psyco

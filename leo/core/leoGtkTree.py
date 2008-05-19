@@ -11,17 +11,17 @@
 
 #@<< imports >>
 #@+node:ekr.20080112170946.1:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-# import leoChapters
-import leoColor
-# import leoKeys
-#import leoMenu
-# import leoNodes
+# import leo.core.leoChapters as leoChapters
+import leo.core.leoColor as leoColor
+# import leo.core.leoKeys as leoKeys
+#import leo.core.leoMenu as leoMenu
+# import leo.core.leoNodes as leoNodes
 
-import leoFrame
+import leo.core.leoFrame as leoFrame
 
-import leoGtkMenu
+import leo.core.leoGtkMenu as leoGtkMenu
 
 import gtk
 import gobject

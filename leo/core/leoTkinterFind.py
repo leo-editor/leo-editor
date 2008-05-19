@@ -4,12 +4,12 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
-import leoFind
+import leo.core.leoGlobals as g
+import leo.core.leoFind as leoFind
 
 import sys
 
-import leoTkinterDialog
+import leo.core.leoTkinterDialog as leoTkinterDialog
 import Tkinter as Tk
 
 Pmw = g.importExtension('Pmw',pluginName=None,verbose=False)

@@ -20,13 +20,13 @@ __version__ = '0.6'
 #@nl
 #@<< imports >>
 #@+node:ekr.20070215164948.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import sys
 import System
 
-import leoGui
+import leo.core.leoGui as leoGui
 
 # import Sytem.Windows.Forms
 

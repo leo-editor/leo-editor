@@ -2,8 +2,8 @@
 #@+node:ekr.20050130120433:@thin test/failed_import.py
 '''A plugin to test import problems.'''
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 __version__ = "1.0"
 

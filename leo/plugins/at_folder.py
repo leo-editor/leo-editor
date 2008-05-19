@@ -22,8 +22,8 @@ while keep every files in a flat/single directory on your computer.
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os  # added JD 2004-09-10
 
 __version__ = "1.4"

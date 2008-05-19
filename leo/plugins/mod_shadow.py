@@ -68,7 +68,7 @@ __version__ = "0.10.4"
 #   This should perhaps be a configuration option.
 # - Modified code to work with simplified atFile class.
 # - Changed the name of the .ini file to mod_shadow.ini.
-# - Use import leoGlobals as g.
+# - Use import leo.core.leoGlobals as g.
 # 
 # 0.9 Adapt to cvs post 4.2 by Bernhard Mulder
 # - fixed assertion in original_replaceTargetFileIfDifferent
@@ -167,12 +167,12 @@ __cvsid__   = "$Id: mod_shadow.py,v 1.18 2007/05/29 13:59:04 edream Exp $"
 #@nl
 #@<< imports >>
 #@+node:ekr.20060801095508:<< imports >>
-import leoGlobals as g 
+import leo.core.leoGlobals as g 
 
-import leoAtFile
-import leoCommands
-import leoImport 
-import leoPlugins
+import leo.core.leoAtFile as leoAtFile
+import leo.core.leoCommands as leoCommands
+import leo.core.leoImport as leoImport 
+import leo.core.leoPlugins as leoPlugins
 
 import ConfigParser 
 import os

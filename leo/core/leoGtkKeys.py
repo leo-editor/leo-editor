@@ -9,7 +9,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoKeys
+import leo.core.leoKeys as leoKeys
 
 class gtkKeyHandlerClass (leoKeys.keyHandlerClass):
 

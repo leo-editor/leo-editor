@@ -7,7 +7,7 @@
 #@@pagewidth 80
 
 import Tkinter as Tk
-import leoKeys
+import leo.core.leoKeys as leoKeys
 
 class tkinterKeyHandlerClass (leoKeys.keyHandlerClass):
     '''Tkinter overrides of base keyHandlerClass.'''

@@ -39,8 +39,8 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 
 #@<< imports >>
 #@+node:mork.20041018091414.2:<< imports >>
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 import copy
 import Tkinter
