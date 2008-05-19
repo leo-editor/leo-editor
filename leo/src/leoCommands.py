@@ -74,7 +74,7 @@ class baseCommands:
             self.requestRedrawFlag = False
             self.requestRedrawScrollFlag = False
             self.requestedIconify = '' # 'iconify','deiconify'
-            g.es('Using new drawing code',color='red')
+            # g.es('Using new drawing code',color='red')
 
         # g.trace('Commands')
         self.exists = True # Indicate that this class exists and has not been destroyed.
