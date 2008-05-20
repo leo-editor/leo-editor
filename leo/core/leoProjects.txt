@@ -2584,6 +2584,125 @@ def insertNewlineHelper (self,w,oldSel,undoType):
 #@nonl
 #@-node:ekr.20051026171121:insertNewlineHelper
 #@-node:ekr.20080517184420.1:Fixed insert-newline bug
+#@+node:ekr.20080520084355.2:Single click did not color body correctly
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode,g.callers(5))
+
+    wname = g.app.gui.widget_name(w).lower()
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20080512115455.1:showStateColors
+def showStateColors (self,inOutline,w):
+
+    k = self ; c = k.c ; state = k.unboundKeyAction
+
+    body = c.frame.body ; bodyCtrl = body.bodyCtrl
+
+    if state not in ('insert','command','overwrite'):
+        g.trace('bad input state',state)
+
+    # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
+
+    # if inOutline and w == bodyCtrl:
+        # return # Don't recolor the body.
+    if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
+        # Don't recolor the minibuffer, log panes, etc.
+        return
+
+    if state == 'insert':
+        bg = k.insert_mode_bg_color
+        fg = k.insert_mode_fg_color
+    elif state == 'command':
+        bg = k.command_mode_bg_color
+        fg = k.command_mode_fg_color
+    elif state == 'overwrite':
+        bg = k.overwrite_mode_bg_color
+        fg = k.overwrite_mode_fg_color
+    else:
+        bg = fg = 'red'
+
+    # g.trace(id(w),bg,fg,self)
+
+    if w == bodyCtrl:
+        body.setEditorColors(bg=bg,fg=fg)
+    else:
+        try:
+            w.configure(bg=bg,fg=fg)
+        except Exception:
+            g.es_exception()
+#@-node:ekr.20080512115455.1:showStateColors
+#@+node:ekr.20031218072017.3977:OnBodyClick, OnBodyRClick (Events)
+def OnBodyClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+            self.OnActivateBody(event=event)
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+            pass # By default Leo does nothing.
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("iconrclick")
+#@-node:ekr.20031218072017.3977:OnBodyClick, OnBodyRClick (Events)
+#@+node:ekr.20031218072017.3978:OnBodyDoubleClick (Events)
+def OnBodyDoubleClick (self,event=None):
+
+    try:
+        c = self.c ; p = c.currentPosition()
+        if event and not g.doHook("bodydclick1",c=c,p=p,v=p,event=event):
+            c.editCommands.extendToWord(event) # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
+        g.doHook("bodydclick2",c=c,p=p,v=p,event=event)
+    except:
+        g.es_event_exception("bodydclick")
+
+    return "break" # Restore this to handle proper double-click logic.
+#@-node:ekr.20031218072017.3978:OnBodyDoubleClick (Events)
+#@-node:ekr.20080520084355.2:Single click did not color body correctly
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080506135044.13:Recent graph-world bugs
 #@+node:ekr.20080506135044.14:Fixed paste outline
