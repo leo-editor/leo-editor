@@ -4592,7 +4592,7 @@ class keyHandlerClass:
             w = g.app.gui.get_focus(c)
             if not w: return
 
-        g.trace(w, state, mode)
+        # g.trace(w, state, mode,g.callers(5))
 
         wname = g.app.gui.widget_name(w).lower()
 
@@ -4629,7 +4629,7 @@ class keyHandlerClass:
         if state not in ('insert','command','overwrite'):
             g.trace('bad input state',state)
 
-        g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
+        # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
         # if inOutline and w == bodyCtrl:
             # return # Don't recolor the body.
