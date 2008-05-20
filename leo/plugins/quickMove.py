@@ -50,8 +50,8 @@ __version__ = '0.5'
 
 #@<< imports >>
 #@+node:tbrown.20070117104409.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
 #@-node:tbrown.20070117104409.2:<< imports >>
 #@nl

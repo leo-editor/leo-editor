@@ -17,9 +17,9 @@ attributes of one another.'''
 
 #@<< imports >>
 #@+node:mork.20041018162155.2:<< imports >>
-import leoPlugins
-import leoGlobals as g
-import leoTkinterFrame    
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoTkinterFrame as leoTkinterFrame    
 
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True,required=True)
 #@nonl

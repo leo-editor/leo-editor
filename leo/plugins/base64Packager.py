@@ -32,9 +32,9 @@ in the future.
 #@nl
 #@<< imports >>
 #@+node:ekr.20050307134613.1:<< imports >>
-import leoPlugins
-import leoGlobals as g
-import leoNodes
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
 import os.path
 import base64
 

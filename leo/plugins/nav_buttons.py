@@ -89,8 +89,8 @@ The dialogs will be automatically detected by the plugin and used if supplied.
 #@<< imports >>
 #@+node:ekr.20050219114353:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 #@nonl
@@ -178,7 +178,7 @@ def init ():
 
         try:
             import Tkinter as Tk
-            from leoTkinterDialog import tkinterListBoxDialog
+            from leo.core.leoTkinterDialog import tkinterListBoxDialog
 
         except ImportError:
             Tk = None

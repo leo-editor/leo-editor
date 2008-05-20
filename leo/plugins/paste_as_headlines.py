@@ -36,8 +36,8 @@ the Edit menu directly under the existing Paste option.
 #@nl
 #@<< imports >>
 #@+node:danr7.20060912105041.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 #@-node:danr7.20060912105041.4:<< imports >>
 #@nl
 

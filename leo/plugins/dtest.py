@@ -28,11 +28,11 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@nl
 #@<< imports >>
 #@+node:ekr.20070119094733.2:<<imports>>
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 from leoPlugins import baseLeoPlugin
 import doctest
 import os
-import leoGlobals as g
+import leo.core.leoGlobals as g
 #@-node:ekr.20070119094733.2:<<imports>>
 #@nl
 #@<< version history >>
@@ -97,7 +97,7 @@ class DT(baseLeoPlugin):
         """The handler for dtest
         """
 
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
 
 
         # get a valid temporary filename

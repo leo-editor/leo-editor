@@ -162,9 +162,9 @@ controllers = {}
 #@nl
 #@<< imports >>
 #@+node:bobjack.20080424190906.15:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterFrame as leoTkinterFrame
 
 import re
 import sys
@@ -180,8 +180,8 @@ except ImportError:
     Image = ImageTk = None
 
 mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
-import leoTkinterFrame
-import leoTkinterTree
+import leo.core.leoTkinterFrame as leoTkinterFrame
+import leo.core.leoTkinterTree as leoTkinterTree
 #@-node:bobjack.20080424190906.15:<< imports >>
 #@nl
 

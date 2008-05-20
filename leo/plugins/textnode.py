@@ -11,8 +11,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os.path
 __version__ = "1.1"
     # Terry Brown: support for @path ancestors and uses universal newline mode for opening.

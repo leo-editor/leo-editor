@@ -28,9 +28,9 @@ plugin:
 
 #@<< imports >>
 #@+node:mork.20041018131258.2:<< imports >>
-import leoPlugins 
-import leoGlobals as g      
-import leoNodes
+import leo.core.leoPlugins as leoPlugins 
+import leo.core.leoGlobals as g      
+import leo.core.leoNodes as leoNodes
 import copy
 import base64
 

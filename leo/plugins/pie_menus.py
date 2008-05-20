@@ -7,10 +7,10 @@
 
 #@<< pie_menus imports >>
 #@+node:ekr.20040828122150.1:<< pie_menus imports >>
-import leoGlobals as g
-import leoTkinterTree
-import leoTkinterFrame
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoTkinterTree as leoTkinterTree
+import leo.core.leoTkinterFrame as leoTkinterFrame
+import leo.core.leoPlugins as leoPlugins
 
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 tkFont = g.importExtension('tkFont', pluginName=__name__,verbose=True)

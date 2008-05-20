@@ -1902,7 +1902,7 @@
 <v t="ekr.20071108082844"><vh>@test c extern</vh></v>
 </v>
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
-<v t="ekr.20080211092326.1"><vh>@test pascal/delphi interface</vh></v>
+<v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
 <v t="ekr.20071020075538.10"><vh>Python tests</vh>
 <v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
@@ -2172,7 +2172,7 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.</t>
-<t tx="ekr.20040707141957.12">import leoTest
+<t tx="ekr.20040707141957.12">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20040707141957.13">Line 1
@@ -2189,23 +2189,23 @@ Line 1
 last line 1: no newline</t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4</t>
-<t tx="ekr.20040712101754.3">import leoTest
+<t tx="ekr.20040712101754.3">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","test.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 
 </t>
-<t tx="ekr.20040712101754.4">import leoTest
+<t tx="ekr.20040712101754.4">import leo.core.leoTest as leoTest
 
-path = g.os_path_join(g.app.loadDir,"..","src","LeoPyRef.leo")
+path = g.os_path_join(g.app.loadDir,"..","core","LeoPyRef.leo")
 leoTest.runLeoTest(c,path)
 </t>
-<t tx="ekr.20040712101754.5">import leoTest
+<t tx="ekr.20040712101754.5">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","plugins","leoPluginsRef.leo")
 leoTest.runLeoTest(c,path)
 </t>
-<t tx="ekr.20040712101754.6">import leoTest
+<t tx="ekr.20040712101754.6">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","doc","LeoDocs.leo")
 leoTest.runLeoTest(c,path)
@@ -2215,7 +2215,7 @@ leoTest.runLeoTest(c,path)
 <t tx="ekr.20040712101754.8"># Create unit tests in g.app.scriptDict["suite"]
 
 import unittest
-import leoTest
+import leo.core.leoTest as leoTest
 
 @others
 
@@ -2226,7 +2226,7 @@ g.app.scriptDict['suite'] = suite</t>
 
 
 import unittest
-import leoTest
+import leo.core.leoTest as leoTest
 
 @others
 
@@ -2272,7 +2272,7 @@ test\\unittest\\output\\outlineToNoweb.txt</t>
 test\\unittest\\output\\outlineToCweb.txt</t>
 <t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 g.app.enableUnitTest = True
 
@@ -2336,7 +2336,7 @@ for t in c.all_unique_tnodes_iter():
     nodes.append(t)
     
 # print "duplicate tests pass"</t>
-<t tx="ekr.20040712101754.103">import leoTest
+<t tx="ekr.20040712101754.103">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20040712101754.104">Line 1
@@ -2351,7 +2351,7 @@ Line 1
 #@-node:#@file
 #@-leo
 last line 1: no newline</t>
-<t tx="ekr.20040712101754.106">import leoTest
+<t tx="ekr.20040712101754.106">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20040712101754.107">Line 1
@@ -2367,7 +2367,7 @@ Line 1
 #@-leo
 last line 1: newline
 </t>
-<t tx="ekr.20040712101754.109">import leoTest
+<t tx="ekr.20040712101754.109">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20040712101754.110">Line 1
@@ -4097,9 +4097,9 @@ verbose = False
 
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","src")
+src_path  = g.os_path_join(g.app.loadDir,"..","core")
 
-leo_file   = g.os_path_join(src_path,"leo.py")
+leo_file   = g.os_path_join(src_path,"runLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
@@ -4121,7 +4121,7 @@ finally:
     
 assert(g.os_path_exists(test_file))</t>
 <t tx="ekr.20040712101754.187"></t>
-<t tx="ekr.20040712101754.188">import leoNodes
+<t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 
 current = c.currentPosition()
 child = current.firstChild()
@@ -4545,7 +4545,7 @@ g.app.scriptDict['suite'] = suite</t>
 
 assert errors == 0, "Check Outline reported %d errors" % errors</t>
 <t tx="ekr.20040712101754.274">import unittest
-import leoTest
+import leo.core.leoTest as leoTest
 
 import sys
 
@@ -4556,7 +4556,7 @@ if sys.platform.lower().startswith('win'):
     version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
     if g.CheckVersion(version, "2.3"):
     
-        path = g.os_path_join(g.app.loadDir,"..","src")
+        path = g.os_path_join(g.app.loadDir,"..","core")
         modules = leoTest.importAllModulesInPath(path)
         suite = leoTest.createUnitTestsFromDoctests(modules)
                                  
@@ -4578,7 +4578,7 @@ else:
 assert result=="ok", "checkPythonCode returns: %s" % result</t>
 <t tx="ekr.20040713070526">@language python 
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 u = leoTest.testUtils(c)
 dump = False 
@@ -4654,12 +4654,12 @@ class eggs:
 
     next = p.next()
     assert not p.isAncestorOf(next)</t>
-<t tx="ekr.20040730181601">import leoTest
+<t tx="ekr.20040730181601">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
-<t tx="ekr.20040730181610">import leoTest
+<t tx="ekr.20040730181610">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile2.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
@@ -4703,12 +4703,12 @@ finally:
     c.setBodyString(child,before)
     c.selectPosition(p)</t>
 <t tx="ekr.20040802071519.1">after</t>
-<t tx="ekr.20040803090901">import leoTest
+<t tx="ekr.20040803090901">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","dist","leoDist.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
-<t tx="ekr.20040803091512">import leoTest
+<t tx="ekr.20040803091512">import leo.core.leoTest as leoTest
 
 u = leoTest.testUtils(c)
 h = "@thin ../src/leoTest.py"
@@ -4727,7 +4727,7 @@ if 0: # This actually saves this file, so it is a bit dangerous.
     assert ok, "putVnode failed to give warning"</t>
 <t tx="ekr.20040831095833"></t>
 <t tx="ekr.20040831095833.1">openFileDialog
-src\\leo.py</t>
+core\\runLeo.py</t>
 <t tx="ekr.20040831101747"># Apparently these file are fine when they are written.
 # The problem comes later in the distribution process.
 
@@ -4746,7 +4746,7 @@ def checkLinuxLineEndings(filename):
 
 for file in ("install","uninstall"):
     checkLinuxLineEndings(g.os_path_join(g.app.loadDir,"..",file))</t>
-<t tx="ekr.20040831104758">import leoTest
+<t tx="ekr.20040831104758">import leo.core.leoTest as leoTest
 
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
 leoTest.runLeoTest(c,path,verbose=False,full=True)
@@ -4789,7 +4789,7 @@ line 1
 line 2
 line 3
 """</t>
-<t tx="ekr.20041020100733">import leoTest
+<t tx="ekr.20041020100733">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20041020100733.1"># Test that @nosent generates no sentinels
@@ -4803,7 +4803,7 @@ last line
 </t>
 <t tx="ekr.20041020100918">section line 1</t>
 <t tx="ekr.20041020100918.1">unnamed node line 1</t>
-<t tx="ekr.20041021062800">import leoTest
+<t tx="ekr.20041021062800">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20041021063220"># Test that @nosent generates no sentinels
@@ -4836,7 +4836,7 @@ unnamed node line 1
 #@-node:unnamed node
 #@-leo
 </t>
-<t tx="ekr.20041021065844">import leoTest
+<t tx="ekr.20041021065844">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20041021065844.1"># Test that @nosent generates no sentinels
@@ -5461,7 +5461,7 @@ else:
 # It may be a bit off-putting to run the two sets together, however...</t>
 <t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
 import unittest
-import leoTest
+import leo.core.leoTest as leoTest
 import sys
 
 @others
@@ -5523,8 +5523,8 @@ else:
     else:
         return "Test tabbing of %s plugin" % fn</t>
 <t tx="ekr.20050120095423.11"># Create unit tests in g.app.scriptDict["suite"]
-import leoPlugins
-import leoTest
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTest as leoTest
 import glob
 import sys
 import unittest
@@ -5617,7 +5617,7 @@ g.app.scriptDict['suite'] = suite</t>
         def shutDown(self):
             c = self.new_c
             c.close()</t>
-<t tx="ekr.20050120095423.21">import leoPlugins
+<t tx="ekr.20050120095423.21">import leo.core.leoPlugins as leoPlugins
 
 print
 print 'loaded plugins...'
@@ -5714,7 +5714,7 @@ assert hasattr(g.app,'tkEncoding')</t>
 
 oldGui = g.app.gui ; guis = [g.app.gui]
 
-import leoGui
+import leo.core.leoGui as leoGui
 guis.append(leoGui.unitTestGui())
 
 for gui in guis:
@@ -5946,30 +5946,30 @@ else:
 <t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050417095020.11"># Honor the first line's leading whitespace.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,16)
 </t>
 <t tx="ekr.20050417095020.12"># Honor the first and second line's leading whitespace.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,16)
 </t>
 <t tx="ekr.20050417095020.13"># Single paragraph, hanging indentation.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)
 </t>
 <t tx="ekr.20050417095020.14"># Single paragraph, hanging indentation with other indentation beyond line 2.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)</t>
 <t tx="ekr.20050417095020.15"># Single paragraph, hanging indentation, short lines, extraneous indentation, and last line uses a tab for whitespace.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,5,8)</t>
 <t tx="ekr.20050417095124.16">@language plain
@@ -6200,7 +6200,7 @@ Each data node must have three children:
 A parent to before and after nodes will contain pagewidth and language formatting directives.</t>
 <t tx="ekr.20050417102114"># Wrap a long line, no trailing newline.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,2,24)</t>
 <t tx="ekr.20050417102114.1">This line is over forty characters long, at least it seems to be.</t>
@@ -6213,7 +6213,7 @@ at least it seems to be.</t>
 </t>
 <t tx="ekr.20050417111144"># Wrap a long line, with trailing newline.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 # Wrap a long line, no trailing newline.
 leoTest.singleParagraphTest(c,p,3,0)</t>
@@ -6228,7 +6228,7 @@ at least it seems to be.
 <t tx="ekr.20050417111240"></t>
 <t tx="ekr.20050417113549"># Wrap a long line and some short ones.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,4,10)</t>
 <t tx="ekr.20050417113910">@language plain
@@ -6245,7 +6245,7 @@ paragraph.</t>
 <t tx="ekr.20050417113921"></t>
 <t tx="ekr.20050417114153"># Wrap a paragraph with interior lines that have leading white space.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,4,12)</t>
 <t tx="ekr.20050417114221">@language plain
@@ -6261,7 +6261,7 @@ paragraph.</t>
   paragraph.</t>
 <t tx="ekr.20050417114836"># No wrapping required, so don't change a thing.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.singleParagraphTest(c,p,1,28)
 </t>
@@ -6273,14 +6273,14 @@ leoTest.singleParagraphTest(c,p,1,28)
 <t tx="ekr.20050417115709"></t>
 <t tx="ekr.20050417120312.1"># Multiple long lined paragraphs.  Cursor should move to next paragraph after formatting a paragraph.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.multiParagraphTest(c,p)</t>
 <t tx="ekr.20050417120312.2"></t>
 <t tx="ekr.20050417121448"># A regular paragraph, plus a numbered list of several items, plus a final regular paragraph.
 # Cursor should move to next paragraph after formatting a paragraph.
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.multiParagraphWithListTest(c,p)</t>
 <t tx="ekr.20050417121448.1"></t>
@@ -6293,11 +6293,11 @@ If you "show invisibles" you'll see the leading whitespace in the blank lines --
 which is different from the "testMultiParagraphWithList" test.
 @c
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 leoTest.leadingWSOnEmptyLinesTest(c,p)</t>
 <t tx="ekr.20050417121942.1"></t>
-<t tx="ekr.20050417122215.1">import leoTest
+<t tx="ekr.20050417122215.1">import leo.core.leoTest as leoTest
 
 leoTest.directiveBreaksParagraphTest(c,p)</t>
 <t tx="ekr.20050417122215.2"></t>
@@ -12737,7 +12737,7 @@ finally:
     c2.setChanged(False)
     c2.close()</t>
 <t tx="ekr.20051107115231.13"></t>
-<t tx="ekr.20051107115231.14">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.14">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = '@test return ends editing of headline'
 p = u.findNodeAnywhere(h)
@@ -12757,7 +12757,7 @@ assert wName.startswith('head'),'w.name:%s' % wName
     # assert repr(w).startswith('headlineWidget')
 w.event_generate('&lt;Return&gt;')
 assert w != c.get_focus(),'oops2: focus in headline'</t>
-<t tx="ekr.20051107115231.15">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.15">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -12778,7 +12778,7 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
 </t>
-<t tx="ekr.20051107115231.16">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -12801,7 +12801,7 @@ finally:
         p.initHeadString(h)
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
-<t tx="ekr.20051107115231.17">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.17">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
@@ -12836,7 +12836,7 @@ if k.defaultUnboundKeyAction == 'insert':
             c.frame.tree.setHeadline(p,h)
             c.redraw_now()
             # c.outerUpdate()</t>
-<t tx="ekr.20051107115231.18">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -12894,7 +12894,7 @@ finally:
         p.initHeadString(h)
         c.redraw_now()
 </t>
-<t tx="ekr.20051107115231.20">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.20">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -12919,7 +12919,7 @@ finally:
         p.initHeadString(h)
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
-<t tx="ekr.20051107115231.21">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.21">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
 if k.defaultUnboundKeyAction == 'insert':
@@ -12947,7 +12947,7 @@ if k.defaultUnboundKeyAction == 'insert':
             c.frame.tree.setHeadline(p,h)
             c.redraw_now()</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
-import leoTest ; u = leoTest.testUtils(c)
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -12974,7 +12974,7 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw_now()</t>
-<t tx="ekr.20051107115231.25">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13020,7 +13020,7 @@ finally:
     if 1:
         p.initHeadString(h)
         c.redraw_now()</t>
-<t tx="ekr.20051107115231.28">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.28">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
@@ -13046,7 +13046,7 @@ finally:
         p.initHeadString(h)
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
-<t tx="ekr.20051107115231.29">import leoEditCommands
+<t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
 
 c.searchCommands.openFindTab()
@@ -13096,7 +13096,7 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw_now()</t>
-<t tx="ekr.20051109091731">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051109091731">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13117,7 +13117,7 @@ finally:
         c.redraw_now()</t>
 <t tx="ekr.20051109143831"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -13134,7 +13134,7 @@ assert c.undoer.undoMenuLabel == 'Undo Insert Node'
 c.undoer.undo()
 assert c.undoer.redoMenuLabel == 'Redo Insert Node'</t>
 <t tx="ekr.20051120110536"></t>
-<t tx="ekr.20051120115046">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051120115046">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -13158,7 +13158,7 @@ try:
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
 finally:
     c.undoer.undo()</t>
-<t tx="ekr.20051125170139">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051125170139">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -13287,7 +13287,7 @@ for state, ch, keysym, result in table:
     assert val==result,'Expected %s, Got %s' % (result,val)</t>
 <t tx="ekr.20060203201949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest ; u = leoTest.testUtils(c)
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 c.contractAllHeadlines()
 h = 'All unit tests'
@@ -13303,7 +13303,7 @@ if p:
         
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
-<t tx="ekr.20060208072307">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072307">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 if c.k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
@@ -13333,7 +13333,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
             c.setBodyString(p,'')
             c.redraw_now()
 </t>
-<t tx="ekr.20060208072331">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -13362,7 +13362,7 @@ finally:
         c.setHeadString(p,h)
         c.frame.tree.setHeadline(p,h)
         c.redraw_now()</t>
-<t tx="ekr.20060208072358">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072358">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13388,7 +13388,7 @@ finally:
     if 1:
         c.setBodyString(p,'')
         c.redraw_now()</t>
-<t tx="ekr.20060208072415">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060208072415">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
@@ -13519,7 +13519,7 @@ if guiname == 'wxWindows':
 <t tx="ekr.20060325072919.1"></t>
 <t tx="ekr.20060325072919.2"></t>
 <t tx="ekr.20060325072919.3"></t>
-<t tx="ekr.20060328091154">import leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20060328091154">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k ; p = c.currentPosition() ; w = c.edit_widget(p)
 commandName = 'test-registerCommand'
 
@@ -13668,7 +13668,7 @@ body.bodyCtrl = frame.bodyCtrl = w
 # Delete the selected editor.
 # g.pdb()
 body.deleteEditor()</t>
-<t tx="ekr.20060913084600">import leoNodes
+<t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
@@ -13767,7 +13767,7 @@ assert c.commandsDict.get('delete-test-at-button-node-button'), 'no delete-test-
 
 # print c.commandsDict.get('test-at-button')
 </t>
-<t tx="ekr.20061101121602.78">import leoTest
+<t tx="ekr.20061101121602.78">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.79">first line
  line 1
@@ -13784,7 +13784,7 @@ last line</t>
      line a
  line b
 last line</t>
-<t tx="ekr.20061101121602.82">import leoTest
+<t tx="ekr.20061101121602.82">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.83">first line
     line 1
@@ -13804,7 +13804,7 @@ last line</t>
             line b
     line c
 last line</t>
-<t tx="ekr.20061101121602.86">import leoTest
+<t tx="ekr.20061101121602.86">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.87">first line
 line 1
@@ -13827,7 +13827,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.90">import leoTest
+<t tx="ekr.20061101121602.90">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.91">first line
 line 1
@@ -13850,7 +13850,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.94">import leoTest
+<t tx="ekr.20061101121602.94">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.95">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -13906,7 +13906,7 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20061101121602.98">import leoTest
+<t tx="ekr.20061101121602.98">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.99">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -13962,7 +13962,7 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20061101121602.102">import leoTest
+<t tx="ekr.20061101121602.102">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.103">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -13979,7 +13979,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.106">import leoTest
+<t tx="ekr.20061101121602.106">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.107">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -13996,7 +13996,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.110">import leoTest
+<t tx="ekr.20061101121602.110">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.111">first line
 line 1
@@ -14019,7 +14019,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.114">import leoTest
+<t tx="ekr.20061101121602.114">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.115">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14036,7 +14036,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.118">import leoTest
+<t tx="ekr.20061101121602.118">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.119">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14053,7 +14053,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.122">import leoTest
+<t tx="ekr.20061101121602.122">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.123">first lie
 line 1
@@ -14076,7 +14076,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.126">import leoTest
+<t tx="ekr.20061101121602.126">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.127">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -14128,7 +14128,7 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20061101121602.130">import leoTest
+<t tx="ekr.20061101121602.130">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.131">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14145,7 +14145,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.134">import leoTest
+<t tx="ekr.20061101121602.134">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.135">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14162,7 +14162,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.138">import leoTest
+<t tx="ekr.20061101121602.138">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.139">first line
 line 1
@@ -14185,7 +14185,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.142">import leoTest
+<t tx="ekr.20061101121602.142">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.143">first line
 line 1
@@ -14208,7 +14208,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.146">import leoTest
+<t tx="ekr.20061101121602.146">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.147">first line
 line 1
@@ -14231,7 +14231,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.150">import leoTest
+<t tx="ekr.20061101121602.150">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.151">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14266,7 +14266,7 @@ StormReady helps community leaders and emergency managers strengthen local safet
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.154">import leoTest
+<t tx="ekr.20061101121602.154">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.155">Some 90% of all presidentially declared disasters are weather related,
 leading to around 500 deaths per year and nearly $14 billion in damage.
@@ -14289,7 +14289,7 @@ leading to around 500 deaths per year and nearly $14 billion in damage.
 skills needed to save lives and property– before and during the event.
 StormReady helps community leaders and emergency managers strengthen local safety programs.
 </t>
-<t tx="ekr.20061101121602.158">import leoTest
+<t tx="ekr.20061101121602.158">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.159">first line
 line    line b
@@ -14308,7 +14308,7 @@ line    line b
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.162">import leoTest
+<t tx="ekr.20061101121602.162">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.163">first line
 line 1
@@ -14331,7 +14331,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.166">import leoTest
+<t tx="ekr.20061101121602.166">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.167">firstline
 line 1
@@ -14354,7 +14354,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.170">import leoTest
+<t tx="ekr.20061101121602.170">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.171">first line
 line 1
@@ -14377,7 +14377,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.174">import leoTest
+<t tx="ekr.20061101121602.174">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 assert g.app.unitTestDict.get('colorized')
 </t>
@@ -14399,7 +14399,7 @@ some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.178">import leoTest
+<t tx="ekr.20061101121602.178">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 assert g.app.unitTestDict.get('colorized')</t>
 <t tx="ekr.20061101121602.179">xyzzy line
@@ -14423,7 +14423,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.182">import leoTest
+<t tx="ekr.20061101121602.182">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.183">first line
 line 1
@@ -14446,7 +14446,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.186">import leoTest
+<t tx="ekr.20061101121602.186">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.187">first line
 line 1
@@ -14469,7 +14469,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.190">import leoTest
+<t tx="ekr.20061101121602.190">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.191">first line
 line 1
@@ -14492,7 +14492,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.194">import leoTest
+<t tx="ekr.20061101121602.194">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.195">first line
 line 1
@@ -14515,7 +14515,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.198">import leoTest
+<t tx="ekr.20061101121602.198">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.199">first line
 line 1
@@ -14538,7 +14538,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.202">import leoTest
+<t tx="ekr.20061101121602.202">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.203">first line
 line 1
@@ -14561,7 +14561,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.206">import leoTest
+<t tx="ekr.20061101121602.206">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.207">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -14620,7 +14620,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 </t>
-<t tx="ekr.20061101121602.210">import leoTest
+<t tx="ekr.20061101121602.210">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.211">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14640,7 +14640,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.214">import leoTest
+<t tx="ekr.20061101121602.214">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.215">first line
 line 1
@@ -14663,7 +14663,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.218">import leoTest
+<t tx="ekr.20061101121602.218">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.219">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14696,7 +14696,7 @@ strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.222">import leoTest
+<t tx="ekr.20061101121602.222">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.223">first line
 line 1
@@ -14719,7 +14719,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.226">import leoTest
+<t tx="ekr.20061101121602.226">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.227">first line
 line 1
@@ -14742,7 +14742,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.230">import leoTest
+<t tx="ekr.20061101121602.230">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.231">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14759,7 +14759,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.234">import leoTest
+<t tx="ekr.20061101121602.234">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.235">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14776,7 +14776,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.238">import leoTest
+<t tx="ekr.20061101121602.238">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.239">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14793,7 +14793,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.242">import leoTest
+<t tx="ekr.20061101121602.242">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.243">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -14849,7 +14849,7 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20061101121602.246">import leoTest
+<t tx="ekr.20061101121602.246">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.247">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -14905,7 +14905,7 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20061101121602.250">import leoTest
+<t tx="ekr.20061101121602.250">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.251">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14922,7 +14922,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.254">import leoTest
+<t tx="ekr.20061101121602.254">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.255">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14939,7 +14939,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.258">import leoTest
+<t tx="ekr.20061101121602.258">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.259">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14956,7 +14956,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.262">import leoTest
+<t tx="ekr.20061101121602.262">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.263">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
 
@@ -14973,7 +14973,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?</t>
-<t tx="ekr.20061101121602.266">import leoTest
+<t tx="ekr.20061101121602.266">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.267">first line
 line 1
@@ -14996,7 +14996,7 @@ line 1
         line c
 last line
 </t>
-<t tx="ekr.20061101121602.270">import leoTest
+<t tx="ekr.20061101121602.270">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.271">first line
 	line 1
@@ -15019,7 +15019,7 @@ last line
 	line c
 last line
 </t>
-<t tx="ekr.20061101121602.274">import leoTest
+<t tx="ekr.20061101121602.274">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.275">first li
 ne
@@ -15044,7 +15044,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.278">import leoTest
+<t tx="ekr.20061101121602.278">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.279">first() line
 line 1
@@ -15067,7 +15067,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.282">import leoTest
+<t tx="ekr.20061101121602.282">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.283">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -15116,7 +15116,7 @@ severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?
 </t>
-<t tx="ekr.20061101121602.286">import leoTest
+<t tx="ekr.20061101121602.286">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.287">first line
 line 1
@@ -15139,7 +15139,7 @@ line c
         line b
 last line
 </t>
-<t tx="ekr.20061101121602.290">import leoTest
+<t tx="ekr.20061101121602.290">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 </t>
 <t tx="ekr.20061101121602.291">line 1
@@ -15163,7 +15163,7 @@ first line
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.294">import leoTest
+<t tx="ekr.20061101121602.294">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.295">first (line)
 line 1
@@ -15186,7 +15186,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.298">import leoTest
+<t tx="ekr.20061101121602.298">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.299">first line
 line 1
@@ -15209,7 +15209,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.302">import leoTest
+<t tx="ekr.20061101121602.302">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.303">first line
 line 1
@@ -15234,7 +15234,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.306">import leoTest
+<t tx="ekr.20061101121602.306">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.307">first line
 line 1
@@ -15259,7 +15259,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.310">import leoTest
+<t tx="ekr.20061101121602.310">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.311">first line
 
@@ -15288,7 +15288,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.314">import leoTest
+<t tx="ekr.20061101121602.314">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.315">first line
 line 1
@@ -15311,7 +15311,7 @@ line a
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.318">import leoTest
+<t tx="ekr.20061101121602.318">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.319">
 last line
@@ -15336,7 +15336,7 @@ line c
 line 1
 first line
 </t>
-<t tx="ekr.20061101121602.322">import leoTest
+<t tx="ekr.20061101121602.322">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.323">        line b
     line a
@@ -15359,7 +15359,7 @@ last line
 line 1
 line c
 </t>
-<t tx="ekr.20061101121602.326">import leoTest
+<t tx="ekr.20061101121602.326">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.327">first line
         line b
@@ -15382,7 +15382,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.330">import leoTest
+<t tx="ekr.20061101121602.330">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.331">first
  line
@@ -15407,7 +15407,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.334">import leoTest
+<t tx="ekr.20061101121602.334">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.335">first line
 line 1
@@ -15430,7 +15430,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.338">import leoTest
+<t tx="ekr.20061101121602.338">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.339">frist line
 line 1
@@ -15453,7 +15453,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.342">import leoTest
+<t tx="ekr.20061101121602.342">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.343">line 1
 first line
@@ -15476,7 +15476,7 @@ first line
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.346">import leoTest
+<t tx="ekr.20061101121602.346">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061101121602.347">first line
 line 1
@@ -15499,7 +15499,7 @@ line 1
 line c
 last line
 </t>
-<t tx="ekr.20061101121602.350">import leoTest
+<t tx="ekr.20061101121602.350">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 assert g.app.unitTestDict.get('colorized')</t>
 <t tx="ekr.20061101121602.351">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
@@ -15520,7 +15520,7 @@ SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING T
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.354">import leoTest
+<t tx="ekr.20061101121602.354">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)
 assert g.app.unitTestDict.get('colorized')</t>
 <t tx="ekr.20061101121602.355">first line
@@ -15886,7 +15886,8 @@ finally:
 ###abcdef</t>
 <t tx="ekr.20061109172511"></t>
 <t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
-    import leoFrame,leoTkinterFrame
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect
     
     baseClass = leoFrame.leoFrame
@@ -15910,7 +15911,8 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
-    import leoFrame,leoTkinterFrame
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect,sys
     
     baseClass = leoFrame.leoBody
@@ -15943,7 +15945,9 @@ finally:
                 exctype, value = sys.exc_info()[:2]
                 print value</t>
 <t tx="ekr.20061109172511.4">if g.app.gui.guiName() == 'tkinter':
-    import leoFrame,leoTkinterTree
+    import leo.core.leoFrame as leoFrame
+    import leo.core.leoTkinterGui as leoTkinterGui
+    import leo.core.leoTkinterTree as leoTkinterTree
     import inspect
     
     baseClass = leoFrame.leoTree
@@ -15967,7 +15971,8 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109210659">if g.app.gui.guiName() == 'tkinter':
-    import leoGui,leoTkinterGui
+    import leo.core.leoGui as leoGui
+    import leo.core.leoTkinterGui as leoTkinterGui
     import inspect
     
     baseClass = leoGui.leoGui
@@ -16036,7 +16041,7 @@ controller.parameterize()
     # However, this does test recent changes.</t>
 <t tx="ekr.20061113154104">if g.app.gui.guiName() == 'tkinter':
     import Tkinter as Tk
-    import leoTkinterFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     w = leoTkinterFrame.leoTkTextWidget()
     w.setAllText('abcdef\n')
     s = w.getAllText()
@@ -16081,7 +16086,7 @@ controller.parameterize()
 </t>
 <t tx="ekr.20061115074956"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -16095,7 +16100,7 @@ finally:
 print ; print 'End of general unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest ; u = leoTest.testUtils(c)
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 c.beginUpdate()
 try:
@@ -16127,7 +16132,7 @@ if g.app.gui.guiName() == 'tkinter':
     for i,expected in table:
         result = w.toGuiIndex(i)
         assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)</t>
-<t tx="ekr.20061128082002">import leoTest
+<t tx="ekr.20061128082002">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128082002.1">first line
 line 1
@@ -16147,7 +16152,7 @@ line 1
         line b
 line c
 last line</t>
-<t tx="ekr.20061128090021">import leoTest
+<t tx="ekr.20061128090021">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090021.1">line 1
 line 2
@@ -16161,7 +16166,7 @@ line 4</t>
 line 2
 
 line 4</t>
-<t tx="ekr.20061128090147">import leoTest
+<t tx="ekr.20061128090147">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090147.1">line 1
 line 2
@@ -16173,7 +16178,7 @@ line 4</t>
 <t tx="ekr.20061128090147.3">line 1
 line 2
 line 4</t>
-<t tx="ekr.20061128090338">import leoTest
+<t tx="ekr.20061128090338">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090338.1">line 1
 line 2
@@ -16184,7 +16189,7 @@ line 3</t>
 <t tx="ekr.20061128090338.3">line 1
 line 2
 </t>
-<t tx="ekr.20061128090441">import leoTest
+<t tx="ekr.20061128090441">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128090441.1">line 1
 line 2</t>
@@ -16216,7 +16221,7 @@ Important.
 Some unit tests may fail if you do select other windows or other applications
 while running these tests. Therefore, you should leave your computer completely
 alone while running these unit tests.</t>
-<t tx="ekr.20070131162935">import leoTest
+<t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line
 line 1
@@ -16246,7 +16251,7 @@ line 1
         line b
 line c
 last line</t>
-<t tx="ekr.20070131172706">import leoTest
+<t tx="ekr.20070131172706">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131172706.1">This is the first sentence.  And
 this is the last sentence.
@@ -16258,7 +16263,7 @@ this is the last sentence.
 <t tx="ekr.20070131172706.3">This is the first sentence.  And
 this is the last sentence.
 </t>
-<t tx="ekr.20070131173932">import leoTest
+<t tx="ekr.20070131173932">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131173932.1">This is the first sentence.  This
 is the second sentence.
@@ -16420,7 +16425,7 @@ line 3</t>
 <t tx="ekr.20070217065840.13">line 1
 
 line 3</t>
-<t tx="ekr.20070217071121.1">import leoTest
+<t tx="ekr.20070217071121.1">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.2">before
 aaa   bbb
@@ -16440,7 +16445,7 @@ aaa   bbb
 aaa   bbb
 aaa   bbb
 after</t>
-<t tx="ekr.20070217071121.5">import leoTest
+<t tx="ekr.20070217071121.5">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.6">before
 aaabbb
@@ -16460,7 +16465,7 @@ aaabbb
 aaabbb
 aaabbb
 after</t>
-<t tx="ekr.20070217071121.9">import leoTest
+<t tx="ekr.20070217071121.9">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.10">before
 aaabbb
@@ -16480,7 +16485,7 @@ aaabbb
 aaabbb
 aaabbb
 after</t>
-<t tx="ekr.20070217071121.13">import leoTest
+<t tx="ekr.20070217071121.13">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.14">before
 aaa   xxxbbb
@@ -16500,7 +16505,7 @@ aaa   xxxbbb
 aaa   xxxbbb
 aaa   xxxbbb
 after</t>
-<t tx="ekr.20070217071121.17">import leoTest
+<t tx="ekr.20070217071121.17">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.18">before
 aaabbb
@@ -16520,7 +16525,7 @@ aaabbb
 aaabbb
 aaabbb
 after</t>
-<t tx="ekr.20070217071121.21">import leoTest
+<t tx="ekr.20070217071121.21">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.22">before
 aaas...sbbb
@@ -16540,7 +16545,7 @@ aaas...sbbb
 aaas...sbbb
 aaas...sbbb
 after</t>
-<t tx="ekr.20070217071121.25">import leoTest
+<t tx="ekr.20070217071121.25">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070217071121.26">before
 aaaY1Ybbb
@@ -16607,7 +16612,7 @@ p3 = c.currentPosition()
 </t>
 <t tx="ekr.20070306091949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -16619,7 +16624,7 @@ finally:
     c.endUpdate()
     
 print ; print 'End of leoEditCommands tests.'</t>
-<t tx="ekr.20070315065720">import leoTest
+<t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070315065720.1">a
 
@@ -16630,7 +16635,7 @@ b</t>
 <t tx="ekr.20070315065720.3">a
 
 b</t>
-<t tx="ekr.20070315065849">import leoTest
+<t tx="ekr.20070315065849">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070315065849.1">a
 
@@ -16836,11 +16841,11 @@ leoTest.doTests (c,all=False)</t>
     return key
     
     </t>
-<t tx="ekr.20071007120750.3">import leoTest
+<t tx="ekr.20071007120750.3">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20071007120750.4">import leoTest
+<t tx="ekr.20071007120750.4">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
-<t tx="ekr.20071007120750.5">import leoTest
+<t tx="ekr.20071007120750.5">import leo.core.leoTest as leoTest
 c.editCommands.ccolumn = 4 # Set the comment column
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071007120750.6"># xxxx.yyyy
@@ -16851,7 +16856,7 @@ w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
 assert c.editCommands.fillPrefix == 'xxxx.yyyy'
 </t>
-<t tx="ekr.20071007120947">import leoTest
+<t tx="ekr.20071007120947">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071007120947.6">first line
 last lin</t>
@@ -16946,7 +16951,7 @@ last line</t>
 <t tx="ekr.20071007121312.7">first line
     line b
 last line</t>
-<t tx="ekr.20071007121529">import leoTest
+<t tx="ekr.20071007121529">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071007121529.1">firstline
 last line</t>
@@ -16954,7 +16959,7 @@ last line</t>
 last line</t>
 <t tx="ekr.20071007121529.3">firstline
 last line</t>
-<t tx="ekr.20071007124202">import leoTest
+<t tx="ekr.20071007124202">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071007124202.1">Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
@@ -17220,14 +17225,14 @@ class testClass2:
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20071020075538.15">s = '''\
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 a = 3
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20071020075538.16">s = '''\
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 a = 3
 '''
@@ -17567,7 +17572,7 @@ if sys.platform.lower().startswith('win'):
     
     c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
 <t tx="ekr.20071020075538.79">c.contractAllHeadlines()</t>
-<t tx="ekr.20071024102639">import leoImport
+<t tx="ekr.20071024102639">import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
 runner.root = p.copy()
@@ -17713,7 +17718,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071113081247">import leoTest
+<t tx="ekr.20071113081247">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071113081247.1">z
 x
@@ -17732,7 +17737,7 @@ e
 d
 a
 </t>
-<t tx="ekr.20071113081247.8">import leoTest
+<t tx="ekr.20071113081247.8">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071113081247.9">A
 B
@@ -17751,7 +17756,7 @@ c
 x
 z
 </t>
-<t tx="ekr.20071113082531">import leoTest
+<t tx="ekr.20071113082531">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071113082531.1">z
 Y
@@ -18974,7 +18979,7 @@ assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii enco
 <t tx="ekr.20071113143844.9">assert g.CheckVersionToInt('12') == 12,'fail 1'
 assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
 assert g.CheckVersionToInt('b2') == 0, 'fail 3'</t>
-<t tx="ekr.20071113145804.2">import leoImport
+<t tx="ekr.20071113145804.2">import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
 i = 0
@@ -18986,7 +18991,7 @@ g.app.unitTestDict ['expectedMismatchLine'] = 1
 
 runner.compareHelper(lines1,lines2,i,strict=True)
 </t>
-<t tx="ekr.20071113145804.3">import leoImport
+<t tx="ekr.20071113145804.3">import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.baseScannerClass(ic,atAuto=True,language='java')
 runner.tab_width = -4
@@ -19295,7 +19300,7 @@ assert script.find('\r\n') == -1, repr(script)
     assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
         repr(s),repr(expected),repr(result))
 </t>
-<t tx="ekr.20071113145804.30">import leoPlugins
+<t tx="ekr.20071113145804.30">import leo.core.leoPlugins as leoPlugins
 
 aList1 = leoPlugins.getHandlersForTag('select1')
 aList2 = leoPlugins.getHandlersForOneTag('select1')
@@ -19429,7 +19434,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 <t tx="ekr.20071113200638.8"></t>
 <t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19443,7 +19448,7 @@ finally:
 print ; print 'End of leoAtFile tests'</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19457,7 +19462,7 @@ finally:
 print ; print 'End of leoCommands tests'</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19471,7 +19476,7 @@ finally:
 print ; print 'End of leoConfig tests'</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19485,7 +19490,7 @@ finally:
 print ; print 'End of leoFileCommands tests.'</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19499,7 +19504,7 @@ finally:
 # print ; print 'End of leoFind tests.'</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19513,7 +19518,7 @@ finally:
 # print ; print 'End of leoFrame tests.'</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19527,7 +19532,7 @@ finally:
 # print ; print 'End of leoGlobals tests.'</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19541,7 +19546,7 @@ finally:
 # print ; print 'End of leoGui tests.'</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19555,7 +19560,7 @@ finally:
 print ; print 'End of leoImport tests.'</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19569,7 +19574,7 @@ finally:
 # print ; print 'End of leoKeys tests.'</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19583,7 +19588,7 @@ finally:
 print ; print 'End of leoNodes tests.'</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leoTest
+import leo.core.leoTest as leoTest
 u = leoTest.testUtils(c)
 
 c.beginUpdate()
@@ -19601,13 +19606,13 @@ print ; print 'End of leoUndo tests.'</t>
 \tb
 '''
 
-import leoImport
+import leo.core.leoImport as leoImport
 ic = c.importCommands
 runner = leoImport.pythonScanner(c.importCommands,atAuto=False)
 runner.tab_width = -4
 runner.regularizeWhitespace(s)
 assert runner.errors == 1</t>
-<t tx="ekr.20071127194743">import leoTest
+<t tx="ekr.20071127194743">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20071127194743.1">@root 'root-test'
@@ -19628,7 +19633,7 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20071206124704"></t>
-<t tx="ekr.20071206124704.1">import leoBridge
+<t tx="ekr.20071206124704.1">import leo.core.leoBridge as leoBridge
 
 if 0: # This can not be run locally: it contains another Tk event loop.
     controller = leoBridge.controller(gui='nullGui',verbose=False)
@@ -20288,7 +20293,7 @@ finally:
             p.firstChild().doDelete(newNode=None)
     if 1:
         c.redraw_now()</t>
-<t tx="ekr.20080423110627.13">import leoNodes
+<t tx="ekr.20080423110627.13">import leo.core.leoNodes as leoNodes
 
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)

@@ -36,11 +36,11 @@ previous content is available under the label "before change:"
 
 #@<<imports>>
 #@+node:ekr.20050301095332.2:<<imports>>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoAtFile
-import leoCommands
-import leoPlugins
+import leo.core.leoAtFile as leoAtFile
+import leo.core.leoCommands as leoCommands
+import leo.core.leoPlugins as leoPlugins
 
 from leoTkinterDialog import tkinterListBoxDialog, leoTkinterDialog
 

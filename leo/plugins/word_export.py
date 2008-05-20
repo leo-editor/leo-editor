@@ -37,8 +37,8 @@ __version__ = "0.8"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040909105522:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 try:
     # From win32 extensions: http://www.python.org/windows/win32/

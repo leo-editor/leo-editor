@@ -24,10 +24,10 @@ For full documentation see:
 
 #@<< imports >>
 #@+node:tbrown.20060903121429.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterTree
-import leoEditCommands
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTkinterTree as leoTkinterTree
+import leo.core.leoEditCommands as leoEditCommands
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 

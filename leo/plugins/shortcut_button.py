@@ -9,8 +9,8 @@ This plugin requires that the mod_scripting plugin be enabled.'''
 
 #@<< imports >>
 #@+node:ekr.20060601151845.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import mod_scripting
 

@@ -55,10 +55,10 @@ beginning of the line and by themselves.
 
 #@<< imports >>
 #@+node:ekr.20050226114732.1:<< imports >>
-import leoGlobals as g 
+import leo.core.leoGlobals as g 
 
-import leoAtFile
-import leoPlugins
+import leo.core.leoAtFile as leoAtFile
+import leo.core.leoPlugins as leoPlugins
 
 import os.path
 import shutil
@@ -116,7 +116,7 @@ def init ():
             g.app.createTkGui(__file__)
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            #import leoGlobals # Append to the module list, not to the g.copy.
+            #import leo.core.leoGlobals as leoGlobals # Append to the module list, not to the g.copy.
             g.globalDirectiveList.append('multipath')
             g.globalDirectiveList.append('multiprefix')
 

@@ -624,8 +624,8 @@ __plugin_name__ = 'Right Click Menus'
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090207.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import re
 import sys
@@ -1411,7 +1411,7 @@ class pluginController(object):
 
             """Show `msg` in an external browser using leo_to_html."""
 
-            import leo_to_html
+            import leo.core.leo_to_html as leo_to_html
 
             oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
 

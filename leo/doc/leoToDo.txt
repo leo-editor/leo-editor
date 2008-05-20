@@ -285,7 +285,7 @@ def fail (self,msg=None):
     # __pychecker__ = '--no-argsused'
         #  msg needed so signature matches base class.
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
 #@-node:ekr.20051104075904.81: fail

@@ -20,9 +20,9 @@ Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
 
 #@<< imports >>
 #@+node:ekr.20041017035937.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoNodes
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoNodes as leoNodes
 
 Pmw    = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)

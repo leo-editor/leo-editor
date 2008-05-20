@@ -11,15 +11,15 @@
 
 #@<< imports >>
 #@+node:ekr.20061207074949.1:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoChapters
-import leoColor
-import leoGui
-import leoKeys
-import leoFrame
-import leoMenu
-import leoNodes
+import leo.core.leoChapters as leoChapters
+import leo.core.leoColor as leoColor
+import leo.core.leoGui as leoGui
+import leo.core.leoKeys as leoKeys
+import leo.core.leoFrame as leoFrame
+import leo.core.leoMenu as leoMenu
+import leo.core.leoNodes as leoNodes
 #@-node:ekr.20061207074949.1:<< imports >>
 #@nl
 #@<< TODO >>
@@ -110,7 +110,7 @@ class textGui(leoGui.leoGui):
   #@+node:ekr.20071211151202:createKeyHandlerClass
   def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-      # import leoKeys # Do this here to break a circular dependency.
+      # import leo.core.leoKeys as leoKeys # Do this here to break a circular dependency.
 
       return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
   #@nonl

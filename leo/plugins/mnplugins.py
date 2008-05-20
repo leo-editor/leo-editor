@@ -23,10 +23,10 @@ insertUser : Shift-F6
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090717.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoCommands
+import leo.core.leoCommands as leoCommands
 import time
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)

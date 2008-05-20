@@ -57,10 +57,10 @@ __version__ = "0.7"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040908093511.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoFind
+import leo.core.leoFind as leoFind
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 

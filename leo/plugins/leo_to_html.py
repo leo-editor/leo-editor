@@ -181,8 +181,8 @@ browser_command:
 #@nl
 #@<< imports >>
 #@+node:danr7.20060902215215.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import ConfigParser
 import webbrowser
 import re

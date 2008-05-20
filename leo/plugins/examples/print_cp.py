@@ -22,8 +22,8 @@ __version__ = '0.1'
 
 #@<< imports >>
 #@+node:ekr.20060621123339.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 if 0:
     Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)

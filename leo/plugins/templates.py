@@ -55,9 +55,9 @@ __version__ = ".5"
 #@nl
 #@<<imports>>
 #@+node:ekr.20041022165647:<< imports >>
-import leoNodes 
-import leoPlugins 
-import leoGlobals as g 
+import leo.core.leoNodes as leoNodes 
+import leo.core.leoPlugins as leoPlugins 
+import leo.core.leoGlobals as g 
 
 try:
     import_succeed = True 

@@ -69,8 +69,8 @@ __plugin_group__ = "Helpers"
 
 #@<< imports >>
 #@+node:ekr.20050329082101.117:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import re
 import sys
 import glob
