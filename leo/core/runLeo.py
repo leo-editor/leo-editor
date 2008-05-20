@@ -57,20 +57,14 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     #@    << import leoGlobals and leoApp >>
     #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
     if jyLeo:
-
         print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
 
-        ### This is a hack.
-        ### The jyleo script in test.leo sets the cwd to g.app.loadDir
-        ### Eventually, we will have to compute the equivalent here.
-
-        path = os.path.join(os.getcwd()) ### ,'..','src')
-        if path not in sys.path:
-            print 'appending %s to sys.path' % path
-            sys.path.append(path)
-        if 0:
-            print 'sys.path...'
-            for s in sys.path: print s
+    # Add the current directory to sys.path *before* importing g.
+    # This will fail if the current directory contains unicode characters...
+    path = os.getcwd()
+    if path not in sys.path:
+        print 'appending %s to sys.path' % path
+        sys.path.append(path)
 
     # Import leoGlobals, but do NOT set g.
     import leo.core.leoGlobals as leoGlobals
@@ -185,7 +179,7 @@ def adjustSysPath (g):
 
     #g.trace('loadDir',g.app.loadDir)
 
-    leoDirs = ('config','doc','extensions','modes','plugins','src','test')
+    leoDirs = ('config','doc','extensions','modes','plugins','core','test')
 
     for theDir in leoDirs:
         path = g.os_path_abspath(
