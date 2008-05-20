@@ -3974,7 +3974,8 @@ class keyHandlerClass:
                     return
 
         # Create bindings after we know whether we are in silent mode.
-        w = g.choose(k.silentMode,k.modeWidget,k.widget)
+        # w = g.choose(k.silentMode,k.modeWidget,k.widget)
+        g.trace('silent',k.silentMode,'modeWidget',k.modeWidget,'widget',k.widget)
         k.createModeBindings(modeName,d,w)
         k.showStateAndMode(prompt=prompt)
     #@-node:ekr.20061031131434.163:initMode
@@ -3987,6 +3988,7 @@ class keyHandlerClass:
 
         k.inputModeName = modeName
         w = g.choose(k.silentMode,k.modeWidget,k.widget)
+        # g.trace('silent',k.silentMode,'modeWidget',k.modeWidget,'widget',k.widget)
         k.createModeBindings(modeName,d,w)
 
         if k.silentMode:
@@ -4625,8 +4627,8 @@ class keyHandlerClass:
 
         # g.trace(state,w,g.app.gui.widget_name(w),g.callers(4))
 
-        if inOutline and w == bodyCtrl:
-            return # Don't recolor the body.
+        # if inOutline and w == bodyCtrl:
+            # return # Don't recolor the body.
         if w != bodyCtrl and not g.app.gui.widget_name(w).startswith('head'):
             # Don't recolor the minibuffer, log panes, etc.
             return
