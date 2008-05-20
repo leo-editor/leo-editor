@@ -631,7 +631,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         e.delta = -120
                         return frame.OnMouseWheel(e)
 
-                c.bind(canvas,"<ButtonPress>",mapWheel,add=1)
+                c.bind2(canvas,"<ButtonPress>",mapWheel,add=1)
                 #@-node:ekr.20050119210541:<< workaround for mouse-wheel problems >>
                 #@nl
 
@@ -1432,8 +1432,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         frame.log.setColorFromConfig()
 
         c.redraw_now()
-
-    #@nonl
     #@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
     #@+node:ekr.20031218072017.1625:setInitialWindowGeometry (tkFrame)
     def setInitialWindowGeometry(self):
@@ -1618,7 +1616,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
                 self.OnActivateBody(event=event)
-                c.k.showStateAndMode()
+                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
             g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodyclick")
@@ -1629,7 +1627,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
                 pass # By default Leo does nothing.
-                c.k.showStateAndMode()
+                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
@@ -1641,6 +1639,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
             c = self.c ; p = c.currentPosition()
             if event and not g.doHook("bodydclick1",c=c,p=p,v=p,event=event):
                 c.editCommands.extendToWord(event) # Handles unicode properly.
+                c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
             g.doHook("bodydclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodydclick")
