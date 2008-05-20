@@ -78,7 +78,7 @@ class leoTkinterBody (leoFrame.leoBody):
             # But we suppress coloring in the widget.
             oldState = k.unboundKeyAction
             k.unboundKeyAction = k.defaultUnboundKeyAction
-            c.k.showStateAndMode(w=c.frame.tree.canvas)
+            c.k.showStateAndMode(w=g.app.gui.get_focus(c))
             k.unboundKeyAction = oldState
 
         def onFocusIn(event,c=c):
