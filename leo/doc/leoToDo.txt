@@ -2,8 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
-#@+node:ekr.20080402153826.2:Finish leo-as-a-package branch
-#@-node:ekr.20080402153826.2:Finish leo-as-a-package branch
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080129103436:Solve Kent's @menu problem
 @nocolor
