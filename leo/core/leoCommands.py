@@ -6140,7 +6140,7 @@ class baseCommands:
 
             w.bind(pattern,bindCallback)
 
-        def bind2 (self,w,pattern,func,extra):
+        def bind2 (self,w,pattern,func,**keys):
 
             c = self
 
@@ -6150,7 +6150,7 @@ class baseCommands:
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback,extra)
+            w.bind(pattern,bindCallback,**keys)
         #@-node:ekr.20080515053412.1:c.bind & c.bind2
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
