@@ -1183,6 +1183,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
                         imagefile = g.os_path_join(g.app.loadDir,imagefile)
                         imagefile = g.os_path_normpath(imagefile)
                         image = Tk.PhotoImage(master=g.app.root,file=imagefile)
+                        g.trace(image,imagefile)
 
                         # Must keep a reference to the image!
                         try:
