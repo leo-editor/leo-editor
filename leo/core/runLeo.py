@@ -63,7 +63,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     # This will fail if the current directory contains unicode characters...
     path = os.getcwd()
     if path not in sys.path:
-        print 'appending %s to sys.path' % path
+        # print 'appending %s to sys.path' % path
         sys.path.append(path)
 
     # Import leoGlobals, but do NOT set g.
