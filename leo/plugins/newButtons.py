@@ -92,8 +92,8 @@ USE_FIXED_SIZES = 1
 #@nl
 #@<< imports >>
 #@+node:pap.20051010170720.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import glob
@@ -134,7 +134,7 @@ def onCreate (tag, keywords):
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leoTkinterFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
 
     # Ensure that the templates folder is there
@@ -246,6 +246,7 @@ class UIHelperClass:
     #@+node:pap.20051010171746.3:addWidgets
     def addWidgets(self):
         """Add the widgets to Leo"""
+        c = self.c
         toolbar = self.c.frame.iconFrame
         if not toolbar: return
         # 
@@ -254,7 +255,7 @@ class UIHelperClass:
         # 
         self.text = Tk.Entry(self._getSizer(self.frame, 24, 130))
         self.text.pack(side="left", padx=3, fill="both", expand=1)
-        self.text.bind("<Return>", self.newItemClicked)
+        c.bind(self.text,"<Return>", self.newItemClicked)
         # 
         self.pseudobutton = Tk.Frame(self._getSizer(self.frame, 24, 142),
             relief="raised", borderwidth=2) 

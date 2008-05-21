@@ -16,8 +16,8 @@ See the documentation for @openwith nodes in leoSettings.leo for details.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.8:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk =            g.importExtension('Tkinter',   pluginName=__name__,verbose=True)
 subprocess =    g.importExtension('subprocess',pluginName=__name__,verbose=False)

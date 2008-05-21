@@ -2,8 +2,8 @@
 #@+node:ekr.20080112150934:@thin experimental/gtkGui.py
 '''The plugin part of the gtk gui code.'''
 
-import leoGlobals as g
-import leoGtkGui
+import leo.core.leoGlobals as g
+import leo.core.leoGtkGui as leoGtkGui
 
 try:
     import gtk

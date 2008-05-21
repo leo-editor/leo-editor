@@ -14,8 +14,8 @@ The time between saves is given in seconds in autosave.ini."""
 
 #@<< imports >>
 #@+node:ekr.20060108123141:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import ConfigParser
 import os

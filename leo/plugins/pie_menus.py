@@ -7,10 +7,10 @@
 
 #@<< pie_menus imports >>
 #@+node:ekr.20040828122150.1:<< pie_menus imports >>
-import leoGlobals as g
-import leoTkinterTree
-import leoTkinterFrame
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoTkinterTree as leoTkinterTree
+import leo.core.leoTkinterFrame as leoTkinterFrame
+import leo.core.leoPlugins as leoPlugins
 
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 tkFont = g.importExtension('tkFont', pluginName=__name__,verbose=True)
@@ -123,6 +123,7 @@ class PieMenu:
 
         fc = 'darkgreen'
         h = self.help
+        c = self.c
 
         #@    << create h1 area >>
         #@+node:ekr.20040828131454:<< create h1 area >>
@@ -150,7 +151,7 @@ class PieMenu:
 
             for w in copy,paste,iu,hoist,insert:
                 w.pack( side = 'left' ) 
-                w.bind( '<Enter>', self.drawString )
+                c.bind(w, '<Enter>', self.drawString )
         else:
             for (ivar,hval,background,fill,text,x,y) in (
                 ('copy','copy','orange','white','C',5,6),
@@ -168,7 +169,7 @@ class PieMenu:
                     w.create_line( 0, 7, 8, 0, 15, 7, fill = fc, width = 2 )
                     w.create_line( 8, 0, 8, 15, fill = fc, width = 2 )
                 w.pack( side = 'left' ) 
-                w.bind( '<Enter>', self.drawString)
+                c.bind(w, '<Enter>', self.drawString)
         #@nonl
         #@-node:ekr.20040828131454:<< create h1 area >>
         #@nl
@@ -177,7 +178,7 @@ class PieMenu:
         self.dele = dele = Tk.Canvas( l3, background = 'red', width = 15, height = 15 )
         h[ dele ] = 'delete'
         dele.create_text( 5, 6, text = 'D' , anchor = 'center', fill = 'white',font = f)
-        dele.bind( '<Enter>', self.drawString )
+        c.bind(dele, '<Enter>', self.drawString )
 
         dele.pack()
         self.il = il = Tk.Canvas( l3 , background = 'white' , width = 15, height= 15)
@@ -185,13 +186,13 @@ class PieMenu:
         il.create_line( 7, 0, 0, 8, 7, 15, fill = fc, width = 2 )
         il.create_line( 0, 7, 15, 7 , fill = fc, width = 2 )
         il.pack()
-        il.bind( '<Enter>', self.drawString )
+        c.bind(il, '<Enter>', self.drawString )
 
         self.promote = promote = Tk.Canvas( l3, background = 'darkgreen', width= 15, height = 15 )
         h[ promote] = 'promote'
         promote.create_text( 5, 6, text = 'P' , anchor = 'center', fill = 'white',font = f)
         promote.pack()
-        promote.bind( '<Enter>', self.drawString )
+        c.bind(promote, '<Enter>', self.drawString )
         #@nonl
         #@-node:ekr.20040828131454.1:<< create h3 area >>
         #@nl
@@ -201,32 +202,32 @@ class PieMenu:
         h[ iclone ] = 'clone'
         iclone.create_text( 5, 6, text = 'C' , anchor = 'center', fill = 'red',font = f)
         iclone.pack( side = 'left' )
-        iclone.bind( '<Enter>', self.drawString )
+        c.bind(iclone, '<Enter>', self.drawString )
 
         self.cut = cut = Tk.Canvas( l2, background = 'orange', width = 15, height= 15 )
         h[ cut ] = 'cut'
         cut.create_text( 5, 6, text = 'X' , anchor = 'center', fill = 'white',font = f)
         cut.pack( side = 'left' )
-        cut.bind( '<Enter>', self.drawString )
+        c.bind(cut, '<Enter>', self.drawString )
 
         self.ib = ib = Tk.Canvas( l2 , background = 'white' , width = 15, height= 15)
         h[ ib ] = 'down'
         ib.create_line( 0, 7, 8, 15, 15, 7, fill = fc, width = 2 )
         ib.create_line( 8, 0, 8, 15, fill = fc, width = 2 )
         ib.pack( side = 'left' ) 
-        ib.bind( '<Enter>', self.drawString )
+        c.bind(ib, '<Enter>', self.drawString )
 
         self.mark = mark = Tk.Canvas( l2, background = 'red', width = 15, height= 15 )
         h[ mark ] = 'mark'
         mark.create_text( 5, 6, text = 'M' , anchor = 'center', fill = 'white',font = f)
         mark.pack( side = 'left' ) 
-        mark.bind( '<Enter>', self.drawString )
+        c.bind(mark, '<Enter>', self.drawString )
 
         self.ichild = ichild = Tk.Canvas( l2, background = 'blue', width = 15,height = 15 )
         h[ ichild ] = 'child'
         ichild.create_text( 5, 6, text = 'C' , anchor = 'center', fill = 'white',font = f)
         ichild.pack( side = 'left' )
-        ichild.bind( '<Enter>', self.drawString )
+        c.bind(ichild, '<Enter>', self.drawString )
         #@nonl
         #@-node:ekr.20040828131454.2:<< create h2 area >>
         #@nl
@@ -236,20 +237,20 @@ class PieMenu:
         h[ uhoist ] = 'unhoist'
         uhoist.create_text( 5, 6, text = 'U' , anchor = 'center', fill = 'green',font = f)
         uhoist.pack()
-        uhoist.bind( '<Enter>', self.drawString )
+        c.bind(uhoist, '<Enter>', self.drawString )
 
         self.ir = ir = Tk.Canvas( l4 , background = 'white' , width = 15, height= 15 )
         h[ ir ] = 'right'
         ir.create_line( 7, 0, 15, 8, 7, 15, fill = fc, width = 2 )
         ir.create_line( 0, 7, 15, 7, fill = fc, width = 2 )
         ir.pack()
-        ir.bind( '<Enter>', self.drawString )
+        c.bind(ir, '<Enter>', self.drawString )
 
         self.demote = demote = Tk.Canvas( l4, background = 'darkgreen', width= 15, height = 15 )
         h[ demote ] = 'demote'
         demote.create_text( 5, 6, text = 'D' , anchor = 'center', fill = 'white',font = f)
         demote.pack()
-        demote.bind( '<Enter>', self.drawString )
+        c.bind(demote, '<Enter>', self.drawString )
         #@nonl
         #@-node:ekr.20040828131454.3:<< create h4 area >>
         #@nl
@@ -259,7 +260,7 @@ class PieMenu:
         h[ sorts ] = 's_siblings'
         sorts.create_text( 5, 6, text = 'S' , anchor = 'center', fill = 'white',font = f)
         sorts.pack()
-        sorts.bind( '<Enter>', self.drawString )
+        c.bind(sorts, '<Enter>', self.drawString )
         #@nonl
         #@-node:ekr.20040828131454.4:<< create h5 area >>
         #@nl
@@ -269,7 +270,7 @@ class PieMenu:
         h[ sort ] = 's_children'
         sort.create_text( 5, 6, text = 's' , anchor = 'center', fill = 'white',font = f)
         sort.pack()
-        sort.bind( '<Enter>', self.drawString )
+        c.bind(sort, '<Enter>', self.drawString )
         #@nonl
         #@-node:ekr.20040828131454.5:<< create h6 area >>
         #@nl
@@ -302,7 +303,7 @@ class PieMenu:
         self.message.overrideredirect( 1 )
 
         self.message_box =Tk.Canvas( self.message , width = 95, height = 15,background = 'white' )
-        self.message_box.bind( '<Enter>', lambda event, self = self: self.clean())
+        c.bind(self.message_box, '<Enter>', lambda event, self = self: self.clean())
         self.message_box.pack()
         #@nonl
         #@-node:ekr.20040828131454.7:<< create message area >>
@@ -315,79 +316,79 @@ class PieMenu:
         def left( event ):           
             c.selectVnode( self.vnode )
             c.moveOutlineLeft()
-        self.il.bind( '<Button-1>', left )
+        c.bind(self.il, '<Button-1>', left )
         def right( event ):
             c.selectVnode( self.vnode )
             c.moveOutlineRight()
-        self.ir.bind( '<Button-1>', right )  
+        c.bind(self.ir, '<Button-1>', right )  
         def up( event ):
             c.selectVnode( self.vnode )
             c.moveOutlineUp()
-        self.iu.bind( '<Button-1>', up ) 
+        c.bind(self.iu, '<Button-1>', up ) 
         def down( event ):
             c.selectVnode( self.vnode )
             c.moveOutlineDown()
-        self.ib.bind( '<Button-1>', down )
+        c.bind(self.ib, '<Button-1>', down )
         def clone( event ):
             c.selectVnode( self.vnode )
             c.clone()
-        self.iclone.bind( '<Button-1>', clone )
+        c.bind(self.iclone, '<Button-1>', clone )
         def child( event ):
             c.selectVnode( self.vnode )
             c.insertHeadline()
             c.moveOutlineRight() 
-        self.ichild.bind( '<Button-1>', child ) 
+        c.bind(self.ichild, '<Button-1>', child ) 
         def insert( event ):
             c.selectVnode( self.vnode )
             c.insertHeadline()
-        self.insert.bind( '<Button-1>', insert )       
+        c.bind(self.insert, '<Button-1>', insert )       
         def cp( event ):
             c.selectVnode( self.vnode )
             c.copyOutline()
-        self.copy.bind( '<Button-1>', cp)
+        c.bind(self.copy, '<Button-1>', cp)
         def pst( event ):
             c.selectVnode( self.vnode )
             c.pasteOutline()
-        self.paste.bind( '<Button-1>', pst)
+        c.bind(self.paste, '<Button-1>', pst)
         def ct( event ):
             c.selectVnode( self.vnode )
             c.cutOutline()
-        self.cut.bind( '<Button-1>', ct)
+        c.bind(self.cut, '<Button-1>', ct)
         def dt( event ):
             c.selectVnode( self.vnode )
             c.deleteOutline()
-        self.dele.bind( '<Button-1>', dt)
+        c.bind(self.dele, '<Button-1>', dt)
         def ht( event ):
             c.selectVnode( self.vnode )
             c.hoist()
-        self.hoist.bind( '<Button-1>', ht)
+        c.bind(self.hoist, '<Button-1>', ht)
         def uht( event ):
             c.selectVnode( self.vnode )
             c.dehoist()
-        self.uhoist.bind( '<Button-1>', uht)
+        c.bind(self.uhoist, '<Button-1>', uht)
         def mk( event ):
             cv = c.currentVnode()
             c.selectVnode( self.vnode )
             c.markHeadline()
-        self.mark.bind( '<Button-1>', mk)
+        c.bind(self.mark, '<Button-1>', mk)
         def pr( event ):
             cv = c.currentVnode()
             c.selectVnode( self.vnode )
             c.promote()
-        self.promote.bind( '<Button-1>', pr)
+        c.bind(self.promote, '<Button-1>', pr)
         def dm( event ):
             cv = c.currentVnode()
             c.selectVnode( self.vnode )
             c.demote()
-        self.demote.bind( '<Button-1>', dm)
+        c.bind(self.demote, '<Button-1>', dm)
         def srts( event ):
             c.selectVnode( self.vnode )
             c.sortSiblings()
-        self.sorts.bind( '<Button-1>', srts)
+        c.bind(self.sorts, '<Button-1>', srts)
         def srt( event ):
             c.selectVnode( self.vnode )
             c.sortChildren()
-        self.sort.bind( '<Button-1>', srt)
+        c.bind(self.sort, '<Button-1>', srt)
     #@-node:ekr.20040828122150.8:bind
     #@+node:ekr.20040828122150.9:clean
     def clean( self ):
@@ -484,7 +485,7 @@ def addPMenu( self, parentFrame ):
     can = createCanvas( self, parentFrame )
     c = self.c
 
-    can.bind( '<Motion>', lambda event , c = c: moving( event, c ) )
+    c.bind(can, '<Motion>', lambda event , c = c: moving( event, c ) )
 
     fa = PieMenu( can, c )
     fas[ can ] = fa

@@ -7,8 +7,8 @@
 
 __version__ = "1.2"
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 directives = "markup", # A tuple with one string.
 

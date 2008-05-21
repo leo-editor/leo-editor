@@ -45,10 +45,10 @@ __version__ = "0.7"
 #@<< imports >>
 #@+node:ekr.20040909100226:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leo
+import leo.core.leo as leo
 import os
 import sys
 #@nonl

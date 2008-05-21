@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="74" left="120" height="800" width="898"/>
+	<global_window_position top="74" left="372" height="800" width="898"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -532,8 +532,6 @@
 </v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20070504100715"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20070503120403"><vh>@bool trace_tree_gc = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
@@ -546,8 +544,9 @@
 <v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
+<v t="ekr.20080513084205.2"><vh>Settings for vim operation</vh></v>
 </v>
-<v t="ekr.20041001211817" str_leo_pos="9"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20070115092430"><vh>@@button winpdb</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
 <v t="ekr.20071101163934"><vh>@@command rst3</vh></v>
@@ -866,8 +865,8 @@
 <v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
 </v>
-<v t="ekr.20080502120646.1" a="E"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
-<v t="ekr.20080503195928.1" a="E"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
+<v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 </vnodes>
 <tnodes>
@@ -1270,9 +1269,8 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070315071830"># Do not remove these nodes.</t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121"></t>
+<t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
 <t tx="ekr.20070503085527"></t>
-<t tx="ekr.20070503120403">True: trace storage allocation in Leo's tree.</t>
 <t tx="ekr.20070504064616">import gc,types
 
 def printDict(d):
@@ -1302,7 +1300,6 @@ printDict(d2)
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.</t>
-<t tx="ekr.20070504100715"></t>
 <t tx="ekr.20070504131950">import gc,types
 
 @others
@@ -5325,11 +5322,38 @@ echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
 </t>
 <t tx="ekr.20080503195928.1"></t>
 <t tx="ekr.20080503202744.3">import rope.base.project
+import rope.contrib.codeassist as codeassist
+import leoGlobals as g
+import leoCommands
+c2 = leoCommands.Commands(frame=c.frame,fileName='xyz-file')
 
+class leoFSCommands (object):
+    def create_file(self,path):         g.trace(path)
+    def create_folder(self,path):       g.trace(path)
+    def move (self,path,new_location):  g.trace(path,new_location)
+    def remove (self,path):             g.trace(path)
+    def write (self,path,data):         g.trace(path,data)
 
-myproject = rope.base.project.Project(g.os_path_join(g.app.loadDir,'..','test','ropeProject'))
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','..'))
+    # Make the trunk folder a project
+project = rope.base.project.Project(path,fscommands=leoFSCommands)
+s = p.bodyString() # Could simulate a write to allow @others.
 
-print myproject</t>
+print '*' * 40
+for pattern in (
+    # 'g.', # works.
+    # 'g.trace(', # weird.
+    # 'rope.base.', # works.
+    'g.list', # works: gives g.listToString
+    'c2.de', # works.
+):
+    i = s.find(pattern)
+    if i &gt; -1:
+        proposals = codeassist.code_assist(project,s,i+len(pattern))
+        print '-' * 20
+        print 'pattern:',pattern
+        print g.listToString(proposals)</t>
+<t tx="ekr.20080513084205.2"></t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4

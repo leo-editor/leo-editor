@@ -58,18 +58,18 @@ __version__ = '0.7.2'
 #@nl
 #@<< imports >>
 #@+node:edream.110203113231.303:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoColor
-import leoCommands
-import leoFind
-import leoFrame
-import leoGui
-import leoKeys
-import leoMenu
-import leoNodes
-import leoUndo
+import leo.core.leoColor as leoColor
+import leo.core.leoCommands as leoCommands
+import leo.core.leoFind as leoFind
+import leo.core.leoFrame as leoFrame
+import leo.core.leoGui as leoGui
+import leo.core.leoKeys as leoKeys
+import leo.core.leoMenu as leoMenu
+import leo.core.leoNodes as leoNodes
+import leo.core.leoUndo as leoUndo
 
 import os
 import string
@@ -1981,8 +1981,8 @@ if wx:
     #@@tabwidth -4
     #@@pagewidth 80
 
-    import leoGlobals as g
-    import leoCompare
+    import leo.core.leoGlobals as g
+    import leo.core.leoCompare as leoCompare
 
     class wxComparePanel (leoCompare.leoCompare): #,leoWxDialog):
 
@@ -3260,6 +3260,7 @@ if wx:
                     def visibilityCallback(event,self=self,w=w):
                         try: self.leoIcon.attach(w.winfo_id())
                         except: pass
+                    # c is not available.
                     w.bind("<Visibility>",visibilityCallback)
                     if not self.leoIcon:
                         # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.
@@ -3715,7 +3716,7 @@ if wx:
         #@+node:edream.111503105816:injectCallbacks
         def injectCallbacks(self):
 
-            import leoNodes
+            import leo.core.leoNodes as leoNodes
 
             # Some callback is required.
             def doNothingCallback(*args,**keys):

@@ -19,8 +19,8 @@ Requires at least version 0.19 of mod_scripting
 #@nl
 #@<< imports >>
 #@+node:ekr.20060328125925.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)

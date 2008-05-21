@@ -13,8 +13,8 @@ changes will appear in Leo. '''
 
 #@<< imports >>
 #@+node:ekr.20050218024153:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import sys
 #@nonl

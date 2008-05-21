@@ -38,8 +38,8 @@ you may need to modify it depending on your system.
 #@nl
 #@<< imports >>
 #@+node:danr7.20060902083957.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import ConfigParser
 
 #@-node:danr7.20060902083957.1:<< imports >>

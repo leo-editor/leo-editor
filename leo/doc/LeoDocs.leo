@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -3658,6 +3658,32 @@
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
 <v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
+<v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
+<v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
+<v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
+<v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
+<v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
+<v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
+<v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
+<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
+<v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
+<v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
+<v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
+<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
+<v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
+<v t="ekr.20080204100523.1"><vh>Commands</vh></v>
+<v t="ekr.20080204100523"><vh>Startup</vh></v>
+<v t="ekr.20080204100523.2"><vh>Scripting IPython from Leo</vh></v>
+<v t="ekr.20080205080801"><vh>Scripting Leo from IPython</vh></v>
+<v t="ekr.20080204100523.3"><vh>@rst-ignore User Settings</vh></v>
+<v t="ekr.20080210101336"><vh>Acknowledgements</vh></v>
 </v>
 </v>
 </v>
@@ -19521,6 +19547,7 @@ deprecated. The ``new_c`` key is also deprecated. Plugins should use the ``c`` k
 ============================= ======== =================================== =============================
 Event name (tag argument)     Stop?    When called                         Keys in keywords dict
 ============================= ======== =================================== =============================
+'after-auto'                           after each @auto file loaded        c,p (note 14)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
 'before-create-leo-frame'              before frame.finishCreate           c
@@ -19671,7 +19698,9 @@ Event name (tag argument)     Stop?    When called                         Keys 
     This hook gives plugins the chance to clean up after themselves when Leo shuts down.
 
 13. New in Leo 4.4: Leo calls the 'headkey1' and 'headkey2' hooks only when the user completes
-    the editing of a headline, and ch is always '\r', regardless of platform.</t>
+    the editing of a headline, and ch is always '\r', regardless of platform.
+    
+14. p is the new node (position) containing '@auto filename.ext'</t>
 <t tx="ekr.20050903075144">A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
 existing commands work, or change any other aspect of Leo's look and feel.

@@ -65,8 +65,8 @@ if 0:
 
 #@<< imports >>
 #@+node:ekr.20050101090207.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import tkFileDialog
 
 Tk =             g.importExtension('Tkinter',       pluginName=__name__,verbose=True)

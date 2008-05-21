@@ -20,13 +20,13 @@ __version__ = '0.6'
 #@nl
 #@<< imports >>
 #@+node:ekr.20070215164948.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import sys
 import System
 
-import leoGui
+import leo.core.leoGui as leoGui
 
 # import Sytem.Windows.Forms
 
@@ -828,6 +828,7 @@ class ironPythonGui(leoGui.leoGui):
                 def visibilityCallback(event,self=self,w=w):
                     try: self.leoIcon.attach(w.winfo_id())
                     except: pass
+                # Don't use c.bind here: c is not available.
                 w.bind("<Visibility>",visibilityCallback)
                 if not self.leoIcon:
                     # Load a 16 by 16 gif.  Using .gif rather than an .ico allows us to specify transparency.

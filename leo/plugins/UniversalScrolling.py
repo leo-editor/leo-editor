@@ -24,8 +24,8 @@ in leoSettings.leo.
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090207.5:<< imports >>
-import leoGlobals as g
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+import leo.core.leoTkinterFrame as leoTkinterFrame
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -142,6 +142,7 @@ def addUThreading (tkFrame,parentFrame):
     t.start()
 
     # Replace the canvas bindings.
+    # c is not available.
     canvas.bind( '<Control-Button-1>', scrollDown)
     canvas.bind( '<Shift Button-1>', scrollDown)
     canvas.bind( '<Control-Button-3>', scrollUp)

@@ -130,20 +130,20 @@ Bug list: (oh! to many to list!)
 
 #@<< imports >>
 #@+node:bob.20070813163332.62:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoColor
-import leoCommands
-import leoFind
-import leoFrame
-import leoGui
-import leoKeys
-import leoMenu
-import leoNodes
-import leoUndo
+import leo.core.leoColor as leoColor
+import leo.core.leoCommands as leoCommands
+import leo.core.leoFind as leoFind
+import leo.core.leoFrame as leoFrame
+import leo.core.leoGui as leoGui
+import leo.core.leoKeys as leoKeys
+import leo.core.leoMenu as leoMenu
+import leo.core.leoNodes as leoNodes
+import leo.core.leoUndo as leoUndo
 
-import leoChapters
+import leo.core.leoChapters as leoChapters
 
 import os
 import string
@@ -209,7 +209,7 @@ def init():
         #@        <<overrides>>
         #@+node:bob.20070831090830:<< over rides >>
 
-        # import leoAtFile
+        # import leo.core.leoAtFile as leoAtFile
 
         # old = leoAtFile.atFile.openFileForReading
 
@@ -219,7 +219,7 @@ def init():
             # #wx.SafeYield(onlyIfNeeded=True)
 
         # leoAtFile.atFile.openFileForReading = wxOpenFileForReading
-        import leoEditCommands
+        import leo.core.leoEditCommands as leoEditCommands
         g.funcToMethod(getImage, leoEditCommands.editCommandsClass)
         #@-node:bob.20070831090830:<< over rides >>
         #@nl
@@ -2616,8 +2616,8 @@ if wx:
     #@@tabwidth -4
     #@@pagewidth 80
 
-    import leoGlobals as g
-    import leoCompare
+    import leo.core.leoGlobals as g
+    import leo.core.leoCompare as leoCompare
 
     class wxComparePanel (leoCompare.leoCompare): #,leoWxDialog):
 
@@ -5401,7 +5401,7 @@ if wx:
 
         def injectCallbacks(self):
 
-            import leoNodes
+            import leo.core.leoNodes as leoNodes
 
             # Some callback is required.
             def doNothingCallback(*args,**keys):

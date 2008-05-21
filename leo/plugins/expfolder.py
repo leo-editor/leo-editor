@@ -17,8 +17,8 @@ For the @text and @expfolder nodes to interact correctly, the textnode plugin mu
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import os.path
 import ConfigParser

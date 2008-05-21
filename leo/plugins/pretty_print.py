@@ -19,10 +19,10 @@ method.
 
 #@<< imports >>
 #@+node:ekr.20041021120859:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoCommands
-import leoPlugins
+import leo.core.leoCommands as leoCommands
+import leo.core.leoPlugins as leoPlugins
 #@nonl
 #@-node:ekr.20041021120859:<< imports >>
 #@nl

@@ -51,8 +51,8 @@ __version__ = '1.22'
 
 #@<< imports >>
 #@+node:ekr.20050805162550.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import HTMLParser

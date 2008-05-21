@@ -36,13 +36,27 @@
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
 </v>
 <v t="bobjack.20080414143159.2"><vh>Howto . . . </vh>
-<v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands 1</vh>
+<v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands </vh>
 <v t="bobjack.20080414143159.4"><vh>&lt;&lt;description of the contents of keywords&gt;&gt;</vh></v>
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
+<v t="bobjack.20080507133937.2"><vh>&lt;&lt; remove previous items &gt;&gt;</vh></v>
 </v>
-<v t="bobjack.20080415130112.2"><vh>. . . Write Generator Commands 2</vh></v>
-<v t="bobjack.20080414155140.2"><vh>. . . Use Radio Buttons</vh></v>
-<v t="bobjack.20080415090247.2"><vh>. . . Use Check Buttons</vh></v>
+<v t="bobjack.20080505055217.5"><vh>. . . Write Generator Functions</vh>
+<v t="bobjack.20080414143159.4"><vh>&lt;&lt;description of the contents of keywords&gt;&gt;</vh></v>
+<v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
+<v t="bobjack.20080505055217.8"><vh>&lt;&lt; remove previous items &gt;&gt;</vh></v>
+</v>
+<v t="bobjack.20080414155140.2"><vh>. . . Use Radio Buttons</vh>
+<v t="bobjack.20080505090848.2"><vh>&lt;&lt; remove previous radio demo &gt;&gt;</vh></v>
+<v t="bobjack.20080505090848.3"><vh>&lt;&lt; save ref to demo &gt;&gt;</vh></v>
+</v>
+<v t="bobjack.20080415090247.2"><vh>. . . Use Check Buttons</vh>
+<v t="bobjack.20080505055217.10"><vh>&lt;&lt; remove previous check demo &gt;&gt;</vh></v>
+<v t="bobjack.20080505055217.11"><vh>&lt;&lt; save ref to demo &gt;&gt;</vh></v>
+</v>
+<v t="bobjack.20080504115316.3"><vh>. . . Make Multi-State Menu Items</vh>
+<v t="bobjack.20080504170743.1"><vh>&lt;&lt; remove any previous demo button &gt;&gt;</vh></v>
+</v>
 </v>
 <v t="bobjack.20080329075629.4"><vh>Experiments</vh>
 <v t="bobjack.20080330095006.2" lineYOffset="4b002e"><vh>Replacing the log menu</vh></v>
@@ -93,6 +107,7 @@
 </v>
 <v t="bobjack.20080329054053.3"><vh>... the body pane</vh>
 <v t="bobjack.20080329054053.4"><vh>@popup body</vh>
+<v t="bobjack.20080504170620.1"><vh>@item *</vh></v>
 <v t="bobjack.20080329061920.1"><vh>@item undo</vh></v>
 <v t="bobjack.20080329061920.2"><vh>@item -</vh></v>
 <v t="bobjack.20080329054053.5"><vh>@item cut-text</vh></v>
@@ -271,6 +286,11 @@
 <v t="bobjack.20080401214039.3"><vh>@item label for menu</vh></v>
 </v>
 </v>
+<v t="bobjack.20080505090848.4"><vh>... buttons</vh>
+<v t="bobjack.20080505090848.5"><vh>@popup test-button-menu</vh>
+<v t="bobjack.20080505090848.6"><vh>@item toolbar-delete-button</vh></v>
+</v>
+</v>
 </v>
 <v t="bobjack.20080413173856.2"><vh>Unit Test Stuff - Do Not Change</vh>
 <v t="bobjack.20080413173856.3"><vh>@popup unit-test-one</vh>
@@ -318,14 +338,10 @@
 <v t="bobjack.20080424073616.7"><vh>@test Controller Methods</vh>
 <v t="bobjack.20080424073616.16"><vh>@test add_menu_item</vh></v>
 <v t="bobjack.20080424073616.17"><vh>@test add_optional_args</vh></v>
-<v t="bobjack.20080424073616.13"><vh>@test chapter_menu_helper</vh></v>
 <v t="bobjack.20080424073616.20"><vh>@test copyMenuDict</vh></v>
 <v t="bobjack.20080420051406.4"><vh>@test copyMenuTable</vh></v>
-<v t="bobjack.20080424195922.8"><vh>@test createCommandCallbacks</vh></v>
-<v t="bobjack.20080424073616.15"><vh>@test do_check_button_event</vh></v>
-<v t="bobjack.20080424073616.14"><vh>@test do_radio_button_event</vh></v>
+<v t="bobjack.20080424195922.8"><vh>@test getPublicCommands</vh></v>
 <v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
-<v t="bobjack.20080424073616.10"><vh>@test getButtonHandlers</vh></v>
 <v t="bobjack.20080424195922.96"><vh>@test getCommandList</vh></v>
 <v t="bobjack.20080424073616.21"><vh>@test getImage</vh></v>
 <v t="bobjack.20080424073616.19"><vh>@test init_default_menus</vh></v>
@@ -337,7 +353,6 @@
 <v t="bobjack.20080424073616.11"><vh>@test rSetupMenus</vh></v>
 <v t="bobjack.20080420051406.2"><vh>@test split_cmd</vh></v>
 </v>
-<v t="bobjack.20080423221422.2"><vh>@test commands have methods and are registered</vh></v>
 </v>
 <v t="bobjack.20080416154107.4"><vh>Test generators</vh>
 <v t="bobjack.20080416154107.8"><vh>@test generator functions and methods</vh>
@@ -350,7 +365,13 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="bobjack.20080324163716.1"></t>
+<t tx="bobjack.20080324163716.1">
+m = c.context_menus['body']
+m[1:4] = []
+c.context_menus['body'] = m
+
+bar = c.frame.iconBar
+bar.removeWidget(bar.buttons[1])</t>
 <t tx="bobjack.20080324164314.1"></t>
 <t tx="bobjack.20080326150321.5"></t>
 <t tx="bobjack.20080326150321.6"></t>
@@ -411,7 +432,13 @@ icon = Tango\16x16\actions\undo.png</t>
 <t tx="bobjack.20080329062304.14"></t>
 <t tx="bobjack.20080329062304.15">Set this to use the same menu as the find-text entry</t>
 <t tx="bobjack.20080329062956.1"></t>
-<t tx="bobjack.20080329063457.1">from pprint import pformat
+<t tx="bobjack.20080329063457.1">@
+@btn bg = oldlace
+@btn fg = blue
+@btn menu = test-button-menu
+@c
+
+from pprint import pformat
 
 g.es_print(pformat(c.context_menus))</t>
 <t tx="bobjack.20080329070612.1">
@@ -668,10 +695,17 @@ name = check-four
 fg = darkred
 bg = lightblue</t>
 <t tx="bobjack.20080404111009.1"></t>
-<t tx="bobjack.20080404113810.1"># Run this as a script to enable reporting of changes
-# to the check/radio menu items in the log panel menu.
+<t tx="bobjack.20080404113810.1">@
+@btn bg = oldlace
+@btn fg = blue
+@btn menu = test-button-menu
 
-# Example: how to initialize/modify item settings
+Run this as a script to enable reporting of changes
+to the check/radio menu items in the log panel menu.
+
+Example: how to initialize/modify item settings
+
+@c
 
 cm = c.theContextMenuController
 
@@ -713,7 +747,16 @@ leoPlugins.registerHandler("rclick-button-clicked", report_item_clicked)
 
 g.es('registered to receive radio/check button events', color='blue')
 </t>
-<t tx="bobjack.20080405081601.2">cm = c.theContextMenuController
+<t tx="bobjack.20080405081601.2">@
+@btn bg = oldlace
+@btn fg = blue
+@btn menu = test-button-menu
+
+This button shows the current state of the radio and check
+buttons controlled by rClick.
+@c
+
+cm = c.theContextMenuController
 
 groups = cm.radio_group_data
 checks = cm.check_button_data
@@ -762,6 +805,11 @@ The following button are provided:
 <t tx="bobjack.20080413173856.5">column break</t>
 <t tx="bobjack.20080413173856.6">comment</t>
 <t tx="bobjack.20080413173856.7">@
+This test suite is far from complete but I hope
+to improve it as time permits and my experience increases.
+
+    - bobjack
+
 NOTE:
 
     After doing unit tests the headline and plusbox menus stop working!
@@ -1007,22 +1055,28 @@ test = this has an = sign
 #
 
 </t>
-<t tx="bobjack.20080414080643.1">@color
+<t tx="bobjack.20080414080643.1">@
+@btn bg = white
+@btn fg = red
+@btn menu = test-button-menu
+@c
+
+@color
 
 import leoTest
 leoTest.doTests(c,all=True)
 </t>
-<t tx="bobjack.20080414143159.2"></t>
+<t tx="bobjack.20080414143159.2">
+</t>
 <t tx="bobjack.20080414143159.3">@
-How to write generator commands version 1.
-==========================================
+How to write generator commands.
+================================
 
 After reading this node you can use Execute Script on it to see the example code
 in action.
 
 A generator command is a minibuffer command that is used to add items to a right
-click menu at the time it is being created. They are only of use in @popup trees
-and rClick menu tables.
+click menu at the time it is being created. 
 
 A generator command can be used in @popup trees like this::
 
@@ -1040,13 +1094,7 @@ start somewhere.
 First of all define the function that will be used for the command.
 
 @c
-def do_demo_editor_items(event):
-
-    # get the keywords dictionary that the rClick menu has prepared for us
-
-    controller = c.theContextMenuController
-
-    keywords = controller.mb_keywords
+def do_demo_editor_items(keywords):
 
     &lt;&lt; description of the contents of keywords &gt;&gt;
 
@@ -1060,29 +1108,36 @@ def do_demo_editor_items(event):
         ('-', ''),
         ('Add Editor Test', 'add-editor'),
         ('Delete Editor Test', 'delete-editor'),
+
+        # comment out items above and uncomment
+        # those below to get versions with icons
+
+        # ('Add Editor\nicon=Tango/16x16/actions/add.png', 'add-editor'),
+        # ('Delete Editor\nicon=Tango/16x16/actions/remove.png', 'delete-editor'),
+
+        ('-', '')
     ]
 
-    # insert the new items at the top of the menu_table which is the table of items waiting
-    # to be converted into real menu items.
-
-    # menu_table must be altered in situ you can NOT do keyword['rc_menu_table'] = new_menu.
+    # insert the new items at the top of the menu_table which is the table of
+    # items waiting to be converted into real menu items.
 
     menu_table[:0] = new_items
 
-    # We do not need really to do this as mb_retval is set to None before we are called
-
-    controller.mb_retval = None
+    # menu_table must be altered in situ you can NOT do
+    # keywords['rc_menu_table'] = new_menu.
 
 @
-Now we have a function lets register it as a minibuffer command
+Now we have a function, lets register it as a minibuffer command.
 @c
-
-c.k.registerCommand('demo-editor-items', shortcut=None, func=do_demo_editor_items)
+c.k.registerCommand('demo-editor-items',
+    shortcut=None, func=do_demo_editor_items, wrap=True)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into
 the second position of the body menu.
 @c
+
+&lt;&lt; remove previous items &gt;&gt;
 
 c.context_menus['body'][1:1] = [('*', 'demo-editor-items')]
 
@@ -1101,12 +1156,37 @@ Right click the body pane to see the new menu items appear.
 
 
 
+
+
 </t>
 <t tx="bobjack.20080414143159.4">@
+keywords['rc_phase']:
+
+    This may have one of three values.
+
+        'generate' - indicates that rclick is creating the menu and expects the
+                     call back to be a generator function.
+
+        'invoke' - indicates a menu item has been selceted and rClick expects
+                   the function to handle this.
+
+        'minibuffer' - the command was called from a source other than rClick,
+                       such as from the minibuffer. In this case keywords['mb_event']
+                       holds the event from the standard command callback.
+
+
+keywords['mb_event']:
+
+    Holds the 'event' pareameter supplied by the original minibuffer
+    command callback.
+
+
+The following will not exist if rc_phase is 'minibuffer'
+
 
 keywords['event']:
 
-    The event object obtain from the right click event.
+    The event object obtain from the original right click event.
 
     keywords['event'].widget:
 
@@ -1117,7 +1197,7 @@ keywords['rc_rmenu']:
 
      The gui menu widget that has been generated from previous items.
 
-     This menu may be changed.
+     This menu may be modified by the generator function.
 
 
 keywords['rc_menu_table']:
@@ -1129,6 +1209,8 @@ keywords['rc_menu_table']:
     entirely.
 
     The list must be manipulated in-situ, you can not replace it.
+
+
 
 </t>
 <t tx="bobjack.20080414143159.5">@
@@ -1149,23 +1231,30 @@ Comment - this item is ignored.
 @item  "  (body: a comment)         or ('"', 'a comment')
 
 Minibuffer Command with label.
-@item mini-buffer-command (body: menu label)    or ('menu label', mini-buffer-command)
+@item mini-buffer-command (body: menu label)    or ('menu label', 'mini-buffer-command')
 
 Minibuffer Command with no label.
-@item mini-buffer-command (body: empty)    or ('Mini Buffer Command', mini-buffer-command)
-@item *mini-buffer-command (body: empty)   or ('Mini Buffer Command', mini-buffer-command)
+@item mini-buffer-command (body: empty)    or ('Mini Buffer Command', 'mini-buffer-command')
+@item *mini-buffer-command (body: empty)   or ('Mini Buffer Command', 'mini-buffer-command')
 
 Submenu.
 @menu menu label (body: &lt;empty&gt;     or ('menu label', [ &lt;menu_list&gt; ])
 
+
+The first item of the tuple can be multiline stirngs. eg :
+
+    @item toolbar-add-iconbar  body:   Add IconBar
+                                       icon = Tango/16x16/actions/add.png
+
+    or ('Add IconBar\nicon=Tango/16x16/actions/add.png', 'toolbar-add-iconbar')
 
 </t>
 <t tx="bobjack.20080414155140.2">@
 How to use radio buttons.
 =========================
 
-After reading this node you can use Execute Script on it to see the example code
-in action.
+After reading this node you can use Execute Script on it  and then right
+click ont the body pane to see the example code in action.
 
 Radio buttons can be placed in @popup menus using the following form::
 
@@ -1190,20 +1279,16 @@ same button, regardless of what menu or how many menus they appear in.
 
 Here we will insert three radio buttons into the second position of the body menu.
 
-Notice that in the menu tables the label is the first item of the tuple and the
-minibuffer command 'rclick' button is the first line of the second item of the
-tuple, which may be the opposite of what you expect.
 
 @c
 new_items = [
 
-('-', ''), #separator
+('-', 'demo radio start'), 
 
 ("""Demo Radio One
     kind = radio
     group = demo-group
     name = demo-radio-one
-
     selected-bg = lightblue
     selected-fg = yellow
 """, 'rclick-button'),
@@ -1212,7 +1297,6 @@ new_items = [
     kind = radio
     group = demo-group
     name = demo-radio-two
-
     selected-bg = lightblue
     selected-fg = yellow
 """, 'rclick-button'),
@@ -1221,12 +1305,14 @@ new_items = [
     kind = radio
     group = demo-group
     name = demo-radio-three
-
     selected-bg = lightblue
     selected-fg = yellow
-""", 'rclick-button')
+""", 'rclick-button'),
 
+('-', 'demo radio end'),
 ]
+
+&lt;&lt; remove previous radio demo &gt;&gt;
 
 # Insert the menu items into the second position of the 'body' menu.
 # Notice we must change the menu in situ.
@@ -1248,6 +1334,8 @@ def demo_radio_callback(self, keywords):
 
     if kind == 'radio' and group=='demo-group':
          g.es("Demo Radio Group Selected['%s']"%selected)
+
+&lt;&lt; save ref to demo &gt;&gt;
 
 # register the callback to receive notification of rclick button events
 
@@ -1321,7 +1409,7 @@ This is done so that @item in @popup menus are compatible with @item in @menus.
 
 @c
 new_items = [
-('-', ''),
+('-', 'demo check start'),
 
 ("""Demo Check One
     kind = check
@@ -1337,10 +1425,14 @@ new_items = [
     selected-bg = lightgreen
 """, 'rclick-button'),
 
+('-', 'demo check end')
+
 ]
 
 # Insert the menu items into the second position of the 'body' menu.
 # Notice we must change the menu in situ.
+
+&lt;&lt; remove previous check demo &gt;&gt;
 
 c.context_menus['body'][1:1] = new_items
 
@@ -1362,6 +1454,8 @@ def demo_check_callback(self, keywords):
 
     if kind == 'check' and name in btns:
          g.es("Demo Check Button[%s] Selected[%s]"%(name, selected))
+
+&lt;&lt; save ref to demo &gt;&gt;
 
 # register the callback to receive notification of rclick button events
 
@@ -1396,64 +1490,6 @@ All check buttons with the same name are effectively the same button.  It can ap
 
 </t>
 <t tx="bobjack.20080415093045.2"></t>
-<t tx="bobjack.20080415130112.2">@
-How to write generator commands version 2.
-==========================================
-
-This is an alternative method of writing generator commands. 
-
-The advantage of using this method is that the do_demo_editor_items function can
-be used directly in rclick menu tables as well as being accessed through the
-minibuffer command.
-
-First define the base function.
-@c
-
-def do_demo_editor_items(keywords):
-
-    menu_table = keywords['rc_menu_table']
-
-    new_items = [
-        ('-', ''),
-        ('Add Editor Test', 'add-editor'),
-        ('Delete Editor Test', 'delete-editor'),
-    ]
-
-    menu_table[:0] = new_items
-
-# Now define a wrapper to convert the minibuffer command event.
-
-def demo_editor_items(event):
-
-    cm = c.theContextMenuController
-    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
-
-c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
-
-c.context_menus['body'][1:1] = [
-    ('*', do_demo_editor_items), # do it once using the function directly
-    ('*', 'demo-editor-items')   # do it again using minbuffer command
-]
-
-
-@
-
-
-Execute this node as a script.
-
-Right click the body pane to see the new menu items appear.
-
-
-
-
-
-
-
-
-
-
-
-</t>
 <t tx="bobjack.20080416154107.4"></t>
 <t tx="bobjack.20080416154107.7"></t>
 <t tx="bobjack.20080416154107.8">call_status = 'not called'
@@ -1568,12 +1604,7 @@ xtest(result, None, 'function hook result')
 
 </t>
 <t tx="bobjack.20080419045546.8">
-def demo_editor_items(event):
-
-    cm = c.theContextMenuController
-    cm.mb_retval = do_demo_editor_items(cm.mb_keywords)
-
-c.k.registerCommand('demo-editor-items', shortcut=None, func=demo_editor_items)
+c.k.registerCommand('demo-editor-items', shortcut=None, func=do_demo_editor_items, wrap=True)
 
 
 menu = [('*', 'demo-editor-items')]
@@ -1885,28 +1916,6 @@ icon = Tango/16x16/actions/editpaste.png</t>
 <t tx="bobjack.20080420084658.2"></t>
 <t tx="bobjack.20080420085604.1"></t>
 <t tx="bobjack.20080423221422.1"></t>
-<t tx="bobjack.20080423221422.2">
-cm = c.theContextMenuController
-
-commands = cm.commandList
-
-for command in commands:
-    
-    assert isinstance(command, basestring), \
-        "Command must be a sring. Got type: %s" % type(command)
-    
-    method_name = command.replace('-', '_')
-    
-    assert hasattr(cm, method_name), \
-        "No method for command %s" % command
-        
-    function = c.commandsDict.get(command)
-    
-    assert function, \
-        "command '%s' has not been registered." % command 
-        
-    assert callable(function), \
-        "function registered for '%s' is not callable" % command</t>
 <t tx="bobjack.20080424054748.5">print 
 print 'Starting testAtPopup (rClick) tests.'
 print</t>
@@ -1947,10 +1956,10 @@ for ivar, kind in ivars:
         "Test Controller has ivar of wrong type\n\tGot type: %s\n\tExpected: %s" %(
             type(val), kind)</t>
 <t tx="bobjack.20080424073616.7">
-from rClick import ContextMenuController
+from rClick import pluginController
 
        
-cm = ContextMenuController
+cm = pluginController
 
     
 headlines = [p.headString() for p in p.children_iter()]
@@ -1963,30 +1972,12 @@ for h in headlines:
             "Controller has no method %s" % h
 </t>
 <t tx="bobjack.20080424073616.8"></t>
-<t tx="bobjack.20080424073616.10">method = c.theContextMenuController.getButtonHandlers
-
-result = method()
-
-assert isinstance(result, dict) and \
-    'radio' in result and 'check' in result, \
-        "Expected a dictionary with at least 'radio' an 'check' keys."
-
-for k, v in result.iteritems():
-    
-    assert isinstance(k, basestring), \
-        'keys must be strings not type %s' % type(k)
-        
-    assert callable(v), \
-        'values must be callable'</t>
 <t tx="bobjack.20080424073616.11"></t>
 <t tx="bobjack.20080424073616.12">rejoin = c.theContextMenuController.rejoin
 
 assert rejoin('a', '') == 'a', 'Fails when second argument is empty second argument.' 
 assert rejoin('a', 'b') == 'a\nb'
 </t>
-<t tx="bobjack.20080424073616.13"></t>
-<t tx="bobjack.20080424073616.14"></t>
-<t tx="bobjack.20080424073616.15"></t>
 <t tx="bobjack.20080424073616.16"></t>
 <t tx="bobjack.20080424073616.17"></t>
 <t tx="bobjack.20080424073616.18"></t>
@@ -2009,6 +2000,257 @@ for name in (
 </t>
 <t tx="bobjack.20080424195922.96"></t>
 <t tx="bobjack.20080424195922.97"></t>
-<t tx="bobjack.20080427183647.1"></t>
+<t tx="bobjack.20080427183647.1">@
+These menus only apply in this frame they will have no effect on any other frame
+you may open.</t>
+<t tx="bobjack.20080504115316.3">@
+How to Make Multi-State Menu items.
+==================================
+
+After reading this node you can use Execute Script on it to see the example code in action.
+
+In this HowTo we will create a menu item which will count cyclically from 1 to 7,
+incrementing on each click, displaying the result using cleo's priority icons
+and printing out it's new value in the log panel.
+
+An icon button will appear in the second position of the iconBar also showing
+a cleo icon representing the current count.
+
+Typing demo-count in the minibuffer will also increment the count as will clicking
+on the icon button..
+
+This demo requires rClick.py and the toolbar.py plugins to be enabled
+
+@c
+c.tmpDemoCount=1
+
+numbers = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven']
+
+frame = c.frame
+bar = c.frame.iconBars['iconbar']
+
+&lt;&lt; remove any previous demo button &gt;&gt;
+
+image = bar.getImage('cleo/pri1.png')
+
+btn = bar.getButton(text='one', image=image, command='demo-count')
+btn.leoDemoCounter = True
+bar.addWidget(btn, 1)
+
+
+def demoCounterItem(keywords):
+
+    frame = c.frame
+
+    phase = keywords['rc_phase']
+
+    count = c.tmpDemoCount
+    iconpath = 'cleo/pri%s.png'%count
+    text = numbers[count]
+    label = '%s\nicon=%s'%(text, iconpath)
+
+    if phase == 'generate':
+
+        menu_table = keywords['rc_menu_table']
+        menu_table.insert(0, (label, 'demo-count'))
+
+    elif phase in ['invoke', 'minibuffer']:
+
+        count += 1
+        if count &gt; 7 or count &lt; 1:
+            count = 1
+        c.tmpDemoCount = count
+
+        iconpath= 'cleo/pri%s.png'%count
+        text = numbers[count]
+        btn.config(text=text, image=bar.getImage(iconpath))
+
+        g.es(text)
+
+c.k.registerCommand('demo-count', shortcut='Alt-9', func=demoCounterItem, wrap=True)
+
+mBody =c.context_menus['body']
+if not (mBody and mBody[0][1] == 'demo-count'):
+    mBody.insert(0, ('*', 'demo-count'))
+
+
+
+
+</t>
+<t tx="bobjack.20080504170620.1">toggle-iconbar</t>
+<t tx="bobjack.20080504170743.1"># execute this node as a script to remove
+# the toolbar button and menu item
+
+for key, bar in c.frame.iconBars.iteritems():
+    for btn in bar.buttons:
+        if hasattr(btn, 'leoDemoCounter'):
+            g.es('deleted button from %s' % key)
+            bar.removeWidget(btn, repack=False)
+            btn.destroy()
+
+menu = c.context_menus.get('body')
+
+if menu and menu[0][1] == 'demo-count':
+    menu[:1] = []</t>
+<t tx="bobjack.20080505055217.5">@
+How to write generator functions.
+=================================
+
+After reading this node you can use Execute Script on it to see the example code
+in action.
+
+It is better to use generator commands where possible but if you must use
+raw function calls then this is for you.
+
+The only difference is that when you use a direct call the keyword object is
+not supplied automatically.
+@c
+
+def do_demo_editor_items(keywords):
+
+    &lt;&lt; description of the contents of keywords &gt;&gt;
+
+    # for this exercise we only need the table of items yet to be converted
+
+    menu_table = keywords['rc_menu_table']
+
+    &lt;&lt; description of menu_table format &gt;&gt;
+
+    new_items = [
+        ('-', ''),
+        ('Add Editor Raw', 'add-editor'),
+        ('Delete Editor Raw', 'delete-editor'),
+        ('-', '')
+    ]
+
+    # insert the new items at the top of the menu_table which is the table of
+    # items waiting to be converted into real menu items.
+
+    # menu_table must be altered in situ you can NOT do
+    # keywords['rc_menu_table'] = new_menu.
+
+    menu_table[:0] = new_items
+
+
+do_demo_editor_items = c.universallCallback(do_demo_editor_items)
+
+@
+Our command has to be inserted into a menu to be of any use, so here we insert it into
+the second position of the body menu.
+@c
+
+&lt;&lt; remove previous items &gt;&gt;
+
+c.context_menus['body'][1:1] = [('*', do_demo_editor_items)]
+
+@
+All that is left to do is for you to execute this node as a script, do that now.
+
+Right click the body pane to see the new menu items appear.
+
+
+
+
+
+
+
+
+
+
+
+</t>
+<t tx="bobjack.20080505055217.8"># This is house keeping stuff for the howto and can be ignored.
+
+# Execute this node as a script to remvove demo menu items
+
+menu = c.context_menus['body']
+
+old = hasattr(g, 'old_do_demo_editor_items') and g.old_do_demo_editor_items
+
+for i, item in enumerate(menu):
+    if item[1] is old:
+        del menu[i]
+
+try:
+    g.old_do_demo_editor_items = do_demo_editor_items
+except:
+    pass
+</t>
+<t tx="bobjack.20080505055217.10"># this is housekeeping stuff and can be ignored
+
+menu = c.context_menus['body']
+newmenu = []
+demo = False
+for i, item in enumerate(menu):
+    if item[1] == 'demo check start':
+        demo = True
+        continue
+    if item[1] == 'demo check end':
+        demo = False
+        continue
+    if not demo:
+        newmenu.append(item)
+
+menu[:] = newmenu
+
+try:
+    import leoPlugins
+    leoPlugins.unregisterHandler("rclick-button-clicked", g.oldCheckCallback)
+except:
+    pass
+
+
+</t>
+<t tx="bobjack.20080505055217.11"># this is housekeeping stuff and can be ignored
+
+g.oldCheckCallback = demo_check_callback</t>
+<t tx="bobjack.20080505090848.2"># this is housekeeping stuff and can be ignored
+
+# Execute this node as a script to remove demo items
+
+
+
+menu = c.context_menus['body']
+newmenu = []
+demo = False
+for i, item in enumerate(menu):
+    if item[1] == 'demo radio start':
+        demo = True
+        continue
+    if item[1] == 'demo radio end':
+        demo = False
+        continue
+    if not demo:
+        newmenu.append(item)
+
+menu[:] = newmenu
+
+try:
+    import leoPlugins
+    leoPlugins.unregisterHandler("rclick-button-clicked", g.oldRadioCallback)
+except:
+    pass
+
+
+</t>
+<t tx="bobjack.20080505090848.3"># this is housekeeping stuff and can be ignored
+
+g.oldRadioCallback = demo_radio_callback</t>
+<t tx="bobjack.20080505090848.4"></t>
+<t tx="bobjack.20080505090848.5"></t>
+<t tx="bobjack.20080505090848.6">Remove Button
+
+icon = Tango\16x16\actions\stop.png</t>
+<t tx="bobjack.20080507133937.2"># This is house keeping stuff for the howto and can be ignored.
+
+# Execute this node as a script to remvove demo menu items
+
+menu = c.context_menus['body']
+
+for i, item in enumerate(menu):
+    if item[1] == 'demo-editor-items' :
+        del menu[i]
+
+</t>
 </tnodes>
 </leo_file>

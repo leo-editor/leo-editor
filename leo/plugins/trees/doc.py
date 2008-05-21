@@ -14,7 +14,7 @@ from autotrees import BaseTreeHandler, TreeNode
 import inspect
 import sets
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]

@@ -19,8 +19,8 @@ Otherwise the path is relative to the Leo file.
 
 # By Josef Dalcolmo: contributed under the same license as Leo.py itself.
 
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 import os
 
 #@<< change log >>

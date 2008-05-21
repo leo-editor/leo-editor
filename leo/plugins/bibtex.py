@@ -111,8 +111,8 @@ __version__ = "0.4" # Set version for the plugin handler.
 #@nl
 #@<< imports >>
 #@+node:timo.20050213193129:<<imports>>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 #@nonl

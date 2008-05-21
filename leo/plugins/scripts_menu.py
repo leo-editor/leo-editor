@@ -10,8 +10,8 @@
 #@<< imports >>
 #@+node:ekr.20050111115429:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import glob
 import os

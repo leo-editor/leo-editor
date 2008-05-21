@@ -10,8 +10,8 @@
 
 # French translation completed by Frédéric Momméja, Spring 2003
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:EKR.20040517080202.4:onMenu

@@ -84,9 +84,9 @@ __version__ = "1.8"
 #@-node:ekr.20040916091520:<< version history >>
 #@nl
 
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 import re
 
 #@+others

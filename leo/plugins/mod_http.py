@@ -46,8 +46,8 @@ __pychecker__ = '--no-errors' # Suppress all pychecker errors.
 
 #@<< imports >>
 #@+node:EKR.20040517080250.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import asynchat
 import asyncore

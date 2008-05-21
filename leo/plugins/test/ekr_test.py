@@ -1,7 +1,7 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20080214092357:@thin test/ekr_test.py
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 def init():
     if g.app.unitTesting: return False

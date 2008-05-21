@@ -16,8 +16,8 @@ trace_leo_matches = False
 
 #@<< imports >>
 #@+node:ekr.20071010193720.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import re
@@ -235,7 +235,7 @@ def onStart1 (tag, keywords):
 
     '''Override Leo's core colorizer classes.'''
 
-    import leoColor
+    import leo.core.leoColor as leoColor
     # print 'threading_colorizer overriding core classes'
     leoColor.colorizer = colorizer
     leoColor.nullColorizer = nullColorizer

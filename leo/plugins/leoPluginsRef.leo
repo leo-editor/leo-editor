@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1,12,0,6,3"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -25,8 +25,11 @@
 <v t="ekr.20051025144116"><vh>@@button Spell</vh></v>
 <v t="ekr.20050819055746"><vh>@@button Save</vh></v>
 </v>
+<v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
+<v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -308,9 +311,8 @@
 <v t="ekr.20071006112739"><vh>Graph world</vh>
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
 </v>
-<v t="ekr.20070116074730" a="E"><vh>Gui plugins</vh>
-<v t="ekr.20061207074949" a="E"
-expanded="ekr.20061207074949.14,"><vh>@thin cursesGui.py</vh></v>
+<v t="ekr.20070116074730"><vh>Gui plugins</vh>
+<v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
 <v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
 </v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
@@ -1629,8 +1631,8 @@ Here we begin the Python program, importing the modules we need, and
 signing on as the Leo2AsciiDoc module in the Leo log window.
 @c
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import re
 import os
@@ -3704,8 +3706,8 @@ it is included in "pluginsManager.txt" in that directory.
 @code
 """Create menu for Open With command and handle the resulting commands"""
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -3848,10 +3850,10 @@ have OpenTreeInXEmacs visibly traverse the tree.
 &lt;&lt; Open_Tree Plugin &gt;&gt;
 @code
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 
 def OpenTreeInXEmacs (c):
-    import leoCommands
+    import leo.core.leoCommands as leoCommands
     #XEmacsCommand = "/usr/bin/gnuclient -q "
     XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
     vnode = c.currentVnode() # get the current vnode.
@@ -3936,10 +3938,10 @@ located in a 'username_Leo' subdirectory of the temporary
 directory. The 'LeoTemp' prefix is omitted.  This makes it easier to
 see which temporary file is related to which outline node.""" #'
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoCommands
+import leo.core.leoCommands as leoCommands
 import getpass
 import os
 import tempfile
@@ -4646,7 +4648,7 @@ may not be available on all platforms.
     from m import *
     from m import x,y,z
 
-- Do not import leoNodes unless your plugin creates nodes directly.</t>
+- Do not import leo.core.leoNodes as leoNodes unless your plugin creates nodes directly.</t>
 <t tx="ekr.20041114103913">Most of the comments in the style guide are comments _about_ the style guide.
 You would replace these comments with your own, or eliminate them entirely in
 your plugin.</t>
@@ -4892,8 +4894,8 @@ what the plugin does and how to use it.
 @
 
 Put notes about each version here.</t>
-<t tx="ekr.20050303051035.5">import leoGlobals as g
-import leoPlugins
+<t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
@@ -4946,7 +4948,7 @@ HitsToHeatUp = 2
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leoTkinterFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
     
     # Replace frame.put with newPut (not shown).
@@ -4967,8 +4969,8 @@ what the plugin does and how to use it.
 @
 
 Put notes about each version here.</t>
-<t tx="ekr.20050306071629.3">import leoGlobals as g
-import leoPlugins
+<t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 # Whatever other imports your plugins uses.</t>
 <t tx="ekr.20050306071629.4">def init ():
@@ -4998,7 +5000,7 @@ If a plugin catches exceptions during startup it should do one of the following:
 <t tx="ekr.20050329035844">def importLeoGlobals():
 
     '''
-    Try to import leoGlobals from the leo/src directory, assuming that
+    Try to import leo.core.leoGlobals as leoGlobals from the leo/src directory, assuming that
     the script using this function is in a subdirectory of the leo directory.
     '''
 
@@ -5010,10 +5012,10 @@ If a plugin catches exceptions during startup it should do one of the following:
     else:
         sys.path.append(plugins_path)
         try:
-            import leoGlobals as g
+            import leo.core.leoGlobals as g
             return g
         except ImportError:
-            print 'can not import leoGlobals from %s' % (plugins_path)
+            print 'can not import leo.core.leoGlobals as leoGlobals from %s' % (plugins_path)
             return None</t>
 <t tx="ekr.20050329080427">def setPaths(self):
     """Set paths to the plugin locations"""
@@ -6031,7 +6033,7 @@ sys.path.append(r'c:\reportlab_1_20')
 
 if 1: # This dependency could easily be removed.
     # Used only for tracing and error reporting.
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
 try:
     # from reportlab.lib.enums import *
@@ -7514,7 +7516,7 @@ in point 2 above.
 
 IV. About tracing and debugging.
 
-As mentioned in the imports section, it is not necessary to import leoGlobals.
+As mentioned in the imports section, it is not necessary to import leo.core.leoGlobals as leoGlobals.
 This file is part of Leo, and contains debugging stuff such as g.trace and
 g.toString. There are also g.splitLines, g.es_exception, etc. used by debugging
 code.
@@ -10002,7 +10004,7 @@ return(0);
 <t tx="ekr.20060715100156.1"></t>
 <t tx="ekr.20060715100156.2">@color
 
-import leoTest
+import leo.core.leoTest as leoTest
 
 print "\nStart of Do @test"
 leoTest.doTests(c,all=False)
@@ -10053,6 +10055,53 @@ if not ok:
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20080203083146"></t>
+<t tx="ekr.20080515173014.1">([a-zA-Z_.]+)\.bind\((.*)\)(.*)$
+c.bind(\1,\2)\3
+
+[a-zA-Z_.]+
+
+(\w)+(\.\w+)*
+
+abc.xyz.pdq
+
+# Bind w.bind with more than two args (none found)
+
+w.bind\(.*,.*,.*$
+
+[-w]\.bind\(</t>
+<t tx="ekr.20080519084304.2">change = True # True: actually make the changes.
+trace = True
+
+print '-' * 40
+
+tag = 'import leo' ; n = len('import ')
+
+for p in p.self_and_subtree_iter():
+    result = []
+    for s in g.splitlines(p.bodyString()):
+        i = s.find(tag,0)
+        if i &gt; -1:
+            # Do nothing if we have already done the translation.
+            i2 = s.find('&lt;&lt;') ; i3 = s.find('import leo.core')
+            if i2 == -1 and i3 == -1:
+                i += n
+                j = g.skip_c_id(s,i)
+                word = s[i:j]
+                rest = s[j:]
+                if rest.strip().startswith('as'):
+                    s = s[:i] + 'leo.core.' + word + rest
+                else:
+                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
+                if trace:
+                    print p.headString()
+                    j,k=g.getLine(s,i) ; print s[j:k]
+        result.append(s)
+    result = ''.join(result)
+
+    if change and result != p.bodyString():
+        c.setBodyString(p,result)
+
+</t>
 <t tx="pap.20041006184225">"""
 A plugin to manage Leo's Plugins:
 
@@ -10168,7 +10217,7 @@ import traceback
 import time
 
 try:
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     standalone = False
 except ImportError:
     standalone = True
@@ -10193,7 +10242,7 @@ if ok:
 # dynamically enable a plugin        
 if not standalone:
     try:
-        import leoPlugins
+        import leo.core.leoPlugins as leoPlugins
     except ImportError:
         leoPlugins = None
 else:

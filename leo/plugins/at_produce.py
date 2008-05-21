@@ -34,8 +34,8 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 
 #@<< imports >>
 #@+node:ekr.20040915085715:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 from leoNodes import *
 

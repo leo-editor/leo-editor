@@ -7,8 +7,8 @@
 
 #@<< imports >>
 #@+node:ekr.20050101090207.6:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nonl
@@ -26,7 +26,7 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 def onStart (tag,keywords):
 
-    import leoTkinterFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
 
     # Replace frame.put with newPut.

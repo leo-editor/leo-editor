@@ -10,8 +10,8 @@ __version__ = "0.4"
 
 #@<< imports >>
 #@+node:ekr.20040908094021.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nonl

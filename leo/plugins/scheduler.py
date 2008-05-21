@@ -29,9 +29,9 @@ out any scheduled commands/messages.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.7:<< imports >>
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -310,7 +310,7 @@ def endRecord(event,c):
         bottom = Tk.Scrollbar(f,orient="horizontal")
         bottom.pack(side="bottom",fill=Tk.X)
         timepanel.lb = Tk.Listbox(f,background='white')
-        timepanel.lb.bind('<ButtonRelease-1>',set_time)
+        c.bind(timepanel.lb,'<ButtonRelease-1>',set_time)
         timepanel.lb.pack(side="left",fill="both")
         right = Tk.Scrollbar(f)
         right.pack(side="right",fill="y")

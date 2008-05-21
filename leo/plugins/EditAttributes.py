@@ -17,9 +17,9 @@ attributes of one another.'''
 
 #@<< imports >>
 #@+node:mork.20041018162155.2:<< imports >>
-import leoPlugins
-import leoGlobals as g
-import leoTkinterFrame    
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoTkinterFrame as leoTkinterFrame    
 
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True,required=True)
 #@nonl
@@ -117,7 +117,8 @@ class AttrEditor:
         self.tx = Pmw.ScrolledText( frame, text_background = 'white', text_foreground = 'blue',
                                     labelpos = 'n', label_text = 'Current Attribute Value' )
         self.tx.pack( side = 'right' )
-        self.tx.component( 'text' ).bind( '<Key>', self.setText )
+        w = self.tx.component( 'text' )
+        c.bind(w,'<Key>', self.setText )
         if bk:
             lb.setvalue( bk[ 0 ] )
             self.selcommand()
@@ -196,8 +197,8 @@ def newCreateCanvas (self,parentFrame,pageName=None):
                 p, junk = data
                 return AttrEditor(c,p)
 
-    can.bind('<Button-2>',hit,'+')
-    can.bind('<Button-3>',hit,'+')
+    c.bind2(can,'<Button-2>',hit,'+')
+    c.bind2(can,'<Button-3>',hit,'+')
 
     return can
 

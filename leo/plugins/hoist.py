@@ -25,17 +25,19 @@
 # node.
 # 1.1 EKR: Use hoist-changed hook rather than idle-time hook to update the 
 # widgets.
+# 1.2 bobjack:
+#     - bind hois/dehoist buttons together if Tk and toolbar.py is enabled
 #@-at
 #@nonl
 #@-node:ekr.20040908093511:<< change history >>
 #@nl
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 #@<< imports >>
 #@+node:ekr.20040908093511.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter')
 
@@ -178,24 +180,11 @@ class HoistButtons:
 
         #@    << bind and pack buttons >>
         #@+node:bobjack.20080503151427.8:<< bind and pack buttons >>
-        def getbuttonCallbacks():
-
-            def pressCallback(event, bf=bf):
-                return bf.leoIconBar.onPress(event)
-
-            def releaseCallback(event, bf=bf):
-                return bf.leoIconBar.onRelease(event)             
-
-            return pressCallback, releaseCallback
-
         for btn in (b1, b2):
             btn.pack(in_=bf, side='left')
-            press, release = getbuttonCallbacks()
-            btn.bind('<ButtonPress-1>', press)
-            btn.bind('<ButtonRelease-1>', release)
-            btn.leoSubWindow = True
 
-        self.c.frame.addIconWidget(bf)    
+        bf.leoDragHandle = (b1, b2)
+        self.c.frame.addIconWidget(bf)  
         #@nonl
         #@-node:bobjack.20080503151427.8:<< bind and pack buttons >>
         #@nl

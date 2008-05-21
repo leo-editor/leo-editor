@@ -78,8 +78,8 @@ Some names defined at the top level have special significance.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.10:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -840,9 +840,9 @@ class TkScrolledMessageDialog:
     def show_message_as_html(self, name):
 
         try:
-            import leo_to_html
+            import leo.core.leo_to_html as leo_to_html
         except ImportError:
-            g.es('Can not import leo_to_html', color='red')
+            g.es('Can not import leo.core.leo_to_html as leo_to_html', color='red')
             return
 
         oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander

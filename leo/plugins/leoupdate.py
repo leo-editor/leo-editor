@@ -24,8 +24,8 @@ __plugin_requires__ = ["plugin_manager"]
 
 #@<< imports >>
 #@+node:pap.20050605183206.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import re
 import sys
 import glob

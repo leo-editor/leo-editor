@@ -92,7 +92,7 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 # IV. About tracing and debugging.
 # 
 # As mentioned in the imports section, it is not necessary to import 
-# leoGlobals.
+# leo.core.leoGlobals as leoGlobals.
 # This file is part of Leo, and contains debugging stuff such as g.trace and
 # g.toString. There are also g.splitLines, g.es_exception, etc. used by 
 # debugging
@@ -305,7 +305,7 @@ sys.path.append(r'c:\reportlab_1_20')
 
 if 1: # This dependency could easily be removed.
     # Used only for tracing and error reporting.
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
 try:
     # from reportlab.lib.enums import *

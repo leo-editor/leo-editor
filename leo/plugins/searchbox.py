@@ -57,10 +57,10 @@ __version__ = "0.7"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040908093511.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoFind
+import leo.core.leoFind as leoFind
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -152,7 +152,7 @@ class SearchBox:
         # Text entry.
         self.search = Tk.Entry(self._getSizer(toolbar, 24, 130))
         self.search.pack(side="right", padx=3, fill="both", expand=1)
-        self.search.bind("<Return>", self.onKey)
+        c.bind(self.search,"<Return>", self.onKey)
         # Store a list of the last searches.
         self.search_list = []
     #@-node:ekr.20040108054555.3:addWidgets
