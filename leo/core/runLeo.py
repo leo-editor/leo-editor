@@ -53,6 +53,8 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     import pdb ; pdb = pdb.set_trace
 
+    if fileName and fileName.startswith('--'):
+        fileName = None
     # print 'leo.py:run','fileName',fileName
     #@    << import leoGlobals and leoApp >>
     #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
@@ -96,6 +98,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.batchMode = script is not None
     g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    scanForOneConfigOption(g)
     #@    << import other early files >>
     #@+node:ekr.20041219072416.1:<< import other early files>>
     import leo.core.leoNodes as leoNodes
@@ -157,6 +160,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
     g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
     p = c.currentPosition()
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'):
@@ -394,6 +398,26 @@ def reportDirectories(verbose):
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
 #@-node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20080521132317.2:scanForOneConfigOption
+def scanForOneConfigOption(g):
+
+    '''Set g.app.oneConfigFilename if "--one-config=<path>" appears in sys.argv.'''
+
+    tag = '--one-config=' ; n = len(tag)
+
+    for s in sys.argv:
+        if s.startswith(tag):
+            path = s[n:]
+            path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+            if g.os_path_exists(path):
+                g.app.oneConfigFilename = path
+                sys.argv.remove(s)
+                break
+            else:
+                g.es_print('Invalid option: file not found:',s,color='red')
+                break
+#@nonl
+#@-node:ekr.20080521132317.2:scanForOneConfigOption
 #@+node:ekr.20070930194949:startJyleo (leo.py)
 def startJyleo (g):
 

@@ -1677,17 +1677,23 @@ class configClass:
         #@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
         #@nl
 
+        # g.trace(g.app.oneConfigFilename)
+        if g.app.oneConfigFilename:
+            table = ((g.app.oneConfigFilename,False),)
+        else:
+            table = (
+                (self.globalConfigFile,False),
+                (self.homeFile,False),
+                (localConfigFile,False),
+                (self.myGlobalConfigFile,False),
+                (self.myHomeConfigFile,False),
+                (self.machineConfigFile,False),
+                (myLocalConfigFile,False),
+                (fileName,True),
+            )
+
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
-        for path,localFlag in (
-            (self.globalConfigFile,False),
-            (self.homeFile,False),
-            (localConfigFile,False),
-            (self.myGlobalConfigFile,False),
-            (self.myHomeConfigFile,False),
-            (self.machineConfigFile,False),
-            (myLocalConfigFile,False),
-            (fileName,True),
-        ):
+        for path,localFlag in table:
             if path and path.lower() not in seen:
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
