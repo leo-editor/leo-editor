@@ -261,8 +261,8 @@ class textFrame(leoFrame.leoFrame):
     f = self ; c = f.c
 
     t = leoNodes.tnode()
-    v = leoNodes.vnode(t)
-    p = leoNodes.position(v,[])
+    v = leoNodes.vnode(context=c,t=t)
+    p = leoNodes.position(v)
     v.initHeadString("NewHeadline")
     p.moveToRoot(oldRoot=None)
     c.setRootPosition(p) # New in 4.4.2.
@@ -554,7 +554,7 @@ class textTree(leoFrame.leoTree):
 
     # This is also where the body-text control is given the text of the selected node...
     # Always do this.  Otherwise there can be problems with trailing hewlines.
-    s = g.toUnicode(p.v.t.bodyString,"utf-8")
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
     w.setAllText(s)
     # and something to do with undo?
   #@-node:ekr.20061207074949.75:select
