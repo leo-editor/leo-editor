@@ -470,7 +470,10 @@ class tkinterGui(leoGui.leoGui):
 
         """Returns the widget that has focus, or body if None."""
 
-        return c.frame.top.focus_displayof()
+        try:
+            return c.frame.top.focus_displayof()
+        except Exception:
+            return None
     #@-node:ekr.20031218072017.4065:tkGui.get_focus
     #@+node:ekr.20031218072017.2373:tk.Gui.set_focus
     set_focus_count = 0
