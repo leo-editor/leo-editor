@@ -5,9 +5,9 @@
 leo/test/scriptFile.py
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
-leo/src/LeoPy.leo
-leo/src/leoPy.leo
-leo/src/Komodo.leo
+leo/core/LeoPy.leo
+leo/core/leoPy.leo
+leo/core/Komodo.leo
 leo/dist/*.zip
 leo/dist/*.exe
 leo/test/dynamicUnitTest.leo
