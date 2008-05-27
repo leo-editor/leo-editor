@@ -317,14 +317,15 @@ class leoTkinterTree (leoFrame.leoTree):
             #     4.4b2: Keys are p.key(), values are Tk.Text widgets.
         self.visibleUserIcons = []
 
-        # Lists of free, hidden widgets...
-        self.freeBoxes = []
-        self.freeClickBoxes = []
-        self.freeIcons = []
-        self.freeLines = []
-        self.freeText = [] # New in 4.4b2: a list of free Tk.Text widgets
+        # Dictionaries of free, hidden widgets...
+        # Keys are id's, values are widgets.
+        self.freeBoxes = {}
+        self.freeClickBoxes = {}
+        self.freeIcons = {}
+        self.freeLines = {}
+        self.freeText = {} # New in 4.4b2: a list of free Tk.Text widgets
 
-        self.freeUserIcons = []
+        self.freeUserIcons = {}
 
         self._block_canvas_menu = False
 
@@ -429,7 +430,8 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas ; tag = "plusBox"
 
         if self.freeBoxes:
-            theId = self.freeBoxes.pop(0)
+            # theId = self.freeBoxes.pop(0)
+            d = self.freeBoxes ; theId = d.keys()[0] ; del d[theId]
             canvas.coords(theId,x,y)
             canvas.itemconfigure(theId,image=image)
         else:
@@ -451,7 +453,8 @@ class leoTkinterTree (leoFrame.leoTree):
         tag = g.choose(p.hasChildren(),'clickBox','selectBox')
 
         if self.freeClickBoxes:
-            theId = self.freeClickBoxes.pop(0)
+            # theId = self.freeClickBoxes.pop(0)
+            d = self.freeClickBoxes ; theId = d.keys()[0] ; del d[theId]
             canvas.coords(theId,x1,y1,x2,y2)
             canvas.itemconfig(theId,tag=tag)
         else:
@@ -472,7 +475,8 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas ; tag = "iconBox"
 
         if self.freeIcons:
-            theId = self.freeIcons.pop(0)
+            # theId = self.freeIcons.pop(0)
+            d = self.freeIcons ; theId = d.keys()[0] ; del d[theId]
             canvas.itemconfigure(theId,image=image)
             canvas.coords(theId,x,y)
         else:
@@ -495,7 +499,8 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas
 
         if self.freeLines:
-            theId = self.freeLines.pop(0)
+            # theId = self.freeLines.pop(0)
+            d = self.freeLines ; theId = d.keys()[0] ; del d[theId]
             canvas.coords(theId,x1,y1,x2,y2)
         else:
             theId = canvas.create_line(x1,y1,x2,y2,tag="lines",fill="gray50") # stipple="gray25")
@@ -515,7 +520,8 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas ; tag = "textBox"
         c = self.c ;  k = c.k
         if self.freeText:
-            w,theId = self.freeText.pop()
+            # w,theId = self.freeText.pop()
+            d = self.freeText ; data = d.keys()[0] ; w,theId = data ; del d[data]
             canvas.coords(theId,x,y) # Make the window visible again.
                 # theId is the id of the *window* not the text.
         else:
@@ -600,26 +606,30 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas
 
         for theId in self.visibleBoxes:
-            if theId not in self.freeBoxes:
-                self.freeBoxes.append(theId)
+            # if theId not in self.freeBoxes:
+                # self.freeBoxes.append(theId)
+            self.freeBoxes[theId] = theId
             canvas.coords(theId,-100,-100)
         self.visibleBoxes = []
 
         for theId in self.visibleClickBoxes:
-            if theId not in self.freeClickBoxes:
-                self.freeClickBoxes.append(theId)
+            # if theId not in self.freeClickBoxes:
+                # self.freeClickBoxes.append(theId)
+            self.freeClickBoxes[theId] = theId
             canvas.coords(theId,-100,-100,-100,-100)
         self.visibleClickBoxes = []
 
         for theId in self.visibleIcons:
-            if theId not in self.freeIcons:
-                self.freeIcons.append(theId)
+            # if theId not in self.freeIcons:
+                # self.freeIcons.append(theId)
+            self.freeIcons[theId] = theId
             canvas.coords(theId,-100,-100)
         self.visibleIcons = []
 
         for theId in self.visibleLines:
-            if theId not in self.freeLines:
-                self.freeLines.append(theId)
+            # if theId not in self.freeLines:
+                # self.freeLines.append(theId)
+            self.freeLines[theId] = theId
             canvas.coords(theId,-100,-100,-100,-100)
         self.visibleLines = []
 
@@ -629,8 +639,9 @@ class leoTkinterTree (leoFrame.leoTree):
             # assert theId == w.leo_window_id
             canvas.coords(theId,-100,-100)
             w.leo_position = None # Allow the position to be freed.
-            if data not in self.freeText:
-                self.freeText.append(data)
+            # if data not in self.freeText:
+                # self.freeText.append(data)
+            self.freeText[data] = data
         self.visibleText = {}
 
         # g.trace('deleting visible user icons!')
@@ -652,11 +663,11 @@ class leoTkinterTree (leoFrame.leoTree):
 
         self.visibleText = {}
 
-        self.freeText = []
-        self.freeBoxes = []
-        self.freeClickBoxes = []
-        self.freeIcons = []
-        self.freeLines = []
+        self.freeText = {}
+        self.freeBoxes = {}
+        self.freeClickBoxes = {}
+        self.freeIcons = {}
+        self.freeLines = {}
 
         self.canvas.delete("all")
     #@-node:ekr.20040803072955.13:destroyWidgets
