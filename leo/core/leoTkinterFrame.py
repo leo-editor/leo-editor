@@ -84,6 +84,7 @@ class leoTkinterBody (leoFrame.leoBody):
         def onFocusIn(event,c=c):
             # g.trace('callback')
             c.k.setDefaultInputState()
+            c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
 
         c.bind(w,'<FocusOut>', onFocusOut)
         c.bind(w,'<FocusIn>', onFocusIn)

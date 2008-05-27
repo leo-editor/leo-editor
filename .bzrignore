@@ -14,17 +14,16 @@ leo/core/vim3.leo
 leo/dist/*.zip
 leo/dist/*.exe
 
-# leo/doc/leoDocs.leo
 leo/doc/leoTechReport.*
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
-leo/test/scriptFile.py
 leo/test/dynamicUnitTest.leo
 leo/test/clean
 leo/test/clean/*.*
 leo/test/dirty-test.py
 leo/test/c_plus_plus_test.cpp
 leo/test/ropeProject/*.*
+leo/test/scriptFile.py
 
