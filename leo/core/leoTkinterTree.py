@@ -1496,22 +1496,6 @@ class leoTkinterTree (leoFrame.leoTree):
     def checkWidgetList (self,tag):
 
         return True # This will fail when the headline actually changes!
-
-        # for w in self.visibleText:
-
-            # p = w.leo_position
-            # if p:
-                # s = w.getAllText().strip()
-                # h = p.headString().strip()
-
-                # if h != s:
-                    # self.dumpWidgetList(tag)
-                    # return False
-            # else:
-                # self.dumpWidgetList(tag)
-                # return False
-
-        # return True
     #@-node:ekr.20040803072955.72:checkWidgetList
     #@+node:ekr.20040803072955.73:dumpWidgetList
     def dumpWidgetList (self,tag):
@@ -1666,9 +1650,9 @@ class leoTkinterTree (leoFrame.leoTree):
     #@nonl
     #@-node:bobjack.20080401090801.2:onClickBoxRightClick
     #@+node:bobjack.20080401090801.4:onPlusBoxRightClick
-    def onPlusBoxRightClick(self, event, p=None):
+    def onPlusBoxRightClick (self,event,p=None):
 
-        #g.trace()
+        c = self.c
 
         self._block_canvas_menu = True
 
@@ -1678,8 +1662,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.OnActivateHeadline(p)
         self.endEditLabel()
 
-        g.doHook('rclick-popup',
-            c=self.c, p=p, event=event, context_menu='plusbox')
+        g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
 
         c.outerUpdate()
 
@@ -1790,11 +1773,11 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20040803072955.100:onContinueDrag
     def onContinueDrag(self,event):
 
-        p = self.drag_p
+        c = self.c ; p = self.drag_p
         if not p: return
 
         try:
-            canvas = self.canvas ; frame = self.c.frame
+            canvas = self.canvas ; frame = c.frame
             if event:
                 x,y = event.x,event.y
             else:
@@ -2266,7 +2249,9 @@ class leoTkinterTree (leoFrame.leoTree):
         return 'break'
     #@-node:ekr.20051022141020:onTreeClick
     #@+node:bobjack.20080401090801.3:onTreeRightClick
-    def onTreeRightClick(self, event=None):
+    def onTreeRightClick (self,event=None):
+
+        c = self.c
 
         if not c.exists: return
 
@@ -2274,7 +2259,7 @@ class leoTkinterTree (leoFrame.leoTree):
             self._block_canvas_menu = False
             return 'break'
 
-        g.doHook('rclick-popup', c=self.c, event=event, context_menu='canvas')
+        g.doHook('rclick-popup',c=c,event=event,context_menu='canvas')
 
         c.outerUpdate()
         return 'break'
