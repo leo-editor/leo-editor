@@ -189,7 +189,7 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
 
     global loadedModules,loadingModuleNameStack
 
-    verbose = verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
     warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
 
     if moduleOrFileName.endswith('.py'):
@@ -219,10 +219,11 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
             try:
                 # Indicate success only if init_result is True.
                 init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
                 if init_result:
                     loadedModules[moduleName] = result
                 else:
-                    if verbose and not g.app.initing: ## or not g.app.unitTesting:
+                    if verbose and not g.app.initing:
                         g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
                     result = None
             except Exception:
