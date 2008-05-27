@@ -113,7 +113,7 @@ The iconbars also have the following public properties.
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.8"
+__version__ = "0.9"
 __plugin_name__ = 'Toolbar Manager'
 __plugin_id__ = 'Toolbar'
 
@@ -148,6 +148,9 @@ controllers = {}
 # wrap=True)
 #     - seperate out icon and script button code and make these first class 
 # objects
+# 0.9 bobjack:
+#     - convert to use class based commands
+# 
 # 
 # 
 #@-at
@@ -182,6 +185,8 @@ except ImportError:
 mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
 import leo.core.leoTkinterFrame as leoTkinterFrame
 import leo.core.leoTkinterTree as leoTkinterTree
+import rClick
+#@nonl
 #@-node:bobjack.20080424190906.15:<< imports >>
 #@nl
 
@@ -1359,6 +1364,8 @@ class ToolbarTkIconBarClass(iconbar, object):
         the actual bar can be found in event.widget.
         """
 
+        g.trace()
+
         g.doHook('rclick-popup', c=self.c, event=event,
             context_menu='default-iconbar-menu', bar=self.barHead
         )
@@ -2042,44 +2049,15 @@ class ToolbarTkIconBarClass(iconbar, object):
 #@-node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
 #@-node:bobjack.20080424190906.6:Module-level
 #@+node:bobjack.20080511121543.9:class toolbarCommandClass
-class toolbarCommandClass(object):
+class toolbarCommandClass(rClick.pluginCommandClass):
 
     """Base class for all commands defined in the toolbar.py plugin."""
 
-    def __init__(self, controller, commandName, **keys):
-
-        self.c = controller.c
-        self.commandName = commandName
-        self._controller = None
-
-        self.keys = keys
-
-        self.wrappedDoCommand = self.c.universallCallback(self.doCommand)
-
-
-    def __call__(self, event):
-
-        self.wrappedDoCommand(event)
-
-
-
-
-
-#@+node:bobjack.20080511121543.10:Properties
-#@+node:bobjack.20080511121543.11:controller
-def getController(self):
-    controller = self._controller
-    if controller:
-        self._controller = controller = self.c.theToolbarController
-    return controller
-
-
-controller = property(getController)
-#@-node:bobjack.20080511121543.11:controller
-#@-node:bobjack.20080511121543.10:Properties
+    pass
+#@nonl
 #@-node:bobjack.20080511121543.9:class toolbarCommandClass
 #@+node:bobjack.20080424195922.12:class pluginController
-class pluginController(object):
+class pluginController(rClick.basePluginController):
 
     """A per commander controller providing a toolbar manager."""
 
@@ -2089,6 +2067,7 @@ class pluginController(object):
         'toolbar-hide-iconbar',
         'toolbar-add-script-button',
         'toolbar-show-iconbar-menu',
+
         'toggle-iconbar',
     )
 
@@ -2104,104 +2083,20 @@ class pluginController(object):
 
         """
 
-        self.c = c
+        super(self.__class__, self).__init__(c)
 
         self.commandPrefix = 'toolbar'
-        self.commandsDict = None
 
 
 
 
 
 
-    #@+node:bobjack.20080424195922.14:onCreate
-    def onCreate(self):
 
-        c = self.c
-
-        self.registerCommands()
-        self.setDefaultContextMenus()
-
-    #@-node:bobjack.20080424195922.14:onCreate
-    #@+node:bobjack.20080424195922.15:onClose
-    def onClose(self):
-        """Clean up and prepare to die."""
-
-        return
-    #@-node:bobjack.20080424195922.15:onClose
-    #@+node:bobjack.20080512063725.2:getPublicCommands
-    def getPublicCommands(self):
-
-        """Create command instances for public commands provided by this plugin.
-
-        Returns a dictionary {commandName: commandInstance, ...}
-
-        """
-        if self.commandsDict:
-            return self.commandsDict
-
-        commandsDict = {}
-
-        for commandName in self.commandList:
-            #@        << get className from commandName >>
-            #@+node:bobjack.20080512063725.3:<< get className from commandName >>
-            # change my-command-name to myCommandNameCommandClass
-
-            className = commandName.split('-')
-
-            if className[0] == self.commandPrefix:
-                alias = ''
-                del className[0]
-            else:
-                alias = commandName
-                commandName = self.commandPrefix + '-' + commandName
-
-            for i in range(1, len(className)):
-                className[i] = className[i].capitalize()
-
-            className = ''.join(className) + 'CommandClass'
-            #@nonl
-            #@-node:bobjack.20080512063725.3:<< get className from commandName >>
-            #@nl
-            klass = getattr(self, className)
-
-            cmd = klass(self, commandName)
-            cmd.alias = [alias]
-
-            commandsDict[commandName] = cmd
-            if alias:
-                commandsDict[alias] = cmd
-
-        self.commandsDict = commandsDict
-
-        return commandsDict
-
-    #@-node:bobjack.20080512063725.2:getPublicCommands
-    #@+node:bobjack.20080424195922.17:registerCommands
-    def registerCommands(self):
-
-        """Create callbacks for minibuffer commands and register them."""
-
-        c = self.c
-
-        commandDict = self.getPublicCommands()
-
-        for commandName, cmd in commandDict.iteritems():
-            c.k.registerCommand(commandName, shortcut=None, func=cmd)   
-
-    #@-node:bobjack.20080424195922.17:registerCommands
-    #@+node:bobjack.20080424195922.19:getCommandList
-    def getCommandList(self):
-
-        return self.commandList
-    #@-node:bobjack.20080424195922.19:getCommandList
     #@+node:bobjack.20080510064957.112:setDeafaultContextMenus
     def setDefaultContextMenus(self):
 
         c = self.c
-
-        if not hasattr(c, 'context_menus'):
-            c.context_menus = {}
 
         if 'default-iconbar-menu' in c.context_menus:
             return

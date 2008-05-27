@@ -70,10 +70,19 @@
 <v t="bobjack.20080427183647.1"><vh>Local Popup Menus</vh>
 <v t="bobjack.20080329054053.1"><vh>Popup fragments for use in other menus</vh>
 <v t="bobjack.20080329053100.1"><vh>@popup find change fragment</vh>
-<v t="bobjack.20080326150321.6"><vh>@item find-next</vh></v>
-<v t="bobjack.20080326150321.7"><vh>@item find-prev</vh></v>
-<v t="bobjack.20080326150321.8"><vh>@item change</vh></v>
-<v t="bobjack.20080326150321.9"><vh>@item change-then-find</vh></v>
+<v t="bobjack.20080516201656.6"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.7"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.8"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.9"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.10"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.11"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.12"><vh>@item |</vh></v>
+<v t="bobjack.20080516201656.18"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.17"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.16"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.15"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.14"><vh>@item *</vh></v>
+<v t="bobjack.20080516201656.13"><vh>@item *</vh></v>
 </v>
 </v>
 <v t="bobjack.20080329062304.13"><vh>Popup Menus For ...</vh>
@@ -344,7 +353,7 @@
 <v t="bobjack.20080420051406.3"><vh>@test getBodyData</vh></v>
 <v t="bobjack.20080424195922.96"><vh>@test getCommandList</vh></v>
 <v t="bobjack.20080424073616.21"><vh>@test getImage</vh></v>
-<v t="bobjack.20080424073616.19"><vh>@test init_default_menus</vh></v>
+<v t="bobjack.20080424073616.19"><vh>@test setDefaultContextMenus</vh></v>
 <v t="bobjack.20080424073616.8"><vh>@test onClose</vh></v>
 <v t="bobjack.20080424195922.6"><vh>@test onCreate</vh></v>
 <v t="bobjack.20080424073616.18"><vh>@test rClicker</vh></v>
@@ -374,10 +383,6 @@ bar = c.frame.iconBar
 bar.removeWidget(bar.buttons[1])</t>
 <t tx="bobjack.20080324164314.1"></t>
 <t tx="bobjack.20080326150321.5"></t>
-<t tx="bobjack.20080326150321.6"></t>
-<t tx="bobjack.20080326150321.7"></t>
-<t tx="bobjack.20080326150321.8"></t>
-<t tx="bobjack.20080326150321.9"></t>
 <t tx="bobjack.20080329043447.2"></t>
 <t tx="bobjack.20080329043447.3">edit-menu</t>
 <t tx="bobjack.20080329051459.3">Example of using a pre-defined fragment.</t>
@@ -2007,19 +2012,23 @@ you may open.</t>
 How to Make Multi-State Menu items.
 ==================================
 
-After reading this node you can use Execute Script on it to see the example code in action.
+After reading this node you can use Execute Script on it to see the example code
+in action.
 
-In this HowTo we will create a menu item which will count cyclically from 1 to 7,
-incrementing on each click, displaying the result using cleo's priority icons
+In this HowTo we will create a menu item which will count cyclically from 1 to 7, incrementing on each click, displaying the result using cleo's priority icons
 and printing out it's new value in the log panel.
 
 An icon button will appear in the second position of the iconBar also showing
 a cleo icon representing the current count.
 
+The label and icon in the right click menu will reflect the value of the current
+count.
+
 Typing demo-count in the minibuffer will also increment the count as will clicking
 on the icon button..
 
-This demo requires rClick.py and the toolbar.py plugins to be enabled
+This demo requires rClick.py and the toolbar.py plugins to be enabled and that
+the Python Imaging Library is installed.
 
 @c
 c.tmpDemoCount=1
@@ -2252,5 +2261,18 @@ for i, item in enumerate(menu):
         del menu[i]
 
 </t>
+<t tx="bobjack.20080516201656.6">rclick-find-whole-word-button</t>
+<t tx="bobjack.20080516201656.7">rclick-find-ignore-case-button</t>
+<t tx="bobjack.20080516201656.8">rclick-find-wrap-around-button</t>
+<t tx="bobjack.20080516201656.9">rclick-find-reverse-button</t>
+<t tx="bobjack.20080516201656.10">rclick-find-regexp-button</t>
+<t tx="bobjack.20080516201656.11">rclick-find-mark-finds-button</t>
+<t tx="bobjack.20080516201656.12"></t>
+<t tx="bobjack.20080516201656.13">rclick-find-mark-changes-button</t>
+<t tx="bobjack.20080516201656.14">rclick-find-search-body-button</t>
+<t tx="bobjack.20080516201656.15">rclick-find-search-headline-button</t>
+<t tx="bobjack.20080516201656.16">rclick-find-node-only-button</t>
+<t tx="bobjack.20080516201656.17">rclick-find-suboutline-only-button</t>
+<t tx="bobjack.20080516201656.18">rclick-find-entire-outline-button</t>
 </tnodes>
 </leo_file>
