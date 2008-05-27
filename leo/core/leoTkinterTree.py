@@ -1681,8 +1681,6 @@ class leoTkinterTree (leoFrame.leoTree):
         g.doHook('rclick-popup',
             c=self.c, p=p, event=event, context_menu='plusbox')
 
-        c.outerUpdate()
-
         return 'break'
     #@-node:bobjack.20080401090801.4:onPlusBoxRightClick
     #@-node:ekr.20040803072955.78:Click Box...
@@ -2267,6 +2265,8 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20051022141020:onTreeClick
     #@+node:bobjack.20080401090801.3:onTreeRightClick
     def onTreeRightClick(self, event=None):
+
+        c = self.c
 
         if not c.exists: return
 
