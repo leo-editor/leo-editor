@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0,4,0"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,3,2"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -77,7 +77,7 @@
 <v t="ekr.20070124092048"><vh>Find entries in k.guiBindNamesDict</vh></v>
 <v t="ekr.20070213074001.1"><vh>find w.xxx</vh></v>
 </v>
-<v t="ekr.20040715105834"><vh>Fun...</vh>
+<v t="ekr.20040715105834" a="E"><vh>Fun...</vh>
 <v t="EKR.20040626212434"><vh>Drawing experiments</vh>
 <v t="EKR.20040626212434.1"><vh>Rectangles &amp; ovals</vh></v>
 <v t="EKR.20040626212434.2"><vh>Lines &amp; arcs</vh></v>
@@ -230,7 +230,7 @@
 <v t="ekr.20071116114235"><vh>Print all Tango icons in wiki-markup format</vh></v>
 <v t="ekr.20080222103719"><vh>square problem</vh></v>
 </v>
-<v t="ekr.20051104082026" a="E"><vh>Important</vh>
+<v t="ekr.20051104082026"><vh>Important</vh>
 <v t="ekr.20080401065127.4"><vh>create-at-auto-nodes</vh></v>
 <v t="ekr.20080221113205"><vh>@@button print g.es stats</vh>
 <v t="ekr.20080221113205.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -391,7 +391,7 @@
 </v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
-<v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
+<v t="ekr.20060824111500.1" a="E"><vh>Colorizing test scripts</vh>
 <v t="ekr.20060824111500.2"><vh>@@button colorize</vh></v>
 <v t="ekr.20060824111500.3"><vh>@@button red:f1</vh></v>
 <v t="ekr.20060824111500.4"><vh>@@button blue:f2</vh></v>
@@ -401,7 +401,7 @@
 <v t="ekr.20060824111500.8"><vh>test</vh></v>
 <v t="ekr.20060824111500.9"><vh>latex keywords</vh></v>
 </v>
-<v t="ekr.20060824111500.10"><vh>Colorizer tests</vh>
+<v t="ekr.20060824111500.10" a="E"><vh>Colorizer tests</vh>
 <v t="ekr.20060824111500.11"><vh>C</vh></v>
 <v t="ekr.20060824111500.12"><vh>Python</vh></v>
 <v t="ekr.20060824111500.13"><vh>php.py</vh></v>
@@ -625,7 +625,7 @@
 <v t="ekr.20060824111500.117"><vh>class modeClass</vh>
 <v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
 <v t="ekr.20060824111500.119"><vh> mode.__str__ &amp; __repr__</vh></v>
-<v t="ekr.20060824111500.120"><vh> Output...</vh>
+<v t="ekr.20060824111500.120" a="E"><vh> Output...</vh>
 <v t="ekr.20060827162343"><vh>fullDelegate</vh></v>
 <v t="ekr.20060824111500.121"><vh>escapeString &amp; quoteString</vh></v>
 <v t="ekr.20060824111500.122"><vh>put, putTripleString</vh></v>
@@ -791,7 +791,7 @@
 </v>
 </v>
 <v t="ekr.20080105135417"><vh>Delete All Icons</vh></v>
-<v t="ekr.20061220094557"><vh>Script to backup Outlook Express files</vh>
+<v t="ekr.20061220094557" a="E"><vh>Script to backup Outlook Express files</vh>
 <v t="ekr.20061220094557.1"><vh>Notes</vh></v>
 </v>
 <v t="ekr.20051110105027.106"><vh>Create diagrams using Graphviz and pydot</vh>
@@ -3542,6 +3542,7 @@ except: pass</t>
 <t tx="ekr.20050803075926">@tabwidth -4
 
 # Solves the sudoku puzzle.
+# For another Leo program that does this, see: http://members.dslextreme.com/users/kayvan/sudoku/
 
 import copy
 

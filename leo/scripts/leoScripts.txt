@@ -1911,6 +1911,7 @@ def put_code_token (self,token):
 @tabwidth -4
 
 # Solves the sudoku puzzle.
+# For another Leo program that does this, see: http://members.dslextreme.com/users/kayvan/sudoku/
 
 import copy
 
