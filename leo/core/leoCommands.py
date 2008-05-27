@@ -347,7 +347,7 @@ class baseCommands:
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
-        return "Leo 4.4.8 final, build %s, April 6, 2008" % c.getBuildNumber()
+        return "Leo 4.5 b1, build %s, May 27, 2008" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -4359,7 +4359,7 @@ class baseCommands:
             p = c.currentPosition()
             while p and p.hasParent():
                 p.moveToParent()
-            c.selectVnode(p)
+            c.selectPosition(p)
         finally:
             c.endUpdate()
 
