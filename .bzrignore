@@ -8,8 +8,6 @@ leo/*.zip
 
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
-leo/core/Komodo.leo
-leo/core/vim3.leo
 
 leo/dist/*.zip
 leo/dist/*.exe
