@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -12,8 +12,8 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
-<v t="ekr.20041226081019"><vh>@button Spell</vh></v>
-<v t="ekr.20050812090111"><vh>@button rst3</vh></v>
+<v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
+<v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
 <v t="ekr.20050901054622"><vh>@@button Save</vh></v>
 <v t="ekr.20050901055150"><vh>@@button promote</vh></v>
 <v t="ekr.20050901060119"><vh>@@button def list</vh>
@@ -142,6 +142,7 @@
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
 <v t="ekr.20070622185234"><vh>How can I do a simple find and replace?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
@@ -3658,32 +3659,6 @@
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
 <v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
-<v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
-<v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
-<v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
-<v t="vivainio.20080302174639.3"><vh>Accessing IPython from Leo</vh></v>
-<v t="vivainio.20080302174639.4"><vh>Accessing Leo nodes from IPython</vh></v>
-<v t="vivainio.20080302174639.5"><vh>@cl definitions</vh></v>
-<v t="vivainio.20080302174639.6"><vh>Special node types</vh></v>
-<v t="vivainio.20080401152121.2"><vh>Launching ILeo from IPython</vh></v>
-<v t="vivainio.20080302174639.7"><vh>Declaring custom push-to-ipython handlers</vh></v>
-<v t="vivainio.20080302174639.8"><vh>Example code snippets</vh></v>
-<v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
-<v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
-<v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
-<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
-<v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
-<v t="ekr.20080204100523.1"><vh>Commands</vh></v>
-<v t="ekr.20080204100523"><vh>Startup</vh></v>
-<v t="ekr.20080204100523.2"><vh>Scripting IPython from Leo</vh></v>
-<v t="ekr.20080205080801"><vh>Scripting Leo from IPython</vh></v>
-<v t="ekr.20080204100523.3"><vh>@rst-ignore User Settings</vh></v>
-<v t="ekr.20080210101336"><vh>Acknowledgements</vh></v>
 </v>
 </v>
 </v>
@@ -13422,7 +13397,7 @@ widget. This allows users to set Tk options.</t>
 <t tx="ekr.20050620150517">Leo looks for a file called ``.leo_xresources`` in the users home directory. If
 found, Leo will pass that file to Tk's ``option_readfile`` method for the top
 widget. This allows users to set Tk options.</t>
-<t tx="ekr.20050812090111">import leoPlugins
+<t tx="ekr.20050812090111">import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
 
@@ -34660,6 +34635,44 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an ``@
   The "!" version allows matching to every machineName except the given one
   to allow differing settings on only a few machines.</t>
 <t tx="ekr.20080412124815.1"></t>
+<t tx="ekr.20080527063511.1">I had a need to figure out why a part of some python code I had written
+was taking too long.
+
+I pulled the code into LEO and the relevant part of the outline looked
+something like this::
+
+    + Main module
+    -- Generate cryptographic key
+    -- Hashing algorithm
+
+etc. So I cloned just the segment I wanted to profile and pulled it under a new
+section::
+
+    + Main module
+    -- [clone] Generate cryptographic key
+    -- Hashing algorithm
+    
+    + Profiling Experiment
+    -- [clone] Generate cryptographic key
+
+And in the body of the "Profiling experiment", I used this code::
+
+    code_under_here = """
+    @others
+    """
+
+    from timeit import Timer
+    t = Timer("print my_key_generator()", code_under_here)
+    print t.timeit(number = 10)
+
+And then I hit Control-B to execute the Profiling Experiment body. This
+let me make adjustments to the code in the clone body and keep hitting
+Control-B to execute the code with the timeit module to see immediately
+if what I had done was making a difference.
+
+The great thing about this was that I just used the LEO @others construct
+to create a wrapper around the code and did not need to litter my code
+with debug or profiling statements.  -- Kayvan</t>
 <t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
 channel between Leo and IPython. The level of integration is much deeper than
 conventional integration in IDEs; most notably, you are able to store and
