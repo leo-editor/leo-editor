@@ -751,15 +751,7 @@ class OutlineCanvas(gtk.DrawingArea):
 
                 count += 1
 
-                #@        << if p.isExpanded() and p.hasFirstChild():>>
-                #@+node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                ## if p.isExpanded() and p.hasFirstChild():
-
-                v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
-                #@nonl
-                #@-node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                #@nl
+                if p.isExpanded() and p.hasFirstChild():
                     stk.append(newp)
                     p = p.firstChild()
                     continue
@@ -1056,15 +1048,7 @@ class OutlineCanvas(gtk.DrawingArea):
                         textSize_w + xTextOffset + left
                     )
 
-                #@        << if p.isExpanded() and p.hasFirstChild():>>
-                #@+node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                ## if p.isExpanded() and p.hasFirstChild():
-
-                v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
-                #@nonl
-                #@-node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                #@nl
+                if p.isExpanded() and p.hasFirstChild():
                     stk.append(newp)
                     p = p.firstChild()
                     continue
@@ -1244,13 +1228,14 @@ def abspath(*args):
 if __name__ == "__main__": 
 
     leoDir = abspath(sys.path[0],'..')
+    sys.path[1:1] = [abspath(leoDir, '..')]
 
-    sys.path.insert(0, abspath(leoDir, 'src'))
+    import leo.core.leoGlobals as g
+    g.g = g
 
-    import leoBridge
+    import leo.core.leoBridge as leoBridge
 
     controller = leoBridge.controller(gui='nullGui')
-    g = controller.globals()
     c = controller.openLeoFile(abspath(leoDir, 'test', 'unitTest.leo'))
 
     outlineFont = ''
