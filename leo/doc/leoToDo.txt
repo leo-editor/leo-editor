@@ -3,6 +3,10 @@
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080411091507.10:Bugs
+#@+node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
+#@-node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
+#@+node:ekr.20080527084425.8:Should assigning to None clear all key bindings?
+#@-node:ekr.20080527084425.8:Should assigning to None clear all key bindings?
 #@+node:ekr.20080129103436:Solve Kent's @menu problem
 @nocolor
 
