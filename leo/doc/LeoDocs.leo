@@ -28103,7 +28103,7 @@ The following are only suggestions: you are free to use any string you like.
 This is by far the simplest strategy.
 I recommend it for typical scripts.
 
-**Important**: if must **leave the connection open** if your script modifies persistent data in any way.
+**Important**: you must **leave the connection open** if your script modifies persistent data in any way.
 (Actually, this statement is not really true,
 but you must define zodb transaction managers if you intend to use multiple connections simultaneously.
 This complication is beyond the scope of this documentation.)
@@ -33862,19 +33862,17 @@ verbose=True
 Chapter 21: IPython and Leo
 ############################################################
 
-To use this plugin, you must run Leo from a console window. When this plugin is
-enabled, Leo's start-ipython command starts IPython_ in this console. Leo's
-ipython plugin provides two-way communication (a bridge) between Leo and
-IPython: you can run Leo scripts from IPython, and IPython scripts from Leo.
+Leo's ipython plugin provides two-way communication (a bridge) between Leo and
+IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
+use this plugin, you must run Leo from a console window. When this plugin is
+enabled, Leo's start-ipython command starts IPython_ in this console.
 
 Remarkably, Leo and IPython run simultaneously in the same process,
 yet their separate event loops do not interfere with each other.
-Even more remarkably, scripts run from IPython *immediately* change Leo,
+Scripts run from IPython *immediately* change Leo,
 *exactly* as if the script were run from Leo.
 Conversely, scripts run from Leo *immediately* affect the IPython interpreter.
-Care may be needed when running such scripts while lengthy IPython scripts are running.
-As the result of this truly remarkable connection between Leo and IPython,
-Leo might plausibly be said to be an `IPython Notebook`_.
+As a result, Leo might be considered an `IPython Notebook`_.
 
 The bridge between Leo and IPython is powerful because it is simple. Indeed,
 
@@ -34673,13 +34671,13 @@ if what I had done was making a difference.
 The great thing about this was that I just used the LEO @others construct
 to create a wrapper around the code and did not need to litter my code
 with debug or profiling statements.  -- Kayvan</t>
-<t tx="vivainio.20080302174639.1">The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
-channel between Leo and IPython. The level of integration is much deeper than
-conventional integration in IDEs; most notably, you are able to store and
-manipulate **data** in Leo nodes, in addition to mere program code - essentially
-making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data.
-The possibilities of this are endless, and the approach can be applied in wide
-range of problem domains with very little actual coding.
+<t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
+and IPython. The level of integration is much deeper than conventional
+integration in IDEs; most notably, you are able to store and manipulate **data**
+in Leo nodes, in addition to mere program code - essentially making ILeo a
+hierarchical spreadsheet, albeit with non-grid view of the data. The
+possibilities of this are endless, and the approach can be applied in wide range
+of problem domains with very little actual coding.
 
 IPython users are accustomed to using things like %edit to produce non-trivial
 functions/classes (i.e. something that they don't want to enter directly on the
