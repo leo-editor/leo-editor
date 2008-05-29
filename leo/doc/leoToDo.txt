@@ -2,7 +2,40 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
+#@+node:ekr.20080528093133.4:Update to version 4 of the vim code
+#@-node:ekr.20080528093133.4:Update to version 4 of the vim code
 #@+node:ekr.20080411091507.10:Bugs
+#@+node:ekr.20080528093133.3:Change installer to support leo-as-a-package
+http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
+
+I'm currently confused about leo-as-a-library(?) and leo-as-an-editor,
+but I'm pretty sure the installer has not kept up.  Using trunk revno
+441, if I "cd trunk; sudo /bin/sh ./install" I get
+
+Password:
+
+Prefix directory set to "/usr/local"
+cp: cannot stat `src': no such file or directory
+cp: cannot stat `config': no such file or directory
+
+Leo installed successfully
+Make sure /usr/local/bin is in your path then
+type 'leo filename.leo' to use it.
+
+...where /usr/local/bin/leo contains
+python /usr/local/lib/src/leo.py "$1"
+
+which is not going to work, since src/leo.py doesn't exist any more.
+Changing that to
+
+python /usr/local/lib/core/runLeo.py "$1"
+
+seems to fix most things.  However, now that we're sending multiple
+arguments to
+leo, I suggest we use
+
+python /usr/local/lib/core/runLeo.py "$@"
+#@-node:ekr.20080528093133.3:Change installer to support leo-as-a-package
 #@+node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
 #@-node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
 #@+node:ekr.20080527084425.8:Should assigning to None clear all key bindings?
@@ -454,6 +487,33 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
+#@+node:ekr.20080528093133.2:Study strange @menu behavior
+@nocolor
+
+http://mail.google.com/mail/#inbox/11a2fd9b40bff76b
+
+OK, I'm using --one-config, so there is no mystery
+surrounding the source of settings.
+
+I'm discovering the following
+
+- top level @menus can be commented out with @@menu
+- secondary level menus cannot
+- items cannot
+- a secondary menu cannot be copied between top level menus
+...
+
+I am having trouble getting a feel for the principles which
+determine @menu behaviour.
+
+Is there a description of the rules which determine what can and
+cannot be done with @menu trees, and @item nodes given a
+single config file?
+
+Thanks,
+Kent
+#@nonl
+#@-node:ekr.20080528093133.2:Study strange @menu behavior
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files
 #@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
@@ -1117,6 +1177,8 @@ for p in c.allNodes_iter():
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20080425054202.3:ASAP
 #@+node:ekr.20080411091507.1:Docs
+#@+node:ekr.20080520140754.2:Document new import code & Leo-as-a-package
+#@-node:ekr.20080520140754.2:Document new import code & Leo-as-a-package
 #@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
 @nocolor
 
