@@ -233,16 +233,23 @@ def makeTestCase (c,p):
 #@+node:ekr.20051104075904.14:runProfileOnNode
 # A utility for use by script buttons.
 
-def runProfileOnNode (p,outputPath):
+def runProfileOnNode (p,outputPath=None):
 
     s = p.bodyString().rstrip() + '\n'
 
+    if outputPath is None:
+        # outputPath = g.os_path_abspath(
+            # g.os_path_join(
+                # g.app.loadDir,'..','test','profileStats'))
+        outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+
     profile.run(s,outputPath)
 
-    stats = pstats.Stats(outputPath)
-    stats.strip_dirs()
-    stats.sort_stats('cum','file','name')
-    stats.print_stats()
+    if 1:
+        stats = pstats.Stats(outputPath)
+        stats.strip_dirs()
+        stats.sort_stats('cum','file','name')
+        stats.print_stats()
 #@-node:ekr.20051104075904.14:runProfileOnNode
 #@+node:ekr.20051104075904.15:runTimerOnNode
 # A utility for use by script buttons.
@@ -263,7 +270,7 @@ def runTimerOnNode (c,p,count):
         if count is None:
             count = 1000000
         result = t.timeit(count)
-        ratio = "%f" % result/count
+        ratio = "%f" % (float(result)/float(count))
         g.es_print("count:",count,"time/count:",ratio,'',p.headString())
     except:
         t.print_exc()

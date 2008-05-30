@@ -361,8 +361,9 @@ You may download Python from http://python.org/download/
 #@nonl
 # To gather statistics, do the following in a Python window, not idle:
 # 
-#     import leo.core.leo as leo
-#     leo.profile_leo()  (this runs leo)
+#     import leo
+#     import leo.core.runLeo as runLeo
+#     runLeo.profile_leo()  (this runs leo)
 #     load leoDocs.leo (it is very slow)
 #     quit Leo.
 #@-at
@@ -372,18 +373,20 @@ def profile_leo ():
 
     """Gather and print statistics about Leo"""
 
-    import profile, pstats
+    import cProfile as profile
+    import pstats
     import leo.core.leoGlobals as g
 
-    # name = "c:/prog/test/leoProfile.txt"
-    name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    # name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
 
     profile.run('leo.run()',name)
 
     p = pstats.Stats(name)
     p.strip_dirs()
-    p.sort_stats('cum','file','name')
-    p.print_stats()
+    p.sort_stats('module','calls','time','name')
+    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    p.print_stats(reFiles)
 #@-node:ekr.20031218072017.2607:profile_leo
 #@+node:ekr.20041130093254:reportDirectories
 def reportDirectories(verbose):

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2150,6 +2150,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
+<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
+<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7576,15 +7580,12 @@ else:
 if suite:
     g.app.scriptDict['suite'] = suite</t>
 <t tx="ekr.20051104081502.108">for i in xrange(10000):
-    if i % 1000 == 0:
+    if i and (i % 1000) == 0:
         print i</t>
-<t tx="ekr.20051104081502.109"># There will never be an overflow here, no matter how many times timeit executes this.
-
-try:
-    i = 0
+<t tx="ekr.20051104081502.109">i = 0
+for i in xrange(100000):
     i += 1
-except OverflowError:
-    pass</t>
+    i -= 1</t>
 <t tx="ekr.20051104081502.110"># c.redraw just schedules the actual drawing.
 # We want to profile the actual idle-time drawing.
 
@@ -20584,5 +20585,9 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 <t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
+<t tx="ekr.20080529114722.1">import leo.core.leoTest as leoTest
+leoTest.runTimerOnNode(c,p,count=100)</t>
+<t tx="ekr.20080529115911.1">import leo.core.leoTest as leoTest
+leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt</t>
 </tnodes>
 </leo_file>
