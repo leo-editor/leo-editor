@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,0,7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -370,6 +370,22 @@
 <v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
+</v>
+<v t="ekr.20080530025357.13" a="E"><vh>Function tracer</vh>
+<v t="ekr.20080530025357.15" a="E"><vh>class Tracer(bdb.Bdb)</vh>
+<v t="ekr.20080530082832.1"><vh>No changes</vh>
+<v t="ekr.20080530025357.20"><vh>dispatch_call</vh></v>
+<v t="ekr.20080530025357.67"><vh>set_step</vh></v>
+<v t="ekr.20080530025357.68"><vh>stop_here</vh></v>
+</v>
+<v t="ekr.20080530025357.16"><vh>__init__</vh></v>
+<v t="ekr.20080530025357.19"><vh>trace_dispatch (the argument to sys.settrace)</vh></v>
+<v t="ekr.20080530025357.21"><vh>dispatch_return</vh></v>
+<v t="ekr.20080530025357.23"><vh>set_trace (override)</vh></v>
+<v t="ekr.20080530082650.1"><vh>user_call</vh></v>
+<v t="ekr.20080530082832.2"><vh>user_return</vh></v>
+<v t="ekr.20080530083318.1"><vh>user_exception</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -4409,6 +4425,151 @@ for pattern in (
 2: scaled progress bars</t>
 <t tx="ekr.20080529111617.9">pixels per time unit to add to width of scaled progress bars</t>
 <t tx="ekr.20080529111617.10">The name of time unit (e.g. days, weeks, hours)</t>
+<t tx="ekr.20080530025357.13">import bdb
+import sys
+import traceback
+
+@others
+
+t = Tracer()
+t.set_trace()</t>
+<t tx="ekr.20080530025357.15">class Tracer (bdb.Bdb):
+
+    '''A "debugger" that merely records which functions call other functions'''
+
+	@others
+</t>
+<t tx="ekr.20080530025357.16">def __init__(self):
+
+    bdb.Bdb.__init__(self) # Init the base class
+
+    self.callDict = {}
+        # Keys are function names.  Values are lists of called functions.
+
+    self.first_frame = None
+
+</t>
+<t tx="ekr.20080530025357.19"># def trace_dispatch(self, frame, event, arg):
+
+    # if event == 'call':
+        # return self.dispatch_call(frame, arg)
+    # if event == 'exception':
+        # g.es_exception()
+        # return None
+        # # return self.dispatch_exception(frame, arg)
+    # elif event in ('line','return','c_return','c_call','c_exception'):
+        # return self.trace_dispatch
+    # else:
+        # print 'Tracer.trace_dispatch: unknown debugging event:', repr(event)
+        # return self.trace_dispatch
+
+    # if event == 'line':
+        # return self.dispatch_line(frame)
+    # if event == 'call':
+        # return self.dispatch_call(frame, arg)
+    # if event == 'return':
+        # return self.dispatch_return(frame, arg)
+    # if event == 'exception':
+        # return self.dispatch_exception(frame, arg)
+    # if event == 'c_call':
+        # return self.trace_dispatch
+    # if event == 'c_exception':
+        # return self.trace_dispatch
+    # if event == 'c_return':
+        # return self.trace_dispatch
+    # print 'bdb.Bdb.dispatch: unknown debugging event:', repr(event)
+    # return self.trace_dispatch
+</t>
+<t tx="ekr.20080530025357.20"># def dispatch_call(self, frame, arg): # XXX 'arg' is no longer used
+
+    # if self.botframe is None:
+        # # # First call of dispatch since reset()
+        # self.botframe = frame.f_back # (CT) Note that this may also be None!
+
+    # g.trace(frame)
+    # return self.trace_dispatch
+
+    # if self.botframe is None:
+        # # First call of dispatch since reset()
+        # self.botframe = frame.f_back # (CT) Note that this may also be None!
+        # return self.trace_dispatch
+
+    # if not (self.stop_here(frame) or self.break_anywhere(frame)):
+        # # No need to trace this function
+        # return # None
+
+    # self.user_call(frame, arg)
+    # if self.quitting: raise BdbQuit
+    # return self.trace_dispatch
+</t>
+<t tx="ekr.20080530025357.21">def dispatch_return(self, frame, arg):
+
+    if self.stop_here(frame) or frame == self.returnframe:
+        self.user_return(frame, arg)
+        if self.quitting: raise BdbQuit
+
+    return self.trace_dispatch
+</t>
+<t tx="ekr.20080530025357.23"># def set_trace(self, frame=None):
+    # """Start debugging from `frame`.
+
+    # If frame is not specified, debugging starts from caller's frame.
+    # """
+    # if frame is None:
+        # frame = sys._getframe().f_back
+    # self.reset()
+    # while frame:
+        # frame.f_trace = self.trace_dispatch
+        # self.botframe = frame
+        # frame = frame.f_back
+    # self.set_step()
+    # sys.settrace(self.trace_dispatch)
+
+def set_trace(self,frame=None):
+    bdb.Bdb.set_trace(self,frame)
+    self.first_frame = sys._getframe()
+</t>
+<t tx="ekr.20080530025357.67"># Derived classes and clients can call the following methods
+# to affect the stepping state.
+
+# def set_step(self):
+    # """Stop after one line of code."""
+    # self.stopframe = None
+    # self.returnframe = None
+    # self.quitting = 0
+</t>
+<t tx="ekr.20080530025357.68"># def stop_here(self, frame):
+    # # (CT) stopframe may now also be None, see dispatch_call.
+    # # (CT) the former test for None is therefore removed from here.
+    # if frame is self.stopframe:
+        # return True
+    # while frame is not None and frame is not self.stopframe:
+        # if frame is self.botframe:
+            # return True
+        # frame = frame.f_back
+    # return False
+</t>
+<t tx="ekr.20080530082650.1">def user_call(self, frame, argument_list):
+    """This method is called when there is the remote possibility
+    that we ever need to stop in this function."""
+
+    g.trace(frame,g.callers(5))
+
+</t>
+<t tx="ekr.20080530082832.1"></t>
+<t tx="ekr.20080530082832.2">def user_return(self, frame, return_value):
+    """This method is called when a return trap is set here."""
+    # if frame == self.first_frame:
+        # print 'at first frame'
+        # self.quitting = True</t>
+<t tx="ekr.20080530083318.1">def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
+    """This method is called if an exception occurs,
+    but only if we are to stop at or just below this level."""
+
+    traceback.print_exception(exc_type,exc_value,exc_traceback)
+    self.quitting = True
+    print ; print 'callDict...'
+    print g.dictToString(self.callDict)</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
