@@ -464,12 +464,14 @@ def startPsyco ():
 #@-node:ekr.20070930060755:utils
 #@-others
 
-if __name__ == "__main__":
-
-    # Keep pylint happy by not defining any symbols at the top level.
+def main():
     if len(sys.argv) > 1:
         run(getFileName())
     else:
         run()
+
+if __name__ == "__main__":
+    main()
+
 #@-node:ekr.20031218072017.2605:@thin runLeo.py 
 #@-leo
