@@ -432,7 +432,7 @@ class atFile:
         """
         return open(*args, **kw)
     #@-node:bwmulder.20050101094804:openForWrite
-    #@+node:ekr.20041005105605.21:read
+    #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
     # Reads @thin, @file and @noref trees.
 
@@ -497,11 +497,14 @@ class atFile:
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
         return at.errors == 0
-    #@-node:ekr.20041005105605.21:read
+    #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False,forceGnx=False):
 
         """Scan vnodes, looking for @file nodes to read."""
+
+        use_tracer = False
+        if use_tracer: tt = g.startTracer()
 
         at = self ; c = at.c
         if partialFlag:
@@ -542,6 +545,8 @@ class atFile:
 
         if partialFlag and not anyRead:
             g.es("no @file nodes in the selected tree")
+
+        if use_tracer: tt.stop()
     #@-node:ekr.20041005105605.26:readAll (atFile)
     #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
     def readOneAtAutoNode (self,fileName,p):
