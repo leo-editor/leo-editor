@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -372,12 +372,19 @@
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
-<v t="ekr.20080531113507.1" a="EO"><vh>mxTextTools test</vh>
+<v t="ekr.20080531113507.1" a="E"><vh>mxTextTools test</vh>
 <v t="ekr.20080531113507.2"><vh>&lt;&lt; define TextTools stuff &gt;&gt;</vh></v>
 <v t="ekr.20080531113507.3"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531113507.4"><vh>printItem</vh></v>
 </v>
 <v t="ekr.20080531120008.1"><vh>output from mxTextTools test</vh></v>
+<v t="ekr.20080531131542.3"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20080531131542.1" a="E"><vh>mxTextTools test (for derived files)</vh>
+<v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
+<v t="ekr.20080531131542.4"><vh>printItem</vh></v>
+</v>
+<v t="ekr.20080531140301.1"><vh>output from second test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -5970,6 +5977,1779 @@ NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /
  eof
 ok: 1
 </t>
+<t tx="ekr.20080531131542.1">import mx.TextTools as tt
+
+&lt;&lt; define scan4 tables &gt;&gt;
+&lt;&lt; define s &gt;&gt;
+
+@others
+
+print '*' * 60
+ok,taglist,nextindex = tt.tag(s,linetable)
+# print g.listToString(taglist)
+for z in taglist:
+    printItem(z,level=0)
+print 'ok:',ok
+</t>
+<t tx="ekr.20080531131542.2">from mx.TextTools import * # Required for tags.
+
+ws_charset = CharSet(' \t')
+
+linetable = (
+    # Start of another line.
+    # Skip ws.
+    ('leading-ws',AllInCharSet,ws_charset,+1),
+    # Sentinel
+    ('sentinel',Word,'#@',+2),
+    ('sentinel-val',AllNotIn,'\n',+2,+2),
+    # Normal line
+    ('line',AllNotIn,'\n',+1),
+    ('nl',Is,'\n',+1),
+    ('eof',EOF,Here,-5),
+)
+</t>
+<t tx="ekr.20080531131542.3"># runLeo.py
+s = """#! /usr/bin/env python
+#@+leo-ver=4-thin
+#@+node:ekr.20031218072017.2605:@thin runLeo.py 
+#@@first
+
+'''Entry point for Leo in Python.'''
+
+#@@language python
+#@@tabwidth -4
+
+#@&lt; &lt; Import pychecker &gt;&gt;
+#@+node:ekr.20031218072017.2606:&lt; &lt; Import pychecker &gt;&gt;
+#@@color
+
+# __pychecker__ = '--no-argsused'
+
+# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
+
+# New in Leo 4.4.5: use pylint instead of pychecker.
+
+# if 0: # Set to 1 for lint-like testing.
+      # # Use t23.bat: only on Python 2.3.
+
+    # try:
+        # import pychecker.checker
+        # # This works.  We may want to set options here...
+        # # from pychecker import Config 
+        # # print pychecker
+        # print ; print "Warning (in leo.py): pychecker.checker running..." ; print
+    # except Exception:
+        # print ; print 'Can not import pychecker' ; print
+#@-node:ekr.20031218072017.2606:&lt; &lt; Import pychecker &gt;&gt;
+#@nl
+
+# __pychecker__ = '--no-import --no-reimportself --no-reimport'
+    # Suppress import errors: this module must do strange things with imports.
+
+# Warning: do not import any Leo modules here!
+# Doing so would make g.app invalid in the imported files.
+import os
+import sys
+import Tkinter ; Tkinter.wantobjects = 0
+    # An ugly hack for Tk/Tkinter 8.5
+    # See http://sourceforge.net/forum/message.php?msg_id=4078577
+
+#@+others
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    '''Initialize and run Leo'''
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    import pdb ; pdb = pdb.set_trace
+
+    if fileName and fileName.startswith('--'):
+        fileName = None
+    # print 'leo.py:run','fileName',fileName
+    #@    &lt; &lt; import leoGlobals and leoApp &gt;&gt;
+    #@+node:ekr.20041219072112:&lt; &lt; import leoGlobals and leoApp &gt;&gt;
+    if jyLeo:
+        print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+
+    # Add the current directory to sys.path *before* importing g.
+    # This will fail if the current directory contains unicode characters...
+    path = os.getcwd()
+    if path not in sys.path:
+        # print 'appending %s to sys.path' % path
+        sys.path.append(path)
+
+    # Import leoGlobals, but do NOT set g.
+    import leo.core.leoGlobals as leoGlobals
+
+    # Set leoGlobals.g, rather than in leoGlobals.py.
+    leoGlobals.g = leoGlobals
+
+    import leo.core.leoApp as leoApp
+
+    # Create the app.
+    leoGlobals.app = leoApp.LeoApp()
+
+    # **now** we can set g.
+    g = leoGlobals
+    assert(g.app)
+
+    if jyLeo:
+        startJyleo(g)
+    #@-node:ekr.20041219072112:&lt; &lt; import leoGlobals and leoApp &gt;&gt;
+    #@nl
+    if not jyLeo and not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    if pymacs:
+        script = windowFlag = False
+    else:
+        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    verbose = script is None
+    g.app.batchMode = script is not None
+    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    scanForOneConfigOption(g)
+    #@    &lt; &lt; import other early files &gt;&gt;
+    #@+node:ekr.20041219072416.1:&lt; &lt; import other early files&gt;&gt;
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoConfig as leoConfig
+
+    # There is a circular dependency between leoCommands and leoEditCommands.
+    import leo.core.leoCommands as leoCommands
+
+    # try:
+        # import leo.core.leoNodes as leoNodes
+    # except ImportError:
+        # print "Error importing leoNodes.py"
+        # import traceback ; traceback.print_exc()
+
+    # try:
+        # import leo.core.leoConfig as leoConfig
+    # except ImportError:
+        # print "Error importing leoConfig.py"
+        # import traceback ; traceback.print_exc()
+    #@-node:ekr.20041219072416.1:&lt; &lt; import other early files&gt;&gt;
+    #@nl
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20070930060755:utils
+#@+node:ekr.20070306085724:adjustSysPath
+def adjustSysPath (g):
+
+    '''Adjust sys.path to enable imports as usual with Leo.'''
+
+    #g.trace('loadDir',g.app.loadDir)
+
+    leoDirs = ('config','doc','extensions','modes','plugins','core','test')
+
+    for theDir in leoDirs:
+        path = g.os_path_abspath(
+            g.os_path_join(g.app.loadDir,'..',theDir))
+        if path not in sys.path:
+            sys.path.append(path)
+#@-node:ekr.20070306085724:adjustSysPath
+#@+node:ekr.20041124083125:completeFileName (leo.py)
+def completeFileName (fileName):
+
+    import leo.core.leoGlobals as g
+
+    if not (fileName and fileName.strip()):
+        return None,None
+
+    # This does not depend on config settings.
+    try:
+        if sys.platform.lower().startswith('win'):
+            fileName = g.toUnicode(fileName,'mbcs')
+        else:
+            fileName = g.toUnicode(fileName,'utf-8')
+    except Exception: pass
+
+    relativeFileName = fileName
+    fileName = g.os_path_join(os.getcwd(),fileName)
+
+    junk,ext = g.os_path_splitext(fileName)
+    if not ext:
+        fileName = fileName + ".leo"
+        relativeFileName = relativeFileName + ".leo"
+
+    return fileName,relativeFileName
+#@-node:ekr.20041124083125:completeFileName (leo.py)
+#@+node:ekr.20031218072017.1624:createFrame (leo.py)
+def createFrame (fileName,relativeFileName):
+
+    '''Create a LeoFrame during Leo's startup process.'''
+
+    import leo.core.leoGlobals as g
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame &amp; indicate it is the startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=frame.c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es("file not found:",fileName)
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (leo.py)
+#@+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
+def createNullGuiWithScript (script):
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoGui as leoGui
+
+    g.app.batchMode = True
+    g.app.gui = leoGui.nullGui("nullGui")
+    g.app.gui.setScript(script)
+#@-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
+#@+node:ekr.20031218072017.1939:getBatchScript
+def getBatchScript ():
+
+    import leo.core.leoGlobals as g
+    windowFlag = False
+
+    name = None ; i = 1 # Skip the dummy first arg.
+    while i + 1 &lt; len(sys.argv):
+        arg = sys.argv[i].strip().lower()
+        if arg in ("--script","-script"):
+            name = sys.argv[i+1].strip() ; break
+        if arg in ("--script-window","-script-window"):
+            name = sys.argv[i+1].strip() ; windowFlag = True ; break
+        i += 1
+
+    if not name:
+        return None, windowFlag
+    name = g.os_path_join(g.app.loadDir,name)
+    try:
+        f = None
+        try:
+            f = open(name,'r')
+            script = f.read()
+            # g.trace("script",script)
+        except IOError:
+            g.es_print("can not open script file:",name, color="red")
+            script = None
+    finally:
+        if f: f.close()
+
+    # Bug fix 4/27/07: Don't put a return in a finally clause.
+    return script, windowFlag
+#@-node:ekr.20031218072017.1939:getBatchScript
+#@+node:ekr.20071117060958:getFileName
+def getFileName ():
+
+    '''Return the filename.
+
+    This is a hack for when Leo is started from a script that also starts IPython.'''
+
+    # No imports here.
+    # print 'leo.py:getFileName',sys.argv
+
+    i = 1
+    while i &lt; len(sys.argv) and sys.argv[i].endswith('.py'):
+        i += 1
+
+    if sys.platform=="win32": # Windows
+        result = ' '.join(sys.argv[i:])
+    else:
+        result = sys.argv[i]
+
+    return result
+#@-node:ekr.20071117060958:getFileName
+#@+node:ekr.20031218072017.1936:isValidPython
+def isValidPython():
+
+    import traceback
+
+    if sys.platform == 'cli':
+        return True
+
+    message = '''\
+Leo requires Python 2.2.1 or higher.
+You may download Python from http://python.org/download/
+'''
+    try:
+        # This will fail if True/False are not defined.
+        import leo.core.leoGlobals as g
+    except ImportError:
+        print "isValidPython: can not import leo.core.leoGlobals"
+        return 0
+    except:
+        print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals"
+        traceback.print_exc()
+        return 0
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+        ok = g.CheckVersion(version,'2.2.1')
+        if not ok:
+            print message
+            g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
+        return ok
+    except Exception:
+        print "isValidPython: unexpected exception: g.CheckVersion"
+        traceback.print_exc()
+        return 0
+#@-node:ekr.20031218072017.1936:isValidPython
+#@+node:ekr.20031218072017.2607:profile_leo
+#@+at 
+#@nonl
+# To gather statistics, do the following in a Python window, not idle:
+# 
+#     import leo
+#     import leo.core.runLeo as runLeo
+#     runLeo.profile_leo()  (this runs leo)
+#     load leoDocs.leo (it is very slow)
+#     quit Leo.
+#@-at
+#@@c
+
+def profile_leo ():
+
+    '''Gather and print statistics about Leo'''
+
+    import cProfile as profile
+    import pstats
+    import leo.core.leoGlobals as g
+
+    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    # name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+
+    profile.run('leo.run()',name)
+
+    p = pstats.Stats(name)
+    p.strip_dirs()
+    p.sort_stats('module','calls','time','name')
+    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    p.print_stats(reFiles)
+#@-node:ekr.20031218072017.2607:profile_leo
+#@+node:ekr.20041130093254:reportDirectories
+def reportDirectories(verbose):
+
+    import leo.core.leoGlobals as g
+
+    if verbose:
+        for kind,theDir in (
+            ("load",g.app.loadDir),
+            ("global config",g.app.globalConfigDir),
+            ("home",g.app.homeDir),
+        ):
+            g.es("%s dir:" % (kind),theDir,color="blue")
+#@-node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20080521132317.2:scanForOneConfigOption
+def scanForOneConfigOption(g):
+
+    '''Set g.app.oneConfigFilename if "--one-config=&lt;path&gt;" appears in sys.argv.'''
+
+    tag = '--one-config=' ; n = len(tag)
+
+    for s in sys.argv:
+        if s.startswith(tag):
+            path = s[n:]
+            path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+            if g.os_path_exists(path):
+                g.app.oneConfigFilename = path
+                sys.argv.remove(s)
+                break
+            else:
+                g.es_print('Invalid option: file not found:',s,color='red')
+                break
+#@nonl
+#@-node:ekr.20080521132317.2:scanForOneConfigOption
+#@+node:ekr.20070930194949:startJyleo (leo.py)
+def startJyleo (g):
+
+    import leo.core.leoSwingFrame as leoSwingFrame
+    import leo.core.leoSwingUtils as leoSwingUtils
+    import java.awt as awt
+
+    if 1:
+        g.app.splash = None
+    else:
+        g.app.splash = splash = leoSwingFrame.leoSplash()
+        awt.EventQueue.invokeAndWait(splash)
+
+    gct = leoSwingUtils.GCEveryOneMinute()
+    gct.run()
+
+    tk = awt.Toolkit.getDefaultToolkit()
+    tk.setDynamicLayout(True)
+#@-node:ekr.20070930194949:startJyleo (leo.py)
+#@+node:ekr.20040411081633:startPsyco
+def startPsyco ():
+
+    import leo.core.leoGlobals as g
+
+    try:
+        import psyco
+        if 0:
+            theFile = r"c:\prog\test\psycoLog.txt"
+            g.es("psyco now logging to:",theFile,color="blue")
+            psyco.log(theFile)
+            psyco.profile()
+        psyco.full()
+        g.es("psyco now running",color="blue")
+    except ImportError:
+        g.app.use_psyco = False
+    except:
+        print "unexpected exception importing psyco"
+        g.es_exception()
+        g.app.use_psyco = False
+#@-node:ekr.20040411081633:startPsyco
+#@-node:ekr.20070930060755:utils
+#@-others
+
+def main():
+    if len(sys.argv) &gt; 1:
+        run(getFileName())
+    else:
+        run()
+
+if __name__ == "__main__":
+    main()
+
+#@-node:ekr.20031218072017.2605:@thin runLeo.py 
+#@-leo
+"""</t>
+<t tx="ekr.20080531131542.4">def printItem(aList,level):
+
+    obj,lt_index,rt_index,subtag = aList
+    print '  '*level,obj,repr(s[lt_index:rt_index])
+    if subtag:
+        for z in subtag:
+            printItem(z,level+1)
+</t>
+<t tx="ekr.20080531140301.1"> line '#! /usr/bin/env python'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+leo-ver=4-thin'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.2605:@thin runLeo.py '
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '@first'
+ nl '\n'
+ nl '\n'
+ line '"""Entry point for Leo in Python."""'
+ nl '\n'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '@language python'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '@tabwidth -4'
+ nl '\n'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '&lt;&lt; Import pychecker &gt;&gt;'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '@color'
+ nl '\n'
+ nl '\n'
+ line "# __pychecker__ = '--no-argsused'"
+ nl '\n'
+ nl '\n'
+ line '# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.'
+ nl '\n'
+ nl '\n'
+ line '# New in Leo 4.4.5: use pylint instead of pychecker.'
+ nl '\n'
+ nl '\n'
+ line '# if 0: # Set to 1 for lint-like testing.'
+ nl '\n'
+ leading-ws '      '
+ line '# # Use t23.bat: only on Python 2.3.'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# try:'
+ nl '\n'
+ leading-ws '        '
+ line '# import pychecker.checker'
+ nl '\n'
+ leading-ws '        '
+ line '# # This works.  We may want to set options here...'
+ nl '\n'
+ leading-ws '        '
+ line '# # from pychecker import Config '
+ nl '\n'
+ leading-ws '        '
+ line '# # print pychecker'
+ nl '\n'
+ leading-ws '        '
+ line '# print ; print "Warning (in leo.py): pychecker.checker running..." ; print'
+ nl '\n'
+ leading-ws '    '
+ line '# except Exception:'
+ nl '\n'
+ leading-ws '        '
+ line "# print ; print 'Can not import pychecker' ; print"
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val 'nl'
+ nl '\n'
+ nl '\n'
+ line "# __pychecker__ = '--no-import --no-reimportself --no-reimport'"
+ nl '\n'
+ leading-ws '    '
+ line '# Suppress import errors: this module must do strange things with imports.'
+ nl '\n'
+ nl '\n'
+ line '# Warning: do not import any Leo modules here!'
+ nl '\n'
+ line '# Doing so would make g.app invalid in the imported files.'
+ nl '\n'
+ line 'import os'
+ nl '\n'
+ line 'import sys'
+ nl '\n'
+ line 'import Tkinter ; Tkinter.wantobjects = 0'
+ nl '\n'
+ leading-ws '    '
+ line '# An ugly hack for Tk/Tkinter 8.5'
+ nl '\n'
+ leading-ws '    '
+ line '# See http://sourceforge.net/forum/message.php?msg_id=4078577'
+ nl '\n'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+others'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.1934:run'
+ nl '\n'
+ line 'def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '"""Initialize and run Leo"""'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "# __pychecker__ = '--no-argsused' # keywords not used."
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import pdb ; pdb = pdb.set_trace'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "if fileName and fileName.startswith('--'):"
+ nl '\n'
+ leading-ws '        '
+ line 'fileName = None'
+ nl '\n'
+ leading-ws '    '
+ line "# print 'leo.py:run','fileName',fileName"
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '    &lt;&lt; import leoGlobals and leoApp &gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '+node:ekr.20041219072112:&lt;&lt; import leoGlobals and leoApp &gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ line 'if jyLeo:'
+ nl '\n'
+ leading-ws '        '
+ line "print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Add the current directory to sys.path *before* importing g.'
+ nl '\n'
+ leading-ws '    '
+ line '# This will fail if the current directory contains unicode characters...'
+ nl '\n'
+ leading-ws '    '
+ line 'path = os.getcwd()'
+ nl '\n'
+ leading-ws '    '
+ line 'if path not in sys.path:'
+ nl '\n'
+ leading-ws '        '
+ line "# print 'appending %s to sys.path' % path"
+ nl '\n'
+ leading-ws '        '
+ line 'sys.path.append(path)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Import leoGlobals, but do NOT set g.'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as leoGlobals'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Set leoGlobals.g, rather than in leoGlobals.py.'
+ nl '\n'
+ leading-ws '    '
+ line 'leoGlobals.g = leoGlobals'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoApp as leoApp'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Create the app.'
+ nl '\n'
+ leading-ws '    '
+ line 'leoGlobals.app = leoApp.LeoApp()'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# **now** we can set g.'
+ nl '\n'
+ leading-ws '    '
+ line 'g = leoGlobals'
+ nl '\n'
+ leading-ws '    '
+ line 'assert(g.app)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if jyLeo:'
+ nl '\n'
+ leading-ws '        '
+ line 'startJyleo(g)'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '-node:ekr.20041219072112:&lt;&lt; import leoGlobals and leoApp &gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val 'nl'
+ nl '\n'
+ leading-ws '    '
+ line 'if not jyLeo and not isValidPython(): return'
+ nl '\n'
+ leading-ws '    '
+ line 'g.computeStandardDirectories()'
+ nl '\n'
+ leading-ws '    '
+ line 'adjustSysPath(g)'
+ nl '\n'
+ leading-ws '    '
+ line 'if pymacs:'
+ nl '\n'
+ leading-ws '        '
+ line 'script = windowFlag = False'
+ nl '\n'
+ leading-ws '    '
+ line 'else:'
+ nl '\n'
+ leading-ws '        '
+ line 'script, windowFlag = getBatchScript() # Do early so we can compute verbose next.'
+ nl '\n'
+ leading-ws '    '
+ line 'verbose = script is None'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.batchMode = script is not None'
+ nl '\n'
+ leading-ws '    '
+ line "g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv"
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.'
+ nl '\n'
+ leading-ws '    '
+ line 'scanForOneConfigOption(g)'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '    &lt;&lt; import other early files &gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '+node:ekr.20041219072416.1:&lt;&lt; import other early files&gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoNodes as leoNodes'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoConfig as leoConfig'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# There is a circular dependency between leoCommands and leoEditCommands.'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoCommands as leoCommands'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# try:'
+ nl '\n'
+ leading-ws '        '
+ line '# import leo.core.leoNodes as leoNodes'
+ nl '\n'
+ leading-ws '    '
+ line '# except ImportError:'
+ nl '\n'
+ leading-ws '        '
+ line '# print "Error importing leoNodes.py"'
+ nl '\n'
+ leading-ws '        '
+ line '# import traceback ; traceback.print_exc()'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# try:'
+ nl '\n'
+ leading-ws '        '
+ line '# import leo.core.leoConfig as leoConfig'
+ nl '\n'
+ leading-ws '    '
+ line '# except ImportError:'
+ nl '\n'
+ leading-ws '        '
+ line '# print "Error importing leoConfig.py"'
+ nl '\n'
+ leading-ws '        '
+ line '# import traceback ; traceback.print_exc()'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val '-node:ekr.20041219072416.1:&lt;&lt; import other early files&gt;&gt;'
+ nl '\n'
+ leading-ws '    '
+ sentinel '#@'
+ sentinel-val 'nl'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.config = leoConfig.configClass()'
+ nl '\n'
+ leading-ws '    '
+ line 'fileName,relativeFileName = completeFileName(fileName)'
+ nl '\n'
+ leading-ws '    '
+ line 'reportDirectories(verbose)'
+ nl '\n'
+ leading-ws '    '
+ line '# Read settings *after* setting g.app.config.'
+ nl '\n'
+ leading-ws '    '
+ line '# Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.config.readSettingsFiles(fileName,verbose)'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.setEncoding()'
+ nl '\n'
+ leading-ws '    '
+ line 'if pymacs:'
+ nl '\n'
+ leading-ws '        '
+ line 'createNullGuiWithScript(None)'
+ nl '\n'
+ leading-ws '    '
+ line 'elif jyLeo:'
+ nl '\n'
+ leading-ws '        '
+ line 'import leo.core.leoSwingGui as leoSwingGui'
+ nl '\n'
+ leading-ws '        '
+ line 'g.app.gui = leoSwingGui.swingGui()'
+ nl '\n'
+ leading-ws '    '
+ line 'elif script:'
+ nl '\n'
+ leading-ws '        '
+ line 'if windowFlag:'
+ nl '\n'
+ leading-ws '            '
+ line 'g.app.createTkGui() # Creates global windows.'
+ nl '\n'
+ leading-ws '            '
+ line 'g.app.gui.setScript(script)'
+ nl '\n'
+ leading-ws '            '
+ line 'sys.args = []'
+ nl '\n'
+ leading-ws '        '
+ line 'else:'
+ nl '\n'
+ leading-ws '            '
+ line 'createNullGuiWithScript(script)'
+ nl '\n'
+ leading-ws '        '
+ line 'fileName = None'
+ nl '\n'
+ leading-ws '    '
+ line '# Load plugins. Plugins may create g.app.gui.'
+ nl '\n'
+ leading-ws '    '
+ line 'g.doHook("start1")'
+ nl '\n'
+ leading-ws '    '
+ line 'if g.app.killed: return # Support for g.app.forceShutdown.'
+ nl '\n'
+ leading-ws '    '
+ line '# Create the default gui if needed.'
+ nl '\n'
+ leading-ws '    '
+ line 'if g.app.gui == None: g.app.createTkGui() # Creates global windows.'
+ nl '\n'
+ leading-ws '    '
+ line '# Initialize tracing and statistics.'
+ nl '\n'
+ leading-ws '    '
+ line 'g.init_sherlock(args)'
+ nl '\n'
+ leading-ws '    '
+ line 'if g.app and g.app.use_psyco: startPsyco()'
+ nl '\n'
+ leading-ws '    '
+ line '# Clear g.app.initing _before_ creating the frame.'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.'
+ nl '\n'
+ leading-ws '    '
+ line '# Create the main frame.  Show it and all queued messages.'
+ nl '\n'
+ leading-ws '    '
+ line 'c,frame = createFrame(fileName,relativeFileName)'
+ nl '\n'
+ leading-ws '    '
+ line 'if not frame: return'
+ nl '\n'
+ leading-ws '    '
+ line "g.app.trace_gc          = c.config.getBool('trace_gc')"
+ nl '\n'
+ leading-ws '    '
+ line "g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')"
+ nl '\n'
+ leading-ws '    '
+ line "g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')"
+ nl '\n'
+ leading-ws '    '
+ line 'if g.app.disableSave:'
+ nl '\n'
+ leading-ws '        '
+ line 'g.es("disabling save commands",color="red")'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.writeWaitingLog()'
+ nl '\n'
+ leading-ws '    '
+ line "if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')"
+ nl '\n'
+ leading-ws '    '
+ line 'p = c.currentPosition()'
+ nl '\n'
+ leading-ws '    '
+ line 'g.doHook("start2",c=c,p=p,v=p,fileName=fileName)'
+ nl '\n'
+ leading-ws '    '
+ line "if c.config.getBool('allow_idle_time_hook'):"
+ nl '\n'
+ leading-ws '        '
+ line 'g.enableIdleTimeHook()'
+ nl '\n'
+ leading-ws '    '
+ line 'if not fileName:'
+ nl '\n'
+ leading-ws '        '
+ line 'c.redraw_now()'
+ nl '\n'
+ leading-ws '    '
+ line "# Respect c's focus wishes if posssible."
+ nl '\n'
+ leading-ws '    '
+ line 'w = g.app.gui.get_focus(c)'
+ nl '\n'
+ leading-ws '    '
+ line 'if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:'
+ nl '\n'
+ leading-ws '        '
+ line 'c.bodyWantsFocus()'
+ nl '\n'
+ leading-ws '        '
+ line 'c.k.showStateAndMode(w)'
+ nl '\n'
+ leading-ws '    '
+ line 'c.outerUpdate()'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.gui.runMainLoop()'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.1934:run'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20070930060755:utils'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20070306085724:adjustSysPath'
+ nl '\n'
+ line 'def adjustSysPath (g):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "'''Adjust sys.path to enable imports as usual with Leo.'''"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "#g.trace('loadDir',g.app.loadDir)"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "leoDirs = ('config','doc','extensions','modes','plugins','core','test')"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'for theDir in leoDirs:'
+ nl '\n'
+ leading-ws '        '
+ line 'path = g.os_path_abspath('
+ nl '\n'
+ leading-ws '            '
+ line "g.os_path_join(g.app.loadDir,'..',theDir))"
+ nl '\n'
+ leading-ws '        '
+ line 'if path not in sys.path:'
+ nl '\n'
+ leading-ws '            '
+ line 'sys.path.append(path)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20070306085724:adjustSysPath'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20041124083125:completeFileName (leo.py)'
+ nl '\n'
+ line 'def completeFileName (fileName):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if not (fileName and fileName.strip()):'
+ nl '\n'
+ leading-ws '        '
+ line 'return None,None'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# This does not depend on config settings.'
+ nl '\n'
+ leading-ws '    '
+ line 'try:'
+ nl '\n'
+ leading-ws '        '
+ line "if sys.platform.lower().startswith('win'):"
+ nl '\n'
+ leading-ws '            '
+ line "fileName = g.toUnicode(fileName,'mbcs')"
+ nl '\n'
+ leading-ws '        '
+ line 'else:'
+ nl '\n'
+ leading-ws '            '
+ line "fileName = g.toUnicode(fileName,'utf-8')"
+ nl '\n'
+ leading-ws '    '
+ line 'except Exception: pass'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'relativeFileName = fileName'
+ nl '\n'
+ leading-ws '    '
+ line 'fileName = g.os_path_join(os.getcwd(),fileName)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'junk,ext = g.os_path_splitext(fileName)'
+ nl '\n'
+ leading-ws '    '
+ line 'if not ext:'
+ nl '\n'
+ leading-ws '        '
+ line 'fileName = fileName + ".leo"'
+ nl '\n'
+ leading-ws '        '
+ line 'relativeFileName = relativeFileName + ".leo"'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'return fileName,relativeFileName'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20041124083125:completeFileName (leo.py)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.1624:createFrame (leo.py)'
+ nl '\n'
+ line 'def createFrame (fileName,relativeFileName):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '"""Create a LeoFrame during Leo\'s startup process."""'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Try to create a frame for the file.'
+ nl '\n'
+ leading-ws '    '
+ line 'if fileName and g.os_path_exists(fileName):'
+ nl '\n'
+ leading-ws '        '
+ line 'ok, frame = g.openWithFileName(relativeFileName or fileName,None)'
+ nl '\n'
+ leading-ws '        '
+ line 'if ok: return frame.c,frame'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Create a _new_ frame &amp; indicate it is the startup window.'
+ nl '\n'
+ leading-ws '    '
+ line 'c,frame = g.app.newLeoCommanderAndFrame('
+ nl '\n'
+ leading-ws '        '
+ line 'fileName=fileName,'
+ nl '\n'
+ leading-ws '        '
+ line 'relativeFileName=relativeFileName,'
+ nl '\n'
+ leading-ws '        '
+ line 'initEditCommanders=True)'
+ nl '\n'
+ leading-ws '    '
+ line 'assert frame.c == c and c.frame == frame'
+ nl '\n'
+ leading-ws '    '
+ line 'frame.setInitialWindowGeometry()'
+ nl '\n'
+ leading-ws '    '
+ line 'frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)'
+ nl '\n'
+ leading-ws '    '
+ line 'frame.startupWindow = True'
+ nl '\n'
+ leading-ws '    '
+ line 'if c.chapterController:'
+ nl '\n'
+ leading-ws '        '
+ line 'c.chapterController.finishCreate()'
+ nl '\n'
+ leading-ws '        '
+ line 'c.setChanged(False) # Clear the changed flag set when creating the @chapters node.'
+ nl '\n'
+ leading-ws '    '
+ line "# Call the 'new' hook for compatibility with plugins."
+ nl '\n'
+ leading-ws '    '
+ line 'g.doHook("new",old_c=None,c=c,new_c=c)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# New in Leo 4.4.8: create the menu as late as possible so it can use user commands.'
+ nl '\n'
+ leading-ws '    '
+ line 'p = c.currentPosition()'
+ nl '\n'
+ leading-ws '    '
+ line 'if not g.doHook("menu1",c=frame.c,p=p,v=p):'
+ nl '\n'
+ leading-ws '        '
+ line 'frame.menu.createMenuBar(frame)'
+ nl '\n'
+ leading-ws '        '
+ line 'c.updateRecentFiles(relativeFileName or fileName)'
+ nl '\n'
+ leading-ws '        '
+ line 'g.doHook("menu2",c=frame.c,p=p,v=p)'
+ nl '\n'
+ leading-ws '        '
+ line 'g.doHook("after-create-leo-frame",c=c)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# Report the failure to open the file.'
+ nl '\n'
+ leading-ws '    '
+ line 'if fileName:'
+ nl '\n'
+ leading-ws '        '
+ line 'g.es("file not found:",fileName)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'return c,frame'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.1624:createFrame (leo.py)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)'
+ nl '\n'
+ line 'def createNullGuiWithScript (script):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGui as leoGui'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.batchMode = True'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.gui = leoGui.nullGui("nullGui")'
+ nl '\n'
+ leading-ws '    '
+ line 'g.app.gui.setScript(script)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.1939:getBatchScript'
+ nl '\n'
+ line 'def getBatchScript ():'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ leading-ws '    '
+ line 'windowFlag = False'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'name = None ; i = 1 # Skip the dummy first arg.'
+ nl '\n'
+ leading-ws '    '
+ line 'while i + 1 &lt; len(sys.argv):'
+ nl '\n'
+ leading-ws '        '
+ line 'arg = sys.argv[i].strip().lower()'
+ nl '\n'
+ leading-ws '        '
+ line 'if arg in ("--script","-script"):'
+ nl '\n'
+ leading-ws '            '
+ line 'name = sys.argv[i+1].strip() ; break'
+ nl '\n'
+ leading-ws '        '
+ line 'if arg in ("--script-window","-script-window"):'
+ nl '\n'
+ leading-ws '            '
+ line 'name = sys.argv[i+1].strip() ; windowFlag = True ; break'
+ nl '\n'
+ leading-ws '        '
+ line 'i += 1'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if not name:'
+ nl '\n'
+ leading-ws '        '
+ line 'return None, windowFlag'
+ nl '\n'
+ leading-ws '    '
+ line 'name = g.os_path_join(g.app.loadDir,name)'
+ nl '\n'
+ leading-ws '    '
+ line 'try:'
+ nl '\n'
+ leading-ws '        '
+ line 'f = None'
+ nl '\n'
+ leading-ws '        '
+ line 'try:'
+ nl '\n'
+ leading-ws '            '
+ line "f = open(name,'r')"
+ nl '\n'
+ leading-ws '            '
+ line 'script = f.read()'
+ nl '\n'
+ leading-ws '            '
+ line '# g.trace("script",script)'
+ nl '\n'
+ leading-ws '        '
+ line 'except IOError:'
+ nl '\n'
+ leading-ws '            '
+ line 'g.es_print("can not open script file:",name, color="red")'
+ nl '\n'
+ leading-ws '            '
+ line 'script = None'
+ nl '\n'
+ leading-ws '    '
+ line 'finally:'
+ nl '\n'
+ leading-ws '        '
+ line 'if f: f.close()'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "# Bug fix 4/27/07: Don't put a return in a finally clause."
+ nl '\n'
+ leading-ws '    '
+ line 'return script, windowFlag'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.1939:getBatchScript'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20071117060958:getFileName'
+ nl '\n'
+ line 'def getFileName ():'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "'''Return the filename."
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "This is a hack for when Leo is started from a script that also starts IPython.'''"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '# No imports here.'
+ nl '\n'
+ leading-ws '    '
+ line "# print 'leo.py:getFileName',sys.argv"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'i = 1'
+ nl '\n'
+ leading-ws '    '
+ line "while i &lt; len(sys.argv) and sys.argv[i].endswith('.py'):"
+ nl '\n'
+ leading-ws '        '
+ line 'i += 1'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if sys.platform=="win32": # Windows'
+ nl '\n'
+ leading-ws '        '
+ line "result = ' '.join(sys.argv[i:])"
+ nl '\n'
+ leading-ws '    '
+ line 'else:'
+ nl '\n'
+ leading-ws '        '
+ line 'result = sys.argv[i]'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'return result'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20071117060958:getFileName'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.1936:isValidPython'
+ nl '\n'
+ line 'def isValidPython():'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import traceback'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "if sys.platform == 'cli':"
+ nl '\n'
+ leading-ws '        '
+ line 'return True'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'message = """\\'
+ nl '\n'
+ line 'Leo requires Python 2.2.1 or higher.'
+ nl '\n'
+ line 'You may download Python from http://python.org/download/'
+ nl '\n'
+ line '"""'
+ nl '\n'
+ leading-ws '    '
+ line 'try:'
+ nl '\n'
+ leading-ws '        '
+ line '# This will fail if True/False are not defined.'
+ nl '\n'
+ leading-ws '        '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ leading-ws '    '
+ line 'except ImportError:'
+ nl '\n'
+ leading-ws '        '
+ line 'print "isValidPython: can not import leo.core.leoGlobals"'
+ nl '\n'
+ leading-ws '        '
+ line 'return 0'
+ nl '\n'
+ leading-ws '    '
+ line 'except:'
+ nl '\n'
+ leading-ws '        '
+ line 'print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals"'
+ nl '\n'
+ leading-ws '        '
+ line 'traceback.print_exc()'
+ nl '\n'
+ leading-ws '        '
+ line 'return 0'
+ nl '\n'
+ leading-ws '    '
+ line 'try:'
+ nl '\n'
+ leading-ws '        '
+ line "version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])"
+ nl '\n'
+ leading-ws '        '
+ line "ok = g.CheckVersion(version,'2.2.1')"
+ nl '\n'
+ leading-ws '        '
+ line 'if not ok:'
+ nl '\n'
+ leading-ws '            '
+ line 'print message'
+ nl '\n'
+ leading-ws '            '
+ line 'g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")'
+ nl '\n'
+ leading-ws '        '
+ line 'return ok'
+ nl '\n'
+ leading-ws '    '
+ line 'except Exception:'
+ nl '\n'
+ leading-ws '        '
+ line 'print "isValidPython: unexpected exception: g.CheckVersion"'
+ nl '\n'
+ leading-ws '        '
+ line 'traceback.print_exc()'
+ nl '\n'
+ leading-ws '        '
+ line 'return 0'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.1936:isValidPython'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20031218072017.2607:profile_leo'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+at '
+ nl '\n'
+ sentinel '#@'
+ sentinel-val 'nonl'
+ nl '\n'
+ line '# To gather statistics, do the following in a Python window, not idle:'
+ nl '\n'
+ line '# '
+ nl '\n'
+ line '#     import leo'
+ nl '\n'
+ line '#     import leo.core.runLeo as runLeo'
+ nl '\n'
+ line '#     runLeo.profile_leo()  (this runs leo)'
+ nl '\n'
+ line '#     load leoDocs.leo (it is very slow)'
+ nl '\n'
+ line '#     quit Leo.'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-at'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '@c'
+ nl '\n'
+ nl '\n'
+ line 'def profile_leo ():'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '"""Gather and print statistics about Leo"""'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import cProfile as profile'
+ nl '\n'
+ leading-ws '    '
+ line 'import pstats'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'name = r"c:\\leo.repo\\trunk\\leo\\test\\leoProfile.txt"'
+ nl '\n'
+ leading-ws '    '
+ line "# name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "profile.run('leo.run()',name)"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'p = pstats.Stats(name)'
+ nl '\n'
+ leading-ws '    '
+ line 'p.strip_dirs()'
+ nl '\n'
+ leading-ws '    '
+ line "p.sort_stats('module','calls','time','name')"
+ nl '\n'
+ leading-ws '    '
+ line "reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'"
+ nl '\n'
+ leading-ws '    '
+ line 'p.print_stats(reFiles)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.2607:profile_leo'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20041130093254:reportDirectories'
+ nl '\n'
+ line 'def reportDirectories(verbose):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if verbose:'
+ nl '\n'
+ leading-ws '        '
+ line 'for kind,theDir in ('
+ nl '\n'
+ leading-ws '            '
+ line '("load",g.app.loadDir),'
+ nl '\n'
+ leading-ws '            '
+ line '("global config",g.app.globalConfigDir),'
+ nl '\n'
+ leading-ws '            '
+ line '("home",g.app.homeDir),'
+ nl '\n'
+ leading-ws '        '
+ line '):'
+ nl '\n'
+ leading-ws '            '
+ line 'g.es("%s dir:" % (kind),theDir,color="blue")'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20041130093254:reportDirectories'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20080521132317.2:scanForOneConfigOption'
+ nl '\n'
+ line 'def scanForOneConfigOption(g):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line '\'\'\'Set g.app.oneConfigFilename if "--one-config=&lt;path&gt;" appears in sys.argv.\'\'\''
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line "tag = '--one-config=' ; n = len(tag)"
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'for s in sys.argv:'
+ nl '\n'
+ leading-ws '        '
+ line 'if s.startswith(tag):'
+ nl '\n'
+ leading-ws '            '
+ line 'path = s[n:]'
+ nl '\n'
+ leading-ws '            '
+ line 'path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))'
+ nl '\n'
+ leading-ws '            '
+ line 'if g.os_path_exists(path):'
+ nl '\n'
+ leading-ws '                '
+ line 'g.app.oneConfigFilename = path'
+ nl '\n'
+ leading-ws '                '
+ line 'sys.argv.remove(s)'
+ nl '\n'
+ leading-ws '                '
+ line 'break'
+ nl '\n'
+ leading-ws '            '
+ line 'else:'
+ nl '\n'
+ leading-ws '                '
+ line "g.es_print('Invalid option: file not found:',s,color='red')"
+ nl '\n'
+ leading-ws '                '
+ line 'break'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val 'nonl'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20080521132317.2:scanForOneConfigOption'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20070930194949:startJyleo (leo.py)'
+ nl '\n'
+ line 'def startJyleo (g):'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoSwingFrame as leoSwingFrame'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoSwingUtils as leoSwingUtils'
+ nl '\n'
+ leading-ws '    '
+ line 'import java.awt as awt'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'if 1:'
+ nl '\n'
+ leading-ws '        '
+ line 'g.app.splash = None'
+ nl '\n'
+ leading-ws '    '
+ line 'else:'
+ nl '\n'
+ leading-ws '        '
+ line 'g.app.splash = splash = leoSwingFrame.leoSplash()'
+ nl '\n'
+ leading-ws '        '
+ line 'awt.EventQueue.invokeAndWait(splash)'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'gct = leoSwingUtils.GCEveryOneMinute()'
+ nl '\n'
+ leading-ws '    '
+ line 'gct.run()'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'tk = awt.Toolkit.getDefaultToolkit()'
+ nl '\n'
+ leading-ws '    '
+ line 'tk.setDynamicLayout(True)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20070930194949:startJyleo (leo.py)'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '+node:ekr.20040411081633:startPsyco'
+ nl '\n'
+ line 'def startPsyco ():'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'import leo.core.leoGlobals as g'
+ nl '\n'
+ nl '\n'
+ leading-ws '    '
+ line 'try:'
+ nl '\n'
+ leading-ws '        '
+ line 'import psyco'
+ nl '\n'
+ leading-ws '        '
+ line 'if 0:'
+ nl '\n'
+ leading-ws '            '
+ line 'theFile = r"c:\\prog\\test\\psycoLog.txt"'
+ nl '\n'
+ leading-ws '            '
+ line 'g.es("psyco now logging to:",theFile,color="blue")'
+ nl '\n'
+ leading-ws '            '
+ line 'psyco.log(theFile)'
+ nl '\n'
+ leading-ws '            '
+ line 'psyco.profile()'
+ nl '\n'
+ leading-ws '        '
+ line 'psyco.full()'
+ nl '\n'
+ leading-ws '        '
+ line 'g.es("psyco now running",color="blue")'
+ nl '\n'
+ leading-ws '    '
+ line 'except ImportError:'
+ nl '\n'
+ leading-ws '        '
+ line 'g.app.use_psyco = False'
+ nl '\n'
+ leading-ws '    '
+ line 'except:'
+ nl '\n'
+ leading-ws '        '
+ line 'print "unexpected exception importing psyco"'
+ nl '\n'
+ leading-ws '        '
+ line 'g.es_exception()'
+ nl '\n'
+ leading-ws '        '
+ line 'g.app.use_psyco = False'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20040411081633:startPsyco'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20070930060755:utils'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-others'
+ nl '\n'
+ nl '\n'
+ line 'def main():'
+ nl '\n'
+ leading-ws '    '
+ line 'if len(sys.argv) &gt; 1:'
+ nl '\n'
+ leading-ws '        '
+ line 'run(getFileName())'
+ nl '\n'
+ leading-ws '    '
+ line 'else:'
+ nl '\n'
+ leading-ws '        '
+ line 'run()'
+ nl '\n'
+ nl '\n'
+ line 'if __name__ == "__main__":'
+ nl '\n'
+ leading-ws '    '
+ line 'main()'
+ nl '\n'
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-node:ekr.20031218072017.2605:@thin runLeo.py '
+ nl '\n'
+ sentinel '#@'
+ sentinel-val '-leo'
+ nl '\n'
+ eof ''
+ok: 1
+</t>
+<t tx="ekr.20080531141227.1">path = r'c:\leo.repo\trunk\leo\core\runLeo.py'
+f = file(path)
+s = f.read()
+f.close()</t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
 @tabwidth -4
