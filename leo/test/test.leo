@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,0,2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -371,16 +371,7 @@
 <v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 </v>
-<v t="ekr.20080530025357.13" a="E"><vh>Function tracer</vh>
-<v t="ekr.20080530025357.15" a="E"><vh>class Tracer</vh>
-<v t="ekr.20080530025357.16"><vh> __init__</vh></v>
-<v t="ekr.20080530101023.22"><vh>computeName</vh></v>
-<v t="ekr.20080530101023.25"><vh>report</vh></v>
-<v t="ekr.20080530105936.1"><vh>stop</vh></v>
-<v t="ekr.20080530025357.19"><vh>tracer</vh></v>
-<v t="ekr.20080530171224.1"><vh>updateStats</vh></v>
-</v>
-</v>
+<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -4419,113 +4410,16 @@ for pattern in (
 2: scaled progress bars</t>
 <t tx="ekr.20080529111617.9">pixels per time unit to add to width of scaled progress bars</t>
 <t tx="ekr.20080529111617.10">The name of time unit (e.g. days, weeks, hours)</t>
-<t tx="ekr.20080530025357.13">import inspect
-import sys
+<t tx="ekr.20080531080812.1">def eggs():
+    g.trace()
 
-@others
+def spam():
+    g.trace()
+    eggs()
 
-print '=' * 40
-t = Tracer()
-sys.settrace(t.tracer)</t>
-<t tx="ekr.20080530025357.15">class Tracer:
-
-    '''A "debugger" that computes a call graph.'''
-
-	@others
-</t>
-<t tx="ekr.20080530025357.16">def __init__(self):
-
-    self.callDict = {}
-        # Keys are function names.  Values are lists of called functions.
-
-    self.inited = False
-    self.stack = []
-</t>
-<t tx="ekr.20080530025357.19">def tracer (self, frame, event, arg):
-
-    '''A function to be passed to sys.settrace.'''
-
-    n = len(self.stack)
-    if event == 'return': n = max(0,n-1)
-    pad = '.' * n
-
-    if event == 'call':
-        name = self.computeName(frame)
-        g.trace('%scall' % (pad),name)
-        self.updateStats(name)
-        self.stack.append(name)
-        return self.tracer
-    elif event == 'return':
-        if self.stack:
-            name = self.stack.pop()
-            g.trace('%sret ' % (pad),name)
-        else:
-            g.trace('return underflow')
-        if self.stack:
-            return self.tracer
-        else:
-            self.stop()
-            return None
-    else:
-        return self.tracer
-</t>
-<t tx="ekr.20080530101023.22">def computeName (self,frame):
-
-    if not frame: return ''
-
-    code = frame.f_code ; result = []
-
-    module = inspect.getmodule(code)
-    if module:
-        module_name = module.__name__
-        if module_name == 'leo.core.leoGlobals':
-            result.append('g')
-        else:
-            tag = 'leo.core.'
-            if module_name.startswith(tag):
-                module_name = module_name[len(tag):]
-            result.append(module_name)
-
-    self_obj = frame.f_locals.get('self')
-    if self_obj: result.append(self_obj.__class__.__name__)
-
-    result.append(code.co_name)
-
-    return '.'.join(result)
-</t>
-<t tx="ekr.20080530101023.25">def report (self):
-
-    print ; print 'callDict...'
-
-    # print g.dictToString(self.callDict)
-    keys = self.callDict.keys()
-    keys.sort()
-    for key in keys:
-        # Print the calling function.
-        print key
-        # Print the called functions.
-        d = self.callDict.get(key)
-        keys2 = d.keys()
-        keys2.sort()
-        for key2 in keys2:
-            print '%3d' % (d.get(key2)),key2
-</t>
-<t tx="ekr.20080530105936.1">def stop (self):
-
-    sys.settrace(None)
-    self.report()
-</t>
-<t tx="ekr.20080530171224.1">def updateStats (self,name):
-
-    if not self.stack:
-        return
-
-    caller = self.stack[-1]
-    d = self.callDict.get(caller,{})
-        # d is a dict reprenting the called functions.
-        # Keys are called functions, values are counts.
-    d[name] = 1 + d.get(name,0)
-    self.callDict[caller] = d
+t = g.startTracer()
+spam()
+t.stop()
 </t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python

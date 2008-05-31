@@ -1709,6 +1709,9 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
 
     """Scan vnodes, looking for @file nodes to read."""
 
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
     at = self ; c = at.c
     if partialFlag:
         # Capture the current headline only if we aren't doing the initial read.
@@ -1748,6 +1751,8 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
 
     if partialFlag and not anyRead:
         g.es("no @file nodes in the selected tree")
+
+    if use_tracer: tt.stop()
 #@-node:ekr.20041005105605.26:readAll (atFile)
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
@@ -7719,7 +7724,1220 @@ def updateSettings (self,c,localFlag):
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 #@-node:ekr.20080521132317.1:Added support for single-config option
+#@+node:ekr.20080531075119.8:Finished Tracer class
+#@+node:ekr.20041005105605.26:readAll (atFile)
+def readAll(self,root,partialFlag=False,forceGnx=False):
+
+    """Scan vnodes, looking for @file nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+    if partialFlag: after = p.nodeAfterTree()
+    else: after = c.nullPosition()
+    while p and not p.equal(after): # Don't use iterator.
+        # g.trace(p.headString())
+        if p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
+                at.forceGnxOnPosition(p)
+            at.read(p,thinFile=True)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_vnodes_iter():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @file nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+#@-node:ekr.20041005105605.26:readAll (atFile)
+#@+node:ekr.20041005105605.21:read (atFile)
+# The caller must enclose this code in beginUpdate/endUpdate.
+# Reads @thin, @file and @noref trees.
+
+def read(self,root,importFileName=None,thinFile=False,fromString=None):
+
+    """Read any derived file."""
+
+    at = self ; c = at.c
+    << set fileName >>
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    if at.errors: return False
+    at.openFileForReading(fileName,fromString=fromString)
+    if not at.inputFile: return False
+    if not g.unitTesting:
+        g.es("reading:",root.headString())
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20080531075119.1:class Tracer & g.startTracer
+class Tracer:
+
+    '''A "debugger" that computes a call graph.
+
+    To trace a function and its callers, put the following at the function's start:
+
+    g.startTracer()
+    '''
+
+	@others
+
+def startTracer():
+
+    import sys
+    t = g.Tracer()
+    sys.settrace(t.tracer)
+    return t
+#@+node:ekr.20080531075119.2: __init__
+def __init__(self):
+
+    self.callDict = {}
+        # Keys are function names.
+        # Values are the number of times the function was called by the caller.
+    self.calledDict = {}
+        # Keys are function names.
+        # Values are the total number of times the function was called.
+
+    self.count = 0
+    self.inited = False
+    self.limit = 2 # 0: no limit, otherwise, limit trace to n entries deep.
+    self.stack = []
+    self.trace = False
+    self.verbose = False # True: print returns as well as calls.
+#@-node:ekr.20080531075119.2: __init__
+#@+node:ekr.20080531075119.3:computeName
+def computeName (self,frame):
+
+    import inspect
+
+    if not frame: return ''
+
+    code = frame.f_code ; result = []
+
+    module = inspect.getmodule(code)
+    if module:
+        module_name = module.__name__
+        if module_name == 'leo.core.leoGlobals':
+            result.append('g')
+        else:
+            tag = 'leo.core.'
+            if module_name.startswith(tag):
+                module_name = module_name[len(tag):]
+            result.append(module_name)
+
+    try:
+        # This can fail during startup.
+        self_obj = frame.f_locals.get('self')
+        if self.obj: result.append(self_obj.__class__.__name__)
+    except Exception:
+        pass
+
+    result.append(code.co_name)
+
+    return '.'.join(result)
+#@-node:ekr.20080531075119.3:computeName
+#@+node:ekr.20080531075119.4:report
+def report (self):
+
+    if 0:
+        print ; print 'stack'
+        for z in self.stack:
+            print z
+
+    print ; print 'callDict...'
+
+    # print g.dictToString(self.callDict)
+    keys = self.callDict.keys()
+    keys.sort()
+    for key in keys:
+        # Print the calling function.
+        print '%d' % (self.calledDict.get(key,0)),key
+        # Print the called functions.
+        d = self.callDict.get(key)
+        keys2 = d.keys()
+        keys2.sort()
+        for key2 in keys2:
+            print '%8d' % (d.get(key2)),key2
+#@-node:ekr.20080531075119.4:report
+#@+node:ekr.20080531075119.5:stop
+def stop (self):
+
+    sys.settrace(None)
+    self.report()
+#@-node:ekr.20080531075119.5:stop
+#@+node:ekr.20080531075119.6:tracer
+def tracer (self, frame, event, arg):
+
+    '''A function to be passed to sys.settrace.'''
+
+    n = len(self.stack)
+    if event == 'return': n = max(0,n-1)
+    pad = '.' * n
+
+    if event == 'call':
+        if not self.inited:
+            # Add an extra stack element for the routine containing the call to startTracer.
+            self.inited = True
+            name = self.computeName(frame.f_back)
+            self.updateStats(name)
+            self.stack.append(name)
+        name = self.computeName(frame)
+        if self.trace and (self.limit == 0 or len(self.stack) < self.limit):
+            g.trace('%scall' % (pad),name)
+        self.updateStats(name)
+        self.stack.append(name)
+        return self.tracer
+    elif event == 'return':
+        if self.stack:
+            name = self.stack.pop()
+            if self.trace and self.verbose and (self.limit == 0 or len(self.stack) < self.limit):
+                g.trace('%sret ' % (pad),name)
+        else:
+            g.trace('return underflow')
+            self.stop()
+            return None
+        if self.stack:
+            return self.tracer
+        else:
+            self.stop()
+            return None
+    else:
+        return self.tracer
+#@-node:ekr.20080531075119.6:tracer
+#@+node:ekr.20080531075119.7:updateStats
+def updateStats (self,name):
+
+    if not self.stack:
+        return
+
+    caller = self.stack[-1]
+    d = self.callDict.get(caller,{})
+        # d is a dict reprenting the called functions.
+        # Keys are called functions, values are counts.
+    d[name] = 1 + d.get(name,0)
+    self.callDict[caller] = d
+
+    # Update the total counts.
+    self.calledDict[name] = 1 + self.calledDict.get(name,0)
+#@-node:ekr.20080531075119.7:updateStats
+#@-node:ekr.20080531075119.1:class Tracer & g.startTracer
+#@-node:ekr.20080531075119.8:Finished Tracer class
 #@-node:ekr.20080408060320.783:Features
+#@+node:ekr.20080529054218.2:Benchmarked the read code
+To do:
+
+- Use cProfile.
+- Sort first by module, then by time (**not** cumulative)
+#@nonl
+#@+node:ekr.20031218072017.2607:profile_leo
+@ To gather statistics, do the following in a Python window, not idle:
+
+    import leo
+    import leo.core.runLeo as runLeo
+    runLeo.profile_leo()  (this runs leo)
+    load leoDocs.leo (it is very slow)
+    quit Leo.
+@c
+
+def profile_leo ():
+
+    """Gather and print statistics about Leo"""
+
+    import cProfile as profile
+    import pstats
+    import leo.core.leoGlobals as g
+
+    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    # name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+
+    profile.run('leo.run()',name)
+
+    p = pstats.Stats(name)
+    p.strip_dirs()
+    p.sort_stats('module','calls','time','name')
+    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    p.print_stats(reFiles)
+#@-node:ekr.20031218072017.2607:profile_leo
+#@+node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
+#@+node:ekr.20051104075904.3:isSuiteNode and isTestNode
+def isSuiteNode (p):
+    h = p.headString().lower()
+    return g.match_word(h,0,"@suite")
+
+def isTestNode (p):
+    h = p.headString().lower()
+    return g.match_word(h,0,"@test")
+
+# def isTestCaseNode (p):
+    # h = p.headString().lower()
+    # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
+#@-node:ekr.20051104075904.3:isSuiteNode and isTestNode
+#@+node:ekr.20051104075904.4:doTests...
+def doTests(c,all,verbosity=1):
+
+    if all:
+        p = c.rootPosition()
+    else:
+        p = c.currentPosition()
+    p1 = p.copy()
+
+    try:
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        while p and p != last:
+            h = p.headString()
+            if g.match_word(h,0,'@ignore'):
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test
+                test = makeTestCase(c,p)
+                if test: suite.addTest(test)
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                # g.trace(p.headString())
+                test = makeTestSuite(c,p)
+                if test: suite.addTest(test)
+                p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        unittest.TextTestRunner(verbosity=verbosity).run(suite)
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        c.selectPosition(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    # __pychecker__ = '--no-argsused'
+        #  msg needed so signature matches base class.
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # To do: restore the outline.
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    self.assert_(script)
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p}
+    else:
+        d = {}
+
+    # Execute the script. Let unit test handle any errors!
+
+    if 0: # debug
+        import pdb
+        pdb.run(script+'\n',d)
+    else:
+        exec script + '\n' in d
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    return self.p.headString() + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@+node:ekr.20051104075904.12:makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    # import leo.core.leoGlobals as g
+    p = p.copy()
+
+    h = p.headString()
+    script = g.getScript(c,p).strip()
+    if not script:
+        print "no script in %s" % h
+        return None
+
+    try:
+        exec script + '\n' in {'c':c,'g':g,'p':p}
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print "%s script did not set g.app.scriptDict" % h
+        return suite
+    except:
+        g.trace('Exception creating test cases for %s' % p.headString())
+        g.es_exception()
+        return None
+#@-node:ekr.20051104075904.12:makeTestSuite
+#@+node:ekr.20051104075904.13:makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.bodyString().strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@-node:ekr.20051104075904.13:makeTestCase
+#@-node:ekr.20051104075904.4:doTests...
+#@+node:ekr.20051104075904.14:runProfileOnNode
+# A utility for use by script buttons.
+
+def runProfileOnNode (p,outputPath=None):
+
+    s = p.bodyString().rstrip() + '\n'
+
+    if outputPath is None:
+        # outputPath = g.os_path_abspath(
+            # g.os_path_join(
+                # g.app.loadDir,'..','test','profileStats'))
+        outputPath = name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+
+    profile.run(s,outputPath)
+
+    if 1:
+        stats = pstats.Stats(outputPath)
+        stats.strip_dirs()
+        stats.sort_stats('cum','file','name')
+        stats.print_stats()
+#@-node:ekr.20051104075904.14:runProfileOnNode
+#@+node:ekr.20051104075904.15:runTimerOnNode
+# A utility for use by script buttons.
+
+def runTimerOnNode (c,p,count):
+
+    s = p.bodyString().rstrip() + '\n'
+
+    # A kludge so we the statement below can get c and p.
+    g.app.unitTestDict = {'c':c,'p':p and p.copy()}
+
+    # This looks like the best we can do.
+    setup = 'import leo.core.leoGlobals as g; c = g.app.unitTestDict.get("c"); p = g.app.unitTestDict.get("p")'
+
+    t = timeit.Timer(s,setup)
+
+    try:
+        if count is None:
+            count = 1000000
+        result = t.timeit(count)
+        ratio = "%f" % (float(result)/float(count))
+        g.es_print("count:",count,"time/count:",ratio,'',p.headString())
+    except:
+        t.print_exc()
+#@-node:ekr.20051104075904.15:runTimerOnNode
+#@-node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
+#@+node:ekr.20080529114024.1:Stats
+@killcolor
+
+C:\leo.repo\trunk>python
+Python 2.5 (r25:51908, Sep 19 2006, 09:52:17) [MSC v.1310 32 bit (Intel)] on win32
+
+         881734 function calls (875681 primitive calls) in 17.168 CPU seconds
+
+   Ordered by: file name, call count, internal time, function name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+
+      412    0.001    0.000    0.001    0.000 cp1252.py:14(decode)
+       14    0.000    0.000    0.000    0.000 cp1252.py:11(encode)
+        3    0.000    0.000    0.000    0.000 cp437.py:11(encode)
+        1    0.004    0.004    0.004    0.004 dis.py:1(<module>)
+
+
+        1    0.004    0.004    0.004    0.004 expat.py:1(<module>)
+     4254    0.014    0.000    0.122    0.000 expatreader.py:300(start_element)
+     4254    0.006    0.000    0.051    0.000 expatreader.py:303(end_element)
+        8    0.000    0.000    0.310    0.039 expatreader.py:196(feed)
+        4    0.000    0.000    0.000    0.000 expatreader.py:244(reset)
+        4    0.000    0.000    0.000    0.000 expatreader.py:223(_reset_cont_handler)
+        2    0.000    0.000    0.000    0.000 expatreader.py:213(close)
+        2    0.000    0.000    0.310    0.155 expatreader.py:100(parse)
+        2    0.000    0.000    0.000    0.000 expatreader.py:87(__init__)
+        2    0.000    0.000    0.000    0.000 expatreader.py:404(create_parser)
+        2    0.000    0.000    0.000    0.000 expatreader.py:115(setContentHandler)
+        2    0.000    0.000    0.000    0.000 expatreader.py:109(prepareParser)
+        2    0.000    0.000    0.000    0.000 expatreader.py:54(__init__)
+        2    0.000    0.000    0.000    0.000 expatreader.py:132(setFeature)
+        1    0.008    0.008    0.013    0.013 expatreader.py:4(<module>)
+        1    0.000    0.000    0.000    0.000 expatreader.py:84(ExpatParser)
+        1    0.000    0.000    0.000    0.000 expatreader.py:48(ExpatLocator)
+
+    14209    0.015    0.000    0.094    0.000 pyexpat.c:479(CharacterData)
+     4254    0.005    0.000    0.127    0.000 pyexpat.c:604(StartElement)
+     4254    0.005    0.000    0.056    0.000 pyexpat.c:656(EndElement)
+        2    0.000    0.000    0.000    0.000 pyexpat.c:662(ProcessingInstruction)
+        1    0.000    0.000    0.000    0.000 python.py:5(<module>)
+      204    0.002    0.000    0.145    0.001 re.py:219(_compile)
+      117    0.000    0.000    0.001    0.000 re.py:126(match)
+       84    0.000    0.000    0.143    0.002 re.py:178(compile)
+       11    0.000    0.000    0.000    0.000 re.py:196(escape)
+        3    0.000    0.000    0.001    0.000 re.py:131(search)
+
+     1686    0.001    0.000    0.001    0.000 sre_compile.py:24(_identityfunction)
+   892/81    0.014    0.000    0.040    0.000 sre_compile.py:38(_compile)
+      310    0.001    0.000    0.001    0.000 sre_compile.py:360(_simple)
+      301    0.013    0.000    0.022    0.000 sre_compile.py:213(_optimize_charset)
+      301    0.002    0.000    0.025    0.000 sre_compile.py:184(_compile_charset)
+      162    0.000    0.000    0.000    0.000 sre_compile.py:480(isstring)
+       88    0.005    0.000    0.005    0.000 sre_compile.py:264(_mk_bitmap)
+       81    0.001    0.000    0.013    0.000 sre_compile.py:367(_compile_info)
+       81    0.001    0.000    0.143    0.002 sre_compile.py:501(compile)
+       81    0.000    0.000    0.053    0.001 sre_compile.py:486(_code)
+       16    0.000    0.000    0.000    0.000 sre_compile.py:57(fixup)
+        1    0.002    0.002    0.003    0.003 sre_compile.py:307(_optimize_unicode)
+    11989    0.025    0.000    0.033    0.000 sre_parse.py:188(__next)
+    10954    0.012    0.000    0.042    0.000 sre_parse.py:207(get)
+     3665    0.003    0.000    0.006    0.000 sre_parse.py:201(match)
+     3176    0.002    0.000    0.002    0.000 sre_parse.py:136(__getitem__)
+     1553    0.001    0.000    0.002    0.000 sre_parse.py:132(__len__)
+     1212    0.001    0.000    0.002    0.000 sre_parse.py:144(append)
+ 1129/415    0.006    0.000    0.008    0.000 sre_parse.py:146(getwidth)
+      892    0.001    0.000    0.001    0.000 sre_parse.py:96(__init__)
+   499/84    0.025    0.000    0.087    0.001 sre_parse.py:385(_parse)
+   375/81    0.004    0.000    0.087    0.001 sre_parse.py:307(_parse_sub)
+      310    0.001    0.000    0.001    0.000 sre_parse.py:140(__getslice__)
+      310    0.000    0.000    0.000    0.000 sre_parse.py:138(__setitem__)
+      231    0.000    0.000    0.000    0.000 sre_parse.py:216(isident)
+      225    0.001    0.000    0.001    0.000 sre_parse.py:231(_class_escape)
+      198    0.001    0.000    0.001    0.000 sre_parse.py:263(_escape)
+      143    0.000    0.000    0.000    0.000 sre_parse.py:78(opengroup)
+      143    0.000    0.000    0.000    0.000 sre_parse.py:89(closegroup)
+       81    0.001    0.000    0.089    0.001 sre_parse.py:669(parse)
+       81    0.000    0.000    0.000    0.000 sre_parse.py:184(__init__)
+       81    0.000    0.000    0.000    0.000 sre_parse.py:73(__init__)
+       38    0.000    0.000    0.000    0.000 sre_parse.py:222(isname)
+        6    0.000    0.000    0.000    0.000 sre_parse.py:211(tell)
+        2    0.000    0.000    0.000    0.000 sre_parse.py:219(isdigit)
+
+        5    0.000    0.000    0.000    0.000 stat.py:29(S_IFMT)
+        3    0.000    0.000    0.000    0.000 stat.py:45(S_ISDIR)
+        2    0.000    0.000    0.000    0.000 stat.py:54(S_ISREG)
+
+        1    0.006    0.006    0.007    0.007 statemachine.py:105(<module>)
+        1    0.000    0.000    0.000    0.000 statemachine.py:115(StateMachine)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1041(ViewList)
+        1    0.000    0.000    0.000    0.000 statemachine.py:867(StateWS)
+        1    0.000    0.000    0.000    0.000 statemachine.py:489(State)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1297(StringList)
+        1    0.000    0.000    0.000    0.000 statemachine.py:761(StateMachineWS)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1008(_SearchOverride)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1427(StateMachineError)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1437(TransitionCorrection)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1036(SearchStateMachineWS)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1433(TransitionMethodNotFound)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1428(UnknownStateError)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1031(SearchStateMachine)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1429(DuplicateStateError)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1434(UnexpectedIndentationError)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1431(DuplicateTransitionError)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1446(StateCorrection)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1432(TransitionPatternNotFound)
+        1    0.000    0.000    0.000    0.000 statemachine.py:1430(UnknownTransitionError)
+
+        7    0.000    0.000    0.000    0.000 states.py:132(__init__)
+      5/1    0.000    0.000    0.007    0.007 states.py:416(build_regexp)
+        1    0.017    0.017    0.122    0.122 states.py:101(<module>)
+        1    0.000    0.000    0.033    0.033 states.py:985(Body)
+        1    0.000    0.000    0.044    0.044 states.py:439(Inliner)
+        1    0.000    0.000    0.000    0.000 states.py:2794(Line)
+        1    0.000    0.000    0.000    0.000 states.py:2318(RFC2822Body)
+        1    0.000    0.000    0.000    0.000 states.py:2583(Text)
+        1    0.000    0.000    0.000    0.000 states.py:201(RSTState)
+        1    0.000    0.000    0.001    0.001 states.py:2557(SubstitutionDef)
+        1    0.000    0.000    0.000    0.000 states.py:2914(QuotedLiteralBlock)
+        1    0.000    0.000    0.000    0.000 states.py:2364(SpecializedBody)
+        1    0.000    0.000    0.000    0.000 states.py:2754(SpecializedText)
+        1    0.000    0.000    0.000    0.000 states.py:2483(RFC2822List)
+        1    0.000    0.000    0.000    0.000 states.py:2777(Definition)
+        1    0.000    0.000    0.000    0.000 states.py:136(RSTStateMachine)
+        1    0.000    0.000    0.000    0.000 states.py:128(Struct)
+        1    0.000    0.000    0.000    0.000 states.py:2536(Explicit)
+        1    0.000    0.000    0.000    0.000 states.py:2520(LineBlock)
+        1    0.000    0.000    0.000    0.000 states.py:2456(FieldList)
+        1    0.000    0.000    0.000    0.000 states.py:175(NestedStateMachine)
+        1    0.000    0.000    0.000    0.000 states.py:2408(BulletList)
+        1    0.000    0.000    0.000    0.000 states.py:2432(EnumeratedList)
+        1    0.000    0.000    0.000    0.000 states.py:124(ParserError)
+        1    0.000    0.000    0.000    0.000 states.py:2468(OptionList)
+        1    0.000    0.000    0.000    0.000 states.py:122(UnknownInterpretedRoleError)
+        1    0.000    0.000    0.000    0.000 states.py:2500(ExtensionOptions)
+        1    0.000    0.000    0.000    0.000 states.py:2423(DefinitionList)
+        1    0.000    0.000    0.000    0.000 states.py:121(MarkupError)
+        1    0.000    0.000    0.000    0.000 states.py:123(InterpretedRoleNotImplementedError)
+        1    0.000    0.000    0.000    0.000 states.py:125(MarkupMismatch)
+    18311    0.024    0.000    0.024    0.000 string.py:349(find)
+       16    0.000    0.000    0.000    0.000 string.py:509(replace)
+        6    0.000    0.000    0.000    0.000 string.py:390(atoi)
+        1    0.000    0.000    0.000    0.000 string.py:279(split)
+        1    0.000    0.000    0.000    0.000 string.py:218(lower)
+
+     4254    0.002    0.000    0.002    0.000 xmlreader.py:278(__init__)
+     2845    0.002    0.000    0.002    0.000 xmlreader.py:290(getValue)
+     2803    0.003    0.000    0.005    0.000 xmlreader.py:306(getNames)
+        6    0.000    0.000    0.000    0.000 xmlreader.py:253(getByteStream)
+        4    0.000    0.000    0.000    0.000 xmlreader.py:203(__init__)
+        4    0.000    0.000    0.000    0.000 xmlreader.py:236(getEncoding)
+        2    0.000    0.000    0.310    0.155 xmlreader.py:115(parse)
+        2    0.000    0.000    0.000    0.000 xmlreader.py:24(__init__)
+        2    0.000    0.000    0.000    0.000 xmlreader.py:111(__init__)
+        2    0.000    0.000    0.000    0.000 xmlreader.py:38(setContentHandler)
+        2    0.000    0.000    0.000    0.000 xmlreader.py:240(setByteStream)
+        2    0.000    0.000    0.000    0.000 xmlreader.py:222(getSystemId)
+        1    0.002    0.002    0.003    0.003 xmlreader.py:2(<module>)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:11(XMLReader)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:276(AttributesImpl)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:341(AttributesNSImpl)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:187(InputSource)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:91(IncrementalParser)
+        1    0.000    0.000    0.000    0.000 xmlreader.py:163(Locator)
+        2    0.000    0.000    0.000    0.000 zipfile.py:128(_EndRecData)
+        2    0.000    0.000    0.001    0.001 zipfile.py:82(is_zipfile)
+
+83742/83321    0.029    0.000    0.030    0.000 {len}
+    55075    0.058    0.000    0.058    0.000 {method 'replace' of 'unicode' objects}
+    52474    0.023    0.000    0.023    0.000 {method 'append' of 'list' objects}
+    50753    0.029    0.000    0.029    0.000 {method 'get' of 'dict' objects}
+    31516    0.011    0.000    0.011    0.000 {method 'isalnum' of 'unicode' objects}
+    29332    0.016    0.000    0.016    0.000 {method 'lower' of 'unicode' objects}
+    19837    0.013    0.000    0.013    0.000 {method 'replace' of 'str' objects}
+    15341    0.005    0.000    0.005    0.000 {method 'isalnum' of 'str' objects}
+     9902    0.007    0.000    0.007    0.000 {method 'lower' of 'str' objects}
+     8813    0.013    0.000    0.013    0.000 {method 'join' of 'str' objects}
+     7762    0.004    0.000    0.004    0.000 {method 'strip' of 'unicode' objects}
+     6700    0.007    0.000    0.008    0.000 {method 'update' of 'dict' objects}
+     6630    0.003    0.000    0.003    0.000 {method 'pop' of 'list' objects}
+     6371    0.007    0.000    0.007    0.000 {method 'startswith' of 'unicode' objects}
+     6315    0.003    0.000    0.003    0.000 {method 'strip' of 'str' objects}
+     5914    0.004    0.000    0.004    0.000 {method 'keys' of 'dict' objects}
+     5592    0.005    0.000    0.005    0.000 {method 'find' of 'unicode' objects}
+3888/3778    0.185    0.000    0.189    0.000 {built-in method call}
+     3855    0.003    0.000    0.003    0.000 {method 'endswith' of 'unicode' objects}
+     3282    0.008    0.000    0.008    0.000 {method 'split' of 'unicode' objects}
+     2787    0.003    0.000    0.003    0.000 {method 'lstrip' of 'unicode' objects}
+     2769    0.001    0.000    0.001    0.000 {callable}
+     2756    0.004    0.000    0.004    0.000 {repr}
+     2743    0.001    0.000    0.001    0.000 {id}
+     2541    0.007    0.000    0.007    0.000 {built-in method createcommand}
+     2515    0.008    0.000    0.008    0.000 {built-in method deletecommand}
+     2346    0.005    0.000    0.005    0.000 {nt._getfullpathname}
+     2012    0.003    0.000    0.003    0.000 {hasattr}
+     1865    0.001    0.000    0.001    0.000 {min}
+     1729    0.001    0.000    0.001    0.000 {ord}
+     1704    0.002    0.000    0.002    0.000 {method 'has_key' of 'dict' objects}
+     1693    0.001    0.000    0.001    0.000 {method 'startswith' of 'str' objects}
+     1243    0.001    0.000    0.001    0.000 {method 'items' of 'dict' objects}
+     1110    0.001    0.000    0.001    0.000 {method 'capitalize' of 'str' objects}
+      765    0.001    0.000    0.001    0.000 {method 'rfind' of 'unicode' objects}
+      761    0.001    0.000    0.001    0.000 {_tkinter._flatten}
+      727    0.001    0.000    0.001    0.000 {method 'find' of 'str' objects}
+      597    0.000    0.000    0.000    0.000 {setattr}
+      528    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
+      512    0.000    0.000    0.000    0.000 {chr}
+      487    0.000    0.000    0.000    0.000 {max}
+      447    0.001    0.000    0.001    0.000 {built-in method match}
+      431    0.021    0.000    0.021    0.000 {nt.stat}
+      412    0.001    0.000    0.001    0.000 {_codecs.charmap_decode}
+      394    0.001    0.000    0.001    0.000 {method 'setdefault' of 'dict' objects}
+      365    0.000    0.000    0.000    0.000 {isinstance}
+  272/169    0.001    0.000    0.109    0.001 {apply}
+      198    0.000    0.000    0.000    0.000 {getattr}
+      197    0.000    0.000    0.000    0.000 {method 'extend' of 'list' objects}
+      194    0.000    0.000    0.000    0.000 {range}
+      186    0.000    0.000    0.000    0.000 {method 'isdigit' of 'unicode' objects}
+      181    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
+      173    0.000    0.000    0.000    0.000 {method 'rstrip' of 'unicode' objects}
+      172    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+      127    0.018    0.000    0.085    0.001 {__import__}
+      124    0.000    0.000    0.000    0.000 {method 'read' of 'cStringIO.StringI' objects}
+      109    0.000    0.000    0.000    0.000 {method 'upper' of 'str' objects}
+       87    0.000    0.000    0.000    0.000 {method 'upper' of 'unicode' objects}
+       81    0.000    0.000    0.000    0.000 {_sre.compile}
+       72    0.000    0.000    0.000    0.000 {built-in method getboolean}
+       70    0.000    0.000    0.000    0.000 {method 'isdigit' of 'str' objects}
+       69    0.000    0.000    0.000    0.000 {method 'isalpha' of 'unicode' objects}
+       66    0.000    0.000    0.000    0.000 {built-in method splitlist}
+       66    0.000    0.000    0.000    0.000 {method 'isupper' of 'unicode' objects}
+       65    0.000    0.000    0.000    0.000 {_codecs.utf_8_decode}
+       60    0.000    0.000    0.000    0.000 {method 'lstrip' of 'str' objects}
+       60    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
+       57    0.000    0.000    0.001    0.000 {method 'encode' of 'unicode' objects}
+       49    0.000    0.000    0.000    0.000 {method 'reverse' of 'list' objects}
+       48    0.000    0.000    0.000    0.000 {method 'islower' of 'unicode' objects}
+       41    0.001    0.000    0.001    0.000 {method 'splitlines' of 'unicode' objects}
+       37    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+       32    0.000    0.000    0.000    0.000 {method 'index' of 'list' objects}
+       31    0.000    0.000    0.000    0.000 {cStringIO.StringIO}
+       29    0.000    0.000    0.000    0.000 {binascii.unhexlify}
+       29    0.000    0.000    0.000    0.000 {_sre.getlower}
+       24    0.000    0.000    0.026    0.001 {map}
+       19    0.002    0.000    0.002    0.000 {method 'close' of 'file' objects}
+       19    0.000    0.000    0.000    0.000 {built-in method globalsetvar}
+       18    0.000    0.000    0.000    0.000 {built-in method globalunsetvar}
+       18    0.000    0.000    0.000    0.000 {method 'insert' of 'list' objects}
+       17    0.000    0.000    0.000    0.000 {_codecs.charmap_encode}
+       16    0.001    0.000    0.001    0.000 {method 'clear' of 'dict' objects}
+       15    0.017    0.001    0.017    0.001 {imp.find_module}
+       15    0.009    0.001    0.359    0.024 {imp.load_module}
+       14    0.000    0.000    0.000    0.000 {locals}
+       13    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+       13    0.000    0.000    0.000    0.000 {_codecs.lookup}
+       10    0.001    0.000    0.001    0.000 {method 'read' of 'file' objects}
+        9    0.000    0.000    0.000    0.000 {built-in method search}
+        8    0.032    0.004    0.309    0.039 {built-in method Parse}
+        7    0.000    0.000    0.000    0.000 {abs}
+        6    0.000    0.000    0.000    0.000 {method 'count' of 'str' objects}
+        5    0.001    0.000    0.001    0.000 {open}
+        5    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
+        5    0.000    0.000    0.000    0.000 {method 'splitlines' of 'str' objects}
+        4    0.000    0.000    0.000    0.000 {method 'seek' of 'file' objects}
+        4    0.000    0.000    0.000    0.000 {thread.allocate_lock}
+        4    0.000    0.000    0.000    0.000 {built-in method getvar}
+        4    0.000    0.000    0.000    0.000 {method 'copy' of 'dict' objects}
+        4    0.000    0.000    0.000    0.000 {built-in method globalgetvar}
+        4    0.000    0.000    0.000    0.000 {built-in method SetParamEntityParsing}
+        4    0.000    0.000    0.000    0.000 {globals}
+        3    0.001    0.000    0.001    0.000 {nt.listdir}
+        3    0.001    0.000    0.001    0.000 {method 'readlines' of 'file' objects}
+        3    0.000    0.000    0.001    0.000 {filter}
+        3    0.000    0.000    0.000    0.000 {eval}
+        3    0.000    0.000    0.000    0.000 {vars}
+        3    0.000    0.000    0.000    0.000 {method 'join' of 'unicode' objects}
+        2    0.000    0.000    0.000    0.000 {dir}
+        2    0.000    0.000    0.000    0.000 {nt.access}
+        2    0.000    0.000    0.000    0.000 {_weakref.proxy}
+        2    0.000    0.000    0.000    0.000 {method 'tell' of 'file' objects}
+        2    0.000    0.000    0.000    0.000 {method 'capitalize' of 'unicode' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method acquire}
+        2    0.000    0.000    0.000    0.000 {thread.get_ident}
+        2    0.000    0.000    0.000    0.000 {sys.getdefaultencoding}
+        2    0.000    0.000    0.000    0.000 {built-in method release}
+
+        1   14.431   14.431   14.504   14.504 {built-in method mainloop}
+        1    0.042    0.042    0.042    0.042 {_tkinter.create}
+        1    0.002    0.002    0.002    0.002 {_ctypes.LoadLibrary}
+        1    0.001    0.001    0.001    0.001 {execfile}
+        1    0.000    0.000    0.000    0.000 {thread.start_new_thread}
+        1    0.000    0.000    0.000    0.000 {method 'readline' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {method 'write' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {time.sleep}
+        1    0.000    0.000    0.000    0.000 {strop.maketrans}
+        1    0.000    0.000    0.000    0.000 {_locale._getdefaultlocale}
+        1    0.000    0.000    0.000    0.000 {time.strftime}
+        1    0.000    0.000    0.000    0.000 {time.localtime}
+        1    0.000    0.000    0.000    0.000 {sys.getwindowsversion}
+        1    0.000    0.000    0.000    0.000 {method 'tolist' of 'array.array' objects}
+        1    0.000    0.000    0.000    0.000 {nt.getcwd}
+        1    0.000    0.000    0.000    0.000 {built-in method __new__ of type object at 0x1E1E6DD0}
+        1    0.000    0.000    0.000    0.000 {built-in method quit}
+        1    0.000    0.000    0.000    0.000 {method 'tostring' of 'array.array' objects}
+        1    0.000    0.000    0.000    0.000 {method 'translate' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {imp.get_magic}
+#@-node:ekr.20080529114024.1:Stats
+#@+node:ekr.20080529114024.3:Stats (.py files)
+@killcolor
+
+         10085874 function calls (10077839 primitive calls) in 31.652 CPU seconds
+
+   Ordered by: file name, call count, internal time, function name
+   List reduced from 2528 to 363 due to restriction <'leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   111237    0.279    0.000    0.963    0.000 leoAtFile.py:1808(readLine)
+   111118    0.545    0.000    3.134    0.000 leoAtFile.py:1511(sentinelKind4)
+    96055    0.261    0.000    0.589    0.000 leoAtFile.py:806(readNormalLine)
+    15063    0.085    0.000    0.347    0.000 leoAtFile.py:1557(skipSentinelStart4)
+     6272    0.010    0.000    0.013    0.000 leoAtFile.py:1499(popSentinelStack)
+     5859    0.134    0.000    0.588    0.000 leoAtFile.py:634(createThinChild4)
+     5859    0.087    0.000    0.743    0.000 leoAtFile.py:915(readStartNode)
+     5859    0.084    0.000    0.165    0.000 leoAtFile.py:1079(readEndNode)
+       43    0.531    0.012    6.564    0.153 leoAtFile.py:744(scanText4)
+       43    0.292    0.007   13.668    0.318 leoAtFile.py:439(read)
+
+negligible
+      845    0.006    0.000    0.013    0.000 leoAtFile.py:1413(readNonl)
+      665    0.004    0.000    0.017    0.000 leoAtFile.py:1452(readRef)
+      664    0.002    0.000    0.005    0.000 leoAtFile.py:1400(readNl)
+      287    0.002    0.000    0.006    0.000 leoAtFile.py:1322(readDirective)
+      221    0.001    0.000    0.004    0.000 leoAtFile.py:999(readStartOthers)
+      221    0.000    0.000    0.001    0.000 leoAtFile.py:1172(readEndOthers)
+      188    0.002    0.000    0.004    0.000 leoAtFile.py:1182(readLastDocLine)
+      188    0.001    0.000    0.003    0.000 leoAtFile.py:860(readStartAt)
+      188    0.001    0.000    0.005    0.000 leoAtFile.py:1029(readEndAt)
+       62    0.000    0.000    0.001    0.000 leoAtFile.py:3454(os)
+       45    0.003    0.000    0.029    0.001 leoAtFile.py:3880(scanAllDirectives)
+       45    0.000    0.000    0.001    0.000 leoAtFile.py:180(initCommonIvars)
+       43    0.038    0.001    0.251    0.006 leoAtFile.py:1632(copyAllTempBodyStringsToTnodes)
+       43    0.013    0.000    0.013    0.000 leoAtFile.py:422(openForRead)
+       43    0.002    0.000    0.023    0.001 leoAtFile.py:4084(scanDefaultDirectory)
+       43    0.001    0.000    0.003    0.000 leoAtFile.py:1677(parseLeoSentinel)
+       43    0.001    0.000    6.572    0.153 leoAtFile.py:580(readOpenFile)
+       43    0.001    0.000    0.024    0.001 leoAtFile.py:242(initReadIvars)
+       43    0.000    0.000    0.006    0.000 leoAtFile.py:1817(scanHeader)
+       43    0.000    0.000    0.018    0.000 leoAtFile.py:393(openFileForReading)
+       43    0.000    0.000    0.001    0.000 leoAtFile.py:1582(completeFirstDirectives)
+       43    0.000    0.000    0.001    0.000 leoAtFile.py:1610(completeLastDirectives)
+       43    0.000    0.000    0.001    0.000 leoAtFile.py:1052(readEndLeo)
+       27    0.000    0.000    0.000    0.000 leoAtFile.py:3440(onl)
+       25    0.000    0.000    0.000    0.000 leoAtFile.py:3661(putIndent)
+       17    0.000    0.000    0.001    0.000 leoAtFile.py:2831(putCodeLine)
+       17    0.000    0.000    0.000    0.000 leoAtFile.py:3347(directiveKind4)
+       17    0.000    0.000    0.000    0.000 leoAtFile.py:3392(findSectionName)
+       14    0.000    0.000    0.000    0.000 leoAtFile.py:1474(readVerbatim)
+       14    0.000    0.000    0.000    0.000 leoAtFile.py:1872(skipIndent)
+       12    0.000    0.000    0.001    0.000 leoAtFile.py:906(readStartMiddle)
+       12    0.000    0.000    0.000    0.000 leoAtFile.py:1070(readEndMiddle)
+       10    0.000    0.000    0.000    0.000 leoAtFile.py:3292(putSentinel)
+        5    0.000    0.000    0.000    0.000 leoAtFile.py:127(__init__)
+        4    0.000    0.000    0.000    0.000 leoAtFile.py:842(readStartAll)
+        4    0.000    0.000    0.000    0.000 leoAtFile.py:3163(nodeSentinelText)
+        4    0.000    0.000    0.000    0.000 leoAtFile.py:1019(readEndAll)
+        2    0.000    0.000    0.002    0.001 leoAtFile.py:2561(putBody)
+        2    0.000    0.000    0.002    0.001 leoAtFile.py:289(initWriteIvars)
+        2    0.000    0.000    0.003    0.001 leoAtFile.py:2533(writeOpenFile)
+        2    0.000    0.000    0.006    0.003 leoAtFile.py:2394(writeFromString)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:2014(openFileForWriting)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:4173(cleanLines)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:1891(closeWriteFile)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3259(putOpenNodeSentinel)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3499(putAtLastLines)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3239(putOpenLeoSentinel)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3227(putCloseNodeSentinel)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3479(putAtFirstLines)
+        2    0.000    0.000    0.000    0.000 leoAtFile.py:3675(putInitialComment)
+        1    0.012    0.012   13.944   13.944 leoAtFile.py:502(readAll)
+        1    0.000    0.000    0.000    0.000 leoAtFile.py:33(atFile)
+        1    0.000    0.000    0.000    0.000 leoAtFile.py:7(<module>)
+        1    0.000    0.000    0.000    0.000 leoAtFile.py:1240(readAfterRef)
+
+All negligible
+
+    22805    0.090    0.000    0.134    0.000 leoFileCommands.py:222(characters)
+     5122    0.021    0.000    0.167    0.000 leoFileCommands.py:303(startElement)
+     5122    0.021    0.000    0.056    0.000 leoFileCommands.py:241(endElement)
+     3344    0.028    0.000    0.045    0.000 leoFileCommands.py:142(attrsToList)
+     3337    0.006    0.000    0.006    0.000 leoFileCommands.py:173(inElement)
+     1753    0.006    0.000    0.006    0.000 leoFileCommands.py:488(__init__)
+     1749    0.017    0.000    0.069    0.000 leoFileCommands.py:436(startVnode)
+     1749    0.012    0.000    0.041    0.000 leoFileCommands.py:459(vnodeAttributes)
+     1749    0.010    0.000    0.012    0.000 leoFileCommands.py:278(endVH)
+     1749    0.003    0.000    0.004    0.000 leoFileCommands.py:271(endVnode)
+     1749    0.001    0.000    0.001    0.000 leoFileCommands.py:370(startVH)
+     1710    0.004    0.000    0.048    0.000 leoFileCommands.py:892(canonicalTnodeIndex)
+     1703    0.028    0.000    0.166    0.000 leoFileCommands.py:1037(createSaxVnode)
+     1703    0.012    0.000    0.019    0.000 leoFileCommands.py:1092(handleVnodeSaxAttributes)
+     1703    0.002    0.000    0.003    0.000 leoFileCommands.py:1073(handleTnodeSaxAttributes)
+   1678/4    0.010    0.000    0.199    0.050 leoFileCommands.py:1003(createSaxChildren)
+     1678    0.004    0.000    0.011    0.000 leoFileCommands.py:1149(_linkParentAndChildren)
+  1674/29    0.004    0.000    0.198    0.007 leoFileCommands.py:1027(createSaxVnodeTree)
+     1588    0.007    0.000    0.026    0.000 leoFileCommands.py:414(tnodeAttributes)
+     1588    0.005    0.000    0.010    0.000 leoFileCommands.py:262(endTnode)
+     1588    0.004    0.000    0.033    0.000 leoFileCommands.py:404(startTnode)
+       35    0.000    0.000    0.002    0.000 leoFileCommands.py:1178(getSaxUa)
+       12    0.000    0.000    0.000    0.000 leoFileCommands.py:909(getDescendentAttributes)
+        8    0.002    0.000    0.002    0.000 leoFileCommands.py:940(initReadIvars)
+        5    0.000    0.000    0.000    0.000 leoFileCommands.py:543(initIvars)
+        5    0.000    0.000    0.000    0.000 leoFileCommands.py:529(__init__)
+        4    0.015    0.004    0.323    0.081 leoFileCommands.py:761(initAllParents)
+        4    0.004    0.001    0.072    0.018 leoFileCommands.py:1274(resolveTnodeLists)
+        4    0.000    0.000   15.661    3.915 leoFileCommands.py:686(getLeoFile)
+        4    0.000    0.000    0.688    0.172 leoFileCommands.py:1255(readSaxFile)
+        4    0.000    0.000    0.490    0.122 leoFileCommands.py:1219(parse_leo_file)
+        4    0.000    0.000    0.033    0.008 leoFileCommands.py:376(startVnodes)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:67(__init__)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:322(getPositionAttributes)
+        4    0.000    0.000   15.661    3.915 leoFileCommands.py:824(open)
+        4    0.000    0.000    0.001    0.000 leoFileCommands.py:1295(setPositionsFromVnodes)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:344(startGlobals)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:292(processingInstruction)
+        4    0.000    0.000    0.199    0.050 leoFileCommands.py:990(createSaxVnodes)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:359(startWinPos)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:365(startLeoHeader)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:288(getRootNode)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:124(endDocument)
+        4    0.000    0.000    0.000    0.000 leoFileCommands.py:136(startDocument)
+        2    0.000    0.000    0.000    0.000 leoFileCommands.py:1309(archivedPositionToPosition)
+        1    0.020    0.020    0.245    0.245 leoFileCommands.py:949(restoreDescendentAttributes)
+        1    0.012    0.012    0.066    0.066 leoFileCommands.py:9(<module>)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:525(baseFileCommands)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:61(saxContentHandler)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:480(saxNodeClass)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:43(BadLeoFile)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:50(invalidPaste)
+        1    0.000    0.000    0.000    0.000 leoFileCommands.py:2303(fileCommands)
+
+   979398    0.728    0.000    0.728    0.000 leoGlobals.py:3520(is_ws)
+   283766    0.585    0.000    1.047    0.000 leoGlobals.py:3531(match)
+   185704    0.386    0.000    0.409    0.000 leoGlobals.py:4074(toUnicode)
+   162977    0.996    0.000    1.779    0.000 leoGlobals.py:3734(skip_ws)
+   111237    0.217    0.000    0.402    0.000 leoGlobals.py:2009(readlineForceUnixNewline)
+    94250    0.251    0.000    0.251    0.000 leoGlobals.py:5569(removeLeadingWhitespace)
+    89406    0.088    0.000    0.124    0.000 leoGlobals.py:3921(isWordChar)
+    26522    0.026    0.000    0.026    0.000 leoGlobals.py:3996(isUnicode)
+
+Negligible
+
+    25877    0.055    0.000    0.088    0.000 leoGlobals.py:3725(skip_to_char)
+    19384    0.053    0.000    0.103    0.000 leoGlobals.py:2992(toUnicodeFileEncoding)
+    15700    0.037    0.000    0.063    0.000 leoGlobals.py:3550(match_word)
+    15333    0.007    0.000    0.007    0.000 leoGlobals.py:2594(choose)
+    14256    0.075    0.000    0.179    0.000 leoGlobals.py:3577(skip_c_id)
+    11417    0.012    0.000    0.045    0.000 leoGlobals.py:2195(clearAllIvars)
+     6721    0.011    0.000    0.018    0.000 leoGlobals.py:4384(__init__)
+     6028    0.012    0.000    0.024    0.000 leoGlobals.py:5159(stripBrackets)
+     5859    0.022    0.000    0.024    0.000 leoGlobals.py:5642(skip_leading_ws_with_indent)
+     4844    0.019    0.000    0.222    0.000 leoGlobals.py:2807(os_path_abspath)
+     3813    0.008    0.000    0.014    0.000 leoGlobals.py:3603(skip_line)
+     2570    0.010    0.000    0.089    0.000 leoGlobals.py:2955(os_path_normpath)
+     1946    0.021    0.000    0.050    0.000 leoGlobals.py:3585(skip_id)
+      506    0.002    0.000    0.014    0.000 leoGlobals.py:2820(os_path_basename)
+      473    0.002    0.000    0.011    0.000 leoGlobals.py:2980(os_path_splitext)
+      448    0.004    0.000    0.015    0.000 leoGlobals.py:2891(os_path_join)
+      275    0.008    0.000    0.020    0.000 leoGlobals.py:462(get_directives_dict)
+      184    0.001    0.000    0.002    0.000 leoGlobals.py:2864(os_path_isabs)
+      181    0.002    0.000    1.364    0.008 leoGlobals.py:2540(doHook)
+      156    0.005    0.000    0.020    0.000 leoGlobals.py:3501(is_special)
+      139    0.000    0.000    0.000    0.000 leoGlobals.py:3494(is_nl)
+      123    0.000    0.000    0.002    0.000 leoGlobals.py:4048(toEncodedString)
+      113    0.000    0.000    0.006    0.000 leoGlobals.py:2846(os_path_exists)
+      106    0.001    0.000    0.001    0.000 leoGlobals.py:838(getOutputNewline)
+      100    0.001    0.000    0.003    0.000 leoGlobals.py:2833(os_path_dirname)
+       94    0.001    0.000    0.002    0.000 leoGlobals.py:1773(getBaseDirectory)
+       83    0.000    0.000    0.000    0.000 leoGlobals.py:4118(convertPythonIndexToRowCol)
+       76    0.001    0.000    0.001    0.000 leoGlobals.py:3628(skip_long)
+       73    0.000    0.000    0.002    0.000 leoGlobals.py:2968(os_path_split)
+       71    0.000    0.000    0.003    0.000 leoGlobals.py:4931(computeWindowTitle)
+       69    0.001    0.000    0.006    0.000 leoGlobals.py:2742(translateArgs)
+       67    0.000    0.000    0.006    0.000 leoGlobals.py:2768(translateString)
+       66    0.003    0.000    0.130    0.002 leoGlobals.py:2616(es)
+       64    0.000    0.000    0.001    0.000 leoGlobals.py:3750(splitLines)
+       62    0.000    0.000    0.000    0.000 leoGlobals.py:5023(write)
+       57    0.000    0.000    0.031    0.001 leoGlobals.py:2609(enl)
+       55    0.000    0.000    0.031    0.001 leoGlobals.py:2603(ecnls)
+       55    0.000    0.000    0.031    0.001 leoGlobals.py:2600(ecnl)
+       53    0.001    0.000    0.002    0.000 leoGlobals.py:326(set_delims_from_string)
+       53    0.000    0.000    0.002    0.000 leoGlobals.py:311(set_delims_from_language)
+       46    0.000    0.000    0.001    0.000 leoGlobals.py:2050(shortFileName)
+       38    0.000    0.000    0.001    0.000 leoGlobals.py:563(scanAtPagewidthDirective)
+       38    0.000    0.000    0.001    0.000 leoGlobals.py:622(scanAtTabwidthDirective)
+       20    0.001    0.000    0.001    0.000 leoGlobals.py:4001(isValidEncoding)
+       19    0.000    0.000    0.000    0.000 leoGlobals.py:4137(convertRowColToPythonIndex)
+       17    0.001    0.000    0.031    0.002 leoGlobals.py:5233(importModule)
+       17    0.000    0.000    0.073    0.004 leoGlobals.py:5255(importExtension)
+       14    0.000    0.000    0.002    0.000 leoGlobals.py:2489(idleTimeHookHandler)
+       13    0.000    0.000    0.337    0.026 leoGlobals.py:5406(importFromPath)
+       12    0.000    0.000    0.000    0.000 leoGlobals.py:4229(CheckVersionToInt)
+       11    0.001    0.000    0.009    0.001 leoGlobals.py:2573(plugin_signon)
+        6    0.000    0.000    0.002    0.000 leoGlobals.py:669(scanDirectives)
+        4    0.001    0.000    0.006    0.001 leoGlobals.py:1981(openLeoOrZipFile)
+        4    0.000    0.000    0.000    0.000 leoGlobals.py:4974(__init__)
+        3    0.002    0.001    0.003    0.001 leoGlobals.py:2692(es_print)
+        3    0.000    0.000    0.000    0.000 leoGlobals.py:291(startupEncoding)
+        3    0.000    0.000    0.000    0.000 leoGlobals.py:2873(os_path_isdir)
+        3    0.000    0.000    0.000    0.000 leoGlobals.py:5048(funcToMethod)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:4204(CheckVersion)
+        2    0.000    0.000    0.006    0.003 leoGlobals.py:5054(getScript)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:5585(removeExtraLws)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:247(computeMachineName)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:1902(munge)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:5529(get_leading_ws)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:5518(computeWidth)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:5004(get)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:3763(joinLines)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:4999(flush)
+        2    0.000    0.000    0.000    0.000 leoGlobals.py:4992(close)
+        1    0.000    0.000   16.606   16.606 leoGlobals.py:1894(openWithFileName)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:208(computeLoadDir)
+        1    0.000    0.000    0.001    0.001 leoGlobals.py:265(computeStandardDirectories)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:140(computeGlobalConfigDir)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:164(computeHomeDir)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:192(computeLeoDir)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:1574(init_trace)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:1556(get_Sherlock_args)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:2467(enableIdleTimeHook)
+        1    0.000    0.000    0.000    0.000 leoGlobals.py:1542(init_sherlock)
+
+
+  1117866    0.908    0.000    0.908    0.000 leoNodes.py:1069(__nonzero__)
+   768290    0.663    0.000    0.663    0.000 leoNodes.py:1692(<lambda>)
+   396157    0.682    0.000    0.682    0.000 leoNodes.py:2721(_parentVnode)
+   223158    0.737    0.000    1.212    0.000 leoNodes.py:1276(hasNext)
+   194215    0.768    0.000    7.557    0.000 leoNodes.py:1707(next)
+   194143    2.396    0.000    6.314    0.000 leoNodes.py:1722(moveToThreadNextUnique)
+   172954    0.739    0.000    1.085    0.000 leoNodes.py:2425(moveToNext)
+   155157    0.136    0.000    0.136    0.000 leoNodes.py:1773(<lambda>)
+    50509    0.137    0.000    0.160    0.000 leoNodes.py:2473(moveToParent)
+    50075    0.240    0.000    0.259    0.000 leoNodes.py:2376(moveToFirstChild)
+    26496    0.019    0.000    0.019    0.000 leoNodes.py:852(areEqual)
+    25341    0.109    0.000    0.421    0.000 leoNodes.py:2502(moveToThreadNext)
+    11920    0.053    0.000    0.279    0.000 leoNodes.py:1662(next)
+    11871    0.061    0.000    0.294    0.000 leoNodes.py:1806(next)
+     9243    0.109    0.000    0.274    0.000 leoNodes.py:892(scanGnx)
+
+    20184    0.068    0.000    0.106    0.000 leoNodes.py:564(headString)
+    17200    0.020    0.000    0.020    0.000 leoNodes.py:588(isDirty)
+    16140    0.105    0.000    0.124    0.000 leoNodes.py:812(_computeParentsOfChildren)
+    13814    0.022    0.000    0.093    0.000 leoNodes.py:1183(headString)
+    12820    0.009    0.000    0.009    0.000 leoNodes.py:1777(<lambda>)
+    12132    0.022    0.000    0.022    0.000 leoNodes.py:1030(isEqual)
+    11763    0.015    0.000    0.015    0.000 leoNodes.py:213(setVisited)
+     7293    0.024    0.000    0.024    0.000 leoNodes.py:260(__init__)
+     7177    0.056    0.000    0.114    0.000 leoNodes.py:58(__init__)
+     7174    0.011    0.000    0.020    0.000 leoNodes.py:1192(isDirty)
+     6338    0.020    0.000    0.032    0.000 leoNodes.py:491(bodyString)
+     6338    0.010    0.000    0.041    0.000 leoNodes.py:1179(bodyString)
+     5985    0.006    0.000    0.006    0.000 leoNodes.py:598(isMarked)
+     5961    0.009    0.000    0.014    0.000 leoNodes.py:1194(isMarked)
+     5871    0.005    0.000    0.005    0.000 leoNodes.py:115(hasBody)
+     5843    0.005    0.000    0.005    0.000 leoNodes.py:135(isVisited)
+     5653    0.006    0.000    0.006    0.000 leoNodes.py:662(clearOrphan)
+     5582    0.020    0.000    0.109    0.000 leoNodes.py:792(_linkAsNthChild)
+     5582    0.008    0.000    0.011    0.000 leoNodes.py:538(numberOfChildren)
+     5001    0.010    0.000    0.014    0.000 leoNodes.py:748(setBodyString)
+     1702    0.003    0.000    0.003    0.000 leoNodes.py:1012(__cmp__)
+     1094    0.003    0.000    0.003    0.000 leoNodes.py:989(__init__)
+     1059    0.005    0.000    0.007    0.000 leoNodes.py:1104(copy)
+      672    0.003    0.000    0.017    0.000 leoNodes.py:342(findAtFileName)
+      397    0.002    0.000    0.003    0.000 leoNodes.py:2024(next)
+      301    0.001    0.000    0.006    0.000 leoNodes.py:2444(moveToNodeAfterTree)
+      257    0.000    0.000    0.000    0.000 leoNodes.py:100(bodyString)
+      202    0.001    0.000    0.006    0.000 leoNodes.py:1240(getNodeAfterTree)
+      175    0.000    0.000    0.008    0.000 leoNodes.py:362(anyAtFileNodeName)
+      156    0.000    0.000    0.005    0.000 leoNodes.py:447(isAtThinFileNode)
+      156    0.000    0.000    0.021    0.000 leoNodes.py:456(isAtIgnoreNode)
+      156    0.000    0.000    0.021    0.000 leoNodes.py:1163(isAtIgnoreNode)
+      156    0.000    0.000    0.006    0.000 leoNodes.py:1168(isAtThinFileNode)
+      156    0.000    0.000    0.005    0.000 leoNodes.py:403(atThinFileNodeName)
+      136    0.001    0.000    0.006    0.000 leoNodes.py:1786(__init__)
+      136    0.000    0.000    0.000    0.000 leoNodes.py:1801(__iter__)
+      133    0.001    0.000    0.006    0.000 leoNodes.py:1827(self_and_subtree_iter)
+      131    0.000    0.000    0.007    0.000 leoNodes.py:1146(anyAtFileNodeName)
+      116    0.000    0.000    0.001    0.000 leoNodes.py:2007(__init__)
+      116    0.000    0.000    0.000    0.000 leoNodes.py:2019(__iter__)
+      115    0.000    0.000    0.002    0.000 leoNodes.py:435(isAtFileNode)
+      115    0.000    0.000    0.002    0.000 leoNodes.py:1162(isAtFileNode)
+      115    0.000    0.000    0.002    0.000 leoNodes.py:387(atFileNodeName)
+      113    0.001    0.000    0.002    0.000 leoNodes.py:2045(self_and_parents_iter)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:432(isAtAutoNode)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:441(isAtRawFileNode)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:1161(isAtAutoNode)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:1166(isAtRawFileNode)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:380(atAutoNodeName)
+      113    0.000    0.000    0.002    0.000 leoNodes.py:395(atRawFileNodeName)
+       95    0.001    0.000    0.001    0.000 leoNodes.py:1130(key)
+       72    0.001    0.000    0.001    0.000 leoNodes.py:1692(__init__)
+       72    0.000    0.000    0.000    0.000 leoNodes.py:1702(__iter__)
+       58    0.000    0.000    0.000    0.000 leoNodes.py:1217(hasChildren)
+       57    0.000    0.000    0.000    0.000 leoNodes.py:1287(hasParent)
+       52    0.000    0.000    0.000    0.000 leoNodes.py:1272(hasBack)
+       47    0.000    0.000    0.000    0.000 leoNodes.py:667(clearVisited)
+       45    0.001    0.000    0.005    0.000 leoNodes.py:1455(clearVisitedInTree)
+       45    0.000    0.000    0.002    0.000 leoNodes.py:421(isAnyAtFileNode)
+       45    0.000    0.000    0.000    0.000 leoNodes.py:1401(clearVisited)
+       45    0.000    0.000    0.000    0.000 leoNodes.py:1193(isExpanded)
+       45    0.000    0.000    0.000    0.000 leoNodes.py:593(isExpanded)
+       44    0.000    0.000    0.000    0.000 leoNodes.py:2357(moveToBack)
+       43    0.000    0.000    0.000    0.000 leoNodes.py:1771(unique_tnodes_iter)
+       43    0.000    0.000    0.000    0.000 leoNodes.py:1471(clearDirty)
+       43    0.000    0.000    0.000    0.000 leoNodes.py:645(clearDirty)
+       43    0.000    0.000    0.002    0.000 leoNodes.py:1159(isAnyAtFileNode)
+       25    0.000    0.000    0.000    0.000 leoNodes.py:1943(<lambda>)
+       24    0.000    0.000    0.000    0.000 leoNodes.py:767(computeIcon)
+       24    0.000    0.000    0.000    0.000 leoNodes.py:1239(getNext)
+       24    0.000    0.000    0.000    0.000 leoNodes.py:583(isCloned)
+       11    0.000    0.000    0.000    0.000 leoNodes.py:752(setHeadString)
+       10    0.000    0.000    0.000    0.000 leoNodes.py:678(expand)
+        9    0.000    0.000    0.000    0.000 leoNodes.py:2076(next)
+        8    0.000    0.000    0.000    0.000 leoNodes.py:1861(next)
+        6    0.000    0.000    0.000    0.000 leoNodes.py:1873(moveToThreadNextUnique)
+        6    0.000    0.000    0.000    0.000 leoNodes.py:2056(__init__)
+        6    0.000    0.000    0.000    0.000 leoNodes.py:2092(siblings_iter)
+        6    0.000    0.000    0.000    0.000 leoNodes.py:2071(__iter__)
+        6    0.000    0.000    0.000    0.000 leoNodes.py:1939(<lambda>)
+        5    0.000    0.000    0.000    0.000 leoNodes.py:1775(unique_vnodes_iter)
+        5    0.000    0.000    0.000    0.000 leoNodes.py:1404(expand)
+        4    0.000    0.000    0.000    0.000 leoNodes.py:1440(initHeadString)
+        4    0.000    0.000    0.000    0.000 leoNodes.py:1649(__init__)
+        4    0.000    0.000    0.000    0.000 leoNodes.py:736(setVisited)
+        4    0.000    0.000    0.000    0.000 leoNodes.py:125(isDirty)
+        4    0.000    0.000    0.000    0.000 leoNodes.py:1657(__iter__)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:2525(moveToVisBack)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:2689(_linkAsRoot)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:1247(getVisBack)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:1823(subtree_iter)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:2041(parents_iter)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:1234(getBack)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:1291(hasThreadBack)
+        3    0.000    0.000    0.000    0.000 leoNodes.py:717(initMarkedBit)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1461(clearAllVisitedInTree)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:2564(moveToVisNext)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1354(isVisible)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1838(__init__)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1248(getVisNext)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1934(subtree_with_unique_tnodes_iter)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1403(contract)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:672(contract)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1400(clearOrphan)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1413(setVisited)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:193(clearVisited)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:198(clearWriteBit)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:218(setWriteBit)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:2531(checkLimit)
+        2    0.000    0.000    0.000    0.000 leoNodes.py:1855(__iter__)
+        1    0.000    0.000    0.001    0.001 leoNodes.py:9(<module>)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:46(tnode)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:985(basePosition)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:234(vnode)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1477(findAllPotentiallyDirtyNodes)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1520(setAllAncestorAtFileNodesDirty)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2753(_unlink)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2665(_linkAsNthChild)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1547(setDirty)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2208(insertAsNthChild)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2284(moveToRoot)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1295(hasThreadNext)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:919(setTimestamp)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2196(insertAsLastChild)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1242(getParent)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:840(__init__)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2487(moveToThreadBack)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2607(_adjustPositionBeforeUnlink)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:834(nodeIndices)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1341(isCloned)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1780(subtree_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1686(unique_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1224(numberOfChildren)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1832(subtree_unique_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:874(getNewIndex)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1643(iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:1959(children_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2001(parents_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2050(siblings_iter_class)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:203(setDirty)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:43(baseTnode)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:231(baseVnode)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:171(setFileIndex)
+        1    0.000    0.000    0.000    0.000 leoNodes.py:2798(position)
+#@-node:ekr.20080529114024.3:Stats (.py files)
+#@-node:ekr.20080529054218.2:Benchmarked the read code
 #@-node:ekr.20080408060320.4:4.5 b1
 #@-all
 #@nonl
