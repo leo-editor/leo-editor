@@ -1723,6 +1723,158 @@ def printDiffTime(message, start):
     print "%s %6.3f" % (message,delta)
     return time.clock()
 #@-node:ekr.20031218072017.3137:Timing
+#@+node:ekr.20080531075119.1:class Tracer & g.startTracer
+class Tracer:
+
+    '''A "debugger" that computes a call graph.
+
+    To trace a function and its callers, put the following at the function's start:
+
+    g.startTracer()
+    '''
+
+    #@	@+others
+    #@+node:ekr.20080531075119.2: __init__
+    def __init__(self):
+
+        self.callDict = {}
+            # Keys are function names.
+            # Values are the number of times the function was called by the caller.
+        self.calledDict = {}
+            # Keys are function names.
+            # Values are the total number of times the function was called.
+
+        self.count = 0
+        self.inited = False
+        self.limit = 2 # 0: no limit, otherwise, limit trace to n entries deep.
+        self.stack = []
+        self.trace = False
+        self.verbose = False # True: print returns as well as calls.
+    #@-node:ekr.20080531075119.2: __init__
+    #@+node:ekr.20080531075119.3:computeName
+    def computeName (self,frame):
+
+        import inspect
+
+        if not frame: return ''
+
+        code = frame.f_code ; result = []
+
+        module = inspect.getmodule(code)
+        if module:
+            module_name = module.__name__
+            if module_name == 'leo.core.leoGlobals':
+                result.append('g')
+            else:
+                tag = 'leo.core.'
+                if module_name.startswith(tag):
+                    module_name = module_name[len(tag):]
+                result.append(module_name)
+
+        try:
+            # This can fail during startup.
+            self_obj = frame.f_locals.get('self')
+            if self.obj: result.append(self_obj.__class__.__name__)
+        except Exception:
+            pass
+
+        result.append(code.co_name)
+
+        return '.'.join(result)
+    #@-node:ekr.20080531075119.3:computeName
+    #@+node:ekr.20080531075119.4:report
+    def report (self):
+
+        if 0:
+            print ; print 'stack'
+            for z in self.stack:
+                print z
+
+        print ; print 'callDict...'
+
+        # print g.dictToString(self.callDict)
+        keys = self.callDict.keys()
+        keys.sort()
+        for key in keys:
+            # Print the calling function.
+            print '%d' % (self.calledDict.get(key,0)),key
+            # Print the called functions.
+            d = self.callDict.get(key)
+            keys2 = d.keys()
+            keys2.sort()
+            for key2 in keys2:
+                print '%8d' % (d.get(key2)),key2
+    #@-node:ekr.20080531075119.4:report
+    #@+node:ekr.20080531075119.5:stop
+    def stop (self):
+
+        sys.settrace(None)
+        self.report()
+    #@-node:ekr.20080531075119.5:stop
+    #@+node:ekr.20080531075119.6:tracer
+    def tracer (self, frame, event, arg):
+
+        '''A function to be passed to sys.settrace.'''
+
+        n = len(self.stack)
+        if event == 'return': n = max(0,n-1)
+        pad = '.' * n
+
+        if event == 'call':
+            if not self.inited:
+                # Add an extra stack element for the routine containing the call to startTracer.
+                self.inited = True
+                name = self.computeName(frame.f_back)
+                self.updateStats(name)
+                self.stack.append(name)
+            name = self.computeName(frame)
+            if self.trace and (self.limit == 0 or len(self.stack) < self.limit):
+                g.trace('%scall' % (pad),name)
+            self.updateStats(name)
+            self.stack.append(name)
+            return self.tracer
+        elif event == 'return':
+            if self.stack:
+                name = self.stack.pop()
+                if self.trace and self.verbose and (self.limit == 0 or len(self.stack) < self.limit):
+                    g.trace('%sret ' % (pad),name)
+            else:
+                g.trace('return underflow')
+                self.stop()
+                return None
+            if self.stack:
+                return self.tracer
+            else:
+                self.stop()
+                return None
+        else:
+            return self.tracer
+    #@-node:ekr.20080531075119.6:tracer
+    #@+node:ekr.20080531075119.7:updateStats
+    def updateStats (self,name):
+
+        if not self.stack:
+            return
+
+        caller = self.stack[-1]
+        d = self.callDict.get(caller,{})
+            # d is a dict reprenting the called functions.
+            # Keys are called functions, values are counts.
+        d[name] = 1 + d.get(name,0)
+        self.callDict[caller] = d
+
+        # Update the total counts.
+        self.calledDict[name] = 1 + self.calledDict.get(name,0)
+    #@-node:ekr.20080531075119.7:updateStats
+    #@-others
+
+def startTracer():
+
+    import sys
+    t = g.Tracer()
+    sys.settrace(t.tracer)
+    return t
+#@-node:ekr.20080531075119.1:class Tracer & g.startTracer
 #@-node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
 #@+node:ekr.20031218072017.3116:Files & Directories...
 #@+node:ekr.20031218072017.3117:g.create_temp_file
