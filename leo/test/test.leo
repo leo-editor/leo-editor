@@ -378,7 +378,7 @@
 <v t="ekr.20080531113507.4"><vh>printItem</vh></v>
 </v>
 <v t="ekr.20080531120008.1"><vh>output from mxTextTools test</vh></v>
-<v t="ekr.20080531131542.1"><vh>mxTextTools test (for derived files)</vh>
+<v t="ekr.20080531131542.1" a="E"><vh>mxTextTools test (for derived files)</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
@@ -5996,19 +5996,6 @@ print 'ok:',ok
 ws_charset   = CharSet(' \t')
 name_charset = CharSet(alpha)
 
-# linetable = (
-    # # Start of another line.
-    # # Skip ws.
-    # ('leading-ws',AllInCharSet,ws_charset,+1),
-    # # Sentinel
-    # ('sentinel',Word,'#@',+2),
-    # ('sentinel-val',AllNotIn,'\n',+2,+2),
-    # # Normal line
-    # ('line',AllNotIn,'\n',+1),
-    # ('nl',Is,'\n',+1),
-    # ('eof',EOF,Here,-5),
-# )
-
 gnxTable = (
     (None,Is,':',MatchFail),
     (None,AllNotIn,':',MatchFail),
@@ -6016,6 +6003,7 @@ gnxTable = (
 )
 
 sentinelNameTable = (
+    (None,Is,'@',+1,+3),
     (None,Is,'+',+1,+2),
     (None,Is,'-',+1),
     (None,AllInCharSet,name_charset,MatchFail,MatchOk),
@@ -7315,21 +7303,66 @@ f.close()</t>
    kind '+node'
    gnx ':ekr.20031218072017.2605:'
    extra '@thin runLeo.py '
- line '#@@first\n'
+ sent '#@@first\n'
+   kind '@first'
  line '\n'
  line '"""Entry point for Leo in Python."""\n'
  line '\n'
- line '#@@language python\n'
- line '#@@tabwidth -4\n'
+ sent '#@@language python\n'
+   kind '@language'
+   extra ' python'
+ sent '#@@tabwidth -4\n'
+   kind '@tabwidth'
+   extra ' -4'
  line '\n'
  line '#@&lt;&lt; Import pychecker &gt;&gt;\n'
  sent '#@+node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;\n'
    kind '+node'
    gnx ':ekr.20031218072017.2606:'
    extra '&lt;&lt; Import pychecker &gt;&gt;'
-   
-[snip]
-
+ sent '#@@color\n'
+   kind '@color'
+ line '\n'
+ line "# __pychecker__ = '--no-argsused'\n"
+ line '\n'
+ line '# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.\n'
+ line '\n'
+ line '# New in Leo 4.4.5: use pylint instead of pychecker.\n'
+ line '\n'
+ line '# if 0: # Set to 1 for lint-like testing.\n'
+ line '      # # Use t23.bat: only on Python 2.3.\n'
+ line '\n'
+ line '    # try:\n'
+ line '        # import pychecker.checker\n'
+ line '        # # This works.  We may want to set options here...\n'
+ line '        # # from pychecker import Config \n'
+ line '        # # print pychecker\n'
+ line '        # print ; print "Warning (in leo.py): pychecker.checker running..." ; print\n'
+ line '    # except Exception:\n'
+ line "        # print ; print 'Can not import pychecker' ; print\n"
+ sent '#@-node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;\n'
+   kind '-node'
+   gnx ':ekr.20031218072017.2606:'
+   extra '&lt;&lt; Import pychecker &gt;&gt;'
+ sent '#@nl\n'
+   kind 'nl'
+ line '\n'
+ line "# __pychecker__ = '--no-import --no-reimportself --no-reimport'\n"
+ line '    # Suppress import errors: this module must do strange things with imports.\n'
+ line '\n'
+ 
+ [snip]
+ 
+ sent '#@-node:ekr.20040411081633:startPsyco\n'
+   kind '-node'
+   gnx ':ekr.20040411081633:'
+   extra 'startPsyco'
+ sent '#@-node:ekr.20070930060755:utils\n'
+   kind '-node'
+   gnx ':ekr.20070930060755:'
+   extra 'utils'
+ sent '#@-others\n'
+   kind '-others'
  line '\n'
  line 'def main():\n'
  line '    if len(sys.argv) &gt; 1:\n'
