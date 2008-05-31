@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -372,6 +372,12 @@
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
+<v t="ekr.20080531113507.1" a="EO"><vh>mxTextTools test</vh>
+<v t="ekr.20080531113507.2"><vh>&lt;&lt; define TextTools stuff &gt;&gt;</vh></v>
+<v t="ekr.20080531113507.3"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20080531113507.4"><vh>printItem</vh></v>
+</v>
+<v t="ekr.20080531120008.1"><vh>output from mxTextTools test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -4420,6 +4426,1549 @@ def spam():
 t = g.startTracer()
 spam()
 t.stop()
+</t>
+<t tx="ekr.20080531113507.1">import mx.TextTools as tt
+
+&lt;&lt; define TextTools stuff &gt;&gt;
+&lt;&lt; define s &gt;&gt;
+
+@others
+
+print '-' * 40
+ok,taglist,nextindex = tt.tag(s,htmltable)
+# print g.listToString(taglist)
+for z in taglist:
+    printItem(z,level=0)
+print 'ok:',ok
+</t>
+<t tx="ekr.20080531113507.2">from mx.TextTools import * # Required for tags.
+# Error tag object
+error = '*syntax error'
+# Character sets
+tagname_charset = CharSet(alpha+'\-'+number)
+tagattrname_charset = CharSet(alpha+'\-'+number)
+tagvalue_charset = CharSet('^"\'&gt; ')
+white_charset = CharSet(' \r\n\t')
+tagname_charset = CharSet(alpha+'\-'+number)
+tagattrname_charset = CharSet(alpha+'\-'+number)
+tagvalue_charset = CharSet('^"\'&gt; ')
+white_charset = CharSet(' \r\n\t')
+# Tag attributes
+tagattr = (
+    # name
+    ('name',AllInCharSet,tagattrname_charset),
+    # with value ?
+    (None,Is,'=',MatchOk),
+    # skip junk
+    (None,AllInCharSet,white_charset,+1),
+    # unquoted value
+    ('value',AllInCharSet,tagvalue_charset,+1,MatchOk),
+    # double quoted value
+    (None,Is,'"',+5),
+    ('value',AllNotIn,'"',+1,+2),
+    ('value',Skip,0),
+    (None,Is,'"'),
+    (None,Jump,To,MatchOk),
+    # single quoted value
+    (None,Is,'\''),
+    ('value',AllNotIn,'\'',+1,+2),
+    ('value',Skip,0),
+    (None,Is,'\''),
+)
+# Tag values
+valuetable = (
+    # ignore whitespace + '='
+    (None,AllInCharSet,CharSet(' \r\n\t='),+1),
+    # unquoted value
+    ('value',AllInCharSet,tagvalue_charset,+1,MatchOk),
+    # double quoted value
+    (None,Is,'"',+5),
+    ('value',AllNotIn,'"',+1,+2),
+    ('value',Skip,0),
+    (None,Is,'"'),
+    (None,Jump,To,MatchOk),
+    # single quoted value
+    (None,Is,'\''),
+    ('value',AllNotIn,'\'',+1,+2),
+    ('value',Skip,0),
+    (None,Is,'\''),
+)
+# Parse all attributes of a tag
+allattrs = (
+    # look for attributes
+    (None,AllInCharSet,white_charset,+4),
+    (None,Is,'&gt;',+1,MatchOk),
+    ('tagattr',Table,tagattr),
+    (None,Jump,To,-3),
+    (None,Is,'&gt;',+1,MatchOk),
+    # handle incorrect attributes
+    (error,AllNotIn,'&gt; \r\n\t'),
+    (None,Jump,To,-6),
+)
+# NOTE: The htmltag tag table assumes that the input text is given
+# in upper case letters (see &lt;XMP&gt; handling).
+# Parse an HTML tag
+htmltag = (
+    (None,Is,'&lt;'),
+    # is this a closing tag ?
+    ('closetag',Is,'/',+1),
+    # a coment ?
+    ('comment',Is,'!',+8),
+    (None,Word,'--',+4),
+    ('text',WordStart,'--&gt;',+1),
+    (None,Skip,3),
+    (None,Jump,To,MatchOk),
+    # a SGML-Tag ?
+    ('other',AllNotIn,'&gt;',+1),
+    (None,Is,'&gt;'),
+    (None,Jump,To,MatchOk),
+    # XMP-Tag ?
+    ('tagname',Word,'XMP',+5),
+    (None,Is,'&gt;'),
+    ('text',WordStart,'&lt;/XMP&gt;'),
+    (None,Skip,len('&lt;/XMP&gt;')),
+    (None,Jump,To,MatchOk),
+    # get the tag name
+    ('tagname',AllInCharSet,tagname_charset),
+    # look for attributes
+    (None,AllInCharSet,white_charset,+4),
+    (None,Is,'&gt;',+1,MatchOk),
+    ('tagattr',Table,tagattr),
+    (None,Jump,To,-3),
+    (None,Is,'&gt;',+1,MatchOk),
+    # handle incorrect attributes
+    (error,AllNotIn,'&gt; \n\r\t'),
+    (None,Jump,To,-6),
+)
+# Parse HTML tags &amp; text
+htmltable = (# HTML-Tag
+    ('htmltag',Table,htmltag,+1,+4),
+    # not HTML, but still using this syntax: error or
+    # inside XMP-tag !
+    (error,Is,'&lt;',+3),
+    (error,AllNotIn,'&gt;',+1),
+    (error,Is,'&gt;'),
+    # normal text
+    ('text',AllNotIn,'&lt;',+1),
+    # end of file
+    ('eof',EOF,Here,-5),
+)</t>
+<t tx="ekr.20080531113507.3">s = '''
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!--@+leo-ver=4-thin--&gt;
+&lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -4--&gt;
+
+&lt;!-- Last Modified: March 1, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;!--@&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
+
+&lt;meta name="description" content="This page describes Leo, a programmer's outliner." /&gt;
+
+&lt;meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
+
+&lt;!-- for GeoUrl --&gt;
+&lt;meta name="ICBM" content="43.0713768, -89.4188004" /&gt;
+&lt;meta name="DC.title" content="Leo's Home Page" /&gt;
+&lt;!--@-node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;!--@&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+
+&lt;table border="0" bgcolor="#FFFBDC"&gt;
+    &lt;tr&gt;
+        &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
+            &lt;b&gt;&lt;font size="4"&gt;Leo's Home&lt;/font&gt;&lt;/b&gt;
+        &lt;/td&gt;
+
+        &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
+            &lt;!--@            &lt;&lt; upper table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;table border="0" width="100%"&gt;
+                &lt;tr&gt;
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.python.org/"&gt;
+                            &lt;img border="0" src="PythonPowered.gif" width="110" height="44" /&gt;&lt;/a&gt;
+                    &lt;/td&gt;
+
+                    &lt;td width="50%" align="center"&gt;
+                        &lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;
+
+                    &lt;/td&gt;
+
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.mind-mapping.org/"&gt;mind-mapping.org&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
+            &lt;!--@            &lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;table border="0" width="100%"&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Documentation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                        &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;Screen Shots&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leo_TOC.html#anchor964914"&gt;Users Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;Online tutorial&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="testimonials.html"&gt;Quotes&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;!--@        &lt;&lt; download ref &gt;&gt;--&gt;
+
+                    &lt;!--@+node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+                        Download Leo[4.4.8 final]&lt;/a&gt;
+                    &lt;!--@nonl--&gt;
+                    &lt;!--@-node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;!--@nl--&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://sourceforge.net/project/?group_id=3458"&gt; Leo at SourceForge&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://launchpad.net/leo-editor"&gt;Leo at launchpad&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;Leo's cvs repository&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://leo.zwiki.org"&gt;Wiki&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leoLinks.html"&gt;More links&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Edward K. Ream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="index.html"&gt;Home&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="mailto:edreamleo@charter.net"&gt;Contact&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@-node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+
+        &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
+
+            &lt;!--@            &lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;h2&gt; Leo is...&lt;/h2&gt;
+
+            &lt;ul&gt;
+            &lt;!--@&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;li&gt;
+
+                A &lt;i&gt;general data management environment&lt;/i&gt;.&lt;br/&gt;
+                Leo shows &lt;b&gt;user-created&lt;/b&gt; relationships among any kind of data:&lt;br /&gt;
+                computer programs, web sites, etc.&lt;br /&gt;
+                Leo shows multiple views of data within a single outline.
+            &lt;/li&gt;
+
+            &lt;li&gt;
+                An &lt;i&gt;outlining editor for programmers&lt;/i&gt;.&lt;br /&gt;
+                Leo supports &lt;i&gt;optional&lt;/i&gt; &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt;
+                and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.
+            &lt;/li&gt;
+
+            &lt;li&gt;A flexible &lt;i&gt;browser&lt;/i&gt; for projects, programs, classes or any other data.&lt;/li&gt;
+            &lt;li&gt;A &lt;i&gt;project manager&lt;/i&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;100% pure&lt;/i&gt; &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+
+            &lt;li&gt;
+                &lt;i&gt;Fully scriptable using&lt;/i&gt;
+                &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;
+                Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt;  format.
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+                distributed under the &lt;a href="http://www.python.org/psf/license/"&gt;Python License&lt;/a&gt;.
+            &lt;/li&gt;
+
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+            &lt;/ul&gt;
+
+            &lt;p&gt;
+            Please use &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+            to ask questions and make suggestions.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+            Leo's author is &lt;a HREF="index.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;/p&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;!--@-node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@-leo--&gt;
+'''</t>
+<t tx="ekr.20080531113507.4">def printItem(aList,level):
+
+    obj,lt_index,rt_index,subtag = aList
+    print '  '*level,obj,s[lt_index:rt_index]
+    if subtag:
+        for z in subtag:
+            printItem(z,level+1)
+</t>
+<t tx="ekr.20080531120008.1">----------------------------------------
+ text
+
+ *syntax error &lt;
+ *syntax error ?xml version="1.0" encoding="utf-8" ?
+ *syntax error &gt;
+ text
+
+ htmltag &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+   comment !
+   other DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+ text
+
+ htmltag &lt;!--@+leo-ver=4-thin--&gt;
+   comment !
+   text @+leo-ver=4-thin
+ text
+
+ htmltag &lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
+   comment !
+   text @+node:ekr.20080301071818.1:@thin html/front.html
+ text
+
+ htmltag &lt;!--@@first--&gt;
+   comment !
+   text @@first
+ text
+
+ htmltag &lt;!--@@first--&gt;
+   comment !
+   text @@first
+ text
+
+
+ htmltag &lt;!--@@language html--&gt;
+   comment !
+   text @@language html
+ text
+
+ htmltag &lt;!--@@tabwidth -4--&gt;
+   comment !
+   text @@tabwidth -4
+ text
+
+
+ htmltag &lt;!-- Last Modified: March 1, 2008 --&gt;
+   comment !
+   text  Last Modified: March 1, 2008
+ text
+
+ htmltag &lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+   comment !
+   text  Author: Edward K. Ream, edreamleo@gmail.com
+ text
+
+
+ htmltag &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+   tagname html
+   tagattr xmlns="http://www.w3.org/1999/xhtml"
+     name xmlns
+     value http://www.w3.org/1999/xhtml
+   tagattr xml
+     name xml
+   *syntax error :lang="en"
+   tagattr lang="en"
+     name lang
+     value en
+ text
+
+ htmltag &lt;head&gt;
+   tagname head
+ text
+
+
+ htmltag &lt;title&gt;
+   tagname title
+ text Leo's Home Page
+ htmltag &lt;/title&gt;
+   closetag /
+   tagname title
+ text
+
+
+ *syntax error &lt;
+ *syntax error meta name="description" content="This page describes Leo, a programmer's outliner." /
+ *syntax error &gt;
+ text
+
+
+ *syntax error &lt;
+ *syntax error meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /
+ *syntax error &gt;
+ text
+
+
+ htmltag &lt;!-- for GeoUrl --&gt;
+   comment !
+   text  for GeoUrl
+ text
+
+ *syntax error &lt;
+ *syntax error meta name="ICBM" content="43.0713768, -89.4188004" /
+ *syntax error &gt;
+ text
+
+ *syntax error &lt;
+ *syntax error meta name="DC.title" content="Leo's Home Page" /
+ *syntax error &gt;
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/head&gt;
+   closetag /
+   tagname head
+ text
+
+
+ htmltag &lt;body bgcolor="#fffbdc"&gt;
+   tagname body
+   tagattr bgcolor="#fffbdc"
+     name bgcolor
+     value #fffbdc
+ text
+
+
+ htmltag &lt;table border="0" bgcolor="#FFFBDC"&gt;
+   tagname table
+   tagattr border="0"
+     name border
+     value 0
+   tagattr bgcolor="#FFFBDC"
+     name bgcolor
+     value #FFFBDC
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ text
+
+ htmltag &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
+   tagname td
+   tagattr width="22%"
+     name width
+     value 22%
+   tagattr height="21"
+     name height
+     value 21
+   tagattr align="center"
+     name align
+     value center
+   tagattr bgcolor="#FFFBDC"
+     name bgcolor
+     value #FFFBDC
+   tagattr valign="middle"
+     name valign
+     value middle
+ text
+
+ htmltag &lt;b&gt;
+   tagname b
+ htmltag &lt;font size="4"&gt;
+   tagname font
+   tagattr size="4"
+     name size
+     value 4
+ text Leo's Home
+ htmltag &lt;/font&gt;
+   closetag /
+   tagname font
+ htmltag &lt;/b&gt;
+   closetag /
+   tagname b
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+
+ htmltag &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
+   tagname td
+   tagattr bgcolor="#F0E68C"
+     name bgcolor
+     value #F0E68C
+   tagattr width="78%"
+     name width
+     value 78%
+   tagattr height="21"
+     name height
+     value 21
+   tagattr align="center"
+     name align
+     value center
+ text
+
+
+ htmltag &lt;table border="0" width="100%"&gt;
+   tagname table
+   tagattr border="0"
+     name border
+     value 0
+   tagattr width="100%"
+     name width
+     value 100%
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ text
+
+ htmltag &lt;td width="25%" align="center"&gt;
+   tagname td
+   tagattr width="25%"
+     name width
+     value 25%
+   tagattr align="center"
+     name align
+     value center
+ text
+
+ htmltag &lt;a href="http://www.python.org/"&gt;
+   tagname a
+   tagattr href="http://www.python.org/"
+     name href
+     value http://www.python.org/
+ text
+
+ *syntax error &lt;
+ *syntax error img border="0" src="PythonPowered.gif" width="110" height="44" /
+ *syntax error &gt;
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+
+ htmltag &lt;td width="50%" align="center"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+   tagattr align="center"
+     name align
+     value center
+ text
+
+ htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
+   tagname a
+   tagattr href="http://groups.google.com/group/leo-editor"
+     name href
+     value http://groups.google.com/group/leo-editor
+ text Leo at Google Groups
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+
+ htmltag &lt;td width="25%" align="center"&gt;
+   tagname td
+   tagattr width="25%"
+     name width
+     value 25%
+   tagattr align="center"
+     name align
+     value center
+ text
+
+ htmltag &lt;a href="http://www.mind-mapping.org/"&gt;
+   tagname a
+   tagattr href="http://www.mind-mapping.org/"
+     name href
+     value http://www.mind-mapping.org/
+ text mind-mapping.org
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;/table&gt;
+   closetag /
+   tagname table
+ text
+
+ htmltag &lt;!--@nonl--&gt;
+   comment !
+   text @nonl
+ text
+
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ text
+
+ htmltag &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
+   tagname td
+   tagattr bgcolor="#F0E68C"
+     name bgcolor
+     value #F0E68C
+   tagattr width="22%"
+     name width
+     value 22%
+   tagattr height="143"
+     name height
+     value 143
+   tagattr valign="top"
+     name valign
+     value top
+ text
+
+ htmltag &lt;table border="0" width="100%"&gt;
+   tagname table
+   tagattr border="0"
+     name border
+     value 0
+   tagattr width="100%"
+     name width
+     value 100%
+ text
+
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+   tagattr bgcolor="#DAA520"
+     name bgcolor
+     value #DAA520
+ htmltag &lt;b&gt;
+   tagname b
+ text Documentation
+ htmltag &lt;/b&gt;
+   closetag /
+   tagname b
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ text
+
+ htmltag &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;
+   tagname a
+   tagattr href="http://sourceforge.net/project/screenshots.php?group_id=3458"
+     name href
+     value http://sourceforge.net/project/screenshots.php?group_id=3458
+ text Screen Shots
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="intro.html"&gt;
+   tagname a
+   tagattr href="intro.html"
+     name href
+     value intro.html
+ text Beginners Guide
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="leo_TOC.html#anchor964914"&gt;
+   tagname a
+   tagattr href="leo_TOC.html#anchor964914"
+     name href
+     value leo_TOC.html#anchor964914
+ text Users Guide
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="FAQ.html"&gt;
+   tagname a
+   tagattr href="FAQ.html"
+     name href
+     value FAQ.html
+ text FAQ
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ text
+
+ htmltag &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;
+   tagname a
+   tagattr href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"
+     name href
+     value http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm
+ text Online tutorial
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="testimonials.html"&gt;
+   tagname a
+   tagattr href="testimonials.html"
+     name href
+     value testimonials.html
+ text Quotes
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+   tagattr bgcolor="#DAA520"
+     name bgcolor
+     value #DAA520
+ htmltag &lt;b&gt;
+   tagname b
+ text Links
+ htmltag &lt;/b&gt;
+   closetag /
+   tagname b
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ text
+
+
+ htmltag &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+   tagname a
+   tagattr href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"
+     name href
+     value http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106
+ text
+                        Download Leo[4.4.8 final]
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;!--@nonl--&gt;
+   comment !
+   text @nonl
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="http://sourceforge.net/project/?group_id=3458"&gt;
+   tagname a
+   tagattr href="http://sourceforge.net/project/?group_id=3458"
+     name href
+     value http://sourceforge.net/project/?group_id=3458
+ text  Leo at SourceForge
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
+   tagname a
+   tagattr href="http://groups.google.com/group/leo-editor"
+     name href
+     value http://groups.google.com/group/leo-editor
+ text Leo at Google Groups
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="http://launchpad.net/leo-editor"&gt;
+   tagname a
+   tagattr href="http://launchpad.net/leo-editor"
+     name href
+     value http://launchpad.net/leo-editor
+ text Leo at launchpad
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;
+   tagname a
+   tagattr href="http://leo.tigris.org/source/browse/leo/"
+     name href
+     value http://leo.tigris.org/source/browse/leo/
+ text Leo's cvs repository
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ text Leo's
+ htmltag &lt;a href="http://leo.zwiki.org"&gt;
+   tagname a
+   tagattr href="http://leo.zwiki.org"
+     name href
+     value http://leo.zwiki.org
+ text Wiki
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="leoLinks.html"&gt;
+   tagname a
+   tagattr href="leoLinks.html"
+     name href
+     value leoLinks.html
+ text More links
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+   tagattr bgcolor="#DAA520"
+     name bgcolor
+     value #DAA520
+ htmltag &lt;b&gt;
+   tagname b
+ text Edward K. Ream
+ htmltag &lt;/b&gt;
+   closetag /
+   tagname b
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="index.html"&gt;
+   tagname a
+   tagattr href="index.html"
+     name href
+     value index.html
+ text Home
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;tr&gt;
+   tagname tr
+ htmltag &lt;td width="50%"&gt;
+   tagname td
+   tagattr width="50%"
+     name width
+     value 50%
+ htmltag &lt;a href="mailto:edreamleo@charter.net"&gt;
+   tagname a
+   tagattr href="mailto:edreamleo@charter.net"
+     name href
+     value mailto:edreamleo@charter.net
+ text Contact
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;/table&gt;
+   closetag /
+   tagname table
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+
+ htmltag &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
+   tagname td
+   tagattr width="78%"
+     name width
+     value 78%
+   tagattr height="143"
+     name height
+     value 143
+   tagattr bgcolor="#FFFBDC"
+     name bgcolor
+     value #FFFBDC
+ text
+
+
+ htmltag &lt;h2&gt;
+   tagname h2
+ text  Leo is...
+ htmltag &lt;/h2&gt;
+   closetag /
+   tagname h2
+ text
+
+
+ htmltag &lt;ul&gt;
+   tagname ul
+ text
+
+ htmltag &lt;li&gt;
+   tagname li
+ text
+
+                A
+ htmltag &lt;i&gt;
+   tagname i
+ text general data management environment
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text .
+ htmltag &lt;br/&gt;
+   tagname br
+   *syntax error /
+ text
+                Leo shows
+ htmltag &lt;b&gt;
+   tagname b
+ text user-created
+ htmltag &lt;/b&gt;
+   closetag /
+   tagname b
+ text  relationships among any kind of data:
+ *syntax error &lt;
+ *syntax error br /
+ *syntax error &gt;
+ text
+                computer programs, web sites, etc.
+ *syntax error &lt;
+ *syntax error br /
+ *syntax error &gt;
+ text
+                Leo shows multiple views of data within a single outline.
+
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+
+ htmltag &lt;li&gt;
+   tagname li
+ text
+                An
+ htmltag &lt;i&gt;
+   tagname i
+ text outlining editor for programmers
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text .
+ *syntax error &lt;
+ *syntax error br /
+ *syntax error &gt;
+ text
+                Leo supports
+ htmltag &lt;i&gt;
+   tagname i
+ text optional
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text
+ htmltag &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;
+   tagname a
+   tagattr HREF="http://www.eecs.harvard.edu/~nr/noweb/"
+     name HREF
+     value http://www.eecs.harvard.edu/~nr/noweb/
+ text noweb
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+                and
+ htmltag &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;
+   tagname a
+   tagattr HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"
+     name HREF
+     value http://www-cs-faculty.stanford.edu/~knuth/cweb.html
+ text CWEB
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text  markup.
+
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+
+ htmltag &lt;li&gt;
+   tagname li
+ text A flexible
+ htmltag &lt;i&gt;
+   tagname i
+ text browser
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text  for projects, programs, classes or any other data.
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+ htmltag &lt;li&gt;
+   tagname li
+ text A
+ htmltag &lt;i&gt;
+   tagname i
+ text project manager
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text .
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+ htmltag &lt;li&gt;
+   tagname li
+ htmltag &lt;i&gt;
+   tagname i
+ text Portable
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text . Leo runs on Windows, Linux and MacOS X.
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+ htmltag &lt;li&gt;
+   tagname li
+ htmltag &lt;i&gt;
+   tagname i
+ text 100% pure
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text
+ htmltag &lt;a HREF="http://www.python.org/"&gt;
+   tagname a
+   tagattr HREF="http://www.python.org/"
+     name HREF
+     value http://www.python.org/
+ htmltag &lt;i&gt;
+   tagname i
+ text Python
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text .
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+
+ htmltag &lt;li&gt;
+   tagname li
+ text
+
+ htmltag &lt;i&gt;
+   tagname i
+ text Fully scriptable using
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ text
+
+ htmltag &lt;a HREF="http://www.python.org/"&gt;
+   tagname a
+   tagattr HREF="http://www.python.org/"
+     name HREF
+     value http://www.python.org/
+ htmltag &lt;i&gt;
+   tagname i
+ text Python
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+                Leo's outline files are
+ htmltag &lt;a HREF="http://www.w3.org/XML/"&gt;
+   tagname a
+   tagattr HREF="http://www.w3.org/XML/"
+     name HREF
+     value http://www.w3.org/XML/
+ text XML
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text   format.
+
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+ htmltag &lt;li&gt;
+   tagname li
+ text
+
+ htmltag &lt;a href="http://www.opensource.org/"&gt;
+   tagname a
+   tagattr href="http://www.opensource.org/"
+     name href
+     value http://www.opensource.org/
+ htmltag &lt;i&gt;
+   tagname i
+ text Open Software
+ htmltag &lt;/i&gt;
+   closetag /
+   tagname i
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text ,
+                distributed under the
+ htmltag &lt;a href="http://www.python.org/psf/license/"&gt;
+   tagname a
+   tagattr href="http://www.python.org/psf/license/"
+     name href
+     value http://www.python.org/psf/license/
+ text Python License
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text .
+
+ htmltag &lt;/li&gt;
+   closetag /
+   tagname li
+ text
+
+
+ htmltag &lt;!--@nonl--&gt;
+   comment !
+   text @nonl
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/ul&gt;
+   closetag /
+   tagname ul
+ text
+
+
+ htmltag &lt;p&gt;
+   tagname p
+ text
+            Please use
+ htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
+   tagname a
+   tagattr href="http://groups.google.com/group/leo-editor"
+     name href
+     value http://groups.google.com/group/leo-editor
+ text leo-editor
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+            to ask questions and make suggestions.
+
+ htmltag &lt;/p&gt;
+   closetag /
+   tagname p
+ text
+
+
+ htmltag &lt;p&gt;
+   tagname p
+ text
+            Leo's author is
+ htmltag &lt;a HREF="index.html"&gt;
+   tagname a
+   tagattr HREF="index.html"
+     name HREF
+     value index.html
+ text Edward K. Ream
+ htmltag &lt;/a&gt;
+   closetag /
+   tagname a
+ text
+
+ htmltag &lt;/p&gt;
+   closetag /
+   tagname p
+ text
+
+ htmltag &lt;!--@nonl--&gt;
+   comment !
+   text @nonl
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/td&gt;
+   closetag /
+   tagname td
+ text
+
+
+ htmltag &lt;/tr&gt;
+   closetag /
+   tagname tr
+ text
+
+ htmltag &lt;/table&gt;
+   closetag /
+   tagname table
+ text
+
+ htmltag &lt;!--@nl--&gt;
+   comment !
+   text @nl
+ text
+
+ htmltag &lt;/body&gt;
+   closetag /
+   tagname body
+ text
+
+ htmltag &lt;/html&gt;
+   closetag /
+   tagname html
+ text
+
+
+ htmltag &lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
+   comment !
+   text @-node:ekr.20080301071818.1:@thin html/front.html
+ text
+
+ htmltag &lt;!--@-leo--&gt;
+   comment !
+   text @-leo
+ text
+
+ eof
+ok: 1
 </t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
