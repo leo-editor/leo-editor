@@ -2,8 +2,34 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
+#@+node:ekr.20080531075119.11:First
 #@+node:ekr.20080528093133.4:Update to version 4 of the vim code
 #@-node:ekr.20080528093133.4:Update to version 4 of the vim code
+#@+node:ekr.20080527084425.4:Rewrite option-parsing code using optparse
+#@+node:ekr.20080521132317.2:scanForOneConfigOption
+def scanForOneConfigOption(g):
+
+    '''Set g.app.oneConfigFilename if "--one-config=<path>" appears in sys.argv.'''
+
+    tag = '--one-config=' ; n = len(tag)
+
+    for s in sys.argv:
+        if s.startswith(tag):
+            path = s[n:]
+            path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+            if g.os_path_exists(path):
+                g.app.oneConfigFilename = path
+                sys.argv.remove(s)
+                break
+            else:
+                g.es_print('Invalid option: file not found:',s,color='red')
+                break
+#@nonl
+#@-node:ekr.20080521132317.2:scanForOneConfigOption
+#@-node:ekr.20080527084425.4:Rewrite option-parsing code using optparse
+#@+node:ekr.20080531075119.10:Benchmark zodb stuff
+#@-node:ekr.20080531075119.10:Benchmark zodb stuff
+#@-node:ekr.20080531075119.11:First
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080528093133.3:Change installer to support leo-as-a-package
 http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
