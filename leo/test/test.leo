@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10,0,4,1,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -425,19 +425,19 @@
 </v>
 <v t="ekr.20080601131331.42"><vh>badEndSentinel, push/popSentinelStack</vh></v>
 </v>
-<v t="ekr.20080601131331.2" a="E"><vh>override scanText4</vh>
-<v t="ekr.20080601131331.3" a="E"><vh>scanText4_mxTextTools &amp; allies</vh>
+<v t="ekr.20080601131331.2"><vh>override scanText4</vh>
+<v t="ekr.20080601131331.3"><vh>scanText4_mxTextTools &amp; allies</vh>
 <v t="ekr.20080601131331.4"><vh>&lt;&lt; init ivars for scanText4 &gt;&gt;</vh></v>
 <v t="ekr.20080601132606.1"><vh>&lt;&lt; define mxTextTools tables &gt;&gt;</vh></v>
 <v t="ekr.20080601134805.12"><vh>&lt;&lt; define sentinelDict &gt;&gt;</vh></v>
 <v t="ekr.20080601131331.5"><vh>&lt;&lt; report unexpected end of text &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.2" a="E"><vh>new helpers</vh>
+<v t="ekr.20080601134805.2"><vh>new helpers</vh>
 <v t="ekr.20080601134805.3"><vh>doLine</vh>
 <v t="ekr.20080601134805.4"><vh>&lt;&lt; Skip the leading stuff &gt;&gt;</vh></v>
 <v t="ekr.20080601134805.5"><vh>&lt;&lt; Append s to docOut &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080601134805.6" a="E"><vh>doSentinel &amp; helpers</vh>
-<v t="ekr.20080601134805.13" a="E"><vh>start sentinels</vh>
+<v t="ekr.20080601134805.6"><vh>doSentinel &amp; helpers</vh>
+<v t="ekr.20080601134805.13"><vh>start sentinels</vh>
 <v t="ekr.20080601134805.14"><vh>readStartAll (4.2)</vh></v>
 <v t="ekr.20080601134805.15"><vh>readStartAt &amp; readStartDoc</vh></v>
 <v t="ekr.20080601134805.16"><vh>readStartLeo</vh></v>

@@ -3,6 +3,34 @@
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080411091507.10:Bugs
+#@+node:ekr.20080602172531.1:before b1
+#@+node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
+#@-node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
+#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
+
+'ve just downloaded leo and been very impressed.  Probably I'll use
+leo mostly for editing text (as opposed to programs).  Which means
+I've turned on text wrapping.
+
+But now, up and down arrows take me to the next line in the file, not
+the next line on the screen.  That means I'm always reaching for the
+mouse.
+
+Is there a way I can change the arrow key behaviour?
+Or should I be editing paragraphs differently (i.e., without text
+wrapping)? 
+
+Reply:
+
+I have a vague memory of writing code to get the behavior you describe, but
+all details are fuzzy.  I know what you are talking about--it may be one of
+the details I've learned to put up with.  In that case, a new option and new
+code will be a substantial improvement.  Thanks for this report. 
+#@nonl
+#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
 #@+node:ekr.20080528093133.3:Change installer to support leo-as-a-package
 http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
 
@@ -34,10 +62,6 @@ leo, I suggest we use
 
 python /usr/local/lib/core/runLeo.py "$@"
 #@-node:ekr.20080528093133.3:Change installer to support leo-as-a-package
-#@+node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
-#@-node:ekr.20080527084425.5:Home and end keys don't work as expected when editing a headline
-#@+node:ekr.20080527084425.8:Should assigning to None clear all key bindings?
-#@-node:ekr.20080527084425.8:Should assigning to None clear all key bindings?
 #@+node:ekr.20080129103436:Solve Kent's @menu problem
 @nocolor
 
@@ -54,166 +78,34 @@ However, if I create a @settings->@menus->@menu node in a file, open
 the file, then open another Leo file, the next file opens with the 
 redefined menu. 
 #@nonl
+#@+node:ekr.20080528093133.2:Study strange @menu behavior
+@nocolor
+
+http://mail.google.com/mail/#inbox/11a2fd9b40bff76b
+
+OK, I'm using --one-config, so there is no mystery
+surrounding the source of settings.
+
+I'm discovering the following
+
+- top level @menus can be commented out with @@menu
+- secondary level menus cannot
+- items cannot
+- a secondary menu cannot be copied between top level menus
+...
+
+I am having trouble getting a feel for the principles which
+determine @menu behaviour.
+
+Is there a description of the rules which determine what can and
+cannot be done with @menu trees, and @item nodes given a
+single config file?
+
+Thanks,
+Kent
+#@nonl
+#@-node:ekr.20080528093133.2:Study strange @menu behavior
 #@-node:ekr.20080129103436:Solve Kent's @menu problem
-#@+node:ekr.20080519062109.2:Improve how Leo handles long lines
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ae52bf0ed8e04a59
-
-'ve just downloaded leo and been very impressed.  Probably I'll use
-leo mostly for editing text (as opposed to programs).  Which means
-I've turned on text wrapping.
-
-But now, up and down arrows take me to the next line in the file, not
-the next line on the screen.  That means I'm always reaching for the
-mouse.
-
-Is there a way I can change the arrow key behaviour?
-Or should I be editing paragraphs differently (i.e., without text
-wrapping)? 
-
-Reply:
-
-I have a vague memory of writing code to get the behavior you describe, but
-all details are fuzzy.  I know what you are talking about--it may be one of
-the details I've learned to put up with.  In that case, a new option and new
-code will be a substantial improvement.  Thanks for this report. 
-#@nonl
-#@-node:ekr.20080519062109.2:Improve how Leo handles long lines
-#@+node:ekr.20080517102922.1:Files bugs 7
-#@+node:ekr.20080412053100.1:Look into undefined-section behavior
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
-
-1) Create an @thin file based outline.
-2) In the @thin file, create an unreferenced section (something like a
-  header <<This Section Is Bogus>>).
-3) Now, File->Exit
-4) A dialog box pops up
-  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
-5) Click "Yes"
-6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
-  and in the console window, you see "undefined section: ..."
-
-However, the application is still running. The only way to really quit
-is to click "No" to the Save dialog.
-
-> Iirc, this is the intended behavior.  It would be possible to build in some
-> state behavior to only ask once, but I'd rather not do that.
-
-The point is that I can't kill Leo if I keep saying "Yes" to the
-"Save change before quitting" dialog. This is definitely not the
-intended behavior. The correct behavior would be to save the file,
-give me the warning about the undefined section, and exit.
-#@nonl
-#@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-This affects @auto imports of all "unknown" languages.
-
-For example, @auto x.css would put @language css in the root node.
-#@nonl
-#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
-#@+node:ekr.20080330085343.3:Fix bug in atFile.write
-The code should save/restore, just as in the clean_file function (from scripts.leo)
-#@nonl
-#@+node:ekr.20080330085343.1:clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v.t,'tnodeList'):
-        has_list = True
-        old_list =  p.v.t.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.t.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
-#@-node:ekr.20080330085343.1:clean_file
-#@-node:ekr.20080330085343.3:Fix bug in atFile.write
-#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-@nocolor
-
-I also unhappily discovered that any file named somedoc.leo.bak will
-get deleted whenever you save a file named somedoc.leo.  Once I saw my
-nodes were overwritten unitTest.leo, I copied somedoc.leo to
-somedoc.leo.bak because I wanted to do a save to see what would
-happen.  The somedoc.leo file ended up with the contents of
-unitTest.leo as I suspected.  To my surprise, I also lost
-somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
-backup copy to revert to.  If leo is making use of a .bak file during
-saving, then should it give a warning if that file already exists?
-
-To duplicate:
-
-1. Open a leo file that you don't care about losing.
-2. From the file->open menu open leo/test/unitTest.leo
-3. Select a unit test and run it with Alt-4 (I chose the Position
-tests described above)
-4. Switch back to the original leo document and you should see the
-contents of unitTest.leo instead of the original document contents.
-#@nonl
-#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-@nocolor
-
-I was playing around with this and I discovered that if I open
-unitTest.leo from the File->Open menu pick of another leo outline and
-then I run a unit test, then all the nodes from unitTest.leo appear in
-the original document.  If I execute a save on the original document
-(now with the unitTest.leo nodes), then the leo file gets overwritten
-with the contents unitTest.leo.
-
-#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
-#@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ad23258d1a46234c
-
-On Fri, May 9, 2008 at 5:56 AM, bobjack <bobjack@post.com> wrote:
-
-> If a headline ending in ... (ellipses) is an ancestor of a node to be edited
-the file path formed is invalid (at least on windows vista), so the node can not
-be edited.
-
-
-Hmm.  mod_tempfname has a problem.  If it filters out non-ascii unicode characters it will have problem with, say, Chinese file names.  So the naive plan of filtering all characters *except* the valid ascii characters is flawed.
-
-Drat.  I suppose building in unicode smarts: filtering 'general punctuation' characters is needed.  See:
-
-http://www.fileformat.info/info/unicode/char/2026/index.htm
-#@nonl
-#@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@+node:ekr.20080509153731.1:Fix bug: myLeoSettings.leo sometimes read twice
 @nocolor
 
@@ -233,33 +125,6 @@ I.e. when $PWD == $HOME, a command like
 will read mySettings.leo and leoSettings.leo twice. 
 #@nonl
 #@-node:ekr.20080509153731.1:Fix bug: myLeoSettings.leo sometimes read twice
-#@-node:ekr.20080517102922.1:Files bugs 7
-#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@+node:ekr.20071211142600.3:Fix minor config bugs 3
-#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
-#@+node:ekr.20061014050154.2:Binding to None clears all bindings
-#@-node:ekr.20061014050154.2:Binding to None clears all bindings
-#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-# Or give a better message.
-#@nonl
-#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
-#@-node:ekr.20071211142600.3:Fix minor config bugs 3
-#@+node:ekr.20080509065556.1:Fix minor spelling bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
-
-If the mis-spelled word  starts at position 0, it is detected but can
-not be replaced.
-#@-node:ekr.20080509065556.1:Fix minor spelling bug
-#@+node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
-
-@color
-#@nonl
-#@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 #@+node:ekr.20080313032655.1:Fix one failed unit test on Linux
 #@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
 #@+node:ekr.20051104075904.78:makeImportExportSuite
@@ -485,33 +350,172 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@+node:ekr.20080528093133.2:Study strange @menu behavior
+#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@-node:ekr.20080602172531.1:before b1
+#@+node:ekr.20080602172531.2:before b2: 12
+#@+node:ekr.20080517102922.1:Files bugs 7
+#@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
 
-http://mail.google.com/mail/#inbox/11a2fd9b40bff76b
+http://groups.google.com/group/leo-editor/browse_thread/thread/db797dd1d4dddffb
 
-OK, I'm using --one-config, so there is no mystery
-surrounding the source of settings.
+1) Create an @thin file based outline.
+2) In the @thin file, create an unreferenced section (something like a
+  header <<This Section Is Bogus>>).
+3) Now, File->Exit
+4) A dialog box pops up
+  (Save changes to leo_file.leo before quitting? Yes/No/Cancel)
+5) Click "Yes"
+6) In the log pane, you will see: "undefined section" and "saved: leo_file.leo"
+  and in the console window, you see "undefined section: ..."
 
-I'm discovering the following
+However, the application is still running. The only way to really quit
+is to click "No" to the Save dialog.
 
-- top level @menus can be commented out with @@menu
-- secondary level menus cannot
-- items cannot
-- a secondary menu cannot be copied between top level menus
-...
+> Iirc, this is the intended behavior.  It would be possible to build in some
+> state behavior to only ask once, but I'd rather not do that.
 
-I am having trouble getting a feel for the principles which
-determine @menu behaviour.
-
-Is there a description of the rules which determine what can and
-cannot be done with @menu trees, and @item nodes given a
-single config file?
-
-Thanks,
-Kent
+The point is that I can't kill Leo if I keep saying "Yes" to the
+"Save change before quitting" dialog. This is definitely not the
+intended behavior. The correct behavior would be to save the file,
+give me the warning about the undefined section, and exit.
 #@nonl
-#@-node:ekr.20080528093133.2:Study strange @menu behavior
+#@-node:ekr.20080412053100.1:Look into undefined-section behavior
+#@+node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+This affects @auto imports of all "unknown" languages.
+
+For example, @auto x.css would put @language css in the root node.
+#@nonl
+#@-node:ekr.20080425054202.1:Add @language x during @auto if modes/x.py exists
+#@+node:ekr.20080330085343.3:Fix bug in atFile.write
+The code should save/restore, just as in the clean_file function (from scripts.leo)
+#@nonl
+#@+node:ekr.20080330085343.1:clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v.t,'tnodeList'):
+        has_list = True
+        old_list =  p.v.t.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.t.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.headString(),len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@-node:ekr.20080330085343.1:clean_file
+#@-node:ekr.20080330085343.3:Fix bug in atFile.write
+#@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+@nocolor
+
+I also unhappily discovered that any file named somedoc.leo.bak will
+get deleted whenever you save a file named somedoc.leo.  Once I saw my
+nodes were overwritten unitTest.leo, I copied somedoc.leo to
+somedoc.leo.bak because I wanted to do a save to see what would
+happen.  The somedoc.leo file ended up with the contents of
+unitTest.leo as I suspected.  To my surprise, I also lost
+somedoc.leo.bak!  The file disappeared!  Fortunately, I had another
+backup copy to revert to.  If leo is making use of a .bak file during
+saving, then should it give a warning if that file already exists?
+
+To duplicate:
+
+1. Open a leo file that you don't care about losing.
+2. From the file->open menu open leo/test/unitTest.leo
+3. Select a unit test and run it with Alt-4 (I chose the Position
+tests described above)
+4. Switch back to the original leo document and you should see the
+contents of unitTest.leo instead of the original document contents.
+#@nonl
+#@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
+#@+node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
+@nocolor
+
+I was playing around with this and I discovered that if I open
+unitTest.leo from the File->Open menu pick of another leo outline and
+then I run a unit test, then all the nodes from unitTest.leo appear in
+the original document.  If I execute a save on the original document
+(now with the unitTest.leo nodes), then the leo file gets overwritten
+with the contents unitTest.leo.
+
+#@-node:ekr.20080406075855.3:Fix problem with running unitTest.leo when it is opened from another .leo file
+#@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ad23258d1a46234c
+
+On Fri, May 9, 2008 at 5:56 AM, bobjack <bobjack@post.com> wrote:
+
+> If a headline ending in ... (ellipses) is an ancestor of a node to be edited
+the file path formed is invalid (at least on windows vista), so the node can not
+be edited.
+
+
+Hmm.  mod_tempfname has a problem.  If it filters out non-ascii unicode characters it will have problem with, say, Chinese file names.  So the naive plan of filtering all characters *except* the valid ascii characters is flawed.
+
+Drat.  I suppose building in unicode smarts: filtering 'general punctuation' characters is needed.  See:
+
+http://www.fileformat.info/info/unicode/char/2026/index.htm
+#@nonl
+#@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
+#@-node:ekr.20080517102922.1:Files bugs 7
+#@+node:ekr.20071211142600.3:Fix minor config bugs 3
+#@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
+#@+node:ekr.20061014050154.2:Binding to None clears all bindings
+Should assigning to None clear all key bindings?
+#@nonl
+#@-node:ekr.20061014050154.2:Binding to None clears all bindings
+#@+node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+# Or give a better message.
+#@nonl
+#@-node:ekr.20060927173836.6:Don't abort mode if there are problems with bindings
+#@-node:ekr.20071211142600.3:Fix minor config bugs 3
+#@+node:ekr.20080509065556.1:Fix minor spelling bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
+
+If the mis-spelled word  starts at position 0, it is detected but can
+not be replaced.
+#@-node:ekr.20080509065556.1:Fix minor spelling bug
+#@+node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
+
+@color
+#@nonl
+#@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+#@-node:ekr.20080602172531.2:before b2: 12
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files
 #@+node:ekr.20080519062109.1:add p.fileLevel and add support for it

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,12,3,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -369,14 +369,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -384,15 +384,15 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080602094234.10" a="E"><vh>@keys</vh>
+<v t="ekr.20080602094234.10"><vh>@keys</vh>
 <v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
 <v t="ekr.20080602094234.12"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
@@ -1071,7 +1071,7 @@
 </v>
 </v>
 <v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
-<v t="ekr.20080515053412.4" a="E"><vh>Main Context Menus</vh>
+<v t="ekr.20080515053412.4"><vh>Main Context Menus</vh>
 <v t="ekr.20080515053412.5"><vh>@popup body</vh>
 <v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
 <v t="ekr.20080515053412.7"><vh>@item -</vh></v>
@@ -1108,14 +1108,14 @@
 <v t="ekr.20080515053412.32"><vh>@popup plusbox</vh></v>
 </v>
 <v t="ekr.20080515053412.33"><vh>Fragments</vh>
-<v t="ekr.20080515053412.34" a="E"><vh>@popup edit-menu</vh>
+<v t="ekr.20080515053412.34"><vh>@popup edit-menu</vh>
 <v t="ekr.20080515053412.35"><vh>@item rclick-cut-text</vh></v>
 <v t="ekr.20080515053412.36"><vh>@item rclick-copy-text</vh></v>
 <v t="ekr.20080515053412.37"><vh>@item rclick-paste-text</vh></v>
 <v t="ekr.20080515053412.38"><vh>@item -</vh></v>
 <v t="ekr.20080515053412.39"><vh>@item rclick-select-all</vh></v>
 </v>
-<v t="ekr.20080515053412.40" a="E"><vh>@popup recent-files-menu</vh>
+<v t="ekr.20080515053412.40"><vh>@popup recent-files-menu</vh>
 <v t="ekr.20080515053412.41"><vh>@menu Recent Files</vh>
 <v t="ekr.20080515053412.42"><vh>@item *</vh></v>
 </v>
@@ -1146,13 +1146,14 @@
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
 <v t="ekr.20080328105334.4"><vh>@data cleo_color_file_node_list</vh></v>
-<v t="ekr.20080328105334.5"><vh>@int cleo_prog_width = 18</vh></v>
+<v t="ekr.20080328105334.8"><vh>@float cleo_prog_extra = 4</vh></v>
 <v t="ekr.20080328105334.6"><vh>@float cleo_time_init = 1.0</vh></v>
 <v t="ekr.20080328105334.7"><vh>@int cleo_prog_scale = 1</vh></v>
-<v t="ekr.20080328105334.8"><vh>@float cleo_prog_extra = 4</vh></v>
+<v t="ekr.20080328105334.5"><vh>@int cleo_prog_width = 18</vh></v>
 <v t="ekr.20080328105334.9"><vh>@string cleo_time_name = 'days'</vh></v>
 </v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
@@ -5013,11 +5014,11 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20080328105334.3">The colour used instead of red in progress bars</t>
 <t tx="ekr.20080328105334.4"># list of @file node types to color.
 # Uncomment these to enable coloring for these kinds of nodes.
-# @asis
-# @file
-# @auto
-# @thin
-# @auto</t>
+@asis
+@auto
+@file
+@thin
+</t>
 <t tx="ekr.20080328105334.5">The base width of progress bars, in pixels.</t>
 <t tx="ekr.20080328105334.6">The default number of time units.</t>
 <t tx="ekr.20080328105334.7">0: no progress bars
@@ -7779,6 +7780,7 @@ cycle-editor-focus   = p   #Vim goes to previous window with focus
 
 delete-editor        = c   #Close
 delete-editor        = q   #Close</t>
+<t tx="ekr.20080602174756.1"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

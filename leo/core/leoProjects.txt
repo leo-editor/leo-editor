@@ -8087,6 +8087,10 @@ def scanOptions(g):
 
 #@-node:ekr.20080521132317.2:scanOptions
 #@-node:ekr.20080527084425.4:Rewrote option-parsing code using optparse
+#@+node:ekr.20080602172531.3:Added @bool cleo_color_ignore = True
+This determines whether cleo colors @ignore headlines. The default is True.
+#@nonl
+#@-node:ekr.20080602172531.3:Added @bool cleo_color_ignore = True
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:
