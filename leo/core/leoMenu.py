@@ -948,9 +948,9 @@ class leoMenu:
             '&add-global-abbrev',
             '&inverse-add-global-abbrev',
             '&kill-all-abbrevs',
-            '-',
+            # '-',
             # 'expand-abbrev', # Not a command
-            '&expand-region-abbrevs',
+            # '&expand-region-abbrevs',
         ]
     #@-node:ekr.20060117094955.1:defineCmdsMenuAbbrevTable
     #@+node:ekr.20060912093104:defineCmdsMenuBodyEditorsTable
