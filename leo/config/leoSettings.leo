@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="89" left="400" height="749" width="795"/>
+<globals body_outline_ratio="0.694259012016">
+	<global_window_position top="89" left="400" height="749" width="873"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,12,5,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -369,14 +369,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -384,7 +384,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
 <v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
@@ -392,7 +392,7 @@
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080602094234.10"><vh>@keys</vh>
+<v t="ekr.20080602094234.10" a="E"><vh>@keys</vh>
 <v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
 <v t="ekr.20080602094234.12"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
@@ -556,7 +556,7 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
-<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -1371,6 +1371,11 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20041119034357.1">@nocolor
@@ -2061,14 +2066,7 @@ Doing so would make unit tests fail.
 Default is Gray80.
 CadetBlue3 has been suggested.</t>
 <t tx="ekr.20051006200015.1">Default is white.</t>
-<t tx="ekr.20051007193321"># append-next-kill                  = None
-# apply settings                    = None
-# call-last-keyboard-macro          = None
-# check-spelling                    = None
-# copy-to-buffer                    = None
-# end-kbd-macro                     = None
-        
-abbrev-mode                         = None
+<t tx="ekr.20051007193321">abbrev-mode                         = None
 abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
@@ -2403,15 +2401,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20051126062243.1"></t>
 <t tx="ekr.20051126062525"></t>
 <t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
-<t tx="ekr.20051218202206"># append-next-kill                  = None
-# apply settings                    = None
-# back-char                         = None
-# call-last-keyboard-macro          = None
-# contract-parent                   = None
-# copy-to-buffer                    = None
-# end-kbd-macro                     = None
-
-abbrev-mode                         = None
+<t tx="ekr.20051218202206">abbrev-mode                         = None
 abort-edit-headline                 = None
 about-leo                           = None
 activate-cmds-menu                  = None
@@ -2422,9 +2412,12 @@ activate-outline-menu               = None
 activate-plugins-menu               = None
 activate-window-menu                = None
 add-comments                        = None
+add-editor                          = None
 add-global-abbrev                   = None
+add-space-to-lines                  = None
 add-tab-to-lines                    = None
 advertised-undo                     = None
+# append-next-kill                    = None
 append-to-buffer                    = None
 append-to-register                  = None
 apropos-autocompletion              = None
@@ -2451,6 +2444,7 @@ beginning-of-buffer                 = None
 beginning-of-buffer-extend-selection= None
 beginning-of-line                   = None
 beginning-of-line-extend-selection  = None
+call-last-keyboard-macro            = None
 capitalize-word                     = None
 cascade-windows                     = None
 center-line                         = None
@@ -2458,12 +2452,15 @@ center-region                       = None
 check-all-python-code               = None
 check-outline                       = None
 check-python-code                   = None
+# check-spelling                      = None
+clean-all-lines                     = None
 clean-lines                         = None
 clean-recent-files                  = None
 clear-extend-mode                   = None
 clear-kill-ring                     = None
 clear-recent-files                  = None
 clear-rectangle                     = None
+clear-selected-text                 = None
 click-click-box                     = None
 click-headline                      = None
 click-icon-box                      = None
@@ -2489,6 +2486,7 @@ copy-node                           = None
 copy-node-to-chapter                = None
 copy-rectangle-to-register          = None
 copy-text                           = None
+# copy-to-buffer                      = None
 copy-to-register                    = None
 count-region                        = None
 create-chapter                      = None
@@ -2503,8 +2501,11 @@ debug                               = None
 de-hoist                            = None
 delete-char                         = None
 delete-comments                     = None
+delete-editor                       = None
 delete-file                         = None
+delete-first-icon                   = None
 delete-indentation                  = None
+delete-last-icon                    = None
 delete-node                         = None
 delete-rectangle                    = None
 delete-spaces                       = None
@@ -2514,6 +2515,7 @@ digit-argument                      = None
 disable-autocompleter               = None
 disable-calltips                    = None
 disable-gc-trace                    = None
+do-nothing                          = None
 downcase-region                     = None
 downcase-word                       = None
 double-click-headline               = None
@@ -2526,6 +2528,7 @@ enable-autocompleter                = None
 enable-calltips                     = None
 enable-gc-trace                     = None
 end-edit-headline                   = None
+end-kbd-macro                       = None
 end-of-buffer                       = None
 end-of-buffer-extend-selection      = None
 end-of-line                         = None
@@ -2607,11 +2610,7 @@ other event specifier, typically 'Button-3'.</t>
 Shift-space  # Control-space conflicts with an Emacs binding.
 Button-3
 Double-Button-3 # Useful if you also have the rClick plugin enabled.</t>
-<t tx="ekr.20060112090844"># indent-for-tab                    = Control-i
-# insert-keyboard-macro             = None
-# insert-to-buffer                  = None
-
-fill-paragraph                      = Alt-q
+<t tx="ekr.20060112090844">fill-paragraph                      = Alt-q
 fill-region                         = None
 fill-region-as-paragraph            = None
 change                              = Ctrl-=
@@ -2706,12 +2705,7 @@ list-buffers                        = None
 list-buffers-alphabetically         = None
 mode-help                           = None
 move-past-close-extend-selection    = None</t>
-<t tx="ekr.20060112090844.1"># name-last-kbd-macro           = None
-# number-to-register            = None
-# save-buffer                   = None  # Use save instead.
-# start-kbd-macro               = None
-
-make-directory                  = None
+<t tx="ekr.20060112090844.1">make-directory                  = None
 mark                            = Ctrl-M
 mark-changed-items              = None         # Alt-C: now quick-command.
 mark-changed-roots              = None         # Removed Alt-R: not useful enough.
@@ -2977,9 +2971,10 @@ indent-rigidly                      = None
 indent-to-comment-column            = None
 insert-body-time                    = None
 insert-child                        = None
+insert-icon                         = None
 insert-file                         = None
 insert-headline-time                = None
-# insert-keyboard-macro             = None
+insert-keyboard-macro               = None
 insert-newline                      = None
 insert-node                         = None
 insert-parentheses                  = None
@@ -3016,6 +3011,8 @@ mark-subheads                       = None
 match-brackets                      = None
 minimize-all                        = None
 mode-help                           = None
+move-lines-down                     = None
+move-lines-up                       = None
 move-node-to-chapter                = None
 move-outline-down                   = None
 move-outline-left                   = None
@@ -3024,7 +3021,7 @@ move-outline-up                     = None
 move-past-close                     = None
 move-past-close-extend-selection    = None
 </t>
-<t tx="ekr.20060112093227.2"># name-last-kbd-macro               = None
+<t tx="ekr.20060112093227.2">name-last-kbd-macro                 = None
 negative-argument                   = None
 new                                 = None
 newline-and-indent                  = None
@@ -3097,6 +3094,8 @@ repeat-complex-command              = None
 replace-string                      = None
 resize-to-screen                    = None
 reverse-region                      = None
+reverse-sort-lines                  = None
+reverse-sort-lines-ignoring-case    = None
 revert                              = None
 run-unit-tests                      = None
 run-unit-tests-locally              = None
@@ -3132,7 +3131,7 @@ set-find-suboutline-only            = None
 set-font                            = None
 set-command-state                   = None
 set-insert-state                    = None
-# set-mark-command                  = None
+# set-mark-command                    = None
 set-overwrite-state                 = None
 settings                            = None
 shell-command                       = None
@@ -3150,6 +3149,7 @@ sort-children                       = None
 sort-columns                        = None
 sort-fields                         = None
 sort-lines                          = None
+sort-lines-ignoring-case            = None
 sort-recent-files                   = None
 sort-siblings                       = None
 spell-change                        = None
@@ -3158,7 +3158,7 @@ spell-find                          = None
 spell-ignore                        = None
 split-line                          = None
 start-ipython                       = None
-# start-kbd-macro                   = None
+start-kbd-macro                     = None
 string-rectangle                    = None
 suspend                             = None
 switch-to-buffer                    = None
@@ -5167,7 +5167,8 @@ For some reason, colors in the text widget do not match the colors in the canvas
 <t tx="ekr.20080512082834.1"># Now that we know what commands are single-line editing commands,
 # Only &lt;return&gt; and arrow keys need per-pane bindings.
 
-end-edit-headline           ! tree = Return # Esc is also possible.
+end-edit-headline           ! tree = Return # Escape is also possible.
+# end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
 # enter-newline-insert-mode ! body = Return
 
@@ -5860,10 +5861,10 @@ add-global-abbrev                      = None
 add-space-to-lines                     = None #Newly found
 add-tab-to-lines                       = None #Newly found
 advertised-undo                        = None
-append-next-kill                       = None
+# append-next-kill                       = None
 append-to-buffer                       = None
 append-to-register                     = None
-apply settings                         = None
+# apply-settings                         = None
 auto-complete                          = None
 back-char                              = None
 back-char-extend-selection             = None
@@ -5895,7 +5896,7 @@ change-then-find                       = None
 check-all-python-code                  = None
 check-outline                          = None
 check-python-code                      = None
-check-spelling                         = None
+# check-spelling                         = None
 clean-all-lines                        = None #Newly found
 clean-lines                            = None #Newly found
 clear-extend-mode                      = None
@@ -5924,7 +5925,7 @@ convert-tabs                           = None
 copy-node                              = None
 copy-rectangle-to-register             = None
 copy-text                              = None
-copy-to-buffer                         = None
+# copy-to-buffer                         = None
 copy-to-register                       = None
 count-region                           = None
 cut-text                               = None
@@ -5934,7 +5935,7 @@ cycle-focus                            = None
 dabbrev-completion                     = None
 dabbrev-expands                        = None
 de-hoist                               = None
-delete-all-icons                       = None #Newly found
+# delete-all-icons                       = None #Newly found
 delete-char                            = None
 delete-comments                        = None
 delete-editor                          = None #Newly found
@@ -5943,7 +5944,7 @@ delete-first-icon                      = None #Newly found
 delete-indentation                     = None
 delete-last-icon                       = None #Newly found
 delete-node                            = None
-delete-node-icons                      = None #Newly found
+# delete-node-icons                      = None #Newly found
 delete-rectangle                       = None
 delete-spaces                          = None
 demote                                 = None
@@ -5980,7 +5981,7 @@ expand-or-go-right                     = None
 expand-outline-pane                    = None #Newly found
 expand-pane                            = None #Newly found
 expand-prev-level                      = None
-expand-region-abbrevs                  = None
+# expand-region-abbrevs                  = None
 expand-to-level-1                      = None
 expand-to-level-2                      = None
 expand-to-level-3                      = None
@@ -6067,7 +6068,7 @@ import-derived-file                    = None
 import-flattened-outline               = None
 import-noweb-files                     = None
 increment-register                     = None
-indent-for-tab                         = None
+# indent-for-tab                         = None
 indent-region                          = None
 indent-relative                        = None
 indent-rigidly                         = None
@@ -6082,13 +6083,12 @@ insert-newline                         = None
 insert-node                            = None
 insert-parentheses                     = None
 insert-register                        = None
-insert-to-buffer                       = None
+# insert-to-buffer                       = None
 inverse-add-global-abbrev              = None
 isearch-backward                       = None
 isearch-backward-regexp                = None
 isearch-forward                        = None
 isearch-forward-regexp                 = None
-izationcut-node                        = None
 jump-to-register                       = None
 keep-lines                             = None
 keyboard-quit                          = None
@@ -6139,7 +6139,7 @@ number-command-6                       = None
 number-command-7                       = None
 number-command-8                       = None
 number-command-9                       = None
-number-to-register                     = None
+# number-to-register                     = None
 open-compare-window                    = None
 open-find-tab                          = None
 open-leoDocs-leo                       = None
@@ -6192,7 +6192,7 @@ reverse-region                         = None
 reverse-sort-lines                     = None #Newly found
 reverse-sort-lines-ignoring-case       = None #Newly found
 revert                                 = None
-save-buffer                            = None
+# save-buffer                          = None
 save-buffers-kill-leo                  = None
 save-file                              = None
 save-file-as                           = None
@@ -6212,7 +6212,7 @@ search-backward                        = None
 search-forward                         = None
 search-with-present-options            = None
 select-all                             = None
-self-insert-command                    = None #Newly found
+# self-insert-command                    = None #Newly found
 set-colors                             = None
 set-command-state                      = None
 set-comment-column                     = None
@@ -6224,7 +6224,7 @@ set-find-node-only                     = None
 set-find-suboutline-only               = None
 set-font                               = None
 set-insert-state                       = None
-set-mark-command                       = None
+# set-mark-command                       = None
 set-overwrite-state                    = None
 settings                               = None
 shell-command                          = None
@@ -6343,7 +6343,7 @@ select-all                       ! tree = Shift-s
 end-of-line-extend-selection        ! tree = Shift-d  #Select to end of line
                                                          #Should use Shift-y
 #enter-tree-select-object-mode   ! tree = d
-end-of-line-extend-selection     ! tree = Shift-d  #Select to end of line
+###end-of-line-extend-selection     ! tree = Shift-d  #Select to end of line
 #enter-tree-delete-to-end-of-line-mode ! tree = Shift-d  #modes not working
 delete-char                      ! tree = x
 delete-char                      ! tree = delete
@@ -6408,7 +6408,7 @@ enter-body-expand-and-go-right-mode ! body = Ctrl-l
 enter-body-expand-and-go-right-mode ! body = Ctrl-RtArrow
 
 search-forward                      ! tree = /
-#search-backword                    ! tree = question #Binding '?' doesn't work
+#search-backward                    ! tree = question #Binding '?' doesn't work
 find-next                           ! tree = n
 find-prev                           ! tree = Shift-n
 
@@ -7011,7 +7011,7 @@ enter-vim-window-commands-mode      ! body = Ctrl-w
 find-character                      ! body = f
 backward-find-character             ! body = Shift-f
 search-forward                      ! body = /
-search-backword                     ! body = question     #bound to '?'
+search-backward                     ! body = question     #bound to '?'
 find-next                           ! body = n
 find-prev                           ! body = Shift-n
 </t>
