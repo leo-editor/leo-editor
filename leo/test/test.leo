@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10,0,4,1,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -372,19 +372,117 @@
 <v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
-<v t="ekr.20080531113507.1" a="E"><vh>mxTextTools test</vh>
-<v t="ekr.20080531113507.2"><vh>&lt;&lt; define TextTools stuff &gt;&gt;</vh></v>
-<v t="ekr.20080531113507.3"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-<v t="ekr.20080531113507.4"><vh>printItem</vh></v>
-</v>
-<v t="ekr.20080531120008.1"><vh>output from mxTextTools test</vh></v>
-<v t="ekr.20080531131542.1" a="E"><vh>mxTextTools test (for derived files)</vh>
+<v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-<v t="ekr.20080531140301.1"><vh>output from second test</vh></v>
-<v t="ekr.20080531172649.1"><vh>output from the third test</vh></v>
+<v t="ekr.20071210102626"><vh>@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080601134805.7"><vh>old helpers</vh>
+<v t="ekr.20080601131331.6"><vh>readNormalLine</vh>
+<v t="ekr.20080601131331.7"><vh>&lt;&lt; Skip the leading stuff &gt;&gt;</vh></v>
+<v t="ekr.20080601131331.8"><vh>&lt;&lt; Append s to docOut &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601131331.9"><vh>start sentinels</vh>
+<v t="ekr.20080601131331.10"><vh>readStartAll (4.2)</vh></v>
+<v t="ekr.20080601131331.11"><vh>readStartAt &amp; readStartDoc</vh></v>
+<v t="ekr.20080601131331.12"><vh>readStartLeo</vh></v>
+<v t="ekr.20080601131331.13"><vh>readStartMiddle</vh></v>
+<v t="ekr.20080601131331.14"><vh>readStartNode (4.x)</vh>
+<v t="ekr.20080601131331.15"><vh>&lt;&lt; set gnx and bump i &gt;&gt;</vh></v>
+<v t="ekr.20080601131331.16"><vh>&lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;</vh></v>
+<v t="ekr.20080601131331.17"><vh>&lt;&lt; Check the filename in the sentinel &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601131331.18"><vh>readStartOthers</vh></v>
+</v>
+<v t="ekr.20080601131331.19"><vh>end sentinels</vh>
+<v t="ekr.20080601131331.20"><vh>readEndAll (4.2)</vh></v>
+<v t="ekr.20080601131331.21"><vh>readEndAt &amp; readEndDoc</vh></v>
+<v t="ekr.20080601131331.22"><vh>readEndLeo</vh></v>
+<v t="ekr.20080601131331.23"><vh>readEndMiddle</vh></v>
+<v t="ekr.20080601131331.24"><vh>readEndNode (4.x)</vh>
+<v t="ekr.20080601131331.25"><vh>&lt;&lt; indicate that the node has been changed &gt;&gt;</vh>
+<v t="ekr.20080601131331.26"><vh>&lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20080601131331.27"><vh>readEndOthers</vh></v>
+<v t="ekr.20080601131331.28"><vh>readLastDocLine</vh></v>
+</v>
+<v t="ekr.20080601131331.29"><vh>Unpaired sentinels</vh>
+<v t="ekr.20080601131331.30"><vh>ignoreOldSentinel</vh></v>
+<v t="ekr.20080601131331.31"><vh>readAfterRef</vh></v>
+<v t="ekr.20080601131331.32"><vh>readClone</vh></v>
+<v t="ekr.20080601131331.33"><vh>readComment</vh></v>
+<v t="ekr.20080601131331.34"><vh>readDelims</vh></v>
+<v t="ekr.20080601131331.35"><vh>readDirective (@@)</vh>
+<v t="ekr.20080601131331.36"><vh>&lt;&lt; handle @language &gt;&gt;</vh></v>
+<v t="ekr.20080601131331.37"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601131331.38"><vh>readNl</vh></v>
+<v t="ekr.20080601131331.39"><vh>readNonl</vh></v>
+<v t="ekr.20080601131331.40"><vh>readRef</vh></v>
+<v t="ekr.20080601131331.41"><vh>readVerbatim</vh></v>
+</v>
+<v t="ekr.20080601131331.42"><vh>badEndSentinel, push/popSentinelStack</vh></v>
+</v>
+<v t="ekr.20080601131331.2" a="E"><vh>override scanText4</vh>
+<v t="ekr.20080601131331.3" a="E"><vh>scanText4_mxTextTools &amp; allies</vh>
+<v t="ekr.20080601131331.4"><vh>&lt;&lt; init ivars for scanText4 &gt;&gt;</vh></v>
+<v t="ekr.20080601132606.1"><vh>&lt;&lt; define mxTextTools tables &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.12"><vh>&lt;&lt; define sentinelDict &gt;&gt;</vh></v>
+<v t="ekr.20080601131331.5"><vh>&lt;&lt; report unexpected end of text &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.2" a="E"><vh>new helpers</vh>
+<v t="ekr.20080601134805.3"><vh>doLine</vh>
+<v t="ekr.20080601134805.4"><vh>&lt;&lt; Skip the leading stuff &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.5"><vh>&lt;&lt; Append s to docOut &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601134805.6" a="E"><vh>doSentinel &amp; helpers</vh>
+<v t="ekr.20080601134805.13" a="E"><vh>start sentinels</vh>
+<v t="ekr.20080601134805.14"><vh>readStartAll (4.2)</vh></v>
+<v t="ekr.20080601134805.15"><vh>readStartAt &amp; readStartDoc</vh></v>
+<v t="ekr.20080601134805.16"><vh>readStartLeo</vh></v>
+<v t="ekr.20080601134805.17"><vh>readStartMiddle</vh></v>
+<v t="ekr.20080601134805.18"><vh>readStartNode (4.x)</vh>
+<v t="ekr.20080601134805.19"><vh>&lt;&lt; set gnx and bump i &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.20"><vh>&lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.21"><vh>&lt;&lt; Check the filename in the sentinel &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601134805.22"><vh>readStartOthers</vh></v>
+</v>
+<v t="ekr.20080601134805.23"><vh>end sentinels</vh>
+<v t="ekr.20080601134805.24"><vh>readEndAll (4.2)</vh></v>
+<v t="ekr.20080601134805.25"><vh>readEndAt &amp; readEndDoc</vh></v>
+<v t="ekr.20080601134805.26"><vh>readEndLeo</vh></v>
+<v t="ekr.20080601134805.27"><vh>readEndMiddle</vh></v>
+<v t="ekr.20080601134805.28"><vh>readEndNode (4.x)</vh>
+<v t="ekr.20080601134805.29"><vh>&lt;&lt; indicate that the node has been changed &gt;&gt;</vh>
+<v t="ekr.20080601134805.30"><vh>&lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20080601134805.31"><vh>readEndOthers</vh></v>
+<v t="ekr.20080601134805.32"><vh>readLastDocLine</vh></v>
+</v>
+<v t="ekr.20080601134805.33"><vh>Unpaired sentinels</vh>
+<v t="ekr.20080601134805.34"><vh>ignoreOldSentinel</vh></v>
+<v t="ekr.20080601134805.35"><vh>readAfterRef</vh></v>
+<v t="ekr.20080601134805.36"><vh>readClone</vh></v>
+<v t="ekr.20080601134805.37"><vh>readComment</vh></v>
+<v t="ekr.20080601134805.38"><vh>readDelims</vh></v>
+<v t="ekr.20080601134805.39"><vh>readDirective (@@)</vh>
+<v t="ekr.20080601134805.40"><vh>&lt;&lt; handle @language &gt;&gt;</vh></v>
+<v t="ekr.20080601134805.41"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080601134805.42"><vh>readNl</vh></v>
+<v t="ekr.20080601134805.43"><vh>readNonl</vh></v>
+<v t="ekr.20080601134805.44"><vh>readRef</vh></v>
+<v t="ekr.20080601134805.45"><vh>readVerbatim</vh></v>
+</v>
+<v t="ekr.20080601134805.46"><vh>badEndSentinel, push/popSentinelStack</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080601132606.2"><vh>printItem</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -4434,1549 +4532,6 @@ t = g.startTracer()
 spam()
 t.stop()
 </t>
-<t tx="ekr.20080531113507.1">import mx.TextTools as tt
-
-&lt;&lt; define TextTools stuff &gt;&gt;
-&lt;&lt; define s &gt;&gt;
-
-@others
-
-print '-' * 40
-ok,taglist,nextindex = tt.tag(s,htmltable)
-# print g.listToString(taglist)
-for z in taglist:
-    printItem(z,level=0)
-print 'ok:',ok
-</t>
-<t tx="ekr.20080531113507.2">from mx.TextTools import * # Required for tags.
-# Error tag object
-error = '*syntax error'
-# Character sets
-tagname_charset = CharSet(alpha+'\-'+number)
-tagattrname_charset = CharSet(alpha+'\-'+number)
-tagvalue_charset = CharSet('^"\'&gt; ')
-white_charset = CharSet(' \r\n\t')
-tagname_charset = CharSet(alpha+'\-'+number)
-tagattrname_charset = CharSet(alpha+'\-'+number)
-tagvalue_charset = CharSet('^"\'&gt; ')
-white_charset = CharSet(' \r\n\t')
-# Tag attributes
-tagattr = (
-    # name
-    ('name',AllInCharSet,tagattrname_charset),
-    # with value ?
-    (None,Is,'=',MatchOk),
-    # skip junk
-    (None,AllInCharSet,white_charset,+1),
-    # unquoted value
-    ('value',AllInCharSet,tagvalue_charset,+1,MatchOk),
-    # double quoted value
-    (None,Is,'"',+5),
-    ('value',AllNotIn,'"',+1,+2),
-    ('value',Skip,0),
-    (None,Is,'"'),
-    (None,Jump,To,MatchOk),
-    # single quoted value
-    (None,Is,'\''),
-    ('value',AllNotIn,'\'',+1,+2),
-    ('value',Skip,0),
-    (None,Is,'\''),
-)
-# Tag values
-valuetable = (
-    # ignore whitespace + '='
-    (None,AllInCharSet,CharSet(' \r\n\t='),+1),
-    # unquoted value
-    ('value',AllInCharSet,tagvalue_charset,+1,MatchOk),
-    # double quoted value
-    (None,Is,'"',+5),
-    ('value',AllNotIn,'"',+1,+2),
-    ('value',Skip,0),
-    (None,Is,'"'),
-    (None,Jump,To,MatchOk),
-    # single quoted value
-    (None,Is,'\''),
-    ('value',AllNotIn,'\'',+1,+2),
-    ('value',Skip,0),
-    (None,Is,'\''),
-)
-# Parse all attributes of a tag
-allattrs = (
-    # look for attributes
-    (None,AllInCharSet,white_charset,+4),
-    (None,Is,'&gt;',+1,MatchOk),
-    ('tagattr',Table,tagattr),
-    (None,Jump,To,-3),
-    (None,Is,'&gt;',+1,MatchOk),
-    # handle incorrect attributes
-    (error,AllNotIn,'&gt; \r\n\t'),
-    (None,Jump,To,-6),
-)
-# NOTE: The htmltag tag table assumes that the input text is given
-# in upper case letters (see &lt;XMP&gt; handling).
-# Parse an HTML tag
-htmltag = (
-    (None,Is,'&lt;'),
-    # is this a closing tag ?
-    ('closetag',Is,'/',+1),
-    # a coment ?
-    ('comment',Is,'!',+8),
-    (None,Word,'--',+4),
-    ('text',WordStart,'--&gt;',+1),
-    (None,Skip,3),
-    (None,Jump,To,MatchOk),
-    # a SGML-Tag ?
-    ('other',AllNotIn,'&gt;',+1),
-    (None,Is,'&gt;'),
-    (None,Jump,To,MatchOk),
-    # XMP-Tag ?
-    ('tagname',Word,'XMP',+5),
-    (None,Is,'&gt;'),
-    ('text',WordStart,'&lt;/XMP&gt;'),
-    (None,Skip,len('&lt;/XMP&gt;')),
-    (None,Jump,To,MatchOk),
-    # get the tag name
-    ('tagname',AllInCharSet,tagname_charset),
-    # look for attributes
-    (None,AllInCharSet,white_charset,+4),
-    (None,Is,'&gt;',+1,MatchOk),
-    ('tagattr',Table,tagattr),
-    (None,Jump,To,-3),
-    (None,Is,'&gt;',+1,MatchOk),
-    # handle incorrect attributes
-    (error,AllNotIn,'&gt; \n\r\t'),
-    (None,Jump,To,-6),
-)
-# Parse HTML tags &amp; text
-htmltable = (# HTML-Tag
-    ('htmltag',Table,htmltag,+1,+4),
-    # not HTML, but still using this syntax: error or
-    # inside XMP-tag !
-    (error,Is,'&lt;',+3),
-    (error,AllNotIn,'&gt;',+1),
-    (error,Is,'&gt;'),
-    # normal text
-    ('text',AllNotIn,'&lt;',+1),
-    # end of file
-    ('eof',EOF,Here,-5),
-)</t>
-<t tx="ekr.20080531113507.3">s = '''
-&lt;?xml version="1.0" encoding="utf-8" ?&gt;
-&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-&lt;!--@+leo-ver=4-thin--&gt;
-&lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
-&lt;!--@@first--&gt;
-&lt;!--@@first--&gt;
-
-&lt;!--@@language html--&gt;
-&lt;!--@@tabwidth -4--&gt;
-
-&lt;!-- Last Modified: March 1, 2008 --&gt;
-&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
-
-&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
-&lt;head&gt;
-&lt;!--@&lt;&lt;head&gt;&gt;--&gt;
-&lt;!--@+node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
-
-&lt;title&gt;Leo's Home Page&lt;/title&gt;
-
-&lt;meta name="description" content="This page describes Leo, a programmer's outliner." /&gt;
-
-&lt;meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
-NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
-
-&lt;!-- for GeoUrl --&gt;
-&lt;meta name="ICBM" content="43.0713768, -89.4188004" /&gt;
-&lt;meta name="DC.title" content="Leo's Home Page" /&gt;
-&lt;!--@-node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
-&lt;!--@nl--&gt;
-&lt;/head&gt;
-
-&lt;body bgcolor="#fffbdc"&gt;
-&lt;!--@&lt;&lt; main table &gt;&gt;--&gt;
-&lt;!--@+node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
-
-&lt;table border="0" bgcolor="#FFFBDC"&gt;
-    &lt;tr&gt;
-        &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
-            &lt;b&gt;&lt;font size="4"&gt;Leo's Home&lt;/font&gt;&lt;/b&gt;
-        &lt;/td&gt;
-
-        &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
-            &lt;!--@            &lt;&lt; upper table &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
-
-            &lt;table border="0" width="100%"&gt;
-                &lt;tr&gt;
-                    &lt;td width="25%" align="center"&gt;
-                        &lt;a href="http://www.python.org/"&gt;
-                            &lt;img border="0" src="PythonPowered.gif" width="110" height="44" /&gt;&lt;/a&gt;
-                    &lt;/td&gt;
-
-                    &lt;td width="50%" align="center"&gt;
-                        &lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;
-
-                    &lt;/td&gt;
-
-                    &lt;td width="25%" align="center"&gt;
-                        &lt;a href="http://www.mind-mapping.org/"&gt;mind-mapping.org&lt;/a&gt;
-                    &lt;/td&gt;
-                &lt;/tr&gt;
-            &lt;/table&gt;
-            &lt;!--@nonl--&gt;
-            &lt;!--@-node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
-
-            &lt;!--@nl--&gt;
-        &lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr&gt;
-        &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
-            &lt;!--@            &lt;&lt; left table &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
-            &lt;table border="0" width="100%"&gt;
-
-                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Documentation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;
-                        &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;Screen Shots&lt;/a&gt;
-                &lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leo_TOC.html#anchor964914"&gt;Users Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-
-                &lt;tr&gt;&lt;td width="50%"&gt;
-                    &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;Online tutorial&lt;/a&gt;
-                &lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="testimonials.html"&gt;Quotes&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;
-                    &lt;!--@        &lt;&lt; download ref &gt;&gt;--&gt;
-
-                    &lt;!--@+node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
-                    &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-                        Download Leo[4.4.8 final]&lt;/a&gt;
-                    &lt;!--@nonl--&gt;
-                    &lt;!--@-node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
-                    &lt;!--@nl--&gt;
-                &lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://sourceforge.net/project/?group_id=3458"&gt; Leo at SourceForge&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://launchpad.net/leo-editor"&gt;Leo at launchpad&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;Leo's cvs repository&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://leo.zwiki.org"&gt;Wiki&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leoLinks.html"&gt;More links&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Edward K. Ream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
-
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="index.html"&gt;Home&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="mailto:edreamleo@charter.net"&gt;Contact&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;/table&gt;
-            &lt;!--@-node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
-            &lt;!--@nl--&gt;
-        &lt;/td&gt;
-
-        &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
-
-            &lt;!--@            &lt;&lt; center area &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
-            &lt;h2&gt; Leo is...&lt;/h2&gt;
-
-            &lt;ul&gt;
-            &lt;!--@&lt;&lt; what is Leo list &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
-            &lt;li&gt;
-
-                A &lt;i&gt;general data management environment&lt;/i&gt;.&lt;br/&gt;
-                Leo shows &lt;b&gt;user-created&lt;/b&gt; relationships among any kind of data:&lt;br /&gt;
-                computer programs, web sites, etc.&lt;br /&gt;
-                Leo shows multiple views of data within a single outline.
-            &lt;/li&gt;
-
-            &lt;li&gt;
-                An &lt;i&gt;outlining editor for programmers&lt;/i&gt;.&lt;br /&gt;
-                Leo supports &lt;i&gt;optional&lt;/i&gt; &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt;
-                and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.
-            &lt;/li&gt;
-
-            &lt;li&gt;A flexible &lt;i&gt;browser&lt;/i&gt; for projects, programs, classes or any other data.&lt;/li&gt;
-            &lt;li&gt;A &lt;i&gt;project manager&lt;/i&gt;.&lt;/li&gt;
-            &lt;li&gt;&lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;/li&gt;
-            &lt;li&gt;&lt;i&gt;100% pure&lt;/i&gt; &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
-
-            &lt;li&gt;
-                &lt;i&gt;Fully scriptable using&lt;/i&gt;
-                &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;
-                Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt;  format.
-            &lt;/li&gt;
-            &lt;li&gt;
-                &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-                distributed under the &lt;a href="http://www.python.org/psf/license/"&gt;Python License&lt;/a&gt;.
-            &lt;/li&gt;
-
-            &lt;!--@nonl--&gt;
-            &lt;!--@-node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
-            &lt;!--@nl--&gt;
-            &lt;/ul&gt;
-
-            &lt;p&gt;
-            Please use &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
-            to ask questions and make suggestions.
-            &lt;/p&gt;
-
-            &lt;p&gt;
-            Leo's author is &lt;a HREF="index.html"&gt;Edward K. Ream&lt;/a&gt;
-            &lt;/p&gt;
-            &lt;!--@nonl--&gt;
-            &lt;!--@-node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
-            &lt;!--@nl--&gt;
-        &lt;/td&gt;
-
-    &lt;/tr&gt;
-&lt;/table&gt;
-&lt;!--@-node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
-&lt;!--@nl--&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-
-&lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
-&lt;!--@-leo--&gt;
-'''</t>
-<t tx="ekr.20080531113507.4">def printItem(aList,level):
-
-    obj,lt_index,rt_index,subtag = aList
-    print '  '*level,obj,s[lt_index:rt_index]
-    if subtag:
-        for z in subtag:
-            printItem(z,level+1)
-</t>
-<t tx="ekr.20080531120008.1">----------------------------------------
- text
-
- *syntax error &lt;
- *syntax error ?xml version="1.0" encoding="utf-8" ?
- *syntax error &gt;
- text
-
- htmltag &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-   comment !
-   other DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
- text
-
- htmltag &lt;!--@+leo-ver=4-thin--&gt;
-   comment !
-   text @+leo-ver=4-thin
- text
-
- htmltag &lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
-   comment !
-   text @+node:ekr.20080301071818.1:@thin html/front.html
- text
-
- htmltag &lt;!--@@first--&gt;
-   comment !
-   text @@first
- text
-
- htmltag &lt;!--@@first--&gt;
-   comment !
-   text @@first
- text
-
-
- htmltag &lt;!--@@language html--&gt;
-   comment !
-   text @@language html
- text
-
- htmltag &lt;!--@@tabwidth -4--&gt;
-   comment !
-   text @@tabwidth -4
- text
-
-
- htmltag &lt;!-- Last Modified: March 1, 2008 --&gt;
-   comment !
-   text  Last Modified: March 1, 2008
- text
-
- htmltag &lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
-   comment !
-   text  Author: Edward K. Ream, edreamleo@gmail.com
- text
-
-
- htmltag &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
-   tagname html
-   tagattr xmlns="http://www.w3.org/1999/xhtml"
-     name xmlns
-     value http://www.w3.org/1999/xhtml
-   tagattr xml
-     name xml
-   *syntax error :lang="en"
-   tagattr lang="en"
-     name lang
-     value en
- text
-
- htmltag &lt;head&gt;
-   tagname head
- text
-
-
- htmltag &lt;title&gt;
-   tagname title
- text Leo's Home Page
- htmltag &lt;/title&gt;
-   closetag /
-   tagname title
- text
-
-
- *syntax error &lt;
- *syntax error meta name="description" content="This page describes Leo, a programmer's outliner." /
- *syntax error &gt;
- text
-
-
- *syntax error &lt;
- *syntax error meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
-NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /
- *syntax error &gt;
- text
-
-
- htmltag &lt;!-- for GeoUrl --&gt;
-   comment !
-   text  for GeoUrl
- text
-
- *syntax error &lt;
- *syntax error meta name="ICBM" content="43.0713768, -89.4188004" /
- *syntax error &gt;
- text
-
- *syntax error &lt;
- *syntax error meta name="DC.title" content="Leo's Home Page" /
- *syntax error &gt;
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/head&gt;
-   closetag /
-   tagname head
- text
-
-
- htmltag &lt;body bgcolor="#fffbdc"&gt;
-   tagname body
-   tagattr bgcolor="#fffbdc"
-     name bgcolor
-     value #fffbdc
- text
-
-
- htmltag &lt;table border="0" bgcolor="#FFFBDC"&gt;
-   tagname table
-   tagattr border="0"
-     name border
-     value 0
-   tagattr bgcolor="#FFFBDC"
-     name bgcolor
-     value #FFFBDC
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- text
-
- htmltag &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
-   tagname td
-   tagattr width="22%"
-     name width
-     value 22%
-   tagattr height="21"
-     name height
-     value 21
-   tagattr align="center"
-     name align
-     value center
-   tagattr bgcolor="#FFFBDC"
-     name bgcolor
-     value #FFFBDC
-   tagattr valign="middle"
-     name valign
-     value middle
- text
-
- htmltag &lt;b&gt;
-   tagname b
- htmltag &lt;font size="4"&gt;
-   tagname font
-   tagattr size="4"
-     name size
-     value 4
- text Leo's Home
- htmltag &lt;/font&gt;
-   closetag /
-   tagname font
- htmltag &lt;/b&gt;
-   closetag /
-   tagname b
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
-
- htmltag &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
-   tagname td
-   tagattr bgcolor="#F0E68C"
-     name bgcolor
-     value #F0E68C
-   tagattr width="78%"
-     name width
-     value 78%
-   tagattr height="21"
-     name height
-     value 21
-   tagattr align="center"
-     name align
-     value center
- text
-
-
- htmltag &lt;table border="0" width="100%"&gt;
-   tagname table
-   tagattr border="0"
-     name border
-     value 0
-   tagattr width="100%"
-     name width
-     value 100%
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- text
-
- htmltag &lt;td width="25%" align="center"&gt;
-   tagname td
-   tagattr width="25%"
-     name width
-     value 25%
-   tagattr align="center"
-     name align
-     value center
- text
-
- htmltag &lt;a href="http://www.python.org/"&gt;
-   tagname a
-   tagattr href="http://www.python.org/"
-     name href
-     value http://www.python.org/
- text
-
- *syntax error &lt;
- *syntax error img border="0" src="PythonPowered.gif" width="110" height="44" /
- *syntax error &gt;
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
-
- htmltag &lt;td width="50%" align="center"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
-   tagattr align="center"
-     name align
-     value center
- text
-
- htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
-   tagname a
-   tagattr href="http://groups.google.com/group/leo-editor"
-     name href
-     value http://groups.google.com/group/leo-editor
- text Leo at Google Groups
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
-
- htmltag &lt;td width="25%" align="center"&gt;
-   tagname td
-   tagattr width="25%"
-     name width
-     value 25%
-   tagattr align="center"
-     name align
-     value center
- text
-
- htmltag &lt;a href="http://www.mind-mapping.org/"&gt;
-   tagname a
-   tagattr href="http://www.mind-mapping.org/"
-     name href
-     value http://www.mind-mapping.org/
- text mind-mapping.org
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;/table&gt;
-   closetag /
-   tagname table
- text
-
- htmltag &lt;!--@nonl--&gt;
-   comment !
-   text @nonl
- text
-
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
-
- htmltag &lt;tr&gt;
-   tagname tr
- text
-
- htmltag &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
-   tagname td
-   tagattr bgcolor="#F0E68C"
-     name bgcolor
-     value #F0E68C
-   tagattr width="22%"
-     name width
-     value 22%
-   tagattr height="143"
-     name height
-     value 143
-   tagattr valign="top"
-     name valign
-     value top
- text
-
- htmltag &lt;table border="0" width="100%"&gt;
-   tagname table
-   tagattr border="0"
-     name border
-     value 0
-   tagattr width="100%"
-     name width
-     value 100%
- text
-
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
-   tagattr bgcolor="#DAA520"
-     name bgcolor
-     value #DAA520
- htmltag &lt;b&gt;
-   tagname b
- text Documentation
- htmltag &lt;/b&gt;
-   closetag /
-   tagname b
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- text
-
- htmltag &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;
-   tagname a
-   tagattr href="http://sourceforge.net/project/screenshots.php?group_id=3458"
-     name href
-     value http://sourceforge.net/project/screenshots.php?group_id=3458
- text Screen Shots
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="intro.html"&gt;
-   tagname a
-   tagattr href="intro.html"
-     name href
-     value intro.html
- text Beginners Guide
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="leo_TOC.html#anchor964914"&gt;
-   tagname a
-   tagattr href="leo_TOC.html#anchor964914"
-     name href
-     value leo_TOC.html#anchor964914
- text Users Guide
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="FAQ.html"&gt;
-   tagname a
-   tagattr href="FAQ.html"
-     name href
-     value FAQ.html
- text FAQ
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- text
-
- htmltag &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;
-   tagname a
-   tagattr href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"
-     name href
-     value http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm
- text Online tutorial
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="testimonials.html"&gt;
-   tagname a
-   tagattr href="testimonials.html"
-     name href
-     value testimonials.html
- text Quotes
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
-   tagattr bgcolor="#DAA520"
-     name bgcolor
-     value #DAA520
- htmltag &lt;b&gt;
-   tagname b
- text Links
- htmltag &lt;/b&gt;
-   closetag /
-   tagname b
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- text
-
-
- htmltag &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-   tagname a
-   tagattr href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"
-     name href
-     value http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106
- text
-                        Download Leo[4.4.8 final]
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;!--@nonl--&gt;
-   comment !
-   text @nonl
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="http://sourceforge.net/project/?group_id=3458"&gt;
-   tagname a
-   tagattr href="http://sourceforge.net/project/?group_id=3458"
-     name href
-     value http://sourceforge.net/project/?group_id=3458
- text  Leo at SourceForge
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
-   tagname a
-   tagattr href="http://groups.google.com/group/leo-editor"
-     name href
-     value http://groups.google.com/group/leo-editor
- text Leo at Google Groups
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="http://launchpad.net/leo-editor"&gt;
-   tagname a
-   tagattr href="http://launchpad.net/leo-editor"
-     name href
-     value http://launchpad.net/leo-editor
- text Leo at launchpad
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;
-   tagname a
-   tagattr href="http://leo.tigris.org/source/browse/leo/"
-     name href
-     value http://leo.tigris.org/source/browse/leo/
- text Leo's cvs repository
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- text Leo's
- htmltag &lt;a href="http://leo.zwiki.org"&gt;
-   tagname a
-   tagattr href="http://leo.zwiki.org"
-     name href
-     value http://leo.zwiki.org
- text Wiki
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="leoLinks.html"&gt;
-   tagname a
-   tagattr href="leoLinks.html"
-     name href
-     value leoLinks.html
- text More links
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%" bgcolor="#DAA520"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
-   tagattr bgcolor="#DAA520"
-     name bgcolor
-     value #DAA520
- htmltag &lt;b&gt;
-   tagname b
- text Edward K. Ream
- htmltag &lt;/b&gt;
-   closetag /
-   tagname b
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="index.html"&gt;
-   tagname a
-   tagattr href="index.html"
-     name href
-     value index.html
- text Home
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;tr&gt;
-   tagname tr
- htmltag &lt;td width="50%"&gt;
-   tagname td
-   tagattr width="50%"
-     name width
-     value 50%
- htmltag &lt;a href="mailto:edreamleo@charter.net"&gt;
-   tagname a
-   tagattr href="mailto:edreamleo@charter.net"
-     name href
-     value mailto:edreamleo@charter.net
- text Contact
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;/table&gt;
-   closetag /
-   tagname table
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
-
- htmltag &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
-   tagname td
-   tagattr width="78%"
-     name width
-     value 78%
-   tagattr height="143"
-     name height
-     value 143
-   tagattr bgcolor="#FFFBDC"
-     name bgcolor
-     value #FFFBDC
- text
-
-
- htmltag &lt;h2&gt;
-   tagname h2
- text  Leo is...
- htmltag &lt;/h2&gt;
-   closetag /
-   tagname h2
- text
-
-
- htmltag &lt;ul&gt;
-   tagname ul
- text
-
- htmltag &lt;li&gt;
-   tagname li
- text
-
-                A
- htmltag &lt;i&gt;
-   tagname i
- text general data management environment
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text .
- htmltag &lt;br/&gt;
-   tagname br
-   *syntax error /
- text
-                Leo shows
- htmltag &lt;b&gt;
-   tagname b
- text user-created
- htmltag &lt;/b&gt;
-   closetag /
-   tagname b
- text  relationships among any kind of data:
- *syntax error &lt;
- *syntax error br /
- *syntax error &gt;
- text
-                computer programs, web sites, etc.
- *syntax error &lt;
- *syntax error br /
- *syntax error &gt;
- text
-                Leo shows multiple views of data within a single outline.
-
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
-
- htmltag &lt;li&gt;
-   tagname li
- text
-                An
- htmltag &lt;i&gt;
-   tagname i
- text outlining editor for programmers
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text .
- *syntax error &lt;
- *syntax error br /
- *syntax error &gt;
- text
-                Leo supports
- htmltag &lt;i&gt;
-   tagname i
- text optional
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text
- htmltag &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;
-   tagname a
-   tagattr HREF="http://www.eecs.harvard.edu/~nr/noweb/"
-     name HREF
-     value http://www.eecs.harvard.edu/~nr/noweb/
- text noweb
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-                and
- htmltag &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;
-   tagname a
-   tagattr HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"
-     name HREF
-     value http://www-cs-faculty.stanford.edu/~knuth/cweb.html
- text CWEB
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text  markup.
-
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
-
- htmltag &lt;li&gt;
-   tagname li
- text A flexible
- htmltag &lt;i&gt;
-   tagname i
- text browser
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text  for projects, programs, classes or any other data.
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
- htmltag &lt;li&gt;
-   tagname li
- text A
- htmltag &lt;i&gt;
-   tagname i
- text project manager
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text .
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
- htmltag &lt;li&gt;
-   tagname li
- htmltag &lt;i&gt;
-   tagname i
- text Portable
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text . Leo runs on Windows, Linux and MacOS X.
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
- htmltag &lt;li&gt;
-   tagname li
- htmltag &lt;i&gt;
-   tagname i
- text 100% pure
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text
- htmltag &lt;a HREF="http://www.python.org/"&gt;
-   tagname a
-   tagattr HREF="http://www.python.org/"
-     name HREF
-     value http://www.python.org/
- htmltag &lt;i&gt;
-   tagname i
- text Python
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text .
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
-
- htmltag &lt;li&gt;
-   tagname li
- text
-
- htmltag &lt;i&gt;
-   tagname i
- text Fully scriptable using
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- text
-
- htmltag &lt;a HREF="http://www.python.org/"&gt;
-   tagname a
-   tagattr HREF="http://www.python.org/"
-     name HREF
-     value http://www.python.org/
- htmltag &lt;i&gt;
-   tagname i
- text Python
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-                Leo's outline files are
- htmltag &lt;a HREF="http://www.w3.org/XML/"&gt;
-   tagname a
-   tagattr HREF="http://www.w3.org/XML/"
-     name HREF
-     value http://www.w3.org/XML/
- text XML
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text   format.
-
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
- htmltag &lt;li&gt;
-   tagname li
- text
-
- htmltag &lt;a href="http://www.opensource.org/"&gt;
-   tagname a
-   tagattr href="http://www.opensource.org/"
-     name href
-     value http://www.opensource.org/
- htmltag &lt;i&gt;
-   tagname i
- text Open Software
- htmltag &lt;/i&gt;
-   closetag /
-   tagname i
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text ,
-                distributed under the
- htmltag &lt;a href="http://www.python.org/psf/license/"&gt;
-   tagname a
-   tagattr href="http://www.python.org/psf/license/"
-     name href
-     value http://www.python.org/psf/license/
- text Python License
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text .
-
- htmltag &lt;/li&gt;
-   closetag /
-   tagname li
- text
-
-
- htmltag &lt;!--@nonl--&gt;
-   comment !
-   text @nonl
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/ul&gt;
-   closetag /
-   tagname ul
- text
-
-
- htmltag &lt;p&gt;
-   tagname p
- text
-            Please use
- htmltag &lt;a href="http://groups.google.com/group/leo-editor"&gt;
-   tagname a
-   tagattr href="http://groups.google.com/group/leo-editor"
-     name href
-     value http://groups.google.com/group/leo-editor
- text leo-editor
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-            to ask questions and make suggestions.
-
- htmltag &lt;/p&gt;
-   closetag /
-   tagname p
- text
-
-
- htmltag &lt;p&gt;
-   tagname p
- text
-            Leo's author is
- htmltag &lt;a HREF="index.html"&gt;
-   tagname a
-   tagattr HREF="index.html"
-     name HREF
-     value index.html
- text Edward K. Ream
- htmltag &lt;/a&gt;
-   closetag /
-   tagname a
- text
-
- htmltag &lt;/p&gt;
-   closetag /
-   tagname p
- text
-
- htmltag &lt;!--@nonl--&gt;
-   comment !
-   text @nonl
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/td&gt;
-   closetag /
-   tagname td
- text
-
-
- htmltag &lt;/tr&gt;
-   closetag /
-   tagname tr
- text
-
- htmltag &lt;/table&gt;
-   closetag /
-   tagname table
- text
-
- htmltag &lt;!--@nl--&gt;
-   comment !
-   text @nl
- text
-
- htmltag &lt;/body&gt;
-   closetag /
-   tagname body
- text
-
- htmltag &lt;/html&gt;
-   closetag /
-   tagname html
- text
-
-
- htmltag &lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
-   comment !
-   text @-node:ekr.20080301071818.1:@thin html/front.html
- text
-
- htmltag &lt;!--@-leo--&gt;
-   comment !
-   text @-leo
- text
-
- eof
-ok: 1
-</t>
 <t tx="ekr.20080531131542.1">import mx.TextTools as tt
 
 &lt;&lt; define scan4 tables &gt;&gt;
@@ -6040,1347 +4595,1482 @@ lineTable = (
         for z in subtag:
             printItem(z,level+1)
 </t>
-<t tx="ekr.20080531140301.1"> line '#! /usr/bin/env python'
- nl '\n'
- sentinel '#@'
- sentinel-val '+leo-ver=4-thin'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.2605:@thin runLeo.py '
- nl '\n'
- sentinel '#@'
- sentinel-val '@first'
- nl '\n'
- nl '\n'
- line '"""Entry point for Leo in Python."""'
- nl '\n'
- nl '\n'
- sentinel '#@'
- sentinel-val '@language python'
- nl '\n'
- sentinel '#@'
- sentinel-val '@tabwidth -4'
- nl '\n'
- nl '\n'
- sentinel '#@'
- sentinel-val '&lt;&lt; Import pychecker &gt;&gt;'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;'
- nl '\n'
- sentinel '#@'
- sentinel-val '@color'
- nl '\n'
- nl '\n'
- line "# __pychecker__ = '--no-argsused'"
- nl '\n'
- nl '\n'
- line '# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.'
- nl '\n'
- nl '\n'
- line '# New in Leo 4.4.5: use pylint instead of pychecker.'
- nl '\n'
- nl '\n'
- line '# if 0: # Set to 1 for lint-like testing.'
- nl '\n'
- leading-ws '      '
- line '# # Use t23.bat: only on Python 2.3.'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# try:'
- nl '\n'
- leading-ws '        '
- line '# import pychecker.checker'
- nl '\n'
- leading-ws '        '
- line '# # This works.  We may want to set options here...'
- nl '\n'
- leading-ws '        '
- line '# # from pychecker import Config '
- nl '\n'
- leading-ws '        '
- line '# # print pychecker'
- nl '\n'
- leading-ws '        '
- line '# print ; print "Warning (in leo.py): pychecker.checker running..." ; print'
- nl '\n'
- leading-ws '    '
- line '# except Exception:'
- nl '\n'
- leading-ws '        '
- line "# print ; print 'Can not import pychecker' ; print"
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;'
- nl '\n'
- sentinel '#@'
- sentinel-val 'nl'
- nl '\n'
- nl '\n'
- line "# __pychecker__ = '--no-import --no-reimportself --no-reimport'"
- nl '\n'
- leading-ws '    '
- line '# Suppress import errors: this module must do strange things with imports.'
- nl '\n'
- nl '\n'
- line '# Warning: do not import any Leo modules here!'
- nl '\n'
- line '# Doing so would make g.app invalid in the imported files.'
- nl '\n'
- line 'import os'
- nl '\n'
- line 'import sys'
- nl '\n'
- line 'import Tkinter ; Tkinter.wantobjects = 0'
- nl '\n'
- leading-ws '    '
- line '# An ugly hack for Tk/Tkinter 8.5'
- nl '\n'
- leading-ws '    '
- line '# See http://sourceforge.net/forum/message.php?msg_id=4078577'
- nl '\n'
- nl '\n'
- sentinel '#@'
- sentinel-val '+others'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.1934:run'
- nl '\n'
- line 'def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '"""Initialize and run Leo"""'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "# __pychecker__ = '--no-argsused' # keywords not used."
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import pdb ; pdb = pdb.set_trace'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "if fileName and fileName.startswith('--'):"
- nl '\n'
- leading-ws '        '
- line 'fileName = None'
- nl '\n'
- leading-ws '    '
- line "# print 'leo.py:run','fileName',fileName"
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '    &lt;&lt; import leoGlobals and leoApp &gt;&gt;'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '+node:ekr.20041219072112:&lt;&lt; import leoGlobals and leoApp &gt;&gt;'
- nl '\n'
- leading-ws '    '
- line 'if jyLeo:'
- nl '\n'
- leading-ws '        '
- line "print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Add the current directory to sys.path *before* importing g.'
- nl '\n'
- leading-ws '    '
- line '# This will fail if the current directory contains unicode characters...'
- nl '\n'
- leading-ws '    '
- line 'path = os.getcwd()'
- nl '\n'
- leading-ws '    '
- line 'if path not in sys.path:'
- nl '\n'
- leading-ws '        '
- line "# print 'appending %s to sys.path' % path"
- nl '\n'
- leading-ws '        '
- line 'sys.path.append(path)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Import leoGlobals, but do NOT set g.'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as leoGlobals'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Set leoGlobals.g, rather than in leoGlobals.py.'
- nl '\n'
- leading-ws '    '
- line 'leoGlobals.g = leoGlobals'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoApp as leoApp'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Create the app.'
- nl '\n'
- leading-ws '    '
- line 'leoGlobals.app = leoApp.LeoApp()'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# **now** we can set g.'
- nl '\n'
- leading-ws '    '
- line 'g = leoGlobals'
- nl '\n'
- leading-ws '    '
- line 'assert(g.app)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if jyLeo:'
- nl '\n'
- leading-ws '        '
- line 'startJyleo(g)'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '-node:ekr.20041219072112:&lt;&lt; import leoGlobals and leoApp &gt;&gt;'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val 'nl'
- nl '\n'
- leading-ws '    '
- line 'if not jyLeo and not isValidPython(): return'
- nl '\n'
- leading-ws '    '
- line 'g.computeStandardDirectories()'
- nl '\n'
- leading-ws '    '
- line 'adjustSysPath(g)'
- nl '\n'
- leading-ws '    '
- line 'if pymacs:'
- nl '\n'
- leading-ws '        '
- line 'script = windowFlag = False'
- nl '\n'
- leading-ws '    '
- line 'else:'
- nl '\n'
- leading-ws '        '
- line 'script, windowFlag = getBatchScript() # Do early so we can compute verbose next.'
- nl '\n'
- leading-ws '    '
- line 'verbose = script is None'
- nl '\n'
- leading-ws '    '
- line 'g.app.batchMode = script is not None'
- nl '\n'
- leading-ws '    '
- line "g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv"
- nl '\n'
- leading-ws '    '
- line 'g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.'
- nl '\n'
- leading-ws '    '
- line 'scanForOneConfigOption(g)'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '    &lt;&lt; import other early files &gt;&gt;'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '+node:ekr.20041219072416.1:&lt;&lt; import other early files&gt;&gt;'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoNodes as leoNodes'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoConfig as leoConfig'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# There is a circular dependency between leoCommands and leoEditCommands.'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoCommands as leoCommands'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# try:'
- nl '\n'
- leading-ws '        '
- line '# import leo.core.leoNodes as leoNodes'
- nl '\n'
- leading-ws '    '
- line '# except ImportError:'
- nl '\n'
- leading-ws '        '
- line '# print "Error importing leoNodes.py"'
- nl '\n'
- leading-ws '        '
- line '# import traceback ; traceback.print_exc()'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# try:'
- nl '\n'
- leading-ws '        '
- line '# import leo.core.leoConfig as leoConfig'
- nl '\n'
- leading-ws '    '
- line '# except ImportError:'
- nl '\n'
- leading-ws '        '
- line '# print "Error importing leoConfig.py"'
- nl '\n'
- leading-ws '        '
- line '# import traceback ; traceback.print_exc()'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val '-node:ekr.20041219072416.1:&lt;&lt; import other early files&gt;&gt;'
- nl '\n'
- leading-ws '    '
- sentinel '#@'
- sentinel-val 'nl'
- nl '\n'
- leading-ws '    '
- line 'g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)'
- nl '\n'
- leading-ws '    '
- line 'g.app.config = leoConfig.configClass()'
- nl '\n'
- leading-ws '    '
- line 'fileName,relativeFileName = completeFileName(fileName)'
- nl '\n'
- leading-ws '    '
- line 'reportDirectories(verbose)'
- nl '\n'
- leading-ws '    '
- line '# Read settings *after* setting g.app.config.'
- nl '\n'
- leading-ws '    '
- line '# Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.'
- nl '\n'
- leading-ws '    '
- line 'g.app.config.readSettingsFiles(fileName,verbose)'
- nl '\n'
- leading-ws '    '
- line 'g.app.setEncoding()'
- nl '\n'
- leading-ws '    '
- line 'if pymacs:'
- nl '\n'
- leading-ws '        '
- line 'createNullGuiWithScript(None)'
- nl '\n'
- leading-ws '    '
- line 'elif jyLeo:'
- nl '\n'
- leading-ws '        '
- line 'import leo.core.leoSwingGui as leoSwingGui'
- nl '\n'
- leading-ws '        '
- line 'g.app.gui = leoSwingGui.swingGui()'
- nl '\n'
- leading-ws '    '
- line 'elif script:'
- nl '\n'
- leading-ws '        '
- line 'if windowFlag:'
- nl '\n'
- leading-ws '            '
- line 'g.app.createTkGui() # Creates global windows.'
- nl '\n'
- leading-ws '            '
- line 'g.app.gui.setScript(script)'
- nl '\n'
- leading-ws '            '
- line 'sys.args = []'
- nl '\n'
- leading-ws '        '
- line 'else:'
- nl '\n'
- leading-ws '            '
- line 'createNullGuiWithScript(script)'
- nl '\n'
- leading-ws '        '
- line 'fileName = None'
- nl '\n'
- leading-ws '    '
- line '# Load plugins. Plugins may create g.app.gui.'
- nl '\n'
- leading-ws '    '
- line 'g.doHook("start1")'
- nl '\n'
- leading-ws '    '
- line 'if g.app.killed: return # Support for g.app.forceShutdown.'
- nl '\n'
- leading-ws '    '
- line '# Create the default gui if needed.'
- nl '\n'
- leading-ws '    '
- line 'if g.app.gui == None: g.app.createTkGui() # Creates global windows.'
- nl '\n'
- leading-ws '    '
- line '# Initialize tracing and statistics.'
- nl '\n'
- leading-ws '    '
- line 'g.init_sherlock(args)'
- nl '\n'
- leading-ws '    '
- line 'if g.app and g.app.use_psyco: startPsyco()'
- nl '\n'
- leading-ws '    '
- line '# Clear g.app.initing _before_ creating the frame.'
- nl '\n'
- leading-ws '    '
- line 'g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.'
- nl '\n'
- leading-ws '    '
- line '# Create the main frame.  Show it and all queued messages.'
- nl '\n'
- leading-ws '    '
- line 'c,frame = createFrame(fileName,relativeFileName)'
- nl '\n'
- leading-ws '    '
- line 'if not frame: return'
- nl '\n'
- leading-ws '    '
- line "g.app.trace_gc          = c.config.getBool('trace_gc')"
- nl '\n'
- leading-ws '    '
- line "g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')"
- nl '\n'
- leading-ws '    '
- line "g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')"
- nl '\n'
- leading-ws '    '
- line 'if g.app.disableSave:'
- nl '\n'
- leading-ws '        '
- line 'g.es("disabling save commands",color="red")'
- nl '\n'
- leading-ws '    '
- line 'g.app.writeWaitingLog()'
- nl '\n'
- leading-ws '    '
- line "if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')"
- nl '\n'
- leading-ws '    '
- line 'p = c.currentPosition()'
- nl '\n'
- leading-ws '    '
- line 'g.doHook("start2",c=c,p=p,v=p,fileName=fileName)'
- nl '\n'
- leading-ws '    '
- line "if c.config.getBool('allow_idle_time_hook'):"
- nl '\n'
- leading-ws '        '
- line 'g.enableIdleTimeHook()'
- nl '\n'
- leading-ws '    '
- line 'if not fileName:'
- nl '\n'
- leading-ws '        '
- line 'c.redraw_now()'
- nl '\n'
- leading-ws '    '
- line "# Respect c's focus wishes if posssible."
- nl '\n'
- leading-ws '    '
- line 'w = g.app.gui.get_focus(c)'
- nl '\n'
- leading-ws '    '
- line 'if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:'
- nl '\n'
- leading-ws '        '
- line 'c.bodyWantsFocus()'
- nl '\n'
- leading-ws '        '
- line 'c.k.showStateAndMode(w)'
- nl '\n'
- leading-ws '    '
- line 'c.outerUpdate()'
- nl '\n'
- leading-ws '    '
- line 'g.app.gui.runMainLoop()'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.1934:run'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20070930060755:utils'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20070306085724:adjustSysPath'
- nl '\n'
- line 'def adjustSysPath (g):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "'''Adjust sys.path to enable imports as usual with Leo.'''"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "#g.trace('loadDir',g.app.loadDir)"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "leoDirs = ('config','doc','extensions','modes','plugins','core','test')"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'for theDir in leoDirs:'
- nl '\n'
- leading-ws '        '
- line 'path = g.os_path_abspath('
- nl '\n'
- leading-ws '            '
- line "g.os_path_join(g.app.loadDir,'..',theDir))"
- nl '\n'
- leading-ws '        '
- line 'if path not in sys.path:'
- nl '\n'
- leading-ws '            '
- line 'sys.path.append(path)'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20070306085724:adjustSysPath'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20041124083125:completeFileName (leo.py)'
- nl '\n'
- line 'def completeFileName (fileName):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if not (fileName and fileName.strip()):'
- nl '\n'
- leading-ws '        '
- line 'return None,None'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# This does not depend on config settings.'
- nl '\n'
- leading-ws '    '
- line 'try:'
- nl '\n'
- leading-ws '        '
- line "if sys.platform.lower().startswith('win'):"
- nl '\n'
- leading-ws '            '
- line "fileName = g.toUnicode(fileName,'mbcs')"
- nl '\n'
- leading-ws '        '
- line 'else:'
- nl '\n'
- leading-ws '            '
- line "fileName = g.toUnicode(fileName,'utf-8')"
- nl '\n'
- leading-ws '    '
- line 'except Exception: pass'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'relativeFileName = fileName'
- nl '\n'
- leading-ws '    '
- line 'fileName = g.os_path_join(os.getcwd(),fileName)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'junk,ext = g.os_path_splitext(fileName)'
- nl '\n'
- leading-ws '    '
- line 'if not ext:'
- nl '\n'
- leading-ws '        '
- line 'fileName = fileName + ".leo"'
- nl '\n'
- leading-ws '        '
- line 'relativeFileName = relativeFileName + ".leo"'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'return fileName,relativeFileName'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20041124083125:completeFileName (leo.py)'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.1624:createFrame (leo.py)'
- nl '\n'
- line 'def createFrame (fileName,relativeFileName):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '"""Create a LeoFrame during Leo\'s startup process."""'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Try to create a frame for the file.'
- nl '\n'
- leading-ws '    '
- line 'if fileName and g.os_path_exists(fileName):'
- nl '\n'
- leading-ws '        '
- line 'ok, frame = g.openWithFileName(relativeFileName or fileName,None)'
- nl '\n'
- leading-ws '        '
- line 'if ok: return frame.c,frame'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Create a _new_ frame &amp; indicate it is the startup window.'
- nl '\n'
- leading-ws '    '
- line 'c,frame = g.app.newLeoCommanderAndFrame('
- nl '\n'
- leading-ws '        '
- line 'fileName=fileName,'
- nl '\n'
- leading-ws '        '
- line 'relativeFileName=relativeFileName,'
- nl '\n'
- leading-ws '        '
- line 'initEditCommanders=True)'
- nl '\n'
- leading-ws '    '
- line 'assert frame.c == c and c.frame == frame'
- nl '\n'
- leading-ws '    '
- line 'frame.setInitialWindowGeometry()'
- nl '\n'
- leading-ws '    '
- line 'frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)'
- nl '\n'
- leading-ws '    '
- line 'frame.startupWindow = True'
- nl '\n'
- leading-ws '    '
- line 'if c.chapterController:'
- nl '\n'
- leading-ws '        '
- line 'c.chapterController.finishCreate()'
- nl '\n'
- leading-ws '        '
- line 'c.setChanged(False) # Clear the changed flag set when creating the @chapters node.'
- nl '\n'
- leading-ws '    '
- line "# Call the 'new' hook for compatibility with plugins."
- nl '\n'
- leading-ws '    '
- line 'g.doHook("new",old_c=None,c=c,new_c=c)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# New in Leo 4.4.8: create the menu as late as possible so it can use user commands.'
- nl '\n'
- leading-ws '    '
- line 'p = c.currentPosition()'
- nl '\n'
- leading-ws '    '
- line 'if not g.doHook("menu1",c=frame.c,p=p,v=p):'
- nl '\n'
- leading-ws '        '
- line 'frame.menu.createMenuBar(frame)'
- nl '\n'
- leading-ws '        '
- line 'c.updateRecentFiles(relativeFileName or fileName)'
- nl '\n'
- leading-ws '        '
- line 'g.doHook("menu2",c=frame.c,p=p,v=p)'
- nl '\n'
- leading-ws '        '
- line 'g.doHook("after-create-leo-frame",c=c)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# Report the failure to open the file.'
- nl '\n'
- leading-ws '    '
- line 'if fileName:'
- nl '\n'
- leading-ws '        '
- line 'g.es("file not found:",fileName)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'return c,frame'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.1624:createFrame (leo.py)'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)'
- nl '\n'
- line 'def createNullGuiWithScript (script):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGui as leoGui'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'g.app.batchMode = True'
- nl '\n'
- leading-ws '    '
- line 'g.app.gui = leoGui.nullGui("nullGui")'
- nl '\n'
- leading-ws '    '
- line 'g.app.gui.setScript(script)'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.1939:getBatchScript'
- nl '\n'
- line 'def getBatchScript ():'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- leading-ws '    '
- line 'windowFlag = False'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'name = None ; i = 1 # Skip the dummy first arg.'
- nl '\n'
- leading-ws '    '
- line 'while i + 1 &lt; len(sys.argv):'
- nl '\n'
- leading-ws '        '
- line 'arg = sys.argv[i].strip().lower()'
- nl '\n'
- leading-ws '        '
- line 'if arg in ("--script","-script"):'
- nl '\n'
- leading-ws '            '
- line 'name = sys.argv[i+1].strip() ; break'
- nl '\n'
- leading-ws '        '
- line 'if arg in ("--script-window","-script-window"):'
- nl '\n'
- leading-ws '            '
- line 'name = sys.argv[i+1].strip() ; windowFlag = True ; break'
- nl '\n'
- leading-ws '        '
- line 'i += 1'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if not name:'
- nl '\n'
- leading-ws '        '
- line 'return None, windowFlag'
- nl '\n'
- leading-ws '    '
- line 'name = g.os_path_join(g.app.loadDir,name)'
- nl '\n'
- leading-ws '    '
- line 'try:'
- nl '\n'
- leading-ws '        '
- line 'f = None'
- nl '\n'
- leading-ws '        '
- line 'try:'
- nl '\n'
- leading-ws '            '
- line "f = open(name,'r')"
- nl '\n'
- leading-ws '            '
- line 'script = f.read()'
- nl '\n'
- leading-ws '            '
- line '# g.trace("script",script)'
- nl '\n'
- leading-ws '        '
- line 'except IOError:'
- nl '\n'
- leading-ws '            '
- line 'g.es_print("can not open script file:",name, color="red")'
- nl '\n'
- leading-ws '            '
- line 'script = None'
- nl '\n'
- leading-ws '    '
- line 'finally:'
- nl '\n'
- leading-ws '        '
- line 'if f: f.close()'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "# Bug fix 4/27/07: Don't put a return in a finally clause."
- nl '\n'
- leading-ws '    '
- line 'return script, windowFlag'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.1939:getBatchScript'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20071117060958:getFileName'
- nl '\n'
- line 'def getFileName ():'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "'''Return the filename."
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "This is a hack for when Leo is started from a script that also starts IPython.'''"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '# No imports here.'
- nl '\n'
- leading-ws '    '
- line "# print 'leo.py:getFileName',sys.argv"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'i = 1'
- nl '\n'
- leading-ws '    '
- line "while i &lt; len(sys.argv) and sys.argv[i].endswith('.py'):"
- nl '\n'
- leading-ws '        '
- line 'i += 1'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if sys.platform=="win32": # Windows'
- nl '\n'
- leading-ws '        '
- line "result = ' '.join(sys.argv[i:])"
- nl '\n'
- leading-ws '    '
- line 'else:'
- nl '\n'
- leading-ws '        '
- line 'result = sys.argv[i]'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'return result'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20071117060958:getFileName'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.1936:isValidPython'
- nl '\n'
- line 'def isValidPython():'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import traceback'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "if sys.platform == 'cli':"
- nl '\n'
- leading-ws '        '
- line 'return True'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'message = """\\'
- nl '\n'
- line 'Leo requires Python 2.2.1 or higher.'
- nl '\n'
- line 'You may download Python from http://python.org/download/'
- nl '\n'
- line '"""'
- nl '\n'
- leading-ws '    '
- line 'try:'
- nl '\n'
- leading-ws '        '
- line '# This will fail if True/False are not defined.'
- nl '\n'
- leading-ws '        '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- leading-ws '    '
- line 'except ImportError:'
- nl '\n'
- leading-ws '        '
- line 'print "isValidPython: can not import leo.core.leoGlobals"'
- nl '\n'
- leading-ws '        '
- line 'return 0'
- nl '\n'
- leading-ws '    '
- line 'except:'
- nl '\n'
- leading-ws '        '
- line 'print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals"'
- nl '\n'
- leading-ws '        '
- line 'traceback.print_exc()'
- nl '\n'
- leading-ws '        '
- line 'return 0'
- nl '\n'
- leading-ws '    '
- line 'try:'
- nl '\n'
- leading-ws '        '
- line "version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])"
- nl '\n'
- leading-ws '        '
- line "ok = g.CheckVersion(version,'2.2.1')"
- nl '\n'
- leading-ws '        '
- line 'if not ok:'
- nl '\n'
- leading-ws '            '
- line 'print message'
- nl '\n'
- leading-ws '            '
- line 'g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")'
- nl '\n'
- leading-ws '        '
- line 'return ok'
- nl '\n'
- leading-ws '    '
- line 'except Exception:'
- nl '\n'
- leading-ws '        '
- line 'print "isValidPython: unexpected exception: g.CheckVersion"'
- nl '\n'
- leading-ws '        '
- line 'traceback.print_exc()'
- nl '\n'
- leading-ws '        '
- line 'return 0'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.1936:isValidPython'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20031218072017.2607:profile_leo'
- nl '\n'
- sentinel '#@'
- sentinel-val '+at '
- nl '\n'
- sentinel '#@'
- sentinel-val 'nonl'
- nl '\n'
- line '# To gather statistics, do the following in a Python window, not idle:'
- nl '\n'
- line '# '
- nl '\n'
- line '#     import leo'
- nl '\n'
- line '#     import leo.core.runLeo as runLeo'
- nl '\n'
- line '#     runLeo.profile_leo()  (this runs leo)'
- nl '\n'
- line '#     load leoDocs.leo (it is very slow)'
- nl '\n'
- line '#     quit Leo.'
- nl '\n'
- sentinel '#@'
- sentinel-val '-at'
- nl '\n'
- sentinel '#@'
- sentinel-val '@c'
- nl '\n'
- nl '\n'
- line 'def profile_leo ():'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '"""Gather and print statistics about Leo"""'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import cProfile as profile'
- nl '\n'
- leading-ws '    '
- line 'import pstats'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'name = r"c:\\leo.repo\\trunk\\leo\\test\\leoProfile.txt"'
- nl '\n'
- leading-ws '    '
- line "# name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "profile.run('leo.run()',name)"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'p = pstats.Stats(name)'
- nl '\n'
- leading-ws '    '
- line 'p.strip_dirs()'
- nl '\n'
- leading-ws '    '
- line "p.sort_stats('module','calls','time','name')"
- nl '\n'
- leading-ws '    '
- line "reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'"
- nl '\n'
- leading-ws '    '
- line 'p.print_stats(reFiles)'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.2607:profile_leo'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20041130093254:reportDirectories'
- nl '\n'
- line 'def reportDirectories(verbose):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if verbose:'
- nl '\n'
- leading-ws '        '
- line 'for kind,theDir in ('
- nl '\n'
- leading-ws '            '
- line '("load",g.app.loadDir),'
- nl '\n'
- leading-ws '            '
- line '("global config",g.app.globalConfigDir),'
- nl '\n'
- leading-ws '            '
- line '("home",g.app.homeDir),'
- nl '\n'
- leading-ws '        '
- line '):'
- nl '\n'
- leading-ws '            '
- line 'g.es("%s dir:" % (kind),theDir,color="blue")'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20041130093254:reportDirectories'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20080521132317.2:scanForOneConfigOption'
- nl '\n'
- line 'def scanForOneConfigOption(g):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line '\'\'\'Set g.app.oneConfigFilename if "--one-config=&lt;path&gt;" appears in sys.argv.\'\'\''
- nl '\n'
- nl '\n'
- leading-ws '    '
- line "tag = '--one-config=' ; n = len(tag)"
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'for s in sys.argv:'
- nl '\n'
- leading-ws '        '
- line 'if s.startswith(tag):'
- nl '\n'
- leading-ws '            '
- line 'path = s[n:]'
- nl '\n'
- leading-ws '            '
- line 'path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))'
- nl '\n'
- leading-ws '            '
- line 'if g.os_path_exists(path):'
- nl '\n'
- leading-ws '                '
- line 'g.app.oneConfigFilename = path'
- nl '\n'
- leading-ws '                '
- line 'sys.argv.remove(s)'
- nl '\n'
- leading-ws '                '
- line 'break'
- nl '\n'
- leading-ws '            '
- line 'else:'
- nl '\n'
- leading-ws '                '
- line "g.es_print('Invalid option: file not found:',s,color='red')"
- nl '\n'
- leading-ws '                '
- line 'break'
- nl '\n'
- sentinel '#@'
- sentinel-val 'nonl'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20080521132317.2:scanForOneConfigOption'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20070930194949:startJyleo (leo.py)'
- nl '\n'
- line 'def startJyleo (g):'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoSwingFrame as leoSwingFrame'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoSwingUtils as leoSwingUtils'
- nl '\n'
- leading-ws '    '
- line 'import java.awt as awt'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'if 1:'
- nl '\n'
- leading-ws '        '
- line 'g.app.splash = None'
- nl '\n'
- leading-ws '    '
- line 'else:'
- nl '\n'
- leading-ws '        '
- line 'g.app.splash = splash = leoSwingFrame.leoSplash()'
- nl '\n'
- leading-ws '        '
- line 'awt.EventQueue.invokeAndWait(splash)'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'gct = leoSwingUtils.GCEveryOneMinute()'
- nl '\n'
- leading-ws '    '
- line 'gct.run()'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'tk = awt.Toolkit.getDefaultToolkit()'
- nl '\n'
- leading-ws '    '
- line 'tk.setDynamicLayout(True)'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20070930194949:startJyleo (leo.py)'
- nl '\n'
- sentinel '#@'
- sentinel-val '+node:ekr.20040411081633:startPsyco'
- nl '\n'
- line 'def startPsyco ():'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'import leo.core.leoGlobals as g'
- nl '\n'
- nl '\n'
- leading-ws '    '
- line 'try:'
- nl '\n'
- leading-ws '        '
- line 'import psyco'
- nl '\n'
- leading-ws '        '
- line 'if 0:'
- nl '\n'
- leading-ws '            '
- line 'theFile = r"c:\\prog\\test\\psycoLog.txt"'
- nl '\n'
- leading-ws '            '
- line 'g.es("psyco now logging to:",theFile,color="blue")'
- nl '\n'
- leading-ws '            '
- line 'psyco.log(theFile)'
- nl '\n'
- leading-ws '            '
- line 'psyco.profile()'
- nl '\n'
- leading-ws '        '
- line 'psyco.full()'
- nl '\n'
- leading-ws '        '
- line 'g.es("psyco now running",color="blue")'
- nl '\n'
- leading-ws '    '
- line 'except ImportError:'
- nl '\n'
- leading-ws '        '
- line 'g.app.use_psyco = False'
- nl '\n'
- leading-ws '    '
- line 'except:'
- nl '\n'
- leading-ws '        '
- line 'print "unexpected exception importing psyco"'
- nl '\n'
- leading-ws '        '
- line 'g.es_exception()'
- nl '\n'
- leading-ws '        '
- line 'g.app.use_psyco = False'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20040411081633:startPsyco'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20070930060755:utils'
- nl '\n'
- sentinel '#@'
- sentinel-val '-others'
- nl '\n'
- nl '\n'
- line 'def main():'
- nl '\n'
- leading-ws '    '
- line 'if len(sys.argv) &gt; 1:'
- nl '\n'
- leading-ws '        '
- line 'run(getFileName())'
- nl '\n'
- leading-ws '    '
- line 'else:'
- nl '\n'
- leading-ws '        '
- line 'run()'
- nl '\n'
- nl '\n'
- line 'if __name__ == "__main__":'
- nl '\n'
- leading-ws '    '
- line 'main()'
- nl '\n'
- nl '\n'
- sentinel '#@'
- sentinel-val '-node:ekr.20031218072017.2605:@thin runLeo.py '
- nl '\n'
- sentinel '#@'
- sentinel-val '-leo'
- nl '\n'
- eof ''
-ok: 1
-</t>
 <t tx="ekr.20080531141227.1">path = r'c:\leo.repo\trunk\leo\core\runLeo.py'
 f = file(path)
 s = f.read()
 f.close()</t>
-<t tx="ekr.20080531172649.1"> line '#! /usr/bin/env python\n'
- sent '#@+leo-ver=4-thin\n'
-   kind '+leo'
-   extra '-ver=4-thin'
- sent '#@+node:ekr.20031218072017.2605:@thin runLeo.py \n'
-   kind '+node'
-   gnx ':ekr.20031218072017.2605:'
-   extra '@thin runLeo.py '
- sent '#@@first\n'
-   kind '@first'
- line '\n'
- line '"""Entry point for Leo in Python."""\n'
- line '\n'
- sent '#@@language python\n'
-   kind '@language'
-   extra ' python'
- sent '#@@tabwidth -4\n'
-   kind '@tabwidth'
-   extra ' -4'
- line '\n'
- line '#@&lt;&lt; Import pychecker &gt;&gt;\n'
- sent '#@+node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;\n'
-   kind '+node'
-   gnx ':ekr.20031218072017.2606:'
-   extra '&lt;&lt; Import pychecker &gt;&gt;'
- sent '#@@color\n'
-   kind '@color'
- line '\n'
- line "# __pychecker__ = '--no-argsused'\n"
- line '\n'
- line '# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.\n'
- line '\n'
- line '# New in Leo 4.4.5: use pylint instead of pychecker.\n'
- line '\n'
- line '# if 0: # Set to 1 for lint-like testing.\n'
- line '      # # Use t23.bat: only on Python 2.3.\n'
- line '\n'
- line '    # try:\n'
- line '        # import pychecker.checker\n'
- line '        # # This works.  We may want to set options here...\n'
- line '        # # from pychecker import Config \n'
- line '        # # print pychecker\n'
- line '        # print ; print "Warning (in leo.py): pychecker.checker running..." ; print\n'
- line '    # except Exception:\n'
- line "        # print ; print 'Can not import pychecker' ; print\n"
- sent '#@-node:ekr.20031218072017.2606:&lt;&lt; Import pychecker &gt;&gt;\n'
-   kind '-node'
-   gnx ':ekr.20031218072017.2606:'
-   extra '&lt;&lt; Import pychecker &gt;&gt;'
- sent '#@nl\n'
-   kind 'nl'
- line '\n'
- line "# __pychecker__ = '--no-import --no-reimportself --no-reimport'\n"
- line '    # Suppress import errors: this module must do strange things with imports.\n'
- line '\n'
- 
- [snip]
- 
- sent '#@-node:ekr.20040411081633:startPsyco\n'
-   kind '-node'
-   gnx ':ekr.20040411081633:'
-   extra 'startPsyco'
- sent '#@-node:ekr.20070930060755:utils\n'
-   kind '-node'
-   gnx ':ekr.20070930060755:'
-   extra 'utils'
- sent '#@-others\n'
-   kind '-others'
- line '\n'
- line 'def main():\n'
- line '    if len(sys.argv) &gt; 1:\n'
- line '        run(getFileName())\n'
- line '    else:\n'
- line '        run()\n'
- line '\n'
- line 'if __name__ == "__main__":\n'
- line '    main()\n'
- line '\n'
- sent '#@-node:ekr.20031218072017.2605:@thin runLeo.py \n'
-   kind '-node'
-   gnx ':ekr.20031218072017.2605:'
-   extra '@thin runLeo.py '
- sent '#@-leo\n'
-   kind '-leo'
- eof ''
-ok: 1
+<t tx="ekr.20080601131331.2">@others
+
+import leo.core.leoAtFile as leoAtFile
+
+try:
+    import mx.TextTools as tt
+    # from mx.TextTools import * # Required for tags.
+except ImportError:
+    tt = None
+
+if tt:
+    g.funcToMethod(scanText4_mxTextTools,leoAtFile.atFile,'scanText4')
+    g.es_print('override: scanText4')
+</t>
+<t tx="ekr.20080601131331.3">def scanText4_mxTextTools (self,theFile,fileName,p,verbose=False):
+
+    """Scan a 4.x derived file non-recursively."""
+
+    # __pychecker__ = '--no-argsused' # fileName,verbose might be used for debugging.
+
+    at = self
+    &lt;&lt; init ivars for scanText4 &gt;&gt;
+    &lt;&lt; define mxTextTools tables &gt;&gt;
+    &lt;&lt; define sentinelDict &gt;&gt;
+    
+    # Temp: define helpers
+    s = theFile.read()
+    # s = s.replace('\n\r','\n').replace('\r\n','\n').replace('\r','\n')
+    s = g.toUnicode(s,self.encoding)
+    ok,taglist,nextindex = tt.tag(s,lineTable)
+    for z in taglist:
+        printItem(s,z,level=0)
+        obj,lt_index,rt_index,subtag = z
+        if obj == 'line':
+            doLine(s[lt_index:rt_index])
+        else:
+            doSentinel(obj,s[lt_index:rt_index],subtag)
+    print 'ok:',ok
+    return at.lastLines
+    # while at.errors == 0 and not at.done:
+        # s = at.readLine(theFile)
+        # self.lineNumber += 1
+        # if len(s) == 0: break
+        # kind = at.sentinelKind4(s)
+        # # g.trace(at.sentinelName(kind),s.strip())
+        # if kind == at.noSentinel:
+            # i = 0
+        # else:
+            # i = at.skipSentinelStart4(s,0)
+        # func = at.dispatch_dict[kind]
+        # func(s,i)
+
+    if at.errors == 0 and not at.done:
+        &lt;&lt; report unexpected end of text &gt;&gt;
+
+    # return at.lastLines
+</t>
+<t tx="ekr.20080601131331.4"># Unstacked ivars...
+at.cloneSibCount = 0
+at.done = False
+at.inCode = True
+at.indent = 0 # Changed only for sentinels.
+at.lastLines = [] # The lines after @-leo
+at.leadingWs = ""
+at.lineNumber = 0
+at.root = p.copy() # Bug fix: 12/10/05
+at.rootSeen = False
+at.updateWarningGiven = False
+
+# Stacked ivars...
+at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
+at.out = [] ; at.outStack = []
+at.t = p.v.t ; at.tStack = []
+at.lastThinNode = p.v ; at.thinNodeStack = [p.v]
+
+if 0: # Useful for debugging.
+    if hasattr(p.v.t,"tnodeList"):
+        g.trace("len(tnodeList)",len(p.v.t.tnodeList),p.v)
+    else:
+        g.trace("no tnodeList",p.v)
+
+# g.trace(at.startSentinelComment)
+</t>
+<t tx="ekr.20080601131331.5">assert(at.endSentinelStack)
+
+at.readError(
+    "Unexpected end of file. Expecting %s sentinel" %
+    at.sentinelName(at.endSentinelStack[-1]))
+</t>
+<t tx="ekr.20080601131331.6">def readNormalLine (self,s,i):
+
+    at = self
+
+    if at.inCode:
+        if not at.raw:
+            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
+        at.out.append(s)
+    else:
+        &lt;&lt; Skip the leading stuff &gt;&gt;
+        &lt;&lt; Append s to docOut &gt;&gt;
+</t>
+<t tx="ekr.20080601131331.7">if len(at.endSentinelComment) == 0:
+    # Skip the single comment delim and a blank.
+    i = g.skip_ws(s,0)
+    if g.match(s,i,at.startSentinelComment):
+        i += len(at.startSentinelComment)
+        if g.match(s,i," "): i += 1
+else:
+    i = at.skipIndent(s,0,at.indent)
+</t>
+<t tx="ekr.20080601131331.8">line = s[i:-1] # remove newline for rstrip.
+
+if line == line.rstrip():
+    # no trailing whitespace: the newline is real.
+    at.docOut.append(line + '\n')
+else:
+    # trailing whitespace: the newline is fake.
+    at.docOut.append(line)
+</t>
+<t tx="ekr.20080601131331.9"></t>
+<t tx="ekr.20080601131331.10">def readStartAll (self,s,i):
+
+    """Read an @+all sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert(g.match(s,j,"@+all"))
+    else:
+        assert(g.match(s,j,"+all"))
+
+    # Make sure that the generated at-all is properly indented.
+    at.out.append(leadingWs + "@all\n")
+
+    at.endSentinelStack.append(at.endAll)
+</t>
+<t tx="ekr.20080601131331.11">def readStartAt (self,s,i):
+    """Read an @+at sentinel."""
+    at = self ; assert(g.match(s,i,"+at"))
+    if 0:# new code: append whatever follows the sentinel.
+        i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
+        at.out.append('@' + follow) ; at.docOut = []
+    else:
+        i += 3 ; j = g.skip_ws(s,i) ; ws = s[i:j]
+        at.docOut = ['@' + ws + '\n'] # This newline may be removed by a following @nonl
+    at.inCode = False
+    at.endSentinelStack.append(at.endAt)
+
+def readStartDoc (self,s,i):
+    """Read an @+doc sentinel."""
+    at = self ; assert(g.match(s,i,"+doc"))
+    if 0: # new code: append whatever follows the sentinel.
+        i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
+        at.out.append('@' + follow) ; at.docOut = []
+    else:
+        i += 4 ; j = g.skip_ws(s,i) ; ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n'] # This newline may be removed by a following @nonl
+    at.inCode = False
+    at.endSentinelStack.append(at.endDoc)
+
+def skipToEndSentinel(self,s,i):
+    at = self
+    end = at.endSentinelComment
+    if end:
+        j = s.find(end,i)
+        if j == -1:
+            return g.skip_to_end_of_line(s,i)
+        else:
+            return j
+    else:
+        return g.skip_to_end_of_line(s,i)
+</t>
+<t tx="ekr.20080601131331.12">def readStartLeo (self,s,i):
+
+    """Read an unexpected @+leo sentinel."""
+
+    at = self
+    assert(g.match(s,i,"+leo"))
+    at.readError("Ignoring unexpected @+leo sentinel")
+</t>
+<t tx="ekr.20080601131331.13">def readStartMiddle (self,s,i):
+
+    """Read an @+middle sentinel."""
+
+    at = self
+
+    at.readStartNode(s,i,middle=True)
+</t>
+<t tx="ekr.20080601131331.14">def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    at = self
+    if middle:
+        assert(g.match(s,i,"+middle:"))
+        i += 8
+    else:
+        assert(g.match(s,i,"+node:"))
+        i += 6
+
+    if at.thinFile:
+        &lt;&lt; set gnx and bump i &gt;&gt;
+    &lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;
+    if not at.root_seen:
+        at.root_seen = True
+        &lt;&lt; Check the filename in the sentinel &gt;&gt;
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out) ; at.out = []
+    at.tStack.append(at.t)
+
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.t = p.v.t
+    elif at.thinFile:
+        at.thinNodeStack.append(at.lastThinNode)
+        at.lastThinNode = v = at.createThinChild4(gnx,headline)
+        at.t = v.t
+    else:
+        at.t = at.findChild4(headline)
+
+    at.endSentinelStack.append(at.endNode)
+</t>
+<t tx="ekr.20080601131331.15"># We have skipped past the opening colon of the gnx.
+j = s.find(':',i)
+if j == -1:
+    g.trace("no closing colon",g.get_line(s,i))
+    at.readError("Expecting gnx in @+node sentinel")
+    return # 5/17/04
+else:
+    gnx = s[i:j]
+    i = j + 1 # Skip the i
+</t>
+<t tx="ekr.20080601131331.16"># Set headline to the rest of the line.
+# Don't strip leading whitespace."
+
+if len(at.endSentinelComment) == 0:
+    headline = s[i:-1].rstrip()
+else:
+    k = s.rfind(at.endSentinelComment,i)
+    headline = s[i:k].rstrip() # works if k == -1
+
+# Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
+if at.startSentinelComment[-1:] == '@':
+    headline = headline.replace('@@','@')
+</t>
+<t tx="ekr.20080601131331.17">if 0: # This doesn't work so well in cooperative environments.
+    if not at.importing:
+
+        h = headline.strip()
+
+        if h[:5] == "@file":
+            i,junk,junk = g.scanAtFileOptions(h)
+            fileName = string.strip(h[i:])
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        elif h[:8] == "@rawfile":
+            fileName = string.strip(h[8:])
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        else:
+            at.readError("Missing @file in root @node sentinel")
+</t>
+<t tx="ekr.20080601131331.18">def readStartOthers (self,s,i):
+
+    """Read an @+others sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert(g.match(s,j,"@+others"))
+    else:
+        assert(g.match(s,j,"+others"))
+
+    # Make sure that the generated at-others is properly indented.
+    at.out.append(leadingWs + "@others\n")
+
+    at.endSentinelStack.append(at.endOthers)
+</t>
+<t tx="ekr.20080601131331.19"></t>
+<t tx="ekr.20080601131331.20">def readEndAll (self,unused_s,unused_i):
+
+    """Read an @-all sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.popSentinelStack(at.endAll)
+</t>
+<t tx="ekr.20080601131331.21">def readEndAt (self,unused_s,unused_i):
+
+    """Read an @-at sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.readLastDocLine("@")
+    at.popSentinelStack(at.endAt)
+    at.inCode = True
+
+def readEndDoc (self,unused_s,unused_i):
+
+    """Read an @-doc sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.readLastDocLine("@doc")
+    at.popSentinelStack(at.endDoc)
+    at.inCode = True
+</t>
+<t tx="ekr.20080601131331.22">def readEndLeo (self,unused_s,unused_i):
+
+    """Read an @-leo sentinel."""
+
+    # __pychecker__ = '--no-argsused' # i not used, but must be present.
+
+    at = self
+
+    # Ignore everything after @-leo.
+    # Such lines were presumably written by @last.
+    while 1:
+        s = at.readLine(at.inputFile)
+        if len(s) == 0: break
+        at.lastLines.append(s) # Capture all trailing lines, even if empty.
+
+    at.done = True
+</t>
+<t tx="ekr.20080601131331.23">def readEndMiddle (self,s,i):
+
+    """Read an @-middle sentinel."""
+
+    at = self
+
+    at.readEndNode(s,i,middle=True)
+</t>
+<t tx="ekr.20080601131331.24">def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle end-of-node processing for @-others and @-ref sentinels."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    s = ''.join(at.out)
+    s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
+
+    if at.importing:
+        at.t._bodyString = s
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if hasattr(at.t,"tempBodyString") and s != at.t.tempBodyString:
+            old = at.t.tempBodyString
+        elif at.t.hasBody() and s != at.t.getBody():
+            old = at.t.getBody()
+        else:
+            old = None
+        # 9/4/04: Suppress this warning for the root: @first complicates matters.
+        if old and not g.app.unitTesting and at.t != at.root.t:
+            &lt;&lt; indicate that the node has been changed &gt;&gt;
+        at.t.tempBodyString = s
+
+    # Indicate that the tnode has been set in the derived file.
+    at.t.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.t = at.tStack.pop()
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    at.popSentinelStack(at.endNode)
+</t>
+<t tx="ekr.20080601131331.25">if at.perfectImportRoot:
+    &lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;
+    # p.setMarked()
+    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
+    at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    if 0: # New in 4.4.1 final.  This warning can be very confusing.
+        if not at.updateWarningGiven:
+            at.updateWarningGiven = True
+            # print "***",at.t,at.root.t
+            g.es("warning: updating changed text in",at.root.headString(),color="blue")
+    # Just set the dirty bit. Ancestors will be marked dirty later.
+    at.t.setDirty()
+    if 1: # We must avoid the full setChanged logic here!
+        c.changed = True
+    else: # Far too slow for mass changes.
+        at.c.setChanged(True)</t>
+<t tx="ekr.20080601131331.26"># Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree_iter():
+    if p.v.t == at.t:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        print ; print '-' * 40
+        print "old",len(old)
+        for line in g.splitLines(old):
+            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
+            print repr(str(line))
+        print ; print '-' * 40
+        print "new",len(s)
+        for line in g.splitLines(s):
+            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
+            print repr(str(line))
+        print ; print '-' * 40
+else:
+    # This should never happen.
+    g.es("correcting hidden node: t=",repr(at.t),color="red")
+</t>
+<t tx="ekr.20080601131331.27">def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
+
+    at = self
+    at.popSentinelStack(at.endOthers)
+</t>
+<t tx="ekr.20080601131331.28">def readLastDocLine (self,tag):
+
+    """Read the @c line that terminates the doc part.
+    tag is @doc or @."""
+
+    at = self
+    end = at.endSentinelComment
+    start = at.startSentinelComment
+    s = ''.join(at.docOut)
+
+    # Remove the @doc or @space.  We'll add it back at the end.
+    if g.match(s,0,tag):
+        s = s[len(tag):]
+    else:
+        at.readError("Missing start of doc part")
+        return
+
+    # Bug fix: Append any whitespace following the tag to tag.
+    while s and s[0] in (' ','\t'):
+        tag = tag + s[0] ; s = s[1:]
+
+    if end:
+        # Remove leading newline.
+        if s[0] == '\n': s = s[1:]
+        # Remove opening block delim.
+        if g.match(s,0,start):
+            s = s[len(start):]
+        else:
+            at.readError("Missing open block comment")
+            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
+            return
+        # Remove trailing newline.
+        if s[-1] == '\n': s = s[:-1]
+        # Remove closing block delim.
+        if s[-len(end):] == end:
+            s = s[:-len(end)]
+        else:
+            at.readError("Missing close block comment")
+            g.trace(s)
+            g.trace(end)
+            g.trace(start)
+            return
+
+    at.out.append(tag + s)
+    at.docOut = []
+</t>
+<t tx="ekr.20080601131331.29"></t>
+<t tx="ekr.20080601131331.30">def  ignoreOldSentinel (self,s,unused_i):
+
+    """Ignore an 3.x sentinel."""
+
+    # __pychecker__ = '--no-argsused' # i unused, but must be present.
+
+    g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+</t>
+<t tx="ekr.20080601131331.31">def  readAfterRef (self,s,i):
+
+    """Read an @afterref sentinel."""
+
+    at = self
+    assert(g.match(s,i,"afterref"))
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile)
+    at.out.append(s)
+</t>
+<t tx="ekr.20080601131331.32">def readClone (self,s,i):
+
+    at = self ; tag = "clone"
+
+    assert(g.match(s,i,tag))
+
+    # Skip the tag and whitespace.
+    i = g.skip_ws(s,i+len(tag))
+
+    # Get the clone count.
+    junk,val = g.skip_long(s,i)
+
+    if val == None:
+        at.readError("Invalid count in @clone sentinel")
+    else:
+        at.cloneSibCount = val
+</t>
+<t tx="ekr.20080601131331.33">def readComment (self,s,i):
+
+    """Read an @comment sentinel."""
+
+    assert(g.match(s,i,"comment"))
+
+    # Just ignore the comment line!
+</t>
+<t tx="ekr.20080601131331.34">def readDelims (self,s,i):
+
+    """Read an @delims sentinel."""
+
+    at = self
+    assert(g.match(s,i-1,"@delims"))
+
+    # Skip the keyword and whitespace.
+    i0 = i-1
+    i = g.skip_ws(s,i-1+7)
+
+    # Get the first delim.
+    j = i
+    while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+        i += 1
+
+    if j &lt; i:
+        at.startSentinelComment = s[j:i]
+        # print "delim1:", at.startSentinelComment
+
+        # Get the optional second delim.
+        j = i = g.skip_ws(s,i)
+        while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+            i += 1
+        end = g.choose(j&lt;i,s[j:i],"")
+        i2 = g.skip_ws(s,i)
+        if end == at.endSentinelComment and (i2 &gt;= len(s) or g.is_nl(s,i2)):
+            at.endSentinelComment = "" # Not really two params.
+            line = s[i0:j]
+            line = line.rstrip()
+            at.out.append(line+'\n')
+        else:
+            at.endSentinelComment = end
+            # print "delim2:",end
+            line = s[i0:i]
+            line = line.rstrip()
+            at.out.append(line+'\n')
+    else:
+        at.readError("Bad @delims")
+        # Append the bad @delims line to the body text.
+        at.out.append("@delims")
+</t>
+<t tx="ekr.20080601131331.35">def readDirective (self,s,i):
+
+    """Read an @@sentinel."""
+
+    at = self
+    assert(g.match(s,i,"@")) # The first '@' has already been eaten.
+
+    # g.trace(g.get_line(s,i))
+
+    if g.match_word(s,i,"@raw"):
+        at.raw = True
+    elif g.match_word(s,i,"@end_raw"):
+        at.raw = False
+
+    e = at.endSentinelComment
+    s2 = s[i:]
+    if len(e) &gt; 0:
+        k = s.rfind(e,i)
+        if k != -1:
+            s2 = s[i:k] + '\n'
+
+    start = at.startSentinelComment
+    if start and len(start) &gt; 0 and start[-1] == '@':
+        s2 = s2.replace('@@','@')
+
+    if 0: # New in 4.2.1: never change comment delims here...
+        if g.match_word(s,i,"@language"):
+            &lt;&lt; handle @language &gt;&gt;
+        elif g.match_word(s,i,"@comment"):
+            &lt;&lt; handle @comment &gt;&gt;
+
+    at.out.append(s2)
+</t>
+<t tx="ekr.20080601131331.36"># Skip the keyword and whitespace.
+i += len("@language")
+i = g.skip_ws(s,i)
+j = g.skip_c_id(s,i)
+language = s[i:j]
+
+delim1,delim2,delim3 = g.set_delims_from_language(language)
+
+g.trace(g.get_line(s,i))
+g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @language sentinel:",line,color="red")
+</t>
+<t tx="ekr.20080601131331.37">j = g.skip_line(s,i)
+line = s[i:j]
+delim1,delim2,delim3 = g.set_delims_from_string(line)
+
+#g.trace(g.get_line(s,i))
+#g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @comment sentinel:",line,color="red")
+</t>
+<t tx="ekr.20080601131331.38">def readNl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert(g.match(s,i,"nl"))
+
+    if at.inCode:
+        at.out.append('\n')
+    else:
+        at.docOut.append('\n')
+</t>
+<t tx="ekr.20080601131331.39">def readNonl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert(g.match(s,i,"nonl"))
+
+    if at.inCode:
+        s = ''.join(at.out)
+        if s and s[-1] == '\n':
+            at.out = [s[:-1]]
+        else:
+            g.trace("out:",s)
+            at.readError("unexpected @nonl directive in code part")
+    else:
+        s = ''.join(at.pending)
+        if s:
+            if s and s[-1] == '\n':
+                at.pending = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in pending doc part")
+        else:
+            s = ''.join(at.docOut)
+            if s and s[-1] == '\n':
+                at.docOut = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in doc part")
+</t>
+<t tx="ekr.20080601131331.40">@ The sentinel contains an @ followed by a section name in angle brackets.  This code is different from the code for the @@ sentinel: the expansion of the reference does not include a trailing newline.
+@c
+
+def readRef (self,s,i):
+
+    """Handle an @&lt;&lt; sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    assert(g.match(s,j,"&lt;&lt;"))
+
+    if len(at.endSentinelComment) == 0:
+        line = s[i:-1] # No trailing newline
+    else:
+        k = s.find(at.endSentinelComment,i)
+        line = s[i:k] # No trailing newline, whatever k is.
+
+    # Undo the cweb hack.
+    start = at.startSentinelComment
+    if start and len(start) &gt; 0 and start[-1] == '@':
+        line = line.replace('@@','@')
+
+    at.out.append(line)
+</t>
+<t tx="ekr.20080601131331.41">def readVerbatim (self,s,i):
+
+    """Read an @verbatim sentinel."""
+
+    at = self
+    assert(g.match(s,i,"verbatim"))
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile) 
+    i = at.skipIndent(s,0,at.indent)
+    at.out.append(s[i:])
+</t>
+<t tx="ekr.20080601131331.42">def badEndSentinel (self,expectedKind):
+
+    """Handle a mismatched ending sentinel."""
+
+    at = self
+    assert(at.endSentinelStack)
+    s = "Ignoring %s sentinel.  Expecting %s" % (
+        at.sentinelName(at.endSentinelStack[-1]),
+        at.sentinelName(expectedKind))
+    at.readError(s)
+
+def popSentinelStack (self,expectedKind):
+
+    """Pop an entry from endSentinelStack and check it."""
+
+    at = self
+    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
+        at.endSentinelStack.pop()
+    else:
+        at.badEndSentinel(expectedKind)
+</t>
+<t tx="ekr.20080601132606.1">ws_charset   = tt.CharSet(' \t')
+name_charset = tt.CharSet(tt.alpha)
+
+gnxTable = (
+    (None,tt.Is,':',tt.MatchFail),
+    (None,tt.AllNotIn,':',tt.MatchFail),
+    (None,tt.Is,':',tt.MatchFail,tt.MatchOk),
+)
+
+sentinelNameTable = (
+    (None,tt.Is,'@',+1,+3),
+    (None,tt.Is,'+',+1,+2),
+    (None,tt.Is,'-',+1),
+    (None,tt.AllInCharSet,name_charset,tt.MatchFail,tt.MatchOk),
+)
+
+sentinelTable = (
+    # Start of another line.
+    # Skip ws.
+    (None,tt.AllInCharSet,ws_charset,+1),
+    # Require sentinel comment.
+    (None,tt.Word,'#@',tt.MatchFail),
+    ('kind',tt.Table,sentinelNameTable,tt.MatchFail),
+    ('gnx',tt.Table,gnxTable,+1),
+    # Everything else is the sentinel value
+    ('extra',tt.AllNotIn,'\n',+1),
+    (None,tt.Is,'\n',tt.MatchOk,tt.MatchOk),
+)
+
+normalLineTable = (
+    (None,tt.AllNotIn,'\n',+1),
+    (None,tt.Is,'\n',tt.MatchOk,tt.MatchOk),
+)
+
+lineTable = (
+    ('sent',tt.Table,sentinelTable,+1,+2),
+    ('line',tt.Table,normalLineTable,+1,+1),
+    ('eof',tt.EOF,tt.Here,-2),
+)</t>
+<t tx="ekr.20080601132606.2">def printItem(s,aList,level):
+
+    obj,lt_index,rt_index,subtag = aList
+    print '  '*level,obj,repr(s[lt_index:rt_index])
+    if subtag:
+        for z in subtag:
+            printItem(s,z,level+1)
+</t>
+<t tx="ekr.20080601134805.2"></t>
+<t tx="ekr.20080601134805.3">def doLine (self,s):
+
+    at = self
+
+    if at.inCode:
+        if not at.raw:
+            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
+        at.out.append(s)
+    else:
+        &lt;&lt; Skip the leading stuff &gt;&gt;
+        &lt;&lt; Append s to docOut &gt;&gt;
+</t>
+<t tx="ekr.20080601134805.4">if len(at.endSentinelComment) == 0:
+    # Skip the single comment delim and a blank.
+    i = g.skip_ws(s,0)
+    if g.match(s,i,at.startSentinelComment):
+        i += len(at.startSentinelComment)
+        if g.match(s,i," "): i += 1
+else:
+    i = at.skipIndent(s,0,at.indent)
+</t>
+<t tx="ekr.20080601134805.5">line = s[i:-1] # remove newline for rstrip.
+
+if line == line.rstrip():
+    # no trailing whitespace: the newline is real.
+    at.docOut.append(line + '\n')
+else:
+    # trailing whitespace: the newline is fake.
+    at.docOut.append(line)
+</t>
+<t tx="ekr.20080601134805.6">def doSentinel (self,kind,s):
+    
+    func = at.dispatch_dict[kind]
+    func(self,s)
+</t>
+<t tx="ekr.20080601134805.7">if 0:
+    @others</t>
+<t tx="ekr.20080601134805.12">sentinelDict = {
+
+    # Unpaired sentinels: 3.x and 4.x.
+    "@comment" : startComment,
+    "@delims" :  startDelims,
+    "@verbatim": startVerbatim,
+
+    # Unpaired sentinels: 3.x only.
+    "@verbatimAfterRef": startVerbatimAfterRef,
+
+    # Unpaired sentinels: 4.x only.
+    "@afterref" : startAfterRef,
+    "@clone"    : startClone,
+    "@nl"       : startNl,
+    "@nonl"     : startNonl,
+
+    # Paired sentinels: 3.x only.
+    ### "@+body":   startBody,   "@-body":   endBody,
+
+    # Paired sentinels: 3.x and 4.x.
+    "@+all":    startAll,    "@-all":    endAll,
+    "@+at":     startAt,     "@-at":     endAt,
+    "@+doc":    startDoc,    "@-doc":    endDoc,
+    "@+leo":    startLeo,    "@-leo":    endLeo,
+    "@+middle": startMiddle, "@-middle": endMiddle,
+    "@+node":   startNode,   "@-node":   endNode,
+    "@+others": startOthers, "@-others": endOthers,</t>
+<t tx="ekr.20080601134805.13"></t>
+<t tx="ekr.20080601134805.14">def readStartAll (self,s,i):
+
+    """Read an @+all sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert(g.match(s,j,"@+all"))
+    else:
+        assert(g.match(s,j,"+all"))
+
+    # Make sure that the generated at-all is properly indented.
+    at.out.append(leadingWs + "@all\n")
+
+    at.endSentinelStack.append(at.endAll)
+</t>
+<t tx="ekr.20080601134805.15">def readStartAt (self,s,i):
+    """Read an @+at sentinel."""
+    at = self ; assert(g.match(s,i,"+at"))
+    if 0:# new code: append whatever follows the sentinel.
+        i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
+        at.out.append('@' + follow) ; at.docOut = []
+    else:
+        i += 3 ; j = g.skip_ws(s,i) ; ws = s[i:j]
+        at.docOut = ['@' + ws + '\n'] # This newline may be removed by a following @nonl
+    at.inCode = False
+    at.endSentinelStack.append(at.endAt)
+
+def readStartDoc (self,s,i):
+    """Read an @+doc sentinel."""
+    at = self ; assert(g.match(s,i,"+doc"))
+    if 0: # new code: append whatever follows the sentinel.
+        i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
+        at.out.append('@' + follow) ; at.docOut = []
+    else:
+        i += 4 ; j = g.skip_ws(s,i) ; ws = s[i:j]
+        at.docOut = ["@doc" + ws + '\n'] # This newline may be removed by a following @nonl
+    at.inCode = False
+    at.endSentinelStack.append(at.endDoc)
+
+def skipToEndSentinel(self,s,i):
+    at = self
+    end = at.endSentinelComment
+    if end:
+        j = s.find(end,i)
+        if j == -1:
+            return g.skip_to_end_of_line(s,i)
+        else:
+            return j
+    else:
+        return g.skip_to_end_of_line(s,i)
+</t>
+<t tx="ekr.20080601134805.16">def readStartLeo (self,s,i):
+
+    """Read an unexpected @+leo sentinel."""
+
+    at = self
+    assert(g.match(s,i,"+leo"))
+    at.readError("Ignoring unexpected @+leo sentinel")
+</t>
+<t tx="ekr.20080601134805.17">def readStartMiddle (self,s,i):
+
+    """Read an @+middle sentinel."""
+
+    at = self
+
+    at.readStartNode(s,i,middle=True)
+</t>
+<t tx="ekr.20080601134805.18">def readStartNode (self,s,i,middle=False):
+
+    """Read an @+node or @+middle sentinel."""
+
+    at = self
+    if middle:
+        assert(g.match(s,i,"+middle:"))
+        i += 8
+    else:
+        assert(g.match(s,i,"+node:"))
+        i += 6
+
+    if at.thinFile:
+        &lt;&lt; set gnx and bump i &gt;&gt;
+    &lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;
+    if not at.root_seen:
+        at.root_seen = True
+        &lt;&lt; Check the filename in the sentinel &gt;&gt;
+
+    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
+    at.indentStack.append(at.indent) ; at.indent = newIndent
+
+    at.outStack.append(at.out) ; at.out = []
+    at.tStack.append(at.t)
+
+    if at.importing:
+        p = at.createImportedNode(at.root,headline)
+        at.t = p.v.t
+    elif at.thinFile:
+        at.thinNodeStack.append(at.lastThinNode)
+        at.lastThinNode = v = at.createThinChild4(gnx,headline)
+        at.t = v.t
+    else:
+        at.t = at.findChild4(headline)
+
+    at.endSentinelStack.append(at.endNode)
+</t>
+<t tx="ekr.20080601134805.19"># We have skipped past the opening colon of the gnx.
+j = s.find(':',i)
+if j == -1:
+    g.trace("no closing colon",g.get_line(s,i))
+    at.readError("Expecting gnx in @+node sentinel")
+    return # 5/17/04
+else:
+    gnx = s[i:j]
+    i = j + 1 # Skip the i
+</t>
+<t tx="ekr.20080601134805.20"># Set headline to the rest of the line.
+# Don't strip leading whitespace."
+
+if len(at.endSentinelComment) == 0:
+    headline = s[i:-1].rstrip()
+else:
+    k = s.rfind(at.endSentinelComment,i)
+    headline = s[i:k].rstrip() # works if k == -1
+
+# Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
+if at.startSentinelComment[-1:] == '@':
+    headline = headline.replace('@@','@')
+</t>
+<t tx="ekr.20080601134805.21">if 0: # This doesn't work so well in cooperative environments.
+    if not at.importing:
+
+        h = headline.strip()
+
+        if h[:5] == "@file":
+            i,junk,junk = g.scanAtFileOptions(h)
+            fileName = string.strip(h[i:])
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        elif h[:8] == "@rawfile":
+            fileName = string.strip(h[8:])
+            if fileName != at.targetFileName:
+                at.readError("File name in @node sentinel does not match file's name")
+        else:
+            at.readError("Missing @file in root @node sentinel")
+</t>
+<t tx="ekr.20080601134805.22">def readStartOthers (self,s,i):
+
+    """Read an @+others sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    leadingWs = s[i:j]
+    if leadingWs:
+        assert(g.match(s,j,"@+others"))
+    else:
+        assert(g.match(s,j,"+others"))
+
+    # Make sure that the generated at-others is properly indented.
+    at.out.append(leadingWs + "@others\n")
+
+    at.endSentinelStack.append(at.endOthers)
+</t>
+<t tx="ekr.20080601134805.23"></t>
+<t tx="ekr.20080601134805.24">def readEndAll (self,unused_s,unused_i):
+
+    """Read an @-all sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.popSentinelStack(at.endAll)
+</t>
+<t tx="ekr.20080601134805.25">def readEndAt (self,unused_s,unused_i):
+
+    """Read an @-at sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.readLastDocLine("@")
+    at.popSentinelStack(at.endAt)
+    at.inCode = True
+
+def readEndDoc (self,unused_s,unused_i):
+
+    """Read an @-doc sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self
+    at.readLastDocLine("@doc")
+    at.popSentinelStack(at.endDoc)
+    at.inCode = True
+</t>
+<t tx="ekr.20080601134805.26">def readEndLeo (self,unused_s,unused_i):
+
+    """Read an @-leo sentinel."""
+
+    # __pychecker__ = '--no-argsused' # i not used, but must be present.
+
+    at = self
+
+    # Ignore everything after @-leo.
+    # Such lines were presumably written by @last.
+    while 1:
+        s = at.readLine(at.inputFile)
+        if len(s) == 0: break
+        at.lastLines.append(s) # Capture all trailing lines, even if empty.
+
+    at.done = True
+</t>
+<t tx="ekr.20080601134805.27">def readEndMiddle (self,s,i):
+
+    """Read an @-middle sentinel."""
+
+    at = self
+
+    at.readEndNode(s,i,middle=True)
+</t>
+<t tx="ekr.20080601134805.28">def readEndNode (self,unused_s,unused_i,middle=False):
+
+    """Handle end-of-node processing for @-others and @-ref sentinels."""
+
+    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
+
+    at = self ; c = at.c
+
+    # End raw mode.
+    at.raw = False
+
+    # Set the temporary body text.
+    s = ''.join(at.out)
+    s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
+
+    if at.importing:
+        at.t._bodyString = s
+    elif middle: 
+        pass # Middle sentinels never alter text.
+    else:
+        if hasattr(at.t,"tempBodyString") and s != at.t.tempBodyString:
+            old = at.t.tempBodyString
+        elif at.t.hasBody() and s != at.t.getBody():
+            old = at.t.getBody()
+        else:
+            old = None
+        # 9/4/04: Suppress this warning for the root: @first complicates matters.
+        if old and not g.app.unitTesting and at.t != at.root.t:
+            &lt;&lt; indicate that the node has been changed &gt;&gt;
+        at.t.tempBodyString = s
+
+    # Indicate that the tnode has been set in the derived file.
+    at.t.setVisited()
+
+    # End the previous node sentinel.
+    at.indent = at.indentStack.pop()
+    at.out = at.outStack.pop()
+    at.t = at.tStack.pop()
+    if at.thinFile and not at.importing:
+        at.lastThinNode = at.thinNodeStack.pop()
+
+    at.popSentinelStack(at.endNode)
+</t>
+<t tx="ekr.20080601134805.29">if at.perfectImportRoot:
+    &lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;
+    # p.setMarked()
+    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
+    at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
+    at.c.setChanged(True)
+else:
+    if 0: # New in 4.4.1 final.  This warning can be very confusing.
+        if not at.updateWarningGiven:
+            at.updateWarningGiven = True
+            # print "***",at.t,at.root.t
+            g.es("warning: updating changed text in",at.root.headString(),color="blue")
+    # Just set the dirty bit. Ancestors will be marked dirty later.
+    at.t.setDirty()
+    if 1: # We must avoid the full setChanged logic here!
+        c.changed = True
+    else: # Far too slow for mass changes.
+        at.c.setChanged(True)</t>
+<t tx="ekr.20080601134805.30"># Report the number of corrected nodes.
+at.correctedLines += 1
+
+found = False
+for p in at.perfectImportRoot.self_and_subtree_iter():
+    if p.v.t == at.t:
+        found = True ; break
+
+if found:
+    if 0: # For debugging.
+        print ; print '-' * 40
+        print "old",len(old)
+        for line in g.splitLines(old):
+            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
+            print repr(str(line))
+        print ; print '-' * 40
+        print "new",len(s)
+        for line in g.splitLines(s):
+            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
+            print repr(str(line))
+        print ; print '-' * 40
+else:
+    # This should never happen.
+    g.es("correcting hidden node: t=",repr(at.t),color="red")
+</t>
+<t tx="ekr.20080601134805.31">def readEndOthers (self,unused_s,unused_i):
+
+    """Read an @-others sentinel."""
+
+    # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
+
+    at = self
+    at.popSentinelStack(at.endOthers)
+</t>
+<t tx="ekr.20080601134805.32">def readLastDocLine (self,tag):
+
+    """Read the @c line that terminates the doc part.
+    tag is @doc or @."""
+
+    at = self
+    end = at.endSentinelComment
+    start = at.startSentinelComment
+    s = ''.join(at.docOut)
+
+    # Remove the @doc or @space.  We'll add it back at the end.
+    if g.match(s,0,tag):
+        s = s[len(tag):]
+    else:
+        at.readError("Missing start of doc part")
+        return
+
+    # Bug fix: Append any whitespace following the tag to tag.
+    while s and s[0] in (' ','\t'):
+        tag = tag + s[0] ; s = s[1:]
+
+    if end:
+        # Remove leading newline.
+        if s[0] == '\n': s = s[1:]
+        # Remove opening block delim.
+        if g.match(s,0,start):
+            s = s[len(start):]
+        else:
+            at.readError("Missing open block comment")
+            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
+            return
+        # Remove trailing newline.
+        if s[-1] == '\n': s = s[:-1]
+        # Remove closing block delim.
+        if s[-len(end):] == end:
+            s = s[:-len(end)]
+        else:
+            at.readError("Missing close block comment")
+            g.trace(s)
+            g.trace(end)
+            g.trace(start)
+            return
+
+    at.out.append(tag + s)
+    at.docOut = []
+</t>
+<t tx="ekr.20080601134805.33"></t>
+<t tx="ekr.20080601134805.34">def  ignoreOldSentinel (self,s,unused_i):
+
+    """Ignore an 3.x sentinel."""
+
+    # __pychecker__ = '--no-argsused' # i unused, but must be present.
+
+    g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+</t>
+<t tx="ekr.20080601134805.35">def  readAfterRef (self,s,i):
+
+    """Read an @afterref sentinel."""
+
+    at = self
+    assert(g.match(s,i,"afterref"))
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile)
+    at.out.append(s)
+</t>
+<t tx="ekr.20080601134805.36">def readClone (self,s,i):
+
+    at = self ; tag = "clone"
+
+    assert(g.match(s,i,tag))
+
+    # Skip the tag and whitespace.
+    i = g.skip_ws(s,i+len(tag))
+
+    # Get the clone count.
+    junk,val = g.skip_long(s,i)
+
+    if val == None:
+        at.readError("Invalid count in @clone sentinel")
+    else:
+        at.cloneSibCount = val
+</t>
+<t tx="ekr.20080601134805.37">def readComment (self,s,i):
+
+    """Read an @comment sentinel."""
+
+    assert(g.match(s,i,"comment"))
+
+    # Just ignore the comment line!
+</t>
+<t tx="ekr.20080601134805.38">def readDelims (self,s,i):
+
+    """Read an @delims sentinel."""
+
+    at = self
+    assert(g.match(s,i-1,"@delims"))
+
+    # Skip the keyword and whitespace.
+    i0 = i-1
+    i = g.skip_ws(s,i-1+7)
+
+    # Get the first delim.
+    j = i
+    while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+        i += 1
+
+    if j &lt; i:
+        at.startSentinelComment = s[j:i]
+        # print "delim1:", at.startSentinelComment
+
+        # Get the optional second delim.
+        j = i = g.skip_ws(s,i)
+        while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
+            i += 1
+        end = g.choose(j&lt;i,s[j:i],"")
+        i2 = g.skip_ws(s,i)
+        if end == at.endSentinelComment and (i2 &gt;= len(s) or g.is_nl(s,i2)):
+            at.endSentinelComment = "" # Not really two params.
+            line = s[i0:j]
+            line = line.rstrip()
+            at.out.append(line+'\n')
+        else:
+            at.endSentinelComment = end
+            # print "delim2:",end
+            line = s[i0:i]
+            line = line.rstrip()
+            at.out.append(line+'\n')
+    else:
+        at.readError("Bad @delims")
+        # Append the bad @delims line to the body text.
+        at.out.append("@delims")
+</t>
+<t tx="ekr.20080601134805.39">def readDirective (self,s,i):
+
+    """Read an @@sentinel."""
+
+    at = self
+    assert(g.match(s,i,"@")) # The first '@' has already been eaten.
+
+    # g.trace(g.get_line(s,i))
+
+    if g.match_word(s,i,"@raw"):
+        at.raw = True
+    elif g.match_word(s,i,"@end_raw"):
+        at.raw = False
+
+    e = at.endSentinelComment
+    s2 = s[i:]
+    if len(e) &gt; 0:
+        k = s.rfind(e,i)
+        if k != -1:
+            s2 = s[i:k] + '\n'
+
+    start = at.startSentinelComment
+    if start and len(start) &gt; 0 and start[-1] == '@':
+        s2 = s2.replace('@@','@')
+
+    if 0: # New in 4.2.1: never change comment delims here...
+        if g.match_word(s,i,"@language"):
+            &lt;&lt; handle @language &gt;&gt;
+        elif g.match_word(s,i,"@comment"):
+            &lt;&lt; handle @comment &gt;&gt;
+
+    at.out.append(s2)
+</t>
+<t tx="ekr.20080601134805.40"># Skip the keyword and whitespace.
+i += len("@language")
+i = g.skip_ws(s,i)
+j = g.skip_c_id(s,i)
+language = s[i:j]
+
+delim1,delim2,delim3 = g.set_delims_from_language(language)
+
+g.trace(g.get_line(s,i))
+g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @language sentinel:",line,color="red")
+</t>
+<t tx="ekr.20080601134805.41">j = g.skip_line(s,i)
+line = s[i:j]
+delim1,delim2,delim3 = g.set_delims_from_string(line)
+
+#g.trace(g.get_line(s,i))
+#g.trace(delim1,delim2,delim3)
+
+# Returns a tuple (single,start,end) of comment delims
+if delim1:
+    self.startSentinelComment = delim1
+    self.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    self.startSentinelComment = delim2
+    self.endSentinelComment = delim3
+else:
+    line = g.get_line(s,i)
+    g.es("ignoring bad @comment sentinel:",line,color="red")
+</t>
+<t tx="ekr.20080601134805.42">def readNl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert(g.match(s,i,"nl"))
+
+    if at.inCode:
+        at.out.append('\n')
+    else:
+        at.docOut.append('\n')
+</t>
+<t tx="ekr.20080601134805.43">def readNonl (self,s,i):
+
+    """Handle an @nonl sentinel."""
+
+    at = self
+    assert(g.match(s,i,"nonl"))
+
+    if at.inCode:
+        s = ''.join(at.out)
+        if s and s[-1] == '\n':
+            at.out = [s[:-1]]
+        else:
+            g.trace("out:",s)
+            at.readError("unexpected @nonl directive in code part")
+    else:
+        s = ''.join(at.pending)
+        if s:
+            if s and s[-1] == '\n':
+                at.pending = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in pending doc part")
+        else:
+            s = ''.join(at.docOut)
+            if s and s[-1] == '\n':
+                at.docOut = [s[:-1]]
+            else:
+                g.trace("docOut:",s)
+                at.readError("unexpected @nonl directive in doc part")
+</t>
+<t tx="ekr.20080601134805.44">@ The sentinel contains an @ followed by a section name in angle brackets.  This code is different from the code for the @@ sentinel: the expansion of the reference does not include a trailing newline.
+@c
+
+def readRef (self,s,i):
+
+    """Handle an @&lt;&lt; sentinel."""
+
+    at = self
+    j = g.skip_ws(s,i)
+    assert(g.match(s,j,"&lt;&lt;"))
+
+    if len(at.endSentinelComment) == 0:
+        line = s[i:-1] # No trailing newline
+    else:
+        k = s.find(at.endSentinelComment,i)
+        line = s[i:k] # No trailing newline, whatever k is.
+
+    # Undo the cweb hack.
+    start = at.startSentinelComment
+    if start and len(start) &gt; 0 and start[-1] == '@':
+        line = line.replace('@@','@')
+
+    at.out.append(line)
+</t>
+<t tx="ekr.20080601134805.45">def readVerbatim (self,s,i):
+
+    """Read an @verbatim sentinel."""
+
+    at = self
+    assert(g.match(s,i,"verbatim"))
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile) 
+    i = at.skipIndent(s,0,at.indent)
+    at.out.append(s[i:])
+</t>
+<t tx="ekr.20080601134805.46">def badEndSentinel (self,expectedKind):
+
+    """Handle a mismatched ending sentinel."""
+
+    at = self
+    assert(at.endSentinelStack)
+    s = "Ignoring %s sentinel.  Expecting %s" % (
+        at.sentinelName(at.endSentinelStack[-1]),
+        at.sentinelName(expectedKind))
+    at.readError(s)
+
+def popSentinelStack (self,expectedKind):
+
+    """Pop an entry from endSentinelStack and check it."""
+
+    at = self
+    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
+        at.endSentinelStack.pop()
+    else:
+        at.badEndSentinel(expectedKind)
 </t>
 <t tx="mcrowe.20060823083143.7">@first # -*- coding: utf-8 -*-
 @language python
