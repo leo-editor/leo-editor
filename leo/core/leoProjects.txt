@@ -7485,22 +7485,17 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     import pdb ; pdb = pdb.set_trace
 
-    if fileName and fileName.startswith('--'):
-        fileName = None
-    # print 'leo.py:run','fileName',fileName
     << import leoGlobals and leoApp >>
     if not jyLeo and not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath(g)
-    if pymacs:
-        script = windowFlag = False
-    else:
-        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
     verbose = script is None
-    g.app.batchMode = script is not None
-    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
-    scanForOneConfigOption(g)
+    if not fileName:
+        fileName = getFileName()
+
     << import other early files >>
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
@@ -7605,26 +7600,66 @@ import leo.core.leoCommands as leoCommands
     # import traceback ; traceback.print_exc()
 #@-node:ekr.20041219072416.1:<< import other early files>>
 #@-node:ekr.20031218072017.1934:run
-#@+node:ekr.20080521132317.2:scanForOneConfigOption
-def scanForOneConfigOption(g):
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions(g):
 
-    '''Set g.app.oneConfigFilename if "--one-config=<path>" appears in sys.argv.'''
+    '''Handle all options and remove them from sys.argv.'''
 
-    tag = '--one-config=' ; n = len(tag)
+    import optparse
 
-    for s in sys.argv:
-        if s.startswith(tag):
-            path = s[n:]
-            path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
-            if g.os_path_exists(path):
-                g.app.oneConfigFilename = path
-                sys.argv.remove(s)
-                break
-            else:
-                g.es_print('Invalid option: file not found:',s,color='red')
-                break
-#@nonl
-#@-node:ekr.20080521132317.2:scanForOneConfigOption
+    parser = optparse.OptionParser()
+    parser.add_option('--one-config',dest="one_config_path")
+    parser.add_option('--silent',action="store_false",dest="silent")
+    parser.add_option('--script',dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # --one-config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid option: file not found:',s,color='red')
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return script, windowFlag
+
+#@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
 

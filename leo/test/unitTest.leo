@@ -882,7 +882,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -2032,7 +2032,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -4109,7 +4109,7 @@ test_file  = g.os_path_join(test_path,"createdFile.txt")
 
 # Execute this command: python leo.py -script test\unittest\batchTest.py
 
-command = r"%s %s -silent -script %s" % (python_interp,leo_file,batch_file)
+command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
 
 @others
 
