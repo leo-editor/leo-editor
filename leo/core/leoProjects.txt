@@ -8025,6 +8025,68 @@ def updateStats (self,name):
 #@-node:ekr.20080531075119.7:updateStats
 #@-node:ekr.20080531075119.1:class Tracer & g.startTracer
 #@-node:ekr.20080531075119.8:Finished Tracer class
+#@+node:ekr.20080527084425.4:Rewrote option-parsing code using optparse
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions(g):
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    import optparse
+
+    parser = optparse.OptionParser()
+    parser.add_option('--one-config',dest="one_config_path")
+    parser.add_option('--silent',action="store_false",dest="silent")
+    parser.add_option('--script',dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # --one-config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid option: file not found:',s,color='red')
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return script, windowFlag
+
+#@-node:ekr.20080521132317.2:scanOptions
+#@-node:ekr.20080527084425.4:Rewrote option-parsing code using optparse
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:

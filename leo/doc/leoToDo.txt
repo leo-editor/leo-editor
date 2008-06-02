@@ -1911,15 +1911,8 @@ SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
 #@nonl
 #@-node:ekr.20071001052501:Versioning for nodes
-#@+node:ekr.20071021125124:Revise plugins manager plugin
-Remove all references to pluginsManager.txt.
-#@nonl
-#@-node:ekr.20071021125124:Revise plugins manager plugin
 #@+node:ekr.20070220082124:Make sure Leo can generate Latex
 #@-node:ekr.20070220082124:Make sure Leo can generate Latex
-#@+node:ekr.20070703111455.3:Minor
-# some of these can wait till much later.
-#@nonl
 #@+node:ekr.20070521105645:Improve api docs with epidoc?
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=4319363
@@ -1938,7 +1931,6 @@ http://epydoc.sourceforge.net/epydoc.html
 See: regionalExpandAbbrev.
 #@nonl
 #@-node:ekr.20071004120359.2:Do expand-region-abbrevs from
-#@-node:ekr.20070703111455.3:Minor
 #@-node:ekr.20071211091355:Other/Minor
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
