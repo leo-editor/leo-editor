@@ -4104,6 +4104,8 @@ def recycleWidgets (self):
     self.visibleUserIcons = []
 #@-node:ekr.20040803072955.12:recycleWidgets
 #@-node:ekr.20080527084425.2:Fixed big performance bug in contract-all command
+#@+node:ekr.20080527084425.5:Changed bindings so Home and end keys work as expected when editing a headline
+#@-node:ekr.20080527084425.5:Changed bindings so Home and end keys work as expected when editing a headline
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py

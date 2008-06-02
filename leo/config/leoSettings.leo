@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -5053,55 +5053,6 @@ scroll-down                         = PageDn
 scroll-down-extend-selection        = Shift-PageDn
 scroll-up                           = PageUp
 scroll-up-extend-selection          = Shift-PageUp
-
-# No longer bound anywhere.
-
-    # enter-quick-command-mode = Alt-Shift-C
-
-    # scroll-outline-down-page    = Alt-PageDn
-    # scroll-outline-left         = Alt+Ctrl+LtArrow
-    # scroll-outline-right        = Alt+Ctrl+RtArrow
-    # scroll-outline-up-page      = Alt-PageUp
-
-# Minibuffer bindings are no longer needed.
-
-    # # Top-level bindings are *not* inherited in the minibuffer!
-    # copy-text           ! mini = Ctrl-c
-    # cut-text            ! mini = Ctrl-x
-    # paste-text          ! mini = Ctrl-v
-    # save-file           ! mini = Ctrl-s
-    
-    # # Important: at present binding to BackSpace in the minibuffer causes problems.
-    # # backward-delete-char                ! mini = BackSpace
-    
-    # back-char                           ! mini = LtArrow
-    # back-char-extend-selection          ! mini = Shift-LtArrow
-    # back-word                           ! mini = Alt-b  
-    # back-word-extend-selection          ! mini = Alt-Shift-b
-    # backward-kill-word                  ! mini = Alt-Delete
-    # beginning-of-line                   ! mini = Home
-    # beginning-of-line-extend-selection  ! mini = Shift-Home
-    # beginning-of-line                   ! mini = Ctrl-a
-    # beginning-of-line-extend-selection  ! mini = Ctrl-Shift-a
-    # dabbrev-completion                  = Alt-\
-    # dabbrev-expands                     = Alt-Ctrl-\
-    # end-of-line                         ! mini = End
-    # end-of-line-extend-selection        ! mini = Shift-End
-    # end-of-line                         ! mini = Ctrl-e
-    # end-of-line-extend-selection        ! mini = Ctrl-Shift-e
-    # forward-char                        ! mini = RtArrow
-    # forward-char-extend-selection       ! mini = Shift-RtArrow
-    # forward-word                        = None ### ! mini = Alt-f          # Usually opens file menu.
-    # forward-word-extend-selection       = None ### ! mini = Alt-Shift-f
-    # kill-line                           ! mini = Ctrl-K
-    # select-all                          ! mini = Alt-Shift-A
-    # yank                                ! mini = Ctrl-Y
-    
-    # # Find options.  Important: conflicts with non-minibuffer bindings do not matter here!
-    # find-next                           ! mini = F3
-    # find-prev                           ! mini = F2
-    # change                              ! mini  =Ctrl-=
-    # change-then-find                    ! mini = Ctrl--
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -5237,9 +5188,11 @@ goto-prev-visible           ! tree = UpArrow
 move-outline-down           ! tree = Shift-DnArrow
 move-outline-left           ! tree = Shift-LtArrow
 move-outline-right          ! tree = Shift-RtArrow
-move-outline-up             ! tree = Shift-UpArrow    
-goto-first-visible-node     ! tree= Home
-goto-last-visible-node      ! tree= End
+move-outline-up             ! tree = Shift-UpArrow
+
+# These cause problems with editing headlines.
+# goto-first-visible-node     ! tree= Home
+# goto-last-visible-node      ! tree= End
 
 contract-or-go-left         = Alt-LtArrow
 expand-and-go-right         = Alt-RtArrow
