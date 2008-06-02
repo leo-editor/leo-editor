@@ -200,20 +200,26 @@ class cleoController:
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
         self.progWidth = 18
-        if self.c.config.getInt('cleo_prog_width'):
-            self.progWidth = self.c.config.getInt('cleo_prog_width')
+        if c.config.getInt('cleo_prog_width'):
+            self.progWidth = c.config.getInt('cleo_prog_width')
+
         self.time_init = 1.0
-        if self.c.config.getFloat('cleo_time_init'):
-            self.time_init = self.c.config.getFloat('cleo_time_init')
+        if c.config.getFloat('cleo_time_init'):
+            self.time_init = c.config.getFloat('cleo_time_init')
+
         self.scaleProg = 1
-        if self.c.config.getInt('cleo_prog_scale'):
-            self.progWidth = self.c.config.getInt('cleo_prog_scale')
+        if c.config.getInt('cleo_prog_scale'):
+            self.progWidth = c.config.getInt('cleo_prog_scale')
+
         self.extraProg = 4
-        if self.c.config.getFloat('cleo_prog_extra'):
-            self.progWidth = self.c.config.getFloat('cleo_prog_extra')
+        if c.config.getFloat('cleo_prog_extra'):
+            self.progWidth = c.config.getFloat('cleo_prog_extra')
+
         self.time_name = 'days'
-        if self.c.config.getString('cleo_time_name'):
-            self.time_name = self.c.config.getString('cleo_time_name')
+        if c.config.getString('cleo_time_name'):
+            self.time_name = c.config.getString('cleo_time_name')
+
+        self.colorIgnore = c.config.getBool('cleo_color_ignore',default=True)
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
@@ -254,7 +260,7 @@ class cleoController:
             'Sel. Comments': 'LightBlue4',
         }
 
-        self.file_nodes = ["@file", "@thin", "@nosen", "@asis", "@root"]
+        self.file_nodes = ["@file", "@thin", "@nosent", "@asis", "@root"]
         if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
             self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
 
@@ -572,11 +578,12 @@ class cleoController:
                     bg = self.node_colours['file']
 
         # set bg of @ignore type of nodes
-        if h.find("@ignore") == 0:
-            if node_is_selected:
-                bg = self.node_colours['Sel. Comments']
-            else:
-                bg = self.node_colours['Comments']
+        if self.colorIgnore:
+            if h.find("@ignore") == 0:
+                if node_is_selected:
+                    bg = self.node_colours['Sel. Comments']
+                else:
+                    bg = self.node_colours['Comments']
         #@-node:tbrown.20060903121429.27:<< auto headline colours >>
         #@nl
         #@    << node colours >>
