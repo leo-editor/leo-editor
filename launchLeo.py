@@ -3,4 +3,4 @@
 A minimal script to launch leo.
 """
 import leo.core.runLeo
-leo.core.runLeo.main()
+leo.core.runLeo.run()
