@@ -3866,7 +3866,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        c.frame.log.deleteTab('Mode')
+        #c.frame.log.deleteTab('Mode') #Changes focus to the body pane
 
         k.endCommand(event,k.stroke)
         k.inputModeName = None
