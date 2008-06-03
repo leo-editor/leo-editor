@@ -266,21 +266,15 @@ def createNullGuiWithScript (script):
 #@+node:ekr.20071117060958:getFileName
 def getFileName ():
 
-    '''Return the filename.
-
-    This is a hack for when Leo is started from a script that also starts IPython.'''
+    '''Return the filename from sys.argv.'''
 
     # Put no imports here.
     # print 'leo.py:getFileName',sys.argv
 
-    i = 1
-    while i < len(sys.argv) and sys.argv[i].endswith('.py'):
-        i += 1
-
     if sys.platform=="win32": # Windows
-        result = ' '.join(sys.argv[i:])
+        result = ' '.join(sys.argv[1:])
     else:
-        result = sys.argv[i]
+        result = len(sys.argv) > 1 and sys.argv[1] or None
 
     return result
 #@-node:ekr.20071117060958:getFileName
