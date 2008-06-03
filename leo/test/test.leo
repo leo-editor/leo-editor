@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -181,7 +181,6 @@
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
 <v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
-<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 </v>
 <v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
 <v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
@@ -195,6 +194,7 @@
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
 </v>
+<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1368,8 +1368,8 @@ g.translateString = myTranslateString
 <t tx="ekr.20080412082246.1"></t>
 <t tx="ekr.20080503202744.3">import rope.base.project
 import rope.contrib.codeassist as codeassist
-import leoGlobals as g
-import leoCommands
+import leo.core.leoGlobals as g
+import leo.core.leoCommands as leoCommands
 c2 = leoCommands.Commands(frame=c.frame,fileName='xyz-file')
 
 class leoFSCommands (object):
