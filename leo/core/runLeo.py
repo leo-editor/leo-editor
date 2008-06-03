@@ -274,7 +274,7 @@ def getFileName ():
     if sys.platform=="win32": # Windows
         result = ' '.join(sys.argv[1:])
     else:
-        result = sys.argv[1]
+        result = len(sys.argv) > 1 and sys.argv[1] or None
 
     return result
 #@-node:ekr.20071117060958:getFileName
