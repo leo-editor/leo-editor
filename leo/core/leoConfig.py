@@ -43,9 +43,12 @@ class parserBaseClass:
 
     #@    @+others
     #@+node:ekr.20041119204700: ctor (parserBaseClass)
-    def __init__ (self,c):
+    def __init__ (self,c,localFlag):
 
         self.c = c
+        self.localFlag = localFlag
+            # True if this is the .leo file being opened,
+            # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.recentFiles = [] # List of recent files.
         self.shortcutsDict = {}
             # Keys are cononicalized shortcut names, values are bunches.
@@ -393,7 +396,7 @@ class parserBaseClass:
             # At present no checking is done.
             self.set(p,kind,name,val)
     #@-node:ekr.20041217132253:doInts
-    #@+node:ekr.20070925144337.2:doMenus & helper
+    #@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
     def doMenus (self,p,kind,name,val):
 
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
@@ -420,6 +423,7 @@ class parserBaseClass:
             else:
                 p.moveToThreadNext()
 
+        # g.trace(c,g.callers())
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
         # self.dumpMenuList(aList)
@@ -470,7 +474,7 @@ class parserBaseClass:
                 self.dumpMenuList(val,level+1)
     #@nonl
     #@-node:ekr.20070926142312:dumpMenuList
-    #@-node:ekr.20070925144337.2:doMenus & helper
+    #@-node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
     #@+node:ekr.20060102103625.1:doMode (ParserBaseClass)
     def doMode(self,p,kind,name,val):
 
@@ -1493,13 +1497,13 @@ class configClass:
 
         return language
     #@-node:ekr.20041117093009.2:getLanguage
-    #@+node:ekr.20070926070412:getMenusDict
+    #@+node:ekr.20070926070412:getMenusList (c.config)
     def getMenusList (self):
 
         '''Return the list of entries for the @menus tree.'''
 
         return g.app.config.menusList
-    #@-node:ekr.20070926070412:getMenusDict
+    #@-node:ekr.20070926070412:getMenusList (c.config)
     #@+node:ekr.20070411101643:getOpenWith
     def getOpenWith (self,c):
 
@@ -1694,6 +1698,8 @@ class configClass:
 
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
         for path,localFlag in table:
+            path = g.os_path_abspath(g.os_path_normpath(path))
+                # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
             if path and path.lower() not in seen:
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
@@ -1738,7 +1744,7 @@ class configClass:
     #@+node:ekr.20051013161232:g.app.config.updateSettings
     def updateSettings (self,c,localFlag):
 
-        d = self.readSettings(c)
+        d = self.readSettings(c,localFlag)
 
         if d:
             d['_hash'] = theHash = c.hash()
@@ -1757,7 +1763,7 @@ class configClass:
     # Called to read all leoSettings.leo files.
     # Also called when opening an .leo file to read @settings tree.
 
-    def readSettings (self,c):
+    def readSettings (self,c,localFlag):
 
         """Read settings from a file that may contain an @settings tree."""
 
@@ -1767,7 +1773,7 @@ class configClass:
         if c and self.localOptionsDict.get(c.hash()) is None:
             self.localOptionsDict[c.hash()] = {}
 
-        parser = settingsTreeParser(c)
+        parser = settingsTreeParser(c,localFlag)
         d = parser.traverse()
 
         return d
@@ -1979,10 +1985,10 @@ class settingsTreeParser (parserBaseClass):
 
     #@    @+others
     #@+node:ekr.20041119204103:ctor
-    def __init__ (self,c):
+    def __init__ (self,c,localFlag):
 
         # Init the base class.
-        parserBaseClass.__init__(self,c)
+        parserBaseClass.__init__(self,c,localFlag)
     #@-node:ekr.20041119204103:ctor
     #@+node:ekr.20041119204714:visitNode (settingsTreeParser)
     def visitNode (self,p):
