@@ -109,6 +109,7 @@
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
+<v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.75"><vh>Leo is hanging on my Linux box.  What should I do?</vh></v>
@@ -121,7 +122,7 @@
 <v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 </v>
-<v t="ekr.20050830115714.12"><vh>How should I use Leo with CVS?</vh></v>
+<v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr?</vh></v>
 <v t="ekr.20050830115714.13"><vh>Using derived files</vh>
 <v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
@@ -12899,7 +12900,7 @@ You have two options:
     Reference files will change only when new derived files get added to the project.
 
     **Important**:
-    Leo's `cvs repository`_ contains the *reference* versions of the following .leo files:
+    Leo's `bzr repository`_ contains the *reference* versions of the following .leo files:
     ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``.
     However,  Leo's distributions contain the *non-reference* versions of those files:
     ``LeoPy.leo`` and ``LeoPlugins.leo``.
@@ -30052,6 +30053,51 @@ if what I had done was making a difference.
 The great thing about this was that I just used the LEO @others construct
 to create a wrapper around the code and did not need to litter my code
 with debug or profiling statements.  -- Kayvan</t>
+<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   ``bzr qlog``, ``bzr qannotate`` etc.
+
+2. Get Leo from launchpad by doing::
+
+    bzr branch lp:leo-editor
+
+And that's it! You can run leo/core/runLeo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run ``bzr pull``.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing ``bzr checkin``.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this on Windows using puttygen and pageant at
+``http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151``.
+
+After your Launchpad account is set up, go to
+``https://launchpad.net/leo-editor``, choose Code tab -&gt; Register Branch, select
+Branch type "Hosted" and fill in descriptive details about the branch. After
+that, go to the branch home page from Code tab again, and copy-paste the push
+command line to terminal. For example, for branch::
+
+ https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+ bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute ``bzr push``.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+
+-- Ville M. Vainio - vivainio.googlepages.com</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
