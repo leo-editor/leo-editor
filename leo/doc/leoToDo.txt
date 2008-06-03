@@ -12,6 +12,39 @@ not be replaced.
 #@-node:ekr.20080509065556.1:Fix minor spelling bug
 #@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20080603052650.466:Fix vim problems
+@nocolor
+
+1. Focus to Body pane (Major problem / Easy to fix?):
+
+Modes always return with the focus put to the body pane even if edit-
+headline command was called.   This prevents most node navigation and
+editing commands from working.  The problem is due to the exit-named-
+mode command, which is used in most modes, calling the "endMode"
+function in leoKeys.py which calls the deleteTab function.  The
+deleteTab function sets the focus to the body pane.  The deleteTab
+function should return focus back to the pane that was in focus when
+the function was called.
+
+2. Editing headlines within modes (Major problem / Difficult to fix?):
+
+Commands that modify or select headline text correctly when bound
+directly to a key will, when executed from within a mode bound to that
+same key, modify or select the body text.  This prevents most of vi's
+delete, change, substitute, and yank commands from working.
+
+3. Commands getting user input (Medium problem / moderate to fix?)
+
+Any commands that request user input will exit the mode immediately
+after the input is received.  This prevents vi commands that will copy
+or replace text up to a user specified character.  For example, key
+sequence 'stw' should "Substitute the text from the current cursor
+position up To the letter 'w'".  This can be done within a mode using
+a zap-to-character command followed by a set-insert-state command.  It
+never executes the set-insert-state command because the zap-to-
+character command asks the user for a character (the 'w').
+#@nonl
+#@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061014050154.2:Binding to None clears all bindings
 Should assigning to None clear all key bindings?
 #@nonl
