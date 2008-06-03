@@ -256,18 +256,16 @@ hr { /* EKR */
 <p><a class="reference" href="unitTesting.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 <div class="section" id="chapter-21-ipython-and-leo">
 <h1><a class="toc-backref" href="#id2">Chapter 21: IPython and Leo</a></h1>
-<p>To use this plugin, you must run Leo from a console window. When this plugin is
-enabled, Leo's start-ipython command starts <a class="reference" href="http://ipython.scipy.org/">IPython</a> in this console. Leo's
-ipython plugin provides two-way communication (a bridge) between Leo and
-IPython: you can run Leo scripts from IPython, and IPython scripts from Leo.</p>
+<p>Leo's ipython plugin provides two-way communication (a bridge) between Leo and
+IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
+use this plugin, you must run Leo from a console window. When this plugin is
+enabled, Leo's start-ipython command starts <a class="reference" href="http://ipython.scipy.org/">IPython</a> in this console.</p>
 <p>Remarkably, Leo and IPython run simultaneously in the same process,
 yet their separate event loops do not interfere with each other.
-Even more remarkably, scripts run from IPython <em>immediately</em> change Leo,
+Scripts run from IPython <em>immediately</em> change Leo,
 <em>exactly</em> as if the script were run from Leo.
 Conversely, scripts run from Leo <em>immediately</em> affect the IPython interpreter.
-Care may be needed when running such scripts while lengthy IPython scripts are running.
-As the result of this truly remarkable connection between Leo and IPython,
-Leo might plausibly be said to be an <a class="reference" href="http://projects.scipy.org/ipython/ipython/wiki/NoteBook">IPython Notebook</a>.</p>
+As a result, Leo might be considered an <a class="reference" href="http://projects.scipy.org/ipython/ipython/wiki/NoteBook">IPython Notebook</a>.</p>
 <p>The bridge between Leo and IPython is powerful because it is simple. Indeed,</p>
 <p>1. <strong>You can run any IPython script from Leo</strong>.
 On the Leo side, as single variable:</p>
@@ -335,13 +333,13 @@ painless and powerful.</p>
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id3">Introduction</a></h2>
-<p>The purpose of ILeo, or leo-ipython bridge, is being a two-way communication
-channel between Leo and IPython. The level of integration is much deeper than
-conventional integration in IDEs; most notably, you are able to store and
-manipulate <strong>data</strong> in Leo nodes, in addition to mere program code - essentially
-making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data.
-The possibilities of this are endless, and the approach can be applied in wide
-range of problem domains with very little actual coding.</p>
+<p>ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
+and IPython. The level of integration is much deeper than conventional
+integration in IDEs; most notably, you are able to store and manipulate <strong>data</strong>
+in Leo nodes, in addition to mere program code - essentially making ILeo a
+hierarchical spreadsheet, albeit with non-grid view of the data. The
+possibilities of this are endless, and the approach can be applied in wide range
+of problem domains with very little actual coding.</p>
 <p>IPython users are accustomed to using things like %edit to produce non-trivial
 functions/classes (i.e. something that they don't want to enter directly on the
 interactive prompt, but creating a proper script/module involves too much

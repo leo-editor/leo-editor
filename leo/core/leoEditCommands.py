@@ -2389,12 +2389,14 @@ class editCommandsClass (baseEditCommandsClass):
             uaLoc.unknownAttributes['icons'] = list(subl)
             # g.es((p.headString(),uaLoc.unknownAttributes['icons']))
             uaLoc.unknownAttributes["lineYOffset"] = 3
+            uaLoc._p_changed = 1
             p.setDirty()
         else:
             if hasattr(uaLoc,'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
                     uaLoc.unknownAttributes["lineYOffset"] = 0
+                    uaLoc._p_changed = 1
                     p.setDirty()
 
     def dHash(self, d):
@@ -2453,24 +2455,6 @@ class editCommandsClass (baseEditCommandsClass):
             return None,None
     #@-node:ekr.20071114083142:getImage
     #@-node:ekr.20080108092811: Helpers
-    #@+node:ekr.20071114082418.2:deleteAllIcons (no longer used)
-    # def deleteAllIcons (self,event=None):
-
-        # c = self.c
-
-        # for p in c.allNodes_iter():
-
-            # if hasattr(p.v.t,"unknownAttributes"):
-                # a = p.v.t.unknownAttributes
-                # iconsList = a.get("icons")
-                # if iconsList:
-                    # a["icons"] = []
-                    # a["lineYOffset"] = 0
-                    # p.setDirty()
-                    # c.setChanged(True)
-
-        # c.redraw()
-    #@-node:ekr.20071114082418.2:deleteAllIcons (no longer used)
     #@+node:ekr.20071114082418:deleteFirstIcon
     def deleteFirstIcon (self,event=None):
 
@@ -2537,12 +2521,12 @@ class editCommandsClass (baseEditCommandsClass):
 
         if hasattr(p.v.t,"unknownAttributes"):
             a = p.v.t.unknownAttributes
-            if dict:  # ???
-                self.setIconList(p,[])
-                a["lineYOffset"] = 0
-                p.setDirty()
-                c.setChanged(True)
-                c.redraw()
+            p.v.t._p_changed = 1
+            self.setIconList(p,[])
+            a["lineYOffset"] = 0
+            p.setDirty()
+            c.setChanged(True)
+            c.redraw()
     #@-node:ekr.20071114082418.1:deleteNodeIcons
     #@+node:ekr.20071114081313.1:insertIcon
     def insertIcon (self,event=None):

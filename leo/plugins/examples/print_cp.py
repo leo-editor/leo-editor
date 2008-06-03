@@ -4,7 +4,7 @@
 #@+node:ekr.20060621123339.1:<< docstring >>
 '''A plugin showing how to convert an @button node to a plugin.
 
-This plugin register the 'print-cp' minibuffer command.'''
+This plugin registers the 'print-cp' minibuffer command.'''
 #@-node:ekr.20060621123339.1:<< docstring >>
 #@nl
 

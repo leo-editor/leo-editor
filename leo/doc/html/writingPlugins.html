@@ -351,7 +351,7 @@ def __init__ (self,c):
     script = &quot;c.k.simulateCommand('print-cp')&quot;
     g.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
 </pre>
-<p>This registers the print_cp <em>method</em> of the print_cp class as the print-cp minibuffer command,
+<p>This registers the print_cp <em>method</em> of the pluginController class as the print-cp minibuffer command,
 and creates a script button with the following script:</p>
 <pre class="literal-block">
 c.k.simulateCommand('print-cp')
@@ -368,8 +368,7 @@ def print_cp (self,event=None):
 The print_cp method gets the proper commander from the <tt class="docutils literal"><span class="pre">c</span></tt> ivar (instance variable) and computes
 the current position <tt class="docutils literal"><span class="pre">p</span></tt> as shown.</p>
 </li>
-<li><p class="first">Enable the print_cp plugin using the plugins manager plugin,
-or just add the following line somewhere in pluginsManager.txt:</p>
+<li><p class="first">Enable the print_cp plugin by putting the following in an &#64;enabled-plugins node:</p>
 <pre class="literal-block">
 print_cp.py
 </pre>

@@ -27,7 +27,6 @@ if g.app and g.app.use_psyco:
     try: from psyco.classes import *
     except ImportError: pass
 
-import string
 import time
 #@nonl
 #@-node:ekr.20060904165452.1:<< imports >>
@@ -1621,7 +1620,7 @@ class basePosition (object):
         Inserts a backslash before any leading plus, minus or backslash."""
 
         p = self ; array = []
-        lines = string.split(p.bodyString(),'\n')
+        lines = p.bodyString().split('\n')
         for s in lines:
             i = g.skip_ws(s,0)
             if i < len(s) and s[i] in ('+','-','\\'):

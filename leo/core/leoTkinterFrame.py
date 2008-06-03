@@ -84,6 +84,7 @@ class leoTkinterBody (leoFrame.leoBody):
         def onFocusIn(event,c=c):
             # g.trace('callback')
             c.k.setDefaultInputState()
+            c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
 
         c.bind(w,'<FocusOut>', onFocusOut)
         c.bind(w,'<FocusIn>', onFocusIn)
@@ -3088,6 +3089,9 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
             tt.createTab(tabName)
 
         tt.cc.selectChapterByName(tabName)
+
+        self.c.redraw()
+        self.c.outerUpdate()
     #@-node:ekr.20070317074824.3:tt.selectTab
     #@+node:ekr.20070604192627:tt.setTabLabel
     def setTabLabel (self,tabName):

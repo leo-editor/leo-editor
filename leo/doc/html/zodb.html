@@ -391,7 +391,7 @@ finally:
 <p>The scripts shown above close the zodb connection after processing the data.
 This is by far the simplest strategy.
 I recommend it for typical scripts.</p>
-<p><strong>Important</strong>: if must <strong>leave the connection open</strong> if your script modifies persistent data in any way.
+<p><strong>Important</strong>: you must <strong>leave the connection open</strong> if your script modifies persistent data in any way.
 (Actually, this statement is not really true,
 but you must define zodb transaction managers if you intend to use multiple connections simultaneously.
 This complication is beyond the scope of this documentation.)

@@ -59,6 +59,7 @@ class LeoApp:
         self.menuWarningsGiven = False # True: supress warnings in menu code.
         self.nodeIndices = None # Singleton node indices instance.
         self.numberOfWindows = 0 # Number of opened windows.
+        self.oneConfigFilename = '' # If non-empty, the name of a single configuration file.
         self.openWithFiles = [] # List of data used by Open With command.
         self.openWithFileNum = 0 # Used to generate temp file names for Open With command.
         self.openWithTable = None # The table passed to createOpenWithMenuFromTable.

@@ -53,7 +53,6 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     import pdb ; pdb = pdb.set_trace
 
-    # print 'leo.py:run','fileName',fileName
     #@    << import leoGlobals and leoApp >>
     #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
     if jyLeo:
@@ -88,14 +87,13 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if not jyLeo and not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath(g)
-    if pymacs:
-        script = windowFlag = False
-    else:
-        script, windowFlag = getBatchScript() # Do early so we can compute verbose next.
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
     verbose = script is None
-    g.app.batchMode = script is not None
-    g.app.silentMode = '-silent' in sys.argv or '--silent' in sys.argv
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    if not fileName:
+        fileName = getFileName()
+
     #@    << import other early files >>
     #@+node:ekr.20041219072416.1:<< import other early files>>
     import leo.core.leoNodes as leoNodes
@@ -157,6 +155,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
     g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
     p = c.currentPosition()
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'):
@@ -264,39 +263,6 @@ def createNullGuiWithScript (script):
     g.app.gui = leoGui.nullGui("nullGui")
     g.app.gui.setScript(script)
 #@-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
-#@+node:ekr.20031218072017.1939:getBatchScript
-def getBatchScript ():
-
-    import leo.core.leoGlobals as g
-    windowFlag = False
-
-    name = None ; i = 1 # Skip the dummy first arg.
-    while i + 1 < len(sys.argv):
-        arg = sys.argv[i].strip().lower()
-        if arg in ("--script","-script"):
-            name = sys.argv[i+1].strip() ; break
-        if arg in ("--script-window","-script-window"):
-            name = sys.argv[i+1].strip() ; windowFlag = True ; break
-        i += 1
-
-    if not name:
-        return None, windowFlag
-    name = g.os_path_join(g.app.loadDir,name)
-    try:
-        f = None
-        try:
-            f = open(name,'r')
-            script = f.read()
-            # g.trace("script",script)
-        except IOError:
-            g.es_print("can not open script file:",name, color="red")
-            script = None
-    finally:
-        if f: f.close()
-
-    # Bug fix 4/27/07: Don't put a return in a finally clause.
-    return script, windowFlag
-#@-node:ekr.20031218072017.1939:getBatchScript
 #@+node:ekr.20071117060958:getFileName
 def getFileName ():
 
@@ -304,7 +270,7 @@ def getFileName ():
 
     This is a hack for when Leo is started from a script that also starts IPython.'''
 
-    # No imports here.
+    # Put no imports here.
     # print 'leo.py:getFileName',sys.argv
 
     i = 1
@@ -357,8 +323,9 @@ You may download Python from http://python.org/download/
 #@nonl
 # To gather statistics, do the following in a Python window, not idle:
 # 
-#     import leo.core.leo as leo
-#     leo.profile_leo()  (this runs leo)
+#     import leo
+#     import leo.core.runLeo as runLeo
+#     runLeo.profile_leo()  (this runs leo)
 #     load leoDocs.leo (it is very slow)
 #     quit Leo.
 #@-at
@@ -368,18 +335,20 @@ def profile_leo ():
 
     """Gather and print statistics about Leo"""
 
-    import profile, pstats
+    import cProfile as profile
+    import pstats
     import leo.core.leoGlobals as g
 
-    # name = "c:/prog/test/leoProfile.txt"
-    name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+    name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
+    # name = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
 
     profile.run('leo.run()',name)
 
     p = pstats.Stats(name)
     p.strip_dirs()
-    p.sort_stats('cum','file','name')
-    p.print_stats()
+    p.sort_stats('module','calls','time','name')
+    reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
+    p.print_stats(reFiles)
 #@-node:ekr.20031218072017.2607:profile_leo
 #@+node:ekr.20041130093254:reportDirectories
 def reportDirectories(verbose):
@@ -394,6 +363,66 @@ def reportDirectories(verbose):
         ):
             g.es("%s dir:" % (kind),theDir,color="blue")
 #@-node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions(g):
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    import optparse
+
+    parser = optparse.OptionParser()
+    parser.add_option('--one-config',dest="one_config_path")
+    parser.add_option('--silent',action="store_false",dest="silent")
+    parser.add_option('--script',dest="script")
+    parser.add_option('--script-window',dest="script_window")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # --one-config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_abspath(g.os_path_join(os.getcwd(),path))
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid option: file not found:',s,color='red')
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return script, windowFlag
+
+#@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20070930194949:startJyleo (leo.py)
 def startJyleo (g):
 
@@ -438,11 +467,7 @@ def startPsyco ():
 #@-others
 
 if __name__ == "__main__":
+    run()
 
-    # Keep pylint happy by not defining any symbols at the top level.
-    if len(sys.argv) > 1:
-        run(getFileName())
-    else:
-        run()
 #@-node:ekr.20031218072017.2605:@thin runLeo.py 
 #@-leo

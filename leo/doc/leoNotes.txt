@@ -2957,6 +2957,39 @@ def scanDefaultAtAutoEncoding(self,p):
 #@-node:ekr.20080212084648:atFile.scanDefaultAtAutoEncoding (not used)(
 #@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
 #@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
+#@+node:ekr.20031218072017.1939:getBatchScript (no longer used)
+def getBatchScript ():
+
+    import leo.core.leoGlobals as g
+    windowFlag = False
+
+    name = None ; i = 1 # Skip the dummy first arg.
+    while i + 1 < len(sys.argv):
+        arg = sys.argv[i].strip().lower()
+        if arg in ("--script","-script"):
+            name = sys.argv[i+1].strip() ; break
+        if arg in ("--script-window","-script-window"):
+            name = sys.argv[i+1].strip() ; windowFlag = True ; break
+        i += 1
+
+    if not name:
+        return None, windowFlag
+    name = g.os_path_join(g.app.loadDir,name)
+    try:
+        f = None
+        try:
+            f = open(name,'r')
+            script = f.read()
+            # g.trace("script",script)
+        except IOError:
+            g.es_print("can not open script file:",name, color="red")
+            script = None
+    finally:
+        if f: f.close()
+
+    # Bug fix 4/27/07: Don't put a return in a finally clause.
+    return script, windowFlag
+#@-node:ekr.20031218072017.1939:getBatchScript (no longer used)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

@@ -882,7 +882,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -2032,7 +2032,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2150,6 +2150,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
+<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
+<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4105,7 +4109,7 @@ test_file  = g.os_path_join(test_path,"createdFile.txt")
 
 # Execute this command: python leo.py -script test\unittest\batchTest.py
 
-command = r"%s %s -silent -script %s" % (python_interp,leo_file,batch_file)
+command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
 
 @others
 
@@ -7576,15 +7580,12 @@ else:
 if suite:
     g.app.scriptDict['suite'] = suite</t>
 <t tx="ekr.20051104081502.108">for i in xrange(10000):
-    if i % 1000 == 0:
+    if i and (i % 1000) == 0:
         print i</t>
-<t tx="ekr.20051104081502.109"># There will never be an overflow here, no matter how many times timeit executes this.
-
-try:
-    i = 0
+<t tx="ekr.20051104081502.109">i = 0
+for i in xrange(100000):
     i += 1
-except OverflowError:
-    pass</t>
+    i -= 1</t>
 <t tx="ekr.20051104081502.110"># c.redraw just schedules the actual drawing.
 # We want to profile the actual idle-time drawing.
 
@@ -20584,5 +20585,9 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
 <t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
+<t tx="ekr.20080529114722.1">import leo.core.leoTest as leoTest
+leoTest.runTimerOnNode(c,p,count=100)</t>
+<t tx="ekr.20080529115911.1">import leo.core.leoTest as leoTest
+leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt</t>
 </tnodes>
 </leo_file>

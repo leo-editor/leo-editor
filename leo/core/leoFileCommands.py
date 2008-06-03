@@ -894,6 +894,10 @@ class baseFileCommands:
         """Convert Tnnn to nnn, leaving gnx's unchanged."""
 
         # index might be Tnnn, nnn, or gnx.
+        if index is None:
+            g.trace('Can not happen: index is None')
+            return None
+
         junk,theTime,junk = g.app.nodeIndices.scanGnx(index,0)
         if theTime == None: # A pre-4.1 file index.
             if index[0] == "T":
