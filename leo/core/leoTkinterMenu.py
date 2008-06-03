@@ -171,6 +171,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
     #@+node:ekr.20041228063406:clearAccel
     def clearAccel(self,menu,name):
 
+        if not menu:
+            return
+
         realName = self.getRealMenuName(name)
         realName = realName.replace("&","")
 
@@ -197,11 +200,15 @@ class leoTkinterMenu (leoMenu.leoMenu):
         '''Create a submenu.'''
 
         menu = Tk.Menu(parent,tearoff=0)
-        parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
+        if menu:
+            parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
         return menu
     #@-node:ekr.20051022042645:createOpenWithMenu
     #@+node:ekr.20031218072017.4119:disableMenu
     def disableMenu (self,menu,name):
+
+        if not menu:
+            return
 
         try:
             menu.entryconfig(name,state="disabled")
@@ -218,6 +225,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
     # Fail gracefully if the item name does not exist.
 
     def enableMenu (self,menu,name,val):
+
+        if not menu:
+            return
 
         state = g.choose(val,"normal","disabled")
         try:
@@ -247,6 +257,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
     #@-node:ekr.20060622075612:getMenuLabel
     #@+node:ekr.20031218072017.4121:setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
+
+        if not menu:
+            return
 
         try:
             if type(name) == type(0):

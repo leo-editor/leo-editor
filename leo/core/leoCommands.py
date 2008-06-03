@@ -7540,10 +7540,6 @@ class configSettings:
         return g.app.config.getFontFromParams(self.c,
             family, size, slant, weight, defaultSize = defaultSize)
 
-    # def getFontDict (self,setting):
-        # '''Return the value of @font setting.'''
-        # return g.app.config.getFontDict(self.c,setting)
-
     def getInt (self,setting):
         '''Return the value of @int setting.'''
         return g.app.config.getInt(self.c,setting)
@@ -7556,7 +7552,7 @@ class configSettings:
 
     def getMenusList (self):
         '''Return the list of entries for the @menus tree.'''
-        return g.app.config.menusList # unusual.
+        return g.app.config.getMenusList(self.c) # Changed in Leo 4.5.
 
     def getOpenWith (self):
         '''Return a list of dictionaries corresponding to @openwith nodes.'''

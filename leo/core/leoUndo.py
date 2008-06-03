@@ -1050,8 +1050,9 @@ class undoer:
         u = self ; frame = u.c.frame
 
         menu = frame.menu.getMenu("Edit")
-        frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
-        frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
+        if menu:
+            frame.menu.enableMenu(menu,u.redoMenuLabel,u.canRedo())
+            frame.menu.enableMenu(menu,u.undoMenuLabel,u.canUndo())
     #@-node:ekr.20031218072017.3611:enableMenuItems
     #@+node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
     if 0:

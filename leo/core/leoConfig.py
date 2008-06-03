@@ -423,14 +423,12 @@ class parserBaseClass:
             else:
                 p.moveToThreadNext()
 
-        # g.trace(c,g.callers())
-        # This setting is handled differently from most other settings,
-        # because the last setting must be retrieved before any commander exists.
-        # self.dumpMenuList(aList)
-        # g.trace(g.listToString(aList))
-        # g.es_print('creating menu from',c.shortFileName(),color='blue')
-        g.app.config.menusList = aList
-        g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+        # g.trace('localFlag',self.localFlag,c)
+        if self.localFlag:
+            self.set(p,kind='menus',name='menus',val=aList)
+        else:
+            g.app.config.menusList = aList
+            g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
@@ -1498,11 +1496,14 @@ class configClass:
         return language
     #@-node:ekr.20041117093009.2:getLanguage
     #@+node:ekr.20070926070412:getMenusList (c.config)
-    def getMenusList (self):
+    def getMenusList (self,c):
 
         '''Return the list of entries for the @menus tree.'''
 
-        return g.app.config.menusList
+        aList = self.get(c,'menus','menus')
+        # g.trace(aList and len(aList) or 0)
+
+        return aList or g.app.config.menusList
     #@-node:ekr.20070926070412:getMenusList (c.config)
     #@+node:ekr.20070411101643:getOpenWith
     def getOpenWith (self,c):
@@ -1985,7 +1986,7 @@ class settingsTreeParser (parserBaseClass):
 
     #@    @+others
     #@+node:ekr.20041119204103:ctor
-    def __init__ (self,c,localFlag):
+    def __init__ (self,c,localFlag=True):
 
         # Init the base class.
         parserBaseClass.__init__(self,c,localFlag)
