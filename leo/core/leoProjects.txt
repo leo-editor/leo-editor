@@ -4106,6 +4106,127 @@ def recycleWidgets (self):
 #@-node:ekr.20080527084425.2:Fixed big performance bug in contract-all command
 #@+node:ekr.20080527084425.5:Changed bindings so Home and end keys work as expected when editing a headline
 #@-node:ekr.20080527084425.5:Changed bindings so Home and end keys work as expected when editing a headline
+#@+node:ekr.20080509153731.1:Fixed bug: myLeoSettings.leo sometimes read twice
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/35a8ea2024036623s
+
+> Leo will read myLeoSettings.leo twice if that's the file you are
+> actually opening.  It's not worth "fixing".
+
+It's not the file I'm actually opening, it's $HOME/myLeoSettings.leo
+and $PWD/myLeoSettings.leo (using $PWD as notation for the directory
+from which python was run).
+
+I.e. when $PWD == $HOME, a command like
+
+  python path/to/leo.py foo.leo
+
+will read mySettings.leo and leoSettings.leo twice. 
+
+@color
+#@nonl
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    if g.app.oneConfigFilename:
+        table = ((g.app.oneConfigFilename,False),)
+    else:
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            (fileName,True),
+        )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        path = g.os_path_abspath(g.os_path_normpath(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                s = g.toEncodedString(s,'ascii')
+                print s
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@-node:ekr.20080509153731.1:Fixed bug: myLeoSettings.leo sometimes read twice
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -7686,6 +7807,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
+        path = g.os_path_abspath(g.os_path_normpath(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
             if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
@@ -7745,7 +7868,7 @@ def openSettingsFile (self,path):
 #@+node:ekr.20051013161232:g.app.config.updateSettings
 def updateSettings (self,c,localFlag):
 
-    d = self.readSettings(c)
+    d = self.readSettings(c,localFlag)
 
     if d:
         d['_hash'] = theHash = c.hash()
