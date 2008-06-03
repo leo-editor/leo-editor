@@ -62,16 +62,19 @@ def openWithTempFilePath (self,v,ext):
 
            #Remove unsupported directory & file name characters
            if(os.name == "dos" or os.name == "nt"):
-              hsClean = ""
-              for ch in hs:
-                  if ch in g.string.whitespace: #Convert tabs to spaces
-                      hsClean += ' '
-                  elif ch in ('\\','/',':','|','<','>'): #Not allowed in Windows
-                      hsClean += '_'
-                  elif ch in ('"'): #Leo code can't handle the "
-                      hsClean += '\''   #replace with '
-                  else:
-                      hsClean += ch
+               hsClean = ""
+               for ch in hs:
+                   if ch in g.string.whitespace: #Convert tabs to spaces
+                       hsClean += ' '
+                   elif ch in ('\\','/',':','|','<','>'): #Not in Dos/Windows
+                       hsClean += '_'
+                   elif ch in ('"'): #Leo code can't handle the "
+                       hsClean += '\''   #replace with '
+                   else:
+                       hsClean += ch
+               #Windows directory and file names can't end with a period
+               if hsClean.endswith( '.' ):
+                   hsClean += '_'
            else:
               hsClean = g.sanitize_filename(hs)
            #Add node's headstring (filtered) to the list of ancestors
