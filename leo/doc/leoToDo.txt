@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080411091507.10:Bugs
-#@+node:ekr.20080602172531.1:before b1
+#@+node:ekr.20080602172531.1:before b1: 5
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
 @nocolor
 
@@ -348,10 +348,10 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
+#@-node:ekr.20080602172531.1:before b1: 5
+#@+node:ekr.20080602172531.2:before b2: 12
 #@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@-node:ekr.20080602172531.1:before b1
-#@+node:ekr.20080602172531.2:before b2: 12
 #@+node:ekr.20080517102922.1:Files bugs 7
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
