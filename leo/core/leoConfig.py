@@ -33,7 +33,7 @@ class parserBaseClass:
         'if','ifgui','ifhostname','ifplatform','ignore','mode',
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
-        'popup', # New in Leo 4.4.8.
+        'menuat', 'popup', # New in Leo 4.4.8.
         ]
 
     # Keys are settings names, values are (type,value) tuples.
@@ -75,7 +75,7 @@ class parserBaseClass:
             'ints':         self.doInts,
             'float':        self.doFloat,
             'menus':        self.doMenus, # New in 4.4.4
-
+            'menuat':       self.doMenuat,
             'popup': self.doPopup, # New in 4.4.8
 
             'mode':         self.doMode, # New in 4.4b1.
@@ -397,16 +397,16 @@ class parserBaseClass:
             self.set(p,kind,name,val)
     #@-node:ekr.20041217132253:doInts
     #@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
-    def doMenus (self,p,kind,name,val):
+    def doMenus (self,p,kind,name,val,storeIn=None):
 
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
-        c = self.c ; aList = [] ; tag = '@menu'
+        c = self.c ; aList = [] # ; tag = '@menu'
         p = p.copy() ; after = p.nodeAfterTree()
         while p and p != after:
             h = p.headString()
-            if g.match_word(h,0,tag):
-                name = h[len(tag):].strip()
+            if g.match_word(h,0,'@menu') or (storeIn is not None and g.match_word(h,0,'@item')):
+                tag, name = h.strip().split(None,1)
                 if name:
                     for z in aList:
                         name2,junk,junk = z
@@ -423,12 +423,17 @@ class parserBaseClass:
             else:
                 p.moveToThreadNext()
 
-        # g.trace('localFlag',self.localFlag,c)
-        if self.localFlag:
-            self.set(p,kind='menus',name='menus',val=aList)
+        if storeIn is None:
+            # g.trace('localFlag',self.localFlag,c)
+            if self.localFlag:
+                self.set(p,kind='menus',name='menus',val=aList)
+            else:
+                g.es_print('Using menus from',c.shortFileName(),color='blue')
+                g.app.config.menusList = aList
+                g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
         else:
-            g.app.config.menusList = aList
-            g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+            storeIn.extend(aList)
+
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
@@ -662,6 +667,111 @@ class parserBaseClass:
     #@nonl
     #@-node:bobjack.20080324141020.5:doPopupItems
     #@-node:bobjack.20080324141020.4:doPopup & helper
+    #@+node:tbrown.20080514112857.124:doMenuat
+    def doMenuat (self,p,kind,name,val):
+
+        if g.app.config.menusList:
+            g.es_print("Patching menu tree: " + name)
+
+            # get the patch fragment
+            patch = []
+            if p.hasChildren():
+                self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
+                self.dumpMenuTree(patch)
+
+            # setup        
+            parts = name.split()
+            if len(parts) != 3:
+                parts.append('subtree')
+            targetPath,mode,source = parts
+            if not targetPath.startswith('/'): targetPath = '/'+targetPath
+
+            ans = self.patchMenuTree(g.app.config.menusList, targetPath)
+
+            if ans:
+                g.es_print("Patching ("+mode+' '+source+") at "+targetPath)
+
+                list_, idx = ans
+
+                if mode not in ('copy', 'cut'):
+                    if source != 'clipboard':
+                        use = patch[0][1]
+                    else:
+                        if isinstance(self.clipBoard, list):
+                            use = self.clipBoard
+                        else:
+                            use = [self.clipBoard]
+                    g.es_print(str(use))
+                if mode == 'replace':
+                    list_[idx] = use.pop(0)
+                    while use:
+                        idx += 1
+                        list_.insert(idx, use.pop(0))
+                elif mode == 'before':
+                    while use:
+                        list_.insert(idx, use.pop())
+                elif mode == 'after':
+                    while use:
+                        list_.insert(idx+1, use.pop())
+                elif mode == 'cut':
+                    self.clipBoard = list_[idx]
+                    del list_[idx]
+                elif mode == 'copy':
+                    self.clipBoard = list_[idx]
+                    g.es_print(str(self.clipBoard))
+                else:  # append
+                    list_.extend(use)
+            else:
+                g.es_print("ERROR: didn't find menu path " + targetPath)
+
+        else:
+            g.es_print("ERROR: @menuat found but no menu tree to patch")
+    #@+node:tbrown.20080514180046.9:getName
+    def getName(self, val, val2=None):
+        if val2 and val2.strip(): val = val2
+        val = val.split('\n',1)[0]
+        for i in "*.-& \t\n":
+            val = val.replace(i,'')
+        return val.lower()
+    #@nonl
+    #@-node:tbrown.20080514180046.9:getName
+    #@+node:tbrown.20080514180046.2:dumpMenuTree
+    def dumpMenuTree (self,aList,level=0,path=''):
+
+        for z in aList:
+            kind,val,val2 = z
+            if kind == '@item':
+                name = self.getName(val, val2)
+                g.es_print('%s %s (%s) [%s]' % ('    '*(level+0), val, val2, path+'/'+name))
+            else:
+                name = self.getName(kind.replace('@menu ',''))
+                g.es_print('%s %s... [%s]' % ('    '*(level), kind, path+'/'+name))
+                self.dumpMenuTree(val,level+1,path=path+'/'+name)
+    #@-node:tbrown.20080514180046.2:dumpMenuTree
+    #@+node:tbrown.20080514180046.8:patchMenuTree
+    def patchMenuTree(self, orig, targetPath, path=''):
+
+        for n,z in enumerate(orig):
+            kind,val,val2 = z
+            if kind == '@item':
+                name = self.getName(val, val2)
+                curPath = path+'/'+name
+                if curPath == targetPath:
+                    g.es_print('Found '+targetPath)
+                    return orig, n
+            else:
+                name = self.getName(kind.replace('@menu ',''))
+                curPath = path+'/'+name
+                if curPath == targetPath:
+                    g.es_print('Found '+targetPath)
+                    return orig, n
+                ans = self.patchMenuTree(val, targetPath, path=path+'/'+name)
+                if ans:
+                    return ans
+
+        return None
+    #@-node:tbrown.20080514180046.8:patchMenuTree
+    #@-node:tbrown.20080514112857.124:doMenuat
     #@-node:ekr.20041120094940:kind handlers (parserBaseClass)
     #@+node:ekr.20041124063257:munge
     def munge(self,s):
