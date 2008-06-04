@@ -8314,6 +8314,7 @@ class spellTabHandler (leoFind.leoFind):
             # Create the dictionary - there are better ways to do this
             # in later Python's but we stick with this method for compatibility
             for word in f.readlines():
+                word = g.toUnicode(word,'utf-8', reportErrors=True)
                 d [word.strip().lower()] = 0
         finally:
             f.close()
@@ -8322,7 +8323,7 @@ class spellTabHandler (leoFind.leoFind):
     #@-node:ekr.20051025071455.16:readDictionary
     #@-node:ekr.20051025071455.19:Birth & death
     #@+node:ekr.20051025071455.36:Commands
-    #@+node:ekr.20051025071455.37:add
+    #@+node:ekr.20051025071455.37:add (spellTab)
     def add(self,event=None):
         """Add the selected suggestion to the dictionary."""
 
@@ -8342,7 +8343,7 @@ class spellTabHandler (leoFind.leoFind):
                 words.sort()
                 f = open(self.dictionaryFileName, "w")
                 for word in words:
-                    f.write("%s\n" % word)
+                    f.write("%s\n" % g.toEncodedString(word,'utf-8',reportErrors=True))
                 f.flush()
                 f.close()
                 if 1:
@@ -8358,7 +8359,7 @@ class spellTabHandler (leoFind.leoFind):
 
         self.dictionary[self.currentWord.lower()] = 0
         self.tab.onFindButton()
-    #@-node:ekr.20051025071455.37:add
+    #@-node:ekr.20051025071455.37:add (spellTab)
     #@+node:ekr.20051025071455.38:change (spellTab)
     def change(self,event=None):
         """Make the selected change to the text"""
@@ -8375,7 +8376,7 @@ class spellTabHandler (leoFind.leoFind):
                 # g.trace('using',start,end)
             else:
                 start,end = oldSel = w.getSelectionRange()
-            if start:
+            if start is not None:
                 if start > end: start,end = end,start
                 w.delete(start,end)
                 w.insert(start,selection)
@@ -8483,7 +8484,7 @@ class spellTabHandler (leoFind.leoFind):
             g.es_exception()
         return alts, word
     #@-node:ekr.20051025071455.45:findNextMisspelledWord
-    #@+node:ekr.20051025071455.47:findNextWord (tkSpell)
+    #@+node:ekr.20051025071455.47:findNextWord (spellTab)
     def findNextWord(self,p):
         """Scan for the next word, leaving the result in the work widget"""
 
@@ -8520,7 +8521,7 @@ class spellTabHandler (leoFind.leoFind):
 
         return None,None,None,None
     #@nonl
-    #@-node:ekr.20051025071455.47:findNextWord (tkSpell)
+    #@-node:ekr.20051025071455.47:findNextWord (spellTab)
     #@-node:ekr.20051025071455.40:find & helpers
     #@+node:ekr.20051025121408:hide
     def hide (self,event=None):
