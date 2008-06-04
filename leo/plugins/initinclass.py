@@ -11,7 +11,8 @@ the order of declarations if other methods are declared before __init__.
 
 __version__ = "0.1"
 __plugin_name__ = "__init__ in class"
-import leoPlugins, leoGlobals
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 def InitInClass(tag, keywords):
     '''Move __init__ into the class node body in python @auto imports'''
     
@@ -51,6 +52,6 @@ def InitInClass(tag, keywords):
 
 def init():
     leoPlugins.registerHandler("after-auto", InitInClass)
-    leoGlobals.plugin_signon('initinclass')
+    g.plugin_signon(__name__)
     return True
 
