@@ -397,16 +397,16 @@ class parserBaseClass:
             self.set(p,kind,name,val)
     #@-node:ekr.20041217132253:doInts
     #@+node:ekr.20070925144337.2:doMenus & helper (ParserBaseClass)
-    def doMenus (self,p,kind,name,val,storeIn=None):
+    def doMenus (self,p,kind,name,val):
 
         # __pychecker__ = '--no-argsused' # kind,name,val not used.
 
-        c = self.c ; aList = [] # ; tag = '@menu'
+        c = self.c ; aList = [] ; tag = '@menu'
         p = p.copy() ; after = p.nodeAfterTree()
         while p and p != after:
             h = p.headString()
-            if g.match_word(h,0,'@menu') or (storeIn is not None and g.match_word(h,0,'@item')):
-                tag, name = h.strip().split(None,1)
+            if g.match_word(h,0,tag):
+                name = h[len(tag):].strip()
                 if name:
                     for z in aList:
                         name2,junk,junk = z
@@ -423,17 +423,13 @@ class parserBaseClass:
             else:
                 p.moveToThreadNext()
 
-        if storeIn is None:
-            # g.trace('localFlag',self.localFlag,c)
-            if self.localFlag:
-                self.set(p,kind='menus',name='menus',val=aList)
-            else:
-                g.es_print('Using menus from',c.shortFileName(),color='blue')
-                g.app.config.menusList = aList
-                g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
+        # g.trace('localFlag',self.localFlag,c)
+        if self.localFlag:
+            self.set(p,kind='menus',name='menus',val=aList)
         else:
-            storeIn.extend(aList)
-
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
+            g.app.config.menusList = aList
+            g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716:doItems
     def doItems (self,p,aList):
 
@@ -676,7 +672,8 @@ class parserBaseClass:
             # get the patch fragment
             patch = []
             if p.hasChildren():
-                self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
+                # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
+                self.doItems(p.copy(),patch)
                 self.dumpMenuTree(patch)
 
             # setup        
@@ -695,7 +692,7 @@ class parserBaseClass:
 
                 if mode not in ('copy', 'cut'):
                     if source != 'clipboard':
-                        use = patch[0][1]
+                        use = patch # [0][1]
                     else:
                         if isinstance(self.clipBoard, list):
                             use = self.clipBoard
