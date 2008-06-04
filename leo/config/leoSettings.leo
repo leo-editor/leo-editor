@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1354,7 +1354,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
+</v>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
@@ -1370,11 +1375,6 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
-<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
-<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
-<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </vnodes>
 <tnodes>
