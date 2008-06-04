@@ -6030,6 +6030,102 @@ def getString (self,setting):
 #@-node:ekr.20041118053731:Getters (c.configSettings)
 #@-node:ekr.20080603052650.465:Changed
 #@-node:ekr.20080129103436:Compute menus list for each c
+#@+node:ekr.20080509065556.1:Fixed minor spelling bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
+
+If the mis-spelled word  starts at position 0, it is detected but can
+not be replaced.
+#@+node:ekr.20051025071455.52:updateButtons (spellTab)
+def updateButtons (self):
+
+    """Enable or disable buttons in the Check Spelling dialog."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    start, end = w.getSelectionRange()
+
+    # Bug fix: enable buttons when start = 0.
+    state = g.choose(self.suggestions and start is not None,"normal","disabled")
+
+    self.changeButton.configure(state=state)
+    self.changeFindButton.configure(state=state)
+
+    # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+    # self.redoButton.configure(state=state)
+    # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+    # self.undoButton.configure(state=state)
+
+    self.addButton.configure(state='normal')
+    self.ignoreButton.configure(state='normal')
+#@-node:ekr.20051025071455.52:updateButtons (spellTab)
+#@-node:ekr.20080509065556.1:Fixed minor spelling bug
+#@+node:ekr.20080315083057.6:Fixed spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20051025071455.16:readDictionary
+def readDictionary (self,fileName):
+
+    """Read the dictionary of words which we use as a local dictionary
+
+    Although Aspell itself has the functionality to handle this kind of things
+    we duplicate it here so that we can also use it for the "ignore" functionality
+    and so that in future a Python only solution could be developed."""
+
+    d = {}
+
+    try:
+        f = open(fileName,"r")
+    except IOError:
+        g.es("can not open local dictionary",fileName,"using a blank one instead")
+        return d
+
+    try:
+        # Create the dictionary - there are better ways to do this
+        # in later Python's but we stick with this method for compatibility
+        for word in f.readlines():
+            word = g.toUnicode(word,'utf-8', reportErrors=True)
+            d [word.strip().lower()] = 0
+    finally:
+        f.close()
+
+    return d
+#@-node:ekr.20051025071455.16:readDictionary
+#@+node:ekr.20051025071455.37:add (spellTab)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    if not self.currentWord: return
+
+    # g.trace(self.currentWord)
+
+    try:
+        f = None
+        try:
+            # Rewrite the dictionary in alphabetical order.
+            f = open(self.dictionaryFileName, "r")
+            words = f.readlines()
+            f.close()
+            words = [word.strip() for word in words]
+            words.append(self.currentWord)
+            words.sort()
+            f = open(self.dictionaryFileName, "w")
+            for word in words:
+                f.write("%s\n" % g.toEncodedString(word,'utf-8',reportErrors=True))
+            f.flush()
+            f.close()
+            if 1:
+                s = 'Spell: added %s' % self.currentWord
+                self.messages.append(s)
+            else: # Too distracting.
+                g.es("adding ", color= "blue", newline= False) 
+                g.es('','%s' % self.currentWord)
+        except IOError:
+            g.es("can not add",self.currentWord,"to dictionary",color="red")
+    finally:
+        if f: f.close()
+
+    self.dictionary[self.currentWord.lower()] = 0
+    self.tab.onFindButton()
+#@-node:ekr.20051025071455.37:add (spellTab)
+#@-node:ekr.20080315083057.6:Fixed spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py

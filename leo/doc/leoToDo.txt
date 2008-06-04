@@ -3,15 +3,7 @@
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20080411091507.10:Bugs
-#@+node:ekr.20080602172531.1:before b1: 6
-#@+node:ekr.20080509065556.1:Fix minor spelling bug
-http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
-
-If the mis-spelled word  starts at position 0, it is detected but can
-not be replaced.
-#@-node:ekr.20080509065556.1:Fix minor spelling bug
-#@+node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
-#@-node:ekr.20080315083057.6:Fix spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20080602172531.1:before b1: 5
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
 
@@ -330,7 +322,7 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
-#@-node:ekr.20080602172531.1:before b1: 6
+#@-node:ekr.20080602172531.1:before b1: 5
 #@+node:ekr.20080602172531.2:before b2: 10
 #@+node:ekr.20080517102922.1:Files bugs 7
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
@@ -483,6 +475,29 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 @color
 #@nonl
 #@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
+#@+node:ekr.20080604060150.1:Clean up plugins
+Some scripting says the following are in .../plugins/ but not
+leoPluginsRef.leo:
+
+dyna_menu.py
+dynacommon.py
+exampleTemacsExtension.py
+gtkDialogs.py
+gtkGui.py
+initinclass.py
+leoOPML.py
+leo_interface.py
+leo_pdf.py
+mod_leo2ascd.py
+override_commands.py
+rst.py
+rst2.py
+temacs.py
+threading_colorizer.py
+threading_colorizer.py
+usetemacs.py
+zenity_file_dialogs.py
+#@-node:ekr.20080604060150.1:Clean up plugins
 #@-node:ekr.20080602172531.2:before b2: 10
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files

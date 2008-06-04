@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -195,6 +195,7 @@
 </v>
 </v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1494,5 +1495,6 @@ lineTable = (
 f = file(path)
 s = f.read()
 f.close()</t>
+<t tx="ekr.20080604101239.1">Martin Lëwis and friends.</t>
 </tnodes>
 </leo_file>

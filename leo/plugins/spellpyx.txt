@@ -135,9 +135,6 @@ Fredrik
 FreeMind
 FrontPage
 Frykholm
-Frédéric
-Frédéric
-Frédéric
 FunctionType
 GPL
 Galimberti
@@ -155,9 +152,6 @@ Gruber
 Gtk
 Gtk2
 Guettler
-Györgyi
-Györgyi
-Györgyi
 H1
 H3
 HIGHLIGHT_DIGITS
@@ -251,12 +245,11 @@ Liechti
 ListType
 Litt
 Locators
-Loewis
 LtArrow
 Lua
 Lundh
 Lundh's
-Löwis
+Lëwis
 M2C
 MARK_PREVIOUS
 MORE``'s
@@ -274,9 +267,6 @@ Melena
 Merenda
 Metadata
 ModuleType
-Momméja
-Momméja
-Momméja
 Montcrieffe
 MouseWheel
 Multipath
@@ -392,7 +382,6 @@ RodrigoB's
 Rossum
 RtArrow
 Ruleset
-Réglages
 SECTION000310000000000000000
 SProvide
 SQL
@@ -406,9 +395,6 @@ SaveTo
 Schwant
 Schwant's
 Schwenzer
-Schöön
-Schöön
-Schöön
 ScreenBook
 Scripts_
 Sections_
