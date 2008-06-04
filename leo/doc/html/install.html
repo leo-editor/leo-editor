@@ -535,9 +535,8 @@ to be reviewed and merged to trunk.</p>
 <p>You can run Leo from a Python interpreter as follows:</p>
 <pre class="literal-block">
 import leo
-leo.run() # runs Leo, opening a new outline.
-leo.go() # runs Leo after reloading all modules.
-leo.leoOpen(fileName) # runs Leo, reloads all modules, and opens fileName.
+leo.run() # runs Leo, opening a new outline or,
+leo.run(fileName=aFileName) # runs Leo, opening the given file name.
 </pre>
 <p>Here are some tips that may make running Leo easier:</p>
 <dl class="docutils">
@@ -545,7 +544,7 @@ leo.leoOpen(fileName) # runs Leo, reloads all modules, and opens fileName.
 <dd><p class="first">The following shell script will allow you to open foo.leo files by typing leo foo:</p>
 <pre class="literal-block">
 #!/bin/sh
-python &lt;leopath&gt;/leo.py $1
+python &lt;leopath&gt;/runLeo.py $1
 </pre>
 <p class="last">where &lt;leopath&gt; is replaced with the path to the leo directory.</p>
 </dd>
@@ -554,8 +553,8 @@ python &lt;leopath&gt;/leo.py $1
 You can also use a batch file.
 Put the following .bat file in c:\Windows:</p>
 <pre class="literal-block">
-cd c:\prog\LeoCVS\leo
-c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
+cd &lt;path-to-leo&gt;
+c:\python25\python &lt;path-to-leo&gt;\leo\core\runLeo.py %1
 </pre>
 <p class="last">This opens the file specified by the first argument (%1).</p>
 </dd>

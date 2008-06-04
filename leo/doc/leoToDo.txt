@@ -1149,8 +1149,6 @@ for p in c.allNodes_iter():
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20080425054202.3:ASAP
 #@+node:ekr.20080411091507.1:Docs
-#@+node:ekr.20080520140754.2:Document new import code & Leo-as-a-package
-#@-node:ekr.20080520140754.2:Document new import code & Leo-as-a-package
 #@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
 @nocolor
 

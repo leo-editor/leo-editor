@@ -1699,7 +1699,7 @@ where p is the node whose tree produced the output, and s is the output itself.<
 <p>Scripts can easily use writeNodeToString to convert &#64;rst trees into various kinds of output.
 For example, here is the body of &#64;button rst-&gt;html in LeoDocs.leo:</p>
 <pre class="literal-block">
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 rst3 = leoPlugins.getPluginModule('rst3')
 if rst3:
     controller = rst3.controllers.get(c)

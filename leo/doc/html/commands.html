@@ -1233,7 +1233,7 @@ the scripts via ivars such as <tt class="docutils literal"><span class="pre">c.w
 <li><p class="first">Put the following code in the root of a tree that will contain your script search:</p>
 <pre class="literal-block">
 # Initialize Leo's find panel using the named children of this node.
-import leoGlobals as g.
+import leo.core.leoGlobals as g.
 g.initScriptFind(&quot;Find script&quot;,&quot;Change script&quot;) # Second argument is optional.
 # Start searching at the top.
 c.selectPosition(c.rootPosition())

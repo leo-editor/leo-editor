@@ -598,19 +598,19 @@ verbose=True
 <pre class="literal-block">
 .. code-block:: Python
 
-    import leoPlugins
-    import leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
 </pre>
 <p>This directive syntax colors the code in the indented code block that follows the directive.
 The result looks like this if the SilverCity syntax coloring module has been installed.</p>
 <div class="code-block">
-import leoPlugins<br>
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins<br>
+import leo.core.leoGlobals as g
 </div>
 <p>Otherwise, the output looks like this:</p>
 <pre class="literal-block">
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 </pre>
 <p>See the tree called &quot;Scripting chapter using the rst plugin&quot; in LeoDocs.leo for many examples of how to use code-blocks.</p>
 </div>
@@ -725,7 +725,7 @@ where p is the node whose tree produced the output, and s is the output itself.<
 <p>Scripts can easily use writeNodeToString to convert &#64;rst trees into various kinds of output.
 For example, here is the body of &#64;button rst-&gt;html in LeoDocs.leo:</p>
 <pre class="literal-block">
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 rst3 = leoPlugins.getPluginModule('rst3')
 if rst3:
     controller = rst3.controllers.get(c)

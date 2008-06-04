@@ -324,7 +324,7 @@ hr { /* EKR */
 <li><a class="reference" href="#id2" id="id55" name="id55">Nothing (or almost nothing) happens when I start Leo.  What should I do?</a></li>
 <li><a class="reference" href="#the-new-python-decorator-syntax-causes-problems-what-can-i-do" id="id56" name="id56">The new Python decorator syntax causes problems.  What can I do?</a></li>
 <li><a class="reference" href="#id3" id="id57" name="id57">Running Python setup.py install from the leo directory doesn't work.  Why not?</a></li>
-<li><a class="reference" href="#i-can-t-run-the-leobridge-module-outside-of-leo-src-what-should-i-do" id="id58" name="id58">I can't run the LeoBridge module outside of leo/src.  What should I do?</a></li>
+<li><a class="reference" href="#i-can-t-run-the-leobridge-module-outside-of-leo-core-what-should-i-do" id="id58" name="id58">I can't run the LeoBridge module outside of leo/core.  What should I do?</a></li>
 </ul>
 </li>
 <li><a class="reference" href="#unicode-issues" id="id59" name="id59">Unicode issues</a><ul>
@@ -926,7 +926,7 @@ I can create and organize those tests and when I am done, ''test.leo'' is a log 
 <p>The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.  You can use that script as follows:</p>
 <pre class="literal-block">
-import leoImport
+import leo.core.leoImport as leoImport
 leoImport.importFiles(aDirectory, &quot;.py&quot;)
 </pre>
 <p>This will import all .py files from aDirectory, which should be a full path to a particular directory.
@@ -1255,22 +1255,22 @@ syn match   pythonDecorator &quot;&#64;\S\S+&quot; display nextgroup=pythonFunct
 <p>Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.</p>
 </div>
-<div class="section" id="i-can-t-run-the-leobridge-module-outside-of-leo-src-what-should-i-do">
-<h3><a class="toc-backref" href="#id58">I can't run the LeoBridge module outside of leo/src.  What should I do?</a></h3>
+<div class="section" id="i-can-t-run-the-leobridge-module-outside-of-leo-core-what-should-i-do">
+<h3><a class="toc-backref" href="#id58">I can't run the LeoBridge module outside of leo/core.  What should I do?</a></h3>
 <p>Question and answer from plumloco.</p>
 <p>Add the equivalent of:</p>
 <pre class="literal-block">
 import sys
-leosrc = &quot;path/to/leo/src&quot;
-if leosrc not in sys.path: sys.path.append(leosrc)
-import leoBridge
+leocore = &quot;path/to/leo/core&quot;
+if leocore not in sys.path: sys.path.append(leocore)
+import leo.core.leoBridge as leoBridge
 </pre>
 <p>at the head of each file that uses leoBridge.</p>
-<p>The problem is not importing leoBridge itself but (if I use 'from leo.src') the
+<p>The problem is not importing leoBridge itself but (if I use 'from leo.core') the
 importing of plugins, who get a different leoGlobals from leoBridge, without
 g.app etc, and so do not work if they rely on dynamic values in g.etc.</p>
 <p>&gt; Why can't you simply add leo/src to sys.path in sitecustomize.py?</p>
-<p>Putting leosrc on the python path as you suggest would put forty python modules
+<p>Putting leocore on the python path as you suggest would put forty python modules
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
@@ -1280,8 +1280,8 @@ version, but both /src directories can't be exposed at the same time.</p>
 <pre class="literal-block">
 sys.modules['leoGlobals'] = leoGlobals
 </pre>
-<p>in leoBridge after import leoGlobals.</p>
-<p>This, together with placing an empty __init__.py in leo/src, allows my scripts
+<p>in leoBridge after import leo.core.leoGlobals as leoGlobals</p>
+<p>This allows my scripts
 to be portable over the several computers/platforms I need to use them on, and
 makes testing scripts against multiple leo versions easy. It does mean that my
 scripts are not portable to other leo users but that is not likely to be a

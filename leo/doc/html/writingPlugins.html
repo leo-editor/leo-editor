@@ -326,8 +326,8 @@ Plugins--&gt;Example code--&gt;&#64;thin print_cp.py
 <li><p class="first">Update the docstring, the __version__ constant and the &lt;&lt; imports &gt;&gt; section.
 Note that unlike when using script buttons, you must have the following imports:</p>
 <pre class="literal-block">
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 </pre>
 </li>
 <li><p class="first">Because this plugin doesn't require any gui interface, we simplify the <tt class="docutils literal"><span class="pre">init</span></tt> function:</p>
