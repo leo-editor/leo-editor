@@ -1858,7 +1858,9 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; tree = self
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            c.outerUpdate()
+            return
 
         c.setLog()
 
@@ -1887,7 +1889,9 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            c.outerUpdate()
+            return
 
         c.setLog()
 
@@ -1912,7 +1916,9 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            c.outerUpdate()
+            return
 
         c.setLog()
 
