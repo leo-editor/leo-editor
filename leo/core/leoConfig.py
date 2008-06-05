@@ -1699,7 +1699,8 @@ class configClass:
 
         # Init settings from leoSettings.leo and myLeoSettings.leo files.
         for path,localFlag in table:
-            path = g.os_path_abspath(g.os_path_normpath(path))
+            if path:
+                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
             if path and path.lower() not in seen:
                 seen.append(path.lower())
