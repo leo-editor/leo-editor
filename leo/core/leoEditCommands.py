@@ -127,7 +127,7 @@ class baseEditCommandsClass:
                 k.resetLabel()
     #@-node:ekr.20051214133130.1:endCommand
     #@-node:ekr.20051214132256:begin/endCommand (baseEditCommands)
-    #@+node:ekr.20061007105001:editWidget
+    #@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
     def editWidget (self,event):
 
         c = self.c ; w = event and event.widget
@@ -138,17 +138,14 @@ class baseEditCommandsClass:
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-        # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-            # self.w = w
-        # else:
-            # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+        # g.trace(self.w)
 
         if self.w:
             c.widgetWantsFocusNow(self.w)
 
         return self.w
     #@nonl
-    #@-node:ekr.20061007105001:editWidget
+    #@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
     #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
