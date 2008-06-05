@@ -36,6 +36,31 @@ a zap-to-character command followed by a set-insert-state command.  It
 never executes the set-insert-state command because the zap-to-
 character command asks the user for a character (the 'w').
 
+4. Repeat last command using the period
+
+Binding keys within nodes:
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.
+
+Support commands requesting input:
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+Note: The copy of the character should be saved somewhere that does
+NOT affect the contents of the clipboard.
+Note: The same or a separate storage location can be used for all
+commands to retain a copy of the character entered by the user.  It
+doesn't matter since only the last command is assigned to the period
+key to be re-executed.
+
 @color
 #@nonl
 #@+node:ekr.20061031131434.156:Modes
