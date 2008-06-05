@@ -3116,6 +3116,18 @@ def os_path_normpath(path,encoding=None):
 
     return path
 #@-node:ekr.20031218072017.2157:os_path_normpath
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
 #@+node:ekr.20031218072017.2158:os_path_split
 def os_path_split(path,encoding=None):
 
