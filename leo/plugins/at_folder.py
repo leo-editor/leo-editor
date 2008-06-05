@@ -4,16 +4,23 @@
 #@+node:edream.110203113231.874:<< docstring >>
 '''Synchronize @folder nodes with folders.
 
-If a node is named '@folder path_to_folder', the content (filenames) of the
-folder and the children of that node will be sync. Whenever a new file is put
-there, a new node will appear on top of the children list (with mark). So that
-I can put my description (ie. annotation) as the content of that node. In this
-way, I can find any files much easier from leo.
+If a node is named '@folder path_to_folder', the content (file and folder names)
+of the folder and the children of that node will be sync.
 
-Moreover, I add another feature to allow you to group files(in leo) into
-children of another group. This will help when there are many files in that
-folder. You can logically group it in leo (or even clone it to many groups),
-while keep every files in a flat/single directory on your computer.
+Whenever a new file is added to the folder a new node will appear on top of
+the children list (with a mark).
+
+Folders appear in the list as /foldername/.  If you click on the icon-box of the
+folder node, it will have children added to it for the contents of the
+folder on disk.
+
+When files are deleted from the folder they will appear in the list as
+*filename* (or */dirname/*).
+
+You can describe files and directories in the body of the nodes.
+
+You can organize files and directories with organizer nodes, an organizer
+node name cannot start with '/'.
 '''
 #@nonl
 #@-node:edream.110203113231.874:<< docstring >>
@@ -26,51 +33,95 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os  # added JD 2004-09-10
 
-__version__ = "1.4"
+__version__ = "2.0"
 
 #@+others
 #@+node:edream.110203113231.875:sync_node_to_folder
+def flattenOrganizers(p):
+    for n in p.children_iter():
+        yield n
+        if not n.headString().startswith('/'):
+            for i in flattenOrganizers(n):
+                yield i
+
 def sync_node_to_folder(c,parent,d):
 
-    oldlist = {}
+    # compare folder content to children
+    try:
+        path, dirs, files = os.walk(d).next()
+    except StopIteration:
+        # directory deleted?
+        c.setHeadString(parent,'*'+parent.headString().strip('*')+'*')  # strip only *
+        return
+
+    oldlist = set()
     newlist = []
-    #get children info
-    v = parent
-    after_v = parent.nodeAfterTree()
-    while v != after_v:
-        if not v.hasChildren():
-            oldlist[v.headString()] = v.bodyString()
-        v = v.threadNext()
-    #compare folder content to children
-    for name in os.listdir(d):
-        if name in oldlist:
-            del oldlist[name]
+
+    # get children info
+    for p in flattenOrganizers(parent):
+        oldlist.add(p.headString().strip('/*'))
+
+    for d in dirs:
+        if d in oldlist:
+            oldlist.discard(d)
         else:
-            newlist.append(name)
-    #insert newlist
+            newlist.append('/'+d+'/')
+    for f in files:
+        if f in oldlist:
+            oldlist.discard(f)
+        else:
+            newlist.append(f)
+    # insert newlist
     newlist.sort()
     newlist.reverse()
     for name in newlist:
-        v = parent.insertAsNthChild(0)
-        c.setHeadString(v,name)
-        v.setMarked()
-    #warn for orphan oldlist
-    if len(oldlist)>0:
-        g.es('missing: '+','.join(oldlist.keys()))
+        p = parent.insertAsNthChild(0)
+        c.setChanged(True)
+        c.setHeadString(p,name)
+        p.setMarked()
+    # warn / mark for orphan oldlist
+    for p in flattenOrganizers(parent):
+        h = p.headString().strip('/*')  # strip / and *
+        if h not in oldlist or p.hasChildren():
+            nh = p.headString().strip('*')  # strip only *
+        else:
+            nh = '*'+p.headString().strip('*')+'*'
+        if p.headString() != nh:  # don't dirty node unless we must
+            c.setHeadString(p,nh)
 #@-node:edream.110203113231.875:sync_node_to_folder
 #@-others
 
-def onSelect (tag,keywords):
+def onSelect (tag,keywords,follow=False):
     c = keywords.get('c') or keywords.get('new_c')
     if not c: return
-    v = keywords.get("new_v")
-    h = v.headString()
-    if g.match_word(h,0,"@folder"):
-        sync_node_to_folder(c,v,h[8:])
+    if follow:
+        p = keywords.get("p")
+    else:
+        p = keywords.get("new_p")
+    pos = p.copy()
+    path = []
+    while p:
+        h = p.headString()
+        if g.match_word(h,0,"@folder"):
+            path.insert(0,os.path.expanduser(h[8:].strip()))
+            d = os.path.join(*path)
+            c.beginUpdate()
+            try:
+                sync_node_to_folder(c,pos,d)
+                c.requestRedrawFlag = True
+            finally:
+                c.endUpdate()
+            break
+        elif follow and h.startswith('/'):
+            path.insert(0,h.strip('/'))
+        else:
+            break
+
+        p = p.parent()
 
 if 1: # Ok for unit testing.
-    leoPlugins.registerHandler("select1", onSelect)
+    leoPlugins.registerHandler("select1", lambda t,k: onSelect(t,k))
+    leoPlugins.registerHandler("iconclick1", lambda t,k: onSelect(t,k,follow=True))
     g.plugin_signon(__name__)
-#@nonl
 #@-node:edream.110203113231.873:@thin at_folder.py
 #@-leo
