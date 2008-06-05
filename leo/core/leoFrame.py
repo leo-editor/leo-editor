@@ -2277,7 +2277,7 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw_now(self,scroll=True):               self.oops()
+    def redraw_now(self,scroll=True,forceDraw=False):   self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -3313,7 +3313,7 @@ class nullTree (leoTree):
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw_now(self,scroll=True):
+    def redraw_now(self,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
