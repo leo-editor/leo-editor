@@ -1795,6 +1795,8 @@ class configClass:
             g.app.globalConfigDir,
             localConfigPath,
         ):
+            if path:
+                path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             if path and path not in seen:
                 ok = self.readRecentFilesFile(path)
                 if ok: seen.append(path)
