@@ -1193,7 +1193,7 @@ def endCommand(self,label=None,changed=True,setLabel=True):
             k.resetLabel()
 #@-node:ekr.20051214133130.1:endCommand
 #@-node:ekr.20051214132256:begin/endCommand (baseEditCommands)
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1204,17 +1204,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
 def getPublicCommands (self):
 
@@ -1306,7 +1303,7 @@ def moveToHelper (self,event,spot,extend):
     self.extendHelper(w,extend,spot,upOrDown=False)
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1317,17 +1314,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.80:howMany
 def howMany (self,event):
 
@@ -6285,6 +6279,8 @@ def readRecentFiles (self,localConfigFile):
         g.app.globalConfigDir,
         localConfigPath,
     ):
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
         if path and path not in seen:
             ok = self.readRecentFilesFile(path)
             if ok: seen.append(path)

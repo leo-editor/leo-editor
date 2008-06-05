@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="68" left="623" height="800" width="620"/>
+	<global_window_position top="72" left="482" height="800" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
@@ -124,10 +124,9 @@
 </v>
 </v>
 <v t="ekr.20080604110043.1"><vh>Vim stuff</vh>
-<v t="ekr.20080604104453.1"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
-<v t="ekr.20080604104453.2"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080604104453.2" a="E"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080604104453.3"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080604104453.4"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080604104453.4" a="E"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080604104453.6"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080604104453.7"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
@@ -1654,16 +1653,6 @@ f = file(path)
 s = f.read()
 f.close()</t>
 <t tx="ekr.20080604101239.1">Martin Lëwis and friends.</t>
-<t tx="ekr.20080604104453.1">@nocolor
-
-This setting determines the initial binding for otherwise-unbound keystrokes
-when no mode is in effect.  Note: the keyboard-quit command exits all modes.
-
-The valid values are::
-
-ignore:  Leo ignores the key (like Vim).
-insert:  Leo inserts the key at the cursor (like Emacs)
-overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20080604104453.2">@language otl</t>
 <t tx="ekr.20080604104453.3">Leo's vi support:
 	History

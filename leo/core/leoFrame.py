@@ -1836,7 +1836,7 @@ class leoFrame:
     #@-node:ekr.20061016071937:OnPaste (To support middle-button paste)
     #@-node:ekr.20070130115927.4:Cut/Copy/Paste (leoFrame)
     #@+node:ekr.20031218072017.3980:Edit Menu... (leoFrame)
-    #@+node:ekr.20031218072017.3981:abortEditLabelCommand
+    #@+node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     def abortEditLabelCommand (self,event=None):
 
         '''End editing of a headline and revert to its previous value.'''
@@ -1861,7 +1861,7 @@ class leoFrame:
                 c.selectPosition(p)
             finally:
                 c.endUpdate()
-    #@-node:ekr.20031218072017.3981:abortEditLabelCommand
+    #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
 
