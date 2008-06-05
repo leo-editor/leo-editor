@@ -5917,6 +5917,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
             if i == -1: return
             self.beginCommand(undoType='zap-to-char')
             self.addToKillBuffer(s[ins:i])
+            g.app.gui.replaceClipboardWith(s[ins:i]) # Support for proper yank.
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
             self.endCommand(changed=True,setLabel=True)
