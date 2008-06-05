@@ -4150,7 +4150,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -4226,6 +4227,18 @@ def updateSettings (self,c,localFlag):
             g.trace(d and d.keys())
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
 #@-node:ekr.20080509153731.1:Fixed bug: myLeoSettings.leo sometimes read twice
 #@+node:ekr.20080129103436:Compute menus list for each c
 @nocolor
@@ -4433,7 +4446,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -9706,7 +9720,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
