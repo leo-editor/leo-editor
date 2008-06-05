@@ -1193,7 +1193,7 @@ def endCommand(self,label=None,changed=True,setLabel=True):
             k.resetLabel()
 #@-node:ekr.20051214133130.1:endCommand
 #@-node:ekr.20051214132256:begin/endCommand (baseEditCommands)
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1204,17 +1204,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
 def getPublicCommands (self):
 
@@ -1306,7 +1303,7 @@ def moveToHelper (self,event,spot,extend):
     self.extendHelper(w,extend,spot,upOrDown=False)
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1317,17 +1314,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.80:howMany
 def howMany (self,event):
 
@@ -3259,16 +3253,16 @@ def endUpdate (self,flag,scroll=False):
 #@+node:ekr.20040803072955.58:tree.redraw_now & helper
 # New in 4.4b2: suppress scrolling by default.
 
-def redraw_now (self,scroll=False):
+def redraw_now (self,scroll=False,forceDraw=False):
 
     '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
 
     c = self.c
-
-    # g.trace('scroll',scroll,g.callers())
 
     if not g.app.unitTesting:
         if self.gc_before_redraw:
@@ -3294,20 +3288,22 @@ def redraw_now (self,scroll=False):
     self.expandAllAncestors(c.currentPosition())
     if self.idle_redraw:
         def idleRedrawCallback(event=None,self=self,scroll=scroll):
-            self.redrawHelper(scroll=scroll)
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
         self.canvas.after_idle(idleRedrawCallback)
     else:
-        self.redrawHelper(scroll=scroll)
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
     if g.app.unitTesting:
         self.canvas.update_idletasks() # Important for unit tests.
     c.masterFocusHandler()
 
 redraw = redraw_now # Compatibility
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
@@ -3938,10 +3934,12 @@ def yoffsetTree(self,p,p1,isTop):
 #@-node:ekr.20040803072955.62:Helpers...
 #@-node:ekr.20040803072955.35:Drawing... (tkTree)
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
@@ -4150,7 +4148,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -4226,6 +4225,18 @@ def updateSettings (self,c,localFlag):
             g.trace(d and d.keys())
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
 #@-node:ekr.20080509153731.1:Fixed bug: myLeoSettings.leo sometimes read twice
 #@+node:ekr.20080129103436:Compute menus list for each c
 @nocolor
@@ -4433,7 +4444,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -6271,6 +6283,8 @@ def readRecentFiles (self,localConfigFile):
         g.app.globalConfigDir,
         localConfigPath,
     ):
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
         if path and path not in seen:
             ok = self.readRecentFilesFile(path)
             if ok: seen.append(path)
@@ -9706,7 +9720,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())

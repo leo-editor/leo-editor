@@ -1102,8 +1102,6 @@ class baseCommands:
         orig = [i for i in c.recentFiles if i.startswith("/")]
         c.clearRecentFiles()
 
-        orig.reverse()  # loop below re-reverses it, leaving it in original order
-
         for i in orig:
             t = i
             for change in changes:
@@ -6258,6 +6256,12 @@ class baseCommands:
             if not c.exists or not c.k:
                 return
 
+            # Suppress any requested redraw until we have iconified or diconified.
+            redrawFlag = c.requestRedrawFlag
+            scrollFlag = c.requestRedrawScrollFlag
+            c.requestRedrawFlag = False
+            c.requestRedrawScrollFlag = False
+
             if c.requestedIconify == 'iconify':
                 aList.append('iconify')
                 c.frame.iconify()
@@ -6266,9 +6270,11 @@ class baseCommands:
                 aList.append('deiconify')
                 c.frame.deiconify()
 
-            if c.requestRedrawFlag:
+            if redrawFlag:
+                # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+                # A hack: force the redraw, even if we are dragging.
                 aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
-                c.frame.tree.redraw_now(scroll=c.requestRedrawScrollFlag)
+                c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
 
             if c.requestRecolorFlag:
                 aList.append('%srecolor' % (
