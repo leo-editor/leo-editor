@@ -1102,8 +1102,6 @@ class baseCommands:
         orig = [i for i in c.recentFiles if i.startswith("/")]
         c.clearRecentFiles()
 
-        orig.reverse()  # loop below re-reverses it, leaving it in original order
-
         for i in orig:
             t = i
             for change in changes:
