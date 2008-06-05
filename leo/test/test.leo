@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
@@ -124,17 +124,17 @@
 </v>
 </v>
 <v t="ekr.20080604110043.1"><vh>Vim stuff</vh>
-<v t="ekr.20080604104453.2" a="E"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080604104453.2"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080604104453.3"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080604104453.4" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080604104453.4"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080604104453.6"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080604104453.7"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080604104453.8"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080604104453.9" a="E"><vh>@keys</vh>
+<v t="ekr.20080604104453.9"><vh>@keys</vh>
 <v t="ekr.20080604104453.10"><vh>@shortcuts - Unbind all commands</vh></v>
-<v t="ekr.20080604104453.11" a="E"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="ekr.20080604104453.11"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080604104453.12"><vh>@mode tree-double-click-node</vh></v>
 <v t="ekr.20080604104453.13"><vh>@mode tree-save-file</vh></v>
 <v t="ekr.20080604104453.14"><vh>@mode tree-command-line</vh>
@@ -198,7 +198,7 @@
 <v t="ekr.20080604104453.65"><vh>@mode tree-unmark-all-nodes</vh></v>
 <v t="ekr.20080604104453.66"><vh>@mode tree-find-in-headline</vh></v>
 </v>
-<v t="ekr.20080604104453.67" a="E"><vh>@shortcuts - vi in Body pane</vh>
+<v t="ekr.20080604104453.67"><vh>@shortcuts - vi in Body pane</vh>
 <v t="ekr.20080604104453.68"><vh>@mode vi-command-line</vh>
 <v t="ekr.20080604104453.69"><vh>@mode vi-command-revert</vh></v>
 <v t="ekr.20080604104453.70"><vh>@mode vi-command-save</vh>
@@ -352,6 +352,7 @@
 </v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
+<v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -3998,5 +3999,18 @@ cycle-editor-focus   = p   #Vim goes to previous window with focus
 delete-editor        = c   #Close
 delete-editor        = q   #Close</t>
 <t tx="ekr.20080604110043.1"></t>
+<t tx="ekr.20080605103500.1">def addchild(tag, keywords):
+   p = keywords.get('new_p')
+   c = keywords.get('c')
+   c.beginUpdate()
+   try:
+       g.trace('inserting child of',p)
+       n = p.insertAsNthChild(0)
+       c.setHeadString(n, 'new')
+   finally:
+       c.endUpdate()
+
+import leo.core.leoPlugins as leoPlugins
+leoPlugins.registerHandler('select2', addchild)</t>
 </tnodes>
 </leo_file>

@@ -3253,16 +3253,16 @@ def endUpdate (self,flag,scroll=False):
 #@+node:ekr.20040803072955.58:tree.redraw_now & helper
 # New in 4.4b2: suppress scrolling by default.
 
-def redraw_now (self,scroll=False):
+def redraw_now (self,scroll=False,forceDraw=False):
 
     '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
 
     c = self.c
-
-    # g.trace('scroll',scroll,g.callers())
 
     if not g.app.unitTesting:
         if self.gc_before_redraw:
@@ -3288,20 +3288,22 @@ def redraw_now (self,scroll=False):
     self.expandAllAncestors(c.currentPosition())
     if self.idle_redraw:
         def idleRedrawCallback(event=None,self=self,scroll=scroll):
-            self.redrawHelper(scroll=scroll)
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
         self.canvas.after_idle(idleRedrawCallback)
     else:
-        self.redrawHelper(scroll=scroll)
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
     if g.app.unitTesting:
         self.canvas.update_idletasks() # Important for unit tests.
     c.masterFocusHandler()
 
 redraw = redraw_now # Compatibility
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
@@ -3932,10 +3934,12 @@ def yoffsetTree(self,p,p1,isTop):
 #@-node:ekr.20040803072955.62:Helpers...
 #@-node:ekr.20040803072955.35:Drawing... (tkTree)
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
