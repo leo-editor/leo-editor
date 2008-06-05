@@ -114,7 +114,7 @@ def onSelect (tag,keywords,follow=False):
             break
         elif follow and h.startswith('/'):
             path.insert(0,h.strip('/'))
-        else:
+        elif not follow or follow and not path:
             break
 
         p = p.parent()
