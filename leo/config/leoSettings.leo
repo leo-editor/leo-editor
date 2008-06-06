@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="89" left="400" height="749" width="873"/>
+	<global_window_position top="101" left="10" height="749" width="873"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -376,7 +376,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -384,9 +384,9 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
@@ -394,7 +394,7 @@
 </v>
 <v t="ekr.20080602094234.10"><vh>@keys</vh>
 <v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
-<v t="ekr.20080602094234.12"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="ekr.20080602094234.12" a="E"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
 <v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
 <v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
@@ -421,7 +421,7 @@
 </v>
 <v t="ekr.20080602094234.32"><vh>@ignore tree-delete-to-end-of-line</vh></v>
 <v t="ekr.20080602094234.33"><vh>@ignore tree-delete</vh></v>
-<v t="ekr.20080602094234.34"><vh>@ignore tree-delete-text-object</vh>
+<v t="ekr.20080602094234.34"><vh>@mode tree-delete-text-object</vh>
 <v t="ekr.20080602094234.35"><vh>@mode tree-delete-line</vh></v>
 <v t="ekr.20080602094234.36"><vh>@mode tree-delete-to-end-of-word</vh></v>
 <v t="ekr.20080602094234.37"><vh>@mode tree-delete-to-beginning-of-word</vh></v>
@@ -1359,7 +1359,7 @@
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
 <v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
@@ -6339,12 +6339,11 @@ select-all                       ! tree = Shift-s
 
 #Delete text commands
 #--------------------------------
-#enter-tree-delete-text-object-mode ! tree = d  #Modes don't work in tree
-end-of-line-extend-selection        ! tree = Shift-d  #Select to end of line
-                                                         #Should use Shift-y
-#enter-tree-select-object-mode   ! tree = d
-###end-of-line-extend-selection     ! tree = Shift-d  #Select to end of line
 #enter-tree-delete-to-end-of-line-mode ! tree = Shift-d  #modes not working
+end-of-line-extend-selection           ! tree = Shift-d  #Temporary workaround
+
+enter-tree-delete-text-object-mode     ! tree = d        #Modes don't work in tree
+
 delete-char                      ! tree = x
 delete-char                      ! tree = delete
 
@@ -6700,14 +6699,15 @@ enter-vi-change-to-beginning-of-word-mode  = b</t>
 
 --&gt; exit-named-mode</t>
 <t tx="ekr.20080602094234.34">--&gt; set-silent-mode
-enter-tree-delete-line-mode = d
+kill-line = d
+enter-tree-delete-line-mode = Shift-d
+enter-tree-delete-to-end-of-word-mode = w
+enter-tree-delete-to-beginning-of-word-mode = b
 enter-tree-delete-to-char-mode = t</t>
 <t tx="ekr.20080602094234.35">#Deleted current line
 #Bind: dd
 
---&gt; set-silent-mode
---&gt; kill-line
---&gt; exit-named-mode</t>
+--&gt; kill-line</t>
 <t tx="ekr.20080602094234.36">#Deleted to end of word
 #Bind: dw
 #Note: Forward-word-extend-selection it consumes all
@@ -6732,7 +6732,6 @@ enter-tree-delete-to-char-mode = t</t>
 --&gt; exit-named-mode</t>
 <t tx="ekr.20080602094234.38">#Delete to character
 #Bind: dt&lt;character&gt;
-#Note: Deleted text not copied into paste buffer.
 #Note: Character search not limited to current line.
 
 --&gt; set-silent-mode
