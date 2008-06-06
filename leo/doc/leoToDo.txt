@@ -1130,6 +1130,7 @@ def importAtFile (self,event=None):
     c.bringToFront()
 
     if names:
+        g.chdir(names[0])
         c.importCommands.importFilesCommand(names,"@file")
 #@-node:ekr.20031218072017.2853:importAtFile
 #@+node:ekr.20031218072017.3212:importFilesCommand
@@ -1573,6 +1574,7 @@ def open (self,event=None):
     if fileName and len(fileName) > 0:
         ok, frame = g.openWithFileName(fileName,c)
         if ok:
+            g.chdir(fileName)
             g.setGlobalOpenDir(fileName)
         if ok and closeFlag:
             g.app.destroyWindow(c.frame)
@@ -1866,6 +1868,8 @@ def save (self,event=None):
                 c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
+
     finally:
         c.endUpdate()
         c.widgetWantsFocusNow(w)
@@ -1905,6 +1909,7 @@ def saveAs (self,event=None):
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
     finally:
         c.endUpdate()
         c.widgetWantsFocusNow(w)
@@ -1961,6 +1966,7 @@ def saveTo (self,event=None):
             fileName = g.ensure_extension(fileName, ".leo")
             c.fileCommands.saveTo(fileName)
             c.updateRecentFiles(fileName)
+            g.chdir(fileName)
 
     finally:
         c.endUpdate()
