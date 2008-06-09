@@ -1877,6 +1877,15 @@ def startTracer():
 #@-node:ekr.20080531075119.1:class Tracer & g.startTracer
 #@-node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
 #@+node:ekr.20031218072017.3116:Files & Directories...
+#@+node:ekr.20080606074139.2:g.chdir
+def chdir (path):
+
+    if not g.os_path_isdir(path):
+        path = g.os_path_dirname(path)
+
+    if g.os_path_isdir(path) and g.os_path_exists(path):
+        os.chdir(path)
+#@-node:ekr.20080606074139.2:g.chdir
 #@+node:ekr.20031218072017.3117:g.create_temp_file
 def create_temp_file (textMode=False):
     '''Return a tuple (theFile,theFileName)
@@ -3116,6 +3125,18 @@ def os_path_normpath(path,encoding=None):
 
     return path
 #@-node:ekr.20031218072017.2157:os_path_normpath
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
 #@+node:ekr.20031218072017.2158:os_path_split
 def os_path_split(path,encoding=None):
 

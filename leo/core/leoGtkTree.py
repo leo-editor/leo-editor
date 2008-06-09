@@ -791,11 +791,13 @@ class leoGtkTree (leoFrame.leoTree):
     #@+node:ekr.20080112145409.349:tree.redraw_now & helper
     # New in 4.4b2: suppress scrolling by default.
 
-    def redraw_now (self,scroll=False):
+    def redraw_now (self,scroll=False,forceDraw=False):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+        if g.app.quitting or self.frame not in g.app.windowList:
+            return
+        if self.drag_p and not forceDraw:
             return
 
         c = self.c
@@ -836,7 +838,7 @@ class leoGtkTree (leoFrame.leoTree):
 
     redraw = redraw_now # Compatibility
     #@+node:ekr.20080112145409.350:redrawHelper
-    def redrawHelper (self,scroll=True):
+    def redrawHelper (self,scroll=True,forceDraw=False):
 
         c = self.c
 

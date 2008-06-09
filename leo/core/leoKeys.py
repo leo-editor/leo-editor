@@ -3279,6 +3279,7 @@ class keyHandlerClass:
                         return 'break'
                     else:
                         # New in Leo 4.5: unbound keys end mode.
+                        if trace: g.trace('unbound key ends mode',stroke)
                         k.endMode(event)
                 else:
                     # New in 4.4b4.
@@ -3866,13 +3867,18 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        c.frame.log.deleteTab('Mode')
+        w = g.app.gui.get_focus(c)
+        if w:
+            c.frame.log.deleteTab('Mode') # Changes focus to the body pane
 
         k.endCommand(event,k.stroke)
         k.inputModeName = None
         k.clearState()
         k.resetLabel()
         k.showStateAndMode() # Restores focus.
+
+        if w:
+            c.widgetWantsFocusNow(w)
     #@-node:ekr.20061031131434.159:endMode
     #@+node:ekr.20061031131434.160:enterNamedMode
     def enterNamedMode (self,event,commandName):

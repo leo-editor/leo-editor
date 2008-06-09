@@ -1193,7 +1193,7 @@ def endCommand(self,label=None,changed=True,setLabel=True):
             k.resetLabel()
 #@-node:ekr.20051214133130.1:endCommand
 #@-node:ekr.20051214132256:begin/endCommand (baseEditCommands)
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1204,17 +1204,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
 def getPublicCommands (self):
 
@@ -1306,7 +1303,7 @@ def moveToHelper (self,event,spot,extend):
     self.extendHelper(w,extend,spot,upOrDown=False)
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
-#@+node:ekr.20061007105001:editWidget
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 def editWidget (self,event):
 
     c = self.c ; w = event and event.widget
@@ -1317,17 +1314,14 @@ def editWidget (self,event):
     else:
         self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-    # if w and g.app.gui.isTextWidget(w) and w != c.frame.miniBufferWidget:
-        # self.w = w
-    # else:
-        # self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+    # g.trace(self.w)
 
     if self.w:
         c.widgetWantsFocusNow(self.w)
 
     return self.w
 #@nonl
-#@-node:ekr.20061007105001:editWidget
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
 #@+node:ekr.20050920084036.80:howMany
 def howMany (self,event):
 
@@ -3259,16 +3253,16 @@ def endUpdate (self,flag,scroll=False):
 #@+node:ekr.20040803072955.58:tree.redraw_now & helper
 # New in 4.4b2: suppress scrolling by default.
 
-def redraw_now (self,scroll=False):
+def redraw_now (self,scroll=False,forceDraw=False):
 
     '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
 
     c = self.c
-
-    # g.trace('scroll',scroll,g.callers())
 
     if not g.app.unitTesting:
         if self.gc_before_redraw:
@@ -3294,20 +3288,22 @@ def redraw_now (self,scroll=False):
     self.expandAllAncestors(c.currentPosition())
     if self.idle_redraw:
         def idleRedrawCallback(event=None,self=self,scroll=scroll):
-            self.redrawHelper(scroll=scroll)
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
         self.canvas.after_idle(idleRedrawCallback)
     else:
-        self.redrawHelper(scroll=scroll)
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
     if g.app.unitTesting:
         self.canvas.update_idletasks() # Important for unit tests.
     c.masterFocusHandler()
 
 redraw = redraw_now # Compatibility
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
@@ -3938,10 +3934,12 @@ def yoffsetTree(self,p,p1,isTop):
 #@-node:ekr.20040803072955.62:Helpers...
 #@-node:ekr.20040803072955.35:Drawing... (tkTree)
 #@+node:ekr.20040803072955.59:redrawHelper
-def redrawHelper (self,scroll=True):
+def redrawHelper (self,scroll=True,forceDraw=False):
 
     # This can be called at idle time, so there are shutdown issues.
-    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
         return
     if not hasattr(self,'c'):
         return
@@ -4150,7 +4148,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -4226,6 +4225,18 @@ def updateSettings (self,c,localFlag):
             g.trace(d and d.keys())
 #@-node:ekr.20051013161232:g.app.config.updateSettings
 #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20080605064555.2:os_path_realpath
+def os_path_realpath(path,encoding=None):
+
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    path = os.path.realpath(path)
+
+    path = g.toUnicodeFileEncoding(path,encoding)
+
+    return path
+#@-node:ekr.20080605064555.2:os_path_realpath
 #@-node:ekr.20080509153731.1:Fixed bug: myLeoSettings.leo sometimes read twice
 #@+node:ekr.20080129103436:Compute menus list for each c
 @nocolor
@@ -4433,7 +4444,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -6030,6 +6042,102 @@ def getString (self,setting):
 #@-node:ekr.20041118053731:Getters (c.configSettings)
 #@-node:ekr.20080603052650.465:Changed
 #@-node:ekr.20080129103436:Compute menus list for each c
+#@+node:ekr.20080509065556.1:Fixed minor spelling bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
+
+If the mis-spelled word  starts at position 0, it is detected but can
+not be replaced.
+#@+node:ekr.20051025071455.52:updateButtons (spellTab)
+def updateButtons (self):
+
+    """Enable or disable buttons in the Check Spelling dialog."""
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+
+    start, end = w.getSelectionRange()
+
+    # Bug fix: enable buttons when start = 0.
+    state = g.choose(self.suggestions and start is not None,"normal","disabled")
+
+    self.changeButton.configure(state=state)
+    self.changeFindButton.configure(state=state)
+
+    # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
+    # self.redoButton.configure(state=state)
+    # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
+    # self.undoButton.configure(state=state)
+
+    self.addButton.configure(state='normal')
+    self.ignoreButton.configure(state='normal')
+#@-node:ekr.20051025071455.52:updateButtons (spellTab)
+#@-node:ekr.20080509065556.1:Fixed minor spelling bug
+#@+node:ekr.20080315083057.6:Fixed spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20051025071455.16:readDictionary
+def readDictionary (self,fileName):
+
+    """Read the dictionary of words which we use as a local dictionary
+
+    Although Aspell itself has the functionality to handle this kind of things
+    we duplicate it here so that we can also use it for the "ignore" functionality
+    and so that in future a Python only solution could be developed."""
+
+    d = {}
+
+    try:
+        f = open(fileName,"r")
+    except IOError:
+        g.es("can not open local dictionary",fileName,"using a blank one instead")
+        return d
+
+    try:
+        # Create the dictionary - there are better ways to do this
+        # in later Python's but we stick with this method for compatibility
+        for word in f.readlines():
+            word = g.toUnicode(word,'utf-8', reportErrors=True)
+            d [word.strip().lower()] = 0
+    finally:
+        f.close()
+
+    return d
+#@-node:ekr.20051025071455.16:readDictionary
+#@+node:ekr.20051025071455.37:add (spellTab)
+def add(self,event=None):
+    """Add the selected suggestion to the dictionary."""
+
+    if not self.currentWord: return
+
+    # g.trace(self.currentWord)
+
+    try:
+        f = None
+        try:
+            # Rewrite the dictionary in alphabetical order.
+            f = open(self.dictionaryFileName, "r")
+            words = f.readlines()
+            f.close()
+            words = [word.strip() for word in words]
+            words.append(self.currentWord)
+            words.sort()
+            f = open(self.dictionaryFileName, "w")
+            for word in words:
+                f.write("%s\n" % g.toEncodedString(word,'utf-8',reportErrors=True))
+            f.flush()
+            f.close()
+            if 1:
+                s = 'Spell: added %s' % self.currentWord
+                self.messages.append(s)
+            else: # Too distracting.
+                g.es("adding ", color= "blue", newline= False) 
+                g.es('','%s' % self.currentWord)
+        except IOError:
+            g.es("can not add",self.currentWord,"to dictionary",color="red")
+    finally:
+        if f: f.close()
+
+    self.dictionary[self.currentWord.lower()] = 0
+    self.tab.onFindButton()
+#@-node:ekr.20051025071455.37:add (spellTab)
+#@-node:ekr.20080315083057.6:Fixed spell bug: words containing unicode characters aren't saved properly
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -6175,6 +6283,8 @@ def readRecentFiles (self,localConfigFile):
         g.app.globalConfigDir,
         localConfigPath,
     ):
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
         if path and path not in seen:
             ok = self.readRecentFilesFile(path)
             if ok: seen.append(path)
@@ -9610,7 +9720,8 @@ def readSettingsFiles (self,fileName,verbose=True):
 
     # Init settings from leoSettings.leo and myLeoSettings.leo files.
     for path,localFlag in table:
-        path = g.os_path_abspath(g.os_path_normpath(path))
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
             # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
         if path and path.lower() not in seen:
             seen.append(path.lower())
@@ -10019,6 +10130,1680 @@ def scanOptions(g):
 This determines whether cleo colors @ignore headlines. The default is True.
 #@nonl
 #@-node:ekr.20080602172531.3:Added @bool cleo_color_ignore = True
+#@+node:ekr.20080606074139.1:Set cwd in read/write commands
+@ This affect the following commands:
+
+open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.
+#@nonl
+#@+node:ekr.20080606074139.2:g.chdir
+def chdir (path):
+
+    if not g.os_path_isdir(path):
+        path = g.os_path_dirname(path)
+
+    if g.os_path_isdir(path) and g.os_path_exists(path):
+        os.chdir(path)
+#@-node:ekr.20080606074139.2:g.chdir
+#@+node:ekr.20031218072017.2819:File Menu
+#@+node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate()
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.chdir(fileName)
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2823:openWith and allies
+def openWith(self,event=None,data=None):
+
+    """This routine handles the items in the Open With... menu.
+
+    These items can only be created by createOpenWithMenuFromTable().
+    Typically this would be done from the "open2" hook.
+
+    New in 4.3: The "os.spawnv" now works. You may specify arguments to spawnv
+    using a list, e.g.:
+
+    openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
+    """
+
+    c = self ; p = c.currentPosition()
+    n = data and len(data) or 0
+    if n != 3:
+        g.trace('bad data, length must be 3, got %d' % n)
+        return
+    try:
+        openType,arg,ext=data
+        if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
+            g.enableIdleTimeHook(idleTimeDelay=100)
+            << set ext based on the present language >>
+            << create or reopen temp file, testing for conflicting changes >>
+            << execute a command to open path in external editor >>
+        g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
+    except Exception:
+        g.es("unexpected exception in c.openWith")
+        g.es_exception()
+
+    return "break"
+#@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+if not ext:
+    theDict = g.scanDirectives(c)
+    language = theDict.get("language")
+    ext = g.app.language_extension_dict.get(language)
+    # print language,ext
+    if ext == None:
+        ext = "txt"
+
+if ext[0] != ".":
+    ext = "."+ext
+
+# print "ext",ext
+#@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+#@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+theDict = None ; path = None
+<< set dict and path if a temp file already refers to p.v.t >>
+if path:
+    << create or recreate temp file as needed >>
+else:
+    path = c.createOpenWithTempFile(p,ext)
+
+if not path:
+    return # An error has occured.
+#@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+searchPath = c.openWithTempFilePath(p,ext)
+
+if g.os_path_exists(searchPath):
+    for theDict in g.app.openWithFiles:
+        if p.v == theDict.get('v') and searchPath == theDict.get("path"):
+            path = searchPath
+            break
+#@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+#@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+@ We test for changes in both p and the temp file:
+
+- If only p's body text has changed, we recreate the temp file.
+- If only the temp file has changed, do nothing here.
+- If both have changed we must prompt the user to see which code to use.
+@c
+
+encoding = theDict.get("encoding")
+old_body = theDict.get("body")
+new_body = p.bodyString()
+new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
+
+old_time = theDict.get("time")
+try:
+    new_time = g.os_path_getmtime(path)
+except:
+    new_time = None
+
+body_changed = old_body != new_body
+temp_changed = old_time != new_time
+
+if body_changed and temp_changed:
+    << Raise dialog about conflict and set result >>
+    if result == "cancel": return
+    rewrite = result == "outline"
+else:
+    rewrite = body_changed
+
+if rewrite:
+    path = c.createOpenWithTempFile(p,ext)
+else:
+    g.es("reopening:",g.shortFileName(path),color="blue")
+#@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+message = (
+    "Conflicting changes in outline and temp file\n\n" +
+    "Do you want to use the code in the outline or the temp file?\n\n")
+
+result = g.app.gui.runAskYesNoCancelDialog(c,
+    "Conflict!", message,
+    yesMessage = "Outline",
+    noMessage = "File",
+    defaultButton = "Cancel")
+#@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+#@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+#@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+#@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+try:
+    if arg == None: arg = ""
+    shortPath = path # g.shortFileName(path)
+    if openType == "os.system":
+        if 1:
+            # This works, _provided_ that arg does not contain blanks.  Sheesh.
+            command = 'os.system(%s)' % (arg+shortPath)
+            os.system(arg+shortPath)
+        else:
+            # XP does not like this format!
+            command = 'os.system("%s" "%s")' % (arg,shortPath)
+            os.system('"%s" "%s"' % (arg,shortPath))
+    elif openType == "os.startfile":
+        command = "os.startfile(%s)" % (arg+shortPath)
+        os.startfile(arg+path)
+    elif openType == "exec":
+        command = "exec(%s)" % (arg+shortPath)
+        exec arg+path in {}
+    elif openType == "os.spawnl":
+        filename = g.os_path_basename(arg)
+        command = "os.spawnl(%s,%s,%s)" % (arg,filename,path)
+        apply(os.spawnl,(os.P_NOWAIT,arg,filename,path))
+    elif openType == "os.spawnv":
+        filename = os.path.basename(arg[0]) 
+        vtuple = arg[1:]
+        vtuple.insert(0, filename)
+            # add the name of the program as the first argument.
+            # Change suggested by Jim Sizelove.
+        vtuple.append(path)
+        command = "os.spawnv(%s,%s)" % (arg[0],repr(vtuple))
+        apply(os.spawnv,(os.P_NOWAIT,arg[0],vtuple))
+    # This clause by Jim Sizelove.
+    elif openType == "subprocess.Popen":
+        if isinstance(arg, basestring):
+            vtuple = arg + " " + path
+        elif isinstance(arg, (list, tuple)):
+            vtuple = arg[:]
+            vtuple.append(path)
+        command = "subprocess.Popen(%s)" % repr(vtuple)
+        if subprocess:
+            subprocess.Popen(vtuple)
+        else:
+            g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+    else:
+        command="bad command:"+str(openType)
+        g.trace(command)
+except Exception:
+    g.es("exception executing:",command)
+    g.es_exception()
+#@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+#@+node:ekr.20031218072017.2830:createOpenWithTempFile
+def createOpenWithTempFile (self,p,ext):
+
+    c = self
+    theFile = ""
+    path = c.openWithTempFilePath(p,ext)
+    try:
+        if g.os_path_exists(path):
+            g.es("recreating:  ",g.shortFileName(path),color="red")
+        else:
+            g.es("creating:  ",g.shortFileName(path),color="blue")
+        theFile = open(path,"w")
+        # Convert s to whatever encoding is in effect.
+        s = p.bodyString()
+        theDict = g.scanDirectives(c,p=p)
+        encoding = theDict.get("encoding",None)
+        if encoding == None:
+            encoding = c.config.default_derived_file_encoding
+        s = g.toEncodedString(s,encoding,reportErrors=True) 
+        theFile.write(s)
+        theFile.flush()
+        theFile.close()
+        try:    time = g.os_path_getmtime(path)
+        except: time = None
+        # g.es("time: " + str(time))
+        # New in 4.3: theDict now contains both 'p' and 'v' entries, of the expected type.
+        theDict = {
+            "body":s, "c":c, "encoding":encoding,
+            "f":theFile, "path":path, "time":time,
+            "p":p, "v":p.v }
+        << remove previous entry from app.openWithFiles if it exists >>
+        g.app.openWithFiles.append(theDict)
+        return path
+    except:
+        if theFile:
+            theFile.close()
+        theFile = None
+        g.es("exception creating temp file",color="red")
+        g.es_exception()
+        return None
+#@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+for d in g.app.openWithFiles[:]:
+    p2 = d.get("p")
+    if p.v.t == p2.v.t:
+        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        g.app.openWithFiles.remove(d)
+#@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+#@-node:ekr.20031218072017.2830:createOpenWithTempFile
+#@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+def openWithTempFilePath (self,p,ext):
+
+    """Return the path to the temp file corresponding to p and ext."""
+
+    name = "LeoTemp_%s_%s%s" % (
+        str(id(p.v.t)),
+        g.sanitize_filename(p.headString()),
+        ext)
+
+    name = g.toUnicode(name,g.app.tkEncoding)
+
+    td = g.os_path_abspath(tempfile.gettempdir())
+
+    path = g.os_path_join(td,name)
+
+    return path
+#@-node:ekr.20031218072017.2832:c.openWithTempFilePath
+#@-node:ekr.20031218072017.2823:openWith and allies
+#@+node:ekr.20031218072017.2833:close
+def close (self,event=None):
+
+    '''Close the Leo window, prompting to save it if it has been changed.'''
+
+    g.app.closeLeoWindow(self.frame)
+#@-node:ekr.20031218072017.2833:close
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    c.beginUpdate()
+    try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.fileCommands.save(c.mFileName)
+                c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            g.trace(fileName)
+            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.saveAs(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+def saveAsUnzipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is not compressed.'''
+    self.saveAsZippedHelper(False)
+
+def saveAsZipped (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename,
+    ensuring that the file is compressed.'''
+    self.saveAsZippedHelper(True)
+
+def saveAsZippedHelper (self,isZipped):
+
+    c = self
+    oldZipped = c.isZipped
+    c.isZipped = isZipped
+    try:
+        c.saveAs()
+    finally:
+        c.isZipped = oldZipped
+#@-node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        # set local fileName, _not_ c.mFileName
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            fileName = g.ensure_extension(fileName, ".leo")
+            c.fileCommands.saveTo(fileName)
+            c.updateRecentFiles(fileName)
+            g.chdir(fileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2837:revert
+def revert (self,event=None):
+
+    '''Revert the contents of a Leo outline to last saved contents.'''
+
+    c = self
+
+    # Make sure the user wants to Revert.
+    if not c.mFileName:
+        return
+
+    reply = g.app.gui.runAskYesNoDialog(c,"Revert",
+        "Revert to previous version of " + c.mFileName + "?")
+    c.bringToFront()
+
+    if reply=="no":
+        return
+
+    # Kludge: rename this frame so openWithFileName won't think it is open.
+    fileName = c.mFileName ; c.mFileName = ""
+
+    # Create a new frame before deleting this frame.
+    ok, frame = g.openWithFileName(fileName,c)
+    if ok:
+        frame.deiconify()
+        g.app.destroyWindow(c.frame)
+    else:
+        c.mFileName = fileName
+#@-node:ekr.20031218072017.2837:revert
+#@-node:ekr.20031218072017.2820:top level (file menu)
+#@+node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.2080:clearRecentFiles
+def clearRecentFiles (self,event=None):
+
+    """Clear the recent files list, then add the present file."""
+
+    c = self ; f = c.frame ; u = c.undoer
+
+    bunch = u.beforeClearRecentFiles()
+
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
+    f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+    c.recentFiles = []
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    f.menu.createRecentFilesMenuItems()
+    c.updateRecentFiles(c.relativeFileName())
+
+    g.app.config.appendToRecentFiles(c.recentFiles)
+
+    # g.trace(c.recentFiles)
+
+    u.afterClearRecentFiles(bunch)
+
+    # New in Leo 4.4.5: write the file immediately.
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:ekr.20031218072017.2080:clearRecentFiles
+#@+node:ekr.20031218072017.2081:openRecentFile
+def openRecentFile(self,name=None):
+
+    if not name: return
+
+    c = self ; v = c.currentVnode()
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = name
+    if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok and closeFlag and frame != c.frame:
+            g.app.destroyWindow(c.frame) # 12/12/03
+            c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
+            c.setLog() # Sets the log stream for g.es
+
+    g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
+#@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2081:openRecentFile
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+    def munge2(name):
+        return g.os_path_abspath(g.os_path_join(g.app.loadDir,name or ''))
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@+node:tbrown.20080509212202.6:cleanRecentFiles
+def cleanRecentFiles(self,event=None):
+
+    c = self
+
+    dat = c.config.getData('path-demangle')
+    if not dat:
+        g.es('No @data path-demangle setting')
+        return
+
+    changes = []
+    replace = None
+    for line in dat:
+        text = line.strip()
+        if text.startswith('REPLACE: '):
+            replace = text.split(None, 1)[1].strip()
+        if text.startswith('WITH:') and replace is not None:
+            with_ = text[5:].strip()
+            changes.append((replace, with_))
+            g.es('%s -> %s' % changes[-1])
+
+    orig = [i for i in c.recentFiles if i.startswith("/")]
+    c.clearRecentFiles()
+
+    for i in orig:
+        t = i
+        for change in changes:
+            t = t.replace(*change)
+
+        c.updateRecentFiles(t)
+
+    # code below copied from clearRecentFiles
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    g.app.config.appendToRecentFiles(c.recentFiles)
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:tbrown.20080509212202.6:cleanRecentFiles
+#@+node:tbrown.20080509212202.8:sortRecentFiles
+def sortRecentFiles(self,event=None):
+
+    c = self
+
+    orig = c.recentFiles[:]
+    c.clearRecentFiles()
+    import os
+    orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
+        os.path.basename(a).lower()))
+    for i in orig:
+        c.updateRecentFiles(i)
+
+    # code below copied from clearRecentFiles
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    g.app.config.appendToRecentFiles(c.recentFiles)
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:tbrown.20080509212202.8:sortRecentFiles
+#@-node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.2838:Read/Write submenu
+#@+node:ekr.20031218072017.2839:readOutlineOnly
+def readOutlineOnly (self,event=None):
+
+    '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read Outline Only",
+        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        defaultextension=".leo")
+
+    if not fileName:
+        return
+
+    try:
+        theFile = open(fileName,'r')
+        g.chdir(fileName)
+        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+        frame.deiconify()
+        frame.lift()
+        g.app.root.update() # Force a screen redraw immediately.
+        c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
+    except:
+        g.es("can not open:",fileName)
+#@-node:ekr.20031218072017.2839:readOutlineOnly
+#@+node:ekr.20070915134101:readFileIntoNode
+def readFileIntoNode (self,event=None):
+
+    '''Read a file into a single node.'''
+
+    c = self ; undoType = 'Read File Into Node'
+    filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+
+    if fileName:    
+        try:
+            theFile = open(fileName,'r')
+            g.chdir(fileName)
+            s = theFile.read()
+            s = '@nocolor\n' + s
+            c.beginUpdate()
+            try:
+                w = c.frame.body.bodyCtrl
+                p = c.insertHeadline(op_name=undoType)
+                p.setHeadString('@read-file-into-node ' + fileName)
+                p.setBodyString(s)
+                w.setAllText(s)
+            finally:
+                c.endUpdate()
+        except:
+            g.es("can not open:",fileName)
+#@-node:ekr.20070915134101:readFileIntoNode
+#@+node:ekr.20070806105721.1:readAtAutoNodes (commands)
+def readAtAutoNodes (self,event=None):
+
+    '''Read all @auto nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeChangeTree(p)
+        c.importCommands.readAtAutoNodes()
+        u.afterChangeTree(p,'Read @auto Nodes',undoData)
+    finally:
+        c.endUpdate()
+#@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
+#@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
+def readAtFileNodes (self,event=None):
+
+    '''Read all @file nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeChangeTree(p)
+        c.fileCommands.readAtFileNodes()
+        u.afterChangeTree(p,'Read @file Nodes',undoData)
+    finally:
+        c.endUpdate()
+#@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
+#@+node:ekr.20031218072017.1809:importDerivedFile
+def importDerivedFile (self,event=None):
+
+    """Create a new outline from a 4.0 derived file."""
+
+    c = self ; p = c.currentPosition()
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Derived File",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importDerivedFiles(parent=p,paths=names)
+#@-node:ekr.20031218072017.1809:importDerivedFile
+#@+node:ekr.20070915142635:writeFileFromNode
+def writeFileFromNode (self,event=None):
+
+    # If node starts with @read-file-into-node, use the full path name in the headline.
+    # Otherwise, prompt for a file name.
+
+    c = self ; p = c.currentPosition()
+    h = p.headString().rstrip()
+    s = p.bodyString()
+    tag = '@read-file-into-node'
+
+    if h.startswith(tag):
+        fileName = h[len(tag):].strip()
+    else:
+        fileName = None
+
+    if not fileName:
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runSaveFileDialog(
+            initialfile=None,
+            title='Write File From Node',
+            filetypes=filetypes,
+            defaultextension=None)
+    if fileName:
+        try:
+            theFile = open(fileName,'w')
+            g.chdir(fileName)
+        except IOError:
+            theFile = None
+        if theFile:
+            if s.startswith('@nocolor\n'):
+                s = s[len('@nocolor\n'):]
+            theFile.write(s)
+            theFile.flush()
+            g.es_print('wrote:',fileName,color='blue')
+            theFile.close()
+        else:
+            g.es('can not write %s',fileName,color='red')
+#@nonl
+#@-node:ekr.20070915142635:writeFileFromNode
+#@-node:ekr.20031218072017.2838:Read/Write submenu
+#@+node:ekr.20031218072017.2841:Tangle submenu
+#@+node:ekr.20031218072017.2842:tangleAll
+def tangleAll (self,event=None):
+
+    '''Tangle all @root nodes in the entire outline.'''
+
+    c = self
+    c.tangleCommands.tangleAll()
+#@-node:ekr.20031218072017.2842:tangleAll
+#@+node:ekr.20031218072017.2843:tangleMarked
+def tangleMarked (self,event=None):
+
+    '''Tangle all marked @root nodes in the entire outline.'''
+
+    c = self
+    c.tangleCommands.tangleMarked()
+#@-node:ekr.20031218072017.2843:tangleMarked
+#@+node:ekr.20031218072017.2844:tangle
+def tangle (self,event=None):
+
+    '''Tangle all @root nodes in the selected outline.'''
+
+    c = self
+    c.tangleCommands.tangle()
+#@-node:ekr.20031218072017.2844:tangle
+#@-node:ekr.20031218072017.2841:Tangle submenu
+#@+node:ekr.20031218072017.2845:Untangle submenu
+#@+node:ekr.20031218072017.2846:untangleAll
+def untangleAll (self,event=None):
+
+    '''Untangle all @root nodes in the entire outline.'''
+
+    c = self
+    c.tangleCommands.untangleAll()
+    c.undoer.clearUndoState()
+#@-node:ekr.20031218072017.2846:untangleAll
+#@+node:ekr.20031218072017.2847:untangleMarked
+def untangleMarked (self,event=None):
+
+    '''Untangle all marked @root nodes in the entire outline.'''
+
+    c = self
+    c.tangleCommands.untangleMarked()
+    c.undoer.clearUndoState()
+#@-node:ekr.20031218072017.2847:untangleMarked
+#@+node:ekr.20031218072017.2848:untangle
+def untangle (self,event=None):
+
+    '''Untangle all @root nodes in the selected outline.'''
+
+    c = self
+    c.tangleCommands.untangle()
+    c.undoer.clearUndoState()
+#@-node:ekr.20031218072017.2848:untangle
+#@-node:ekr.20031218072017.2845:Untangle submenu
+#@+node:ekr.20031218072017.2849:Import&Export submenu
+#@+node:ekr.20031218072017.2850:exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
+#@-node:ekr.20031218072017.2850:exportHeadlines
+#@+node:ekr.20031218072017.2851:flattenOutline
+def flattenOutline (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in MORE format.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="flat.txt",
+        title="Flatten Outline",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.flattenOutline(fileName)
+#@-node:ekr.20031218072017.2851:flattenOutline
+#@+node:ekr.20031218072017.2852:importAtRoot
+def importAtRoot (self,event=None):
+
+    '''Import one or more external files, creating @root trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @root",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand (names,"@root")
+#@-node:ekr.20031218072017.2852:importAtRoot
+#@+node:ekr.20031218072017.2853:importAtFile
+def importAtFile (self,event=None):
+
+    '''Import one or more external files, creating @file trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @file",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand(names,"@file")
+#@-node:ekr.20031218072017.2853:importAtFile
+#@+node:ekr.20031218072017.2854:importCWEBFiles
+def importCWEBFiles (self,event=None):
+
+    '''Import one or more external CWEB files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("CWEB files", "*.w"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import CWEB Files",
+        filetypes=filetypes,
+        defaultextension=".w",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"cweb")
+#@-node:ekr.20031218072017.2854:importCWEBFiles
+#@+node:ekr.20031218072017.2855:importFlattenedOutline
+def importFlattenedOutline (self,event=None):
+
+    '''Import an external created by the flatten-outline command.'''
+
+    c = self
+
+    types = [("Text files","*.txt"), ("All files","*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import MORE Text",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFlattenedOutline(names)
+#@-node:ekr.20031218072017.2855:importFlattenedOutline
+#@+node:ekr.20031218072017.2856:importNowebFiles
+def importNowebFiles (self,event=None):
+
+    '''Import one or more external noweb files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("Noweb files", "*.nw"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Noweb Files",
+        filetypes=filetypes,
+        defaultextension=".nw",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"noweb")
+#@-node:ekr.20031218072017.2856:importNowebFiles
+#@+node:ekr.20031218072017.2857:outlineToCWEB
+def outlineToCWEB (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in CWEB format.'''
+
+    c = self
+
+    filetypes=[
+        ("CWEB files", "*.w"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="cweb.w",
+        title="Outline To CWEB",
+        filetypes=filetypes,
+        defaultextension=".w")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.outlineToWeb(fileName,"cweb")
+#@-node:ekr.20031218072017.2857:outlineToCWEB
+#@+node:ekr.20031218072017.2858:outlineToNoweb
+def outlineToNoweb (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in noweb format.'''
+
+    c = self
+
+    filetypes=[
+        ("Noweb files", "*.nw"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile=self.outlineToNowebDefaultFileName,
+        title="Outline To Noweb",
+        filetypes=filetypes,
+        defaultextension=".nw")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.outlineToWeb(fileName,"noweb")
+        c.outlineToNowebDefaultFileName = fileName
+#@-node:ekr.20031218072017.2858:outlineToNoweb
+#@+node:ekr.20031218072017.2859:removeSentinels
+def removeSentinels (self,event=None):
+
+    '''Import one or more files, removing any sentinels.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Remove Sentinels",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.removeSentinelsCommand (names)
+#@-node:ekr.20031218072017.2859:removeSentinels
+#@+node:ekr.20031218072017.2860:weave
+def weave (self,event=None):
+
+    '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="weave.txt",
+        title="Weave",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.weave(fileName)
+#@-node:ekr.20031218072017.2860:weave
+#@-node:ekr.20031218072017.2849:Import&Export submenu
+#@-node:ekr.20031218072017.2819:File Menu
+#@+node:ekr.20080606074139.3:Changed
+#@+node:ekr.20031218072017.2821:open
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",
+        filetypes = [("Leo files","*.leo"), ("All files","*")],
+        defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName and len(fileName) > 0:
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok:
+            g.chdir(fileName)
+            g.setGlobalOpenDir(fileName)
+        if ok and closeFlag:
+            g.app.destroyWindow(c.frame)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2821:open
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    c.beginUpdate()
+    try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.fileCommands.save(c.mFileName)
+                c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.2835:saveAs
+def saveAs (self,event=None):
+
+    '''Save a Leo outline to a file with a new filename.'''
+
+    c = self ;  w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            g.trace(fileName)
+            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.saveAs(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2835:saveAs
+#@+node:ekr.20031218072017.2836:saveTo
+def saveTo (self,event=None):
+
+    '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+
+    c = self ; w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    c.beginUpdate()
+    try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
+
+        # set local fileName, _not_ c.mFileName
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            fileName = g.ensure_extension(fileName, ".leo")
+            c.fileCommands.saveTo(fileName)
+            c.updateRecentFiles(fileName)
+            g.chdir(fileName)
+
+    finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2836:saveTo
+#@+node:ekr.20031218072017.2839:readOutlineOnly
+def readOutlineOnly (self,event=None):
+
+    '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read Outline Only",
+        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        defaultextension=".leo")
+
+    if not fileName:
+        return
+
+    try:
+        theFile = open(fileName,'r')
+        g.chdir(fileName)
+        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+        frame.deiconify()
+        frame.lift()
+        g.app.root.update() # Force a screen redraw immediately.
+        c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
+    except:
+        g.es("can not open:",fileName)
+#@-node:ekr.20031218072017.2839:readOutlineOnly
+#@+node:ekr.20070915134101:readFileIntoNode
+def readFileIntoNode (self,event=None):
+
+    '''Read a file into a single node.'''
+
+    c = self ; undoType = 'Read File Into Node'
+    filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+    fileName = g.app.gui.runOpenFileDialog(
+        title="Read File Into Node",filetypes=filetypes,defaultextension=None)
+
+    if fileName:    
+        try:
+            theFile = open(fileName,'r')
+            g.chdir(fileName)
+            s = theFile.read()
+            s = '@nocolor\n' + s
+            c.beginUpdate()
+            try:
+                w = c.frame.body.bodyCtrl
+                p = c.insertHeadline(op_name=undoType)
+                p.setHeadString('@read-file-into-node ' + fileName)
+                p.setBodyString(s)
+                w.setAllText(s)
+            finally:
+                c.endUpdate()
+        except:
+            g.es("can not open:",fileName)
+#@-node:ekr.20070915134101:readFileIntoNode
+#@+node:ekr.20070915142635:writeFileFromNode
+def writeFileFromNode (self,event=None):
+
+    # If node starts with @read-file-into-node, use the full path name in the headline.
+    # Otherwise, prompt for a file name.
+
+    c = self ; p = c.currentPosition()
+    h = p.headString().rstrip()
+    s = p.bodyString()
+    tag = '@read-file-into-node'
+
+    if h.startswith(tag):
+        fileName = h[len(tag):].strip()
+    else:
+        fileName = None
+
+    if not fileName:
+        filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
+        fileName = g.app.gui.runSaveFileDialog(
+            initialfile=None,
+            title='Write File From Node',
+            filetypes=filetypes,
+            defaultextension=None)
+    if fileName:
+        try:
+            theFile = open(fileName,'w')
+            g.chdir(fileName)
+        except IOError:
+            theFile = None
+        if theFile:
+            if s.startswith('@nocolor\n'):
+                s = s[len('@nocolor\n'):]
+            theFile.write(s)
+            theFile.flush()
+            g.es_print('wrote:',fileName,color='blue')
+            theFile.close()
+        else:
+            g.es('can not write %s',fileName,color='red')
+#@nonl
+#@-node:ekr.20070915142635:writeFileFromNode
+#@+node:ekr.20031218072017.1809:importDerivedFile
+def importDerivedFile (self,event=None):
+
+    """Create a new outline from a 4.0 derived file."""
+
+    c = self ; p = c.currentPosition()
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Derived File",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importDerivedFiles(parent=p,paths=names)
+#@-node:ekr.20031218072017.1809:importDerivedFile
+#@+node:ekr.20031218072017.2849:Import&Export submenu
+#@+node:ekr.20031218072017.2850:exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
+#@-node:ekr.20031218072017.2850:exportHeadlines
+#@+node:ekr.20031218072017.2851:flattenOutline
+def flattenOutline (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in MORE format.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="flat.txt",
+        title="Flatten Outline",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.flattenOutline(fileName)
+#@-node:ekr.20031218072017.2851:flattenOutline
+#@+node:ekr.20031218072017.2852:importAtRoot
+def importAtRoot (self,event=None):
+
+    '''Import one or more external files, creating @root trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @root",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand (names,"@root")
+#@-node:ekr.20031218072017.2852:importAtRoot
+#@+node:ekr.20031218072017.2853:importAtFile
+def importAtFile (self,event=None):
+
+    '''Import one or more external files, creating @file trees.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import To @file",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFilesCommand(names,"@file")
+#@-node:ekr.20031218072017.2853:importAtFile
+#@+node:ekr.20031218072017.2854:importCWEBFiles
+def importCWEBFiles (self,event=None):
+
+    '''Import one or more external CWEB files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("CWEB files", "*.w"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import CWEB Files",
+        filetypes=filetypes,
+        defaultextension=".w",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"cweb")
+#@-node:ekr.20031218072017.2854:importCWEBFiles
+#@+node:ekr.20031218072017.2855:importFlattenedOutline
+def importFlattenedOutline (self,event=None):
+
+    '''Import an external created by the flatten-outline command.'''
+
+    c = self
+
+    types = [("Text files","*.txt"), ("All files","*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import MORE Text",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importFlattenedOutline(names)
+#@-node:ekr.20031218072017.2855:importFlattenedOutline
+#@+node:ekr.20031218072017.2856:importNowebFiles
+def importNowebFiles (self,event=None):
+
+    '''Import one or more external noweb files, creating @file trees.'''
+
+    c = self
+
+    filetypes = [
+        ("Noweb files", "*.nw"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Import Noweb Files",
+        filetypes=filetypes,
+        defaultextension=".nw",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.importWebCommand(names,"noweb")
+#@-node:ekr.20031218072017.2856:importNowebFiles
+#@+node:ekr.20031218072017.2857:outlineToCWEB
+def outlineToCWEB (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in CWEB format.'''
+
+    c = self
+
+    filetypes=[
+        ("CWEB files", "*.w"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="cweb.w",
+        title="Outline To CWEB",
+        filetypes=filetypes,
+        defaultextension=".w")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.outlineToWeb(fileName,"cweb")
+#@-node:ekr.20031218072017.2857:outlineToCWEB
+#@+node:ekr.20031218072017.2858:outlineToNoweb
+def outlineToNoweb (self,event=None):
+
+    '''Export the selected outline to an external file.
+    The outline is represented in noweb format.'''
+
+    c = self
+
+    filetypes=[
+        ("Noweb files", "*.nw"),
+        ("Text files", "*.txt"),
+        ("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile=self.outlineToNowebDefaultFileName,
+        title="Outline To Noweb",
+        filetypes=filetypes,
+        defaultextension=".nw")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.outlineToWeb(fileName,"noweb")
+        c.outlineToNowebDefaultFileName = fileName
+#@-node:ekr.20031218072017.2858:outlineToNoweb
+#@+node:ekr.20031218072017.2859:removeSentinels
+def removeSentinels (self,event=None):
+
+    '''Import one or more files, removing any sentinels.'''
+
+    c = self
+
+    types = [
+        ("All files","*"),
+        ("C/C++ files","*.c"),
+        ("C/C++ files","*.cpp"),
+        ("C/C++ files","*.h"),
+        ("C/C++ files","*.hpp"),
+        ("Java files","*.java"),
+        ("Lua files", "*.lua"),
+        ("Pascal files","*.pas"),
+        ("Python files","*.py") ]
+
+    names = g.app.gui.runOpenFileDialog(
+        title="Remove Sentinels",
+        filetypes=types,
+        defaultextension=".py",
+        multiple=True)
+    c.bringToFront()
+
+    if names:
+        g.chdir(names[0])
+        c.importCommands.removeSentinelsCommand (names)
+#@-node:ekr.20031218072017.2859:removeSentinels
+#@+node:ekr.20031218072017.2860:weave
+def weave (self,event=None):
+
+    '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="weave.txt",
+        title="Weave",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.weave(fileName)
+#@-node:ekr.20031218072017.2860:weave
+#@-node:ekr.20031218072017.2849:Import&Export submenu
+#@-node:ekr.20080606074139.3:Changed
+#@-node:ekr.20080606074139.1:Set cwd in read/write commands
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:

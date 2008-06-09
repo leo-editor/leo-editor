@@ -306,7 +306,7 @@ if g.unitTesting:
 <p>When either of Leo's unit test commands finds this &#64;test node the command will
 run a unit test equivalent to the following:</p>
 <pre class="literal-block">
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 class aTestCase (unittest.TestCase):
     def shortDescription():

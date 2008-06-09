@@ -109,6 +109,7 @@
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
+<v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.75"><vh>Leo is hanging on my Linux box.  What should I do?</vh></v>
@@ -121,7 +122,7 @@
 <v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 </v>
-<v t="ekr.20050830115714.12"><vh>How should I use Leo with CVS?</vh></v>
+<v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr?</vh></v>
 <v t="ekr.20050830115714.13"><vh>Using derived files</vh>
 <v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
@@ -167,7 +168,7 @@
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
-<v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/src.  What should I do?</vh></v>
+<v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 </v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
@@ -6352,9 +6353,9 @@ from within scripts.  See ``leoFindScript.py`` in ``LeoPy.leo`` for full details
 The findall function returns a list of tuples ``(v,pos)`` describing matches in
 ``c``'s entire tree::
 
-    import leoFindScript
+    import leo.core.leoFindScript as leoFindScript
 
-    pattern="import leoGlobals as g"
+    pattern="import leo.core.leoGlobals as g"
     result = leoFindScript.findAll(c,pattern,bodyFlag=1)
     
     g.es("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
@@ -6367,7 +6368,7 @@ The findall function returns a list of tuples ``(v,pos)`` describing matches in
 The ``reFindall`` function returns a list of tuples ``(v,mo,pos)``, where ``mo``
 is a ``MatchObject``. The ``reFlags`` argument are flags to ``re.search``::
 
-    import leoFindScript
+    import leo.core.leoFindScript as leoFindScript
 
     pattern="from .* import"
     result = leoFindScript.reFindAll(c,pattern,bodyFlag=1,reFlags=None)
@@ -9177,21 +9178,21 @@ This directive takes one argument, a language name.  Like this::
 
     .. code-block:: Python
 
-        import leoPlugins
-        import leoGlobals as g
+        import leo.core.leoPlugins as leoPlugins
+        import leo.core.leoGlobals as g
 
 This directive syntax colors the code in the indented code block that follows the directive.
 The result looks like this if the SilverCity syntax coloring module has been installed.
 
 .. code-block:: Python
     
-    import leoPlugins
-    import leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
 
 Otherwise, the output looks like this::
 
-    import leoPlugins
-    import leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
 
 See the tree called "Scripting chapter using the rst plugin" in LeoDocs.leo for many examples of how to use code-blocks.
 </t>
@@ -9880,21 +9881,21 @@ This directive takes one argument, a language name.  Like this::
 
     .. code-block:: Python
 
-        import leoPlugins
-        import leoGlobals as g
+        import leo.core.leoPlugins as leoPlugins
+        import leo.core.leoGlobals as g
 
 This directive syntax colors the code in the indented code block that follows the directive.
 The result looks like this if the SilverCity syntax coloring module has been installed.
 
 .. code-block:: Python
     
-    import leoPlugins
-    import leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
 
 Otherwise, the output looks like this::
 
-    import leoPlugins
-    import leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoGlobals as g
 
 See the tree called "Scripting chapter using the rst plugin" in LeoDocs.leo for many examples of how to use code-blocks.
 </t>
@@ -10286,7 +10287,7 @@ A section definition node is a node_ whose headline_ starts with a `section name
 
 The `body text`_ of this node_ is its definition.  For example::
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     import sys
 
 As you can see, `section definitions`_ can be *fragments* of code;
@@ -12899,7 +12900,7 @@ You have two options:
     Reference files will change only when new derived files get added to the project.
 
     **Important**:
-    Leo's `cvs repository`_ contains the *reference* versions of the following .leo files:
+    Leo's `bzr repository`_ contains the *reference* versions of the following .leo files:
     ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``.
     However,  Leo's distributions contain the *non-reference* versions of those files:
     ``LeoPy.leo`` and ``LeoPlugins.leo``.
@@ -13083,7 +13084,7 @@ To add support for a new language, just add another such description file.</t>
 <t tx="ekr.20050830115714.74">The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in ``LeoPy.leo``.  You can use that script as follows::
 
-    import leoImport
+    import leo.core.leoImport as leoImport
     leoImport.importFiles(aDirectory, ".py")
 
 This will import all .py files from aDirectory, which should be a full path to a particular directory.
@@ -14561,10 +14562,9 @@ splitSentences(c,p)</t>
     c.updateBodyPane('',result,'',undoType,oldSel,oldYview)</t>
 <t tx="ekr.20050901174937">You can run Leo from a Python interpreter as follows::
 
-	import leo
-	leo.run() # runs Leo, opening a new outline.
-	leo.go() # runs Leo after reloading all modules.
-	leo.leoOpen(fileName) # runs Leo, reloads all modules, and opens fileName.
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
 
 Here are some tips that may make running Leo easier:
 
@@ -14572,7 +14572,7 @@ Here are some tips that may make running Leo easier:
     The following shell script will allow you to open foo.leo files by typing leo foo::
     
         #!/bin/sh 
-        python &lt;leopath&gt;/leo.py $1
+        python &lt;leopath&gt;/runLeo.py $1
     
     where &lt;leopath&gt; is replaced with the path to the leo directory. 
 
@@ -14581,9 +14581,9 @@ Here are some tips that may make running Leo easier:
     You can also use a batch file.
     Put the following .bat file in c:\\Windows::
 
-        cd c:\prog\LeoCVS\leo
-        c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
-    
+        cd &lt;path-to-leo&gt;
+        c:\python25\python &lt;path-to-leo&gt;\leo\core\runLeo.py %1
+
     This opens the file specified by the first argument (%1).
 
 The first time you start Leo, a dialog will ask you for a unique identifier. If
@@ -14847,7 +14847,7 @@ The ``initScriptFind`` script in ``LeoPy.leo`` makes it easy to set up script ba
 1. Put the following code in the root of a tree that will contain your script search::
 
     # Initialize Leo's find panel using the named children of this node.
-    import leoGlobals as g.
+    import leo.core.leoGlobals as g.
     g.initScriptFind("Find script","Change script") # Second argument is optional.
     # Start searching at the top.
     c.selectPosition(c.rootPosition())
@@ -15117,7 +15117,7 @@ and its ancestors looking for an ``@rst`` node. When such a node is found the
 script calls the `rst3 plugin`_ to format it. I don't have to select the actual
 ``@rst`` node; I can select any of its children::
 
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     rst3 = leoPlugins.getPluginModule('rst3')
     if rst3: # already loaded.
         controller = rst3.controllers.get(c)
@@ -16299,7 +16299,7 @@ When the first @rst node is found, writeNodeToString processes the node as usual
 Scripts can easily use writeNodeToString to convert @rst trees into various kinds of output.
 For example, here is the body of @button rst-&gt;html in LeoDocs.leo::
 
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     rst3 = leoPlugins.getPluginModule('rst3')
     if rst3:
         controller = rst3.controllers.get(c)
@@ -20262,7 +20262,7 @@ Home:     http://sourceforge.net/projects/leo/
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20060525104232">import leoPlugins
+<t tx="ekr.20060525104232">import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
 
@@ -20282,7 +20282,7 @@ else:
         g.app.scriptDict['removeMe'] = True</t>
 <t tx="ekr.20060525110135"># Problems with pdf files.
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
 
@@ -20300,7 +20300,7 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20060525110135.1">import leoPlugins
+<t tx="ekr.20060525110135.1">import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
 
@@ -20318,7 +20318,7 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20060525110217">import leoPlugins
+<t tx="ekr.20060525110217">import leo.core.leoPlugins as leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
 
@@ -20357,7 +20357,7 @@ When the first @rst node is found, writeNodeToString processes the node as usual
 Scripts can easily use writeNodeToString to convert @rst trees into various kinds of output.
 For example, here is the body of @button rst-&gt;html in LeoDocs.leo::
 
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     rst3 = leoPlugins.getPluginModule('rst3')
     if rst3:
         controller = rst3.controllers.get(c)
@@ -20705,7 +20705,7 @@ Documentation for leoFind.py
 @tabwidth -4
 @pagewidth 80
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import re
 import string
 
@@ -22850,8 +22850,8 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
 3. Update the docstring, the __version__ constant and the &lt;&lt; imports &gt;&gt; section.
    Note that unlike when using script buttons, you must have the following imports::
        
-    import leoGlobals as g
-    import leoPlugins
+    import leo.core.leoGlobals as g
+    import leo.core.leoPlugins as leoPlugins
     
 4. Because this plugin doesn't require any gui interface, we simplify the ``init`` function::
     
@@ -25223,7 +25223,7 @@ headlines of any future node joined to p.v.</t>
 <t tx="ekr.20070120075236">Leo's ``Execute Script`` command predefines ``c`` to be the commander of the
 outline containing the script. ``g`` and ``p`` are predefined as follows::
 
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     p = c.currentPosition()
     
 These definitions provide an easy way to access or change any
@@ -25699,14 +25699,14 @@ Using the leoBridge module, host programs can get access to:
 </t>
 <t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows::
 
-    import leoBridge
+    import leo.core.leoBridge as leoBridge
     controller = leoBridge.controller(gui='nullGui')
     g = controller.globals()
     c = controller.openLeoFile(path)
     
 Let us look at these statements in detail.  The statements::
     
-    import leoBridge
+    import leo.core.leoBridge as leoBridge
     controller = leoBridge.controller(gui='nullGui')
     
 import the leoBridge module and create a **bridge controller**. In effect, these
@@ -25747,8 +25747,8 @@ Here it is, stripped of its sentinel lines::
     
     '''A program to run unit tests with the leoBridge module.'''
     
-    import leoBridge
-    import leoTest
+    import leo.core.leoBridge as leoBridge
+    import leo.core.leoTest as leoTest
     
     def main ():
         tag = 'leoTestBridge'
@@ -26726,7 +26726,7 @@ The body text is::
 When either of Leo's unit test commands finds this @test node the command will
 run a unit test equivalent to the following::
     
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
     class aTestCase (unittest.TestCase):
         def shortDescription():
@@ -26769,12 +26769,12 @@ is not needed.  However, it prevents pychecker warnings that c and p are undefin
 
 The script in the unit-tests button is::
 
-    import leoTest
+    import leo.core.leoTest as leoTest
     leoTest.runTestsExternally (c,all=False)
     
 The script in the all-unit-tests button is::
 
-    import leoTest
+    import leo.core.leoTest as leoTest
     leoTest.runTestsExternally (c,all=True)
 
 As you can see, each button writes a message, and calls runTestsExternally.
@@ -27663,19 +27663,19 @@ Notes:
 Add the equivalent of::
  
     import sys 
-    leosrc = "path/to/leo/src" 
-    if leosrc not in sys.path: sys.path.append(leosrc) 
-    import leoBridge 
+    leocore = "path/to/leo/core" 
+    if leocore not in sys.path: sys.path.append(leocore) 
+    import leo.core.leoBridge as leoBridge
  
 at the head of each file that uses leoBridge.
 
-The problem is not importing leoBridge itself but (if I use 'from leo.src') the
+The problem is not importing leoBridge itself but (if I use 'from leo.core') the
 importing of plugins, who get a different leoGlobals from leoBridge, without
 g.app etc, and so do not work if they rely on dynamic values in g.etc.
 
 &gt; Why can't you simply add leo/src to sys.path in sitecustomize.py?  
  
-Putting leo\src on the python path as you suggest would put forty python modules
+Putting leo\core on the python path as you suggest would put forty python modules
 in the global module namespace for all python programs when I want just one.
 Also, I have a safe working copy of leo and a cvs/testing version. I would wish
 to test any programs against the testing version while using the working
@@ -27687,9 +27687,9 @@ Afraid so, at least the rst3 plugin. The solution I am using now is to place::
  
     sys.modules['leoGlobals'] = leoGlobals  
  
-in leoBridge after import leoGlobals.
+in leoBridge after import leo.core.leoGlobals as leoGlobals
 
-This, together with placing an empty __init__.py in leo/src, allows my scripts
+This allows my scripts
 to be portable over the several computers/platforms I need to use them on, and
 makes testing scripts against multiple leo versions easy. It does mean that my
 scripts are not portable to other leo users but that is not likely to be a
@@ -30052,6 +30052,51 @@ if what I had done was making a difference.
 The great thing about this was that I just used the LEO @others construct
 to create a wrapper around the code and did not need to litter my code
 with debug or profiling statements.  -- Kayvan</t>
+<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   ``bzr qlog``, ``bzr qannotate`` etc.
+
+2. Get Leo from launchpad by doing::
+
+    bzr branch lp:leo-editor
+
+And that's it! You can run leo/core/runLeo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run ``bzr pull``.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing ``bzr checkin``.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this on Windows using puttygen and pageant at
+``http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151``.
+
+After your Launchpad account is set up, go to
+``https://launchpad.net/leo-editor``, choose Code tab -&gt; Register Branch, select
+Branch type "Hosted" and fill in descriptive details about the branch. After
+that, go to the branch home page from Code tab again, and copy-paste the push
+command line to terminal. For example, for branch::
+
+ https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+ bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute ``bzr push``.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+
+-- Ville M. Vainio - vivainio.googlepages.com</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

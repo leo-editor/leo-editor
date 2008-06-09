@@ -1197,7 +1197,11 @@ class leoTkinterFrame (leoFrame.leoFrame):
                     if not bg:
                         bg = f.cget("bg")
 
-                    b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
+                    try:
+                        b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
+                    except Exception:
+                        g.es_print('image does not exist',image,color='blue')
+                        b = Tk.Button(f,relief='flat',bd=0,command=command,bg=bg)
                     b.pack(side="left",fill="y")
                     return b
 

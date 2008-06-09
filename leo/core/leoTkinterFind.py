@@ -1113,7 +1113,9 @@ class tkSpellTab:
         c = self.c ; w = c.frame.body.bodyCtrl
 
         start, end = w.getSelectionRange()
-        state = g.choose(self.suggestions and start,"normal","disabled")
+
+        # Bug fix: enable buttons when start = 0.
+        state = g.choose(self.suggestions and start is not None,"normal","disabled")
 
         self.changeButton.configure(state=state)
         self.changeFindButton.configure(state=state)
