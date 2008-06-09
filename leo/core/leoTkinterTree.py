@@ -401,16 +401,17 @@ class leoTkinterTree (leoFrame.leoTree):
             ('plusBox','<Button-1>', self.onClickBoxClick),
             ('clickBox','<Button-3>',  self.onClickBoxRightClick),
         )
-        for tag,event,callback in table:
+        for tag,event_kind,callback in table:
+            # c.tag_bind(canvas,tag,event,callback)
 
             def tag_bind_callback(event,c=c,callback=callback):
                 # g.trace('before',callback.__name__)
                 val = callback(event)
                 c.outerUpdate()
-                # g.trace('after')
+                # g.trace('after','event',event,'val',val)
                 return val
 
-            canvas.tag_bind(tag,event,tag_bind_callback)
+            canvas.tag_bind(tag,event_kind,tag_bind_callback)
         #@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
         #@nl
         #@    << create baloon bindings for tagged items on the canvas >>
