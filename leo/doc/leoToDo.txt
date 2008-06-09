@@ -1873,7 +1873,6 @@ def save (self,event=None):
     finally:
         c.endUpdate()
         c.widgetWantsFocusNow(w)
-#@nonl
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
