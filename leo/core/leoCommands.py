@@ -5887,11 +5887,19 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20031218072017.2950:c.begin/endUpdate
-        #@+node:ekr.20080515053412.53:c.bind (new)
+        #@+node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
         def bind (self,w,pattern,func):
 
             w.bind(pattern,func)
-        #@-node:ekr.20080515053412.53:c.bind (new)
+
+        def bind2 (self,w,pattern,func,**keys):
+
+            w.bind(pattern,func,**keys)
+
+        def tag_bind(self,w,a,b,c):
+
+            w.bind_tags(a,b,c)
+        #@-node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6146,11 +6154,10 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.bind & c.bind2
+        #@+node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
         def bind (self,w,pattern,func):
 
             c = self
-
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6162,7 +6169,6 @@ class baseCommands:
         def bind2 (self,w,pattern,func,**keys):
 
             c = self
-
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6170,7 +6176,17 @@ class baseCommands:
                 return val
 
             w.bind(pattern,bindCallback,**keys)
-        #@-node:ekr.20080515053412.1:c.bind & c.bind2
+
+        def tag_bind (self,w,tag,event_kind,func):
+
+            c = self
+            def tag_bindCallback(event,c=c,tag=tag,event_kind=event_kind,func=func):
+                val = func(tag,event_kind,func)
+                c.outerUpdate()
+                return val
+
+            w.tag_bind(tag,event_kind,tag_bindCallback)
+        #@-node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 
