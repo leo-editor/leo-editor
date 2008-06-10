@@ -68,7 +68,7 @@ class pluginController:
         self.c = c
         c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
         script = "c.k.simulateCommand('print-cp')"
-        g.makeScriptButton(c,script=script,buttonText='Print c & p',bg='red')
+        g.app.gui.makeScriptButton(c,script=script,buttonText='Print c & p',bg='red')
     #@nonl
     #@-node:ekr.20060621123339.7:__init__
     #@+node:ekr.20060621124649:print_cp

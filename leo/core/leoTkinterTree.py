@@ -401,8 +401,17 @@ class leoTkinterTree (leoFrame.leoTree):
             ('plusBox','<Button-1>', self.onClickBoxClick),
             ('clickBox','<Button-3>',  self.onClickBoxRightClick),
         )
-        for tag,event,callback in table:
-            canvas.tag_bind(tag,event,callback)
+        for tag,event_kind,callback in table:
+            # c.tag_bind(canvas,tag,event,callback)
+
+            def tag_bind_callback(event,c=c,callback=callback):
+                # g.trace('before',callback.__name__)
+                val = callback(event)
+                c.outerUpdate()
+                # g.trace('after','event',event,'val',val)
+                return val
+
+            canvas.tag_bind(tag,event_kind,tag_bind_callback)
         #@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
         #@nl
         #@    << create baloon bindings for tagged items on the canvas >>
@@ -813,16 +822,16 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20040803072955.58:tree.redraw_now & helper
     # New in 4.4b2: suppress scrolling by default.
 
-    def redraw_now (self,scroll=False):
+    def redraw_now (self,scroll=False,forceDraw=False):
 
         '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
 
-        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+        if g.app.quitting or self.frame not in g.app.windowList:
+            return
+        if self.drag_p and not forceDraw:
             return
 
         c = self.c
-
-        # g.trace('scroll',scroll,g.callers())
 
         if not g.app.unitTesting:
             if self.gc_before_redraw:
@@ -848,20 +857,22 @@ class leoTkinterTree (leoFrame.leoTree):
         self.expandAllAncestors(c.currentPosition())
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
-                self.redrawHelper(scroll=scroll)
+                self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
             self.canvas.after_idle(idleRedrawCallback)
         else:
-            self.redrawHelper(scroll=scroll)
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
         if g.app.unitTesting:
             self.canvas.update_idletasks() # Important for unit tests.
         c.masterFocusHandler()
 
     redraw = redraw_now # Compatibility
     #@+node:ekr.20040803072955.59:redrawHelper
-    def redrawHelper (self,scroll=True):
+    def redrawHelper (self,scroll=True,forceDraw=False):
 
         # This can be called at idle time, so there are shutdown issues.
-        if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+        if g.app.quitting or self.frame not in g.app.windowList:
+            return
+        if self.drag_p and not forceDraw:
             return
         if not hasattr(self,'c'):
             return
@@ -1739,8 +1750,8 @@ class leoTkinterTree (leoFrame.leoTree):
             # Must set self.drag_p = None first.
             c.endUpdate(redrawFlag)
             c.recolor_now() # Dragging can affect coloring.
-        c.outerUpdate()
-    #@nonl
+
+        # g.trace(redrawFlag)
     #@-node:ekr.20041111115908:endDrag
     #@+node:ekr.20041111114944:startDrag
     # This precomputes numberOfVisibleNodes(), a significant optimization.
@@ -1858,7 +1869,8 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; tree = self
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            return
 
         c.setLog()
 
@@ -1873,8 +1885,6 @@ class leoTkinterTree (leoFrame.leoTree):
                 c.frame.findPanel.handleUserClick(p)
         g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
-        c.outerUpdate()
-
         return "break" # disable expanded box handling.
     #@-node:ekr.20040803072955.81:onIconBoxClick
     #@+node:ekr.20040803072955.89:onIconBoxRightClick
@@ -1887,7 +1897,9 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            c.outerUpdate()
+            return
 
         c.setLog()
 
@@ -1912,7 +1924,9 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c
 
         if not p: p = self.eventToPosition(event)
-        if not p: return
+        if not p:
+            c.outerUpdate()
+            return
 
         c.setLog()
 

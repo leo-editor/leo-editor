@@ -3,35 +3,21 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="-4" left="244" height="967" width="863"/>
+	<global_window_position top="10" left="392" height="967" width="863"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080121105857" str_leo_pos="15,3"><vh>Startup</vh>
+<v t="ekr.20080121105857" str_leo_pos="6,7,0"><vh>Startup</vh>
 <v t="ekr.20080121105230.3"><vh>@chapters</vh></v>
-</v>
+<v t="ekr.20080121122039"><vh>@@button remove license</vh></v>
 <v t="ekr.20080121105800"><vh>create-at-auto-nodes</vh></v>
-<v t="ekr.20080121122039"><vh>@button remove license</vh></v>
+</v>
 <v t="ekr.20080121105837"><vh>Notes</vh>
 <v t="ekr.20080121152156"><vh>Diary</vh></v>
 <v t="ekr.20080121105837.2"><vh>.rng files</vh></v>
 <v t="ekr.20080331081556.2"><vh>&lt;&lt; old experiments &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
-<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
-<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
-<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
-<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
-<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
-<v t="ekr.20080329224906.5"><vh>To do</vh></v>
-</v>
-<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
-<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
-</v>
 <v t="ekr.20080330201829.1"><vh>Usage</vh>
 <v t="ekr.20080330201829.3"><vh>1. Getting info for a particular buffer</vh>
 <v t="ekr.20080121105837.1808"><vh>Convenience methods (Database)</vh>
@@ -95,6 +81,33 @@
 <v t="ekr.20080121121842.153" a="M"><vh>hits_from_lpath</vh></v>
 <v t="ekr.20080121121842.154" a="M"><vh>toplevel_cplns</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080121133057"><vh>Important doc nodes</vh>
+<v t="ekr.20080121133057.1"><vh>&lt;&lt; citadel.py docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
+<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
+<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
+<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
+<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
+<v t="ekr.20080329224906.5"><vh>To do</vh></v>
+</v>
+<v t="ekr.20080121105837.1853"><vh>sdk/share/lang_LANG.py (Important)</vh></v>
+<v t="ekr.20080121151821"><vh>&lt;&lt; LangIntel docstring &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20080606122004.1" a="E"><vh>Flattened versions</vh>
+<v t="ekr.20080331081556.1"><vh>@@asis komodo-test-data.py</vh></v>
+<v t="ekr.20080416071842.2"><vh>@@asis komodo-test.py</vh>
+<v t="ekr.20080416071842.4"><vh>addKomodoPaths</vh></v>
+<v t="ekr.20080416071842.11"><vh>complete imports</vh></v>
+<v t="ekr.20080416071842.5"><vh>doLog</vh></v>
+<v t="ekr.20080416071842.6"><vh>doTrigger</vh></v>
+<v t="ekr.20080416071842.9"><vh>main</vh></v>
+<v t="ekr.20080416071842.7"><vh>scan</vh></v>
+<v t="ekr.20080416071842.8"><vh>scanComplete</vh></v>
+<v t="ekr.20080416071842.10"><vh>top-level</vh></v>
 </v>
 </v>
 <v t="ekr.20080121105837.3"><vh>Komodo code</vh>
@@ -1435,7 +1448,7 @@
 <v t="ekr.20080121105837.421"><vh>preceding_trg_from_pos</vh></v>
 <v t="ekr.20080121105837.422"><vh>_is_terminating_char</vh></v>
 </v>
-<v t="ekr.20080121105837.423"><vh>class PythonCITDLExtractorMixin</vh>
+<v t="ekr.20080121105837.423" a="E"><vh>class PythonCITDLExtractorMixin</vh>
 <v t="ekr.20080121105837.424"><vh>_citdl_expr_from_pos</vh></v>
 <v t="ekr.20080121105837.425"><vh>citdl_expr_from_trg</vh></v>
 </v>
@@ -2958,6 +2971,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080606122004.2"><vh>Clones</vh>
 <v t="ekr.20080121105837.8"><vh>codeintel2 directory</vh>
 <v t="ekr.20080121105837.1768"><vh> database directory (code to access the database) </vh>
 <v t="ekr.20080121121728.9"><vh> __init__.py (database)</vh></v>
@@ -3700,7 +3714,7 @@
 <v t="ekr.20080121105837.421"><vh>preceding_trg_from_pos</vh></v>
 <v t="ekr.20080121105837.422"><vh>_is_terminating_char</vh></v>
 </v>
-<v t="ekr.20080121105837.423"><vh>class PythonCITDLExtractorMixin</vh>
+<v t="ekr.20080121105837.423" a="E"><vh>class PythonCITDLExtractorMixin</vh>
 <v t="ekr.20080121105837.424"><vh>_citdl_expr_from_pos</vh></v>
 <v t="ekr.20080121105837.425"><vh>citdl_expr_from_trg</vh></v>
 </v>
@@ -5601,38 +5615,12 @@
 <v t="ekr.20080121105837.1409"><vh>_last_logical_line</vh></v>
 </v>
 </v>
-<v t="ekr.20080331182810.1"><vh>Recent</vh>
-<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
-<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
-<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
-<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
-<v t="ekr.20080121105837.91"><vh>async_eval_at_trg (Buffer)</vh></v>
-<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
 <v t="ekr.20080331182810.5"><vh>not used</vh>
 <v t="ekr.20080121150435"><vh>openManager</vh></v>
 <v t="ekr.20080121150435.1"><vh>openDatabase</vh></v>
 </v>
 </v>
-<v t="ekr.20080331182810.3"><vh>other tests</vh></v>
-<v t="ekr.20080331081556.1"><vh>@asis komodo-test-data.py</vh></v>
-<v t="ekr.20080416071842.2"><vh>@asis komodo-test.py</vh>
-<v t="ekr.20080416071842.4"><vh>addKomodoPaths</vh></v>
-<v t="ekr.20080416071842.11"><vh>complete imports</vh></v>
-<v t="ekr.20080416071842.5"><vh>doLog</vh></v>
-<v t="ekr.20080416071842.6"><vh>doTrigger</vh></v>
-<v t="ekr.20080416071842.9"><vh>main</vh></v>
-<v t="ekr.20080416071842.7"><vh>scan</vh></v>
-<v t="ekr.20080416071842.8"><vh>scanComplete</vh></v>
-<v t="ekr.20080416071842.10"><vh>top-level</vh></v>
-</v>
-<v t="ekr.20080121105837.1770"><vh>&lt;&lt; database.py docstring &gt;&gt; (important)</vh>
-<v t="ekr.20080329224906.1"><vh>Usage</vh></v>
-<v t="ekr.20080329224906.2"><vh>Database structure (zones)</vh></v>
-<v t="ekr.20080329224906.3"><vh>Actions</vh></v>
-<v t="ekr.20080329224906.4"><vh>Logging</vh></v>
-<v t="ekr.20080329224906.5"><vh>To do</vh></v>
-</v>
-<v t="ekr.20080121143612" a="E"><vh>Komodo test script</vh>
+<v t="ekr.20080121143612"><vh>@button Komodo test script @key = Alt-8</vh>
 <v t="ekr.20080331170945.1"><vh>&lt;&lt; imports &gt;&gt;</vh>
 <v t="ekr.20080121142959.1"><vh>&lt;&lt; define addKomodePaths &gt;&gt;</vh></v>
 </v>
@@ -5640,6 +5628,22 @@
 <v t="ekr.20080331182810.4"><vh>doTrigger</vh></v>
 <v t="ekr.20080331170945.3"><vh>scan</vh></v>
 <v t="ekr.20080331171758.1"><vh>scanComplete</vh></v>
+</v>
+<v t="ekr.20080331182810.1" a="E"><vh>Recent</vh>
+<v t="ekr.20080121133057.2"><vh>&lt;&lt; class CitadelBuffer docstring &gt;&gt;</vh></v>
+<v t="ekr.20080121105837.1408"><vh>trg_from_pos (PythonBuffer)</vh></v>
+<v t="ekr.20080121105837.92"><vh>cplns_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.93"><vh>calltips_from_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.91"><vh>async_eval_at_trg (Buffer)</vh></v>
+<v t="ekr.20080121105837.1396"><vh>async_eval_at_trg (PythonLangIntel) (Used by completions/calltips)</vh></v>
+<v t="ekr.20080121105837.1391"><vh>class PythonImportsEvaluator</vh>
+<v t="ekr.20080121105837.1392"><vh>__str__</vh></v>
+<v t="ekr.20080121105837.1393"><vh>eval</vh></v>
+</v>
+<v t="ekr.20080121105837.423" a="E"><vh>class PythonCITDLExtractorMixin</vh>
+<v t="ekr.20080121105837.424"><vh>_citdl_expr_from_pos</vh></v>
+<v t="ekr.20080121105837.425"><vh>citdl_expr_from_trg</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -59698,15 +59702,14 @@ def scan(mgr):
 <t tx="ekr.20080331171758.1">def scanComplete(request):
     g.trace('*'*10,request)</t>
 <t tx="ekr.20080331182810.1"></t>
-<t tx="ekr.20080331182810.3">print os.path.join
-os.path.join('abc')</t>
 <t tx="ekr.20080331182810.4">prev_trigger = None
 
 def doTrigger (s,i,trigger,buf,ctlr):
 
     # See also Buffer.async_eval_at_trg()
+    print
     print 'trigger at %3d' % (i),'%33s' % (
-        trigger.name),'%9s' % (repr(s[i: i+5])),
+        trigger.name),'%9s' % (repr(s[i: i+5]))
 
     completions = buf.cplns_from_trg(trigger,timeout=None,ctlr=ctlr)
     print 'completions %3s' % (completions and len(completions) or 0),
@@ -59887,5 +59890,7 @@ from codeintel2.manager import Manager
 from codeintel2.common import EvalController
 
 </t>
+<t tx="ekr.20080606122004.1"></t>
+<t tx="ekr.20080606122004.2"></t>
 </tnodes>
 </leo_file>

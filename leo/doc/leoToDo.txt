@@ -2,6 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
+#@+node:ekr.20080605064555.1:Look at menuat branch
+#@-node:ekr.20080605064555.1:Look at menuat branch
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080602172531.1:before b1: 5
 #@+node:ekr.20080603052650.466:Fix vim problems
@@ -35,6 +37,31 @@ position up To the letter 'w'".  This can be done within a mode using
 a zap-to-character command followed by a set-insert-state command.  It
 never executes the set-insert-state command because the zap-to-
 character command asks the user for a character (the 'w').
+
+4. Repeat last command using the period
+
+Binding keys within nodes:
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.
+
+Support commands requesting input:
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+Note: The copy of the character should be saved somewhere that does
+NOT affect the contents of the clipboard.
+Note: The same or a separate storage location can be used for all
+commands to retain a copy of the character entered by the user.  It
+doesn't matter since only the last command is assigned to the period
+key to be re-executed.
 
 @color
 #@nonl
@@ -293,6 +320,7 @@ def modeHelpHelper (self,d):
 #@-node:ekr.20061031131434.166:modeHelpHelper
 #@-node:ekr.20061031131434.165:modeHelp & helper
 #@-node:ekr.20061031131434.156:Modes
+#@+node:ekr.20080605064555.3:Problem 1
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
@@ -718,6 +746,151 @@ def endCommand (self,event,commandName):
             # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
             k.newMinibufferWidget = None
 #@-node:ekr.20061031131434.113:k.endCommand
+#@-node:ekr.20080605064555.3:Problem 1
+#@+node:ekr.20080605064555.4:Problem 2
+# k.singleLineCommandList may provide part of the solution.
+#@nonl
+#@+node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
+def abortEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and revert to its previous value.'''
+
+    frame = self ; c = frame.c ; tree = frame.tree
+    p = c.currentPosition() ; w = c.edit_widget(p)
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Abort Edit Headline")
+        return
+
+    # g.trace('isEditing',p == tree.editPosition(),'revertHeadline',repr(tree.revertHeadline))
+
+    if w and p == tree.editPosition():
+        # Revert the headline text.
+        w.delete(0,"end")
+        w.insert("end",tree.revertHeadline)
+        p.initHeadString(tree.revertHeadline)
+        c.beginUpdate()
+        try:
+            c.endEditing()
+            c.selectPosition(p)
+        finally:
+            c.endUpdate()
+#@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
+#@+node:ekr.20031218072017.2886:c.editHeadline
+def editHeadline (self,event=None):
+
+    '''Begin editing the headline of the selected node.'''
+
+    c = self ; k = c.k ; tree = c.frame.tree
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Edit Headline")
+        return
+
+    if k:
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    tree.editLabel(c.currentPosition())
+#@-node:ekr.20031218072017.2886:c.editHeadline
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20061007105001:editWidget (baseEditCommandsClass)
+def editWidget (self,event):
+
+    c = self.c ; w = event and event.widget
+
+    # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+    if w and g.app.gui.isTextWidget(w):
+        self.w = w
+    else:
+        self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    # g.trace(self.w)
+
+    if self.w:
+        c.widgetWantsFocusNow(self.w)
+
+    return self.w
+#@nonl
+#@-node:ekr.20061007105001:editWidget (baseEditCommandsClass)
+#@+node:ekr.20051218122116:moveToHelper
+def moveToHelper (self,event,spot,extend):
+
+    '''Common helper method for commands the move the cursor
+    in a way that can be described by a Tk Text expression.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    # Put the request in the proper range.
+    if c.widget_name(w).startswith('mini'):
+        i,j = k.getEditableTextRange()
+        if   spot < i: spot = i
+        elif spot > j: spot = j
+
+    self.extendHelper(w,extend,spot,upOrDown=False)
+#@nonl
+#@-node:ekr.20051218122116:moveToHelper
+#@-node:ekr.20080605064555.4:Problem 2
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061014050154.2:Binding to None clears all bindings
 Should assigning to None clear all key bindings?
@@ -957,6 +1130,7 @@ def importAtFile (self,event=None):
     c.bringToFront()
 
     if names:
+        g.chdir(names[0])
         c.importCommands.importFilesCommand(names,"@file")
 #@-node:ekr.20031218072017.2853:importAtFile
 #@+node:ekr.20031218072017.3212:importFilesCommand
@@ -1400,6 +1574,7 @@ def open (self,event=None):
     if fileName and len(fileName) > 0:
         ok, frame = g.openWithFileName(fileName,c)
         if ok:
+            g.chdir(fileName)
             g.setGlobalOpenDir(fileName)
         if ok and closeFlag:
             g.app.destroyWindow(c.frame)
@@ -1693,10 +1868,11 @@ def save (self,event=None):
                 c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
+
     finally:
         c.endUpdate()
         c.widgetWantsFocusNow(w)
-#@nonl
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -1732,6 +1908,7 @@ def saveAs (self,event=None):
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
     finally:
         c.endUpdate()
         c.widgetWantsFocusNow(w)
@@ -1788,6 +1965,7 @@ def saveTo (self,event=None):
             fileName = g.ensure_extension(fileName, ".leo")
             c.fileCommands.saveTo(fileName)
             c.updateRecentFiles(fileName)
+            g.chdir(fileName)
 
     finally:
         c.endUpdate()
