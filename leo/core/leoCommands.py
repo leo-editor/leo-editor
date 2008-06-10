@@ -560,6 +560,7 @@ class baseCommands:
         if fileName and len(fileName) > 0:
             ok, frame = g.openWithFileName(fileName,c)
             if ok:
+                g.chdir(fileName)
                 g.setGlobalOpenDir(fileName)
             if ok and closeFlag:
                 g.app.destroyWindow(c.frame)
@@ -856,10 +857,11 @@ class baseCommands:
                     c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                     c.fileCommands.save(c.mFileName)
                     c.updateRecentFiles(c.mFileName)
+                    g.chdir(c.mFileName)
+
         finally:
             c.endUpdate()
             c.widgetWantsFocusNow(w)
-    #@nonl
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
     def saveAs (self,event=None):
@@ -895,6 +897,7 @@ class baseCommands:
                 # Calls c.setChanged(False) if no error.
                 c.fileCommands.saveAs(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
         finally:
             c.endUpdate()
             c.widgetWantsFocusNow(w)
@@ -951,6 +954,7 @@ class baseCommands:
                 fileName = g.ensure_extension(fileName, ".leo")
                 c.fileCommands.saveTo(fileName)
                 c.updateRecentFiles(fileName)
+                g.chdir(fileName)
 
         finally:
             c.endUpdate()
@@ -1151,6 +1155,7 @@ class baseCommands:
 
         try:
             theFile = open(fileName,'r')
+            g.chdir(fileName)
             c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
             frame.deiconify()
             frame.lift()
@@ -1159,7 +1164,7 @@ class baseCommands:
         except:
             g.es("can not open:",fileName)
     #@-node:ekr.20031218072017.2839:readOutlineOnly
-    #@+node:ekr.20070915134101:readFileIntoFile
+    #@+node:ekr.20070915134101:readFileIntoNode
     def readFileIntoNode (self,event=None):
 
         '''Read a file into a single node.'''
@@ -1172,6 +1177,7 @@ class baseCommands:
         if fileName:    
             try:
                 theFile = open(fileName,'r')
+                g.chdir(fileName)
                 s = theFile.read()
                 s = '@nocolor\n' + s
                 c.beginUpdate()
@@ -1185,7 +1191,7 @@ class baseCommands:
                     c.endUpdate()
             except:
                 g.es("can not open:",fileName)
-    #@-node:ekr.20070915134101:readFileIntoFile
+    #@-node:ekr.20070915134101:readFileIntoNode
     #@+node:ekr.20070806105721.1:readAtAutoNodes (commands)
     def readAtAutoNodes (self,event=None):
 
@@ -1241,6 +1247,7 @@ class baseCommands:
             multiple=True)
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importDerivedFiles(parent=p,paths=names)
     #@-node:ekr.20031218072017.1809:importDerivedFile
     #@+node:ekr.20070915142635:writeFileFromNode
@@ -1269,6 +1276,7 @@ class baseCommands:
         if fileName:
             try:
                 theFile = open(fileName,'w')
+                g.chdir(fileName)
             except IOError:
                 theFile = None
             if theFile:
@@ -1357,6 +1365,7 @@ class baseCommands:
 
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
+            g.chdir(fileName)
             c.importCommands.exportHeadlines(fileName)
     #@-node:ekr.20031218072017.2850:exportHeadlines
     #@+node:ekr.20031218072017.2851:flattenOutline
@@ -1378,6 +1387,7 @@ class baseCommands:
 
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
+            g.chdir(fileName)
             c.importCommands.flattenOutline(fileName)
     #@-node:ekr.20031218072017.2851:flattenOutline
     #@+node:ekr.20031218072017.2852:importAtRoot
@@ -1406,6 +1416,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importFilesCommand (names,"@root")
     #@-node:ekr.20031218072017.2852:importAtRoot
     #@+node:ekr.20031218072017.2853:importAtFile
@@ -1434,6 +1445,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importFilesCommand(names,"@file")
     #@-node:ekr.20031218072017.2853:importAtFile
     #@+node:ekr.20031218072017.2854:importCWEBFiles
@@ -1456,6 +1468,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importWebCommand(names,"cweb")
     #@-node:ekr.20031218072017.2854:importCWEBFiles
     #@+node:ekr.20031218072017.2855:importFlattenedOutline
@@ -1475,6 +1488,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importFlattenedOutline(names)
     #@-node:ekr.20031218072017.2855:importFlattenedOutline
     #@+node:ekr.20031218072017.2856:importNowebFiles
@@ -1497,6 +1511,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.importWebCommand(names,"noweb")
     #@-node:ekr.20031218072017.2856:importNowebFiles
     #@+node:ekr.20031218072017.2857:outlineToCWEB
@@ -1521,6 +1536,7 @@ class baseCommands:
 
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
+            g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"cweb")
     #@-node:ekr.20031218072017.2857:outlineToCWEB
     #@+node:ekr.20031218072017.2858:outlineToNoweb
@@ -1545,6 +1561,7 @@ class baseCommands:
 
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
+            g.chdir(fileName)
             c.importCommands.outlineToWeb(fileName,"noweb")
             c.outlineToNowebDefaultFileName = fileName
     #@-node:ekr.20031218072017.2858:outlineToNoweb
@@ -1574,6 +1591,7 @@ class baseCommands:
         c.bringToFront()
 
         if names:
+            g.chdir(names[0])
             c.importCommands.removeSentinelsCommand (names)
     #@-node:ekr.20031218072017.2859:removeSentinels
     #@+node:ekr.20031218072017.2860:weave
@@ -1594,6 +1612,7 @@ class baseCommands:
 
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
+            g.chdir(fileName)
             c.importCommands.weave(fileName)
     #@-node:ekr.20031218072017.2860:weave
     #@-node:ekr.20031218072017.2849:Import&Export submenu
@@ -5868,11 +5887,19 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20031218072017.2950:c.begin/endUpdate
-        #@+node:ekr.20080515053412.53:c.bind (new)
+        #@+node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
         def bind (self,w,pattern,func):
 
             w.bind(pattern,func)
-        #@-node:ekr.20080515053412.53:c.bind (new)
+
+        def bind2 (self,w,pattern,func,**keys):
+
+            w.bind(pattern,func,**keys)
+
+        def tag_bind(self,w,a,b,c):
+
+            w.bind_tags(a,b,c)
+        #@-node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6127,11 +6154,10 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.bind & c.bind2
+        #@+node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
         def bind (self,w,pattern,func):
 
             c = self
-
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6143,7 +6169,6 @@ class baseCommands:
         def bind2 (self,w,pattern,func,**keys):
 
             c = self
-
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6151,7 +6176,17 @@ class baseCommands:
                 return val
 
             w.bind(pattern,bindCallback,**keys)
-        #@-node:ekr.20080515053412.1:c.bind & c.bind2
+
+        def tag_bind (self,w,tag,event_kind,func):
+
+            c = self
+            def tag_bindCallback(event,c=c,tag=tag,event_kind=event_kind,func=func):
+                val = func(tag,event_kind,func)
+                c.outerUpdate()
+                return val
+
+            w.tag_bind(tag,event_kind,tag_bindCallback)
+        #@-node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 

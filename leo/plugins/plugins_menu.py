@@ -840,9 +840,9 @@ class TkScrolledMessageDialog:
     def show_message_as_html(self, name):
 
         try:
-            import leo.core.leo_to_html as leo_to_html
+            import leo.plugins.leo_to_html as leo_to_html
         except ImportError:
-            g.es('Can not import leo.core.leo_to_html as leo_to_html', color='red')
+            g.es('Can not import leo.plugins.leo_to_html as leo_to_html', color='red')
             return
 
         oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
