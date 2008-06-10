@@ -343,7 +343,7 @@ class leoGtkTree (leoFrame.leoTree):
                 # ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
             # )
             # for tag,event,callback in table:
-                # canvas.tag_bind(tag,event,callback)
+                # c.tag_bind(canvas,tag,event,callback)
             #@-node:ekr.20080112145409.327:<< make bindings for tagged items on the canvas >>
             #@nl
             #@        << create baloon bindings for tagged items on the canvas >>

@@ -6182,7 +6182,8 @@ class baseCommands:
             c = self
             def tag_bindCallback(event,c=c,tag=tag,event_kind=event_kind,func=func):
                 val = func(tag,event_kind,func)
-                c.outerUpdate()
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
                 return val
 
             w.tag_bind(tag,event_kind,tag_bindCallback)

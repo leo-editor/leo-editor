@@ -376,9 +376,9 @@ def match_section_ref (self,s,i):
                 self.tag(tagName,i+2,j)
 
                 ref.tagName = tagName
-                w.tag_bind(tagName,"<Control-1>",ref.OnHyperLinkControlClick)
-                w.tag_bind(tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
-                w.tag_bind(tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+                c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
                 #@nonl
                 #@-node:ekr.20071010193720.15:<< set the hyperlink >>
                 #@nl

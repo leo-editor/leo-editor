@@ -1915,7 +1915,7 @@ class leoGtkBody (leoFrame.leoBody):
         self.bodyCtrl.tag_add(tagName,index1,index2)
 
     def tag_bind (self,tagName,event,callback):
-        self.bodyCtrl.tag_bind(tagName,event,callback)
+        self.c.tag_bind(self.bodyCtrl,tagName,event,callback)
 
     def tag_configure (self,colorName,**keys):
         self.bodyCtrl.tag_configure(colorName,keys)

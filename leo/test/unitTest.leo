@@ -35,7 +35,7 @@
 <v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
@@ -64,7 +64,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
