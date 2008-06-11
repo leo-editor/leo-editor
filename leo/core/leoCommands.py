@@ -5898,7 +5898,7 @@ class baseCommands:
 
         def tag_bind(self,w,a,b,c):
 
-            w.bind_tags(a,b,c)
+            w.tag_bind(a,b,c)
         #@-node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
@@ -6180,8 +6180,8 @@ class baseCommands:
         def tag_bind (self,w,tag,event_kind,func):
 
             c = self
-            def tag_bindCallback(event,c=c,tag=tag,event_kind=event_kind,func=func):
-                val = func(tag,event_kind,func)
+            def tag_bindCallback(event,c=c,func=func):
+                val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
