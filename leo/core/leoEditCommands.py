@@ -3467,7 +3467,16 @@ class editCommandsClass (baseEditCommandsClass):
 
         # Find the start of the next/prev line.
         row,col = g.convertPythonIndexToRowCol(s,ins)
-        if trace: g.trace('ins',ins,'row',row,'col',col)
+        if trace:
+            gui_ins = w.toGuiIndex(ins)
+            bbox = w.bbox(gui_ins)
+            if bbox:
+                x,y,width,height = bbox
+                # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+                g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+                g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+                g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+                g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
         i,j = g.getLine(s,ins)
         if direction == 'down':
             i2,j2 = g.getLine(s,j)
