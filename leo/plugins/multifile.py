@@ -143,7 +143,7 @@ def addMenu (tag,keywords):
     haveseen [c] = None
     men = c.frame.menu
     men = men.getMenu('Edit')
-    men.add_command(
+    c.add_command(men,
         label = "Insert Directory String",
         command = lambda c = c: insertDirectoryString(c))
 #@nonl

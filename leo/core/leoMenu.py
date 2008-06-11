@@ -1427,8 +1427,9 @@ class leoMenu:
             #@nl
             accelerator = stroke = k.shortcutFromSetting(accel) or ''
             accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-            def masterMenuCallback (k=k,stroke=stroke,command=command,commandName=commandName):
+            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
                 return k.masterMenuHandler(stroke,command,commandName)
+
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&","")
@@ -1442,10 +1443,18 @@ class leoMenu:
                     accelerator = ''
                 #@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
                 #@nl
-            self.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
+
+            # c.add_command ensures that c.outerUpdate is called.
+            if menu:
+                c.add_command(menu,label=realLabel,
+                    accelerator=accelerator,
+                    command=masterMenuCallback,
+                    underline=amp_index)
+
+            # self.add_command(menu,label=realLabel,
+                # accelerator=accelerator,
+                # command=masterMenuCallback,
+                # underline=amp_index)
     #@-node:ekr.20031218072017.1723:createMenuEntries
     #@+node:ekr.20031218072017.3784:createMenuItemsFromTable
     def createMenuItemsFromTable (self,menuName,table,dynamicMenu=False):
@@ -1574,7 +1583,7 @@ class leoMenu:
             realLabel = realLabel.replace("&","")
             callback = self.defineOpenWithMenuCallback(openWithData)
 
-            self.add_command(menu,label=realLabel,
+            c.add_command(menu,label=realLabel,
                 accelerator=accelerator or '',
                 command=callback,underline=underline)
     #@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
@@ -1605,7 +1614,7 @@ class leoMenu:
                 # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)
             label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
-            self.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
+            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
             i += 1
     #@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
     #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems

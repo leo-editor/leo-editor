@@ -4458,11 +4458,12 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.186:OnRightClick
     def OnRightClick(self,event):
         try:
+            c = self.c
             m = Menu(self)
-            m.add_command(label="Delete Node Breaks", command=self.DeleteNodeBreaks)
-            m.add_command(label="Delete Project Breaks", command=self.DeleteProjectBreaks)
+            c.add_command(m,label="Delete Node Breaks", command=self.DeleteNodeBreaks)
+            c.add_command(m,label="Delete Project Breaks", command=self.DeleteProjectBreaks)
             m.add_separator()
-            m.add_command(label="Cancel",command=lambda :self.Cancel(m))
+            c.add_command(m,label="Cancel",command=lambda :self.Cancel(m))
 
             m.post(event.x_root,event.y_root)
         except Exception:

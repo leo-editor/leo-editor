@@ -632,6 +632,8 @@ class cleoController:
     def redraw(self):
         "redraw after menu used"
 
+        g.trace(g.callers())
+
         # IMPORTANT ASSUMPTION: called only after menu used
 
         # read updates from menu choice
@@ -653,7 +655,6 @@ class cleoController:
         c = self.c
         c.setChanged(True)
         c.redraw_now()
-    #@nonl
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
     def clear_all(self,v):
@@ -941,6 +942,7 @@ class cleoController:
     #@+node:tbrown.20060903121429.50:colours_menu
     def colours_menu(self,parent, p):
 
+        c = self.c
         self.prep_pickle(p.v, 'fg')
         self.prep_pickle(p.v, 'bg')
 
@@ -962,16 +964,16 @@ class cleoController:
         def cleoColorsMenuSubtree():
             self.subtree_colours(p.v)
 
-        parent.add_command(label='Remove Colouring', underline=0,
+        c.add_command(parent,label='Remove Colouring', underline=0,
             command=cleoColorsMenuCallback)
 
-        parent.add_command(label='Colour subtree', underline=0,
+        c.add_command(parent,label='Colour subtree', underline=0,
             command=cleoColorsMenuSubtree)
 
         def cleoAddColorsMenuCallback():
             self.add_colour()
 
-        parent.add_command(label='New Colour', underline=0,
+        c.add_command(parent,label='New Colour', underline=0,
             command=cleoAddColorsMenuCallback)
     #@-node:tbrown.20060903121429.50:colours_menu
     #@+node:tbrown.20060903121429.51:node menu
@@ -1041,6 +1043,7 @@ class cleoController:
         # done already in left_priority menu
         # self.prep_pickle(p.v, 'priority', default=9999)
 
+        c = self.c
         menu = Tk.Menu(parent,tearoff=0,takefocus=1)
 
         parent.add_cascade(label='Priority', menu=menu,underline=1)
@@ -1055,14 +1058,14 @@ class cleoController:
 
         menu.add_separator()
 
-        menu.add_command(label='Sort',
+        c.add_command(menu,label='Sort',
             command=self.priSort, underline=0)
-        menu.add_command(label='Children -> To do',
+        c.add_command(menu,label='Children -> To do',
             command=self.childrenTodo, underline=0)
 
         menu.add_separator()
 
-        menu.add_command(label='Clear',
+        c.add_command(menu,label='Clear',
             command=lambda p=p:self.priority_clear(p.v),underline=0)
 
         return menu
@@ -1085,14 +1088,14 @@ class cleoController:
 
         menu.add_separator()
 
-        menu.add_command(label='Clear',
+        c.add_command(menu,label='Clear',
             command=lambda p=p:self.progress_clear(p.v),underline=0)
 
         def toggle_scaling():
             self.scaleProg = (self.scaleProg+1) % 3
             self.redraw()
 
-        menu.add_command(label='Toggle progress scaling',
+        c.add_command(menu,label='Toggle progress scaling',
             underline=0,command=toggle_scaling)
 
         return menu
@@ -1101,7 +1104,7 @@ class cleoController:
     #@+node:tbrown.20060913212017:time_menu
     def time_menu(self,parent,p):
 
-        v = p.v
+        c = self.c ; v = p.v
 
         menu = Tk.Menu(parent,tearoff=0,takefocus=1)
 
@@ -1113,14 +1116,14 @@ class cleoController:
         lab = 'Set time required'
         if self.getat(v, 'time_req') != '':
             lab += ' ('+str(self.getat(v, 'time_req'))+')'
-        menu.add_command(label=lab,
+        c.add_command(menu,label=lab,
             underline=0,command=lambda:self.set_time_req(p))
-        menu.add_command(label='Clear time required',
+        c.add_command(menu,label='Clear time required',
             underline=0,command=lambda:self.clear_time_req(p))
 
-        menu.add_command(label='Show times',
+        c.add_command(menu,label='Show times',
             underline=0,command=lambda:self.show_times(p, show=True))
-        menu.add_command(label='Hide times',
+        c.add_command(menu,label='Hide times',
             underline=0,command=lambda:self.show_times(p, show=False))
 
         def local_recalc():
@@ -1128,7 +1131,7 @@ class cleoController:
             self.pickles['progress'].set(self.getat(v, 'progress'))
             self.redraw()
 
-        menu.add_command(label='Re-calc. time required',
+        c.add_command(menu,label='Re-calc. time required',
             underline=0,command=local_recalc)
 
         def local_clear():
@@ -1136,7 +1139,7 @@ class cleoController:
             self.pickles['progress'].set(self.getat(v, 'progress'))
             self.redraw()
 
-        menu.add_command(label='Clear derived times',
+        c.add_command(menu,label='Clear derived times',
             underline=0,command=local_clear)
 
         return menu
@@ -1161,10 +1164,10 @@ class cleoController:
 
         self.left_priority_menu(menu, p)
 
-        menu.add_command(label='T',
+        c.add_command(menu,label='T',
             underline=0,command=lambda:self.set_time_req(p))
 
-        menu.add_command(label='Find next todo', columnbreak=1,
+        c.add_command(menu,label='Find next todo', columnbreak=1,
             underline=0,command=lambda:self.find_todo(p))
         self.priority_menu(menu,p)
         self.progress_menu(menu,p)
@@ -1177,9 +1180,9 @@ class cleoController:
         self.colours_menu(menu,p)
         # fonts_menu(menu,p)
         menu.add_separator()
-        menu.add_command(label='Clear All for node',
+        c.add_command(menu,label='Clear All for node',
             underline=0,command=lambda:self.clear_all(v))
-        menu.add_command(label='Flush empty cleo attribs.',
+        c.add_command(menu,label='Flush empty cleo attribs.',
             underline=0,command=self.dropEmptyAll)
 
         # Show the menu.

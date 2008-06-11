@@ -171,10 +171,10 @@ def addMenu( tag, keywords ):
     men = c.frame.menu.getMenu( 'Outline' )
     men2 = Tk.Menu( men , tearoff = 0 )
     men.add_cascade( menu = men2, label = 'Produce' )
-    men2.add_command(
+    c.add_command(men2,
         label = "Execute All Produce",
         command = lambda  c = c: exeProduce( c ))
-    men2.add_command(
+    c.add_command(men2,
         label = "Execute Tree Produce",
         command = lambda c = c: exeProduce( c, root = False ) )
 #@nonl

@@ -5887,7 +5887,11 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20031218072017.2950:c.begin/endUpdate
-        #@+node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
+        #@+node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
+        def add_command (self,menu,**keys):
+
+            menu.add_command(**keys)
+
         def bind (self,w,pattern,func):
 
             w.bind(pattern,func)
@@ -5899,7 +5903,8 @@ class baseCommands:
         def tag_bind(self,w,a,b,c):
 
             w.tag_bind(a,b,c)
-        #@-node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
+
+        #@-node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6024,6 +6029,7 @@ class baseCommands:
                 return # nullFrame's do not have a top frame.
 
             c.frame.tree.redraw_now()
+
             if 0: # Interferes with new colorizer.
                 c.frame.top.update_idletasks()
 
@@ -6154,10 +6160,34 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
+        #@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+        # These wrappers ensure that c.outerUpdate get called.
+        #@nonl
+        #@+node:ekr.20080610085158.2:c.add_command
+        def add_command (self,menu,**keys):
+
+            c = self ; command = keys.get('command')
+
+            if command:
+
+                def add_commandCallback(c=c,command=command):
+                    val = command()
+                    # Careful: func may destroy c.
+                    if c.exists: c.outerUpdate()
+                    return val
+
+                keys ['command'] = add_commandCallback
+
+                menu.add_command(**keys)
+
+            else:
+                g.trace('can not happen: no "command" arg')
+        #@-node:ekr.20080610085158.2:c.add_command
+        #@+node:ekr.20080610085158.3:c.bind and c.bind2
         def bind (self,w,pattern,func):
 
             c = self
+
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6169,6 +6199,7 @@ class baseCommands:
         def bind2 (self,w,pattern,func,**keys):
 
             c = self
+
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
@@ -6176,7 +6207,8 @@ class baseCommands:
                 return val
 
             w.bind(pattern,bindCallback,**keys)
-
+        #@-node:ekr.20080610085158.3:c.bind and c.bind2
+        #@+node:ekr.20080610085158.4:c.tag_bind
         def tag_bind (self,w,tag,event_kind,func):
 
             c = self
@@ -6187,7 +6219,8 @@ class baseCommands:
                 return val
 
             w.tag_bind(tag,event_kind,tag_bindCallback)
-        #@-node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
+        #@-node:ekr.20080610085158.4:c.tag_bind
+        #@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6361,6 +6394,7 @@ class baseCommands:
         def redraw_now (self):
             c = self
             c.requestRedrawFlag = True
+            c.outerUpdate()
 
         # Compatibility with old scripts
         force_redraw = redraw_now

@@ -2305,7 +2305,7 @@ class leoGtkLog (leoFrame.leoLog):
         # hull = self.nb.component('hull') # A Tk.Canvas.
 
         # menu = Tk.Menu(hull,tearoff=0)
-        # menu.add_command(label='New Tab',command=self.newTabFromMenu)
+        # c.add_command(menu,label='New Tab',command=self.newTabFromMenu)
 
         # if tabName:
             # # Important: tabName is the name when the tab is created.
@@ -2316,12 +2316,12 @@ class leoGtkLog (leoFrame.leoLog):
 
             # label = g.choose(
                 # tabName in ('Find','Spell'),'Hide This Tab','Delete This Tab')
-            # menu.add_command(label=label,command=deleteTabCallback)
+            # c.add_command(menu,label=label,command=deleteTabCallback)
 
             # def renameTabCallback():
                 # return self.renameTabFromMenu(tabName)
 
-            # menu.add_command(label='Rename This Tab',command=renameTabCallback)
+            # c.add_command(menu,label='Rename This Tab',command=renameTabCallback)
 
         # return menu
     #@-node:ekr.20080112145409.211:gtkLog.makeTabMenu

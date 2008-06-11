@@ -2189,8 +2189,8 @@ class leoTkinterLog (leoFrame.leoLog):
         hull = self.nb.component('hull') # A Tk.Canvas.
 
         menu = Tk.Menu(hull,tearoff=0)
-        menu.add_command(label='New Tab',command=self.newTabFromMenu)
-        menu.add_command(label='New CanvasTab',command=self.newCanvasTabFromMenu)
+        c.add_command(menu,label='New Tab',command=self.newTabFromMenu)
+        c.add_command(menu,label='New CanvasTab',command=self.newCanvasTabFromMenu)
 
         if tabName:
             # Important: tabName is the name when the tab is created.
@@ -2201,13 +2201,13 @@ class leoTkinterLog (leoFrame.leoLog):
 
             label = g.choose(
                 tabName in ('Find','Spell'),'Hide This Tab','Delete This Tab')
-            menu.add_command(label=label,command=deleteTabCallback)
+            c.add_command(menu,label=label,command=deleteTabCallback)
 
             def renameTabCallback():
                 return self.renameTabFromMenu(tabName)
 
             if allowRename:
-                menu.add_command(label='Rename This Tab',command=renameTabCallback)
+                c.add_command(menu,label='Rename This Tab',command=renameTabCallback)
 
         return menu
     #@-node:ekr.20051019134106.1:tkLog.makeTabMenu

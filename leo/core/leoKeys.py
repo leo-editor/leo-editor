@@ -3593,12 +3593,6 @@ class keyHandlerClass:
             return 'break'
     #@-node:ekr.20061031131434.154:masterDoubleClickHandler
     #@+node:ekr.20061031131434.155:masterMenuHandler
-    # def masterMenuHandler (self,stroke,func,commandName):
-        # k = self ; c = k.c
-        # val = self.masterMenuHandlerHelper(stroke,func,commandName)
-        # if c.exists: c.outerUpdate()
-        # return val
-
     def masterMenuHandler (self,stroke,func,commandName):
 
         k = self ; c = k.c ; w = c.frame.getFocus()
