@@ -5323,8 +5323,7 @@ right clicks in the body pane.
 <t tx="ekr.20080515053412.15"></t>
 <t tx="ekr.20080515053412.16"></t>
 <t tx="ekr.20080515053412.17"></t>
-<t tx="ekr.20080515053412.18">rclick-gen-context-sensitive-
-commands
+<t tx="ekr.20080515053412.18">rclick-gen-context-sensitive-commands
 
 # This is an example of a menu generator command. It will scan the
 body text for
