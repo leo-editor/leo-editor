@@ -2200,6 +2200,8 @@ def new (self,event=None,gui=None):
 
     '''Create a new Leo window.'''
 
+    # g.trace(g.callers())
+
     c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
     # Needed for plugins.
@@ -2227,7 +2229,7 @@ def new (self,event=None,gui=None):
             g.doHook("after-create-leo-frame",c=c)
 
     finally:
-        c.endUpdate()
+        c.endUpdate(False)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use_chapters') and c.chapterController:
@@ -2237,6 +2239,9 @@ def new (self,event=None,gui=None):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
+        # Force a call to c.outerUpdate.
+        # This is needed when we execute this command from a menu.
+        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20031218072017.2821:open
@@ -8926,10 +8931,6 @@ self.allocateOnlyVisibleNodes = False # True: enable incremental redraws.
 self.prevMoveToFrac = 0.0
 self.visibleArea = None
 self.expandedVisibleArea = None
-
-###
-# if self.allocateOnlyVisibleNodes:
-    # self.frame.bar1.bind("<B1-ButtonRelease>", self.redraw_now)
 #@-node:ekr.20071001092453.10:<< old ivars >>
 #@+node:ekr.20071001092453.11:<< inject callbacks into the position class >>
 # The new code injects 3 callbacks for the colorizer.

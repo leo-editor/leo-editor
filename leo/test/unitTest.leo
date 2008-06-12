@@ -882,7 +882,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -13154,6 +13154,7 @@ finally:
 c.frame.body.bodyCtrl.update()</t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 c.insertHeadline()
+c.outerUpdate()
 try:
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
