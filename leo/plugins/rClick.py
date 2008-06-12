@@ -1931,7 +1931,10 @@ class pluginController(basePluginController):
 
             self.add_optional_args(kws, item_data)
 
-            c.add_command(rmenu,kws)
+            c.add_command(rmenu,
+                label=label,
+                command=command,
+                columnbreak=rmenu.rc_columnbreak)
             #@nonl
             #@-node:bobjack.20080516105903.49:<< add command item >>
             #@nl
