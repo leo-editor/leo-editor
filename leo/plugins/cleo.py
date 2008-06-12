@@ -1088,6 +1088,8 @@ class cleoController:
 
         menu.add_separator()
 
+        c = self.c
+
         c.add_command(menu,label='Clear',
             command=lambda p=p:self.progress_clear(p.v),underline=0)
 
@@ -1163,6 +1165,8 @@ class cleoController:
         menu = Tk.Menu(None,tearoff=0,takefocus=0)
 
         self.left_priority_menu(menu, p)
+
+        c = self.c
 
         c.add_command(menu,label='T',
             underline=0,command=lambda:self.set_time_req(p))
