@@ -801,7 +801,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Leo and vim bindings</vh>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
 <v t="ekr.20080611105410.148"><vh>@rst html\vimBindings.html</vh>
 <v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
@@ -2941,7 +2941,7 @@
 <v t="ekr.20080611105410.150"><vh>Problems</vh></v>
 <v t="ekr.20080611105410.151"><vh>Notes</vh></v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Leo and vim bindings</vh>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
 <v t="ekr.20080611105410.148"><vh>@rst html\vimBindings.html</vh>
 <v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
@@ -6658,6 +6658,8 @@ Leo's Users Guide
 `Chapter 20: Unit testing with Leo`_
 
 `Chapter 21: ILeo - the IPython bridge`_
+
+`Chapter 22: Using Vim Bindings with Leo`_
 
 Appendices_
 
@@ -11144,6 +11146,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
+.. _`Chapter 22\: Using Vim Bindings with Leo`:     vimBindings.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html

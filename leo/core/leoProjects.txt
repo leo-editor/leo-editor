@@ -7185,6 +7185,283 @@ def tag_bind (self,w,tag,event_kind,func):
 #@-node:ekr.20080610085158.4:c.tag_bind
 #@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
 #@-node:ekr.20080605064555.5:Fixed missing redraw problem
+#@+node:ekr.20080612060621.1:Fixed coloring bugs in reformatParagraph and c.redraw
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList: g.trace(', '.join(aList)) # ,g.callers(5))
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.12:c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@-node:ekr.20080514131122.12:c.recolor & requestRecolor
+#@+node:ekr.20031218072017.1825:c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+
+    return head,result,tail # string, list, string
+#@nonl
+#@+node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+if 0:
+    print ; print "head_lines"
+    for line in head_lines: print line
+    print ; print "ins", ins
+    print ; print "tail_lines"
+    for line in tail_lines: print line
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+#@-node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+#@-node:ekr.20031218072017.1825:c.findBoundParagraph
+#@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.currentPosition()
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch,g.app.tkEncoding)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    if trace: g.trace('w',w,'newText',repr(newText),g.callers())
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.bodyString() ; changed = True
+    else:
+        changed = oldText != newText
+    if trace: g.trace(repr(ch),'changed:',changed,'newText:',repr(newText))
+    if not changed: return
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << redraw the screen if necessary >>
+#@+node:ekr.20051026083733.6:<< recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor_now(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+#@-node:ekr.20051026083733.6:<< recolor the body >>
+#@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+c.beginUpdate()
+try:
+    redraw_flag = False
+    # Update dirty bits.
+    # p.setDirty() sets all cloned and @file dirty bits.
+    if not p.isDirty() and p.setDirty():
+        redraw_flag = True
+
+    # Update icons. p.v.iconVal may not exist during unit tests.
+    val = p.computeIcon()
+    # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+    if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+        p.v.iconVal = val
+        redraw_flag = True
+finally:
+    c.endUpdate(redraw_flag)
+#@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+#@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+#@+node:ekr.20031218072017.1833:reformatParagraph
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph in a Tk.Text widget
+
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
+
+Paragraph is bound by start of body, end of body, blank lines, and lines
+starting with "@". Paragraph is selected by position of current insertion
+cursor."""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    << compute vars for reformatParagraph >>
+    if lines:
+        << compute the leading whitespace >>
+        << compute the result of wrapping all lines >>
+        << update the body, selection & undo state >>
+#@nonl
+#@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+theDict = g.scanDirectives(c)
+pageWidth = theDict.get("pagewidth")
+tabWidth  = theDict.get("tabwidth")
+
+original = w.getAllText()
+oldSel =  w.getSelectionRange()
+oldYview = body.getYScrollPosition()
+
+head,lines,tail = c.findBoundParagraph()
+#@-node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+#@+node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+indents = [0,0] ; leading_ws = ["",""]
+
+for i in (0,1):
+    if i < len(lines):
+        # Use the original, non-optimized leading whitespace.
+        leading_ws[i] = ws = g.get_leading_ws(lines[i])
+        indents[i] = g.computeWidth(ws,tabWidth)
+
+indents[1] = max(indents)
+if len(lines) == 1:
+    leading_ws[1] = leading_ws[0]
+#@-node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+#@+node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+trailingNL = lines and lines[-1].endswith('\n')
+lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+# Wrap the lines, decreasing the page width by indent.
+result = g.wrap_lines(lines,
+    pageWidth-indents[1],
+    pageWidth-indents[0])
+
+# prefix with the leading whitespace, if any
+paddedResult = []
+paddedResult.append(leading_ws[0] + result[0])
+for line in result[1:]:
+    paddedResult.append(leading_ws[1] + line)
+
+# Convert the result to a string.
+result = '\n'.join(paddedResult)
+if trailingNL: result = result + '\n'
+#@nonl
+#@-node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+#@+node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+# This destroys recoloring.
+junk, ins = body.setSelectionAreas(head,result,tail)
+
+# Advance to the next paragraph.
+s = w.getAllText()
+ins += 1 # Move past the selection.
+while ins < len(s):
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    if line.startswith('@') or line.isspace():
+        ins = j+1
+    else:
+        ins = i ; break
+
+changed = original != head + result + tail
+if changed:
+    body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+else:
+    # We must always recolor, even if the text has not changed,
+    # because setSelectionAreas above destroys the coloring.
+    c.recolor()
+
+w.setSelectionRange(ins,ins,insert=ins)
+w.see(ins)
+#@-node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+#@-node:ekr.20031218072017.1833:reformatParagraph
+#@-node:ekr.20080612060621.1:Fixed coloring bugs in reformatParagraph and c.redraw
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
