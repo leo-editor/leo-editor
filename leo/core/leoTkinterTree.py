@@ -2430,6 +2430,7 @@ class leoTkinterTree (leoFrame.leoTree):
             try:
                 self.endEditLabel()
             finally:
+                # This redraw *is* required so the c.edit_widget(p) will exist.
                 c.endUpdate(True)
                 c.outerUpdate()
 
