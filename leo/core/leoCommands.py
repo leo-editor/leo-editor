@@ -72,11 +72,11 @@ class baseCommands:
 
         if g.newDrawing:
             self.requestedFocusWidget = None
-            c.requestRecolorFlag = False
             self.requestRedrawFlag = False
             self.requestRedrawScrollFlag = False
             self.requestedIconify = '' # 'iconify','deiconify'
             # g.es('Using new drawing code',color='red')
+        self.requestRecolorFlag = False
 
         # g.trace('Commands')
         self.exists = True # Indicate that this class exists and has not been destroyed.
@@ -93,6 +93,7 @@ class baseCommands:
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName
+
 
         # g.trace(c) # Do this after setting c.mFileName.
         c.initIvars()
@@ -2961,6 +2962,7 @@ class baseCommands:
             #@nl
             #@        << update the body, selection & undo state >>
             #@+node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+            # This destroys recoloring.
             junk, ins = body.setSelectionAreas(head,result,tail)
 
             # Advance to the next paragraph.
@@ -2977,11 +2979,13 @@ class baseCommands:
             changed = original != head + result + tail
             if changed:
                 body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+            else:
+                # We must always recolor, even if the text has not changed,
+                # because setSelectionAreas above destroys the coloring.
+                c.recolor()
 
             w.setSelectionRange(ins,ins,insert=ins)
             w.see(ins)
-            if changed:
-                c.recolor()
             #@-node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
             #@nl
     #@nonl
@@ -6003,7 +6007,7 @@ class baseCommands:
         def requestRecolor (self):
 
             c = self
-            c.frame.requestRecolorFlag = True
+            c.requestRecolorFlag = True
         #@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
         #@+node:ekr.20051216171520:c.recolor_now
         def recolor_now(self,p=None,incremental=False,interruptable=True):
@@ -6033,8 +6037,8 @@ class baseCommands:
             if 0: # Interferes with new colorizer.
                 c.frame.top.update_idletasks()
 
-            if c.frame.requestRecolorFlag:
-                c.frame.requestRecolorFlag = False
+            if c.requestRecolorFlag:
+                c.requestRecolorFlag = False
                 c.recolor()
 
         # Compatibility with old scripts
@@ -6320,7 +6324,7 @@ class baseCommands:
         #@+node:ekr.20080514131122.20:c.outerUpdate
         def outerUpdate (self):
 
-            c = self ; aList = []
+            c = self ; aList = [] ; trace = False
 
             if not c.exists or not c.k:
                 return
@@ -6359,7 +6363,7 @@ class baseCommands:
                 # That would make nested calls to c.outerUpdate significant.
                 pass
 
-            # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+            if trace and aList: g.trace(', '.join(aList)) # ,g.callers(5))
 
             c.incrementalRecolorFlag = False
             c.requestRecolorFlag = None
@@ -6372,7 +6376,7 @@ class baseCommands:
         def requestRecolor (self):
 
             c = self
-            c.frame.requestRecolorFlag = True
+            c.requestRecolorFlag = True
 
         recolor = requestRecolor
         #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
@@ -6486,11 +6490,6 @@ class baseCommands:
         treeWantsFocusNow = treeWantsFocus
         #@-node:ekr.20080514131122.19:c.xWantsFocusNow
         #@-others
-
-    else:
-
-        def outerUpdate (self):
-            pass
     #@-node:ekr.20080514131122.6:New code
     #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
     #@+node:ekr.20031218072017.2955:Enabling Menu Items
