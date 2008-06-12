@@ -488,6 +488,8 @@ class baseCommands:
 
         '''Create a new Leo window.'''
 
+        # g.trace(g.callers())
+
         c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
         # Needed for plugins.
@@ -515,7 +517,7 @@ class baseCommands:
                 g.doHook("after-create-leo-frame",c=c)
 
         finally:
-            c.endUpdate()
+            c.endUpdate(False)
             # chapterController.finishCreate must be called after the first real redraw
             # because it requires a valid value for c.rootPosition().
             if c.config.getBool('use_chapters') and c.chapterController:
@@ -525,6 +527,9 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
+            # Force a call to c.outerUpdate.
+            # This is needed when we execute this command from a menu.
+            c.redraw_now()
         return c # For unit test.
     #@-node:ekr.20031218072017.1623:new
     #@+node:ekr.20031218072017.2821:open
@@ -6159,7 +6164,7 @@ class baseCommands:
             if flag:
                 c.requestRedrawFlag = True
                 c.requestRedrawScrollFlag = scroll
-                # g.trace('flag is True','scroll',scroll,c)
+                # g.trace('flag is True',c.shortFileName(),g.callers())
 
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
@@ -6324,7 +6329,7 @@ class baseCommands:
         #@+node:ekr.20080514131122.20:c.outerUpdate
         def outerUpdate (self):
 
-            c = self ; aList = [] ; trace = False
+            c = self ; aList = [] ; trace = False ; verbose = False
 
             if not c.exists or not c.k:
                 return
@@ -6336,26 +6341,26 @@ class baseCommands:
             c.requestRedrawScrollFlag = False
 
             if c.requestedIconify == 'iconify':
-                aList.append('iconify')
+                if verbose: aList.append('iconify')
                 c.frame.iconify()
 
             if c.requestedIconify == 'deiconify':
-                aList.append('deiconify')
+                if verbose: aList.append('deiconify')
                 c.frame.deiconify()
 
             if redrawFlag:
                 # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
                 # A hack: force the redraw, even if we are dragging.
-                aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+                aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
                 c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
 
             if c.requestRecolorFlag:
-                aList.append('%srecolor' % (
+                if verbose: aList.append('%srecolor' % (
                     g.choose(c.incrementalRecolorFlag,'','full ')))
                 c.recolor_now(incremental=c.incrementalRecolorFlag)
 
             if c.requestedFocusWidget:
-                aList.append('focus: %s' % (
+                if verbose: aList.append('focus: %s' % (
                     g.app.gui.widget_name(c.requestedFocusWidget)))
                 c.set_focus(c.requestedFocusWidget)
             else:
@@ -6363,7 +6368,8 @@ class baseCommands:
                 # That would make nested calls to c.outerUpdate significant.
                 pass
 
-            if trace and aList: g.trace(', '.join(aList)) # ,g.callers(5))
+            if trace and aList:
+                g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
 
             c.incrementalRecolorFlag = False
             c.requestRecolorFlag = None
@@ -6399,6 +6405,7 @@ class baseCommands:
             c = self
             c.requestRedrawFlag = True
             c.outerUpdate()
+            assert not c.requestRedrawFlag
 
         # Compatibility with old scripts
         force_redraw = redraw_now
