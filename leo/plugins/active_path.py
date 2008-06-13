@@ -117,25 +117,25 @@ def sync_node_to_folder(c,parent,d):
 #@+node:tbrown.20080613095157.7:createDir
 def createDir(c,parent,d):
     """Ask if we should create a new folder"""
-        newd = os.path.basename(d)
-        ok = g.app.gui.runAskYesNoDialog(c, 'Create folder?',
-            'Create folder '+newd+'?')
-        if ok == 'no':
-            return
-        c.setHeadString(parent, '/'+newd+'/')
-        os.mkdir(d)
+    newd = os.path.basename(d)
+    ok = g.app.gui.runAskYesNoDialog(c, 'Create folder?',
+        'Create folder '+newd+'?')
+    if ok == 'no':
+        return
+    c.setHeadString(parent, '/'+newd+'/')
+    os.mkdir(d)
 #@nonl
 #@-node:tbrown.20080613095157.7:createDir
 #@+node:tbrown.20080613095157.8:createFile
 def createFile(c,parent,d):
     """Ask if we should create a new file"""
-        d = os.path.basename(d)
-        ok = g.app.gui.runAskYesNoDialog(c, 'Create file?',
-            'Create file @auto '+d+'?')
-        if ok == 'no':
-            return
-        c.setHeadString(parent, '@auto '+d)
-        c.bodyWantsFocusNow()
+    d = os.path.basename(d)
+    ok = g.app.gui.runAskYesNoDialog(c, 'Create file?',
+        'Create file @auto '+d+'?')
+    if ok == 'no':
+        return
+    c.setHeadString(parent, '@auto '+d)
+    c.bodyWantsFocusNow()
 #@nonl
 #@-node:tbrown.20080613095157.8:createFile
 #@+node:tbrown.20080613095157.9:openFile
