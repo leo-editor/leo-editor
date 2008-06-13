@@ -9,12 +9,11 @@
 Right Click Menus (rClick.py)
 =============================
 
-
-
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
-Examples of the use of this plugin can be found in::
+Executable Howto's and other examples of the use of this plugin can be
+found in::
 
     leo/tests/testAtPopup.leo
 
@@ -517,14 +516,11 @@ When any check or radio item is clicked, a hook is generated
 The 'rclick-button' command is provided for convenience.  Plugins may provide there own
 command to handle check and radio items, using rclick-button as a template.
 
-
-
-
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.35"
+__version__ = "1.36"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -635,6 +631,8 @@ __plugin_name__ = 'Right Click Menus'
 #     - add menu generator commands to crate menu items to control find 
 # options
 #     - seperate out base classes pluginCommandClass and basePluginController
+# 1.36 EKR:
+#     - convert menu.add_command to c.add_command
 # 
 # 
 # 
@@ -814,14 +812,11 @@ class pluginCommandClass(object):
         self.controller = controller
         self.keys = keys
 
-        self.alias = []
-
         self.wrappedDoCommand = self.preDoCommand
         self.wrapCommand(self.c.universallCallback)
 
 
     def __call__(self, event):
-
         self.wrappedDoCommand(event)
 
 
@@ -830,7 +825,6 @@ class pluginCommandClass(object):
         self.wrappedDoCommand = wrapper(self.wrappedDoCommand)
 
     def preDoCommand(self, keywords):
-
         self.keywords = keywords
         self.doCommand(keywords)
         #g.trace(self.keywords)
@@ -1931,10 +1925,7 @@ class pluginController(basePluginController):
 
             self.add_optional_args(kws, item_data)
 
-            c.add_command(rmenu,
-                label=label,
-                command=command,
-                columnbreak=rmenu.rc_columnbreak)
+            c.add_command(rmenu, **kws)
             #@nonl
             #@-node:bobjack.20080516105903.49:<< add command item >>
             #@nl
@@ -1984,8 +1975,6 @@ class pluginController(basePluginController):
             }
 
             self.add_optional_args(kws, item_data, selected)
-
-            #
 
             rmenu.add_radiobutton(**kws)
             #@-node:bobjack.20080516105903.50:<< add radio item >>
