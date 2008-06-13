@@ -97,7 +97,7 @@ def flattenOrganizers(p):
     """    
     for n in p.children_iter():
         yield n
-        if '/' not in n:
+        if '/' not in n.headString():
             for i in flattenOrganizers(n):
                 yield i
 #@nonl
