@@ -3628,7 +3628,7 @@ if image:
         self._block_canvas_menu = True
         return 'break'
 
-    self.canvas.tag_bind(tag,'<3>',deleteButtonCallback)
+    c.tag_bind(self.canvas,tag,'<3>',deleteButtonCallback)
 
     # assert(theId not in self.visibleIcons)
     self.visibleUserIcons.append(theId)
@@ -6138,6 +6138,2142 @@ def add(self,event=None):
     self.tab.onFindButton()
 #@-node:ekr.20051025071455.37:add (spellTab)
 #@-node:ekr.20080315083057.6:Fixed spell bug: words containing unicode characters aren't saved properly
+#@+node:ekr.20080612060621.1:Fixed coloring bugs in reformatParagraph and c.redraw
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.12:c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@-node:ekr.20080514131122.12:c.recolor & requestRecolor
+#@+node:ekr.20031218072017.1825:c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+
+    return head,result,tail # string, list, string
+#@nonl
+#@+node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+if 0:
+    print ; print "head_lines"
+    for line in head_lines: print line
+    print ; print "ins", ins
+    print ; print "tail_lines"
+    for line in tail_lines: print line
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+#@-node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+#@-node:ekr.20031218072017.1825:c.findBoundParagraph
+#@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.currentPosition()
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch,g.app.tkEncoding)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    if trace: g.trace('w',w,'newText',repr(newText),g.callers())
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.bodyString() ; changed = True
+    else:
+        changed = oldText != newText
+    if trace: g.trace(repr(ch),'changed:',changed,'newText:',repr(newText))
+    if not changed: return
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << redraw the screen if necessary >>
+#@+node:ekr.20051026083733.6:<< recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor_now(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+#@-node:ekr.20051026083733.6:<< recolor the body >>
+#@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+c.beginUpdate()
+try:
+    redraw_flag = False
+    # Update dirty bits.
+    # p.setDirty() sets all cloned and @file dirty bits.
+    if not p.isDirty() and p.setDirty():
+        redraw_flag = True
+
+    # Update icons. p.v.iconVal may not exist during unit tests.
+    val = p.computeIcon()
+    # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+    if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+        p.v.iconVal = val
+        redraw_flag = True
+finally:
+    c.endUpdate(redraw_flag)
+#@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+#@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+#@+node:ekr.20031218072017.1833:reformatParagraph
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph in a Tk.Text widget
+
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
+
+Paragraph is bound by start of body, end of body, blank lines, and lines
+starting with "@". Paragraph is selected by position of current insertion
+cursor."""
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("xxx")
+        return
+
+    if body.hasTextSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+
+    << compute vars for reformatParagraph >>
+    if lines:
+        << compute the leading whitespace >>
+        << compute the result of wrapping all lines >>
+        << update the body, selection & undo state >>
+#@nonl
+#@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+theDict = g.scanDirectives(c)
+pageWidth = theDict.get("pagewidth")
+tabWidth  = theDict.get("tabwidth")
+
+original = w.getAllText()
+oldSel =  w.getSelectionRange()
+oldYview = body.getYScrollPosition()
+
+head,lines,tail = c.findBoundParagraph()
+#@-node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+#@+node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+indents = [0,0] ; leading_ws = ["",""]
+
+for i in (0,1):
+    if i < len(lines):
+        # Use the original, non-optimized leading whitespace.
+        leading_ws[i] = ws = g.get_leading_ws(lines[i])
+        indents[i] = g.computeWidth(ws,tabWidth)
+
+indents[1] = max(indents)
+if len(lines) == 1:
+    leading_ws[1] = leading_ws[0]
+#@-node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+#@+node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+trailingNL = lines and lines[-1].endswith('\n')
+lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+# Wrap the lines, decreasing the page width by indent.
+result = g.wrap_lines(lines,
+    pageWidth-indents[1],
+    pageWidth-indents[0])
+
+# prefix with the leading whitespace, if any
+paddedResult = []
+paddedResult.append(leading_ws[0] + result[0])
+for line in result[1:]:
+    paddedResult.append(leading_ws[1] + line)
+
+# Convert the result to a string.
+result = '\n'.join(paddedResult)
+if trailingNL: result = result + '\n'
+#@nonl
+#@-node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+#@+node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+# This destroys recoloring.
+junk, ins = body.setSelectionAreas(head,result,tail)
+
+# Advance to the next paragraph.
+s = w.getAllText()
+ins += 1 # Move past the selection.
+while ins < len(s):
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+    if line.startswith('@') or line.isspace():
+        ins = j+1
+    else:
+        ins = i ; break
+
+changed = original != head + result + tail
+if changed:
+    body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+else:
+    # We must always recolor, even if the text has not changed,
+    # because setSelectionAreas above destroys the coloring.
+    c.recolor()
+
+w.setSelectionRange(ins,ins,insert=ins)
+w.see(ins)
+#@-node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+#@-node:ekr.20031218072017.1833:reformatParagraph
+#@-node:ekr.20080612060621.1:Fixed coloring bugs in reformatParagraph and c.redraw
+#@+node:ekr.20080605064555.5:Fixed missing redraw problem
+# Changed c.outerUpdate.
+# Added temp fix (created tag_bind_callback in setCanvasBindings)
+# To do: generalize this temp fix: change w.tag_bind to c.tag_bind(w,...)
+#@nonl
+#@+node:ekr.20070327103016:tkTree.setCanvasBindings
+def setCanvasBindings (self,canvas):
+
+    c = self.c ; k = c.k
+
+    c.bind(canvas,'<Key>',k.masterKeyHandler)
+    c.bind(canvas,'<Button-1>',self.onTreeClick)
+    c.bind(canvas,'<Button-3>',self.onTreeRightClick)
+    # c.bind(canvas,'<FocusIn>',self.onFocusIn)
+
+    << make bindings for tagged items on the canvas >>
+    << create baloon bindings for tagged items on the canvas >>
+#@nonl
+#@+node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+where = g.choose(self.expanded_click_area,'clickBox','plusBox')
+
+table = (
+    (where,    '<Button-1>',self.onClickBoxClick),
+    ('iconBox','<Button-1>',self.onIconBoxClick),
+    ('iconBox','<Double-1>',self.onIconBoxDoubleClick),
+    ('iconBox','<Button-3>',self.onIconBoxRightClick),
+    ('iconBox','<Double-3>',self.onIconBoxRightClick),
+    ('iconBox','<B1-Motion>',self.onDrag),
+    ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
+
+    ('plusBox','<Button-3>', self.onPlusBoxRightClick),
+    ('plusBox','<Button-1>', self.onClickBoxClick),
+    ('clickBox','<Button-3>',  self.onClickBoxRightClick),
+)
+for tag,event_kind,callback in table:
+    c.tag_bind(canvas,tag,event_kind,callback)
+#@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
+#@+node:ekr.20060307080642:<< create baloon bindings for tagged items on the canvas >>
+if 0: # I find these very irritating.
+    for tag,text in (
+        # ('plusBox','plusBox'),
+        ('iconBox','Icon Box'),
+        ('selectBox','Click to select'),
+        ('clickBox','Click to expand or contract'),
+        # ('textBox','Headline'),
+    ):
+        # A fairly long wait is best.
+        balloon = Pmw.Balloon(self.canvas,initwait=700)
+        balloon.tagbind(self.canvas,tag,balloonHelp=text)
+#@-node:ekr.20060307080642:<< create baloon bindings for tagged items on the canvas >>
+#@-node:ekr.20070327103016:tkTree.setCanvasBindings
+#@+node:ekr.20040803072955.81:onIconBoxClick
+def onIconBoxClick (self,event,p=None):
+
+    c = self.c ; tree = self
+
+    if not p: p = self.eventToPosition(event)
+    if not p:
+        return
+
+    c.setLog()
+
+    if self.trace and self.verbose: g.trace()
+
+    if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
+        if event:
+            self.onDrag(event)
+        tree.endEditLabel()
+        tree.select(p,scroll=False)
+        if c.frame.findPanel:
+            c.frame.findPanel.handleUserClick(p)
+    g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
+    return "break" # disable expanded box handling.
+#@-node:ekr.20040803072955.81:onIconBoxClick
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20040803072955.58:tree.redraw_now & helper
+# New in 4.4b2: suppress scrolling by default.
+
+def redraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+
+    c = self.c
+
+    if not g.app.unitTesting:
+        if self.gc_before_redraw:
+            g.collectGarbage()
+        if g.app.trace_gc_verbose:
+            if (self.redrawCount % 5) == 0:
+                g.printGcSummary()
+        if self.trace_redraw or self.trace_alloc:
+            # g.trace(self.redrawCount,g.callers())
+            # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+            if self.trace_stats:
+                g.print_stats()
+                g.clear_stats()
+
+    # New in 4.4b2: Call endEditLabel, but suppress the redraw.
+    self.beginUpdate()
+    try:
+        self.endEditLabel()
+    finally:
+        self.endUpdate(False)
+
+    # Do the actual redraw.
+    self.expandAllAncestors(c.currentPosition())
+    if self.idle_redraw:
+        def idleRedrawCallback(event=None,self=self,scroll=scroll):
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+        self.canvas.after_idle(idleRedrawCallback)
+    else:
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+    if g.app.unitTesting:
+        self.canvas.update_idletasks() # Important for unit tests.
+    c.masterFocusHandler()
+
+redraw = redraw_now # Compatibility
+#@+node:ekr.20040803072955.59:redrawHelper
+def redrawHelper (self,scroll=True,forceDraw=False):
+
+    # This can be called at idle time, so there are shutdown issues.
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+    if not hasattr(self,'c'):
+        return
+
+    c = self.c ; trace = False
+    oldcursor = self.canvas['cursor']
+    self.canvas['cursor'] = "watch"
+
+    if not g.doHook("redraw-entire-outline",c=c):
+
+        if trace: g.trace('scroll',scroll,g.callers())
+        c.setTopVnode(None)
+        self.setVisibleAreaToFullCanvas()
+        self.drawTopTree()
+        # Set up the scroll region after the tree has been redrawn.
+        bbox = self.canvas.bbox('all')
+        # g.trace('canvas',self.canvas,'bbox',bbox)
+        if bbox is None:
+            x0,y0,x1,y1 = 0,0,100,100
+        else:
+            x0, y0, x1, y1 = bbox
+        self.canvas.configure(scrollregion=(0, 0, x1, y1))
+        if scroll:
+            self.canvas.update_idletasks() # Essential.
+            self.scrollTo()
+
+    g.doHook("after-redraw-outline",c=c)
+
+    self.canvas['cursor'] = oldcursor
+#@-node:ekr.20040803072955.59:redrawHelper
+#@-node:ekr.20040803072955.58:tree.redraw_now & helper
+#@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
+#@+node:ekr.20080514131122.4:Legacy code
+if not g.newDrawing:
+
+    @others
+#@+node:ekr.20031218072017.2950:c.begin/endUpdate
+@
+**Important** These methods ensure that exactly zero or one (depending on the
+argument to endUpdate) redraws exist within the section of code bounded by
+c.beginUpdate and c.endUpdate. This greatly simplifies and clarifies the code.
+
+Callers should ensure that every beginUpdate is matched with an endUpdate by
+using the following pattern:
+    c.beginUpdate()
+    try:
+        << whatever >>
+    finally:
+        c.endUpdate()
+@c
+
+def beginUpdate(self):
+
+    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+    until the matching call to endUpdate.'''
+
+    c = self
+    if c.frame and c.frame.tree:
+        c.frame.tree.beginUpdate()
+
+def endUpdate(self,flag=True,scroll=True):
+
+    '''Redraw the screen if flag is True.'''
+
+    c = self
+    if c.frame and c.frame.tree:
+        c.frame.tree.endUpdate(flag,scroll=scroll)
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@-node:ekr.20031218072017.2950:c.begin/endUpdate
+#@+node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
+def add_command (self,menu,**keys):
+
+    menu.add_command(**keys)
+
+def bind (self,w,pattern,func):
+
+    w.bind(pattern,func)
+
+def bind2 (self,w,pattern,func,**keys):
+
+    w.bind(pattern,func,**keys)
+
+def tag_bind(self,w,a,b,c):
+
+    w.tag_bind(a,b,c)
+
+#@-node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
+#@+node:ekr.20031218072017.2951:c.bringToFront
+def bringToFront(self,set_focus=True):
+
+    # g.trace(g.callers())
+
+    c = self
+    c.frame.deiconify()
+
+    if set_focus:
+        c.frame.body.setFocus()
+
+BringToFront = bringToFront # Compatibility with old scripts
+#@-node:ekr.20031218072017.2951:c.bringToFront
+#@+node:ekr.20060205103842:c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget or c.hasFocusWidget or g.app.gui.get_focus(c)
+
+def request_focus(self,w):
+
+    c = self
+    if w: c.requestedFocusWidget = w
+    c.traceFocus(w)
+
+def set_focus (self,w,force=False):
+
+    c = self
+
+    if force: # New in Leo 4.4.2: safer.
+        c.hasFocusWidget = c.requestedFocusWidget = w
+        g.app.gui and g.app.gui.set_focus(c,w)
+        c.traceFocus(w)
+    else: # An optimization.
+        c.requestedFocusWidget = w
+        c.masterFocusHandler()
+
+    # Can't do this: it interferes with too much.
+    # if c.k: c.k.showStateAndMode(w)
+#@-node:ekr.20060205103842:c.get/request/set_focus
+#@+node:ekr.20060210103358:c.invalidateFocus
+def invalidateFocus (self):
+
+    '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+    c = self
+    c.requestedFocusWidget = None
+    c.hasFocusWidget = None
+    # g.trace(g.callers())
+#@-node:ekr.20060210103358:c.invalidateFocus
+#@+node:ekr.20060207140352:c.masterFocusHandler
+def masterFocusHandler (self):
+
+    c = self
+    trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+    # Give priority to later requests, but default to previously set widget.
+    w = c.requestedFocusWidget or c.hasFocusWidget
+
+    if trace: print \
+        'requested',c.widget_name(c.requestedFocusWidget),\
+        'present',c.widget_name(c.hasFocusWidget)
+
+    if c.hasFocusWidget and (
+        not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+        if trace: print 'no change.',c.widget_name(w)
+        c.requestedFocusWidget = None
+    elif w:
+        # Ignore whatever g.app.gui.get_focus might say.
+        ok = g.app.gui.set_focus(c,w)
+        if ok: c.hasFocusWidget = w
+        c.requestedFocusWidget = None
+    else:
+        # This is not an error: it can arise because of a call to k.invalidateFocus.
+        if trace: print '*'*20,'oops: moving to body pane.'
+        c.bodyWantsFocusNow()
+
+restoreRequestedFocus = masterFocusHandler
+#@-node:ekr.20060207140352:c.masterFocusHandler
+#@+node:ekr.20080514131122.21:c.outerUpdate
+def outerUpdate (self):
+
+    pass
+#@-node:ekr.20080514131122.21:c.outerUpdate
+#@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
+def recolor(self):
+
+    c = self
+    c.frame.body.recolor(c.currentPosition())
+
+def requestRecolor (self):
+
+    c = self
+    c.requestRecolorFlag = True
+#@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
+#@+node:ekr.20051216171520:c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.currentPosition()
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@-node:ekr.20051216171520:c.recolor_now
+#@+node:ekr.20031218072017.2954:c.redraw and c.redraw_now
+def redraw (self):
+    c = self
+    c.beginUpdate()
+    c.endUpdate()
+
+def redraw_now (self):
+
+    c = self
+
+    if g.app.quitting or not c.exists or not hasattr(c.frame,'top'):
+        return # nullFrame's do not have a top frame.
+
+    c.frame.tree.redraw_now()
+
+    if 0: # Interferes with new colorizer.
+        c.frame.top.update_idletasks()
+
+    if c.requestRecolorFlag:
+        c.requestRecolorFlag = False
+        c.recolor()
+
+# Compatibility with old scripts
+force_redraw = redraw_now
+#@-node:ekr.20031218072017.2954:c.redraw and c.redraw_now
+#@+node:ekr.20060208143543:c.restoreFocus
+def restoreFocus (self):
+
+    '''Ensure that the focus eventually gets restored.'''
+
+    c =self
+    trace = not g.app.unitTesting and c.config.getBool('trace_focus')
+
+    if c.requestedFocusWidget:
+        c.hasFocusWidget = None # Force an update
+    elif c.hasFocusWidget:
+        c.requestedFocusWidget = c.hasFocusWidget
+        c.hasFocusWidget = None # Force an update
+    else:
+        # Should not happen, except during unit testing.
+        # c.masterFocusHandler sets c.hasFocusWidget,
+        # so if it is not set here it is because this method cleared it.
+        if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
+        c.bodyWantsFocusNow()
+
+    if c.inCommand:
+        if trace: g.trace('expecting later call to c.masterFocusHandler')
+        # A call to c.masterFocusHandler will surely happen.
+    else:
+        c.masterFocusHandler() # Do it now.
+#@-node:ekr.20060208143543:c.restoreFocus
+#@+node:ekr.20060207142332:c.traceFocus
+trace_focus_count = 0
+
+def traceFocus (self,w):
+
+    c = self
+
+    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        c.trace_focus_count += 1
+        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+#@-node:ekr.20060207142332:c.traceFocus
+#@+node:ekr.20060205111103:c.widget_name
+def widget_name (self,widget):
+
+    c = self
+
+    return g.app.gui and g.app.gui.widget_name(widget) or ''
+#@-node:ekr.20060205111103:c.widget_name
+#@+node:ekr.20050120092028:c.xWantsFocus
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+def headlineWantsFocus(self,p):
+    c = self
+    c.request_focus(p and c.edit_widget(p))
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocus()
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@-node:ekr.20050120092028:c.xWantsFocus
+#@+node:ekr.20060210102201:c.xWantsFocusNow
+def bodyWantsFocusNow(self):
+    c = self ; body = c.frame.body
+    #g.trace(body and body.bodyCtrl)
+    c.set_focus(body and body.bodyCtrl,force=True)
+
+def headlineWantsFocusNow(self,p):
+    c = self
+    c.set_focus(p and c.edit_widget(p),force=True)
+
+def logWantsFocusNow(self):
+    c = self ; log = c.frame.log
+    c.set_focus(log and log.logCtrl,force=True)
+
+def minibufferWantsFocusNow(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocusNow()
+
+def treeWantsFocusNow(self):
+    c = self ; tree = c.frame.tree
+    c.set_focus(tree and tree.canvas,force=True)
+
+def widgetWantsFocusNow(self,w):
+    c = self ; c.set_focus(w,force=True)
+#@-node:ekr.20060210102201:c.xWantsFocusNow
+#@-node:ekr.20080514131122.4:Legacy code
+#@+node:ekr.20080514131122.6:New code
+if g.newDrawing:
+
+    @others
+#@+node:ekr.20080514131122.7:c.begin/endUpdate
+
+def beginUpdate(self):
+
+    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+    until the matching call to endUpdate.'''
+
+    pass
+
+def endUpdate(self,flag=True,scroll=True):
+
+    '''Redraw the screen if flag is True.'''
+
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+        c.requestRedrawScrollFlag = scroll
+        # g.trace('flag is True',c.shortFileName(),g.callers())
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@-node:ekr.20080514131122.7:c.begin/endUpdate
+#@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+# These wrappers ensure that c.outerUpdate get called.
+#@nonl
+#@+node:ekr.20080610085158.2:c.add_command
+def add_command (self,menu,**keys):
+
+    c = self ; command = keys.get('command')
+
+    if command:
+
+        def add_commandCallback(c=c,command=command):
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
+
+        keys ['command'] = add_commandCallback
+
+        menu.add_command(**keys)
+
+    else:
+        g.trace('can not happen: no "command" arg')
+#@-node:ekr.20080610085158.2:c.add_command
+#@+node:ekr.20080610085158.3:c.bind and c.bind2
+def bind (self,w,pattern,func):
+
+    c = self
+
+    def bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback)
+
+def bind2 (self,w,pattern,func,**keys):
+
+    c = self
+
+    def bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback,**keys)
+#@-node:ekr.20080610085158.3:c.bind and c.bind2
+#@+node:ekr.20080610085158.4:c.tag_bind
+def tag_bind (self,w,tag,event_kind,func):
+
+    c = self
+    def tag_bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.tag_bind(tag,event_kind,tag_bindCallback)
+#@-node:ekr.20080610085158.4:c.tag_bind
+#@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+#@+node:ekr.20080514131122.8:c.bringToFront
+def bringToFront(self,set_focus=True):
+
+    c = self
+    c.requestedIconify = 'deiconify'
+    c.requestedFocusWidget = c.frame.body.bodyCtrl
+
+BringToFront = bringToFront # Compatibility with old scripts
+#@-node:ekr.20080514131122.8:c.bringToFront
+#@+node:ekr.20080514131122.9:c.get/request/set_focus
+def get_focus (self):
+
+    c = self
+    return g.app.gui and g.app.gui.get_focus(c)
+
+def get_requested_focus (self):
+
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self,w):
+
+    c = self
+    if w: c.requestedFocusWidget = w
+
+def set_focus (self,w,force=False):
+
+    c = self
+    if w and g.app.gui and c.requestedFocusWidget:
+        g.app.gui.set_focus(c,w)
+
+    c.requestedFocusWidget = None
+#@-node:ekr.20080514131122.9:c.get/request/set_focus
+#@+node:ekr.20080514131122.10:c.invalidateFocus
+def invalidateFocus (self):
+
+    '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
+#@nonl
+#@-node:ekr.20080514131122.10:c.invalidateFocus
+#@+node:ekr.20080514131122.11:c.masterFocusHandler
+def masterFocusHandler (self):
+
+    pass # No longer used.
+
+    # c = self
+    # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+    # # Give priority to later requests, but default to previously set widget.
+    # w = c.requestedFocusWidget or c.hasFocusWidget
+
+    # if trace: print \
+        # 'requested',c.widget_name(c.requestedFocusWidget),\
+        # 'present',c.widget_name(c.hasFocusWidget)
+
+    # if c.hasFocusWidget and (
+        # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+        # if trace: print 'no change.',c.widget_name(w)
+        # c.requestedFocusWidget = None
+    # elif w:
+        # # Ignore whatever g.app.gui.get_focus might say.
+        # ok = g.app.gui.set_focus(c,w)
+        # if ok: c.hasFocusWidget = w
+        # c.requestedFocusWidget = None    # c = self
+    # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+    # # Give priority to later requests, but default to previously set widget.
+    # w = c.requestedFocusWidget or c.hasFocusWidget
+
+    # if trace: print \
+        # 'requested',c.widget_name(c.requestedFocusWidget),\
+        # 'present',c.widget_name(c.hasFocusWidget)
+
+    # if c.hasFocusWidget and (
+        # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+        # if trace: print 'no change.',c.widget_name(w)
+        # c.requestedFocusWidget = None
+    # elif w:
+        # # Ignore whatever g.app.gui.get_focus might say.
+        # ok = g.app.gui.set_focus(c,w)
+        # if ok: c.hasFocusWidget = w
+        # c.requestedFocusWidget = None
+    # else:
+        # # This is not an error: it can arise because of a call to k.invalidateFocus.
+        # if trace: print '*'*20,'oops: moving to body pane.'
+        # c.bodyWantsFocusNow()
+    # else:
+        # # This is not an error: it can arise because of a call to k.invalidateFocus.
+        # if trace: print '*'*20,'oops: moving to body pane.'
+        # c.bodyWantsFocusNow()
+
+restoreRequestedFocus = masterFocusHandler
+#@-node:ekr.20080514131122.11:c.masterFocusHandler
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.12:c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@-node:ekr.20080514131122.12:c.recolor & requestRecolor
+#@+node:ekr.20080514131122.13:c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.currentPosition()
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@-node:ekr.20080514131122.13:c.recolor_now
+#@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
+def redraw (self):
+    c = self
+    c.requestRedrawFlag = True
+
+def redraw_now (self):
+    c = self
+    c.requestRedrawFlag = True
+    c.outerUpdate()
+    assert not c.requestRedrawFlag
+
+# Compatibility with old scripts
+force_redraw = redraw_now
+#@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
+#@+node:ekr.20080514131122.15:c.restoreFocus
+def restoreFocus (self):
+
+    '''Ensure that the focus eventually gets restored.'''
+    pass
+    # g.trace(g.callers(5))
+
+    # c =self
+    # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
+
+    # if c.requestedFocusWidget:
+        # c.hasFocusWidget = None # Force an update
+    # elif c.hasFocusWidget:
+        # c.requestedFocusWidget = c.hasFocusWidget
+        # c.hasFocusWidget = None # Force an update
+    # else:
+        # # Should not happen, except during unit testing.
+        # # c.masterFocusHandler sets c.hasFocusWidget,
+        # # so if it is not set here it is because this method cleared it.
+        # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
+        # c.bodyWantsFocusNow()
+
+    # if c.inCommand:
+        # if trace: g.trace('expecting later call to c.masterFocusHandler')
+        # # A call to c.masterFocusHandler will surely happen.
+    # else:
+        # c.masterFocusHandler() # Do it now.
+#@-node:ekr.20080514131122.15:c.restoreFocus
+#@+node:ekr.20080514131122.16:c.traceFocus
+trace_focus_count = 0
+
+def traceFocus (self,w):
+
+    c = self
+
+    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        c.trace_focus_count += 1
+        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+#@-node:ekr.20080514131122.16:c.traceFocus
+#@+node:ekr.20080514131122.17:c.widget_name
+def widget_name (self,widget):
+
+    c = self
+
+    return g.app.gui and g.app.gui.widget_name(widget) or ''
+#@-node:ekr.20080514131122.17:c.widget_name
+#@+node:ekr.20080514131122.18:c.xWantsFocus (no change)
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+
+def headlineWantsFocus(self,p):
+    c = self
+    c.request_focus(p and c.edit_widget(p))
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocus()
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
+#@+node:ekr.20080514131122.19:c.xWantsFocusNow
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
+    # Re-request widget so we don't use the body by default.
+    c.request_focus(w) 
+
+# All other "Now" methods wait.
+bodyWantsFocusNow = bodyWantsFocus
+headlineWantsFocusNow = headlineWantsFocus
+logWantsFocusNow = logWantsFocus
+minibufferWantsFocusNow = minibufferWantsFocus
+treeWantsFocusNow = treeWantsFocus
+#@-node:ekr.20080514131122.19:c.xWantsFocusNow
+#@-node:ekr.20080514131122.6:New code
+#@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    # g.trace('c',self.c)
+
+    c = self.c ; f = c.frame ; k = c.k
+    if g.app.unitTesting: return
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        accelerator = stroke = k.shortcutFromSetting(accel) or ''
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+
+        # self.add_command(menu,label=realLabel,
+            # accelerator=accelerator,
+            # command=masterMenuCallback,
+            # underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                # g.trace('1',bunch)
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            # g.trace('2',bunch)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val ; break
+                    # g.trace('2',bunch)
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+# These wrappers ensure that c.outerUpdate get called.
+#@nonl
+#@+node:ekr.20080610085158.2:c.add_command
+def add_command (self,menu,**keys):
+
+    c = self ; command = keys.get('command')
+
+    if command:
+
+        def add_commandCallback(c=c,command=command):
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
+
+        keys ['command'] = add_commandCallback
+
+        menu.add_command(**keys)
+
+    else:
+        g.trace('can not happen: no "command" arg')
+#@-node:ekr.20080610085158.2:c.add_command
+#@+node:ekr.20080610085158.3:c.bind and c.bind2
+def bind (self,w,pattern,func):
+
+    c = self
+
+    def bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback)
+
+def bind2 (self,w,pattern,func,**keys):
+
+    c = self
+
+    def bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.bind(pattern,bindCallback,**keys)
+#@-node:ekr.20080610085158.3:c.bind and c.bind2
+#@+node:ekr.20080610085158.4:c.tag_bind
+def tag_bind (self,w,tag,event_kind,func):
+
+    c = self
+    def tag_bindCallback(event,c=c,func=func):
+        val = func(event)
+        # Careful: func may destroy c.
+        if c.exists: c.outerUpdate()
+        return val
+
+    w.tag_bind(tag,event_kind,tag_bindCallback)
+#@-node:ekr.20080610085158.4:c.tag_bind
+#@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+#@-node:ekr.20080605064555.5:Fixed missing redraw problem
+#@+node:ekr.20080612060621.3:Fixed new-headline problem
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    # g.trace(g.callers())
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate(False)
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+        # Force a call to c.outerUpdate.
+        # This is needed when we execute this command from a menu.
+        c.redraw_now()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20080514131122.7:c.begin/endUpdate
+
+def beginUpdate(self):
+
+    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+    until the matching call to endUpdate.'''
+
+    pass
+
+def endUpdate(self,flag=True,scroll=True):
+
+    '''Redraw the screen if flag is True.'''
+
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+        c.requestRedrawScrollFlag = scroll
+        # g.trace('flag is True',c.shortFileName(),g.callers())
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@-node:ekr.20080514131122.7:c.begin/endUpdate
+#@+node:ekr.20031218072017.2991:c.editPosition
+# Selects v: sets the focus to p and edits p.
+
+def editPosition(self,p,selectAll=False):
+
+    c = self ; k = c.k
+
+    if p:
+        c.selectPosition(p)
+
+        c.frame.tree.editLabel(p,selectAll=selectAll)
+
+        if k:
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            k.showStateAndMode()
+#@-node:ekr.20031218072017.2991:c.editPosition
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = (False or self.trace_edit) and not g.app.unitTesting
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        c.beginUpdate()
+        try:
+            self.endEditLabel()
+        finally:
+            # This redraw *is* required so the c.edit_widget(p) will exist.
+            c.endUpdate(True)
+            c.outerUpdate()
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+
+    if trace: g.trace(c.edit_widget(p))
+
+    w = c.edit_widget(p)
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@+node:ekr.20080612091459.1:Found: .redraw_now
+#@+node:ekr.20080506135044.9:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.headString())
+            if not clones:
+                undoData = u.beforeInsertNode(c.currentPosition())
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        # u.afterChangeGroup(found,undoType,reportFlag=True) 
+        c.selectPosition(found) # Recomputes root.
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw_now()
+    g.es("found",count,"matches")
+
+#@+node:ekr.20080506135044.10:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20080506135044.10:<< create the found node >>
+#@+node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20080506135044.11:<< create a clone of p under the find node >>
+#@-node:ekr.20080506135044.9:findAll
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.7:c.begin/endUpdate
+
+def beginUpdate(self):
+
+    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+    until the matching call to endUpdate.'''
+
+    pass
+
+def endUpdate(self,flag=True,scroll=True):
+
+    '''Redraw the screen if flag is True.'''
+
+    c = self
+    if flag:
+        c.requestRedrawFlag = True
+        c.requestRedrawScrollFlag = scroll
+        # g.trace('flag is True',c.shortFileName(),g.callers())
+
+BeginUpdate = beginUpdate # Compatibility with old scripts
+EndUpdate = endUpdate # Compatibility with old scripts
+#@-node:ekr.20080514131122.7:c.begin/endUpdate
+#@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
+def redraw (self):
+    c = self
+    c.requestRedrawFlag = True
+
+def redraw_now (self):
+    c = self
+    c.requestRedrawFlag = True
+    c.outerUpdate()
+    assert not c.requestRedrawFlag
+
+# Compatibility with old scripts
+force_redraw = redraw_now
+#@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
+#@+node:ekr.20031218072017.1934:run
+def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
+
+    """Initialize and run Leo"""
+
+    # __pychecker__ = '--no-argsused' # keywords not used.
+
+    import pdb ; pdb = pdb.set_trace
+
+    << import leoGlobals and leoApp >>
+    if not jyLeo and not isValidPython(): return
+    g.computeStandardDirectories()
+    adjustSysPath(g)
+    script,windowFlag = scanOptions(g)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
+    if not fileName:
+        fileName = getFileName()
+
+    << import other early files >>
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.config = leoConfig.configClass()
+    fileName,relativeFileName = completeFileName(fileName)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config.
+    # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    if pymacs:
+        createNullGuiWithScript(None)
+    elif jyLeo:
+        import leo.core.leoSwingGui as leoSwingGui
+        g.app.gui = leoSwingGui.swingGui()
+    elif script:
+        if windowFlag:
+            g.app.createTkGui() # Creates global windows.
+            g.app.gui.setScript(script)
+            sys.args = []
+        else:
+            createNullGuiWithScript(script)
+        fileName = None
+    # Load plugins. Plugins may create g.app.gui.
+    g.doHook("start1")
+    if g.app.killed: return # Support for g.app.forceShutdown.
+    # Create the default gui if needed.
+    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
+    # Initialize tracing and statistics.
+    g.init_sherlock(args)
+    if g.app and g.app.use_psyco: startPsyco()
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName)
+    if not frame: return
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+    g.app.writeWaitingLog()
+    if g.app.oneConfigFilename: g.es_print('--one-config option in effect',color='red')
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    if not fileName:
+        c.redraw_now()
+    # Respect c's focus wishes if posssible.
+    w = g.app.gui.get_focus(c)
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+    c.outerUpdate()
+    g.app.gui.runMainLoop()
+#@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+if jyLeo:
+    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+
+# Add the current directory to sys.path *before* importing g.
+# This will fail if the current directory contains unicode characters...
+path = os.getcwd()
+if path not in sys.path:
+    # print 'appending %s to sys.path' % path
+    sys.path.append(path)
+
+# Import leoGlobals, but do NOT set g.
+import leo.core.leoGlobals as leoGlobals
+
+# Set leoGlobals.g, rather than in leoGlobals.py.
+leoGlobals.g = leoGlobals
+
+import leo.core.leoApp as leoApp
+
+# Create the app.
+leoGlobals.app = leoApp.LeoApp()
+
+# **now** we can set g.
+g = leoGlobals
+assert(g.app)
+
+if jyLeo:
+    startJyleo(g)
+#@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+#@+node:ekr.20041219072416.1:<< import other early files>>
+import leo.core.leoNodes as leoNodes
+import leo.core.leoConfig as leoConfig
+
+# There is a circular dependency between leoCommands and leoEditCommands.
+import leo.core.leoCommands as leoCommands
+
+# try:
+    # import leo.core.leoNodes as leoNodes
+# except ImportError:
+    # print "Error importing leoNodes.py"
+    # import traceback ; traceback.print_exc()
+
+# try:
+    # import leo.core.leoConfig as leoConfig
+# except ImportError:
+    # print "Error importing leoConfig.py"
+    # import traceback ; traceback.print_exc()
+#@-node:ekr.20041219072416.1:<< import other early files>>
+#@-node:ekr.20031218072017.1934:run
+#@+node:ekr.20031218072017.1623:new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    # g.trace(g.callers())
+
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    # Use the config params to set the size and location of the window.
+    c.beginUpdate()
+    try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+
+    finally:
+        c.endUpdate(False)
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+        # Force a call to c.outerUpdate.
+        # This is needed when we execute this command from a menu.
+        c.redraw_now()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:new
+#@+node:ekr.20071001091231.80:reconfigureFromConfig (swingFrame)
+def reconfigureFromConfig (self):
+
+    frame = self ; c = frame.c
+
+    frame.tree.setFontFromConfig()
+    ### frame.tree.setColorFromConfig()
+
+    frame.configureBarsFromConfig()
+
+    frame.body.setFontFromConfig()
+    frame.body.setColorFromConfigt()
+
+    frame.setTabWidth(c.tab_width)
+    frame.log.setFontFromConfig()
+    frame.log.setColorFromConfig()
+
+    c.redraw_now()
+#@-node:ekr.20071001091231.80:reconfigureFromConfig (swingFrame)
+#@+node:ekr.20070317085437.41:cc.renameChapter
+# newName is for unitTesting.
+
+def renameChapter (self,event=None,newName=None):
+
+    '''Use the minibuffer to get a new name for the present chapter.'''
+
+    cc = self ; c = cc.c ; k = cc.c.k ; tt = cc.tt
+    tag = 'rename-chapter'
+    theChapter = cc.selectedChapter
+    if not theChapter: return
+    if theChapter.name == 'main':
+        return cc.error('Can not rename the main chapter')
+
+    state = k.getState(tag)
+
+    if state == 0 and not newName:
+        names = cc.chaptersDict.keys()
+        prefix = 'Rename this chapter: '
+        k.setLabelBlue(prefix,protect=True)
+        k.getArg(event,tag,1,self.renameChapter,prefix=prefix,tabList=names)
+    else:
+        k.clearState()
+        k.resetLabel()
+        if newName: k.arg = newName
+        if k.arg and k.arg != theChapter.name:
+            oldChapterName = theChapter.name
+            del cc.chaptersDict[theChapter.name]
+            cc.chaptersDict[k.arg] = theChapter
+            theChapter.name = k.arg
+            root = theChapter.root
+            root.initHeadString('@chapter %s' % k.arg)
+            if tt:
+                tt.setTabLabel(k.arg)
+                tt.destroyTab(oldChapterName)
+                tt.createTab(k.arg)
+            c.redraw_now()
+#@-node:ekr.20070317085437.41:cc.renameChapter
+#@+node:ekr.20031218072017.2817: doCommand
+command_count = 0
+
+def doCommand (self,command,label,event=None):
+
+    """Execute the given command, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the command if
+    g.doHook("command1") returns False.
+    This provides a simple mechanism for overriding commands."""
+
+    c = self ; p = c.currentPosition()
+    commandName = command and command.__name__
+    c.setLog()
+
+    self.command_count += 1
+    if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
+        g.trace(commandName)
+
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+        return 'break' # Inhibit all other handlers.
+
+    if c.exists and c.inCommand and not g.unitTesting:
+        # g.trace('inCommand',c)
+        g.es('ignoring command: already executing a command.',color='red')
+        return 'break'
+
+    if label and event is None: # Do this only for legacy commands.
+        if label == "cantredo": label = "redo"
+        if label == "cantundo": label = "undo"
+        g.app.commandName = label
+
+    if not g.doHook("command1",c=c,p=p,v=p,label=label):
+        try:
+            c.inCommand = True
+            val = command(event)
+            if c and c.exists: # Be careful: the command could destroy c.
+                c.inCommand = False
+                c.k.funcReturn = val
+            # else: print 'c no longer exists',c
+        except:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            else:
+                g.es("exception executing command")
+                print "exception executing command"
+                g.es_exception(c=c)
+                if c and c.exists and hasattr(c,'frame'):
+                    c.redraw_now()
+
+        if c and c.exists:
+            if c.requestCloseWindow:
+                g.trace('Closing window after command')
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.currentPosition()
+        g.doHook("command2",c=c,p=p,v=p,label=label)
+
+    return "break" # Inhibit all other handlers.
+#@-node:ekr.20031218072017.2817: doCommand
+#@+node:ekr.20060202154734:freeTreeWidgets
+def freeTreeWidgets (self,event=None):
+
+    '''Free all widgets used in Leo's outline pane.'''
+
+    c = self.c
+
+    c.frame.tree.destroyWidgets()
+    c.redraw_now()
+#@-node:ekr.20060202154734:freeTreeWidgets
+#@+node:ekr.20070921072910:createAllCompareClones & helper
+def createAllCompareClones(self,inserted,deleted,changed):
+
+    c = self.c # Always use the visible commander
+    c.beginUpdate()
+    try:
+        # Create parent node at the start of the outline.
+        u = c.undoer ; undoType = 'Compare .leo Files'
+        u.beforeChangeGroup(c.currentPosition(),undoType)
+        undoData = u.beforeInsertNode(c.currentPosition())
+        parent = c.currentPosition().insertAfter()
+        c.setHeadString(parent,undoType)
+        u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+        for d,kind in (
+            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+        ):
+            self.createCompareClones(d,kind,parent)
+        c.selectPosition(parent)
+        u.afterChangeGroup(parent,undoType,reportFlag=True) 
+    finally:
+        c.endUpdate(False)
+    c.redraw_now()
+    c.outerUpdate()
+#@nonl
+#@+node:ekr.20070921074410:createCompareClones
+def createCompareClones (self,d,kind,parent):
+
+    c = self.c # Always use the visible commander.
+
+    if d.keys():
+        parent = parent.insertAsLastChild()
+        c.setHeadString(parent,kind)
+
+        for key in d.keys():
+            p = d.get(key)
+            clone = p.clone()
+            clone.moveToLastChildOf(parent)
+#@-node:ekr.20070921074410:createCompareClones
+#@-node:ekr.20070921072910:createAllCompareClones & helper
+#@+node:ekr.20031218072017.1553:getLeoFile
+# The caller should enclose this in begin/endUpdate.
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    << warn on read-only files >>
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+    c.loading = True # disable c.changed
+
+    try:
+        ok = True
+        # t1 = time.clock()
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile, message:
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    # Do this before reading derived files.
+    self.resolveTnodeLists()
+
+    if ok and readAtFileNodesFlag:
+        # Redraw before reading the @file nodes so the screen isn't blank.
+        # This is important for big files like LeoPy.leo.
+        c.redraw_now()
+        c.outerUpdate()
+        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+    # Do this after reading derived files.
+    if readAtFileNodesFlag:
+        # The descendent nodes won't exist unless we have read the @thin nodes!
+        self.restoreDescendentAttributes()
+
+    self.setPositionsFromVnodes()
+    c.selectVnode(c.currentPosition()) # load body pane
+
+    self.initAllParents()
+
+    if c.config.getBool('check_outline_after_read'):
+        g.trace('@bool check_outline_after_read = True',color='blue')
+        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+
+    c.loading = False # reenable c.changed
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, self.ratio
+#@+node:ekr.20031218072017.1554:<< warn on read-only files >>
+# os.access may not exist on all platforms.
+
+try:
+    self.read_only = not os.access(fileName,os.W_OK)
+except AttributeError:
+    self.read_only = False
+except UnicodeError:
+    self.read_only = False
+
+if self.read_only:
+    g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:<< warn on read-only files >>
+#@-node:ekr.20031218072017.1553:getLeoFile
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.headString())
+            if not clones:
+                undoData = u.beforeInsertNode(c.currentPosition())
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        # u.afterChangeGroup(found,undoType,reportFlag=True) 
+        c.selectPosition(found) # Recomputes root.
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw_now()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@+node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
+def reconfigureFromConfig (self):
+
+    frame = self ; c = frame.c
+
+    frame.tree.setFontFromConfig()
+    frame.configureBarsFromConfig()
+
+    frame.body.setFontFromConfig()
+    frame.body.setColorFromConfig()
+
+    frame.setTabWidth(c.tab_width)
+    frame.log.setFontFromConfig()
+    frame.log.setColorFromConfig()
+
+    c.redraw_now()
+#@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
+#@-node:ekr.20080612091459.1:Found: .redraw_now
+#@-node:ekr.20080612060621.3:Fixed new-headline problem
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -8786,11 +10922,11 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     if g.newDrawing:
         self.requestedFocusWidget = None
-        c.requestRecolorFlag = False
         self.requestRedrawFlag = False
         self.requestRedrawScrollFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
         # g.es('Using new drawing code',color='red')
+    self.requestRecolorFlag = False
 
     # g.trace('Commands')
     self.exists = True # Indicate that this class exists and has not been destroyed.
@@ -8807,6 +10943,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.mFileName = fileName
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
     self.mRelativeFileName = relativeFileName
+
 
     # g.trace(c) # Do this after setting c.mFileName.
     c.initIvars()
@@ -10151,6 +12288,8 @@ def new (self,event=None,gui=None):
 
     '''Create a new Leo window.'''
 
+    # g.trace(g.callers())
+
     c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
     # Needed for plugins.
@@ -10178,7 +12317,7 @@ def new (self,event=None,gui=None):
             g.doHook("after-create-leo-frame",c=c)
 
     finally:
-        c.endUpdate()
+        c.endUpdate(False)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use_chapters') and c.chapterController:
@@ -10188,6 +12327,9 @@ def new (self,event=None,gui=None):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
+        # Force a call to c.outerUpdate.
+        # This is needed when we execute this command from a menu.
+        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20031218072017.2821:open

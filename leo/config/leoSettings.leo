@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -376,7 +376,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -384,7 +384,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
 <v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
@@ -1375,6 +1375,160 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+</v>
+<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
+<v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+</v>
+<v t="ekr.20080602094234.10"><vh>@keys</vh>
+<v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
+<v t="ekr.20080602094234.12" a="E"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
+<v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
+<v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
+<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert</vh></v>
+<v t="ekr.20080602094234.17"><vh>@mode tree-command-save</vh>
+<v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
+</v>
+<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit</vh></v>
+</v>
+<v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
+<v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
+<v t="ekr.20080602094234.22"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20080602094234.23"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
+</v>
+<v t="ekr.20080602094234.24"><vh>@ignore tree-yank-object</vh>
+<v t="ekr.20080602094234.25"><vh>@mode tree-yank-line</vh></v>
+<v t="ekr.20080602094234.26"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20080602094234.27"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
+</v>
+<v t="ekr.20080602094234.28"><vh>@ignore tree-change-object</vh>
+<v t="ekr.20080602094234.29"><vh>@mode vi-Change-line</vh></v>
+<v t="ekr.20080602094234.30"><vh>@mode vi-change-to-end-of-word</vh></v>
+<v t="ekr.20080602094234.31"><vh>@mode vi-change-to-beginning-of-word</vh></v>
+</v>
+<v t="ekr.20080602094234.32"><vh>@ignore tree-delete-to-end-of-line</vh></v>
+<v t="ekr.20080602094234.33"><vh>@ignore tree-delete</vh></v>
+<v t="ekr.20080602094234.34"><vh>@mode tree-delete-text-object</vh>
+<v t="ekr.20080602094234.35"><vh>@mode tree-delete-line</vh></v>
+<v t="ekr.20080602094234.36"><vh>@mode tree-delete-to-end-of-word</vh></v>
+<v t="ekr.20080602094234.37"><vh>@mode tree-delete-to-beginning-of-word</vh></v>
+<v t="ekr.20080602094234.38"><vh>@mode tree-delete-to-char</vh></v>
+</v>
+<v t="ekr.20080602094234.39"><vh>@mode tree-copy-node</vh></v>
+<v t="ekr.20080602094234.40"><vh>@mode tree-paste-node</vh></v>
+<v t="ekr.20080602094234.41"><vh>@mode tree-delete-node</vh></v>
+<v t="ekr.20080602094234.42"><vh>@mode focus-to-tree</vh></v>
+<v t="ekr.20080602094234.43"><vh>@mode focus-to-body</vh></v>
+<v t="ekr.20080602094234.44"><vh>@mode tree-undo</vh></v>
+<v t="ekr.20080602094234.45"><vh>@mode tree-redo</vh></v>
+<v t="ekr.20080602094234.46"><vh>@mode tree-goto-last-node</vh></v>
+<v t="ekr.20080602094234.47"><vh>@mode tree-goto</vh>
+<v t="ekr.20080602094234.48"><vh>@mode node-goto-first-node</vh></v>
+</v>
+<v t="ekr.20080602094234.49"><vh>@mode tree-goto-next-visible</vh></v>
+<v t="ekr.20080602094234.50"><vh>@mode body-goto-next-visible</vh></v>
+<v t="ekr.20080602094234.51"><vh>@mode tree-goto-prev-visible</vh></v>
+<v t="ekr.20080602094234.52"><vh>@mode body-goto-prev-visible</vh></v>
+<v t="ekr.20080602094234.53"><vh>@mode tree-contract-or-go-left</vh></v>
+<v t="ekr.20080602094234.54"><vh>@mode body-contract-or-go-left</vh></v>
+<v t="ekr.20080602094234.55"><vh>@mode tree-expand-and-go-right</vh></v>
+<v t="ekr.20080602094234.56"><vh>@mode body-expand-and-go-right</vh></v>
+<v t="ekr.20080602094234.57"><vh>@mode tree-move-outline-up</vh></v>
+<v t="ekr.20080602094234.58"><vh>@mode tree-move-outline-down</vh></v>
+<v t="ekr.20080602094234.59"><vh>@mode tree-move-outline-left</vh></v>
+<v t="ekr.20080602094234.60"><vh>@mode tree-move-outline-right</vh></v>
+<v t="ekr.20080602094234.61"><vh>@mode tree-contract-node</vh></v>
+<v t="ekr.20080602094234.62"><vh>@mode tree-clone-node</vh></v>
+<v t="ekr.20080602094234.63"><vh>@mode tree-goto-next-cloned-node</vh></v>
+<v t="ekr.20080602094234.64"><vh>@mode tree-mark-node</vh></v>
+<v t="ekr.20080602094234.65"><vh>@mode tree-goto-next-marked-node</vh></v>
+<v t="ekr.20080602094234.66"><vh>@mode tree-unmark-all-nodes</vh></v>
+<v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
+</v>
+<v t="ekr.20080602094234.68"><vh>@shortcuts - vi in Body pane</vh>
+<v t="ekr.20080602094234.69"><vh>@mode vi-command-line</vh>
+<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert</vh></v>
+<v t="ekr.20080602094234.71"><vh>@mode vi-command-save</vh>
+<v t="ekr.20080602094234.72"><vh>@mode vi-command-save-quit</vh></v>
+</v>
+<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit</vh></v>
+</v>
+<v t="ekr.20080602094234.74"><vh>@mode vi-goto-end-of-buffer</vh></v>
+<v t="ekr.20080602094234.75"><vh>@mode vi-goto</vh>
+<v t="ekr.20080602094234.76"><vh>@mode vi-goto-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20080602094234.77"><vh>@mode vi-save-buffers-exit</vh></v>
+<v t="ekr.20080602094234.78"><vh>@mode vi-new-line-below</vh></v>
+<v t="ekr.20080602094234.79"><vh>@mode vi-new-line-above</vh></v>
+<v t="ekr.20080602094234.80"><vh>@mode vi-append</vh></v>
+<v t="ekr.20080602094234.81"><vh>@mode vi-insert-at-indent</vh></v>
+<v t="ekr.20080602094234.82"><vh>@mode vi-delete-to-end-of-line</vh></v>
+<v t="ekr.20080602094234.83"><vh>@mode vi-delete-object</vh>
+<v t="ekr.20080602094234.84"><vh>@mode vi-delete-line</vh></v>
+<v t="ekr.20080602094234.85"><vh>@mode vi-delete-to-end-of-word</vh></v>
+<v t="ekr.20080602094234.86"><vh>@mode vi-delete-to-begin-of-word</vh></v>
+<v t="ekr.20080602094234.87"><vh>@mode vi-delete-to-end-of-sentence</vh></v>
+<v t="ekr.20080602094234.88"><vh>@mode vi-delete-to-beginning-of-sentence</vh></v>
+<v t="ekr.20080602094234.89"><vh>@mode vi-delete-to-end-of-paragraph</vh></v>
+<v t="ekr.20080602094234.90"><vh>@mode vi-delete-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20080602094234.91"><vh>@mode vi-delete-section</vh></v>
+<v t="ekr.20080602094234.92" a="M"><vh>@mode vi-delete-to-char</vh></v>
+</v>
+<v t="ekr.20080602094234.93"><vh>@mode vi-yank-to-end-of-line</vh></v>
+<v t="ekr.20080602094234.94"><vh>@mode vi-yank</vh>
+<v t="ekr.20080602094234.95"><vh>@mode vi-yank-line</vh></v>
+<v t="ekr.20080602094234.96"><vh>@mode vi-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20080602094234.97"><vh>@mode vi-yank-to-beginning-of-current-word</vh></v>
+<v t="ekr.20080602094234.98"><vh>@mode vi-yank-to-end-of-sentence</vh></v>
+<v t="ekr.20080602094234.99"><vh>@mode vi-yank-to-beginning-of-sentence</vh></v>
+<v t="ekr.20080602094234.100"><vh>@mode vi-yank-to-end-of-paragraph</vh></v>
+<v t="ekr.20080602094234.101"><vh>@mode vi-yank-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20080602094234.102"><vh>@mode vi-yank-section</vh></v>
+</v>
+<v t="ekr.20080602094234.103"><vh>@mode vi-change-to-end-of-line</vh></v>
+<v t="ekr.20080602094234.104"><vh>@mode vi-change</vh>
+<v t="ekr.20080602094234.105"><vh>@mode vi-Change-line</vh></v>
+<v t="ekr.20080602094234.106"><vh>@mode vi-change-to-end-of-word</vh></v>
+<v t="ekr.20080602094234.107"><vh>@mode vi-change-to-beginning-of-word</vh></v>
+<v t="ekr.20080602094234.108"><vh>@mode vi-change-to-end-of-sentence</vh></v>
+<v t="ekr.20080602094234.109"><vh>@mode vi-change-to-beginning-of-sentence</vh></v>
+<v t="ekr.20080602094234.110"><vh>@mode vi-change-to-end-of-paragraph</vh></v>
+<v t="ekr.20080602094234.111"><vh>@mode vi-change-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20080602094234.112"><vh>@mode vi-change-section</vh></v>
+</v>
+<v t="ekr.20080602094234.113"><vh>@mode vi-substitute-char</vh></v>
+<v t="ekr.20080602094234.114"><vh>@mode vi-substitute-line</vh></v>
+<v t="ekr.20080602094234.115"><vh>@mode vi-indent</vh>
+<v t="ekr.20080602094234.116"><vh>@mode vi-indent-line</vh></v>
+<v t="ekr.20080602094234.117"><vh>@mode vi-indent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20080602094234.118"><vh>@mode vi-indent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20080602094234.119"><vh>@mode vi-indent-to-end-of-paragraph</vh></v>
+<v t="ekr.20080602094234.120"><vh>@mode vi-indent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20080602094234.121"><vh>@mode vi-indent-to-beginning-of-buffer</vh></v>
+<v t="ekr.20080602094234.122"><vh>@mode vi-indent-to-end-of-buffer</vh></v>
+</v>
+<v t="ekr.20080602094234.123"><vh>@mode vi-deindent</vh>
+<v t="ekr.20080602094234.124"><vh>@mode vi-deindent-less</vh></v>
+<v t="ekr.20080602094234.125"><vh>@ignore vi-deindent-to-end-of-paragraph</vh></v>
+<v t="ekr.20080602094234.126"><vh>@ignore vi-deindent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20080602094234.127"><vh>@ignore vi-deindent-to-end-of-sentence</vh></v>
+<v t="ekr.20080602094234.128"><vh>@ignore vi-deindent-to-beginning-of-sentence</vh></v>
+</v>
+<v t="ekr.20080602094234.129"><vh>@mode vi-beginning-of-line</vh></v>
+<v t="ekr.20080602094234.130"><vh>@mode vi-goto-indent-beginning-previous-line</vh></v>
+<v t="ekr.20080602094234.131"><vh>@mode vi-end-of-line</vh></v>
+<v t="ekr.20080602094234.132"><vh>@mode vi-goto-after-paragraph</vh></v>
+<v t="ekr.20080602094234.133"><vh>@mode vi-goto-before-paragraph</vh></v>
+<v t="ekr.20080602094234.134"><vh>@mode vi-join</vh></v>
+<v t="ekr.20080602094234.135"><vh>@mode vi-match</vh></v>
+<v t="ekr.20080602094234.136"><vh>@mode vim-window-commands</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -5323,8 +5477,7 @@ right clicks in the body pane.
 <t tx="ekr.20080515053412.15"></t>
 <t tx="ekr.20080515053412.16"></t>
 <t tx="ekr.20080515053412.17"></t>
-<t tx="ekr.20080515053412.18">rclick-gen-context-sensitive-
-commands
+<t tx="ekr.20080515053412.18">rclick-gen-context-sensitive-commands
 
 # This is an example of a menu generator command. It will scan the
 body text for

@@ -3058,9 +3058,10 @@ class baseColorizer:
                     self.tag(tagName,i+2,j)
 
                     ref.tagName = tagName
-                    c.frame.body.tag_bind(tagName,"<Control-1>",ref.OnHyperLinkControlClick)
-                    c.frame.body.tag_bind(tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
-                    c.frame.body.tag_bind(tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+                    w = c.frame.body
+                    c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                    c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                    c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
                     #@-node:ekr.20031218072017.1915:<< set the hyperlink >>
                     #@nl
             elif k == 3: # a section definition

@@ -1907,6 +1907,8 @@ class pluginController(basePluginController):
 
         """Add an item to the menu being constructed."""
 
+        c = self.c
+
         item_data = keywords.get('rc_item_data', {})
 
         kind = item_data.get('kind', 'command')
@@ -1929,7 +1931,10 @@ class pluginController(basePluginController):
 
             self.add_optional_args(kws, item_data)
 
-            rmenu.add_command(kws)
+            c.add_command(rmenu,
+                label=label,
+                command=command,
+                columnbreak=rmenu.rc_columnbreak)
             #@nonl
             #@-node:bobjack.20080516105903.49:<< add command item >>
             #@nl

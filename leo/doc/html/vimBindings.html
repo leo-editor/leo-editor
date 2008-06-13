@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Chapter 22: Using Vim Bindings with Leo</title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\vimBindings.html -->
+<!-- June 11, 2008 -->
+<p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section" id="chapter-22-using-vim-bindings-with-leo">
+<h1><a class="toc-backref" href="#id1">Chapter 22: Using Vim Bindings with Leo</a></h1>
+<p>This chapter describes Leo's vim-like bindings, including how to install them.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference" href="#chapter-22-using-vim-bindings-with-leo" id="id1" name="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
+<li><a class="reference" href="#installing-vim-bindings" id="id2" name="id2">Installing vim bindings</a></li>
+<li><a class="reference" href="#general-commands" id="id3" name="id3">General commands</a></li>
+<li><a class="reference" href="#outline-commands" id="id4" name="id4">Outline commands</a></li>
+<li><a class="reference" href="#body-pane" id="id5" name="id5">Body pane</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- Links -->
+<!-- .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section" id="installing-vim-bindings">
+<h2><a class="toc-backref" href="#id2">Installing vim bindings</a></h2>
+</div>
+<div class="section" id="general-commands">
+<h2><a class="toc-backref" href="#id3">General commands</a></h2>
+<p>The following commands are always available.</p>
+<p>State change commands:</p>
+<pre class="literal-block">
+i       Change state to insert from command state
+Ctrl-[  Change state to command from insert state
+Esc     Change state to command from insert state
+</pre>
+<p>Miscellaneous commands:</p>
+<pre class="literal-block">
+:       Enter vi's command line
+Ctrl-:  Enter Leo's command line
+Ctrl-s  Save '.leo' file
+u       Undo previous command
+Ctrl-r  Redo previous command
+Tab     Toggle focus between Outline and Body pane
+=       Simulate double-click on current node's icon box
+Alt-G   Go to specified line number (relative to derived file)
+</pre>
+</div>
+<div class="section" id="outline-commands">
+<h2><a class="toc-backref" href="#id4">Outline commands</a></h2>
+<p>Outline navigation and manipulation are mapped to keys using vi's text
+navigation key mapping as a guide. Outline navigation commands can also be
+invoked while in the body pane's command mode. This reduces the keystrokes
+necessary to make changes to the body text of multiple nodes. Node headline
+editing uses vi's line editing key mappings.</p>
+<p>The following commands are supported when in a headline's command mode.</p>
+<p>State change commands:</p>
+<pre class="literal-block">
+Ctrl-i  Change state to command from grayed state
+return  Change state to command from insert state
+Ctrl-]  Change state to grayed from command state
+</pre>
+<p>Go to node commands:</p>
+<pre class="literal-block">
+Ctrl-h  Go to parent
+Ctrl-j  Go to previous sibling
+Ctrl-k  Go to next sigling
+Ctrl-l  Go to first child, expanding the present node if needed.
+Ctrl-G  Go to the outline's last node
+gg      Go to the outline's first node
+</pre>
+<p><em>Note</em>: The bindings above can also be used while in the command state of the node's body.</p>
+<p>Scroll commands:</p>
+<pre class="literal-block">
+Ctrl-y  Scroll outline up one line   (also Ctrl-b, Ctrl-u)
+Ctrl-e  Scroll outline down one line (also Ctrl-f, Ctrl-d)
+</pre>
+<p>Move node commands:</p>
+<pre class="literal-block">
+Shift-Ctrl-h    Move node left
+Shift-Ctrl-l    Move node right
+Shift-Ctrl-j    Move node up
+Shift-Ctrl-k    Move node down
+</pre>
+<p>Mark node commands:</p>
+<pre class="literal-block">
+m       Mark or unmark the current node
+Ctrl-m  Go to next marked node
+Alt-m   Clear all marked nodes
+</pre>
+<p>Clone (transclude) node commands:</p>
+<pre class="literal-block">
+t       Clone node
+Ctrl-t  Go to next cloned node
+</pre>
+<p>Select headline text:</p>
+<pre class="literal-block">
+s       Select current character
+W       Select text to the end of the current word
+B       Select text to the beginning of the current word
+Shift-D Select to end of line
+</pre>
+<p>At present, the delete, yank, and change text object commands are not available.
+Instead, commands are provided to facilitate the selection of text which the
+user can follow with 'i', 'x', or 'y' to change, delete, or yank the text.</p>
+<p>Delete/Yank/Paste node commands:</p>
+<pre class="literal-block">
+Ctrl-x  Delete current node
+Ctrl-c  Yank current node
+Ctrl-v  Paste current node
+</pre>
+<p>Move cursor comamnds:</p>
+<pre class="literal-block">
+w   Go to next word
+b   Go to previous word
+e   Go to endo of word
+|   Go to Beginning of line
+$   Go to end of line
+</pre>
+<p>Find commands:</p>
+<pre class="literal-block">
+f   Find character
+</pre>
+</div>
+<div class="section" id="body-pane">
+<h2><a class="toc-backref" href="#id5">Body pane</a></h2>
+<p>All vi text navigation and editing functionality has been implemented except for the following.</p>
+<p>The following vi commands are <strong>not</strong> supported in the Body pane:</p>
+<pre class="literal-block">
+cf&lt;char&gt;    Change up to and including specified character
+ct&lt;char&gt;    Change up to specified character
+yf&lt;char&gt;    Yank up to and including specified character
+yt&lt;char&gt;    Yank up to specified character
+t&lt;char&gt;     Move cursor to character before specified character
+r           Replace a single character with a single character
+?           Search backwards
+1G          Use 'gg' instead
+0           Use '-' instead
+bksp        Move one character to the left
+m&lt;label&gt;    Mark text
+`           Mark text
+'           Goto marked text
+~           Toggle character's case
+.           Repeat last command
+&lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+&lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Performing the command on/upto n'th object
+Ctrl-u      Move cursor up  1/2 screen
+Ctrl-d      Move cursor down 1/2 screen
+Ctrl-e      Slide buffer up (leaving cursor on same line)
+Ctrl-y      Slide buffer down (leaving cursor on same line)
+z           Slide buffer to put current line at top
+z.          Slide buffer to put current line at middle
+z-          Slide buffer to put current line at bottom
+</pre>
+<hr class="docutils" />
+<p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -87,7 +87,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
         """Wrapper for the Tkinter add_command menu method."""
 
         if menu:
-            return menu.add_command(**keys)
+            return self.c.add_command(menu,**keys)
     #@-node:ekr.20031218072017.4106:add_command
     #@+node:ekr.20031218072017.4107:add_separator
     def add_separator(self,menu):
