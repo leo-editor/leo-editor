@@ -2,26 +2,32 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="67" left="229" height="634" width="1161"/>
+<globals body_outline_ratio="0.448434622468">
+	<global_window_position top="97" left="227" height="648" width="1086"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="bobjack.20080424195922.3" str_leo_pos="3,0,2,5"><vh>Startup</vh>
+<v t="bobjack.20080424195922.3" str_leo_pos="2,0"><vh>Startup</vh>
 <v t="bobjack.20080424195922.2"><vh>@chapters</vh></v>
 </v>
-<v t="bobjack.20080424195922.90"><vh>Buttons</vh>
+<v t="bobjack.20080424195922.90" a="E"><vh>Buttons</vh>
 <v t="bobjack.20080427085237.1"><vh>@button Fav Button</vh></v>
 <v t="bobjack.20080427084403.1"><vh>@button Say Hello!</vh></v>
 <v t="bobjack.20080427183647.2"><vh>@button show-menu-tables</vh></v>
 <v t="bobjack.20080424195922.94"><vh>@button Do Unit Tests</vh></v>
 </v>
-<v t="bobjack.20080427091720.1" a="EM"><vh>@popup test-button-menu</vh>
+<v t="bobjack.20080611190121.2" a="E"><vh>Howto . . .</vh>
+<v t="bobjack.20080611190121.3"><vh>. . . use compound widgets and dragHandles</vh></v>
+</v>
+<v t="bobjack.20080427091720.1" a="M"><vh>@popup test-button-menu</vh>
 <v t="bobjack.20080427091720.2"><vh>@item toolbar-delete-button</vh></v>
 </v>
-<v t="bobjack.20080424195922.89" a="E"><vh>Unit Tests</vh>
+<v t="bobjack.20080613111554.19" a="EM"><vh>@popup test-widget-menu</vh>
+<v t="bobjack.20080613111554.20"><vh>@item toolbar-delete-button</vh></v>
+</v>
+<v t="bobjack.20080424195922.89"><vh>Unit Tests</vh>
 <v t="bobjack.20080424195922.87" a="E"><vh>Test Plugin Controller</vh>
 <v t="bobjack.20080424224706.1"><vh>@test module has required functions</vh></v>
 <v t="bobjack.20080424195922.88"><vh>@test ivars exist and have correct type</vh></v>
@@ -172,5 +178,101 @@ from pprint import pformat
 
 g.es_print(pformat(c.context_menus))</t>
 <t tx="bobjack.20080511155621.2"></t>
+<t tx="bobjack.20080611190121.2"></t>
+<t tx="bobjack.20080611190121.3">@
+In this howto I will demonstrate how to create a set of buttons (Cut, Copy and
+Paste) and have the iconBar handle them as a single unit.
+
+Use execute-script on this node to see the results of the demo code.
+
+Icons will only be shown in the buttons if the Python Imaging Library is
+availiable.
+
+@c
+
+bar = c.frame.iconBars['iconbar']
+
+import Tkinter as Tk
+
+# create the frame BEFORE the buttons
+
+# a normal Tk.Frame may be used but getting the frame this way
+# makes sure it has the proper parent and a default deleteButton method
+# (which only actually removes the widget from the toolbar)
+
+compoundFrame = bar.getWidgetFrame()
+
+# the above statement could have been
+#compoundFrame = c.frame.getIconWidgetFrame()
+
+
+cutButton = bar.getButton(
+    text='Cut',
+    icon='Tango/16x16/actions/editcut.png',
+    command='cut-text',
+)
+
+copyButton = bar.getButton(
+    text='Copy',
+    icon='Tango/16x16/actions/editcopy.png',
+    command='copy-text',
+)
+
+pasteButton = bar.getButton(
+    text='Paste',
+    icon='Tango/16x16/actions/editpaste.png',
+    command='paste-text',
+)
+
+buttons = (cutButton, copyButton, pasteButton)
+
+for button in buttons:
+    button.pack(in_=compoundFrame, side='left')
+    # try it with side='top' :)
+
+
+
+# add a list of widgets that can be used as drag handles
+# in this case all the buttons are drag handles.
+
+compoundFrame.leoDragHandle = buttons
+
+# a single embedded widget could be used as the drag handle
+# uncomment the statement below to set cutButtons as the only
+# drag handle. Notice that right click only has effect over the
+# the widget(s) identified as drag handles.
+
+#compoundFrame.leoDragHandle = cutButton
+
+
+
+# optionally add an rClick menu to the frame
+# comment out the next statement to test with no rclick menu
+
+compoundFrame.context_menu = 'test-widget-menu'
+
+
+
+@
+Set compoundFrame.deleteOnRightClick to True if you wish to allow the
+widget to be removed from the iconBar.
+@c
+
+compoundFrame.deleteOnRightClick = True
+
+@
+The above statement will only have effect if there is no context_menu set for
+the buttons or the compoundFrame.
+@c
+
+# add the compound widget in the first position of the bar
+bar.addWidget(compoundFrame, index=0)
+
+
+</t>
+<t tx="bobjack.20080613111554.19"></t>
+<t tx="bobjack.20080613111554.20">Remove Compound Widget
+
+icon = Tango\16x16\actions\stop.png</t>
 </tnodes>
 </leo_file>

@@ -588,7 +588,9 @@ will also restore the leo standard popup menu. Highlight the code above and exec
 <t tx="bobjack.20080401213339.3"></t>
 <t tx="bobjack.20080401213500.1"></t>
 <t tx="bobjack.20080401213500.2">find_change_text_menu</t>
-<t tx="bobjack.20080401214039.1"></t>
+<t tx="bobjack.20080401214039.1">@nocolor
+
+Icon box rClick menus will be disabled if cleo is enabled.</t>
 <t tx="bobjack.20080401214039.2">@
 Icon box menus will be disabled by cleo or other plugins using the same hook.
 
