@@ -278,8 +278,8 @@ except ImportError:
 mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
 import leo.core.leoTkinterFrame as leoTkinterFrame
 import leo.core.leoTkinterTree as leoTkinterTree
-import rClick
-#@nonl
+
+import rClickBasePluginClasses as baseClasses
 #@-node:bobjack.20080424190906.15:<< imports >>
 #@nl
 
@@ -722,7 +722,7 @@ class ToolbarIconButton(Tk.Button, object):
             imagefile = icon
 
         if not image and imagefile:
-            image = self.getImage(imagefile)
+            image = baseClasses.getImage(imagefile)
 
         if image:
             keys['image'] = image
@@ -839,62 +839,6 @@ class ToolbarIconButton(Tk.Button, object):
             self.leoIconBar.removeWidget(self)
 
     #@-node:bobjack.20080507053105.7:detachWidget
-    #@+node:bobjack.20080506182829.30:getImage
-    def getImage(self, path):
-
-        """Use PIL to get an image suitable for displaying in menus."""
-
-        c = self.c
-
-        if not (Image and ImageTk):
-            return None
-
-        path = g.os_path_normpath(path)
-
-        if not hasattr(self, 'iconCache'):
-            self.iconCache = {}
-
-        try:
-            return self.iconCache[path]
-        except KeyError:
-            pass
-
-        iconpath = g.os_path_join(iconBasePath, path)
-
-        try:
-            return self.iconCache[iconpath]
-        except KeyError:
-            pass
-
-        try:
-            image = Image.open(path)
-        except Exception:
-            image = None
-
-        if not image:
-
-            try:
-                image = Image.open(iconpath)
-            except Exception:
-                image = None
-
-        if not image:
-            return None
-
-        try:    
-            image = ImageTk.PhotoImage(image)
-        except Exception:
-            image = None
-
-        if not image or not image.height():
-            g.es('Bad Toolbar Icon: %s' % path)
-            return None
-
-        self.iconCache[path] = image
-
-        return image
-
-    #@-node:bobjack.20080506182829.30:getImage
     #@+node:bobjack.20080508051801.5:getButtonConfig
     def getButtonConfig(self, keys=None):
 
@@ -2140,62 +2084,11 @@ class ToolbarTkIconBarClass(iconbar, object):
         return w
     #@-node:bobjack.20080429153129.27:unpackWidget
     #@+node:bobjack.20080508125414.6:Utility
-    #@+node:bobjack.20080506182829.30:getImage
-    def getImage(self, path):
+    #@+node:bobjack.20080614200920.16:getImage
+    def getImage(self, path, iconBasePath=None):
 
-        """Use PIL to get an image suitable for displaying in menus."""
-
-        c = self.c
-
-        if not (Image and ImageTk):
-            return None
-
-        path = g.os_path_normpath(path)
-
-        if not hasattr(self, 'iconCache'):
-            self.iconCache = {}
-
-        try:
-            return self.iconCache[path]
-        except KeyError:
-            pass
-
-        iconpath = g.os_path_join(iconBasePath, path)
-
-        try:
-            return self.iconCache[iconpath]
-        except KeyError:
-            pass
-
-        try:
-            image = Image.open(path)
-        except Exception:
-            image = None
-
-        if not image:
-
-            try:
-                image = Image.open(iconpath)
-            except Exception:
-                image = None
-
-        if not image:
-            return None
-
-        try:    
-            image = ImageTk.PhotoImage(image)
-        except Exception:
-            image = None
-
-        if not image or not image.height():
-            g.es('Bad Toolbar Icon: %s' % path)
-            return None
-
-        self.iconCache[path] = image
-
-        return image
-
-    #@-node:bobjack.20080506182829.30:getImage
+        return baseClasses.getImage(path, iconBasePath)
+    #@-node:bobjack.20080614200920.16:getImage
     #@+node:bobjack.20080430064145.5:uniqueSlaveName
     def uniqueSlaveName(self):
 
@@ -2208,7 +2101,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 #@-node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
 #@-node:bobjack.20080424190906.6:Module-level
 #@+node:bobjack.20080511121543.9:class toolbarCommandClass
-class toolbarCommandClass(rClick.pluginCommandClass):
+class toolbarCommandClass(baseClasses.pluginCommandClass):
 
     """Base class for all commands defined in the toolbar.py plugin."""
 
@@ -2216,7 +2109,7 @@ class toolbarCommandClass(rClick.pluginCommandClass):
 #@nonl
 #@-node:bobjack.20080511121543.9:class toolbarCommandClass
 #@+node:bobjack.20080424195922.12:class pluginController
-class pluginController(rClick.basePluginController):
+class pluginController(baseClasses.basePluginController):
 
     """A per commander controller providing a toolbar manager."""
 

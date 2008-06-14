@@ -2089,8 +2089,9 @@ if not (mBody and mBody[0][1] == 'demo-count'):
 
 </t>
 <t tx="bobjack.20080504170620.1">toggle-iconbar</t>
-<t tx="bobjack.20080504170743.1"># execute this node as a script to remove
-# the toolbar button and menu item
+<t tx="bobjack.20080504170743.1"># this is housekeeping stuff and can be ignored
+
+# Use execute-script on the node to remove previous demo.
 
 for key, bar in c.frame.iconBars.iteritems():
     for btn in bar.buttons:
@@ -2170,9 +2171,9 @@ Right click the body pane to see the new menu items appear.
 
 
 </t>
-<t tx="bobjack.20080505055217.8"># This is house keeping stuff for the howto and can be ignored.
+<t tx="bobjack.20080505055217.8"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remvove demo menu items
+# Use execute-script on the node to remove previous demo.
 
 menu = c.context_menus['body']
 
@@ -2188,6 +2189,8 @@ except:
     pass
 </t>
 <t tx="bobjack.20080505055217.10"># this is housekeeping stuff and can be ignored
+
+# Use execute-script on the node to remove previous radio button demo.
 
 menu = c.context_menus['body']
 newmenu = []
@@ -2217,7 +2220,7 @@ except:
 g.oldCheckCallback = demo_check_callback</t>
 <t tx="bobjack.20080505090848.2"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remove demo items
+# Use execute-script on the node to remove previous check button demo.
 
 
 
@@ -2252,9 +2255,9 @@ g.oldRadioCallback = demo_radio_callback</t>
 <t tx="bobjack.20080505090848.6">Remove Button
 
 icon = Tango\16x16\actions\stop.png</t>
-<t tx="bobjack.20080507133937.2"># This is house keeping stuff for the howto and can be ignored.
+<t tx="bobjack.20080507133937.2"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remvove demo menu items
+# Use execute-script on the node to remove previous demo.
 
 menu = c.context_menus['body']
 
