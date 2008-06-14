@@ -4851,6 +4851,7 @@ class baseCommands:
                     p.v.clearMarked()
                     p.v.t.setDirty()
                     u.afterMark(p,undoType,bunch)
+                    changed = True
             dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
             if changed:
                 g.doHook("clear-all-marks",c=c,p=p,v=p)

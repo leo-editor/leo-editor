@@ -850,7 +850,7 @@ def init ():
 
     r = leoPlugins.registerHandler          
     r('after-create-leo-frame',onCreate)
-    r(('after-create-leo-frame', 'set-mark','clear-mark'), marksHandler)
+    r(('after-create-leo-frame', 'set-mark','clear-mark', 'clear-all-marks'), marksHandler)
     r('select2', recentHandler)
 
     g.plugin_signon(__name__)
