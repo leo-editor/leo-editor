@@ -98,6 +98,8 @@ def init():
 
         leoPlugins.registerHandler("after-create-leo-frame", on_create)
         g.plugin_signon(__name__)
+
+        return True
 #@nonl
 #@-node:bobjack.20080615065747.2:init
 #@+node:gfunch.20041207100416.5:class DateNodes
