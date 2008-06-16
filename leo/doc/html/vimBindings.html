@@ -263,8 +263,8 @@ hr { /* EKR */
 <li><a class="reference" href="#chapter-22-using-vim-bindings-with-leo" id="id1" name="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
 <li><a class="reference" href="#installing-vim-bindings" id="id2" name="id2">Installing vim bindings</a></li>
 <li><a class="reference" href="#general-commands" id="id3" name="id3">General commands</a></li>
-<li><a class="reference" href="#outline-commands" id="id4" name="id4">Outline commands</a></li>
-<li><a class="reference" href="#body-pane" id="id5" name="id5">Body pane</a></li>
+<li><a class="reference" href="#body-pane-commands" id="id4" name="id4">Body pane commands</a></li>
+<li><a class="reference" href="#outline-commands" id="id5" name="id5">Outline commands</a></li>
 </ul>
 </li>
 </ul>
@@ -274,10 +274,22 @@ hr { /* EKR */
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="installing-vim-bindings">
 <h2><a class="toc-backref" href="#id2">Installing vim bindings</a></h2>
+<p>To install vim bindings, move the node in leoSettings.leo called &quot;Vim bindings by TL&quot;
+so that it is not a descendant of the &quot;&#64;ignore Unused key bindings&quot; node.
+Then restart Leo.</p>
 </div>
 <div class="section" id="general-commands">
 <h2><a class="toc-backref" href="#id3">General commands</a></h2>
 <p>The following commands are always available.</p>
+<p>Scroll commands:</p>
+<pre class="literal-block">
+Ctrl-b  scroll-up
+Ctrl-f  scroll-down
+Ctrl-u  scroll-up       (should scroll 1/2 screen)
+Ctrl-d  scroll-down         ditto
+Ctrl-y  scroll-up       (should scroll 1 line)
+Ctrl-e  scroll-down         ditto
+</pre>
 <p>State change commands:</p>
 <pre class="literal-block">
 i       Change state to insert from command state
@@ -286,95 +298,139 @@ Esc     Change state to command from insert state
 </pre>
 <p>Miscellaneous commands:</p>
 <pre class="literal-block">
-:       Enter vi's command line
-Ctrl-:  Enter Leo's command line
+:e          Revert
+:w&lt;return&gt;  Save file
+:wq         Save and quit
+:q&lt;return&gt;  Quit
+
 Ctrl-s  Save '.leo' file
 u       Undo previous command
 Ctrl-r  Redo previous command
 Tab     Toggle focus between Outline and Body pane
 =       Simulate double-click on current node's icon box
 Alt-G   Go to specified line number (relative to derived file)
+ Z      save-buffers-kill-leo
 </pre>
 </div>
-<div class="section" id="outline-commands">
-<h2><a class="toc-backref" href="#id4">Outline commands</a></h2>
-<p>Outline navigation and manipulation are mapped to keys using vi's text
-navigation key mapping as a guide. Outline navigation commands can also be
-invoked while in the body pane's command mode. This reduces the keystrokes
-necessary to make changes to the body text of multiple nodes. Node headline
-editing uses vi's line editing key mappings.</p>
-<p>The following commands are supported when in a headline's command mode.</p>
-<p>State change commands:</p>
+<div class="section" id="body-pane-commands">
+<h2><a class="toc-backref" href="#id4">Body pane commands</a></h2>
+<p>Change commands:</p>
 <pre class="literal-block">
-Ctrl-i  Change state to command from grayed state
-return  Change state to command from insert state
-Ctrl-]  Change state to grayed from command state
+C           Change to end of line
+cc          Change to end of line
+cw          Change to end of word
+cb          Change to beginning of word
+c)          Delete to end of sentence
+c(          Delete to beginning of sentence
+c}          Delete to end of paragraph
+c{          Delete to beginning of paragraph
+c%          Change from current bracket type its matching bracket type
 </pre>
-<p>Go to node commands:</p>
+<p>Delete/join commands:</p>
 <pre class="literal-block">
-Ctrl-h  Go to parent
-Ctrl-j  Go to previous sibling
-Ctrl-k  Go to next sigling
-Ctrl-l  Go to first child, expanding the present node if needed.
-Ctrl-G  Go to the outline's last node
-gg      Go to the outline's first node
-</pre>
-<p><em>Note</em>: The bindings above can also be used while in the command state of the node's body.</p>
-<p>Scroll commands:</p>
-<pre class="literal-block">
-Ctrl-y  Scroll outline up one line   (also Ctrl-b, Ctrl-u)
-Ctrl-e  Scroll outline down one line (also Ctrl-f, Ctrl-d)
-</pre>
-<p>Move node commands:</p>
-<pre class="literal-block">
-Shift-Ctrl-h    Move node left
-Shift-Ctrl-l    Move node right
-Shift-Ctrl-j    Move node up
-Shift-Ctrl-k    Move node down
-</pre>
-<p>Mark node commands:</p>
-<pre class="literal-block">
-m       Mark or unmark the current node
-Ctrl-m  Go to next marked node
-Alt-m   Clear all marked nodes
-</pre>
-<p>Clone (transclude) node commands:</p>
-<pre class="literal-block">
-t       Clone node
-Ctrl-t  Go to next cloned node
-</pre>
-<p>Select headline text:</p>
-<pre class="literal-block">
-s       Select current character
-W       Select text to the end of the current word
-B       Select text to the beginning of the current word
-Shift-D Select to end of line
-</pre>
-<p>At present, the delete, yank, and change text object commands are not available.
-Instead, commands are provided to facilitate the selection of text which the
-user can follow with 'i', 'x', or 'y' to change, delete, or yank the text.</p>
-<p>Delete/Yank/Paste node commands:</p>
-<pre class="literal-block">
-Ctrl-x  Delete current node
-Ctrl-c  Yank current node
-Ctrl-v  Paste current node
-</pre>
-<p>Move cursor comamnds:</p>
-<pre class="literal-block">
-w   Go to next word
-b   Go to previous word
-e   Go to endo of word
-|   Go to Beginning of line
-$   Go to end of line
+dw          Delete to end of word
+db          Delete to beginning of word
+d)          Delete to end of sentence
+d(          Delete to beginning of sentence
+d}          Delete to end of paragraph
+d{          Delete to start of paragraph
+d%          Delete from current bracket type to its apposing bracket
+dt&lt;ch&gt;      Delete to character (not limited to current line)
+D           Delete to the end of the current line
+x           delete-char
+delete      delete-char
+J           Join next line to end of current line
 </pre>
 <p>Find commands:</p>
 <pre class="literal-block">
-f   Find character
+/           search-forward
+?           search-backward
+f           find-character
+F           backward-find-character
+n           find-next
+N           find-prev
 </pre>
-</div>
-<div class="section" id="body-pane">
-<h2><a class="toc-backref" href="#id5">Body pane</a></h2>
-<p>All vi text navigation and editing functionality has been implemented except for the following.</p>
+<p>Indent/Unindent line commands:</p>
+<pre class="literal-block">
+&gt;&gt;          Indent line
+&gt;)          Indent to end of sentence
+&gt;(          Indent to beginning of sentence
+&gt;}          Indent to end of paragraph
+&gt;{          Indent to beginning of paragraph
+&gt;g          Indent to start of buffer
+&gt;G          Indent to end of buffer
+&lt;&lt;          Unindent current line
+&lt;)          Unindent to end of sentence
+    &lt;(          Unindent to beginning of sentence
+    &lt;}          Unindent to end of paragraph
+&lt;{          Unindent to beginning of paragraph
+</pre>
+<p>Insert/substitute commands:</p>
+<pre class="literal-block">
+a           Insert at cursor
+A           Insert at end of line
+i           Insert at cursor
+I           Insert at first non-space
+o           Open new line below current line
+O           Open new line above current line
+R           Overwrite text
+s           Substitute character (Delete character, enter insert state)
+S           Substitute line (Delete line, enter insert state)
+</pre>
+<p>Move cursor commands:</p>
+<pre class="literal-block">
+^           back-to-indentation
+$           Goto end of current line
+%           match-brackets
+|           Goto beginning of current line
+(           back-sentence
+)           forward-sentence
+{           back-paragraph
+}           forward-paragraph
+-           Goto beginning of current line
+b           back-word
+B           back-word
+e           forward-end-word
+E           forward-end-word
+gg          beginning-of-buffer
+G           end-of-buffer (at beginning-of-line)
+h           back-char
+j           next-line
+k           previous-line
+l           forward-char
+w           forward-word (no before/after support)
+W           forward-word
+Ctrl-g      goto-line
+DnArrow     next-line
+LtArrow     back-char
+RtArrow     forward-char
+UpArrow     previous-line
+</pre>
+<p>Window commands:</p>
+<pre class="literal-block">
+Ctrl-w s    add-editor           = s   (split current window)
+Ctrl-w n    add-editor           = n   (should open &quot;New&quot; blank window)
+Ctrl-w w    cycle-editor-focus   = w
+Ctrl-w p    cycle-editor-focus   = p
+Ctrl-w c    delete-editor        = c
+Ctrl-w q    delete-editor        = q
+</pre>
+<p>Yank/paste text commands:</p>
+<pre class="literal-block">
+Y           Yank to end of line
+yy          Yank line
+yw          Yank to beginning of next word
+yb          Yank to beginning of current word
+y)          Yank to end of sentence
+y(          Yank to beginning of sentence
+y}          Yank to end of paragraph
+y{          Yank to beginning of paragraph
+y%          Yank from current bracket type to its opposing bracket
+Alt-y       Yank selected text
+v           toggle-extend-mode
+p           paste-text  (To paste a line before current: use '-p')
+P           Paste text before cursor
+</pre>
 <p>The following vi commands are <strong>not</strong> supported in the Body pane:</p>
 <pre class="literal-block">
 cf&lt;char&gt;    Change up to and including specified character
@@ -401,6 +457,86 @@ Ctrl-y      Slide buffer down (leaving cursor on same line)
 z           Slide buffer to put current line at top
 z.          Slide buffer to put current line at middle
 z-          Slide buffer to put current line at bottom
+</pre>
+</div>
+<div class="section" id="outline-commands">
+<h2><a class="toc-backref" href="#id5">Outline commands</a></h2>
+<p>The following commands are supported when in a headline's command mode.</p>
+<p>Headline editing commands:</p>
+<pre class="literal-block">
+|               Go to Beginning of line
+$               Go to end of line
+%               match-brackets
+/               search-forward
+RtArrow         back-char
+b               back-word
+B               back-word-extend-selection
+C               end-of-line-extend-selection
+D               end-of-line-extend-selection           (Temporary workaround)
+db              delete to beginning of word
+dd              kill-line
+dt&lt;ch&gt;          delete to character
+dw              Delete to end of word
+delete          delete-char
+e               forward-end-word
+E               forward-end-word-extend-selection
+f               Find character
+F               backward-find-character
+h               back-char
+l               forward-char
+RtArrow         forward-char
+n               find-next
+N               find-prev
+s               forward-char-extend-selection
+s               Select current character
+S               select-all
+v               toggle-extend-mode
+w               forward-word
+W               forward-word-extend-selection
+x               delete-char
+Y               end-of-line-extend-selection
+Alt-y           copy-text
+</pre>
+<!-- c   enter-tree-select-object-mode -->
+<p>Node commands:</p>
+<pre class="literal-block">
+G               Go to the outline's last node
+gg              Go to the outline's first node
+m               Toggle node mark
+t               Clone (transclude) node
+
+Alt-m           Clear all marked nodes
+Ctrl-c          Yank node
+Ctrl-h          contract-or-go-left
+Ctrl-j          Go to next visible node
+Ctrl-k          Go to previous visible node
+Ctrl-l          expand-and-go-right
+Ctrl-m          Go to next marked node
+Ctrl-t          Go to next cloned node
+Ctrl-O          Insert-node
+Ctrl-x          Delete node
+Ctrl-v          Paste node
+
+Shift-Ctrl-k    Move node down
+Shift-Ctrl-h    Move node left
+Shift-Ctrl-l    Move node right
+Shift-Ctrl-j    Move node up
+
+Shift-Ctrl-DnArrow    Move node down
+Shift-Ctrl-LtArrow    Move node left
+Shift-Ctrl-RtArrow    Move node right
+Shift-Ctrl-UpArrow    Move node up
+
+DnArrow         Go to next visible node
+UpArrow         Go to previous visible node
+Ctrl-LtArrow    expand-or-go-left
+Ctrl-RtArrow    contract-or-go-left
+</pre>
+<p>State change commands:</p>
+<pre class="literal-block">
+Ctrl-i          Change state to command from grayed state
+return          Change state to command from insert state
+Ctrl-]          Change state to grayed from command state
 </pre>
 <hr class="docutils" />
 <p><a class="reference" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>

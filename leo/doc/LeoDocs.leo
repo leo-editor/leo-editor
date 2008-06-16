@@ -806,8 +806,8 @@
 <v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
 <v t="ekr.20080611105410.7"><vh>General commands</vh></v>
+<v t="ekr.20080611105410.9"><vh>Body pane commands</vh></v>
 <v t="ekr.20080611105410.8"><vh>Outline commands</vh></v>
-<v t="ekr.20080611105410.9"><vh>Body pane</vh></v>
 <v t="ekr.20080611105410.156"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -2946,8 +2946,8 @@
 <v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
 <v t="ekr.20080611105410.7"><vh>General commands</vh></v>
+<v t="ekr.20080611105410.9"><vh>Body pane commands</vh></v>
 <v t="ekr.20080611105410.8"><vh>Outline commands</vh></v>
-<v t="ekr.20080611105410.9"><vh>Body pane</vh></v>
 <v t="ekr.20080611105410.156"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -30228,6 +30228,15 @@ Code limitations:
     | commands are modified to only select text.</t>
 <t tx="ekr.20080611105410.7">The following commands are always available.
 
+Scroll commands::
+
+    Ctrl-b  scroll-up
+    Ctrl-f  scroll-down
+    Ctrl-u  scroll-up       (should scroll 1/2 screen)
+    Ctrl-d  scroll-down         ditto
+    Ctrl-y  scroll-up       (should scroll 1 line)
+    Ctrl-e  scroll-down         ditto
+
 State change commands::
 
     i       Change state to insert from command state
@@ -30236,92 +30245,215 @@ State change commands::
 
 Miscellaneous commands::
 
-    :       Enter vi's command line
-    Ctrl-:  Enter Leo's command line
+    :e          Revert
+    :w&lt;return&gt;  Save file
+    :wq         Save and quit
+    :q&lt;return&gt;  Quit
+
     Ctrl-s  Save '.leo' file
     u       Undo previous command
     Ctrl-r  Redo previous command
     Tab     Toggle focus between Outline and Body pane
     =       Simulate double-click on current node's icon box
     Alt-G   Go to specified line number (relative to derived file)
+     Z      save-buffers-kill-leo
 </t>
-<t tx="ekr.20080611105410.8">Outline navigation and manipulation are mapped to keys using vi's text
-navigation key mapping as a guide. Outline navigation commands can also be
-invoked while in the body pane's command mode. This reduces the keystrokes
-necessary to make changes to the body text of multiple nodes. Node headline
-editing uses vi's line editing key mappings.
+<t tx="ekr.20080611105410.8">The following commands are supported when in a headline's command mode.
 
-The following commands are supported when in a headline's command mode.
+Headline editing commands::
 
-State change commands::
+    |               Go to Beginning of line 
+    $               Go to end of line
+    %               match-brackets
+    /               search-forward
+    RtArrow         back-char
+    b               back-word
+    B               back-word-extend-selection
+    C               end-of-line-extend-selection
+    D               end-of-line-extend-selection           (Temporary workaround)
+    db              delete to beginning of word
+    dd              kill-line 
+    dt&lt;ch&gt;          delete to character   
+    dw              Delete to end of word
+    delete          delete-char
+    e               forward-end-word
+    E               forward-end-word-extend-selection
+    f               Find character
+    F               backward-find-character
+    h               back-char
+    l               forward-char
+    RtArrow         forward-char
+    n               find-next
+    N               find-prev
+    s               forward-char-extend-selection
+    s               Select current character
+    S               select-all
+    v               toggle-extend-mode
+    w               forward-word
+    W               forward-word-extend-selection
+    x               delete-char
+    Y               end-of-line-extend-selection
+    Alt-y           copy-text   
+    
+..  c   enter-tree-select-object-mode  
 
-    Ctrl-i  Change state to command from grayed state
-    return  Change state to command from insert state
-    Ctrl-]  Change state to grayed from command state
+Node commands::
 
-Go to node commands::
+    G               Go to the outline's last node
+    gg              Go to the outline's first node
+    m               Toggle node mark
+    t               Clone (transclude) node
 
-    Ctrl-h  Go to parent
-    Ctrl-j  Go to previous sibling
-    Ctrl-k  Go to next sigling
-    Ctrl-l  Go to first child, expanding the present node if needed.
-    Ctrl-G  Go to the outline's last node
-    gg      Go to the outline's first node
-                                   
-*Note*: The bindings above can also be used while in the command state of the node's body.
+    Alt-m           Clear all marked nodes
+    Ctrl-c          Yank node
+    Ctrl-h          contract-or-go-left
+    Ctrl-j          Go to next visible node
+    Ctrl-k          Go to previous visible node
+    Ctrl-l          expand-and-go-right
+    Ctrl-m          Go to next marked node
+    Ctrl-t          Go to next cloned node
+    Ctrl-O          Insert-node
+    Ctrl-x          Delete node
+    Ctrl-v          Paste node
 
-Scroll commands::
-
-    Ctrl-y  Scroll outline up one line   (also Ctrl-b, Ctrl-u)
-    Ctrl-e  Scroll outline down one line (also Ctrl-f, Ctrl-d)
-
-Move node commands::
-
+    Shift-Ctrl-k    Move node down
     Shift-Ctrl-h    Move node left
     Shift-Ctrl-l    Move node right
     Shift-Ctrl-j    Move node up
-    Shift-Ctrl-k    Move node down
 
-Mark node commands::
+    Shift-Ctrl-DnArrow    Move node down
+    Shift-Ctrl-LtArrow    Move node left
+    Shift-Ctrl-RtArrow    Move node right
+    Shift-Ctrl-UpArrow    Move node up
 
-    m       Mark or unmark the current node
-    Ctrl-m  Go to next marked node
-    Alt-m   Clear all marked nodes
+    DnArrow         Go to next visible node
+    UpArrow         Go to previous visible node
+    Ctrl-LtArrow    expand-or-go-left
+    Ctrl-RtArrow    contract-or-go-left
 
-Clone (transclude) node commands::
+State change commands::
 
-    t       Clone node
-    Ctrl-t  Go to next cloned node
+    Ctrl-i          Change state to command from grayed state
+    return          Change state to command from insert state
+    Ctrl-]          Change state to grayed from command state
 
-Select headline text::
+</t>
+<t tx="ekr.20080611105410.9">Change commands::
 
-    s       Select current character
-    W       Select text to the end of the current word
-    B       Select text to the beginning of the current word
-    Shift-D Select to end of line
+    C           Change to end of line
+    cc          Change to end of line
+    cw          Change to end of word
+    cb          Change to beginning of word
+    c)          Delete to end of sentence
+    c(          Delete to beginning of sentence
+    c}          Delete to end of paragraph
+    c{          Delete to beginning of paragraph
+    c%          Change from current bracket type its matching bracket type
     
-At present, the delete, yank, and change text object commands are not available.
-Instead, commands are provided to facilitate the selection of text which the
-user can follow with 'i', 'x', or 'y' to change, delete, or yank the text.
+Delete/join commands::
 
-Delete/Yank/Paste node commands::
-
-    Ctrl-x  Delete current node
-    Ctrl-c  Yank current node
-    Ctrl-v  Paste current node
-
-Move cursor comamnds::
-
-    w   Go to next word
-    b   Go to previous word
-    e   Go to endo of word
-    |   Go to Beginning of line
-    $   Go to end of line
-
+    dw          Delete to end of word
+    db          Delete to beginning of word
+    d)          Delete to end of sentence
+    d(          Delete to beginning of sentence
+    d}          Delete to end of paragraph
+    d{          Delete to start of paragraph
+    d%          Delete from current bracket type to its apposing bracket
+    dt&lt;ch&gt;      Delete to character (not limited to current line)
+    D           Delete to the end of the current line
+    x           delete-char
+    delete      delete-char
+    J           Join next line to end of current line
+    
 Find commands::
 
-    f   Find character</t>
-<t tx="ekr.20080611105410.9">All vi text navigation and editing functionality has been implemented except for the following.
+    /           search-forward
+    ?           search-backward
+    f           find-character
+    F           backward-find-character
+    n           find-next
+    N           find-prev
+
+Indent/Unindent line commands::
+
+    &gt;&gt;          Indent line
+    &gt;)          Indent to end of sentence
+    &gt;(          Indent to beginning of sentence
+    &gt;}          Indent to end of paragraph
+    &gt;{          Indent to beginning of paragraph
+    &gt;g          Indent to start of buffer
+    &gt;G          Indent to end of buffer
+    &lt;&lt;          Unindent current line
+    &lt;)          Unindent to end of sentence
+	&lt;(          Unindent to beginning of sentence
+	&lt;}          Unindent to end of paragraph
+    &lt;{          Unindent to beginning of paragraph
+    
+Insert/substitute commands::
+    
+    a           Insert at cursor
+    A           Insert at end of line
+    i           Insert at cursor
+    I           Insert at first non-space
+    o           Open new line below current line
+    O           Open new line above current line
+    R           Overwrite text
+    s           Substitute character (Delete character, enter insert state)
+    S           Substitute line (Delete line, enter insert state)
+    
+Move cursor commands::
+
+    ^           back-to-indentation
+    $           Goto end of current line
+    %           match-brackets
+    |           Goto beginning of current line
+    (           back-sentence
+    )           forward-sentence
+    {           back-paragraph
+    }           forward-paragraph
+    -           Goto beginning of current line
+    b           back-word
+    B           back-word
+    e           forward-end-word
+    E           forward-end-word
+    gg          beginning-of-buffer
+    G           end-of-buffer (at beginning-of-line)
+    h           back-char
+    j           next-line
+    k           previous-line
+    l           forward-char
+    w           forward-word (no before/after support)
+    W           forward-word
+    Ctrl-g      goto-line
+    DnArrow     next-line
+    LtArrow     back-char
+    RtArrow     forward-char
+    UpArrow     previous-line
+    
+Window commands::
+
+    Ctrl-w s    add-editor           = s   (split current window)
+    Ctrl-w n    add-editor           = n   (should open "New" blank window)
+    Ctrl-w w    cycle-editor-focus   = w
+    Ctrl-w p    cycle-editor-focus   = p
+    Ctrl-w c    delete-editor        = c
+    Ctrl-w q    delete-editor        = q
+    
+Yank/paste text commands::
+
+    Y           Yank to end of line
+    yy          Yank line
+    yw          Yank to beginning of next word
+    yb          Yank to beginning of current word
+    y)          Yank to end of sentence
+    y(          Yank to beginning of sentence
+    y}          Yank to end of paragraph
+    y{          Yank to beginning of paragraph
+    y%          Yank from current bracket type to its opposing bracket
+    Alt-y       Yank selected text
+    v           toggle-extend-mode
+    p           paste-text  (To paste a line before current: use '-p')
+    P           Paste text before cursor
 
 The following vi commands are **not** supported in the Body pane::
 
@@ -30349,7 +30481,6 @@ The following vi commands are **not** supported in the Body pane::
     z           Slide buffer to put current line at top
     z.          Slide buffer to put current line at middle
     z-          Slide buffer to put current line at bottom
-    
 </t>
 <t tx="ekr.20080611105410.147">@language rest
 </t>
@@ -30458,7 +30589,9 @@ paste-text in modes:
 
 delete-node does not copy node to clipboard:
 | Issue copy-node command followed by delete-node</t>
-<t tx="ekr.20080611105410.152"></t>
+<t tx="ekr.20080611105410.152">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
+so that it is not a descendant of the "@ignore Unused key bindings" node.
+Then restart Leo.</t>
 <t tx="ekr.20080611105410.155">.. Links
 
 .. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
