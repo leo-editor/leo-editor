@@ -17,7 +17,7 @@ but may be used in other plugins.
 #@@language python
 #@@tabwidth -4
 
-__version__ = '0.1'
+__version__ = '0.2'
 #@<< version history >>
 #@+node:bobjack.20080614200920.9:<< version history >>
 #@@killcolor
@@ -25,6 +25,8 @@ __version__ = '0.1'
 # 
 # 0.1 bobjack:
 #     - initial version
+# 0.2 bobjack:
+#     - seperated defaultContextMenus data from setDefaultContextMenus method
 #@-at
 #@nonl
 #@-node:bobjack.20080614200920.9:<< version history >>
@@ -115,6 +117,11 @@ class pluginCommandClass(object):
 
     """Base class for commands defined in plugins."""
 
+
+    showLabel = "Show %s\nicon=Tango/16x16/actions/add.png"
+    hideLabel = "Hide %s\nicon=Tango/16x16/actions/remove.png"
+
+
     def __init__(self, controller, **keys):
 
         self.c = controller.c
@@ -145,6 +152,14 @@ class pluginCommandClass(object):
 
     phase = property(getPhase)
     #@-node:bobjack.20080513085207.5:phase
+    #@+node:bobjack.20080617170156.12:menu_table
+    def getMenuTable(self):
+
+        return self.keywords.get('rc_menu_table')
+
+    menu_table = menuTable = property(getMenuTable) 
+
+    #@-node:bobjack.20080617170156.12:menu_table
     #@+node:bobjack.20080516105903.108:item_data
     def getItemData(self):
 
@@ -156,12 +171,27 @@ class pluginCommandClass(object):
     item_data = property(getItemData)
     #@nonl
     #@-node:bobjack.20080516105903.108:item_data
+    #@+node:bobjack.20080618115559.12:iconBars
+    def getIconBars(self):
+
+        return self.c.frame.iconBars
+
+    iconBars = property(getIconBars)
+    #@-node:bobjack.20080618115559.12:iconBars
     #@-node:bobjack.20080513085207.4:Properties
     #@+node:bobjack.20080513085207.6:phaseError
     def phaseError(self):
 
         g.es_error('command not valid in phase: %s'%self.phase)
     #@-node:bobjack.20080513085207.6:phaseError
+    #@+node:bobjack.20080618115559.11:assertPhase
+    def assertPhase(self, *args):
+
+        if self.phase in args:
+            return True
+
+        self.phaseError()
+    #@-node:bobjack.20080618115559.11:assertPhase
     #@+node:bobjack.20080513085207.7:minibufferPhaseError
     def minibufferPhaseError(self):
 
@@ -169,6 +199,19 @@ class pluginCommandClass(object):
             self.phaseError()
             return True
     #@-node:bobjack.20080513085207.7:minibufferPhaseError
+    #@+node:bobjack.20080618115559.16:showNamedBar
+    def showNamedBar(self, barName='iconbar', show=True):
+
+        bar = self.c.frame.iconBars.get(barName)
+
+        if bar:
+            bar.visible = show
+    #@-node:bobjack.20080618115559.16:showNamedBar
+    #@+node:bobjack.20080618181754.2:getNamedBar
+    def getNamedBar(self, barName='iconbar', show=True):
+
+        return self.c.frame.iconBars.get(barName)
+    #@-node:bobjack.20080618181754.2:getNamedBar
     #@-others
 #@-node:bobjack.20080511155621.3:class pluginCommandClass
 #@+node:bobjack.20080323045434.14:class basePluginController
@@ -203,9 +246,23 @@ class basePluginController(object):
 
         c = self.c
 
+        self.preCreate()
+
         self.registerCommands()
         self.setDefaultContextMenus()
+
+        self.postCreate()
     #@-node:bobjack.20080423205354.3:onCreate
+    #@+node:bobjack.20080617170156.9:preCreate
+    def preCreate(self, *args, **kw):
+
+        pass
+    #@-node:bobjack.20080617170156.9:preCreate
+    #@+node:bobjack.20080617170156.8:postCreate
+    def postCreate(self, *args, **kw):
+
+        pass
+    #@-node:bobjack.20080617170156.8:postCreate
     #@+node:bobjack.20080424195922.7:onClose
     def onClose(self):
         """Clean up and prepare to die."""
@@ -280,13 +337,46 @@ class basePluginController(object):
 
         return self.commandList
     #@-node:bobjack.20080423205354.5:getCommandList
-    #@+node:bobjack.20080516105903.77:setDeafaultContextMenus
+    #@+node:bobjack.20080617170156.4:setDeafaultContextMenus
     def setDefaultContextMenus(self):
 
-        pass
+        """Set menus for context menus that have not been defined in @popup menus."""
 
+        c = self.c
 
-    #@-node:bobjack.20080516105903.77:setDeafaultContextMenus
+        for k, v in self.defaultContextMenus.iteritems():
+            if k in c.context_menus:
+                continue
+            c.context_menus[k] = v
+
+    #@-node:bobjack.20080617170156.4:setDeafaultContextMenus
+    #@+node:bobjack.20080617170156.5:copyMenuTable
+    def copyMenuTable(self, menu_table):
+
+        """make a copy of the menu_table and make copies of its submenus.
+
+        It is the menu lists that are being copied we are not deep copying
+        objects contained in those lists.
+
+        """
+
+        def _deepcopy(menu):
+
+            table = []
+            for item in menu:
+                label, cmd = item
+                if isinstance(cmd, list):
+                    cmd = _deepcopy(cmd)
+                    item = (label, cmd)
+                table.append(item)
+
+            return table
+
+        newtable =  _deepcopy(menu_table)
+
+        return newtable
+
+    #@-node:bobjack.20080617170156.5:copyMenuTable
     #@-node:bobjack.20080323045434.15:__init__
     #@+node:bobjack.20080614200920.14:getImage
     def getImage(self, path, iconBasePath=None):
