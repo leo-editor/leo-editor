@@ -202,7 +202,7 @@ See the compound widgets and drag handles howto in test/testToolbar.leo
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.10"
+__version__ = "0.11"
 __plugin_name__ = 'Toolbar Manager'
 __plugin_id__ = 'Toolbar'
 
@@ -243,6 +243,8 @@ controllers = {}
 #     - attempt to improve docstring
 #     - add ToolbarIconWidgetFrame and convenience methods to make
 #       creating compound widgets for the iconbars easier.
+# 0.11 bobjack:
+#     - use baseclasses in rclickPluginBaseClasses
 # 
 # 
 # 
@@ -252,6 +254,11 @@ controllers = {}
 #@<< todo >>
 #@+node:bobjack.20080424190906.14:<< todo >>
 #@+at
+# 
+# Use a more efficent repack algorithm to reduce flicker. The current method 
+# is
+# simple and safe. I have tried to optimize repack but keep running into
+# special cases and instability.
 #@-at
 #@nonl
 #@-node:bobjack.20080424190906.14:<< todo >>
@@ -300,6 +307,7 @@ import rClickBasePluginClasses as baseClasses
 requiredIvars = (
     ('commandList', (list, tuple)),
     ('commandPrefix', basestring),
+    ('grabWidget', False)
 )
 #@nonl
 #@-node:bobjack.20080424195922.85:<< required ivars >>
@@ -2138,6 +2146,8 @@ class pluginController(baseClasses.basePluginController):
         super(self.__class__, self).__init__(c)
 
         self.commandPrefix = 'toolbar'
+
+        self.grabWidget = None
 
 
 

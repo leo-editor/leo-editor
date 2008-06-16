@@ -520,7 +520,7 @@ command to handle check and radio items, using rclick-button as a template.
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.36"
+__version__ = "1.37"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -633,6 +633,10 @@ __plugin_name__ = 'Right Click Menus'
 #     - seperate out base classes pluginCommandClass and basePluginController
 # 1.36 EKR:
 #     - convert menu.add_command to c.add_command
+# 1.37 bobjack:
+#     - remove base classes to a seperate file so toolbar can be independant 
+# of rClick
+#     - modify menu config to remove rClick load order sensitivity
 # 
 # 
 # 
@@ -645,6 +649,16 @@ __plugin_name__ = 'Right Click Menus'
 # TODO:
 # 
 # - extend support to other leo widgets
+# 
+#     - allow rClick menus for log tabs
+# 
+#     - menu for minibuffer label/widget
+# 
+#     - menu for status line
+# 
+#     - menus for spell tab objects
+# 
+#     - menus for colors tab objects
 # 
 # - provide rclick-gen-open-with-list and @popup open-with-menu
 # 
