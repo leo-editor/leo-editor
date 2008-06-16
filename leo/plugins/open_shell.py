@@ -74,6 +74,8 @@ def init ():
         leoPlugins.registerHandler("after-create-leo-frame", onCreate)
 
         g.plugin_signon(__name__)
+
+        return True
 #@nonl
 #@-node:ekr.20060107110126:init
 #@+node:ekr.20060107110126.1:onCreate
