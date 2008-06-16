@@ -48,7 +48,6 @@ __version__ = "0.7"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import leo.core.leo as leo
 import os
 import sys
 #@nonl
