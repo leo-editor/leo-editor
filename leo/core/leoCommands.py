@@ -4851,6 +4851,7 @@ class baseCommands:
                     p.v.clearMarked()
                     p.v.t.setDirty()
                     u.afterMark(p,undoType,bunch)
+                    changed = True
             dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
             if changed:
                 g.doHook("clear-all-marks",c=c,p=p,v=p)
@@ -6193,11 +6194,11 @@ class baseCommands:
                 g.trace('can not happen: no "command" arg')
         #@-node:ekr.20080610085158.2:c.add_command
         #@+node:ekr.20080610085158.3:c.bind and c.bind2
-        def bind (self,w,pattern,func):
+        def bind (self,w,pattern,func,add=None):
 
             c = self
 
-            def bindCallback(event,c=c,func=func):
+            def bindCallback(event,c=c,func=func,add=add):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
@@ -6205,11 +6206,11 @@ class baseCommands:
 
             w.bind(pattern,bindCallback)
 
-        def bind2 (self,w,pattern,func,**keys):
+        def bind2 (self,w,pattern,func,add=None,**keys):
 
             c = self
 
-            def bindCallback(event,c=c,func=func):
+            def bindCallback(event,c=c,func=func,add=add):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()

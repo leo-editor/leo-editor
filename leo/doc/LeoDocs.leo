@@ -593,6 +593,7 @@
 <v t="ekr.20050912125735.1050"><vh>nodenavigator.py</vh></v>
 <v t="ekr.20050912125735.1072"><vh>searchbox.py</vh></v>
 <v t="ekr.20060603081045"><vh>shortcut_button.py</vh></v>
+<v t="bobjack.20080613141524.2"><vh>toolbar.py</vh></v>
 <v t="ekr.20050912125735.1092"><vh>UNL.py</vh></v>
 </v>
 <v t="ekr.20050912125735.2786"><vh>LeoN</vh></v>
@@ -5097,6 +5098,24 @@ made to keep it working on Windows as well.
 
 Work on this project has now halted in favor of a gtkLeo plugin.
 
+</t>
+<t tx="bobjack.20080613141524.2">A plugin that enhances Leo's iconBar and script buttons.
+
+
+This plugin provides:
+
+    multiple iconBars each of which automatically collapse and
+    expand so that all the buttons are always visible.
+
+    drag and drop of buttons within and between iconBars.
+
+    enhancements to Leo's buttons and @button settings to allow
+    icons, menus, tooltips and text and background colors to be set
+    in @button settings and scripts. 
+
+
+see test/testToolbar.leo for demo's and howto's
+see test/testAtPopup.leo for examples of enhanced buttons
 </t>
 <t tx="edream.110203163054.46">@language rest</t>
 <t tx="edream.110203163054.48">@ @rst-options
@@ -15864,7 +15883,19 @@ You can do this as a standard plugin, but as an AutoTrees handler you,
 <t tx="ekr.20050912125735.874">Handles images in body text. Based on work by Gil Shwartz. Brent Burley provided
 many important insights. See:
 http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52264</t>
-<t tx="ekr.20050912125735.880">Create a context menu when right-clicking in the body pane.</t>
+<t tx="ekr.20050912125735.880">This plugin provides a simple but powerful and flexible system of managing
+scriptable context menus.
+
+Named menus defined in scripts or @popup &lt;name&gt; settings can be associated with any widget.
+
+Menu items may have icons and the foreground/background colors can be set in @popup settings.
+
+Full details can be found in the plugins docstring.
+
+Many executable howto's, demos and examples can be found in::
+
+    test/testAtPopup.leo
+</t>
 <t tx="ekr.20050912125735.904">Autocompletion and calltips plugin.
 
 - ``.`` summons the autocompletion.
