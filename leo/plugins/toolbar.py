@@ -1347,7 +1347,10 @@ class ToolbarScriptingController(scripting, object):
         )
 
         def addScriptButtonCallback(event=None, self=self, b=b):
-            return self.addScriptButtonCommand(event, b)
+            val = self.addScriptButtonCommand(event, b)
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
 
         b.configure(command=addScriptButtonCallback)
     #@+node:bobjack.20080428114659.13:addScriptButtonCommand
