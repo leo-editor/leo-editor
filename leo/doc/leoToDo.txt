@@ -9,110 +9,94 @@
 #@+node:ekr.20080603052650.466:Fix vim problems
 @nocolor
 
-1. Focus to Body pane (Major problem / Easy to fix?):
+Problems
 
-Modes always return with the focus put to the body pane even if edit-
-headline command was called.   This prevents most node navigation and
-editing commands from working.  The problem is due to the exit-named-
-mode command, which is used in most modes, calling the "endMode"
-function in leoKeys.py which calls the deleteTab function.  The
-deleteTab function sets the focus to the body pane.  The deleteTab
-function should return focus back to the pane that was in focus when
-the function was called.
+	Binding numeric keys:
+	| Mapping a number to a command or mode prevents the number from being
+	| entered as text while in the insert state.
 
-2. Editing headlines within modes (Major problem / Difficult to fix?):
+	Binding '?' key:
+	| No response when key pressed.
 
-Commands that modify or select headline text correctly when bound
-directly to a key will, when executed from within a mode bound to that
-same key, modify or select the body text.  This prevents most of vi's
-delete, change, substitute, and yank commands from working.
+	Binding 'bksp' key:
+	| Binding 'bksp' key to back-char to move back a character in command mode
+	| prevents 'bksp' from deleting characters in text edit mode.
 
-3. Commands getting user input (Medium problem / moderate to fix?)
+	Commands getting user input:
+	| Commands requesting user input must be the last command executed.  These
+	| commands include: find-character and zap-to-character.
 
-Any commands that request user input will exit the mode immediately
-after the input is received.  This prevents vi commands that will copy
-or replace text up to a user specified character.  For example, key
-sequence 'stw' should "Substitute the text from the current cursor
-position up To the letter 'w'".  This can be done within a mode using
-a zap-to-character command followed by a set-insert-state command.  It
-never executes the set-insert-state command because the zap-to-
-character command asks the user for a character (the 'w').
+	Editing headlines within modes:
+	| Text editing commands do not work within modes assigned to outline key
+	| mappings.
 
-4. Repeat last command using the period
+	Undo command:
+	| The 'undo' command sometimes does not work when returning to a node's
+	| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
 
-Binding keys within nodes:
-Some commands can be "easily" repeated by having the command's mode
-bind itself to the period key.  This is not currently working.
+	Matching bracket command:
+	| Performs bracket matching on Body text when in node's headline command
+	| state.
 
-Support commands requesting input:
-Add companion commands that reuse input.  For example, a zap-to-
-character-again command could exist which will reuse the key entered
-in the last zap-to-character command.  With this support, the mode
-that performs the initial command would assign the period key to a
-companion mode that is identical to the initial mode but with the zap-
-to-character command replaced by the zap-to-character-again command.
-Commands requiring companion commands are:
-  zap-to-character
-  find-character
-  backward-find-character
-  (Any others?)
-Note: The copy of the character should be saved somewhere that does
-NOT affect the contents of the clipboard.
-Note: The same or a separate storage location can be used for all
-commands to retain a copy of the character entered by the user.  It
-doesn't matter since only the last command is assigned to the period
-key to be re-executed.
+	Word definition:
+	| "Word" related commands determine boundries of a word differently.
+
+	Toggle case:
+	| Leo provides support for switching to upper or lower case but no method |
+	| exists to toggle between cases.
+
+	Find settings
+	| Leo commands only allow toggling of search settings.  If specific "set"
+	| and "clear" search setting commands were available then searches from the
+	| body pane could be restricted to the body pane and searches from the
+	| outline could be restricted to the outline.
+	Forward and backward sentences:
+	| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+	| at empty lines nor do they skip over periods within words nor do they stop
+	| at sentences ending in non-periods nor do they stop at the end or
+	| beginning of the buffer.
+
+	Focus to Body pane:
+	| Leo functions exist which unconditionally set focus to the body pane
+	| regardless of the active pane.
+		deleteTab() function:
+			| Issuing "--> exit-named-mode" calls "endMode" function which calls
+			| "c.frame.log.deleteTab('Mode')" function which sets the focus to the
+			| body pane.  
+
+	Displaying mode help:
+	| The "--> mode-help" command displays all mapped keys using a capitol
+	| letter regardless of the actual binding.
+		Recommendations:
+		| To better support narrow tab cards, display the mode's label without
+		| the "enter-" and "-mode" text and place key label before mode label.
+		| Results in change from:
+		|                enter-vi-delete-line-mode D
+		|    enter-vi-delete-to-begin-of-word-mode B 
+		| to:
+		|    D : vi-delete-line
+		|    B : vi-delete-to-begin-of-word
+
+Notes:
+	Yank vs. Yank
+	| A vi "yank" operation copies the selected text TO the clipboard.
+	| A Leo "yank" operation inserts text FROM the clipboard.
+
+	copy-text in modes:
+	| Leo's copy-text does not work within a mode.  As a result, all "copy to
+	| clipboard" capability is being implemented using kill-<object> command
+	| followed by a "yank" command.
+
+	paste-text in modes:
+	| paste-text in modes does not work.  Use Leo's "yank" instead.
+
+	delete-node does not copy node to clipboard:
+	| Issue copy-node command followed by delete-node
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
 
 @color
-#@nonl
-#@+node:ekr.20080611105410.143:Add/test all vim patches
-@nocolor
-#@nonl
-#@+node:ekr.20080611105410.144:Outline
-Outline Patches:
-
-The following patch is needed for the vi outline commands to work.
-
-Prevent "--> exit-named-modes" from switching focus to the Body pane.
-| Remove the call to "deleteTab" (see "Focus to Body pane" problem).
-| Don't create "Mode" tabs by not using "--> mode-help" commands (see
-| "Displaying mode help" problem).
-    Function: endMode (File: core\leoKeys.py)
-    | Remove the following line:
-    |     c.frame.log.deleteTab('Mode')
-#@nonl
-#@-node:ekr.20080611105410.144:Outline
-#@+node:ekr.20080611105410.145:Body pane
-The following patches are recommended to enhance vi functionality within the body pane.
-
-- Enable search for 'space' character in text
-
-Commands 'f<char>' and 'dt<char>' should support specifying space character.
-    Function: zapToCharacter (File: leoEditCommands.py)
-    | Remove the following line:
-    | 		if ch.isspace(): return
-
-- Eliminate delete-word from removing trailing white space
-
-delete-word discards trailing spaces instead of placing them in the
-clipboard resulting in subsequent paste operations only pasting the
-alpha-numeric portion.  The following patch does not discard the
-trailing spaces.
-    Function: killWord (File: leoEditCommands.py)
-    | Remove the following line:
-    |     self.killWs(event)
-
-- Put zapped text to clipboard
-
-To save a copy of text deleted using the zap-to-Character command to
-the clipboard make the following change:
-
-    Function: zapToCharacter (File: leoEditCommands.py)
-    | Add the following line after sel.addToKillBuffer(s[ins:i])
-    |     g.app.gui.replaceClipboardWith(s[ins:i])
-#@nonl
-#@-node:ekr.20080611105410.145:Body pane
-#@-node:ekr.20080611105410.143:Add/test all vim patches
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
 def badMode(self,modeName):
@@ -368,7 +352,24 @@ def modeHelpHelper (self,d):
 #@-node:ekr.20061031131434.166:modeHelpHelper
 #@-node:ekr.20061031131434.165:modeHelp & helper
 #@-node:ekr.20061031131434.156:Modes
-#@+node:ekr.20080605064555.3:Problem 1
+#@+node:ekr.20080605064555.3:Problem 1 (fixed)
+@nocolor
+
+1. Focus to Body pane (Major problem / Easy to fix?):
+
+Modes always return with the focus put to the body pane even if edit-
+headline command was called.   This prevents most node navigation and
+editing commands from working.  The problem is due to the exit-named-
+mode command, which is used in most modes, calling the "endMode"
+function in leoKeys.py which calls the deleteTab function.  The
+deleteTab function sets the focus to the body pane.  The deleteTab
+function should return focus back to the pane that was in focus when
+the function was called.
+
+Fixed in k.endMode
+
+@color
+#@nonl
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
@@ -794,9 +795,20 @@ def endCommand (self,event,commandName):
             # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
             k.newMinibufferWidget = None
 #@-node:ekr.20061031131434.113:k.endCommand
-#@-node:ekr.20080605064555.3:Problem 1
+#@-node:ekr.20080605064555.3:Problem 1 (fixed)
 #@+node:ekr.20080605064555.4:Problem 2
-# k.singleLineCommandList may provide part of the solution.
+@nocolor
+
+2. Editing headlines within modes (Major problem / Difficult to fix?):
+
+Commands that modify or select headline text correctly when bound
+directly to a key will, when executed from within a mode bound to that
+same key, modify or select the body text.  This prevents most of vi's
+delete, change, substitute, and yank commands from working.
+
+k.singleLineCommandList may provide part of the solution.
+
+@color
 #@nonl
 #@+node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
 def abortEditLabelCommand (self,event=None):
@@ -939,6 +951,116 @@ def moveToHelper (self,event,spot,extend):
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
 #@-node:ekr.20080605064555.4:Problem 2
+#@+node:ekr.20080616110054.1:Problem 3
+@nocolor
+
+3. Commands getting user input (Medium problem / moderate to fix?)
+
+Any commands that request user input will exit the mode immediately
+after the input is received.  This prevents vi commands that will copy
+or replace text up to a user specified character.  For example, key
+sequence 'stw' should "Substitute the text from the current cursor
+position up To the letter 'w'".  This can be done within a mode using
+a zap-to-character command followed by a set-insert-state command.  It
+never executes the set-insert-state command because the zap-to-
+character command asks the user for a character (the 'w').
+
+@color
+#@nonl
+#@-node:ekr.20080616110054.1:Problem 3
+#@+node:ekr.20080616110054.3:Other problems (from docstring)
+@nocolor
+
+Problems
+
+	Binding numeric keys:
+	| Mapping a number to a command or mode prevents the number from being
+	| entered as text while in the insert state.
+
+	Binding '?' key:
+	| No response when key pressed.
+
+	Binding 'bksp' key:
+	| Binding 'bksp' key to back-char to move back a character in command mode
+	| prevents 'bksp' from deleting characters in text edit mode.
+
+	Commands getting user input:
+	| Commands requesting user input must be the last command executed.  These
+	| commands include: find-character and zap-to-character.
+
+	Editing headlines within modes:
+	| Text editing commands do not work within modes assigned to outline key
+	| mappings.
+
+	Undo command:
+	| The 'undo' command sometimes does not work when returning to a node's
+	| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
+
+	Matching bracket command:
+	| Performs bracket matching on Body text when in node's headline command
+	| state.
+
+	Word definition:
+	| "Word" related commands determine boundries of a word differently.
+
+	Toggle case:
+	| Leo provides support for switching to upper or lower case but no method |
+	| exists to toggle between cases.
+
+	Find settings
+	| Leo commands only allow toggling of search settings.  If specific "set"
+	| and "clear" search setting commands were available then searches from the
+	| body pane could be restricted to the body pane and searches from the
+	| outline could be restricted to the outline.
+	Forward and backward sentences:
+	| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+	| at empty lines nor do they skip over periods within words nor do they stop
+	| at sentences ending in non-periods nor do they stop at the end or
+	| beginning of the buffer.
+
+	Focus to Body pane:
+	| Leo functions exist which unconditionally set focus to the body pane
+	| regardless of the active pane.
+		deleteTab() function:
+			| Issuing "--> exit-named-mode" calls "endMode" function which calls
+			| "c.frame.log.deleteTab('Mode')" function which sets the focus to the
+			| body pane.  
+
+	Displaying mode help:
+	| The "--> mode-help" command displays all mapped keys using a capitol
+	| letter regardless of the actual binding.
+		Recommendations:
+		| To better support narrow tab cards, display the mode's label without
+		| the "enter-" and "-mode" text and place key label before mode label.
+		| Results in change from:
+		|                enter-vi-delete-line-mode D
+		|    enter-vi-delete-to-begin-of-word-mode B 
+		| to:
+		|    D : vi-delete-line
+		|    B : vi-delete-to-begin-of-word
+
+Notes:
+	Yank vs. Yank
+	| A vi "yank" operation copies the selected text TO the clipboard.
+	| A Leo "yank" operation inserts text FROM the clipboard.
+
+	copy-text in modes:
+	| Leo's copy-text does not work within a mode.  As a result, all "copy to
+	| clipboard" capability is being implemented using kill-<object> command
+	| followed by a "yank" command.
+
+	paste-text in modes:
+	| paste-text in modes does not work.  Use Leo's "yank" instead.
+
+	delete-node does not copy node to clipboard:
+	| Issue copy-node command followed by delete-node
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
+
+@color
+#@nonl
+#@-node:ekr.20080616110054.3:Other problems (from docstring)
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061014050154.2:Binding to None clears all bindings
 Should assigning to None clear all key bindings?
@@ -1685,6 +1807,37 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@nonl
 #@-node:ekr.20060113105246.1:moveUpOrDownHelper
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
+#@+node:ekr.20080616110054.2:Support vim dot command
+@nocolor
+
+4. Repeat last command using the period
+
+Binding keys within nodes:
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.
+
+Support commands requesting input:
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+Note: The copy of the character should be saved somewhere that does
+NOT affect the contents of the clipboard.
+Note: The same or a separate storage location can be used for all
+commands to retain a copy of the character entered by the user.  It
+doesn't matter since only the last command is assigned to the period
+key to be re-executed.
+
+@color
+#@nonl
+#@-node:ekr.20080616110054.2:Support vim dot command
 #@+node:ekr.20080517102922.1:Files bugs 7
 #@+node:ekr.20080412053100.1:Look into undefined-section behavior
 @nocolor
