@@ -6194,29 +6194,29 @@ class baseCommands:
                 g.trace('can not happen: no "command" arg')
         #@-node:ekr.20080610085158.2:c.add_command
         #@+node:ekr.20080610085158.3:c.bind and c.bind2
-        def bind (self,w,pattern,func,add=None):
+        def bind (self,w,pattern,func,*args,**keys):
 
             c = self
 
-            def bindCallback(event,c=c,func=func,add=add):
+            def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback)
+            w.bind(pattern,bindCallback,*args,**keys)
 
-        def bind2 (self,w,pattern,func,add=None,**keys):
+        def bind2 (self,w,pattern,func,*args,**keys):
 
             c = self
 
-            def bindCallback(event,c=c,func=func,add=add):
+            def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback,**keys)
+            w.bind(pattern,bindCallback,*args,**keys)
         #@-node:ekr.20080610085158.3:c.bind and c.bind2
         #@+node:ekr.20080610085158.4:c.tag_bind
         def tag_bind (self,w,tag,event_kind,func):
