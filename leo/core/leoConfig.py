@@ -572,7 +572,7 @@ class parserBaseClass:
                         # A regular shortcut.
                         bunchList = d.get(name,[])
                         if bunch.pane in ('kill','Kill'):
-                            if grace: g.trace('****** killing binding:',bunch.val,'to',name)
+                            if trace: g.trace('****** killing binding:',bunch.val,'to',name)
                             bunchList = [z for z in bunchList
                                 if munge(z.val) != munge(bunch.val)]
                             # g.trace(bunchList)

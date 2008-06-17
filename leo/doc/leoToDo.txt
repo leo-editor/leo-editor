@@ -117,6 +117,8 @@ def generalModeHandler (self,event,
         k.modeWidget = event and event.widget
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return 'break'
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -139,6 +141,8 @@ def generalModeHandler (self,event,
                 event = g.Bunch(widget = k.modeWidget)
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
+            if g.app.quitting or not c.exists:
+                return 'break'
             if nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
@@ -151,6 +155,8 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return 'break'
 
     return 'break'
 #@-node:ekr.20061031131434.162:generalModeHandler
@@ -181,6 +187,8 @@ def initMode (self,event,modeName):
         for commandName in entryCommands:
             if trace: g.trace('entry command:',commandName)
             k.simulateCommand(commandName)
+            # Careful, the command can kill the commander.
+            if g.app.quitting or not c.exists: return
             # New in Leo 4.5: a startup command can immediately transfer to another mode.
             if commandName.startswith('enter-'):
                 if trace: g.trace('redirect to mode',commandName)
@@ -371,14 +379,14 @@ else:
     if d:
         b = d.get(stroke)
         if b:
-            if trace: g.trace('calling generalModeHandler')
+            if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
                 commandName=b.commandName,func=b.func,
                 modeName=state,nextMode=b.nextMode)
             return 'break'
         else:
             # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke)
+            if trace: g.trace('unbound key ends mode',stroke,state)
             k.endMode(event)
     else:
         # New in 4.4b4.
@@ -611,6 +619,8 @@ def generalModeHandler (self,event,
         k.modeWidget = event and event.widget
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return 'break'
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -633,6 +643,8 @@ def generalModeHandler (self,event,
                 event = g.Bunch(widget = k.modeWidget)
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
+            if g.app.quitting or not c.exists:
+                return 'break'
             if nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
@@ -645,6 +657,8 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return 'break'
 
     return 'break'
 #@-node:ekr.20061031131434.162:generalModeHandler

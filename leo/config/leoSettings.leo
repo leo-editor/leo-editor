@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.476420798065">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="68" left="343" height="827" width="873"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,12,3,2,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -369,14 +369,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -384,12 +384,12 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.10"><vh>@keys Vim bindings</vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
 <v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
@@ -397,17 +397,15 @@
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080602094234.10"><vh>@keys</vh>
 <v t="ekr.20080617073917.4"><vh>@shortcuts kill conflicting bindings</vh></v>
 <v t="ekr.20080602094234.12"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
 <v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
-<v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
-<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert</vh></v>
-<v t="ekr.20080602094234.17"><vh>@mode tree-command-save</vh>
+<v t="ekr.20080602094234.15" a="E"><vh>@mode tree-command-line:: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert :: &lt;ret&gt;: revert</vh></v>
+<v t="ekr.20080602094234.17"><vh>@mode tree-command-save :: &lt;ret&gt;:write q: write &amp; quit</vh></v>
+<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit :: &lt;ret&gt;: quit</vh></v>
 <v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit</vh></v>
 </v>
 <v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
 <v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
@@ -464,12 +462,12 @@
 <v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
 </v>
 <v t="ekr.20080602094234.68"><vh>@shortcuts - vi in Body pane</vh>
-<v t="ekr.20080602094234.69"><vh>@mode vi-command-line</vh>
-<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert</vh></v>
-<v t="ekr.20080602094234.71"><vh>@mode vi-command-save</vh>
+<v t="ekr.20080602094234.69" a="E"><vh>@mode vi-command-line :: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert :: :&lt;ret&gt; to revert</vh></v>
+<v t="ekr.20080602094234.71"><vh>@mode vi-command-save :: :&lt;ret&gt; to write</vh>
 <v t="ekr.20080602094234.72"><vh>@mode vi-command-save-quit</vh></v>
 </v>
-<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit</vh></v>
+<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit :: : &lt;ret&gt; to quit</vh></v>
 </v>
 <v t="ekr.20080602094234.74"><vh>@mode vi-goto-end-of-buffer</vh></v>
 <v t="ekr.20080602094234.75"><vh>@mode vi-goto</vh>
@@ -540,7 +538,6 @@
 <v t="ekr.20080602094234.134"><vh>@mode vi-join</vh></v>
 <v t="ekr.20080602094234.135"><vh>@mode vi-match</vh></v>
 <v t="ekr.20080602094234.136"><vh>@mode vim-window-commands</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -1303,7 +1300,7 @@
 <v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" a="E" annotate="7d71002e"><vh>Window</vh>
+<v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
 <v t="ekr.20041119034357.38" a="E"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
@@ -1357,14 +1354,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -1372,12 +1369,12 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080602094234.10"><vh>@keys Vim bindings</vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
 <v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
@@ -1385,17 +1382,15 @@
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080602094234.10"><vh>@keys</vh>
 <v t="ekr.20080617073917.4"><vh>@shortcuts kill conflicting bindings</vh></v>
 <v t="ekr.20080602094234.12"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
 <v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
-<v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
-<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert</vh></v>
-<v t="ekr.20080602094234.17"><vh>@mode tree-command-save</vh>
+<v t="ekr.20080602094234.15" a="E"><vh>@mode tree-command-line:: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert :: &lt;ret&gt;: revert</vh></v>
+<v t="ekr.20080602094234.17"><vh>@mode tree-command-save :: &lt;ret&gt;:write q: write &amp; quit</vh></v>
+<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit :: &lt;ret&gt;: quit</vh></v>
 <v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit</vh></v>
 </v>
 <v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
 <v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
@@ -1452,12 +1447,12 @@
 <v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
 </v>
 <v t="ekr.20080602094234.68"><vh>@shortcuts - vi in Body pane</vh>
-<v t="ekr.20080602094234.69"><vh>@mode vi-command-line</vh>
-<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert</vh></v>
-<v t="ekr.20080602094234.71"><vh>@mode vi-command-save</vh>
+<v t="ekr.20080602094234.69" a="E"><vh>@mode vi-command-line :: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert :: :&lt;ret&gt; to revert</vh></v>
+<v t="ekr.20080602094234.71"><vh>@mode vi-command-save :: :&lt;ret&gt; to write</vh>
 <v t="ekr.20080602094234.72"><vh>@mode vi-command-save-quit</vh></v>
 </v>
-<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit</vh></v>
+<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit :: : &lt;ret&gt; to quit</vh></v>
 </v>
 <v t="ekr.20080602094234.74"><vh>@mode vi-goto-end-of-buffer</vh></v>
 <v t="ekr.20080602094234.75"><vh>@mode vi-goto</vh>
@@ -1528,7 +1523,6 @@
 <v t="ekr.20080602094234.134"><vh>@mode vi-join</vh></v>
 <v t="ekr.20080602094234.135"><vh>@mode vi-match</vh></v>
 <v t="ekr.20080602094234.136"><vh>@mode vim-window-commands</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -5601,8 +5595,9 @@ recent files. </t>
 <t tx="ekr.20080515053412.49">move-node-to-chapter-menu</t>
 <t tx="ekr.20080515053412.50"></t>
 <t tx="ekr.20080515053412.51">select-chapter-menu</t>
-<t tx="ekr.20080602094234.3">@language otl</t>
-<t tx="ekr.20080602094234.4">Leo's vi support:
+<t tx="ekr.20080602094234.4">@language otl
+
+Leo's vi support:
 	History
 		Version 4 (27-May-08)
 			Newly found commands
