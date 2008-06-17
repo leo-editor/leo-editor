@@ -2349,12 +2349,13 @@ class keyHandlerClass:
         if w:
             widgets = [w]
         else:
-            bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None     
-            if 1: # Canvas and bindingWidget bindings are now set in tree.setBindings.
-                widgets = (c.miniBufferWidget,bodyCtrl)
+            # New in Leo 4.5: we *must* make the binding in the binding widget.
+            bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
+            bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
+            canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
+            if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
+                widgets = (c.miniBufferWidget,bodyCtr)
             else:
-                bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
-                canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
                 widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
 
         # This is the only real key callback.
@@ -2996,7 +2997,10 @@ class keyHandlerClass:
             else: # Create a dummy event as a signal.
                 event = g.bunch(c=c,keysym='',char='',widget=None)
             k.masterCommand(event,func,stroke)
-            return k.funcReturn
+            if c.exists:
+                return k.funcReturn
+            else:
+                return None
         else:
             g.trace('no command for %s' % (commandName),color='red')
             if g.app.unitTesting:
@@ -3274,14 +3278,14 @@ class keyHandlerClass:
                 if d:
                     b = d.get(stroke)
                     if b:
-                        if trace: g.trace('calling generalModeHandler')
+                        if trace: g.trace('calling generalModeHandler',stroke)
                         k.generalModeHandler (event,
                             commandName=b.commandName,func=b.func,
                             modeName=state,nextMode=b.nextMode)
                         return 'break'
                     else:
                         # New in Leo 4.5: unbound keys end mode.
-                        if trace: g.trace('unbound key ends mode',stroke)
+                        if trace: g.trace('unbound key ends mode',stroke,state)
                         k.endMode(event)
                 else:
                     # New in 4.4b4.
@@ -3569,12 +3573,6 @@ class keyHandlerClass:
     masterDoubleClick3Handler = masterClickHandler
     #@-node:ekr.20061031131434.153:masterClickHandler
     #@+node:ekr.20061031131434.154:masterDoubleClickHandler
-    # def masterDoubleClickHandler (self,event,func=None):
-        # k = self ; c = k.c
-        # val = self.masterDoubleClickHandlerHelper(event,func)
-        # if c.exists: c.outerUpdate()
-        # return val
-
     def masterDoubleClickHandler (self,event,func=None):
 
         k = self ; c = k.c ; w = event and event.widget
@@ -3912,6 +3910,8 @@ class keyHandlerClass:
             k.modeWidget = event and event.widget
             k.setState(modeName,1,handler=k.generalModeHandler)
             self.initMode(event,modeName)
+            # Careful: k.initMode can execute commands that will destroy a commander.
+            if g.app.quitting or not c.exists: return 'break'
             if not k.silentMode:
                 if c.config.getBool('showHelpWhenEnteringModes'):
                     k.modeHelp(event)
@@ -3934,6 +3934,8 @@ class keyHandlerClass:
                     event = g.Bunch(widget = k.modeWidget)
                 if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
                 func(event)
+                if g.app.quitting or not c.exists:
+                    return 'break'
                 if nextMode in (None,'none'):
                     # Do *not* clear k.inputModeName or the focus here.
                     # func may have put us in *another* mode.
@@ -3946,6 +3948,8 @@ class keyHandlerClass:
                 else:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event,nextMode) # Enter another mode.
+                    # Careful: k.initMode can execute commands that will destroy a commander.
+                    if g.app.quitting or not c.exists: return 'break'
 
         return 'break'
     #@-node:ekr.20061031131434.162:generalModeHandler
@@ -3976,6 +3980,8 @@ class keyHandlerClass:
             for commandName in entryCommands:
                 if trace: g.trace('entry command:',commandName)
                 k.simulateCommand(commandName)
+                # Careful, the command can kill the commander.
+                if g.app.quitting or not c.exists: return
                 # New in Leo 4.5: a startup command can immediately transfer to another mode.
                 if commandName.startswith('enter-'):
                     if trace: g.trace('redirect to mode',commandName)
