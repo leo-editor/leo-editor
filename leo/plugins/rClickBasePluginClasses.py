@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:bobjack.20080614200920.7:@thin rClickBasePluginClasses.py
+#@+node:bobjack.20080615130304.2:@thin rClickBasePluginClasses.py
 #@<< docstring >>
 #@+node:bobjack.20080614200920.8:<< docstring >>
 """Base classes for plugins.
@@ -294,6 +294,5 @@ class basePluginController(object):
 
 #@-node:bobjack.20080323045434.14:class basePluginController
 #@-others
-#@nonl
-#@-node:bobjack.20080614200920.7:@thin rClickBasePluginClasses.py
+#@-node:bobjack.20080615130304.2:@thin rClickBasePluginClasses.py
 #@-leo

@@ -38,8 +38,8 @@ and also the following fragments:
 
     - 'edit-menu' fragment (c.context_menus['edit-menu'])
 
-            This gives basic 'cut/copy/paste/select all' menu items for plain
-            text widgets, (not body widgets).
+        This gives basic 'cut/copy/paste/select all' menu items for
+        text widgets.
 
     - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
 
@@ -82,7 +82,7 @@ Any number of keyword pairs can be included and all these will be passed to any
 generator or invocation callbacks used in the menu.
 
 
-The right click menu to be used is determined in one of three ways.
+The right click menu to be used is determined in one of two ways.
 
     The explicitly set context_menu property:
 
@@ -90,18 +90,6 @@ The right click menu to be used is determined in one of three ways.
 
     The context_menu supplied the doHook call if any.   
 
-    The widgets name:
-
-        If no context_menu property is defined then the widgets name, as determined
-        by c.widget_name(w), is used and each key in c.context_menus is tested
-        against it to see if the name starts with that key. If it does, the menu
-        table in c.context_menus[key] will be used.
-
-        eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
-
-        No attempt is made to resolve conflicts. The keys are in random order and
-        the first match found will be used. Better to use w.context_menu for anything
-        other than the default 'body', 'log', 'find-text' and 'change-text'.
 
 Keyword = Value data items in the body
 --------------------------------------
@@ -897,72 +885,101 @@ class pluginController(baseClasses.basePluginController):
 
         """Set menus for context menus that have not been defined in @popup menus."""
 
-        return
-
         c = self.c
 
         default_menus = {
 
-        'body': [
-            ('&', 'edit-menu'),
-            ('-', ''),
-            ('Block Operations', [
-                ('Indent', 'indent-region'),
-                ('Dedent', 'deden-region'),
-                ('-', ''),
-                ('Add Comments', 'add-comments'),
-                ('Remove Comments', 'delete-comments'),
-            ]),
-            ('&', 'recent-files-menu'),
-            ('-', ''),
-            ('Match Brackets', 'match-brackets'),
-            ('Execture Script', 'execute-script'),
-            ('*', 'rclick-gen-context-sensitive-commands'),
+        'rclick-find-controls-left': [
+            ('*', 'rclick-find-whole-word-button'),
+            ('*', 'rclick-find-ignore-case-button'),
+            ('*', 'rclick-find-wrap-around-button'),
+            ('*', 'rclick-find-reverse-button'),
+            ('*', 'rclick-find-regexp-button'),
+            ('*', 'rclick-find-mark-finds-button'),
         ],
 
-        'log': [('&', 'edit-menu')],
-        'find-text': [('&', 'edit-menu')],
-        'change-text': [('&', 'edit-menu')],
-
-        'canvas': [
-            ('&', 'to-chapter-fragment'),
-            ('-', ''),
-            ('Create Chapter', 'create-chapter'),
-            ('Remove Chapter', 'remove-chapter'),
+        'rclick-find-controls-right': [
+            ('*', 'rclick-find-mark-changes-button'),
+            ('*', 'rclick-find-search-body-button'),
+            ('*', 'rclick-find-search-headline-button'),
+            ('*', 'rclick-find-node-only-button'),
+            ('*', 'rclick-find-suboutline-only-button'),
+            ('*', 'rclick-find-entire-outline-button'),
         ],
 
-        'headline': [],
-        'iconbox': [],
-        'plusbox': [],
-
-        'edit-menu': [
-            ('Cut\nicon = Tango/16x16/actions/editcut.png', 'rclick-cut-text'),
-            ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'rclick-copy-text'),
-            ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'rclick-paste-text'),
-            ('-',''),
-            ('Select All', 'rclick-select-all'),
+        'rclick-find-controls': [
+            ('&', 'rclick-find-controls-left'),
+            ('|', ''),
+            ('&', 'rclick-find-controls-right')
         ],
 
-        'recent-files-menu': [
-            ('Recent Files',
-                [('*', 'rclick-gen-recent-files-list')],
-            ),
-        ],
+    #@+at
+    #     'body': [
+    #         ('&', 'edit-menu'),
+    #         ('-', ''),
+    #         ('Block Operations', [
+    #             ('Indent', 'indent-region'),
+    #             ('Dedent', 'deden-region'),
+    #             ('-', ''),
+    #             ('Add Comments', 'add-comments'),
+    #             ('Remove Comments', 'delete-comments'),
+    #         ]),
+    #         ('&', 'recent-files-menu'),
+    #         ('-', ''),
+    #         ('Match Brackets', 'match-brackets'),
+    #         ('Execture Script', 'execute-script'),
+    #         ('*', 'rclick-gen-context-sensitive-commands'),
+    #     ],
+    # 
+    #     'log': [('&', 'edit-menu')],
+    #     'find-text': [('&', 'edit-menu')],
+    #     'change-text': [('&', 'edit-menu')],
+    # 
+    #     'canvas': [
+    #         ('&', 'to-chapter-fragment'),
+    #         ('-', ''),
+    #         ('Create Chapter', 'create-chapter'),
+    #         ('Remove Chapter', 'remove-chapter'),
+    #     ],
+    # 
+    #     'headline': [],
+    #     'iconbox': [],
+    #     'plusbox': [],
+    # 
+    #     'edit-menu': [
+    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 
+    # 'rclick-cut-text'),
+    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 
+    # 'rclick-copy-text'),
+    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 
+    # 'rclick-paste-text'),
+    #         ('-',''),
+    #         ('Select All', 'rclick-select-all'),
+    #     ],
+    # 
+    #     'recent-files-menu': [
+    #         ('Recent Files',
+    #             [('*', 'rclick-gen-recent-files-list')],
+    #         ),
+    #     ],
+    # 
+    #     'to-chapter-fragment': [
+    #         ('Clone To Chapter',
+    #             [('*', 'clone-node-to-chapter-menu')],
+    #         ),
+    #         ('Copy To Chapter',
+    #             [('*', 'copy-node-to-chapter-menu')],
+    #         ),
+    #         ('Move To Chapter',
+    #             [('*', 'move-node-to-chapter-menu')],
+    #         ),
+    #         ('Go To Chapter',
+    #             [('*', 'select-chapter-menu')],
+    #         ),
+    #     ],
+    #@-at
+    #@@c
 
-        'to-chapter-fragment': [
-            ('Clone To Chapter', 
-                [('*', 'clone-node-to-chapter-menu')],
-            ),
-            ('Copy To Chapter', 
-                [('*', 'copy-node-to-chapter-menu')],
-            ),
-            ('Move To Chapter', 
-                [('*', 'move-node-to-chapter-menu')],
-            ),
-            ('Go To Chapter', 
-                [('*', 'select-chapter-menu')],
-            ),
-        ],
         }
         for k, v in default_menus.iteritems():
             if k in c.context_menus:

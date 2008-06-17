@@ -354,16 +354,16 @@ def onPreCreate (tag, keys):
     """Replace iconBarClass with our own."""
 
     c = keys.get('c')
-    if not (c and c.exists):
+    if not (c and c.exists) or hasattr(c.frame, 'toolbarClass'):
         return
 
     g.app.gui.ScriptingControllerClass = ToolbarScriptingController
     c.frame.iconBarClass = ToolbarTkIconBarClass
+    c.frame.toolbarClass = ToolbarTkToolbarClass
     leoTkinterFrame.leoTkinterTreeTab = ToolbarTkinterTreeTab
 
-    if not hasattr(c.frame, 'iconBars'):
-        c.frame.iconBars= {}
-        c.frame.toolbarFrame = None
+    c.frame.iconBars= {}
+    c.frame.toolbar = None
 #@-node:bobjack.20080424195922.11:onPreCreate
 #@+node:bobjack.20080426190702.6:onCreate
 def onCreate (tag, keys):
@@ -456,10 +456,12 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         """Create and add an icon button to the named toolbar.
 
-        keys['barname'] gives the name of the toolbar to be uses if it is present
+        keys['barName'] gives the name of the iconBar to be uses if it is present
         outherwise 'iconbar' is used.
 
         If the iconBar does not exist it will be created.
+
+        All arguments and keywords except 'barName' will be passed to iconBar.add.
 
         """
 
@@ -477,33 +479,27 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@+node:bobjack.20080503151427.2:getIconButton
     def getIconButton (self,*args,**keys):
 
-        """Create icon button but do not add it to a toolbar.
+        """Create an icon button but do not add it to a toolbar.
 
-        keys['barname'] gives the name of the toolbar or the
-        toolbar named 'iconbar' is used.
-
-        If the iconBar does not exist it will be created.
+        If keys['barName'] is present it is removed from 'keys' but
+        otherwise ignored.
 
         """
         if 'barName' in keys:
             barName = keys['barName']
             del keys['barName']
 
-        else:
-             barName = 'iconbar'
-
-        bar = self.createIconBar(barName)
+        bar = self.createIconBar('iconbar')
 
         if bar:
             return bar.getButton(*args,**keys)
 
     createIconButton = getIconButton
-    #@nonl
     #@-node:bobjack.20080503151427.2:getIconButton
     #@+node:bobjack.20080501055450.16:addIconWidget
     def addIconWidget (self, widget, barName='iconbar', index=None):
 
-        """Adds a widget to the named toolbar."""
+        """Adds a button or other widget to the named toolbar."""
 
         bar = self.createIconBar(barName)
         if bar:
@@ -519,15 +515,17 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@+node:bobjack.20080429153129.32:createIconBar
     def createIconBar (self, barName='iconbar',  slaveMaster=None):
 
-        """Create and display new iconBar.
+        """Create and display a new iconBar.
 
         If the iconbar exists it will returned.
 
-        Otherwise a new toolbar will be created, shown and returned.
+        Otherwise a new iconBar will be created, shown and returned.
 
         """
 
-        frame = self.createToolbarFrame()
+        toolbar = self.createToolbar()
+
+        frame = toolbar.toolbarFrame
 
         if not barName in self.iconBars:
 
@@ -557,10 +555,20 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@+node:bobjack.20080429153129.35:hideIconBar
     def hideIconBar (self, barName='iconbar'):
 
+        """Remove an iconBar from the display."""
+
         self.iconBars[barName].hide()
     #@-node:bobjack.20080429153129.35:hideIconBar
     #@+node:bobjack.20080612150456.3:getIconWidgetFrame
     def getIconWidgetFrame(self, *args, **keys):
+
+        """Return a subclass of Tk.Frame.
+
+        The frame is parented on c.frame.top and set up for packing
+        into an iconBar. It may be used to hold several buttons or
+        other widgets which are then treat as a single item
+
+        """
 
         if 'barName' in keys:
             del keys['barName']
@@ -572,7 +580,7 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
     #@-node:bobjack.20080612150456.3:getIconWidgetFrame
     #@-node:bobjack.20080429153129.29:Icon area convenience methods
     #@+node:bobjack.20080502134903.8:Properties
-    #@+node:bobjack.20080502134903.9:getIconFrame
+    #@+node:bobjack.20080502134903.9:iconFrame
     def getIconFrame(self):
 
         try:
@@ -584,10 +592,21 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
         pass
 
     iconFrame = property(getIconFrame, setIconFrame)
-    #@-node:bobjack.20080502134903.9:getIconFrame
+    #@-node:bobjack.20080502134903.9:iconFrame
+    #@+node:bobjack.20080616103714.6:toolbarFrame
+    def getToolbarFrame(self):
+
+        try:
+            return self.toolBar.toolbarFrame
+        except Exception:
+            pass
+
+    toolbarFrame = property(getToolbarFrame)
+    #@nonl
+    #@-node:bobjack.20080616103714.6:toolbarFrame
     #@-node:bobjack.20080502134903.8:Properties
-    #@+node:bobjack.20080428114659.5:createToolbarFrame
-    def createToolbarFrame(self):
+    #@+node:bobjack.20080428114659.5:createToolbar
+    def createToolbar(self):
 
         """Create and pack the frame that contains all the toolbars.
 
@@ -596,59 +615,191 @@ class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
 
         """
 
-        if self.toolbarFrame:
-            return self.toolbarFrame
+        c = self.c
 
-        self.toolbarFrame = w = Tk.Frame(self.outerFrame)
-        self.dummyToolbarFrame = Tk.Frame(w, height='1p')
+        try:
+            toolbar = self.toolbar
+        except AttributeError:
+            toolbar = None
 
-        w.pack(fill='x')
+        if toolbar:
+            return toolbar
 
-        return self.toolbarFrame
-    #@-node:bobjack.20080428114659.5:createToolbarFrame
+        self.toolbar = w = ToolbarTkToolbarClass(c, self.outerFrame, toolbarName='toolbar')
+        self.dummyToolbarFrame = Tk.Frame(w.toolbarFrame, height='1p')
+
+        w.toolbarFrame.pack(fill='x')
+
+        return self.toolbar
+    #@-node:bobjack.20080428114659.5:createToolbar
+    #@+node:bobjack.20080616103714.12:tkFrame.createCanvas
+    def createCanvas (self,parentFrame,pack=True):
+
+        """Toolbar override of frame.creatCanvas."""
+
+        c = self.c
+
+        g.trace('toolbar')
+
+        self.toolbarCanvasPanel = tcp = Tk.Frame()
+
+
+
+        scrolls = c.config.getBool('outline_pane_scrolls_horizontally')
+        scrolls = g.choose(scrolls,1,0)
+        canvas = self.createTkTreeCanvas(parentFrame,scrolls,pack)
+        self.setCanvasColorFromConfig(canvas)
+
+        return canvas
+    #@nonl
+    #@+node:bobjack.20080616103714.13:f.createTkTreeCanvas & callbacks
+    def createTkTreeCanvas (self,parentFrame,scrolls,pack):
+
+        frame = self ; c = frame.c
+
+        canvas = Tk.Canvas(parentFrame,name="canvas",
+            bd=0,bg="white",relief="flat")
+
+        treeBar = Tk.Scrollbar(parentFrame,name="treeBar")
+
+        # New in Leo 4.4.3 b1: inject the ivar into the canvas.
+        canvas.leo_treeBar = treeBar
+
+        # Bind mouse wheel event to canvas
+        if sys.platform != "win32": # Works on 98, crashes on XP.
+            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
+            if 1: # New in 4.3.
+                #@            << workaround for mouse-wheel problems >>
+                #@+node:bobjack.20080616103714.14:<< workaround for mouse-wheel problems >>
+                # Handle mapping of mouse-wheel to buttons 4 and 5.
+
+                def mapWheel(e):
+                    if e.num == 4: # Button 4
+                        e.delta = 120
+                        return frame.OnMouseWheel(e)
+                    elif e.num == 5: # Button 5
+                        e.delta = -120
+                        return frame.OnMouseWheel(e)
+
+                c.bind2(canvas,"<ButtonPress>",mapWheel,add=1)
+                #@-node:bobjack.20080616103714.14:<< workaround for mouse-wheel problems >>
+                #@nl
+
+        canvas['yscrollcommand'] = self.setCallback
+        treeBar['command']     = self.yviewCallback
+        treeBar.pack(side="right", fill="y")
+        if scrolls: 
+            treeXBar = Tk.Scrollbar( 
+                parentFrame,name='treeXBar',orient="horizontal") 
+            canvas['xscrollcommand'] = treeXBar.set 
+            treeXBar['command'] = canvas.xview 
+            treeXBar.pack(side="bottom", fill="x")
+
+        if pack:
+            canvas.pack(expand=1,fill="both")
+
+        c.bind(canvas,"<Button-1>", frame.OnActivateTree)
+
+        # Handle mouse wheel in the outline pane.
+        if sys.platform == "linux2": # This crashes tcl83.dll
+            c.bind(canvas,"<MouseWheel>", frame.OnMouseWheel)
+
+        # g.print_bindings("canvas",canvas)
+        return canvas
+    #@+node:bobjack.20080616103714.15:Scrolling callbacks (tkFrame)
+    def setCallback (self,*args,**keys):
+
+        """Callback to adjust the scrollbar.
+
+        Args is a tuple of two floats describing the fraction of the visible area."""
+
+        #g.trace(self.tree.redrawCount,args,g.callers())
+
+        apply(self.canvas.leo_treeBar.set,args,keys)
+
+        if self.tree.allocateOnlyVisibleNodes:
+            self.tree.setVisibleArea(args)
+
+    def yviewCallback (self,*args,**keys):
+
+        """Tell the canvas to scroll"""
+
+        #g.trace(vyiewCallback,args,keys,g.callers())
+
+        if self.tree.allocateOnlyVisibleNodes:
+            self.tree.allocateNodesBeforeScrolling(args)
+
+        apply(self.canvas.yview,args,keys)
+    #@nonl
+    #@-node:bobjack.20080616103714.15:Scrolling callbacks (tkFrame)
+    #@-node:bobjack.20080616103714.13:f.createTkTreeCanvas & callbacks
+    #@+node:bobjack.20080616103714.16:f.setCanvasColorFromConfig
+    def setCanvasColorFromConfig (self,canvas):
+
+        c = self.c
+
+        bg = c.config.getColor("outline_pane_background_color") or 'white'
+
+        try:
+            canvas.configure(bg=bg)
+        except:
+            g.es("exception setting outline pane background color")
+            g.es_exception()
+    #@-node:bobjack.20080616103714.16:f.setCanvasColorFromConfig
+    #@-node:bobjack.20080616103714.12:tkFrame.createCanvas
     #@-others
 
 #@-node:bobjack.20080428114659.2:class ToolbarTkinterFrame
 #@+node:bobjack.20080506182829.14:class ToolbarIconWidgetFrame
 class ToolbarIconWidgetFrame(Tk.Frame, object):
 
-   #@   @+others
-   #@+node:bobjack.20080506182829.15:__init__
-   def __init__(self, c, *args, **keys):
-
-       self.c = c
-
-       Tk.Frame.__init__(self, c.frame.top, *args, **keys)
-
-       self.deleteOnRightClick = False
-   #@-node:bobjack.20080506182829.15:__init__
-   #@+node:bobjack.20080612150456.4:detachWidget
-   def detachWidget(self):
-
-       try:
-           bar = self.leoIconBar
-       except:
-           bar = None
-
-       if bar:
-           self.leoIconBar.removeWidget(self)
-
-   #@-node:bobjack.20080612150456.4:detachWidget
-   #@+node:bobjack.20080612150456.5:deleteButton
-   def deleteButton(self, event=None):
-
-       """Delete the given button.
-
-       This method does not actually delete the button, override the method
-       in derived classes to do that.
-
-       """
-
-       self.detachWidget()
+    """A subclass of Tk.Frame that is parented on c.frame.top.
 
 
-   #@-node:bobjack.20080612150456.5:deleteButton
-   #@-others
+
+    """
+
+    #@    @+others
+    #@+node:bobjack.20080506182829.15:__init__
+    def __init__(self, c, *args, **keys):
+
+        self.c = c
+
+        Tk.Frame.__init__(self, c.frame.top, *args, **keys)
+
+        self.deleteOnRightClick = False
+    #@-node:bobjack.20080506182829.15:__init__
+    #@+node:bobjack.20080612150456.4:detachWidget
+    def detachWidget(self):
+
+        """Remove this widget from its containing iconBar."""
+
+        try:
+            bar = self.leoIconBar
+        except:
+            bar = None
+
+        if bar:
+            self.leoIconBar.removeWidget(self)
+
+    removeWidget = detachWidget
+
+    #@-node:bobjack.20080612150456.4:detachWidget
+    #@+node:bobjack.20080612150456.5:deleteButton
+    def deleteButton(self, event=None):
+
+        """Delete the given button.
+
+        This method does not actually delete the widget, override the method
+        in a derived class to do that. 
+
+        """
+
+        self.detachWidget()
+
+
+    #@-node:bobjack.20080612150456.5:deleteButton
+    #@-others
 #@-node:bobjack.20080506182829.14:class ToolbarIconWidgetFrame
 #@+node:bobjack.20080506182829.16:class ToolbarIconButton
 class ToolbarIconButton(Tk.Button, object):
@@ -845,6 +996,8 @@ class ToolbarIconButton(Tk.Button, object):
 
         if bar:
             self.leoIconBar.removeWidget(self)
+
+    removeWidget = detachWidget
 
     #@-node:bobjack.20080507053105.7:detachWidget
     #@+node:bobjack.20080508051801.5:getButtonConfig
@@ -1439,7 +1592,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         # Create the frame to hold buttons assigned to this slave bar.
 
-        self.iconFrame = w = Tk.Frame(
+        self.iconFrame = self.top = w = Tk.Frame(
             self.parentFrame,          
             height="5m",relief="flat",
         )
@@ -2116,6 +2269,29 @@ class toolbarCommandClass(baseClasses.pluginCommandClass):
     pass
 #@nonl
 #@-node:bobjack.20080511121543.9:class toolbarCommandClass
+#@+node:bobjack.20080616103714.2:class ToolbarTkToolbarClass
+class ToolbarTkToolbarClass(object):
+
+    """A class that wraps a toolbar frame which holds a collection of iconBars."""
+
+    #@    @+others
+    #@+node:bobjack.20080616103714.3:__init__
+    def __init__(self, c, parentFrame=None, toolbarName='iconbar', slaveMaster=None):
+
+        self.c = c
+        self.toolbarName = toolbarName    
+        self.parentFrame = parentFrame or c.frame.outerFrame
+
+
+        self.toolbarFrame = w = Tk.Frame(
+            self.parentFrame,          
+            height="5m",relief="flat",
+        )
+    #@-node:bobjack.20080616103714.3:__init__
+    #@-others
+#@-node:bobjack.20080616103714.2:class ToolbarTkToolbarClass
+#@+node:bobjack.20080616103714.17:class ToolbarVPanel
+#@-node:bobjack.20080616103714.17:class ToolbarVPanel
 #@+node:bobjack.20080424195922.12:class pluginController
 class pluginController(baseClasses.basePluginController):
 
