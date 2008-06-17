@@ -5659,7 +5659,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         c = self.c
         self.beginCommand(undoType='backward-kill-word')
         c.editCommands.backwardWord(event)
-        self.killWs(event)
+        # self.killWs(event)
         self.kill(event,'insert wordstart','insert wordend',undoType=None)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
@@ -5669,7 +5669,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         c = self.c
         self.beginCommand(undoType='kill-word')
         self.kill(event,'insert wordstart','insert wordend',undoType=None)
-        self.killWs(event)
+        # self.killWs(event)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
 
@@ -5919,7 +5919,6 @@ class killBufferCommandsClass (baseEditCommandsClass):
             ch = event and event.char or ' '
             k.resetLabel()
             k.clearState()
-            if ch.isspace(): return
             s = w.getAllText()
             ins = w.getInsertPoint()
             i = s.find(ch,ins)

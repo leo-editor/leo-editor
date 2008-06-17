@@ -7832,6 +7832,7 @@ if wx:
             def marksButtonCallback(*args,**keys):
                 self.Show()
                 self.Iconize(False)
+                # No call to c.outerUpdate needed.
 
             self.marks_button = c.frame.addIconButton(
                 text="Marks",
@@ -7939,6 +7940,7 @@ if wx:
                 self.fillbox(forceUpdate=True)
                 self.Show()
                 self.Iconize(False)
+                # No call to c.outerUpdate needed.
 
             self.sections_button = c.frame.addIconButton(
                 text="Recent",
@@ -7955,6 +7957,7 @@ if wx:
                 bg=self.bg,
                 canRemove=False
             )
+            # To do: a callback that calls c.outerUpdate is needed here.
 
             self.rt_nav_iconFrame_button = c.frame.addIconButton(
                 image = 'rt_arrow_disabled',
@@ -7962,6 +7965,7 @@ if wx:
                 bg=self.bg,
                 canRemove=False
             )
+            # To do: a callback that calls c.outerUpdate is needed here.
 
             # Don't dim the button when it is inactive.
             #for b in (self.lt_nav_iconFrame_button, self.rt_nav_iconFrame_button):

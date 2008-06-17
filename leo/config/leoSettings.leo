@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.688918558077">
-	<global_window_position top="29" left="541" height="749" width="873"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="29" left="10" height="749" width="873"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,14,14"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -386,7 +386,7 @@
 </v>
 <v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
@@ -1137,7 +1137,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1265,7 +1265,7 @@
 <v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
 <v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
 </v>
-<v t="bobjack.20080614084120.3" a="E"><vh>shortcut _button plugin</vh>
+<v t="bobjack.20080614084120.3"><vh>shortcut _button plugin</vh>
 <v t="bobjack.20080614084120.5"><vh>@data shortcut_button_data</vh></v>
 </v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
@@ -1381,7 +1381,7 @@
 </v>
 <v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
 <v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5" a="E"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
@@ -5838,16 +5838,6 @@ Outline Pane
 		Find commands
 			      f : Find character
 
-	Outline Patches:
-	| The following patch is needed for the vi outline commands to work.
-		Prevent "--&gt; exit-named-modes" from switching focus to the Body pane.
-		| Remove the call to "deleteTab" (see "Focus to Body pane" problem).
-		| Don't create "Mode" tabs by not using "--&gt; mode-help" commands (see
-		| "Displaying mode help" problem).
-			Function: endMode (File: core\leoKeys.py)
-			| Remove the following line:
-			|     c.frame.log.deleteTab('Mode')
-
 Body Pane
 	| All vi text navigation and editing functionality has been implemented
 	| except for the following.
@@ -5900,32 +5890,6 @@ Body Pane
 			| Leo does not provide commands to support this function.
 		'z', 'z.', 'z-' - Slide buffer to put current line at top,middle,bottom
 			| Leo does not provide commands to support this function.
-	Patches:
-	| The following patches are recommended to enhance vi functionality within
-	| the body pane.
-
-		Enable search for 'space' character in text
-		| Commands 'f&lt;char&gt;' and 'dt&lt;char&gt;' should support specifying space
-		| character.
-			Function: zapToCharacter (File: leoEditCommands.py)
-			| Remove the following line:
-			| 		if ch.isspace(): return
-
-		Eliminate delete-word from removing trailing white space
-		| delete-word discards trailing spaces instead of placing them in the
-		| clipboard resulting in subsequent paste operations only pasting the
-		| alpha-numeric portion.  The following patch does not discard the
-		| trailing spaces.
-			Function: killWord (File: leoEditCommands.py)
-			| Remove the following line:
-			|     self.killWs(event)
-
-		Put zapped text to clipboard
-		| To save a copy of text deleted using the zap-to-Character command to
-		| the clipboard make the following change:
-			Function: zapToCharacter (File: leoEditCommands.py)
-			| Add the following line after sel.addToKillBuffer(s[ins:i])
-			|     g.app.gui.replaceClipboardWith(s[ins:i])
 
 Problems
 

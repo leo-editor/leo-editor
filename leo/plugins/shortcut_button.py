@@ -166,8 +166,8 @@ class shortcutButton:
 
         def shortcutButtonButtonCallback(event=None,self=self, b=b):
             self.createShortcutButton(b)
-            c.redraw()
-            c.outerUpdate()
+            # Careful: func may destroy c.
+            if c.exists: c.redraw_now()
             #return 'break'
 
         b.configure(command=shortcutButtonButtonCallback)
