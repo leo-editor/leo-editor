@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -49,6 +49,7 @@
 <v t="ekr.20080529111617.10"><vh>@string cleo_time_name = 'days'</vh></v>
 </v>
 </v>
+<v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -125,14 +126,14 @@
 </v>
 </v>
 <v t="ekr.20080604110043.1"><vh>Vim stuff</vh>
-<v t="ekr.20080604104453.2"><vh>Vim bindings by TL </vh>
-<v t="ekr.20080604104453.4"><vh>Settings for vim bindings</vh>
+<v t="ekr.20080604104453.2" a="E"><vh>Vim bindings by TL </vh>
+<v t="ekr.20080604104453.4" a="E"><vh>Settings for vim bindings</vh>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="ekr.20080604104453.6"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
 <v t="ekr.20080604104453.7"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
 <v t="ekr.20080604104453.8"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
-<v t="ekr.20080604104453.9"><vh>@keys</vh>
+<v t="ekr.20080604104453.9"><vh>@keys (vim)</vh>
 <v t="ekr.20080604104453.10"><vh>@shortcuts - Unbind all commands</vh></v>
 <v t="ekr.20080604104453.11"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="ekr.20080604104453.12"><vh>@mode tree-double-click-node</vh></v>
@@ -356,6 +357,7 @@
 <v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 <v t="ekr.20080612061137.1"><vh>coloring after reformat paragraph</vh></v>
+<v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -3587,5 +3589,6 @@ leoPlugins.registerHandler('select2', addchild)</t>
 </t>
 <t tx="ekr.20080610144233.1">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
 <t tx="ekr.20080612061137.1">This is a test.</t>
+<t tx="ekr.20080616162655.1"></t>
 </tnodes>
 </leo_file>
