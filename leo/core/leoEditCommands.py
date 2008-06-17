@@ -4777,8 +4777,10 @@ class editCommandsClass (baseEditCommandsClass):
     def selectAllText (self,event):
 
         c = self.c 
-        w = g.app.gui.eventWidget(event) or c.frame.body.bodyCtrl
-        return w.selectAllText()
+
+        w = self.editWidget(event)
+        if w:
+            return w.selectAllText()
     #@-node:ekr.20061111223516:selectAllText (leoEditCommands)
     #@-others
 #@-node:ekr.20050920084036.53:editCommandsClass
