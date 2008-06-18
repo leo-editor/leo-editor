@@ -48,7 +48,6 @@ __version__ = "0.7"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import leo.core.leo as leo
 import os
 import sys
 #@nonl
@@ -74,6 +73,8 @@ def init ():
         leoPlugins.registerHandler("after-create-leo-frame", onCreate)
 
         g.plugin_signon(__name__)
+
+        return True
 #@nonl
 #@-node:ekr.20060107110126:init
 #@+node:ekr.20060107110126.1:onCreate

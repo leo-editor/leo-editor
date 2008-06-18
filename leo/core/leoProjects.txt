@@ -4529,7 +4529,7 @@ def readSettings (self,c,localFlag):
 
     """Read settings from a file that may contain an @settings tree."""
 
-    # g.trace(c.fileName())
+    # g.trace('=' * 20, c.fileName())
 
     # Create a settings dict for c for set()
     if c and self.localOptionsDict.get(c.hash()) is None:
@@ -5125,7 +5125,9 @@ def doShortcuts(self,p,kind,name,val,s=None):
 
     # g.trace(self.c.fileName(),name)
 
-    c = self.c ; d = self.shortcutsDict
+    c = self.c ; d = self.shortcutsDict ; k = c.k
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    munge = k.shortcutFromSetting
     if s is None: s = p.bodyString()
     lines = g.splitLines(s)
     for line in lines:
@@ -5133,12 +5135,20 @@ def doShortcuts(self,p,kind,name,val,s=None):
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(line)
             if bunch is not None:
-                # A regular shortcut.
-                bunchList = d.get(name,[])
-                bunchList.append(bunch)
-                d [name] = bunchList
-                self.set(p,"shortcut",name,bunchList)
-                self.setShortcut(name,bunchList)
+                if bunch.val not in (None,'none','None'):
+                    # A regular shortcut.
+                    bunchList = d.get(name,[])
+                    if bunch.pane in ('kill','Kill'):
+                        if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                        bunchList = [z for z in bunchList
+                            if munge(z.val) != munge(bunch.val)]
+                        # g.trace(bunchList)
+                    else:
+                        if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                        bunchList.append(bunch)
+                    d [name] = bunchList
+                    self.set(p,"shortcut",name,bunchList)
+                    self.setShortcut(name,bunchList)
 #@-node:ekr.20041120105609:doShortcuts (ParserBaseClass)
 #@+node:ekr.20041217132028:doString
 def doString (self,p,kind,name,val):
@@ -5459,6 +5469,9 @@ def set (self,p,kind,name,val):
             g.es("over-riding setting:",name,"from",path)
 
     # N.B.  We can't use c here: it may be destroyed!
+    # if key == 'shortcut':
+        # g.trace('*****',key,val)
+
     d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
 
 #@-node:ekr.20041120094940.9:set (parseBaseClass)
@@ -6964,7 +6977,7 @@ def add_command (self,menu,**keys):
         g.trace('can not happen: no "command" arg')
 #@-node:ekr.20080610085158.2:c.add_command
 #@+node:ekr.20080610085158.3:c.bind and c.bind2
-def bind (self,w,pattern,func):
+def bind (self,w,pattern,func,*args,**keys):
 
     c = self
 
@@ -6974,9 +6987,9 @@ def bind (self,w,pattern,func):
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback)
+    w.bind(pattern,bindCallback,*args,**keys)
 
-def bind2 (self,w,pattern,func,**keys):
+def bind2 (self,w,pattern,func,*args,**keys):
 
     c = self
 
@@ -6986,7 +6999,7 @@ def bind2 (self,w,pattern,func,**keys):
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback,**keys)
+    w.bind(pattern,bindCallback,*args,**keys)
 #@-node:ekr.20080610085158.3:c.bind and c.bind2
 #@+node:ekr.20080610085158.4:c.tag_bind
 def tag_bind (self,w,tag,event_kind,func):
@@ -7428,7 +7441,7 @@ def add_command (self,menu,**keys):
         g.trace('can not happen: no "command" arg')
 #@-node:ekr.20080610085158.2:c.add_command
 #@+node:ekr.20080610085158.3:c.bind and c.bind2
-def bind (self,w,pattern,func):
+def bind (self,w,pattern,func,*args,**keys):
 
     c = self
 
@@ -7438,9 +7451,9 @@ def bind (self,w,pattern,func):
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback)
+    w.bind(pattern,bindCallback,*args,**keys)
 
-def bind2 (self,w,pattern,func,**keys):
+def bind2 (self,w,pattern,func,*args,**keys):
 
     c = self
 
@@ -7450,7 +7463,7 @@ def bind2 (self,w,pattern,func,**keys):
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback,**keys)
+    w.bind(pattern,bindCallback,*args,**keys)
 #@-node:ekr.20080610085158.3:c.bind and c.bind2
 #@+node:ekr.20080610085158.4:c.tag_bind
 def tag_bind (self,w,tag,event_kind,func):
@@ -13946,6 +13959,94 @@ def weave (self,event=None):
 #@-node:ekr.20031218072017.2849:Import&Export submenu
 #@-node:ekr.20080606074139.3:Changed
 #@-node:ekr.20080606074139.1:Set cwd in read/write commands
+#@+node:ekr.20080611105410.145:Added  vim patches
+@nocolor
+
+Headline pane:
+
+- (Done) Prevent "--> exit-named-modes" from switching focus to the Body pane.
+    Removed 'c.frame.log.deleteTab('Mode') from endMode
+
+Body pane:
+
+- (Done) Enable search for 'space' character in text
+    Removed 'if ch.isspace(): return' in zapToCharacter:
+
+- (Done) Eliminate delete-word from removing trailing white space
+    Removed 'self.killWs(event)' in killWord and backwardKillWord
+
+- (Done) Put zapped text to clipboard
+    Added 'g.app.gui.replaceClipboardWith(s[ins:i])' after 'sel.addToKillBuffer(s[ins:i])' in zapToCharacter
+
+@color
+#@nonl
+#@+node:ekr.20061031131434.159:endMode
+def endMode(self,event):
+
+    k = self ; c = k.c
+
+    w = g.app.gui.get_focus(c)
+    if w:
+        c.frame.log.deleteTab('Mode') # Changes focus to the body pane
+
+    k.endCommand(event,k.stroke)
+    k.inputModeName = None
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode() # Restores focus.
+
+    if w:
+        c.widgetWantsFocusNow(w)
+#@-node:ekr.20061031131434.159:endMode
+#@+node:ekr.20050920084036.128:zapToCharacter
+def zapToCharacter (self,event):
+
+    '''Kill characters from the insertion point to a given character.'''
+
+    k = self.k ; w = self.editWidget(event)
+    if not w: return
+
+    state = k.getState('zap-to-char')
+    if state == 0:
+        k.setLabelBlue('Zap To Character: ',protect=True)
+        k.setState('zap-to-char',1,handler=self.zapToCharacter)
+    else:
+        ch = event and event.char or ' '
+        k.resetLabel()
+        k.clearState()
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i = s.find(ch,ins)
+        if i == -1: return
+        self.beginCommand(undoType='zap-to-char')
+        self.addToKillBuffer(s[ins:i])
+        g.app.gui.replaceClipboardWith(s[ins:i]) # Support for proper yank.
+        w.setAllText(s[:ins] + s[i:])
+        w.setInsertPoint(ins)
+        self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.128:zapToCharacter
+#@+node:ekr.20050920084036.180:backwardKillWord & killWord
+def backwardKillWord (self,event):
+    '''Kill the previous word.'''
+    c = self.c
+    self.beginCommand(undoType='backward-kill-word')
+    c.editCommands.backwardWord(event)
+    # self.killWs(event)
+    self.kill(event,'insert wordstart','insert wordend',undoType=None)
+    c.frame.body.forceFullRecolor()
+    self.endCommand(changed=True,setLabel=True)
+
+def killWord (self,event):
+    '''Kill the word containing the cursor.'''
+    c = self.c
+    self.beginCommand(undoType='kill-word')
+    self.kill(event,'insert wordstart','insert wordend',undoType=None)
+    # self.killWs(event)
+    c.frame.body.forceFullRecolor()
+    self.endCommand(changed=True,setLabel=True)
+
+#@-node:ekr.20050920084036.180:backwardKillWord & killWord
+#@-node:ekr.20080611105410.145:Added  vim patches
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:

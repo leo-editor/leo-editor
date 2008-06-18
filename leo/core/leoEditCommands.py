@@ -4777,8 +4777,10 @@ class editCommandsClass (baseEditCommandsClass):
     def selectAllText (self,event):
 
         c = self.c 
-        w = g.app.gui.eventWidget(event) or c.frame.body.bodyCtrl
-        return w.selectAllText()
+
+        w = self.editWidget(event)
+        if w:
+            return w.selectAllText()
     #@-node:ekr.20061111223516:selectAllText (leoEditCommands)
     #@-others
 #@-node:ekr.20050920084036.53:editCommandsClass
@@ -5659,7 +5661,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         c = self.c
         self.beginCommand(undoType='backward-kill-word')
         c.editCommands.backwardWord(event)
-        self.killWs(event)
+        # self.killWs(event)
         self.kill(event,'insert wordstart','insert wordend',undoType=None)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
@@ -5669,7 +5671,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         c = self.c
         self.beginCommand(undoType='kill-word')
         self.kill(event,'insert wordstart','insert wordend',undoType=None)
-        self.killWs(event)
+        # self.killWs(event)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
 
@@ -5919,7 +5921,6 @@ class killBufferCommandsClass (baseEditCommandsClass):
             ch = event and event.char or ' '
             k.resetLabel()
             k.clearState()
-            if ch.isspace(): return
             s = w.getAllText()
             ins = w.getInsertPoint()
             i = s.find(ch,ins)
