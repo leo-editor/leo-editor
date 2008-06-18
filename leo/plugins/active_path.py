@@ -29,6 +29,9 @@ status-iconbox.
 
 Files can be loaded by clicking on the node's status-iconbox.
 
+There are two commands on the Plugins active_path submenu, show path, and set absolute path.
+The latter changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+
 active_path is a rewrite of the at_directory plugin to use @path directives (which influence
 @auto and other @file type directives), and to handle sub-folders more automatically.
 '''
@@ -52,7 +55,24 @@ def onSelect (tag,keywords):
     if not c: return
     p = keywords.get("p")
     pos = p.copy()
+
+    path = getPath(p)
+
+    if path:
+        c.beginUpdate()
+        try:
+            sync_node_to_folder(c,pos,path)
+            c.requestRedrawFlag = True
+        finally:
+            c.endUpdate()
+#@-node:tbrown.20080613095157.4:onSelect
+#@+node:tbrown.20080616153649.4:getPath
+def getPath(p):
+
+    p = p.copy()
+
     path = []
+
     while p:
         h = p.headString()
         # TODO - use leo internal @path code, when it's working
@@ -60,13 +80,7 @@ def onSelect (tag,keywords):
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
             d = os.path.join(*path)
-            c.beginUpdate()
-            try:
-                sync_node_to_folder(c,pos,d)
-                c.requestRedrawFlag = True
-            finally:
-                c.endUpdate()
-            break
+            return d
 
         elif h.startswith('@'):  # some other directive, run away
             break
@@ -78,8 +92,9 @@ def onSelect (tag,keywords):
             path.insert(0,h.strip('*'))
 
         p = p.parent()
-#@nonl
-#@-node:tbrown.20080613095157.4:onSelect
+
+    return None
+#@-node:tbrown.20080616153649.4:getPath
 #@+node:tbrown.20080613095157.5:flattenOrganizers
 def flattenOrganizers(p):
     """Children of p, some of which may be in organizer nodes
@@ -200,6 +215,22 @@ def openDir(c,parent,d):
             c.setHeadString(p,nh)
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
+#@+node:tbrown.20080616153649.2:cmd_showPath
+def cmd_showPath(c):
+    g.es(getPath(c.currentPosition()))
+#@-node:tbrown.20080616153649.2:cmd_showPath
+#@+node:tbrown.20080616153649.5:cmd_setPathAbsolute
+def cmd_setPathAbsolute(c):
+
+    p = c.currentPosition()
+    if '@' in p.headString():
+        g.es('Node should be a "/dirname/" type directory entry')
+        return
+    path = getPath(p)
+    c.setBodyString(p, ('@path Created from node "%s"\n\n'
+        % p.headString())+p.bodyString())
+    c.setHeadString(p, '@path '+path)
+#@-node:tbrown.20080616153649.5:cmd_setPathAbsolute
 #@-others
 
 if 1: # Ok for unit testing.
