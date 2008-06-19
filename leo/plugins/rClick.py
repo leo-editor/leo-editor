@@ -816,6 +816,10 @@ class pluginController(baseClasses.basePluginController):
 
     """A per commander controller for right click menu functionality."""
 
+    commandPrefix = 'rclick'
+
+    #@    << command list >>
+    #@+node:bobjack.20080617170156.6:<< command list >>
     commandList = (
         'rclick-gen-recent-files-list',
         'rclick-gen-context-sensitive-commands',
@@ -843,51 +847,13 @@ class pluginController(baseClasses.basePluginController):
         'rclick-find-node-only-button',
         'rclick-find-suboutline-only-button',
         'rclick-find-entire-outline-button',
-   )
-
-
-    #@    @+others
-    #@+node:bobjack.20080516105903.19:__init__
-    def __init__(self, c):
-
-        """Initialize rclick functionality for this commander.
-
-        This only initializes ivars, the proper setup must be done by calling init
-        in onCreate. This is to make unit testing easier.
-
-        """
-
-        super(self.__class__, self).__init__(c)
-
-        self.mb_retval = None
-        self.mb_keywords = None
-
-        self.default_context_menus = {}
-
-        self.radio_group_data = {}
-        self.check_button_data = {}
-
-        self.radio_vars = {}
-        self.iconCache = {}
-
-        self.commandPrefix = 'rclick'
-
-    #@+node:bobjack.20080516105903.20:onCreate
-    def onCreate(self):
-
-        """Perform initialization for this per commander controller."""
-
-        self.rSetupMenus()
-        super(self.__class__, self).onCreate()
-    #@-node:bobjack.20080516105903.20:onCreate
-    #@+node:bobjack.20080516105903.93:setDeafaultContextMenus
-    def setDefaultContextMenus(self):
-
-        """Set menus for context menus that have not been defined in @popup menus."""
-
-        c = self.c
-
-        default_menus = {
+    )
+    #@nonl
+    #@-node:bobjack.20080617170156.6:<< command list >>
+    #@nl
+    #@    << default context menus >>
+    #@+node:bobjack.20080617170156.7:<< default context menus >>
+    defaultContextMenus = {
 
         'rclick-find-controls-left': [
             ('*', 'rclick-find-whole-word-button'),
@@ -977,16 +943,48 @@ class pluginController(baseClasses.basePluginController):
     #             [('*', 'select-chapter-menu')],
     #         ),
     #     ],
+    # 
     #@-at
     #@@c
+    }
+    #@-node:bobjack.20080617170156.7:<< default context menus >>
+    #@nl
 
-        }
-        for k, v in default_menus.iteritems():
-            if k in c.context_menus:
-                continue
-            c.context_menus[k] = v
+    #@    @+others
+    #@+node:bobjack.20080516105903.19:__init__
+    def __init__(self, c):
 
-    #@-node:bobjack.20080516105903.93:setDeafaultContextMenus
+        """Initialize rclick functionality for this commander.
+
+        This only initializes ivars, the proper setup must be done by calling init
+        in onCreate. This is to make unit testing easier.
+
+        """
+
+        super(self.__class__, self).__init__(c)
+
+        self.mb_retval = None
+        self.mb_keywords = None
+
+        self.default_context_menus = {}
+
+        self.radio_group_data = {}
+        self.check_button_data = {}
+
+        self.radio_vars = {}
+        self.iconCache = {}
+
+
+    #@+node:bobjack.20080516105903.20:onCreate
+    def onCreate(self):
+
+        """Perform initialization for this per commander controller."""
+
+
+        super(self.__class__, self).onCreate()
+
+        self.rSetupMenus()
+    #@-node:bobjack.20080516105903.20:onCreate
     #@+node:bobjack.20080516105903.21:getButtonHandlers
     def getButtonHandlers(self):
 
@@ -1002,13 +1000,7 @@ class pluginController(baseClasses.basePluginController):
 
         # save any default menus set by plugins before rClick was enabled
 
-        try:
-            saved_menus = c.context_menus
-        except AttributeError:
-            saved_menus = {}
-
-        if not isinstance(saved_menus, dict):
-           saved_menus = {}
+        saved_menus = c.context_menus
 
         if hasattr(g.app.config, 'context_menus'):
             c.context_menus = self.copyMenuDict(g.app.config.context_menus)
@@ -1074,13 +1066,6 @@ class pluginController(baseClasses.basePluginController):
         for key, item in saved_menus.iteritems():
             if not key in menus:
                 menus[key] = item
-
-        # default menus define in rClick are inserted here
-        #  config menus and menus defined in other plugins take priority over these
-
-        for key, item in self.default_context_menus.iteritems():
-            if not key in menus:
-                menus[key] = self.copyMenuTable(item)
 
         return True
 
@@ -1184,13 +1169,12 @@ class pluginController(baseClasses.basePluginController):
 
             c = self.c
 
-            if self.minibufferPhaseError():
-                return
+            self.assertPhase('generate')
 
             event = keywords.get('event')
             widget = event.widget
             #rmenu = keywords.get('rc_rmenu')
-            menu_table = keywords.get('rc_menu_table')
+            menu_table = self.menu_table
 
             def computeLabels (fileName):
 
@@ -2000,6 +1984,7 @@ class pluginController(baseClasses.basePluginController):
             #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
             isText = g.app.gui.isTextWidget(widget)
             if isText:
+
                 try:
                     widget.setSelectionRange(*c.k.previousSelection)
                 except TypeError:
@@ -2381,34 +2366,6 @@ class pluginController(baseClasses.basePluginController):
 
         return cmd, cmd_data
     #@-node:bobjack.20080516105903.72:split_cmd
-    #@+node:bobjack.20080516105903.73:copyMenuTable
-    def copyMenuTable(self, menu_table):
-
-        """make a copy of the menu_table and make copies of its submenus.
-
-        It is the menu lists that are being copied we are not deep copying
-        objects contained in those lists.
-
-        """
-
-
-        def _deepcopy(menu):
-
-            table = []
-            for item in menu:
-                label, cmd = item
-                if isinstance(cmd, list):
-                    cmd = _deepcopy(cmd)
-                    item = (label, cmd)
-                table.append(item)
-
-            return table
-
-        newtable =  _deepcopy(menu_table)
-
-        return newtable
-
-    #@-node:bobjack.20080516105903.73:copyMenuTable
     #@+node:bobjack.20080516105903.74:copyMenuDict
     def copyMenuDict(self, menu_dict):
 

@@ -3108,7 +3108,7 @@ class keyHandlerClass:
             k.showStateAndMode()
     #@-node:ekr.20061031131434.130:keyboardQuit
     #@+node:ekr.20061031131434.131:k.registerCommand
-    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=False):
 
         '''Make the function available as a minibuffer command,
         and optionally attempt to bind a shortcut.
@@ -3116,7 +3116,7 @@ class keyHandlerClass:
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
 
-        If wrap is True then func will be wrapped with c.universallCallback.
+        If wrap is True then func will be wrapped with c.universalCallback.
 
         '''
 
@@ -3125,7 +3125,7 @@ class keyHandlerClass:
         k = self ; c = k.c
 
         if wrap:
-            func = c.universallCallback(func)
+            func = c.universalCallback(func)
 
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting

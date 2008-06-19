@@ -444,8 +444,8 @@ class baseCommands:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@-node:ekr.20051106040126:c.executeMinibufferCommand
-    #@+node:bobjack.20080509080123.2:c.universallCallback
-    def universallCallback(self, function):
+    #@+node:bobjack.20080509080123.2:c.universalCallback
+    def universalCallback(self, function):
 
         """Create a universal command callback.
 
@@ -469,17 +469,23 @@ class baseCommands:
                 cm = self.theContextMenuController
                 keywords = cm.mb_keywords 
             except AttributeError:
-                keywords = None
+                cm = keywords = None
 
-            if keywords:
-                keywords['mb_event'] = event  
-                cm.mb_retval = function(keywords)
-            else:
-                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
-                return function(keywords)
+            if not keywords:
+                 keywords = {'c': self, 'rc_phase': 'minibuffer'}
+
+            keywords['mb_event'] = event     
+            retval = function(keywords)
+
+            if cm:
+                cm.mb_keywords = None
+                cm.mb_retval = retval
 
         return minibufferCallback
-    #@-node:bobjack.20080509080123.2:c.universallCallback
+
+    #fix bobjacks spelling error
+    universallCallback = universalCallback
+    #@-node:bobjack.20080509080123.2:c.universalCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)

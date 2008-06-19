@@ -10,20 +10,20 @@ select the presently selected node at the time the button was created.
 This plugin requires that the mod_scripting plugin be enabled.
 
 An @data shortcut_button_data may be used in @setting trees to control the colors
-for the buttons and to set an rClick menu.
+for the buttons and to set the name of the @popup menu to be used as a context menu.
 
 The colors and menus for the 'shortcut' button itself are set using::
 
     master-bg = <color>
     master-fg = <color>
-    master-menu = <rclick menu name>
+    master-menu = <@popup menu-name>
 
 
 The colors and menus for the 'shortcut' button itself are set using::
 
     slave-bg = <color>
     slave-fg = <color>
-    slave-menu = <rclick menu name>
+    slave-menu = <@popoup menu-name>
 
 
 The menus will be ignored if the rClick.py and toolbar.py plugins are not enabled.
@@ -88,8 +88,9 @@ def init ():
             leoPlugins.registerHandler(('new','open2'),onCreate)
             g.plugin_signon(__name__)
 
+
+
     return ok
-#@nonl
 #@-node:ekr.20060601151845.4:init
 #@+node:ekr.20060601151845.5:onCreate
 def onCreate (tag, keys):
@@ -103,7 +104,7 @@ def onCreate (tag, keys):
 #@nonl
 #@-node:ekr.20060601151845.5:onCreate
 #@+node:ekr.20060601151845.6:class shortcutButton
-class shortcutButton:
+class shortcutButton(object):
 
     #@    @+others
     #@+node:ekr.20060601151845.7: ctor
@@ -111,14 +112,64 @@ class shortcutButton:
 
         self.c = c
 
+        try:
+            self.iconBars = c.frame.iconbar.iconbars
+        except:
+            self.iconBars = {}
+
 
         self.item_data = self.get_item_data()
 
         self.createShortcutButtonButton()
 
+        for command, method in [
+            ('add-shortcut-button', self.addShortcutButton),
+            ('shortcut-button-add-shortcut-button', self.addShortcutButton),
 
+            ('add-shortcut', self.addShortcut),
+            ('shortcut-button-add-shortcut', self.addShortcut)
+        ]:
 
+            c.k.registerCommand(command,shortcut=None,func=method,wrap=True)
     #@-node:ekr.20060601151845.7: ctor
+    #@+node:bobjack.20080618205453.2:add-shortcut-button
+    def addShortcutButton(self, keywords):
+
+        c = self.c
+
+        phase = keywords.get('rc_phase')
+
+        if phase not in ('invoke', 'minibuffer'):
+            g.trace('wrong phase', phase)
+            return
+
+        barName = self.item_data.get('iconbar')
+        bar = keywords.get('button') or keywords.get('bar')
+
+        if bar:
+            try:
+                barName = bar.leoIconBar.barName
+            except AttributeError:
+                try:
+                    barName = bar.barName 
+                except:
+                    barName = None
+
+        self.createShortcutButtonButton(barName)
+    #@-node:bobjack.20080618205453.2:add-shortcut-button
+    #@+node:bobjack.20080618205453.3:add-shortcut
+    def addShortcut(self, keywords):
+
+        phase = keywords.get('phase')
+
+        if phase not in ('invoke', 'minibuffer'):
+            return
+
+        bar = keywords.get('bar')
+
+        if bar:
+            self.createShortcutButton(bar)
+    #@-node:bobjack.20080618205453.3:add-shortcut
     #@+node:bobjack.20080613173457.11:get_item_data
     def get_item_data(self):
 
@@ -132,19 +183,22 @@ class shortcutButton:
 
             if '=' in pair:
                 k, v = pair.split('=', 1)
-                k, v = k.strip(), v.strip()
+                k, v = k.strip().lower(), v.strip()
 
                 item_data[k] = v
 
         return item_data
     #@-node:bobjack.20080613173457.11:get_item_data
     #@+node:ekr.20060601153526:createShortcutButtonButton
-    def createShortcutButtonButton(self):
+    def createShortcutButtonButton(self, barName=None):
 
         c = self.c
         sc = c.theScriptingController
 
         data = self.item_data
+
+        if barName:
+            data['barname'] = barName
 
         kws = {
             'text': 'shortcut',
@@ -158,7 +212,21 @@ class shortcutButton:
         if bg:
             kws['bg'] = bg
 
-        b = sc.createIconButton(**kws)
+        barName = data.get('barname')
+
+        if barName:
+            bar = c.frame.iconBars.get(barName)
+        else:
+            bar = None
+
+        bar = bar or c.frame.iconBar
+
+        oldIconBar = c.frame.iconBar
+        try:
+            c.frame.iconBar = bar
+            b = sc.createIconButton(**kws)
+        finally:
+            c.frame.iconBar = oldIconBar
 
         fg = data.get('master-fg')
         if fg:
@@ -182,8 +250,10 @@ class shortcutButton:
         '''Create a button which selects the present position (when the button was created).'''
 
         c = self.c
+        sc = c.theScriptingController
 
         data = self.item_data
+        g.es('shortcut-data', data)
 
         p = c.currentPosition()
         h = p.headString()
@@ -200,7 +270,7 @@ class shortcutButton:
             'text': commandName,
             'command': shortcutButtonCallback,
             'shortcut': None,
-            'statusLine': commandName,
+            'statusLine': commandName[3:],
             'bg':'LightSteelBlue1',
         }
 
@@ -218,7 +288,7 @@ class shortcutButton:
         oldIconBar = c.frame.iconBar
         try:
             c.frame.iconBar = bar
-            b = c.theScriptingController.createIconButton(**kws)
+            b = sc.createIconButton(**kws)
 
         finally:
             c.frame.iconBar = oldIconBar
