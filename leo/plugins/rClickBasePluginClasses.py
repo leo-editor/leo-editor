@@ -267,10 +267,10 @@ class basePluginController(object):
 
         commandsDict = self.getPublicCommands()
 
-        for commandName, klass in commandsDict.iteritems():
+        for commandName, cmd in commandsDict.iteritems():
 
-            def rclickBaseCommandCallback(event, func=klass):
-                return klass()
+            def rclickBaseCommandCallback(event, func=cmd):
+                return func(event)
 
             c.k.registerCommand(commandName, shortcut=None, func=rclickBaseCommandCallback)   
 
