@@ -596,6 +596,7 @@ class atFile:
             lastLines = at.scanText4(theFile,fileName,root)
         else:
             # lastLines = at.scanText3(theFile,root,[],at.endLeo)
+            lastLines = []
             g.es('can not read 3.x derived file',fileName,color='red')
             g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
 

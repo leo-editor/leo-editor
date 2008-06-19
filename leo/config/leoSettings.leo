@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="29" left="10" height="749" width="873"/>
+	<global_window_position top="68" left="343" height="827" width="873"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -353,7 +353,7 @@
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
-<v t="ekr.20060216170801"><vh>@bool enable_calltips = False</vh></v>
+<v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
@@ -370,6 +370,7 @@
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -384,165 +385,15 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20080602094234.3"><vh>Vim bindings by TL </vh>
-<v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
-<v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
-<v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-</v>
-<v t="ekr.20080602094234.10"><vh>@keys</vh>
-<v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
-<v t="ekr.20080602094234.12" a="E"><vh>@shortcuts - vi in Outline pane</vh>
-<v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
-<v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
-<v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
-<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert</vh></v>
-<v t="ekr.20080602094234.17"><vh>@mode tree-command-save</vh>
-<v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
-<v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
-<v t="ekr.20080602094234.22"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
-<v t="ekr.20080602094234.23"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
-</v>
-<v t="ekr.20080602094234.24"><vh>@ignore tree-yank-object</vh>
-<v t="ekr.20080602094234.25"><vh>@mode tree-yank-line</vh></v>
-<v t="ekr.20080602094234.26"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
-<v t="ekr.20080602094234.27"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
-</v>
-<v t="ekr.20080602094234.28"><vh>@ignore tree-change-object</vh>
-<v t="ekr.20080602094234.29"><vh>@mode vi-Change-line</vh></v>
-<v t="ekr.20080602094234.30"><vh>@mode vi-change-to-end-of-word</vh></v>
-<v t="ekr.20080602094234.31"><vh>@mode vi-change-to-beginning-of-word</vh></v>
-</v>
-<v t="ekr.20080602094234.32"><vh>@ignore tree-delete-to-end-of-line</vh></v>
-<v t="ekr.20080602094234.33"><vh>@ignore tree-delete</vh></v>
-<v t="ekr.20080602094234.34"><vh>@mode tree-delete-text-object</vh>
-<v t="ekr.20080602094234.35"><vh>@mode tree-delete-line</vh></v>
-<v t="ekr.20080602094234.36"><vh>@mode tree-delete-to-end-of-word</vh></v>
-<v t="ekr.20080602094234.37"><vh>@mode tree-delete-to-beginning-of-word</vh></v>
-<v t="ekr.20080602094234.38"><vh>@mode tree-delete-to-char</vh></v>
-</v>
-<v t="ekr.20080602094234.39"><vh>@mode tree-copy-node</vh></v>
-<v t="ekr.20080602094234.40"><vh>@mode tree-paste-node</vh></v>
-<v t="ekr.20080602094234.41"><vh>@mode tree-delete-node</vh></v>
-<v t="ekr.20080602094234.42"><vh>@mode focus-to-tree</vh></v>
-<v t="ekr.20080602094234.43"><vh>@mode focus-to-body</vh></v>
-<v t="ekr.20080602094234.44"><vh>@mode tree-undo</vh></v>
-<v t="ekr.20080602094234.45"><vh>@mode tree-redo</vh></v>
-<v t="ekr.20080602094234.46"><vh>@mode tree-goto-last-node</vh></v>
-<v t="ekr.20080602094234.47"><vh>@mode tree-goto</vh>
-<v t="ekr.20080602094234.48"><vh>@mode node-goto-first-node</vh></v>
-</v>
-<v t="ekr.20080602094234.49"><vh>@mode tree-goto-next-visible</vh></v>
-<v t="ekr.20080602094234.50"><vh>@mode body-goto-next-visible</vh></v>
-<v t="ekr.20080602094234.51"><vh>@mode tree-goto-prev-visible</vh></v>
-<v t="ekr.20080602094234.52"><vh>@mode body-goto-prev-visible</vh></v>
-<v t="ekr.20080602094234.53"><vh>@mode tree-contract-or-go-left</vh></v>
-<v t="ekr.20080602094234.54"><vh>@mode body-contract-or-go-left</vh></v>
-<v t="ekr.20080602094234.55"><vh>@mode tree-expand-and-go-right</vh></v>
-<v t="ekr.20080602094234.56"><vh>@mode body-expand-and-go-right</vh></v>
-<v t="ekr.20080602094234.57"><vh>@mode tree-move-outline-up</vh></v>
-<v t="ekr.20080602094234.58"><vh>@mode tree-move-outline-down</vh></v>
-<v t="ekr.20080602094234.59"><vh>@mode tree-move-outline-left</vh></v>
-<v t="ekr.20080602094234.60"><vh>@mode tree-move-outline-right</vh></v>
-<v t="ekr.20080602094234.61"><vh>@mode tree-contract-node</vh></v>
-<v t="ekr.20080602094234.62"><vh>@mode tree-clone-node</vh></v>
-<v t="ekr.20080602094234.63"><vh>@mode tree-goto-next-cloned-node</vh></v>
-<v t="ekr.20080602094234.64"><vh>@mode tree-mark-node</vh></v>
-<v t="ekr.20080602094234.65"><vh>@mode tree-goto-next-marked-node</vh></v>
-<v t="ekr.20080602094234.66"><vh>@mode tree-unmark-all-nodes</vh></v>
-<v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
-</v>
-<v t="ekr.20080602094234.68"><vh>@shortcuts - vi in Body pane</vh>
-<v t="ekr.20080602094234.69"><vh>@mode vi-command-line</vh>
-<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert</vh></v>
-<v t="ekr.20080602094234.71"><vh>@mode vi-command-save</vh>
-<v t="ekr.20080602094234.72"><vh>@mode vi-command-save-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.74"><vh>@mode vi-goto-end-of-buffer</vh></v>
-<v t="ekr.20080602094234.75"><vh>@mode vi-goto</vh>
-<v t="ekr.20080602094234.76"><vh>@mode vi-goto-beginning-of-buffer</vh></v>
-</v>
-<v t="ekr.20080602094234.77"><vh>@mode vi-save-buffers-exit</vh></v>
-<v t="ekr.20080602094234.78"><vh>@mode vi-new-line-below</vh></v>
-<v t="ekr.20080602094234.79"><vh>@mode vi-new-line-above</vh></v>
-<v t="ekr.20080602094234.80"><vh>@mode vi-append</vh></v>
-<v t="ekr.20080602094234.81"><vh>@mode vi-insert-at-indent</vh></v>
-<v t="ekr.20080602094234.82"><vh>@mode vi-delete-to-end-of-line</vh></v>
-<v t="ekr.20080602094234.83"><vh>@mode vi-delete-object</vh>
-<v t="ekr.20080602094234.84"><vh>@mode vi-delete-line</vh></v>
-<v t="ekr.20080602094234.85"><vh>@mode vi-delete-to-end-of-word</vh></v>
-<v t="ekr.20080602094234.86"><vh>@mode vi-delete-to-begin-of-word</vh></v>
-<v t="ekr.20080602094234.87"><vh>@mode vi-delete-to-end-of-sentence</vh></v>
-<v t="ekr.20080602094234.88"><vh>@mode vi-delete-to-beginning-of-sentence</vh></v>
-<v t="ekr.20080602094234.89"><vh>@mode vi-delete-to-end-of-paragraph</vh></v>
-<v t="ekr.20080602094234.90"><vh>@mode vi-delete-to-beginning-of-paragraph</vh></v>
-<v t="ekr.20080602094234.91"><vh>@mode vi-delete-section</vh></v>
-<v t="ekr.20080602094234.92" a="M"><vh>@mode vi-delete-to-char</vh></v>
-</v>
-<v t="ekr.20080602094234.93"><vh>@mode vi-yank-to-end-of-line</vh></v>
-<v t="ekr.20080602094234.94"><vh>@mode vi-yank</vh>
-<v t="ekr.20080602094234.95"><vh>@mode vi-yank-line</vh></v>
-<v t="ekr.20080602094234.96"><vh>@mode vi-yank-to-beginning-of-next-word</vh></v>
-<v t="ekr.20080602094234.97"><vh>@mode vi-yank-to-beginning-of-current-word</vh></v>
-<v t="ekr.20080602094234.98"><vh>@mode vi-yank-to-end-of-sentence</vh></v>
-<v t="ekr.20080602094234.99"><vh>@mode vi-yank-to-beginning-of-sentence</vh></v>
-<v t="ekr.20080602094234.100"><vh>@mode vi-yank-to-end-of-paragraph</vh></v>
-<v t="ekr.20080602094234.101"><vh>@mode vi-yank-to-beginning-of-paragraph</vh></v>
-<v t="ekr.20080602094234.102"><vh>@mode vi-yank-section</vh></v>
-</v>
-<v t="ekr.20080602094234.103"><vh>@mode vi-change-to-end-of-line</vh></v>
-<v t="ekr.20080602094234.104"><vh>@mode vi-change</vh>
-<v t="ekr.20080602094234.105"><vh>@mode vi-Change-line</vh></v>
-<v t="ekr.20080602094234.106"><vh>@mode vi-change-to-end-of-word</vh></v>
-<v t="ekr.20080602094234.107"><vh>@mode vi-change-to-beginning-of-word</vh></v>
-<v t="ekr.20080602094234.108"><vh>@mode vi-change-to-end-of-sentence</vh></v>
-<v t="ekr.20080602094234.109"><vh>@mode vi-change-to-beginning-of-sentence</vh></v>
-<v t="ekr.20080602094234.110"><vh>@mode vi-change-to-end-of-paragraph</vh></v>
-<v t="ekr.20080602094234.111"><vh>@mode vi-change-to-beginning-of-paragraph</vh></v>
-<v t="ekr.20080602094234.112"><vh>@mode vi-change-section</vh></v>
-</v>
-<v t="ekr.20080602094234.113"><vh>@mode vi-substitute-char</vh></v>
-<v t="ekr.20080602094234.114"><vh>@mode vi-substitute-line</vh></v>
-<v t="ekr.20080602094234.115"><vh>@mode vi-indent</vh>
-<v t="ekr.20080602094234.116"><vh>@mode vi-indent-line</vh></v>
-<v t="ekr.20080602094234.117"><vh>@mode vi-indent-to-beginning-of-sentence</vh></v>
-<v t="ekr.20080602094234.118"><vh>@mode vi-indent-to-beginning-of-sentence</vh></v>
-<v t="ekr.20080602094234.119"><vh>@mode vi-indent-to-end-of-paragraph</vh></v>
-<v t="ekr.20080602094234.120"><vh>@mode vi-indent-to-beginning-of-paragraph</vh></v>
-<v t="ekr.20080602094234.121"><vh>@mode vi-indent-to-beginning-of-buffer</vh></v>
-<v t="ekr.20080602094234.122"><vh>@mode vi-indent-to-end-of-buffer</vh></v>
-</v>
-<v t="ekr.20080602094234.123"><vh>@mode vi-deindent</vh>
-<v t="ekr.20080602094234.124"><vh>@mode vi-deindent-less</vh></v>
-<v t="ekr.20080602094234.125"><vh>@ignore vi-deindent-to-end-of-paragraph</vh></v>
-<v t="ekr.20080602094234.126"><vh>@ignore vi-deindent-to-beginning-of-paragraph</vh></v>
-<v t="ekr.20080602094234.127"><vh>@ignore vi-deindent-to-end-of-sentence</vh></v>
-<v t="ekr.20080602094234.128"><vh>@ignore vi-deindent-to-beginning-of-sentence</vh></v>
-</v>
-<v t="ekr.20080602094234.129"><vh>@mode vi-beginning-of-line</vh></v>
-<v t="ekr.20080602094234.130"><vh>@mode vi-goto-indent-beginning-previous-line</vh></v>
-<v t="ekr.20080602094234.131"><vh>@mode vi-end-of-line</vh></v>
-<v t="ekr.20080602094234.132"><vh>@mode vi-goto-after-paragraph</vh></v>
-<v t="ekr.20080602094234.133"><vh>@mode vi-goto-before-paragraph</vh></v>
-<v t="ekr.20080602094234.134"><vh>@mode vi-join</vh></v>
-<v t="ekr.20080602094234.135"><vh>@mode vi-match</vh></v>
-<v t="ekr.20080602094234.136"><vh>@mode vim-window-commands</vh></v>
-</v>
-</v>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
-<v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
-<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
@@ -555,11 +406,6 @@
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
-<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
-<v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
-<v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
-<v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
@@ -1304,7 +1150,7 @@
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
 <v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
-<v t="ekr.20041119034357.38"><vh>Body pane options</vh>
+<v t="ekr.20041119034357.38" a="E"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
 <v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
@@ -1357,15 +1203,31 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
+<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
+<v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
+<v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
+<v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
+</v>
+<v t="ekr.20060117092249"><vh>About modes</vh></v>
+<v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
+<v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
+</v>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
+</v>
 <v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
-<v t="ekr.20080514084054.1"><vh>@mode d::Delete: d: line, c: char</vh></v>
-<v t="ekr.20080510121331.16"><vh>@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
@@ -1379,87 +1241,80 @@
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
-<v t="ekr.20080602094234.3" a="E"><vh>Vim bindings by TL </vh>
-<v t="ekr.20080602094234.4"><vh>Vi Documentation</vh></v>
-<v t="ekr.20080602094234.5"><vh>Settings for vim bindings</vh>
+</v>
+<v t="ekr.20080602094234.10"><vh>@keys Vim bindings</vh>
 <v t="ekr.20080602094234.6"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20080602094234.7"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20080602094234.8"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
-<v t="ekr.20080602094234.9"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-</v>
-<v t="ekr.20080602094234.10"><vh>@keys</vh>
-<v t="ekr.20080602094234.11"><vh>@shortcuts - Unbind all commands</vh></v>
+<v t="ekr.20080617073917.4"><vh>@@shortcuts kill conflicting bindings</vh></v>
 <v t="ekr.20080602094234.12" a="E"><vh>@shortcuts - vi in Outline pane</vh>
-<v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
-<v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
-<v t="ekr.20080602094234.15"><vh>@mode tree-command-line</vh>
-<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert</vh></v>
-<v t="ekr.20080602094234.17"><vh>@mode tree-command-save</vh>
-<v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit</vh></v>
-</v>
-<v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
-<v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
-<v t="ekr.20080602094234.22"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
-<v t="ekr.20080602094234.23"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
-</v>
-<v t="ekr.20080602094234.24"><vh>@ignore tree-yank-object</vh>
-<v t="ekr.20080602094234.25"><vh>@mode tree-yank-line</vh></v>
-<v t="ekr.20080602094234.26"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
-<v t="ekr.20080602094234.27"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
-</v>
 <v t="ekr.20080602094234.28"><vh>@ignore tree-change-object</vh>
 <v t="ekr.20080602094234.29"><vh>@mode vi-Change-line</vh></v>
 <v t="ekr.20080602094234.30"><vh>@mode vi-change-to-end-of-word</vh></v>
 <v t="ekr.20080602094234.31"><vh>@mode vi-change-to-beginning-of-word</vh></v>
 </v>
-<v t="ekr.20080602094234.32"><vh>@ignore tree-delete-to-end-of-line</vh></v>
 <v t="ekr.20080602094234.33"><vh>@ignore tree-delete</vh></v>
-<v t="ekr.20080602094234.34"><vh>@mode tree-delete-text-object</vh>
+<v t="ekr.20080602094234.32"><vh>@ignore tree-delete-to-end-of-line</vh></v>
+<v t="ekr.20080602094234.24"><vh>@ignore tree-yank-object</vh>
+<v t="ekr.20080602094234.25"><vh>@mode tree-yank-line</vh></v>
+<v t="ekr.20080602094234.26"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20080602094234.27"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
+</v>
+<v t="ekr.20080602094234.54"><vh>@mode body-contract-or-go-left</vh></v>
+<v t="ekr.20080602094234.56"><vh>@mode body-expand-and-go-right</vh></v>
+<v t="ekr.20080602094234.50"><vh>@mode body-goto-next-visible</vh></v>
+<v t="ekr.20080602094234.52"><vh>@mode body-goto-prev-visible</vh></v>
+<v t="ekr.20080602094234.43"><vh>@mode focus-to-body</vh></v>
+<v t="ekr.20080602094234.42"><vh>@mode focus-to-tree</vh></v>
+<v t="ekr.20080602094234.62"><vh>@mode tree-clone-node</vh></v>
+<v t="ekr.20080602094234.15"><vh>@mode tree-command-line:: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.16"><vh>@mode tree-command-revert :: &lt;ret&gt;: revert</vh></v>
+<v t="ekr.20080602094234.17"><vh>@mode tree-command-save :: &lt;ret&gt;:write q: write &amp; quit</vh></v>
+<v t="ekr.20080602094234.19"><vh>@mode tree-command-quit :: &lt;ret&gt;: quit</vh></v>
+<v t="ekr.20080602094234.18"><vh>@mode tree-command-save-quit</vh></v>
+</v>
+<v t="ekr.20080602094234.61"><vh>@mode tree-contract-node</vh></v>
+<v t="ekr.20080602094234.53"><vh>@mode tree-contract-or-go-left</vh></v>
+<v t="ekr.20080602094234.39"><vh>@mode tree-copy-node</vh></v>
+<v t="ekr.20080602094234.41"><vh>@mode tree-delete-node</vh></v>
+<v t="ekr.20080602094234.34"><vh>@mode tree-delete-text-object:: d: delete line w: del end word b: del start word t: del to char</vh>
 <v t="ekr.20080602094234.35"><vh>@mode tree-delete-line</vh></v>
 <v t="ekr.20080602094234.36"><vh>@mode tree-delete-to-end-of-word</vh></v>
 <v t="ekr.20080602094234.37"><vh>@mode tree-delete-to-beginning-of-word</vh></v>
 <v t="ekr.20080602094234.38"><vh>@mode tree-delete-to-char</vh></v>
 </v>
-<v t="ekr.20080602094234.39"><vh>@mode tree-copy-node</vh></v>
-<v t="ekr.20080602094234.40"><vh>@mode tree-paste-node</vh></v>
-<v t="ekr.20080602094234.41"><vh>@mode tree-delete-node</vh></v>
-<v t="ekr.20080602094234.42"><vh>@mode focus-to-tree</vh></v>
-<v t="ekr.20080602094234.43"><vh>@mode focus-to-body</vh></v>
-<v t="ekr.20080602094234.44"><vh>@mode tree-undo</vh></v>
-<v t="ekr.20080602094234.45"><vh>@mode tree-redo</vh></v>
-<v t="ekr.20080602094234.46"><vh>@mode tree-goto-last-node</vh></v>
+<v t="ekr.20080602094234.13"><vh>@mode tree-double-click-node</vh></v>
+<v t="ekr.20080602094234.55"><vh>@mode tree-expand-and-go-right</vh></v>
+<v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
 <v t="ekr.20080602094234.47"><vh>@mode tree-goto</vh>
 <v t="ekr.20080602094234.48"><vh>@mode node-goto-first-node</vh></v>
 </v>
+<v t="ekr.20080602094234.46"><vh>@mode tree-goto-last-node</vh></v>
+<v t="ekr.20080602094234.63"><vh>@mode tree-goto-next-cloned-node</vh></v>
+<v t="ekr.20080602094234.65"><vh>@mode tree-goto-next-marked-node</vh></v>
 <v t="ekr.20080602094234.49"><vh>@mode tree-goto-next-visible</vh></v>
-<v t="ekr.20080602094234.50"><vh>@mode body-goto-next-visible</vh></v>
 <v t="ekr.20080602094234.51"><vh>@mode tree-goto-prev-visible</vh></v>
-<v t="ekr.20080602094234.52"><vh>@mode body-goto-prev-visible</vh></v>
-<v t="ekr.20080602094234.53"><vh>@mode tree-contract-or-go-left</vh></v>
-<v t="ekr.20080602094234.54"><vh>@mode body-contract-or-go-left</vh></v>
-<v t="ekr.20080602094234.55"><vh>@mode tree-expand-and-go-right</vh></v>
-<v t="ekr.20080602094234.56"><vh>@mode body-expand-and-go-right</vh></v>
-<v t="ekr.20080602094234.57"><vh>@mode tree-move-outline-up</vh></v>
+<v t="ekr.20080602094234.64"><vh>@mode tree-mark-node</vh></v>
 <v t="ekr.20080602094234.58"><vh>@mode tree-move-outline-down</vh></v>
 <v t="ekr.20080602094234.59"><vh>@mode tree-move-outline-left</vh></v>
 <v t="ekr.20080602094234.60"><vh>@mode tree-move-outline-right</vh></v>
-<v t="ekr.20080602094234.61"><vh>@mode tree-contract-node</vh></v>
-<v t="ekr.20080602094234.62"><vh>@mode tree-clone-node</vh></v>
-<v t="ekr.20080602094234.63"><vh>@mode tree-goto-next-cloned-node</vh></v>
-<v t="ekr.20080602094234.64"><vh>@mode tree-mark-node</vh></v>
-<v t="ekr.20080602094234.65"><vh>@mode tree-goto-next-marked-node</vh></v>
-<v t="ekr.20080602094234.66"><vh>@mode tree-unmark-all-nodes</vh></v>
-<v t="ekr.20080602094234.67"><vh>@mode tree-find-in-headline</vh></v>
+<v t="ekr.20080602094234.57"><vh>@mode tree-move-outline-up</vh></v>
+<v t="ekr.20080602094234.40"><vh>@mode tree-paste-node</vh></v>
+<v t="ekr.20080602094234.45"><vh>@mode tree-redo</vh></v>
+<v t="ekr.20080602094234.14"><vh>@mode tree-save-file</vh></v>
+<v t="ekr.20080602094234.20"><vh>@mode tree-select-object</vh>
+<v t="ekr.20080602094234.21"><vh>@mode tree-yank-line</vh></v>
+<v t="ekr.20080602094234.22"><vh>@mode tree-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20080602094234.23"><vh>@mode tree-yank-to-beginning-of-current-word</vh></v>
 </v>
-<v t="ekr.20080602094234.68"><vh>@shortcuts - vi in Body pane</vh>
-<v t="ekr.20080602094234.69"><vh>@mode vi-command-line</vh>
-<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert</vh></v>
-<v t="ekr.20080602094234.71"><vh>@mode vi-command-save</vh>
+<v t="ekr.20080602094234.44"><vh>@mode tree-undo</vh></v>
+<v t="ekr.20080602094234.66"><vh>@mode tree-unmark-all-nodes</vh></v>
+</v>
+<v t="ekr.20080602094234.68" a="E"><vh>@shortcuts - vi in Body pane</vh>
+<v t="ekr.20080602094234.69"><vh>@mode vi-command-line :: : e: revert q: quit w: write</vh>
+<v t="ekr.20080602094234.70"><vh>@mode vi-command-revert :: :&lt;ret&gt; to revert</vh></v>
+<v t="ekr.20080602094234.71"><vh>@mode vi-command-save :: :&lt;ret&gt; to write</vh>
 <v t="ekr.20080602094234.72"><vh>@mode vi-command-save-quit</vh></v>
 </v>
-<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit</vh></v>
+<v t="ekr.20080602094234.73"><vh>@mode vi-command-quit :: : &lt;ret&gt; to quit</vh></v>
 </v>
 <v t="ekr.20080602094234.74"><vh>@mode vi-goto-end-of-buffer</vh></v>
 <v t="ekr.20080602094234.75"><vh>@mode vi-goto</vh>
@@ -1532,7 +1387,6 @@
 <v t="ekr.20080602094234.136"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bobjack.20080614084120.3"></t>
@@ -1570,7 +1424,7 @@ slave-menu =
 </t>
 <t tx="ekr.20041119034357.1">@nocolor
 
-The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
+The @settings tree contains all active settings.  Settings outside this tree have no effect.t</t>
 <t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.8">Example:
@@ -4417,7 +4271,7 @@ plugins_menu.py
 # It doesn't understand @enabled-plugins nodes.
 # plugin_manager.py
 
-cleo.py
+# cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -5481,17 +5335,6 @@ probably find that your bindings are much easier to understand.
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
-<t tx="ekr.20080514084054.1">--&gt; set-silent-mode
-  # Suppress mode help.
-# --&gt; mode-help
-   # Show mode help initially.
-
-# keyboard-quit       = Ctrl-g # not needed, but a good reminder
-# keyboard-quit       = Return 
-
-kill-line       = d
-delete-char     = c
-</t>
 <t tx="ekr.20080515053412.3"></t>
 <t tx="ekr.20080515053412.4"></t>
 <t tx="ekr.20080515053412.5">@popup body is the default menu for
@@ -5578,8 +5421,9 @@ recent files. </t>
 <t tx="ekr.20080515053412.49">move-node-to-chapter-menu</t>
 <t tx="ekr.20080515053412.50"></t>
 <t tx="ekr.20080515053412.51">select-chapter-menu</t>
-<t tx="ekr.20080602094234.3">@language otl</t>
-<t tx="ekr.20080602094234.4">Leo's vi support:
+<t tx="ekr.20080602094234.4">@language otl
+
+Leo's vi support:
 	History
 		Version 4 (27-May-08)
 			Newly found commands
@@ -5978,7 +5822,6 @@ Notes:
 Vim Modeline (used by Vim for file specific settings)
 	| vim: noet filetype=otl foldcolumn=1
 </t>
-<t tx="ekr.20080602094234.5"></t>
 <t tx="ekr.20080602094234.6">@nocolor
 
 This setting determines the initial binding for otherwise-unbound keystrokes
@@ -5989,467 +5832,7 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080602094234.7">This allows the newline character to switch from the outline pane to the body pane.</t>
-<t tx="ekr.20080602094234.8"></t>
-<t tx="ekr.20080602094234.9"></t>
 <t tx="ekr.20080602094234.10"></t>
-<t tx="ekr.20080602094234.11"># List of commands available for key binding.
-# Put the contents of this file as the first
-#     @shortcuts node under @Keys to disable
-#     all keys defined in leoSettings.leo
-#--------------------------------------------
-abbrev-mode                            = None
-abort-edit-headline                    = None
-about-leo                              = None
-activate-cmds-menu                     = None #Newly found
-activate-edit-menu                     = None #Newly found
-activate-file-menu                     = None #Newly found
-activate-help-menu                     = None #Newly found
-activate-outline-menu                  = None #Newly found
-activate-plugins-menu                  = None #Newly found
-activate-window-menu                   = None #Newly found
-add-comments                           = None
-add-editor                             = None #Newly found
-add-global-abbrev                      = None
-add-space-to-lines                     = None #Newly found
-add-tab-to-lines                       = None #Newly found
-advertised-undo                        = None
-# append-next-kill                       = None
-append-to-buffer                       = None
-append-to-register                     = None
-# apply-settings                         = None
-auto-complete                          = None
-back-char                              = None
-back-char-extend-selection             = None
-back-paragraph                         = None
-back-paragraph-extend-selection        = None
-back-sentence                          = None
-back-sentence-extend-selection         = None
-back-to-indentation                    = None
-back-word                              = None
-back-word-extend-selection             = None
-backward-delete-char                   = None
-backward-find-character                = None #Newly found
-backward-find-character-extend-selection = None #Newly found
-backward-kill-paragraph                = None
-backward-kill-sentence                 = None
-backward-kill-word                     = None
-beginning-of-buffer                    = None
-beginning-of-buffer-extend-selection   = None
-beginning-of-line                      = None
-beginning-of-line-extend-selection     = None
-call-last-keyboard-macro               = None
-capitalize-word                        = None
-cascade-windows                        = None
-center-line                            = None
-center-region                          = None
-change                                 = None
-change-all                             = None
-change-then-find                       = None
-check-all-python-code                  = None
-check-outline                          = None
-check-python-code                      = None
-# check-spelling                         = None
-clean-all-lines                        = None #Newly found
-clean-lines                            = None #Newly found
-clear-extend-mode                      = None
-clear-kill-ring                        = None
-clear-recent-files                     = None
-clear-rectangle                        = None
-clear-selected-text                    = None #Newly found
-click-click-box                        = None #Newly found
-click-headline                         = None #Newly found
-click-icon-box                         = None #Newly found
-clone-node                             = None
-close-rectangle                        = None
-close-window                           = None
-contract-all                           = None
-contract-body-pane                     = None #Newly found
-contract-log-pane                      = None #Newly found
-contract-node                          = None
-contract-or-go-left                    = None
-contract-outline-pane                  = None #Newly found
-contract-pane                          = None #Newly found
-contract-parent                        = None
-convert-all-blanks                     = None
-convert-all-tabs                       = None
-convert-blanks                         = None
-convert-tabs                           = None
-copy-node                              = None
-copy-rectangle-to-register             = None
-copy-text                              = None
-# copy-to-buffer                         = None
-copy-to-register                       = None
-count-region                           = None
-cut-text                               = None
-cycle-all-focus                        = None #Newly found
-cycle-editor-focus                     = None #Newly found
-cycle-focus                            = None
-dabbrev-completion                     = None
-dabbrev-expands                        = None
-de-hoist                               = None
-# delete-all-icons                       = None #Newly found
-delete-char                            = None
-delete-comments                        = None
-delete-editor                          = None #Newly found
-delete-file                            = None
-delete-first-icon                      = None #Newly found
-delete-indentation                     = None
-delete-last-icon                       = None #Newly found
-delete-node                            = None
-# delete-node-icons                      = None #Newly found
-delete-rectangle                       = None
-delete-spaces                          = None
-demote                                 = None
-diff                                   = None
-digit-argument                         = None
-do-nothing                             = None #Newly found
-double-click-headline                  = None #Newly found
-double-click-icon-box                  = None #Newly found
-downcase-region                        = None
-downcase-word                          = None
-dump-outline                           = None
-edit-headline                          = None
-end-edit-headline                      = None
-end-kbd-macro                          = None
-end-of-buffer                          = None
-end-of-buffer-extend-selection         = None
-end-of-line                            = None
-end-of-line-extend-selection           = None
-enter-destination-mode                 = None
-equal-sized-panes                      = None
-escape                                 = None
-eval-expression                        = None
-exchange-point-mark                    = None
-execute-script                         = None
-exit-leo                               = None
-exit-named-mode                        = None
-expand-all                             = None
-expand-and-go-right                    = None
-expand-body-pane                       = None #Newly found
-expand-log-pane                        = None #Newly found
-expand-next-level                      = None
-expand-node                            = None
-expand-or-go-right                     = None
-expand-outline-pane                    = None #Newly found
-expand-pane                            = None #Newly found
-expand-prev-level                      = None
-# expand-region-abbrevs                  = None
-expand-to-level-1                      = None
-expand-to-level-2                      = None
-expand-to-level-3                      = None
-expand-to-level-4                      = None
-expand-to-level-5                      = None
-expand-to-level-6                      = None
-expand-to-level-7                      = None
-expand-to-level-8                      = None
-expand-to-level-9                      = None
-export-headlines                       = None
-extend-to-line                         = None #Newly found
-extend-to-paragraph                    = None
-extend-to-sentence                     = None #Newly found
-extend-to-word                         = None #Newly found
-extract                                = None
-extract-names                          = None
-extract-section                        = None
-fill-paragraph                         = None
-fill-region                            = None
-fill-region-as-paragraph               = None
-find-character                         = None
-find-character-extend-selection        = None #Newly found
-find-next                              = None
-find-prev                              = None
-find-word                              = None #Newly found
-find-word-in-line                      = None #Newly found
-flatten-outline                        = None
-flush-lines                            = None
-focus-to-body                          = None
-focus-to-log                           = None
-focus-to-minibuffer                    = None
-focus-to-tree                          = None
-forward-char                           = None
-forward-char-extend-selection          = None
-forward-end-word                       = None #Newly found
-forward-end-word-extend-selection      = None #Newly found
-forward-paragraph                      = None
-forward-paragraph-extend-selection     = None
-forward-sentence                       = None
-forward-sentence-extend-selection      = None
-forward-word                           = None
-forward-word-extend-selection          = None
-full-command                           = None
-fully-expand-body-pane                 = None #Newly found
-fully-expand-log-pane                  = None #Newly found
-fully-expand-outline-pane              = None #Newly found
-fully-expand-pane                      = None #Newly found
-go-back                                = None
-go-forward                             = None
-goto-char                              = None
-goto-first-node                        = None
-goto-first-sibling                     = None
-goto-global-line                       = None
-goto-last-node                         = None
-goto-last-sibling                      = None
-goto-last-visible-node                 = None
-goto-line                              = None
-goto-line-number                       = None
-goto-next-changed                      = None
-goto-next-clone                        = None
-goto-next-marked                       = None
-goto-next-node                         = None
-goto-next-sibling                      = None
-goto-next-visible                      = None
-goto-parent                            = None
-goto-prev-node                         = None
-goto-prev-sibling                      = None
-goto-prev-visible                      = None
-help-for-minibuffer                    = None
-hide-body-pane                         = None #Newly found
-hide-find-tab                          = None
-hide-log-pane                          = None #Newly found
-hide-mini-buffer                       = None
-hide-outline-pane                      = None #Newly found
-hide-pane                              = None #Newly found
-hide-spell-tab                         = None
-hoist                                  = None
-how-many                               = None
-iconify-frame                          = None
-import-at-file                         = None
-import-at-root                         = None
-import-cweb-files                      = None
-import-derived-file                    = None
-import-flattened-outline               = None
-import-noweb-files                     = None
-increment-register                     = None
-# indent-for-tab                         = None
-indent-region                          = None
-indent-relative                        = None
-indent-rigidly                         = None
-indent-to-comment-column               = None
-insert-body-time                       = None
-insert-child                           = None
-insert-file                            = None
-insert-headline-time                   = None
-insert-icon                            = None #Newly found
-insert-keyboard-macro                  = None
-insert-newline                         = None
-insert-node                            = None
-insert-parentheses                     = None
-insert-register                        = None
-# insert-to-buffer                       = None
-inverse-add-global-abbrev              = None
-isearch-backward                       = None
-isearch-backward-regexp                = None
-isearch-forward                        = None
-isearch-forward-regexp                 = None
-jump-to-register                       = None
-keep-lines                             = None
-keyboard-quit                          = None
-kill-all-abbrevs                       = None
-kill-buffer                            = None
-kill-line                              = None
-kill-paragraph                         = None
-kill-rectangle                         = None
-kill-region                            = None
-kill-region-save                       = None
-kill-sentence                          = None
-kill-word                              = None
-line-number                            = None
-list-abbrevs                           = None
-list-buffers                           = None
-list-buffers-alphabetically            = None
-make-directory                         = None
-mark                                   = None
-mark-changed-items                     = None
-mark-changed-roots                     = None
-mark-clones                            = None
-mark-subheads                          = None
-match-brackets                         = None
-minimize-all                           = None
-mode-help                              = None
-move-lines-down                        = None #Newly found
-move-lines-up                          = None #Newly found
-move-outline-down                      = None
-move-outline-left                      = None
-move-outline-right                     = None
-move-outline-up                        = None
-move-past-close                        = None
-move-past-close-extend-selection       = None
-name-last-kbd-macro                    = None
-negative-argument                      = None
-new                                    = None
-newline-and-indent                     = None
-next-line                              = None
-next-line-extend-selection             = None
-number-command                         = None
-number-command-0                       = None
-number-command-1                       = None
-number-command-2                       = None
-number-command-3                       = None
-number-command-4                       = None
-number-command-5                       = None
-number-command-6                       = None
-number-command-7                       = None
-number-command-8                       = None
-number-command-9                       = None
-# number-to-register                     = None
-open-compare-window                    = None
-open-find-tab                          = None
-open-leoDocs-leo                       = None
-open-leoPlugins-leo                    = None
-open-leoSettings-leo                   = None
-open-offline-tutorial                  = None
-open-online-home                       = None
-open-online-tutorial                   = None
-open-outline                           = None
-open-python-window                     = None
-open-rectangle                         = None
-open-scripts-leo                       = None
-open-spell-tab                         = None
-open-with                              = None
-outline-to-cweb                        = None
-outline-to-noweb                       = None
-paste-node                             = None
-paste-retaining-clones                 = None
-paste-text                             = None
-point-to-register                      = None
-prepend-to-buffer                      = None
-prepend-to-register                    = None
-pretty-print-all-python-code           = None
-pretty-print-python-code               = None
-previous-line                          = None
-previous-line-extend-selection         = None
-print-bindings                         = None
-print-commands                         = None
-promote                                = None
-query-replace                          = None
-query-replace-regex                    = None
-quick-command                          = None
-re-search-backward                     = None
-re-search-forward                      = None
-read-abbrev-file                       = None
-read-at-file-nodes                     = None
-read-outline-only                      = None
-redo                                   = None
-reformat-paragraph                     = None
-remove-blank-lines                     = None
-remove-directory                       = None
-remove-sentinels                       = None
-remove-space-from-lines                = None #Newly found
-remove-tab-from-lines                  = None #Newly found
-rename-buffer                          = None
-repeat-complex-command                 = None
-replace-string                         = None
-resize-to-screen                       = None
-reverse-region                         = None
-reverse-sort-lines                     = None #Newly found
-reverse-sort-lines-ignoring-case       = None #Newly found
-revert                                 = None
-# save-buffer                          = None
-save-buffers-kill-leo                  = None
-save-file                              = None
-save-file-as                           = None
-save-file-to                           = None
-scroll-down                            = None
-scroll-down-extend-selection           = None
-scroll-outline-down-line               = None #Newly found
-scroll-outline-down-page               = None #Newly found
-scroll-outline-left                    = None #Newly found
-scroll-outline-right                   = None #Newly found
-scroll-outline-up-line                 = None #Newly found
-scroll-outline-up-page                 = None #Newly found
-scroll-up                              = None
-scroll-up-extend-selection             = None
-search-again                           = None
-search-backward                        = None
-search-forward                         = None
-search-with-present-options            = None
-select-all                             = None
-# self-insert-command                    = None #Newly found
-set-colors                             = None
-set-command-state                      = None
-set-comment-column                     = None
-set-extend-mode                        = None
-set-fill-column                        = None
-set-fill-prefix                        = None
-set-find-everywhere                    = None
-set-find-node-only                     = None
-set-find-suboutline-only               = None
-set-font                               = None
-set-insert-state                       = None
-# set-mark-command                       = None
-set-overwrite-state                    = None
-settings                               = None
-shell-command                          = None
-shell-command-on-region                = None
-show-colors                            = None
-show-fonts                             = None
-show-invisibles                        = None
-show-mini-buffer                       = None
-simulate-begin-drag                    = None #Newly found
-simulate-end-drag                      = None #Newly found
-sort-children                          = None
-sort-columns                           = None
-sort-fields                            = None
-sort-lines                             = None
-sort-lines-ignoring-case               = None #Newly found
-sort-siblings                          = None
-spell-change                           = None
-spell-change-then-find                 = None
-spell-find                             = None
-spell-ignore                           = None
-split-line                             = None
-start-kbd-macro                        = None
-string-rectangle                       = None
-suspend                                = None
-switch-to-buffer                       = None
-tabify                                 = None
-tangle                                 = None
-tangle-all                             = None
-tangle-marked                          = None
-toggle-active-pane                     = None
-toggle-angle-brackets                  = None
-toggle-extend-mode                     = None
-toggle-find-ignore-case-option         = None
-toggle-find-in-body-option             = None
-toggle-find-in-headline-option         = None
-toggle-find-mark-changes-option        = None
-toggle-find-mark-finds-option          = None
-toggle-find-regex-option               = None
-toggle-find-reverse-option             = None
-toggle-find-word-option                = None
-toggle-find-wrap-around-option         = None
-toggle-mini-buffer                     = None
-toggle-split-direction                 = None
-transpose-chars                        = None
-transpose-lines                        = None
-transpose-words                        = None
-undo                                   = None
-unindent-region                        = None
-universal-argument                     = None
-unmark-all                             = None
-untabify                               = None
-untangle                               = None
-untangle-all                           = None
-untangle-marked                        = None
-upcase-region                          = None
-upcase-word                            = None
-view-lossage                           = None
-view-register                          = None
-weave                                  = None
-what-line                              = None
-word-search-backward                   = None
-word-search-forward                    = None
-write-abbrev-file                      = None
-write-at-file-nodes                    = None
-write-dirty-at-file-nodes              = None
-write-missing-at-file-nodes            = None
-write-outline-only                     = None 
-yank                                   = None
-yank-pop                               = None
-yank-rectangle                         = None
-zap-to-character                       = None
-</t>
 <t tx="ekr.20080602094234.12"># vi key bindings - Outline pane #
  ################################
 
@@ -6487,7 +5870,13 @@ enter-tree-select-object-mode    ! tree = c
 
 #Substitute text commands
 #--------------------------------
-forward-char-extend-selection    ! tree = s
+forward-char-extend-selection    ! tree 
+
+
+
+
+
+
 select-all                       ! tree = Shift-s
 
 #Delete text commands
@@ -7053,8 +6442,9 @@ full-command                     = Ctrl-Shift-:    #Enter Leo's command mode
 keyboard-quit                    ! body = Ctrl-[   #Exit insert state
 keyboard-quit                    ! body = esc      #Exit insert state
 double-click-icon-box            ! body = =
-undo                             = u
-redo                             = Ctrl-r
+undo                             ! body = u
+redo                             ! body = Ctrl-r
+save-file                        = Ctrl-s
 enter-vi-save-buffers-exit-mode  = Shift-z         #ZZ command
 
 #Insert commands
@@ -7886,6 +7276,33 @@ cycle-editor-focus   = p   #Vim goes to previous window with focus
 delete-editor        = c   #Close
 delete-editor        = q   #Close</t>
 <t tx="ekr.20080602174756.1"></t>
+<t tx="ekr.20080617073917.4">contract-or-go-left             ! kill = Left
+end-edit-headline               ! kill = Return
+exchange-point-mark             ! kill = Alt+m
+extend-to-word                  ! kill = Ctrl+w
+expand-and-go-right             ! kill = Right
+forward-word                    ! kill = Ctrl+Right
+forward-word-extend-selection   ! kill = Ctrl+Shift+Right
+goto-next-visible               ! kill = Down
+goto-prev-visible               ! kill = Up
+indent-region                   ! kill = Ctrl+bracketright
+insert-node                     ! kill = Ctrl+i
+keyboard-quit                   ! kill = Ctrl+g
+mark                            ! kill = Ctrl+m
+move-outline-left               ! kill = Ctrl+l
+move-outline-right              ! kill = Ctrl+r
+newline-and-indent              ! kill = Ctrl+j
+open-outline                    ! kill = Ctrl+o
+paste-text                      ! kill = Ctrl+v
+redo                            ! kill = Ctrl+r
+search-with-present-options     ! kill = Ctrl+f
+set-command-state               ! kill = Return
+show-calltips                   ! kill = parenleft
+undo                            ! kill = u
+unindent-region                 ! kill = Ctrl+bracketleft
+yank                            ! kill = Ctrl+y
+yank-pop                        ! kill = Alt+y
+ </t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

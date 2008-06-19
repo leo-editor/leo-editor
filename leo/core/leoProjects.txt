@@ -4529,7 +4529,7 @@ def readSettings (self,c,localFlag):
 
     """Read settings from a file that may contain an @settings tree."""
 
-    # g.trace(c.fileName())
+    # g.trace('=' * 20, c.fileName())
 
     # Create a settings dict for c for set()
     if c and self.localOptionsDict.get(c.hash()) is None:
@@ -5125,20 +5125,31 @@ def doShortcuts(self,p,kind,name,val,s=None):
 
     # g.trace(self.c.fileName(),name)
 
-    c = self.c ; d = self.shortcutsDict
+    c = self.c ; d = self.shortcutsDict ; k = c.k
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    munge = k.shortcutFromSetting
     if s is None: s = p.bodyString()
     lines = g.splitLines(s)
     for line in lines:
         line = line.strip()
         if line and not g.match(line,0,'#'):
             name,bunch = self.parseShortcutLine(line)
+            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
             if bunch is not None:
-                # A regular shortcut.
-                bunchList = d.get(name,[])
-                bunchList.append(bunch)
-                d [name] = bunchList
-                self.set(p,"shortcut",name,bunchList)
-                self.setShortcut(name,bunchList)
+                if bunch.val not in (None,'none','None'):
+                    # A regular shortcut.
+                    bunchList = d.get(name,[])
+                    if bunch.pane in ('kill','Kill'):
+                        if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                        bunchList = [z for z in bunchList
+                            if munge(z.val) != munge(bunch.val)]
+                        # g.trace(bunchList)
+                    else:
+                        if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                        bunchList.append(bunch)
+                    d [name] = bunchList
+                    self.set(p,"shortcut",name,bunchList)
+                    self.setShortcut(name,bunchList)
 #@-node:ekr.20041120105609:doShortcuts (ParserBaseClass)
 #@+node:ekr.20041217132028:doString
 def doString (self,p,kind,name,val):
@@ -5459,20 +5470,25 @@ def set (self,p,kind,name,val):
             g.es("over-riding setting:",name,"from",path)
 
     # N.B.  We can't use c here: it may be destroyed!
+    # if key == 'shortcut':
+        # g.trace('*****',key,val)
+
     d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
 
 #@-node:ekr.20041120094940.9:set (parseBaseClass)
 #@+node:ekr.20041227071423:setShortcut (ParserBaseClass)
-def setShortcut (self,name,bunch):
+def setShortcut (self,name,bunchList):
 
     c = self.c
 
     # None is a valid value for val.
     key = c.frame.menu.canonicalizeMenuName(name)
     rawKey = key.replace('&','')
-    self.set(c,rawKey,"shortcut",bunch)
+    self.set(c,rawKey,"shortcut",bunchList)
 
-    # g.trace(bunch.pane,rawKey,bunch.val)
+    if 0:
+        for b in bunchList:
+            g.trace('%20s %45s %s' % (b.val,rawKey,b.pane))
 #@-node:ekr.20041227071423:setShortcut (ParserBaseClass)
 #@+node:ekr.20041119204700.1:traverse (parserBaseClass)
 def traverse (self):
@@ -7278,7 +7294,7 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
 
     # g.trace('c',self.c)
 
-    c = self.c ; f = c.frame ; k = c.k
+    c = self.c ; f = c.frame ; k = c.k ; trace = False
     if g.app.unitTesting: return
     for data in table:
         << get label & command or continue >>
@@ -7286,6 +7302,8 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
         accelerator = stroke = k.shortcutFromSetting(accel) or ''
         accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
         def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            #k.clearState()
+            #g.trace(stroke)
             return k.masterMenuHandler(stroke,command,commandName)
 
         realLabel = self.getRealMenuName(label)
@@ -7300,11 +7318,6 @@ def createMenuEntries (self,menu,table,dynamicMenu=False):
                 accelerator=accelerator,
                 command=masterMenuCallback,
                 underline=amp_index)
-
-        # self.add_command(menu,label=realLabel,
-            # accelerator=accelerator,
-            # command=masterMenuCallback,
-            # underline=amp_index)
 #@+node:ekr.20051021091958:<< get label & command or continue >>
 if type(data) in (type(''),type(u'')): # Bug fix: 10/10/07: Allow unicode labels.
     # New in Leo 4.4.2: Can use the same string for both the label and the command string.
@@ -7347,14 +7360,14 @@ if minibufferCommand:
         # Pick the first entry that is not a mode.
         for bunch in bunchList:
             if not bunch.pane.endswith('-mode'):
-                # g.trace('1',bunch)
+                if trace: g.trace('1','%20s' % (bunch.val),commandName)
                 accel = bunch and bunch.val
                 if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
     else:
         if not g.app.unitTesting and not dynamicMenu:
             # Don't warn during unit testing.
             # This may come from a plugin that normally isn't enabled.
-            g.trace('No inverse for %s' % commandName)
+            if trace: g.trace('No inverse for %s' % commandName)
         continue # There is no way to make this menu entry.
 else:
     # First, get the old-style name.
@@ -7362,7 +7375,7 @@ else:
     rawKey,bunchList = c.config.getShortcut(commandName)
     for bunch in bunchList:
         if not bunch.pane.endswith('-mode'):
-            # g.trace('2',bunch)
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
             accel = bunch and bunch.val ; break
     # Second, get new-style name.
     if not accel:
@@ -7375,7 +7388,7 @@ else:
             for bunch in bunchList:
                 if not bunch.pane.endswith('-mode'):
                     accel = bunch.val ; break
-                    # g.trace('2',bunch)
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
         elif not dynamicMenu:
             g.trace('No inverse for %s' % commandName)
 #@+node:ekr.20051021100806.1:<< compute emacs_name >>
@@ -8274,6 +8287,23 @@ def reconfigureFromConfig (self):
 #@-node:ekr.20031218072017.2246:reconfigureFromConfig (tkFrame)
 #@-node:ekr.20080612091459.1:Found: .redraw_now
 #@-node:ekr.20080612060621.3:Fixed new-headline problem
+#@+node:ekr.20080617073917.2:Fixed recent crasher
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 311, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 4781, in selectAllText
+    return w.selectAllText()
+AttributeError: Canvas instance has no attribute 'selectAllText'
+#@+node:ekr.20061111223516:selectAllText (leoEditCommands)
+def selectAllText (self,event):
+
+    c = self.c 
+
+    w = self.editWidget(event)
+    if w:
+        return w.selectAllText()
+#@-node:ekr.20061111223516:selectAllText (leoEditCommands)
+#@-node:ekr.20080617073917.2:Fixed recent crasher
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
@@ -14034,6 +14064,593 @@ def killWord (self,event):
 
 #@-node:ekr.20050920084036.180:backwardKillWord & killWord
 #@-node:ekr.20080611105410.145:Added  vim patches
+#@+node:ekr.20061014050154.2:Added 'kill' bindings
+Should assigning to None clear all key bindings?
+#@nonl
+#@+node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    if g.app.oneConfigFilename:
+        table = ((g.app.oneConfigFilename,False),)
+    else:
+        table = (
+            (self.globalConfigFile,False),
+            (self.homeFile,False),
+            (localConfigFile,False),
+            (self.myGlobalConfigFile,False),
+            (self.myHomeConfigFile,False),
+            (self.machineConfigFile,False),
+            (myLocalConfigFile,False),
+            (fileName,True),
+        )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_abspath(g.os_path_normpath(path)))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        if path and path.lower() not in seen:
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                s = g.toEncodedString(s,'ascii')
+                print s
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because the local directory does not exits.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20041117085625:g.app.config.openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:g.app.config.openSettingsFile
+#@+node:ekr.20051013161232:g.app.config.updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:g.app.config.updateSettings
+#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+#@+node:ekr.20041117083857.1:g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    # g.trace('=' * 20, c.fileName())
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+
+    return d
+#@-node:ekr.20041117083857.1:g.app.config.readSettings
+#@-node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@+node:ekr.20041120105609:doShortcuts (ParserBaseClass)
+def doShortcuts(self,p,kind,name,val,s=None):
+
+    # __pychecker__ = '--no-argsused' # kind,val.
+
+    # g.trace(self.c.fileName(),name)
+
+    c = self.c ; d = self.shortcutsDict ; k = c.k
+    trace = False or c.config.getBool('trace_bindings_verbose')
+    munge = k.shortcutFromSetting
+    if s is None: s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not g.match(line,0,'#'):
+            name,bunch = self.parseShortcutLine(line)
+            # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
+            if bunch is not None:
+                if bunch.val not in (None,'none','None'):
+                    # A regular shortcut.
+                    bunchList = d.get(name,[])
+                    if bunch.pane in ('kill','Kill'):
+                        if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                        bunchList = [z for z in bunchList
+                            if munge(z.val) != munge(bunch.val)]
+                        # g.trace(bunchList)
+                    else:
+                        if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                        bunchList.append(bunch)
+                    d [name] = bunchList
+                    self.set(p,"shortcut",name,bunchList)
+                    self.setShortcut(name,bunchList)
+#@-node:ekr.20041120105609:doShortcuts (ParserBaseClass)
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    << trace bindings >>
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.91:<< trace bindings >>
+if c.config.getBool('trace_bindings_verbose'):
+    theFilter = c.config.getString('trace_bindings_filter') or ''
+    # g.trace(repr(theFilter))
+    if not theFilter or shortcut.find(theFilter) != -1:
+        pane_filter = c.config.getString('trace_bindings_pane_filter')
+        if not pane_filter or pane_filter.lower() == pane:
+            g.trace(pane,shortcut,commandName)
+#@-node:ekr.20061031131434.91:<< trace bindings >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print('redefining','shortcut %20s' % (shortcut),
+            'from',z,'(%s)' % (b2.pane),
+            'to',commandName,'(%s)' % (pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@+node:ekr.20080617073917.1:Error messages
+C:\leo.repo\trunk>python leo\core\runLeo.py leo\test\test.leo
+reading settings in C:\leo.repo\trunk\leo\config\leoSettings.leo
+readSettings: ==================== C:\leo.repo\trunk\leo\config\leoSettings.leo
+doShortcuts:   tree               Return end-edit-headline
+doShortcuts:   body               Return insert-newline
+doShortcuts:   text              LtArrow back-char
+doShortcuts:   text              RtArrow forward-char
+doShortcuts:   text              DnArrow next-line
+doShortcuts:   text              UpArrow previous-line
+doShortcuts:   text        Shift-LtArrow back-char-extend-selection
+doShortcuts:   text        Shift-RtArrow forward-char-extend-selection
+doShortcuts:   text        Shift-DnArrow next-line-extend-selection
+doShortcuts:   text        Shift-UpArrow previous-line-extend-selection
+doShortcuts:   tree              LtArrow contract-or-go-left
+doShortcuts:   tree              RtArrow expand-and-go-right
+doShortcuts:   tree              DnArrow goto-next-visible
+doShortcuts:   tree              UpArrow goto-prev-visible
+doShortcuts:   tree        Shift-DnArrow move-outline-down
+doShortcuts:   tree        Shift-LtArrow move-outline-left
+doShortcuts:   tree        Shift-RtArrow move-outline-right
+doShortcuts:   tree        Shift-UpArrow move-outline-up
+doShortcuts:    all          Alt-LtArrow contract-or-go-left
+doShortcuts:    all          Alt-RtArrow expand-and-go-right
+doShortcuts:    all          Alt-DnArrow goto-next-visible
+doShortcuts:    all          Alt-UpArrow goto-prev-visible
+doShortcuts:    all    Alt-Shift-DnArrow move-outline-down
+doShortcuts:    all    Alt-Shift-LtArrow move-outline-left
+doShortcuts:    all    Alt-Shift-RtArrow move-outline-right
+doShortcuts:    all    Alt-Shift-UpArrow move-outline-up
+doShortcuts:    all             Alt-Home goto-first-visible-node
+doShortcuts:    all              Alt-End goto-last-visible-node
+doShortcuts:    all             Ctrl-tab cycle-focus
+doShortcuts:    all       Ctrl-Shift-tab cycle-all-focus
+doShortcuts:    all         Ctrl-LtArrow back-word
+doShortcuts:    all   Ctrl-Shift-LtArrow back-word-extend-selection
+doShortcuts:    all            Ctrl-Home beginning-of-buffer
+doShortcuts:    all      Ctrl-Shift-Home beginning-of-buffer-extend-selection
+doShortcuts:    all             Ctrl-End end-of-buffer
+doShortcuts:    all       Ctrl-Shift-End end-of-buffer-extend-selection
+doShortcuts:    all         Ctrl-RtArrow forward-word
+doShortcuts:    all   Ctrl-Shift-RtArrow forward-word-extend-selection
+doShortcuts:    all                 Home beginning-of-line
+doShortcuts:    all           Shift-Home beginning-of-line-extend-selection
+doShortcuts:    all                  End end-of-line
+doShortcuts:    all            Shift-End end-of-line-extend-selection
+doShortcuts:    all               PageDn scroll-down
+doShortcuts:    all         Shift-PageDn scroll-down-extend-selection
+doShortcuts:    all               PageUp scroll-up
+doShortcuts:    all         Shift-PageUp scroll-up-extend-selection
+doShortcuts:    all                Alt-b back-word
+doShortcuts:    all          Alt-Shift-b back-word-extend-selection
+doShortcuts:    all           Ctrl-space back-to-indentation
+doShortcuts:    all               Ctrl-a beginning-of-line
+doShortcuts:    all         Ctrl-Shift-a beginning-of-line-extend-selection
+doShortcuts:    all               Ctrl-e end-of-line
+doShortcuts:    all                Alt-M exchange-point-mark
+doShortcuts:    all         Ctrl-Shift-e end-of-line-extend-selection
+doShortcuts:    all                Alt-L extend-to-line
+doShortcuts:    all               Ctrl-W extend-to-word
+doShortcuts:    all       Alt-braceright forward-paragraph
+doShortcuts:    all Alt-Shift-braceright forward-paragraph-extend-selection
+doShortcuts:    all                Alt-g goto-global-line
+doShortcuts:    all       Alt-parenright move-past-close
+doShortcuts:    all          Alt-Shift-A select-all
+doShortcuts:    all               Alt-F4 close-window
+doShortcuts:    all               Ctrl-q exit-leo
+doShortcuts:    all               Ctrl-n new
+doShortcuts:    all               Ctrl-o open-outline
+doShortcuts:    all               Ctrl-s save-file
+doShortcuts:    all         Shift-Ctrl-W write-at-file-nodes
+doShortcuts:    all         Shift+Ctrl+Q write-dirty-at-file-nodes
+doShortcuts:    all                Alt-Q backward-find-character
+doShortcuts:    all          Alt-Shift-Q backward-find-character-extend-selection
+doShortcuts:    all               Ctrl-f search-with-present-options
+doShortcuts:    all         Ctrl-Shift-r replace-string
+doShortcuts:    all                Alt-R isearch-backward
+doShortcuts:    all                Alt-S isearch-forward
+doShortcuts:    all                   F3 find-next
+doShortcuts:    all                   F2 find-prev
+doShortcuts:    all               Ctrl-= change
+doShortcuts:    all               Ctrl-- change-then-find
+doShortcuts:    all           Alt-Ctrl-e set-find-everywhere
+doShortcuts:    all           Alt-Ctrl-n set-find-node-only
+doShortcuts:    all           Alt-Ctrl-s set-find-suboutline-only
+doShortcuts:    all           Alt-Ctrl-i toggle-find-ignore-case-option
+doShortcuts:    all           Alt-Ctrl-b toggle-find-in-body-option
+doShortcuts:    all           Alt-Ctrl-h toggle-find-in-headline-option
+doShortcuts:    all           Alt-Ctrl-c toggle-find-mark-changes-option
+doShortcuts:    all           Alt-Ctrl-f toggle-find-mark-finds-option
+doShortcuts:    all           Alt-Ctrl-x toggle-find-regex-option
+doShortcuts:    all           Alt-Ctrl-r toggle-find-reverse-option
+doShortcuts:    all           Alt-Ctrl-w toggle-find-word-option
+doShortcuts:    all           Alt-Ctrl-a toggle-find-wrap-around-option
+doShortcuts:    all           Alt+Ctrl+- contract-pane
+doShortcuts:    all           Alt+Ctrl-= expand-pane
+doShortcuts:    all                Alt-d focus-to-body
+doShortcuts:    all                Alt-t focus-to-tree
+doShortcuts:    all               Ctrl-t toggle-active-pane
+doShortcuts:    all               Ctrl-g keyboard-quit
+doShortcuts:    all          Alt-Shift-i start-ipython
+doShortcuts:    all                Alt-i push-to-ipython
+doShortcuts:    all                Alt-C propagate-key-event
+doShortcuts:    all                Alt-E propagate-key-event
+doShortcuts:    all                Alt-F propagate-key-event
+doShortcuts:    all                Alt-H propagate-key-event
+doShortcuts:    all                Alt-P propagate-key-event
+doShortcuts:    all                Alt-O propagate-key-event
+doShortcuts:    all                Alt-W propagate-key-event
+doShortcuts:    all                Alt-x full-command
+doShortcuts:    all               Ctrl-P repeat-complex-command
+doShortcuts:    all                Alt-u universal-argument
+doShortcuts:    all               period auto-complete
+doShortcuts:    all               Ctrl+B execute-script
+doShortcuts:    all                   F1 help-for-command
+doShortcuts:    all                   F7 open-spell-tab
+doShortcuts:    all         Shift-Ctrl-Z redo
+doShortcuts:    all                Alt-4 run-unit-tests-locally
+doShortcuts:    all            parenleft show-calltips
+doShortcuts:    all                Alt-A sort-siblings
+doShortcuts:    all                Alt-1 toggle-autocompleter
+doShortcuts:    all                Alt-2 toggle-calltips
+doShortcuts:    all                Alt-3 toggle-extend-mode
+doShortcuts:    all               Ctrl-Z undo
+doShortcuts:    all               Ctrl-` clone-node
+doShortcuts:    all         Shift-Ctrl-c copy-node
+doShortcuts:    all         Shift-Ctrl-x cut-node
+doShortcuts:    all                Alt-- contract-all
+doShortcuts:    all               Ctrl-h edit-headline
+doShortcuts:    all               Ctrl-} demote
+doShortcuts:    all     Alt-bracketright expand-node
+doShortcuts:    all         Shift-Ctrl-D extract
+doShortcuts:    all         Shift-Ctrl-N extract-names
+doShortcuts:    all         Shift-Ctrl-S extract-section
+doShortcuts:    all                Alt-N goto-next-clone
+doShortcuts:    all               Ctrl-I insert-node
+doShortcuts:    all               Ctrl-M mark
+doShortcuts:    all               Ctrl-D move-outline-down
+doShortcuts:    all               Ctrl-L move-outline-left
+doShortcuts:    all               Ctrl-R move-outline-right
+doShortcuts:    all               Ctrl-U move-outline-up
+doShortcuts:    all         Shift-Ctrl-V paste-node
+doShortcuts:    all               Ctrl-{ promote
+doShortcuts:    all       Ctrl-parenleft add-comments
+doShortcuts:    all            BackSpace backward-delete-char
+doShortcuts:    all           Alt-Delete backward-kill-word
+doShortcuts:    all               Ctrl-c copy-text
+doShortcuts:    all               Ctrl-x cut-text
+doShortcuts:    all               Delete delete-char
+doShortcuts:    all      Ctrl-parenright delete-comments
+doShortcuts:    all               Ctrl-] indent-region
+doShortcuts:    all               Ctrl-k kill-line
+doShortcuts:    all               Ctrl-j newline-and-indent
+doShortcuts:    all               Ctrl-v paste-text
+doShortcuts:    all         Shift-Ctrl-p reformat-paragraph
+doShortcuts:    all               Ctrl-[ unindent-region
+doShortcuts:    all               Ctrl-Y yank
+doShortcuts:    all                Alt-Y yank-pop
+doShortcuts:    all                Alt-z zap-to-character
+doShortcuts: ****** killing binding: Alt+m to exchange-point-mark
+doShortcuts:   tree                    : enter-tree-command-line-mode
+doShortcuts:   tree               Ctrl-: full-command
+doShortcuts:   tree               Ctrl-s enter-tree-save-file-mode
+doShortcuts:   tree                    u enter-tree-undo-mode
+doShortcuts:   tree               Ctrl-r enter-tree-redo-mode
+doShortcuts:   body                  Tab enter-focus-to-tree-mode
+doShortcuts:   tree                  Tab enter-focus-to-body-mode
+doShortcuts:   tree                    = enter-tree-double-click-node-mode
+doShortcuts:   tree                Alt-g goto-global-line
+doShortcuts:   tree                    i set-insert-state
+doShortcuts:   tree               Ctrl-i edit-headline
+doShortcuts:   tree               Ctrl-[ set-command-state
+doShortcuts:   tree                  Esc set-command-state
+doShortcuts:   tree               return set-command-state
+doShortcuts:   tree               Ctrl-] end-edit-headline
+doShortcuts:   tree              Shift-y end-of-line-extend-selection
+doShortcuts:   tree                Alt-y copy-text
+doShortcuts:   tree                    v toggle-extend-mode
+doShortcuts:   tree              Shift-c end-of-line-extend-selection
+doShortcuts:   tree                    c enter-tree-select-object-mode
+doShortcuts:   tree                    s forward-char-extend-selection
+doShortcuts:   tree              Shift-s select-all
+doShortcuts:   tree              Shift-d end-of-line-extend-selection
+doShortcuts:   tree                    d enter-tree-delete-text-object-mode
+doShortcuts:   tree                    x delete-char
+doShortcuts:   tree               delete delete-char
+doShortcuts:   tree               Ctrl-b scroll-outline-up-line
+doShortcuts:   tree               Ctrl-f scroll-outline-down-line
+doShortcuts:   tree               Ctrl-u scroll-outline-up-line
+doShortcuts:   tree               Ctrl-d scroll-outline-down-line
+doShortcuts:   tree               Ctrl-y scroll-outline-up-line
+doShortcuts:   tree               Ctrl-e scroll-outline-down-line
+doShortcuts:   tree              RtArrow forward-char
+doShortcuts:   tree                    l forward-char
+doShortcuts:   tree              LtArrow back-char
+doShortcuts:   tree                    h back-char
+doShortcuts:   tree                    w forward-word
+doShortcuts:   tree              Shift-w forward-word-extend-selection
+doShortcuts:   tree                    b back-word
+doShortcuts:   tree              Shift-b back-word-extend-selection
+doShortcuts:   tree                    e forward-end-word
+doShortcuts:   tree              Shift-e forward-end-word-extend-selection
+doShortcuts:   tree                    | beginning-of-line
+doShortcuts:   tree                    $ end-of-line
+doShortcuts:   tree                    % match-brackets
+doShortcuts:   tree                    f find-character
+doShortcuts:   tree              Shift-f backward-find-character
+doShortcuts:   tree                    g enter-tree-goto-mode
+doShortcuts:   tree              Shift-g enter-tree-goto-last-node-mode
+doShortcuts:   tree               Ctrl-j enter-tree-goto-next-visible-mode
+doShortcuts:   tree              DnArrow enter-tree-goto-next-visible-mode
+doShortcuts:   tree         Ctrl-DnArrow enter-tree-goto-next-visible-mode
+doShortcuts:   body               Ctrl-j enter-body-goto-next-visible-mode
+doShortcuts:   body         Ctrl-DnArrow enter-body-goto-next-visible-mode
+doShortcuts:   tree               Ctrl-k enter-tree-goto-prev-visible-mode
+doShortcuts:   tree              UpArrow enter-tree-goto-prev-visible-mode
+doShortcuts:   tree         Ctrl-UpArrow enter-tree-goto-prev-visible-mode
+doShortcuts:   body               Ctrl-k enter-body-goto-prev-visible-mode
+doShortcuts:   body         Ctrl-UpArrow enter-body-goto-prev-visible-mode
+doShortcuts:   tree               Ctrl-h enter-tree-contract-or-go-left-mode
+doShortcuts:   tree         Ctrl-LtArrow enter-tree-contract-or-go-left-mode
+doShortcuts:   body               Ctrl-h enter-body-contract-or-go-left-mode
+doShortcuts:   body         Ctrl-LtArrow enter-body-contract-or-go-left-mode
+doShortcuts:   tree               Ctrl-l enter-tree-expand-and-go-right-mode
+doShortcuts:   tree         Ctrl-RtArrow enter-tree-expand-and-go-right-mode
+doShortcuts:   body               Ctrl-l enter-body-expand-and-go-right-mode
+doShortcuts:   body         Ctrl-RtArrow enter-body-expand-and-go-right-mode
+doShortcuts:   tree                    / search-forward
+doShortcuts:   tree                    n find-next
+doShortcuts:   tree              Shift-n find-prev
+doShortcuts:   tree               Ctrl-o insert-node
+doShortcuts:   tree               Ctrl-c enter-tree-copy-node-mode
+doShortcuts:   tree               Ctrl-x enter-tree-delete-node-mode
+doShortcuts:   tree               Ctrl-v enter-tree-paste-node-mode
+doShortcuts:   tree         Ctrl-Shift-j enter-tree-move-outline-down-mode
+doShortcuts:   tree         Ctrl-Shift-h enter-tree-move-outline-left-mode
+doShortcuts:   tree         Ctrl-Shift-l enter-tree-move-outline-right-mode
+doShortcuts:   tree         Ctrl-Shift-k enter-tree-move-outline-up-mode
+doShortcuts:   tree   Ctrl-Shift-DnArrow enter-tree-move-outline-down-mode
+doShortcuts:   tree   Ctrl-Shift-LtArrow enter-tree-move-outline-left-mode
+doShortcuts:   tree   Ctrl-Shift-RtArrow enter-tree-move-outline-right-mode
+doShortcuts:   tree   Ctrl-Shift-UpArrow enter-tree-move-outline-up-mode
+doShortcuts:   tree                    t enter-tree-clone-node-mode
+doShortcuts:   tree               Ctrl-t enter-tree-goto-next-clone-node-mode
+doShortcuts:   tree                    m enter-tree-mark-node-mode
+doShortcuts:   tree               Ctrl-m enter-tree-goto-next-marked-node-mode
+doShortcuts:   tree                Alt-m enter-tree-unmark-all-nodes-mode
+doShortcuts:   body                    : enter-vi-command-line-mode
+doShortcuts:    all         Ctrl-Shift-: full-command
+doShortcuts:   body               Ctrl-[ keyboard-quit
+doShortcuts:   body                  esc keyboard-quit
+doShortcuts:   body                    = double-click-icon-box
+doShortcuts:    all                    u undo
+doShortcuts:    all               Ctrl-r redo
+doShortcuts:    all              Shift-z enter-vi-save-buffers-exit-mode
+doShortcuts:   body              Shift-i enter-vi-insert-at-indent-mode
+doShortcuts:   body                    i set-insert-state
+doShortcuts:   body                    a set-insert-state
+doShortcuts:   body              Shift-a enter-vi-append-mode
+doShortcuts:   body              Shift-r set-overwrite-state
+doShortcuts:   body                    o enter-vi-new-line-below-mode
+doShortcuts:   body              Shift-o enter-vi-new-line-above-mode
+doShortcuts:   body              Shift-c enter-vi-change-to-end-of-line-mode
+doShortcuts:   body                    c enter-vi-change-mode
+doShortcuts:   body                    s enter-vi-substitute-char-mode
+doShortcuts:   body              Shift-s enter-vi-substitute-line-mode
+doShortcuts:   body                    d enter-vi-delete-object-mode
+doShortcuts:   body              Shift-d enter-vi-delete-to-end-of-line-mode
+doShortcuts:   body                    x delete-char
+doShortcuts:   body               delete delete-char
+doShortcuts:   body              Shift-y enter-vi-yank-to-end-of-line-mode
+doShortcuts:   body                    y enter-vi-yank-mode
+doShortcuts:   body                Alt-y copy-text
+doShortcuts:   body                    v toggle-extend-mode
+doShortcuts:   body              Shift-p paste-text
+doShortcuts:   body                    p paste-text
+doShortcuts:   body              greater enter-vi-indent-mode
+doShortcuts:   body                 less enter-vi-deindent-mode
+doShortcuts:   body              Shift-j enter-vi-join-mode
+doShortcuts:   body                    h back-char
+doShortcuts:   body              LtArrow back-char
+doShortcuts:   body                    l forward-char
+doShortcuts:   body              RtArrow forward-char
+doShortcuts:   body                    w forward-word
+doShortcuts:   body              Shift-w forward-word
+doShortcuts:   body                    b back-word
+doShortcuts:   body              Shift-b back-word
+doShortcuts:   body                    e forward-end-word
+doShortcuts:   body              Shift-e forward-end-word
+doShortcuts:   body                    | enter-vi-beginning-of-line-mode
+doShortcuts:   body                    ^ back-to-indentation
+doShortcuts:   body                    $ enter-vi-end-of-line-mode
+doShortcuts:   body                minus enter-vi-goto-indent-of-previous-line-mode
+doShortcuts:   body                    j next-line
+doShortcuts:   body              DnArrow next-line
+doShortcuts:   body                    k previous-line
+doShortcuts:   body              UpArrow previous-line
+doShortcuts:   body                    ) forward-sentence
+doShortcuts:   body                    ( back-sentence
+doShortcuts:   body                    } enter-vi-goto-after-paragraph-mode
+doShortcuts:   body                    { enter-vi-goto-before-paragraph-mode
+doShortcuts:   body                    g enter-vi-goto-mode
+doShortcuts:   body              Shift-g enter-vi-goto-end-of-buffer-mode
+doShortcuts:   body               Ctrl-g goto-line
+doShortcuts:   body                    % enter-vi-match-mode
+doShortcuts:   body               Ctrl-b scroll-up
+doShortcuts:   body               Ctrl-f scroll-down
+doShortcuts:   body               Ctrl-u scroll-up
+doShortcuts:   body               Ctrl-d scroll-down
+doShortcuts:   body               Ctrl-y scroll-up
+doShortcuts:   body               Ctrl-e scroll-down
+doShortcuts:   body               Ctrl-w enter-vim-window-commands-mode
+doShortcuts:   body                    f find-character
+doShortcuts:   body              Shift-f backward-find-character
+doShortcuts:   body                    / search-forward
+doShortcuts:   body             question search-backward
+doShortcuts:   body                    n find-next
+doShortcuts:   body              Shift-n find-prev
+reading settings in C:\Documents and Settings\HP_Administrator\My Documents\Edward\myLeoSettings.leo
+readSettings: ==================== C:\Documents and Settings\HP_Administrator\My Documents\Edward\myLeoSettings.leo
+doShortcuts:    all                Alt-9 enter-headline-mode
+reading settings in C:\leo.repo\trunk\leo\test\test.leo
+readSettings: ==================== C:\leo.repo\trunk\leo\test\test.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
+@enabled-plugins found in test.leo
+wiki markup enabled
+rst3 plugin: SilverCity not loaded
+redefining shortcut                 Left from back-char (body) to contract-or-go-left (tree)
+warning: ignoring bool enablecalltips is not shortcut
+there may be conflicting settings!
+redefining shortcut                Alt+m from enter-tree-unmark-all-nodes-mode (tree) to exchange-point-mark (all)
+redefining shortcut               Ctrl+w from enter-vim-window-commands-mode (body) to extend-to-word (all)
+redefining shortcut                Right from expand-and-go-right (text) to forward-char (tree)
+redefining shortcut           Ctrl+Right from enter-body-expand-and-go-right-mode (tree) to forward-word (all)
+redefining shortcut           Ctrl+Right from enter-tree-expand-and-go-right-mode (tree) to forward-word (all)
+redefining shortcut     Ctrl+Shift+Right from enter-tree-move-outline-right-mode (tree) to forward-word-extend-selection (all)
+redefining shortcut                 Down from enter-tree-goto-next-visible-mode (tree) to goto-next-visible (tree)
+redefining shortcut                   Up from enter-tree-goto-prev-visible-mode (tree) to goto-prev-visible (tree)
+redefining shortcut    Ctrl+bracketright from end-edit-headline (tree) to indent-region (all)
+redefining shortcut               Ctrl+i from edit-headline (tree) to insert-node (all)
+redefining shortcut               Ctrl+g from goto-line (body) to keyboard-quit (all)
+redefining shortcut               Ctrl+m from enter-tree-goto-next-marked-node-mode (tree) to mark (all)
+redefining shortcut               Ctrl+l from enter-body-expand-and-go-right-mode (tree) to move-outline-left (all)
+redefining shortcut               Ctrl+l from enter-tree-expand-and-go-right-mode (tree) to move-outline-left (all)
+redefining shortcut               Ctrl+r from enter-tree-redo-mode (tree) to move-outline-right (all)
+redefining shortcut               Ctrl+j from enter-body-goto-next-visible-mode (tree) to newline-and-indent (all)
+redefining shortcut               Ctrl+j from enter-tree-goto-next-visible-mode (tree) to newline-and-indent (all)
+redefining shortcut               Ctrl+o from insert-node (tree) to open-outline (all)
+redefining shortcut               Ctrl+v from enter-tree-paste-node-mode (tree) to paste-text (all)
+redefining shortcut               Ctrl+r from move-outline-right (all) to redo (all)
+redefining shortcut               Ctrl+f from scroll-down (tree) to search-with-present-options (all)
+redefining shortcut               Ctrl+f from scroll-outline-down-line (tree) to search-with-present-options (all)
+redefining shortcut               Return from end-edit-headline (body) to set-command-state (tree)
+redefining shortcut            parenleft from back-sentence (body) to show-calltips (all)
+redefining shortcut                    u from enter-tree-undo-mode (tree) to undo (all)
+redefining shortcut     Ctrl+bracketleft from keyboard-quit (tree) to unindent-region (all)
+redefining shortcut     Ctrl+bracketleft from set-command-state (tree) to unindent-region (all)
+redefining shortcut               Ctrl+y from scroll-outline-up-line (body) to yank (all)
+redefining shortcut               Ctrl+y from scroll-up (body) to yank (all)
+redefining shortcut                Alt+y from copy-text (body) to yank-pop (all)
+redefining shortcut                Alt+y from copy-text (body) to yank-pop (all)
+#@-node:ekr.20080617073917.1:Error messages
+#@-node:ekr.20061014050154.2:Added 'kill' bindings
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:

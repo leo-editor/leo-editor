@@ -1984,7 +1984,6 @@ class pluginController(baseClasses.basePluginController):
             #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
             isText = g.app.gui.isTextWidget(widget)
             if isText:
-
                 try:
                     widget.setSelectionRange(*c.k.previousSelection)
                 except TypeError:

@@ -443,6 +443,7 @@ class leoGui:
             self.c      = c # Required to access c.k tables.
             self.char   = hasattr(event,'char') and event.char or ''
             self.keysym = hasattr(event,'keysym') and event.keysym or ''
+            self.state  = hasattr(event,'state') and event.state or 0
             self.w      = hasattr(event,'widget') and event.widget or None
             self.x      = hasattr(event,'x') and event.x or 0
             self.y      = hasattr(event,'y') and event.y or 0
