@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:bobjack.20080615130304.2:@thin rClickBasePluginClasses.py
+#@+node:bobjack.20080619110105.2:@thin rClickBasePluginClasses.py
 #@<< docstring >>
 #@+node:bobjack.20080614200920.8:<< docstring >>
 """Base classes for plugins.
@@ -268,6 +268,7 @@ class basePluginController(object):
         commandsDict = self.getPublicCommands()
 
         for commandName, klass in commandsDict.iteritems():
+            klass.__name__ = klass.__class__.__name__
             c.k.registerCommand(commandName, shortcut=None, func=klass)   
 
     #@-node:bobjack.20080511155621.9:registerCommands
@@ -294,5 +295,5 @@ class basePluginController(object):
 
 #@-node:bobjack.20080323045434.14:class basePluginController
 #@-others
-#@-node:bobjack.20080615130304.2:@thin rClickBasePluginClasses.py
+#@-node:bobjack.20080619110105.2:@thin rClickBasePluginClasses.py
 #@-leo

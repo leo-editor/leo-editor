@@ -60,6 +60,7 @@
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
+<v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
 <v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 </v>
