@@ -2344,7 +2344,6 @@ class keyHandlerClass:
         k = self ; c = k.c ; f = c.frame
 
         bindStroke = k.tkbindingFromStroke(stroke)
-        # g.trace('stroke',stroke,'bindStroke',bindStroke)
 
         if w:
             widgets = [w]
@@ -2354,7 +2353,7 @@ class keyHandlerClass:
             bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
             canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
             if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
-                widgets = (c.miniBufferWidget,bodyCtr)
+                widgets = (c.miniBufferWidget,bodyCtrl)
             else:
                 widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
 
@@ -2362,6 +2361,12 @@ class keyHandlerClass:
         def masterBindKeyCallback (event,k=k,stroke=stroke):
             # g.trace(stroke)
             return k.masterKeyHandler(event,stroke=stroke)
+
+        if 0:
+            if stroke.lower().endswith('+s') or stroke.lower().endswith('-s'):
+                g.trace(sroke,widgets)
+            if stroke in ('s','S'):
+                g.trace(stroke,widgets)
 
         for w in widgets:
             if not w: continue
@@ -3204,8 +3209,6 @@ class keyHandlerClass:
 
         '''This is the handler for almost all key bindings.'''
 
-        # g.trace('event.keysym_num',event.keysym_num,event,dir(event))
-
         #@    << define vars >>
         #@+node:ekr.20061031131434.147:<< define vars >>
         k = self ; c = k.c ; gui = g.app.gui
@@ -3235,13 +3238,16 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        if keysym in special_keys: return None
-
         trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+        verbose = False
+
+        if keysym in special_keys:
+            if verbose: g.trace('keysym',keysym)
+            return None
         if traceGC: g.printNewObjects('masterKey 1')
         if trace:
-            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char))
+            g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
@@ -3819,7 +3825,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        # g.trace(w,g.callers())
+        g.trace(w,g.callers())
         # g.trace(g.dictToString(d))
 
         for commandName in d.keys():
@@ -4860,6 +4866,7 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.203:doControlU
     #@-node:ekr.20061031131434.200:universalDispatcher & helpers
     #@-others
+#@nonl
 #@-node:ekr.20061031131434.74:class keyHandlerClass
 #@-others
 #@-node:ekr.20061031131434:@thin leoKeys.py
