@@ -376,6 +376,7 @@ class LeoApp:
         '''Exit Leo, prompting to save unsaved outlines first.'''
 
         g.app.quitting = True
+        # g.trace('True')
 
         while g.app.windowList:
             w = g.app.windowList[0]

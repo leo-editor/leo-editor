@@ -558,7 +558,9 @@ class parserBaseClass:
 
         # g.trace(self.c.fileName(),name)
 
-        c = self.c ; d = self.shortcutsDict
+        c = self.c ; d = self.shortcutsDict ; k = c.k
+        trace = False or c.config.getBool('trace_bindings_verbose')
+        munge = k.shortcutFromSetting
         if s is None: s = p.bodyString()
         lines = g.splitLines(s)
         for line in lines:
@@ -566,12 +568,20 @@ class parserBaseClass:
             if line and not g.match(line,0,'#'):
                 name,bunch = self.parseShortcutLine(line)
                 if bunch is not None:
-                    # A regular shortcut.
-                    bunchList = d.get(name,[])
-                    bunchList.append(bunch)
-                    d [name] = bunchList
-                    self.set(p,"shortcut",name,bunchList)
-                    self.setShortcut(name,bunchList)
+                    if bunch.val not in (None,'none','None'):
+                        # A regular shortcut.
+                        bunchList = d.get(name,[])
+                        if bunch.pane in ('kill','Kill'):
+                            if trace: g.trace('****** killing binding:',bunch.val,'to',name)
+                            bunchList = [z for z in bunchList
+                                if munge(z.val) != munge(bunch.val)]
+                            # g.trace(bunchList)
+                        else:
+                            if trace: g.trace('%6s %20s %s' % (bunch.pane,bunch.val,name))
+                            bunchList.append(bunch)
+                        d [name] = bunchList
+                        self.set(p,"shortcut",name,bunchList)
+                        self.setShortcut(name,bunchList)
     #@-node:ekr.20041120105609:doShortcuts (ParserBaseClass)
     #@+node:ekr.20041217132028:doString
     def doString (self,p,kind,name,val):
@@ -892,6 +902,9 @@ class parserBaseClass:
                 g.es("over-riding setting:",name,"from",path)
 
         # N.B.  We can't use c here: it may be destroyed!
+        # if key == 'shortcut':
+            # g.trace('*****',key,val)
+
         d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
 
     #@-node:ekr.20041120094940.9:set (parseBaseClass)
@@ -1769,7 +1782,7 @@ class configClass:
 
         """Read settings from a file that may contain an @settings tree."""
 
-        # g.trace(c.fileName())
+        # g.trace('=' * 20, c.fileName())
 
         # Create a settings dict for c for set()
         if c and self.localOptionsDict.get(c.hash()) is None:

@@ -7,96 +7,6 @@
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080602172531.1:before b1: 3
 #@+node:ekr.20080603052650.466:Fix vim problems
-@nocolor
-
-Problems
-
-	Binding numeric keys:
-	| Mapping a number to a command or mode prevents the number from being
-	| entered as text while in the insert state.
-
-	Binding '?' key:
-	| No response when key pressed.
-
-	Binding 'bksp' key:
-	| Binding 'bksp' key to back-char to move back a character in command mode
-	| prevents 'bksp' from deleting characters in text edit mode.
-
-	Commands getting user input:
-	| Commands requesting user input must be the last command executed.  These
-	| commands include: find-character and zap-to-character.
-
-	Editing headlines within modes:
-	| Text editing commands do not work within modes assigned to outline key
-	| mappings.
-
-	Undo command:
-	| The 'undo' command sometimes does not work when returning to a node's
-	| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
-
-	Matching bracket command:
-	| Performs bracket matching on Body text when in node's headline command
-	| state.
-
-	Word definition:
-	| "Word" related commands determine boundries of a word differently.
-
-	Toggle case:
-	| Leo provides support for switching to upper or lower case but no method |
-	| exists to toggle between cases.
-
-	Find settings
-	| Leo commands only allow toggling of search settings.  If specific "set"
-	| and "clear" search setting commands were available then searches from the
-	| body pane could be restricted to the body pane and searches from the
-	| outline could be restricted to the outline.
-	Forward and backward sentences:
-	| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
-	| at empty lines nor do they skip over periods within words nor do they stop
-	| at sentences ending in non-periods nor do they stop at the end or
-	| beginning of the buffer.
-
-	Focus to Body pane:
-	| Leo functions exist which unconditionally set focus to the body pane
-	| regardless of the active pane.
-		deleteTab() function:
-			| Issuing "--> exit-named-mode" calls "endMode" function which calls
-			| "c.frame.log.deleteTab('Mode')" function which sets the focus to the
-			| body pane.  
-
-	Displaying mode help:
-	| The "--> mode-help" command displays all mapped keys using a capitol
-	| letter regardless of the actual binding.
-		Recommendations:
-		| To better support narrow tab cards, display the mode's label without
-		| the "enter-" and "-mode" text and place key label before mode label.
-		| Results in change from:
-		|                enter-vi-delete-line-mode D
-		|    enter-vi-delete-to-begin-of-word-mode B 
-		| to:
-		|    D : vi-delete-line
-		|    B : vi-delete-to-begin-of-word
-
-Notes:
-	Yank vs. Yank
-	| A vi "yank" operation copies the selected text TO the clipboard.
-	| A Leo "yank" operation inserts text FROM the clipboard.
-
-	copy-text in modes:
-	| Leo's copy-text does not work within a mode.  As a result, all "copy to
-	| clipboard" capability is being implemented using kill-<object> command
-	| followed by a "yank" command.
-
-	paste-text in modes:
-	| paste-text in modes does not work.  Use Leo's "yank" instead.
-
-	delete-node does not copy node to clipboard:
-	| Issue copy-node command followed by delete-node
-
-Vim Modeline (used by Vim for file specific settings)
-	| vim: noet filetype=otl foldcolumn=1
-
-@color
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
 def badMode(self,modeName):
@@ -207,6 +117,8 @@ def generalModeHandler (self,event,
         k.modeWidget = event and event.widget
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return 'break'
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -229,6 +141,8 @@ def generalModeHandler (self,event,
                 event = g.Bunch(widget = k.modeWidget)
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
+            if g.app.quitting or not c.exists:
+                return 'break'
             if nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
@@ -241,6 +155,8 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return 'break'
 
     return 'break'
 #@-node:ekr.20061031131434.162:generalModeHandler
@@ -271,6 +187,8 @@ def initMode (self,event,modeName):
         for commandName in entryCommands:
             if trace: g.trace('entry command:',commandName)
             k.simulateCommand(commandName)
+            # Careful, the command can kill the commander.
+            if g.app.quitting or not c.exists: return
             # New in Leo 4.5: a startup command can immediately transfer to another mode.
             if commandName.startswith('enter-'):
                 if trace: g.trace('redirect to mode',commandName)
@@ -461,14 +379,14 @@ else:
     if d:
         b = d.get(stroke)
         if b:
-            if trace: g.trace('calling generalModeHandler')
+            if trace: g.trace('calling generalModeHandler',stroke)
             k.generalModeHandler (event,
                 commandName=b.commandName,func=b.func,
                 modeName=state,nextMode=b.nextMode)
             return 'break'
         else:
             # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke)
+            if trace: g.trace('unbound key ends mode',stroke,state)
             k.endMode(event)
     else:
         # New in 4.4b4.
@@ -701,6 +619,8 @@ def generalModeHandler (self,event,
         k.modeWidget = event and event.widget
         k.setState(modeName,1,handler=k.generalModeHandler)
         self.initMode(event,modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return 'break'
         if not k.silentMode:
             if c.config.getBool('showHelpWhenEnteringModes'):
                 k.modeHelp(event)
@@ -723,6 +643,8 @@ def generalModeHandler (self,event,
                 event = g.Bunch(widget = k.modeWidget)
             if trace: g.trace(modeName,'state',state,commandName,'nextMode',nextMode)
             func(event)
+            if g.app.quitting or not c.exists:
+                return 'break'
             if nextMode in (None,'none'):
                 # Do *not* clear k.inputModeName or the focus here.
                 # func may have put us in *another* mode.
@@ -735,6 +657,8 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                if g.app.quitting or not c.exists: return 'break'
 
     return 'break'
 #@-node:ekr.20061031131434.162:generalModeHandler
@@ -807,6 +731,33 @@ same key, modify or select the body text.  This prevents most of vi's
 delete, change, substitute, and yank commands from working.
 
 k.singleLineCommandList may provide part of the solution.
+
+
+Editing headlines within modes - clarification
+
+Functions mapped to a key within a mode work correctly but functions
+called within a mode do not.
+
+The following example has been checked into the Trunk for testing
+purposes.  Both of the following commands should delete the entire
+headline text given the key mappings and modes shown below:
+   The 'dd' command does work
+   The 'dD' command does not work
+
+enter-tree-delete-text-object-mode ! tree = d
+
+@mode tree-delete-text-object
+   kill-line = d
+   enter-tree-delete-line-mode = Shift-d
+
+@mode tree-delete-line
+   --> kill-line
+
+Note: Undoing the 'dd' command should be possible by pressing the 'u'
+key.  Nothing happens for some unknown reason.  However, moving to
+another node (enter Ctrl-k) and then pressing the 'u' key will restore
+the deleted text.
+
 
 @color
 #@nonl
@@ -1062,10 +1013,6 @@ Vim Modeline (used by Vim for file specific settings)
 #@nonl
 #@-node:ekr.20080616110054.3:Other problems (from docstring)
 #@-node:ekr.20080603052650.466:Fix vim problems
-#@+node:ekr.20061014050154.2:Binding to None clears all bindings
-Should assigning to None clear all key bindings?
-#@nonl
-#@-node:ekr.20061014050154.2:Binding to None clears all bindings
 #@+node:ekr.20080528093133.3:Change installer to support leo-as-a-package
 http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
 
