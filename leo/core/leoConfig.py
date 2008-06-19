@@ -567,6 +567,7 @@ class parserBaseClass:
             line = line.strip()
             if line and not g.match(line,0,'#'):
                 name,bunch = self.parseShortcutLine(line)
+                # if name in ('save-file','enter-tree-save-file-mode'): g.pdb()
                 if bunch is not None:
                     if bunch.val not in (None,'none','None'):
                         # A regular shortcut.
@@ -909,16 +910,18 @@ class parserBaseClass:
 
     #@-node:ekr.20041120094940.9:set (parseBaseClass)
     #@+node:ekr.20041227071423:setShortcut (ParserBaseClass)
-    def setShortcut (self,name,bunch):
+    def setShortcut (self,name,bunchList):
 
         c = self.c
 
         # None is a valid value for val.
         key = c.frame.menu.canonicalizeMenuName(name)
         rawKey = key.replace('&','')
-        self.set(c,rawKey,"shortcut",bunch)
+        self.set(c,rawKey,"shortcut",bunchList)
 
-        # g.trace(bunch.pane,rawKey,bunch.val)
+        if 0:
+            for b in bunchList:
+                g.trace('%20s %45s %s' % (b.val,rawKey,b.pane))
     #@-node:ekr.20041227071423:setShortcut (ParserBaseClass)
     #@+node:ekr.20041119204700.1:traverse (parserBaseClass)
     def traverse (self):
