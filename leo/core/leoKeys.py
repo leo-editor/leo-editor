@@ -3119,7 +3119,7 @@ class keyHandlerClass:
             k.showStateAndMode()
     #@-node:ekr.20061031131434.130:keyboardQuit
     #@+node:ekr.20061031131434.131:k.registerCommand
-    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=False):
+    def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
 
         '''Make the function available as a minibuffer command,
         and optionally attempt to bind a shortcut.
