@@ -316,19 +316,19 @@ def addMenu( tag, keywords ):
     men = c.frame.menu
     men = men.getMenu( 'Outline' )
     xmen = Tk.Menu( men , tearoff = False)
-    xmen.add_command( label = "Set Stylesheet Node", command = lambda c = c : setStyleNode( c ) )
-    xmen.add_command( label = "Jump To Style Node", command = lambda c = c: jumpToStyleNode( c ) )
-    xmen.add_command( label = "Process Node with Stylesheet Node", command = lambda c=c : processDocumentNode( c ) )
+    c.add_command(xmen, label = "Set Stylesheet Node", command = lambda c = c : setStyleNode( c ) )
+    c.add_command(xmen, label = "Jump To Style Node", command = lambda c = c: jumpToStyleNode( c ) )
+    c.add_command(xmen, label = "Process Node with Stylesheet Node", command = lambda c=c : processDocumentNode( c ) )
     xmen.add_separator()
-    xmen.add_command( label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
+    c.add_command(xmen, label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
     elmen= Tk.Menu( xmen, tearoff = False )
     xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
     xsltkeys = xslt.keys()
     xsltkeys.sort()
     for z in xsltkeys:
-        elmen.add_command( label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )
+        c.add_command(elmen, label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )
     men.add_cascade( menu = xmen, label = "XSLT-Node Commands" )
-    xmen.add_command( label = 'Test Node with Minidom', command = lambda c=c: doMinidomTest( c ) )
+    c.add_command(xmen, label = 'Test Node with Minidom', command = lambda c=c: doMinidomTest( c ) )
 
 
 
@@ -434,8 +434,8 @@ def addMenu( tag, keywords ):
     men = men.getMenu( 'Outline' )
     tmen = Tk.Menu( men, tearoff = 0 )
     men.add_cascade( menu = tmen, label = "Table Commands" )
-    tmen.add_command( label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
-    tmen.add_command( label = "Create New Table", command = lambda c = c: newTable( c ) )
+    c.add_command(tmen, label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
+    c.add_command(tmen, label = "Create New Table", command = lambda c = c: newTable( c ) )
 
 
 

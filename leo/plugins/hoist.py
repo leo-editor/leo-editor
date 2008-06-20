@@ -152,7 +152,14 @@ class HoistButtons:
         self.hoistButton,self.dehoistButton = b1,b2 = buttons
 
         for b,command in ((b1,c.hoist),(b2,c.dehoist)):
-            b.configure(command=command)
+
+            def hoistPluginCallback(c=c,command=command):
+                val = command(event=None)
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            b.configure(command=hoistPluginCallback)
             b.pack(side='left',fill='none')
 
         self.bgColor = b1.cget('background')
@@ -176,7 +183,14 @@ class HoistButtons:
         self.hoistButton, self.dehoistButton = b1, b2 = buttons
 
         for b,command in ((b1,c.hoist),(b2,c.dehoist)):
-            b.configure(command=command)
+
+            def hoistPluginCallback(c=c,command=command):
+                val = command(event=None)
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            b.configure(command=hoistPluginCallback)
 
         #@    << bind and pack buttons >>
         #@+node:bobjack.20080503151427.8:<< bind and pack buttons >>

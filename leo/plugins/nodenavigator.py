@@ -141,7 +141,7 @@ class Navigator:
             self.select(c,p)
 
         name = p.headString().strip()
-        menu.add_command(label=name[:40],command=callback)
+        c.add_command(menu,label=name[:40],command=callback)
         marks.append(p.v.t)
 
         # Unlike the recent menu, which gets recreated each time, we remember the marks.
@@ -196,7 +196,7 @@ class Navigator:
                 def callback(event=None,self=self,c=c,p=p.copy()):
                     self.select(c,p)
                 name = p.headString().strip()
-                menu.add_command(label=name,command=callback)
+                c.add_command(menu,label=name,command=callback)
                 marks.append(p.v.t)
         self.markLists[c] = marks
     #@nonl
@@ -261,7 +261,7 @@ class Navigator:
             if c.positionExists(p):
                 def callback(event=None,self=self,c=c,p=p):
                     self.select(c,p)
-                menu.add_command(label=p.headString()[:40],command=callback)
+                c.add_command(menu,label=p.headString()[:40],command=callback)
     #@nonl
     #@-node:ekr.20040108091136:updateRecent
     #@-others

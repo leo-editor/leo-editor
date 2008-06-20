@@ -593,6 +593,7 @@
 <v t="ekr.20050912125735.1050"><vh>nodenavigator.py</vh></v>
 <v t="ekr.20050912125735.1072"><vh>searchbox.py</vh></v>
 <v t="ekr.20060603081045"><vh>shortcut_button.py</vh></v>
+<v t="bobjack.20080613141524.2"><vh>toolbar.py</vh></v>
 <v t="ekr.20050912125735.1092"><vh>UNL.py</vh></v>
 </v>
 <v t="ekr.20050912125735.2786"><vh>LeoN</vh></v>
@@ -799,6 +800,16 @@
 <v t="ekr.20080204100523.3"><vh>@rst-ignore User Settings</vh></v>
 <v t="ekr.20080210101336"><vh>Acknowledgements</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
+<v t="ekr.20080611105410.148"><vh>@rst html\vimBindings.html</vh>
+<v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
+<v t="ekr.20080611105410.7"><vh>General commands</vh></v>
+<v t="ekr.20080611105410.9"><vh>Body pane commands</vh></v>
+<v t="ekr.20080611105410.8"><vh>Outline commands</vh></v>
+<v t="ekr.20080611105410.156"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -2924,6 +2935,21 @@
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
 <v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20080611105410.149"><vh>Vim notes</vh>
+<v t="ekr.20080611105410.6"><vh>Realization</vh></v>
+<v t="ekr.20080611105410.150"><vh>Problems</vh></v>
+<v t="ekr.20080611105410.151"><vh>Notes</vh></v>
+</v>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
+<v t="ekr.20080611105410.148"><vh>@rst html\vimBindings.html</vh>
+<v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
+<v t="ekr.20080611105410.7"><vh>General commands</vh></v>
+<v t="ekr.20080611105410.9"><vh>Body pane commands</vh></v>
+<v t="ekr.20080611105410.8"><vh>Outline commands</vh></v>
+<v t="ekr.20080611105410.156"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 </vnodes>
@@ -5073,6 +5099,24 @@ made to keep it working on Windows as well.
 Work on this project has now halted in favor of a gtkLeo plugin.
 
 </t>
+<t tx="bobjack.20080613141524.2">A plugin that enhances Leo's iconBar and script buttons.
+
+
+This plugin provides:
+
+    multiple iconBars each of which automatically collapse and
+    expand so that all the buttons are always visible.
+
+    drag and drop of buttons within and between iconBars.
+
+    enhancements to Leo's buttons and @button settings to allow
+    icons, menus, tooltips and text and background colors to be set
+    in @button settings and scripts. 
+
+
+see test/testToolbar.leo for demo's and howto's
+see test/testAtPopup.leo for examples of enhanced buttons
+</t>
 <t tx="edream.110203163054.46">@language rest</t>
 <t tx="edream.110203163054.48">@ @rst-options
 code_mode=False
@@ -6633,6 +6677,8 @@ Leo's Users Guide
 `Chapter 20: Unit testing with Leo`_
 
 `Chapter 21: ILeo - the IPython bridge`_
+
+`Chapter 22: Using Vim Bindings with Leo`_
 
 Appendices_
 
@@ -11119,6 +11165,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
+.. _`Chapter 22\: Using Vim Bindings with Leo`:     vimBindings.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
@@ -13480,7 +13527,7 @@ Appendices
 .. WARNING: image targets may not have upper case letters!
 
 .. |back| image:: arrow_lt.gif
-	:target: IPythonBridge.html
+	:target: vimBindings.html
 
 .. |next| image:: arrow_rt.gif
 	:target: glossary.html
@@ -15836,7 +15883,19 @@ You can do this as a standard plugin, but as an AutoTrees handler you,
 <t tx="ekr.20050912125735.874">Handles images in body text. Based on work by Gil Shwartz. Brent Burley provided
 many important insights. See:
 http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52264</t>
-<t tx="ekr.20050912125735.880">Create a context menu when right-clicking in the body pane.</t>
+<t tx="ekr.20050912125735.880">This plugin provides a simple but powerful and flexible system of managing
+scriptable context menus.
+
+Named menus defined in scripts or @popup &lt;name&gt; settings can be associated with any widget.
+
+Menu items may have icons and the foreground/background colors can be set in @popup settings.
+
+Full details can be found in the plugins docstring.
+
+Many executable howto's, demos and examples can be found in::
+
+    test/testAtPopup.leo
+</t>
 <t tx="ekr.20050912125735.904">Autocompletion and calltips plugin.
 
 - ``.`` summons the autocompletion.
@@ -29305,7 +29364,7 @@ painless and powerful.
     :target: front.html
 
 .. |next| image:: arrow_rt.gif
-    :target: appendices.html
+    :target: vimBindings.html
 </t>
 <t tx="ekr.20080203101507.10">-----------------------
 
@@ -30097,6 +30156,492 @@ After your branch is pushed, you can email the Leo mailing list and request it
 to be reviewed and merged to trunk.
 
 -- Ville M. Vainio - vivainio.googlepages.com</t>
+<t tx="ekr.20080611105410.6">Leo Configuration:
+    | The following configuration was used for all testing:
+        @strings  top_level_unbound_key_action = command
+        @bool stayInTreeAfterEditHeadline = True
+        @bool stayInTreeAfterSelect = True
+        @bool outline_pane_has_initial_focus = True
+
+Leo's Panes:
+    | A "pane" is a area of the screen containing a user interface
+    | dedicated to supporting a common set of tasks.  Vi key mappings are
+    | associated with the Outline pane, the Body pane, or to the Leo
+    | program.  See the no pane (see "General Commands" below). (Outline
+    | pane, Body pane)
+
+Leo's Command/Insert States:
+    Command state - Denoted by a blue background color (Outline,Body pane)
+        | Keys are mapped to commands.
+    Insert state - Denoted by a red background color (Outline,Body pane)
+        | Keys pressed are inserted into the text.
+    Grayed state - Denoted by a gray background color (Outline pane)
+        | Keys pressed will cause the next node with a headline starting
+        | with that key to be selected.  This "select node by first
+        | character" feature is built into Leo. It is not part of the vi
+        | support.
+        | 
+        | This state is intentionally avoided in the vi based outline key
+        | mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+        | "Command" state.  The "Grayed" state can be entered from the
+        | outline's "Command" state by pressing the Ctrl-] key.
+
+Leo's modes:
+| Most vi commands are implemented using Leo's "mode" functionality.
+| Modes beginning with "vi-" denote a vi command for the body pane.
+| Modes beginning with "tree-" denote a vi-like command for the outline.
+| Modes beginning with "body-" denote outline commands that can be called
+| from the body pane (and return focus back to the body pane)
+| 
+| Modes are used both for managing multi-key vi commands and for defining
+| macros.
+    
+    Multi-key command modes:
+    | Vi has many commands that require multiple keys to invoke.  Each key
+    | accept the last in the command are assigned to a mode that, when
+    | executed, maps the subsequent allowed keys in the command sequence.
+    | The last key in the sequence is mapped directly to a Leo command or
+    | to a "Macro" mode (see below). Any modes mapped to a key by another
+    | mode are located in a child node of the mode node doing the mapping.
+    | 
+    | Example:
+    |     dtw = Delete To the 'W' character (note the capital letters)
+    |   The 'd' key is mapped to vi-delete-object
+    |   vi-delete-object maps the 't' key to vi-delete-to-char
+    |   vi-delete-to-char contains Leo commands to perform the vi command.
+
+    Macros modes:
+    | Most vi commands do not have an equivalent Leo command.  Instead, a
+    | series of Leo commands must be issued to emulate the vi command.
+    | The Leo commands needed to emulate a vi command are placed in a
+    | single @mode node.
+
+Code limitations:
+    Current character:
+    | Vi implementation normally use two different "current character"
+    | designators depending on the current state.
+
+        Insert state:
+        | In the Insert state, a vertical bar is placed between two
+        | characters to indicate where the next key will be inserted.
+        | Leo's cursor is of this type.
+
+        Command state: 
+        | In the Command state, vi expects that the cursor is highlighting
+        | a current character and provides commands to enter the insert
+        | state or paste text either before or after that current
+        | character.  Leo's vi emulation currently does not support a
+        | "current character" cursor. As a result, inserting and pasting
+        | before or after is replaced by inserting or pasting "at" the
+        | current cursor location.  For example, the 'i' and 'a' command
+        | are both mapped to enter the insert state at the current cursor
+        | location.
+
+    Conditional code execution:
+    | No conditional command invocation exits.  Instead, conditional
+    | branching is replace by setup commands that insure that, regardless
+    | of current state, the command performs correctly.  For example,
+    | Beginning-of-line command will go to previous line if called when
+    | cursor is at beginning of line.  Vi requires that '|' always goes to
+    | beginning of current line.  Problme is solved by issueing
+    | forward-char command to insure cursor is moved off of the beginning
+    | of the line before beginning-of-line command is issued.
+
+    Commands requesting user input:
+    | Commands getting user input must be the last command within the
+    | mode.  See "Commands getting user input" in Problems section below.
+
+    Edit headings using modes:
+    | Commands modifying or selecting headline text do not work correctly
+    | within a mode.  See "Editing headlines within modes" in Problems
+    | section below.  This eliminates accurate implementation of vi's
+    | delete/change/substitute/yank object commands.  Instead, the
+    | commands are modified to only select text.</t>
+<t tx="ekr.20080611105410.7">The following commands are always available.
+
+Scroll commands::
+
+    Ctrl-b  scroll-up
+    Ctrl-f  scroll-down
+    Ctrl-u  scroll-up       (should scroll 1/2 screen)
+    Ctrl-d  scroll-down         ditto
+    Ctrl-y  scroll-up       (should scroll 1 line)
+    Ctrl-e  scroll-down         ditto
+
+State change commands::
+
+    i       Change state to insert from command state
+    Ctrl-[  Change state to command from insert state
+    Esc     Change state to command from insert state
+
+Miscellaneous commands::
+
+    :e          Revert
+    :w&lt;return&gt;  Save file
+    :wq         Save and quit
+    :q&lt;return&gt;  Quit
+
+    Ctrl-s  Save '.leo' file
+    u       Undo previous command
+    Ctrl-r  Redo previous command
+    Tab     Toggle focus between Outline and Body pane
+    =       Simulate double-click on current node's icon box
+    Alt-G   Go to specified line number (relative to derived file)
+     Z      save-buffers-kill-leo
+</t>
+<t tx="ekr.20080611105410.8">The following commands are supported when in a headline's command mode.
+
+Headline editing commands::
+
+    |               Go to Beginning of line 
+    $               Go to end of line
+    %               match-brackets
+    /               search-forward
+    RtArrow         back-char
+    b               back-word
+    B               back-word-extend-selection
+    C               end-of-line-extend-selection
+    D               end-of-line-extend-selection           (Temporary workaround)
+    db              delete to beginning of word
+    dd              kill-line 
+    dt&lt;ch&gt;          delete to character   
+    dw              Delete to end of word
+    delete          delete-char
+    e               forward-end-word
+    E               forward-end-word-extend-selection
+    f               Find character
+    F               backward-find-character
+    h               back-char
+    l               forward-char
+    RtArrow         forward-char
+    n               find-next
+    N               find-prev
+    s               forward-char-extend-selection
+    s               Select current character
+    S               select-all
+    v               toggle-extend-mode
+    w               forward-word
+    W               forward-word-extend-selection
+    x               delete-char
+    Y               end-of-line-extend-selection
+    Alt-y           copy-text   
+    
+..  c   enter-tree-select-object-mode  
+
+Node commands::
+
+    G               Go to the outline's last node
+    gg              Go to the outline's first node
+    m               Toggle node mark
+    t               Clone (transclude) node
+
+    Alt-m           Clear all marked nodes
+    Ctrl-c          Yank node
+    Ctrl-h          contract-or-go-left
+    Ctrl-j          Go to next visible node
+    Ctrl-k          Go to previous visible node
+    Ctrl-l          expand-and-go-right
+    Ctrl-m          Go to next marked node
+    Ctrl-t          Go to next cloned node
+    Ctrl-O          Insert-node
+    Ctrl-x          Delete node
+    Ctrl-v          Paste node
+
+    Shift-Ctrl-k    Move node down
+    Shift-Ctrl-h    Move node left
+    Shift-Ctrl-l    Move node right
+    Shift-Ctrl-j    Move node up
+
+    Shift-Ctrl-DnArrow    Move node down
+    Shift-Ctrl-LtArrow    Move node left
+    Shift-Ctrl-RtArrow    Move node right
+    Shift-Ctrl-UpArrow    Move node up
+
+    DnArrow         Go to next visible node
+    UpArrow         Go to previous visible node
+    Ctrl-LtArrow    expand-or-go-left
+    Ctrl-RtArrow    contract-or-go-left
+
+State change commands::
+
+    Ctrl-i          Change state to command from grayed state
+    return          Change state to command from insert state
+    Ctrl-]          Change state to grayed from command state
+
+</t>
+<t tx="ekr.20080611105410.9">Change commands::
+
+    C           Change to end of line
+    cc          Change to end of line
+    cw          Change to end of word
+    cb          Change to beginning of word
+    c)          Delete to end of sentence
+    c(          Delete to beginning of sentence
+    c}          Delete to end of paragraph
+    c{          Delete to beginning of paragraph
+    c%          Change from current bracket type its matching bracket type
+    
+Delete/join commands::
+
+    dw          Delete to end of word
+    db          Delete to beginning of word
+    d)          Delete to end of sentence
+    d(          Delete to beginning of sentence
+    d}          Delete to end of paragraph
+    d{          Delete to start of paragraph
+    d%          Delete from current bracket type to its apposing bracket
+    dt&lt;ch&gt;      Delete to character (not limited to current line)
+    D           Delete to the end of the current line
+    x           delete-char
+    delete      delete-char
+    J           Join next line to end of current line
+    
+Find commands::
+
+    /           search-forward
+    ?           search-backward
+    f           find-character
+    F           backward-find-character
+    n           find-next
+    N           find-prev
+
+Indent/Unindent line commands::
+
+    &gt;&gt;          Indent line
+    &gt;)          Indent to end of sentence
+    &gt;(          Indent to beginning of sentence
+    &gt;}          Indent to end of paragraph
+    &gt;{          Indent to beginning of paragraph
+    &gt;g          Indent to start of buffer
+    &gt;G          Indent to end of buffer
+    &lt;&lt;          Unindent current line
+    &lt;)          Unindent to end of sentence
+	&lt;(          Unindent to beginning of sentence
+	&lt;}          Unindent to end of paragraph
+    &lt;{          Unindent to beginning of paragraph
+    
+Insert/substitute commands::
+    
+    a           Insert at cursor
+    A           Insert at end of line
+    i           Insert at cursor
+    I           Insert at first non-space
+    o           Open new line below current line
+    O           Open new line above current line
+    R           Overwrite text
+    s           Substitute character (Delete character, enter insert state)
+    S           Substitute line (Delete line, enter insert state)
+    
+Move cursor commands::
+
+    ^           back-to-indentation
+    $           Goto end of current line
+    %           match-brackets
+    |           Goto beginning of current line
+    (           back-sentence
+    )           forward-sentence
+    {           back-paragraph
+    }           forward-paragraph
+    -           Goto beginning of current line
+    b           back-word
+    B           back-word
+    e           forward-end-word
+    E           forward-end-word
+    gg          beginning-of-buffer
+    G           end-of-buffer (at beginning-of-line)
+    h           back-char
+    j           next-line
+    k           previous-line
+    l           forward-char
+    w           forward-word (no before/after support)
+    W           forward-word
+    Ctrl-g      goto-line
+    DnArrow     next-line
+    LtArrow     back-char
+    RtArrow     forward-char
+    UpArrow     previous-line
+    
+Window commands::
+
+    Ctrl-w s    add-editor           = s   (split current window)
+    Ctrl-w n    add-editor           = n   (should open "New" blank window)
+    Ctrl-w w    cycle-editor-focus   = w
+    Ctrl-w p    cycle-editor-focus   = p
+    Ctrl-w c    delete-editor        = c
+    Ctrl-w q    delete-editor        = q
+    
+Yank/paste text commands::
+
+    Y           Yank to end of line
+    yy          Yank line
+    yw          Yank to beginning of next word
+    yb          Yank to beginning of current word
+    y)          Yank to end of sentence
+    y(          Yank to beginning of sentence
+    y}          Yank to end of paragraph
+    y{          Yank to beginning of paragraph
+    y%          Yank from current bracket type to its opposing bracket
+    Alt-y       Yank selected text
+    v           toggle-extend-mode
+    p           paste-text  (To paste a line before current: use '-p')
+    P           Paste text before cursor
+
+The following vi commands are **not** supported in the Body pane::
+
+    cf&lt;char&gt;    Change up to and including specified character
+    ct&lt;char&gt;    Change up to specified character
+    yf&lt;char&gt;    Yank up to and including specified character
+    yt&lt;char&gt;    Yank up to specified character
+    t&lt;char&gt;     Move cursor to character before specified character
+    r           Replace a single character with a single character
+    ?           Search backwards
+    1G          Use 'gg' instead
+    0           Use '-' instead
+    bksp        Move one character to the left
+    m&lt;label&gt;    Mark text
+    `           Mark text
+    '           Goto marked text
+    ~           Toggle character's case
+    .           Repeat last command
+    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Performing the command on/upto n'th object
+    Ctrl-u      Move cursor up  1/2 screen
+    Ctrl-d      Move cursor down 1/2 screen
+    Ctrl-e      Slide buffer up (leaving cursor on same line)
+    Ctrl-y      Slide buffer down (leaving cursor on same line)
+    z           Slide buffer to put current line at top
+    z.          Slide buffer to put current line at middle
+    z-          Slide buffer to put current line at bottom
+</t>
+<t tx="ekr.20080611105410.147">@language rest
+</t>
+<t tx="ekr.20080611105410.148">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+.. June 11, 2008
+
+|back| |leo| |next|
+
+############################################################
+Chapter 22: Using Vim Bindings with Leo
+############################################################
+
+This chapter describes Leo's vim-like bindings, including how to install them.
+
+.. contents::
+</t>
+<t tx="ekr.20080611105410.149">@nocolor
+</t>
+<t tx="ekr.20080611105410.150">Binding numeric keys:
+| Mapping a number to a command or mode prevents the number from being
+| entered as text while in the insert state.
+
+Binding '?' key:
+| No response when key pressed.
+
+Binding 'bksp' key:
+| Binding 'bksp' key to back-char to move back a character in command mode
+| prevents 'bksp' from deleting characters in text edit mode.
+
+Commands getting user input:
+| Commands requesting user input must be the last command executed.  These
+| commands include: find-character and zap-to-character.
+
+Editing headlines within modes:
+| Text editing commands do not work within modes assigned to outline key
+| mappings.
+
+Undo command:
+| The 'undo' command sometimes does not work when returning to a node's
+| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
+
+Matching bracket command:
+| Performs bracket matching on Body text when in node's headline command
+| state.
+
+Word definition:
+| "Word" related commands determine boundries of a word differently.
+
+Toggle case:
+| Leo provides support for switching to upper or lower case but no method |
+| exists to toggle between cases.
+
+Find settings
+| Leo commands only allow toggling of search settings.  If specific "set"
+| and "clear" search setting commands were available then searches from the
+| body pane could be restricted to the body pane and searches from the
+| outline could be restricted to the outline.
+Forward and backward sentences:
+| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+| at empty lines nor do they skip over periods within words nor do they stop
+| at sentences ending in non-periods nor do they stop at the end or
+| beginning of the buffer.
+
+Focus to Body pane:
+| Leo functions exist which unconditionally set focus to the body pane
+| regardless of the active pane.
+    deleteTab() function:
+        | Issuing "--&gt; exit-named-mode" calls "endMode" function which calls
+        | "c.frame.log.deleteTab('Mode')" function which sets the focus to the
+        | body pane.  
+
+Displaying mode help:
+| The "--&gt; mode-help" command displays all mapped keys using a capitol
+| letter regardless of the actual binding.
+    Recommendations:
+    | To better support narrow tab cards, display the mode's label without
+    | the "enter-" and "-mode" text and place key label before mode label.
+    | Results in change from:
+    |                enter-vi-delete-line-mode D
+    |    enter-vi-delete-to-begin-of-word-mode B 
+    | to:
+    |    D : vi-delete-line
+    |    B : vi-delete-to-begin-of-word</t>
+<t tx="ekr.20080611105410.151">Yank vs. Yank
+| A vi "yank" operation copies the selected text TO the clipboard.
+| A Leo "yank" operation inserts text FROM the clipboard.
+
+copy-text in modes:
+| Leo's copy-text does not work within a mode.  As a result, all "copy to
+| clipboard" capability is being implemented using kill-&lt;object&gt; command
+| followed by a "yank" command.
+
+paste-text in modes:
+| paste-text in modes does not work.  Use Leo's "yank" instead.
+
+delete-node does not copy node to clipboard:
+| Issue copy-node command followed by delete-node</t>
+<t tx="ekr.20080611105410.152">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
+so that it is not a descendant of the "@ignore Unused key bindings" node.
+Then restart Leo.</t>
+<t tx="ekr.20080611105410.155">.. Links
+
+.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |back| image:: arrow_lt.gif
+    :target: IPythonBridge.html
+
+.. |leo|  image:: leo.gif
+    :target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: appendices.html
+</t>
+<t tx="ekr.20080611105410.156">-----------------------
+
+|back| |leo| |next|</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

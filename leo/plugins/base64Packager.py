@@ -85,11 +85,11 @@ def addMenu( tag, keywords ):
     haveseen[ c ] = None
     men = c.frame.menu
     imen = men.getMenu( 'Import' )
-    imen.add_command( label = "Import To base64", command = lambda c = c: base64Import( c ) )
+    c.add_command(imen, label = "Import To base64", command = lambda c = c: base64Import( c ) )
     emen = men.getMenu( 'Export' )
-    emen.add_command( label = "Export base64", command = lambda c = c : base64Export( c ) )
+    c.add_command(emen, label = "Export base64", command = lambda c = c : base64Export( c ) )
     omen = men.getMenu( 'Outline' )
-    omen.add_command( label = 'View base64', command = lambda c = c: viewAsGif( c ) )
+    c.add_command(omen, label = 'View base64', command = lambda c = c: viewAsGif( c ) )
 #@-node:mork.20041020082242.2:addMenu
 #@+node:mork.20041020082907:base64Export
 def base64Export( c ):

@@ -264,7 +264,7 @@ def getSectionReferenceMenu (pmenu,c):
         srmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in srefs:
-            srmenu.add_command(
+            c.add_command(srmenu,
                 label = z,
                 command = lambda label = z, c = c:
                 paster(label,c,''), columnbreak = sb.next())
@@ -283,7 +283,7 @@ def getWindowMenu (pmenu,c):
         clear()
     sb = shouldBreak()
     for z in wl:
-        winmenu.add_command(
+        c.add_command(winmenu,
             label = z.getTitle(),
             command = lambda frame = z: bTF(frame),
             columnbreak = sb.next())
@@ -309,7 +309,7 @@ def getChildrenMenu (pmenu,c):
         def adder (a):
             hs = a
             child = children [hs]
-            chimenu.add_command(
+            c.add_command(chimenu,
                 label = hs,
                 command = lambda p = child, c = c:
                 jumpto(p,c),
@@ -333,7 +333,7 @@ def getSiblingsMenu (pmenu,c):
         sb = shouldBreak()
         for z in siblings:
             hs = z.headString()
-            sibmenu.add_command(
+            c.add_command(sibmenu,
                 label = hs,
                 command = lambda p = z, c = c:
                 jumpto(p,c),
@@ -366,7 +366,7 @@ def getAncestorsMenu (pmenu,c):
             sb = shouldBreak()
             for z in alist:
                 hs = z.headString()
-                ancmenu.add_command(
+                c.add_command(ancmenu,
                     label = hs,
                     command = lambda parent = z, c = c:
                     jumpto(parent,c),
@@ -409,7 +409,7 @@ def addLanguageMenu (pmenu,c,haveseen={}):
     lmenu = Tkinter.Menu(pmenu,tearoff=0)
     sb = shouldBreak()
     for z in kwords:
-        lmenu.add_command(
+        c.add_command(lmenu,
             label = z,
             command = lambda keyword = z, c = c:
             paster(keyword,c),
@@ -438,7 +438,7 @@ def getMoveAMenu (pmenu,c):
         sb = shouldBreak()
         for z in alist:
             hs = z.headString()
-            mvmenu.add_command(
+            c.add_command(mvmenu,
                 label = hs,
                 command = lambda p = p, p2 = z:
                 mvchild(p,p2),
@@ -463,7 +463,7 @@ def getMoveSMenu (pmenu,c):
         smenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in sibs:
-            smenu.add_command(label=z.headString(),
+            c.add_command(smenu,label=z.headString(),
                             command = lambda p = p, p2 = z: mafter(p,p2),
                             columnbreak = sb.next())
     return smenu
@@ -483,16 +483,16 @@ def getHeadlineMenu (pmenu,c):
     names = list(names)
     names.sort()
     hmenu = Tkinter.Menu(pmenu,tearoff=0)
-    hmenu.add_command(
+    c.add_command(hmenu,
         label = 'add <' + '<' + '>' + '>',
         command = lambda c = c: addGL(c))
     hmenu.add_separator()
     for z in names:
-        hmenu.add_command(label=z,
+        c.add_command(hmenu,label=z,
                             command = lambda c = c, d = z, nm = names:
                                 setFileDirective(c,d,nm))
     hmenu.add_separator()
-    hmenu.add_command(label='remove @',command=lambda c=c,nm=names:
+    c.add_command(hmenu,label='remove @',command=lambda c=c,nm=names:
                                             removeFileDirective(c,nm))
     return hmenu
 #@nonl
@@ -507,7 +507,7 @@ def getDirectiveInsert (pm,c,directives=[],directives2=[]):
             directives.append(z)
         directives.sort()
     for z in directives:
-       m.add_command(
+       c.add_command(m,
           label = z,
           columnbreak = sb.next(),
           command = lambda label = z, c = c:

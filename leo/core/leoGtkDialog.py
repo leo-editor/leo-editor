@@ -253,14 +253,14 @@ class gtkAboutLeo (leoGtkDialog):
         w.tag_config("copyright",justify="center",spacing1="3")
         w.tag_config("url",underline=1,justify="center",spacing1="10")
 
-        w.tag_bind("url","<Button-1>",self.onAboutLeoUrl)
-        w.tag_bind("url","<Enter>",self.setArrowCursor)
-        w.tag_bind("url","<Leave>",self.setDefaultCursor)
+        c.tag_bind(w,"url","<Button-1>",self.onAboutLeoUrl)
+        c.tag_bind(w,"url","<Enter>",self.setArrowCursor)
+        c.tag_bind(w,"url","<Leave>",self.setDefaultCursor)
 
         w.tag_config("email",underline=1,justify="center",spacing1="10")
-        w.tag_bind("email","<Button-1>",self.onAboutLeoEmail)
-        w.tag_bind("email","<Enter>",self.setArrowCursor)
-        w.tag_bind("email","<Leave>",self.setDefaultCursor)
+        c.tag_bind(w,"email","<Button-1>",self.onAboutLeoEmail)
+        c.tag_bind(w,"email","<Enter>",self.setArrowCursor)
+        c.tag_bind(w,"email","<Leave>",self.setDefaultCursor)
 
         w.configure(state="disabled")
     #@-node:ekr.20080112145409.13:gtkAboutLeo.createFrame

@@ -485,7 +485,7 @@ class leoMenu:
     #@+node:ekr.20070926135612:createMenusFromConfigList & helpers
     def createMenusFromConfigList (self,aList):
 
-        '''Create menus from dictionary d instead of 'hard coded' menus.
+        '''Create menus from aList instead of 'hard coded' menus.
         The 'top' menu has already been created.'''
 
         tag = '@menu'
@@ -1320,7 +1320,7 @@ class leoMenu:
 
         # g.trace('c',self.c)
 
-        c = self.c ; f = c.frame ; k = c.k
+        c = self.c ; f = c.frame ; k = c.k ; trace = False
         if g.app.unitTesting: return
         for data in table:
             #@        << get label & command or continue >>
@@ -1368,14 +1368,14 @@ class leoMenu:
                     # Pick the first entry that is not a mode.
                     for bunch in bunchList:
                         if not bunch.pane.endswith('-mode'):
-                            # g.trace('1',bunch)
+                            if trace: g.trace('1','%20s' % (bunch.val),commandName)
                             accel = bunch and bunch.val
                             if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
                 else:
                     if not g.app.unitTesting and not dynamicMenu:
                         # Don't warn during unit testing.
                         # This may come from a plugin that normally isn't enabled.
-                        g.trace('No inverse for %s' % commandName)
+                        if trace: g.trace('No inverse for %s' % commandName)
                     continue # There is no way to make this menu entry.
             else:
                 # First, get the old-style name.
@@ -1383,7 +1383,7 @@ class leoMenu:
                 rawKey,bunchList = c.config.getShortcut(commandName)
                 for bunch in bunchList:
                     if not bunch.pane.endswith('-mode'):
-                        # g.trace('2',bunch)
+                        if trace: g.trace('2','%20s' % (bunch.val),commandName)
                         accel = bunch and bunch.val ; break
                 # Second, get new-style name.
                 if not accel:
@@ -1420,15 +1420,18 @@ class leoMenu:
                         for bunch in bunchList:
                             if not bunch.pane.endswith('-mode'):
                                 accel = bunch.val ; break
-                                # g.trace('2',bunch)
+                                if trace: g.trace('3','%20s' % (bunch.val),commandName)
                     elif not dynamicMenu:
                         g.trace('No inverse for %s' % commandName)
             #@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
             #@nl
             accelerator = stroke = k.shortcutFromSetting(accel) or ''
             accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-            def masterMenuCallback (k=k,stroke=stroke,command=command,commandName=commandName):
+            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+                #k.clearState()
+                #g.trace(stroke)
                 return k.masterMenuHandler(stroke,command,commandName)
+
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&","")
@@ -1442,10 +1445,13 @@ class leoMenu:
                     accelerator = ''
                 #@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
                 #@nl
-            self.add_command(menu,label=realLabel,
-                accelerator=accelerator,
-                command=masterMenuCallback,
-                underline=amp_index)
+
+            # c.add_command ensures that c.outerUpdate is called.
+            if menu:
+                c.add_command(menu,label=realLabel,
+                    accelerator=accelerator,
+                    command=masterMenuCallback,
+                    underline=amp_index)
     #@-node:ekr.20031218072017.1723:createMenuEntries
     #@+node:ekr.20031218072017.3784:createMenuItemsFromTable
     def createMenuItemsFromTable (self,menuName,table,dynamicMenu=False):
@@ -1574,7 +1580,7 @@ class leoMenu:
             realLabel = realLabel.replace("&","")
             callback = self.defineOpenWithMenuCallback(openWithData)
 
-            self.add_command(menu,label=realLabel,
+            c.add_command(menu,label=realLabel,
                 accelerator=accelerator or '',
                 command=callback,underline=underline)
     #@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
@@ -1605,7 +1611,7 @@ class leoMenu:
                 # __pychecker__ = '--no-argsused' # event not used, but must be present.
                 c.openRecentFile(name)
             label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
-            self.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
+            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
             i += 1
     #@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
     #@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems

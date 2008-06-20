@@ -276,6 +276,7 @@ def init ():
 
                 def marksButtonCallback(*args,**keys):
                     self.top.deiconify()
+                    # No call to c.outerUpdate is needed here.
 
                 self.marks_button = btn = c.frame.addIconButton(
                     text="Marks",command=marksButtonCallback)
@@ -602,6 +603,7 @@ def init ():
                 def recentButtonCallback(*args,**keys):
                     self.fillbox(forceUpdate=True)
                     self.top.deiconify()
+                    # No call to c.outerUpdate is needed here.
 
                 self.sections_button = btn = c.frame.addIconButton(
                     text="Recent",command=recentButtonCallback)
@@ -850,7 +852,7 @@ def init ():
 
     r = leoPlugins.registerHandler          
     r('after-create-leo-frame',onCreate)
-    r(('after-create-leo-frame', 'set-mark','clear-mark'), marksHandler)
+    r(('after-create-leo-frame', 'set-mark','clear-mark', 'clear-all-marks'), marksHandler)
     r('select2', recentHandler)
 
     g.plugin_signon(__name__)

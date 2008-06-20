@@ -568,7 +568,7 @@ class leoGtkMenu(leoMenu.leoMenu):
             realLabel = realLabel.replace("&","")
             callback = self.defineOpenWithMenuCallback(openWithData)
 
-            self.add_command(menu,label=realLabel,
+            c.add_command(menu,label=realLabel,
                 accelerator=accelerator or '',
                 command=callback,underline=underline)
     #@-node:bob.20080115223114.3:createOpenWithMenuItemsFromTable

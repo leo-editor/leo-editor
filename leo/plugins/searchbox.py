@@ -213,11 +213,12 @@ class SearchBox:
         """Update the list of recently searched items"""
 
         # First update the menu - delete all the options if there are any
+        c = self.c
         menu = self.options["menu"]
         if self.search_list:
             menu.delete(len(OPTION_LIST),"end")
 
-        menu.add_command(label="-------------", command=lambda:0) 
+        c.add_command(menu,label="-------------", command=lambda:0) 
 
         # Update and prune list to remove a previous search for this text 
         self.search_list = [(text, search_mode)] +  [
@@ -225,7 +226,7 @@ class SearchBox:
 
         # Now update the menu 
         for name, mode in self.search_list:
-            menu.add_command(
+            c.add_command(menu,
                 label=name,command=Tk._setit(self.option_value,name,self.searchRecent))
     #@nonl
     #@-node:ekr.20040108054555.7:updateRecentList

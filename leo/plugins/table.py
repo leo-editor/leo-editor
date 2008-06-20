@@ -225,16 +225,16 @@ def createBBox( parent, csvv, tab ):
 
 #@-node:ekr.20041017035937.12:createBBox
 #@+node:ekr.20041017035937.13:addMenu
-def addMenu( tag, keywords ):
+def addMenu (tag,keywords):
 
     c = keywords.get(c)
-    if not c or haveseen.has_key( c ):
+    if not c or haveseen.has_key(c):
         return
 
-    haveseen[ c ] = None
+    haveseen [c] = None
     men = c.frame.menu
-    men = men.getMenu( 'Outline' )
-    men.add_command( label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
+    men = men.getMenu('Outline')
+    c.add_command(men,label="Edit Node With Table",command=lambda c=c: viewTable(c))
 #@nonl
 #@-node:ekr.20041017035937.13:addMenu
 #@-others

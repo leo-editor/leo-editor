@@ -35,7 +35,7 @@
 <v t="ekr.20041001194357"><vh>@@command Unit Test @key=Alt+4</vh></v>
 </v>
 <v t="ekr.20041121151002" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
@@ -64,7 +64,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -882,7 +882,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -924,7 +924,7 @@
 </v>
 <v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
 <v t="ekr.20071113145804.8"><vh>@test atFile.directiveKind4</vh></v>
-<v t="ekr.20071113143844.5"><vh>@test atFile.isSignificantAtAutoTree</vh></v>
+<v t="ekr.20071113143844.5"><vh>@test atFile.isSignificantTree</vh></v>
 <v t="ekr.20050105093136"><vh>@test atFile.remove</vh></v>
 <v t="ekr.20050105093524"><vh>@test atFile.rename</vh></v>
 <v t="ekr.20050105094311"><vh>@test atFile.replaceTargetFileIfDifferent (different)</vh></v>
@@ -13154,6 +13154,7 @@ finally:
 c.frame.body.bodyCtrl.update()</t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 c.insertHeadline()
+c.outerUpdate()
 try:
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
@@ -18964,7 +18965,7 @@ The new scheme:
 - Put general unit tests in unitTest.leo.
 - Put most unit tests in leoPy.leo, near the code they test.
 - Run @test nodes in leoPy.leo **from unitTest.leo**.</t>
-<t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantAtAutoTree(p)
+<t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
 <t tx="ekr.20071113143844.6">encoding = 'ascii'
