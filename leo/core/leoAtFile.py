@@ -2086,15 +2086,15 @@ class atFile:
         return True
     #@-node:ekr.20041005105605.143:openFileForWritingHelper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
-    #@+node:ekr.20041005105605.144:write
+    #@+node:ekr.20041005105605.144:write & helper
     # This is the entry point to the write code.  root should be an @file vnode.
 
-    def write(self,root,
-        nosentinels=False,
-        thinFile=False,
-        scriptWrite=False,
-        toString=False,
-        write_strips_blank_lines=None,
+    def write (self,root,
+        nosentinels = False,
+        thinFile = False,
+        scriptWrite = False,
+        toString = False,
+        write_strips_blank_lines = None,
     ):
 
         """Write a 4.x derived file."""
@@ -2115,9 +2115,16 @@ class atFile:
         #@-node:ekr.20041005105605.145:<< set at.targetFileName >>
         #@nl
         at.initWriteIvars(root,at.targetFileName,
-            nosentinels=nosentinels,thinFile=thinFile,
-            scriptWrite=scriptWrite,toString=toString,
-            write_strips_blank_lines=write_strips_blank_lines)
+            nosentinels = nosentinels, thinFile = thinFile,
+            scriptWrite = scriptWrite, toString = toString,
+            write_strips_blank_lines = write_strips_blank_lines)
+
+        if nosentinels and not scriptWrite and not toString:
+            fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
+            exists = g.os_path_exists(fileName)
+            if not self.shouldWriteAtNosentNode(root,exists):
+                return
+
         if not at.openFileForWriting(root,at.targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
             return
@@ -2153,7 +2160,41 @@ class atFile:
                 at.root.v.t._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
-    #@-node:ekr.20041005105605.144:write
+    #@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+    #@+at 
+    #@nonl
+    # Much thought went into this decision tree:
+    # 
+    # - We do not want decisions to depend on past history.That ' s too 
+    # confusing.
+    # - We must ensure that the file will be written if the user does 
+    # significant work.
+    # - We must ensure that the user can create an @auto x node at any time
+    #   without risk of of replacing x with empty or insignificant 
+    # information.
+    # - We want the user to be able to create an @auto node which will be 
+    # populated the next time the.leo file is opened.
+    # - We don ' t want minor import imperfections to be written to the @auto 
+    # file.
+    # - The explicit commands that read and write @auto trees must always be 
+    # honored.
+    #@-at
+    #@@c
+
+    def shouldWriteAtNosentNode (self,p,exists):
+
+        '''Return True if we should write the @auto node at p.'''
+
+        if not exists: # We can write a non-existent file without danger.
+            return True
+        elif self.isSignificantTree(p):
+            return True # Assume the tree contains what should be written.
+        else:
+            g.es_print(p.headString(),'not written:',color='red')
+            g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+            return False
+    #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+    #@-node:ekr.20041005105605.144:write & helper
     #@+node:ekr.20041005105605.147:writeAll (atFile)
     def writeAll(self,
         writeAtFileNodesFlag=False,
@@ -2288,7 +2329,7 @@ class atFile:
         else:
             g.es("no @auto nodes in the selected tree")
     #@-node:ekr.20070806140208:writeAtAutoNodesHelper
-    #@+node:ekr.20070806141607:writeOneAtAutoNode & helpers
+    #@+node:ekr.20070806141607:writeOneAtAutoNode & helper
     def writeOneAtAutoNode(self,p,toString,force):
 
         '''Write p, an @auto node.
@@ -2360,39 +2401,14 @@ class atFile:
             return True
         elif not p.isDirty(): # There is nothing new to write.
             return False
-        elif not self.isSignificantAtAutoTree(p): # There is noting of value to write.
+        elif not self.isSignificantTree(p): # There is noting of value to write.
             g.es_print(p.headString(),'not written:',color='red')
             g.es_print('no children and less than 10 characters (excluding directives)',color='red')
             return False
         else: # The @auto tree is dirty and contains significant info.
             return True
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
-    #@+node:ekr.20070909103844:isSignificantAtAutoTree
-    def isSignificantAtAutoTree (self,p):
-
-        '''Return True if p's tree has a significant amount of information.'''
-
-        s = p.bodyString()
-
-        # Remove all blank lines and all Leo directives.
-        lines = []
-        for line in g.splitLines(s):
-            if not line.strip():
-                pass
-            elif line.startswith('@'):
-                i = 1 ; j = g.skip_id(line,i,chars='-')
-                word = s[i:j]
-                if not (word and word in g.globalDirectiveList):
-                    lines.append(line)
-            else:
-                lines.append(line)
-
-        s2 = ''.join(lines)
-        # g.trace('s2',s2)
-
-        return p.hasChildren() or len(s2.strip()) >= 10
-    #@-node:ekr.20070909103844:isSignificantAtAutoTree
-    #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers
+    #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtFileNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
@@ -3430,6 +3446,31 @@ class atFile:
         else:
             return False, -1
     #@-node:ekr.20041005105605.200:isSectionName
+    #@+node:ekr.20070909103844:isSignificantTree
+    def isSignificantTree (self,p):
+
+        '''Return True if p's tree has a significant amount of information.'''
+
+        s = p.bodyString()
+
+        # Remove all blank lines and all Leo directives.
+        lines = []
+        for line in g.splitLines(s):
+            if not line.strip():
+                pass
+            elif line.startswith('@'):
+                i = 1 ; j = g.skip_id(line,i,chars='-')
+                word = s[i:j]
+                if not (word and word in g.globalDirectiveList):
+                    lines.append(line)
+            else:
+                lines.append(line)
+
+        s2 = ''.join(lines)
+        # g.trace('s2',s2)
+
+        return p.hasChildren() or len(s2.strip()) >= 10
+    #@-node:ekr.20070909103844:isSignificantTree
     #@+node:ekr.20041005105605.201:os and allies
     # Note:  self.outputFile may be either a fileLikeObject or a real file.
     #@+node:ekr.20041005105605.202:oblank, oblanks & otabs
