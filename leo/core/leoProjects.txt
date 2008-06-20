@@ -14651,6 +14651,108 @@ redefining shortcut                Alt+y from copy-text (body) to yank-pop (all)
 redefining shortcut                Alt+y from copy-text (body) to yank-pop (all)
 #@-node:ekr.20080617073917.1:Error messages
 #@-node:ekr.20061014050154.2:Added 'kill' bindings
+#@+node:ekr.20080620095343.2:Added check for empty @nosent nodes
+# These are now treated much like empty @auto nodes
+#@nonl
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+    write_strips_blank_lines = None,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString,
+        write_strips_blank_lines = write_strips_blank_lines)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            << set dirty and orphan bits on error >>
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+
+if at.errors > 0 or at.root.isOrphan():
+    root.setOrphan()
+    root.setDirty() # Make _sure_ we try to rewrite this file.
+    ### os.remove(at.outputFileName) # Delete the temp file.
+    self.remove(at.outputFileName) # Delete the temp file.
+    g.es("not written:",at.outputFileName)
+else:
+    at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@-node:ekr.20080620095343.2:Added check for empty @nosent nodes
 #@-node:ekr.20080408060320.783:Features
 #@+node:ekr.20080529054218.2:Benchmarked the read code
 To do:

@@ -9,6 +9,8 @@
 #@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 @nocolor
 
+Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
+
 So reading all the file names in my home directory into leo as
 headlines while playing with my active_path plugin, I got some odd
 characters in a filename into leo, it saved the file fine, but wouldn't
@@ -4718,6 +4720,241 @@ if len(prefix0) > 0 and prefix0 == prefix1:
 #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 #@-node:ekr.20031218072017.3212:importFilesCommand
 #@-node:ekr.20080313032655.1:Fix one failed unit test on Linux
+#@+node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
+@nocolor
+
+Note: at present the only change is to c.setHeadString.  It's unlikely this will make a difference.
+
+So reading all the file names in my home directory into leo as
+headlines while playing with my active_path plugin, I got some odd
+characters in a filename into leo, it saved the file fine, but wouldn't
+read it:
+
+error parsing /media/usr1/usr1/home/tbrown/files.leo
+Traceback (most recent call last):
+
+ File
+"/media/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/active_path/leo/core/leoFileCommands.py",
+line 1240, in parse_leo_file parser.parse(theFile) # expat does not
+support parseString
+
+ File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
+   xmlreader.IncrementalParser.parse(self, source)
+
+ File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
+   self.feed(buffer)
+
+ File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
+   self._err_handler.fatalError(exc)
+
+ File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
+   raise exception
+
+SAXParseException: <unknown>:732:58: not well-formed (invalid token)
+
+
+emacs shows the offending line as:
+
+<v t="tbrown.20080618141617.720"
+a="M"><vh>coppertop_mapYI .2006_04_09_14_16_22.0</vh></v>
+
+...of course it looks different in my mail composer window :-) but
+there's a ^H after the I.
+
+So, garbage in, garbage out, I get that, but is it the intent that leo
+save a file without comment and then fail to read it in these cases?
+
+I'm not saying it should do one thing or the other, but just wanted to
+point out the possibility.
+
+Cheers -Terry
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1577:putTnode
+def putTnode (self,t):
+
+    # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+    if not t.fileIndex:
+        g.trace('can not happen: no index for tnode',t)
+        t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+    # New in Leo 4.4.2 b2: call put just once.
+    gnx = g.app.nodeIndices.toString(t.fileIndex)
+    ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
+    body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
+    self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
+#@-node:ekr.20031218072017.1577:putTnode
+#@+node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+def putVnode (self,p,isIgnore=False):
+
+    """Write a <v> element corresponding to a vnode."""
+
+    fc = self ; c = fc.c ; v = p.v
+    # Not writing @auto nodes is way too dangerous.
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isThin = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore: isIgnore = p.isAtIgnoreNode()
+
+    # forceWrite = isIgnore or not isThin or (isThin and isOrphan)
+    if isIgnore: forceWrite = True      # Always write full @ignore trees.
+    elif isAuto: forceWrite = False     # Never write non-ignored @auto trees.
+    elif isThin: forceWrite = isOrphan  # Only write orphan @thin trees.
+    else:        forceWrite = True      # Write all other @file trees.
+
+    << Set gnx = tnode index >>
+    attrs = []
+    << Append attribute bits to attrs >>
+    << Append tnodeList and unKnownAttributes to attrs >>
+    attrs = ''.join(attrs)
+    v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
+    # The string catentation is faster than repeated calls to fc.put.
+    if not self.usingClipboard:
+        << issue informational messages >>
+    # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+    if p.hasChildren() and (forceWrite or self.usingClipboard):
+        fc.put('%s\n' % v_head)
+        # This optimization eliminates all "recursive" copies.
+        p.moveToFirstChild()
+        while 1:
+            fc.putVnode(p,isIgnore)
+            if p.hasNext(): p.moveToNext()
+            else:           break
+        p.moveToParent() # Restore p in the caller.
+        fc.put('</v>\n')
+    else:
+        fc.put('%s</v>\n' % v_head) # Call put only once.
+#@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+# New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
+if not v.t.fileIndex:
+    v.t.fileIndex = g.app.nodeIndices.getNewIndex()
+
+gnx = g.app.nodeIndices.toString(v.t.fileIndex)
+
+if forceWrite or self.usingClipboard:
+    v.t.setWriteBit() # 4.2: Indicate we wrote the body text.
+#@-node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+#@+node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+# These string catenations are benign because they rarely happen.
+attr = ""
+# New in Leo 4.5: support fixed .leo files.
+if not c.fixed:
+    if v.isExpanded() and v.hasChildren(): attr += "E"
+    if v.isMarked():   attr += "M"
+    if v.isOrphan():   attr += "O"
+
+    # No longer a bottleneck now that we use p.equal rather than p.__cmp__
+    # Almost 30% of the entire writing time came from here!!!
+    # if not self.use_sax:
+        # if p.equal(self.topPosition):     attr += "T" # was a bottleneck
+        # if p.equal(self.currentPosition): attr += "V" # was a bottleneck
+
+    if attr:
+        attrs.append(' a="%s"' % attr)
+
+# Put the archived *current* position in the *root* positions <v> element.
+if p == self.rootPosition:
+    aList = [str(z) for z in self.currentPosition.archivedPosition()]
+    d = hasattr(v,'unKnownAttributes') and v.unknownAttributes or {}
+    if not c.fixed:
+        d['str_leo_pos'] = ','.join(aList)
+    # g.trace(aList,d)
+    v.unknownAttributes = d
+elif hasattr(v,"unknownAttributes"):
+    d = v.unknownAttributes
+    if d and not c.fixed and d.get('str_leo_pos'):
+        # g.trace("clearing str_leo_pos",v)
+        del d['str_leo_pos']
+        v.unknownAttributes = d
+#@-node:ekr.20031218072017.1865:<< Append attribute bits to attrs >>
+#@+node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+# Write the tnodeList only for @file nodes.
+# New in 4.2: tnode list is in tnode.
+
+if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and v.isAnyAtFileNode():
+    if isThin:
+        if g.app.unitTesting:
+            g.app.unitTestDict["warning"] = True
+        g.es("deleting tnode list for",p.headString(),color="blue")
+        # This is safe: cloning can't change the type of this node!
+        delattr(v.t,"tnodeList")
+    else:
+        attrs.append(fc.putTnodeList(v)) # New in 4.0
+
+if hasattr(v,"unknownAttributes"): # New in 4.0
+    attrs.append(self.putUnknownAttributes(v))
+
+if p.hasChildren() and not forceWrite and not self.usingClipboard:
+    # We put the entire tree when using the clipboard, so no need for this.
+    attrs.append(self.putDescendentUnknownAttributes(p))
+    attrs.append(self.putDescendentAttributes(p))
+#@nonl
+#@-node:ekr.20040324082713:<< Append tnodeList and unKnownAttributes to attrs>>
+#@+node:ekr.20040702085529:<< issue informational messages >>
+if isOrphan and isThin:
+    g.es("writing erroneous:",p.headString(),color="blue")
+    p.clearOrphan()
+#@-node:ekr.20040702085529:<< issue informational messages >>
+#@-node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@+node:ekr.20031218072017.1470:put
+def put (self,s):
+
+    '''Put string s to self.outputFile. All output eventually comes here.'''
+
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    if s:
+        self.putCount += 1
+        s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
+        self.outputFile.write(s)
+
+def put_dquote (self):
+    self.put('"')
+
+def put_dquoted_bool (self,b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
+
+def put_flag (self,a,b):
+    if a:
+        self.put(" ") ; self.put(b) ; self.put('="1"')
+
+def put_in_dquotes (self,a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+
+def put_nl (self):
+    self.put("\n")
+
+def put_tab (self):
+    self.put("\t")
+
+def put_tabs (self,n):
+    while n > 0:
+        self.put("\t")
+        n -= 1
+#@nonl
+#@-node:ekr.20031218072017.1470:put
+#@+node:ekr.20040305223225:c.setHeadString
+def setHeadString (self,p,s,encoding="utf-8"):
+
+    c = self
+    w = c.edit_widget(p) # w only exists for the Tk gui.
+
+    p.initHeadString(s,encoding)
+
+    if w:
+        s = g.toUnicode(s,encoding)
+        w.setAllText(s)
+        width = c.frame.tree.headWidth(p=None,s=s)
+        w.setWidth(width)
+
+    p.setDirty()
+#@nonl
+#@-node:ekr.20040305223225:c.setHeadString
+#@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
 #@-node:ekr.20080602172531.2:before b2: 10
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files

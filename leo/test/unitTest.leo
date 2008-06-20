@@ -924,7 +924,7 @@
 </v>
 <v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
 <v t="ekr.20071113145804.8"><vh>@test atFile.directiveKind4</vh></v>
-<v t="ekr.20071113143844.5"><vh>@test atFile.isSignificantAtAutoTree</vh></v>
+<v t="ekr.20071113143844.5"><vh>@test atFile.isSignificantTree</vh></v>
 <v t="ekr.20050105093136"><vh>@test atFile.remove</vh></v>
 <v t="ekr.20050105093524"><vh>@test atFile.rename</vh></v>
 <v t="ekr.20050105094311"><vh>@test atFile.replaceTargetFileIfDifferent (different)</vh></v>
@@ -18965,7 +18965,7 @@ The new scheme:
 - Put general unit tests in unitTest.leo.
 - Put most unit tests in leoPy.leo, near the code they test.
 - Run @test nodes in leoPy.leo **from unitTest.leo**.</t>
-<t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantAtAutoTree(p)
+<t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
 <t tx="ekr.20071113143844.6">encoding = 'ascii'
