@@ -7218,6 +7218,7 @@ class baseCommands:
         p.initHeadString(s,encoding)
 
         if w:
+            s = g.toUnicode(s,encoding)
             w.setAllText(s)
             width = c.frame.tree.headWidth(p=None,s=s)
             w.setWidth(width)
