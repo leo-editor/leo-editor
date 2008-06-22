@@ -38,8 +38,8 @@ and also the following fragments:
 
     - 'edit-menu' fragment (c.context_menus['edit-menu'])
 
-            This gives basic 'cut/copy/paste/select all' menu items for plain
-            text widgets, (not body widgets).
+        This gives basic 'cut/copy/paste/select all' menu items for
+        text widgets.
 
     - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
 
@@ -82,7 +82,7 @@ Any number of keyword pairs can be included and all these will be passed to any
 generator or invocation callbacks used in the menu.
 
 
-The right click menu to be used is determined in one of three ways.
+The right click menu to be used is determined in one of two ways.
 
     The explicitly set context_menu property:
 
@@ -90,18 +90,6 @@ The right click menu to be used is determined in one of three ways.
 
     The context_menu supplied the doHook call if any.   
 
-    The widgets name:
-
-        If no context_menu property is defined then the widgets name, as determined
-        by c.widget_name(w), is used and each key in c.context_menus is tested
-        against it to see if the name starts with that key. If it does, the menu
-        table in c.context_menus[key] will be used.
-
-        eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
-
-        No attempt is made to resolve conflicts. The keys are in random order and
-        the first match found will be used. Better to use w.context_menu for anything
-        other than the default 'body', 'log', 'find-text' and 'change-text'.
 
 Keyword = Value data items in the body
 --------------------------------------
@@ -828,6 +816,10 @@ class pluginController(baseClasses.basePluginController):
 
     """A per commander controller for right click menu functionality."""
 
+    commandPrefix = 'rclick'
+
+    #@    << command list >>
+    #@+node:bobjack.20080617170156.6:<< command list >>
     commandList = (
         'rclick-gen-recent-files-list',
         'rclick-gen-context-sensitive-commands',
@@ -855,8 +847,108 @@ class pluginController(baseClasses.basePluginController):
         'rclick-find-node-only-button',
         'rclick-find-suboutline-only-button',
         'rclick-find-entire-outline-button',
-   )
+    )
+    #@nonl
+    #@-node:bobjack.20080617170156.6:<< command list >>
+    #@nl
+    #@    << default context menus >>
+    #@+node:bobjack.20080617170156.7:<< default context menus >>
+    defaultContextMenus = {
 
+        'rclick-find-controls-left': [
+            ('*', 'rclick-find-whole-word-button'),
+            ('*', 'rclick-find-ignore-case-button'),
+            ('*', 'rclick-find-wrap-around-button'),
+            ('*', 'rclick-find-reverse-button'),
+            ('*', 'rclick-find-regexp-button'),
+            ('*', 'rclick-find-mark-finds-button'),
+        ],
+
+        'rclick-find-controls-right': [
+            ('*', 'rclick-find-mark-changes-button'),
+            ('*', 'rclick-find-search-body-button'),
+            ('*', 'rclick-find-search-headline-button'),
+            ('*', 'rclick-find-node-only-button'),
+            ('*', 'rclick-find-suboutline-only-button'),
+            ('*', 'rclick-find-entire-outline-button'),
+        ],
+
+        'rclick-find-controls': [
+            ('&', 'rclick-find-controls-left'),
+            ('|', ''),
+            ('&', 'rclick-find-controls-right')
+        ],
+
+    #@+at
+    #     'body': [
+    #         ('&', 'edit-menu'),
+    #         ('-', ''),
+    #         ('Block Operations', [
+    #             ('Indent', 'indent-region'),
+    #             ('Dedent', 'deden-region'),
+    #             ('-', ''),
+    #             ('Add Comments', 'add-comments'),
+    #             ('Remove Comments', 'delete-comments'),
+    #         ]),
+    #         ('&', 'recent-files-menu'),
+    #         ('-', ''),
+    #         ('Match Brackets', 'match-brackets'),
+    #         ('Execture Script', 'execute-script'),
+    #         ('*', 'rclick-gen-context-sensitive-commands'),
+    #     ],
+    # 
+    #     'log': [('&', 'edit-menu')],
+    #     'find-text': [('&', 'edit-menu')],
+    #     'change-text': [('&', 'edit-menu')],
+    # 
+    #     'canvas': [
+    #         ('&', 'to-chapter-fragment'),
+    #         ('-', ''),
+    #         ('Create Chapter', 'create-chapter'),
+    #         ('Remove Chapter', 'remove-chapter'),
+    #     ],
+    # 
+    #     'headline': [],
+    #     'iconbox': [],
+    #     'plusbox': [],
+    # 
+    #     'edit-menu': [
+    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 
+    # 'rclick-cut-text'),
+    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 
+    # 'rclick-copy-text'),
+    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 
+    # 'rclick-paste-text'),
+    #         ('-',''),
+    #         ('Select All', 'rclick-select-all'),
+    #     ],
+    # 
+    #     'recent-files-menu': [
+    #         ('Recent Files',
+    #             [('*', 'rclick-gen-recent-files-list')],
+    #         ),
+    #     ],
+    # 
+    #     'to-chapter-fragment': [
+    #         ('Clone To Chapter',
+    #             [('*', 'clone-node-to-chapter-menu')],
+    #         ),
+    #         ('Copy To Chapter',
+    #             [('*', 'copy-node-to-chapter-menu')],
+    #         ),
+    #         ('Move To Chapter',
+    #             [('*', 'move-node-to-chapter-menu')],
+    #         ),
+    #         ('Go To Chapter',
+    #             [('*', 'select-chapter-menu')],
+    #         ),
+    #     ],
+    # 
+    #@-at
+    #@@c
+    }
+    #@-node:bobjack.20080617170156.7:<< default context menus >>
+    #@nl
 
     #@    @+others
     #@+node:bobjack.20080516105903.19:__init__
@@ -882,94 +974,17 @@ class pluginController(baseClasses.basePluginController):
         self.radio_vars = {}
         self.iconCache = {}
 
-        self.commandPrefix = 'rclick'
 
     #@+node:bobjack.20080516105903.20:onCreate
     def onCreate(self):
 
         """Perform initialization for this per commander controller."""
 
-        self.rSetupMenus()
+
         super(self.__class__, self).onCreate()
+
+        self.rSetupMenus()
     #@-node:bobjack.20080516105903.20:onCreate
-    #@+node:bobjack.20080516105903.93:setDeafaultContextMenus
-    def setDefaultContextMenus(self):
-
-        """Set menus for context menus that have not been defined in @popup menus."""
-
-        return
-
-        c = self.c
-
-        default_menus = {
-
-        'body': [
-            ('&', 'edit-menu'),
-            ('-', ''),
-            ('Block Operations', [
-                ('Indent', 'indent-region'),
-                ('Dedent', 'deden-region'),
-                ('-', ''),
-                ('Add Comments', 'add-comments'),
-                ('Remove Comments', 'delete-comments'),
-            ]),
-            ('&', 'recent-files-menu'),
-            ('-', ''),
-            ('Match Brackets', 'match-brackets'),
-            ('Execture Script', 'execute-script'),
-            ('*', 'rclick-gen-context-sensitive-commands'),
-        ],
-
-        'log': [('&', 'edit-menu')],
-        'find-text': [('&', 'edit-menu')],
-        'change-text': [('&', 'edit-menu')],
-
-        'canvas': [
-            ('&', 'to-chapter-fragment'),
-            ('-', ''),
-            ('Create Chapter', 'create-chapter'),
-            ('Remove Chapter', 'remove-chapter'),
-        ],
-
-        'headline': [],
-        'iconbox': [],
-        'plusbox': [],
-
-        'edit-menu': [
-            ('Cut\nicon = Tango/16x16/actions/editcut.png', 'rclick-cut-text'),
-            ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'rclick-copy-text'),
-            ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'rclick-paste-text'),
-            ('-',''),
-            ('Select All', 'rclick-select-all'),
-        ],
-
-        'recent-files-menu': [
-            ('Recent Files',
-                [('*', 'rclick-gen-recent-files-list')],
-            ),
-        ],
-
-        'to-chapter-fragment': [
-            ('Clone To Chapter', 
-                [('*', 'clone-node-to-chapter-menu')],
-            ),
-            ('Copy To Chapter', 
-                [('*', 'copy-node-to-chapter-menu')],
-            ),
-            ('Move To Chapter', 
-                [('*', 'move-node-to-chapter-menu')],
-            ),
-            ('Go To Chapter', 
-                [('*', 'select-chapter-menu')],
-            ),
-        ],
-        }
-        for k, v in default_menus.iteritems():
-            if k in c.context_menus:
-                continue
-            c.context_menus[k] = v
-
-    #@-node:bobjack.20080516105903.93:setDeafaultContextMenus
     #@+node:bobjack.20080516105903.21:getButtonHandlers
     def getButtonHandlers(self):
 
@@ -985,13 +1000,7 @@ class pluginController(baseClasses.basePluginController):
 
         # save any default menus set by plugins before rClick was enabled
 
-        try:
-            saved_menus = c.context_menus
-        except AttributeError:
-            saved_menus = {}
-
-        if not isinstance(saved_menus, dict):
-           saved_menus = {}
+        saved_menus = c.context_menus
 
         if hasattr(g.app.config, 'context_menus'):
             c.context_menus = self.copyMenuDict(g.app.config.context_menus)
@@ -1057,13 +1066,6 @@ class pluginController(baseClasses.basePluginController):
         for key, item in saved_menus.iteritems():
             if not key in menus:
                 menus[key] = item
-
-        # default menus define in rClick are inserted here
-        #  config menus and menus defined in other plugins take priority over these
-
-        for key, item in self.default_context_menus.iteritems():
-            if not key in menus:
-                menus[key] = self.copyMenuTable(item)
 
         return True
 
@@ -1167,13 +1169,12 @@ class pluginController(baseClasses.basePluginController):
 
             c = self.c
 
-            if self.minibufferPhaseError():
-                return
+            self.assertPhase('generate')
 
             event = keywords.get('event')
             widget = event.widget
             #rmenu = keywords.get('rc_rmenu')
-            menu_table = keywords.get('rc_menu_table')
+            menu_table = self.menu_table
 
             def computeLabels (fileName):
 
@@ -2364,34 +2365,6 @@ class pluginController(baseClasses.basePluginController):
 
         return cmd, cmd_data
     #@-node:bobjack.20080516105903.72:split_cmd
-    #@+node:bobjack.20080516105903.73:copyMenuTable
-    def copyMenuTable(self, menu_table):
-
-        """make a copy of the menu_table and make copies of its submenus.
-
-        It is the menu lists that are being copied we are not deep copying
-        objects contained in those lists.
-
-        """
-
-
-        def _deepcopy(menu):
-
-            table = []
-            for item in menu:
-                label, cmd = item
-                if isinstance(cmd, list):
-                    cmd = _deepcopy(cmd)
-                    item = (label, cmd)
-                table.append(item)
-
-            return table
-
-        newtable =  _deepcopy(menu_table)
-
-        return newtable
-
-    #@-node:bobjack.20080516105903.73:copyMenuTable
     #@+node:bobjack.20080516105903.74:copyMenuDict
     def copyMenuDict(self, menu_dict):
 

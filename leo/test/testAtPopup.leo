@@ -34,6 +34,9 @@
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh>
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
+<v t="bobjack.20080618081827.4"><vh>description of the contents of keywords</vh>
+<v t="bobjack.20080414143159.4"><vh>&lt;&lt;description of the contents of keywords&gt;&gt;</vh></v>
+</v>
 </v>
 <v t="bobjack.20080414143159.2"><vh>Howto . . . </vh>
 <v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands </vh>
@@ -1178,9 +1181,7 @@ keywords['rc_phase']:
                    the function to handle this.
 
         'minibuffer' - the command was called from a source other than rClick,
-                       such as from the minibuffer. In this case keywords['mb_event']
-                       holds the event from the standard command callback.
-
+                       such as from the minibuffer. In this case 
 
 keywords['mb_event']:
 
@@ -2144,7 +2145,7 @@ def do_demo_editor_items(keywords):
     menu_table[:0] = new_items
 
 
-do_demo_editor_items = c.universallCallback(do_demo_editor_items)
+do_demo_editor_items = c.universalCallback(do_demo_editor_items)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into
@@ -2279,5 +2280,6 @@ for i, item in enumerate(menu):
 <t tx="bobjack.20080516201656.16">rclick-find-node-only-button</t>
 <t tx="bobjack.20080516201656.17">rclick-find-suboutline-only-button</t>
 <t tx="bobjack.20080516201656.18">rclick-find-entire-outline-button</t>
+<t tx="bobjack.20080618081827.4">&lt;&lt;description of the contents of keywords&gt;&gt;</t>
 </tnodes>
 </leo_file>
