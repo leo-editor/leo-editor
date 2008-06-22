@@ -1794,6 +1794,8 @@ class leoFrame:
         else:
             s = s1 = g.app.gui.getTextFromClipboard()
 
+        s = g.toUnicode(s,encoding=g.app.tkEncoding) # 6/22/08
+
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
 
         if singleLine:
