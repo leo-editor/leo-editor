@@ -752,7 +752,7 @@ def report_item_clicked(tag, keywords):
         g.es("Rclick Test Check Button Name['%s']  Checked:[%s]"% (
             name, bool(selected)))
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", report_item_clicked)
 
 g.es('registered to receive radio/check button events', color='blue')
@@ -1334,8 +1334,8 @@ cm.radio_group_data['demo-group'] = 'demo-radio-two'
 
 #define a callback so we can print a message when one of our buttons is clicked
 
-def demo_radio_callback(self, keywords):
-
+def demo_radio_callback(tag, keywords):
+    
     kind, selected, name, group = \
         [keywords.get(v) for v in (
             'kind', 'selected', 'name', 'group')]
@@ -1347,13 +1347,13 @@ def demo_radio_callback(self, keywords):
 
 # register the callback to receive notification of rclick button events
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_radio_callback)
 
 @
 Execute this node as a script and right click the body to see the results.
 
-Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, gien right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
 
 A radio button with the same group name and the same name is effectively the same button.  It can appear in the menu many times or in many different menus.
 
@@ -1454,7 +1454,7 @@ for btn in btns:
 
 #define a callback so we can print a message when one of our buttons is clicked
 
-def demo_check_callback(self, keywords):
+def demo_check_callback(tag, keywords):
 
     kind, selected, name = \
         [keywords.get(v) for v in (
@@ -1467,7 +1467,7 @@ def demo_check_callback(self, keywords):
 
 # register the callback to receive notification of rclick button events
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
 
 @
@@ -2209,7 +2209,7 @@ for i, item in enumerate(menu):
 menu[:] = newmenu
 
 try:
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     leoPlugins.unregisterHandler("rclick-button-clicked", g.oldCheckCallback)
 except:
     pass
@@ -2241,7 +2241,7 @@ for i, item in enumerate(menu):
 menu[:] = newmenu
 
 try:
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     leoPlugins.unregisterHandler("rclick-button-clicked", g.oldRadioCallback)
 except:
     pass

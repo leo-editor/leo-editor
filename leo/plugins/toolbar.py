@@ -2210,7 +2210,7 @@ class ToolbarTkToolbarClass(object):
 
     #@    @+others
     #@+node:bobjack.20080616103714.3:__init__
-    def __init__(self, c, parentFrame=None, toolbarName='iconbar'):
+    def __init__(self, c, parentFrame=None, toolbarName='toolbar'):
 
         self.c = c
         self.toolbarName = toolbarName    
@@ -2312,6 +2312,9 @@ class pluginController(baseClasses.basePluginController):
 
             c = self.c
 
+            if not self.assertPhase('generate'):
+                return
+
             items = []
             for name, bar in self.iconBars.iteritems():
 
@@ -2337,6 +2340,9 @@ class pluginController(baseClasses.basePluginController):
         def doCommand(self, keywords):
 
             c = self.c
+
+            if not self.assertPhase('generate'):
+                return
 
             items = []
             for name, bar in self.iconBars.iteritems():
@@ -2364,7 +2370,8 @@ class pluginController(baseClasses.basePluginController):
 
             c = self.c
 
-            self.assertPhase('generate')
+            if not self.assertPhase('generate'):
+                return
 
             items = []
             for name, bar in c.frame.iconBars.iteritems():

@@ -187,8 +187,10 @@ class pluginCommandClass(object):
     #@+node:bobjack.20080618115559.11:assertPhase
     def assertPhase(self, *args):
 
-        if self.phase not in args:
-            self.phaseError()
+        if self.phase in args:
+            return True
+
+        self.phaseError()
     #@-node:bobjack.20080618115559.11:assertPhase
     #@+node:bobjack.20080513085207.7:minibufferPhaseError
     def minibufferPhaseError(self):

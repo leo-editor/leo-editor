@@ -1169,7 +1169,8 @@ class pluginController(baseClasses.basePluginController):
 
             c = self.c
 
-            self.assertPhase('generate')
+            if not self.assertPhase('generate'):
+                return
 
             event = keywords.get('event')
             widget = event.widget
