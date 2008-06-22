@@ -450,17 +450,14 @@ class pluginController(baseClasses.basePluginController):
                 return
 
             if phase == 'generate':
-                g.trace('generate', bar.visible)
                 label = bar.visible and self.hideLabel or self.showLabel
                 self.menu_table[:0] =  [(label % 'searchbar', 'toggle-searchbar')]
 
             elif phase in ['invoke', 'minibuffer']:
-
                 bar.visible = not bar.visible
-                g.trace('toggle bar')
-
             else:
                 g.trace('illegal phase')
+                pass
 
     #@-node:bobjack.20080616185440.10:toggle-searchbar
     #@-node:bobjack.20080510064957.130:Generator Commands

@@ -1464,6 +1464,8 @@ class ToolbarTkIconBarClass(iconbar, object):
 
     iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
 
+    barConfigCount = 0
+
     #@    @+others
     #@+node:bobjack.20080428114659.6:__init__
     def __init__(self, c, parentFrame, barName='iconBar', slaveMaster=None):
@@ -1478,7 +1480,6 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         self.slaveMaster = slaveMaster
         self.slaveBar = None
-
 
         self.buttonCount = 0
 
@@ -1516,11 +1517,12 @@ class ToolbarTkIconBarClass(iconbar, object):
         )
         w.leoIconBar = self
         c.bind(w,'<Button-3>', self.onRightClick)
-        c.bind(w,'<Configure>', self.onConfigure)
+
+        if not slaveMaster:
+            c.bind(w,'<Configure>', self.onConfigure)
 
         self.show()
-        c.frame.top.update_idletasks()
-
+        w.update_idletasks()
     #@-node:bobjack.20080428114659.6:__init__
     #@+node:bobjack.20080508125414.5:Event Handlers
     #@+node:bobjack.20080428114659.9:onRightClick
@@ -1606,11 +1608,29 @@ class ToolbarTkIconBarClass(iconbar, object):
     #@+node:bobjack.20080429153129.16:onConfigure
     def onConfigure(self, event=None):
 
+        #g.trace(self.configCount(), self.barHead.barName)
+
         self.repackButtons()
+
+        self.configCount(1)
+
+        #return True
+
+
 
 
 
     #@-node:bobjack.20080429153129.16:onConfigure
+    #@+node:bobjack.20080620224131.2:configCount
+    def configCount(self, i=0):
+
+        ToolbarTkIconBarClass.barConfigCount += i
+
+        return ToolbarTkIconBarClass.barConfigCount
+
+
+
+    #@-node:bobjack.20080620224131.2:configCount
     #@+node:bobjack.20080506182829.2:getDragMaster
     def getDragMaster(self, w):
 
@@ -1705,12 +1725,11 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         """Set a new list of widgets to be displayed in this toolbar."""
 
-        if not lst:
-            lst = []
         self.repackButtons(lst)
         return
 
     buttons = property(getButtons, setButtons)
+
     #@-node:bobjack.20080501125812.5:buttons
     #@+node:bobjack.20080501181134.5:visible
     def getVisible(self):
@@ -1758,7 +1777,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         if repack:
             self.repackButtons()
     #@-node:bobjack.20080504034903.9:updateButtons
-    #@+node:bobjack.20080507083323.4:repackButons
+    #@+node:bobjack.20080507083323.4:repackButtons
     def repackButtons(self, buttons=None):
 
         bar = self.barHead
@@ -1789,13 +1808,13 @@ class ToolbarTkIconBarClass(iconbar, object):
 
         #@    << unpack all buttons >>
         #@+node:bobjack.20080501181134.2:<< unpack all buttons >>
+
         bar = barHead
         while bar and bar.buttonCount:
             [ btn.pack_forget() for btn in bar.iconFrame.pack_slaves()]
             bar.buttonCount = 0
             bar = bar.slaveBar
 
-        #barHead.iconFrame.update_idletasks()
 
         #@-node:bobjack.20080501181134.2:<< unpack all buttons >>
         #@nl
@@ -1822,6 +1841,9 @@ class ToolbarTkIconBarClass(iconbar, object):
             bar = bar.slaveBar
         #@-node:bobjack.20080502134903.5:<< hide empty slave bars >>
         #@nl
+
+
+
     #@+node:bobjack.20080429153129.24:repackHelper
     def repackHelper(self, orphans):
 
@@ -1836,8 +1858,8 @@ class ToolbarTkIconBarClass(iconbar, object):
         actual = iconFrame.winfo_width
 
         while orphans:
-            #@        << pack widgets untill full >>
-            #@+node:bobjack.20080502134903.6:<< pack widgets untill full >>
+            #@        << pack widgets until full >>
+            #@+node:bobjack.20080502134903.6:<< pack widgets until full >>
             widget = orphans[0]
 
             try:
@@ -1857,7 +1879,7 @@ class ToolbarTkIconBarClass(iconbar, object):
 
             orphans.pop(0)
 
-            #@-node:bobjack.20080502134903.6:<< pack widgets untill full >>
+            #@-node:bobjack.20080502134903.6:<< pack widgets until full >>
             #@nl
 
         if len(orphans) and not self.buttonCount:
@@ -1870,6 +1892,7 @@ class ToolbarTkIconBarClass(iconbar, object):
             self.slaveBar = self.createSlaveBar()
 
         return orphans
+
 
     #@-node:bobjack.20080429153129.24:repackHelper
     #@+node:bobjack.20080430064145.3:createSlaveBar
@@ -1896,7 +1919,7 @@ class ToolbarTkIconBarClass(iconbar, object):
         return slaveBar 
     #@-node:bobjack.20080430064145.3:createSlaveBar
     #@-node:bobjack.20080430160907.12:doRepackButtons
-    #@-node:bobjack.20080507083323.4:repackButons
+    #@-node:bobjack.20080507083323.4:repackButtons
     #@+node:bobjack.20080503151427.3:add
     def add(self,*args,**keys):
         """Create and pack an iconBar button."""
@@ -2101,10 +2124,11 @@ class ToolbarTkIconBarClass(iconbar, object):
             return self.hide()
 
         if not self.visible:
-            self.outerFrame.pack(fill="x", pady=2)
+            self.outerFrame.pack(fill="x", pady=1)
             self.barHead.packSlaveBar()
 
     show = pack
+    #@nonl
     #@-node:bobjack.20080429153129.36:pack (show)
     #@+node:bobjack.20080501181134.4:unpack (hide)
     def unpack (self):
@@ -2522,26 +2546,6 @@ class pluginController(baseClasses.basePluginController):
                 frame.iconBar = oldIconBar
 
     #@-node:bobjack.20080428114659.17:toolbar-add-script-button
-    #@+node:bobjack.20080619073020.4:toolbar-add-shortcut-button
-    class addShortcutButtonCommandClass(toolbarCommandClass):
-
-        """Add a shortcut-button menu item to the toolbar.
-
-        The menu item is only added if the add-shortcut-button
-        command exists.
-
-        """
-        #@    @+others
-        #@-others
-
-        def doCommand(self, keywords):
-
-
-            if self.phase == 'generate'
-
-                if 
-    #@nonl
-    #@-node:bobjack.20080619073020.4:toolbar-add-shortcut-button
     #@-node:bobjack.20080426190702.2:Invocation Commands
     #@+node:bobjack.20080429153129.28:Utility
     #@-node:bobjack.20080429153129.28:Utility

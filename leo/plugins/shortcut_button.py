@@ -7,10 +7,20 @@
 Pressing the 'shortcut' button creates *another* button which when pressed will
 select the presently selected node at the time the button was created.
 
-This plugin requires that the mod_scripting plugin be enabled.
+This plugin requires that the mod_scripting plugin be enabled. The toolbar.py
+and rClick.py plugins are not required, but extra facilities are available
+if they are enabled.
+
 
 An @data shortcut_button_data may be used in @setting trees to control the colors
 for the buttons and to set the name of the @popup menu to be used as a context menu.
+
+If the following line appears::
+
+    icon = <full or relative path to an icon>
+
+then the requested icon will be shown instead of text in the master button.
+
 
 The colors and menus for the 'shortcut' button itself are set using::
 
@@ -28,8 +38,48 @@ The colors and menus for the 'shortcut' button itself are set using::
 
 The menus will be ignored if the rClick.py and toolbar.py plugins are not enabled.
 
+If the toolbar.py plugin is enabled then the following settings will be honored::
+
+    iconbar = <name of an iconbar>
+    hide = 
+
+Iconbar gives the name of an iconbar to which the master button should initially be attached. 
+If no name is given then the default 'iconbar' will be used. The iconbar will be created if it
+does not already exist. 
+
+If hide is left blank then any iconbar created will be shown initially, otherwise it will be
+hidden. This has no effect if the iconbar already exists.
+
+
+Minibuffer Commands
+-------------------
+
+The following minibuffer commands are provided::
+
+        If these commands are used in a button menu or an iconBar menu then the
+        buttons will be created in the iconbar to which the menu or button
+        is attached. Otherwise the button will be created in the default 'iconbar'. 
+
+    create-shortcut-button
+
+        Creates a duplicate of the master button, which when pressed
+        will issue a create-shortcut command.
+
+
+    create-shortcut
+
+        Creates a slave button which when pressed will select the presently 
+        selected node at the time the button was created.
+
+
+
+
+
+
+
+
+
 '''
-#@nonl
 #@-node:bobjack.20080614084120.6:<< docstring >>
 #@nl
 
@@ -44,11 +94,13 @@ import leo.core.leoPlugins as leoPlugins
 import mod_scripting
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+
+import rClickBasePluginClasses as baseClasses
 #@nonl
 #@-node:ekr.20060601151845.2:<< imports >>
 #@nl
 
-__version__ = "0.5"
+__version__ = "0.6"
 #@<< version history >>
 #@+node:ekr.20060601151845.3:<< version history >>
 #@@nocolor
@@ -65,6 +117,8 @@ __version__ = "0.5"
 #     - Updated to be compatible with toolbar.py plugin extensions
 #     - Added support for @data shortcut-button-data which allow
 #       setting of forground/background colors and rClick menus
+# 0.6 bobjack:
+#     - added support for icon, iconbar and hide settings
 #@-at
 #@nonl
 #@-node:ekr.20060601151845.3:<< version history >>
@@ -113,14 +167,32 @@ class shortcutButton(object):
         self.c = c
 
         try:
-            self.iconBars = c.frame.iconbar.iconbars
+            self.iconBars = c.frame.iconBars
         except:
             self.iconBars = {}
 
+        self.item_data = data = self.get_item_data()
 
-        self.item_data = self.get_item_data()
+        barName = data.get('iconbar')
+        barHideOnStartup = data.get('hide')
 
-        self.createShortcutButtonButton()
+        if barName and not barName in self.iconBars:
+
+            try:
+                bar = c.frame.getIconBar(barName=barName)
+            except TypeError:
+                bar = None
+
+            if bar and barHideOnStartup:
+                bar.hide()
+
+        icon = data.get('icon')
+        if icon:
+            self.icon = baseClasses.getImage(icon)
+        else:
+            self.icon = None
+
+        self.createShortcutButtonButton(barName)
 
         for command, method in [
             ('add-shortcut-button', self.addShortcutButton),
@@ -197,29 +269,20 @@ class shortcutButton(object):
 
         data = self.item_data
 
-        if barName:
-            data['barname'] = barName
-
         kws = {
             'text': 'shortcut',
             'command': None,
             'shortcut': None,
-            'statusLine': 'create a shortcut button',
+            'statusLine': 'Create a Shortcut Button',
             'bg':'LightSteelBlue1',
         }
+
 
         bg = data.get('master-bg')
         if bg:
             kws['bg'] = bg
 
-        barName = data.get('barname')
-
-        if barName:
-            bar = c.frame.iconBars.get(barName)
-        else:
-            bar = None
-
-        bar = bar or c.frame.iconBar
+        bar = self.iconBars.get(barName, c.frame.iconBar)
 
         oldIconBar = c.frame.iconBar
         try:
@@ -243,6 +306,9 @@ class shortcutButton(object):
         menu = data.get('master-menu')
         if menu:
             b.context_menu = menu
+
+        if self.icon:
+            b.configure(image=self.icon)
     #@-node:ekr.20060601153526:createShortcutButtonButton
     #@+node:ekr.20060601151845.10:createShortcutButton
     def createShortcutButton (self, b):
@@ -253,7 +319,6 @@ class shortcutButton(object):
         sc = c.theScriptingController
 
         data = self.item_data
-        g.es('shortcut-data', data)
 
         p = c.currentPosition()
         h = p.headString()
