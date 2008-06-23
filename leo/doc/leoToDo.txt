@@ -2,10 +2,11 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
+#@+node:ekr.20080616093150.1:After b1: Update docs relating to c.begin/endUpdate
+# Mention c.outerUpdate, c.bind, c.bind2 and the need to create callbacks when using c.addIconButton.
+#@nonl
+#@-node:ekr.20080616093150.1:After b1: Update docs relating to c.begin/endUpdate
 #@+node:ekr.20080411091507.10:Bugs
-#@+node:ekr.20080602172531.1:before b1
-#@-node:ekr.20080602172531.1:before b1
-#@+node:ekr.20080602172531.2:before b2: 10
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -4687,7 +4688,6 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@nonl
 #@-node:ekr.20040305223225:c.setHeadString
 #@-node:ekr.20080619090226.2:Make sure unicode characters in headlines don't make the file unreadable
-#@-node:ekr.20080602172531.2:before b2: 10
 #@-node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080515170809.1:Files
 #@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
@@ -4797,8 +4797,6 @@ Create a simple template myLeoSettings.leo in $HOME when you try to
 open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
-#@+node:ekr.20080531075119.10:Benchmark zodb stuff
-#@-node:ekr.20080531075119.10:Benchmark zodb stuff
 #@-node:ekr.20080515170809.1:Files
 #@+node:ekr.20080425054202.3:ASAP
 # These are useful and easy.
@@ -5361,37 +5359,22 @@ for p in c.allNodes_iter():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20080425054202.3:ASAP
-#@+node:ekr.20080411091507.1:Docs
-#@+node:ekr.20080616093150.1:Update docs relating to c.begin/endUpdate
-# Mention c.outerUpdate, c.bind, c.bind2 and the need to create callbacks when using c.addIconButton.
+#@+node:ekr.20080623083646.1:Code reorg
+The following decorators might be useful:
+
+@leo_command
+@leo_event_handler
+
+- It would be good to eliminate command tables.
+  But how would we know about command classes/functions?
 #@nonl
-#@-node:ekr.20080616093150.1:Update docs relating to c.begin/endUpdate
-#@+node:ekr.20080417213809.1:Update the docs re adding support for a new language
-@nocolor
-
-I'm updating my local copy of the trunk to add support for the
-AutoHotkey language to Leo.  It appears that the documentation in the
-leoNotes.txt file for adding support for a new language is outdated.
-Here is what I've done.  Is anything else necessary?
-
-The following structures were updated in leoApp.py:
-  self.language_delims_dict
-  self.language_extension_dict
-  self.extension_dict
-
-and an ahk.xml and ahk.py file was added to the leo\modes directory.
-
-With these changes I get correct syntax highlighting using "@language
-ahk" and by also setting the language as the default language in
-myLeoSettings.leo.  Is it also necessary to test:
-  "Test workings of the Preferences Panel by..." and
-  "Test the leoconfig.txt by setting default_target_language..." and
-  "Create an @root node and verify that you can tangle it."?
-#@-node:ekr.20080417213809.1:Update the docs re adding support for a new language
+#@-node:ekr.20080623083646.1:Code reorg
+#@+node:ekr.20080411091507.1:Docs
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20071211093323:more screen shots on Leo's web site
 #@-node:ekr.20071211093323:more screen shots on Leo's web site
+#@-node:ekr.20080411091507.1:Docs
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy
 @nocolor
@@ -5413,7 +5396,6 @@ Leo should copy this download philosophy.
 #@+node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20071029082025:Improve distribution
-#@-node:ekr.20080411091507.1:Docs
 #@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion

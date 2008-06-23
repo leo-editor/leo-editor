@@ -2994,6 +2994,37 @@
 </v>
 </v>
 </v>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20050816073412.1"><vh>Introduction</vh>
+<v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
+<v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
+</v>
+<v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
+<v t="ekr.20050822173420.1"><vh>Derived files</vh></v>
+<v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
+<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
+<v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
+</v>
+<v t="ekr.20050827102655"><vh>Leo for Programmers</vh>
+<v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
+<v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
+<v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
+<v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
+<v t="ekr.20050828205054"><vh>Directives for programming</vh></v>
+<v t="ekr.20050828161117"><vh>Orphan nodes</vh></v>
+<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
+<v t="ekr.20050827162537"><vh>Leo and literate programming</vh></v>
+</v>
+<v t="ekr.20050827094813"><vh>Good style and bad:  sections vs. @others</vh></v>
+<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
+<v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
+<v t="ekr.20050827090802"><vh>Further study</vh></v>
+</v>
+<v t="ekr.20050816073824"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004

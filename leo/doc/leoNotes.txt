@@ -2064,9 +2064,8 @@ This will not hurt your ability to use branches, only your ability to automatica
 #@+node:ekr.20031218072017.367:How to add support for a new language
 @nocolor
 
-- Add a new entries in << define global data structures >> app
-
-- Add a new Tk.Radiobutton in <<create the Target Language frame>>
+- Add new entries in the following Python dictionariues in leoApp.py:
+  self.language_delims_dict, self.language_extension_dict and self.extension_dict
 
 - Add an entry to the languages list in <<configure language-specific settings>>
 
@@ -2075,29 +2074,17 @@ This will not hurt your ability to use branches, only your ability to automatica
   N.B.: the name of this list must be x_keywords, where x is the entry in language in step a.
 
 - Add any language-specifig code to leoColor.colorizeAnyLanguage.
-  For most languages nothing need be done in this step.
+  For most languages nothing need be done.
 
 - If the language is case insensitive, add it to the list of
 case_insensitiveLanguages found in  << define global colorizer data >>
 
-- Add the language name to @language default_target_language entry in leoSettings.leo
+- Create the files theLanguage.xml and theLanguage.py file was added to the leo\modes directory.
+  See Chapter 15 of Leo's users guide for full details.
 
 TESTS
 
 - Test the syntax coloring for the new language by using the @language directive.
-
-- Test workings of the Preferences Panel by choosing the language in the panel and by looking at code that is _not_ under control of an @language directive.
-
-- Test the leoConfig.txt by setting default_target_language to the name of the new language.  When you restart Leo, the new language should be selected in the Prefs panel.
-
-- Remove leoConfig.txt, select the new language in the Prefs panel, and save the .leo file.  Open the file with a text editor and check to make sure that the <preferences> tag (near the top) contains an entry like this:
-
-<preferences allow_rich_text="0" defaultTargetLanguage="Python">
-</preferences>
-
-but with the name of your new language instead of "Python".
-
-- Create an @root node and verify that you can Tangle it.
 
 @color
 #@nonl
