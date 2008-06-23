@@ -3127,7 +3127,7 @@ class keyHandlerClass:
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
 
-        If wrap is True then func will be wrapped with c.universalCallback.
+        If wrap is True then func will be wrapped with c.universallCallback.
 
         '''
 
@@ -3136,7 +3136,7 @@ class keyHandlerClass:
         k = self ; c = k.c
 
         if wrap:
-            func = c.universalCallback(func)
+            func = c.universallCallback(func)
 
         f = c.commandsDict.get(commandName)
         verbose = (False or verbose) and not g.app.unitTesting
