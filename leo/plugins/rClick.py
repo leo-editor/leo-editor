@@ -9,12 +9,11 @@
 Right Click Menus (rClick.py)
 =============================
 
-
-
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
-Examples of the use of this plugin can be found in::
+Executable Howto's and other examples of the use of this plugin can be
+found in::
 
     leo/tests/testAtPopup.leo
 
@@ -39,8 +38,8 @@ and also the following fragments:
 
     - 'edit-menu' fragment (c.context_menus['edit-menu'])
 
-            This gives basic 'cut/copy/paste/select all' menu items for plain
-            text widgets, (not body widgets).
+        This gives basic 'cut/copy/paste/select all' menu items for
+        text widgets.
 
     - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
 
@@ -83,7 +82,7 @@ Any number of keyword pairs can be included and all these will be passed to any
 generator or invocation callbacks used in the menu.
 
 
-The right click menu to be used is determined in one of three ways.
+The right click menu to be used is determined in one of two ways.
 
     The explicitly set context_menu property:
 
@@ -91,18 +90,6 @@ The right click menu to be used is determined in one of three ways.
 
     The context_menu supplied the doHook call if any.   
 
-    The widgets name:
-
-        If no context_menu property is defined then the widgets name, as determined
-        by c.widget_name(w), is used and each key in c.context_menus is tested
-        against it to see if the name starts with that key. If it does, the menu
-        table in c.context_menus[key] will be used.
-
-        eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
-
-        No attempt is made to resolve conflicts. The keys are in random order and
-        the first match found will be used. Better to use w.context_menu for anything
-        other than the default 'body', 'log', 'find-text' and 'change-text'.
 
 Keyword = Value data items in the body
 --------------------------------------
@@ -517,14 +504,11 @@ When any check or radio item is clicked, a hook is generated
 The 'rclick-button' command is provided for convenience.  Plugins may provide there own
 command to handle check and radio items, using rclick-button as a template.
 
-
-
-
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
 
-__version__ = "1.35"
+__version__ = "1.37"
 __plugin_name__ = 'Right Click Menus'
 
 #@<< version history >>
@@ -635,6 +619,12 @@ __plugin_name__ = 'Right Click Menus'
 #     - add menu generator commands to crate menu items to control find 
 # options
 #     - seperate out base classes pluginCommandClass and basePluginController
+# 1.36 EKR:
+#     - convert menu.add_command to c.add_command
+# 1.37 bobjack:
+#     - remove base classes to a seperate file so toolbar can be independant 
+# of rClick
+#     - modify menu config to remove rClick load order sensitivity
 # 
 # 
 # 
@@ -647,6 +637,16 @@ __plugin_name__ = 'Right Click Menus'
 # TODO:
 # 
 # - extend support to other leo widgets
+# 
+#     - allow rClick menus for log tabs
+# 
+#     - menu for minibuffer label/widget
+# 
+#     - menu for status line
+# 
+#     - menus for spell tab objects
+# 
+#     - menus for colors tab objects
 # 
 # - provide rclick-gen-open-with-list and @popup open-with-menu
 # 
@@ -671,6 +671,7 @@ try:
 except ImportError:
     Image = ImageTk = None
 
+import rClickBasePluginClasses as baseClasses
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
@@ -802,191 +803,8 @@ def rClicker(tag, keywords):
     return controllers[c].rClicker(keywords)
 #@-node:ekr.20080327061021.220:rClicker
 #@-node:ekr.20060108122501:Module-level
-#@+node:bobjack.20080516105903.76:Base Classes
-#@+node:bobjack.20080511155621.3:class pluginCommandClass
-class pluginCommandClass(object):
-
-    """Base class for all commands defined in the rClick.py plugin."""
-
-    def __init__(self, controller, **keys):
-
-        self.c = controller.c
-        self.controller = controller
-        self.keys = keys
-
-        self.alias = []
-
-        self.wrappedDoCommand = self.preDoCommand
-        self.wrapCommand(self.c.universallCallback)
-
-
-    def __call__(self, event):
-
-        self.wrappedDoCommand(event)
-
-
-    def wrapCommand(self, wrapper):
-
-        self.wrappedDoCommand = wrapper(self.wrappedDoCommand)
-
-    def preDoCommand(self, keywords):
-
-        self.keywords = keywords
-        self.doCommand(keywords)
-        #g.trace(self.keywords)
-
-    #@    @+others
-    #@+node:bobjack.20080513085207.4:Properties
-    #@+node:bobjack.20080513085207.5:phase
-    def getPhase(self):
-
-        return self.keywords.get('rc_phase')
-
-    phase = property(getPhase)
-    #@-node:bobjack.20080513085207.5:phase
-    #@+node:bobjack.20080516105903.108:item_data
-    def getItemData(self):
-
-        item_data = self.keywords.get('rc_item_data', None)
-        if item_data is None:
-            self.keywords['rc_item_data'] = item_data = {}
-        return item_data
-
-    item_data = property(getItemData)
-    #@nonl
-    #@-node:bobjack.20080516105903.108:item_data
-    #@-node:bobjack.20080513085207.4:Properties
-    #@+node:bobjack.20080513085207.6:phaseError
-    def phaseError(self):
-
-        g.es_error('command not valid in phase: %s'%self.phase)
-    #@-node:bobjack.20080513085207.6:phaseError
-    #@+node:bobjack.20080513085207.7:minibufferPhaseError
-    def minibufferPhaseError(self):
-
-        if self.phase == 'minibuffer':
-            self.phaseError()
-            return True
-    #@-node:bobjack.20080513085207.7:minibufferPhaseError
-    #@-others
-#@-node:bobjack.20080511155621.3:class pluginCommandClass
-#@+node:bobjack.20080323045434.14:class basePluginController
-class basePluginController(object):
-
-    """A per commander controller for right click menu functionality."""
-
-
-    iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
-
-    #@    @+others
-    #@+node:bobjack.20080323045434.15:__init__
-    def __init__(self, c):
-
-        """Initialize base functionality for this commander.
-
-        This only initializes ivars, the proper setup must be done by calling onCreate
-        in onCreate. This is to make unit testing easier.
-
-        """
-
-        self.c = c
-
-        self.commandsDict = None
-
-        iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
-
-    #@+node:bobjack.20080423205354.3:onCreate
-    def onCreate(self):
-
-        c = self.c
-
-        self.registerCommands()
-        self.setDefaultContextMenus()
-    #@-node:bobjack.20080423205354.3:onCreate
-    #@+node:bobjack.20080424195922.7:onClose
-    def onClose(self):
-        """Clean up and prepare to die."""
-
-        pass
-    #@-node:bobjack.20080424195922.7:onClose
-    #@+node:bobjack.20080511155621.6:getPublicCommands
-    def getPublicCommands(self):
-
-        """Create command instances for public commands provided by this plugin.
-
-        Returns a dictionary {commandName: commandInstance, ...}
-
-        """
-        if self.commandsDict:
-            return self.commandsDict
-
-        commandsDict = {}
-
-        for commandName in self.commandList:
-            #@        << get className from commandName >>
-            #@+node:bobjack.20080512054154.2:<< get className from commandName >>
-            # change my-command-name to myCommandNameCommandClass
-
-            className = commandName.split('-')
-
-            if className[0] == self.commandPrefix:
-                alias = ''
-                del className[0]
-            else:
-                alias = commandName
-                commandName = self.commandPrefix + '-' + commandName
-
-            for i in range(1, len(className)):
-                className[i] = className[i].capitalize()
-
-            className = ''.join(className) + 'CommandClass'
-            #@-node:bobjack.20080512054154.2:<< get className from commandName >>
-            #@nl
-            klass = getattr(self, className)
-
-            cmd = klass(self)
-
-            commandsDict[commandName] = cmd
-            if alias:
-                commandsDict[alias] = cmd
-
-        self.commandsDict = commandsDict
-
-        return commandsDict
-
-    #@-node:bobjack.20080511155621.6:getPublicCommands
-    #@+node:bobjack.20080511155621.9:registerCommands
-    def registerCommands(self):
-
-        """Create callbacks for minibuffer commands and register them."""
-
-        c = self.c
-
-        commandsDict = self.getPublicCommands()
-
-        for commandName, klass in commandsDict.iteritems():
-            c.k.registerCommand(commandName, shortcut=None, func=klass)   
-
-    #@-node:bobjack.20080511155621.9:registerCommands
-    #@+node:bobjack.20080423205354.5:getCommandList
-    def getCommandList(self):
-
-        return self.commandList
-    #@-node:bobjack.20080423205354.5:getCommandList
-    #@+node:bobjack.20080516105903.77:setDeafaultContextMenus
-    def setDefaultContextMenus(self):
-
-        pass
-
-
-    #@-node:bobjack.20080516105903.77:setDeafaultContextMenus
-    #@-node:bobjack.20080323045434.15:__init__
-    #@-others
-
-#@-node:bobjack.20080323045434.14:class basePluginController
-#@-node:bobjack.20080516105903.76:Base Classes
 #@+node:bobjack.20080516105903.17:class rClickCommandClass
-class rClickCommandClass(pluginCommandClass):
+class rClickCommandClass(baseClasses.pluginCommandClass):
 
     """Base class for all commands defined in the rClick.py plugin."""
 
@@ -994,10 +812,14 @@ class rClickCommandClass(pluginCommandClass):
 #@nonl
 #@-node:bobjack.20080516105903.17:class rClickCommandClass
 #@+node:bobjack.20080516105903.18:class pluginController
-class pluginController(basePluginController):
+class pluginController(baseClasses.basePluginController):
 
     """A per commander controller for right click menu functionality."""
 
+    commandPrefix = 'rclick'
+
+    #@    << command list >>
+    #@+node:bobjack.20080617170156.6:<< command list >>
     commandList = (
         'rclick-gen-recent-files-list',
         'rclick-gen-context-sensitive-commands',
@@ -1025,8 +847,108 @@ class pluginController(basePluginController):
         'rclick-find-node-only-button',
         'rclick-find-suboutline-only-button',
         'rclick-find-entire-outline-button',
-   )
+    )
+    #@nonl
+    #@-node:bobjack.20080617170156.6:<< command list >>
+    #@nl
+    #@    << default context menus >>
+    #@+node:bobjack.20080617170156.7:<< default context menus >>
+    defaultContextMenus = {
 
+        'rclick-find-controls-left': [
+            ('*', 'rclick-find-whole-word-button'),
+            ('*', 'rclick-find-ignore-case-button'),
+            ('*', 'rclick-find-wrap-around-button'),
+            ('*', 'rclick-find-reverse-button'),
+            ('*', 'rclick-find-regexp-button'),
+            ('*', 'rclick-find-mark-finds-button'),
+        ],
+
+        'rclick-find-controls-right': [
+            ('*', 'rclick-find-mark-changes-button'),
+            ('*', 'rclick-find-search-body-button'),
+            ('*', 'rclick-find-search-headline-button'),
+            ('*', 'rclick-find-node-only-button'),
+            ('*', 'rclick-find-suboutline-only-button'),
+            ('*', 'rclick-find-entire-outline-button'),
+        ],
+
+        'rclick-find-controls': [
+            ('&', 'rclick-find-controls-left'),
+            ('|', ''),
+            ('&', 'rclick-find-controls-right')
+        ],
+
+    #@+at
+    #     'body': [
+    #         ('&', 'edit-menu'),
+    #         ('-', ''),
+    #         ('Block Operations', [
+    #             ('Indent', 'indent-region'),
+    #             ('Dedent', 'deden-region'),
+    #             ('-', ''),
+    #             ('Add Comments', 'add-comments'),
+    #             ('Remove Comments', 'delete-comments'),
+    #         ]),
+    #         ('&', 'recent-files-menu'),
+    #         ('-', ''),
+    #         ('Match Brackets', 'match-brackets'),
+    #         ('Execture Script', 'execute-script'),
+    #         ('*', 'rclick-gen-context-sensitive-commands'),
+    #     ],
+    # 
+    #     'log': [('&', 'edit-menu')],
+    #     'find-text': [('&', 'edit-menu')],
+    #     'change-text': [('&', 'edit-menu')],
+    # 
+    #     'canvas': [
+    #         ('&', 'to-chapter-fragment'),
+    #         ('-', ''),
+    #         ('Create Chapter', 'create-chapter'),
+    #         ('Remove Chapter', 'remove-chapter'),
+    #     ],
+    # 
+    #     'headline': [],
+    #     'iconbox': [],
+    #     'plusbox': [],
+    # 
+    #     'edit-menu': [
+    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 
+    # 'rclick-cut-text'),
+    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 
+    # 'rclick-copy-text'),
+    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 
+    # 'rclick-paste-text'),
+    #         ('-',''),
+    #         ('Select All', 'rclick-select-all'),
+    #     ],
+    # 
+    #     'recent-files-menu': [
+    #         ('Recent Files',
+    #             [('*', 'rclick-gen-recent-files-list')],
+    #         ),
+    #     ],
+    # 
+    #     'to-chapter-fragment': [
+    #         ('Clone To Chapter',
+    #             [('*', 'clone-node-to-chapter-menu')],
+    #         ),
+    #         ('Copy To Chapter',
+    #             [('*', 'copy-node-to-chapter-menu')],
+    #         ),
+    #         ('Move To Chapter',
+    #             [('*', 'move-node-to-chapter-menu')],
+    #         ),
+    #         ('Go To Chapter',
+    #             [('*', 'select-chapter-menu')],
+    #         ),
+    #     ],
+    # 
+    #@-at
+    #@@c
+    }
+    #@-node:bobjack.20080617170156.7:<< default context menus >>
+    #@nl
 
     #@    @+others
     #@+node:bobjack.20080516105903.19:__init__
@@ -1052,94 +974,17 @@ class pluginController(basePluginController):
         self.radio_vars = {}
         self.iconCache = {}
 
-        self.commandPrefix = 'rclick'
 
     #@+node:bobjack.20080516105903.20:onCreate
     def onCreate(self):
 
         """Perform initialization for this per commander controller."""
 
-        self.rSetupMenus()
+
         super(self.__class__, self).onCreate()
+
+        self.rSetupMenus()
     #@-node:bobjack.20080516105903.20:onCreate
-    #@+node:bobjack.20080516105903.93:setDeafaultContextMenus
-    def setDefaultContextMenus(self):
-
-        """Set menus for context menus that have not been defined in @popup menus."""
-
-        return
-
-        c = self.c
-
-        default_menus = {
-
-        'body': [
-            ('&', 'edit-menu'),
-            ('-', ''),
-            ('Block Operations', [
-                ('Indent', 'indent-region'),
-                ('Dedent', 'deden-region'),
-                ('-', ''),
-                ('Add Comments', 'add-comments'),
-                ('Remove Comments', 'delete-comments'),
-            ]),
-            ('&', 'recent-files-menu'),
-            ('-', ''),
-            ('Match Brackets', 'match-brackets'),
-            ('Execture Script', 'execute-script'),
-            ('*', 'rclick-gen-context-sensitive-commands'),
-        ],
-
-        'log': [('&', 'edit-menu')],
-        'find-text': [('&', 'edit-menu')],
-        'change-text': [('&', 'edit-menu')],
-
-        'canvas': [
-            ('&', 'to-chapter-fragment'),
-            ('-', ''),
-            ('Create Chapter', 'create-chapter'),
-            ('Remove Chapter', 'remove-chapter'),
-        ],
-
-        'headline': [],
-        'iconbox': [],
-        'plusbox': [],
-
-        'edit-menu': [
-            ('Cut\nicon = Tango/16x16/actions/editcut.png', 'rclick-cut-text'),
-            ('Copy\nicon = Tango/16x16/actions/editcopy.png', 'rclick-copy-text'),
-            ('Paste\nicon = Tango/16x16/actions/editpaste.png', 'rclick-paste-text'),
-            ('-',''),
-            ('Select All', 'rclick-select-all'),
-        ],
-
-        'recent-files-menu': [
-            ('Recent Files',
-                [('*', 'rclick-gen-recent-files-list')],
-            ),
-        ],
-
-        'to-chapter-fragment': [
-            ('Clone To Chapter', 
-                [('*', 'clone-node-to-chapter-menu')],
-            ),
-            ('Copy To Chapter', 
-                [('*', 'copy-node-to-chapter-menu')],
-            ),
-            ('Move To Chapter', 
-                [('*', 'move-node-to-chapter-menu')],
-            ),
-            ('Go To Chapter', 
-                [('*', 'select-chapter-menu')],
-            ),
-        ],
-        }
-        for k, v in default_menus.iteritems():
-            if k in c.context_menus:
-                continue
-            c.context_menus[k] = v
-
-    #@-node:bobjack.20080516105903.93:setDeafaultContextMenus
     #@+node:bobjack.20080516105903.21:getButtonHandlers
     def getButtonHandlers(self):
 
@@ -1153,81 +998,77 @@ class pluginController(basePluginController):
 
         c = self.c
 
-        if not hasattr(c, 'context_menus'):
+        # save any default menus set by plugins before rClick was enabled
 
-            menus = {}
-            if hasattr(g.app.config, 'context_menus'):
-                menus = self.copyMenuDict(g.app.config.context_menus)
+        saved_menus = c.context_menus
 
-            if not isinstance(menus, dict):
-                menus = {}
+        if hasattr(g.app.config, 'context_menus'):
+            c.context_menus = self.copyMenuDict(g.app.config.context_menus)
 
-            c.context_menus = menus
+        self.handleLocalPopupMenus()
 
-            self.handleLocalPopupMenus()
+        #@    << def config_to_rclick >>
+        #@+node:bobjack.20080516105903.23:<< def config_to_rclick >>
+        def config_to_rclick(menu_table):
 
-            #@        << def config_to_rclick >>
-            #@+node:bobjack.20080516105903.23:<< def config_to_rclick >>
-            def config_to_rclick(menu_table):
+            """Convert from config to rClick format"""
 
-                """Convert from config to rClick format"""
+            out = []
 
-                out = []
-
-                if not menu_table:
-                    return out
-
-                while menu_table:
-
-                    s, cmd = menu_table.pop(0)
-
-                    if isinstance(cmd, list):
-
-                        s, pairs = self.getBodyData(s) 
-                        s = s.replace('&', '')
-                        out.append((self.rejoin(s, pairs), config_to_rclick(cmd[:])))
-                        continue
-
-                    else:
-                        cmd, pairs = self.getBodyData(cmd)
-
-                    if s in ('-', '&', '*', '|', '"'):
-                        out.append((self.rejoin(s, pairs), cmd))
-                        continue
-
-                    star = s.startswith('*')
-
-                    if not star and cmd:
-                        cmd = cmd.replace('&', '')
-                        out.append((self.rejoin(cmd, pairs), s))
-                        continue
-
-                    if star:
-                        s = s[1:]
-
-                    label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
-                    label = label.replace('&', '')
-                    cmd = s.replace('&', '')
-                    out.append( (self.rejoin(label, pairs), cmd) )
-
+            if not menu_table:
                 return out
-            #@-node:bobjack.20080516105903.23:<< def config_to_rclick >>
-            #@nl
 
-            for key in menus.keys():
-                menus[key] = config_to_rclick(menus[key][:])
+            while menu_table:
 
+                s, cmd = menu_table.pop(0)
+
+                if isinstance(cmd, list):
+
+                    s, pairs = self.getBodyData(s) 
+                    s = s.replace('&', '')
+                    out.append((self.rejoin(s, pairs), config_to_rclick(cmd[:])))
+                    continue
+
+                else:
+                    cmd, pairs = self.getBodyData(cmd)
+
+                if s in ('-', '&', '*', '|', '"'):
+                    out.append((self.rejoin(s, pairs), cmd))
+                    continue
+
+                star = s.startswith('*')
+
+                if not star and cmd:
+                    cmd = cmd.replace('&', '')
+                    out.append((self.rejoin(cmd, pairs), s))
+                    continue
+
+                if star:
+                    s = s[1:]
+
+                label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
+                label = label.replace('&', '')
+                cmd = s.replace('&', '')
+                out.append( (self.rejoin(label, pairs), cmd) )
+
+            return out
+        #@-node:bobjack.20080516105903.23:<< def config_to_rclick >>
+        #@nl
+
+        # convert config menus to rClick format
         menus = c.context_menus
+        for key in menus.keys():
+            menus[key] = config_to_rclick(menus[key][:])
 
-        if not isinstance(menus, dict):
-            c.context_menus = menus = {}
+        # menus defined before rclick was enabled are inserted here
+        #  config menus take priority over these
 
-        for key, item in self.default_context_menus.iteritems():
-
+        for key, item in saved_menus.iteritems():
             if not key in menus:
-                menus[key] = self.copyMenuTable(item)
+                menus[key] = item
 
         return True
+
     #@+node:bobjack.20080516105903.24:rejoin
     def rejoin(self, cmd, pairs):
         """Join two strings with a line separator."""
@@ -1328,13 +1169,13 @@ class pluginController(basePluginController):
 
             c = self.c
 
-            if self.minibufferPhaseError():
+            if not self.assertPhase('generate'):
                 return
 
             event = keywords.get('event')
             widget = event.widget
             #rmenu = keywords.get('rc_rmenu')
-            menu_table = keywords.get('rc_menu_table')
+            menu_table = self.menu_table
 
             def computeLabels (fileName):
 
@@ -1907,6 +1748,8 @@ class pluginController(basePluginController):
 
         """Add an item to the menu being constructed."""
 
+        c = self.c
+
         item_data = keywords.get('rc_item_data', {})
 
         kind = item_data.get('kind', 'command')
@@ -1929,7 +1772,7 @@ class pluginController(basePluginController):
 
             self.add_optional_args(kws, item_data)
 
-            rmenu.add_command(kws)
+            c.add_command(rmenu, **kws)
             #@nonl
             #@-node:bobjack.20080516105903.49:<< add command item >>
             #@nl
@@ -1979,8 +1822,6 @@ class pluginController(basePluginController):
             }
 
             self.add_optional_args(kws, item_data, selected)
-
-            #
 
             rmenu.add_radiobutton(**kws)
             #@-node:bobjack.20080516105903.50:<< add radio item >>
@@ -2097,7 +1938,7 @@ class pluginController(basePluginController):
 
         icon = item_data.get('icon')
         if icon:
-            image = self.getImage(icon)
+            image = baseClasses.getImage(icon)
             if image:
                 kws['image'] = image
                 compound = item_data.get('compound', '').lower()
@@ -2525,34 +2366,6 @@ class pluginController(basePluginController):
 
         return cmd, cmd_data
     #@-node:bobjack.20080516105903.72:split_cmd
-    #@+node:bobjack.20080516105903.73:copyMenuTable
-    def copyMenuTable(self, menu_table):
-
-        """make a copy of the menu_table and make copies of its submenus.
-
-        It is the menu lists that are being copied we are not deep copying
-        objects contained in those lists.
-
-        """
-
-
-        def _deepcopy(menu):
-
-            table = []
-            for item in menu:
-                label, cmd = item
-                if isinstance(cmd, list):
-                    cmd = _deepcopy(cmd)
-                    item = (label, cmd)
-                table.append(item)
-
-            return table
-
-        newtable =  _deepcopy(menu_table)
-
-        return newtable
-
-    #@-node:bobjack.20080516105903.73:copyMenuTable
     #@+node:bobjack.20080516105903.74:copyMenuDict
     def copyMenuDict(self, menu_dict):
 
@@ -2563,59 +2376,6 @@ class pluginController(basePluginController):
         return menus
 
     #@-node:bobjack.20080516105903.74:copyMenuDict
-    #@+node:bobjack.20080516105903.75:getImage
-    def getImage(self, path):
-
-        """Use PIL to get an image suitable for displaying in menus."""
-
-        c = self.c
-
-        if not (Image and ImageTk):
-            return None
-
-        path = g.os_path_normpath(path)
-
-        try:
-            return self.iconCache[path]
-        except KeyError:
-            pass
-
-        iconpath = g.os_path_join(self.iconBasePath, path)
-
-        try:
-            return self.iconCache[iconpath]
-        except KeyError:
-            pass
-
-        try:
-            image = Image.open(path)
-        except:
-            image = None
-
-        if not image:
-
-            try:
-                image = Image.open(iconpath)
-            except:
-                image = None
-
-        if not image:
-            return None
-
-        try:    
-            image = ImageTk.PhotoImage(image)
-        except:
-            image = None
-
-        if not image or not image.height() == 16:
-            g.es('Bad Menu Icon: %s' % path)
-            return None
-
-        self.iconCache[path] = image
-
-        return image
-
-    #@-node:bobjack.20080516105903.75:getImage
     #@-node:bobjack.20080516105903.70:Utility
     #@-others
 #@-node:bobjack.20080516105903.18:class pluginController

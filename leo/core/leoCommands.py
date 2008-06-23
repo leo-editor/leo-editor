@@ -72,11 +72,11 @@ class baseCommands:
 
         if g.newDrawing:
             self.requestedFocusWidget = None
-            c.requestRecolorFlag = False
             self.requestRedrawFlag = False
             self.requestRedrawScrollFlag = False
             self.requestedIconify = '' # 'iconify','deiconify'
             # g.es('Using new drawing code',color='red')
+        self.requestRecolorFlag = False
 
         # g.trace('Commands')
         self.exists = True # Indicate that this class exists and has not been destroyed.
@@ -93,6 +93,7 @@ class baseCommands:
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName
+
 
         # g.trace(c) # Do this after setting c.mFileName.
         c.initIvars()
@@ -443,8 +444,8 @@ class baseCommands:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
     #@-node:ekr.20051106040126:c.executeMinibufferCommand
-    #@+node:bobjack.20080509080123.2:c.universallCallback
-    def universallCallback(self, function):
+    #@+node:bobjack.20080509080123.2:c.universalCallback
+    def universalCallback(self, function):
 
         """Create a universal command callback.
 
@@ -468,17 +469,23 @@ class baseCommands:
                 cm = self.theContextMenuController
                 keywords = cm.mb_keywords 
             except AttributeError:
-                keywords = None
+                cm = keywords = None
 
-            if keywords:
-                keywords['mb_event'] = event  
-                cm.mb_retval = function(keywords)
-            else:
-                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
-                return function(keywords)
+            if not keywords:
+                 keywords = {'c': self, 'rc_phase': 'minibuffer'}
+
+            keywords['mb_event'] = event     
+            retval = function(keywords)
+
+            if cm:
+                cm.mb_keywords = None
+                cm.mb_retval = retval
 
         return minibufferCallback
-    #@-node:bobjack.20080509080123.2:c.universallCallback
+
+    #fix bobjacks spelling error
+    universallCallback = universalCallback
+    #@-node:bobjack.20080509080123.2:c.universalCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)
@@ -486,6 +493,8 @@ class baseCommands:
     def new (self,event=None,gui=None):
 
         '''Create a new Leo window.'''
+
+        # g.trace(g.callers())
 
         c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
 
@@ -514,7 +523,7 @@ class baseCommands:
                 g.doHook("after-create-leo-frame",c=c)
 
         finally:
-            c.endUpdate()
+            c.endUpdate(False)
             # chapterController.finishCreate must be called after the first real redraw
             # because it requires a valid value for c.rootPosition().
             if c.config.getBool('use_chapters') and c.chapterController:
@@ -524,6 +533,9 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
+            # Force a call to c.outerUpdate.
+            # This is needed when we execute this command from a menu.
+            c.redraw_now()
         return c # For unit test.
     #@-node:ekr.20031218072017.1623:new
     #@+node:ekr.20031218072017.2821:open
@@ -2961,6 +2973,7 @@ class baseCommands:
             #@nl
             #@        << update the body, selection & undo state >>
             #@+node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+            # This destroys recoloring.
             junk, ins = body.setSelectionAreas(head,result,tail)
 
             # Advance to the next paragraph.
@@ -2977,11 +2990,13 @@ class baseCommands:
             changed = original != head + result + tail
             if changed:
                 body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+            else:
+                # We must always recolor, even if the text has not changed,
+                # because setSelectionAreas above destroys the coloring.
+                c.recolor()
 
             w.setSelectionRange(ins,ins,insert=ins)
             w.see(ins)
-            if changed:
-                c.recolor()
             #@-node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
             #@nl
     #@nonl
@@ -4842,6 +4857,7 @@ class baseCommands:
                     p.v.clearMarked()
                     p.v.t.setDirty()
                     u.afterMark(p,undoType,bunch)
+                    changed = True
             dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
             if changed:
                 g.doHook("clear-all-marks",c=c,p=p,v=p)
@@ -5887,7 +5903,11 @@ class baseCommands:
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20031218072017.2950:c.begin/endUpdate
-        #@+node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
+        #@+node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
+        def add_command (self,menu,**keys):
+
+            menu.add_command(**keys)
+
         def bind (self,w,pattern,func):
 
             w.bind(pattern,func)
@@ -5898,8 +5918,9 @@ class baseCommands:
 
         def tag_bind(self,w,a,b,c):
 
-            w.bind_tags(a,b,c)
-        #@-node:ekr.20080515053412.53:c.bind/bind2/tag_bind (new)
+            w.tag_bind(a,b,c)
+
+        #@-node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
         #@+node:ekr.20031218072017.2951:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -5998,7 +6019,7 @@ class baseCommands:
         def requestRecolor (self):
 
             c = self
-            c.frame.requestRecolorFlag = True
+            c.requestRecolorFlag = True
         #@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
         #@+node:ekr.20051216171520:c.recolor_now
         def recolor_now(self,p=None,incremental=False,interruptable=True):
@@ -6024,11 +6045,12 @@ class baseCommands:
                 return # nullFrame's do not have a top frame.
 
             c.frame.tree.redraw_now()
+
             if 0: # Interferes with new colorizer.
                 c.frame.top.update_idletasks()
 
-            if c.frame.requestRecolorFlag:
-                c.frame.requestRecolorFlag = False
+            if c.requestRecolorFlag:
+                c.requestRecolorFlag = False
                 c.recolor()
 
         # Compatibility with old scripts
@@ -6149,44 +6171,72 @@ class baseCommands:
             if flag:
                 c.requestRedrawFlag = True
                 c.requestRedrawScrollFlag = scroll
-                # g.trace('flag is True','scroll',scroll,c)
+                # g.trace('flag is True',c.shortFileName(),g.callers())
 
         BeginUpdate = beginUpdate # Compatibility with old scripts
         EndUpdate = endUpdate # Compatibility with old scripts
         #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
-        def bind (self,w,pattern,func):
+        #@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+        # These wrappers ensure that c.outerUpdate get called.
+        #@nonl
+        #@+node:ekr.20080610085158.2:c.add_command
+        def add_command (self,menu,**keys):
+
+            c = self ; command = keys.get('command')
+
+            if command:
+
+                def add_commandCallback(c=c,command=command):
+                    val = command()
+                    # Careful: func may destroy c.
+                    if c.exists: c.outerUpdate()
+                    return val
+
+                keys ['command'] = add_commandCallback
+
+                menu.add_command(**keys)
+
+            else:
+                g.trace('can not happen: no "command" arg')
+        #@-node:ekr.20080610085158.2:c.add_command
+        #@+node:ekr.20080610085158.3:c.bind and c.bind2
+        def bind (self,w,pattern,func,*args,**keys):
 
             c = self
+
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback)
+            w.bind(pattern,bindCallback,*args,**keys)
 
-        def bind2 (self,w,pattern,func,**keys):
+        def bind2 (self,w,pattern,func,*args,**keys):
 
             c = self
+
             def bindCallback(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback,**keys)
-
+            w.bind(pattern,bindCallback,*args,**keys)
+        #@-node:ekr.20080610085158.3:c.bind and c.bind2
+        #@+node:ekr.20080610085158.4:c.tag_bind
         def tag_bind (self,w,tag,event_kind,func):
 
             c = self
-            def tag_bindCallback(event,c=c,tag=tag,event_kind=event_kind,func=func):
-                val = func(tag,event_kind,func)
-                c.outerUpdate()
+            def tag_bindCallback(event,c=c,func=func):
+                val = func(event)
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
                 return val
 
             w.tag_bind(tag,event_kind,tag_bindCallback)
-        #@-node:ekr.20080515053412.1:c.bind, c.bind2 & c.tag_bind
+        #@-node:ekr.20080610085158.4:c.tag_bind
+        #@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
         #@+node:ekr.20080514131122.8:c.bringToFront
         def bringToFront(self,set_focus=True):
 
@@ -6286,7 +6336,7 @@ class baseCommands:
         #@+node:ekr.20080514131122.20:c.outerUpdate
         def outerUpdate (self):
 
-            c = self ; aList = []
+            c = self ; aList = [] ; trace = False ; verbose = False
 
             if not c.exists or not c.k:
                 return
@@ -6298,26 +6348,26 @@ class baseCommands:
             c.requestRedrawScrollFlag = False
 
             if c.requestedIconify == 'iconify':
-                aList.append('iconify')
+                if verbose: aList.append('iconify')
                 c.frame.iconify()
 
             if c.requestedIconify == 'deiconify':
-                aList.append('deiconify')
+                if verbose: aList.append('deiconify')
                 c.frame.deiconify()
 
             if redrawFlag:
                 # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
                 # A hack: force the redraw, even if we are dragging.
-                aList.append('redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+                aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
                 c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
 
             if c.requestRecolorFlag:
-                aList.append('%srecolor' % (
+                if verbose: aList.append('%srecolor' % (
                     g.choose(c.incrementalRecolorFlag,'','full ')))
                 c.recolor_now(incremental=c.incrementalRecolorFlag)
 
             if c.requestedFocusWidget:
-                aList.append('focus: %s' % (
+                if verbose: aList.append('focus: %s' % (
                     g.app.gui.widget_name(c.requestedFocusWidget)))
                 c.set_focus(c.requestedFocusWidget)
             else:
@@ -6325,7 +6375,8 @@ class baseCommands:
                 # That would make nested calls to c.outerUpdate significant.
                 pass
 
-            # if aList: g.trace(', '.join(aList)) # ,g.callers(5))
+            if trace and aList:
+                g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
 
             c.incrementalRecolorFlag = False
             c.requestRecolorFlag = None
@@ -6338,7 +6389,7 @@ class baseCommands:
         def requestRecolor (self):
 
             c = self
-            c.frame.requestRecolorFlag = True
+            c.requestRecolorFlag = True
 
         recolor = requestRecolor
         #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
@@ -6360,6 +6411,8 @@ class baseCommands:
         def redraw_now (self):
             c = self
             c.requestRedrawFlag = True
+            c.outerUpdate()
+            assert not c.requestRedrawFlag
 
         # Compatibility with old scripts
         force_redraw = redraw_now
@@ -6451,11 +6504,6 @@ class baseCommands:
         treeWantsFocusNow = treeWantsFocus
         #@-node:ekr.20080514131122.19:c.xWantsFocusNow
         #@-others
-
-    else:
-
-        def outerUpdate (self):
-            pass
     #@-node:ekr.20080514131122.6:New code
     #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
     #@+node:ekr.20031218072017.2955:Enabling Menu Items
@@ -7176,6 +7224,7 @@ class baseCommands:
         p.initHeadString(s,encoding)
 
         if w:
+            s = g.toUnicode(s,encoding)
             w.setAllText(s)
             width = c.frame.tree.headWidth(p=None,s=s)
             w.setWidth(width)

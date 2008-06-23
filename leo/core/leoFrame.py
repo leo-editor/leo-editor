@@ -1465,7 +1465,6 @@ class leoFrame:
         self.componentsDict = {} # Keys are names, values are componentClass instances.
         self.es_newlines = 0 # newline count for this log stream
         self.openDirectory = ""
-        self.requestRecolorFlag = False
         self.saved=False # True if ever saved
         self.splitVerticalFlag,self.ratio, self.secondary_ratio = True,0.5,0.5 # Set by initialRatios later.
         self.startupWindow=False # True if initially opened window
@@ -1794,6 +1793,8 @@ class leoFrame:
             c.k.previousSelection = None
         else:
             s = s1 = g.app.gui.getTextFromClipboard()
+
+        s = g.toUnicode(s,encoding=g.app.tkEncoding) # 6/22/08
 
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
 

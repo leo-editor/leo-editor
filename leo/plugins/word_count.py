@@ -76,8 +76,7 @@ def createWordCountMenu (tag,keywords):
     index_label = index_label.replace("&","")
     # Add 'Word Count...' to the bottom of the Edit menu.
     menu = c.frame.menu.getMenu('Edit')
-    c.frame.menu.add_command(menu,label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
-    # menu.add('command',label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
+    c.add_command(menu,label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
 #@-node:danr7.20061010105952.5:createWordCountMenu
 #@+node:danr7.20061010105952.6:word_count
 def word_count( c ):

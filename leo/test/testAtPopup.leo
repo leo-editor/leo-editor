@@ -34,6 +34,9 @@
 </v>
 <v t="bobjack.20080329075629.3"><vh>Notes</vh>
 <v t="bobjack.20080414143159.5"><vh>&lt;&lt; description of menu_table format &gt;&gt;</vh></v>
+<v t="bobjack.20080618081827.4"><vh>description of the contents of keywords</vh>
+<v t="bobjack.20080414143159.4"><vh>&lt;&lt;description of the contents of keywords&gt;&gt;</vh></v>
+</v>
 </v>
 <v t="bobjack.20080414143159.2"><vh>Howto . . . </vh>
 <v t="bobjack.20080414143159.3"><vh>. . . Write Generator Commands </vh>
@@ -588,7 +591,9 @@ will also restore the leo standard popup menu. Highlight the code above and exec
 <t tx="bobjack.20080401213339.3"></t>
 <t tx="bobjack.20080401213500.1"></t>
 <t tx="bobjack.20080401213500.2">find_change_text_menu</t>
-<t tx="bobjack.20080401214039.1"></t>
+<t tx="bobjack.20080401214039.1">@nocolor
+
+Icon box rClick menus will be disabled if cleo is enabled.</t>
 <t tx="bobjack.20080401214039.2">@
 Icon box menus will be disabled by cleo or other plugins using the same hook.
 
@@ -747,7 +752,7 @@ def report_item_clicked(tag, keywords):
         g.es("Rclick Test Check Button Name['%s']  Checked:[%s]"% (
             name, bool(selected)))
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", report_item_clicked)
 
 g.es('registered to receive radio/check button events', color='blue')
@@ -1176,9 +1181,7 @@ keywords['rc_phase']:
                    the function to handle this.
 
         'minibuffer' - the command was called from a source other than rClick,
-                       such as from the minibuffer. In this case keywords['mb_event']
-                       holds the event from the standard command callback.
-
+                       such as from the minibuffer. In this case 
 
 keywords['mb_event']:
 
@@ -1331,8 +1334,8 @@ cm.radio_group_data['demo-group'] = 'demo-radio-two'
 
 #define a callback so we can print a message when one of our buttons is clicked
 
-def demo_radio_callback(self, keywords):
-
+def demo_radio_callback(tag, keywords):
+    
     kind, selected, name, group = \
         [keywords.get(v) for v in (
             'kind', 'selected', 'name', 'group')]
@@ -1344,13 +1347,13 @@ def demo_radio_callback(self, keywords):
 
 # register the callback to receive notification of rclick button events
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_radio_callback)
 
 @
 Execute this node as a script and right click the body to see the results.
 
-Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, then right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
+Notice that if you execute this script twice you will get two sets of buttons but if select a button in one group, gien right click again you will see that the selection in the other group has changed also.  This is intentional behavior.
 
 A radio button with the same group name and the same name is effectively the same button.  It can appear in the menu many times or in many different menus.
 
@@ -1451,7 +1454,7 @@ for btn in btns:
 
 #define a callback so we can print a message when one of our buttons is clicked
 
-def demo_check_callback(self, keywords):
+def demo_check_callback(tag, keywords):
 
     kind, selected, name = \
         [keywords.get(v) for v in (
@@ -1464,7 +1467,7 @@ def demo_check_callback(self, keywords):
 
 # register the callback to receive notification of rclick button events
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 leoPlugins.registerHandler("rclick-button-clicked", demo_check_callback)
 
 @
@@ -2087,8 +2090,9 @@ if not (mBody and mBody[0][1] == 'demo-count'):
 
 </t>
 <t tx="bobjack.20080504170620.1">toggle-iconbar</t>
-<t tx="bobjack.20080504170743.1"># execute this node as a script to remove
-# the toolbar button and menu item
+<t tx="bobjack.20080504170743.1"># this is housekeeping stuff and can be ignored
+
+# Use execute-script on the node to remove previous demo.
 
 for key, bar in c.frame.iconBars.iteritems():
     for btn in bar.buttons:
@@ -2141,7 +2145,7 @@ def do_demo_editor_items(keywords):
     menu_table[:0] = new_items
 
 
-do_demo_editor_items = c.universallCallback(do_demo_editor_items)
+do_demo_editor_items = c.universalCallback(do_demo_editor_items)
 
 @
 Our command has to be inserted into a menu to be of any use, so here we insert it into
@@ -2168,9 +2172,9 @@ Right click the body pane to see the new menu items appear.
 
 
 </t>
-<t tx="bobjack.20080505055217.8"># This is house keeping stuff for the howto and can be ignored.
+<t tx="bobjack.20080505055217.8"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remvove demo menu items
+# Use execute-script on the node to remove previous demo.
 
 menu = c.context_menus['body']
 
@@ -2186,6 +2190,8 @@ except:
     pass
 </t>
 <t tx="bobjack.20080505055217.10"># this is housekeeping stuff and can be ignored
+
+# Use execute-script on the node to remove previous radio button demo.
 
 menu = c.context_menus['body']
 newmenu = []
@@ -2203,7 +2209,7 @@ for i, item in enumerate(menu):
 menu[:] = newmenu
 
 try:
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     leoPlugins.unregisterHandler("rclick-button-clicked", g.oldCheckCallback)
 except:
     pass
@@ -2215,7 +2221,7 @@ except:
 g.oldCheckCallback = demo_check_callback</t>
 <t tx="bobjack.20080505090848.2"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remove demo items
+# Use execute-script on the node to remove previous check button demo.
 
 
 
@@ -2235,7 +2241,7 @@ for i, item in enumerate(menu):
 menu[:] = newmenu
 
 try:
-    import leoPlugins
+    import leo.core.leoPlugins as leoPlugins
     leoPlugins.unregisterHandler("rclick-button-clicked", g.oldRadioCallback)
 except:
     pass
@@ -2250,9 +2256,9 @@ g.oldRadioCallback = demo_radio_callback</t>
 <t tx="bobjack.20080505090848.6">Remove Button
 
 icon = Tango\16x16\actions\stop.png</t>
-<t tx="bobjack.20080507133937.2"># This is house keeping stuff for the howto and can be ignored.
+<t tx="bobjack.20080507133937.2"># this is housekeeping stuff and can be ignored
 
-# Execute this node as a script to remvove demo menu items
+# Use execute-script on the node to remove previous demo.
 
 menu = c.context_menus['body']
 
@@ -2274,5 +2280,6 @@ for i, item in enumerate(menu):
 <t tx="bobjack.20080516201656.16">rclick-find-node-only-button</t>
 <t tx="bobjack.20080516201656.17">rclick-find-suboutline-only-button</t>
 <t tx="bobjack.20080516201656.18">rclick-find-entire-outline-button</t>
+<t tx="bobjack.20080618081827.4">&lt;&lt;description of the contents of keywords&gt;&gt;</t>
 </tnodes>
 </leo_file>

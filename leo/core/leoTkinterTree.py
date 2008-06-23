@@ -402,16 +402,7 @@ class leoTkinterTree (leoFrame.leoTree):
             ('clickBox','<Button-3>',  self.onClickBoxRightClick),
         )
         for tag,event_kind,callback in table:
-            # c.tag_bind(canvas,tag,event,callback)
-
-            def tag_bind_callback(event,c=c,callback=callback):
-                # g.trace('before',callback.__name__)
-                val = callback(event)
-                c.outerUpdate()
-                # g.trace('after','event',event,'val',val)
-                return val
-
-            canvas.tag_bind(tag,event_kind,tag_bind_callback)
+            c.tag_bind(canvas,tag,event_kind,callback)
         #@-node:ekr.20060131173440.2:<< make bindings for tagged items on the canvas >>
         #@nl
         #@    << create baloon bindings for tagged items on the canvas >>
@@ -1188,7 +1179,7 @@ class leoTkinterTree (leoFrame.leoTree):
                     self._block_canvas_menu = True
                     return 'break'
 
-                self.canvas.tag_bind(tag,'<3>',deleteButtonCallback)
+                c.tag_bind(self.canvas,tag,'<3>',deleteButtonCallback)
 
                 # assert(theId not in self.visibleIcons)
                 self.visibleUserIcons.append(theId)
@@ -2439,6 +2430,7 @@ class leoTkinterTree (leoFrame.leoTree):
             try:
                 self.endEditLabel()
             finally:
+                # This redraw *is* required so the c.edit_widget(p) will exist.
                 c.endUpdate(True)
                 c.outerUpdate()
 

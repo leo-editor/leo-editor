@@ -144,10 +144,6 @@ class leoGtkTree (leoFrame.leoTree):
         self.prevMoveToFrac = 0.0
         self.visibleArea = None
         self.expandedVisibleArea = None
-
-        ###
-        # if self.allocateOnlyVisibleNodes:
-            # c.bind(self.frame.bar1,"<B1-ButtonRelease>", self.redraw_now)
         #@-node:ekr.20080112145409.322:<< old ivars >>
         #@nl
         #@<< inject callbacks into the position class >>
@@ -343,7 +339,7 @@ class leoGtkTree (leoFrame.leoTree):
                 # ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
             # )
             # for tag,event,callback in table:
-                # canvas.tag_bind(tag,event,callback)
+                # c.tag_bind(canvas,tag,event,callback)
             #@-node:ekr.20080112145409.327:<< make bindings for tagged items on the canvas >>
             #@nl
             #@        << create baloon bindings for tagged items on the canvas >>

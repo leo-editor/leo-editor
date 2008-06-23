@@ -99,6 +99,8 @@ class AttrEditor:
     #@+node:mork.20041018162155.6:_mkGui
     def _mkGui( self, frame ):
 
+        c = self.c
+
         group = Pmw.Group( frame , tag_text = "Attributes")
         group.pack( side = 'left' )
         lb = self.lb = Pmw.ScrolledListBox( group.interior() ,
@@ -172,6 +174,8 @@ olCreateCanvas = leoTkinterFrame.leoTkinterFrame.createCanvas
 def newCreateCanvas (self,parentFrame,pageName=None):
 
     # g.trace('editAttributes plugin',pageName)
+
+    c = self.c
 
     if pageName:
         # Support the chapters2 plugin.

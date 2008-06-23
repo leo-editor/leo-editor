@@ -274,7 +274,7 @@ def addMenu (tag,keywords):
     men = tp.children [mname]
     nrumenu = Tkinter.Menu(men,tearoff=0)
     men.add_cascade(menu=nrumenu,label='GroupOps') # image=groupOpPI)
-    nrumenu.add_command(image=markSpotPI,command=las.markTarget)
+    c.add_command(nrumenu,image=markSpotPI,command=las.markTarget)
     mmenu = Tkinter.Menu(nrumenu,tearoff=0)
     nrumenu.add_cascade(menu=mmenu,image=markForPI)
 
@@ -283,10 +283,10 @@ def addMenu (tag,keywords):
         ('Copying',las.addForCopy,copy_arrowPI),
         ('Cloning',las.addForClone,clone_arrowPI),
     ):
-        mmenu.add_command(label=label,command=command,image=image)
+        c.add_command(mmenu,label=label,command=command,image=image)
 
-    nrumenu.add_command(command=las.operateOnMarked,image=operateOnMarkedPI)
-    nrumenu.add_command(command=las.reset,image=clearMarksPI)
+    c.add_command(nrumenu,command=las.operateOnMarked,image=operateOnMarkedPI)
+    c.add_command(nrumenu,command=las.reset,image=clearMarksPI)
     imenu = Tkinter.Menu(nrumenu,tearoff=0)
     nrumenu.add_cascade(menu=imenu,image=transferFromPI)
     imenu.config(postcommand=lambda nm=imenu: createCommandsMenu(nm))
@@ -305,7 +305,7 @@ def createCommandsMenu (menu):
     for c in commanders:
         if hasattr(c,"frame") and len(lassoers[c]) != 0:
             las = lassoers [c]
-            menu.add_command(
+            c.add_command(menu,
                 label=c.frame.getTitle(),
                 command=lambda frm=las,to=mlas: frm.transfer(event,to))
 #@nonl
