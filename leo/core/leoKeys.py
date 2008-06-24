@@ -3825,7 +3825,7 @@ class keyHandlerClass:
 
         k = self ; c = k.c
 
-        g.trace(w,g.callers())
+        # g.trace(w,g.callers())
         # g.trace(g.dictToString(d))
 
         for commandName in d.keys():
