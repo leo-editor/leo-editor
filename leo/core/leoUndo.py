@@ -168,8 +168,58 @@ class undoer:
             # g.trace('Cutting undo stack to %d entries' % (n))
             u.beads = u.beads[-n:]
             u.bead = n-1
-            # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads))
+            # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads),g.callers())
     #@-node:ekr.20060127052111.1:cutStack
+    #@+node:ekr.20080623083646.10:dumpBead
+    def dumpBead (self,n):
+
+        u = self
+
+        if n < 0 or n >= len(u.beads):
+            return 'no bead: n = ',n
+
+        bunch = u.beads[n] ; result = []
+        result.append('-' * 10)
+        result.append('len(u.beads): %s, n: %s' % (len(u.beads),n))
+        for ivar in ('kind','newP','newN','p','oldN','undoHelper'):
+            result.append('%s = %s' % (ivar,getattr(self,ivar)))
+        return '\n'.join(result)
+
+    def dumpTopBead(self):
+
+        n = len(u.beads)
+        if n > 0:
+            return dumpBead(n-1)
+        else:
+            return '<no top bead>'
+
+    #@+at 
+    #@nonl
+    # self.afterTree = None
+    #     self.beforeTree = None
+    #     self.dirtyVnodeList = None
+    #     self.kind = None
+    #     self.newBack = None
+    #     self.newBody = None
+    #     self.newHead = None
+    #     self.newMarked = None
+    #     self.newN = None
+    #     self.newP = None
+    #     self.newParent = None
+    #     self.newRecentFiles = None
+    #     self.newTree = None
+    #     self.oldBack = None
+    #     self.oldBody = None
+    #     self.oldHead = None
+    #     self.oldMarked = None
+    #     self.oldN = None
+    #     self.oldParent = None
+    #     self.oldRecentFiles = None
+    #     self.oldTree = None
+    #     self.pasteAsClone = None
+    #@-at
+    #@nonl
+    #@-node:ekr.20080623083646.10:dumpBead
     #@+node:EKR.20040526150818:getBead
     def getBead (self,n):
 
@@ -210,7 +260,7 @@ class undoer:
             # Push the bunch.
             u.bead += 1
             u.beads[u.bead:] = [bunch]
-            # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
+            # g.trace('u.bead',u.bead,'len u.beads',len(u.beads),g.callers())
 
             # Recalculate the menu labels.
             u.setUndoTypes()
@@ -1374,8 +1424,7 @@ class undoer:
 
         '''Redo the operation undone by the last undo.'''
 
-        u = self ; c = u.c ; trace = True
-        # g.trace(g.callers(7))
+        u = self ; c = u.c ; trace = False
 
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
@@ -1385,9 +1434,8 @@ class undoer:
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        if trace:
-            g.trace(u.undoType)
-            g.trace(u.bead+1,len(u.beads),u.peekBead(u.bead+1))
+        if trace: g.trace(u.dumpBead(u.bead))
+
         u.redoing = True 
         u.groupCount = 0
 
@@ -1405,6 +1453,8 @@ class undoer:
                 c.setCurrentPosition(c.currentPosition())
             c.setChanged(True)
             c.endUpdate()
+            # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+            c.redraw_now()
             c.recolor_now()
             c.bodyWantsFocusNow()
             u.redoing = False
@@ -1702,8 +1752,7 @@ class undoer:
 
         """Undo the operation described by the undo parameters."""
 
-        u = self ; c = u.c ; trace = True
-        # g.trace(g.callers(7))
+        u = self ; c = u.c ; trace = False
 
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
@@ -1713,9 +1762,8 @@ class undoer:
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        if trace:
-            g.trace(u.undoType)
-            g.trace(len(u.beads),u.bead,u.peekBead(u.bead))
+        if trace: g.trace(u.dumpBead(u.bead))
+
         u.undoing = True
         u.groupCount = 0
 
@@ -1733,6 +1781,8 @@ class undoer:
                 c.setCurrentPosition(c.currentPosition())
             c.setChanged(True)
             c.endUpdate()
+            # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+            c.redraw_now()
             c.recolor_now()
             c.bodyWantsFocusNow()
             u.undoing = False
@@ -1869,6 +1919,7 @@ class undoer:
         u = self ; c = u.c
 
         c.selectPosition(u.newP)
+
         c.deleteOutline()
 
         if u.pasteAsClone:
