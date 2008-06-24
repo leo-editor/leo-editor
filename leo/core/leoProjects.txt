@@ -9640,6 +9640,37 @@ if 0:
     rollBackToMark = rollbackToMark
 #@-node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
 #@-node:ekr.20080623083646.2:Fixed undo problem
+#@+node:ekr.20080624120440.2:Fixed insert-file bug
+@nocolor
+
+Minor nit - insert-file to load a file into a node, text appears in the
+body pane.  Without doing anything else to the body pane click on
+another node.  Inserted text is lost - body for node is empty.  As long
+as you move the cursor into the body frame and press a key after
+inserting the contents, it's retained.
+
+@color
+#@nonl
+#@+node:ekr.20050920084036.167:insertFile
+def insertFile (self,event):
+
+    '''Prompt for the name of a file and put the selected text into it.'''
+
+    k = self.k ; c = k.c ; w = self.editWidget(event)
+    if not w: return
+
+    f, name = self.getReadableTextFile()
+    if f:
+        self.beginCommand(undoType='insert-file')
+
+        txt = f.read()
+        f.close()
+        w.insert('insert',txt)
+        w.seeInsertPoint()
+
+        self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.167:insertFile
+#@-node:ekr.20080624120440.2:Fixed insert-file bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
