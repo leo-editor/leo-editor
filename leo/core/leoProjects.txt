@@ -9671,6 +9671,163 @@ def insertFile (self,event):
         self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.167:insertFile
 #@-node:ekr.20080624120440.2:Fixed insert-file bug
+#@+node:ekr.20080624120440.3:Fixed script button bug
+@nocolor
+
+c.beginUpdate()
+try:
+ add / change icons on some nodes
+ c.setChanged(True)
+finally:
+ c.endUpdate()
+
+seems not to give a redraw *after* a script button is pressed.
+
+It does give one before the action is taken, so pressing the button
+twice shows the change.
+
+EKR: The fix was to mod_scripting.py.
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.3958:add
+def add(self,*args,**keys):
+
+    """Add a button containing text or a picture to the icon bar.
+
+    Pictures take precedence over text"""
+
+    c = self.c ; f = self.iconFrame
+    text = keys.get('text')
+    imagefile = keys.get('imagefile')
+    image = keys.get('image')
+    command = keys.get('command')
+    bg = keys.get('bg')
+
+    if not imagefile and not image and not text: return
+
+    # First define n.
+    try:
+        g.app.iconWidgetCount += 1
+        n = g.app.iconWidgetCount
+    except:
+        n = g.app.iconWidgetCount = 1
+
+    if command:
+        def commandCallBack(c=c,command=command):
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+    else:
+        def commandCallback():
+            print "command for widget %s" % (n)
+        command = commandCallback
+
+    if imagefile or image:
+        << create a picture >>
+    elif text:
+        b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
+        if not self.font:
+            self.font = c.config.getFontFromParams(
+                "button_text_font_family", "button_text_font_size",
+                "button_text_font_slant",  "button_text_font_weight",)
+        b.configure(font=self.font)
+        # elif sys.platform.startswith('win'):
+            # width = max(6,len(text))
+            # b.configure(width=width,font=('verdana',7,'bold'))
+        if bg: b.configure(bg=bg)
+        b.pack(side="left", fill="none")
+        return b
+
+    return None
+#@+node:ekr.20031218072017.3959:<< create a picture >>
+try:
+    if imagefile:
+        # Create the image.  Throws an exception if file not found
+        imagefile = g.os_path_join(g.app.loadDir,imagefile)
+        imagefile = g.os_path_normpath(imagefile)
+        image = Tk.PhotoImage(master=g.app.root,file=imagefile)
+        g.trace(image,imagefile)
+
+        # Must keep a reference to the image!
+        try:
+            refs = g.app.iconImageRefs
+        except:
+            refs = g.app.iconImageRefs = []
+
+        refs.append((imagefile,image),)
+
+    if not bg:
+        bg = f.cget("bg")
+
+    try:
+        b = Tk.Button(f,image=image,relief="flat",bd=0,command=command,bg=bg)
+    except Exception:
+        g.es_print('image does not exist',image,color='blue')
+        b = Tk.Button(f,relief='flat',bd=0,command=command,bg=bg)
+    b.pack(side="left",fill="y")
+    return b
+
+except:
+    g.es_exception()
+    return None
+#@-node:ekr.20031218072017.3959:<< create a picture >>
+#@-node:ekr.20031218072017.3958:add
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(c.requestedFocusWidget)))
+        c.set_focus(c.requestedFocusWidget)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@-node:ekr.20080624120440.3:Fixed script button bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -208,7 +208,6 @@
 <v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
 <v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
-<v t="ekr.20080624091248.3"><vh>Print -----</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1571,6 +1570,5 @@ top.mainloop()
 <t tx="ekr.20080618093010.1">print 'Ctrl+s' in c.k.bindingsDict.keys()
 print c.k.masterBindingsDict.keys()
 print '&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys()</t>
-<t tx="ekr.20080624091248.3">print '-' * 40</t>
 </tnodes>
 </leo_file>
