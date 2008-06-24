@@ -469,21 +469,17 @@ class baseCommands:
                 cm = self.theContextMenuController
                 keywords = cm.mb_keywords 
             except AttributeError:
-                cm = keywords = None
+                keywords = None
 
-            if not keywords:
-                 keywords = {'c': self, 'rc_phase': 'minibuffer'}
-
-            keywords['mb_event'] = event     
-            retval = function(keywords)
-
-            if cm:
-                cm.mb_keywords = None
-                cm.mb_retval = retval
+            if keywords:
+                keywords['mb_event'] = event  
+                cm.mb_retval = function(keywords)
+            else:
+                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
+                return function(keywords)
 
         return minibufferCallback
 
-    #fix bobjacks spelling error
     universallCallback = universalCallback
     #@-node:bobjack.20080509080123.2:c.universalCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
