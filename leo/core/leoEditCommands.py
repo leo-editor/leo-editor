@@ -5019,10 +5019,14 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         f, name = self.getReadableTextFile()
         if f:
+            self.beginCommand(undoType='insert-file')
+
             txt = f.read()
             f.close()
             w.insert('insert',txt)
             w.seeInsertPoint()
+
+            self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20050920084036.167:insertFile
     #@+node:ekr.20050920084036.168:makeDirectory
     def makeDirectory (self,event):
