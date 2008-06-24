@@ -803,13 +803,13 @@
 </v>
 </v>
 <v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
-<v t="ekr.20080611105410.148"><vh>@rst html\vimBindings.html</vh>
-<v t="ekr.20080611105410.155"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080611105410.152"><vh>Installing vim bindings</vh></v>
-<v t="ekr.20080611105410.7"><vh>General commands</vh></v>
-<v t="ekr.20080611105410.9"><vh>Body pane commands</vh></v>
-<v t="ekr.20080611105410.8"><vh>Outline commands</vh></v>
-<v t="ekr.20080611105410.156"><vh>@rst-no-head end stuff</vh></v>
+<v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
+<v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
+<v t="TL.20080622103911.4"><vh>General commands</vh></v>
+<v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
+<v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+<v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -2926,6 +2926,7 @@
 <v t="ekr.20080403065258.10"><vh>4.4.8 rc1</vh>
 <v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
 </v>
+</v>
 <v t="ekr.20080405074410.4"><vh>4.4.8 final</vh>
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
@@ -2933,96 +2934,79 @@
 </v>
 </v>
 </v>
-</v>
 <v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20080622082853.29"><vh>4.5 b1</vh>
-<v t="ekr.20080622082853.31"><vh>Bug fixes</vh>
-<v t="ekr.20080622082853.56"><vh>Fixed bug in appendToRecentFiles</vh></v>
-<v t="ekr.20080622082853.58"><vh>Fixed bug in install script</vh></v>
-<v t="ekr.20080622082853.59"><vh>Fixed bug: no focus after save-as and save-to commands</vh></v>
-<v t="ekr.20080622082853.60"><vh>Fixed find bug</vh></v>
-<v t="ekr.20080622082853.66"><vh>Fixed find completion bug</vh></v>
-<v t="ekr.20080622082853.69"><vh>Fixed how-many, find-word and goto-character commands</vh></v>
-<v t="ekr.20080622082853.93"><vh>Fixed import PHP bug</vh></v>
-<v t="ekr.20080622082853.99"><vh>Fixed keyword handling in g.es and g.es_print</vh></v>
-<v t="ekr.20080622082853.100"><vh>Fixed new @auto bug</vh></v>
-<v t="ekr.20080622082853.113"><vh>Fixed recent files bug</vh></v>
-<v t="ekr.20080622082853.122"><vh>Fixed Tangle bugs</vh></v>
-<v t="ekr.20080622082853.126"><vh>Greatly increased speed of undo clone-find-all</vh></v>
-<v t="ekr.20080622082853.130"><vh>Temporary fix for php import bug</vh></v>
-<v t="ekr.20080622082853.133"><vh>Fixed unbounded loop in autocompleter.findAnchor</vh></v>
-<v t="ekr.20080622082853.134"><vh>Fixed insert-newline bug</vh></v>
-<v t="ekr.20080622082853.138"><vh>Single click did not color body correctly</vh></v>
-<v t="ekr.20080622082853.143"><vh>Body not colored correctly after find</vh></v>
-<v t="ekr.20080622082853.146"><vh>Fixed big performance bug in contract-all command</vh></v>
-<v t="ekr.20080622082853.189"><vh>Changed bindings so Home and end keys work as expected when editing a headline</vh></v>
-<v t="ekr.20080622082853.190"><vh>Fixed bug: myLeoSettings.leo sometimes read twice</vh></v>
-<v t="ekr.20080622082853.196"><vh>Compute menus list for each c</vh></v>
-<v t="ekr.20080622082853.290"><vh>Fixed minor spelling bug</vh></v>
-<v t="ekr.20080622082853.292"><vh>Fixed spell bug: words containing unicode characters aren't saved properly</vh></v>
-<v t="ekr.20080622082853.295"><vh>Fixed coloring bugs in reformatParagraph and c.redraw</vh></v>
-<v t="ekr.20080622082853.308"><vh>Fixed missing redraw problem</vh></v>
-<v t="ekr.20080622082853.352"><vh>Fixed new-headline problem</vh></v>
-<v t="ekr.20080622082853.372"><vh>Fixed recent crasher</vh></v>
-<v t="ekr.20080622082853.374"><vh>Fixed encoding problems with paste from clipboard</vh></v>
-<v t="ekr.20080622082853.378"><vh>Changed installer to support leo-as-a-package</vh></v>
+<v t="ekr.20080624093059.1"><vh>4.5 b1</vh>
+<v t="ekr.20080624093059.2"><vh>Bug fixes</vh>
+<v t="ekr.20080624093059.3"><vh>Fixed bug in appendToRecentFiles</vh></v>
+<v t="ekr.20080624093059.4"><vh>Fixed bug in install script</vh></v>
+<v t="ekr.20080624093059.5"><vh>Fixed bug: no focus after save-as and save-to commands</vh></v>
+<v t="ekr.20080624093059.6"><vh>Fixed find bug</vh></v>
+<v t="ekr.20080624093059.7"><vh>Fixed find completion bug</vh></v>
+<v t="ekr.20080624093059.8"><vh>Fixed how-many, find-word and goto-character commands</vh></v>
+<v t="ekr.20080624093059.9"><vh>Fixed import PHP bug</vh></v>
+<v t="ekr.20080624093059.10"><vh>Fixed keyword handling in g.es and g.es_print</vh></v>
+<v t="ekr.20080624093059.11"><vh>Fixed new @auto bug</vh></v>
+<v t="ekr.20080624093059.12"><vh>Fixed recent files bug</vh></v>
+<v t="ekr.20080624093059.13"><vh>Fixed Tangle bugs</vh></v>
+<v t="ekr.20080624093059.14"><vh>Greatly increased speed of undo clone-find-all</vh></v>
+<v t="ekr.20080624093059.15"><vh>Temporary fix for php import bug</vh></v>
+<v t="ekr.20080624093059.16"><vh>Fixed unbounded loop in autocompleter.findAnchor</vh></v>
+<v t="ekr.20080624093059.17"><vh>Fixed insert-newline bug</vh></v>
+<v t="ekr.20080624093059.18"><vh>Single click did not color body correctly</vh></v>
+<v t="ekr.20080624093059.19"><vh>Body not colored correctly after find</vh></v>
+<v t="ekr.20080624093059.20"><vh>Fixed big performance bug in contract-all command</vh></v>
+<v t="ekr.20080624093059.21"><vh>Changed bindings so Home and end keys work as expected when editing a headline</vh></v>
+<v t="ekr.20080624093059.22"><vh>Fixed bug: myLeoSettings.leo sometimes read twice</vh></v>
+<v t="ekr.20080624093059.23"><vh>Compute menus list for each c</vh></v>
+<v t="ekr.20080624093059.24"><vh>Fixed minor spelling bug</vh></v>
+<v t="ekr.20080624093059.25"><vh>Fixed spell bug: words containing unicode characters aren't saved properly</vh></v>
+<v t="ekr.20080624093059.26"><vh>Fixed coloring bugs in reformatParagraph and c.redraw</vh></v>
+<v t="ekr.20080624093059.27"><vh>Fixed missing redraw problem</vh></v>
+<v t="ekr.20080624093059.28"><vh>Fixed new-headline problem</vh></v>
+<v t="ekr.20080624093059.29"><vh>Fixed recent crasher</vh></v>
+<v t="ekr.20080624093059.30"><vh>Fixed encoding problems with paste from clipboard</vh></v>
+<v t="ekr.20080624093059.31"><vh>Changed installer to support leo-as-a-package</vh></v>
 </v>
-<v t="ekr.20080622082853.379"><vh>Features</vh>
-<v t="ekr.20080622082853.380"><vh>Remove useTextWidget option from leoKeys.py</vh></v>
-<v t="ekr.20080622082853.381"><vh>Set use_sax = True always</vh></v>
-<v t="ekr.20080622082853.385"><vh>Added g.unified_nodes</vh></v>
-<v t="ekr.20080622082853.386"><vh>Added install nodes re Leo's home directory</vh></v>
-<v t="ekr.20080622082853.408"><vh>Added support for @bool fixedWindow option</vh></v>
-<v t="ekr.20080622082853.459"><vh>Added new key-handling</vh></v>
-<v t="ekr.20080622082853.465"><vh>New drawing/focus code</vh></v>
-<v t="ekr.20080622082853.479"><vh>Improved end of calltips</vh></v>
-<v t="ekr.20080622082853.480"><vh>Find character crosses lines</vh></v>
-<v t="ekr.20080622082853.481"><vh>Added os.curdir to sys.path if possible</vh></v>
-<v t="ekr.20080622082853.482"><vh>Added support for single-config option</vh></v>
-<v t="ekr.20080622082853.484"><vh>Finished Tracer class</vh></v>
-<v t="ekr.20080622082853.496"><vh>Rewrote option-parsing code using optparse</vh></v>
-<v t="ekr.20080622082853.497"><vh>Added @bool cleo_color_ignore = True</vh></v>
-<v t="ekr.20080622082853.498"><vh>Set cwd in read/write commands</vh></v>
-<v t="ekr.20080622082853.547"><vh>Added  vim patches</vh>
+<v t="ekr.20080624093059.32"><vh>Features</vh>
+<v t="ekr.20080624093059.33"><vh>Remove useTextWidget option from leoKeys.py</vh></v>
+<v t="ekr.20080624093059.34"><vh>Set use_sax = True always</vh></v>
+<v t="ekr.20080624093059.35"><vh>Added g.unified_nodes</vh></v>
+<v t="ekr.20080624093059.36"><vh>Added install nodes re Leo's home directory</vh></v>
+<v t="ekr.20080624093059.37"><vh>Added support for @bool fixedWindow option</vh></v>
+<v t="ekr.20080624093059.38"><vh>Added new key-handling</vh></v>
+<v t="ekr.20080624093059.39"><vh>New drawing/focus code</vh></v>
+<v t="ekr.20080624093059.40"><vh>Improved end of calltips</vh></v>
+<v t="ekr.20080624093059.41"><vh>Find character crosses lines</vh></v>
+<v t="ekr.20080624093059.42"><vh>Added os.curdir to sys.path if possible</vh></v>
+<v t="ekr.20080624093059.43"><vh>Added support for single-config option</vh></v>
+<v t="ekr.20080624093059.44"><vh>Finished Tracer class</vh></v>
+<v t="ekr.20080624093059.45"><vh>Rewrote option-parsing code using optparse</vh></v>
+<v t="ekr.20080624093059.46"><vh>Added @bool cleo_color_ignore = True</vh></v>
+<v t="ekr.20080624093059.47"><vh>Set cwd in read/write commands</vh></v>
+<v t="ekr.20080624093059.48"><vh>Added  vim patches</vh>
+<v t="ekr.20080624093059.49"><vh>Realization</vh></v>
+<v t="ekr.20080624093059.50"><vh>Problems</vh></v>
+<v t="ekr.20080624093059.51"><vh>Notes</vh></v>
+</v>
+<v t="ekr.20080624093059.52"><vh>Added 'kill' bindings</vh></v>
+<v t="ekr.20080624093059.53"><vh>Added check for empty @nosent nodes</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20080611105410.149"><vh>Vim notes</vh>
 <v t="ekr.20080611105410.6"><vh>Realization</vh></v>
-<v t="ekr.20080611105410.150"><vh>Problems</vh></v>
+<v t="ekr.20080611105410.150"><vh>Open issues</vh></v>
 <v t="ekr.20080611105410.151"><vh>Notes</vh></v>
 </v>
-<v t="ekr.20080622082853.551"><vh>Added 'kill' bindings</vh></v>
-<v t="ekr.20080622082853.558"><vh>Added check for empty @nosent nodes</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
-<v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050816073412.1"><vh>Introduction</vh>
-<v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
-<v t="ekr.20050823082517"><vh>Using Leo as an outliner</vh></v>
-</v>
-<v t="ekr.20050824151926"><vh>Unique features of Leo</vh>
-<v t="ekr.20050822173420.1"><vh>Derived files</vh></v>
-<v t="ekr.20050822173420.2"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20050827055403"><vh>Outline structure is significant everywhere</vh></v>
-<v t="ekr.20050822173420.3"><vh>Leo directives</vh></v>
-</v>
-<v t="ekr.20050827102655"><vh>Leo for Programmers</vh>
-<v t="ekr.20050827090532"><vh>Quick start for programmers</vh></v>
-<v t="ekr.20050829081318"><vh>Beginner`s reference guide</vh>
-<v t="ekr.20050827155902"><vh>Syntax of section names</vh></v>
-<v t="ekr.20050827061847"><vh>Code and doc parts</vh></v>
-<v t="ekr.20050828205054"><vh>Directives for programming</vh></v>
-<v t="ekr.20050828161117"><vh>Orphan nodes</vh></v>
-<v t="ekr.20050828103319"><vh>Sentinel lines</vh></v>
-<v t="ekr.20050827162537"><vh>Leo and literate programming</vh></v>
-</v>
-<v t="ekr.20050827094813"><vh>Good style and bad:  sections vs. @others</vh></v>
-<v t="ekr.20050822173420.5"><vh>Scripting Leo</vh></v>
-<v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
-<v t="ekr.20050827090802"><vh>Further study</vh></v>
-</v>
-<v t="ekr.20050816073824"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
+<v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
+<v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
+<v t="TL.20080622103911.4"><vh>General commands</vh></v>
+<v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
+<v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+<v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 </vnodes>
@@ -5153,6 +5137,346 @@ The code is pretty fragile; it should handle either None or "", but in fact it r
 <t tx="EKR.20040628095213.513"></t>
 <t tx="EKR.20040628100535">@killcolor</t>
 <t tx="EKR.20040628100535.1"></t>
+<t tx="TL.20080622103911.1">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+.. June 11, 2008
+
+|back| |leo| |next|
+
+############################################################
+Chapter 22: Using Vim Bindings with Leo
+############################################################
+
+This chapter describes Leo's vim-like bindings, including how to install them.
+
+.. contents::
+</t>
+<t tx="TL.20080622103911.2">.. Links
+
+.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |back| image:: arrow_lt.gif
+    :target: IPythonBridge.html
+
+.. |leo|  image:: leo.gif
+    :target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: appendices.html
+</t>
+<t tx="TL.20080622103911.3">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
+so that it is not a descendant of the "@ignore Unused key bindings" node.
+Then restart Leo.</t>
+<t tx="TL.20080622103911.4">The following commands are always available.
+
+State change commands::
+
+    i           Change state to insert from command state
+    Esc         Change state to command from insert state
+    Ctrl-[      Change state to command from insert state
+
+Miscellaneous commands::
+
+    :e          Revert
+    :w&lt;return&gt;  Save '.leo' file
+    :wq&lt;return&gt; Save '.leo' file and quit Leo
+    :q&lt;return&gt;  Quit Leo   (Leo will prompt if file not saved)
+    ZZ          Save leo file and exit
+
+    u           Undo previous command
+    Ctrl-r      Redo previous command
+
+    Tab         Toggle focus between Outline and Body pane
+    =           Simulate double-click on current node's icon box
+    Alt-G       Go to specified line number (relative to derived file)
+</t>
+<t tx="TL.20080622103911.5">Move cursor commands::
+
+    h           Go back 1 character
+       LtArrow  Mapped to "h" for convenience
+    j           Go down 1 line
+       DnArrow  Mapped to "j" for convenience
+    k           Go up 1 line
+       UpArrow  Mapped to "k" for convenience
+    l           Go forward 1 character
+       RtArrow  Mapped to "l" for convenience
+
+    w           Go to the next word (stop at non-alpha characters)
+       W        Mapped to "w" until "stop after blank characters" supported
+    b           Go to beginning of word (stop at non-alpha characters)
+       B        Mapped to "b" until "stop at blank character" supported
+    e           Go to end of word (stop at non-alpha characters)
+       E        Mapped to "e" until "stop at blank character" supported
+
+    |           Goto beginning of current line
+    ^           Go to 1st non-blank character on current line
+    $           Goto end of current line
+
+    (           Go to beginning of current sentence
+    )           Go to beginning of next sentence
+    {           Go to beginning of current paragraph
+    }           Go to beginning of next paragraph
+
+    %           Go to matching bracket
+
+    gg          Go to the first line (Cursor at column 1)
+    G           Go to the last line  (Cursor at column 1)
+
+    `.          Go to location of last edit (regardless of buffer)
+    '.          Go to beginning of line of last edit (regardless of buffer)
+    
+Insert/substitute commands::
+    
+    a           Insert at cursor
+    i           Mapped to "a" until "cursor on a character" supported
+    A           Insert at end of line
+    I           Insert at first non-space
+    o           Open new line below current line
+    O           Open new line above current line
+    R           Overwrite text
+    s           Substitute character (Delete character, enter insert state)
+    S           Substitute line (Delete line, enter insert state)
+    
+Change commands::
+
+    C           Change to end of line
+    cc          Change all of current line
+    cw          Change to end of word
+    cb          Change to beginning of word
+    c)          Delete to end of sentence
+    c(          Delete to beginning of sentence
+    c}          Delete to end of paragraph
+    c{          Delete to beginning of paragraph
+    c%          Change from current bracket type its matching bracket type
+    ct&lt;char&gt;    Selects forward to &lt;char&gt; (follow with 'i' to change selection)
+    cT&lt;char&gt;    Selects backward to &lt;char&gt; (follow with 'i' to change selection)
+    
+Delete commands::
+
+    x           Delete next character
+    delete      Delete next character
+    D           Delete to the end of the current line
+    dd          Delete current line
+    dw          Delete to end of word
+    db          Delete to beginning of word
+    d)          Delete to end of sentence
+    d(          Delete to beginning of sentence
+    d}          Delete to end of paragraph
+    d{          Delete to start of paragraph
+    d%          Delete from current bracket type to its apposing bracket
+    dt&lt;ch&gt;      Delete to character (not limited to current line)
+    J           Join next line to end of current line (deletes carriage return)
+    
+Yank text commands::
+
+    Y           Yank to end of line
+    yy          Yank line
+    yw          Yank to beginning of next word
+    yb          Yank to beginning of current word
+    y)          Yank to end of sentence
+    y(          Yank to beginning of sentence
+    y}          Yank to end of paragraph
+    y{          Yank to beginning of paragraph
+    y%          Yank from current bracket type to its opposing bracket
+    yt&lt;char&gt;    Select forward to &lt;char&gt;  (use 'y&lt;cr&gt;' to yank selection)
+    yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
+
+    v           Toggle text select mode (Vim's "visual" mode)
+    y&lt;cr&gt;       Yank selected text (Vim uses 'y')
+    
+Paste text commands::
+
+    Paste commands do not differentiate between yanked lines or partial lines.
+    Put cursor at beginning of line (key '|') before pasting full lines.
+    
+    P           Paste text in clipboard before cursor location
+      p         Mapped to "P" until character based cursor supported.
+
+Find commands::
+
+    /           Find next occurrence of user specified string
+    ?           Find previous occurrence of user specified string
+    f           Find next occurrence of user specified character
+    F           Find previous occurrence of user specified character
+    n           Find next occurrence of string specified by '/' command
+    N           Find previous occurrence of string specified by '/' command
+
+Indent line commands::
+
+    &gt;&gt;          Indent the current line
+    &gt;)          Indent to the end of sentence
+    &gt;(          Indent to the beginning of sentence
+    &gt;}          Indent to the end of paragraph
+    &gt;{          Indent to the beginning of paragraph
+    &gt;g          Indent to the start of buffer
+    &gt;G          Indent to the end of buffer
+    &lt;&lt;          Remove all indentation on the current line
+    &lt;)          Remove all indentation to the end of sentence
+    &lt;(          Remove all indentation to the beginning of sentence
+    &lt;}          Remove all indentation to the end of paragraph
+    &lt;{          Remove all indentation to the beginning of paragraph
+    
+Scroll commands::
+
+    Ctrl-b      Scroll text up by pane's height
+    Ctrl-f      Scroll text down by pane's height
+       Ctrl-y   Mapped to Ctrl-b until scroll up one line is supported
+       Ctrl-e   Mapped to Ctrl-f until scroll down one line is supported
+       Ctrl-u   Mapped to Ctrl-b until scroll up half a pane height is supported
+       Ctrl-d   Mapped to Ctrl-f until scroll down half a pane height is supported
+
+Window commands::
+
+    Ctrl-w s    Open another view into current node's body (Vim: Split window)
+       Ctrl-w n Mapped to "Ctrl-w s" (Vim: New buffer in split window)
+    Ctrl-w w    Switch to next view (Vim: Go to up/left window w/wrapping)
+       Ctrl-w p Mapped to "Ctrl-w w" (Vim: Cycle through windows)
+       Ctrl-w k Mapped to "Ctrl-w w" (Vim: Go to window above current window)
+       Ctrl-w j Mapped to "Ctrl-w w" (Vim: Go to window below current window)
+    Ctrl-w c    Close current view in body pane (Vim: Close current window)
+       Ctrl-w q Mapped to "Ctrl-w c" (Vim: Quit current window)
+    
+Node commands::
+
+    Ctrl-j      Go to next visible node
+    Ctrl-k      Go to previous visible node
+    Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
+    Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
+
+       Ctrl-DnArrow  Mapped to "Ctrl-j" for convenience
+       Ctrl-UpArrow  Mapped to "Ctrl-k" for convenience
+       Ctrl-LtArrow  Mapped to "Ctrl-h" for convenience
+       Ctrl-RtArrow  Mapped to "Ctrl-l" for convenience
+
+Notable vi commands **not** supported in the Body pane::
+
+    t&lt;char&gt;     Move cursor to character before specified character
+    r           Replace a single character with a single character
+    &lt;num&gt;G      Go to specified line number
+    0           Go to 1st column in current line (Use '|' instead)
+    bksp        Move one character to the left
+    m&lt;label&gt;    Mark cursor location (and "'" and "`" to return to mark)
+    ~           Toggle character's case
+    .           Repeat last editing command
+    ;           Repeat last cursor movement command
+    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
+    z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+</t>
+<t tx="TL.20080622103911.6">The following commands are supported when in a headline's command mode.
+
+State change commands::
+
+    Ctrl-i          Change state to command from grayed state
+    return          Change state to command from insert state
+    Ctrl-]          Change state to grayed from command state
+
+Headline editing commands::
+
+    |               Go to Beginning of line
+    $               Go to end of line
+    %               Go to matching bracket
+    e               Go to end of word (stop at non-alpha characters)
+    E               Select to end of word
+    w               Go to beginning of next word
+    W               Select to beginning of next word
+
+    h               Go to previous character
+       LtArrow      Mapped to 'h' for convenience
+    l               Go to next character
+       RtArrow      Mapped to "l" for convenience
+
+    f               Find next occurrence of user specified character
+    /               Find next occurrence of user specified string
+    n               Find next occurrence of last search string
+    N               Find previous occurrence of last search string
+
+    x               Delete next character
+    delete          Delete next character
+    dd              kill-line 
+
+    s               Select current character
+
+    C               Select to end of line (follow with 'i' to change text)
+    cc              Delete line (follow with 'i' to change text)
+
+    D               Select to end of line (follow with 'x' to delete text)
+    dd              Delete line
+
+    Y               Select to end of line (follow with 'y&lt;return&gt;' to yank text)
+    yy              Select line (follow with 'y&lt;return&gt;' to yank text)
+
+    v               Toggle text select mode
+    y&lt;return&gt;       Yank selected text
+    
+Node commands::
+
+    G               Go to the outline's last node
+    gg              Go to the outline's first node
+
+    Ctrl-j          Go to next visible node
+    Ctrl-k          Go to previous visible node
+    Ctrl-h          Hide sub-nodes or, if hidden, go up 1 level
+    Ctrl-l          Display sub-nodes or, if displayed, go down 1 level
+
+       j            Mapped to "Ctrl-j" for convenience
+       DnArrow      Mapped to "Ctrl-j" for convenience
+       k            Mapped to "Ctrl-k" for convenience
+       UpArrow      Mapped to "Ctrl-k" for convenience
+
+       Ctrl-DnArrow Mapped to "Ctrl-j" for convenience
+       Ctrl-UpArrow Mapped to "Ctrl-k" for convenience
+       Ctrl-LtArrow Mapped to "Ctrl-h" for convenience
+       Ctrl-RtArrow Mapped to "Ctrl-l" for convenience
+
+    Shift-Ctrl-k    Move node down
+    Shift-Ctrl-h    Move node left
+    Shift-Ctrl-l    Move node right
+    Shift-Ctrl-j    Move node up
+
+       Shift-Ctrl-DnArrow    Mapped to "Shift-Ctrl-k" for convenience
+       Shift-Ctrl-LtArrow    Mapped to "Shift-Ctrl-h" for convenience
+       Shift-Ctrl-RtArrow    Mapped to "Shift-Ctrl-l" for convenience
+       Shift-Ctrl-UpArrow    Mapped to "Shift-Ctrl-j" for convenience
+
+    m               Toggle node mark
+    Ctrl-m          Go to next marked node
+    Alt-m           Clear all marked nodes
+
+    t               Clone the current node (transclude)
+    Ctrl-t          Go to next clone of current node
+
+    Ctrl-o          Insert-node
+
+    Ctrl-x          Delete node
+    Ctrl-c          Yank node
+    Ctrl-v          Paste node
+
+Scroll commands::
+
+   Ctrl-y          Scroll outline up one line
+   Ctrl-e          scroll outline down one line
+       Ctrl-u       Mapped to Ctrl-y until scroll up by half a pane supported
+       Ctrl-d       Mapped to Ctrl-e until scroll down by half a pane supported
+       Ctrl-b       Mapped to Ctrl-y until scroll up by pane's height supported
+       Ctrl-f       Mapped to Ctrl-e until scroll down by pane's height supported
+</t>
+<t tx="TL.20080622103911.7">-----------------------
+
+|back| |leo| |next|</t>
 <t tx="bob.20080110214217"></t>
 <t tx="bob.20080110214217.1">gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
@@ -30230,6 +30554,400 @@ to be reviewed and merged to trunk.
 
 -- Ville M. Vainio - vivainio.googlepages.com</t>
 <t tx="ekr.20080611105410.6">Leo Configuration:
+	The following configuration was used for all testing:
+		@strings  top_level_unbound_key_action = command
+		@bool stayInTreeAfterEditHeadline = True
+		@bool stayInTreeAfterSelect = True
+		@bool outline_pane_has_initial_focus = True
+
+Leo's Panes:
+	A "pane" is a area of the screen containing a user interface
+	dedicated to supporting a common set of tasks.  Vi key mappings are
+	associated with the Outline pane, the Body pane, or to the Leo
+	program.  See the no pane (see "General Commands" below). (Outline
+	pane, Body pane)
+
+Leo's Command/Insert States:
+	Command state - Denoted by a blue background color (Outline,Body pane)
+		Keys are mapped to commands.
+	Insert state - Denoted by a red background color (Outline,Body pane)
+		Keys pressed are inserted into the text.
+	Grayed state - Denoted by a gray background color (Outline pane)
+		Keys pressed will cause the next node with a headline starting
+		with that key to be selected.  This "select node by first
+		character" feature is built into Leo. It is not part of the vi
+		support.
+		
+		This state is intentionally avoided in the vi based outline key
+		mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+		"Command" state.  The "Grayed" state can be entered from the
+		outline's "Command" state by pressing the Ctrl-] key.
+
+Leo's modes:
+Most vi commands are implemented using Leo's "mode" functionality.
+Modes beginning with "vi-" denote a vi command for the body pane.
+Modes beginning with "tree-" denote a vi-like command for the outline.
+Modes beginning with "body-" denote outline commands that can be called
+from the body pane (and return focus back to the body pane)
+
+Modes are used both for managing multi-key vi commands and for defining
+macros.
+	
+	Multi-key command modes:
+	Vi has many commands that require multiple keys to invoke.  Each key
+	accept the last in the command are assigned to a mode that, when
+	executed, maps the subsequent allowed keys in the command sequence.
+	The last key in the sequence is mapped directly to a Leo command or
+	to a "Macro" mode (see below). Any modes mapped to a key by another
+	mode are located in a child node of the mode node doing the mapping.
+	
+	Example:
+	    dtw = Delete To the 'W' character (note the capital letters)
+	  The 'd' key is mapped to vi-delete-object
+	  vi-delete-object maps the 't' key to vi-delete-to-char
+	  vi-delete-to-char contains Leo commands to perform the vi command.
+
+	Macros modes:
+	Most vi commands do not have an equivalent Leo command.  Instead, a
+	series of Leo commands must be issued to emulate the vi command.
+	The Leo commands needed to emulate a vi command are placed in a
+	single @mode node.
+
+Code limitations:
+	Current character:
+	Vi implementations normally use two different "current character"
+	designators depending on the current state.
+
+		Insert state:
+		In the Insert state, a vertical bar is placed between two
+		characters to indicate where the next key will be inserted.
+		Leo's cursor is always of this type regardless of the state.
+
+		Command state: 
+		In the Command state, vi expects that the cursor is highlighting
+		a current character and provides commands to enter the insert
+		state or paste text either before or after that current
+		character.  Leo's vi emulation currently does not support a
+		"current character" cursor. As a result, inserting and pasting
+		before or after is replaced by inserting or pasting "at" the
+		current cursor location.  For example, the 'i' and 'a' command
+		are both mapped to enter the insert state at the current cursor
+		location.
+
+	Conditional code execution:
+	No conditional command invocation exits.  Instead, conditional
+	branching is replace by setup commands that insure that, regardless
+	of current state, the command performs correctly.  For example,
+	Beginning-of-line command will go to previous line if called when
+	cursor is at beginning of line.  Vi requires that '|' always goes to
+	beginning of current line.  Problme is solved by issueing
+	forward-char command to insure cursor is moved off of the beginning
+	of the line before beginning-of-line command is issued.
+
+	Commands requesting user input:
+	Commands getting user input must be the last command within the
+	mode.  See "Commands getting user input" in Problems section below.
+
+	Edit headings using modes:
+	Commands modifying or selecting headline text do not work correctly
+	within a mode.  See "Editing headlines within modes" in Problems
+	section below.  This eliminates accurate implementation of vi's
+	delete/change/substitute/yank object commands.  Instead, the
+	commands are modified to only select text.
+
+</t>
+<t tx="ekr.20080611105410.147">@language rest
+</t>
+<t tx="ekr.20080611105410.149">@nocolor
+</t>
+<t tx="ekr.20080611105410.150">Binding numeric keys:
+Mapping a number to a command or mode prevents the number from being
+entered as text while in the insert state.
+ 
+ Binding Arrow keys:
+ Binding arrow keys, with or without Shift, Ctrl, Alt, and their
+ combinations, to comamnds or modes have no effect. 
+
+Binding 'bksp' key:
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+
+Commands getting user input:
+Commands requesting user input must be the last command executed.  These
+commands include: find-character and zap-to-character.
+
+Editing headlines within modes:
+Text editing commands do not work within modes assigned to outline key
+mappings.
+
+Undo command:
+Using the "undo" command (key 'u') to undo a change to a node's headline
+works better if, first, another node is selected and then the edited node
+is reselected (key sequence "Ctrl-k, Ctrl-j).
+
+Matching bracket command:
+Performs bracket matching on Body text when in node's headline command
+state.
+
+Word definition:
+Different Leo commands detect word boundries differently.
+
+Toggle case:
+Leo provides support for switching to upper or lower case but no method |
+exists to toggle between cases.
+
+Forward and backward by sentence:
+Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+at empty lines nor do they skip over periods within words nor do they stop
+at sentences ending in non-periods nor do they stop at the end or
+beginning of the buffer.
+
+Focus to Body pane:
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+Displaying mode help:
+The "--&gt; mode-help" command displays all mapped keys using a capitol
+letter regardless of the actual binding.
+	Recommendations:
+	To better support narrow tab cards, display the mode's label without
+	the "enter-" and "-mode" text and place key label before mode label.
+	Results in change from:
+	               enter-vi-delete-line-mode D
+	   enter-vi-delete-to-begin-of-word-mode B 
+	to:
+	   D : vi-delete-line
+	   B : vi-delete-to-begin-of-word
+</t>
+<t tx="ekr.20080611105410.151">Yank vs. Yank:
+  A vi "yank" operation copies the selected text TO the clipboard.
+  A Leo "yank" operation inserts text FROM the clipboard.
+
+copy-text in modes:
+  Leo's copy-text does not work within a mode.  As a result, all "copy to
+  clipboard" capability is being implemented using kill-&lt;object&gt; command
+  followed by Leo's "yank" command to put text back.
+
+paste-text in modes:
+  paste-text in modes does not work.  Use Leo's "yank" instead.
+
+delete-node does not copy node to clipboard:
+  Issue copy-node command followed by delete-node
+</t>
+<t tx="ekr.20080624093059.1">Leo 4.5 beta 1                      June 23, 2008
+
+Leo 4.5 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5 features three major code revisions and many bug fixes.
+There are no remaining major reorganizations left to do.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+- A major revision of Leo's node structures, compatible with so-called unified nodes.
+- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
+- A major revision of Leo's outline drawing and focus handling code.
+  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
+- The beginning of usable vim-like bindings.  More support is coming.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080624093059.2"></t>
+<t tx="ekr.20080624093059.3"></t>
+<t tx="ekr.20080624093059.4">On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob &lt;bhossley@ieee.org&gt; wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.</t>
+<t tx="ekr.20080624093059.5"></t>
+<t tx="ekr.20080624093059.6">http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
+</t>
+<t tx="ekr.20080624093059.7">Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.</t>
+<t tx="ekr.20080624093059.8">find-word
+=========
+This command is supposed to:
+
+"Put the cursor at the next word (on a line) that starts with a
+character"
+
+It does not. You have to type in a whole word to get any result and
+even then
+it only selects the word it does not move the cursor to it.
+
+
+goto-charachter
+==============
+'''Put the cursor at the n'th character of the buffer.'''
+
+Doesn't do anything.</t>
+<t tx="ekr.20080624093059.9">http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
+</t>
+<t tx="ekr.20080624093059.10"></t>
+<t tx="ekr.20080624093059.11">Leo's running, so I create a new outline with File-&gt;New
+
+Then I save as in a location where foo.py exists.
+
+The I create a node '@auto foo.py'
+
+Then I use File-&gt;Read/Write-&gt;Read @auto (with that node selected)
+
+Leo says it can't read it.
+
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.</t>
+<t tx="ekr.20080624093059.12">http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
+</t>
+<t tx="ekr.20080624093059.13"></t>
+<t tx="ekr.20080624093059.14">findAll now just creates undo info for clone-find-all for one inserted node.</t>
+<t tx="ekr.20080624093059.15"></t>
+<t tx="ekr.20080624093059.16"></t>
+<t tx="ekr.20080624093059.17">exception executing command
+Traceback (most recent call last):
+ File "C:\_Proj\Leo\key-handling\leo\src\leoCommands.py", line 298, in doCommand
+   val = command(event)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 2946, in insertNewLine
+   self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 3104, in insertNewlineHelper
+   w.setInsertPoint(i+1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+truncating headline to one line
+</t>
+<t tx="ekr.20080624093059.18"></t>
+<t tx="ekr.20080624093059.19"></t>
+<t tx="ekr.20080624093059.20"></t>
+<t tx="ekr.20080624093059.21"></t>
+<t tx="ekr.20080624093059.22">http://groups.google.com/group/leo-editor/browse_thread/thread/35a8ea2024036623s</t>
+<t tx="ekr.20080624093059.23">http://sourceforge.net/forum/forum.php?thread_id=1858451&amp;forum_id=10228
+</t>
+<t tx="ekr.20080624093059.24">http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
+</t>
+<t tx="ekr.20080624093059.25"></t>
+<t tx="ekr.20080624093059.26"></t>
+<t tx="ekr.20080624093059.27">Changed c.outerUpdate and added c.bind and c.bind2.</t>
+<t tx="ekr.20080624093059.28"></t>
+<t tx="ekr.20080624093059.29">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 311, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 4781, in selectAllText
+    return w.selectAllText()
+AttributeError: Canvas instance has no attribute 'selectAllText'
+</t>
+<t tx="ekr.20080624093059.30"></t>
+<t tx="ekr.20080624093059.31">http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
+</t>
+<t tx="ekr.20080624093059.32"></t>
+<t tx="ekr.20080624093059.33"></t>
+<t tx="ekr.20080624093059.34"></t>
+<t tx="ekr.20080624093059.35">- Made t arg optional in vnode ctor.
+
+- Removed the t arg from insertAsX.  Affects these plugins:
+
+wrote:     base64Packager.py
+wrote:     macros.py
+wrote:     table.py
+wrote:     templates.py
+wrote:     xsltWithNodes.py
+
+Search for tnode.</t>
+<t tx="ekr.20080624093059.36">Leo puts several files in the home directory: .leoID.txt,
+.leoRecentFiles.txt, and myLeoSettings.leo.  There are various fallback directories if there is no home directory.
+
+If you want more details, you can do what I did: do a clone-find-all for homeDir.
+
+As for how the home directory is set, the code to do this is g.computeHomeDir.  We get the home directory with
+
+home = os.getenv('HOME',default=None)
+
+There are some mind-numbing details to be handled if there os.getenv does, in fact, return a directory.</t>
+<t tx="ekr.20080624093059.37">Leo suppresses marks, expansion state, orphan bits and current
+position bits when writing fixed .leo files.  As a result, all nodes
+will be collapsed and the root node will always be selected when Leo
+opens a fixed .leo file.
+
+When writing fixed .leo files, Leo writes fixed, immutable, reasonable
+defaults for window size, position and body-outline ratio.
+Specifically, width,height,left,top = 700,500,50,50 and the ratio is
+0.5. These values are written so older versions of Leo can read fixed
+files.
+
+You make a file fixed by putting '@bool fixedWindow = True' in the
+@settings tree of a particular .leo file.  The file will be fixed
+after you save the file, reload the file, and save the file again.
+Yes, this is clumsy, but it only has to be done once.  A toggle-fixed
+file command doesn't seem that useful: using an @bool node is simple
+and clear.
+
+You can optionally specify the size and position on the screen of
+fixed .leo files by putting an '@data fixedWindowPosition' node in the
+@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+**not** put such a node in the fixed .leo file itself--everyone who
+opens the file would get that fixed position.
+
+The body of the '@data fixedWindowPosition' node should contain
+something like this:
+
+# Must be four entries: width,height,left,top.
+# Put this in myLeoSettings.leo, **not** in individual .leo files.
+
+1200
+800
+50
+50
+
+Leo uses reasonable defaults for fixed .leo files if this node does
+not exist, or contains something other than 4 numbers, one per line. </t>
+<t tx="ekr.20080624093059.38">This allows substantially simpler key bindings. Indeed, most per-pane bindings
+have been eliminate.</t>
+<t tx="ekr.20080624093059.39"></t>
+<t tx="ekr.20080624093059.40"># Added ')' at end.</t>
+<t tx="ekr.20080624093059.41"></t>
+<t tx="ekr.20080624093059.42">This is necessary to simulate operation as a package.</t>
+<t tx="ekr.20080624093059.43">This code appears to have been reverted in such a way that it never got pushed to launchpad.</t>
+<t tx="ekr.20080624093059.44">This is a Python 'debugger' that computes a call graph.
+
+To trace a function and its callers, put the following at the function's start::
+
+    g.startTracer()</t>
+<t tx="ekr.20080624093059.45"></t>
+<t tx="ekr.20080624093059.46">This determines whether cleo colors @ignore headlines. The default is True.</t>
+<t tx="ekr.20080624093059.47">This affect the following commands:
+
+open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.</t>
+<t tx="ekr.20080624093059.48">Headline pane:
+
+- Prevented "--&gt; exit-named-modes" from switching focus to the Body pane.
+    Removed 'c.frame.log.deleteTab('Mode') from endMode
+
+Body pane:
+
+- Enabled search for 'space' character in text
+    Removed 'if ch.isspace(): return' in zapToCharacter:
+
+- Eliminated delete-word from removing trailing white space
+    Removed 'self.killWs(event)' in killWord and backwardKillWord
+
+- Put zapped text to clipboard
+    Added 'g.app.gui.replaceClipboardWith(s[ins:i])' after 'sel.addToKillBuffer(s[ins:i])' in zapToCharacter
+    
+@nocolor</t>
+<t tx="ekr.20080624093059.49">Leo Configuration:
     | The following configuration was used for all testing:
         @strings  top_level_unbound_key_action = command
         @bool stayInTreeAfterEditHeadline = True
@@ -30330,289 +31048,7 @@ Code limitations:
     | section below.  This eliminates accurate implementation of vi's
     | delete/change/substitute/yank object commands.  Instead, the
     | commands are modified to only select text.</t>
-<t tx="ekr.20080611105410.7">The following commands are always available.
-
-Scroll commands::
-
-    Ctrl-b  scroll-up
-    Ctrl-f  scroll-down
-    Ctrl-u  scroll-up       (should scroll 1/2 screen)
-    Ctrl-d  scroll-down         ditto
-    Ctrl-y  scroll-up       (should scroll 1 line)
-    Ctrl-e  scroll-down         ditto
-
-State change commands::
-
-    i       Change state to insert from command state
-    Ctrl-[  Change state to command from insert state
-    Esc     Change state to command from insert state
-
-Miscellaneous commands::
-
-    :e          Revert
-    :w&lt;return&gt;  Save file
-    :wq         Save and quit
-    :q&lt;return&gt;  Quit
-
-    Ctrl-s  Save '.leo' file
-    u       Undo previous command
-    Ctrl-r  Redo previous command
-    Tab     Toggle focus between Outline and Body pane
-    =       Simulate double-click on current node's icon box
-    Alt-G   Go to specified line number (relative to derived file)
-     Z      save-buffers-kill-leo
-</t>
-<t tx="ekr.20080611105410.8">The following commands are supported when in a headline's command mode.
-
-Headline editing commands::
-
-    |               Go to Beginning of line 
-    $               Go to end of line
-    %               match-brackets
-    /               search-forward
-    RtArrow         back-char
-    b               back-word
-    B               back-word-extend-selection
-    C               end-of-line-extend-selection
-    D               end-of-line-extend-selection           (Temporary workaround)
-    db              delete to beginning of word
-    dd              kill-line 
-    dt&lt;ch&gt;          delete to character   
-    dw              Delete to end of word
-    delete          delete-char
-    e               forward-end-word
-    E               forward-end-word-extend-selection
-    f               Find character
-    F               backward-find-character
-    h               back-char
-    l               forward-char
-    RtArrow         forward-char
-    n               find-next
-    N               find-prev
-    s               forward-char-extend-selection
-    s               Select current character
-    S               select-all
-    v               toggle-extend-mode
-    w               forward-word
-    W               forward-word-extend-selection
-    x               delete-char
-    Y               end-of-line-extend-selection
-    Alt-y           copy-text   
-    
-..  c   enter-tree-select-object-mode  
-
-Node commands::
-
-    G               Go to the outline's last node
-    gg              Go to the outline's first node
-    m               Toggle node mark
-    t               Clone (transclude) node
-
-    Alt-m           Clear all marked nodes
-    Ctrl-c          Yank node
-    Ctrl-h          contract-or-go-left
-    Ctrl-j          Go to next visible node
-    Ctrl-k          Go to previous visible node
-    Ctrl-l          expand-and-go-right
-    Ctrl-m          Go to next marked node
-    Ctrl-t          Go to next cloned node
-    Ctrl-O          Insert-node
-    Ctrl-x          Delete node
-    Ctrl-v          Paste node
-
-    Shift-Ctrl-k    Move node down
-    Shift-Ctrl-h    Move node left
-    Shift-Ctrl-l    Move node right
-    Shift-Ctrl-j    Move node up
-
-    Shift-Ctrl-DnArrow    Move node down
-    Shift-Ctrl-LtArrow    Move node left
-    Shift-Ctrl-RtArrow    Move node right
-    Shift-Ctrl-UpArrow    Move node up
-
-    DnArrow         Go to next visible node
-    UpArrow         Go to previous visible node
-    Ctrl-LtArrow    expand-or-go-left
-    Ctrl-RtArrow    contract-or-go-left
-
-State change commands::
-
-    Ctrl-i          Change state to command from grayed state
-    return          Change state to command from insert state
-    Ctrl-]          Change state to grayed from command state
-
-</t>
-<t tx="ekr.20080611105410.9">Change commands::
-
-    C           Change to end of line
-    cc          Change to end of line
-    cw          Change to end of word
-    cb          Change to beginning of word
-    c)          Delete to end of sentence
-    c(          Delete to beginning of sentence
-    c}          Delete to end of paragraph
-    c{          Delete to beginning of paragraph
-    c%          Change from current bracket type its matching bracket type
-    
-Delete/join commands::
-
-    dw          Delete to end of word
-    db          Delete to beginning of word
-    d)          Delete to end of sentence
-    d(          Delete to beginning of sentence
-    d}          Delete to end of paragraph
-    d{          Delete to start of paragraph
-    d%          Delete from current bracket type to its apposing bracket
-    dt&lt;ch&gt;      Delete to character (not limited to current line)
-    D           Delete to the end of the current line
-    x           delete-char
-    delete      delete-char
-    J           Join next line to end of current line
-    
-Find commands::
-
-    /           search-forward
-    ?           search-backward
-    f           find-character
-    F           backward-find-character
-    n           find-next
-    N           find-prev
-
-Indent/Unindent line commands::
-
-    &gt;&gt;          Indent line
-    &gt;)          Indent to end of sentence
-    &gt;(          Indent to beginning of sentence
-    &gt;}          Indent to end of paragraph
-    &gt;{          Indent to beginning of paragraph
-    &gt;g          Indent to start of buffer
-    &gt;G          Indent to end of buffer
-    &lt;&lt;          Unindent current line
-    &lt;)          Unindent to end of sentence
-	&lt;(          Unindent to beginning of sentence
-	&lt;}          Unindent to end of paragraph
-    &lt;{          Unindent to beginning of paragraph
-    
-Insert/substitute commands::
-    
-    a           Insert at cursor
-    A           Insert at end of line
-    i           Insert at cursor
-    I           Insert at first non-space
-    o           Open new line below current line
-    O           Open new line above current line
-    R           Overwrite text
-    s           Substitute character (Delete character, enter insert state)
-    S           Substitute line (Delete line, enter insert state)
-    
-Move cursor commands::
-
-    ^           back-to-indentation
-    $           Goto end of current line
-    %           match-brackets
-    |           Goto beginning of current line
-    (           back-sentence
-    )           forward-sentence
-    {           back-paragraph
-    }           forward-paragraph
-    -           Goto beginning of current line
-    b           back-word
-    B           back-word
-    e           forward-end-word
-    E           forward-end-word
-    gg          beginning-of-buffer
-    G           end-of-buffer (at beginning-of-line)
-    h           back-char
-    j           next-line
-    k           previous-line
-    l           forward-char
-    w           forward-word (no before/after support)
-    W           forward-word
-    Ctrl-g      goto-line
-    DnArrow     next-line
-    LtArrow     back-char
-    RtArrow     forward-char
-    UpArrow     previous-line
-    
-Window commands::
-
-    Ctrl-w s    add-editor           = s   (split current window)
-    Ctrl-w n    add-editor           = n   (should open "New" blank window)
-    Ctrl-w w    cycle-editor-focus   = w
-    Ctrl-w p    cycle-editor-focus   = p
-    Ctrl-w c    delete-editor        = c
-    Ctrl-w q    delete-editor        = q
-    
-Yank/paste text commands::
-
-    Y           Yank to end of line
-    yy          Yank line
-    yw          Yank to beginning of next word
-    yb          Yank to beginning of current word
-    y)          Yank to end of sentence
-    y(          Yank to beginning of sentence
-    y}          Yank to end of paragraph
-    y{          Yank to beginning of paragraph
-    y%          Yank from current bracket type to its opposing bracket
-    Alt-y       Yank selected text
-    v           toggle-extend-mode
-    p           paste-text  (To paste a line before current: use '-p')
-    P           Paste text before cursor
-
-The following vi commands are **not** supported in the Body pane::
-
-    cf&lt;char&gt;    Change up to and including specified character
-    ct&lt;char&gt;    Change up to specified character
-    yf&lt;char&gt;    Yank up to and including specified character
-    yt&lt;char&gt;    Yank up to specified character
-    t&lt;char&gt;     Move cursor to character before specified character
-    r           Replace a single character with a single character
-    ?           Search backwards
-    1G          Use 'gg' instead
-    0           Use '-' instead
-    bksp        Move one character to the left
-    m&lt;label&gt;    Mark text
-    `           Mark text
-    '           Goto marked text
-    ~           Toggle character's case
-    .           Repeat last command
-    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
-    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Performing the command on/upto n'th object
-    Ctrl-u      Move cursor up  1/2 screen
-    Ctrl-d      Move cursor down 1/2 screen
-    Ctrl-e      Slide buffer up (leaving cursor on same line)
-    Ctrl-y      Slide buffer down (leaving cursor on same line)
-    z           Slide buffer to put current line at top
-    z.          Slide buffer to put current line at middle
-    z-          Slide buffer to put current line at bottom
-</t>
-<t tx="ekr.20080611105410.147">@language rest
-</t>
-<t tx="ekr.20080611105410.148">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = False
-verbose=True
-@c
-
-.. June 11, 2008
-
-|back| |leo| |next|
-
-############################################################
-Chapter 22: Using Vim Bindings with Leo
-############################################################
-
-This chapter describes Leo's vim-like bindings, including how to install them.
-
-.. contents::
-</t>
-<t tx="ekr.20080611105410.150">Binding numeric keys:
+<t tx="ekr.20080624093059.50">Binding numeric keys:
 | Mapping a number to a command or mode prevents the number from being
 | entered as text while in the insert state.
 
@@ -30677,7 +31113,7 @@ Displaying mode help:
     | to:
     |    D : vi-delete-line
     |    B : vi-delete-to-begin-of-word</t>
-<t tx="ekr.20080611105410.151">Yank vs. Yank
+<t tx="ekr.20080624093059.51">Yank vs. Yank
 | A vi "yank" operation copies the selected text TO the clipboard.
 | A Leo "yank" operation inserts text FROM the clipboard.
 
@@ -30691,243 +31127,8 @@ paste-text in modes:
 
 delete-node does not copy node to clipboard:
 | Issue copy-node command followed by delete-node</t>
-<t tx="ekr.20080611105410.152">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
-so that it is not a descendant of the "@ignore Unused key bindings" node.
-Then restart Leo.</t>
-<t tx="ekr.20080611105410.155">.. Links
-
-.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: IPythonBridge.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: appendices.html
-</t>
-<t tx="ekr.20080611105410.156">-----------------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20080622082853.29">Leo 4.5 beta 1                      June 23, 2008
-
-Leo 4.5 beta 1 is now available at:
-http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 features three major code revisions and many bug fixes.
-There are no remaining major reorganizations left to do.
-
-Leo is a text editor, data organizer, project manager and much more. See:
-http://webpages.charter.net/edreamleo/intro.html
-
-The highlights of Leo 4.5:
---------------------------
-- A major revision of Leo's node structures, compatible with so-called unified nodes.
-- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
-- A major revision of Leo's outline drawing and focus handling code.
-  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
-- The beginning of usable vim-like bindings.  More support is coming.
-- Many small improvements and bug fixes.
-
-Links:
-------
-Leo:      http://webpages.charter.net/edreamleo/front.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/project/showfiles.php?group_id=3458
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080622082853.31"></t>
-<t tx="ekr.20080622082853.56"></t>
-<t tx="ekr.20080622082853.58">On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob &lt;bhossley@ieee.org&gt; wrote:
-
-I installed Leo 4.4..8 final on Ubuntu.  The installation failed
-because the installation put files in /usr/lib/leo/leo.  The
-duplicated leo is a mistake.
-On line 13 of install I changed:
-LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
-to
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-With the change the installation worked.</t>
-<t tx="ekr.20080622082853.59"></t>
-<t tx="ekr.20080622082853.60">http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
-</t>
-<t tx="ekr.20080622082853.66">Trying to edit the minibuffer, when I backspace to a character and
-press delete the cursor moves to the end of the buffer and deletes the
-last character instead.</t>
-<t tx="ekr.20080622082853.69">find-word
-=========
-This command is supposed to:
-
-"Put the cursor at the next word (on a line) that starts with a
-character"
-
-It does not. You have to type in a whole word to get any result and
-even then
-it only selects the word it does not move the cursor to it.
-
-
-goto-charachter
-==============
-'''Put the cursor at the n'th character of the buffer.'''
-
-Doesn't do anything.</t>
-<t tx="ekr.20080622082853.93">http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
-</t>
-<t tx="ekr.20080622082853.99"></t>
-<t tx="ekr.20080622082853.100">Leo's running, so I create a new outline with File-&gt;New
-
-Then I save as in a location where foo.py exists.
-
-The I create a node '@auto foo.py'
-
-Then I use File-&gt;Read/Write-&gt;Read @auto (with that node selected)
-
-Leo says it can't read it.
-
-I close the leo file, re-open in from the recent files menu of the
-outline that spawned it, and the @auto file is read no problems.</t>
-<t tx="ekr.20080622082853.113">http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
-</t>
-<t tx="ekr.20080622082853.122"></t>
-<t tx="ekr.20080622082853.126">findAll now just creates undo info for clone-find-all for one inserted node.</t>
-<t tx="ekr.20080622082853.130"></t>
-<t tx="ekr.20080622082853.133"></t>
-<t tx="ekr.20080622082853.134">exception executing command
-Traceback (most recent call last):
- File "C:\_Proj\Leo\key-handling\leo\src\leoCommands.py", line 298, in doCommand
-   val = command(event)
- File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 2946, in insertNewLine
-   self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
- File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 3104, in insertNewlineHelper
-   w.setInsertPoint(i+1)
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
-truncating headline to one line
-</t>
-<t tx="ekr.20080622082853.138"></t>
-<t tx="ekr.20080622082853.143"></t>
-<t tx="ekr.20080622082853.146"></t>
-<t tx="ekr.20080622082853.189"></t>
-<t tx="ekr.20080622082853.190">http://groups.google.com/group/leo-editor/browse_thread/thread/35a8ea2024036623s</t>
-<t tx="ekr.20080622082853.196">http://sourceforge.net/forum/forum.php?thread_id=1858451&amp;forum_id=10228
-</t>
-<t tx="ekr.20080622082853.290">http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
-</t>
-<t tx="ekr.20080622082853.292"></t>
-<t tx="ekr.20080622082853.295"></t>
-<t tx="ekr.20080622082853.308">Changed c.outerUpdate and added c.bind and c.bind2.</t>
-<t tx="ekr.20080622082853.352"></t>
-<t tx="ekr.20080622082853.372">Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 311, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 4781, in selectAllText
-    return w.selectAllText()
-AttributeError: Canvas instance has no attribute 'selectAllText'
-</t>
-<t tx="ekr.20080622082853.374"></t>
-<t tx="ekr.20080622082853.378">http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
-</t>
-<t tx="ekr.20080622082853.379"></t>
-<t tx="ekr.20080622082853.380"></t>
-<t tx="ekr.20080622082853.381"></t>
-<t tx="ekr.20080622082853.385">- Made t arg optional in vnode ctor.
-
-- Removed the t arg from insertAsX.  Affects these plugins:
-
-wrote:     base64Packager.py
-wrote:     macros.py
-wrote:     table.py
-wrote:     templates.py
-wrote:     xsltWithNodes.py
-
-Search for tnode.</t>
-<t tx="ekr.20080622082853.386">Leo puts several files in the home directory: .leoID.txt,
-.leoRecentFiles.txt, and myLeoSettings.leo.  There are various fallback directories if there is no home directory.
-
-If you want more details, you can do what I did: do a clone-find-all for homeDir.
-
-As for how the home directory is set, the code to do this is g.computeHomeDir.  We get the home directory with
-
-home = os.getenv('HOME',default=None)
-
-There are some mind-numbing details to be handled if there os.getenv does, in fact, return a directory.</t>
-<t tx="ekr.20080622082853.408">Leo suppresses marks, expansion state, orphan bits and current
-position bits when writing fixed .leo files.  As a result, all nodes
-will be collapsed and the root node will always be selected when Leo
-opens a fixed .leo file.
-
-When writing fixed .leo files, Leo writes fixed, immutable, reasonable
-defaults for window size, position and body-outline ratio.
-Specifically, width,height,left,top = 700,500,50,50 and the ratio is
-0.5. These values are written so older versions of Leo can read fixed
-files.
-
-You make a file fixed by putting '@bool fixedWindow = True' in the
-@settings tree of a particular .leo file.  The file will be fixed
-after you save the file, reload the file, and save the file again.
-Yes, this is clumsy, but it only has to be done once.  A toggle-fixed
-file command doesn't seem that useful: using an @bool node is simple
-and clear.
-
-You can optionally specify the size and position on the screen of
-fixed .leo files by putting an '@data fixedWindowPosition' node in the
-@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
-**not** put such a node in the fixed .leo file itself--everyone who
-opens the file would get that fixed position.
-
-The body of the '@data fixedWindowPosition' node should contain
-something like this:
-
-# Must be four entries: width,height,left,top.
-# Put this in myLeoSettings.leo, **not** in individual .leo files.
-
-1200
-800
-50
-50
-
-Leo uses reasonable defaults for fixed .leo files if this node does
-not exist, or contains something other than 4 numbers, one per line. </t>
-<t tx="ekr.20080622082853.459">This allows substantially simpler key bindings. Indeed, most per-pane bindings
-have been eliminate.</t>
-<t tx="ekr.20080622082853.465"></t>
-<t tx="ekr.20080622082853.479"># Added ')' at end.</t>
-<t tx="ekr.20080622082853.480"></t>
-<t tx="ekr.20080622082853.481">This is necessary to simulate operation as a package.</t>
-<t tx="ekr.20080622082853.482">This code appears to have been reverted in such a way that it never got pushed to launchpad.</t>
-<t tx="ekr.20080622082853.484">This is a Python 'debugger' that computes a call graph.
-
-To trace a function and its callers, put the following at the function's start::
-
-    g.startTracer()</t>
-<t tx="ekr.20080622082853.496"></t>
-<t tx="ekr.20080622082853.497">This determines whether cleo colors @ignore headlines. The default is True.</t>
-<t tx="ekr.20080622082853.498">This affect the following commands:
-
-open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.</t>
-<t tx="ekr.20080622082853.547">Headline pane:
-
-- Prevented "--&gt; exit-named-modes" from switching focus to the Body pane.
-    Removed 'c.frame.log.deleteTab('Mode') from endMode
-
-Body pane:
-
-- Enabled search for 'space' character in text
-    Removed 'if ch.isspace(): return' in zapToCharacter:
-
-- Eliminated delete-word from removing trailing white space
-    Removed 'self.killWs(event)' in killWord and backwardKillWord
-
-- Put zapped text to clipboard
-    Added 'g.app.gui.replaceClipboardWith(s[ins:i])' after 'sel.addToKillBuffer(s[ins:i])' in zapToCharacter
-    
-@nocolor</t>
-<t tx="ekr.20080622082853.551"></t>
-<t tx="ekr.20080622082853.558">These are now treated much like empty @auto nodes</t>
+<t tx="ekr.20080624093059.52"></t>
+<t tx="ekr.20080624093059.53">These are now treated much like empty @auto nodes</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

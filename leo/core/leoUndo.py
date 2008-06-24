@@ -1374,19 +1374,20 @@ class undoer:
 
         '''Redo the operation undone by the last undo.'''
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; trace = True
         # g.trace(g.callers(7))
 
         if not u.canRedo():
-            # g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
+            if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead+1):
             g.trace('no bead') ; return
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        # g.trace(u.undoType)
-        # g.trace(u.bead+1,len(u.beads),u.peekBead(u.bead+1))
+        if trace:
+            g.trace(u.undoType)
+            g.trace(u.bead+1,len(u.beads),u.peekBead(u.bead+1))
         u.redoing = True 
         u.groupCount = 0
 
@@ -1701,19 +1702,20 @@ class undoer:
 
         """Undo the operation described by the undo parameters."""
 
-        u = self ; c = u.c
+        u = self ; c = u.c ; trace = True
         # g.trace(g.callers(7))
 
         if not u.canUndo():
-            # g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
+            if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead):
             g.trace('no bead') ; return
         if not c.currentPosition():
             g.trace('no current position') ; return
 
-        # g.trace(u.undoType)
-        # g.trace(len(u.beads),u.bead,u.peekBead(u.bead))
+        if trace:
+            g.trace(u.undoType)
+            g.trace(len(u.beads),u.bead,u.peekBead(u.bead))
         u.undoing = True
         u.groupCount = 0
 
