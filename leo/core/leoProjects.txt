@@ -4607,7 +4607,7 @@ control_types = [
     'if','ifgui','ifhostname','ifplatform','ignore','mode',
     'openwith','page','settings','shortcuts',
     'buttons','menus', # New in Leo 4.4.4.
-    'popup', # New in Leo 4.4.8.
+    'menuat', 'popup', # New in Leo 4.4.8.
     ]
 
 # Keys are settings names, values are (type,value) tuples.
@@ -4646,7 +4646,7 @@ def __init__ (self,c,localFlag):
         'ints':         self.doInts,
         'float':        self.doFloat,
         'menus':        self.doMenus, # New in 4.4.4
-
+        'menuat':       self.doMenuat,
         'popup': self.doPopup, # New in 4.4.8
 
         'mode':         self.doMode, # New in 4.4b1.
@@ -4994,6 +4994,7 @@ def doMenus (self,p,kind,name,val):
     if self.localFlag:
         self.set(p,kind='menus',name='menus',val=aList)
     else:
+        g.es_print('Using menus from',c.shortFileName(),color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
 #@+node:ekr.20070926141716:doItems
@@ -5240,6 +5241,112 @@ def doPopupItems (self,p,aList):
 #@nonl
 #@-node:bobjack.20080324141020.5:doPopupItems
 #@-node:bobjack.20080324141020.4:doPopup & helper
+#@+node:tbrown.20080514112857.124:doMenuat
+def doMenuat (self,p,kind,name,val):
+
+    if g.app.config.menusList:
+        g.es_print("Patching menu tree: " + name)
+
+        # get the patch fragment
+        patch = []
+        if p.hasChildren():
+            # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
+            self.doItems(p.copy(),patch)
+            self.dumpMenuTree(patch)
+
+        # setup        
+        parts = name.split()
+        if len(parts) != 3:
+            parts.append('subtree')
+        targetPath,mode,source = parts
+        if not targetPath.startswith('/'): targetPath = '/'+targetPath
+
+        ans = self.patchMenuTree(g.app.config.menusList, targetPath)
+
+        if ans:
+            g.es_print("Patching ("+mode+' '+source+") at "+targetPath)
+
+            list_, idx = ans
+
+            if mode not in ('copy', 'cut'):
+                if source != 'clipboard':
+                    use = patch # [0][1]
+                else:
+                    if isinstance(self.clipBoard, list):
+                        use = self.clipBoard
+                    else:
+                        use = [self.clipBoard]
+                g.es_print(str(use))
+            if mode == 'replace':
+                list_[idx] = use.pop(0)
+                while use:
+                    idx += 1
+                    list_.insert(idx, use.pop(0))
+            elif mode == 'before':
+                while use:
+                    list_.insert(idx, use.pop())
+            elif mode == 'after':
+                while use:
+                    list_.insert(idx+1, use.pop())
+            elif mode == 'cut':
+                self.clipBoard = list_[idx]
+                del list_[idx]
+            elif mode == 'copy':
+                self.clipBoard = list_[idx]
+                g.es_print(str(self.clipBoard))
+            else:  # append
+                list_.extend(use)
+        else:
+            g.es_print("ERROR: didn't find menu path " + targetPath)
+
+    else:
+        g.es_print("ERROR: @menuat found but no menu tree to patch")
+#@+node:tbrown.20080514180046.9:getName
+def getName(self, val, val2=None):
+    if val2 and val2.strip(): val = val2
+    val = val.split('\n',1)[0]
+    for i in "*.-& \t\n":
+        val = val.replace(i,'')
+    return val.lower()
+#@nonl
+#@-node:tbrown.20080514180046.9:getName
+#@+node:tbrown.20080514180046.2:dumpMenuTree
+def dumpMenuTree (self,aList,level=0,path=''):
+
+    for z in aList:
+        kind,val,val2 = z
+        if kind == '@item':
+            name = self.getName(val, val2)
+            g.es_print('%s %s (%s) [%s]' % ('    '*(level+0), val, val2, path+'/'+name))
+        else:
+            name = self.getName(kind.replace('@menu ',''))
+            g.es_print('%s %s... [%s]' % ('    '*(level), kind, path+'/'+name))
+            self.dumpMenuTree(val,level+1,path=path+'/'+name)
+#@-node:tbrown.20080514180046.2:dumpMenuTree
+#@+node:tbrown.20080514180046.8:patchMenuTree
+def patchMenuTree(self, orig, targetPath, path=''):
+
+    for n,z in enumerate(orig):
+        kind,val,val2 = z
+        if kind == '@item':
+            name = self.getName(val, val2)
+            curPath = path+'/'+name
+            if curPath == targetPath:
+                g.es_print('Found '+targetPath)
+                return orig, n
+        else:
+            name = self.getName(kind.replace('@menu ',''))
+            curPath = path+'/'+name
+            if curPath == targetPath:
+                g.es_print('Found '+targetPath)
+                return orig, n
+            ans = self.patchMenuTree(val, targetPath, path=path+'/'+name)
+            if ans:
+                return ans
+
+    return None
+#@-node:tbrown.20080514180046.8:patchMenuTree
+#@-node:tbrown.20080514112857.124:doMenuat
 #@-node:ekr.20041120094940:kind handlers (parserBaseClass)
 #@+node:ekr.20041124063257:munge
 def munge(self,s):
@@ -5916,6 +6023,7 @@ def doMenus (self,p,kind,name,val):
     if self.localFlag:
         self.set(p,kind='menus',name='menus',val=aList)
     else:
+        g.es_print('Using menus from',c.shortFileName(),color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
 #@+node:ekr.20070926141716:doItems
@@ -8434,6 +8542,1104 @@ leo, I suggest we use
 
 python /usr/local/lib/core/runLeo.py "$@"
 #@-node:ekr.20080528093133.3:Changed installer to support leo-as-a-package
+#@+node:ekr.20080623083646.2:Fixed undo problem
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
+
+Its difficult to nail down the exact circumstances and results.
+
+The following does not show all the problems I have been experiencing
+but it does serve to show that undo/redo is broken.
+
+In a new window do  Ctrl-I 1, Ctrl-I 2, Ctrl-I 3, to insert three
+headlines named 1,2 and 3. Go back to 1 and insert 1 in the body, same
+with 2 and 3.
+
+Now use undo repeatedly to go back as far as you can, then use redo to
+go as far forward as you can.
+
+Observe the results.
+
+Now do the same but revert leo to a pre-big-change version first.
+
+In the old leo you will end up with three nodes 1,2,3 with 1,2,3 in
+there respective bodies, just as one should expect, but in the new leo
+you won't.
+
+I'll try to find repeatable ways of demonstrating some of the other
+problems.
+
+Bob
+
+@color
+#@nonl
+#@+node:ekr.20080623083646.10:dumpBead
+def dumpBead (self,n):
+
+    u = self
+
+    if n < 0 or n >= len(u.beads):
+        return 'no bead: n = ',n
+
+    bunch = u.beads[n] ; result = []
+    result.append('-' * 10)
+    result.append('len(u.beads): %s, n: %s' % (len(u.beads),n))
+    for ivar in ('kind','newP','newN','p','oldN','undoHelper'):
+        result.append('%s = %s' % (ivar,getattr(self,ivar)))
+    return '\n'.join(result)
+
+def dumpTopBead(self):
+
+    n = len(u.beads)
+    if n > 0:
+        return dumpBead(n-1)
+    else:
+        return '<no top bead>'
+
+@ self.afterTree = None
+    self.beforeTree = None
+    self.dirtyVnodeList = None
+    self.kind = None
+    self.newBack = None
+    self.newBody = None
+    self.newHead = None
+    self.newMarked = None
+    self.newN = None
+    self.newP = None
+    self.newParent = None
+    self.newRecentFiles = None
+    self.newTree = None
+    self.oldBack = None
+    self.oldBody = None
+    self.oldHead = None
+    self.oldMarked = None
+    self.oldN = None
+    self.oldParent = None
+    self.oldRecentFiles = None
+    self.oldTree = None
+    self.pasteAsClone = None
+#@nonl
+#@-node:ekr.20080623083646.10:dumpBead
+#@+node:ekr.20031218072017.2030:redo & helpers...
+def redo (self,event=None):
+
+    '''Redo the operation undone by the last undo.'''
+
+    u = self ; c = u.c ; trace = False
+
+    if not u.canRedo():
+        if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
+        return
+    if not u.getBead(u.bead+1):
+        g.trace('no bead') ; return
+    if not c.currentPosition():
+        g.trace('no current position') ; return
+
+    if trace: g.trace(u.dumpBead(u.bead))
+
+    u.redoing = True 
+    u.groupCount = 0
+
+    c.beginUpdate()
+    try:
+        c.endEditing()
+        if u.redoHelper: u.redoHelper()
+        else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+    finally:
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.endUpdate()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.redoing = False
+        u.bead += 1
+        u.setUndoTypes()
+#@nonl
+#@+node:ekr.20050424170219:redoClearRecentFiles
+def redoClearRecentFiles (self):
+
+    u = self ; c = u.c
+
+    g.app.recentFiles = u.newRecentFiles[:]
+    c.recentFiles = u.newRecentFiles[:]
+
+    c.frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20050424170219:redoClearRecentFiles
+#@+node:ekr.20050412083057:redoCloneNode
+def redoCloneNode (self):
+
+    u = self ; c = u.c
+
+    if u.newBack:
+        u.newP._linkAfter(u.newBack)
+    elif u.newParent:
+        u.newP._linkAsNthChild(u.newParent,0)
+    else:
+        oldRoot = c.rootPosition()
+        u.newP._linkAsRoot(oldRoot)
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+
+    u.newP.v._computeParentsOfChildren()
+    u.newP._parentVnode()._computeParentsOfChildren()
+
+    c.selectPosition(u.newP)
+#@-node:ekr.20050412083057:redoCloneNode
+#@+node:EKR.20040526072519.2:redoDeleteNode
+def redoDeleteNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.deleteOutline()
+    c.selectPosition(u.newP)
+#@-node:EKR.20040526072519.2:redoDeleteNode
+#@+node:ekr.20080425060424.9:redoDemote
+def redoDemote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode()
+    n = u.p.childIndex()
+
+    # Remove the moved nodes from the parent's children.
+    parent_v.t.children = parent_v.t.children[:n+1]
+
+    # Add the moved nodes to p's children
+    u.p.v.t.children.extend(u.followingSibs)
+
+    # Adjust the parent links of all moved nodes.
+    u.p.v._computeParentsOfChildren(children=u.followingSibs)
+
+    c.setCurrentPosition(u.p)
+#@-node:ekr.20080425060424.9:redoDemote
+#@+node:ekr.20050318085432.6:redoGroup
+def redoGroup (self):
+
+    '''Process beads until the matching 'afterGroup' bead is seen.'''
+
+    u = self
+
+    # Remember these values.
+    c = u.c
+    dirtyVnodeList = u.dirtyVnodeList or []
+    newSel = u.newSel
+    p = u.p.copy()
+
+    u.groupCount += 1
+
+    bunch = u.beads[u.bead] ; count = 0
+    if not hasattr(bunch,'items'):
+        g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+    else:
+        c.beginUpdate()
+        try:
+            for z in bunch.items:
+                self.setIvarsFromBunch(z)
+                if z.redoHelper:
+                    # g.trace(z.redoHelper)
+                    z.redoHelper() ; count += 1
+                else:
+                    g.trace('oops: no redo helper for %s' % u.undoType)
+        finally:
+            c.endUpdate(False)
+
+    u.groupCount -= 1
+
+    u.updateMarks('new') # Bug fix: Leo 4.4.6.
+
+    for v in dirtyVnodeList:
+        v.t.setDirty()
+
+    if not g.unitTesting:
+        g.es("redo",count,"instances")
+
+    c.selectPosition(p)
+    if newSel: c.frame.body.setSelectionRange(newSel)
+#@nonl
+#@-node:ekr.20050318085432.6:redoGroup
+#@+node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
+def redoHoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.hoist()
+
+def redoDehoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.dehoist()
+#@-node:ekr.20050412085138.1:redoHoistNode & redoDehoistNode
+#@+node:ekr.20050412084532:redoInsertNode
+def redoInsertNode (self):
+
+    u = self ; c = u.c
+
+    # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
+
+    if u.newBack:
+        u.newP._linkAfter(u.newBack)
+    elif u.newParent:
+        u.newP._linkAsNthChild(u.newParent,0)
+    else:
+        oldRoot = c.rootPosition()
+        u.newP._linkAsRoot(oldRoot)
+
+    # Restore all vnodeLists (and thus all clone marks).
+    u.newP._restoreLinksInTree()
+
+    if u.pasteAsClone:
+        for bunch in u.afterTree:
+            t = bunch.t
+            if u.newP.v.t == t:
+                c.setBodyString(u.newP,bunch.body)
+                c.setHeadString(u.newP,bunch.head)
+            else:
+                t.setBodyString(bunch.body)
+                t.setHeadString(bunch.head)
+            # g.trace(t,bunch.head,bunch.body)
+
+    c.selectPosition(u.newP)
+#@-node:ekr.20050412084532:redoInsertNode
+#@+node:ekr.20050526125801:redoMark
+def redoMark (self):
+
+    u = self ; c = u.c
+
+    u.updateMarks('new')
+
+    if u.groupCount == 0:
+
+        for v in u.dirtyVnodeList:
+            v.t.setDirty()
+
+        c.selectPosition(u.p)
+#@nonl
+#@-node:ekr.20050526125801:redoMark
+#@+node:ekr.20050411111847:redoMove
+def redoMove (self):
+
+    u = self ; c = u.c ; v = u.p.v
+    assert(u.oldParent_v)
+    assert(u.newParent_v)
+    assert(v)
+
+    # Adjust the children arrays.
+    assert u.oldParent_v.t.children[u.oldN] == v
+    del u.oldParent_v.t.children[u.oldN]
+    u.newParent_v.t.children.insert(u.newN,v)
+
+    # Recompute the parent links.
+    u.newParent_v._computeParentsOfChildren()
+
+    u.updateMarks('new')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+
+    c.selectPosition(u.newP)
+#@-node:ekr.20050411111847:redoMove
+#@+node:ekr.20050318085432.7:redoNodeContents
+def redoNodeContents (self):
+
+    u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+
+    # Restore the body.
+    u.p.setBodyString(u.newBody)
+    w.setAllText(u.newBody)
+    c.frame.body.recolor(u.p,incremental=False)
+
+    # Restore the headline.
+    u.p.initHeadString(u.newHead)
+    c.frame.tree.setHeadline(u.p,u.newHead) # New in 4.4b2.
+
+    # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
+
+    if u.groupCount == 0 and u.newSel:
+        u.c.frame.body.setSelectionRange(u.newSel)
+
+    u.updateMarks('new')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+#@-node:ekr.20050318085432.7:redoNodeContents
+#@+node:ekr.20080425060424.13:redoPromote
+def redoPromote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode()
+
+    # Add the children to parent_v's children.
+    n = u.p.childIndex() + 1
+    z = parent_v.t.children[:]
+    parent_v.t.children = z[:n]
+    parent_v.t.children.extend(u.children)
+    parent_v.t.children.extend(z[n:])
+
+    # Remove v's children.
+    u.p.v.t.children = []
+
+    # Adjust the parent links of all moved nodes.
+    parent_v._computeParentsOfChildren(children=u.children)
+
+    c.setCurrentPosition(u.p)
+#@-node:ekr.20080425060424.13:redoPromote
+#@+node:ekr.20080425060424.4:redoSort
+def redoSort (self):
+
+    u = self ; c = u.c
+
+    parent_v = u.p._parentVnode()
+    parent_v.t.children = u.newChildren
+    c.setPositionAfterSort(u.sortChildren)
+#@nonl
+#@-node:ekr.20080425060424.4:redoSort
+#@+node:ekr.20050318085432.8:redoTree
+def redoTree (self):
+
+    '''Redo replacement of an entire tree.'''
+
+    u = self ; c = u.c
+
+    u.p = self.undoRedoTree(u.p,u.oldTree,u.newTree)
+    c.selectPosition(u.p) # Does full recolor.
+    if u.newSel:
+        c.frame.body.setSelectionRange(u.newSel)
+#@-node:ekr.20050318085432.8:redoTree
+#@+node:EKR.20040526075238.5:redoTyping
+def redoTyping (self):
+
+    u = self ; c = u.c ; current = c.currentPosition()
+    w = c.frame.body.bodyCtrl
+
+    # selectPosition causes recoloring, so avoid if possible.
+    if current != u.p:
+        c.selectPosition(u.p)
+    elif u.undoType in ('Cut','Paste','Clear Recent Files'):
+        c.frame.body.forceFullRecolor()
+
+    self.undoRedoText(
+        u.p,u.leading,u.trailing,
+        u.newMiddleLines,u.oldMiddleLines,
+        u.newNewlines,u.oldNewlines,
+        tag="redo",undoType=u.undoType)
+
+    u.updateMarks('new')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+
+    if u.newSel:
+        c.bodyWantsFocusNow()
+        i,j = u.newSel
+        w.setSelectionRange(i,j,insert=j)
+    if u.yview:
+        c.bodyWantsFocusNow()
+        c.frame.body.setYScrollPosition(u.yview)
+#@-node:EKR.20040526075238.5:redoTyping
+#@-node:ekr.20031218072017.2030:redo & helpers...
+#@+node:ekr.20031218072017.2039:undo & helpers...
+def undo (self,event=None):
+
+    """Undo the operation described by the undo parameters."""
+
+    u = self ; c = u.c ; trace = False
+
+    if not u.canUndo():
+        if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
+        return
+    if not u.getBead(u.bead):
+        g.trace('no bead') ; return
+    if not c.currentPosition():
+        g.trace('no current position') ; return
+
+    if trace: g.trace(u.dumpBead(u.bead))
+
+    u.undoing = True
+    u.groupCount = 0
+
+    c.beginUpdate()
+    try:
+        c.endEditing()
+        if u.undoHelper: u.undoHelper()
+        else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+    finally:
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.endUpdate()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.undoing = False
+        u.bead -= 1
+        u.setUndoTypes()
+#@nonl
+#@+node:ekr.20050424170219.1:undoClearRecentFiles
+def undoClearRecentFiles (self):
+
+    u = self ; c = u.c
+
+    g.app.recentFiles = u.oldRecentFiles[:]
+    c.recentFiles = u.oldRecentFiles[:]
+
+    c.frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20050424170219.1:undoClearRecentFiles
+#@+node:ekr.20050412083057.1:undoCloneNode
+def undoCloneNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.newP)
+    c.deleteOutline()
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty() # Bug fix: Leo 4.4.6
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050412083057.1:undoCloneNode
+#@+node:ekr.20050412084055:undoDeleteNode
+def undoDeleteNode (self):
+
+    u = self ; c = u.c
+
+    if u.oldBack:
+        u.p._linkAfter(u.oldBack)
+    elif u.oldParent:
+        u.p._linkAsNthChild(u.oldParent,0)
+    else:
+        oldRoot = c.rootPosition()
+        u.p._linkAsRoot(oldRoot)
+
+    # Restore all vnodeLists (and thus all clone marks).
+    u.p._restoreLinksInTree()
+    u.p.setAllAncestorAtFileNodesDirty()
+    c.selectPosition(u.p)
+#@-node:ekr.20050412084055:undoDeleteNode
+#@+node:ekr.20080425060424.10:undoDemote
+def undoDemote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode()
+    n = len(u.followingSibs)
+
+    # Remove the demoted nodes from p's children.
+    u.p.v.t.children = u.p.v.t.children[:-n]
+
+    # Add the demoted nodes to the parent's children.
+    parent_v.t.children.extend(u.followingSibs)
+
+    # Adjust the parent links of all moved nodes.
+    parent_v._computeParentsOfChildren(children=u.followingSibs)
+
+    c.setCurrentPosition(u.p)
+#@nonl
+#@-node:ekr.20080425060424.10:undoDemote
+#@+node:ekr.20050318085713:undoGroup
+def undoGroup (self):
+
+    '''Process beads until the matching 'beforeGroup' bead is seen.'''
+
+    u = self
+
+    # Remember these values.
+    c = u.c
+    dirtyVnodeList = u.dirtyVnodeList or []
+    oldSel = u.oldSel
+    p = u.p.copy()
+
+    u.groupCount += 1
+
+    bunch = u.beads[u.bead] ; count = 0
+
+    if not hasattr(bunch,'items'):
+        g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
+    else:
+        # Important bug fix: 9/8/06: reverse the items first.
+        reversedItems = bunch.items[:]
+        reversedItems.reverse()
+        c.beginUpdate()
+        try:
+            for z in reversedItems:
+                self.setIvarsFromBunch(z)
+                # g.trace(z.undoHelper)
+                if z.undoHelper:
+                    z.undoHelper() ; count += 1
+                else:
+                    g.trace('oops: no undo helper for %s' % u.undoType)
+        finally:
+            c.endUpdate(False)
+
+    u.groupCount -= 1
+
+    u.updateMarks('old') # Bug fix: Leo 4.4.6.
+
+    for v in dirtyVnodeList:
+        v.t.setDirty() # Bug fix: Leo 4.4.6.
+
+    if not g.unitTesting:
+        g.es("undo",count,"instances")
+
+    c.selectPosition(p)
+    if oldSel: c.frame.body.setSelectionRange(oldSel)
+#@nonl
+#@-node:ekr.20050318085713:undoGroup
+#@+node:ekr.20050412083244:undoHoistNode & undoDehoistNode
+def undoHoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.dehoist()
+
+def undoDehoistNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.p)
+    c.hoist()
+#@-node:ekr.20050412083244:undoHoistNode & undoDehoistNode
+#@+node:ekr.20050412085112:undoInsertNode
+def undoInsertNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.newP)
+
+    c.deleteOutline()
+
+    if u.pasteAsClone:
+        for bunch in u.beforeTree:
+            t = bunch.t
+            if u.p.v.t == t:
+                c.setBodyString(u.p,bunch.body)
+                c.setHeadString(u.p,bunch.head)
+            else:
+                t.setBodyString(bunch.body)
+                t.setHeadString(bunch.head)
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050412085112:undoInsertNode
+#@+node:ekr.20050526124906:undoMark
+def undoMark (self):
+
+    u = self ; c = u.c
+
+    u.updateMarks('old')
+
+    if u.groupCount == 0:
+
+        for v in u.dirtyVnodeList:
+            v.t.setDirty() # Bug fix: Leo 4.4.6.
+
+        c.selectPosition(u.p)
+#@-node:ekr.20050526124906:undoMark
+#@+node:ekr.20050411112033:undoMove
+def undoMove (self):
+
+    u = self ; c = u.c ; v = u.p.v
+    assert(u.oldParent_v)
+    assert(u.newParent_v)
+    assert(v)
+
+    # Adjust the children arrays.
+    assert u.newParent_v.t.children[u.newN] == v
+    del u.newParent_v.t.children[u.newN]
+    u.oldParent_v.t.children.insert(u.oldN,v)
+
+    # Recompute the parent links.
+    u.oldParent_v._computeParentsOfChildren()
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty()
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050411112033:undoMove
+#@+node:ekr.20050318085713.1:undoNodeContents
+def undoNodeContents (self):
+
+    '''Undo all changes to the contents of a node,
+    including headline and body text, and marked bits.
+    '''
+
+    u = self ; c = u.c ;  w = c.frame.body.bodyCtrl
+
+    u.p.setBodyString(u.oldBody)
+    w.setAllText(u.oldBody)
+    c.frame.body.recolor(u.p,incremental=False)
+
+    u.p.initHeadString(u.oldHead)
+    c.frame.tree.setHeadline(u.p,u.oldHead)
+
+    if u.groupCount == 0 and u.oldSel:
+        u.c.frame.body.setSelectionRange(u.oldSel)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty() # Bug fix: Leo 4.4.6.
+#@-node:ekr.20050318085713.1:undoNodeContents
+#@+node:ekr.20080425060424.14:undoPromote
+def undoPromote (self):
+
+    u = self ; c = u.c
+    parent_v = u.p._parentVnode()
+
+    # Remove the promoted nodes from parent_v's children.
+    n = u.p.childIndex() + 1
+    z = parent_v.t.children
+    parent_v.t.children = z[:n]
+    parent_v.t.children.extend(z[n+len(u.children):])
+
+    # Add the demoted nodes to v's children.
+    u.p.t.children = u.children[:]
+
+    # Adjust the parent links of all moved nodes.
+    u.p.v._computeParentsOfChildren(children=u.children)
+
+    c.setCurrentPosition(u.p)
+#@-node:ekr.20080425060424.14:undoPromote
+#@+node:ekr.20031218072017.1493:undoRedoText
+def undoRedoText (self,p,
+    leading,trailing, # Number of matching leading & trailing lines.
+    oldMidLines,newMidLines, # Lists of unmatched lines.
+    oldNewlines,newNewlines, # Number of trailing newlines.
+    tag="undo", # "undo" or "redo"
+    undoType=None):
+
+    # __pychecker__ = '--no-argsused' # newNewlines is unused, but it has symmetry.
+
+    '''Handle text undo and redo: converts _new_ text into _old_ text.'''
+
+    u = self ; c = u.c ; w = c.frame.body.bodyCtrl
+
+    << Compute the result using p's body text >>
+    p.setBodyString(result)
+    w.setAllText(result)
+    c.frame.body.recolor(p,incremental=False)
+#@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
+# Recreate the text using the present body text.
+body = p.bodyString()
+body = g.toUnicode(body,"utf-8")
+body_lines = body.split('\n')
+s = []
+if leading > 0:
+    s.extend(body_lines[:leading])
+if len(oldMidLines) > 0:
+    s.extend(oldMidLines)
+if trailing > 0:
+    s.extend(body_lines[-trailing:])
+s = string.join(s,'\n')
+# Remove trailing newlines in s.
+while len(s) > 0 and s[-1] == '\n':
+    s = s[:-1]
+# Add oldNewlines newlines.
+if oldNewlines > 0:
+    s = s + '\n' * oldNewlines
+result = s
+
+if u.debug_print:
+    print "body:  ",body
+    print "result:",result
+#@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
+#@-node:ekr.20031218072017.1493:undoRedoText
+#@+node:ekr.20050408100042:undoRedoTree
+def undoRedoTree (self,p,new_data,old_data):
+
+    '''Replace p and its subtree using old_data during undo.'''
+
+    # Same as undoReplace except uses g.Bunch.
+
+    u = self ; c = u.c
+
+    if new_data == None:
+        # This is the first time we have undone the operation.
+        # Put the new data in the bead.
+        bunch = u.beads[u.bead]
+        bunch.newTree = u.saveTree(p.copy())
+        u.beads[u.bead] = bunch
+
+    # Replace data in tree with old data.
+    u.restoreTree(old_data)
+    c.setBodyString(p,p.bodyString())
+
+    return p # Nothing really changes.
+#@-node:ekr.20050408100042:undoRedoTree
+#@+node:ekr.20080425060424.5:undoSort
+def undoSort (self):
+
+    u = self ; c = u.c
+
+    parent_v = u.p._parentVnode()
+    parent_v.t.children = u.oldChildren
+    c.setPositionAfterSort(u.sortChildren)
+
+#@-node:ekr.20080425060424.5:undoSort
+#@+node:ekr.20050318085713.2:undoTree
+def undoTree (self):
+
+    '''Redo replacement of an entire tree.'''
+
+    u = self ; c = u.c
+
+    u.p = self.undoRedoTree(u.p,u.newTree,u.oldTree)
+    c.selectPosition(u.p) # Does full recolor.
+    if u.oldSel:
+        c.frame.body.setSelectionRange(u.oldSel)
+#@-node:ekr.20050318085713.2:undoTree
+#@+node:EKR.20040526090701.4:undoTyping
+def undoTyping (self):
+
+    u = self ; c = u.c ; current = c.currentPosition()
+    w = c.frame.body.bodyCtrl
+
+    # selectPosition causes recoloring, so don't do this unless needed.
+    if current != u.p:
+        c.selectPosition(u.p)
+    elif u.undoType in ("Cut","Paste",'Clear Recent Files'):
+        c.frame.body.forceFullRecolor()
+
+    self.undoRedoText(
+        u.p,u.leading,u.trailing,
+        u.oldMiddleLines,u.newMiddleLines,
+        u.oldNewlines,u.newNewlines,
+        tag="undo",undoType=u.undoType)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty() # Bug fix: Leo 4.4.6.
+
+    if u.oldSel:
+        c.bodyWantsFocusNow()
+        i,j = u.oldSel
+        w.setSelectionRange(i,j,insert=j)
+    if u.yview:
+        c.bodyWantsFocusNow()
+        c.frame.body.setYScrollPosition(u.yview)
+#@-node:EKR.20040526090701.4:undoTyping
+#@-node:ekr.20031218072017.2039:undo & helpers...
+#@+node:ekr.20031218072017.1193:c.deleteOutline
+def deleteOutline (self,event=None,op_name="Delete Node"):
+
+    """Deletes the selected outline."""
+
+    c = self ; cc = c.chapterController ; u = c.undoer
+    p = c.currentPosition()
+    if not p: return
+
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+
+    c.beginUpdate()
+    try:
+        c.endEditing() # Make sure we capture the headline for Undo.
+    finally:
+        c.endUpdate(False)
+
+    if cc: # Special cases for @chapter and @chapters nodes.
+        chapter = '@chapter ' ; chapters = '@chapters ' 
+        h = p.headString()
+        if h.startswith(chapters):
+            if p.hasChildren():
+                return cc.error('Can not delete @chapters node with children.')
+        elif h.startswith(chapter):
+            name = h[len(chapter):].strip()
+            if name:
+                return cc.removeChapterByName(name)
+
+    c.beginUpdate()
+    try:
+        undoData = u.beforeDeleteNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.doDelete(newNode)
+        c.selectPosition(newNode)
+        c.setChanged(True)
+        u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate()
+
+    c.validateOutline()
+#@-node:ekr.20031218072017.1193:c.deleteOutline
+#@+node:ekr.20050412085112:undoInsertNode
+def undoInsertNode (self):
+
+    u = self ; c = u.c
+
+    c.selectPosition(u.newP)
+
+    c.deleteOutline()
+
+    if u.pasteAsClone:
+        for bunch in u.beforeTree:
+            t = bunch.t
+            if u.p.v.t == t:
+                c.setBodyString(u.p,bunch.body)
+                c.setHeadString(u.p,bunch.head)
+            else:
+                t.setBodyString(bunch.body)
+                t.setHeadString(bunch.head)
+
+    c.selectPosition(u.p)
+#@-node:ekr.20050412085112:undoInsertNode
+#@+node:ekr.20050318085713.1:undoNodeContents
+def undoNodeContents (self):
+
+    '''Undo all changes to the contents of a node,
+    including headline and body text, and marked bits.
+    '''
+
+    u = self ; c = u.c ;  w = c.frame.body.bodyCtrl
+
+    u.p.setBodyString(u.oldBody)
+    w.setAllText(u.oldBody)
+    c.frame.body.recolor(u.p,incremental=False)
+
+    u.p.initHeadString(u.oldHead)
+    c.frame.tree.setHeadline(u.p,u.oldHead)
+
+    if u.groupCount == 0 and u.oldSel:
+        u.c.frame.body.setSelectionRange(u.oldSel)
+
+    u.updateMarks('old')
+
+    for v in u.dirtyVnodeList:
+        v.t.setDirty() # Bug fix: Leo 4.4.6.
+#@-node:ekr.20050318085713.1:undoNodeContents
+#@+node:ekr.20040803072955.90:head key handlers (leoTree)
+#@+node:ekr.20040803072955.91:onHeadChanged
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    c = self.c ; u = c.undoer ; w = c.edit_widget(p)
+    if c.suppressHeadChanged: return
+    if not w: return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    << truncate s if it has multiple lines >>
+    c.beginUpdate()
+    try:
+        # Make the change official, but undo to the *old* revert point.
+        oldRevert = self.revertHeadline
+        changed = s != oldRevert
+        self.revertHeadline = s
+        p.initHeadString(s)
+        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+        if changed:
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate(flag=changed,scroll=False)
+            # scroll=False in 4.4.1; flag = changed in 4.4.3.
+        if changed:
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+        else:
+            c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged
+#@+node:ekr.20040803072955.88:onHeadlineKey
+def onHeadlineKey (self,event):
+
+    '''Handle a key event in a headline.'''
+
+    w = event and event.widget or None
+    ch = event and event.char or ''
+
+    # g.trace(repr(ch),g.callers())
+
+    # Testing for ch here prevents flashing in the headline
+    # when the control key is held down.
+    if ch:
+        # g.trace(repr(ch),g.callers())
+        self.updateHead(event,w)
+
+    return 'break' # Required
+#@-node:ekr.20040803072955.88:onHeadlineKey
+#@+node:ekr.20051026083544.2:updateHead
+def updateHead (self,event,w):
+
+    '''Update a headline from an event.
+
+    The headline officially changes only when editing ends.'''
+
+    c = self.c ; k = c.k
+    ch = event and event.char or ''
+    i,j = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    if i != j: ins = i
+
+    # g.trace('w',w,'ch',repr(ch),g.callers())
+
+    if ch == '\b':
+        if i != j:  w.delete(i,j)
+        else:       w.delete(ins-1)
+        w.setSelectionRange(i-1,i-1,insert=i-1)
+    elif ch and ch not in ('\n','\r'):
+        if i != j:                              w.delete(i,j)
+        elif k.unboundKeyAction == 'overwrite': w.delete(i,i+1)
+        w.insert(ins,ch)
+        w.setSelectionRange(ins+1,ins+1,insert=ins+1)
+
+    s = w.getAllText()
+    if s.endswith('\n'):
+        # g.trace('can not happen: trailing newline')
+        s = s[:-1]
+    w.setWidth(self.headWidth(s=s))
+
+    if ch in ('\n','\r'):
+        self.endEditLabel() # Now calls self.onHeadChanged.
+#@-node:ekr.20051026083544.2:updateHead
+#@+node:ekr.20040803072955.126:endEditLabel
+def endEditLabel (self):
+
+    '''End editing of a headline and update p.headString().'''
+
+    c = self.c ; k = c.k ; p = c.currentPosition()
+
+    self.setEditPosition(None) # That is, self._editPosition = None
+
+    # Important: this will redraw if necessary.
+    self.onHeadChanged(p)
+
+    if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    if 0: # This interferes with the find command and interferes with focus generally!
+        c.bodyWantsFocus()
+#@-node:ekr.20040803072955.126:endEditLabel
+#@-node:ekr.20040803072955.90:head key handlers (leoTree)
+#@+node:ekr.20040305223522:c.setBodyString
+def setBodyString (self,p,s,encoding="utf-8"):
+
+    c = self ; v = p.v
+    if not c or not v: return
+
+    s = g.toUnicode(s,encoding)
+    current = c.currentPosition()
+    # 1/22/05: Major change: the previous test was: 'if p == current:'
+    # This worked because commands work on the presently selected node.
+    # But setRecentFiles may change a _clone_ of the selected node!
+    if current and p.v.t==current.v.t:
+        # Revert to previous code, but force an empty selection.
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+        # This code destoys all tags, so we must recolor.
+        c.recolor()
+
+    # Keep the body text in the tnode up-to-date.
+    if v.t._bodyString != s:
+        c.beginUpdate()
+        try:
+            v.setBodyString(s)
+            v.t.setSelection(0,0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+        finally:
+            c.endUpdate()
+#@-node:ekr.20040305223522:c.setBodyString
+#@+node:ekr.20060127052111.1:cutStack
+def cutStack (self):
+
+    u = self ; n = u.max_undo_stack_size
+
+    if n > 0 and u.bead >= n and not g.app.unitTesting:
+
+        # Do nothing if we are in the middle of creating a group.
+        i = len(u.beads)-1
+        while i >= 0:
+            bunch = u.beads[i]
+            if hasattr(bunch,'kind') and bunch.kind == 'beforeGroup':
+                return
+            i -= 1
+
+        # This work regardless of how many items appear after bead n.
+        # g.trace('Cutting undo stack to %d entries' % (n))
+        u.beads = u.beads[-n:]
+        u.bead = n-1
+        # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads),g.callers())
+#@-node:ekr.20060127052111.1:cutStack
+#@+node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
+if 0:
+    def getMark (self):
+
+        # __pychecker__ = '--no-classattr' # self.bead does, in fact, exist.
+
+        return self.bead
+
+    def rollbackToMark (self,n):
+
+        u = self
+
+        u.bead = n
+        u.beads = u.beads[:n+1]
+        u.setUndoTypes()
+
+    rollBackToMark = rollbackToMark
+#@-node:ekr.20050525151217:getMark & rollbackToMark (no longer used)
+#@-node:ekr.20080623083646.2:Fixed undo problem
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py
