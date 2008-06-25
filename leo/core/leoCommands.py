@@ -449,8 +449,8 @@ class baseCommands:
 
         """Create a universal command callback.
 
-        Create and return a callback that wraps a function whith an rCick
-        signature in a callback which addapts standard minibufer cammand
+        Create and return a callback that wraps a function with an rClick
+        signature in a callback which adapts standard minibufer command
         callbacks to a compatible format.
 
         This also serves to allow rClick callback functions to handle
@@ -467,19 +467,32 @@ class baseCommands:
 
             try:
                 cm = self.theContextMenuController
-                keywords = cm.mb_keywords 
+                keywords = cm.mb_keywords
             except AttributeError:
-                keywords = None
+                cm = keywords = None
 
-            if keywords:
-                keywords['mb_event'] = event  
-                cm.mb_retval = function(keywords)
-            else:
-                keywords = {'c': self, 'mb_event': event, 'rc_phase': 'minibuffer'}
-                return function(keywords)
+            if not keywords:
+                # If rClick is not loaded or no keywords dict was provided
+                #  then the command must have been issued in a minibuffer
+                #  context.
+                keywords = {'c': self, 'rc_phase': 'minibuffer'}
+
+            keywords['mb_event'] = event     
+
+            retval = None
+            try:
+                retval = function(keywords)
+            finally:
+                if cm:
+                    # Even if there is an error:
+                    #   clear mb_keywords prior to next command and
+                    #   ensure mb_retval from last command is wiped
+                    cm.mb_keywords = None
+                    cm.mb_retval = retval
 
         return minibufferCallback
 
+    #fix bobjacks spelling error
     universallCallback = universalCallback
     #@-node:bobjack.20080509080123.2:c.universalCallback
     #@+node:ekr.20031218072017.2818:Command handlers...
