@@ -874,13 +874,12 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if not g.doHook("redraw-entire-outline",c=c):
 
-            if trace: g.trace('scroll',scroll,g.callers())
             c.setTopVnode(None)
             self.setVisibleAreaToFullCanvas()
             self.drawTopTree()
             # Set up the scroll region after the tree has been redrawn.
             bbox = self.canvas.bbox('all')
-            # g.trace('canvas',self.canvas,'bbox',bbox)
+            if trace: g.trace('bbox',bbox,g.callers())
             if bbox is None:
                 x0,y0,x1,y1 = 0,0,100,100
             else:
@@ -1357,6 +1356,7 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; frame = c.frame ; trace = False
         if not p or not c.positionExists(p):
             p = c.currentPosition()
+            if trace: g.trace('*** current position',p,p.stack)
         if not p or not c.positionExists(p):
             if trace: g.trace('current p does not exist',p)
             p = c.rootPosition()
@@ -1364,6 +1364,7 @@ class leoTkinterTree (leoFrame.leoTree):
             if trace: g.trace('no position')
             return
         try:
+            if trace: g.trace('***',p,p.stack,'exists',c.positionExists(p))
             h1 = self.yoffset(p)
             if self.center_selected_tree_node: # New in Leo 4.4.3.
                 #@            << compute frac0 >>
@@ -1374,13 +1375,13 @@ class leoTkinterTree (leoFrame.leoTree):
 
                 if scrollRegion and geom:
                     scrollRegion = scrollRegion.split(' ')
-                    # g.trace('scrollRegion',repr(scrollRegion))
+                    # if trace: g.trace('scrollRegion',repr(scrollRegion))
                     htot = int(scrollRegion[3])
                     wh,junk,junk = geom.split('+')
                     junk,h = wh.split('x')
                     if h: wtot = int(h)
                     else: wtot = 500
-                    # g.trace('geom',geom,'wtot',wtot)
+                    # if trace: g.trace('geom',geom,'wtot',wtot,'htot',htot)
                     if htot > 0.1:
                         frac0 = float(h1-wtot/2)/float(htot)
                         frac0 = max(min(frac0,1.0),0.0)
@@ -1391,11 +1392,12 @@ class leoTkinterTree (leoFrame.leoTree):
                 #@-node:ekr.20061030091926:<< compute frac0 >>
                 #@nl
                 delta = abs(self.prevMoveToFrac-frac0)
-                # g.trace(delta)
+                if trace: g.trace('delta',delta)
                 if delta > 0.0:
                     self.prevMoveToFrac = frac0
                     self.canvas.yview("moveto",frac0)
-                    if trace: g.trace("frac0 %1.2f %3d %3d %3d" % (frac0,h1,htot,wtot))
+                    if trace: g.trace("frac0 %1.2f h1 %3d htot %3d wtot %3d" % (
+                        frac0,h1,htot,wtot),g.callers())
             else:
                 last = c.lastVisible()
                 nextToLast = last.visBack(c)
@@ -1431,12 +1433,14 @@ class leoTkinterTree (leoFrame.leoTree):
                     if self.prevMoveToFrac != frac:
                         self.prevMoveToFrac = frac
                         self.canvas.yview("moveto",frac)
-                        if trace: g.trace("frac  %1.2f %3d %3d %1.2f %1.2f" % (frac, h1,h2,lo,hi))
+                        if trace: g.trace("frac  %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                            frac, h1,h2,lo,hi),g.callers())
                 elif frac2 + (hi - lo) >= hi: # frac2 is for scrolling up.
                     if self.prevMoveToFrac != frac2:
                         self.prevMoveToFrac = frac2
                         self.canvas.yview("moveto",frac2)
-                        if trace: g.trace("frac2 %1.2f %3d %3d %1.2f %1.2f" % (frac2,h1,h2,lo,hi))
+                        if trace: g.trace("frac2 %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                            frac2,h1,h2,lo,hi),g.callers())
 
             if self.allocateOnlyVisibleNodes:
                 self.canvas.after_idle(self.idle_second_redraw)
@@ -1468,15 +1472,16 @@ class leoTkinterTree (leoFrame.leoTree):
         if root:
             h,flag = self.yoffsetTree(root,p1,isTop=True)
             # flag can be False during initialization.
-            # if not flag: print "yoffset fails:",h,v1
+            # if not flag: print "*** yoffset fails:",'root',root,'p1',p1,'returns',h
             return h
         else:
             return 0
 
     def yoffsetTree(self,p,p1,isTop):
-        c = self.c ; h = 0 ; trace = False ; verbose = False
+        c = self.c ; h = 0 ; trace = False ; verbose = True
+        if trace: g.trace('entry','root',p,p.stack,'target',p1,p1.stack)
         if not c.positionExists(p):
-            if trace: g.trace('does not exist',p.headString())
+            if trace: g.trace('*** does not exist',p.headString())
             return h,False # An extra precaution.
         p = p.copy()
         if trace and verbose and isTop and c.hoistStack:
@@ -1484,21 +1489,27 @@ class leoTkinterTree (leoFrame.leoTree):
         if isTop and c.hoistStack:
             if p.firstChild():  theIter = [p.firstChild()]
             else:               theIter = []
-        else: theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+        else:
+            theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+
         for p2 in theIter:
+            if trace and p1.headString() == p2.headString():
+                g.trace('loop',p1,p2)
+                g.trace(p1.stack,p2.stack)
             if p2 == p1:
-                if trace and verbose: g.trace(h,p1.headString())
+                if trace and verbose: g.trace('returns',h,p1.headString())
                 return h, True
             h += self.line_height
             if p2.isExpanded() and p2.hasChildren():
                 child = p2.firstChild()
+                if trace and verbose: g.trace('recursive call')
                 h2, flag = self.yoffsetTree(child,p1,isTop=False)
                 h += h2
                 if flag:
-                    if trace and verbose: g.trace(h,p1.headString())
+                    if trace and verbose: g.trace('returns',h,p1.headString())
                     return h, True
 
-        if trace: g.trace('not found',p1.headString())
+        if trace: g.trace('not found',h,p1.headString())
         return h, False
     #@-node:ekr.20040803072955.70:yoffset (tkTree)
     #@-node:ekr.20040803072955.62:Helpers...
@@ -1725,9 +1736,9 @@ class leoTkinterTree (leoFrame.leoTree):
                         c.dragCloneAfter(p,vdrag)
                 else: # Just drag p.
                     if childFlag:
-                        c.dragToNthChildOf(p,vdrag,0)
+                        p = c.dragToNthChildOf(p,vdrag,0)
                     else:
-                        c.dragAfter(p,vdrag)
+                        p = c.dragAfter(p,vdrag)
                 #@-node:ekr.20041111114148:<< drag p to vdrag >>
                 #@nl
             elif self.trace and self.verbose:
@@ -1739,7 +1750,9 @@ class leoTkinterTree (leoFrame.leoTree):
             self.drag_p = None
         finally:
             # Must set self.drag_p = None first.
-            c.endUpdate(redrawFlag)
+            c.endUpdate(False) # redrawFlag)
+            if redrawFlag:
+                c.redraw_now()
             c.recolor_now() # Dragging can affect coloring.
 
         # g.trace(redrawFlag)
