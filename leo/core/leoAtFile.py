@@ -2628,6 +2628,8 @@ class atFile:
             kind = at.directiveKind4(s,i)
             #@        << handle line at s[i] >>
             #@+node:ekr.20041005105605.163:<< handle line at s[i]  >>
+            # g.trace(kind,repr(s[i:next_i]))
+
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
@@ -3505,6 +3507,9 @@ class atFile:
         All output produced by leoAtFile module goes here."""
 
         at = self
+
+        # g.trace(g.callers())
+        # g.trace(repr(s))
 
         if s and at.outputFile:
             try:
