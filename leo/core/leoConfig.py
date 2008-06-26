@@ -427,7 +427,8 @@ class parserBaseClass:
         if self.localFlag:
             self.set(p,kind='menus',name='menus',val=aList)
         else:
-            g.es_print('Using menus from',c.shortFileName(),color='blue')
+            if not g.app.unitTesting:
+                g.es_print('Using menus from',c.shortFileName(),color='blue')
             g.app.config.menusList = aList
             g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716:doItems
