@@ -2240,9 +2240,13 @@ class basePosition (object):
 
         p = self # Do NOT copy the position!
 
+        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
         a._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAfter(a)
+
+        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
 
         return p
     #@-node:ekr.20040303175026.10:p.moveAfter
@@ -2615,6 +2619,25 @@ class basePosition (object):
             if sib == p2:
                 p._childIndex -= 1
                 break
+
+        # Major bug fix: 6/26/2008. Adjust p's stack as well.
+        stack = [] ; changed = False ; i = 0
+        while i < len(p.stack):
+            v,childIndex = p.stack[i]
+            p3 = position(v=v,childIndex=childIndex,stack=stack[:i])
+            while p3:
+                if p2.v == p3.v: # A match with the to-be-moved node?
+                    stack.append((v,childIndex-1),)
+                    changed = True
+                    break
+                p3.moveToBack()
+            else:
+                stack.append((v,childIndex),)
+            i += 1
+
+        if changed:
+            # g.trace('***new stack','p',p,'stack',stack)
+            p.stack = stack
     #@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
     #@+node:ekr.20040409203454.1:p._deleteLinksInTree
     def _deleteLinksInTree (self):
@@ -2760,6 +2783,7 @@ class basePosition (object):
             # returns None if p.v is None
         assert(p.v)
         assert(parent_v)
+        # g.trace('parent_v',parent_v)
 
         # Remove v from it's tnode's vnodeList.
         if p.v in p.v.t.vnodeList:
@@ -2774,13 +2798,15 @@ class basePosition (object):
             elif trace:
                 g.trace('**can not happen: children[%s] != p.v' % (n))
                 g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+                g.trace('parent_v',parent_v)
+                g.trace('parent_v.t.children[n]',parent_v.t.children[n])
                 g.trace('p.v',p.v)
                 g.trace('** callers:',g.callers())
                 if g.app.unitTesting: assert False, 'children[%s] != p.v'
         elif trace:
             g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
-            g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
-            g.trace('p.v',p.v)
+            # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+            g.trace('parent_v',parent_v,'p.v',p.v)
             g.trace('** callsers:',g.callers())
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
 
