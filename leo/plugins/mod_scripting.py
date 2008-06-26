@@ -123,7 +123,7 @@ import sys
 #@-node:ekr.20060328125248.2:<< imports >>
 #@nl
 
-__version__ = '2.2'
+__version__ = '2.5'
 #@<< version history >>
 #@+node:ekr.20060328125248.3:<< version history >>
 #@@nocolor
@@ -141,6 +141,7 @@ __version__ = '2.2'
 # 2.4 bobjack:
 #     - exposed the scripting controller instance as
 #         c.theScriptingController
+# 2.5 EKR: call c.outerUpdate in callbacks.
 #@-at
 #@nonl
 #@-node:ekr.20060328125248.3:<< version history >>
@@ -301,8 +302,9 @@ class scriptingController:
 
         # Now that b is defined we can define the callback.
         # Yes, the callback *does* use b (to delete b if requested by the script).
-        def atSettingButtonCallback (event=None,self=self,b=b,script=script,buttonText=buttonText):
+        def atSettingButtonCallback (event=None,self=self,b=b,c=c,script=script,buttonText=buttonText):
             self.executeScriptFromSettingButton (b,script,buttonText)
+            if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atSettingButtonCallback)
 
@@ -644,8 +646,9 @@ class scriptingController:
 
         # Now that b is defined we can define the callback.
         # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        def atButtonCallback (event=None,self=self,p=p.copy(),b=b,buttonText=buttonText):
+        def atButtonCallback (event=None,self=self,p=p.copy(),b=b,c=c,buttonText=buttonText):
             self.executeScriptFromButton (p,b,buttonText)
+            if c.exists: c.outerUpdate()
 
         self.iconBar.setCommandForButton(b,atButtonCallback)
 

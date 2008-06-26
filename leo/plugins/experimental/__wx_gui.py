@@ -4310,9 +4310,13 @@ if wx:
         #@+node:ekr.20061213092105:setCommandForButton
         def setCommandForButton(self,b,command):
 
+            c = self.c
+
             if command:
-                def onClickCallback(event=None,command=command):
+
+                def onClickCallback(event=None,c=c,command=command):
                     command(event=event)
+                    c.outerUpdate()
 
                 self.toolbar.Bind(wx.EVT_BUTTON,onClickCallback,b)
         #@-node:ekr.20061213092105:setCommandForButton

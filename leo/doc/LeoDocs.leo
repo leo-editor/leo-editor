@@ -2927,9 +2927,6 @@
 <v t="ekr.20080403065258.6"><vh>Fixed delete-editor problem</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080405074410.4"><vh>4.4.8 final</vh>
 <v t="ekr.20080405074410.7"><vh>Open leoPluginsRef.leo in help menu if leoPlugins.leo does not exist</vh></v>
 <v t="ekr.20080405074410.9"><vh>Fixed big performance bug in find/spell commands.</vh></v>
@@ -2937,19 +2934,64 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080611105410.149"><vh>Vim notes</vh>
-<v t="ekr.20080611105410.6"><vh>Realization</vh></v>
-<v t="ekr.20080611105410.150"><vh>Open issues</vh></v>
-<v t="ekr.20080611105410.151"><vh>Notes</vh></v>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080624093059.1"><vh>4.5 b1</vh>
+<v t="ekr.20080624093059.2"><vh>Bug fixes</vh>
+<v t="ekr.20080624093059.3"><vh>Fixed bug in appendToRecentFiles</vh></v>
+<v t="ekr.20080624093059.4"><vh>Fixed bug in install script</vh></v>
+<v t="ekr.20080624093059.5"><vh>Fixed bug: no focus after save-as and save-to commands</vh></v>
+<v t="ekr.20080624093059.6"><vh>Fixed find bug</vh></v>
+<v t="ekr.20080624093059.7"><vh>Fixed find completion bug</vh></v>
+<v t="ekr.20080624093059.8"><vh>Fixed how-many, find-word and goto-character commands</vh></v>
+<v t="ekr.20080624093059.9"><vh>Fixed import PHP bug</vh></v>
+<v t="ekr.20080624093059.10"><vh>Fixed keyword handling in g.es and g.es_print</vh></v>
+<v t="ekr.20080624093059.11"><vh>Fixed new @auto bug</vh></v>
+<v t="ekr.20080624093059.12"><vh>Fixed recent files bug</vh></v>
+<v t="ekr.20080624093059.13"><vh>Fixed Tangle bugs</vh></v>
+<v t="ekr.20080624093059.14"><vh>Greatly increased speed of undo clone-find-all</vh></v>
+<v t="ekr.20080624093059.15"><vh>Temporary fix for php import bug</vh></v>
+<v t="ekr.20080624093059.16"><vh>Fixed unbounded loop in autocompleter.findAnchor</vh></v>
+<v t="ekr.20080624093059.17"><vh>Fixed insert-newline bug</vh></v>
+<v t="ekr.20080624093059.18"><vh>Single click did not color body correctly</vh></v>
+<v t="ekr.20080624093059.19"><vh>Body not colored correctly after find</vh></v>
+<v t="ekr.20080624093059.20"><vh>Fixed big performance bug in contract-all command</vh></v>
+<v t="ekr.20080624093059.21"><vh>Changed bindings so Home and end keys work as expected when editing a headline</vh></v>
+<v t="ekr.20080624093059.22"><vh>Fixed bug: myLeoSettings.leo sometimes read twice</vh></v>
+<v t="ekr.20080624093059.23"><vh>Compute menus list for each c</vh></v>
+<v t="ekr.20080624093059.24"><vh>Fixed minor spelling bug</vh></v>
+<v t="ekr.20080624093059.25"><vh>Fixed spell bug: words containing unicode characters aren't saved properly</vh></v>
+<v t="ekr.20080624093059.26"><vh>Fixed coloring bugs in reformatParagraph and c.redraw</vh></v>
+<v t="ekr.20080624093059.27"><vh>Fixed missing redraw problem</vh></v>
+<v t="ekr.20080624093059.28"><vh>Fixed new-headline problem</vh></v>
+<v t="ekr.20080624093059.29"><vh>Fixed recent crasher</vh></v>
+<v t="ekr.20080624093059.30"><vh>Fixed encoding problems with paste from clipboard</vh></v>
+<v t="ekr.20080624093059.31"><vh>Changed installer to support leo-as-a-package</vh></v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
-<v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
-<v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
-<v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
-<v t="TL.20080622103911.4"><vh>General commands</vh></v>
-<v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
-<v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
-<v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080624093059.32"><vh>Features</vh>
+<v t="ekr.20080624093059.33"><vh>Remove useTextWidget option from leoKeys.py</vh></v>
+<v t="ekr.20080624093059.34"><vh>Set use_sax = True always</vh></v>
+<v t="ekr.20080624093059.35"><vh>Added g.unified_nodes</vh></v>
+<v t="ekr.20080624093059.36"><vh>Added install nodes re Leo's home directory</vh></v>
+<v t="ekr.20080624093059.37"><vh>Added support for @bool fixedWindow option</vh></v>
+<v t="ekr.20080624093059.38"><vh>Added new key-handling</vh></v>
+<v t="ekr.20080624093059.39"><vh>New drawing/focus code</vh></v>
+<v t="ekr.20080624093059.40"><vh>Improved end of calltips</vh></v>
+<v t="ekr.20080624093059.41"><vh>Find character crosses lines</vh></v>
+<v t="ekr.20080624093059.42"><vh>Added os.curdir to sys.path if possible</vh></v>
+<v t="ekr.20080624093059.43"><vh>Added support for single-config option</vh></v>
+<v t="ekr.20080624093059.44"><vh>Finished Tracer class</vh></v>
+<v t="ekr.20080624093059.45"><vh>Rewrote option-parsing code using optparse</vh></v>
+<v t="ekr.20080624093059.46"><vh>Added @bool cleo_color_ignore = True</vh></v>
+<v t="ekr.20080624093059.47"><vh>Set cwd in read/write commands</vh></v>
+<v t="ekr.20080624093059.48"><vh>Added  vim patches</vh>
+<v t="ekr.20080624093059.49"><vh>Realization</vh></v>
+<v t="ekr.20080624093059.50"><vh>Problems</vh></v>
+<v t="ekr.20080624093059.51"><vh>Notes</vh></v>
+</v>
+<v t="ekr.20080624093059.52"><vh>Added 'kill' bindings</vh></v>
+<v t="ekr.20080624093059.53"><vh>Added check for empty @nosent nodes</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -30496,187 +30538,403 @@ After your branch is pushed, you can email the Leo mailing list and request it
 to be reviewed and merged to trunk.
 
 -- Ville M. Vainio - vivainio.googlepages.com</t>
-<t tx="ekr.20080611105410.6">Leo Configuration:
-	The following configuration was used for all testing:
-		@strings  top_level_unbound_key_action = command
-		@bool stayInTreeAfterEditHeadline = True
-		@bool stayInTreeAfterSelect = True
-		@bool outline_pane_has_initial_focus = True
-
-Leo's Panes:
-	A "pane" is a area of the screen containing a user interface
-	dedicated to supporting a common set of tasks.  Vi key mappings are
-	associated with the Outline pane, the Body pane, or to the Leo
-	program.  See the no pane (see "General Commands" below). (Outline
-	pane, Body pane)
-
-Leo's Command/Insert States:
-	Command state - Denoted by a blue background color (Outline,Body pane)
-		Keys are mapped to commands.
-	Insert state - Denoted by a red background color (Outline,Body pane)
-		Keys pressed are inserted into the text.
-	Grayed state - Denoted by a gray background color (Outline pane)
-		Keys pressed will cause the next node with a headline starting
-		with that key to be selected.  This "select node by first
-		character" feature is built into Leo. It is not part of the vi
-		support.
-		
-		This state is intentionally avoided in the vi based outline key
-		mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
-		"Command" state.  The "Grayed" state can be entered from the
-		outline's "Command" state by pressing the Ctrl-] key.
-
-Leo's modes:
-Most vi commands are implemented using Leo's "mode" functionality.
-Modes beginning with "vi-" denote a vi command for the body pane.
-Modes beginning with "tree-" denote a vi-like command for the outline.
-Modes beginning with "body-" denote outline commands that can be called
-from the body pane (and return focus back to the body pane)
-
-Modes are used both for managing multi-key vi commands and for defining
-macros.
-	
-	Multi-key command modes:
-	Vi has many commands that require multiple keys to invoke.  Each key
-	accept the last in the command are assigned to a mode that, when
-	executed, maps the subsequent allowed keys in the command sequence.
-	The last key in the sequence is mapped directly to a Leo command or
-	to a "Macro" mode (see below). Any modes mapped to a key by another
-	mode are located in a child node of the mode node doing the mapping.
-	
-	Example:
-	    dtw = Delete To the 'W' character (note the capital letters)
-	  The 'd' key is mapped to vi-delete-object
-	  vi-delete-object maps the 't' key to vi-delete-to-char
-	  vi-delete-to-char contains Leo commands to perform the vi command.
-
-	Macros modes:
-	Most vi commands do not have an equivalent Leo command.  Instead, a
-	series of Leo commands must be issued to emulate the vi command.
-	The Leo commands needed to emulate a vi command are placed in a
-	single @mode node.
-
-Code limitations:
-	Current character:
-	Vi implementations normally use two different "current character"
-	designators depending on the current state.
-
-		Insert state:
-		In the Insert state, a vertical bar is placed between two
-		characters to indicate where the next key will be inserted.
-		Leo's cursor is always of this type regardless of the state.
-
-		Command state: 
-		In the Command state, vi expects that the cursor is highlighting
-		a current character and provides commands to enter the insert
-		state or paste text either before or after that current
-		character.  Leo's vi emulation currently does not support a
-		"current character" cursor. As a result, inserting and pasting
-		before or after is replaced by inserting or pasting "at" the
-		current cursor location.  For example, the 'i' and 'a' command
-		are both mapped to enter the insert state at the current cursor
-		location.
-
-	Conditional code execution:
-	No conditional command invocation exits.  Instead, conditional
-	branching is replace by setup commands that insure that, regardless
-	of current state, the command performs correctly.  For example,
-	Beginning-of-line command will go to previous line if called when
-	cursor is at beginning of line.  Vi requires that '|' always goes to
-	beginning of current line.  Problme is solved by issueing
-	forward-char command to insure cursor is moved off of the beginning
-	of the line before beginning-of-line command is issued.
-
-	Commands requesting user input:
-	Commands getting user input must be the last command within the
-	mode.  See "Commands getting user input" in Problems section below.
-
-	Edit headings using modes:
-	Commands modifying or selecting headline text do not work correctly
-	within a mode.  See "Editing headlines within modes" in Problems
-	section below.  This eliminates accurate implementation of vi's
-	delete/change/substitute/yank object commands.  Instead, the
-	commands are modified to only select text.
-
-</t>
 <t tx="ekr.20080611105410.147">@language rest
 </t>
-<t tx="ekr.20080611105410.149">@nocolor
+<t tx="ekr.20080624093059.1">Leo 4.5 beta 1                      June 23, 2008
+
+Leo 4.5 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo 4.5 features three major code revisions and many bug fixes.
+There are no remaining major reorganizations left to do.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+- A major revision of Leo's node structures, compatible with so-called unified nodes.
+- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
+- A major revision of Leo's outline drawing and focus handling code.
+  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
+- The beginning of usable vim-like bindings.  More support is coming.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080624093059.2"></t>
+<t tx="ekr.20080624093059.3"></t>
+<t tx="ekr.20080624093059.4">On Mon, Apr 7, 2008 at 7:07 PM, SegundoBob &lt;bhossley@ieee.org&gt; wrote:
+
+I installed Leo 4.4..8 final on Ubuntu.  The installation failed
+because the installation put files in /usr/lib/leo/leo.  The
+duplicated leo is a mistake.
+On line 13 of install I changed:
+LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
+to
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+With the change the installation worked.</t>
+<t tx="ekr.20080624093059.5"></t>
+<t tx="ekr.20080624093059.6">http://groups.google.com/group/leo-editor/browse_thread/thread/294866696257802e
 </t>
-<t tx="ekr.20080611105410.150">Binding numeric keys:
-Mapping a number to a command or mode prevents the number from being
-entered as text while in the insert state.
- 
- Binding Arrow keys:
- Binding arrow keys, with or without Shift, Ctrl, Alt, and their
- combinations, to comamnds or modes have no effect. 
+<t tx="ekr.20080624093059.7">Trying to edit the minibuffer, when I backspace to a character and
+press delete the cursor moves to the end of the buffer and deletes the
+last character instead.</t>
+<t tx="ekr.20080624093059.8">find-word
+=========
+This command is supposed to:
+
+"Put the cursor at the next word (on a line) that starts with a
+character"
+
+It does not. You have to type in a whole word to get any result and
+even then
+it only selects the word it does not move the cursor to it.
+
+
+goto-charachter
+==============
+'''Put the cursor at the n'th character of the buffer.'''
+
+Doesn't do anything.</t>
+<t tx="ekr.20080624093059.9">http://groups.google.com/group/leo-editor/browse_thread/thread/b068e88a577a0547
+</t>
+<t tx="ekr.20080624093059.10"></t>
+<t tx="ekr.20080624093059.11">Leo's running, so I create a new outline with File-&gt;New
+
+Then I save as in a location where foo.py exists.
+
+The I create a node '@auto foo.py'
+
+Then I use File-&gt;Read/Write-&gt;Read @auto (with that node selected)
+
+Leo says it can't read it.
+
+I close the leo file, re-open in from the recent files menu of the
+outline that spawned it, and the @auto file is read no problems.</t>
+<t tx="ekr.20080624093059.12">http://groups.google.com/group/leo-editor/browse_thread/thread/c6c4faf6fdead672
+</t>
+<t tx="ekr.20080624093059.13"></t>
+<t tx="ekr.20080624093059.14">findAll now just creates undo info for clone-find-all for one inserted node.</t>
+<t tx="ekr.20080624093059.15"></t>
+<t tx="ekr.20080624093059.16"></t>
+<t tx="ekr.20080624093059.17">exception executing command
+Traceback (most recent call last):
+ File "C:\_Proj\Leo\key-handling\leo\src\leoCommands.py", line 298, in doCommand
+   val = command(event)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 2946, in insertNewLine
+   self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+ File "C:\_Proj\Leo\key-handling\leo\src\leoEditCommands.py", line 3104, in insertNewlineHelper
+   w.setInsertPoint(i+1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+truncating headline to one line
+</t>
+<t tx="ekr.20080624093059.18"></t>
+<t tx="ekr.20080624093059.19"></t>
+<t tx="ekr.20080624093059.20"></t>
+<t tx="ekr.20080624093059.21"></t>
+<t tx="ekr.20080624093059.22">http://groups.google.com/group/leo-editor/browse_thread/thread/35a8ea2024036623s</t>
+<t tx="ekr.20080624093059.23">http://sourceforge.net/forum/forum.php?thread_id=1858451&amp;forum_id=10228
+</t>
+<t tx="ekr.20080624093059.24">http://groups.google.com/group/leo-editor/browse_thread/thread/d2a9aeac0d0082f6
+</t>
+<t tx="ekr.20080624093059.25"></t>
+<t tx="ekr.20080624093059.26"></t>
+<t tx="ekr.20080624093059.27">Changed c.outerUpdate and added c.bind and c.bind2.</t>
+<t tx="ekr.20080624093059.28"></t>
+<t tx="ekr.20080624093059.29">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 311, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoEditCommands.py", line 4781, in selectAllText
+    return w.selectAllText()
+AttributeError: Canvas instance has no attribute 'selectAllText'
+</t>
+<t tx="ekr.20080624093059.30"></t>
+<t tx="ekr.20080624093059.31">http://groups.google.com/group/leo-editor/browse_thread/thread/8edc4e7b809189cf
+</t>
+<t tx="ekr.20080624093059.32"></t>
+<t tx="ekr.20080624093059.33"></t>
+<t tx="ekr.20080624093059.34"></t>
+<t tx="ekr.20080624093059.35">- Made t arg optional in vnode ctor.
+
+- Removed the t arg from insertAsX.  Affects these plugins:
+
+wrote:     base64Packager.py
+wrote:     macros.py
+wrote:     table.py
+wrote:     templates.py
+wrote:     xsltWithNodes.py
+
+Search for tnode.</t>
+<t tx="ekr.20080624093059.36">Leo puts several files in the home directory: .leoID.txt,
+.leoRecentFiles.txt, and myLeoSettings.leo.  There are various fallback directories if there is no home directory.
+
+If you want more details, you can do what I did: do a clone-find-all for homeDir.
+
+As for how the home directory is set, the code to do this is g.computeHomeDir.  We get the home directory with
+
+home = os.getenv('HOME',default=None)
+
+There are some mind-numbing details to be handled if there os.getenv does, in fact, return a directory.</t>
+<t tx="ekr.20080624093059.37">Leo suppresses marks, expansion state, orphan bits and current
+position bits when writing fixed .leo files.  As a result, all nodes
+will be collapsed and the root node will always be selected when Leo
+opens a fixed .leo file.
+
+When writing fixed .leo files, Leo writes fixed, immutable, reasonable
+defaults for window size, position and body-outline ratio.
+Specifically, width,height,left,top = 700,500,50,50 and the ratio is
+0.5. These values are written so older versions of Leo can read fixed
+files.
+
+You make a file fixed by putting '@bool fixedWindow = True' in the
+@settings tree of a particular .leo file.  The file will be fixed
+after you save the file, reload the file, and save the file again.
+Yes, this is clumsy, but it only has to be done once.  A toggle-fixed
+file command doesn't seem that useful: using an @bool node is simple
+and clear.
+
+You can optionally specify the size and position on the screen of
+fixed .leo files by putting an '@data fixedWindowPosition' node in the
+@settings tree of myLeoSettings.leo or leoSettings.leo.  You should
+**not** put such a node in the fixed .leo file itself--everyone who
+opens the file would get that fixed position.
+
+The body of the '@data fixedWindowPosition' node should contain
+something like this:
+
+# Must be four entries: width,height,left,top.
+# Put this in myLeoSettings.leo, **not** in individual .leo files.
+
+1200
+800
+50
+50
+
+Leo uses reasonable defaults for fixed .leo files if this node does
+not exist, or contains something other than 4 numbers, one per line. </t>
+<t tx="ekr.20080624093059.38">This allows substantially simpler key bindings. Indeed, most per-pane bindings
+have been eliminate.</t>
+<t tx="ekr.20080624093059.39"></t>
+<t tx="ekr.20080624093059.40"># Added ')' at end.</t>
+<t tx="ekr.20080624093059.41"></t>
+<t tx="ekr.20080624093059.42">This is necessary to simulate operation as a package.</t>
+<t tx="ekr.20080624093059.43">This code appears to have been reverted in such a way that it never got pushed to launchpad.</t>
+<t tx="ekr.20080624093059.44">This is a Python 'debugger' that computes a call graph.
+
+To trace a function and its callers, put the following at the function's start::
+
+    g.startTracer()</t>
+<t tx="ekr.20080624093059.45"></t>
+<t tx="ekr.20080624093059.46">This determines whether cleo colors @ignore headlines. The default is True.</t>
+<t tx="ekr.20080624093059.47">This affect the following commands:
+
+open, save, save-as, save-to, read-outline-only, read-file-into-node, write-file-from-node and all the import/export commands.</t>
+<t tx="ekr.20080624093059.48">Headline pane:
+
+- Prevented "--&gt; exit-named-modes" from switching focus to the Body pane.
+    Removed 'c.frame.log.deleteTab('Mode') from endMode
+
+Body pane:
+
+- Enabled search for 'space' character in text
+    Removed 'if ch.isspace(): return' in zapToCharacter:
+
+- Eliminated delete-word from removing trailing white space
+    Removed 'self.killWs(event)' in killWord and backwardKillWord
+
+- Put zapped text to clipboard
+    Added 'g.app.gui.replaceClipboardWith(s[ins:i])' after 'sel.addToKillBuffer(s[ins:i])' in zapToCharacter
+    
+@nocolor</t>
+<t tx="ekr.20080624093059.49">Leo Configuration:
+    | The following configuration was used for all testing:
+        @strings  top_level_unbound_key_action = command
+        @bool stayInTreeAfterEditHeadline = True
+        @bool stayInTreeAfterSelect = True
+        @bool outline_pane_has_initial_focus = True
+
+Leo's Panes:
+    | A "pane" is a area of the screen containing a user interface
+    | dedicated to supporting a common set of tasks.  Vi key mappings are
+    | associated with the Outline pane, the Body pane, or to the Leo
+    | program.  See the no pane (see "General Commands" below). (Outline
+    | pane, Body pane)
+
+Leo's Command/Insert States:
+    Command state - Denoted by a blue background color (Outline,Body pane)
+        | Keys are mapped to commands.
+    Insert state - Denoted by a red background color (Outline,Body pane)
+        | Keys pressed are inserted into the text.
+    Grayed state - Denoted by a gray background color (Outline pane)
+        | Keys pressed will cause the next node with a headline starting
+        | with that key to be selected.  This "select node by first
+        | character" feature is built into Leo. It is not part of the vi
+        | support.
+        | 
+        | This state is intentionally avoided in the vi based outline key
+        | mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+        | "Command" state.  The "Grayed" state can be entered from the
+        | outline's "Command" state by pressing the Ctrl-] key.
+
+Leo's modes:
+| Most vi commands are implemented using Leo's "mode" functionality.
+| Modes beginning with "vi-" denote a vi command for the body pane.
+| Modes beginning with "tree-" denote a vi-like command for the outline.
+| Modes beginning with "body-" denote outline commands that can be called
+| from the body pane (and return focus back to the body pane)
+| 
+| Modes are used both for managing multi-key vi commands and for defining
+| macros.
+    
+    Multi-key command modes:
+    | Vi has many commands that require multiple keys to invoke.  Each key
+    | accept the last in the command are assigned to a mode that, when
+    | executed, maps the subsequent allowed keys in the command sequence.
+    | The last key in the sequence is mapped directly to a Leo command or
+    | to a "Macro" mode (see below). Any modes mapped to a key by another
+    | mode are located in a child node of the mode node doing the mapping.
+    | 
+    | Example:
+    |     dtw = Delete To the 'W' character (note the capital letters)
+    |   The 'd' key is mapped to vi-delete-object
+    |   vi-delete-object maps the 't' key to vi-delete-to-char
+    |   vi-delete-to-char contains Leo commands to perform the vi command.
+
+    Macros modes:
+    | Most vi commands do not have an equivalent Leo command.  Instead, a
+    | series of Leo commands must be issued to emulate the vi command.
+    | The Leo commands needed to emulate a vi command are placed in a
+    | single @mode node.
+
+Code limitations:
+    Current character:
+    | Vi implementation normally use two different "current character"
+    | designators depending on the current state.
+
+        Insert state:
+        | In the Insert state, a vertical bar is placed between two
+        | characters to indicate where the next key will be inserted.
+        | Leo's cursor is of this type.
+
+        Command state: 
+        | In the Command state, vi expects that the cursor is highlighting
+        | a current character and provides commands to enter the insert
+        | state or paste text either before or after that current
+        | character.  Leo's vi emulation currently does not support a
+        | "current character" cursor. As a result, inserting and pasting
+        | before or after is replaced by inserting or pasting "at" the
+        | current cursor location.  For example, the 'i' and 'a' command
+        | are both mapped to enter the insert state at the current cursor
+        | location.
+
+    Conditional code execution:
+    | No conditional command invocation exits.  Instead, conditional
+    | branching is replace by setup commands that insure that, regardless
+    | of current state, the command performs correctly.  For example,
+    | Beginning-of-line command will go to previous line if called when
+    | cursor is at beginning of line.  Vi requires that '|' always goes to
+    | beginning of current line.  Problme is solved by issueing
+    | forward-char command to insure cursor is moved off of the beginning
+    | of the line before beginning-of-line command is issued.
+
+    Commands requesting user input:
+    | Commands getting user input must be the last command within the
+    | mode.  See "Commands getting user input" in Problems section below.
+
+    Edit headings using modes:
+    | Commands modifying or selecting headline text do not work correctly
+    | within a mode.  See "Editing headlines within modes" in Problems
+    | section below.  This eliminates accurate implementation of vi's
+    | delete/change/substitute/yank object commands.  Instead, the
+    | commands are modified to only select text.</t>
+<t tx="ekr.20080624093059.50">Binding numeric keys:
+| Mapping a number to a command or mode prevents the number from being
+| entered as text while in the insert state.
+
+Binding '?' key:
+| No response when key pressed.
 
 Binding 'bksp' key:
-Binding 'bksp' key to back-char to move back a character in command mode
-prevents 'bksp' from deleting characters in text edit mode.
+| Binding 'bksp' key to back-char to move back a character in command mode
+| prevents 'bksp' from deleting characters in text edit mode.
 
 Commands getting user input:
-Commands requesting user input must be the last command executed.  These
-commands include: find-character and zap-to-character.
+| Commands requesting user input must be the last command executed.  These
+| commands include: find-character and zap-to-character.
 
 Editing headlines within modes:
-Text editing commands do not work within modes assigned to outline key
-mappings.
+| Text editing commands do not work within modes assigned to outline key
+| mappings.
 
 Undo command:
-Using the "undo" command (key 'u') to undo a change to a node's headline
-works better if, first, another node is selected and then the edited node
-is reselected (key sequence "Ctrl-k, Ctrl-j).
+| The 'undo' command sometimes does not work when returning to a node's
+| command mode.  Moving to another node fixes the problem.(i.e. delete-char, set-insert-state, ...)
 
 Matching bracket command:
-Performs bracket matching on Body text when in node's headline command
-state.
+| Performs bracket matching on Body text when in node's headline command
+| state.
 
 Word definition:
-Different Leo commands detect word boundries differently.
+| "Word" related commands determine boundries of a word differently.
 
 Toggle case:
-Leo provides support for switching to upper or lower case but no method |
-exists to toggle between cases.
+| Leo provides support for switching to upper or lower case but no method |
+| exists to toggle between cases.
 
-Forward and backward by sentence:
-Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
-at empty lines nor do they skip over periods within words nor do they stop
-at sentences ending in non-periods nor do they stop at the end or
-beginning of the buffer.
+Find settings
+| Leo commands only allow toggling of search settings.  If specific "set"
+| and "clear" search setting commands were available then searches from the
+| body pane could be restricted to the body pane and searches from the
+| outline could be restricted to the outline.
+Forward and backward sentences:
+| Leo's forwardSentenceHelper and backSentenceHelper functions do not stop
+| at empty lines nor do they skip over periods within words nor do they stop
+| at sentences ending in non-periods nor do they stop at the end or
+| beginning of the buffer.
 
 Focus to Body pane:
-Leo functions exist which unconditionally set focus to the body pane
-regardless of the active pane.
+| Leo functions exist which unconditionally set focus to the body pane
+| regardless of the active pane.
+    deleteTab() function:
+        | Issuing "--&gt; exit-named-mode" calls "endMode" function which calls
+        | "c.frame.log.deleteTab('Mode')" function which sets the focus to the
+        | body pane.  
 
 Displaying mode help:
-The "--&gt; mode-help" command displays all mapped keys using a capitol
-letter regardless of the actual binding.
-	Recommendations:
-	To better support narrow tab cards, display the mode's label without
-	the "enter-" and "-mode" text and place key label before mode label.
-	Results in change from:
-	               enter-vi-delete-line-mode D
-	   enter-vi-delete-to-begin-of-word-mode B 
-	to:
-	   D : vi-delete-line
-	   B : vi-delete-to-begin-of-word
-</t>
-<t tx="ekr.20080611105410.151">Yank vs. Yank:
-  A vi "yank" operation copies the selected text TO the clipboard.
-  A Leo "yank" operation inserts text FROM the clipboard.
+| The "--&gt; mode-help" command displays all mapped keys using a capitol
+| letter regardless of the actual binding.
+    Recommendations:
+    | To better support narrow tab cards, display the mode's label without
+    | the "enter-" and "-mode" text and place key label before mode label.
+    | Results in change from:
+    |                enter-vi-delete-line-mode D
+    |    enter-vi-delete-to-begin-of-word-mode B 
+    | to:
+    |    D : vi-delete-line
+    |    B : vi-delete-to-begin-of-word</t>
+<t tx="ekr.20080624093059.51">Yank vs. Yank
+| A vi "yank" operation copies the selected text TO the clipboard.
+| A Leo "yank" operation inserts text FROM the clipboard.
 
 copy-text in modes:
-  Leo's copy-text does not work within a mode.  As a result, all "copy to
-  clipboard" capability is being implemented using kill-&lt;object&gt; command
-  followed by Leo's "yank" command to put text back.
+| Leo's copy-text does not work within a mode.  As a result, all "copy to
+| clipboard" capability is being implemented using kill-&lt;object&gt; command
+| followed by a "yank" command.
 
 paste-text in modes:
-  paste-text in modes does not work.  Use Leo's "yank" instead.
+| paste-text in modes does not work.  Use Leo's "yank" instead.
 
 delete-node does not copy node to clipboard:
-  Issue copy-node command followed by delete-node
-</t>
+| Issue copy-node command followed by delete-node</t>
+<t tx="ekr.20080624093059.52"></t>
+<t tx="ekr.20080624093059.53">These are now treated much like empty @auto nodes</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
