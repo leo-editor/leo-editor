@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="143" left="385" height="800" width="777"/>
+	<global_window_position top="29" left="385" height="914" width="777"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -208,6 +208,12 @@
 <v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
 <v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
+<v t="ekr.20080624141305.1" tnodeList="ekr.20080624141305.1"><vh>@nosent at_ignore_test.txt</vh>
+<v t="ekr.20080624141305.2"><vh>ignored</vh>
+<v t="ekr.20080624141305.3"><vh>a</vh></v>
+</v>
+</v>
+<v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1570,5 +1576,29 @@ top.mainloop()
 <t tx="ekr.20080618093010.1">print 'Ctrl+s' in c.k.bindingsDict.keys()
 print c.k.masterBindingsDict.keys()
 print '&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys()</t>
+<t tx="ekr.20080624141305.1">@others
+
+# done</t>
+<t tx="ekr.20080624141305.2">@ignore
+
+# after @ignore</t>
+<t tx="ekr.20080624141305.3"># a</t>
+<t tx="ekr.20080625094025.1">t = p.insertAfter()
+c.setHeadString(t, 'test node 1')
+t = t.insertAfter()
+c.setHeadString(t, 'test node 2')
+t = t.insertAfter()
+c.setHeadString(t, 'test area')
+for i in range(200):
+   n = t.insertAsLastChild()
+   c.setHeadString(n, str(i))
+   if i == 3: x = n
+
+for i in range(100):
+   n = x.insertAsLastChild()
+   c.setHeadString(n, str(i+500))
+
+t.expand()
+c.redraw_now()</t>
 </tnodes>
 </leo_file>

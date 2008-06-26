@@ -3314,13 +3314,12 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 
     if not g.doHook("redraw-entire-outline",c=c):
 
-        if trace: g.trace('scroll',scroll,g.callers())
         c.setTopVnode(None)
         self.setVisibleAreaToFullCanvas()
         self.drawTopTree()
         # Set up the scroll region after the tree has been redrawn.
         bbox = self.canvas.bbox('all')
-        # g.trace('canvas',self.canvas,'bbox',bbox)
+        if trace: g.trace('bbox',bbox,g.callers())
         if bbox is None:
             x0,y0,x1,y1 = 0,0,100,100
         else:
@@ -3793,6 +3792,7 @@ def scrollTo(self,p=None):
     c = self.c ; frame = c.frame ; trace = False
     if not p or not c.positionExists(p):
         p = c.currentPosition()
+        if trace: g.trace('*** current position',p,p.stack)
     if not p or not c.positionExists(p):
         if trace: g.trace('current p does not exist',p)
         p = c.rootPosition()
@@ -3800,15 +3800,17 @@ def scrollTo(self,p=None):
         if trace: g.trace('no position')
         return
     try:
+        if trace: g.trace('***',p,p.stack,'exists',c.positionExists(p))
         h1 = self.yoffset(p)
         if self.center_selected_tree_node: # New in Leo 4.4.3.
             << compute frac0 >>
             delta = abs(self.prevMoveToFrac-frac0)
-            # g.trace(delta)
+            if trace: g.trace('delta',delta)
             if delta > 0.0:
                 self.prevMoveToFrac = frac0
                 self.canvas.yview("moveto",frac0)
-                if trace: g.trace("frac0 %1.2f %3d %3d %3d" % (frac0,h1,htot,wtot))
+                if trace: g.trace("frac0 %1.2f h1 %3d htot %3d wtot %3d" % (
+                    frac0,h1,htot,wtot),g.callers())
         else:
             last = c.lastVisible()
             nextToLast = last.visBack(c)
@@ -3819,12 +3821,14 @@ def scrollTo(self,p=None):
                 if self.prevMoveToFrac != frac:
                     self.prevMoveToFrac = frac
                     self.canvas.yview("moveto",frac)
-                    if trace: g.trace("frac  %1.2f %3d %3d %1.2f %1.2f" % (frac, h1,h2,lo,hi))
+                    if trace: g.trace("frac  %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                        frac, h1,h2,lo,hi),g.callers())
             elif frac2 + (hi - lo) >= hi: # frac2 is for scrolling up.
                 if self.prevMoveToFrac != frac2:
                     self.prevMoveToFrac = frac2
                     self.canvas.yview("moveto",frac2)
-                    if trace: g.trace("frac2 %1.2f %3d %3d %1.2f %1.2f" % (frac2,h1,h2,lo,hi))
+                    if trace: g.trace("frac2 %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                        frac2,h1,h2,lo,hi),g.callers())
 
         if self.allocateOnlyVisibleNodes:
             self.canvas.after_idle(self.idle_second_redraw)
@@ -3842,13 +3846,13 @@ geom = self.canvas.winfo_geometry()
 
 if scrollRegion and geom:
     scrollRegion = scrollRegion.split(' ')
-    # g.trace('scrollRegion',repr(scrollRegion))
+    # if trace: g.trace('scrollRegion',repr(scrollRegion))
     htot = int(scrollRegion[3])
     wh,junk,junk = geom.split('+')
     junk,h = wh.split('x')
     if h: wtot = int(h)
     else: wtot = 500
-    # g.trace('geom',geom,'wtot',wtot)
+    # if trace: g.trace('geom',geom,'wtot',wtot,'htot',htot)
     if htot > 0.1:
         frac0 = float(h1-wtot/2)/float(htot)
         frac0 = max(min(frac0,1.0),0.0)
@@ -3898,15 +3902,16 @@ def yoffset(self,p1):
     if root:
         h,flag = self.yoffsetTree(root,p1,isTop=True)
         # flag can be False during initialization.
-        # if not flag: print "yoffset fails:",h,v1
+        # if not flag: print "*** yoffset fails:",'root',root,'p1',p1,'returns',h
         return h
     else:
         return 0
 
 def yoffsetTree(self,p,p1,isTop):
-    c = self.c ; h = 0 ; trace = False ; verbose = False
+    c = self.c ; h = 0 ; trace = False ; verbose = True
+    if trace: g.trace('entry','root',p,p.stack,'target',p1,p1.stack)
     if not c.positionExists(p):
-        if trace: g.trace('does not exist',p.headString())
+        if trace: g.trace('*** does not exist',p.headString())
         return h,False # An extra precaution.
     p = p.copy()
     if trace and verbose and isTop and c.hoistStack:
@@ -3914,21 +3919,27 @@ def yoffsetTree(self,p,p1,isTop):
     if isTop and c.hoistStack:
         if p.firstChild():  theIter = [p.firstChild()]
         else:               theIter = []
-    else: theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+    else:
+        theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+
     for p2 in theIter:
+        if trace and p1.headString() == p2.headString():
+            g.trace('loop',p1,p2)
+            g.trace(p1.stack,p2.stack)
         if p2 == p1:
-            if trace and verbose: g.trace(h,p1.headString())
+            if trace and verbose: g.trace('returns',h,p1.headString())
             return h, True
         h += self.line_height
         if p2.isExpanded() and p2.hasChildren():
             child = p2.firstChild()
+            if trace and verbose: g.trace('recursive call')
             h2, flag = self.yoffsetTree(child,p1,isTop=False)
             h += h2
             if flag:
-                if trace and verbose: g.trace(h,p1.headString())
+                if trace and verbose: g.trace('returns',h,p1.headString())
                 return h, True
 
-    if trace: g.trace('not found',p1.headString())
+    if trace: g.trace('not found',h,p1.headString())
     return h, False
 #@-node:ekr.20040803072955.70:yoffset (tkTree)
 #@-node:ekr.20040803072955.62:Helpers...
@@ -3950,13 +3961,12 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 
     if not g.doHook("redraw-entire-outline",c=c):
 
-        if trace: g.trace('scroll',scroll,g.callers())
         c.setTopVnode(None)
         self.setVisibleAreaToFullCanvas()
         self.drawTopTree()
         # Set up the scroll region after the tree has been redrawn.
         bbox = self.canvas.bbox('all')
-        # g.trace('canvas',self.canvas,'bbox',bbox)
+        if trace: g.trace('bbox',bbox,g.callers())
         if bbox is None:
             x0,y0,x1,y1 = 0,0,100,100
         else:
@@ -4994,7 +5004,8 @@ def doMenus (self,p,kind,name,val):
     if self.localFlag:
         self.set(p,kind='menus',name='menus',val=aList)
     else:
-        g.es_print('Using menus from',c.shortFileName(),color='blue')
+        if not g.app.unitTesting:
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
 #@+node:ekr.20070926141716:doItems
@@ -6023,7 +6034,8 @@ def doMenus (self,p,kind,name,val):
     if self.localFlag:
         self.set(p,kind='menus',name='menus',val=aList)
     else:
-        g.es_print('Using menus from',c.shortFileName(),color='blue')
+        if not g.app.unitTesting:
+            g.es_print('Using menus from',c.shortFileName(),color='blue')
         g.app.config.menusList = aList
         g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
 #@+node:ekr.20070926141716:doItems
@@ -6731,13 +6743,12 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 
     if not g.doHook("redraw-entire-outline",c=c):
 
-        if trace: g.trace('scroll',scroll,g.callers())
         c.setTopVnode(None)
         self.setVisibleAreaToFullCanvas()
         self.drawTopTree()
         # Set up the scroll region after the tree has been redrawn.
         bbox = self.canvas.bbox('all')
-        # g.trace('canvas',self.canvas,'bbox',bbox)
+        if trace: g.trace('bbox',bbox,g.callers())
         if bbox is None:
             x0,y0,x1,y1 = 0,0,100,100
         else:
@@ -9828,6 +9839,536 @@ def outerUpdate (self):
     c.requestedRedrawScrollFlag = False
 #@-node:ekr.20080514131122.20:c.outerUpdate
 #@-node:ekr.20080624120440.3:Fixed script button bug
+#@+node:ekr.20080625094201.1:Fixed dragging bug
+# The fix was a major addition to p._adjustPositionBeforeUnlink.
+#@nonl
+#@+node:ekr.20080625094201.2:Report
+@nocolor
+
+This has taken me a bit to pin down, but here we go.  Run this script:
+
+t = p.insertAfter()
+c.setHeadString(t, 'test node 1')
+t = t.insertAfter()
+c.setHeadString(t, 'test node 2')
+t = t.insertAfter()
+c.setHeadString(t, 'test area')
+for i in range(200):
+   n = t.insertAsLastChild()
+   c.setHeadString(n, str(i))
+   if i == 3: x = n
+
+for i in range(100):
+   n = x.insertAsLastChild()
+   c.setHeadString(n, str(i+500))
+
+t.expand()
+
+It creates an outline, you might need to click on the node from which
+the script was run to see what was added.  It should look like this:
+
+test node 1
+test node 2
+test area
+   1
+   2
+  +3
+   4
+   5
+   etc.
+
+Now, use the mouse to drag test node 1 down to a position after node
+4... for me at least this results in the outline view leaping to the
+bottom of the tree, which it shouldn't do.
+
+Scroll back up to the top, and drag test node 2 down to a position
+after node 4, this time no leap.
+
+It appears that the first time you drag something into the test area it
+reacts as if 3 is expanded and repositions to allow for all those
+actually not visible lines, but the second time you drag something in
+it's ok, as if it has an accurate count on visible lines now.
+#@-node:ekr.20080625094201.2:Report
+#@+node:ekr.20031218072017.2353:c.dragAfter
+def dragAfter(self,p,after):
+
+    c = self ; u = self.undoer ; undoType = 'Drag'
+    current = c.currentPosition()
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    if not c.checkDrag(p,after): return
+    if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
+
+    c.beginUpdate()
+    try: # In update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(current)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveAfter(after)
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+    c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
+#@-node:ekr.20031218072017.2353:c.dragAfter
+#@+node:ekr.20041111115908:endDrag
+def endDrag (self,event):
+
+    """The official helper of the onEndDrag event handler."""
+
+    c = self.c ; p = self.drag_p
+    c.setLog()
+    canvas = self.canvas
+    if not event: return
+
+    c.beginUpdate()
+    try:
+        << set vdrag, childFlag >>
+        if self.allow_clone_drags:
+            if not self.look_for_control_drag_on_mouse_down:
+                self.controlDrag = c.frame.controlKeyIsDown
+
+        redrawFlag = vdrag and vdrag.v.t != p.v.t
+        if redrawFlag: # Disallow drag to joined node.
+            << drag p to vdrag >>
+        elif self.trace and self.verbose:
+            g.trace("Cancel drag")
+
+        # Reset the old cursor by brute force.
+        self.canvas['cursor'] = "arrow"
+        self.dragging = False
+        self.drag_p = None
+    finally:
+        # Must set self.drag_p = None first.
+        c.endUpdate(False) # redrawFlag)
+        if redrawFlag:
+            c.redraw_now()
+        c.recolor_now() # Dragging can affect coloring.
+
+    # g.trace(redrawFlag)
+#@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>
+x,y = event.x,event.y
+canvas_x = canvas.canvasx(x)
+canvas_y = canvas.canvasy(y)
+
+theId = self.canvas.find_closest(canvas_x,canvas_y)
+# theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
+
+vdrag = self.findPositionWithIconId(theId)
+childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
+#@-node:ekr.20040803072955.104:<< set vdrag, childFlag >>
+#@+node:ekr.20041111114148:<< drag p to vdrag >>
+# g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
+
+if self.controlDrag: # Clone p and move the clone.
+    if childFlag:
+        c.dragCloneToNthChildOf(p,vdrag,0)
+    else:
+        c.dragCloneAfter(p,vdrag)
+else: # Just drag p.
+    if childFlag:
+        p = c.dragToNthChildOf(p,vdrag,0)
+    else:
+        p = c.dragAfter(p,vdrag)
+#@-node:ekr.20041111114148:<< drag p to vdrag >>
+#@-node:ekr.20041111115908:endDrag
+#@+node:ekr.20040803072955.70:yoffset (tkTree)
+@ We can't just return icony because the tree hasn't been redrawn yet.
+For the same reason we can't rely on any TK canvas methods here.
+@c
+
+def yoffset(self,p1):
+    # if not p1.isVisible(): print "yoffset not visible:",p1
+    if not p1: return 0
+    c = self.c
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        root = bunch.p.copy()
+    else:
+        root = self.c.rootPosition()
+    if root:
+        h,flag = self.yoffsetTree(root,p1,isTop=True)
+        # flag can be False during initialization.
+        # if not flag: print "*** yoffset fails:",'root',root,'p1',p1,'returns',h
+        return h
+    else:
+        return 0
+
+def yoffsetTree(self,p,p1,isTop):
+    c = self.c ; h = 0 ; trace = False ; verbose = True
+    if trace: g.trace('entry','root',p,p.stack,'target',p1,p1.stack)
+    if not c.positionExists(p):
+        if trace: g.trace('*** does not exist',p.headString())
+        return h,False # An extra precaution.
+    p = p.copy()
+    if trace and verbose and isTop and c.hoistStack:
+        g.trace('c.hoistStack',c.hoistStack[-1].p.headString())
+    if isTop and c.hoistStack:
+        if p.firstChild():  theIter = [p.firstChild()]
+        else:               theIter = []
+    else:
+        theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
+
+    for p2 in theIter:
+        if trace and p1.headString() == p2.headString():
+            g.trace('loop',p1,p2)
+            g.trace(p1.stack,p2.stack)
+        if p2 == p1:
+            if trace and verbose: g.trace('returns',h,p1.headString())
+            return h, True
+        h += self.line_height
+        if p2.isExpanded() and p2.hasChildren():
+            child = p2.firstChild()
+            if trace and verbose: g.trace('recursive call')
+            h2, flag = self.yoffsetTree(child,p1,isTop=False)
+            h += h2
+            if flag:
+                if trace and verbose: g.trace('returns',h,p1.headString())
+                return h, True
+
+    if trace: g.trace('not found',h,p1.headString())
+    return h, False
+#@-node:ekr.20040803072955.70:yoffset (tkTree)
+#@+node:ekr.20040803072955.65:scrollTo
+def scrollTo(self,p=None):
+
+    """Scrolls the canvas so that p is in view."""
+
+    # This can be called at idle time, so there are shutdown issues.
+    if g.app.quitting or self.drag_p or self.frame not in g.app.windowList:
+        return
+    if not hasattr(self,'c'):
+        return
+
+    # __pychecker__ = '--no-argsused' # event not used.
+    # __pychecker__ = '--no-intdivide' # suppress warning about integer division.
+
+    c = self.c ; frame = c.frame ; trace = False
+    if not p or not c.positionExists(p):
+        p = c.currentPosition()
+        if trace: g.trace('*** current position',p,p.stack)
+    if not p or not c.positionExists(p):
+        if trace: g.trace('current p does not exist',p)
+        p = c.rootPosition()
+    if not p or not c.positionExists(p):
+        if trace: g.trace('no position')
+        return
+    try:
+        if trace: g.trace('***',p,p.stack,'exists',c.positionExists(p))
+        h1 = self.yoffset(p)
+        if self.center_selected_tree_node: # New in Leo 4.4.3.
+            << compute frac0 >>
+            delta = abs(self.prevMoveToFrac-frac0)
+            if trace: g.trace('delta',delta)
+            if delta > 0.0:
+                self.prevMoveToFrac = frac0
+                self.canvas.yview("moveto",frac0)
+                if trace: g.trace("frac0 %1.2f h1 %3d htot %3d wtot %3d" % (
+                    frac0,h1,htot,wtot),g.callers())
+        else:
+            last = c.lastVisible()
+            nextToLast = last.visBack(c)
+            h2 = self.yoffset(last)
+            << compute approximate line height >>
+            << Compute the fractions to scroll down/up >>
+            if frac <= lo: # frac is for scrolling down.
+                if self.prevMoveToFrac != frac:
+                    self.prevMoveToFrac = frac
+                    self.canvas.yview("moveto",frac)
+                    if trace: g.trace("frac  %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                        frac, h1,h2,lo,hi),g.callers())
+            elif frac2 + (hi - lo) >= hi: # frac2 is for scrolling up.
+                if self.prevMoveToFrac != frac2:
+                    self.prevMoveToFrac = frac2
+                    self.canvas.yview("moveto",frac2)
+                    if trace: g.trace("frac2 %1.2f h1 %3d h2 %3d lo %1.2f hi %1.2f" % (
+                        frac2,h1,h2,lo,hi),g.callers())
+
+        if self.allocateOnlyVisibleNodes:
+            self.canvas.after_idle(self.idle_second_redraw)
+
+        c.setTopVnode(p) # 1/30/04: remember a pseudo "top" node.
+
+    except:
+        g.es_exception()
+
+idle_scrollTo = scrollTo # For compatibility.
+#@+node:ekr.20061030091926:<< compute frac0 >>
+# frac0 attempt to put the 
+scrollRegion = self.canvas.cget('scrollregion')
+geom = self.canvas.winfo_geometry()
+
+if scrollRegion and geom:
+    scrollRegion = scrollRegion.split(' ')
+    # if trace: g.trace('scrollRegion',repr(scrollRegion))
+    htot = int(scrollRegion[3])
+    wh,junk,junk = geom.split('+')
+    junk,h = wh.split('x')
+    if h: wtot = int(h)
+    else: wtot = 500
+    # if trace: g.trace('geom',geom,'wtot',wtot,'htot',htot)
+    if htot > 0.1:
+        frac0 = float(h1-wtot/2)/float(htot)
+        frac0 = max(min(frac0,1.0),0.0)
+    else:
+        frac0 = 0.0
+else:
+    frac0 = 0.0 ; htot = wtot = 0
+#@-node:ekr.20061030091926:<< compute frac0 >>
+#@+node:ekr.20040803072955.66:<< compute approximate line height >>
+if nextToLast: # 2/2/03: compute approximate line height.
+    lineHeight = h2 - self.yoffset(nextToLast)
+else:
+    lineHeight = 20 # A reasonable default.
+#@-node:ekr.20040803072955.66:<< compute approximate line height >>
+#@+node:ekr.20040803072955.67:<< Compute the fractions to scroll down/up >>
+data = frame.canvas.leo_treeBar.get() # Get the previous values of the scrollbar.
+try: lo, hi = data
+except: lo,hi = 0.0,1.0
+
+# h1 and h2 are the y offsets of the present and last nodes.
+if h2 > 0.1:
+    frac = float(h1)/float(h2) # For scrolling down.
+    frac2 = float(h1+lineHeight/2)/float(h2) # For scrolling up.
+    frac2 = frac2 - (hi - lo)
+else:
+    frac = frac2 = 0.0 # probably any value would work here.
+
+frac =  max(min(frac,1.0),0.0)
+frac2 = max(min(frac2,1.0),0.0)
+#@nonl
+#@-node:ekr.20040803072955.67:<< Compute the fractions to scroll down/up >>
+#@-node:ekr.20040803072955.65:scrollTo
+#@+node:ekr.20040803072955.58:tree.redraw_now & helper
+# New in 4.4b2: suppress scrolling by default.
+
+def redraw_now (self,scroll=False,forceDraw=False):
+
+    '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+
+    c = self.c
+
+    if not g.app.unitTesting:
+        if self.gc_before_redraw:
+            g.collectGarbage()
+        if g.app.trace_gc_verbose:
+            if (self.redrawCount % 5) == 0:
+                g.printGcSummary()
+        if self.trace_redraw or self.trace_alloc:
+            # g.trace(self.redrawCount,g.callers())
+            # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+            if self.trace_stats:
+                g.print_stats()
+                g.clear_stats()
+
+    # New in 4.4b2: Call endEditLabel, but suppress the redraw.
+    self.beginUpdate()
+    try:
+        self.endEditLabel()
+    finally:
+        self.endUpdate(False)
+
+    # Do the actual redraw.
+    self.expandAllAncestors(c.currentPosition())
+    if self.idle_redraw:
+        def idleRedrawCallback(event=None,self=self,scroll=scroll):
+            self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+        self.canvas.after_idle(idleRedrawCallback)
+    else:
+        self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+    if g.app.unitTesting:
+        self.canvas.update_idletasks() # Important for unit tests.
+    c.masterFocusHandler()
+
+redraw = redraw_now # Compatibility
+#@+node:ekr.20040803072955.59:redrawHelper
+def redrawHelper (self,scroll=True,forceDraw=False):
+
+    # This can be called at idle time, so there are shutdown issues.
+    if g.app.quitting or self.frame not in g.app.windowList:
+        return
+    if self.drag_p and not forceDraw:
+        return
+    if not hasattr(self,'c'):
+        return
+
+    c = self.c ; trace = False
+    oldcursor = self.canvas['cursor']
+    self.canvas['cursor'] = "watch"
+
+    if not g.doHook("redraw-entire-outline",c=c):
+
+        c.setTopVnode(None)
+        self.setVisibleAreaToFullCanvas()
+        self.drawTopTree()
+        # Set up the scroll region after the tree has been redrawn.
+        bbox = self.canvas.bbox('all')
+        if trace: g.trace('bbox',bbox,g.callers())
+        if bbox is None:
+            x0,y0,x1,y1 = 0,0,100,100
+        else:
+            x0, y0, x1, y1 = bbox
+        self.canvas.configure(scrollregion=(0, 0, x1, y1))
+        if scroll:
+            self.canvas.update_idletasks() # Essential.
+            self.scrollTo()
+
+    g.doHook("after-redraw-outline",c=c)
+
+    self.canvas['cursor'] = oldcursor
+#@-node:ekr.20040803072955.59:redrawHelper
+#@-node:ekr.20040803072955.58:tree.redraw_now & helper
+#@+node:ekr.20040303175026.10:p.moveAfter
+def moveAfter (self,a):
+
+    """Move a position after position a."""
+
+    p = self # Do NOT copy the position!
+
+    # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
+    a._adjustPositionBeforeUnlink(p)
+    p._unlink()
+    p._linkAfter(a)
+
+    # g.trace('before','p',p,p.stack,'\na',a,a.stack)
+
+    return p
+#@-node:ekr.20040303175026.10:p.moveAfter
+#@+node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+def _adjustPositionBeforeUnlink (self,p2):
+
+    '''Adjust position p before unlinking p2.'''
+
+    p = self ; sib = p.copy()
+
+    while sib.hasBack():
+        sib.moveToBack()
+        if sib == p2:
+            p._childIndex -= 1
+            break
+
+    # Major bug fix: 6/26/2008. Adjust p's stack as well.
+    stack = [] ; changed = False ; i = 0
+    while i < len(p.stack):
+        v,childIndex = p.stack[i]
+        p3 = position(v=v,childIndex=childIndex,stack=stack[:i])
+        while p3:
+            if p2.v == p3.v: # A match with the to-be-moved node?
+                stack.append((v,childIndex-1),)
+                changed = True
+                break
+            p3.moveToBack()
+        else:
+            stack.append((v,childIndex),)
+        i += 1
+
+    if changed:
+        # g.trace('***new stack','p',p,'stack',stack)
+        p.stack = stack
+#@-node:ekr.20080427062528.4:p._adjustPositionBeforeUnlink
+#@+node:ekr.20080416161551.214:p._linkAfter
+def _linkAfter (self,p_after):
+
+    '''Link self after p_after.'''
+
+    p = self
+    parent_v = p_after._parentVnode()
+        # Returns None if p.v is None
+
+    # Init the ivars.
+    p.stack = p_after.stack[:]
+    p._childIndex = p_after._childIndex + 1
+
+    # Add v to it's tnode's vnodeList.
+    if p.v not in p.v.t.vnodeList:
+        p.v.t.vnodeList.append(p.v)
+        p.v.t._p_changed = 1 # Support for tnode class.
+
+    # Add p.v to parent_v's children.
+    parent_v.t.children.insert(p_after._childIndex+1,p.v)
+    parent_v._p_changed = 1
+
+    # Add all all nodes in parent_v.t.vnodeList to p.v.parents
+    parent_v._computeParentsOfChildren()
+#@-node:ekr.20080416161551.214:p._linkAfter
+#@+node:ekr.20080416161551.217:p._unlink
+def _unlink (self):
+
+    '''Unlink the receiver p from the tree.'''
+
+    trace = True
+    p = self ; n = p._childIndex
+    parent_v = p._parentVnode()
+        # returns None if p.v is None
+    assert(p.v)
+    assert(parent_v)
+    # g.trace('parent_v',parent_v)
+
+    # Remove v from it's tnode's vnodeList.
+    if p.v in p.v.t.vnodeList:
+        p.v.t.vnodeList.remove(p.v)
+        p.v.t._p_changed = 1 # Support for tnode class.
+
+    # Delete p.v from parent_v's children.
+    if 0 <= n < len(parent_v.t.children):
+        if parent_v.t.children[n] == p.v:
+            del parent_v.t.children[n]
+            parent_v._p_changed = 1
+        elif trace:
+            g.trace('**can not happen: children[%s] != p.v' % (n))
+            g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+            g.trace('parent_v',parent_v)
+            g.trace('parent_v.t.children[n]',parent_v.t.children[n])
+            g.trace('p.v',p.v)
+            g.trace('** callers:',g.callers())
+            if g.app.unitTesting: assert False, 'children[%s] != p.v'
+    elif trace:
+        g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
+        # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
+        g.trace('parent_v',parent_v,'p.v',p.v)
+        g.trace('** callsers:',g.callers())
+        if g.app.unitTesting: assert False, 'children[%s] != p.v'
+
+    # Clear the entire parents array.
+    if p.v.parents:
+        p.v.parents = []
+        p.v._p_changed = 1
+
+
+
+#@-node:ekr.20080416161551.217:p._unlink
+#@+node:ekr.20080416161551.212:p._parentVnode
+def _parentVnode (self):
+
+    '''Return the parent vnode.
+    Return the hiddenRootNode if there is no other parent.'''
+
+    p = self
+
+    if p.v:
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        else:
+            return p.v.context.hiddenRootNode
+    else:
+        return None
+#@-node:ekr.20080416161551.212:p._parentVnode
+#@-node:ekr.20080625094201.1:Fixed dragging bug
 #@-node:ekr.20080408060320.782:Bug fixes
 #@+node:ekr.20080408060320.783:Features
 #@+node:ekr.20080409081425.1:Remove useTextWidget option from leoKeys.py

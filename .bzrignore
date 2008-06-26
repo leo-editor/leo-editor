@@ -28,3 +28,4 @@ leo/test/scriptFile.py
 leo/test/leoProfile.txt
 gradient.png
 leo/core/leoKeys.py
+leo/test/at_ignore_test.txt
