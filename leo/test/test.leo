@@ -208,7 +208,7 @@
 <v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
 <v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
-<v t="ekr.20080624141305.1" tnodeList="ekr.20080624141305.1"><vh>@nosent at_ignore_test.txt</vh>
+<v t="ekr.20080624141305.1"><vh>@@nosent at_ignore_test.txt</vh>
 <v t="ekr.20080624141305.2"><vh>ignored</vh>
 <v t="ekr.20080624141305.3"><vh>a</vh></v>
 </v>

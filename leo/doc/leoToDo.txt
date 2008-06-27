@@ -8,6 +8,63 @@
 #@-node:ekr.20080616093150.1:After b1: Update docs relating to c.begin/endUpdate
 #@+node:ekr.20080624120440.1:After b1: Create new branch to eliminate begin/endUpdate
 #@-node:ekr.20080624120440.1:After b1: Create new branch to eliminate begin/endUpdate
+#@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb718b4c6d478ac0
+
+I'm just getting started learning how to use Leo. Now, I'd like to use
+it for some of my projects, but there's no chance that I can convert
+everyone at work to using it, so putting sentinel-filled files in our
+repository is out of the question. At the same time, my code looks
+awfully bare without sentinels because the documentation ends up in
+the section names, not the comments!
+
+So, I was wondering if there's a convenient way to pull the section
+names into a comment at the start of each section?
+
+===============
+
+Interesting question.  Am I correct in assuming you are using @nosent trees
+to generate your files?  If so, it would be easy to add support for the
+following options:
+
+@bool write_section_comments_in_at_nosent_trees
+@bool write_node_name_comments_in_at_nosent_trees
+
+The first would write a sentinel consisting of only the section name;
+the second would write a sentinel consisting only of the node's headline
+(for nodes whose headline is not a section name).
+
+These seem like they would be useful additions.  One can even imagine
+corresponding Leo directives so that the comments could be turned on or off
+within an @nosent tree.
+
+What do you think?
+
+=====================
+
+> Interesting question.  Am I correct in assuming you are using @nosent trees
+> to generate your files?  If so, it would be easy to add support for the
+> following options:
+
+> @bool write_section_comments_in_at_nosent_trees
+> @bool write_node_name_comments_in_at_nosent_trees
+
+> The first would write a sentinel consisting of only the section name;
+> the second would write a sentinel consisting only of the node's headline
+> (for nodes whose headline is not a section name).
+
+> These seem like they would be useful additions.  One can even imagine
+> corresponding Leo directives so that the comments could be turned on or off
+> within an @nosent tree.
+
+That sounds like an excellent solution. Particularly the last bit --
+if you could turn section-comments on and off as required, it would
+become very convenient to use Leo to produce source that is intended
+to also be read by non Leo users. 
+#@nonl
+#@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -3497,6 +3554,32 @@ delete-node does not copy node to clipboard:
   Issue copy-node command followed by delete-node
 #@-node:ekr.20080623083646.9:Notes
 #@-node:ekr.20080623083646.6:Vim notes
+#@+node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
+
+Running the latest trunk with the Vim key bindings shows the following
+behavior:
+
+Note: all steps below should leave current node in the Command state
+(light blue background)
+
+1. Select a node
+2. Delete a character ('x' key)
+  ! Undo menu item dimmed
+3. Go to next node ('Ctrl-J' key)
+  ! Undo menu item active
+4. Delete a character ('x' key)
+5. undo delete ('u' key)
+  ! Restores previous node's character
+
+In summary, it appears that any changes to a node's headline are not
+placed in the edit history used by the undo command until after
+another node has been selected.
+
+
+#@-node:ekr.20080626081829.1:Fix headline undo problem (with vim bindings)
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20080411091507.10:Bugs
 #@+node:ekr.20080519062109.2:Improve how Leo handles long lines
