@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -214,6 +214,7 @@
 </v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
 </v>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1600,5 +1601,34 @@ for i in range(100):
 
 t.expand()
 c.redraw_now()</t>
+<t tx="ekr.20080628094340.1">if 0:
+    # Called when func is **defined**
+    def leo_command(func):
+        g.trace(func.__name__)
+        return func
+else:
+    class leo_command:
+        def __init__(self,func,c=c):
+            self.c = c
+            self.func = func
+            self.name = func.__name__
+            print "registering",self.name
+
+        def __call__(__self,*__args,**__kw):
+            print "before", __self.name
+            try:
+                return __self.func(*__args,**__kw)
+            finally:
+                print "after ", __self.name
+                print 'c',c
+                c.outerUpdate()
+
+
+@leo_command
+def hello():
+    print "Hello, world!"
+
+hello()
+</t>
 </tnodes>
 </leo_file>
