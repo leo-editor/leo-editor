@@ -5642,6 +5642,303 @@ The following decorators might be useful:
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20071211093323:more screen shots on Leo's web site
 #@-node:ekr.20071211093323:more screen shots on Leo's web site
+#@+node:ekr.20080624120440.4:Improve docs for @ignore
+#@+node:ekr.20041005105605.198:directiveKind4
+def directiveKind4(self,s,i):
+
+    """Return the kind of at-directive or noDirective."""
+
+    at = self
+    n = len(s)
+    if i >= n or s[i] != '@':
+        j = g.skip_ws(s,i)
+        if g.match_word(s,j,"@others"):
+            return at.othersDirective
+        elif g.match_word(s,j,"@all"):
+            return at.allDirective
+        else:
+            return at.noDirective
+
+    table = (
+        ("@all",at.allDirective),
+        ("@c",at.cDirective),
+        ("@code",at.codeDirective),
+        ("@doc",at.docDirective),
+        ("@end_raw",at.endRawDirective),
+        ("@others",at.othersDirective),
+        ("@raw",at.rawDirective))
+
+    # Rewritten 6/8/2005.
+    if i+1 >= n or s[i+1] in (' ','\t','\n'):
+        # Bare '@' not recognized in cweb mode.
+        return g.choose(at.language=="cweb",at.noDirective,at.atDirective)
+    if not s[i+1].isalpha():
+        return at.noDirective # Bug fix: do NOT return miscDirective here!
+    if at.language=="cweb" and g.match_word(s,i,'@c'):
+        return at.noDirective
+
+    for name,directive in table:
+        if g.match_word(s,i,name):
+            return directive
+
+    # New in Leo 4.4.3: add support for add_directives plugin.
+    for name in g.globalDirectiveList:
+        if g.match_word(s,i+1,name):
+            return at.miscDirective
+
+    return at.noDirective
+#@-node:ekr.20041005105605.198:directiveKind4
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+    write_strips_blank_lines = None,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString,
+        write_strips_blank_lines = write_strips_blank_lines)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = g.os_path_normpath(g.os_path_join(at.default_directory,at.targetFileName))
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            << set dirty and orphan bits on error >>
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+
+if at.errors > 0 or at.root.isOrphan():
+    root.setOrphan()
+    root.setDirty() # Make _sure_ we try to rewrite this file.
+    ### os.remove(at.outputFileName) # Delete the temp file.
+    self.remove(at.outputFileName) # Delete the temp file.
+    g.es("not written:",at.outputFileName)
+else:
+    at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits on error >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@+node:ekr.20041005105605.157:writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,nosentinels=False,toString=False,fromString='',atAuto=False):
+
+    """Do all writes except asis writes."""
+
+    at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
+
+    root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
+    root.clearVisitedInTree()
+
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=4")
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+
+    if atAuto or (not toString and not nosentinels):
+        at.warnAboutOrphandAndIgnoredNodes()
+#@-node:ekr.20041005105605.157:writeOpenFile
+#@+node:ekr.20041005105605.171:inAtOthers
+def inAtOthers(self,p):
+
+    """Returns True if p should be included in the expansion of the at-others directive
+
+    in the body text of p's parent."""
+
+    # Return False if this has been expanded previously.
+    if  p.v.isVisited():
+        # g.trace("previously visited",p.v)
+        return False
+
+    # Return False if this is a definition node.
+    h = p.headString() ; i = g.skip_ws(h,0)
+    isSection,junk = self.isSectionName(h,i)
+    if isSection:
+        # g.trace("is section",p)
+        return False
+
+    # Return False if p's body contains an @ignore directive.
+    if p.isAtIgnoreNode():
+        # g.trace("is @ignore",p)
+        return False
+    else:
+        # g.trace("ok",p)
+        return True
+#@-node:ekr.20041005105605.171:inAtOthers
+#@+node:ekr.20041005105605.161:putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    at = self
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.bodyString())
+
+    p.v.t.setVisited() # Suppress orphans check.
+    p.v.setVisited() # Make sure v is never expanded again.
+    if not at.thinFile:
+        p.v.t.setWriteBit() # Mark the tnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    if self.write_strips_blank_lines:
+        s = self.cleanLines(p,s)
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert(next_i > i)
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+    if at.sentinels and not trailingNewlineFlag:
+        at.putSentinel("@nonl")
+#@+node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
+@
+
+If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and not trailingNewlineFlag:
+        # g.trace('Added newline',repr(s))
+        s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@-node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
+#@+node:ekr.20041005105605.163:<< handle line at s[i]  >>
+# g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert(not at.pending)
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.miscDirective:
+    # g.trace('miscDirective')
+    at.putDirective(s,i)
+else:
+    assert(0) # Unknown directive.
+#@-node:ekr.20041005105605.163:<< handle line at s[i]  >>
+#@-node:ekr.20041005105605.161:putBody
+#@-node:ekr.20080624120440.4:Improve docs for @ignore
 #@-node:ekr.20080411091507.1:Docs
 #@+node:ekr.20071029082025:Improve distribution
 #@+node:ekr.20070929125944:Emulate Orange's download philosophy

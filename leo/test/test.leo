@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -199,7 +199,6 @@
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-</v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
 <v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
@@ -214,6 +213,7 @@
 </v>
 </v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk

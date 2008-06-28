@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5,1,4,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -48,7 +48,7 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080405093619.1"><vh>ANN: Leo 4.4.8 final</vh></v>
+<v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080305100429.1"><vh>Pre 4.4</vh>
 <v t="EKR.20040519091259.34"><vh>4.0</vh>
@@ -164,6 +164,7 @@
 <v t="ekr.20080314081033.1"><vh>ANN: Leo 4.4.8 b2</vh></v>
 <v t="ekr.20080328075132.1"><vh>ANN: Leo 4.4.8 b3</vh></v>
 <v t="ekr.20080403083615.1"><vh>ANN: Leo 4.4.8 rc1</vh></v>
+<v t="ekr.20080405093619.1"><vh>ANN: Leo 4.4.8 final</vh></v>
 </v>
 </v>
 </v>
@@ -181,7 +182,6 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
-<v t="ekr.20080218154442.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
@@ -235,7 +235,7 @@
 <v t="ekr.20050118092706"
 marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -246,7 +246,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
@@ -448,28 +448,22 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.4.8 final                        April 6, 2008
+<t tx="EKR.20040519090846.9">Leo 4.5 beta 1                      June 28, 2008
 
-Leo 4.4.8 final is now available at:
+Leo 4.5 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-This version features a new ipython plugin that provides a two-way bridge
-between Leo and IPython.  See http://webpages.charter.net/edreamleo/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.4.8:
-----------------------------
-- Leo's source code is now managed by bzr: see link below.
-- Leo's discussion is now hosted by Google Groups: see link below.
-- Arguments to g.es and g.es_print can be translated using gettext.
-- Completed ILeo: a bridge between IPython and Leo.
-  See http://webpages.charter.net/edreamleo/IPythonBridge.html
-- Minibuffer commands may have arguments.
-- @menu trees can now refer to commands created by
-  @command and @button nodes.
-- Added support for common @commands nodes in settings files.
+The highlights of Leo 4.5:
+--------------------------
+- A major revision of Leo's node structures, compatible with so-called unified nodes.
+- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
+- A major revision of Leo's outline drawing and focus handling code.
+  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
+- The beginning of usable vim-like bindings.  More support is coming.
+- Many small improvements and bug fixes.
 
 Links:
 ------
@@ -5072,47 +5066,6 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080218154442.1"></t>
-<t tx="ekr.20080218154442.2">@color
-# Run pylint
-# Run all unit tests.
-@nocolor
-** LeoDocs.leo:
-    ** Update the version number on the home page
-    - select the read-me node.
-** LeoDist.leo:
-    - Update announcement.
-    - Update readme.txt
-- leoPlugins.leo: Remove top-level clones.
-- leoPy.leo:
-    - Update the version number in the Help menu.
-    - Remove top-level clones.
-Create leo-x.zip:
-    - bzr commit
-    - bzr tag
-    - bzr push
-    ** cd trunk
-    - bzr export &lt;release-name&gt;.zip
-Create and test leosetup.exe.
-	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
-	- Test created leosetup.exe file.
-	- test the files created in c:\program files\leo
-    ** Open unitTest.leo: does it open without errors?
-    ** Open leoPlugins.leo: does it open without errors?
-
-@color
-# **** Scan all folders &amp; files before uploading.
-@nocolor
-
-Create Release on SourceForge
-
-Announcements
-- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
-    - Edit with the 'Edit this page' *tab* (not a link)
-- Update version number on web site.
-- Announce to SourceForge itself.
-- Announce to leo-editor.
-- Announce to comp.lang.python
-- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20080305100429">Leo 4.4.8 beta 1                           March 5, 2008
 
 Leo 4.4.8 beta 1 is available at:
@@ -5359,6 +5312,30 @@ The highlights of Leo 4.4.8:
 - @menu trees can now refer to commands created by
   @command and @button nodes.
 - Added support for common @commands nodes in settings files.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080628062747.73">Leo 4.5 beta 1                      June 28, 2008
+
+Leo 4.5 beta 1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+- A major revision of Leo's node structures, compatible with so-called unified nodes.
+- A major revision of Leo's key-handling code.  Most per-pane key bindings have been eliminated.
+- A major revision of Leo's outline drawing and focus handling code.
+  Calls to c.beginUpdate and c.endUpdate simply request later redrawing in c.outerUpdate.
+- The beginning of usable vim-like bindings.  More support is coming.
+- Many small improvements and bug fixes.
 
 Links:
 ------
