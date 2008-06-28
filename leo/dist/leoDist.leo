@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5,0,1,13,9"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -182,8 +182,9 @@
 <v t="ekr.20040701193853.5"><vh>variablesToIgnore</vh></v>
 </v>
 </v>
+<v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
-<v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
+<v t="ekr.20050118095021" a="E"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
@@ -217,9 +218,9 @@
 <v t="ekr.20050118104901.13"><vh>&lt;&lt; install scripts &gt;&gt;</vh></v>
 <v t="ekr.20050118104901.14"><vh>&lt;&lt; uninstall scripts &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20050118104901.9"><vh>src files</vh>
-<v t="ekr.20050118104901.10"><vh>&lt;&lt; install src files &gt;&gt;</vh></v>
-<v t="ekr.20050118104901.11"><vh>&lt;&lt; uninstall src files &gt;&gt;</vh></v>
+<v t="ekr.20050118104901.9"><vh>core files</vh>
+<v t="ekr.20050118104901.10"><vh>&lt;&lt; install core files &gt;&gt;</vh></v>
+<v t="ekr.20050118104901.11"><vh>&lt;&lt; uninstall core files &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20050118122740.2"><vh>test files</vh>
 <v t="ekr.20050118122404.1"><vh>&lt;&lt; install test files &gt;&gt;</vh></v>
@@ -232,10 +233,11 @@
 <v t="ekr.20050118103447.1"><vh>&lt;&lt; uninstall top-level files &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20050118092706"
-marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
+<v t="ekr.20050118092706" a="E"
+marks="ekr.20050118124408,ekr.20050118092706.4,"
+expanded="ekr.20050118092706.22,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="EKR.20040519090846.4"><vh>Linux installation</vh></v>
@@ -251,7 +253,6 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="ekr.20080402082107.1"><vh>How to use bzr export</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -340,11 +341,11 @@ To install Leo from the .zip file:
     2. Unzip the .zip file and place the unpacked leo folder in 
        the 'Program Files' folder or any convenient location.
 
-After you have installed Leo, you should add the location of your leo/src folder to your python path.
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
 One way to do this is adding something like the following to python/Lib/sitecustomize.py:
 
     import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\src')
+    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
 
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 </t>
@@ -385,7 +386,7 @@ b) The OLD way: Download Leo-version-number.zip:
 
 Unzip the contents into the desired directory by double-clicking the downloaded file.
 
-5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/src/leo.py and open
+5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
 with PythonLauncher.
 
 6) It is a good idea to set PythonLauncher as the default program to  
@@ -429,7 +430,7 @@ c:\python22\python &lt;leopath&gt;leo.py "%1"
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.4.8-final
+Version: 4.5-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -2428,22 +2429,24 @@ Delete "$INSTDIR\plugins\trees\*.*"
 
 Delete "$INSTDIR\plugins\trees\pluginsManager.txt"</t>
 <t tx="ekr.20050118104901.9"></t>
-<t tx="ekr.20050118104901.10">File "..\src\buttons.txt"
-File "..\src\leoProjects.txt"
-File "..\src\LeoPy.leo"
-File "..\src\oldLeoProjects.leo"
+<t tx="ekr.20050118104901.10">File "..\core\buttons.txt"
+File "..\core\leoProjects.txt"
+File "..\core\LeoPy.leo"
+File "..\core\oldLeoProjects.leo"
 
-; File "..\src\__init__.py"
-File "..\src\leo*.py"
+; File "..\core\__init__.py"
+File "..\core\leo*.py"
+File "..\core\runLeo.py"
 </t>
-<t tx="ekr.20050118104901.11">Delete "$INSTDIR\src\buttons.txt"
-Delete "$INSTDIR\src\leoProjects.txt"
-Delete "$INSTDIR\src\LeoPy.leo"
-Delete "$INSTDIR\src\oldLeoProjects.leo"
+<t tx="ekr.20050118104901.11">Delete "$INSTDIR\core\buttons.txt"
+Delete "$INSTDIR\core\leoProjects.txt"
+Delete "$INSTDIR\core\LeoPy.leo"
+Delete "$INSTDIR\core\oldLeoProjects.leo"
 
-Delete "$INSTDIR\src\__init__.p*"
+Delete "$INSTDIR\core\__init__.p*"
 
-Delete "$INSTDIR\src\leo*.p*"</t>
+Delete "$INSTDIR\core\leo*.p*"
+Delete "$INSTDIR\core\runLeo.py"</t>
 <t tx="ekr.20050118104901.12"></t>
 <t tx="ekr.20050118104901.13">File "..\scripts\scripts.leo"
 File "..\scripts\leoScripts.txt"
@@ -5251,13 +5254,11 @@ print command
 
 os.system(command)
 </t>
-<t tx="ekr.20080402082107.1">cd leo.repo/leo-editor/trunk
-</t>
 <t tx="ekr.20080402154207.1">@nocolor
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -final
+Latest suffix:  -b1
 
 @color</t>
 <t tx="ekr.20080403083615.1">Leo 4.4.8 rc1                        April 3, 2008
@@ -5344,5 +5345,46 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080628065201.2">@color
+# Run pylint
+# Run all unit tests.
+@nocolor
+** LeoDocs.leo:
+    ** Update the version number on the home page
+    - select the read-me node.
+** LeoDist.leo:
+    - Update announcement.
+    - Update readme.txt
+- leoPlugins.leo: Remove top-level clones.
+- leoPy.leo:
+    - Update the version number in the Help menu.
+    - Remove top-level clones.
+Create leo-x.zip:
+    - bzr commit
+    - bzr tag
+    - bzr push
+    ** cd trunk
+    - bzr export &lt;release-name&gt;.zip
+Create and test leosetup.exe.
+	- Create leosetup.exe by right-clicking leo.nsi and choosing "compile with NSI (bz2)"
+	- Test created leosetup.exe file.
+	- test the files created in c:\program files\leo
+    ** Open unitTest.leo: does it open without errors?
+    ** Open leoPlugins.leo: does it open without errors?
+
+@color
+# **** Scan all folders &amp; files before uploading.
+@nocolor
+
+Create Release on SourceForge
+
+Announcements
+- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
+    - Edit with the 'Edit this page' *tab* (not a link)
+- Update version number on web site.
+- Announce to SourceForge itself.
+- Announce to leo-editor.
+- Announce to comp.lang.python
+- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 </tnodes>
 </leo_file>
