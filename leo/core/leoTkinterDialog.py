@@ -210,6 +210,8 @@ class tkinterAboutLeo (leoTkinterDialog):
 
         if g.app.unitTesting: return
 
+        c = self.c
+
         frame = self.frame
         theCopyright = self.copyright ; email = self.email
         url = self.url ; version = self.version
