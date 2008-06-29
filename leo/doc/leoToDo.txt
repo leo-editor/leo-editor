@@ -2,12 +2,6 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
-#@+node:ekr.20080616093150.1:After b1: Update docs relating to c.begin/endUpdate
-# Mention c.outerUpdate, c.bind, c.bind2 and the need to create callbacks when using c.addIconButton.
-#@nonl
-#@-node:ekr.20080616093150.1:After b1: Update docs relating to c.begin/endUpdate
-#@+node:ekr.20080624120440.1:After b1: Create new branch to eliminate begin/endUpdate
-#@-node:ekr.20080624120440.1:After b1: Create new branch to eliminate begin/endUpdate
 #@+node:ekr.20080626081829.2:Allow headline comments for @nosent files
 @nocolor
 
@@ -5961,6 +5955,36 @@ Leo should copy this download philosophy.
 #@+node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20071029082025:Improve distribution
+#@+node:ekr.20080628095358.1:Make each Leo command a class??
+http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
+
+@nocolor
+
+The main difficulty I see in the migration is creating the tables in the getPublicCommands methods in the various classes in leoEditCommands.py.  At present, these tables associate command names (strings) with corresponding methods.  The form of getPublicCommands is always:
+
+def getPublicCommands (self):
+  return {
+    'command-name1': self.methodName1,
+    'command-name2': self.methodName2,
+    ...
+  }
+
+Thinking out loud, let's see whether the migration can be done easily.  We would change the entry:
+
+    'command-name1': self.methodNameN,
+
+to:
+
+    'command-name1': self.classNameN(self),
+
+That is, the table creates an instance of the class by calling the class's ctor, with self (the container object) as the ctor's only argument.  To make this work, all we need to do is give the class a __call__ method whose signature matches the signature of methodNameN, that is, the signature used to call methods previously.
+
+Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* to do a mass migration.  It should be easy to verify this scheme with one or two examples.  Please report your experiences if you decide to play around with this.
+
+Edward
+
+P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
+#@-node:ekr.20080628095358.1:Make each Leo command a class??
 #@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion
