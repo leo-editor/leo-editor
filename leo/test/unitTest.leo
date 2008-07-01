@@ -846,6 +846,10 @@
 <v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
 </v>
 <v t="ekr.20070301064408"><vh>@test print All plugins tests complete</vh></v>
+<v t="ekr.20080701183239.1"><vh>Tests of threading_colorizer code</vh>
+<v t="ekr.20080701183239.2"><vh>quickConvertRowColToPythonIndex</vh></v>
+<v t="ekr.20080701183239.3"><vh>quickConvertPythonIndexToRowCol</vh></v>
+</v>
 </v>
 <v t="ekr.20050120095423.6"><vh>@suite test syntax of all plugins</vh>
 <v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
@@ -16582,7 +16586,7 @@ after</t>
 plugins_menu.py
 
 # Standard plugins...
-cleo.py
+# cleo.py
 open_with.py
 mod_scripting.py
 rst3.py
@@ -20590,5 +20594,70 @@ finally:
 leoTest.runTimerOnNode(c,p,count=100)</t>
 <t tx="ekr.20080529115911.1">import leo.core.leoTest as leoTest
 leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt</t>
+<t tx="ekr.20080701183239.1">if 0:
+    @others
+
+</t>
+<t tx="ekr.20080701183239.2">def quickConvertRowColToPythonIndex(row,col):
+    return lineIndices[row-1] + col
+
+s = p.bodyString()
+lines = g.splitLines(s)
+lineIndices = [0]
+for i in xrange(1,len(lines)):
+    lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
+
+n = 0
+for row in xrange(len(lines)):
+    line = lines[row]
+    for col in xrange(len(line)):
+        assert quickConvertRowColToPythonIndex(row+1,col) == n
+        n += 1
+print 'pass'
+
+</t>
+<t tx="ekr.20080701183239.3"># aaaaaaaaaaaaaaaaaa add some more characters.
+
+total_count_chars = total_rfind_chars = 0
+
+def quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i):
+    global total_count_chars, total_rfind_chars
+    trace = False
+    if trace: g.trace('i',i,'last_row',last_row,'last_col',last_col,'last_i',last_i)
+    row = s.count('\n',last_i,i) # Don't include i
+    total_count_chars += i-last_i
+    if trace: g.trace('row',row)
+    if row == 0:
+        if trace: g.trace('returns',last_row,last_col+i-last_i)
+        return last_row,last_col+i-last_i
+    else:
+        prevNL = s.rfind('\n',last_i,i) # Don't include i
+        total_rfind_chars += i-last_i
+        if trace: g.trace('prevNL',prevNL)
+        if trace: g.trace('returns',last_row+row,i-prevNL-1)
+        return last_row+row,i-prevNL-1
+
+def fail(kind,expected,got):
+    return 'n: %d, expected %s %d, got %s %d last_row %d last_col %d' % (
+        n,kind,expected,kind,got,last_row,last_col)
+
+# This is fast because we never look at characters more than once.
+s = p.bodyString()
+print '-'*40
+last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
+while n &lt; len(s):
+    expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
+    row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
+    assert row == expected_row,fail('row',expected_row,row)
+    assert col == expected_col,fail('col',expected_col,col)
+    last_row = row ; last_col = col ; last_i = n
+    n += 20
+n = len(s)
+expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
+row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
+assert row == expected_row,fail('row',expected_row,row)
+assert col == expected_col,fail('col',expected_col,col)
+print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
+</t>
 </tnodes>
 </leo_file>

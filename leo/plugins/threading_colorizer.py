@@ -9,7 +9,7 @@ See: http://webpages.charter.net/edreamleo/coloring.html for documentation.
 #@@tabwidth -4
 #@@pagewidth 80
 
-__version__ = '1.4'
+__version__ = '1.5'
 
 trace_all_matches = False
 trace_leo_matches = False
@@ -19,13 +19,14 @@ trace_leo_matches = False
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import os
+# import os
 import re
 import string
 import threading
 import traceback
-import xml.sax
-import xml.sax.saxutils
+
+# import xml.sax
+# import xml.sax.saxutils
 
 import Tkinter as Tk
 
@@ -56,6 +57,7 @@ php_re = re.compile("<?(\s[pP][hH][pP])")
 # perl.
 # ** Important: regexp matching can hang for complex regexp's.
 #    The fix for perl was to disable two perl rules.
+# 1.5 EKR: Changes suggested by pylint.
 #@-at
 #@nonl
 #@-node:ekr.20071010193720.2:<< version history >>
@@ -150,76 +152,6 @@ default_font_dict = {
 #@nl
 
 #@+others
-#@+node:ekr.20071011184312:Tests
-if 0:
-    #@    @+others
-    #@+node:ekr.20071011153139:quickConvertRowColToPythonIndex
-    def quickConvertRowColToPythonIndex(row,col):
-        return lineIndices[row-1] + col
-
-    s = p.bodyString()
-    lines = g.splitLines(s)
-    lineIndices = [0]
-    for i in xrange(1,len(lines)):
-        lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
-
-    n = 0
-    for row in xrange(len(lines)):
-        line = lines[row]
-        for col in xrange(len(line)):
-            assert quickConvertRowColToPythonIndex(row+1,col) == n
-            n += 1
-    print 'pass'
-
-    #@-node:ekr.20071011153139:quickConvertRowColToPythonIndex
-    #@+node:ekr.20071011154916:quickConvertPythonIndexToRowCol
-    # aaaaaaaaaaaaaaaaaa add some more characters.
-
-    total_count_chars = total_rfind_chars = 0
-
-    def quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i):
-        global total_count_chars, total_rfind_chars
-        trace = False
-        if trace: g.trace('i',i,'last_row',last_row,'last_col',last_col,'last_i',last_i)
-        row = s.count('\n',last_i,i) # Don't include i
-        total_count_chars += i-last_i
-        if trace: g.trace('row',row)
-        if row == 0:
-            if trace: g.trace('returns',last_row,last_col+i-last_i)
-            return last_row,last_col+i-last_i
-        else:
-            prevNL = s.rfind('\n',last_i,i) # Don't include i
-            total_rfind_chars += i-last_i
-            if trace: g.trace('prevNL',prevNL)
-            if trace: g.trace('returns',last_row+row,i-prevNL-1)
-            return last_row+row,i-prevNL-1
-
-    def fail(kind,expected,got):
-        return 'n: %d, expected %s %d, got %s %d last_row %d last_col %d' % (
-            n,kind,expected,kind,got,last_row,last_col)
-
-    # This is fast because we never look at characters more than once.
-    s = p.bodyString()
-    print '-'*40
-    last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
-    while n < len(s):
-        expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
-        row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
-        assert row == expected_row,fail('row',expected_row,row)
-        assert col == expected_col,fail('col',expected_col,col)
-        last_row = row ; last_col = col ; last_i = n
-        n += 20
-    n = len(s)
-    expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
-    row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
-    assert row == expected_row,fail('row',expected_row,row)
-    assert col == expected_col,fail('col',expected_col,col)
-    print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
-
-    #@-node:ekr.20071011154916:quickConvertPythonIndexToRowCol
-    #@-others
-
-#@-node:ekr.20071011184312:Tests
 #@+node:ekr.20071010193720.6:module-level
 #@+node:ekr.20071010193720.7:init
 def init ():
@@ -512,8 +444,8 @@ class colorizer:
         self.mode = None # The mode object for the present language.
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
-        if 0: self.defineAndExtendForthWords()
-        self.word_chars = {} # Inited by init_keywords().
+        # self.defineAndExtendForthWords()
+        self.word_chars = [] # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
             "blank","comment","cwebName","docPart","keyword","leoKeyword",
@@ -920,9 +852,6 @@ class colorizer:
     #@-node:ekr.20071010193720.26:init_mode & helpers
     #@-node:ekr.20071010193720.20:Birth and init
     #@+node:ekr.20071010193720.32:Entry points
-    def idleHandler (self,event=None):
-
-        if not self.helpterThread: return
     #@+node:ekr.20071010193720.33:colorize
     def colorize(self,p,incremental=False,interruptable=True):
 
@@ -1888,7 +1817,7 @@ class colorizer:
             if self.escape and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0 ; k = 1
-                while j-k >=0 and s[j-k] == esc:
+                while j-k >=0 and s[j-k] == self.escape:
                     escapes += 1 ; k += 1
                 if (escapes % 2) == 1:
                     # An escaped end **aborts the entire match**:

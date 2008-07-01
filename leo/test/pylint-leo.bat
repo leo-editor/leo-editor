@@ -113,6 +113,12 @@ goto done
 :good_plugins
 
 echo .
+echo threading_colorizer.py
+call pylint.bat plugins\threading_colorizer.py     --rcfile=test\pylint-leo-rc.txt
+
+goto done
+
+echo .
 echo add_directives.py
 call pylint.bat plugins\add_directives.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -441,9 +447,6 @@ call pylint.bat plugins\table.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo templates.py
 call pylint.bat plugins\templates.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo threading_colorizer.py
-call pylint.bat plugins\threading_colorizer.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo toolbar.py
 call pylint.bat plugins\toolbar.py     --rcfile=test\pylint-leo-rc.txt
