@@ -111,26 +111,33 @@ class undoer:
         # Set the following ivars to keep pychecker happy.
         self.afterTree = None
         self.beforeTree = None
+        self.children = None
         self.dirtyVnodeList = None
+        self.followingSibs = None
         self.kind = None
         self.newBack = None
         self.newBody = None
+        self.newChildren = None
         self.newHead = None
         self.newMarked = None
         self.newN = None
         self.newP = None
         self.newParent = None
+        self.newParent_v = None
         self.newRecentFiles = None
         self.newTree = None
         self.oldBack = None
         self.oldBody = None
+        self.oldChildren = None
         self.oldHead = None
         self.oldMarked = None
         self.oldN = None
         self.oldParent = None
+        self.oldParent_v = None
         self.oldRecentFiles = None
         self.oldTree = None
         self.pasteAsClone = None
+        self.sortChildren = None
 
     def redoHelper(self):
         pass
@@ -174,7 +181,6 @@ class undoer:
     def dumpBead (self,n):
 
         u = self
-
         if n < 0 or n >= len(u.beads):
             return 'no bead: n = ',n
 
@@ -187,38 +193,12 @@ class undoer:
 
     def dumpTopBead(self):
 
+        u = self
         n = len(u.beads)
         if n > 0:
-            return dumpBead(n-1)
+            return self.dumpBead(n-1)
         else:
             return '<no top bead>'
-
-    #@+at 
-    #@nonl
-    # self.afterTree = None
-    #     self.beforeTree = None
-    #     self.dirtyVnodeList = None
-    #     self.kind = None
-    #     self.newBack = None
-    #     self.newBody = None
-    #     self.newHead = None
-    #     self.newMarked = None
-    #     self.newN = None
-    #     self.newP = None
-    #     self.newParent = None
-    #     self.newRecentFiles = None
-    #     self.newTree = None
-    #     self.oldBack = None
-    #     self.oldBody = None
-    #     self.oldHead = None
-    #     self.oldMarked = None
-    #     self.oldN = None
-    #     self.oldParent = None
-    #     self.oldRecentFiles = None
-    #     self.oldTree = None
-    #     self.pasteAsClone = None
-    #@-at
-    #@nonl
     #@-node:ekr.20080623083646.10:dumpBead
     #@+node:EKR.20040526150818:getBead
     def getBead (self,n):

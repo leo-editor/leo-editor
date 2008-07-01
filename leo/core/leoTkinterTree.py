@@ -47,7 +47,8 @@ Pmw = g.importExtension("Pmw",pluginName='LeoTkinterTree',verbose=True,required=
 import leo.core.leoFrame as leoFrame
 import Tkinter as Tk
 import tkFont
-import sys
+
+# import sys
 #@-node:ekr.20040928101836:<< imports >>
 #@nl
 
@@ -2511,9 +2512,8 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; w = c.edit_widget(p)
 
         if False or (self.trace and self.verbose):
-            # if not self.redrawing:
-                g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
-                # import traceback ; traceback.print_stack(limit=6)
+            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+            # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_selected_foreground_color or 'black'
         bg = self.headline_text_selected_background_color or 'grey80'

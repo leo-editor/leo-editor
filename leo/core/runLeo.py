@@ -12,23 +12,18 @@
 #@+node:ekr.20031218072017.2606:<< Import pychecker >>
 #@@color
 
-# __pychecker__ = '--no-argsused'
+__pychecker__ = '--no-argsused'
 
 # See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
 
-# New in Leo 4.4.5: use pylint instead of pychecker.
+if 0: # Set to 1 for lint-like testing.
+      # Use t23.bat: only on Python 2.3.
 
-# if 0: # Set to 1 for lint-like testing.
-      # # Use t23.bat: only on Python 2.3.
-
-    # try:
-        # import pychecker.checker
-        # # This works.  We may want to set options here...
-        # # from pychecker import Config 
-        # # print pychecker
-        # print ; print "Warning (in leo.py): pychecker.checker running..." ; print
-    # except Exception:
-        # print ; print 'Can not import pychecker' ; print
+    try:
+        import pychecker.checker
+        print '\npychecker.checker running...\n'
+    except Exception:
+        print '\nCan not import pychecker\n'
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
 #@nl
 
@@ -271,12 +266,14 @@ def getFileName ():
     # Put no imports here.
     # print 'leo.py:getFileName',sys.argv
 
-    if sys.platform=="win32": # Windows
-        result = ' '.join(sys.argv[1:])
-    else:
-        result = len(sys.argv) > 1 and sys.argv[1] or None
+    return len(sys.argv) > 1 and sys.argv[-1]
 
-    return result
+    # if sys.platform=="win32": # Windows
+        # result = ' '.join(sys.argv[1:])
+    # else:
+        # result = len(sys.argv) > 1 and sys.argv[1] or None
+
+    # return result
 #@-node:ekr.20071117060958:getFileName
 #@+node:ekr.20031218072017.1936:isValidPython
 def isValidPython():
@@ -384,7 +381,7 @@ def scanOptions(g):
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',s,color='red')
+            g.es_print('Invalid option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -415,7 +412,7 @@ def scanOptions(g):
     # Compute the return values.
     windowFlag = script and script_path_w
     return script, windowFlag
-
+#@nonl
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20070930194949:startJyleo (leo.py)
 def startJyleo (g):

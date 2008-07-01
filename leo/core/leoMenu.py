@@ -1419,8 +1419,9 @@ class leoMenu:
                         # Pick the first entry that is not a mode.
                         for bunch in bunchList:
                             if not bunch.pane.endswith('-mode'):
-                                accel = bunch.val ; break
+                                accel = bunch.val
                                 if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                                break
                     elif not dynamicMenu:
                         g.trace('No inverse for %s' % commandName)
             #@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>

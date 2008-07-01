@@ -1343,8 +1343,8 @@ class leoFind:
             if sparseFind and not c.currentPosition().isAncestorOf(p):
                 # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
                 for p2 in c.currentPosition().self_and_parents_iter():
-                        p2.contract()
-                        redraw = True
+                    p2.contract()
+                    redraw = True
             for p in self.p.parents_iter():
                 if not p.isExpanded():
                     p.expand()

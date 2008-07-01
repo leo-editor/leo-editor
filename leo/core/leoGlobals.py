@@ -143,8 +143,11 @@ def computeGlobalConfigDir():
 
     encoding = g.startupEncoding()
 
-    if hasattr(sys,'leo_config_directory'):
-        theDir = sys.leo_config_directory
+    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
+    leo_config_dir = hasattr(sys,'leo_config_directory') and getattr(sys,'leo_config_directory')
+
+    if leo_config_dir:
+        theDir = leo_config_dir
     else:
         theDir = g.os_path_join(g.app.loadDir,"..","config")
 
@@ -1774,7 +1777,7 @@ class Tracer:
         try:
             # This can fail during startup.
             self_obj = frame.f_locals.get('self')
-            if self.obj: result.append(self_obj.__class__.__name__)
+            if self_obj: result.append(self_obj.__class__.__name__)
         except Exception:
             pass
 
@@ -4132,11 +4135,31 @@ except Exception:
     else:
         #@        << define getpreferredencoding for *nix >>
         #@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        # Pychecker & pylint complains about CODESET
+        # Avoid pychecker & pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
+        if (
+            hasattr(locale,'CODESET') and
+            hasattr(locale,'LC_CTYPE') and
+            hasattr(locale,'nl_langinfo')
+        ):
+            codeset =  getattr(locale,'CODESET')
+            lc_ctype = getattr(locale,'LC_CTYPE')
+            nl_langinfo = getattr(locale,'nl_langinfo')
 
-        try:
-            locale.CODESET # Bug fix, 2/12/05
-        except NameError:
+            def getpreferredencoding(do_setlocale=True):
+                """Return the charset that the user is likely using,
+                according to the system configuration."""
+                try:
+                    if do_setlocale:
+                        oldloc = locale.setlocale(lc_ctype)
+                        locale.setlocale(lc_ctype, "")
+                        result = nl_langinfo(codeset)
+                        locale.setlocale(lc_ctype, oldloc)
+                        return result
+                    else:
+                        return nl_langinfo(codeset)
+                except Exception:
+                    return None
+        else:
             # Fall back to parsing environment variables :-(
             def getpreferredencoding(do_setlocale = True):
                 """Return the charset that the user is likely using,
@@ -4145,21 +4168,7 @@ except Exception:
                     return locale.getdefaultlocale()[1]
                 except Exception:
                     return None
-        else:
-            def getpreferredencoding(do_setlocale = True):
-                """Return the charset that the user is likely using,
-                according to the system configuration."""
-                try:
-                    if do_setlocale:
-                        oldloc = locale.setlocale(LC_CTYPE)
-                        locale.setlocale(LC_CTYPE, "")
-                        result = locale.nl_langinfo(CODESET)
-                        locale.setlocale(LC_CTYPE, oldloc)
-                        return result
-                    else:
-                        return locale.nl_langinfo(CODESET)
-                except Exception:
-                    return None
+
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
 
@@ -4647,14 +4656,16 @@ class mulderUpdateAlgorithm:
         that of the source file.
         """
 
-        # pychecker complains about mtime.
-
         st = os.stat(sourcefilename)
 
-        if hasattr(os, 'utime'):
-            os.utime(targetfilename, (st.st_atime, st.st_mtime))
-        elif hasattr(os, 'mtime'):
-            os.mtime(targetfilename, st.st_mtime)
+        # To avoid pychecker/pylint complaints.
+        utime = getattr(os,'utime')
+        mtime = getattr(os,'mtime')
+
+        if utime:
+            utime(targetfilename, (st.st_atime, st.st_mtime))
+        elif mtime:
+            mtime(targetfilename, st.st_mtime)
         else:
             g.trace("Can not set modification time")
     #@-node:EKR.20040504155109:copy_time

@@ -8191,17 +8191,16 @@ class spellCommandsClass (baseEditCommandsClass):
 
         if log.frameDict.get(tabName):
             log.selectTab(tabName)
-        elif self.handler:
-            if self.handler.loaded:
-                self.handler.bringToFront()
         else:
             log.selectTab(tabName)
             self.handler = spellTabHandler(c,tabName)
             if not self.handler.loaded:
                 log.deleteTab(tabName,force=True)
-    #@+node:ekr.20051025080420.1:commands...
+    #@-node:ekr.20051025080633:openSpellTab
+    #@+node:ekr.20051025080420.1:commands...(spellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
+    # self.handler is a spellTabHandler object (inited by openSpellTab)
 
     def find (self,event=None):
         '''Simulate pressing the 'Find' button in the Spell tab.'''
@@ -8219,19 +8218,14 @@ class spellCommandsClass (baseEditCommandsClass):
         else:
             self.openSpellTab()
 
-    def changeAll(self,event=None):
-
-        if self.handler:
-            self.openSpellTab()
-            self.handler.changeAll()
-        else:
-            self.openSpellTab()
-
     def changeThenFind (self,event=None):
         '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
         if self.handler:
             self.openSpellTab()
-            self.handler.changeThenFind()
+            # A workaround for a pylint warning:
+            # self.handler.changeThenFind()
+            f = getattr(self.handler,'changeThenFind')
+            f()
         else:
             self.openSpellTab()
 
@@ -8248,8 +8242,7 @@ class spellCommandsClass (baseEditCommandsClass):
             self.handler.ignore()
         else:
             self.openSpellTab()
-    #@-node:ekr.20051025080420.1:commands...
-    #@-node:ekr.20051025080633:openSpellTab
+    #@-node:ekr.20051025080420.1:commands...(spellCommandsClass)
     #@-others
 #@-node:ekr.20051025071455.1:class spellCommandsClass
 #@+node:ekr.20051025071455.18:class spellTabHandler (leoFind.leoFind)

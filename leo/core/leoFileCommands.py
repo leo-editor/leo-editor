@@ -22,7 +22,7 @@ import pickle
 import string
 import sys
 import zipfile
-import re
+# import re
 
 try:
     # IronPython has problems with this.
@@ -586,7 +586,6 @@ class baseFileCommands:
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.bodyString() ; tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
-        # self.fileBuffer = s ; self.fileBufferIndex = 0
 
         # Do a trial read.
         self.checking = True
@@ -594,9 +593,11 @@ class baseFileCommands:
         c.loading = True # disable c.changed
         try:
             try:
-                self.getAllLeoElements(fileName='check-leo-file',silent=False)
+                # self.getAllLeoElements(fileName='check-leo-file',silent=False)
+                theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
+                self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
                 g.es_print('check-leo-file passed',color='blue')
-            except BadLeoFile, message:
+            except Exception, message:
                 # g.es_exception()
                 g.es_print('check-leo-file failed:',str(message),color='red')
         finally:

@@ -176,11 +176,15 @@ class tkinterGui(leoGui.leoGui):
 
         """Run tkinter's main loop."""
 
-        if self.script:
+        # Avoid an erroneous pylint complaint.
+        # script = self.script
+        script = getattr(self,'script')
+
+        if script:
             log = g.app.log
             if log:
                 print 'Start of batch script...\n'
-                log.c.executeScript(script=self.script)
+                log.c.executeScript(script=script)
                 print 'End of batch script'
             else:
                 print 'no log, no commander for executeScript in tkInterGui.runMainLoop'
@@ -289,11 +293,11 @@ class tkinterGui(leoGui.leoGui):
         """Create a Tkinter color picker panel."""
         return leoTkinterComparePanel.leoTkinterComparePanel(c)
 
-    def createFindPanel(self,c):
-        """Create a hidden Tkinter find panel."""
-        panel = leoTkinterFind.leoTkinterFind(c)
-        panel.top.withdraw()
-        return panel
+    # def createFindPanel(self,c):
+        # """Create a hidden Tkinter find panel."""
+        # panel = leoTkinterFind.leoTkinterFind(c)
+        # panel.top.withdraw()
+        # return panel
 
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""

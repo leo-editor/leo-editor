@@ -59,6 +59,8 @@ become very convenient to use Leo to produce source that is intended
 to also be read by non Leo users. 
 #@nonl
 #@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
+#@+node:ekr.20080630093024.2:Get pychecker working again
+#@-node:ekr.20080630093024.2:Get pychecker working again
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -2793,8 +2795,9 @@ else:
             # Pick the first entry that is not a mode.
             for bunch in bunchList:
                 if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val ; break
+                    accel = bunch.val
                     if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
         elif not dynamicMenu:
             g.trace('No inverse for %s' % commandName)
 #@+node:ekr.20051021100806.1:<< compute emacs_name >>
@@ -5359,7 +5362,7 @@ except Exception:
 def createOpenWithTempFile (self,p,ext):
 
     c = self
-    theFile = ""
+    theFile = None # pylint complains if this is inited to ''.
     path = c.openWithTempFilePath(p,ext)
     try:
         if g.os_path_exists(path):

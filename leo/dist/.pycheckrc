@@ -145,12 +145,12 @@ usesExec = 0
 #@+node:max...
 # Max value before generating a complexity warning.
 
-maxlines = 2000
-maxbranches = 500
-maxreturns = 100
-maxargs = 100
-maxlocals = 250
-maxreferences = 500
+maxLines = 2000
+maxBranches = 500
+maxReturns = 100
+maxArgs = 100
+maxLocals = 250
+maxReferences = 500
 #@nonl
 #@-node:max...
 #@+node:suppressions

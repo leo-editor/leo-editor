@@ -19,7 +19,7 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20071217134533:Pylint
+#@+node:ekr.20071217134533:Pylint errors
 #@+node:ekr.20071217231348:Pylint docs
 @nocolor
 
@@ -408,9 +408,6 @@ R0801:	Duplication
 #@-node:ekr.20071217231828.4:Simularities
 #@-node:ekr.20071217231348:Pylint docs
 #@+node:ekr.20071220081732:pylint report
-@killcolor
-
-
 *** Erroneous errors in Leo 4.4.8
 
 
@@ -421,195 +418,348 @@ R0801:	Duplication
 
 W0221:2377:leoTkinterTree.setSelectedLabelState: Arguments number differs from overridden method
 W0221:2387:leoTkinterTree.setUnselectedLabelState: Arguments number differs from overridden method
-#@+node:ekr.20080304084023:leoEditCommands
-*** All these error messages are WRONG.
-
-E1101:114:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'name' member
-E1101:115:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'undoType' member
-E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldSel' member
-E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldText' member
-
-E1101:8091:spellCommandsClass.openSpellTab: Instance of 'spellTabHandler' has no 'bringToFront' member
-E1101:8121:spellCommandsClass.changeAll: Instance of 'spellTabHandler' has no 'changeAll' member
-E1101:8129:spellCommandsClass.changeThenFind: Instance of 'spellTabHandler' has no 'changeThenFind' member
-#@nonl
-#@-node:ekr.20080304084023:leoEditCommands
-#@+node:ekr.20080304084023.1:leoGlobals
-*** All these error messages are WRONG.
-
-E1101:137:computeGlobalConfigDir: Module 'sys' has no 'leo_config_directory' member
-W0104:3915: Statement seems to have no effect
-
-E0602:3931:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E0602:3932:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E1101:3933:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
-E0602:3933:getpreferredencoding: Undefined variable 'CODESET'
-E0602:3934:getpreferredencoding: Undefined variable 'LC_CTYPE'
-E1101:3937:getpreferredencoding: Module 'locale' has no 'nl_langinfo' member
-E0602:3937:getpreferredencoding: Undefined variable 'CODESET'
-E1101:4432:mulderUpdateAlgorithm.copy_time: Module 'os' has no 'mtime' member
-#@-node:ekr.20080304084023.1:leoGlobals
 #@+node:ekr.20080304091441:leoTkinterFind
 *** All these error messages are WRONG.
 
-************* Module leoTkinterFind
-E1101: 95:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'title' member
-E1101:101:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'intKeys' member
-E1101:104:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'newStringKeys' member
-E1101:113:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'createTopFrame' member
-E1101:115:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
-E1101:116:leoTkinterFind.__init__: Instance of 'leoTkinterFind' has no 'top' member
-E1101:123:leoTkinterFind.init: Instance of 'leoTkinterFind' has no 'intKeys' member
-E1101:177:leoTkinterFind.destroySelf: Instance of 'leoTkinterFind' has no 'top' member
-E1101:185:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'frame' member
-E1101:213:leoTkinterFind.createFrame.setFocus: Instance of 'leoTkinterFind' has no 'c' member
-E1101:298:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:305:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1103:325:leoTkinterFind.createFrame.findButtonCallback: Instance of 'leoTkinterFind' has no 'findButton' member (but some types c
-ould not be inferred)
-E1101:341:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'findAllButton' member
-E1101:348:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeButton' member
-E1101:354:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeThenFindButton' member
-E1101:360:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'changeAllButton' member
-E1101:367:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
-E1101:368:leoTkinterFind.createFrame: Instance of 'leoTkinterFind' has no 'top' member
-E1103:378:leoTkinterFind.createBindings.findButtonCallback2: Instance of 'leoTkinterFind' has no 'findButton' member (but some typ
-es could not be inferred)
-E1101:382:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:383:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'resetWrap' member
-E1101:384:leoTkinterFind.createBindings: Instance of 'leoTkinterFind' has no 'selectAllFindText' member
-E1101:396:leoTkinterFind.onCloseWindow: Instance of 'leoTkinterFind' has no 'top' member
-E1101:401:leoTkinterFind.dismiss: Instance of 'leoTkinterFind' has no 'top' member
-E1101:408:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'c' member
-E1101:410:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:411:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:412:leoTkinterFind.bringToFront: Instance of 'leoTkinterFind' has no 'top' member
-E1101:438:tkFindTab.initGui: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:441:tkFindTab.initGui: Instance of 'tkFindTab' has no 'newStringKeys' member
-E1101:448:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'c' member
-E1101:489:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:504:tkFindTab.createFrame.setFocus: Instance of 'tkFindTab' has no 'c' member
-E1101:538:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:591:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:599:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:606:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:623:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findButtonCallback' member
-E1101:624:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findAllButton' member
-E1101:626:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeButton' member
-E1101:627:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeThenFindButton' member
-E1101:628:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeAllButton' member
-E1101:647:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'c' member
-E1103:650:tkFindTab.createBindings.resetWrapCallback: Instance of 'tkFindTab' has no 'resetWrap' member (but some types could not
-be inferred)
-E1103:654:tkFindTab.createBindings.findButtonBindingCallback: Instance of 'tkFindTab' has no 'findButton' member (but some types c
-ould not be inferred)
-E1101:664:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'hideTab' member
-E1101:677:tkFindTab.init: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:746:tkFindTab.setOption: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:758:tkFindTab.toggleOption: Instance of 'tkFindTab' has no 'intKeys' member
+leoTkinterFind.py Dangerous: E1101,E1103
+************* Module core.leoTkinterFind
+E1101:100:tkFindTab.initGui: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:103:tkFindTab.initGui: Instance of 'tkFindTab' has no 'newStringKeys' member
+E1101:110:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'c' member
+E1101:151:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:166:tkFindTab.createFrame.setFocus: Instance of 'tkFindTab' has no 'c' member
+E1101:200:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:253:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
+E1101:261:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
+E1101:268:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
+E1101:285:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findButtonCallback' member
+E1101:286:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findAllButton' member
+E1101:288:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeButton' member
+E1101:289:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeThenFindButton' member
+E1101:290:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeAllButton' member
+E1101:309:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'c' member
+E1103:312:tkFindTab.createBindings.resetWrapCallback: Instance of 'tkFindTab' has no 'resetWrap' member
+(but some types could not be inferred)
+E1103:316:tkFindTab.createBindings.findButtonBindingCallback: Instance of 'tkFindTab' has no 'findButton' member
+(but some types could not be inferred)
+E1101:332:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'hideTab' member
+E1101:349:tkFindTab.onRightClick: Instance of 'tkFindTab' has no 'c' member
+E1101:350:tkFindTab.onRightClick: Instance of 'tkFindTab' has no 'c' member
+E1101:358:tkFindTab.init: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:427:tkFindTab.setOption: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:439:tkFindTab.toggleOption: Instance of 'tkFindTab' has no 'intKeys' member
+E1101:685:tkSpellTab.down: Instance of 'tkSpellTab' has no 'positionList' member
+W0611: 12: Unused import leoTkinterDialog
 "*****done*****"
-Press any key to continue . . .
 #@nonl
 #@-node:ekr.20080304091441:leoTkinterFind
-#@+node:ekr.20080304091441.1:leoTkinterGui
-*** All these error messages are WRONG.
-
-************* Module leoTkinterGui
-E1101:179:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
-E1101:183:tkinterGui.runMainLoop: Instance of 'tkinterGui' has no 'script' member
-#@-node:ekr.20080304091441.1:leoTkinterGui
 #@+node:ekr.20080304092628:leoTkinterFrame
 *** All these error messages are WRONG.
 
 leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
 leoTkinterFrame.py Dangerous: E1101
-************* Module leoTkinterFrame
-E1101: 53:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
-E1101: 67:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 88:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
-E1101:102:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:109:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
-E1101:176:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:224:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:241:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
-E1101:245:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
-E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
-E1101:351:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:379:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
-E1101:437:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:439:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
-E1101:442:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
-E1101:938:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
-E1101:1347:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
-E1101:1901:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:2111:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2138:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2140:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2303:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
-E1101:2423:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2424:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2431:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2432:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2433:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2462:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2463:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2464:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2475:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2476:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2477:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2489:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2514:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2515:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2516:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2556:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2573:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2574:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2587:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2589:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2600:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2787:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2788:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2845:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2846:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:3018:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3065:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
+************* Module core.leoTkinterFrame
+E1101: 52:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
+E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
+E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
+E1101:116:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
+E1101:130:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:137:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
+E1101:204:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:252:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:269:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
+E1101:273:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
+E1101:286:leoTkinterBody.tag_bind: Instance of 'leoTkinterBody' has no 'c' member
+E1101:334:leoTkinterBody.bind: Instance of 'leoTkinterBody' has no 'c' member
+E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
+E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:409:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
+E1101:467:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:469:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
+E1101:472:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
+E1101:1365:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
+W0107:1635:leoTkinterFrame.OnBodyRClick: Unnecessary pass statement
+E1101:1922:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:2132:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2159:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2161:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2324:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
+E1101:2444:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2445:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2452:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2453:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2454:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2483:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2484:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2485:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2496:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2497:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2498:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2510:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2535:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2536:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2537:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2577:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2594:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2595:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2608:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2610:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2817:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2818:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2875:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2876:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:3048:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
+E1101:3095:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
+E1101:3097:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
+E1101:3098:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
+W0611: 32: Unused import time
 "*****done*****"
 Press any key to continue . . .
+
+C:\leo.repo\trunk\leo\test>
 #@nonl
 #@-node:ekr.20080304092628:leoTkinterFrame
-#@+node:ekr.20080304093027:leoTkinterKeys
-*** All these error messages are WRONG.
-
-************* Module leoTkinterKeys
-E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'useTextWidget' member
-E1101: 27:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
-E1101: 29:tkinterKeyHandlerClass.createTkIvars: Instance of 'tkinterKeyHandlerClass' has no 'widget' member
-#@-node:ekr.20080304093027:leoTkinterKeys
 #@+node:ekr.20080304093258:leoTkinterMenu
 *** All these error messages are WRONG.
 
-leoTkinterMenu.py
-************* Module leoTkinterMenu
+leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
+leoTkinterFrame.py Dangerous: E1101
+************* Module core.leoTkinterFrame
+E1101: 52:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
+E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
+E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
+E1101:116:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
+E1101:130:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:137:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
+E1101:204:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:252:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
+E1101:269:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
+E1101:273:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
+E1101:286:leoTkinterBody.tag_bind: Instance of 'leoTkinterBody' has no 'c' member
+E1101:334:leoTkinterBody.bind: Instance of 'leoTkinterBody' has no 'c' member
+E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
+E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
+E1101:409:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
+E1101:467:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:469:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
+E1101:472:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
+E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
+E1101:1365:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
+W0107:1635:leoTkinterFrame.OnBodyRClick: Unnecessary pass statement
+E1101:1922:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
+E1101:2132:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2159:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2161:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2324:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
+E1101:2444:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2445:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
+E1101:2452:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2453:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2454:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2483:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2484:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2485:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2496:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2497:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2498:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2510:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2535:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
+E1101:2536:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2537:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2577:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2594:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2595:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2608:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2610:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2817:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2818:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:2875:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
+E1101:2876:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
+E1101:3048:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
+E1101:3095:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
+E1101:3097:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
+E1101:3098:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
+W0611: 32: Unused import time
+"*****done*****"
+Press any key to continue . . .
+
+C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>echo off
+cd c:\leo.repo\trunk\leo
+tests that fail with dangerous settings enabled...
+ECHO is off.
+leoTkinterKeys.py Dangerous: E1101
+************* Module core.leoTkinterKeys
+W0611:  9: Unused import Tk
+"*****done*****"
+Press any key to continue . . .
+
+C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>echo off
+cd c:\leo.repo\trunk\leo
+tests that fail with dangerous settings enabled...
+ECHO is off.
+"*****done*****"
+Press any key to continue . . .
+
+C:\leo.repo\trunk\leo\test>trunk
+
+C:\leo.repo\trunk\leo\test>cd c:\leo.repo\trunk
+
+C:\leo.repo\trunk>t
+
+C:\leo.repo\trunk>leo leo\test\test.leo
+
+C:\leo.repo\trunk>c:\python25\python.exe leo\core\runLeo.py leo\test\test.leo
+reading settings in C:\leo.repo\trunk\leo\config\leoSettings.leo
+Using menus from leoSettings.leo
+reading settings in C:\Documents and Settings\HP_Administrator\My Documents\Edward\myLeoSettings.leo
+reading settings in C:\leo.repo\trunk\leo\test\test.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
+@enabled-plugins found in myLeoSettings.leo
+rst3 plugin: SilverCity not loaded
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
+
+C:\leo.repo\trunk>cd leo\test
+
+C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>echo off
+cd c:\leo.repo\trunk\leo
+tests that fail with dangerous settings enabled...
+ECHO is off.
+leoTkinterMenu.py Dangerous: E1101
+************* Module core.leoTkinterMenu
 E1101: 62:leoTkinterMenu.computeMenuPositions: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:136:leoTkinterMenu.insert: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:172:leoTkinterMenu.clearAccel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:183:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'updateAllMenus' member
-E1101:186:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'setMenu' member
-E1101:187:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'createMenusFromTables' member
-E1101:208:leoTkinterMenu.disableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:225:leoTkinterMenu.enableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:255:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:258:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:297:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:301:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'createMenuEntries' member
+E1101:138:leoTkinterMenu.insert: Instance of 'leoTkinterMenu' has no 'getMenu' member
+E1101:177:leoTkinterMenu.clearAccel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:188:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'updateAllMenus' member
+E1101:191:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'setMenu' member
+E1101:192:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'createMenusFromTables' member
+E1101:217:leoTkinterMenu.disableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:237:leoTkinterMenu.enableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:270:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:273:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
+E1101:312:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'getMenu' member
+E1101:316:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'createMenuEntries' member
+"*****done*****"
+Press any key to continue . . .
+
+C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
+
+C:\leo.repo\trunk\leo\test>
+#@nonl
 #@-node:ekr.20080304093258:leoTkinterMenu
+#@+node:ekr.20080701085405.5:leoTkinterTree
+************* Module core.leoTkinterTree
+E1101:278:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'frame' member
+E1101:287:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'injectCallbacks' member
+E1101:304:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'setEditPosition' member
+E1101:339:leoTkinterTree.setBindings: Instance of 'leoTkinterTree' has no 'c' member
+E1101:354:leoTkinterTree.setBindingsHelper: Instance of 'leoTkinterTree' has no 'c' member
+E1101:380:leoTkinterTree.setCanvasBindings: Instance of 'leoTkinterTree' has no 'c' member
+E1101:521:leoTkinterTree.newText: Instance of 'leoTkinterTree' has no 'c' member
+E1101:711:leoTkinterTree.setFontFromConfig: Instance of 'leoTkinterTree' has no 'c' member
+E1101:820:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'frame' member
+E1101:825:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'c' member
+E1101:843:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:848:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'expandAllAncestors' member
+E1101:864:leoTkinterTree.redrawHelper: Instance of 'leoTkinterTree' has no 'frame' member
+E1101:871:leoTkinterTree.redrawHelper: Instance of 'leoTkinterTree' has no 'c' member
+E1101:900:leoTkinterTree.idle_second_redraw: Instance of 'leoTkinterTree' has no 'c' member
+E1101:920:leoTkinterTree.drawBox: Instance of 'leoTkinterTree' has no 'c' member
+E1101:951:leoTkinterTree.drawIcon: Instance of 'leoTkinterTree' has no 'c' member
+E1101:995:leoTkinterTree.drawNode: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1063:leoTkinterTree.drawText: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1082:leoTkinterTree.drawUserIcons: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1100:leoTkinterTree.drawUserIcon: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1212:leoTkinterTree.drawTopTree: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1264:leoTkinterTree.drawTree: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1334:leoTkinterTree.numberOfVisibleNodes: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1336:leoTkinterTree.numberOfVisibleNodes: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1348:leoTkinterTree.scrollTo: Instance of 'leoTkinterTree' has no 'frame' member
+E1101:1356:leoTkinterTree.scrollTo: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1466:leoTkinterTree.yoffset: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1471:leoTkinterTree.yoffset: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1481:leoTkinterTree.yoffsetTree: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1597:leoTkinterTree.findEditWidget: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1644:leoTkinterTree.onClickBoxClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1658:leoTkinterTree.onClickBoxClick: Instance of 'leoTkinterTree' has no 'select' member
+E1101:1679:leoTkinterTree.onPlusBoxRightClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1687:leoTkinterTree.onPlusBoxRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:1702:leoTkinterTree.endDrag: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1768:leoTkinterTree.startDrag: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1802:leoTkinterTree.onContinueDrag: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1840:leoTkinterTree.onDrag: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1859:leoTkinterTree.onEndDrag: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1873:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1886:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:1887:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'select' member
+E1101:1901:leoTkinterTree.onIconBoxRightClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1913:leoTkinterTree.onIconBoxRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:1928:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1941:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:1942:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'OnIconDoubleClick' member
+E1101:1962:leoTkinterTree.OnActivateHeadline: Instance of 'leoTkinterTree' has no 'c' member
+E1101:1976:leoTkinterTree.OnActivateHeadline: Instance of 'leoTkinterTree' has no 'select' member
+E1101:2005:leoTkinterTree.configureTextState: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2012:leoTkinterTree.configureTextState: Instance of 'leoTkinterTree' has no 'editPosition' member
+E1101:2031:leoTkinterTree.onHeadlineClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2062:leoTkinterTree.onHeadlineRightClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2075:leoTkinterTree.onHeadlineRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:2095:leoTkinterTree.OnDeactivate: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2101:leoTkinterTree.OnDeactivate: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:2117:leoTkinterTree.OnPopup: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2157:leoTkinterTree.createPopupMenu: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2205:leoTkinterTree.enablePopupMenuItems: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2232:leoTkinterTree.enablePopupMenuItems: Instance of 'leoTkinterTree' has no 'frame' member
+E1101:2251:leoTkinterTree.showPopupMenu: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2266:leoTkinterTree.onTreeClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2283:leoTkinterTree.onTreeRightClick: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2321:leoTkinterTree.allocateNodes: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2358:leoTkinterTree.updateNode: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2421:leoTkinterTree.dimEditLabel: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2426:leoTkinterTree.undimEditLabel: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2434:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2437:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'editPosition' member
+E1101:2444:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'endEditLabel' member
+E1101:2450:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'setEditPosition' member
+E1101:2465:leoTkinterTree.setEditLabelState: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2486:leoTkinterTree.setSelectedLabelState: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2503:leoTkinterTree.setUnselectedLabelState: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2511:leoTkinterTree.setDisabledHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2532:leoTkinterTree.setEditHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
+E1101:2552:leoTkinterTree.setUnselectedHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
+#@-node:ekr.20080701085405.5:leoTkinterTree
 #@-node:ekr.20071220081732:pylint report
-#@-node:ekr.20071217134533:Pylint
+#@-node:ekr.20071217134533:Pylint errors
 #@+node:ekr.20080408060320.4:4.5 b1
 # The first 4.5 release will be 4.5 b1.
 #@nonl
@@ -2807,7 +2957,6 @@ def OnBodyRClick(self,event=None):
     try:
         c = self.c ; p = c.currentPosition()
         if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
-            pass # By default Leo does nothing.
             c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
         g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
     except:
@@ -2846,8 +2995,8 @@ def showSuccess(self,pos,newpos):
         if sparseFind and not c.currentPosition().isAncestorOf(p):
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
             for p2 in c.currentPosition().self_and_parents_iter():
-                    p2.contract()
-                    redraw = True
+                p2.contract()
+                redraw = True
         for p in self.p.parents_iter():
             if not p.isExpanded():
                 p.expand()
@@ -6764,291 +6913,6 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 #@-node:ekr.20040803072955.59:redrawHelper
 #@-node:ekr.20040803072955.58:tree.redraw_now & helper
 #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
-#@+node:ekr.20080514131122.4:Legacy code
-if not g.newDrawing:
-
-    @others
-#@+node:ekr.20031218072017.2950:c.begin/endUpdate
-@
-**Important** These methods ensure that exactly zero or one (depending on the
-argument to endUpdate) redraws exist within the section of code bounded by
-c.beginUpdate and c.endUpdate. This greatly simplifies and clarifies the code.
-
-Callers should ensure that every beginUpdate is matched with an endUpdate by
-using the following pattern:
-    c.beginUpdate()
-    try:
-        << whatever >>
-    finally:
-        c.endUpdate()
-@c
-
-def beginUpdate(self):
-
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
-
-    c = self
-    if c.frame and c.frame.tree:
-        c.frame.tree.beginUpdate()
-
-def endUpdate(self,flag=True,scroll=True):
-
-    '''Redraw the screen if flag is True.'''
-
-    c = self
-    if c.frame and c.frame.tree:
-        c.frame.tree.endUpdate(flag,scroll=scroll)
-
-BeginUpdate = beginUpdate # Compatibility with old scripts
-EndUpdate = endUpdate # Compatibility with old scripts
-#@-node:ekr.20031218072017.2950:c.begin/endUpdate
-#@+node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
-def add_command (self,menu,**keys):
-
-    menu.add_command(**keys)
-
-def bind (self,w,pattern,func):
-
-    w.bind(pattern,func)
-
-def bind2 (self,w,pattern,func,**keys):
-
-    w.bind(pattern,func,**keys)
-
-def tag_bind(self,w,a,b,c):
-
-    w.tag_bind(a,b,c)
-
-#@-node:ekr.20080515053412.53:c.add_command/bind/bind2/tag_bind (new)
-#@+node:ekr.20031218072017.2951:c.bringToFront
-def bringToFront(self,set_focus=True):
-
-    # g.trace(g.callers())
-
-    c = self
-    c.frame.deiconify()
-
-    if set_focus:
-        c.frame.body.setFocus()
-
-BringToFront = bringToFront # Compatibility with old scripts
-#@-node:ekr.20031218072017.2951:c.bringToFront
-#@+node:ekr.20060205103842:c.get/request/set_focus
-def get_focus (self):
-
-    c = self
-    return g.app.gui and g.app.gui.get_focus(c)
-
-def get_requested_focus (self):
-
-    c = self
-    return c.requestedFocusWidget or c.hasFocusWidget or g.app.gui.get_focus(c)
-
-def request_focus(self,w):
-
-    c = self
-    if w: c.requestedFocusWidget = w
-    c.traceFocus(w)
-
-def set_focus (self,w,force=False):
-
-    c = self
-
-    if force: # New in Leo 4.4.2: safer.
-        c.hasFocusWidget = c.requestedFocusWidget = w
-        g.app.gui and g.app.gui.set_focus(c,w)
-        c.traceFocus(w)
-    else: # An optimization.
-        c.requestedFocusWidget = w
-        c.masterFocusHandler()
-
-    # Can't do this: it interferes with too much.
-    # if c.k: c.k.showStateAndMode(w)
-#@-node:ekr.20060205103842:c.get/request/set_focus
-#@+node:ekr.20060210103358:c.invalidateFocus
-def invalidateFocus (self):
-
-    '''Indicate that the focus is in an invalid location, or is unknown.'''
-
-    c = self
-    c.requestedFocusWidget = None
-    c.hasFocusWidget = None
-    # g.trace(g.callers())
-#@-node:ekr.20060210103358:c.invalidateFocus
-#@+node:ekr.20060207140352:c.masterFocusHandler
-def masterFocusHandler (self):
-
-    c = self
-    trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-    # Give priority to later requests, but default to previously set widget.
-    w = c.requestedFocusWidget or c.hasFocusWidget
-
-    if trace: print \
-        'requested',c.widget_name(c.requestedFocusWidget),\
-        'present',c.widget_name(c.hasFocusWidget)
-
-    if c.hasFocusWidget and (
-        not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-        if trace: print 'no change.',c.widget_name(w)
-        c.requestedFocusWidget = None
-    elif w:
-        # Ignore whatever g.app.gui.get_focus might say.
-        ok = g.app.gui.set_focus(c,w)
-        if ok: c.hasFocusWidget = w
-        c.requestedFocusWidget = None
-    else:
-        # This is not an error: it can arise because of a call to k.invalidateFocus.
-        if trace: print '*'*20,'oops: moving to body pane.'
-        c.bodyWantsFocusNow()
-
-restoreRequestedFocus = masterFocusHandler
-#@-node:ekr.20060207140352:c.masterFocusHandler
-#@+node:ekr.20080514131122.21:c.outerUpdate
-def outerUpdate (self):
-
-    pass
-#@-node:ekr.20080514131122.21:c.outerUpdate
-#@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
-def recolor(self):
-
-    c = self
-    c.frame.body.recolor(c.currentPosition())
-
-def requestRecolor (self):
-
-    c = self
-    c.requestRecolorFlag = True
-#@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
-#@+node:ekr.20051216171520:c.recolor_now
-def recolor_now(self,p=None,incremental=False,interruptable=True):
-
-    c = self
-    if p is None:
-        p = c.currentPosition()
-
-    c.frame.body.colorizer.colorize(p,
-        incremental=incremental,interruptable=interruptable)
-#@-node:ekr.20051216171520:c.recolor_now
-#@+node:ekr.20031218072017.2954:c.redraw and c.redraw_now
-def redraw (self):
-    c = self
-    c.beginUpdate()
-    c.endUpdate()
-
-def redraw_now (self):
-
-    c = self
-
-    if g.app.quitting or not c.exists or not hasattr(c.frame,'top'):
-        return # nullFrame's do not have a top frame.
-
-    c.frame.tree.redraw_now()
-
-    if 0: # Interferes with new colorizer.
-        c.frame.top.update_idletasks()
-
-    if c.requestRecolorFlag:
-        c.requestRecolorFlag = False
-        c.recolor()
-
-# Compatibility with old scripts
-force_redraw = redraw_now
-#@-node:ekr.20031218072017.2954:c.redraw and c.redraw_now
-#@+node:ekr.20060208143543:c.restoreFocus
-def restoreFocus (self):
-
-    '''Ensure that the focus eventually gets restored.'''
-
-    c =self
-    trace = not g.app.unitTesting and c.config.getBool('trace_focus')
-
-    if c.requestedFocusWidget:
-        c.hasFocusWidget = None # Force an update
-    elif c.hasFocusWidget:
-        c.requestedFocusWidget = c.hasFocusWidget
-        c.hasFocusWidget = None # Force an update
-    else:
-        # Should not happen, except during unit testing.
-        # c.masterFocusHandler sets c.hasFocusWidget,
-        # so if it is not set here it is because this method cleared it.
-        if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
-        c.bodyWantsFocusNow()
-
-    if c.inCommand:
-        if trace: g.trace('expecting later call to c.masterFocusHandler')
-        # A call to c.masterFocusHandler will surely happen.
-    else:
-        c.masterFocusHandler() # Do it now.
-#@-node:ekr.20060208143543:c.restoreFocus
-#@+node:ekr.20060207142332:c.traceFocus
-trace_focus_count = 0
-
-def traceFocus (self,w):
-
-    c = self
-
-    if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-        c.trace_focus_count += 1
-        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
-#@-node:ekr.20060207142332:c.traceFocus
-#@+node:ekr.20060205111103:c.widget_name
-def widget_name (self,widget):
-
-    c = self
-
-    return g.app.gui and g.app.gui.widget_name(widget) or ''
-#@-node:ekr.20060205111103:c.widget_name
-#@+node:ekr.20050120092028:c.xWantsFocus
-def bodyWantsFocus(self):
-    c = self ; body = c.frame.body
-    c.request_focus(body and body.bodyCtrl)
-def headlineWantsFocus(self,p):
-    c = self
-    c.request_focus(p and c.edit_widget(p))
-
-def logWantsFocus(self):
-    c = self ; log = c.frame.log
-    c.request_focus(log and log.logCtrl)
-
-def minibufferWantsFocus(self):
-    c = self ; k = c.k
-    if k: k.minibufferWantsFocus()
-
-def treeWantsFocus(self):
-    c = self ; tree = c.frame.tree
-    c.request_focus(tree and tree.canvas)
-
-def widgetWantsFocus(self,w):
-    c = self ; c.request_focus(w)
-#@-node:ekr.20050120092028:c.xWantsFocus
-#@+node:ekr.20060210102201:c.xWantsFocusNow
-def bodyWantsFocusNow(self):
-    c = self ; body = c.frame.body
-    #g.trace(body and body.bodyCtrl)
-    c.set_focus(body and body.bodyCtrl,force=True)
-
-def headlineWantsFocusNow(self,p):
-    c = self
-    c.set_focus(p and c.edit_widget(p),force=True)
-
-def logWantsFocusNow(self):
-    c = self ; log = c.frame.log
-    c.set_focus(log and log.logCtrl,force=True)
-
-def minibufferWantsFocusNow(self):
-    c = self ; k = c.k
-    if k: k.minibufferWantsFocusNow()
-
-def treeWantsFocusNow(self):
-    c = self ; tree = c.frame.tree
-    c.set_focus(tree and tree.canvas,force=True)
-
-def widgetWantsFocusNow(self,w):
-    c = self ; c.set_focus(w,force=True)
-#@-node:ekr.20060210102201:c.xWantsFocusNow
-#@-node:ekr.20080514131122.4:Legacy code
 #@+node:ekr.20080514131122.6:New code
 if g.newDrawing:
 
@@ -7506,8 +7370,9 @@ else:
             # Pick the first entry that is not a mode.
             for bunch in bunchList:
                 if not bunch.pane.endswith('-mode'):
-                    accel = bunch.val ; break
+                    accel = bunch.val
                     if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
         elif not dynamicMenu:
             g.trace('No inverse for %s' % commandName)
 #@+node:ekr.20051021100806.1:<< compute emacs_name >>
@@ -8589,7 +8454,6 @@ Bob
 def dumpBead (self,n):
 
     u = self
-
     if n < 0 or n >= len(u.beads):
         return 'no bead: n = ',n
 
@@ -8602,35 +8466,12 @@ def dumpBead (self,n):
 
 def dumpTopBead(self):
 
+    u = self
     n = len(u.beads)
     if n > 0:
-        return dumpBead(n-1)
+        return self.dumpBead(n-1)
     else:
         return '<no top bead>'
-
-@ self.afterTree = None
-    self.beforeTree = None
-    self.dirtyVnodeList = None
-    self.kind = None
-    self.newBack = None
-    self.newBody = None
-    self.newHead = None
-    self.newMarked = None
-    self.newN = None
-    self.newP = None
-    self.newParent = None
-    self.newRecentFiles = None
-    self.newTree = None
-    self.oldBack = None
-    self.oldBody = None
-    self.oldHead = None
-    self.oldMarked = None
-    self.oldN = None
-    self.oldParent = None
-    self.oldRecentFiles = None
-    self.oldTree = None
-    self.pasteAsClone = None
-#@nonl
 #@-node:ekr.20080623083646.10:dumpBead
 #@+node:ekr.20031218072017.2030:redo & helpers...
 def redo (self,event=None):
@@ -13895,7 +13736,7 @@ def scanOptions(g):
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',s,color='red')
+            g.es_print('Invalid option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -13926,7 +13767,7 @@ def scanOptions(g):
     # Compute the return values.
     windowFlag = script and script_path_w
     return script, windowFlag
-
+#@nonl
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
 def readSettingsFiles (self,fileName,verbose=True):
@@ -14202,7 +14043,7 @@ def computeName (self,frame):
     try:
         # This can fail during startup.
         self_obj = frame.f_locals.get('self')
-        if self.obj: result.append(self_obj.__class__.__name__)
+        if self_obj: result.append(self_obj.__class__.__name__)
     except Exception:
         pass
 
@@ -14324,7 +14165,7 @@ def scanOptions(g):
         if g.os_path_exists(path):
             g.app.oneConfigFilename = path
         else:
-            g.es_print('Invalid option: file not found:',s,color='red')
+            g.es_print('Invalid option: file not found:',path,color='red')
 
     # --script
     script_path = options.script
@@ -14355,7 +14196,7 @@ def scanOptions(g):
     # Compute the return values.
     windowFlag = script and script_path_w
     return script, windowFlag
-
+#@nonl
 #@-node:ekr.20080521132317.2:scanOptions
 #@-node:ekr.20080527084425.4:Rewrote option-parsing code using optparse
 #@+node:ekr.20080602172531.3:Added @bool cleo_color_ignore = True
@@ -14632,7 +14473,7 @@ except Exception:
 def createOpenWithTempFile (self,p,ext):
 
     c = self
-    theFile = ""
+    theFile = None # pylint complains if this is inited to ''.
     path = c.openWithTempFilePath(p,ext)
     try:
         if g.os_path_exists(path):

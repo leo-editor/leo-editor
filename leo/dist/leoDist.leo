@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3,1,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -168,12 +168,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20040629175400"><vh>Pychecker stuff</vh>
+<v t="ekr.20040629175400" a="E"><vh>Pychecker stuff</vh>
 <v t="ekr.20050212143754"><vh>Mods to pychecker in python23/site-packages</vh>
 <v t="ekr.20050212143754.4"><vh>_checkModuleAttribute (modified)</vh></v>
 <v t="ekr.20050212143754.3"><vh>_checkGlobal (modified)</vh></v>
 </v>
-<v t="ekr.20040629173419.1" tnodeList="ekr.20040629173419.1,ekr.20040701193853,ekr.20040701193853.1,ekr.20040701193853.2,ekr.20040701193853.3,ekr.20040701193853.4,ekr.20040701193853.5"><vh>@file .pycheckrc</vh>
+<v t="ekr.20040629173419.1" a="E" tnodeList="ekr.20040629173419.1,ekr.20040701193853,ekr.20040701193853.1,ekr.20040701193853.2,ekr.20040701193853.3,ekr.20040701193853.4,ekr.20040701193853.5"><vh>@file .pycheckrc</vh>
 <v t="ekr.20040701193853"><vh>blacklist</vh></v>
 <v t="ekr.20040701193853.1"><vh>defaults</vh></v>
 <v t="ekr.20040701193853.2"><vh>max...</vh></v>
@@ -2040,12 +2040,12 @@ modifyDefaultValue = 1
 usesExec = 0</t>
 <t tx="ekr.20040701193853.2"># Max value before generating a complexity warning.
 
-maxlines = 2000
-maxbranches = 500
-maxreturns = 100
-maxargs = 100
-maxlocals = 250
-maxreferences = 500</t>
+maxLines = 2000
+maxBranches = 500
+maxReturns = 100
+maxArgs = 100
+maxLocals = 250
+maxReferences = 500</t>
 <t tx="ekr.20040701193853.3"># dict: suppress warnings, key is module.class.method or module.function
 #	value is a string of command line arguments (can omit -- for long args)
 #       { 'module1': 'no-namedargs maxlines=0',

@@ -27,9 +27,7 @@ import sys
 Pmw = g.importExtension("Pmw",pluginName="leoTkinterFrame.py",verbose=False)
 tkColorChooser = g.importExtension('tkColorChooser',pluginName=None,verbose=False)
 
-# The following imports _are_ used.
-# __pychecker__ = '--no-import'
-import time
+# import time
 #@-node:ekr.20041221070525:<< imports >>
 #@nl
 
@@ -1632,7 +1630,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         try:
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
-                pass # By default Leo does nothing.
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
