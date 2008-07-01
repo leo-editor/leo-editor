@@ -81,9 +81,8 @@ def onCreate (tag,keys):
     if not (c and c.exists):
         return
 
-    try:
-        c.theHoistButtonsController
-    except:
+    # Rewritten to avoid pylint complaint.
+    if not hasattr(c,'theHoistButtonsController'):
         c.theHoistButtonsController = hoist = HoistButtons(c)
 
         useTkFrame = g.app.gui.guiName() == 'tkinter' and hasattr(c.frame, 'getIconButton')

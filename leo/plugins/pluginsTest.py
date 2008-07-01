@@ -94,7 +94,7 @@ def onUnselect (tag,keywords):
             # Erase image if it was previously displayed
             if a.gsimage:
                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                    c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
                     g.es("info: no image to erase")
 

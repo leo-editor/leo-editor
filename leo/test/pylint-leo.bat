@@ -10,7 +10,7 @@ echo cd c:\leo.repo\trunk\leo
 cd c:\leo.repo\trunk\leo
 
 REM tests that fail...
-REM goto good_plugins
+goto good_plugins
 goto plugins
 goto all
 
@@ -146,14 +146,26 @@ echo .
 echo gtkGui.py
 call pylint.bat plugins\gtkGui.py              --rcfile=test\pylint-leo-rc.txt
 echo .
+echo hoist.py
+call pylint.bat plugins\hoist.py               --rcfile=test\pylint-leo-rc.txt
+echo .
+echo image.py
+call pylint.bat plugins\image.py               --rcfile=test\pylint-leo-rc.txt
+echo .
 echo import_cisco_config.py
 call pylint.bat plugins\import_cisco_config.py --rcfile=test\pylint-leo-rc.txt
 echo .
 echo initinclass.py
 call pylint.bat plugins\initinclass.py         --rcfile=test\pylint-leo-rc.txt
 echo .
+echo mod_scripting.py
+call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
+echo .
 echo mod_timestamp.py
 call pylint.bat plugins\mod_timestamp.py       --rcfile=test\pylint-leo-rc.txt
+echo .
+echo niceNosent.py
+call pylint.bat plugins\niceNosent.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo nodenavigator.py
 call pylint.bat plugins\nodenavigator.py       --rcfile=test\pylint-leo-rc.txt
@@ -170,6 +182,9 @@ echo .
 echo paste_as_headlines.py
 call pylint.bat plugins\paste_as_headlines.py   --rcfile=test\pylint-leo-rc.txt
 echo .
+echo pluginsTest.py
+call pylint.bat plugins\pluginsTest.py          --rcfile=test\pylint-leo-rc.txt
+echo .
 echo quickMove.py
 call pylint.bat plugins\quickMove.py            --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -185,8 +200,17 @@ echo .
 echo rst.py
 call pylint.bat plugins\rst.py                  --rcfile=test\pylint-leo-rc.txt
 echo .
+echo rst3.py
+call pylint.bat plugins\rst3.py                 --rcfile=test\pylint-leo-rc.txt
+echo .
+echo run_nodes.py
+call pylint.bat plugins\run_nodes.py            --rcfile=test\pylint-leo-rc.txt
+echo .
 echo script_io_to_body.py
 call pylint.bat plugins\script_io_to_body.py    --rcfile=test\pylint-leo-rc.txt
+echo .
+echo scripts_menu.py
+call pylint.bat plugins\scripts_menu.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo shortcut_button.py
 call pylint.bat plugins\shortcut_button.py      --rcfile=test\pylint-leo-rc.txt
@@ -205,6 +229,9 @@ call pylint.bat plugins\textnode.py             --rcfile=test\pylint-leo-rc.txt
 echo .
 echo trace_gc_plugin.py
 call pylint.bat plugins\trace_gc_plugin.py      --rcfile=test\pylint-leo-rc.txt
+echo .
+echo trace_keys.py
+call pylint.bat plugins\trace_keys.py           --rcfile=test\pylint-leo-rc.txt
 echo .
 echo trace_tags.py
 call pylint.bat plugins\trace_tags.py           --rcfile=test\pylint-leo-rc.txt
@@ -304,12 +331,6 @@ echo .
 echo gtkDialogs.py
 call pylint.bat plugins\gtkDialogs.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo hoist.py
-call pylint.bat plugins\hoist.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo image.py
-call pylint.bat plugins\image.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo ipython.py
 call pylint.bat plugins\ipython.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -364,9 +385,6 @@ echo .
 echo mod_read_dir_outline.py
 call pylint.bat plugins\mod_read_dir_outline.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo mod_scripting.py
-call pylint.bat plugins\mod_scripting.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo mod_shadow.py
 call pylint.bat plugins\mod_shadow.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -385,9 +403,6 @@ echo .
 echo newButtons.py
 call pylint.bat plugins\newButtons.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo niceNosent.py
-call pylint.bat plugins\niceNosent.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo nodebar.py
 call pylint.bat plugins\nodebar.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -396,9 +411,6 @@ call pylint.bat plugins\open_shell.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo pie_menus.py
 call pylint.bat plugins\pie_menus.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo pluginsTest.py
-call pylint.bat plugins\pluginsTest.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo plugins_menu.py
 call pylint.bat plugins\plugins_menu.py     --rcfile=test\pylint-leo-rc.txt
@@ -415,17 +427,8 @@ echo .
 echo read_only_nodes.py
 call pylint.bat plugins\read_only_nodes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo rst3.py
-call pylint.bat plugins\rst3.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo run_nodes.py
-call pylint.bat plugins\run_nodes.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo scheduler.py
 call pylint.bat plugins\scheduler.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo scripts_menu.py
-call pylint.bat plugins\scripts_menu.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo searchbar.py
 call pylint.bat plugins\searchbar.py     --rcfile=test\pylint-leo-rc.txt
@@ -444,9 +447,6 @@ call pylint.bat plugins\threading_colorizer.py     --rcfile=test\pylint-leo-rc.t
 echo .
 echo toolbar.py
 call pylint.bat plugins\toolbar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo trace_keys.py
-call pylint.bat plugins\trace_keys.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo UASearch.py
 call pylint.bat plugins\UASearch.py     --rcfile=test\pylint-leo-rc.txt

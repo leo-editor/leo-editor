@@ -1190,7 +1190,7 @@ class rstClass:
                         self.report(self.outputFileName)
                     p.moveToNodeAfterTree()
                 else:
-                   p.moveToThreadNext()
+                    p.moveToThreadNext()
             else: p.moveToThreadNext()
         if not found:
             g.es('No @rst nodes in selected tree',color='blue')

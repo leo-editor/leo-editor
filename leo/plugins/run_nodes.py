@@ -72,7 +72,7 @@ import leo.core.leoPlugins as leoPlugins
 
 import os
 import string
-import sys
+# import sys
 import thread
 import threading
 import time
