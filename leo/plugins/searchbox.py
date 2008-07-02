@@ -222,7 +222,7 @@ class SearchBox:
 
         # Update and prune list to remove a previous search for this text 
         self.search_list = [(text, search_mode)] +  [
-            (name, mode) for name, mode in self.search_list[:SEARCH_LIST_LENGTH] if name <> text] 
+            (name, mode) for name, mode in self.search_list[:SEARCH_LIST_LENGTH] if name != text] 
 
         # Now update the menu 
         for name, mode in self.search_list:

@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo scheduler.py
-call pylint.bat plugins\scheduler.py     --rcfile=test\pylint-leo-rc.txt
+echo searchbox.py Dangerous: E1101: two ERRONEOUS errors
+call pylint.bat plugins\searchbox.py     --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 
 
 goto done
@@ -280,6 +280,9 @@ echo .
 echo run_nodes.py
 call pylint.bat plugins\run_nodes.py            --rcfile=test\pylint-leo-rc.txt
 echo .
+echo scheduler.py
+call pylint.bat plugins\scheduler.py            --rcfile=test\pylint-leo-rc.txt
+echo .
 echo script_io_to_body.py
 call pylint.bat plugins\script_io_to_body.py    --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -444,9 +447,6 @@ call pylint.bat plugins\read_only_nodes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo searchbar.py
 call pylint.bat plugins\searchbar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo searchbox.py
-call pylint.bat plugins\searchbox.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo table.py
 call pylint.bat plugins\table.py     --rcfile=test\pylint-leo-rc.txt
