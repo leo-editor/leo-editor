@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo UASearch.py
-call pylint.bat plugins\UASearch.py     --rcfile=test\pylint-leo-rc.txt
+echo URLloader.py
+call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -349,6 +349,9 @@ echo .
 echo trace_tags.py
 call pylint.bat plugins\trace_tags.py           --rcfile=test\pylint-leo-rc.txt
 echo .
+echo UASearch.py
+call pylint.bat plugins\UASearch.py             --rcfile=test\pylint-leo-rc.txt
+echo .
 echo UniversalScrolling.py
 call pylint.bat plugins\UniversalScrolling.py   --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -477,9 +480,6 @@ call pylint.bat plugins\toolbar.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo UNL.py
 call pylint.bat plugins\UNL.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo URLloader.py
-call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo xcc_nodes.py
 call pylint.bat plugins\xcc_nodes.py     --rcfile=test\pylint-leo-rc.txt
