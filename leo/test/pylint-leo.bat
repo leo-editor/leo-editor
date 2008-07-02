@@ -112,6 +112,9 @@ goto done
 
 :good_plugins
 
+echo .
+echo plugins_menu.py
+call pylint.bat plugins\plugins_menu.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -422,9 +425,6 @@ call pylint.bat plugins\nodebar.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo pie_menus.py
 call pylint.bat plugins\pie_menus.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo plugins_menu.py
-call pylint.bat plugins\plugins_menu.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo pretty_print.py
 call pylint.bat plugins\pretty_print.py     --rcfile=test\pylint-leo-rc.txt
