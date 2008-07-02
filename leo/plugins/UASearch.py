@@ -33,13 +33,13 @@ __version__ = ".4"
 #@+node:ekr.20040915075530.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoTkinterFrame as leoTkinterFrame
+# import leo.core.leoTkinterFrame as leoTkinterFrame
 
 Tk        = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
 Pmw       = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import re
-import weakref
+# import weakref
 #@nonl
 #@-node:ekr.20040915075530.2:<< imports >>
 #@nl
@@ -68,9 +68,7 @@ def addPMenu (tag,keywords):
     if not c: return
 
     # New in Leo 4.4: the log is always tabbed.
-    if 1: x = c.frame.log.selectTab("UASearch")
-    else: x = TabbedLog.getPane("UASearch",c)
-
+    x = c.frame.log.selectTab("UASearch")
     ef = Pmw.EntryField(x,labelpos='w',label_text='uaname:')
     e = ef.component('entry')
     e.configure(background='white',foreground='blue')

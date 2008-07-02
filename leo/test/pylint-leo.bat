@@ -113,9 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo newButtons.py Dangerous: E1101
-rem  E1101: UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
-call pylint.bat plugins\newButtons.py        --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
+echo UASearch.py
+call pylint.bat plugins\UASearch.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -255,6 +254,10 @@ call pylint.bat plugins\mod_timestamp.py       --rcfile=test\pylint-leo-rc.txt
 echo .
 echo multifile.py
 call pylint.bat plugins\multifile.py           --rcfile=test\pylint-leo-rc.txt
+echo .
+echo newButtons.py Dangerous: E1101
+rem  E1101: UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
+call pylint.bat plugins\newButtons.py        --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo niceNosent.py
 call pylint.bat plugins\niceNosent.py          --rcfile=test\pylint-leo-rc.txt
@@ -471,9 +474,6 @@ call pylint.bat plugins\templates.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo toolbar.py
 call pylint.bat plugins\toolbar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo UASearch.py
-call pylint.bat plugins\UASearch.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo UNL.py
 call pylint.bat plugins\UNL.py     --rcfile=test\pylint-leo-rc.txt
