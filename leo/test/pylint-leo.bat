@@ -113,6 +113,8 @@ goto done
 :good_plugins
 
 
+goto done
+
 echo .
 echo at_produce.py
 rem                                            W0102: Dangerous default value pl ([]) as argument
@@ -128,22 +130,30 @@ echo at_folder.py
 call pylint.bat plugins\at_folder.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo bibtex.py
-call pylint.bat plugins\bibtex.py              --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\bibtex.py             --rcfile=test\pylint-leo-rc.txt
 echo .
 echo bookmarks.py
-call pylint.bat plugins\bookmarks.py     --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\bookmarks.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo chapter_hoist.py
 call pylint.bat plugins\chapter_hoist.py      --rcfile=test\pylint-leo-rc.txt
 echo .
 echo datenodes.py
-call pylint.bat plugins\datenodes.py     --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\datenodes.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo detect_urls.py
 call pylint.bat plugins\detect_urls.py        --rcfile=test\pylint-leo-rc.txt
 echo .
+echo dtest.py
+rem                                           W0611: Unused import g (may be needed for doctests)
+rem                                           E1101: A pylint bug: setCommand defined in baseLeoPlugin.
+call pylint.bat plugins\dtest.py              --disable-msg=W0611,E1101 --rcfile=test\pylint-leo-rc.txt
+echo .
 echo dump_globals.py
 call pylint.bat plugins\dump_globals.py       --rcfile=test\pylint-leo-rc.txt
+echo .
+echo EditAttributes.py
+call pylint.bat plugins\EditAttributes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo empty_leo_file.py
 call pylint.bat plugins\empty_leo_file.py     --rcfile=test\pylint-leo-rc.txt
@@ -314,12 +324,6 @@ call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cursesGui.py W0311: uses @tabwidth -2
 call pylint.bat plugins\cursesGui.py          --disable-msg=W0311 --rcfile=test\pylint-leo-rc.txt
-echo .
-echo dtest.py
-call pylint.bat plugins\dtest.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo EditAttributes.py
-call pylint.bat plugins\EditAttributes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo fastGotoNode.py
 call pylint.bat plugins\fastGotoNode.py     --rcfile=test\pylint-leo-rc.txt
