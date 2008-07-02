@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo base64Packager.py Dangerous: E1101: two ERRONEOUS errors
-call pylint.bat plugins\base64Packager.py     --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
+echo color_markup.py
+call pylint.bat plugins\color_markup.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -134,6 +134,9 @@ call pylint.bat plugins\at_produce.py          --disable-msg=W0102 --rcfile=test
 echo .
 echo at_view.py
 call pylint.bat plugins\at_view.py            --rcfile=test\pylint-leo-rc.txt
+echo .
+echo base64Packager.py Dangerous: E1101: two ERRONEOUS errors
+call pylint.bat plugins\base64Packager.py     --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo bibtex.py
 call pylint.bat plugins\bibtex.py             --rcfile=test\pylint-leo-rc.txt
@@ -379,9 +382,6 @@ call pylint.bat plugins\autotrees.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cleo.py
 call pylint.bat plugins\cleo.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo color_markup.py
-call pylint.bat plugins\color_markup.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo ConceptualSort.py
 call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
