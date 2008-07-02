@@ -112,13 +112,9 @@ goto done
 
 :good_plugins
 
-
-
 echo .
-echo xsltWithNodes.py
-rem                                          W0105:697: String statement has no effect
-rem                                          This string is needed as an example
-call pylint.bat plugins\xsltWithNodes.py     --disable-msg=W0105 --rcfile=test\pylint-leo-rc.txt
+echo at_view.py
+call pylint.bat plugins\at_view.py     --rcfile=test\pylint-leo-rc.txt
 
 
 goto done
@@ -340,6 +336,11 @@ call pylint.bat plugins\word_export.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo xemacs.py
 call pylint.bat plugins\xemacs.py               --rcfile=test\pylint-leo-rc.txt
+echo .
+echo xsltWithNodes.py
+rem                                          W0105:697: String statement has no effect
+rem                                          This string is needed as an example
+call pylint.bat plugins\xsltWithNodes.py     --disable-msg=W0105 --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -369,9 +370,6 @@ REM call pylint.bat plugins\usetemacs.py         --rcfile=test\pylint-leo-rc.txt
 
 :plugins
 
-echo .
-echo at_view.py
-call pylint.bat plugins\at_view.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo autotrees.py
 call pylint.bat plugins\autotrees.py     --rcfile=test\pylint-leo-rc.txt
