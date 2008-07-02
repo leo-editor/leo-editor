@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,14,9,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -982,7 +982,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1024,10 +1024,14 @@
 <v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
 <v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
 </v>
-<v t="ekr.20070411101857"><vh>Open With plugin</vh>
+<v t="ekr.20070411101857" a="E"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = False</vh></v>
+<v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
+<v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
+<v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
 <v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
@@ -1040,7 +1044,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>rst3_http_server_support = False</vh></v>
@@ -3088,6 +3092,24 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
 </t>
+<t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
+
+If False: Don't save the Leo file or any derived files when the external editor saves a file.</t>
+<t tx="TL.20080702085131.3">If True: When a file is saved by the external editor the node associated with that file is becomes that selected node in Leo.
+
+If False: The current node remains selected when a file, associated with a different node, is saved by the external editor.</t>
+<t tx="TL.20080702085131.4">Only supported with the mod_tempfname.py plugin.
+
+if True: The Open-With plugin will store temporary files utilizing cleaner file names (no unique number is appended to the node's headline text).  Unique temporary directory paths are used to insure unique files are created by creating temporary directories reflecting each node's ancestor nodes in the Leo outline.
+Note: Do not have multiple sibling nodes (nodes having the same parent node) in Leo with the same headline text.  There will be a conflict if both are opened in an external editor at the same time. 
+
+if False: The Open-With plugin will store temporary files with an appended unique number to insure unique temporary filenames.
+</t>
+<t tx="TL.20080702085131.5">Only supported with the mod_tempfname.py plugin.
+
+If True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
+
+If False or no derived file exists for that node: The Open-With plugin will use the file extension of the node's default language (set by the @language command) or '.txt' if none exists.</t>
 <t tx="bobjack.20080614084120.3"></t>
 <t tx="bobjack.20080614084120.5"># The name of the iconBar to which the buttons should initially be placed
 # This is ignored unless the toolbar.py plugin is enabled
