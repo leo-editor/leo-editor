@@ -113,11 +113,9 @@ goto done
 :good_plugins
 
 echo .
-echo leo_pdf.py
-rem
-rem  A pylint error(?):  E0602:391:Bunch.__setitem__: Undefined variable 'operator'
-rem  This may be needed: W0105:415:Writer: String statement has no effect
-call pylint.bat plugins\leo_pdf.py            --disable-msg=E0602,W0105 --rcfile=test\pylint-leo-rc.txt
+echo leo_to_html.py
+call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
+
 
 goto done
 
@@ -208,6 +206,12 @@ call pylint.bat plugins\ipython.py             --rcfile=test\pylint-leo-rc.txt
 echo .
 echo keybindings.py
 call pylint.bat plugins\keybindings.py         --rcfile=test\pylint-leo-rc.txt
+echo .
+echo leo_pdf.py
+rem
+rem  A pylint error(?):  E0602:391:Bunch.__setitem__: Undefined variable 'operator'
+rem  This may be needed: W0105:415:Writer: String statement has no effect
+call pylint.bat plugins\leo_pdf.py             --disable-msg=E0602,W0105 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_to_rtf.py
 call pylint.bat plugins\leo_to_rtf.py          --rcfile=test\pylint-leo-rc.txt
@@ -418,9 +422,6 @@ call pylint.bat plugins\leoupdate.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_interface.py
 call pylint.bat plugins\leo_interface.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo leo_to_html.py
-call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_autosave.py
 call pylint.bat plugins\mod_autosave.py     --rcfile=test\pylint-leo-rc.txt
