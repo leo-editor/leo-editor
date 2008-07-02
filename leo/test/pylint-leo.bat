@@ -113,9 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo vim.py
-call pylint.bat plugins\vim.py     --rcfile=test\pylint-leo-rc.txt
-
+echo word_export.py
+call pylint.bat plugins\word_export.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -325,6 +324,9 @@ echo .
 echo UniversalScrolling.py
 call pylint.bat plugins\UniversalScrolling.py   --rcfile=test\pylint-leo-rc.txt
 echo .
+echo vim.py
+call pylint.bat plugins\vim.py                  --rcfile=test\pylint-leo-rc.txt
+echo .
 echo word_count.py
 call pylint.bat plugins\word_count.py           --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -468,9 +470,6 @@ call pylint.bat plugins\UNL.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo URLloader.py
 call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo word_export.py
-call pylint.bat plugins\word_export.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo xcc_nodes.py
 call pylint.bat plugins\xcc_nodes.py     --rcfile=test\pylint-leo-rc.txt
