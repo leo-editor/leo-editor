@@ -131,7 +131,9 @@ def on_idle (tag,keywords):
                     if update:
                         g.es("updated from: " + g.shortFileName(path),color="blue")
                         c.setBodyString(p,s,encoding)
-                        c.selectPosition(p)
+                        #TL - 7/2/08 Converted to configurable 'goto node...'
+                        if c.config.getBool('open_with_goto_node_on_update'):
+                            c.selectPosition(p)
                         dict["body"] = s
                         # A patch by Terry Brown.
                         if c.config.getBool('open_with_save_on_update'):
