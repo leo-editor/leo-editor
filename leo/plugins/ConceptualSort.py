@@ -210,12 +210,12 @@ class CSFrontend:
                 header = 'def user_sort( a, b, atts):\n'
                 code = header + bcode
                 usort = compile( code, 'user_sort', 'exec' )
-                def lcsort( a, b, atts =atts ):
+                def lcsort2( a, b, atts =atts ):
                     z = {}
                     exec usort in {}, z
                     rv = z[ 'user_sort' ]( a, b, atts )
                     return rv
-                self.children.sort( lcsort )
+                self.children.sort( lcsort2 )
             if self.hasparent:
                 move( self.c, self.children, self.parent )
             else:

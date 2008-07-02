@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo color_markup.py
-call pylint.bat plugins\color_markup.py     --rcfile=test\pylint-leo-rc.txt
+echo ConceptualSort.py
+call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -146,6 +146,9 @@ call pylint.bat plugins\bookmarks.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo chapter_hoist.py
 call pylint.bat plugins\chapter_hoist.py      --rcfile=test\pylint-leo-rc.txt
+echo .
+echo color_markup.py
+call pylint.bat plugins\color_markup.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo datenodes.py
 call pylint.bat plugins\datenodes.py          --rcfile=test\pylint-leo-rc.txt
@@ -382,9 +385,6 @@ call pylint.bat plugins\autotrees.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cleo.py
 call pylint.bat plugins\cleo.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo ConceptualSort.py
-call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cursesGui.py W0311: uses @tabwidth -2
 call pylint.bat plugins\cursesGui.py          --disable-msg=W0311 --rcfile=test\pylint-leo-rc.txt
