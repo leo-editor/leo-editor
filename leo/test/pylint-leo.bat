@@ -113,9 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo leo_to_html.py
-call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
-
+echo multifile.py
+call pylint.bat plugins\multifile.py          --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -212,6 +211,9 @@ rem
 rem  A pylint error(?):  E0602:391:Bunch.__setitem__: Undefined variable 'operator'
 rem  This may be needed: W0105:415:Writer: String statement has no effect
 call pylint.bat plugins\leo_pdf.py             --disable-msg=E0602,W0105 --rcfile=test\pylint-leo-rc.txt
+echo .
+echo leo_to_html.py
+call pylint.bat plugins\leo_to_html.py         --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_to_rtf.py
 call pylint.bat plugins\leo_to_rtf.py          --rcfile=test\pylint-leo-rc.txt
@@ -435,9 +437,6 @@ echo .
 echo .
 echo mod_tempfname.py
 call pylint.bat plugins\mod_tempfname.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo multifile.py
-call pylint.bat plugins\multifile.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo nav_buttons.py
 call pylint.bat plugins\nav_buttons.py     --rcfile=test\pylint-leo-rc.txt
