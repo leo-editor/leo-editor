@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo keybindings.py
-call pylint.bat plugins\keybindings.py     --rcfile=test\pylint-leo-rc.txt
+echo Library.py
+call pylint.bat plugins\Library.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -190,6 +190,12 @@ call pylint.bat plugins\initinclass.py         --rcfile=test\pylint-leo-rc.txt
 echo .
 echo ipython.py
 call pylint.bat plugins\ipython.py             --rcfile=test\pylint-leo-rc.txt
+echo .
+echo keybindings.py
+call pylint.bat plugins\keybindings.py         --rcfile=test\pylint-leo-rc.txt
+echo .
+echo leo_to_rtf.py
+call pylint.bat plugins\leo_to_rtf.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_scripting.py
 call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
@@ -360,12 +366,6 @@ call pylint.bat plugins\leo_pdf.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_to_html.py
 call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo leo_to_rtf.py
-call pylint.bat plugins\leo_to_rtf.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo Library.py
-call pylint.bat plugins\Library.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo lineNumbers.py
 call pylint.bat plugins\lineNumbers.py     --rcfile=test\pylint-leo-rc.txt

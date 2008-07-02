@@ -113,7 +113,7 @@ __version__ = ".5"
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import anydbm
-import ConfigParser
+# import ConfigParser
 import whichdb
 
 Tk   = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -174,21 +174,21 @@ def onCloseFrame (tag,keywords):
 def cmd_Close_Database(c): 
 
     lib = libraries.get(c)
-    lib and lib.destroySelf()
+    if lib: lib.destroySelf()
 #@nonl
 #@-node:ekr.20050328092641.30:cmd_Close_Database
 #@+node:ekr.20060108191608:cmd_Show_Dialog
 def cmd_Show_Dialog (c):
 
     lib = libraries.get(c)
-    lib and lib.showDialog()
+    if lib: lib.showDialog()
 #@nonl
 #@-node:ekr.20060108191608:cmd_Show_Dialog
 #@+node:ekr.20050328092641.32:cmd_Show_Status
 def cmd_Show_Status(c): 
 
     lib = libraries.get(c)
-    lib and lib.showStatus()
+    if lib: lib.showStatus()
 #@nonl
 #@-node:ekr.20050328092641.32:cmd_Show_Status
 #@-node:ekr.20050328092641.28:cmd_ methods
