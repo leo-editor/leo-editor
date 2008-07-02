@@ -113,8 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo mnplugins.py
-call pylint.bat plugins\mnplugins.py     --rcfile=test\pylint-leo-rc.txt
+echo mod_leo2ascd.py
+call pylint.bat plugins\mod_leo2ascd.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -208,6 +208,9 @@ call pylint.bat plugins\macros.py              --rcfile=test\pylint-leo-rc.txt
 echo .
 echo maximizeNewWindows.py
 call pylint.bat plugins\maximizeNewWindows.py  --rcfile=test\pylint-leo-rc.txt
+echo .
+echo mnplugins.py
+call pylint.bat plugins\mnplugins.py           --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_scripting.py
 call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
@@ -387,9 +390,6 @@ call pylint.bat plugins\mod_http.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_labels.py
 call pylint.bat plugins\mod_labels.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo mod_leo2ascd.py
-call pylint.bat plugins\mod_leo2ascd.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_read_dir_outline.py
 call pylint.bat plugins\mod_read_dir_outline.py     --rcfile=test\pylint-leo-rc.txt

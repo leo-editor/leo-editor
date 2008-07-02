@@ -192,7 +192,7 @@ def WriteTreeAsAsc(vnode, ascFileN):
             v = v.threadNext()
 
     CleanUp()
-    g.es('Wrote: '+`ascFileN`)
+    g.es('Wrote: '+repr(ascFileN))
 # -- end -- << Write the outline tree as AsciiDoc file >>
 # << Write a node >> (1 of 7)
 def WriteNode(v,startinglevel, ascFile):
