@@ -85,7 +85,7 @@ __version__ = "1.8"
 #@nl
 
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 import re
 
@@ -155,7 +155,7 @@ class paramClass:
         searchline = pieces [0] + ">>"
         pieces [1] = pieces [1].rstrip('>')
         pieces [1] = pieces [1].rstrip(')')
-        sections = pieces [1].split(',') ;
+        sections = pieces [1].split(',')
 
         node = None
         for z in xrange(self.params.numberOfChildren()):
