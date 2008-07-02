@@ -112,6 +112,9 @@ goto done
 
 :good_plugins
 
+echo .
+echo keybindings.py
+call pylint.bat plugins\keybindings.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -342,9 +345,6 @@ call pylint.bat plugins\groupOperations.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo gtkDialogs.py
 call pylint.bat plugins\gtkDialogs.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo keybindings.py
-call pylint.bat plugins\keybindings.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leoOPML.py
 call pylint.bat plugins\leoOPML.py     --rcfile=test\pylint-leo-rc.txt
