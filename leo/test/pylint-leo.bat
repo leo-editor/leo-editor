@@ -112,15 +112,12 @@ goto done
 
 :good_plugins
 
-echo .
-echo mod_leo2ascd.py
-call pylint.bat plugins\mod_leo2ascd.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
 echo .
 echo at_produce.py
-rem                                            W0102: Dangerous default value pl ([]) as argument
+rem                                           W0102: Dangerous default value pl ([]) as argument
 call pylint.bat plugins\at_produce.py          --disable-msg=W0102 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo active_path.py  W0511: A todo message
@@ -212,6 +209,19 @@ echo .
 echo mnplugins.py
 call pylint.bat plugins\mnplugins.py           --rcfile=test\pylint-leo-rc.txt
 echo .
+echo mod_leo2ascd.py
+call pylint.bat plugins\mod_leo2ascd.py       --rcfile=test\pylint-leo-rc.txt
+echo .
+echo mod_read_dir_outline.py
+call pylint.bat plugins\mod_read_dir_outline.py --rcfile=test\pylint-leo-rc.txt
+echo .
+echo mod_shadow.py
+call pylint.bat plugins\mod_shadow.py         --rcfile=test\pylint-leo-rc.txt
+echo .
+echo mod_shadow_core.py
+rem                                           W0311: bad indentation
+call pylint.bat plugins\mod_shadow_core.py    --disable-msg=W0311 --rcfile=test\pylint-leo-rc.txt
+echo .
 echo mod_scripting.py
 call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -223,6 +233,9 @@ call pylint.bat plugins\niceNosent.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo nodenavigator.py
 call pylint.bat plugins\nodenavigator.py       --rcfile=test\pylint-leo-rc.txt
+echo .
+echo open_shell.py
+call pylint.bat plugins\open_shell.py         --rcfile=test\pylint-leo-rc.txt
 echo .
 echo open_with.py
 call pylint.bat plugins\open_with.py           --rcfile=test\pylint-leo-rc.txt
@@ -391,14 +404,6 @@ echo .
 echo mod_labels.py
 call pylint.bat plugins\mod_labels.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo mod_read_dir_outline.py
-call pylint.bat plugins\mod_read_dir_outline.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo mod_shadow.py
-call pylint.bat plugins\mod_shadow.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo mod_shadow_core.py
-call pylint.bat plugins\mod_shadow_core.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_tempfname.py
 call pylint.bat plugins\mod_tempfname.py     --rcfile=test\pylint-leo-rc.txt
@@ -414,9 +419,6 @@ call pylint.bat plugins\newButtons.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo nodebar.py
 call pylint.bat plugins\nodebar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo open_shell.py
-call pylint.bat plugins\open_shell.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo pie_menus.py
 call pylint.bat plugins\pie_menus.py     --rcfile=test\pylint-leo-rc.txt

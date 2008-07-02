@@ -30,8 +30,8 @@ Feedback on this plugin can be sent to::
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import leo.core.leoImport as leoImport
-import leo.core.leoCommands as leoCommands
+# import leo.core.leoImport as leoImport
+# import leo.core.leoCommands as leoCommands
 
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 
