@@ -34,7 +34,7 @@ in the future.
 #@+node:ekr.20050307134613.1:<< imports >>
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import os.path
 import base64
 
@@ -46,7 +46,7 @@ try:
     importok = True
 except Exception, x:
     g.es( "Cant Import %s" % x )
-    importof = False
+    importok = False
 #@nonl
 #@-node:ekr.20050307134613.1:<< imports >>
 #@nl

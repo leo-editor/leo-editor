@@ -113,16 +113,11 @@ goto done
 :good_plugins
 
 echo .
-echo at_view.py
-call pylint.bat plugins\at_view.py     --rcfile=test\pylint-leo-rc.txt
-
+echo base64Packager.py Dangerous: E1101: two ERRONEOUS errors
+call pylint.bat plugins\base64Packager.py     --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
-echo .
-echo at_produce.py
-rem                                           W0102: Dangerous default value pl ([]) as argument
-call pylint.bat plugins\at_produce.py          --disable-msg=W0102 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo active_path.py  W0511: A todo message
 call pylint.bat plugins\active_path.py        --disable-msg=W0511 --rcfile=test\pylint-leo-rc.txt
@@ -132,6 +127,13 @@ call pylint.bat plugins\add_directives.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo at_folder.py
 call pylint.bat plugins\at_folder.py          --rcfile=test\pylint-leo-rc.txt
+echo .
+echo at_produce.py
+rem                                           W0102: Dangerous default value pl ([]) as argument
+call pylint.bat plugins\at_produce.py          --disable-msg=W0102 --rcfile=test\pylint-leo-rc.txt
+echo .
+echo at_view.py
+call pylint.bat plugins\at_view.py            --rcfile=test\pylint-leo-rc.txt
 echo .
 echo bibtex.py
 call pylint.bat plugins\bibtex.py             --rcfile=test\pylint-leo-rc.txt
@@ -371,11 +373,9 @@ REM call pylint.bat plugins\usetemacs.py         --rcfile=test\pylint-leo-rc.txt
 :plugins
 
 echo .
+rem  this file has a bug that I don't know how to fix.
 echo autotrees.py
 call pylint.bat plugins\autotrees.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo base64Packager.py
-call pylint.bat plugins\base64Packager.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cleo.py
 call pylint.bat plugins\cleo.py     --rcfile=test\pylint-leo-rc.txt
