@@ -100,7 +100,6 @@ class baseCommands:
         self.nodeHistory = nodeHistory(c)
 
         self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
-        self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
         self.showMinibuffer = c.config.getBool('useMinibuffer')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.fixed = c.config.getBool('fixedWindow',False)

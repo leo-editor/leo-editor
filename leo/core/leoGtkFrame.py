@@ -985,13 +985,9 @@ class leoGtkFrame (leoFrame.leoFrame):
         # lab = gtk.Label(f,text='mini-buffer',justify='left',anchor='nw',foreground='blue')
         # lab.pack(side='left')
 
-        # if c.useTextMinibuffer:
-            # label = g.app.gui.plainTextWidget(
-                # f,height=1,relief='groove',background='lightgrey',name='minibuffer')
-            # label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
-        # else:
-            # label = gtk.Label(f,relief='groove',justify='left',anchor='w',name='minibuffer')
-            # label.pack(side='left',fill='both',expand=1,padx=2,pady=1)
+        # label = g.app.gui.plainTextWidget(
+            # f,height=1,relief='groove',background='lightgrey',name='minibuffer')
+        # label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
 
         # frame.minibufferVisible = c.showMinibuffer
 
@@ -1003,8 +999,6 @@ class leoGtkFrame (leoFrame.leoFrame):
         '''Create bindings for the minibuffer..'''
 
         f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
-
-        if not c.useTextMinibuffer: return
 
         # for kind,callback in (
             # ('<Key>',           k.masterKeyHandler),

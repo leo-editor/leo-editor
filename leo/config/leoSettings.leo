@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="731" height="827" width="655"/>
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,14,9,3"><vh>Startup</vh>
+<v t="ekr.20070622214401"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -362,7 +362,6 @@
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060122105527.5" annotate="7d71002e"><vh>@bool useCmdMenu = True</vh></v>
 <v t="ekr.20060122105527.6" annotate="7d71002e"><vh>@bool useMinibuffer = True</vh></v>
-<v t="ekr.20060125165241"><vh>@bool useTextMinibuffer = True</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -982,7 +981,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1024,7 +1023,7 @@
 <v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
 <v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
 </v>
-<v t="ekr.20070411101857" a="E"><vh>Open With plugin</vh>
+<v t="ekr.20070411101857"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20070411101857.3"><vh>@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
@@ -1044,7 +1043,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>rst3_http_server_support = False</vh></v>
@@ -1105,7 +1104,7 @@
 <v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
 <v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
 </v>
-<v t="ekr.20060730101451" a="E"><vh>shadow plugin</vh>
+<v t="ekr.20060730101451"><vh>shadow plugin</vh>
 <v t="ekr.20060730101451.1"><vh>@bool shadow_active = True</vh></v>
 <v t="ekr.20060730101451.2"><vh>@bool shadow_backups = True</vh></v>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
@@ -1153,7 +1152,7 @@
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
 <v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
-<v t="ekr.20041119034357.38" a="E"><vh>Body pane options</vh>
+<v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
 <v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
@@ -1244,7 +1243,7 @@
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 </v>
-<v t="TL.20080622104320.1" a="E"><vh>@keys Vim bindings</vh>
+<v t="TL.20080622104320.1"><vh>@keys Vim bindings</vh>
 <v t="TL.20080622104320.2"><vh>Vi Documentation</vh></v>
 <v t="TL.20080622104320.3"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 <v t="TL.20080622104320.4"><vh>@@shortcuts kill conflicting bindings</vh></v>
@@ -1256,8 +1255,8 @@
 <v t="TL.20080622104320.10"><vh>@mode focus-to-body</vh></v>
 <v t="TL.20080622104320.11"><vh>@mode vi-command-line</vh>
 <v t="TL.20080622104320.12"><vh>@mode vi-command-revert</vh></v>
-<v t="TL.20080622104320.13" a="E"><vh>@mode vi-command-save</vh>
-<v t="TL.20080622104320.14" a="E"><vh>@mode vi-command-save-quit</vh>
+<v t="TL.20080622104320.13"><vh>@mode vi-command-save</vh>
+<v t="TL.20080622104320.14"><vh>@mode vi-command-save-quit</vh>
 <v t="TL.20080622104320.15"><vh>@mode vi-command-save-quit-return</vh></v>
 </v>
 </v>
@@ -1265,15 +1264,15 @@
 </v>
 <v t="TL.20080622104320.17"><vh>@mode tree-command-line</vh>
 <v t="TL.20080622104320.18"><vh>@mode tree-command-revert</vh></v>
-<v t="TL.20080622104320.19" a="E"><vh>@mode tree-command-save</vh>
+<v t="TL.20080622104320.19"><vh>@mode tree-command-save</vh>
 <v t="TL.20080622104320.20"><vh>@mode tree-command-save</vh></v>
-<v t="TL.20080622104320.21" a="E"><vh>@mode tree-command-save-quit</vh>
+<v t="TL.20080622104320.21"><vh>@mode tree-command-save-quit</vh>
 <v t="TL.20080622104320.22"><vh>@mode tree-command-save-quit-return</vh></v>
 </v>
 </v>
 <v t="TL.20080622104320.23"><vh>@mode tree-command-quit</vh></v>
 </v>
-<v t="TL.20080622104320.24" a="E"><vh>@mode vi-shift-z</vh>
+<v t="TL.20080622104320.24"><vh>@mode vi-shift-z</vh>
 <v t="TL.20080622104320.25"><vh>@mode vi-shift-z-save-quit</vh></v>
 </v>
 </v>
@@ -1336,7 +1335,7 @@
 </v>
 <v t="TL.20080622104320.77"><vh>@mode vi-delete-to-end-of-buffer</vh></v>
 <v t="TL.20080622104320.78"><vh>@mode vi-delete-section</vh></v>
-<v t="TL.20080622104320.79" a="M"><vh>@mode vi-delete-to-char</vh></v>
+<v t="TL.20080622104320.79"><vh>@mode vi-delete-to-char</vh></v>
 </v>
 <v t="TL.20080622104320.80"><vh>@mode vi-yank-to-end-of-line</vh></v>
 <v t="TL.20080622104320.81"><vh>@mode vi-yank-object</vh>
@@ -1362,7 +1361,7 @@
 <v t="TL.20080622104320.99"><vh>@mode vi-change-to-beginning-of-sentence</vh></v>
 <v t="TL.20080622104320.100"><vh>@mode vi-change-to-end-of-paragraph</vh></v>
 <v t="TL.20080622104320.101"><vh>@mode vi-change-to-beginning-of-paragraph</vh></v>
-<v t="TL.20080622104320.102" a="E"><vh>@mode vi-change-to-g-object</vh>
+<v t="TL.20080622104320.102"><vh>@mode vi-change-to-g-object</vh>
 <v t="TL.20080622104320.103"><vh>@mode vi-change-to-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20080622104320.104"><vh>@mode vi-change-to-end-of-buffer</vh></v>
@@ -5290,7 +5289,6 @@ False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20060122105527.8"></t>
 <t tx="ekr.20060125104049">True: (recommended) The Find tab shows only options, not text or buttons.
 False: (legacy)     The Find tab shows text, options and buttons.</t>
-<t tx="ekr.20060125165241"></t>
 <t tx="ekr.20060126075152"># True: calls to the garbage collector.</t>
 <t tx="ekr.20060126083715"># True: verbose trace the garbage collector.</t>
 <t tx="ekr.20060127050605">Zero (recommended): unlimited stack size.

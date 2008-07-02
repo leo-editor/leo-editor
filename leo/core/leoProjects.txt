@@ -14357,7 +14357,6 @@ def __init__(self,frame,fileName,relativeFileName=None):
     self.nodeHistory = nodeHistory(c)
 
     self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
-    self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
     self.showMinibuffer = c.config.getBool('useMinibuffer')
     self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
     self.fixed = c.config.getBool('fixedWindow',False)
@@ -19079,6 +19078,34 @@ Negligible
 #@-node:ekr.20080529114024.3:Stats (.py files)
 #@-node:ekr.20080529054218.2:Benchmarked the read code
 #@-node:ekr.20080408060320.4:4.5 b1
+#@+node:ekr.20080702123133.2:4.5 b2
+#@+node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
+Should always use a Tk.Text widget.
+#@nonl
+#@+node:ekr.20050920094212:f.createMiniBufferWidget
+def createMiniBufferWidget (self):
+
+    '''Create the minbuffer below the status line.'''
+
+    frame = self ; c = frame.c
+
+    frame.minibufferFrame = f = Tk.Frame(frame.outerFrame,relief='flat',borderwidth=0)
+    if c.showMinibuffer:
+        f.pack(side='bottom',fill='x')
+
+    lab = Tk.Label(f,text='mini-buffer',justify='left',anchor='nw',foreground='blue')
+    lab.pack(side='left')
+
+    label = g.app.gui.plainTextWidget(
+        f,height=1,relief='groove',background='lightgrey',name='minibuffer')
+    label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
+
+    frame.minibufferVisible = c.showMinibuffer
+
+    return label
+#@-node:ekr.20050920094212:f.createMiniBufferWidget
+#@-node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
+#@-node:ekr.20080702123133.2:4.5 b2
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
