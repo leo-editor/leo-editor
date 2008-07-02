@@ -87,11 +87,11 @@ import sys
 
 import_ok = True
 
-try:
-    import Tkinter as Tk
-except ImportError:
-    g.es_print('ipython plugin: can not Tkinter',color='red')
-    import_ok = False
+# try:
+    # import Tkinter as Tk
+# except ImportError:
+    # g.es_print('ipython plugin: can not Tkinter',color='red')
+    # import_ok = False
 
 try:
     import IPython.ipapi
@@ -99,12 +99,11 @@ except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
 
-try:
-    from IPython.Shell import IPShellEmbed
-except ImportError:
-    g.es_print('ipython plugin: can not import IPython.Shell.IPShellEmbed')
-    import_ok = False
-
+# try:
+    # from IPython.Shell import IPShellEmbed
+# except ImportError:
+    # g.es_print('ipython plugin: can not import IPython.Shell.IPShellEmbed')
+    # import_ok = False
 #@-node:ekr.20080201143145.3:<< imports >>
 #@nl
 

@@ -185,6 +185,9 @@ echo .
 echo initinclass.py
 call pylint.bat plugins\initinclass.py         --rcfile=test\pylint-leo-rc.txt
 echo .
+echo ipython.py
+call pylint.bat plugins\ipython.py             --rcfile=test\pylint-leo-rc.txt
+echo .
 echo mod_scripting.py
 call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -339,9 +342,6 @@ call pylint.bat plugins\groupOperations.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo gtkDialogs.py
 call pylint.bat plugins\gtkDialogs.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo ipython.py
-call pylint.bat plugins\ipython.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo keybindings.py
 call pylint.bat plugins\keybindings.py     --rcfile=test\pylint-leo-rc.txt
