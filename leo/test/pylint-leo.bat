@@ -112,10 +112,10 @@ goto done
 
 :good_plugins
 
-
 echo .
-echo table.py
-call pylint.bat plugins\table.py     --rcfile=test\pylint-leo-rc.txt
+echo vim.py
+call pylint.bat plugins\vim.py     --rcfile=test\pylint-leo-rc.txt
+
 
 goto done
 
@@ -301,6 +301,9 @@ echo .
 echo startfile.py
 call pylint.bat plugins\startfile.py            --rcfile=test\pylint-leo-rc.txt
 echo .
+echo table.py
+call pylint.bat plugins\table.py                --rcfile=test\pylint-leo-rc.txt
+echo .
 echo testRegisterCommand.py
 call pylint.bat plugins\testRegisterCommand.py  --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -465,9 +468,6 @@ call pylint.bat plugins\UNL.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo URLloader.py
 call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo vim.py
-call pylint.bat plugins\vim.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo word_export.py
 call pylint.bat plugins\word_export.py     --rcfile=test\pylint-leo-rc.txt

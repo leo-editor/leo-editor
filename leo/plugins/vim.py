@@ -254,7 +254,7 @@ def open_in_vim (tag,keywords,val=None):
     #if p.isAnyAtFileNode():
     #   return
     if p.headString().find('file-ref') == 1: #Must be at 2nd position
-       return
+        return
 
     #URL nodes
     openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
