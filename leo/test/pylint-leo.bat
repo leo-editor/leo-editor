@@ -112,9 +112,14 @@ goto done
 
 :good_plugins
 
+
+
 echo .
-echo word_export.py
-call pylint.bat plugins\word_export.py     --rcfile=test\pylint-leo-rc.txt
+echo xsltWithNodes.py
+rem                                          W0105:697: String statement has no effect
+rem                                          This string is needed as an example
+call pylint.bat plugins\xsltWithNodes.py     --disable-msg=W0105 --rcfile=test\pylint-leo-rc.txt
+
 
 goto done
 
@@ -330,6 +335,9 @@ echo .
 echo word_count.py
 call pylint.bat plugins\word_count.py           --rcfile=test\pylint-leo-rc.txt
 echo .
+echo word_export.py
+call pylint.bat plugins\word_export.py          --rcfile=test\pylint-leo-rc.txt
+echo .
 echo xemacs.py
 call pylint.bat plugins\xemacs.py               --rcfile=test\pylint-leo-rc.txt
 
@@ -473,9 +481,6 @@ call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo xcc_nodes.py
 call pylint.bat plugins\xcc_nodes.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo xsltWithNodes.py
-call pylint.bat plugins\xsltWithNodes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo zenity_file_dialogs.py
 call pylint.bat plugins\zenity_file_dialogs.py     --rcfile=test\pylint-leo-rc.txt

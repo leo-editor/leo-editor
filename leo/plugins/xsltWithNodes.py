@@ -26,7 +26,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 #@<< imports >>
 #@+node:mork.20041025113509:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
