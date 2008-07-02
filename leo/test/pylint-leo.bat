@@ -10,8 +10,8 @@ echo cd c:\leo.repo\trunk\leo
 cd c:\leo.repo\trunk\leo
 
 REM tests that fail...
-goto good_plugins
-goto plugins
+REM goto good_plugins
+REM goto bad_plugins
 goto all
 
 echo tests that fail with dangerous settings enabled...
@@ -108,15 +108,9 @@ echo .
 echo leoTkinterTree.py Dangerous: E1101: many ERRONEOUS errors
 call pylint.bat core\leoTkinterTree.py   --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 
-goto done
+REM goto done
 
 :good_plugins
-
-echo .
-echo URLloader.py
-call pylint.bat plugins\URLloader.py     --rcfile=test\pylint-leo-rc.txt
-
-goto done
 
 echo .
 echo active_path.py  W0511: A todo message
@@ -247,13 +241,16 @@ rem                                           W0311: bad indentation
 call pylint.bat plugins\mod_shadow_core.py    --disable-msg=W0311 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_scripting.py
-call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\mod_scripting.py      --rcfile=test\pylint-leo-rc.txt
+echo .
+echo mod_tempfname.py
+call pylint.bat plugins\mod_tempfname.py      --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_timestamp.py
-call pylint.bat plugins\mod_timestamp.py       --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\mod_timestamp.py      --rcfile=test\pylint-leo-rc.txt
 echo .
 echo multifile.py
-call pylint.bat plugins\multifile.py           --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\multifile.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo newButtons.py Dangerous: E1101
 rem  E1101: UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
@@ -355,6 +352,12 @@ echo .
 echo UniversalScrolling.py
 call pylint.bat plugins\UniversalScrolling.py   --rcfile=test\pylint-leo-rc.txt
 echo .
+echo UNL.py
+call pylint.bat plugins\UNL.py                  --rcfile=test\pylint-leo-rc.txt
+echo .
+echo URLloader.py
+call pylint.bat plugins\URLloader.py            --rcfile=test\pylint-leo-rc.txt
+echo .
 echo vim.py
 call pylint.bat plugins\vim.py                  --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -398,7 +401,7 @@ REM echo .
 REM echo usetemacs.py
 REM call pylint.bat plugins\usetemacs.py         --rcfile=test\pylint-leo-rc.txt
 
-:plugins
+:bad_plugins
 
 echo .
 rem  this file has a bug that I don't know how to fix.
@@ -444,10 +447,6 @@ echo .
 echo mod_labels.py
 call pylint.bat plugins\mod_labels.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo .
-echo mod_tempfname.py
-call pylint.bat plugins\mod_tempfname.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo nav_buttons.py
 call pylint.bat plugins\nav_buttons.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -477,9 +476,6 @@ call pylint.bat plugins\templates.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo toolbar.py
 call pylint.bat plugins\toolbar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo UNL.py
-call pylint.bat plugins\UNL.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo xcc_nodes.py
 call pylint.bat plugins\xcc_nodes.py     --rcfile=test\pylint-leo-rc.txt
