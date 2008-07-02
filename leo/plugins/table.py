@@ -22,7 +22,7 @@ Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
 #@+node:ekr.20041017035937.1:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 
 Pmw    = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -35,7 +35,7 @@ import weakref
 #@-node:ekr.20041017035937.1:<< imports >>
 #@nl
 
-__version__ = ".13"
+__version__ = ".14"
 #@<< version history >>
 #@+node:ekr.20050311103711:<< version history >>
 #@@killcolor
@@ -45,6 +45,7 @@ __version__ = ".13"
 # .13 EKR:
 #     - Added init function.
 #     - Use only 'new' and 'open2' hooks.
+# .14 EKR: Fixed bug reported by pylint.
 #@-at
 #@nonl
 #@-node:ekr.20050311103711:<< version history >>
@@ -227,7 +228,7 @@ def createBBox( parent, csvv, tab ):
 #@+node:ekr.20041017035937.13:addMenu
 def addMenu (tag,keywords):
 
-    c = keywords.get(c)
+    c = keywords.get('c')
     if not c or haveseen.has_key(c):
         return
 

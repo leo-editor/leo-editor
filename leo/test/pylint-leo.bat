@@ -112,10 +112,10 @@ goto done
 
 :good_plugins
 
-echo .
-echo searchbox.py Dangerous: E1101: two ERRONEOUS errors
-call pylint.bat plugins\searchbox.py     --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
 
+echo .
+echo table.py
+call pylint.bat plugins\table.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -289,6 +289,9 @@ echo .
 echo scripts_menu.py
 call pylint.bat plugins\scripts_menu.py         --rcfile=test\pylint-leo-rc.txt
 echo .
+echo searchbox.py Dangerous: E1101: two ERRONEOUS errors
+call pylint.bat plugins\searchbox.py            --disable-msg=E1101 --rcfile=test\pylint-leo-rc.txt
+echo .
 echo shortcut_button.py
 call pylint.bat plugins\shortcut_button.py      --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -447,9 +450,6 @@ call pylint.bat plugins\read_only_nodes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo searchbar.py
 call pylint.bat plugins\searchbar.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo table.py
-call pylint.bat plugins\table.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo templates.py
 call pylint.bat plugins\templates.py     --rcfile=test\pylint-leo-rc.txt
