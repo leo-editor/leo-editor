@@ -113,8 +113,11 @@ goto done
 :good_plugins
 
 echo .
-echo ConceptualSort.py
-call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
+echo leo_pdf.py
+rem
+rem  A pylint error(?):  E0602:391:Bunch.__setitem__: Undefined variable 'operator'
+rem  This may be needed: W0105:415:Writer: String statement has no effect
+call pylint.bat plugins\leo_pdf.py            --disable-msg=E0602,W0105 --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -148,7 +151,10 @@ echo chapter_hoist.py
 call pylint.bat plugins\chapter_hoist.py      --rcfile=test\pylint-leo-rc.txt
 echo .
 echo color_markup.py
-call pylint.bat plugins\color_markup.py     --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\color_markup.py       --rcfile=test\pylint-leo-rc.txt
+echo .
+echo ConceptualSort.py
+call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo datenodes.py
 call pylint.bat plugins\datenodes.py          --rcfile=test\pylint-leo-rc.txt
@@ -412,9 +418,6 @@ call pylint.bat plugins\leoupdate.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_interface.py
 call pylint.bat plugins\leo_interface.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo leo_pdf.py
-call pylint.bat plugins\leo_pdf.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_to_html.py
 call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
