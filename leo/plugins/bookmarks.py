@@ -34,8 +34,8 @@ import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
-import os       
-import urlparse 
+# import os       
+# import urlparse 
 #@nonl
 #@-node:tbrown.20070322113635.3:<< imports >>
 #@nl
@@ -43,7 +43,7 @@ import urlparse
 #@+others
 #@+node:tbrown.20070322113635.4:onDClick1
 def onDClick1 (tag,keywords):
-    """"""
+
     c = keywords.get("c")
     p = keywords.get("p")
     bookmark = False

@@ -978,6 +978,7 @@ class colorizer:
 
         '''
         trace = self.trace and self.trace_tags
+        verbose = self.verbose
         old_len = len(oldList) ; new_len = len(newList)
         addList = [] ; deleteList = []
 

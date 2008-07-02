@@ -44,7 +44,7 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 import os
 import threading
 import time
-import weakref
+# import weakref
 #@-node:ekr.20040915085715:<< imports >>
 #@nl
 __version__ = '.3'

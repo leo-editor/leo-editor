@@ -112,12 +112,14 @@ goto done
 
 :good_plugins
 
+
 echo .
-echo threading_colorizer.py
-call pylint.bat plugins\threading_colorizer.py     --rcfile=test\pylint-leo-rc.txt
-
-goto done
-
+echo at_produce.py
+rem                                            W0102: Dangerous default value pl ([]) as argument
+call pylint.bat plugins\at_produce.py          --disable-msg=W0102 --rcfile=test\pylint-leo-rc.txt
+echo .
+echo active_path.py  W0511: A todo message
+call pylint.bat plugins\active_path.py        --disable-msg=W0511 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo add_directives.py
 call pylint.bat plugins\add_directives.py     --rcfile=test\pylint-leo-rc.txt
@@ -125,8 +127,17 @@ echo .
 echo at_folder.py
 call pylint.bat plugins\at_folder.py          --rcfile=test\pylint-leo-rc.txt
 echo .
+echo bibtex.py
+call pylint.bat plugins\bibtex.py              --rcfile=test\pylint-leo-rc.txt
+echo .
+echo bookmarks.py
+call pylint.bat plugins\bookmarks.py     --rcfile=test\pylint-leo-rc.txt
+echo .
 echo chapter_hoist.py
 call pylint.bat plugins\chapter_hoist.py      --rcfile=test\pylint-leo-rc.txt
+echo .
+echo datenodes.py
+call pylint.bat plugins\datenodes.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo detect_urls.py
 call pylint.bat plugins\detect_urls.py        --rcfile=test\pylint-leo-rc.txt
@@ -216,7 +227,7 @@ echo script_io_to_body.py
 call pylint.bat plugins\script_io_to_body.py    --rcfile=test\pylint-leo-rc.txt
 echo .
 echo scripts_menu.py
-call pylint.bat plugins\scripts_menu.py     --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\scripts_menu.py         --rcfile=test\pylint-leo-rc.txt
 echo .
 echo shortcut_button.py
 call pylint.bat plugins\shortcut_button.py      --rcfile=test\pylint-leo-rc.txt
@@ -232,6 +243,9 @@ call pylint.bat plugins\testRegisterCommand.py  --rcfile=test\pylint-leo-rc.txt
 echo .
 echo textnode.py
 call pylint.bat plugins\textnode.py             --rcfile=test\pylint-leo-rc.txt
+echo .
+echo threading_colorizer.py
+call pylint.bat plugins\threading_colorizer.py  --rcfile=test\pylint-leo-rc.txt
 echo .
 echo trace_gc_plugin.py
 call pylint.bat plugins\trace_gc_plugin.py      --rcfile=test\pylint-leo-rc.txt
@@ -280,12 +294,6 @@ REM call pylint.bat plugins\usetemacs.py         --rcfile=test\pylint-leo-rc.txt
 :plugins
 
 echo .
-echo active_path.py
-call pylint.bat plugins\active_path.py       --rcfile=test\pylint-leo-rc.txt
-echo .
-echo at_produce.py
-call pylint.bat plugins\at_produce.py     --rcfile=test\pylint-leo-rc.txt
-echo .
 echo at_view.py
 call pylint.bat plugins\at_view.py     --rcfile=test\pylint-leo-rc.txt
 echo .
@@ -294,12 +302,6 @@ call pylint.bat plugins\autotrees.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo base64Packager.py
 call pylint.bat plugins\base64Packager.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo bibtex.py
-call pylint.bat plugins\bibtex.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo bookmarks.py
-call pylint.bat plugins\bookmarks.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo cleo.py
 call pylint.bat plugins\cleo.py     --rcfile=test\pylint-leo-rc.txt
@@ -310,11 +312,8 @@ echo .
 echo ConceptualSort.py
 call pylint.bat plugins\ConceptualSort.py     --rcfile=test\pylint-leo-rc.txt
 echo .
-echo cursesGui.py
-call pylint.bat plugins\cursesGui.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo datenodes.py
-call pylint.bat plugins\datenodes.py     --rcfile=test\pylint-leo-rc.txt
+echo cursesGui.py W0311: uses @tabwidth -2
+call pylint.bat plugins\cursesGui.py          --disable-msg=W0311 --rcfile=test\pylint-leo-rc.txt
 echo .
 echo dtest.py
 call pylint.bat plugins\dtest.py     --rcfile=test\pylint-leo-rc.txt

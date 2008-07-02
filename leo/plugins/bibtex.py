@@ -114,7 +114,7 @@ __version__ = "0.4" # Set version for the plugin handler.
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import os
+# import os
 #@nonl
 #@-node:timo.20050213193129:<<imports>>
 #@nl
@@ -261,7 +261,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
             if h == '@string': # store string declarations in strings
                 for i in s.split('\n'):
                     if i and (not i.isspace()):
-                         strings = strings + '@string{' + i + '}\n'
+                        strings = strings + '@string{' + i + '}\n'
             else:  # store other stuff in entries  
                 entries = entries + typestring + '{' + h[h.find(' ')+1:]+  ',\n' + s + '}\n\n'
     if strings:
