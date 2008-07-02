@@ -12,7 +12,13 @@ cd c:\leo.repo\trunk\leo
 REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
-goto all
+REM goto all
+
+echo A demonstration of the pylint bug
+
+call pylint.bat test\pylintTest\subClass.py --rcfile=test\pylint-leo-rc.txt
+
+goto done
 
 echo tests that fail with dangerous settings enabled...
 

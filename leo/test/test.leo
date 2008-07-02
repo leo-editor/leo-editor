@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -217,6 +217,11 @@
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
+<v t="ekr.20080702113207.1" a="E"><vh>demo of pylint bugs</vh>
+<v t="ekr.20080702113207.2"><vh>@thin pylintTest/baseClass.py</vh></v>
+<v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
+<v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1649,5 +1654,6 @@ for z in aList:
         print 'echo .'
         print 'echo',name
         print 'call pylint.bat core\\%s' % name</t>
+<t tx="ekr.20080702113207.1"></t>
 </tnodes>
 </leo_file>
