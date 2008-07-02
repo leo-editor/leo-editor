@@ -87,7 +87,6 @@ import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
-import os       
 import urlparse 
 #@nonl
 #@-node:rogererens.20041014110709.1:<< imports >>
