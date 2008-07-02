@@ -113,14 +113,8 @@ goto done
 :good_plugins
 
 echo .
-echo lineNumbers.py
-call pylint.bat plugins\lineNumbers.py         --rcfile=test\pylint-leo-rc.txt
-echo .
-echo macros.py
-call pylint.bat plugins\macros.py              --rcfile=test\pylint-leo-rc.txt
-echo .
-echo maximizeNewWindows.py
-call pylint.bat plugins\maximizeNewWindows.py  --rcfile=test\pylint-leo-rc.txt
+echo mnplugins.py
+call pylint.bat plugins\mnplugins.py     --rcfile=test\pylint-leo-rc.txt
 
 goto done
 
@@ -204,7 +198,16 @@ echo leo_to_rtf.py
 call pylint.bat plugins\leo_to_rtf.py          --rcfile=test\pylint-leo-rc.txt
 echo .
 echo Library.py
-call pylint.bat plugins\Library.py     --rcfile=test\pylint-leo-rc.txt
+call pylint.bat plugins\Library.py             --rcfile=test\pylint-leo-rc.txt
+echo .
+echo lineNumbers.py
+call pylint.bat plugins\lineNumbers.py         --rcfile=test\pylint-leo-rc.txt
+echo .
+echo macros.py
+call pylint.bat plugins\macros.py              --rcfile=test\pylint-leo-rc.txt
+echo .
+echo maximizeNewWindows.py
+call pylint.bat plugins\maximizeNewWindows.py  --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_scripting.py
 call pylint.bat plugins\mod_scripting.py       --rcfile=test\pylint-leo-rc.txt
@@ -375,9 +378,6 @@ call pylint.bat plugins\leo_pdf.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo leo_to_html.py
 call pylint.bat plugins\leo_to_html.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo mnplugins.py
-call pylint.bat plugins\mnplugins.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo mod_autosave.py
 call pylint.bat plugins\mod_autosave.py     --rcfile=test\pylint-leo-rc.txt
