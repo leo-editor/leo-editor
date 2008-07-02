@@ -113,8 +113,9 @@ goto done
 :good_plugins
 
 echo .
-echo plugins_menu.py
-call pylint.bat plugins\plugins_menu.py     --rcfile=test\pylint-leo-rc.txt
+echo scheduler.py
+call pylint.bat plugins\scheduler.py     --rcfile=test\pylint-leo-rc.txt
+
 
 goto done
 
@@ -251,6 +252,9 @@ call pylint.bat plugins\override_commands.py   --rcfile=test\pylint-leo-rc.txt
 echo .
 echo paste_as_headlines.py
 call pylint.bat plugins\paste_as_headlines.py   --rcfile=test\pylint-leo-rc.txt
+echo .
+echo plugins_menu.py
+call pylint.bat plugins\plugins_menu.py         --rcfile=test\pylint-leo-rc.txt
 echo .
 echo pluginsTest.py
 call pylint.bat plugins\pluginsTest.py          --rcfile=test\pylint-leo-rc.txt
@@ -437,9 +441,6 @@ call pylint.bat plugins\rClickBasePluginClasses.py     --rcfile=test\pylint-leo-
 echo .
 echo read_only_nodes.py
 call pylint.bat plugins\read_only_nodes.py     --rcfile=test\pylint-leo-rc.txt
-echo .
-echo scheduler.py
-call pylint.bat plugins\scheduler.py     --rcfile=test\pylint-leo-rc.txt
 echo .
 echo searchbar.py
 call pylint.bat plugins\searchbar.py     --rcfile=test\pylint-leo-rc.txt
