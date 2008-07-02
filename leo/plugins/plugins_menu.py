@@ -245,10 +245,10 @@ def init ():
     if g.app.unitTesting: return None
 
     if g.app.gui is None:
-            g.app.createTkGui(__file__)
+        g.app.createTkGui(__file__)
 
-            if g.app.gui.guiName() != "tkinter":
-                return False
+        if g.app.gui.guiName() != "tkinter":
+            return False
 
     leoPlugins.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
