@@ -90,6 +90,7 @@ default_colors_dict = {
     'latexBackground':('latex_background_color',      'white'),
 
     # jEdit tags.
+    'bracketRange'   :('bracket_range_color',         'orange'),
     'comment1'  :('comment1_color', 'red'),
     'comment2'  :('comment2_color', 'red'),
     'comment3'  :('comment3_color', 'red'),
@@ -128,6 +129,7 @@ default_font_dict = {
     'latexBackground':'latex_background_font',
 
     # jEdit tags.
+    'bracketRange'   :'bracketRange_font',
     'comment1'  :'comment1_font',
     'comment2'  :'comment2_font',
     'comment3'  :'comment3_font',
@@ -457,6 +459,7 @@ class colorizer:
             # Leo jEdit tags...
             '@color', '@nocolor', 'doc_part', 'section_ref',
             # jEdit tags.
+            'bracketRange',
             'comment1','comment2','comment3','comment4',
             'function',
             'keyword1','keyword2','keyword3','keyword4',
@@ -1554,7 +1557,7 @@ class colorizer:
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             result = j - i
-            # g.trace('success',word,kind)
+            # g.trace('success',word,kind,j-i)
             # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
             self.trace_match(kind,s,i,j)
             return result
