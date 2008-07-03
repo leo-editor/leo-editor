@@ -26,6 +26,8 @@
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
 <v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
 </v>
+<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
+<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </v>
 <v t="ekr.20080312090030.1"><vh>Commands</vh>
 <v t="ekr.20051104081502.552"><vh>@@command my-command @key = alt-shift-ctrl-z</vh></v>
@@ -802,6 +804,10 @@
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
+</v>
+<v t="ekr.20080703104536.1"><vh>Other tests</vh>
+<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
+<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
@@ -2154,130 +2160,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113193438.1"><vh>leoColor</vh>
-<v t="ekr.20040712101754.116"><vh>@test @comment after @language plain</vh>
-<v t="ekr.20040712101754.117"><vh>Test</vh></v>
-</v>
-<v t="ekr.20040712101754.118"><vh>@test colorizer Actionscript</vh>
-<v t="ekr.20040712101754.119"><vh>Actionscript</vh></v>
-</v>
-<v t="ekr.20040712101754.120"><vh>@test colorizer C</vh>
-<v t="ekr.20040712101754.121"><vh>C</vh></v>
-</v>
-<v t="ekr.20040712101754.122"><vh>@test colorizer C#</vh>
-<v t="ekr.20040712101754.123"><vh>C#</vh></v>
-</v>
-<v t="ekr.20040712101754.124"><vh>@test colorizer css</vh>
-<v t="ekr.20040712101754.125"><vh>css</vh></v>
-</v>
-<v t="ekr.20040712101754.126"><vh>@test colorizer CWEB</vh>
-<v t="ekr.20040712101754.127"><vh>CWEB</vh>
-<v t="ekr.20040712101754.128"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.129"><vh>@test colorizer elisp</vh>
-<v t="ekr.20040712101754.130"><vh>elisp</vh></v>
-</v>
-<v t="ekr.20060829092306"><vh>@test colorizer erlang</vh>
-<v t="ekr.20060829092306.1"><vh>erlang</vh></v>
-</v>
-<v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20041107105213.1"><vh>forth</vh></v>
-</v>
-<v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
-<v t="ekr.20040712101754.132"><vh>String bug in html</vh></v>
-</v>
-<v t="ekr.20040712101754.133"><vh>@test colorizer HTML1</vh>
-<v t="ekr.20040712101754.134"><vh>HTML1</vh></v>
-</v>
-<v t="ekr.20040712101754.135"><vh>@test colorizer HTML2</vh>
-<v t="ekr.20040712101754.136"><vh>HTML2</vh></v>
-</v>
-<v t="ekr.20060829092306.2"><vh>@test colorizer Java</vh>
-<v t="ekr.20060829092306.3"><vh>Java</vh></v>
-</v>
-<v t="ekr.20040712101754.137"><vh>@test colorizer LaTex</vh>
-<v t="ekr.20040712101754.138"><vh>LaTex</vh></v>
-</v>
-<v t="ekr.20071219172126"><vh>@test colorizer lisp</vh>
-<v t="ekr.20071219172126.1"><vh>lisp</vh></v>
-</v>
-<v t="ekr.20071219170354"><vh>@test colorizer perl</vh>
-<v t="ekr.20071219170354.1"><vh>perl</vh></v>
-</v>
-<v t="ekr.20040712101754.141"><vh>@test colorizer PHP</vh>
-<v t="ekr.20040712101754.142"><vh>PHP</vh></v>
-</v>
-<v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
-<v t="ekr.20050618053006.1"><vh>plsql</vh></v>
-</v>
-<v t="ekr.20040712101754.143" a="M"><vh>@test colorizer python.xml (jEdit)</vh>
-<v t="ekr.20040712101754.144"><vh>python.xml</vh>
-<v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.147"><vh>&lt;&lt; literals &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.148"><vh>&lt;&lt; operators &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.149"><vh>&lt;&lt; keywords &gt;&gt;</vh>
-<v t="ekr.20040712101754.150"><vh>&lt;&lt; reserved words &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.151"><vh>&lt;&lt; builtins &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.152"><vh>&lt;&lt; exceptions &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.153"><vh>&lt;&lt; types &gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20040712101754.154"><vh>@test colorizer Python1</vh>
-<v t="ekr.20040712101754.155"><vh>Python1</vh></v>
-</v>
-<v t="ekr.20040712101754.156"><vh>@test colorizer Python2</vh>
-<v t="ekr.20040712101754.157"><vh>Python2</vh></v>
-</v>
-<v t="ekr.20060829092306.4"><vh>@test colorizer r</vh>
-<v t="ekr.20060829092306.5"><vh>r</vh></v>
-</v>
-<v t="ekr.20040712101754.158"><vh>@test colorizer rapidq</vh>
-<v t="ekr.20040712101754.159"><vh>rapidq</vh></v>
-</v>
-<v t="ekr.20040712101754.160"><vh>@test colorizer Rebol</vh>
-<v t="ekr.20040712101754.161"><vh>Rebol</vh></v>
-</v>
-<v t="ekr.20071219184852"><vh>@test colorizer rest</vh>
-<v t="ekr.20071219184847"><vh>rest</vh></v>
-</v>
-<v t="ekr.20040712101754.162"><vh>@test colorizer shell</vh>
-<v t="ekr.20040712101754.163"><vh>shell</vh></v>
-</v>
-<v t="ekr.20071219172615"><vh>@test colorizer shellscript</vh>
-<v t="ekr.20071219172615.1"><vh>shellscript</vh></v>
-</v>
-<v t="ekr.20040712101754.164"><vh>@test colorizer tex.xml (jEdit)</vh>
-<v t="ekr.20040712101754.165"><vh>tex.xml</vh>
-<v t="ekr.20040712101754.166"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.167"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.168"><vh>@test colorizer wikiTest1</vh>
-<v t="ekr.20040712101754.169"><vh>wikiTest1</vh></v>
-</v>
-<v t="ekr.20040712101754.170"><vh>@test colorizer wikiTest2</vh>
-<v t="ekr.20040712101754.171"><vh>wikiTest2</vh></v>
-</v>
-<v t="ekr.20040712101754.172"><vh>@test colorizer wikiTest3</vh>
-<v t="ekr.20040712101754.173"><vh>wikiTest3</vh></v>
-</v>
-<v t="ekr.20061106184118"><vh>@test leoColor.doNowebSecRef</vh>
-<v t="ekr.20061106184118.1"><vh>&lt;&lt; test defined &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20040712101754.176"><vh>@test python keywords (new colorizer)</vh></v>
-<v t="ekr.20071113090055.2"><vh>@test scanColorDirectives</vh></v>
-<v t="ekr.20060829092306.6"><vh>@test vbscript</vh>
-<v t="ekr.20060829092306.7"><vh>vbscript</vh></v>
-</v>
-<v t="ekr.20061115103558" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
-<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
-<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
-<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -16716,7 +16598,7 @@ hoist.py
 
 image.py
 leo_to_html.py
-# threading_colorizer.py
+threading_colorizer.py
 
 # Other plugins...
 
@@ -20779,5 +20661,6 @@ assert row == expected_row,fail('row',expected_row,row)
 assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
+<t tx="ekr.20080703104536.1"></t>
 </tnodes>
 </leo_file>
