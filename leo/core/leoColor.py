@@ -857,6 +857,7 @@ getCairo = getColorCairo
 #@+node:ekr.20031218072017.2796:class colorizer
 class colorizer:
     """Leo's syntax colorer class"""
+    def interrupt(self): pass
     #@    @+others
     #@+node:ekr.20031218072017.1605:color.__init__
     def __init__(self,c):
@@ -1358,7 +1359,6 @@ class colorizer:
         ]
 
         self.perlpod_keywords = self.perl_keywords
-        #@nonl
         #@-node:ekr.20031218072017.379:perl/perlpod keywords
         #@+node:ekr.20031218072017.380:php keywords
         self.php_keywords = [ # 08-SEP-2002 DTHEIN
@@ -1993,18 +1993,19 @@ class colorizer:
                 pass
 
         # Pair up entries in forth_delims list.
+        self.forth_brackets1 = []
+        self.forth_brackets2 = []
         if self.forth_delims:
             # g.trace(len(self.forth_delims),repr(self.forth_delims))
             if (len(self.forth_delims) % 2) == 1:
-                g.es_print('leo-forthdelimiters.txt must contain an even number of entries',color='red')
-                self.forth_delims = []
+                g.es_print('leo-forthdelimiters.txt contain an odd number of entries',color='red')
             else:
-                result = [] ; i = 0
+                i = 0
                 while i < len(self.forth_delims):
-                    result.append((self.forth_delims[i],self.forth_delims[i+1]),)
+                    self.forth_brackets1.append(self.forth_delims[i])
+                    self.forth_brackets2.append(self.forth_delims[i+1])
                     i += 2
-                self.forth_delims = result
-                # g.trace(self,self.forth_delims)
+                # g.trace('forth_brackets1:',self.forth_brackets1,'forth_brackets2',self.forth_brackets2)
         #@-node:ekr.20041107094252:<< extend forth words from files >>
         #@nl
     #@-node:ekr.20031218072017.1605:color.__init__
@@ -2817,7 +2818,12 @@ class colorizer:
                     if word in self.forth_definingwords:
                         self.nextForthWordIsNew = True
 
-                    if word in self.forth_boldwords:
+                    if word in self.forth_brackets1:
+                        i = self.forth_brackets1.index(word)
+                        self.forth_bracket_end = self.forth_brackets2[i]
+                        self.tag("forthBrackets", i, j)
+                        state = "forthBrackets"
+                    elif word in self.forth_boldwords:
                         self.tag("bold", i, j)
                     elif word in self.forth_bolditalicwords:
                         self.tag("bolditalic", i, j)

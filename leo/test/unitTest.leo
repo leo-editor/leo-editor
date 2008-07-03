@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -26,6 +26,8 @@
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
 <v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
 </v>
+<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
+<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </v>
 <v t="ekr.20080312090030.1"><vh>Commands</vh>
 <v t="ekr.20051104081502.552"><vh>@@command my-command @key = alt-shift-ctrl-z</vh></v>
@@ -802,6 +804,10 @@
 <v t="ekr.20071113203234"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
+</v>
+<v t="ekr.20080703104357.1"><vh>Other tests</vh>
+<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
+<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
@@ -2154,10 +2160,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
-<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
-<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
-<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
+<v t="ekr.20041107105213" a="E"><vh>@test colorizer forth</vh>
+<v t="ekr.20041107105213.1"><vh>forth</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4883,6 +4888,8 @@ finally:
 
 : some-forth-word ( x1 x2 -- x3 )
    s" some string" type cr
+   [ a b c 
+   x y z ]
 ;</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
@@ -16596,7 +16603,7 @@ hoist.py
 
 image.py
 leo_to_html.py
-threading_colorizer.py
+# threading_colorizer.py
 
 # Other plugins...
 
@@ -20659,5 +20666,6 @@ assert row == expected_row,fail('row',expected_row,row)
 assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
+<t tx="ekr.20080703104357.1"></t>
 </tnodes>
 </leo_file>

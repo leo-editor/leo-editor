@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -217,11 +217,12 @@
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080702113207.1" a="E"><vh>demo of pylint bugs</vh>
+<v t="ekr.20080702113207.1"><vh>demo of pylint bugs</vh>
 <v t="ekr.20080702113207.2"><vh>@thin pylintTest/baseClass.py</vh></v>
 <v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
 <v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
 </v>
+<v t="ekr.20080703105508.1"><vh>forth</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1194,7 +1195,7 @@ toolbar.py
 
 add_directives.py
 color_markup.py
-threading_colorizer.py
+# threading_colorizer.py
 rst3.py
 UNL.py
 open_with.py
@@ -1655,5 +1656,19 @@ for z in aList:
         print 'echo',name
         print 'call pylint.bat core\\%s' % name</t>
 <t tx="ekr.20080702113207.1"></t>
+<t tx="ekr.20080703105508.1">@language forth
+
+\ tiny demo of Leo forth syntax colouring
+\ 
+\ If you've correctly installed the hacked LeoPy.leo, the below you should see:
+\  - the ':' 's' and ';' in blue
+\  - the paren-comment in red
+\  - the string 'some string' in green
+
+: some-forth-word ( x1 x2 -- x3 )
+   s" some string" type cr
+   [ a b c 
+   x y z]
+;</t>
 </tnodes>
 </leo_file>
