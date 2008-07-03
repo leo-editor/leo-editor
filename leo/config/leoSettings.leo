@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="42" left="444" height="856" width="700"/>
+	<global_window_position top="45" left="472" height="856" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,2,3,1,9"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -102,7 +102,7 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041213105007.1" a="E" annotate="7d71002e"><vh>Colors</vh>
+<v t="ekr.20041213105007.1" annotate="7d71002e"><vh>Colors</vh>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
 <v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
 <v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
@@ -139,9 +139,9 @@
 <v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = #ffffec</vh></v>
 </v>
-<v t="ekr.20041119034357.70" a="E"><vh>Syntax colors &amp; options</vh>
+<v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20060828145228" a="E"><vh>Options for old colorizer</vh>
+<v t="ekr.20060828145228"><vh>Options for old colorizer</vh>
 <v t="ekr.20041119034357.73"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
 <v t="ekr.20041119034357.72"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
 <v t="ekr.20041119034357.74"><vh>@bool color_directives_in_plain_text = True</vh></v>
@@ -187,6 +187,15 @@
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts (new colorizer)</vh></v>
+</v>
+<v t="ekr.20080703111151.18"><vh>Forth fonts &amp; colors</vh>
+<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
 </v>
 </v>
 </v>
@@ -1395,6 +1404,15 @@
 <v t="TL.20080622104320.128"><vh>@mode vi-match</vh></v>
 <v t="TL.20080622104320.129"><vh>@mode vim-window-commands</vh></v>
 </v>
+</v>
+<v t="ekr.20080703111151.18"><vh>Forth fonts &amp; colors</vh>
+<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7143,6 +7161,38 @@ recent files. </t>
 <t tx="ekr.20080515053412.51">select-chapter-menu</t>
 <t tx="ekr.20080602174756.1"></t>
 <t tx="ekr.20080703071815.3"></t>
+<t tx="ekr.20080703111151.12"># bold words in forth
+
+forth_keyword3_family = None
+forth_keyword3_font_size = None
+forth_keyword3_font_slant = roman
+forth_keyword3_font_weight = bold
+</t>
+<t tx="ekr.20080703111151.14"># bold-italic words in forth
+
+forth_keyword4_family = None
+forth_keyword4_size = None
+forth_keyword4_slant = slant
+forth_keyword4_weight = bold
+</t>
+<t tx="ekr.20080703111151.15"># italic words in forth
+
+forth_keyword5_family = None
+forth_keyword5_size = None
+forth_keyword5_slant = slant
+forth_keyword5_weight = normal
+</t>
+<t tx="ekr.20080703111151.17"># defining words in forth
+
+forth_keyword2_family = None
+forth_keyword2_size = None
+forth_keyword2_slant = None
+forth_keyword2_weight = None
+</t>
+<t tx="ekr.20080703111151.18"></t>
+<t tx="ekr.20080703111151.21"># bold keywords defined in leo-forthboldwords.txt</t>
+<t tx="ekr.20080703111151.22"># bold-italic keywords defined in leo-forthbolditalicwords.txt</t>
+<t tx="ekr.20080703111151.23"># italic keywords defined in leo-forthitalicwords.txt</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

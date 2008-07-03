@@ -9,15 +9,21 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20080703111151.8:<< define mode rules >>
 # Rules for forth_main ruleset.
 
-def forth_comment_rule(colorer, s, i): # Was python_rule0
+def forth_block_comment_rule(colorer, s, i):
+        return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+def forth_comment_rule(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
 
-def forth_keyword_rule(colorer, s, i):  # Was python_rule21
+def forth_keyword_rule(colorer, s, i):
     return colorer.match_keywords(s, i)
 
-def forth_string_rule(colorer, s, i): # Was python_rule3
+def forth_string_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="",exclude_match=False,
@@ -148,9 +154,7 @@ attributesDictDict = {
 }
 
 # Keywords dict for forth_main ruleset.
-forth_main_keywords_dict = {}
-    # ***** Created by extendForth class.
-    # "ArithmeticError": "keyword3", # or keyword1 or keyword3
+forth_main_keywords_dict = {} # Created by extendForth class.
 
 # Dictionary of keywords dictionaries for forth mode.
 keywordsDictDict = {
@@ -160,28 +164,14 @@ keywordsDictDict = {
 # Rules dict for forth_main ruleset.
 # This is extended by extendForth.
 rulesDict = {
-    '"':    [forth_string_rule],
+    '(':    [forth_block_comment_rule],
     '\\':   [forth_comment_rule],
+    '"':    [forth_string_rule],
 }
-    # Created by extendForth class.
-
-	# "!": [forth_rule6,],
-	# "\"": [forth_rule1,forth_rule3,],
-	# "#": [forth_rule0,],
-	# "%": [forth_rule15,],
-	# "&": [forth_rule16,],
-	# "'": [forth_rule2,forth_rule4,],
-	# "(": [forth_rule20,],
-	# "*": [forth_rule12,],
-	# "+": [forth_rule9,],
-	# "-": [forth_rule10,],
-	# "/": [forth_rule11,],
-	# "0": [forth_rule21,],
-	# "1": [forth_rule21,],
 
 # x.rulesDictDict for forth mode.
 rulesDictDict = {
-	"forth_main": rulesDict,
+    "forth_main": rulesDict,
 }
 
 # Import dict for forth mode.
@@ -232,7 +222,8 @@ class extendForth:
             "meta", "host", "target", "picasm", "macro",
             "needs", "include",
             "'", "[']",
-            ":", ";",
+            # ":", # Now a defining word.
+            ";",
             "@", "!", ",", "1+", "+", "-",
             "<", "<=", "=", ">=", ">",
             "invert", "and", "or", 
@@ -244,11 +235,12 @@ class extendForth:
             'abort"',
             ]
 
-        self.verbose = True
+        self.verbose = False # True: tell when extending forth words.
 
         self.init()
         self.createKeywords()
         self.createBracketRules()
+        self.createDefiningWordRules()
         # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
     #@-node:ekr.20080703111151.5:ctor
     #@+node:ekr.20080703111151.3:init
@@ -316,6 +308,27 @@ class extendForth:
 
         return forth_bracket_rule
     #@-node:ekr.20080703111151.9:createBracketRules & helper
+    #@+node:ekr.20080703111151.13:createDefiningWordRules & helper
+    def createDefiningWordRules (self):
+
+        for z in self.definingwords:
+            func = self.createDefiningWordRule(z)
+            self.extendRulesDict(ch=z[0],func=func)
+
+    def createDefiningWordRule (self,word):
+
+        def forth_defining_word_rule(colorer, s, i):
+            pattern=''
+            return colorer.match_word_and_regexp(s, i,
+                kind1="keyword2", # defining word
+                word=word,
+                kind2="keyword3", # bold
+                pattern='(\s)*(\S)+',
+                at_line_start=False, at_whitespace_end=False, at_word_start=False,
+                exclude_match=False)
+
+        return forth_defining_word_rule
+    #@-node:ekr.20080703111151.13:createDefiningWordRules & helper
     #@+node:ekr.20080703111151.6:createKeywords
     def createKeywords (self):
 
@@ -326,12 +339,11 @@ class extendForth:
         global forth_keyword_rule
 
         table = (
-            # (self.brackets1, 'forthBrackets'),
-            # (self.boldwords,        'boldword'),
-            # (self.bolditalicwords,  'bolditalicwords'),
-            # (self.italicwords,      'italicword'),
-            (self.definingwords,    'keyword2'),
             (self.keywords,         'keyword1'),
+          # (self.definingwords,    'keyword2'), # Done in createDefiningWordRules.
+            (self.boldwords,        'keyword3'),
+            (self.bolditalicwords,  'keyword4'),
+            (self.italicwords,      'keyword5'),
             (self.stringwords,      'string'),
         )
 

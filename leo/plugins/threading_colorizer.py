@@ -89,67 +89,72 @@ default_colors_dict = {
     'name'           :('undefined_section_name_color','red'),
     'latexBackground':('latex_background_color',      'white'),
 
-    # jEdit tags.
+    # Tags used by forth.
+    'keyword5'       :('keyword5_color',              'blue'),
     'bracketRange'   :('bracket_range_color',         'orange'),
-    'comment1'  :('comment1_color', 'red'),
-    'comment2'  :('comment2_color', 'red'),
-    'comment3'  :('comment3_color', 'red'),
-    'comment4'  :('comment4_color', 'red'),
-    'function'  :('function_color', 'black'),
-    'keyword1'  :('keyword1_color', 'blue'),
-    'keyword2'  :('keyword2_color', 'blue'),
-    'keyword3'  :('keyword3_color', 'blue'),
-    'keyword4'  :('keyword4_color', 'blue'),
-    'label'     :('label_color',    'black'),
-    'literal1'  :('literal1_color', '#00aa00'),
-    'literal2'  :('literal2_color', '#00aa00'),
-    'literal3'  :('literal3_color', '#00aa00'),
-    'literal4'  :('literal4_color', '#00aa00'),
-    'markup'    :('markup_color',   'red'),
-    'null'      :('null_color',     'black'),
-    'operator'  :('operator_color', 'black'),
+    # jEdit tags.
+
+    'comment1'       :('comment1_color', 'red'),
+    'comment2'       :('comment2_color', 'red'),
+    'comment3'       :('comment3_color', 'red'),
+    'comment4'       :('comment4_color', 'red'),
+    'function'       :('function_color', 'black'),
+    'keyword1'       :('keyword1_color', 'blue'),
+    'keyword2'       :('keyword2_color', 'blue'),
+    'keyword3'       :('keyword3_color', 'blue'),
+    'keyword4'       :('keyword4_color', 'blue'),
+    'label'          :('label_color',    'black'),
+    'literal1'       :('literal1_color', '#00aa00'),
+    'literal2'       :('literal2_color', '#00aa00'),
+    'literal3'       :('literal3_color', '#00aa00'),
+    'literal4'       :('literal4_color', '#00aa00'),
+    'markup'         :('markup_color',   'red'),
+    'null'           :('null_color',     'black'),
+    'operator'       :('operator_color', 'black'),
     }
-#@nonl
 #@-node:ekr.20071010193720.4:<< define default_colors_dict >>
 #@nl
 #@<< define default_font_dict >>
 #@+node:ekr.20071010193720.5:<< define default_font_dict >>
 default_font_dict = {
-    # tag name       : option name
-    'comment'        :'comment_font',
-    'cwebName'       :'cweb_section_name_font',
-    'pp'             :'directive_font',
-    'docPart'        :'doc_part_font',
-    'keyword'        :'keyword_font',
-    'leoKeyword'     :'leo_keyword_font',
-    'link'           :'section_name_font',
-    'nameBrackets'   :'section_name_brackets_font',
-    'string'         :'string_font',
-    'name'           :'undefined_section_name_font',
+    # tag name      : option name
+    'comment'       :'comment_font',
+    'cwebName'      :'cweb_section_name_font',
+    'pp'            :'directive_font',
+    'docPart'       :'doc_part_font',
+    'keyword'       :'keyword_font',
+    'leoKeyword'    :'leo_keyword_font',
+    'link'          :'section_name_font',
+    'nameBrackets'  :'section_name_brackets_font',
+    'string'        :'string_font',
+    'name'          :'undefined_section_name_font',
     'latexBackground':'latex_background_font',
 
-    # jEdit tags.
+    # Tags used by forth.
     'bracketRange'   :'bracketRange_font',
-    'comment1'  :'comment1_font',
-    'comment2'  :'comment2_font',
-    'comment3'  :'comment3_font',
-    'comment4'  :'comment4_font',
-    'function'  :'function_font',
-    'keyword1'  :'keyword1_font',
-    'keyword2'  :'keyword2_font',
-    'keyword3'  :'keyword3_font',
-    'keyword4'  :'keyword4_font',
-    'label'     :'label_font',
-    'literal1'  :'literal1_font',
-    'literal2'  :'literal2_font',
-    'literal3'  :'literal3_font',
-    'literal4'  :'literal4_font',
-    'markup'    :'markup_font',
+    'keyword5'       :'keyword5_font',
+
+     # jEdit tags.
+    'comment1'      :'comment1_font',
+    'comment2'      :'comment2_font',
+    'comment3'      :'comment3_font',
+    'comment4'      :'comment4_font',
+    'function'      :'function_font',
+    'keyword1'      :'keyword1_font',
+    'keyword2'      :'keyword2_font',
+    'keyword3'      :'keyword3_font',
+    'keyword4'      :'keyword4_font',
+    'keyword5'      :'keyword5_font',
+    'label'         :'label_font',
+    'literal1'      :'literal1_font',
+    'literal2'      :'literal2_font',
+    'literal3'      :'literal3_font',
+    'literal4'      :'literal4_font',
+    'markup'        :'markup_font',
     # 'nocolor' This tag is used, but never generates code.
-    'null'      :'null_font',
-    'operator'  :'operator_font',
+    'null'          :'null_font',
+    'operator'      :'operator_font',
     }
-#@nonl
 #@-node:ekr.20071010193720.5:<< define default_font_dict >>
 #@nl
 
@@ -545,12 +550,10 @@ class colorizer:
     #@+node:ekr.20071010193720.24:configure_tags
     def configure_tags (self):
 
-        c = self.c ; w = self.w
+        c = self.c ; w = self.w ; trace = False
 
-        try:
+        if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
-        except AttributeError:
-            pass
 
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
@@ -569,7 +572,7 @@ class colorizer:
             for name in ('%s_%s' % (self.language,option_name),(option_name)):
                 font = self.fonts.get(name)
                 if font:
-                    # g.trace('found',name,id(font))
+                    if trace: g.trace('found',name,id(font))
                     w.tag_config(key,font=font)
                     break
                 else:
@@ -585,12 +588,12 @@ class colorizer:
                         font = g.app.gui.getFontFromParams(family,size,slant,weight)
                         # Save a reference to the font so it 'sticks'.
                         self.fonts[name] = font 
-                        # g.trace(key,name,family,size,slant,weight,id(font))
+                        if trace: g.trace(key,name,family,size,slant,weight,id(font))
                         w.tag_config(key,font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
                 if self.fonts.keys(): # Restore the default font.
-                    # g.trace('default',key)
+                    if trace: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
 
         keys = default_colors_dict.keys() ; keys.sort()
@@ -601,7 +604,7 @@ class colorizer:
                 c.config.getColor(option_name) or
                 default_color
             )
-            # g.trace(option_name,color)
+            if trace: g.trace(option_name,color)
 
             # Must use foreground, not fg.
             try:
@@ -1414,7 +1417,7 @@ class colorizer:
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            ### self.globalAddList.append((tag,i,j),)
+            # g.trace(tag,i,j)
             aList = self.newTagsDict.get(tag,[])
             aList.append((i,j),)
             self.newTagsDict[tag] = aList
@@ -1839,6 +1842,39 @@ class colorizer:
             return j2 - i
         else: return 0
     #@-node:ekr.20071010193720.70:match_span_regexp
+    #@+node:ekr.20080703111151.19:match_word_and_regexp
+    def match_word_and_regexp (self,s,i,
+        kind1='',word='',
+        kind2='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if (False or self.verbose): g.trace(i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+
+        if not g.match(s,i,word):
+            return 0
+
+        j = i + len(word)
+        n = self.match_regexp_helper(s,j,pattern)
+        # g.trace(j,pattern,n)
+        if n == 0:
+            return 0
+        self.colorRangeWithTag(s,i,j,kind1,exclude_match=exclude_match)
+        k = j + n
+        self.colorRangeWithTag(s,j,k,kind2,exclude_match=False)    
+        self.prev = (j,k,kind2)
+        self.trace_match(kind1,s,i,j)
+        self.trace_match(kind2,s,j,k)
+        return k - i
+    #@-node:ekr.20080703111151.19:match_word_and_regexp
     #@-node:ekr.20071010193720.58:jEdit matchers (in helper thread)
     #@+node:ekr.20071010193720.57:target (in helper thread)
     def target(self,*args,**keys):

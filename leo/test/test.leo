@@ -1656,11 +1656,16 @@ for z in aList:
 \ 
 \ If you've correctly installed the hacked LeoPy.leo, the below you should see:
 \  - the ':' 's' and ';' in blue
+\  - the some-forth-word in black bold italics.
 \  - the paren-comment in red
-\  - the string 'some string' in green
+\  - the string s"some string" in green
+\  - the string lcd2"abc" in green.
+\  - the brackets [ a b c x y z ] in orange.
 
 : some-forth-word ( x1 x2 -- x3 )
-   s" some string" type cr
+   label: y
+   asm[ s" some string" type ]asm cr
+   tty"abc"
    lcd2"abc"
    [ a b c 
    x y z]
