@@ -14,7 +14,7 @@ Perhaps the user should be responsible for updating forth.xml.
 #@-node:ekr.20060824103837:Notes
 #@+node:ekr.20041107093834:forth keywords
 # Default forth keywords: extended by leo-forthwords.txt.
-forth_keywords = [
+self.forth_keywords = [
     "variable", "constant", "code", "end-code",
     "dup", "2dup", "swap", "2swap", "drop", "2drop",
     "r>", ">r", "2r>", "2>r",
@@ -31,28 +31,33 @@ forth_keywords = [
     ]
 
 # Forth words which define other words: extended by leo-forthdefwords.txt.
-forth_definingwords = [
+self.forth_definingwords = [
     ":", "variable", "constant", "code",
     ]
 
+# Forth words that define brackets: extended by leo-forthdelimiters.txt
+# Entries are tuples.
+self.forth_delims = [
+    ]
+
 # Forth words which start strings: extended by leo-forthstringwords.txt.
-forth_stringwords = [
+self.forth_stringwords = [
     's"', '."', '"', '."',
     'abort"',
     ]
 
 # Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
-forth_boldwords = [ ]
+self.forth_boldwords = [ ]
 
 # Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
-forth_italicwords = [ ]
+self.forth_italicwords = [ ]
 
 # Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
 # Note: on some boxen, bold italics may show in plain bold.
-forth_bolditalicwords = [ ]
+self.forth_bolditalicwords = [ ]
 #@-node:ekr.20041107093834:forth keywords
 #@+node:ekr.20040331145826:rapidq keywords
-rapidq_keywords = [
+self.rapidq_keywords = [
 # Syntax file for RapidQ
 "$APPTYPE","$DEFINE","$ELSE","$ENDIF","$ESCAPECHARS","$IFDEF","$IFNDEF",
 "$INCLUDE","$MACRO","$OPTIMIZE","$OPTION","$RESOURCE","$TYPECHECK","$UNDEF",
