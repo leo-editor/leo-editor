@@ -13329,7 +13329,7 @@ You have two options:
 -   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
 
 -   The cvs repository contains "reference" .leo files.
-    These reference files should containing nothing but ``@thin`` nodes.
+    These reference files should contain nothing but ``@thin`` nodes.
     Reference files will change only when new derived files get added to the project.
 
     **Important**:
