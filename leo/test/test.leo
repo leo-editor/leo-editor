@@ -125,12 +125,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20080618080919.1"><vh>Recent settings</vh>
-<v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
-</v>
+<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
@@ -1195,7 +1190,7 @@ toolbar.py
 
 add_directives.py
 color_markup.py
-# threading_colorizer.py
+threading_colorizer.py
 rst3.py
 UNL.py
 open_with.py
@@ -1581,7 +1576,6 @@ w.update()
 # top.after_idle(after)
 top.mainloop()
 </t>
-<t tx="ekr.20080618080919.1"></t>
 <t tx="ekr.20080618093010.1">print 'Ctrl+s' in c.k.bindingsDict.keys()
 print c.k.masterBindingsDict.keys()
 print '&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys()</t>
@@ -1667,6 +1661,7 @@ for z in aList:
 
 : some-forth-word ( x1 x2 -- x3 )
    s" some string" type cr
+   lcd2"abc"
    [ a b c 
    x y z]
 ;</t>
