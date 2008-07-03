@@ -35,6 +35,11 @@ forth_definingwords = [
     ":", "variable", "constant", "code",
     ]
 
+# Forth words that define brackets: extended by leo-forthdelimiters.txt
+# Entries are tuples.
+forth_delims = [
+    ]
+
 # Forth words which start strings: extended by leo-forthstringwords.txt.
 forth_stringwords = [
     's"', '."', '"', '."',
