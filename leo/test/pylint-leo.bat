@@ -6,34 +6,38 @@ rem *** Most warnings are disabled in the .rc file.
 rem E0602 Undefined variable
 rem E1101 Instance of <class> has no x member
 
-echo cd c:\leo.repo\trunk\leo
-cd c:\leo.repo\trunk\leo
-
 REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
-REM goto all
+goto all
+goto bad_core
 
 echo A demonstration of the pylint bug
 
-call pylint.bat test\pylintTest\subClass.py --rcfile=test\pylint-leo-rc.txt
+cd c:\leo.repo\leo\test\pylintTest
+
+call pylint.bat subClass.py --rcfile=..\pylint-leo-rc.txt
 
 goto done
 
+:bad_core
+
 echo tests that fail with dangerous settings enabled...
+
+cd c:\leo.repo\trunk\leo\core
 
 echo .
 echo leoTkinterFind.py Dangerous: E1101,E1103: many Erroneous errors given.
-call pylint.bat core\leoTkinterFind.py   --rcfile=test\pylint-leo-rc.txt
+call pylint.bat leoTkinterFind.py   --rcfile=..\test\pylint-leo-rc.txt
 
 echo .
 echo leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
 echo leoTkinterFrame.py Dangerous: E1101 : many ERRONEOUS errors given
-call pylint.bat core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=test\pylint-leo-rc.txt
+call pylint.bat leoTkinterFrame.py  --disable-msg=W0221 --rcfile=..\test\pylint-leo-rc.txt
 
 echo .
 echo leoTkinterMenu.py Dangerous: E1101: many ERRONEOUS errors given.
-call pylint.bat core\leoTkinterMenu.py   --rcfile=test\pylint-leo-rc.txt
+call pylint.bat leoTkinterMenu.py   --rcfile=..\test\pylint-leo-rc.txt
 
 goto done
 
@@ -492,6 +496,6 @@ call pylint.bat plugins\zenity_file_dialogs.py     --rcfile=test\pylint-leo-rc.t
 
 :done
 echo "*****done*****"
-cd c:\leo.repo\trunk\leo\test
+rem cd c:\leo.repo\trunk\leo\test
 
 pause
