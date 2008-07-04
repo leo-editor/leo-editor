@@ -1,3 +1,5 @@
 \Delimiter pairs for forth colorizing, one per line
-[
-]
+
+[ ]
+{ }
+asm[ ]asm
