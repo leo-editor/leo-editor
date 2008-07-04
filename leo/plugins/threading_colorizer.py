@@ -522,6 +522,8 @@ class colorizer:
 
         '''Put Leo-specific rules to theList.'''
 
+        # g.trace() ; g.pdb()
+
         for ch, rule, atFront, in (
             # Rules added at front are added in **reverse** order.
             ('@',  match_leo_keywords,True), # Called after all other Leo matchers.
@@ -545,7 +547,6 @@ class colorizer:
             theDict [ch] = theList
 
         # g.trace(g.listToString(theDict.get('@')))
-    #@nonl
     #@-node:ekr.20071010193720.23:addLeoRules
     #@+node:ekr.20071010193720.24:configure_tags
     def configure_tags (self):

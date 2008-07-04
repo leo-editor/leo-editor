@@ -231,9 +231,11 @@ class extendForth:
 
         # Forth words which start strings: extended by leo-forthstringwords.txt.
         self.stringwords = [
-            's"', '."', '"', '."',
-            'abort"',
+            # Must be pairs.
+            '" "',
             ]
+        self.stringwords1 = []
+        self.stringwords2 = []
 
         self.verbose = False # True: tell when extending forth words.
 
@@ -243,7 +245,7 @@ class extendForth:
         self.createDefiningWordRules()
         # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
     #@-node:ekr.20080703111151.5:ctor
-    #@+node:ekr.20080703111151.3:init
+    #@+node:ekr.20080703111151.3:init & helper
     def init (self):
 
         '''Set our ivars from external files.'''
@@ -259,7 +261,7 @@ class extendForth:
         )
 
         # Add entries from files (if they exist) to the corresponding lists.
-        for (lst, path, typ) in table:
+        for (lst, path, message) in table:
             try:
                 extras = []
                 path = g.os_path_join(g.app.loadDir,"..","plugins",path)
@@ -270,24 +272,48 @@ class extendForth:
                 if extras:
                     if self.verbose: # I find this annoying.  YMMV.
                         if not g.app.unitTesting and not g.app.batchMode:
-                            print "Found extra forth %s" % typ + ": " + " ".join(extras)
+                            print "Found extra forth %s" % message + ": " + " ".join(extras)
                     lst.extend(extras)
             except IOError:
                 pass # print "Not found",path
 
-        # Pair up entries in brackets list.
-        self.brackets1 = [] ; self.brackets2 = []
-        if self.brackets:
-            if (len(self.brackets) % 2) == 1:
-                g.es_print('leo-forthdelimiters.txt contain an odd number of entries',color='red')
+        # Create brackets1/2 and stringwords1/2 lists.
+        table2 = (
+            ("brackets",    "leo-forthdelimiters.txt"),
+            ("stringwords", "leo-forthstringwords.txt"),
+        )
+        for (ivar, fileName) in table2:
+            self.splitList (ivar,fileName)
+    #@+node:ekr.20080704085627.2:splitList
+    def splitList (self,ivar,fileName):
+
+        '''Process lines containing pairs of entries 
+        in a list whose *name* is ivar.
+        Put the results in ivars whose names are ivar1 and ivar2.'''
+
+        result1 = [] ; result2 = []
+        aList = getattr(self,ivar)
+
+        # Look for pairs.  Comments have already been removed.
+        for s in aList:
+            pair = s.split(' ')
+            if len(pair) == 2 and pair[0].strip() and pair[1].strip():
+                result1.append(pair[0].strip())
+                result2.append(pair[1].strip())
             else:
-                i = 0
-                while i < len(self.brackets):
-                    self.brackets1.append(self.brackets[i])
-                    self.brackets2.append(self.brackets[i+1])
-                    i += 2
-                # g.trace('brackets1:',self.brackets1,'brackets2',self.brackets2)
-    #@-node:ekr.20080703111151.3:init
+                g.es_print('%s: ignoring line: %s' % (fileName,s))
+
+        # Set the ivars.
+        name1 = '%s1' % ivar
+        name2 = '%s2' % ivar
+        setattr(self,name1, result1)
+        setattr(self,name2, result2)
+
+        # g.trace(name1,getattr(self,name1))
+        # g.trace(name2,getattr(self,name2))
+    #@nonl
+    #@-node:ekr.20080704085627.2:splitList
+    #@-node:ekr.20080703111151.3:init & helper
     #@+node:ekr.20080703111151.9:createBracketRules & helper
     def createBracketRules (self):
 
@@ -297,7 +323,7 @@ class extendForth:
 
     def createBracketRule (self,begin):
 
-        i = self.brackets.index(begin)
+        i = self.brackets1.index(begin)
         end = self.brackets2[i]
 
         def forth_bracket_rule(colorer, s, i):
@@ -360,12 +386,19 @@ class extendForth:
                 self.extendRulesDict(ch=z[0],func=func)
     #@-node:ekr.20080703111151.6:createKeywords
     #@+node:ekr.20080703111151.10:createStringRule
-    def createStringRule (self,word):
+    def createStringRule (self,pair):
 
         '''Create an entry in the global forth_main_keywords_dict for a string keyword.'''
 
+        aList = pair.split(' ')
+        if len(aList) != 2:
+            g.trace('can not happen: expecting pair of forth strings:',pair)
+            return
+
+        begin,end = aList
+
         def forth_string_word_rule(colorer, s, i):
-            return colorer.match_span(s, i, kind="literal1", begin=word, end="\"",
+            return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
                 at_line_start=False, at_whitespace_end=False, at_word_start=False,
                 delegate="",exclude_match=False,
                 no_escape=False, no_line_break=False, no_word_break=False)

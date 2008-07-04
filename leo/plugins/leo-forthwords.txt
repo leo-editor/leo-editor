@@ -5,8 +5,7 @@
 \ lines beginning with '\' are comments, and ignored.
 \ declare any supplementary forth words you want coloured, one per line, below
 
-asm[
-]asm
+\ asm[ ]asm now string delims.
 return-in-w
 w>
 >w

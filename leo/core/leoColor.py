@@ -859,7 +859,7 @@ class colorizer:
     """Leo's syntax colorer class"""
     def interrupt(self): pass
     #@    @+others
-    #@+node:ekr.20031218072017.1605:color.__init__
+    #@+node:ekr.20031218072017.1605:color.__init__ & helper
     def __init__(self,c):
 
         self.c = c
@@ -1926,6 +1926,8 @@ class colorizer:
         self.line_index = 0
 
         # Others.
+        self.forth_brackets = []
+        self.forth_stringwords = []
         self.single_comment_start = None
         self.block_comment_start = None
         self.block_comment_end = None
@@ -1964,7 +1966,7 @@ class colorizer:
         #@    << extend forth words from files >>
         #@+node:ekr.20041107094252:<< extend forth words from files >>
         # Associate files with lists: probably no need to edit this.
-        forth_items = (
+        table1 = (
             (self.forth_definingwords, "leo-forthdefwords.txt", "defining words"),
             (self.forth_delims, "leo-forthdelimiters.txt", "extra delimiter pairs"),
             (self.forth_keywords, "leo-forthwords.txt", "words"),
@@ -1975,7 +1977,7 @@ class colorizer:
         )
 
         # Add entries from files (if they exist) and to the corresponding wordlists.
-        for (lst, path, typ) in forth_items:
+        for (lst, path, typ) in table1:
             try:
                 extras = []
                 path = g.os_path_join(g.app.loadDir,"..","plugins",path) # EKR.
@@ -1992,23 +1994,46 @@ class colorizer:
                 # print "Not found",path
                 pass
 
-        # Pair up entries in forth_delims list.
-        self.forth_brackets1 = []
-        self.forth_brackets2 = []
-        if self.forth_delims:
-            # g.trace(len(self.forth_delims),repr(self.forth_delims))
-            if (len(self.forth_delims) % 2) == 1:
-                g.es_print('leo-forthdelimiters.txt contain an odd number of entries',color='red')
-            else:
-                i = 0
-                while i < len(self.forth_delims):
-                    self.forth_brackets1.append(self.forth_delims[i])
-                    self.forth_brackets2.append(self.forth_delims[i+1])
-                    i += 2
-                # g.trace('forth_brackets1:',self.forth_brackets1,'forth_brackets2',self.forth_brackets2)
+        # Create brackets1/2 and stringwords1/2 lists.
+        table2 = (
+            ("forth_brackets",    "leo-forthdelimiters.txt"),
+            ("forth_stringwords", "leo-forthstringwords.txt"),
+        )
+
+        for (ivar, fileName) in table2:
+            self.splitList (ivar,fileName)
         #@-node:ekr.20041107094252:<< extend forth words from files >>
         #@nl
-    #@-node:ekr.20031218072017.1605:color.__init__
+    #@+node:ekr.20080704085627.3:splitList
+    def splitList (self,ivar,fileName):
+
+        '''Process lines containing pairs of entries 
+        in a list whose *name* is ivar.
+        Put the results in ivars whose names are ivar1 and ivar2.'''
+
+        result1 = [] ; result2 = []
+        aList = getattr(self,ivar)
+
+        # Look for pairs.  Comments have already been removed.
+        for s in aList:
+            pair = s.split(' ')
+            if len(pair) == 2 and pair[0].strip() and pair[1].strip():
+                result1.append(pair[0].strip())
+                result2.append(pair[1].strip())
+            else:
+                g.es_print('%s: ignoring line: %s' % (fileName,s))
+
+        # Set the ivars.
+        name1 = '%s1' % ivar
+        name2 = '%s1' % ivar
+        setattr(self,name1, result1)
+        setattr(self,name2, result2)
+
+        # g.trace(name1,getattr(self,name1))
+        # g.trace(name2,getattr(self,name2))
+    #@nonl
+    #@-node:ekr.20080704085627.3:splitList
+    #@-node:ekr.20031218072017.1605:color.__init__ & helper
     #@+node:ekr.20031218072017.2801:colorize & recolor_range
     # The main colorizer entry point.
 

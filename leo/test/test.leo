@@ -1653,21 +1653,26 @@ for z in aList:
 <t tx="ekr.20080703105508.1">@language forth
 
 \ tiny demo of Leo forth syntax colouring
-\ 
-\ If you've correctly installed the hacked LeoPy.leo, the below you should see:
-\  - the ':' 's' and ';' in blue
-\  - the some-forth-word in black bold italics.
-\  - the paren-comment in red
-\  - the string s"some string" in green
-\  - the string lcd2"abc" in green.
-\  - the brackets [ a b c x y z ] in orange.
 
-: some-forth-word ( x1 x2 -- x3 )
-   label: y
+: some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
+   label: y  \ blue label:
    asm[ s" some string" type ]asm cr
+   asm[ abc ]asm
    tty"abc"
    lcd2"abc"
-   [ a b c 
+
+@ test
+@c
+
+{ abc }
+
+asm[ abc ]asm
+
+.( ) \ a string
+   
+: foo [ .s ] ;
+
+   [ a b c
    x y z]
 ;</t>
 </tnodes>
