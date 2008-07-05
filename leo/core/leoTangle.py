@@ -738,13 +738,13 @@ class baseTangleCommands:
         c = self.c ; p = c.currentPosition()
         self.initUntangleCommand()
 
-        c.beginUpdate()
-        try:
-            self.untangleTree(p,report_errors)
-            if not g.unitTesting:
-                g.es("untangle complete")
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        self.untangleTree(p,report_errors)
+        if not g.unitTesting:
+            g.es("untangle complete")
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.3478:untangle
     #@+node:ekr.20031218072017.3479:untangleAll
     def untangleAll(self,event=None):
@@ -753,13 +753,13 @@ class baseTangleCommands:
         self.initUntangleCommand()
         has_roots = False
 
-        c.beginUpdate()
-        try:
-            for p in c.rootPosition().self_and_siblings_iter():
-                ok = self.untangleTree(p,False)
-                if ok: has_roots = True
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        for p in c.rootPosition().self_and_siblings_iter():
+            ok = self.untangleTree(p,False)
+            if ok: has_roots = True
+        # finally:
+        c.endUpdate()
 
         self.errors += g.app.scanErrors
 
@@ -778,18 +778,18 @@ class baseTangleCommands:
         self.initUntangleCommand()
         marked_flag = False
 
-        c.beginUpdate()
-        try:
-            while p: # Don't use an iterator.
-                if p.isMarked():
-                    ok = self.untangleTree(p,dont_report_errors)
-                    if ok: marked_flag = True
-                    if self.errors + g.app.scanErrors > 0: break
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        while p: # Don't use an iterator.
+            if p.isMarked():
+                ok = self.untangleTree(p,dont_report_errors)
+                if ok: marked_flag = True
+                if self.errors + g.app.scanErrors > 0: break
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        # finally:
+        c.endUpdate()
 
         self.errors += g.app.scanErrors
 
@@ -2976,13 +2976,13 @@ class baseTangleCommands:
         assert(self.p)
         c.setBodyString(p,s)
 
-        c.beginUpdate()
-        try:
-            c.setChanged(True)
-            p.setDirty()
-            p.setMarked()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        c.setChanged(True)
+        p.setDirty()
+        p.setMarked()
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.3575:update_current_vnode
     #@-node:ekr.20031218072017.3544:untangle
     #@+node:ekr.20031218072017.3576:utility methods

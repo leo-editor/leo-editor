@@ -1713,30 +1713,30 @@ def runEditCommandTest (c,p):
     sel1,sel2 = sels
     #g.trace(repr(sels))
 
-    c.beginUpdate()
-    try:
-        c.selectPosition(work)
-        c.setBodyString(work,before.bodyString())
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        c.k.simulateCommand(commandName)
-        s1 = work.bodyString() ; s2 = after.bodyString()
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        ins = w.toGuiIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        # g.trace(w)
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-    finally:
-        c.endUpdate(False) # Don't redraw.
+    # c.beginUpdate()
+    # try:
+    c.selectPosition(work)
+    c.setBodyString(work,before.bodyString())
+    #g.trace(repr(sel1[0]),repr(sel1[1]))
+    w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+    c.k.simulateCommand(commandName)
+    s1 = work.bodyString() ; s2 = after.bodyString()
+    assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
+    sel3 = w.getSelectionRange()
+    ins = w.toGuiIndex(w.getInsertPoint())
+    #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+    # Convert both selection ranges to gui indices.
+    sel2_orig = sel2
+    # g.trace(w)
+    assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+    i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+    assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+    i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+    assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+    c.selectPosition(atTest)
+    atTest.contract()
+    # finally:
+    c.endUpdate(False) # Don't redraw.
 #@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
 #@+node:ekr.20051104075904.95:throwAssertionError
