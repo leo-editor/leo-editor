@@ -1658,8 +1658,10 @@ for z in aList:
    label: y  \ blue label:
    asm[ s" some string" type ]asm cr
    asm[ abc ]asm
-   tty"abc"
-   lcd2"abc"
+   a
+   tty" abc "
+   lcd2" abc "
+   until
 
 @ test
 @c

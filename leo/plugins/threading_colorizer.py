@@ -705,7 +705,12 @@ class colorizer:
             if g.os_path_exists(fileName):
                 mode = g.importFromPath (language,path)
             else: mode = None
-            if not mode:
+
+            if mode:
+                # A hack to give modes/forth.py access to c.
+                if hasattr(mode,'pre_init_mode'):
+                    mode.pre_init_mode(self.c)
+            else:
                 # Create a dummy bunch to limit recursion.
                 self.modes [rulesetName] = self.modeBunch = g.Bunch(
                     attributesDict  = {},
@@ -1767,7 +1772,7 @@ class colorizer:
         elif not g.match(s,i,begin):
             j = i
         else:
-            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break)
+            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
             if j == -1:
                 j = i
             else:
@@ -1785,7 +1790,7 @@ class colorizer:
         self.trace_match(kind,s,i,j)
         return j - i
     #@+node:ekr.20071010193720.69:match_span_helper
-    def match_span_helper (self,s,i,pattern,no_escape,no_line_break):
+    def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=False):
 
         '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
 
@@ -1794,11 +1799,13 @@ class colorizer:
         while 1:
             j = s.find(pattern,i)
             if j == -1:
-                # 7/21/07: Match to end of text if not found and no_line_break is False
+                # Match to end of text if not found and no_line_break is False
                 if no_line_break:
                     return -1
                 else:
                     return len(s)
+            elif no_word_break and j > 0 and s[j-1] in self.word_chars:
+                return -1 # New in Leo 4.5.
             elif no_line_break and '\n' in s[i:j]:
                 return -1
             elif esc and not no_escape:

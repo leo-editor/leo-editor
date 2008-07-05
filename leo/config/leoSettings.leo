@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -188,14 +188,21 @@
 <v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts (new colorizer)</vh></v>
 </v>
-<v t="ekr.20080703111151.18"><vh>Forth fonts &amp; colors</vh>
+<v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
+<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
+<v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
+<v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
+<v t="ekr.20080705064822.4"><vh>@data forth-delimiter-pairs</vh></v>
+<v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
+<v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
+<v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
 <v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
 <v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
 <v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
 <v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
 </v>
 </v>
 </v>
@@ -1405,14 +1412,21 @@
 <v t="TL.20080622104320.129"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20080703111151.18"><vh>Forth fonts &amp; colors</vh>
+<v t="ekr.20080703111151.18" a="E"><vh>Forth fonts, colors &amp; settings</vh>
+<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
+<v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
+<v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
+<v t="ekr.20080705064822.4"><vh>@data forth-delimiter-pairs</vh></v>
+<v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
+<v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
+<v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
 <v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
 <v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
 <v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
 <v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7189,10 +7203,103 @@ forth_keyword2_size = None
 forth_keyword2_slant = None
 forth_keyword2_weight = None
 </t>
-<t tx="ekr.20080703111151.18"></t>
-<t tx="ekr.20080703111151.21"># bold keywords defined in leo-forthboldwords.txt</t>
-<t tx="ekr.20080703111151.22"># bold-italic keywords defined in leo-forthbolditalicwords.txt</t>
-<t tx="ekr.20080703111151.23"># italic keywords defined in leo-forthitalicwords.txt</t>
+<t tx="ekr.20080703111151.18">@language text</t>
+<t tx="ekr.20080703111151.21"># bold keywords defined in forth-bold-words</t>
+<t tx="ekr.20080703111151.22"># bold-italic keywords defined in @data forth-bold-italic-words</t>
+<t tx="ekr.20080703111151.23"># italic keywords defined in forth-italic-words</t>
+<t tx="ekr.20080705064822.1">:
+variable
+constant
+code
+</t>
+<t tx="ekr.20080705064822.2"></t>
+<t tx="ekr.20080705064822.3"></t>
+<t tx="ekr.20080705064822.4">\Delimiter pairs for forth colorizing, one per line
+
+[ ]
+{ }
+asm[ ]asm
+</t>
+<t tx="ekr.20080705064822.5">\ lines beginning with '\' are comments, and ignored.
+\ declare any supplementary forth words you want coloured, one per line, below
+
+\ asm[ ]asm     now string delims.
+\ :             now a defining word.
+
+!
+&lt;
+'
++
+,
+-
+1+
+2&gt;r
+2r&gt;
+2drop
+2dup
+2swap
+::
+::code
+;
+&lt;=
+=
+&gt;
+&gt;=
+&gt;r
+r&gt;
+&gt;w
+w&gt;
+[']
+again
+and
+begin
+code
+constant
+drop
+dup
+else
+end-code
+exit
+host
+if
+include
+invert
+label:
+macro
+meta
+needs
+or 
+picasm
+repeat
+return-in-w
+swap
+target
+then
+until
+v-for
+v-next
+variable
+while
+@</t>
+<t tx="ekr.20080705064822.6"></t>
+<t tx="ekr.20080705064822.7">\ List of supplementary tokens to be syntax-coloured by Leo as Forth 'string words'.
+\ Each line contains a pair of tokens.
+\ Lines beginning with '\' are comments, and ignored.
+
+" "
+c" "
+." "
+s" "
+.( )
+
+abort" "
+tty" "
+ttyl" "
+lcd1" "
+lcd2" "
+lcd1c" "
+lcd2c" "
+</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

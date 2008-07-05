@@ -183,111 +183,133 @@ importDict = {}
 #@+node:ekr.20080703111151.4:<< define extendForth class >>
 class extendForth:
 
-    '''A helper class to extend the mode tables from plugins/leo-forthXXX.txt files.'''
+    '''A helper class to extend the mode tables from @data forth-x settings.'''
 
     #@    @+others
     #@+node:ekr.20080703111151.5:ctor
     def __init__ (self):
 
+        self.c = None # set by pre_init_mode function.
+
         # g.trace('modes/forth.py:extendForth')
 
-        # Default forth keywords: extended by leo-forthwords.txt.
+        # Default forth keywords: extended by @data forth-words
 
-        # Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
+        # Forth words to be rendered in boldface: extended by @data forth-bold-words
         self.boldwords = [ ]
 
-        # Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
+        # Forth bold-italics words: extended by @data forth-bold-italic-words
         # Note: on some boxen, bold italics may show in plain bold.
         self.bolditalicwords = [ ]
 
-        # Forth words that define brackets: extended by leo-forthdelimiters.txt
+        # Forth words that define brackets: extended by @data forth-delimiter-pairs
         self.brackets = []  # Helper: a list of tuples.
         self.brackets1 = []
         self.brackets2 = []
 
-        # Words which define other words: extended by leo-forthdefwords.txt.
-        self.definingwords = [
-            ":", "variable", "constant", "code",
-        ]
+        # Words which define other words: extended by forth-defwords
+        self.definingwords = []
 
-        # Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
-        self.italicwords = [ ]
+        # Forth words to be rendered in italics: extended by forth-italic-words
+        self.italicwords = []
 
-        # Default keywords.
-        self.keywords = [
-            "variable", "constant", "code", "end-code",
-            "dup", "2dup", "swap", "2swap", "drop", "2drop",
-            "r>", ">r", "2r>", "2>r",
-            "if", "else", "then",
-            "begin", "again", "until", "while", "repeat",
-            "v-for", "v-next", "exit",
-            "meta", "host", "target", "picasm", "macro",
-            "needs", "include",
-            "'", "[']",
-            # ":", # Now a defining word.
-            ";",
-            "@", "!", ",", "1+", "+", "-",
-            "<", "<=", "=", ">=", ">",
-            "invert", "and", "or", 
-            ]
+        # Default keywords: extended by @data forth-keywords
+        self.keywords = []
+            # "variable", "constant", "code", "end-code",
+            # "dup", "2dup", "swap", "2swap", "drop", "2drop",
+            # "r>", ">r", "2r>", "2>r",
+            # "if", "else", "then",
+            # "begin", "again", "until", "while", "repeat",
+            # "v-for", "v-next", "exit",
+            # "meta", "host", "target", "picasm", "macro",
+            # "needs", "include",
+            # "'", "[']",
+            # # ":", # Now a defining word.
+            # ";",
+            # "@", "!", ",", "1+", "+", "-",
+            # "<", "<=", "=", ">=", ">",
+            # "invert", "and", "or",
 
-        # Forth words which start strings: extended by leo-forthstringwords.txt.
-        self.stringwords = [
-            # Must be pairs.
-            '" "',
-            ]
+        # Forth words which start strings: extended by @data forth-string-word-pairs
+        self.stringwords = []
         self.stringwords1 = []
         self.stringwords2 = []
 
         self.verbose = False # True: tell when extending forth words.
-
-        self.init()
-        self.createKeywords()
-        self.createBracketRules()
-        self.createDefiningWordRules()
         # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
     #@-node:ekr.20080703111151.5:ctor
     #@+node:ekr.20080703111151.3:init & helper
     def init (self):
 
-        '''Set our ivars from external files.'''
+        '''Set our ivars from settings.'''
 
-        table = (
-            (self.definingwords, "leo-forthdefwords.txt", "defining words"),
-            (self.brackets, "leo-forthdelimiters.txt", "extra delimiter pairs"),
-            (self.keywords, "leo-forthwords.txt", "words"),
-            (self.stringwords, "leo-forthstringwords.txt", "string words"),
-            (self.boldwords, "leo-forthboldwords.txt", "bold words"),
-            (self.bolditalicwords, "leo-forthbolditalicwords.txt", "bold-italic words"),
-            (self.italicwords, "leo-forthitalicwords.txt", "italic words"),
-        )
+        c = self.c
+        assert(c)
+
+        # table = (
+            # (self.definingwords, "leo-forthdefwords.txt", "defining words"),
+            # (self.brackets, "leo-forthdelimiters.txt", "extra delimiter pairs"),
+            # (self.keywords, "leo-forthwords.txt", "words"),
+            # (self.stringwords, "leo-forthstringwords.txt", "string words"),
+            # (self.boldwords, "leo-forthboldwords.txt", "bold words"),
+            # (self.bolditalicwords, "leo-forthbolditalicwords.txt", "bold-italic words"),
+            # (self.italicwords, "leo-forthitalicwords.txt", "italic words"),
+        # )
 
         # Add entries from files (if they exist) to the corresponding lists.
-        for (lst, path, message) in table:
-            try:
-                extras = []
-                path = g.os_path_join(g.app.loadDir,"..","plugins",path)
-                for line in file(path).read().strip().split("\n"):
-                    line = line.strip()
-                    if line and line[0] != '\\':
-                        extras.append(line)
+        # for (lst, path, message) in table:
+            # try:
+                # extras = []
+                # path = g.os_path_join(g.app.loadDir,"..","plugins",path)
+                # for line in file(path).read().strip().split("\n"):
+                    # line = line.strip()
+                    # if line and line[0] != '\\':
+                        # extras.append(line)
+                # if extras:
+                    # if self.verbose: # I find this annoying.  YMMV.
+                        # if not g.app.unitTesting and not g.app.batchMode:
+                            # print "Found extra forth %s" % message + ": " + " ".join(extras)
+                    # lst.extend(extras)
+            # except IOError:
+                # pass # print "Not found",path
+
+        table = (
+            (self.definingwords, "forth-defwords"),
+            (self.brackets, "forth-delimiter-pairs"),
+            (self.keywords, "forth-words"),
+            (self.stringwords, "forth-string-word-pairs"),
+            (self.boldwords, "forth-bold-words"),
+            (self.bolditalicwords, "forth-bold-italic-words"),
+            (self.italicwords, "forth-italic-words"),
+        )
+
+        # Add entries from @data nodes (if they exist) to the corresponding lists.
+        for (ivarList, setting) in table:
+            extras = []
+            aList = c.config.getData(setting)
+            if aList:
+                for s in aList:
+                    s = s.strip()
+                    if s and s[0] != '\\':
+                        # g.trace(setting,s)
+                        extras.append(s)
                 if extras:
-                    if self.verbose: # I find this annoying.  YMMV.
+                    if self.verbose:
                         if not g.app.unitTesting and not g.app.batchMode:
                             print "Found extra forth %s" % message + ": " + " ".join(extras)
-                    lst.extend(extras)
-            except IOError:
-                pass # print "Not found",path
+                    ivarList.extend(extras)
 
         # Create brackets1/2 and stringwords1/2 lists.
         table2 = (
-            ("brackets",    "leo-forthdelimiters.txt"),
-            ("stringwords", "leo-forthstringwords.txt"),
+            ("brackets",    "@data forth-delimiter-pairs"),
+            ("stringwords", "@data forth-string-word-pairs"),
         )
-        for (ivar, fileName) in table2:
-            self.splitList (ivar,fileName)
+        for (ivar, setting) in table2:
+            self.splitList (ivar,setting)
+
+        # g.trace('keywords',self.keywords)
     #@+node:ekr.20080704085627.2:splitList
-    def splitList (self,ivar,fileName):
+    def splitList (self,ivar,setting):
 
         '''Process lines containing pairs of entries 
         in a list whose *name* is ivar.
@@ -303,7 +325,7 @@ class extendForth:
                 result1.append(pair[0].strip())
                 result2.append(pair[1].strip())
             else:
-                g.es_print('%s: ignoring line: %s' % (fileName,s))
+                g.es_print('%s: ignoring line: %s' % (setting,s))
 
         # Set the ivars.
         name1 = '%s1' % ivar
@@ -311,8 +333,9 @@ class extendForth:
         setattr(self,name1, result1)
         setattr(self,name2, result2)
 
-        # g.trace(name1,getattr(self,name1))
-        # g.trace(name2,getattr(self,name2))
+        if 0:
+            g.trace(name1,getattr(self,name1))
+            g.trace(name2,getattr(self,name2))
     #@nonl
     #@-node:ekr.20080704085627.2:splitList
     #@-node:ekr.20080703111151.3:init & helper
@@ -330,9 +353,9 @@ class extendForth:
 
         def forth_bracket_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-                at_line_start=False, at_whitespace_end=False, at_word_start=False,
+                at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
                 delegate="",exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=False)
+                no_escape=False, no_line_break=False, no_word_break=True) # Require word.
 
         return forth_bracket_rule
     #@-node:ekr.20080703111151.9:createBracketRules & helper
@@ -404,7 +427,7 @@ class extendForth:
             return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
                 at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
                 delegate="",exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=False)
+                no_escape=False, no_line_break=False, no_word_break=True) # Require ending word.
 
         return forth_string_word_rule
     #@-node:ekr.20080703111151.10:createStringRule
@@ -425,6 +448,15 @@ class extendForth:
 #@-node:ekr.20080703111151.4:<< define extendForth class >>
 #@nl
 
-extendForth()
+e = extendForth()
+
+def pre_init_mode(c):
+    # g.trace('modes/forth.py',c)
+    e.c = c
+    e.init()
+    e.createKeywords()
+    e.createBracketRules()
+    e.createDefiningWordRules()
+#@nonl
 #@-node:ekr.20080703111151.1:@thin ../modes/forth.py
 #@-leo
