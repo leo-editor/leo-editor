@@ -107,28 +107,28 @@ class chapterController:
             return cc.error('can not clone @chapter node')
         # g.trace('from',fromChapter.name,'to',toChapter)
 
-        c.beginUpdate()
-        try:
-            # Open the group undo.
-            c.undoer.beforeChangeGroup(p,undoType)
-            # Do the clone.  c.clone handles the inner undo.
-            clone = c.clone()
-            # Do the move.
-            undoData2 = u.beforeMoveNode(clone)
-            if toChapter.name == 'main':
-                clone.moveAfter(toChapter.p)
-            else:
-                parent = cc.getChapterNode(toChapter.name)
-                clone.moveToLastChildOf(parent)
-            u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
-            c.selectPosition(clone)
-            c.setChanged(True)
-            # Close the group undo.
-            # Only the ancestors of the moved node get set dirty.
-            dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-            c.undoer.afterChangeGroup(clone,undoType,reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        # Open the group undo.
+        c.undoer.beforeChangeGroup(p,undoType)
+        # Do the clone.  c.clone handles the inner undo.
+        clone = c.clone()
+        # Do the move.
+        undoData2 = u.beforeMoveNode(clone)
+        if toChapter.name == 'main':
+            clone.moveAfter(toChapter.p)
+        else:
+            parent = cc.getChapterNode(toChapter.name)
+            clone.moveToLastChildOf(parent)
+        u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
+        c.selectPosition(clone)
+        c.setChanged(True)
+        # Close the group undo.
+        # Only the ancestors of the moved node get set dirty.
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        c.undoer.afterChangeGroup(clone,undoType,reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate(False)
 
         toChapter.p = clone.copy()
         toChapter.select()
@@ -196,20 +196,20 @@ class chapterController:
             return cc.error('can not copy @chapter node')
         # g.trace('from',fromChapter.name,'to',toChapter.name)
 
-        c.beginUpdate()
-        try:
-            # For undo, we treat the copy like a pasted (inserted) node.
-            # Use parent as the node to select for undo.
-            parent = cc.getChapterNode(toChapter.name)
-            undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
-            s = c.fileCommands.putLeoOutline()
-            p2 = c.fileCommands.getLeoOutline(s)
-            p2.moveToLastChildOf(parent)
-            c.selectPosition(p2)
-            u.afterInsertNode(p2,undoType,undoData)
-            c.setChanged(True)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        # For undo, we treat the copy like a pasted (inserted) node.
+        # Use parent as the node to select for undo.
+        parent = cc.getChapterNode(toChapter.name)
+        undoData = u.beforeInsertNode(parent,pasteAsClone=False,copiedBunchList=[])
+        s = c.fileCommands.putLeoOutline()
+        p2 = c.fileCommands.getLeoOutline(s)
+        p2.moveToLastChildOf(parent)
+        c.selectPosition(p2)
+        u.afterInsertNode(p2,undoType,undoData)
+        c.setChanged(True)
+        # finally:
+        c.endUpdate(False)
 
         toChapter.p = p2.copy()
         toChapter.select()
@@ -329,35 +329,35 @@ class chapterController:
             if fromChapter.name == 'main' and p.headString().startswith('@chapter'):
                 return cc.error('can not move @chapter node')
 
-        c.beginUpdate()
-        try:
+        # c.beginUpdate()
+        # try:
+        if toChapter.name == 'main':
+            sel = (p.threadBack() != fromChapter.root and p.threadBack()) or p.nodeAfterTree()
+        else:
+            sel = p.threadBack() or p.nodeAfterTree()
+        if sel:
+            # Get 'before' undo data.
+            inAtIgnoreRange = p.inAtIgnoreRange()
+            undoData = u.beforeMoveNode(p)
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            # Do the move.
             if toChapter.name == 'main':
-                sel = (p.threadBack() != fromChapter.root and p.threadBack()) or p.nodeAfterTree()
+                p.moveAfter(toChapter.p)
             else:
-                sel = p.threadBack() or p.nodeAfterTree()
-            if sel:
-                # Get 'before' undo data.
-                inAtIgnoreRange = p.inAtIgnoreRange()
-                undoData = u.beforeMoveNode(p)
-                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-                # Do the move.
-                if toChapter.name == 'main':
-                    p.moveAfter(toChapter.p)
-                else:
-                    p.moveToLastChildOf(toChapter.root)
-                c.selectPosition(sel)
-                c.setChanged(True)
-                # Do the 'after' undo operation.
-                if inAtIgnoreRange and not p.inAtIgnoreRange():
-                    # The moved nodes have just become newly unignored.
-                    dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                else: # No need to mark descendents dirty.
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate(False) # toChapter.select will do the drawing.
+                p.moveToLastChildOf(toChapter.root)
+            c.selectPosition(sel)
+            c.setChanged(True)
+            # Do the 'after' undo operation.
+            if inAtIgnoreRange and not p.inAtIgnoreRange():
+                # The moved nodes have just become newly unignored.
+                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+                dirtyVnodeList.extend(dirtyVnodeList2)
+            else: # No need to mark descendents dirty.
+                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+            u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate(False) # toChapter.select will do the drawing.
 
         if sel:
             toChapter.p = p.copy()
@@ -390,17 +390,17 @@ class chapterController:
         theChapter = cc.chaptersDict.get(name)
         if not theChapter: return
 
-        c.beginUpdate()
-        try:
-            savedRoot = theChapter.root
-            bunch = cc.beforeRemoveChapter(c.currentPosition(),name,savedRoot)
-            cc.deleteChapterNode(name)
-            del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
-            if tt:tt.destroyTab(name)
-            cc.selectChapterByName('main')
-            cc.afterRemoveChapter(bunch,c.currentPosition())
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        savedRoot = theChapter.root
+        bunch = cc.beforeRemoveChapter(c.currentPosition(),name,savedRoot)
+        cc.deleteChapterNode(name)
+        del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
+        if tt:tt.destroyTab(name)
+        cc.selectChapterByName('main')
+        cc.afterRemoveChapter(bunch,c.currentPosition())
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20070606075434:cc.removeChapterByName
     #@+node:ekr.20070317085437.41:cc.renameChapter
     # newName is for unitTesting.
@@ -482,23 +482,23 @@ class chapterController:
 
         cc = self ; c = cc.c ; root = c.rootPosition()
 
-        c.beginUpdate()
-        try:
-            # Create the node with a postion method
-            # so we don't involve the undo logic.
-            p = root.insertAsLastChild()
-            p.initHeadString('@chapters')
-            p.moveToRoot(oldRoot=root)
-            c.setRootPosition(p)
-            cc.chaptersNode = p.copy()
-            t = p.v.t
-            if t.fileIndex:
-                self.error('***** t.fileIndex already exists')
-            else:
-                t.setFileIndex(g.app.nodeIndices.getNewIndex())
-            c.setChanged(True)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        # Create the node with a postion method
+        # so we don't involve the undo logic.
+        p = root.insertAsLastChild()
+        p.initHeadString('@chapters')
+        p.moveToRoot(oldRoot=root)
+        c.setRootPosition(p)
+        cc.chaptersNode = p.copy()
+        t = p.v.t
+        if t.fileIndex:
+            self.error('***** t.fileIndex already exists')
+        else:
+            t.setFileIndex(g.app.nodeIndices.getNewIndex())
+        c.setChanged(True)
+        # finally:
+        c.endUpdate(False)
     #@nonl
     #@-node:ekr.20070325101652:cc.createChaptersNode
     #@+node:ekr.20070325063303.2:cc.createChapterNode
@@ -510,22 +510,22 @@ class chapterController:
         cc = self ; c = cc.c
         current = c.currentPosition() or c.rootPosition()
 
-        c.beginUpdate()
-        try:
-            # Create the node with a postion method
-            # so we don't involve the undo logic.
-            root = current.insertAsLastChild()
-            root.initHeadString('@chapter ' + chapterName)
-            root.moveToFirstChildOf(cc.chaptersNode)
-            if p:
-                # Clone p and move it to the first child of the root.
-                clone = p.clone()
-                clone.moveToFirstChildOf(root)
-            else:
-                cc.createChild(root,'%s node 1' % chapterName)
-            c.setChanged(True)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        # Create the node with a postion method
+        # so we don't involve the undo logic.
+        root = current.insertAsLastChild()
+        root.initHeadString('@chapter ' + chapterName)
+        root.moveToFirstChildOf(cc.chaptersNode)
+        if p:
+            # Clone p and move it to the first child of the root.
+            clone = p.clone()
+            clone.moveToFirstChildOf(root)
+        else:
+            cc.createChild(root,'%s node 1' % chapterName)
+        c.setChanged(True)
+        # finally:
+        c.endUpdate(False)
 
         return root
     #@-node:ekr.20070325063303.2:cc.createChapterNode
@@ -552,15 +552,15 @@ class chapterController:
         chapter = cc.chaptersDict.get(chapterName)
 
         if chapter:
-            c.beginUpdate()
-            try:
-                # Do not involve undo logic.
-                c.setCurrentPosition(chapter.root)
-                chapter.root.doDelete()
-                # The chapter selection logic will select a new node.
-                c.setChanged(True)
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            # Do not involve undo logic.
+            c.setCurrentPosition(chapter.root)
+            chapter.root.doDelete()
+            # The chapter selection logic will select a new node.
+            c.setChanged(True)
+            # finally:
+            c.endUpdate(False)
     #@nonl
     #@-node:ekr.20070325063303.4:cc.deleteChapterNode
     #@-node:ekr.20070511081405:Creating/deleting nodes (chapterController)
@@ -939,16 +939,16 @@ class chapter:
                 w = self.findEditorInChapter(p)
                 c.frame.body.selectEditor(w) # Switches text.
 
-        c.beginUpdate()
-        try:
-            if name == 'main' and cc.chaptersNode:
-                cc.chaptersNode.contract()    
-            c.hoistStack = self.hoistStack[:]
-            c.selectPosition(p)
-        finally:
-            c.endUpdate()
-            g.doHook('hoist-changed',c=c)
-            c.bodyWantsFocusNow()
+        # c.beginUpdate()
+        # try:
+        if name == 'main' and cc.chaptersNode:
+            cc.chaptersNode.contract()    
+        c.hoistStack = self.hoistStack[:]
+        c.selectPosition(p)
+        # finally:
+        c.endUpdate()
+        g.doHook('hoist-changed',c=c)
+        c.bodyWantsFocusNow()
     #@nonl
     #@-node:ekr.20070423102603.1:chapterSelectHelper
     #@+node:ekr.20070317131708:chapter.findPositionInChapter

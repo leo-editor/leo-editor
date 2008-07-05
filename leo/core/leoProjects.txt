@@ -3309,11 +3309,11 @@ def readAtFileNodes (self):
 
     c = self.c ; p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        c.atFileCommands.readAll(p,partialFlag=True)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.atFileCommands.readAll(p,partialFlag=True)
+    # finally:
+    c.endUpdate()
 
     # Force an update of the body pane.
     c.setBodyString(p,p.bodyString())
@@ -3383,12 +3383,12 @@ def readOneAtAutoNode (self,fileName,p):
         g.es("reading:",p.headString())
 
     # Delete all children.
-    c.beginUpdate()
-    try:
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    finally:
-        c.endUpdate(False)
+    # c.beginUpdate()
+    # try:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    # finally:
+    c.endUpdate(False)
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
@@ -3426,11 +3426,11 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        c.beginUpdate()
-        try:
-            p.setBodyString('')
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        p.setBodyString('')
+        # finally:
+        c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -3671,45 +3671,44 @@ def openWithFileName(fileName,old_c,
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    c.beginUpdate()
-    try:
-        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-            c.setLog()
-            app.lockLog()
-            frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-        # Bug fix in 4.4.
-        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        p = c.currentPosition()
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(relativeFileName or fileName)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        assert frame.c == c and c.frame == frame
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.chapterController:
-            c.chapterController.finishCreate()
-        k = c.k
-        if k:
-            k.setDefaultInputState()
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        if k:
-            k.showStateAndMode()
+    # c.beginUpdate()
+    # try:
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        app.lockLog()
+        frame.c.fileCommands.open(
+            theFile,fileName,
+            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+        app.unlockLog()
+        for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.currentPosition()
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    c.endUpdate()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
 
     return True, frame
 #@nonl
@@ -4099,11 +4098,11 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        c.beginUpdate()
-        try:
-            p.setBodyString('')
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        p.setBodyString('')
+        # finally:
+        c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()

@@ -835,11 +835,11 @@ class leoImportCommands:
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
-            c.beginUpdate()
-            try:
-                p.setBodyString('')
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            p.setBodyString('')
+            # finally:
+            c.endUpdate(False)
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
@@ -882,24 +882,24 @@ class leoImportCommands:
         c = self.c
         p = c.currentPosition() ; after = p.nodeAfterTree()
 
-        c.beginUpdate()
-        try:
-            found = False
-            while p and p != after:
-                if p.isAtAutoNode():
-                    if p.isAtIgnoreNode():
-                        g.es_print('ignoring',p.headString(),color='blue')
-                        p.moveToThreadNext()
-                    else:
-                        self.readOneAtAutoNode(p)
-                        found = True
-                        p.moveToNodeAfterTree()
-                else:
+        # c.beginUpdate()
+        # try:
+        found = False
+        while p and p != after:
+            if p.isAtAutoNode():
+                if p.isAtIgnoreNode():
+                    g.es_print('ignoring',p.headString(),color='blue')
                     p.moveToThreadNext()
-            message = g.choose(found,'finished','no @auto nodes in the selected tree')
-            g.es(message,color='blue')
-        finally:
-            c.endUpdate()
+                else:
+                    self.readOneAtAutoNode(p)
+                    found = True
+                    p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        message = g.choose(found,'finished','no @auto nodes in the selected tree')
+        g.es(message,color='blue')
+        # finally:
+        c.endUpdate()
 
     #@+node:ekr.20070807084545:readOneAtAutoNode
     def readOneAtAutoNode(self,p):
@@ -926,40 +926,40 @@ class leoImportCommands:
         at = c.atFileCommands ; current = c.currentPosition()
         self.tab_width = self.getTabWidth()
         if not paths: return
-        c.beginUpdate()
-        try:
-            u.beforeChangeGroup(current,command)
-            for fileName in paths:
-                g.setGlobalOpenDir(fileName)
-                #@            << set isThin if fileName is a thin derived file >>
-                #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
-                fileName = g.os_path_normpath(fileName)
+        # c.beginUpdate()
+        # try:
+        u.beforeChangeGroup(current,command)
+        for fileName in paths:
+            g.setGlobalOpenDir(fileName)
+            #@        << set isThin if fileName is a thin derived file >>
+            #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+            fileName = g.os_path_normpath(fileName)
 
-                try:
-                    theFile = open(fileName,'rb')
-                    isThin = at.scanHeaderForThin(theFile,fileName)
-                    theFile.close()
-                except IOError:
-                    isThin = False
-                #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
-                #@nl
-                undoData = u.beforeInsertNode(parent)
-                p = parent.insertAfter()
-                if isThin:
-                    at.forceGnxOnPosition(p)
-                    p.initHeadString("@thin " + fileName)
-                    at.read(p,thinFile=True)
-                else:
-                    p.initHeadString("Imported @file " + fileName)
-                    at.read(p,importFileName=fileName)
-                p.contract()
-                u.afterInsertNode(p,command,undoData)
-            current.expand()
-            c.selectPosition(current)
-            c.setChanged(True)
-            u.afterChangeGroup(p,command)
-        finally:
-            c.endUpdate()
+            try:
+                theFile = open(fileName,'rb')
+                isThin = at.scanHeaderForThin(theFile,fileName)
+                theFile.close()
+            except IOError:
+                isThin = False
+            #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+            #@nl
+            undoData = u.beforeInsertNode(parent)
+            p = parent.insertAfter()
+            if isThin:
+                at.forceGnxOnPosition(p)
+                p.initHeadString("@thin " + fileName)
+                at.read(p,thinFile=True)
+            else:
+                p.initHeadString("Imported @file " + fileName)
+                at.read(p,importFileName=fileName)
+            p.contract()
+            u.afterInsertNode(p,command,undoData)
+        current.expand()
+        c.selectPosition(current)
+        c.setChanged(True)
+        u.afterChangeGroup(p,command)
+        # finally:
+        c.endUpdate()
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -1233,17 +1233,17 @@ class leoImportCommands:
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.webType = webType
 
-        c.beginUpdate()
-        try:
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                v = self.createOutlineFromWeb(fileName,current)
-                v.contract()
-                v.setDirty()
-                c.setChanged(True)
-            c.selectVnode(current)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            v = self.createOutlineFromWeb(fileName,current)
+            v.contract()
+            v.setDirty()
+            c.setChanged(True)
+        c.selectVnode(current)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1570,47 +1570,46 @@ class leoImportCommands:
 
         c = self.c ; h = p.headString() ; old_root = p.copy()
         oldChanged = c.changed
-        c.beginUpdate()
-        try:
-            d = g.app.unitTestDict
-            expectedErrors = d.get('expectedErrors')
-            expectedErrorMessage = d.get('expectedErrorMessage')
-            expectedMismatchLine = d.get('expectedMismatchLine')
-            g.app.unitTestDict = {
-                'expectedErrors':expectedErrors,
-                'expectedErrorMessage':expectedErrorMessage,
-                'expectedMismatchLine':expectedMismatchLine,
-            }
-            if not fileName: fileName = p.headString()
-            if not s: s = self.removeSentinelsCommand([fileName],toString=True)
-            title = g.choose(h.startswith('@test'),h[5:],h)
-            self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
-            d = g.app.unitTestDict
-            ok = ((d.get('result') and expectedErrors in (None,0)) or
-                (
-                    # checkTrialWrite returns *True* if the following match.
-                    # d.get('result') == False and
-                    d.get('actualErrors') == d.get('expectedErrors') and
-                    d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
-                    (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
-                ))
-            if not ok:
-                g.trace('result',d.get('result'),
-                    'actualErrors',d.get('actualErrors'),
-                    'expectedErrors',d.get('expectedErrors'),
-                    'actualMismatchLine',d.get('actualMismatchLine'),
-                    'expectedMismatchLine', d.get('expectedMismatchLine'),
-                    '\nactualErrorMessage  ',d.get('actualErrorMessage'),
-                    '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
-                )
-            if not showTree and ok:
-                while old_root.hasChildren():
-                    old_root.firstChild().doDelete()
-                c.setChanged(oldChanged)
-
-        finally:
-            c.selectPosition(old_root)
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        d = g.app.unitTestDict
+        expectedErrors = d.get('expectedErrors')
+        expectedErrorMessage = d.get('expectedErrorMessage')
+        expectedMismatchLine = d.get('expectedMismatchLine')
+        g.app.unitTestDict = {
+            'expectedErrors':expectedErrors,
+            'expectedErrorMessage':expectedErrorMessage,
+            'expectedMismatchLine':expectedMismatchLine,
+        }
+        if not fileName: fileName = p.headString()
+        if not s: s = self.removeSentinelsCommand([fileName],toString=True)
+        title = g.choose(h.startswith('@test'),h[5:],h)
+        self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
+        d = g.app.unitTestDict
+        ok = ((d.get('result') and expectedErrors in (None,0)) or
+            (
+                # checkTrialWrite returns *True* if the following match.
+                # d.get('result') == False and
+                d.get('actualErrors') == d.get('expectedErrors') and
+                d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
+                (expectedErrorMessage is None or d.get('actualErrorMessage') == d.get('expectedErrorMessage'))
+            ))
+        if not ok:
+            g.trace('result',d.get('result'),
+                'actualErrors',d.get('actualErrors'),
+                'expectedErrors',d.get('expectedErrors'),
+                'actualMismatchLine',d.get('actualMismatchLine'),
+                'expectedMismatchLine', d.get('expectedMismatchLine'),
+                '\nactualErrorMessage  ',d.get('actualErrorMessage'),
+                '\nexpectedErrorMessage',d.get('expectedErrorMessage'),
+            )
+        if not showTree and ok:
+            while old_root.hasChildren():
+                old_root.firstChild().doDelete()
+            c.setChanged(oldChanged)
+        # finally:
+        c.selectPosition(old_root)
+        c.endUpdate()
 
         if g.app.unitTesting:
             assert ok

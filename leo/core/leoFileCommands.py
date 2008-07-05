@@ -811,11 +811,11 @@ class baseFileCommands:
 
         c = self.c ; p = c.currentPosition()
 
-        c.beginUpdate()
-        try:
-            c.atFileCommands.readAll(p,partialFlag=True)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        c.atFileCommands.readAll(p,partialFlag=True)
+        # finally:
+        c.endUpdate()
 
         # Force an update of the body pane.
         c.setBodyString(p,p.bodyString())
@@ -874,11 +874,12 @@ class baseFileCommands:
             c.openDirectory = theDir
         #@-node:ekr.20071211134300:<< Set the default directory >>
         #@nl
-        c.beginUpdate()
-        try:
-            ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
+        # finally:
+        c.endUpdate()
+
         c.frame.deiconify()
         junk,junk,secondary_ratio = self.frame.initialRatios()
         c.frame.resizePanesToRatio(ratio,secondary_ratio)
@@ -1348,19 +1349,20 @@ class baseFileCommands:
         ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
         # redraw_flag = g.app.gui.guiName() == 'tkinter'
         if ok is None:
-            c.beginUpdate()
-            try:
-                c.endEditing()# Set the current headline text.
-                self.setDefaultDirectoryForNewFiles(fileName)
-                ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
-                self.putSavedMessage(fileName)
-                if ok:
-                    c.setChanged(False) # Clears all dirty bits.
-                    if c.config.save_clears_undo_buffer:
-                        g.es("clearing undo")
-                        c.undoer.clearUndoState()
-            finally:
-                c.endUpdate() # We must redraw in order to clear dirty node icons.
+            # c.beginUpdate()
+            # try:
+            c.endEditing()# Set the current headline text.
+            self.setDefaultDirectoryForNewFiles(fileName)
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+            self.putSavedMessage(fileName)
+            if ok:
+                c.setChanged(False) # Clears all dirty bits.
+                if c.config.save_clears_undo_buffer:
+                    g.es("clearing undo")
+                    c.undoer.clearUndoState()
+            # finally:
+            c.endUpdate() # We must redraw in order to clear dirty node icons.
+
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
     #@-node:ekr.20031218072017.1720:save (fileCommands)
@@ -1370,15 +1372,16 @@ class baseFileCommands:
         c = self.c ; v = c.currentVnode()
 
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
-            c.beginUpdate()
-            try:
-                c.endEditing() # Set the current headline text.
-                self.setDefaultDirectoryForNewFiles(fileName)
-                if self.write_Leo_file(fileName,False): # outlineOnlyFlag
-                    c.setChanged(False) # Clears all dirty bits.
-                    self.putSavedMessage(fileName)
-            finally:
-                c.endUpdate() # We must redraw in order to clear dirty node icons.
+            # c.beginUpdate()
+            # try:
+            c.endEditing() # Set the current headline text.
+            self.setDefaultDirectoryForNewFiles(fileName)
+            if self.write_Leo_file(fileName,False): # outlineOnlyFlag
+                c.setChanged(False) # Clears all dirty bits.
+                self.putSavedMessage(fileName)
+            # finally:
+            c.endUpdate() # We must redraw in order to clear dirty node icons.
+
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3043:saveAs
     #@+node:ekr.20031218072017.3044:saveTo
@@ -1387,14 +1390,15 @@ class baseFileCommands:
         c = self.c ; v = c.currentVnode()
 
         if not g.doHook("save1",c=c,p=v,v=v,fileName=fileName):
-            c.beginUpdate()
-            try:
-                c.endEditing()# Set the current headline text.
-                self.setDefaultDirectoryForNewFiles(fileName)
-                self.write_Leo_file(fileName,False) # outlineOnlyFlag
-                self.putSavedMessage(fileName)
-            finally:
-                c.endUpdate() # We must redraw in order to clear dirty node icons.
+            # c.beginUpdate()
+            # try:
+            c.endEditing()# Set the current headline text.
+            self.setDefaultDirectoryForNewFiles(fileName)
+            self.write_Leo_file(fileName,False) # outlineOnlyFlag
+            self.putSavedMessage(fileName)
+            # finally:
+            c.endUpdate() # We must redraw in order to clear dirty node icons.
+
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3044:saveTo
     #@+node:ekr.20070413061552:putSavedMessage
