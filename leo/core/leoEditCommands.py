@@ -722,18 +722,18 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('append-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.setInsertPoint('end')
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
+            # c.beginUpdate()
+            # try:
+            w = self.w
+            c.selectPosition(p)
+            self.beginCommand('append-to-buffer: %s' % p.headString())
+            w.insert('end',s)
+            w.setInsertPoint('end')
+            w.seeInsertPoint()
+            self.endCommand()
+            # finally:
+            c.endUpdate()
+            c.recolor_now()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
     #@+node:ekr.20050920084036.36:copyToBuffer
@@ -753,16 +753,16 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('copy-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.setInsertPoint('end')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            self.beginCommand('copy-to-buffer: %s' % p.headString())
+            w.insert('end',s)
+            w.setInsertPoint('end')
+            self.endCommand()
+            # finally:
+            c.endUpdate()
+            c.recolor_now()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
     def insertToBuffer (self,event):
@@ -781,16 +781,16 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('insert-to-buffer: %s' % p.headString())
-                i = w.getInsertPoint()
-                w.insert(i,s)
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            self.beginCommand('insert-to-buffer: %s' % p.headString())
+            i = w.getInsertPoint()
+            w.insert(i,s)
+            w.seeInsertPoint()
+            self.endCommand()
+            # finally:
+            c.endUpdate()
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -855,18 +855,17 @@ class bufferCommandsClass (baseEditCommandsClass):
         s = w.getSelectedText()
         p = self.findBuffer(name)
         if s and p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                self.beginCommand('prepend-to-buffer: %s' % p.headString())
-                w.insert(0,s)
-                w.setInsertPoint(0)
-                w.seeInsertPoint()
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
-
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            self.beginCommand('prepend-to-buffer: %s' % p.headString())
+            w.insert(0,s)
+            w.setInsertPoint(0)
+            w.seeInsertPoint()
+            self.endCommand()
+            # finally:
+            c.endUpdate()
+            c.recolor_now()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
     def renameBuffer (self,event):
@@ -903,11 +902,11 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            # finally:
+            c.endUpdate()
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -2795,15 +2794,15 @@ class editCommandsClass (baseEditCommandsClass):
         w = c.frame.body.bodyCtrl
         if not w: return
 
-        c.beginUpdate()
-        try:
-            for p in current.self_and_subtree_iter():
-                c.selectPosition(p)
-                w.setSelectionRange(0,0,insert=0)
-                c.editCommands.cleanLines(event)
-            c.selectPosition(current)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        for p in current.self_and_subtree_iter():
+            c.selectPosition(p)
+            w.setSelectionRange(0,0,insert=0)
+            c.editCommands.cleanLines(event)
+        c.selectPosition(current)
+        # finally:
+        c.endUpdate(False)
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -4191,11 +4190,12 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadNext()
-                c.beginUpdate()
-                try:
-                    c.selectPosition(p)
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                c.selectPosition(p)
+                # finally:
+                c.endUpdate()
+
                 s = w.getAllText()
                 w.insert(0,lines)
                 if not lines.endswith('\n'): w.insert(len(lines),'\n')
@@ -4240,11 +4240,12 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadBack()
-                c.beginUpdate()
-                try:
-                    c.selectPosition(p)
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                c.selectPosition(p)
+                # finally:
+                c.endUpdate()
+
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
                 w.insert('end',lines)
@@ -4865,23 +4866,24 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createAllCompareClones(self,inserted,deleted,changed):
 
         c = self.c # Always use the visible commander
-        c.beginUpdate()
-        try:
-            # Create parent node at the start of the outline.
-            u = c.undoer ; undoType = 'Compare .leo Files'
-            u.beforeChangeGroup(c.currentPosition(),undoType)
-            undoData = u.beforeInsertNode(c.currentPosition())
-            parent = c.currentPosition().insertAfter()
-            c.setHeadString(parent,undoType)
-            u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
-            for d,kind in (
-                (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
-            ):
-                self.createCompareClones(d,kind,parent)
-            c.selectPosition(parent)
-            u.afterChangeGroup(parent,undoType,reportFlag=True) 
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        # Create parent node at the start of the outline.
+        u = c.undoer ; undoType = 'Compare .leo Files'
+        u.beforeChangeGroup(c.currentPosition(),undoType)
+        undoData = u.beforeInsertNode(c.currentPosition())
+        parent = c.currentPosition().insertAfter()
+        c.setHeadString(parent,undoType)
+        u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+        for d,kind in (
+            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+        ):
+            self.createCompareClones(d,kind,parent)
+        c.selectPosition(parent)
+        u.afterChangeGroup(parent,undoType,reportFlag=True) 
+        # finally:
+        c.endUpdate(False)
+
         c.redraw_now()
         c.outerUpdate()
     #@nonl
@@ -8467,23 +8469,23 @@ class spellTabHandler (leoFind.leoFind):
                 alts = aspell.processWord(word)
                 if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
                 if alts:
-                    c.beginUpdate()
-                    try:
-                        redraw = not p.isVisible(c)
-                        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                        if sparseFind and not c.currentPosition().isAncestorOf(p):
-                            for p2 in c.currentPosition().self_and_parents_iter():
-                                p2.contract()
-                                redraw = True
-                        for p2 in p.parents_iter():
-                            if not p2.isExpanded():
-                                p2.expand()
-                                redraw = True
-                        # c.frame.tree.expandAllAncestors(p)
-                        c.selectPosition(p)
-                    finally:
-                        c.endUpdate(redraw)
-                        w.setSelectionRange(i,j,insert=j)
+                    # c.beginUpdate()
+                    # try:
+                    redraw = not p.isVisible(c)
+                    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                    if sparseFind and not c.currentPosition().isAncestorOf(p):
+                        for p2 in c.currentPosition().self_and_parents_iter():
+                            p2.contract()
+                            redraw = True
+                    for p2 in p.parents_iter():
+                        if not p2.isExpanded():
+                            p2.expand()
+                            redraw = True
+                    # c.frame.tree.expandAllAncestors(p)
+                    c.selectPosition(p)
+                    # finally:
+                    c.endUpdate(redraw)
+                    w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:
             g.es_exception()

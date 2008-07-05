@@ -9567,23 +9567,24 @@ def freeTreeWidgets (self,event=None):
 def createAllCompareClones(self,inserted,deleted,changed):
 
     c = self.c # Always use the visible commander
-    c.beginUpdate()
-    try:
-        # Create parent node at the start of the outline.
-        u = c.undoer ; undoType = 'Compare .leo Files'
-        u.beforeChangeGroup(c.currentPosition(),undoType)
-        undoData = u.beforeInsertNode(c.currentPosition())
-        parent = c.currentPosition().insertAfter()
-        c.setHeadString(parent,undoType)
-        u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
-        for d,kind in (
-            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
-        ):
-            self.createCompareClones(d,kind,parent)
-        c.selectPosition(parent)
-        u.afterChangeGroup(parent,undoType,reportFlag=True) 
-    finally:
-        c.endUpdate(False)
+    # c.beginUpdate()
+    # try:
+    # Create parent node at the start of the outline.
+    u = c.undoer ; undoType = 'Compare .leo Files'
+    u.beforeChangeGroup(c.currentPosition(),undoType)
+    undoData = u.beforeInsertNode(c.currentPosition())
+    parent = c.currentPosition().insertAfter()
+    c.setHeadString(parent,undoType)
+    u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+    for d,kind in (
+        (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+    ):
+        self.createCompareClones(d,kind,parent)
+    c.selectPosition(parent)
+    u.afterChangeGroup(parent,undoType,reportFlag=True) 
+    # finally:
+    c.endUpdate(False)
+
     c.redraw_now()
     c.outerUpdate()
 #@nonl
