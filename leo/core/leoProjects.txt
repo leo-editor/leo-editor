@@ -8053,22 +8053,23 @@ if g.app.unitTesting:
     g.app.unitTestDict['colorized'] = True
 #@-node:ekr.20051026083733.6:<< recolor the body >>
 #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
-c.beginUpdate()
-try:
-    redraw_flag = False
-    # Update dirty bits.
-    # p.setDirty() sets all cloned and @file dirty bits.
-    if not p.isDirty() and p.setDirty():
-        redraw_flag = True
+# c.beginUpdate()
+# try:
 
-    # Update icons. p.v.iconVal may not exist during unit tests.
-    val = p.computeIcon()
-    # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
-    if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
-        p.v.iconVal = val
-        redraw_flag = True
-finally:
-    c.endUpdate(redraw_flag)
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+#finally:
+c.endUpdate(redraw_flag)
 #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
 #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
 #@+node:ekr.20031218072017.1833:reformatParagraph
@@ -9092,13 +9093,13 @@ def editLabel (self,p,selectAll=False):
         if trace:
             g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-        c.beginUpdate()
-        try:
-            self.endEditLabel()
-        finally:
-            # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.endUpdate(True)
-            c.outerUpdate()
+        # c.beginUpdate()
+        # try:
+        self.endEditLabel()
+        # finally:
+        # This redraw *is* required so the c.edit_widget(p) will exist.
+        c.endUpdate(True)
+        c.outerUpdate()
 
     self.setEditPosition(p) # That is, self._editPosition = p
     w = c.edit_widget(p)
@@ -10771,34 +10772,34 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     if s is None: s = w.getAllText()
     << truncate s if it has multiple lines >>
-    c.beginUpdate()
-    try:
-        # Make the change official, but undo to the *old* revert point.
-        oldRevert = self.revertHeadline
-        changed = s != oldRevert
-        self.revertHeadline = s
-        p.initHeadString(s)
-        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-        # g.trace(g.callers())
-        if changed:
-            undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
-            if not c.changed: c.setChanged(True)
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p,incremental=True)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
-    finally:
-        c.endUpdate(flag=changed,scroll=False)
-        if changed:
-            if self.stayInTree:
-                c.treeWantsFocus()
-            else:
-                c.bodyWantsFocus()
+    # c.beginUpdate()
+    # try:
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+    # g.trace(g.callers())
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    # finally:
+    c.endUpdate(flag=changed,scroll=False)
+    if changed:
+        if self.stayInTree:
+            c.treeWantsFocus()
         else:
-            c.frame.tree.setSelectedLabelState(p)
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
 
     g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
 #@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
@@ -11245,29 +11246,29 @@ def endDrag (self,event):
     canvas = self.canvas
     if not event: return
 
-    c.beginUpdate()
-    try:
-        << set vdrag, childFlag >>
-        if self.allow_clone_drags:
-            if not self.look_for_control_drag_on_mouse_down:
-                self.controlDrag = c.frame.controlKeyIsDown
+    # c.beginUpdate()
+    # try:
+    << set vdrag, childFlag >>
+    if self.allow_clone_drags:
+        if not self.look_for_control_drag_on_mouse_down:
+            self.controlDrag = c.frame.controlKeyIsDown
 
-        redrawFlag = vdrag and vdrag.v.t != p.v.t
-        if redrawFlag: # Disallow drag to joined node.
-            << drag p to vdrag >>
-        elif self.trace and self.verbose:
-            g.trace("Cancel drag")
+    redrawFlag = vdrag and vdrag.v.t != p.v.t
+    if redrawFlag: # Disallow drag to joined node.
+        << drag p to vdrag >>
+    elif self.trace and self.verbose:
+        g.trace("Cancel drag")
 
-        # Reset the old cursor by brute force.
-        self.canvas['cursor'] = "arrow"
-        self.dragging = False
-        self.drag_p = None
-    finally:
-        # Must set self.drag_p = None first.
-        c.endUpdate(False) # redrawFlag)
-        if redrawFlag:
-            c.redraw_now()
-        c.recolor_now() # Dragging can affect coloring.
+    # Reset the old cursor by brute force.
+    self.canvas['cursor'] = "arrow"
+    self.dragging = False
+    self.drag_p = None
+    # finally:
+    # Must set self.drag_p = None first.
+    c.endUpdate(False) # redrawFlag)
+    if redrawFlag:
+        c.redraw_now()
+    c.recolor_now() # Dragging can affect coloring.
 
     # g.trace(redrawFlag)
 #@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>

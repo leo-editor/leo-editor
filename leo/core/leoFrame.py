@@ -1026,13 +1026,13 @@ class leoBody:
                 hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
-        c.beginUpdate()
-        try:
-            # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
-            c.frame.tree.expandAllAncestors(w.leo_p)
-            c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
+        c.frame.tree.expandAllAncestors(w.leo_p)
+        c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
+        # finally:
+        c.endUpdate()
 
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>
@@ -1237,22 +1237,23 @@ class leoBody:
         self.updateEditors()
         #@    << redraw the screen if necessary >>
         #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
-        c.beginUpdate()
-        try:
-            redraw_flag = False
-            # Update dirty bits.
-            # p.setDirty() sets all cloned and @file dirty bits.
-            if not p.isDirty() and p.setDirty():
-                redraw_flag = True
+        # c.beginUpdate()
+        # try:
 
-            # Update icons. p.v.iconVal may not exist during unit tests.
-            val = p.computeIcon()
-            # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
-            if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
-                p.v.iconVal = val
-                redraw_flag = True
-        finally:
-            c.endUpdate(redraw_flag)
+        redraw_flag = False
+        # Update dirty bits.
+        # p.setDirty() sets all cloned and @file dirty bits.
+        if not p.isDirty() and p.setDirty():
+            redraw_flag = True
+
+        # Update icons. p.v.iconVal may not exist during unit tests.
+        val = p.computeIcon()
+        # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+        if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+            redraw_flag = True
+        #finally:
+        c.endUpdate(redraw_flag)
         #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
@@ -1849,12 +1850,12 @@ class leoFrame:
             w.delete(0,"end")
             w.insert("end",tree.revertHeadline)
             p.initHeadString(tree.revertHeadline)
-            c.beginUpdate()
-            try:
-                c.endEditing()
-                c.selectPosition(p)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            c.endEditing()
+            c.selectPosition(p)
+            # finally:
+            c.endUpdate()
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -2336,34 +2337,34 @@ class leoTree:
         s = g.toUnicode(s or '',g.app.tkEncoding)
         #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         #@nl
-        c.beginUpdate()
-        try:
-            # Make the change official, but undo to the *old* revert point.
-            oldRevert = self.revertHeadline
-            changed = s != oldRevert
-            self.revertHeadline = s
-            p.initHeadString(s)
-            # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-            # g.trace(g.callers())
-            if changed:
-                undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
-                if not c.changed: c.setChanged(True)
-                # New in Leo 4.4.5: we must recolor the body because
-                # the headline may contain directives.
-                c.frame.scanForTabWidth(p)
-                c.frame.body.recolor(p,incremental=True)
-                dirtyVnodeList = p.setDirty()
-                u.afterChangeNodeContents(p,undoType,undoData,
-                    dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate(flag=changed,scroll=False)
-            if changed:
-                if self.stayInTree:
-                    c.treeWantsFocus()
-                else:
-                    c.bodyWantsFocus()
+        # c.beginUpdate()
+        # try:
+        # Make the change official, but undo to the *old* revert point.
+        oldRevert = self.revertHeadline
+        changed = s != oldRevert
+        self.revertHeadline = s
+        p.initHeadString(s)
+        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+        # g.trace(g.callers())
+        if changed:
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate(flag=changed,scroll=False)
+        if changed:
+            if self.stayInTree:
+                c.treeWantsFocus()
             else:
-                c.frame.tree.setSelectedLabelState(p)
+                c.bodyWantsFocus()
+        else:
+            c.frame.tree.setSelectedLabelState(p)
 
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
     #@-node:ekr.20040803072955.91:onHeadChanged
@@ -2449,18 +2450,18 @@ class leoTree:
         c = self.c ; cc = c.chapterController ; redraw_flag = False
         # inChapter = cc and cc.inChapter()
 
-        c.beginUpdate()
-        try:
-            for p in p.parents_iter():
-                # g.trace('testing',p)
-                if cc and p.headString().startswith('@chapter'):
-                    break
-                if not p.isExpanded():
-                    # g.trace('inChapter',inChapter,'p',p,g.callers())
-                    p.expand()
-                    redraw_flag = True
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        for p in p.parents_iter():
+            # g.trace('testing',p)
+            if cc and p.headString().startswith('@chapter'):
+                break
+            if not p.isExpanded():
+                # g.trace('inChapter',inChapter,'p',p,g.callers())
+                p.expand()
+                redraw_flag = True
+        # finally:
+        c.endUpdate(False)
 
         return redraw_flag
     #@-node:ekr.20040803072955.143:tree.expandAllAncestors
@@ -2485,11 +2486,11 @@ class leoTree:
 
             try:
                 if not g.doHook("hypercclick1",c=c,p=p,v=p,event=event):
-                    c.beginUpdate()
-                    try:
-                        c.selectPosition(p)
-                    finally:
-                        c.endUpdate()
+                    # c.beginUpdate()
+                    # try:
+                    c.selectPosition(p)
+                    # finally:
+                    c.endUpdate()
                     c.frame.body.bodyCtrl.setInsertPoint(0) # 2007/10/27
                 g.doHook("hypercclick2",c=c,p=p,v=p,event=event)
             except:
@@ -3344,11 +3345,11 @@ class nullTree (leoTree):
         c = self.c
 
         if self.editPosition() and p != self.editPosition():
-            c.beginUpdate()
-            try:
-                self.endEditLabel()
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            self.endEditLabel()
+            # finally:
+            c.endUpdate(False)
 
         self.setEditPosition(p) # That is, self._editPosition = p
 
