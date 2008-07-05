@@ -5135,41 +5135,41 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
 
-    finally:
-        c.endUpdate(False)
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20031218072017.2821:open
@@ -5463,32 +5463,31 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    c.beginUpdate()
-    try:
-        if c.mFileName:
-            # Calls c.setChanged(False) if no error.
+    # c.beginUpdate()
+    # try:
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
             c.fileCommands.save(c.mFileName)
-        else:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
-
-            if fileName:
-                # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
-                g.chdir(c.mFileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    # finally:
+    c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -5501,33 +5500,33 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            g.trace(fileName)
-            # 7/2/02: don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            # Calls c.setChanged(False) if no error.
-            c.fileCommands.saveAs(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+    # finally:
+    c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
 def saveAsUnzipped (self,event=None):
@@ -5563,29 +5562,28 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
-            c.fileCommands.saveTo(fileName)
-            c.updateRecentFiles(fileName)
-            g.chdir(fileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+    # finally:
+    c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
 def revert (self,event=None):

@@ -508,41 +508,41 @@ class baseCommands:
         # Needed for plugins.
         g.doHook("new",old_c=self,c=c,new_c=c)
         # Use the config params to set the size and location of the window.
-        c.beginUpdate()
-        try:
-            frame.setInitialWindowGeometry()
-            frame.deiconify()
-            frame.lift()
-            frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-            v = leoNodes.vnode(context=c)
-            p = leoNodes.position(v)
-            v.initHeadString("NewHeadline")
-            # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-            p._linkAsRoot(oldRoot=None)
-            c.setRootVnode(v) # New in Leo 4.4.2.
-            c.editPosition(p)
-            # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-            p = c.currentPosition()
-            if not g.doHook("menu1",c=c,p=p,v=p):
-                frame.menu.createMenuBar(frame)
-                c.updateRecentFiles(fileName=None)
-                g.doHook("menu2",c=frame.c,p=p,v=p)
-                g.doHook("after-create-leo-frame",c=c)
+        # c.beginUpdate()
+        # try:
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        v.initHeadString("NewHeadline")
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot(oldRoot=None)
+        c.setRootVnode(v) # New in Leo 4.4.2.
+        c.editPosition(p)
+        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+        p = c.currentPosition()
+        if not g.doHook("menu1",c=c,p=p,v=p):
+            frame.menu.createMenuBar(frame)
+            c.updateRecentFiles(fileName=None)
+            g.doHook("menu2",c=frame.c,p=p,v=p)
+            g.doHook("after-create-leo-frame",c=c)
+        # finally:
+        c.endUpdate(False)
+        # chapterController.finishCreate must be called after the first real redraw
+        # because it requires a valid value for c.rootPosition().
+        if c.config.getBool('use_chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+        # Force a call to c.outerUpdate.
+        # This is needed when we execute this command from a menu.
+        c.redraw_now()
 
-        finally:
-            c.endUpdate(False)
-            # chapterController.finishCreate must be called after the first real redraw
-            # because it requires a valid value for c.rootPosition().
-            if c.config.getBool('use_chapters') and c.chapterController:
-                c.chapterController.finishCreate()
-                frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-            if c.config.getBool('outline_pane_has_initial_focus'):
-                c.treeWantsFocusNow()
-            else:
-                c.bodyWantsFocusNow()
-            # Force a call to c.outerUpdate.
-            # This is needed when we execute this command from a menu.
-            c.redraw_now()
         return c # For unit test.
     #@-node:ekr.20031218072017.1623:new
     #@+node:ekr.20031218072017.2821:open
@@ -855,32 +855,31 @@ class baseCommands:
             c.frame.title = ""
             c.mFileName = ""
 
-        c.beginUpdate()
-        try:
-            if c.mFileName:
-                # Calls c.setChanged(False) if no error.
+        # c.beginUpdate()
+        # try:
+        if c.mFileName:
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.save(c.mFileName)
+        else:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
+
+            if fileName:
+                # Don't change mFileName until the dialog has suceeded.
+                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.frame.title = c.mFileName
+                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
-            else:
-                fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                    initialfile = c.mFileName,
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
-                c.bringToFront()
-
-                if fileName:
-                    # Don't change mFileName until the dialog has suceeded.
-                    c.mFileName = g.ensure_extension(fileName, ".leo")
-                    c.frame.title = c.mFileName
-                    c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                    c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                    c.fileCommands.save(c.mFileName)
-                    c.updateRecentFiles(c.mFileName)
-                    g.chdir(c.mFileName)
-
-        finally:
-            c.endUpdate()
-            c.widgetWantsFocusNow(w)
+                c.updateRecentFiles(c.mFileName)
+                g.chdir(c.mFileName)
+        # finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
     def saveAs (self,event=None):
@@ -893,33 +892,33 @@ class baseCommands:
             g.es("save commands disabled",color="purple")
             return
 
-        c.beginUpdate()
-        try:
-            # Make sure we never pass None to the ctor.
-            if not c.mFileName:
-                c.frame.title = ""
+        # c.beginUpdate()
+        # try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
 
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save As",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
 
-            if fileName:
-                g.trace(fileName)
-                # 7/2/02: don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                # Calls c.setChanged(False) if no error.
-                c.fileCommands.saveAs(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
-                g.chdir(c.mFileName)
-        finally:
-            c.endUpdate()
-            c.widgetWantsFocusNow(w)
+        if fileName:
+            g.trace(fileName)
+            # 7/2/02: don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            # Calls c.setChanged(False) if no error.
+            c.fileCommands.saveAs(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+        # finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
     def saveAsUnzipped (self,event=None):
@@ -955,29 +954,28 @@ class baseCommands:
             g.es("save commands disabled",color="purple")
             return
 
-        c.beginUpdate()
-        try:
-            # Make sure we never pass None to the ctor.
-            if not c.mFileName:
-                c.frame.title = ""
+        # c.beginUpdate()
+        # try:
+        # Make sure we never pass None to the ctor.
+        if not c.mFileName:
+            c.frame.title = ""
 
-            # set local fileName, _not_ c.mFileName
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save To",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
+        # set local fileName, _not_ c.mFileName
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
 
-            if fileName:
-                fileName = g.ensure_extension(fileName, ".leo")
-                c.fileCommands.saveTo(fileName)
-                c.updateRecentFiles(fileName)
-                g.chdir(fileName)
-
-        finally:
-            c.endUpdate()
-            c.widgetWantsFocusNow(w)
+        if fileName:
+            fileName = g.ensure_extension(fileName, ".leo")
+            c.fileCommands.saveTo(fileName)
+            c.updateRecentFiles(fileName)
+            g.chdir(fileName)
+        # finally:
+        c.endUpdate()
+        c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
     def revert (self,event=None):
@@ -1199,15 +1197,15 @@ class baseCommands:
                 g.chdir(fileName)
                 s = theFile.read()
                 s = '@nocolor\n' + s
-                c.beginUpdate()
-                try:
-                    w = c.frame.body.bodyCtrl
-                    p = c.insertHeadline(op_name=undoType)
-                    p.setHeadString('@read-file-into-node ' + fileName)
-                    p.setBodyString(s)
-                    w.setAllText(s)
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                w = c.frame.body.bodyCtrl
+                p = c.insertHeadline(op_name=undoType)
+                p.setHeadString('@read-file-into-node ' + fileName)
+                p.setBodyString(s)
+                w.setAllText(s)
+                # finally:
+                c.endUpdate()
             except:
                 g.es("can not open:",fileName)
     #@-node:ekr.20070915134101:readFileIntoNode
@@ -1218,13 +1216,13 @@ class baseCommands:
 
         c = self ; u = c.undoer ; p = c.currentPosition()
 
-        c.beginUpdate()
-        try:
-            undoData = u.beforeChangeTree(p)
-            c.importCommands.readAtAutoNodes()
-            u.afterChangeTree(p,'Read @auto Nodes',undoData)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        undoData = u.beforeChangeTree(p)
+        c.importCommands.readAtAutoNodes()
+        u.afterChangeTree(p,'Read @auto Nodes',undoData)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
     #@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
     def readAtFileNodes (self,event=None):
@@ -1233,13 +1231,13 @@ class baseCommands:
 
         c = self ; u = c.undoer ; p = c.currentPosition()
 
-        c.beginUpdate()
-        try:
-            undoData = u.beforeChangeTree(p)
-            c.fileCommands.readAtFileNodes()
-            u.afterChangeTree(p,'Read @file Nodes',undoData)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        undoData = u.beforeChangeTree(p)
+        c.fileCommands.readAtFileNodes()
+        u.afterChangeTree(p,'Read @file Nodes',undoData)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
     #@+node:ekr.20031218072017.1809:importDerivedFile
     def importDerivedFile (self,event=None):
@@ -1976,12 +1974,12 @@ class baseCommands:
             #@nl
         #@    << select p and make it visible >>
         #@+node:ekr.20031218072017.2875:<< select p and make it visible >>
-        c.beginUpdate()
-        try:
-            c.frame.tree.expandAllAncestors(p)
-            c.selectVnode(p)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        c.frame.tree.expandAllAncestors(p)
+        c.selectVnode(p)
+        # finally:
+        c.endUpdate()
         #@-node:ekr.20031218072017.2875:<< select p and make it visible >>
         #@nl
         #@    << put the cursor on line n2 of the body text >>
@@ -3257,44 +3255,44 @@ class baseCommands:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
         if not pasted: return
 
-        c.beginUpdate()
-        try:
-            copiedBunchList = []
-            if pasteAsClone:
-                #@            << put only needed info in copiedBunchList >>
-                #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-                # Create a dict containing only copied tnodes.
-                copiedTnodeDict = {}
-                for p in pasted.self_and_subtree_iter():
-                    if p.v.t not in copiedTnodeDict:
-                        copiedTnodeDict[p.v.t] = p.v.t
+        # c.beginUpdate()
+        # try:
+        copiedBunchList = []
+        if pasteAsClone:
+            #@        << put only needed info in copiedBunchList >>
+            #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+            # Create a dict containing only copied tnodes.
+            copiedTnodeDict = {}
+            for p in pasted.self_and_subtree_iter():
+                if p.v.t not in copiedTnodeDict:
+                    copiedTnodeDict[p.v.t] = p.v.t
 
-                # g.trace(copiedTnodeDict.keys())
+            # g.trace(copiedTnodeDict.keys())
 
-                for t in tnodeInfoDict.keys():
-                    bunch = tnodeInfoDict.get(t)
-                    if copiedTnodeDict.get(t):
-                        copiedBunchList.append(bunch)
+            for t in tnodeInfoDict.keys():
+                bunch = tnodeInfoDict.get(t)
+                if copiedTnodeDict.get(t):
+                    copiedBunchList.append(bunch)
 
-                # g.trace('copiedBunchList',copiedBunchList)
-                #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
-                #@nl
-            undoData = u.beforeInsertNode(current,
-                pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-            c.endEditing()
-            c.validateOutline()
-            c.selectPosition(pasted)
-            pasted.setDirty()
-            c.setChanged(True)
-            # paste as first child if back is expanded.
-            back = pasted.back()
-            if back and back.isExpanded():
-                pasted.moveToNthChildOf(back,0)
-            c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
-            u.afterInsertNode(pasted,undoType,undoData)
-        finally:
-            c.endUpdate()
-            c.recolor()
+            # g.trace('copiedBunchList',copiedBunchList)
+            #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+            #@nl
+        undoData = u.beforeInsertNode(current,
+            pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+        c.endEditing()
+        c.validateOutline()
+        c.selectPosition(pasted)
+        pasted.setDirty()
+        c.setChanged(True)
+        # paste as first child if back is expanded.
+        back = pasted.back()
+        if back and back.isExpanded():
+            pasted.moveToNthChildOf(back,0)
+        c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+        u.afterInsertNode(pasted,undoType,undoData)
+        # finally:
+        c.endUpdate()
+        c.recolor()
     #@-node:ekr.20031218072017.1551:pasteOutline
     #@+node:EKR.20040610130943:pasteOutlineRetainingClones
     def pasteOutlineRetainingClones (self,event=None):
@@ -3315,12 +3313,13 @@ class baseCommands:
         c = self ; p = c.currentPosition()
         if p and c.canDehoist():
             bunch = c.hoistStack.pop()
-            c.beginUpdate()
-            try:
-                if bunch.expanded: p.expand()
-                else:              p.contract()
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            if bunch.expanded: p.expand()
+            else:              p.contract()
+            # finally:
+            c.endUpdate()
+
             c.frame.clearStatusLine()
             if c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -3339,11 +3338,12 @@ class baseCommands:
             # Remember the expansion state.
             bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
             c.hoistStack.append(bunch)
-            c.beginUpdate()
-            try:
-                p.expand()
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            p.expand()
+            # finally:
+            c.endUpdate()
+
             c.frame.clearStatusLine()
             c.frame.putStatusLine("Hoist: " + p.headString())
             c.undoer.afterHoist(p,'Hoist')
@@ -3411,11 +3411,11 @@ class baseCommands:
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
 
-        c.beginUpdate()
-        try:
-            c.endEditing() # Make sure we capture the headline for Undo.
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        c.endEditing() # Make sure we capture the headline for Undo.
+        # finally:
+        c.endUpdate(False)
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -3428,16 +3428,16 @@ class baseCommands:
                 if name:
                     return cc.removeChapterByName(name)
 
-        c.beginUpdate()
-        try:
-            undoData = u.beforeDeleteNode(p)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.doDelete(newNode)
-            c.selectPosition(newNode)
-            c.setChanged(True)
-            u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        undoData = u.beforeDeleteNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.doDelete(newNode)
+        c.selectPosition(newNode)
+        c.setChanged(True)
+        u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate()
 
         c.validateOutline()
     #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -3451,31 +3451,32 @@ class baseCommands:
 
         if not current: return
 
-        c.beginUpdate()
-        try:
-            undoData = c.undoer.beforeInsertNode(current)
-            # Make sure the new node is visible when hoisting.
-            if (as_child or
-                (current.hasChildren() and current.isExpanded()) or
-                (c.hoistStack and current == c.hoistStack[-1].p)
-            ):
-                if c.config.getBool('insert_new_nodes_at_end'):
-                    p = current.insertAsLastChild()
-                else:
-                    p = current.insertAsNthChild(0)
+        # c.beginUpdate()
+        # try:
+        undoData = c.undoer.beforeInsertNode(current)
+        # Make sure the new node is visible when hoisting.
+        if (as_child or
+            (current.hasChildren() and current.isExpanded()) or
+            (c.hoistStack and current == c.hoistStack[-1].p)
+        ):
+            if c.config.getBool('insert_new_nodes_at_end'):
+                p = current.insertAsLastChild()
             else:
-                p = current.insertAfter()
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            c.selectPosition(p)
-            c.setChanged(True)
-            u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate()
-        c.beginUpdate()
-        try:
-            c.editPosition(p,selectAll=True)
-        finally:
-            c.endUpdate(False)
+                p = current.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(p)
+        c.setChanged(True)
+        u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate()
+
+        # c.beginUpdate()
+        # try:
+        c.editPosition(p,selectAll=True)
+        # finally:
+        c.endUpdate(False)
 
         return p # for mod_labels plugin.
     #@-node:ekr.20031218072017.1761:c.insertHeadline
@@ -3563,19 +3564,19 @@ class baseCommands:
 
         # g.trace(g.listToString(newChildren))
 
-        c.beginUpdate()
-        try:
-            bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
-            parent_v.t.children = newChildren
-            if parent:
-                dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-            else:
-                dirtyVnodeList = []
-            u.afterSort(p,bunch,dirtyVnodeList)
-        finally:
-            # Sorting destroys position p, and possibly the root position.
-            c.setPositionAfterSort(sortChildren)
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
+        parent_v.t.children = newChildren
+        if parent:
+            dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+        else:
+            dirtyVnodeList = []
+        u.afterSort(p,bunch,dirtyVnodeList)
+        # finally:
+        # Sorting destroys position p, and possibly the root position.
+        c.setPositionAfterSort(sortChildren)
+        c.endUpdate()
     #@-node:ekr.20050415134809.1:c.sortSiblings
     #@+node:ekr.20080503055349.1:c.setPositionAfterSort
     def setPositionAfterSort (self,sortChildren):
@@ -4417,11 +4418,11 @@ class baseCommands:
 
         # g.trace(p.headString())
 
-        c.beginUpdate()
-        try:
-            p.contract()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        p.contract()
+        # finally:
+        c.endUpdate()
 
         c.treeFocusHelper()
     #@-node:ekr.20031218072017.2901:contractNode
@@ -4452,11 +4453,11 @@ class baseCommands:
         parent = p.parent()
         if not parent: return
 
-        c.beginUpdate()
-        try:
-            parent.contract()
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        parent.contract()
+        # finally:
+        c.endUpdate(False)
 
         c.treeSelectHelper(parent)
     #@-node:ekr.20031218072017.2902:contractParent
@@ -4468,16 +4469,16 @@ class baseCommands:
 
         c = self
 
-        c.beginUpdate()
-        try:
-            p = c.rootPosition()
-            while p:
-                c.expandSubtree(p)
-                p.moveToNext()
-            c.selectVnode(c.rootPosition())
-        finally:
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try:
+        p = c.rootPosition()
+        while p:
+            c.expandSubtree(p)
+            p.moveToNext()
+        c.selectVnode(c.rootPosition())
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
 
         c.expansionLevel = 0 # Reset expansion level.
     #@-node:ekr.20031218072017.2903:expandAllHeadlines
@@ -4490,16 +4491,16 @@ class baseCommands:
         if not v: return
 
         child = v.firstChild()
-        c.beginUpdate()
-        try:
-            c.expandSubtree(v)
-            while child:
-                c.expandSubtree(child)
-                child = child.next()
-            c.selectVnode(v)
-        finally:
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try:
+        c.expandSubtree(v)
+        while child:
+            c.expandSubtree(child)
+            child = child.next()
+        c.selectVnode(v)
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
     #@-node:ekr.20031218072017.2904:expandAllSubheads
     #@+node:ekr.20031218072017.2905:expandLevel1..9
     def expandLevel1 (self,event=None):
@@ -4560,12 +4561,12 @@ class baseCommands:
 
         c = self ; v = c.currentVnode()
 
-        c.beginUpdate()
-        try:
-            v.expand()
-        finally:
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try:
+        v.expand()
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     def expandNodeAndGoToFirstChild (self,event=None):
@@ -4577,14 +4578,14 @@ class baseCommands:
             c.treeFocusHelper()
             return
 
-        c.beginUpdate()
-        try:
-            if not p.isExpanded():
-                c.expandNode()
-            c.selectVnode(p.firstChild())
-        finally:
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try:
+        if not p.isExpanded():
+            c.expandNode()
+        c.selectVnode(p.firstChild())
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
 
     def expandNodeOrGoToFirstChild (self,event=None):
 
@@ -4595,11 +4596,11 @@ class baseCommands:
             if not p.isExpanded():
                 c.expandNode()
             else:
-                c.beginUpdate()
-                try:
-                    c.selectVnode(p.firstChild())
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                c.selectVnode(p.firstChild())
+                # finally:
+                c.endUpdate()
         c.treeFocusHelper()
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4609,16 +4610,16 @@ class baseCommands:
 
         c = self ; level = 1
 
-        c.beginUpdate()
-        try:
-            for p in c.all_positions_with_unique_vnodes_iter():
-                p.contract()
-            for p in c.currentPosition().parents_iter():
-                p.expand()
-                level += 1
-        finally:
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try:
+        for p in c.all_positions_with_unique_vnodes_iter():
+            p.contract()
+        for p in c.currentPosition().parents_iter():
+            p.expand()
+            level += 1
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
 
         c.expansionLevel = level # Reset expansion level.
     #@-node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4651,31 +4652,31 @@ class baseCommands:
         c = self
         last = v.lastNode()
 
-        c.beginUpdate()
-        try:
-            while v and v != last:
-                v.expand()
-                v = v.threadNext()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        while v and v != last:
+            v.expand()
+            v = v.threadNext()
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2911:expandSubtree
     #@+node:ekr.20031218072017.2912:expandToLevel (rewritten in 4.4)
     def expandToLevel (self,level):
 
         c = self
-        c.beginUpdate()
-        try:
-            current = c.currentPosition()
-            n = current.level()
-            for p in current.self_and_subtree_iter():
-                if p.level() - n + 1 < level:
-                    p.expand()
-                else:
-                    p.contract()
-            c.expansionLevel = level
-            c.expansionNode = c.currentPosition()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        current = c.currentPosition()
+        n = current.level()
+        for p in current.self_and_subtree_iter():
+            if p.level() - n + 1 < level:
+                p.expand()
+            else:
+                p.contract()
+        c.expansionLevel = level
+        c.expansionNode = c.currentPosition()
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2912:expandToLevel (rewritten in 4.4)
     #@-node:ekr.20031218072017.2909:Utilities
     #@-node:ekr.20031218072017.2898:Expand & Contract...
@@ -4688,20 +4689,20 @@ class baseCommands:
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.currentPosition()
 
-        c.beginUpdate()
-        try:
-            u.beforeChangeGroup(current,undoType)
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if p.isDirty()and not p.isMarked():
-                    bunch = u.beforeMark(p,undoType)
-                    c.setMarked(p)
-                    c.setChanged(True)
-                    u.afterMark(p,undoType,bunch)
-            u.afterChangeGroup(current,undoType)
-            if not g.unitTesting:
-                g.es("done",color="blue")
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        u.beforeChangeGroup(current,undoType)
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if p.isDirty()and not p.isMarked():
+                bunch = u.beforeMark(p,undoType)
+                c.setMarked(p)
+                c.setChanged(True)
+                u.afterMark(p,undoType,bunch)
+        u.afterChangeGroup(current,undoType)
+        if not g.unitTesting:
+            g.es("done",color="blue")
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2923:markChangedHeadlines
     #@+node:ekr.20031218072017.2924:markChangedRoots
     def markChangedRoots (self,event=None):
@@ -4711,23 +4712,23 @@ class baseCommands:
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.currentPosition()
 
-        c.beginUpdate()
-        try:
-            u.beforeChangeGroup(current,undoType)
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if p.isDirty()and not p.isMarked():
-                    s = p.bodyString()
-                    flag, i = g.is_special(s,0,"@root")
-                    if flag:
-                        bunch = u.beforeMark(p,undoType)
-                        c.setMarked(p)
-                        c.setChanged(True)
-                        u.afterMark(p,undoType,bunch)
-            u.afterChangeGroup(current,undoType)
-            if not g.unitTesting:
-                g.es("done",color="blue")
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        u.beforeChangeGroup(current,undoType)
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if p.isDirty()and not p.isMarked():
+                s = p.bodyString()
+                flag, i = g.is_special(s,0,"@root")
+                if flag:
+                    bunch = u.beforeMark(p,undoType)
+                    c.setMarked(p)
+                    c.setChanged(True)
+                    u.afterMark(p,undoType,bunch)
+        u.afterChangeGroup(current,undoType)
+        if not g.unitTesting:
+            g.es("done",color="blue")
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2924:markChangedRoots
     #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     def markAllAtFileNodesDirty (self,event=None):
@@ -5351,16 +5352,16 @@ class baseCommands:
 
         if not p: g.es("done",color="blue")
 
-        c.beginUpdate()
-        try:
-            if cc:
-                name = cc.findChapterNameForPosition(p)
-                cc.selectChapterByName(name)
-                c.frame.tree.expandAllAncestors(p)
+        # c.beginUpdate()
+        # try:
+        if cc:
+            name = cc.findChapterNameForPosition(p)
+            cc.selectChapterByName(name)
+            c.frame.tree.expandAllAncestors(p)
 
-            c.selectPosition(p)
-        finally:
-            c.endUpdate() 
+        c.selectPosition(p)
+        # finally:
+        c.endUpdate() 
     #@-node:ekr.20031218072017.2916:goToNextClone
     #@+node:ekr.20071213123942:findNextClone
     def findNextClone (self,event=None):
@@ -5380,16 +5381,16 @@ class baseCommands:
                 p.moveToThreadNext()
 
         if flag:
-            c.beginUpdate()
-            try:
-                cc = c.chapterController
-                if cc:
-                    name = cc.findChapterNameForPosition(p)
-                    cc.selectChapterByName(name)
-                c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            cc = c.chapterController
+            if cc:
+                name = cc.findChapterNameForPosition(p)
+                cc.selectChapterByName(name)
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p)
+            # finally:
+            c.endUpdate()
         else:
             g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
@@ -5550,12 +5551,12 @@ class baseCommands:
         c = self ; current = c.currentPosition()
 
         if p:
-            c.beginUpdate()
-            try:
-                c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p,updateBeadList=False)
-            finally:
-                c.endUpdate(redraw)
+            # c.beginUpdate()
+            # try:
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p,updateBeadList=False)
+            # finally:
+            c.endUpdate(redraw)
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -6860,15 +6861,15 @@ class baseCommands:
 
         # Keep the body text in the tnode up-to-date.
         if v.t._bodyString != s:
-            c.beginUpdate()
-            try:
-                v.setBodyString(s)
-                v.t.setSelection(0,0)
-                p.setDirty()
-                if not c.isChanged():
-                    c.setChanged(True)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            v.setBodyString(s)
+            v.t.setSelection(0,0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+            # finally:
+            c.endUpdate()
     #@-node:ekr.20040305223522:c.setBodyString
     #@+node:ekr.20031218072017.2989:c.setChanged
     def setChanged (self,changedFlag):
