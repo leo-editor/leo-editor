@@ -1666,6 +1666,8 @@ for z in aList:
 
 { abc }
 
+a b @ c
+
 asm[ abc ]asm
 
 .( ) \ a string

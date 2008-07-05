@@ -196,6 +196,7 @@ def match_at_color (self,s,i):
 
     seq = '@color'
 
+    # Only matches at start of line.
     if i != 0 and s[i-1] != '\n': return 0
 
     if g.match_word(s,i,seq):
@@ -212,6 +213,7 @@ def match_at_nocolor (self,s,i):
 
     if trace_leo_matches: g.trace()
 
+    # Only matches at start of line.
     if i != 0 and s[i-1] != '\n':
         return 0
     if not g.match_word(s,i,'@nocolor'):
@@ -232,6 +234,10 @@ def match_at_nocolor (self,s,i):
 #@-node:ekr.20071010193720.11:match_at_nocolor
 #@+node:ekr.20071010193720.12:match_doc_part
 def match_doc_part (self,s,i):
+
+    # New in Leo 4.5: only matches at start of line.
+    if i != 0 and s[i-1] != '\n':
+        return 0
 
     if g.match_word(s,i,'@doc'):
         j = i+4
@@ -257,7 +263,6 @@ def match_doc_part (self,s,i):
             j = k + 2
     j = n - 1
     return max(0,j - i) # Bug fix: 2008/2/10
-#@nonl
 #@-node:ekr.20071010193720.12:match_doc_part
 #@+node:ekr.20071010193720.13:match_leo_keywords
 def match_leo_keywords(self,s,i):
@@ -522,9 +527,7 @@ class colorizer:
 
         '''Put Leo-specific rules to theList.'''
 
-        # g.trace() ; g.pdb()
-
-        for ch, rule, atFront, in (
+        table = (
             # Rules added at front are added in **reverse** order.
             ('@',  match_leo_keywords,True), # Called after all other Leo matchers.
                 # Debatable: Leo keywords override langauge keywords.
@@ -538,7 +541,10 @@ class colorizer:
             # Python rule 3 appears to work well enough.
             #('"',  match_incomplete_strings, False),
             #("'",  match_incomplete_strings, False),
-        ):
+        )
+
+        for ch, rule, atFront, in table:
+
             theList = theDict.get(ch,[])
             if atFront:
                 theList.insert(0,rule)
