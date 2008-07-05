@@ -562,17 +562,17 @@ class leoFind:
         c.widgetWantsFocus(w)
 
         # No redraws here: they would destroy the headline selection.
-        c.beginUpdate()
-        try:
-            if self.mark_changes:
-                p.setMarked()
-            if self.in_headline:
-                c.frame.tree.onHeadChanged(p,'Change')
-            else:
-                c.frame.body.onBodyChanged('Change',oldSel=oldSel)
-        finally:
-            c.endUpdate(False)
-            c.frame.tree.drawIcon(p) # redraw only the icon.
+        # c.beginUpdate()
+        # try:
+        if self.mark_changes:
+            p.setMarked()
+        if self.in_headline:
+            c.frame.tree.onHeadChanged(p,'Change')
+        else:
+            c.frame.body.onBodyChanged('Change',oldSel=oldSel)
+        # finally:
+        c.endUpdate(False)
+        c.frame.tree.drawIcon(p) # redraw only the icon.
 
         return True
     #@+node:ekr.20060526201951:makeRegexSubs
@@ -1338,22 +1338,23 @@ class leoFind:
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
         redraw = not p.isVisible(c)
-        c.beginUpdate()
-        try:
-            if sparseFind and not c.currentPosition().isAncestorOf(p):
-                # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-                for p2 in c.currentPosition().self_and_parents_iter():
-                    p2.contract()
-                    redraw = True
-            for p in self.p.parents_iter():
-                if not p.isExpanded():
-                    p.expand()
-                    redraw = True
-            p = self.p
-            if not p: g.trace('can not happen: self.p is None')
-            c.selectPosition(p)
-        finally:
-            c.endUpdate(redraw)
+        # c.beginUpdate()
+        # try:
+        if sparseFind and not c.currentPosition().isAncestorOf(p):
+            # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
+            for p2 in c.currentPosition().self_and_parents_iter():
+                p2.contract()
+                redraw = True
+        for p in self.p.parents_iter():
+            if not p.isExpanded():
+                p.expand()
+                redraw = True
+        p = self.p
+        if not p: g.trace('can not happen: self.p is None')
+        c.selectPosition(p)
+        # finally:
+        c.endUpdate(redraw)
+
         if self.in_headline:
             c.editPosition(p)
         # Set the focus and selection after the redraw.
