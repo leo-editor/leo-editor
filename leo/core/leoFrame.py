@@ -792,16 +792,9 @@ class leoBody:
 
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-
-    if g.newDrawing:
-
-        def recolor(self,p,incremental=False):
-            self.c.requestRecolorFlag = True
-            self.c.incrementalRecolorFlag = incremental
-    else:
-
-        def recolor(self,p,incremental=False):
-            self.colorizer.colorize(p.copy(),incremental)
+    def recolor(self,p,incremental=False):
+        self.c.requestRecolorFlag = True
+        self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
 

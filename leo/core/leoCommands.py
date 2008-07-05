@@ -70,12 +70,10 @@ class baseCommands:
 
         c = self
 
-        if g.newDrawing:
-            self.requestedFocusWidget = None
-            self.requestRedrawFlag = False
-            self.requestRedrawScrollFlag = False
-            self.requestedIconify = '' # 'iconify','deiconify'
-            # g.es('Using new drawing code',color='red')
+        self.requestedFocusWidget = None
+        self.requestRedrawFlag = False
+        self.requestRedrawScrollFlag = False
+        self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
         # g.trace('Commands')
@@ -5868,363 +5866,357 @@ class baseCommands:
     #@-node:ekr.20031218072017.2948:c.dragCloneAfter
     #@-node:ekr.20031218072017.2945:Dragging (commands)
     #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
-    #@+node:ekr.20080514131122.6:New code
-    if g.newDrawing:
+    #@+node:ekr.20080514131122.7:c.begin/endUpdate
 
-        #@    @+others
-        #@+node:ekr.20080514131122.7:c.begin/endUpdate
+    def beginUpdate(self):
 
-        def beginUpdate(self):
+        '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
+        until the matching call to endUpdate.'''
 
-            '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-            until the matching call to endUpdate.'''
+        pass
 
-            pass
+    def endUpdate(self,flag=True,scroll=True):
 
-        def endUpdate(self,flag=True,scroll=True):
+        '''Redraw the screen if flag is True.'''
 
-            '''Redraw the screen if flag is True.'''
+        c = self
+        if flag:
+            c.requestRedrawFlag = True
+            c.requestRedrawScrollFlag = scroll
+            # g.trace('flag is True',c.shortFileName(),g.callers())
 
-            c = self
-            if flag:
-                c.requestRedrawFlag = True
-                c.requestRedrawScrollFlag = scroll
-                # g.trace('flag is True',c.shortFileName(),g.callers())
+    BeginUpdate = beginUpdate # Compatibility with old scripts
+    EndUpdate = endUpdate # Compatibility with old scripts
+    #@-node:ekr.20080514131122.7:c.begin/endUpdate
+    #@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+    # These wrappers ensure that c.outerUpdate get called.
+    #@nonl
+    #@+node:ekr.20080610085158.2:c.add_command
+    def add_command (self,menu,**keys):
 
-        BeginUpdate = beginUpdate # Compatibility with old scripts
-        EndUpdate = endUpdate # Compatibility with old scripts
-        #@-node:ekr.20080514131122.7:c.begin/endUpdate
-        #@+node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
-        # These wrappers ensure that c.outerUpdate get called.
-        #@nonl
-        #@+node:ekr.20080610085158.2:c.add_command
-        def add_command (self,menu,**keys):
+        c = self ; command = keys.get('command')
 
-            c = self ; command = keys.get('command')
+        if command:
 
-            if command:
-
-                def add_commandCallback(c=c,command=command):
-                    val = command()
-                    # Careful: func may destroy c.
-                    if c.exists: c.outerUpdate()
-                    return val
-
-                keys ['command'] = add_commandCallback
-
-                menu.add_command(**keys)
-
-            else:
-                g.trace('can not happen: no "command" arg')
-        #@-node:ekr.20080610085158.2:c.add_command
-        #@+node:ekr.20080610085158.3:c.bind and c.bind2
-        def bind (self,w,pattern,func,*args,**keys):
-
-            c = self ; callers = g.callers()
-
-            def bindCallback(event,c=c,func=func,callers=callers):
-                # g.trace('w',w,'binding callers',callers)
-                val = func(event)
+            def add_commandCallback(c=c,command=command):
+                val = command()
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback,*args,**keys)
+            keys ['command'] = add_commandCallback
 
-        def bind2 (self,w,pattern,func,*args,**keys):
+            menu.add_command(**keys)
 
-            c = self
+        else:
+            g.trace('can not happen: no "command" arg')
+    #@-node:ekr.20080610085158.2:c.add_command
+    #@+node:ekr.20080610085158.3:c.bind and c.bind2
+    def bind (self,w,pattern,func,*args,**keys):
 
-            def bindCallback2(event,c=c,func=func):
-                val = func(event)
-                # Careful: func may destroy c.
-                if c.exists: c.outerUpdate()
-                return val
+        c = self ; callers = g.callers()
 
-            w.bind(pattern,bindCallback2,*args,**keys)
-        #@-node:ekr.20080610085158.3:c.bind and c.bind2
-        #@+node:ekr.20080610085158.4:c.tag_bind
-        def tag_bind (self,w,tag,event_kind,func):
+        def bindCallback(event,c=c,func=func,callers=callers):
+            # g.trace('w',w,'binding callers',callers)
+            val = func(event)
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
 
-            c = self
-            def tag_bindCallback(event,c=c,func=func):
-                val = func(event)
-                # Careful: func may destroy c.
-                if c.exists: c.outerUpdate()
-                return val
+        w.bind(pattern,bindCallback,*args,**keys)
 
-            w.tag_bind(tag,event_kind,tag_bindCallback)
-        #@-node:ekr.20080610085158.4:c.tag_bind
-        #@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
-        #@+node:ekr.20080514131122.8:c.bringToFront
-        def bringToFront(self,set_focus=True):
+    def bind2 (self,w,pattern,func,*args,**keys):
 
-            c = self
-            c.requestedIconify = 'deiconify'
-            c.requestedFocusWidget = c.frame.body.bodyCtrl
+        c = self
 
-        BringToFront = bringToFront # Compatibility with old scripts
-        #@-node:ekr.20080514131122.8:c.bringToFront
-        #@+node:ekr.20080514131122.9:c.get/request/set_focus
-        def get_focus (self):
+        def bindCallback2(event,c=c,func=func):
+            val = func(event)
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
 
-            c = self
-            return g.app.gui and g.app.gui.get_focus(c)
+        w.bind(pattern,bindCallback2,*args,**keys)
+    #@-node:ekr.20080610085158.3:c.bind and c.bind2
+    #@+node:ekr.20080610085158.4:c.tag_bind
+    def tag_bind (self,w,tag,event_kind,func):
 
-        def get_requested_focus (self):
+        c = self
+        def tag_bindCallback(event,c=c,func=func):
+            val = func(event)
+            # Careful: func may destroy c.
+            if c.exists: c.outerUpdate()
+            return val
 
-            c = self
-            return c.requestedFocusWidget
+        w.tag_bind(tag,event_kind,tag_bindCallback)
+    #@-node:ekr.20080610085158.4:c.tag_bind
+    #@-node:ekr.20080515053412.1:c.add_command, c.bind, c.bind2 & c.tag_bind
+    #@+node:ekr.20080514131122.8:c.bringToFront
+    def bringToFront(self,set_focus=True):
 
-        def request_focus(self,w):
+        c = self
+        c.requestedIconify = 'deiconify'
+        c.requestedFocusWidget = c.frame.body.bodyCtrl
 
-            c = self
-            if w: c.requestedFocusWidget = w
+    BringToFront = bringToFront # Compatibility with old scripts
+    #@-node:ekr.20080514131122.8:c.bringToFront
+    #@+node:ekr.20080514131122.9:c.get/request/set_focus
+    def get_focus (self):
 
-        def set_focus (self,w,force=False):
+        c = self
+        return g.app.gui and g.app.gui.get_focus(c)
 
-            c = self
-            if w and g.app.gui and c.requestedFocusWidget:
-                g.app.gui.set_focus(c,w)
+    def get_requested_focus (self):
 
-            c.requestedFocusWidget = None
-        #@-node:ekr.20080514131122.9:c.get/request/set_focus
-        #@+node:ekr.20080514131122.10:c.invalidateFocus
-        def invalidateFocus (self):
+        c = self
+        return c.requestedFocusWidget
 
-            '''Indicate that the focus is in an invalid location, or is unknown.'''
+    def request_focus(self,w):
 
-            # c = self
+        c = self
+        if w: c.requestedFocusWidget = w
+
+    def set_focus (self,w,force=False):
+
+        c = self
+        if w and g.app.gui and c.requestedFocusWidget:
+            g.app.gui.set_focus(c,w)
+
+        c.requestedFocusWidget = None
+    #@-node:ekr.20080514131122.9:c.get/request/set_focus
+    #@+node:ekr.20080514131122.10:c.invalidateFocus
+    def invalidateFocus (self):
+
+        '''Indicate that the focus is in an invalid location, or is unknown.'''
+
+        # c = self
+        # c.requestedFocusWidget = None
+        pass
+    #@nonl
+    #@-node:ekr.20080514131122.10:c.invalidateFocus
+    #@+node:ekr.20080514131122.11:c.masterFocusHandler
+    def masterFocusHandler (self):
+
+        pass # No longer used.
+
+        # c = self
+        # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+        # # Give priority to later requests, but default to previously set widget.
+        # w = c.requestedFocusWidget or c.hasFocusWidget
+
+        # if trace: print \
+            # 'requested',c.widget_name(c.requestedFocusWidget),\
+            # 'present',c.widget_name(c.hasFocusWidget)
+
+        # if c.hasFocusWidget and (
+            # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+            # if trace: print 'no change.',c.widget_name(w)
             # c.requestedFocusWidget = None
+        # elif w:
+            # # Ignore whatever g.app.gui.get_focus might say.
+            # ok = g.app.gui.set_focus(c,w)
+            # if ok: c.hasFocusWidget = w
+            # c.requestedFocusWidget = None    # c = self
+        # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+
+        # # Give priority to later requests, but default to previously set widget.
+        # w = c.requestedFocusWidget or c.hasFocusWidget
+
+        # if trace: print \
+            # 'requested',c.widget_name(c.requestedFocusWidget),\
+            # 'present',c.widget_name(c.hasFocusWidget)
+
+        # if c.hasFocusWidget and (
+            # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
+            # if trace: print 'no change.',c.widget_name(w)
+            # c.requestedFocusWidget = None
+        # elif w:
+            # # Ignore whatever g.app.gui.get_focus might say.
+            # ok = g.app.gui.set_focus(c,w)
+            # if ok: c.hasFocusWidget = w
+            # c.requestedFocusWidget = None
+        # else:
+            # # This is not an error: it can arise because of a call to k.invalidateFocus.
+            # if trace: print '*'*20,'oops: moving to body pane.'
+            # c.bodyWantsFocusNow()
+        # else:
+            # # This is not an error: it can arise because of a call to k.invalidateFocus.
+            # if trace: print '*'*20,'oops: moving to body pane.'
+            # c.bodyWantsFocusNow()
+
+    restoreRequestedFocus = masterFocusHandler
+    #@-node:ekr.20080514131122.11:c.masterFocusHandler
+    #@+node:ekr.20080514131122.20:c.outerUpdate
+    def outerUpdate (self):
+
+        c = self ; aList = [] ; trace = False ; verbose = False
+
+        if not c.exists or not c.k:
+            return
+
+        # Suppress any requested redraw until we have iconified or diconified.
+        redrawFlag = c.requestRedrawFlag
+        scrollFlag = c.requestRedrawScrollFlag
+        c.requestRedrawFlag = False
+        c.requestRedrawScrollFlag = False
+
+        if c.requestedIconify == 'iconify':
+            if verbose: aList.append('iconify')
+            c.frame.iconify()
+
+        if c.requestedIconify == 'deiconify':
+            if verbose: aList.append('deiconify')
+            c.frame.deiconify()
+
+        if redrawFlag:
+            # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+            # A hack: force the redraw, even if we are dragging.
+            aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+            c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+        if c.requestRecolorFlag:
+            if verbose: aList.append('%srecolor' % (
+                g.choose(c.incrementalRecolorFlag,'','full ')))
+            c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+        if c.requestedFocusWidget:
+            w = c.requestedFocusWidget
+            if verbose: aList.append('focus: %s' % (
+                g.app.gui.widget_name(w)))
+            c.set_focus(w)
+        else:
+            # We can not set the focus to the body pane:
+            # That would make nested calls to c.outerUpdate significant.
             pass
-        #@nonl
-        #@-node:ekr.20080514131122.10:c.invalidateFocus
-        #@+node:ekr.20080514131122.11:c.masterFocusHandler
-        def masterFocusHandler (self):
 
-            pass # No longer used.
+        if trace and aList:
+            g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
 
-            # c = self
-            # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+        c.incrementalRecolorFlag = False
+        c.requestRecolorFlag = None
+        c.requestRedrawFlag = False
+        c.requestedFocusWidget = None
+        c.requestedIconify = ''
+        c.requestedRedrawScrollFlag = False
+    #@-node:ekr.20080514131122.20:c.outerUpdate
+    #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
+    def requestRecolor (self):
 
-            # # Give priority to later requests, but default to previously set widget.
-            # w = c.requestedFocusWidget or c.hasFocusWidget
+        c = self
+        c.requestRecolorFlag = True
 
-            # if trace: print \
-                # 'requested',c.widget_name(c.requestedFocusWidget),\
-                # 'present',c.widget_name(c.hasFocusWidget)
+    recolor = requestRecolor
+    #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
+    #@+node:ekr.20080514131122.13:c.recolor_now
+    def recolor_now(self,p=None,incremental=False,interruptable=True):
 
-            # if c.hasFocusWidget and (
-                # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-                # if trace: print 'no change.',c.widget_name(w)
-                # c.requestedFocusWidget = None
-            # elif w:
-                # # Ignore whatever g.app.gui.get_focus might say.
-                # ok = g.app.gui.set_focus(c,w)
-                # if ok: c.hasFocusWidget = w
-                # c.requestedFocusWidget = None    # c = self
-            # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
+        c = self
+        if p is None:
+            p = c.currentPosition()
 
-            # # Give priority to later requests, but default to previously set widget.
-            # w = c.requestedFocusWidget or c.hasFocusWidget
+        c.frame.body.colorizer.colorize(p,
+            incremental=incremental,interruptable=interruptable)
+    #@-node:ekr.20080514131122.13:c.recolor_now
+    #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
+    def redraw (self):
+        c = self
+        c.requestRedrawFlag = True
 
-            # if trace: print \
-                # 'requested',c.widget_name(c.requestedFocusWidget),\
-                # 'present',c.widget_name(c.hasFocusWidget)
+    def redraw_now (self):
+        c = self
+        c.requestRedrawFlag = True
+        c.outerUpdate()
+        assert not c.requestRedrawFlag
 
-            # if c.hasFocusWidget and (
-                # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-                # if trace: print 'no change.',c.widget_name(w)
-                # c.requestedFocusWidget = None
-            # elif w:
-                # # Ignore whatever g.app.gui.get_focus might say.
-                # ok = g.app.gui.set_focus(c,w)
-                # if ok: c.hasFocusWidget = w
-                # c.requestedFocusWidget = None
-            # else:
-                # # This is not an error: it can arise because of a call to k.invalidateFocus.
-                # if trace: print '*'*20,'oops: moving to body pane.'
-                # c.bodyWantsFocusNow()
-            # else:
-                # # This is not an error: it can arise because of a call to k.invalidateFocus.
-                # if trace: print '*'*20,'oops: moving to body pane.'
-                # c.bodyWantsFocusNow()
+    # Compatibility with old scripts
+    force_redraw = redraw_now
+    #@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
+    #@+node:ekr.20080514131122.15:c.restoreFocus
+    def restoreFocus (self):
 
-        restoreRequestedFocus = masterFocusHandler
-        #@-node:ekr.20080514131122.11:c.masterFocusHandler
-        #@+node:ekr.20080514131122.20:c.outerUpdate
-        def outerUpdate (self):
+        '''Ensure that the focus eventually gets restored.'''
+        pass
+        # g.trace(g.callers(5))
 
-            c = self ; aList = [] ; trace = False ; verbose = False
+        # c =self
+        # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
 
-            if not c.exists or not c.k:
-                return
+        # if c.requestedFocusWidget:
+            # c.hasFocusWidget = None # Force an update
+        # elif c.hasFocusWidget:
+            # c.requestedFocusWidget = c.hasFocusWidget
+            # c.hasFocusWidget = None # Force an update
+        # else:
+            # # Should not happen, except during unit testing.
+            # # c.masterFocusHandler sets c.hasFocusWidget,
+            # # so if it is not set here it is because this method cleared it.
+            # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
+            # c.bodyWantsFocusNow()
 
-            # Suppress any requested redraw until we have iconified or diconified.
-            redrawFlag = c.requestRedrawFlag
-            scrollFlag = c.requestRedrawScrollFlag
-            c.requestRedrawFlag = False
-            c.requestRedrawScrollFlag = False
+        # if c.inCommand:
+            # if trace: g.trace('expecting later call to c.masterFocusHandler')
+            # # A call to c.masterFocusHandler will surely happen.
+        # else:
+            # c.masterFocusHandler() # Do it now.
+    #@-node:ekr.20080514131122.15:c.restoreFocus
+    #@+node:ekr.20080514131122.16:c.traceFocus
+    trace_focus_count = 0
 
-            if c.requestedIconify == 'iconify':
-                if verbose: aList.append('iconify')
-                c.frame.iconify()
+    def traceFocus (self,w):
 
-            if c.requestedIconify == 'deiconify':
-                if verbose: aList.append('deiconify')
-                c.frame.deiconify()
+        c = self
 
-            if redrawFlag:
-                # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-                # A hack: force the redraw, even if we are dragging.
-                aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
-                c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+            c.trace_focus_count += 1
+            print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+    #@-node:ekr.20080514131122.16:c.traceFocus
+    #@+node:ekr.20080514131122.17:c.widget_name
+    def widget_name (self,widget):
 
-            if c.requestRecolorFlag:
-                if verbose: aList.append('%srecolor' % (
-                    g.choose(c.incrementalRecolorFlag,'','full ')))
-                c.recolor_now(incremental=c.incrementalRecolorFlag)
+        c = self
 
-            if c.requestedFocusWidget:
-                w = c.requestedFocusWidget
-                if verbose: aList.append('focus: %s' % (
-                    g.app.gui.widget_name(w)))
-                c.set_focus(w)
-            else:
-                # We can not set the focus to the body pane:
-                # That would make nested calls to c.outerUpdate significant.
-                pass
+        return g.app.gui and g.app.gui.widget_name(widget) or ''
+    #@-node:ekr.20080514131122.17:c.widget_name
+    #@+node:ekr.20080514131122.18:c.xWantsFocus (no change)
+    def bodyWantsFocus(self):
+        c = self ; body = c.frame.body
+        c.request_focus(body and body.bodyCtrl)
 
-            if trace and aList:
-                g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+    def headlineWantsFocus(self,p):
+        c = self
+        c.request_focus(p and c.edit_widget(p))
 
-            c.incrementalRecolorFlag = False
-            c.requestRecolorFlag = None
-            c.requestRedrawFlag = False
-            c.requestedFocusWidget = None
-            c.requestedIconify = ''
-            c.requestedRedrawScrollFlag = False
-        #@-node:ekr.20080514131122.20:c.outerUpdate
-        #@+node:ekr.20080514131122.12:c.recolor & requestRecolor
-        def requestRecolor (self):
+    def logWantsFocus(self):
+        c = self ; log = c.frame.log
+        c.request_focus(log and log.logCtrl)
 
-            c = self
-            c.requestRecolorFlag = True
+    def minibufferWantsFocus(self):
+        c = self ; k = c.k
+        if k: k.minibufferWantsFocus()
 
-        recolor = requestRecolor
-        #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
-        #@+node:ekr.20080514131122.13:c.recolor_now
-        def recolor_now(self,p=None,incremental=False,interruptable=True):
+    def treeWantsFocus(self):
+        c = self ; tree = c.frame.tree
+        c.request_focus(tree and tree.canvas)
 
-            c = self
-            if p is None:
-                p = c.currentPosition()
+    def widgetWantsFocus(self,w):
+        c = self ; c.request_focus(w)
+    #@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
+    #@+node:ekr.20080514131122.19:c.xWantsFocusNow
+    # widgetWantsFocusNow does an automatic update.
+    def widgetWantsFocusNow(self,w):
+        c = self
+        c.request_focus(w)
+        c.outerUpdate()
+        # Re-request widget so we don't use the body by default.
+        c.request_focus(w) 
 
-            c.frame.body.colorizer.colorize(p,
-                incremental=incremental,interruptable=interruptable)
-        #@-node:ekr.20080514131122.13:c.recolor_now
-        #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
-        def redraw (self):
-            c = self
-            c.requestRedrawFlag = True
-
-        def redraw_now (self):
-            c = self
-            c.requestRedrawFlag = True
-            c.outerUpdate()
-            assert not c.requestRedrawFlag
-
-        # Compatibility with old scripts
-        force_redraw = redraw_now
-        #@-node:ekr.20080514131122.14:c.redraw and c.redraw_now
-        #@+node:ekr.20080514131122.15:c.restoreFocus
-        def restoreFocus (self):
-
-            '''Ensure that the focus eventually gets restored.'''
-            pass
-            # g.trace(g.callers(5))
-
-            # c =self
-            # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
-
-            # if c.requestedFocusWidget:
-                # c.hasFocusWidget = None # Force an update
-            # elif c.hasFocusWidget:
-                # c.requestedFocusWidget = c.hasFocusWidget
-                # c.hasFocusWidget = None # Force an update
-            # else:
-                # # Should not happen, except during unit testing.
-                # # c.masterFocusHandler sets c.hasFocusWidget,
-                # # so if it is not set here it is because this method cleared it.
-                # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
-                # c.bodyWantsFocusNow()
-
-            # if c.inCommand:
-                # if trace: g.trace('expecting later call to c.masterFocusHandler')
-                # # A call to c.masterFocusHandler will surely happen.
-            # else:
-                # c.masterFocusHandler() # Do it now.
-        #@-node:ekr.20080514131122.15:c.restoreFocus
-        #@+node:ekr.20080514131122.16:c.traceFocus
-        trace_focus_count = 0
-
-        def traceFocus (self,w):
-
-            c = self
-
-            if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
-                c.trace_focus_count += 1
-                print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
-        #@-node:ekr.20080514131122.16:c.traceFocus
-        #@+node:ekr.20080514131122.17:c.widget_name
-        def widget_name (self,widget):
-
-            c = self
-
-            return g.app.gui and g.app.gui.widget_name(widget) or ''
-        #@-node:ekr.20080514131122.17:c.widget_name
-        #@+node:ekr.20080514131122.18:c.xWantsFocus (no change)
-        def bodyWantsFocus(self):
-            c = self ; body = c.frame.body
-            c.request_focus(body and body.bodyCtrl)
-
-        def headlineWantsFocus(self,p):
-            c = self
-            c.request_focus(p and c.edit_widget(p))
-
-        def logWantsFocus(self):
-            c = self ; log = c.frame.log
-            c.request_focus(log and log.logCtrl)
-
-        def minibufferWantsFocus(self):
-            c = self ; k = c.k
-            if k: k.minibufferWantsFocus()
-
-        def treeWantsFocus(self):
-            c = self ; tree = c.frame.tree
-            c.request_focus(tree and tree.canvas)
-
-        def widgetWantsFocus(self,w):
-            c = self ; c.request_focus(w)
-        #@-node:ekr.20080514131122.18:c.xWantsFocus (no change)
-        #@+node:ekr.20080514131122.19:c.xWantsFocusNow
-        # widgetWantsFocusNow does an automatic update.
-        def widgetWantsFocusNow(self,w):
-            c = self
-            c.request_focus(w)
-            c.outerUpdate()
-            # Re-request widget so we don't use the body by default.
-            c.request_focus(w) 
-
-        # All other "Now" methods wait.
-        bodyWantsFocusNow = bodyWantsFocus
-        headlineWantsFocusNow = headlineWantsFocus
-        logWantsFocusNow = logWantsFocus
-        minibufferWantsFocusNow = minibufferWantsFocus
-        treeWantsFocusNow = treeWantsFocus
-        #@-node:ekr.20080514131122.19:c.xWantsFocusNow
-        #@-others
-    #@-node:ekr.20080514131122.6:New code
+    # All other "Now" methods wait.
+    bodyWantsFocusNow = bodyWantsFocus
+    headlineWantsFocusNow = headlineWantsFocus
+    logWantsFocusNow = logWantsFocus
+    minibufferWantsFocusNow = minibufferWantsFocus
+    treeWantsFocusNow = treeWantsFocus
+    #@-node:ekr.20080514131122.19:c.xWantsFocusNow
     #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
     #@+node:ekr.20031218072017.2955:Enabling Menu Items
     #@+node:ekr.20040323172420:Slow routines: no longer used

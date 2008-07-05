@@ -8386,10 +8386,6 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 #@-node:ekr.20040803072955.59:redrawHelper
 #@-node:ekr.20040803072955.58:tree.redraw_now & helper
 #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
-#@+node:ekr.20080514131122.6:New code
-if g.newDrawing:
-
-    @others
 #@+node:ekr.20080514131122.7:c.begin/endUpdate
 
 def beginUpdate(self):
@@ -8741,7 +8737,6 @@ logWantsFocusNow = logWantsFocus
 minibufferWantsFocusNow = minibufferWantsFocus
 treeWantsFocusNow = treeWantsFocus
 #@-node:ekr.20080514131122.19:c.xWantsFocusNow
-#@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
 #@+node:ekr.20031218072017.1723:createMenuEntries
 def createMenuEntries (self,menu,table,dynamicMenu=False):
@@ -14337,12 +14332,10 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     c = self
 
-    if g.newDrawing:
-        self.requestedFocusWidget = None
-        self.requestRedrawFlag = False
-        self.requestRedrawScrollFlag = False
-        self.requestedIconify = '' # 'iconify','deiconify'
-        # g.es('Using new drawing code',color='red')
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestRedrawScrollFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
     self.requestRecolorFlag = False
 
     # g.trace('Commands')

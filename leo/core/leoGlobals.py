@@ -90,8 +90,6 @@ unitTesting = False # A synonym for app.unitTesting.
 # It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
     # True: (Not recommended) unify vnodes and tnodes into a single vnode.
-newDrawing = True
-    # True: use c.outerUpdate to complete drawing, focus, recoloring.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
