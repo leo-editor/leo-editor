@@ -781,6 +781,7 @@ class colorizer:
 
         # Create the word_chars list. 
         self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+
         for key in d.keys():
             for ch in key:
                 # if ch == ' ': g.trace('blank in key: %s' % repr (key))
@@ -788,12 +789,13 @@ class colorizer:
                     self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
 
         # jEdit2Py now does this check, so this isn't really needed.
+        # But it is needed for forth.py.
         for ch in (' ', '\t'):
             if ch in self.word_chars:
-                g.es_print('removing %s from word_chars' % (repr(ch)))
+                # g.es_print('removing %s from word_chars' % (repr(ch)))
                 self.word_chars.remove(ch)
 
-        # g.trace(len(d.keys()))
+        # g.trace(self.language,[str(z) for z in self.word_chars])
     #@nonl
     #@-node:ekr.20071010193720.28:setKeywords
     #@+node:ekr.20071010193720.29:setModeAttributes
@@ -1507,7 +1509,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,seq):
             #j = g.skip_to_end_of_line(s,i)
@@ -1531,7 +1535,7 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
 
         n = self.match_regexp_helper(s,i,regexp)
         if n > 0:
@@ -1590,7 +1594,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,pattern):
             j = i + len(pattern)
@@ -1637,7 +1643,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,pattern):
             j = i + len(pattern)
@@ -1700,8 +1708,10 @@ class colorizer:
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
             j = i
-        elif at_word_start and i > 0 and s[i-1] not in self.word_chars:
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars:  # 7/5/2008
             j = i
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            j = i # 7/5/2008
         elif g.match(s,i,seq):
             j = i + len(seq)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
@@ -1724,7 +1734,7 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
 
         # g.trace('before')
         n = self.match_regexp_helper(s,i,regexp)
@@ -1750,8 +1760,10 @@ class colorizer:
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
             j = i
-        elif at_word_start and i > 0 and s[i-1] not in self.word_chars:
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars: # 7/5/2008
             j = i
+        elif at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            j = i # 7/5/2008
         elif not g.match(s,i,begin):
             j = i
         else:
@@ -1759,7 +1771,6 @@ class colorizer:
             if j == -1:
                 j = i
             else:
-
                 i2 = i + len(begin) ; j2 = j + len(end)
                 # g.trace(i,j,s[i:j2],kind)
                 if delegate:
@@ -1820,7 +1831,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            return 0 # 7/5/2008
 
         n = self.match_regexp_helper(s,i,begin)
         # We may have to allow $n here, in which case we must use a regex object?
@@ -1864,7 +1877,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
+            j = i # 7/5/2008
 
         if not g.match(s,i,word):
             return 0

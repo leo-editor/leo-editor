@@ -11,13 +11,13 @@ import leo.core.leoGlobals as g
 
 def forth_block_comment_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def forth_comment_rule(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
         delegate="", exclude_match=False)
 
 def forth_keyword_rule(colorer, s, i):
@@ -25,7 +25,7 @@ def forth_keyword_rule(colorer, s, i):
 
 def forth_string_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
@@ -188,6 +188,8 @@ class extendForth:
     #@    @+others
     #@+node:ekr.20080703111151.5:ctor
     def __init__ (self):
+
+        # g.trace('modes/forth.py:extendForth')
 
         # Default forth keywords: extended by leo-forthwords.txt.
 
@@ -378,17 +380,18 @@ class extendForth:
             for z in keywordList:
                 # Create the entry in the keyword table.
                 if kind == 'string':
-                    func = self.createStringRule(z)
-                    # Don't set d: the created rule handles everything.
+                    func = self.createStringRule(d,z)
                 else:
                     func = forth_keyword_rule
-                    d [z] = kind
+
+                # Always make the entry.
+                d [z] = kind
                 self.extendRulesDict(ch=z[0],func=func)
     #@-node:ekr.20080703111151.6:createKeywords
     #@+node:ekr.20080703111151.10:createStringRule
-    def createStringRule (self,pair):
+    def createStringRule (self,d,pair):
 
-        '''Create an entry in the global forth_main_keywords_dict for a string keyword.'''
+        '''Create an entry in d for a string keyword.'''
 
         aList = pair.split(' ')
         if len(aList) != 2:
@@ -399,12 +402,11 @@ class extendForth:
 
         def forth_string_word_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-                at_line_start=False, at_whitespace_end=False, at_word_start=False,
+                at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
                 delegate="",exclude_match=False,
                 no_escape=False, no_line_break=False, no_word_break=False)
 
         return forth_string_word_rule
-    #@nonl
     #@-node:ekr.20080703111151.10:createStringRule
     #@+node:ekr.20080703111151.11:extendRulesDict
     def extendRulesDict (self,ch,func):

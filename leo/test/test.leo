@@ -1670,7 +1670,7 @@ a b @ c
 
 asm[ abc ]asm
 
-.( ) \ a string
+.( ab ) \ a string
    
 : foo [ .s ] ;
 
