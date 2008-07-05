@@ -447,6 +447,8 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20061109215734:Events (tkGui)
     def event_generate(self,w,kind,*args,**keys):
         '''Generate an event.'''
+        # g.trace('tkGui','kind',kind,'w',w,'args,keys',*args,**keys)
+        # g.trace(g.callers())
         return w.event_generate(kind,*args,**keys)
 
     def eventChar (self,event,c=None):
@@ -504,6 +506,10 @@ class tkinterGui(leoGui.leoGui):
 
                 # It's possible that the widget doesn't exist now.
                 w.focus_set()
+
+                # This often fails.  The focus will be delayed until later...
+                # if not w != w.focus_get():
+                    # g.trace('*** can not happen:',repr(w),repr(w.focus_get()))
                 return True
             except Exception:
                 # g.es_exception()

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -813,7 +813,7 @@
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
+<v t="ekr.20040712101754.2" a="E" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
 <v t="ekr.20040712101754.4"><vh>@test LeoPyRef.leo</vh></v>
@@ -2042,7 +2042,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2160,6 +2160,29 @@
 </v>
 </v>
 </v>
+<v t="ekr.20051107115231.13"><vh>Typing and undo tests</vh>
+<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
+<v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
+<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
+<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
+<v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
+<v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
+<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
+<v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
+<v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
+<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
+<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
+<v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
+<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
+<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
+<v t="ekr.20060131102450"><vh>print end of typing and undo tests</vh></v>
+</v>
+<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -12787,21 +12810,31 @@ else:
 </t>
 <t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
+trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
+if trace: print '='*20
+if trace: print '1',g.app.gui.get_focus(c)
 tree.editLabel(p)
+if trace: print '2',g.app.gui.get_focus(c)
 w = c.edit_widget(p)
+if trace: print '3',g.app.gui.get_focus(c)
+w2 = g.app.gui.get_focus(c)
+assert w==w2,'w: %s, w2: %s' % (w,w2)
+
 try:
     assert w
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
+    if trace: print 'before',p.headString()
     w.event_generate('&lt;Return&gt;')
+    if trace: print 'after',p.headString()
     assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:

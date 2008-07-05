@@ -1117,6 +1117,9 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     bindStroke = k.tkbindingFromStroke(stroke)
 
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+
     if w:
         widgets = [w]
     else:
@@ -1829,6 +1832,9 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     bindStroke = k.tkbindingFromStroke(stroke)
 
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+
     if w:
         widgets = [w]
     else:
@@ -2185,6 +2191,9 @@ def makeMasterGuiBinding (self,stroke,w=None):
     k = self ; c = k.c ; f = c.frame
 
     bindStroke = k.tkbindingFromStroke(stroke)
+
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
 
     if w:
         widgets = [w]
@@ -3263,6 +3272,9 @@ def makeMasterGuiBinding (self,stroke,w=None):
 
     bindStroke = k.tkbindingFromStroke(stroke)
 
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+
     if w:
         widgets = [w]
     else:
@@ -3312,6 +3324,9 @@ def makeMasterGuiBinding (self,stroke,w=None):
     k = self ; c = k.c ; f = c.frame
 
     bindStroke = k.tkbindingFromStroke(stroke)
+
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
 
     if w:
         widgets = [w]

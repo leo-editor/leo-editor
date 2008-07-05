@@ -1784,8 +1784,6 @@ class leoFrame:
         i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
         oldText = w.getAllText()
 
-        # print 'pasteText',i,j,middleButton,wname,repr(c.k.previousSelection)
-
         if middleButton and c.k.previousSelection is not None:
             start,end = c.k.previousSelection
             s = w.getAllText()
@@ -1794,7 +1792,9 @@ class leoFrame:
         else:
             s = s1 = g.app.gui.getTextFromClipboard()
 
-        s = g.toUnicode(s,encoding=g.app.tkEncoding) # 6/22/08
+        s = g.toUnicode(s,encoding=g.app.tkEncoding)
+
+        # g.trace('pasteText','wname',wname,'s',s,g.callers())
 
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
 
@@ -2351,6 +2351,7 @@ class leoTree:
             self.revertHeadline = s
             p.initHeadString(s)
             # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+            # g.trace(g.callers())
             if changed:
                 undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
                 if not c.changed: c.setChanged(True)
@@ -2363,7 +2364,6 @@ class leoTree:
                     dirtyVnodeList=dirtyVnodeList)
         finally:
             c.endUpdate(flag=changed,scroll=False)
-                # scroll=False in 4.4.1; flag = changed in 4.4.3.
             if changed:
                 if self.stayInTree:
                     c.treeWantsFocus()

@@ -2433,7 +2433,7 @@ class leoTkinterTree (leoFrame.leoTree):
         """Start editing p's headline."""
 
         c = self.c
-        trace = (False or self.trace_edit) and not g.app.unitTesting
+        trace = (False or self.trace_edit)
 
         if p and p != self.editPosition():
 
@@ -2449,15 +2449,17 @@ class leoTkinterTree (leoFrame.leoTree):
                 c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p
-
-        if trace: g.trace(c.edit_widget(p))
-
         w = c.edit_widget(p)
+
+        if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
+
         if p and w:
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             c.headlineWantsFocus(p) # Make sure the focus sticks.
             c.k.showStateAndMode(w)
+
+        if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
     #@-node:ekr.20040803072955.127:tree.editLabel
     #@+node:ekr.20040803072955.134:tree.set...LabelState
     #@+node:ekr.20040803072955.135:setEditLabelState
@@ -2466,7 +2468,6 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; w = c.edit_widget(p)
 
         if p and w:
-            # g.trace('*****',g.callers())
             c.widgetWantsFocusNow(w)
             self.setEditHeadlineColors(p)
             selectAll = selectAll or self.select_all_text_when_editing_headlines

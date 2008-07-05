@@ -5920,9 +5920,10 @@ class baseCommands:
         #@+node:ekr.20080610085158.3:c.bind and c.bind2
         def bind (self,w,pattern,func,*args,**keys):
 
-            c = self
+            c = self ; callers = g.callers()
 
-            def bindCallback(event,c=c,func=func):
+            def bindCallback(event,c=c,func=func,callers=callers):
+                # g.trace('w',w,'binding callers',callers)
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
@@ -5934,13 +5935,13 @@ class baseCommands:
 
             c = self
 
-            def bindCallback(event,c=c,func=func):
+            def bindCallback2(event,c=c,func=func):
                 val = func(event)
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()
                 return val
 
-            w.bind(pattern,bindCallback,*args,**keys)
+            w.bind(pattern,bindCallback2,*args,**keys)
         #@-node:ekr.20080610085158.3:c.bind and c.bind2
         #@+node:ekr.20080610085158.4:c.tag_bind
         def tag_bind (self,w,tag,event_kind,func):
@@ -6085,9 +6086,10 @@ class baseCommands:
                 c.recolor_now(incremental=c.incrementalRecolorFlag)
 
             if c.requestedFocusWidget:
+                w = c.requestedFocusWidget
                 if verbose: aList.append('focus: %s' % (
-                    g.app.gui.widget_name(c.requestedFocusWidget)))
-                c.set_focus(c.requestedFocusWidget)
+                    g.app.gui.widget_name(w)))
+                c.set_focus(w)
             else:
                 # We can not set the focus to the body pane:
                 # That would make nested calls to c.outerUpdate significant.
