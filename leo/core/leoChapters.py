@@ -621,7 +621,7 @@ class chapterController:
         theChapter = cc.getSelectedChapter()
         return theChapter and theChapter.name != 'main'
     #@-node:ekr.20070605124356:cc.inChapter
-    #@+node:ekr.20070325115102:cc.getChaperNode
+    #@+node:ekr.20070325115102:cc.getChapterNode
     def getChapterNode (self,chapterName,p=None):
 
         '''Return the position of the @chapter node with the given name.'''
@@ -635,7 +635,7 @@ class chapterController:
                 cc.findChapterNode(chapterName,giveError=False) or
                 cc.createChapterNode(chapterName,p=p))
             return val
-    #@-node:ekr.20070325115102:cc.getChaperNode
+    #@-node:ekr.20070325115102:cc.getChapterNode
     #@+node:ekr.20070318124004:cc.getChapter
     def getChapter(self,name):
 
