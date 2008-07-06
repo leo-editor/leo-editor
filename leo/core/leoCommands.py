@@ -2257,40 +2257,40 @@ class baseCommands:
 
         d = g.scanDirectives(c)
         tabWidth  = d.get("tabwidth")
-        c.beginUpdate()
-        try: # In update...
-            count = 0 ; dirtyVnodeList = []
-            u.beforeChangeGroup(current,undoType)
-            for p in current.self_and_subtree_iter():
-                # g.trace(p.headString(),tabWidth)
-                innerUndoData = u.beforeChangeNodeContents(p)
-                if p == current:
-                    changed,dirtyVnodeList2 = c.convertBlanks(event)
-                    if changed:
-                        count += 1
-                        dirtyVnodeList.extend(dirtyVnodeList2)
-                else:
-                    changed = False ; result = []
-                    text = p.t._bodyString
-                    assert(g.isUnicode(text))
-                    lines = string.split(text, '\n')
-                    for line in lines:
-                        i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
-                        s = g.computeLeadingWhitespace(w,abs(tabWidth)) + line[i:] # use positive width.
-                        if s != line: changed = True
-                        result.append(s)
-                    if changed:
-                        count += 1
-                        dirtyVnodeList2 = p.setDirty()
-                        dirtyVnodeList.extend(dirtyVnodeList2)
-                        result = string.join(result,'\n')
-                        p.setBodyString(result)
-                        u.afterChangeNodeContents(p,undoType,innerUndoData)
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-            if not g.unitTesting:
-                g.es("blanks converted to tabs in",count,"nodes") # Must come before c.endUpdate().
-        finally:
-            c.endUpdate(count > 0)
+        # c.beginUpdate()
+        # try: # In update...
+        count = 0 ; dirtyVnodeList = []
+        u.beforeChangeGroup(current,undoType)
+        for p in current.self_and_subtree_iter():
+            # g.trace(p.headString(),tabWidth)
+            innerUndoData = u.beforeChangeNodeContents(p)
+            if p == current:
+                changed,dirtyVnodeList2 = c.convertBlanks(event)
+                if changed:
+                    count += 1
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+            else:
+                changed = False ; result = []
+                text = p.t._bodyString
+                assert(g.isUnicode(text))
+                lines = string.split(text, '\n')
+                for line in lines:
+                    i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
+                    s = g.computeLeadingWhitespace(w,abs(tabWidth)) + line[i:] # use positive width.
+                    if s != line: changed = True
+                    result.append(s)
+                if changed:
+                    count += 1
+                    dirtyVnodeList2 = p.setDirty()
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+                    result = string.join(result,'\n')
+                    p.setBodyString(result)
+                    u.afterChangeNodeContents(p,undoType,innerUndoData)
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+        if not g.unitTesting:
+            g.es("blanks converted to tabs in",count,"nodes") # Must come before c.endUpdate().
+        # finally:
+        c.endUpdate(count > 0)
     #@-node:ekr.20031218072017.1704:convertAllBlanks
     #@+node:ekr.20031218072017.1705:convertAllTabs
     def convertAllTabs (self,event=None):
@@ -2305,39 +2305,39 @@ class baseCommands:
             return
         theDict = g.scanDirectives(c)
         tabWidth  = theDict.get("tabwidth")
-        c.beginUpdate()
-        try: # In update:
-            count = 0 ; dirtyVnodeList = []
-            u.beforeChangeGroup(current,undoType)
-            for p in current.self_and_subtree_iter():
-                undoData = u.beforeChangeNodeContents(p)
-                if p == current:
-                    changed,dirtyVnodeList2 = self.convertTabs(event)
-                    if changed:
-                        count += 1
-                        dirtyVnodeList.extend(dirtyVnodeList2)
-                else:
-                    result = [] ; changed = False
-                    text = p.t._bodyString
-                    assert(g.isUnicode(text))
-                    lines = string.split(text, '\n')
-                    for line in lines:
-                        i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
-                        s = g.computeLeadingWhitespace(w,-abs(tabWidth)) + line[i:] # use negative width.
-                        if s != line: changed = True
-                        result.append(s)
-                    if changed:
-                        count += 1
-                        dirtyVnodeList2 = p.setDirty()
-                        dirtyVnodeList.extend(dirtyVnodeList2)
-                        result = string.join(result,'\n')
-                        p.setBodyString(result)
-                        u.afterChangeNodeContents(p,undoType,undoData)
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-            if not g.unitTesting:
-                g.es("tabs converted to blanks in",count,"nodes")
-        finally:
-            c.endUpdate(count > 0)
+        # c.beginUpdate()
+        # try: # In update:
+        count = 0 ; dirtyVnodeList = []
+        u.beforeChangeGroup(current,undoType)
+        for p in current.self_and_subtree_iter():
+            undoData = u.beforeChangeNodeContents(p)
+            if p == current:
+                changed,dirtyVnodeList2 = self.convertTabs(event)
+                if changed:
+                    count += 1
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+            else:
+                result = [] ; changed = False
+                text = p.t._bodyString
+                assert(g.isUnicode(text))
+                lines = string.split(text, '\n')
+                for line in lines:
+                    i,w = g.skip_leading_ws_with_indent(line,0,tabWidth)
+                    s = g.computeLeadingWhitespace(w,-abs(tabWidth)) + line[i:] # use negative width.
+                    if s != line: changed = True
+                    result.append(s)
+                if changed:
+                    count += 1
+                    dirtyVnodeList2 = p.setDirty()
+                    dirtyVnodeList.extend(dirtyVnodeList2)
+                    result = string.join(result,'\n')
+                    p.setBodyString(result)
+                    u.afterChangeNodeContents(p,undoType,undoData)
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+        if not g.unitTesting:
+            g.es("tabs converted to blanks in",count,"nodes")
+        # finally:
+        c.endUpdate(count > 0)
     #@-node:ekr.20031218072017.1705:convertAllTabs
     #@+node:ekr.20031218072017.1821:convertBlanks
     def convertBlanks (self,event=None):
@@ -2456,17 +2456,17 @@ class baseCommands:
         newBody = ''.join(strippedLines)
         if head: head = head.rstrip()
 
-        c.beginUpdate()
-        try: # In update...
-            u.beforeChangeGroup(current,undoType)
-            if 1: # In group...
-                undoData = u.beforeInsertNode(current)
-                p = c.createLastChildNode(current,headline,newBody)
-                u.afterInsertNode(p,undoType,undoData)
-                c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-            u.afterChangeGroup(current,undoType=undoType)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        u.beforeChangeGroup(current,undoType)
+        if 1: # In group...
+            undoData = u.beforeInsertNode(current)
+            p = c.createLastChildNode(current,headline,newBody)
+            u.afterInsertNode(p,undoType,undoData)
+            c.updateBodyPane(head+'\n',None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+        u.afterChangeGroup(current,undoType=undoType)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.1706:extract (test)
     #@+node:ekr.20031218072017.1708:extractSection
     def extractSection (self,event=None):
@@ -2510,17 +2510,17 @@ class baseCommands:
         newBody = ''.join(strippedLines)
         if head: head = head.rstrip()
 
-        c.beginUpdate()
-        try: # In update...
-            u.beforeChangeGroup(current,undoType)
-            if 1: # In group...
-                undoData = u.beforeInsertNode(current)
-                p = c.createLastChildNode(current,headline,newBody)
-                u.afterInsertNode(p,undoType,undoData)
-                c.updateBodyPane(head+line1,None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
-            u.afterChangeGroup(current,undoType=undoType)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        u.beforeChangeGroup(current,undoType)
+        if 1: # In group...
+            undoData = u.beforeInsertNode(current)
+            p = c.createLastChildNode(current,headline,newBody)
+            u.afterInsertNode(p,undoType,undoData)
+            c.updateBodyPane(head+line1,None,tail,undoType=undoType,oldSel=None,oldYview=oldYview)
+        u.afterChangeGroup(current,undoType=undoType)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.1708:extractSection
     #@+node:ekr.20031218072017.1710:extractSectionNames
     def extractSectionNames(self,event=None):
@@ -2534,40 +2534,40 @@ class baseCommands:
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines: return
 
-        c.beginUpdate()
-        try: # In update...
-            u.beforeChangeGroup(current,undoType)
-            if 1: # In group...
-                found = False
-                for s in lines:
-                    #@                << Find the next section name >>
-                    #@+node:ekr.20031218072017.1711:<< Find the next section name >>
-                    head1 = string.find(s,"<<")
+        # c.beginUpdate()
+        # try: # In update...
+        u.beforeChangeGroup(current,undoType)
+        if 1: # In group...
+            found = False
+            for s in lines:
+                #@            << Find the next section name >>
+                #@+node:ekr.20031218072017.1711:<< Find the next section name >>
+                head1 = string.find(s,"<<")
+                if head1 > -1:
+                    head2 = string.find(s,">>",head1)
+                else:
+                    head1 = string.find(s,"@<")
                     if head1 > -1:
-                        head2 = string.find(s,">>",head1)
-                    else:
-                        head1 = string.find(s,"@<")
-                        if head1 > -1:
-                            head2 = string.find(s,"@>",head1)
+                        head2 = string.find(s,"@>",head1)
 
-                    if head1 == -1 or head2 == -1 or head1 > head2:
-                        name = None
-                    else:
-                        name = s[head1:head2+2]
-                    #@-node:ekr.20031218072017.1711:<< Find the next section name >>
-                    #@nl
-                    if name:
-                        undoData = u.beforeInsertNode(current)
-                        p = self.createLastChildNode(current,name,None)
-                        u.afterInsertNode(p,undoType,undoData)
-                        found = True
-                c.selectPosition(current)
-                c.validateOutline()
-                if not found:
-                    g.es("selected text should contain one or more section names",color="blue")
-            u.afterChangeGroup(current,undoType)
-        finally:
-            c.endUpdate()
+                if head1 == -1 or head2 == -1 or head1 > head2:
+                    name = None
+                else:
+                    name = s[head1:head2+2]
+                #@-node:ekr.20031218072017.1711:<< Find the next section name >>
+                #@nl
+                if name:
+                    undoData = u.beforeInsertNode(current)
+                    p = self.createLastChildNode(current,name,None)
+                    u.afterInsertNode(p,undoType,undoData)
+                    found = True
+            c.selectPosition(current)
+            c.validateOutline()
+            if not found:
+                g.es("selected text should contain one or more section names",color="blue")
+        u.afterChangeGroup(current,undoType)
+        # finally:
+        c.endUpdate()
 
         # Restore the selection.
         body.setSelectionRange(oldSel)
@@ -3027,15 +3027,15 @@ class baseCommands:
         body.onBodyChanged(undoType,oldSel=oldSel or newSel,oldYview=oldYview)
 
         # Update the changed mark and icon.
-        c.beginUpdate()
-        try: # In update...
-            c.setChanged(True)
-            if p.isDirty():
-                dirtyVnodeList = []
-            else:
-                dirtyVnodeList = p.setDirty()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        c.setChanged(True)
+        if p.isDirty():
+            dirtyVnodeList = []
+        else:
+            dirtyVnodeList = p.setDirty()
+        # finally:
+        c.endUpdate()
 
         # Scroll as necessary.
         if oldYview:
@@ -3497,17 +3497,17 @@ class baseCommands:
         c = self ; u = c.undoer ; p = c.currentPosition()
         if not p: return
 
-        c.beginUpdate()
-        try: # In update...
-            undoData = c.undoer.beforeCloneNode(p)
-            clone = p.clone()
-            dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-            c.setChanged(True)
-            if c.validateOutline():
-                u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
-                c.selectPosition(clone)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        undoData = c.undoer.beforeCloneNode(p)
+        clone = p.clone()
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        if c.validateOutline():
+            u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
+            c.selectPosition(clone)
+        # finally:
+        c.endUpdate()
 
         return clone # For mod_labels and chapters plugins.
     #@-node:ekr.20031218072017.1762:c.clone
@@ -4393,17 +4393,17 @@ class baseCommands:
 
         c = self
 
-        c.beginUpdate()
-        try: # update...
-            for p in c.all_positions_with_unique_vnodes_iter():
-                p.contract()
-            # Select the topmost ancestor of the presently selected node.
-            p = c.currentPosition()
-            while p and p.hasParent():
-                p.moveToParent()
-            c.selectPosition(p)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # update...
+        for p in c.all_positions_with_unique_vnodes_iter():
+            p.contract()
+        # Select the topmost ancestor of the presently selected node.
+        p = c.currentPosition()
+        while p and p.hasParent():
+            p.moveToParent()
+        c.selectPosition(p)
+        # finally:
+        c.endUpdate()
 
         c.treeFocusHelper()
 
@@ -4737,17 +4737,17 @@ class baseCommands:
 
         c = self ; p = c.rootPosition()
 
-        c.beginUpdate()
-        try: # In update...
-            while p:
-                if p.isAtFileNode() and not p.isDirty():
-                    p.setDirty()
-                    c.setChanged(True)
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        while p:
+            if p.isAtFileNode() and not p.isDirty():
+                p.setDirty()
+                c.setChanged(True)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     #@+node:ekr.20031218072017.2926:markAtFileNodesDirty
     def markAtFileNodesDirty (self,event=None):
@@ -4759,17 +4759,17 @@ class baseCommands:
         if not p: return
 
         after = p.nodeAfterTree()
-        c.beginUpdate()
-        try: # In update...
-            while p and p != after:
-                if p.isAtFileNode() and not p.isDirty():
-                    p.setDirty()
-                    c.setChanged(True)
-                    p.moveToNodeAfterTree()
-                else:
-                    p.moveToThreadNext()
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        while p and p != after:
+            if p.isAtFileNode() and not p.isDirty():
+                p.setDirty()
+                c.setChanged(True)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
     #@+node:ekr.20031218072017.2927:markClones
     def markClones (self,event=None):
@@ -4782,21 +4782,21 @@ class baseCommands:
             g.es('the current node is not a clone',color='blue')
             return
 
-        c.beginUpdate()
+        # c.beginUpdate()
         u.beforeChangeGroup(current,undoType)
-        try: # In update...
-            dirtyVnodeList = []
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if p.v.t == current.v.t:
-                    bunch = u.beforeMark(p,undoType)
-                    c.setMarked(p)
-                    c.setChanged(True)
-                    dirtyVnodeList2 = p.setDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    u.afterMark(p,undoType,bunch)
-        finally:
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-            c.endUpdate()
+        # try: # In update...
+        dirtyVnodeList = []
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if p.v.t == current.v.t:
+                bunch = u.beforeMark(p,undoType)
+                c.setMarked(p)
+                c.setChanged(True)
+                dirtyVnodeList2 = p.setDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                u.afterMark(p,undoType,bunch)
+        # finally:
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+        c.endUpdate()
     #@-node:ekr.20031218072017.2927:markClones
     #@+node:ekr.20031218072017.2928:markHeadline & est
     def markHeadline (self,event=None):
@@ -4806,19 +4806,19 @@ class baseCommands:
         c = self ; u = c.undoer ; p = c.currentPosition()
         if not p: return
 
-        c.beginUpdate()
-        try: # In update...
-            undoType = g.choose(p.isMarked(),'Unmark','Mark')
-            bunch = u.beforeMark(p,undoType)
-            if p.isMarked():
-                c.clearMarked(p)
-            else:
-                c.setMarked(p)
-            dirtyVnodeList = p.setDirty()
-            c.setChanged(True)
-            u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        undoType = g.choose(p.isMarked(),'Unmark','Mark')
+        bunch = u.beforeMark(p,undoType)
+        if p.isMarked():
+            c.clearMarked(p)
+        else:
+            c.setMarked(p)
+        dirtyVnodeList = p.setDirty()
+        c.setChanged(True)
+        u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.endUpdate()
     #@-node:ekr.20031218072017.2928:markHeadline & est
     #@+node:ekr.20031218072017.2929:markSubheads
     def markSubheads (self,event=None):
@@ -4901,28 +4901,29 @@ class baseCommands:
                 c.treeFocusHelper() ; return
             next.moveToNext()
 
-        c.beginUpdate()
-        try: # update...
-            c.endEditing()
-            parent_v = p._parentVnode()
-            n = p.childIndex()
-            followingSibs = parent_v.t.children[n+1:]
-            # g.trace('sibs2\n',g.listToString(followingSibs2))
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=followingSibs)
-            # Remove the moved nodes from the parent's children.
-            parent_v.t.children = parent_v.t.children[:n+1]
-            # Add the moved nodes to p's children
-            p.v.t.children.extend(followingSibs)
-            p.expand()
-            # Even if p is an @ignore node there is no need to mark the demoted children dirty.
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            c.setChanged(True)
-            u.afterDemote(p,followingSibs,dirtyVnodeList)
-        finally:
-            c.selectPosition(p)  # Also sets rootPosition.
-            c.endUpdate()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try: # update...
+        c.endEditing()
+        parent_v = p._parentVnode()
+        n = p.childIndex()
+        followingSibs = parent_v.t.children[n+1:]
+        # g.trace('sibs2\n',g.listToString(followingSibs2))
+        # Adjust the parent links of all moved nodes.
+        parent_v._computeParentsOfChildren(children=followingSibs)
+        # Remove the moved nodes from the parent's children.
+        parent_v.t.children = parent_v.t.children[:n+1]
+        # Add the moved nodes to p's children
+        p.v.t.children.extend(followingSibs)
+        p.expand()
+        # Even if p is an @ignore node there is no need to mark the demoted children dirty.
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        u.afterDemote(p,followingSibs,dirtyVnodeList)
+        # finally:
+        c.selectPosition(p)  # Also sets rootPosition.
+        c.endUpdate()
+        c.treeFocusHelper()
+
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1767:demote
     #@+node:ekr.20031218072017.1768:moveOutlineDown
@@ -4959,45 +4960,45 @@ class baseCommands:
             return
 
         sparseMove = c.config.getBool('sparse_move_outline_left')
-        c.beginUpdate()
-        try: # update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(p)
-            #@        << Move p down & set moved if successful >>
-            #@+node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
-            if next.hasChildren() and next.isExpanded():
-                # Attempt to move p to the first child of next.
-                moved = c.checkMoveWithParentWithWarning(p,next,True)
-                if moved:
-                    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-                    p.moveToNthChildOf(next,0)
-
-            else:
-                # Attempt to move p after next.
-                moved = c.checkMoveWithParentWithWarning(p,next.parent(),True)
-                if moved:
-                    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-                    p.moveAfter(next)
-
-            if moved and sparseMove and parent and not parent.isAncestorOf(p):
-                # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
-                parent.contract()
-            #@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
-            #@nl
+        # c.beginUpdate()
+        # try: # update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(p)
+        #@    << Move p down & set moved if successful >>
+        #@+node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+        if next.hasChildren() and next.isExpanded():
+            # Attempt to move p to the first child of next.
+            moved = c.checkMoveWithParentWithWarning(p,next,True)
             if moved:
-                if inAtIgnoreRange and not p.inAtIgnoreRange():
-                    # The moved nodes have just become newly unignored.
-                    p.setDirty() # Mark descendent @thin nodes dirty.
-                else: # No need to mark descendents dirty.
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                c.setChanged(True)
-                u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
-        finally:
-            c.selectPosition(p) # Also sets rootPosition.
-            c.endUpdate()
-            # c.treeWantsFocusNow()
-            c.treeFocusHelper()
+                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+                p.moveToNthChildOf(next,0)
+
+        else:
+            # Attempt to move p after next.
+            moved = c.checkMoveWithParentWithWarning(p,next.parent(),True)
+            if moved:
+                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+                p.moveAfter(next)
+
+        if moved and sparseMove and parent and not parent.isAncestorOf(p):
+            # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+            parent.contract()
+        #@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+        #@nl
+        if moved:
+            if inAtIgnoreRange and not p.inAtIgnoreRange():
+                # The moved nodes have just become newly unignored.
+                p.setDirty() # Mark descendent @thin nodes dirty.
+            else: # No need to mark descendents dirty.
+                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+            c.setChanged(True)
+            u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
+        # finally:
+        c.selectPosition(p) # Also sets rootPosition.
+        c.endUpdate()
+        c.treeFocusHelper()
+
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1768:moveOutlineDown
     #@+node:ekr.20031218072017.1770:moveOutlineLeft
@@ -5018,27 +5019,27 @@ class baseCommands:
         inAtIgnoreRange = p.inAtIgnoreRange()
         parent = p.parent()
         sparseMove = c.config.getBool('sparse_move_outline_left')
-        c.beginUpdate()
-        try: # In update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(p)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.moveAfter(parent)
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                p.setDirty() # Mark descendent @thin nodes dirty.
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            c.setChanged(True)
-            u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
-            if sparseMove: # New in Leo 4.4.2
-                parent.contract()
-        finally:
-            c.selectPosition(p) # Also sets rootPosition.
-            c.endUpdate()
-            # c.treeWantsFocusNow()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try: # In update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveAfter(parent)
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
+        if sparseMove: # New in Leo 4.4.2
+            parent.contract()
+        # finally:
+        c.selectPosition(p) # Also sets rootPosition.
+        c.endUpdate()
+        c.treeFocusHelper()
+
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@nonl
     #@-node:ekr.20031218072017.1770:moveOutlineLeft
@@ -5063,24 +5064,24 @@ class baseCommands:
             c.treeFocusHelper()
             return
 
-        c.beginUpdate()
-        try: # update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(p)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            n = back.numberOfChildren()
-            p.moveToNthChildOf(back,n)
-            # g.trace(p,p.parent())
-            # Moving an outline right can never bring it outside the range of @ignore.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
-            c.setChanged(True)
-            u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
-        finally:
-            c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
-            # c.treeWantsFocusNow()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try: # update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        n = back.numberOfChildren()
+        p.moveToNthChildOf(back,n)
+        # g.trace(p,p.parent())
+        # Moving an outline right can never bring it outside the range of @ignore.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+        # finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+        c.treeFocusHelper()
+
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1771:moveOutlineRight
     #@+node:ekr.20031218072017.1772:moveOutlineUp
@@ -5100,72 +5101,72 @@ class baseCommands:
         back2 = back.visBack(c)
 
         sparseMove = c.config.getBool('sparse_move_outline_left')
-        c.beginUpdate()
-        try: # update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(p)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            moved = False
-            #@        << Move p up >>
-            #@+node:ekr.20031218072017.1773:<< Move p up >>
-            if 0:
-                g.trace("visBack",back)
-                g.trace("visBack2",back2)
-                g.trace("back2.hasChildren",back2.hasChildren())
-                g.trace("back2.isExpanded",back2.isExpanded())
+        # c.beginUpdate()
+        # try: # update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(p)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        moved = False
+        #@    << Move p up >>
+        #@+node:ekr.20031218072017.1773:<< Move p up >>
+        if 0:
+            g.trace("visBack",back)
+            g.trace("visBack2",back2)
+            g.trace("back2.hasChildren",back2.hasChildren())
+            g.trace("back2.isExpanded",back2.isExpanded())
 
-            parent = p.parent()
+        parent = p.parent()
 
-            # For this special case we move p after back2.
-            specialCase = back2 and p.v in back2.v.t.vnodeList
+        # For this special case we move p after back2.
+        specialCase = back2 and p.v in back2.v.t.vnodeList
 
-            if specialCase:
-                # The move must be legal.
-                moved = True
-                back2.contract()
-                p.moveAfter(back2)
-            elif not back2:
-                if c.hoistStack: # hoist or chapter.
-                    limit,limitIsVisible = c.visLimit()
-                    assert limit
-                    if limitIsVisible:
-                        # canMoveOutlineUp should have caught this.
-                        g.trace('can not happen. In hoist')
-                    else:
-                        # g.trace('chapter first child')
-                        moved = True
-                        p.moveToFirstChildOf(limit)
+        if specialCase:
+            # The move must be legal.
+            moved = True
+            back2.contract()
+            p.moveAfter(back2)
+        elif not back2:
+            if c.hoistStack: # hoist or chapter.
+                limit,limitIsVisible = c.visLimit()
+                assert limit
+                if limitIsVisible:
+                    # canMoveOutlineUp should have caught this.
+                    g.trace('can not happen. In hoist')
                 else:
-                    # p will be the new root node
-                    p.moveToRoot(oldRoot=c.rootPosition())
+                    # g.trace('chapter first child')
                     moved = True
-            elif back2.hasChildren() and back2.isExpanded():
-                if c.checkMoveWithParentWithWarning(p,back2,True):
-                    moved = True
-                    p.moveToNthChildOf(back2,0)
+                    p.moveToFirstChildOf(limit)
             else:
-                if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
-                    moved = True
-                    p.moveAfter(back2)
-            if moved and sparseMove and parent and not parent.isAncestorOf(p):
-                # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
-                parent.contract()
-            #@-node:ekr.20031218072017.1773:<< Move p up >>
-            #@nl
-            if moved:
-                if inAtIgnoreRange and not p.inAtIgnoreRange():
-                    # The moved nodes have just become newly unignored.
-                    dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                else: # No need to mark descendents dirty.
-                    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-                c.setChanged(True)
-                u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+                # p will be the new root node
+                p.moveToRoot(oldRoot=c.rootPosition())
+                moved = True
+        elif back2.hasChildren() and back2.isExpanded():
+            if c.checkMoveWithParentWithWarning(p,back2,True):
+                moved = True
+                p.moveToNthChildOf(back2,0)
+        else:
+            if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
+                moved = True
+                p.moveAfter(back2)
+        if moved and sparseMove and parent and not parent.isAncestorOf(p):
+            # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+            parent.contract()
+        #@-node:ekr.20031218072017.1773:<< Move p up >>
+        #@nl
+        if moved:
+            if inAtIgnoreRange and not p.inAtIgnoreRange():
+                # The moved nodes have just become newly unignored.
+                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+            else: # No need to mark descendents dirty.
+                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+            c.setChanged(True)
+            u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+        # finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+        c.treeFocusHelper()
 
-        finally:
-            c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
-            c.treeFocusHelper()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1772:moveOutlineUp
     #@+node:ekr.20031218072017.1774:promote
@@ -5182,33 +5183,33 @@ class baseCommands:
 
         isAtIgnoreNode = p.isAtIgnoreNode()
         inAtIgnoreRange = p.inAtIgnoreRange()
-        c.beginUpdate()
-        try: # In update...
-            c.endEditing()
-            parent_v = p._parentVnode()
-            children = p.v.t.children
-            # Add the children to parent_v's children.
-            n = p.childIndex()+1
-            z = parent_v.t.children[:]
-            parent_v.t.children = z[:n]
-            parent_v.t.children.extend(children)
-            parent_v.t.children.extend(z[n:])
-            # Remove v's children.
-            p.v.t.children = []
-            # Adjust the parent links of all moved nodes.
-            parent_v._computeParentsOfChildren(children=children)
-            c.setChanged(True)
-            if not inAtIgnoreRange and isAtIgnoreNode:
-                # The promoted nodes have just become newly unignored.
-                dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            u.afterPromote(p,children,dirtyVnodeList)
-            c.selectPosition(p)
-        finally:
-            c.endUpdate()
-            # c.treeWantsFocusNow()
-            c.treeFocusHelper()
+        # c.beginUpdate()
+        # try: # In update...
+        c.endEditing()
+        parent_v = p._parentVnode()
+        children = p.v.t.children
+        # Add the children to parent_v's children.
+        n = p.childIndex()+1
+        z = parent_v.t.children[:]
+        parent_v.t.children = z[:n]
+        parent_v.t.children.extend(children)
+        parent_v.t.children.extend(z[n:])
+        # Remove v's children.
+        p.v.t.children = []
+        # Adjust the parent links of all moved nodes.
+        parent_v._computeParentsOfChildren(children=children)
+        c.setChanged(True)
+        if not inAtIgnoreRange and isAtIgnoreNode:
+            # The promoted nodes have just become newly unignored.
+            dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        u.afterPromote(p,children,dirtyVnodeList)
+        c.selectPosition(p)
+        # finally:
+        c.endUpdate()
+        c.treeFocusHelper()
+
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1774:promote
     #@+node:ekr.20071213185710:c.toggleSparseMove
@@ -5745,24 +5746,25 @@ class baseCommands:
         if not c.checkDrag(p,after): return
         if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
 
-        c.beginUpdate()
-        try: # In update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(current)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.moveAfter(after)
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            c.setChanged(True)
-            u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(current)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveAfter(after)
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
     #@-node:ekr.20031218072017.2353:c.dragAfter
     #@+node:ekr.20031218072017.2947:c.dragToNthChildOf
@@ -5774,24 +5776,25 @@ class baseCommands:
         if not c.checkDrag(p,parent): return
         if not c.checkMoveWithParentWithWarning(p,parent,True): return
 
-        c.beginUpdate()
-        try: # In update...
-            c.endEditing()
-            undoData = u.beforeMoveNode(current)
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-            p.moveToNthChildOf(parent,n)
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            c.setChanged(True)
-            u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        c.endEditing()
+        undoData = u.beforeMoveNode(current)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.moveToNthChildOf(parent,n)
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
     #@-node:ekr.20031218072017.2947:c.dragToNthChildOf
     #@+node:ekr.20031218072017.2946:c.dragCloneToNthChildOf
@@ -5801,34 +5804,35 @@ class baseCommands:
         current = c.currentPosition()
         inAtIgnoreRange = p.inAtIgnoreRange()
 
-        c.beginUpdate()
-        try: # In update...
-            # g.trace("p,parent,n:",p.headString(),parent.headString(),n)
-            clone = p.clone() # Creates clone & dependents, does not set undo.
-            if (
-                not c.checkDrag(p,parent) or
-                not c.checkMoveWithParentWithWarning(clone,parent,True)
-            ):
-                clone.doDelete(newNode=p) # Destroys clone and makes p the current node.
-                c.selectPosition(p) # Also sets root position.
-                c.endUpdate(False) # Nothing has changed.
-                return
-            c.endEditing()
-            undoData = u.beforeInsertNode(current)
-            dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-            clone.moveToNthChildOf(parent,n)
-            if inAtIgnoreRange and not p.inAtIgnoreRange():
-                # The moved nodes have just become newly unignored.
-                dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            else: # No need to mark descendents dirty.
-                dirtyVnodeList2 =  p.setAllAncestorAtFileNodesDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
-            c.setChanged(True)
-            u.afterInsertNode(clone,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-        finally:
-            c.selectPosition(clone) # Also sets root position.
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        # g.trace("p,parent,n:",p.headString(),parent.headString(),n)
+        clone = p.clone() # Creates clone & dependents, does not set undo.
+        if (
+            not c.checkDrag(p,parent) or
+            not c.checkMoveWithParentWithWarning(clone,parent,True)
+        ):
+            clone.doDelete(newNode=p) # Destroys clone and makes p the current node.
+            c.selectPosition(p) # Also sets root position.
+            c.endUpdate(False) # Nothing has changed.
+            return
+        c.endEditing()
+        undoData = u.beforeInsertNode(current)
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        clone.moveToNthChildOf(parent,n)
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 =  p.setAllAncestorAtFileNodesDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterInsertNode(clone,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+        # finally:
+        c.selectPosition(clone) # Also sets root position.
+        c.endUpdate()
+
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@-node:ekr.20031218072017.2946:c.dragCloneToNthChildOf
     #@+node:ekr.20031218072017.2948:c.dragCloneAfter
@@ -5837,31 +5841,32 @@ class baseCommands:
         c = self ; u = c.undoer ; undoType = 'Clone Drag'
         current = c.currentPosition()
 
-        c.beginUpdate()
-        try: # In update...
-            clone = p.clone() # Creates clone.  Does not set undo.
-            if c.checkDrag(p,after) and c.checkMoveWithParentWithWarning(clone,after.parent(),True):
-                inAtIgnoreRange = clone.inAtIgnoreRange()
-                c.endEditing()
-                undoData = u.beforeInsertNode(current)
-                dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-                clone.moveAfter(after)
-                if inAtIgnoreRange and not clone.inAtIgnoreRange():
-                    # The moved node have just become newly unignored.
-                    dirtyVnodeList2 = clone.setDirty() # Mark descendent @thin nodes dirty.
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                else: # No need to mark descendents dirty.
-                    dirtyVnodeList2 = clone.setAllAncestorAtFileNodesDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                c.setChanged(True)
-                u.afterInsertNode(clone,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-                p = clone
-            else:
-                # g.trace("invalid clone drag")
-                clone.doDelete(newNode=p)
-        finally:
-            c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
+        # c.beginUpdate()
+        # try: # In update...
+        clone = p.clone() # Creates clone.  Does not set undo.
+        if c.checkDrag(p,after) and c.checkMoveWithParentWithWarning(clone,after.parent(),True):
+            inAtIgnoreRange = clone.inAtIgnoreRange()
+            c.endEditing()
+            undoData = u.beforeInsertNode(current)
+            dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+            clone.moveAfter(after)
+            if inAtIgnoreRange and not clone.inAtIgnoreRange():
+                # The moved node have just become newly unignored.
+                dirtyVnodeList2 = clone.setDirty() # Mark descendent @thin nodes dirty.
+                dirtyVnodeList.extend(dirtyVnodeList2)
+            else: # No need to mark descendents dirty.
+                dirtyVnodeList2 = clone.setAllAncestorAtFileNodesDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+            c.setChanged(True)
+            u.afterInsertNode(clone,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+            p = clone
+        else:
+            # g.trace("invalid clone drag")
+            clone.doDelete(newNode=p)
+        # finally:
+        c.selectPosition(p) # Also sets root position.
+        c.endUpdate()
+
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@nonl
     #@-node:ekr.20031218072017.2948:c.dragCloneAfter

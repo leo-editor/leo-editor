@@ -4836,17 +4836,17 @@ def contractAllHeadlines (self,event=None):
 
     c = self
 
-    c.beginUpdate()
-    try: # update...
-        for p in c.all_positions_with_unique_vnodes_iter():
-            p.contract()
-        # Select the topmost ancestor of the presently selected node.
-        p = c.currentPosition()
-        while p and p.hasParent():
-            p.moveToParent()
-        c.selectPosition(p)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # update...
+    for p in c.all_positions_with_unique_vnodes_iter():
+        p.contract()
+    # Select the topmost ancestor of the presently selected node.
+    p = c.currentPosition()
+    while p and p.hasParent():
+        p.moveToParent()
+    c.selectPosition(p)
+    # finally:
+    c.endUpdate()
 
     c.treeFocusHelper()
 
@@ -11217,24 +11217,25 @@ def dragAfter(self,p,after):
     if not c.checkDrag(p,after): return
     if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
 
-    c.beginUpdate()
-    try: # In update...
-        c.endEditing()
-        undoData = u.beforeMoveNode(current)
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.moveAfter(after)
-        if inAtIgnoreRange and not p.inAtIgnoreRange():
-            # The moved nodes have just become newly unignored.
-            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-            dirtyVnodeList.extend(dirtyVnodeList2)
-        else: # No need to mark descendents dirty.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
-        c.setChanged(True)
-        u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-    finally:
-        c.selectPosition(p) # Also sets root position.
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # In update...
+    c.endEditing()
+    undoData = u.beforeMoveNode(current)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.moveAfter(after)
+    if inAtIgnoreRange and not p.inAtIgnoreRange():
+        # The moved nodes have just become newly unignored.
+        dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    else: # No need to mark descendents dirty.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    c.setChanged(True)
+    u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+    # finally:
+    c.selectPosition(p) # Also sets root position.
+    c.endUpdate()
+
     c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
 #@-node:ekr.20031218072017.2353:c.dragAfter
 #@+node:ekr.20041111115908:endDrag

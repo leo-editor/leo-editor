@@ -977,42 +977,43 @@ class leoImportCommands:
         if len(files) < 1: return
         self.tab_width = self.getTabWidth() # New in 4.3.
         self.treeType = treeType
-        c.beginUpdate()
-        try: # range of update...
-            if len(files) == 2:
-                #@            << Create a parent for two files having a common prefix >>
-                #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-                #@+at 
-                #@nonl
-                # The two filenames have a common prefix everything before the 
-                # last period is the same.  For example, x.h and x.cpp.
-                #@-at
-                #@@c
+        # c.beginUpdate()
+        # try: # range of update...
+        if len(files) == 2:
+            #@        << Create a parent for two files having a common prefix >>
+            #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+            #@+at 
+            #@nonl
+            # The two filenames have a common prefix everything before the 
+            # last period is the same.  For example, x.h and x.cpp.
+            #@-at
+            #@@c
 
-                name0 = files[0]
-                name1 = files[1]
-                prefix0, junk = g.os_path_splitext(name0)
-                prefix1, junk = g.os_path_splitext(name1)
-                if len(prefix0) > 0 and prefix0 == prefix1:
-                    current = current.insertAsLastChild()
-                    # junk, nameExt = g.os_path_split(prefix1)
-                    name,junk = g.os_path_splitext(prefix1)
-                    current.initHeadString(name)
-                #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
-                #@nl
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                v = self.createOutline(fileName,current)
-                if v: # createOutline may fail.
-                    if not g.unitTesting:
-                        g.es("imported",fileName,color="blue")
-                    v.contract()
-                    v.setDirty()
-                    c.setChanged(True)
-            c.validateOutline()
-            current.expand()
-        finally:
-            c.endUpdate()
+            name0 = files[0]
+            name1 = files[1]
+            prefix0, junk = g.os_path_splitext(name0)
+            prefix1, junk = g.os_path_splitext(name1)
+            if len(prefix0) > 0 and prefix0 == prefix1:
+                current = current.insertAsLastChild()
+                # junk, nameExt = g.os_path_split(prefix1)
+                name,junk = g.os_path_splitext(prefix1)
+                current.initHeadString(name)
+            #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+            #@nl
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            v = self.createOutline(fileName,current)
+            if v: # createOutline may fail.
+                if not g.unitTesting:
+                    g.es("imported",fileName,color="blue")
+                v.contract()
+                v.setDirty()
+                c.setChanged(True)
+        c.validateOutline()
+        current.expand()
+        # finally:
+        c.endUpdate()
+
         c.selectVnode(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
     #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
@@ -1033,88 +1034,89 @@ class leoImportCommands:
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None
-        c.beginUpdate()
-        try: # range of update...
-            firstLevel, junk = self.moreHeadlineLevel(strings[0])
-            lastLevel = -1 ; theRoot = last_p = None
-            index = 0
-            while index < len(strings):
-                progress = index
-                s = strings[index]
-                level,junk = self.moreHeadlineLevel(s)
-                level -= firstLevel
-                if level >= 0:
-                    #@                << Link a new position p into the outline >>
-                    #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
-                    assert(level >= 0)
-                    if not last_p:
-                        # g.trace(first_p)
-                        theRoot = p = first_p.insertAfter()
-                    elif level == lastLevel:
-                        p = last_p.insertAfter()
-                    elif level == lastLevel + 1:
-                        p = last_p.insertAsNthChild(0)
-                    else:
-                        assert(level < lastLevel)
-                        while level < lastLevel:
-                            lastLevel -= 1
-                            last_p = last_p.parent()
-                            assert(last_p)
-                            assert(lastLevel >= 0)
-                        p = last_p.insertAfter()
-                    last_p = p
-                    lastLevel = level
-                    #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
-                    #@nl
-                    #@                << Set the headline string, skipping over the leader >>
-                    #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
-                    j = 0
-                    while g.match(s,j,'\t'):
-                        j += 1
-                    if g.match(s,j,"+ ") or g.match(s,j,"- "):
-                        j += 2
+        # c.beginUpdate()
+        # try: # range of update...
+        firstLevel, junk = self.moreHeadlineLevel(strings[0])
+        lastLevel = -1 ; theRoot = last_p = None
+        index = 0
+        while index < len(strings):
+            progress = index
+            s = strings[index]
+            level,junk = self.moreHeadlineLevel(s)
+            level -= firstLevel
+            if level >= 0:
+                #@            << Link a new position p into the outline >>
+                #@+node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
+                assert(level >= 0)
+                if not last_p:
+                    # g.trace(first_p)
+                    theRoot = p = first_p.insertAfter()
+                elif level == lastLevel:
+                    p = last_p.insertAfter()
+                elif level == lastLevel + 1:
+                    p = last_p.insertAsNthChild(0)
+                else:
+                    assert(level < lastLevel)
+                    while level < lastLevel:
+                        lastLevel -= 1
+                        last_p = last_p.parent()
+                        assert(last_p)
+                        assert(lastLevel >= 0)
+                    p = last_p.insertAfter()
+                last_p = p
+                lastLevel = level
+                #@-node:ekr.20031218072017.3216:<< Link a new position p into the outline >>
+                #@nl
+                #@            << Set the headline string, skipping over the leader >>
+                #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                j = 0
+                while g.match(s,j,'\t'):
+                    j += 1
+                if g.match(s,j,"+ ") or g.match(s,j,"- "):
+                    j += 2
 
-                    p.initHeadString(s[j:])
-                    #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
-                    #@nl
-                    #@                << Count the number of following body lines >>
-                    #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
-                    bodyLines = 0
-                    index += 1 # Skip the headline.
-                    while index < len(strings):
-                        s = strings[index]
-                        level, junk = self.moreHeadlineLevel(s)
-                        level -= firstLevel
-                        if level >= 0:
-                            break
-                        # Remove first backslash of the body line.
-                        if g.match(s,0,'\\'):
-                            strings[index] = s[1:]
-                        bodyLines += 1
-                        index += 1
-                    #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
-                    #@nl
-                    #@                << Add the lines to the body text of p >>
-                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
-                    if bodyLines > 0:
-                        body = ""
-                        n = index - bodyLines
-                        while n < index:
-                            body += strings[n]
-                            if n != index - 1:
-                                body += "\n"
-                            n += 1
-                        p.setBodyString(body)
-                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
-                    #@nl
-                    p.setDirty()
-                else: index += 1
-                assert progress < index
-            if theRoot:
-                theRoot.setDirty()
-                c.setChanged(True)
-        finally:
-            c.endUpdate()
+                p.initHeadString(s[j:])
+                #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                #@nl
+                #@            << Count the number of following body lines >>
+                #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                bodyLines = 0
+                index += 1 # Skip the headline.
+                while index < len(strings):
+                    s = strings[index]
+                    level, junk = self.moreHeadlineLevel(s)
+                    level -= firstLevel
+                    if level >= 0:
+                        break
+                    # Remove first backslash of the body line.
+                    if g.match(s,0,'\\'):
+                        strings[index] = s[1:]
+                    bodyLines += 1
+                    index += 1
+                #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                #@nl
+                #@            << Add the lines to the body text of p >>
+                #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
+                if bodyLines > 0:
+                    body = ""
+                    n = index - bodyLines
+                    while n < index:
+                        body += strings[n]
+                        if n != index - 1:
+                            body += "\n"
+                        n += 1
+                    p.setBodyString(body)
+                #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of p >>
+                #@nl
+                p.setDirty()
+            else: index += 1
+            assert progress < index
+        if theRoot:
+            theRoot.setDirty()
+            c.setChanged(True)
+        # finally:
+        c.endUpdate()
+
         return theRoot
     #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
     #@+node:ekr.20031218072017.3220:importFlattenedOutline

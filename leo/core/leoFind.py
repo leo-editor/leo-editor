@@ -505,24 +505,24 @@ class leoFind:
         saveData = self.save()
         self.initBatchCommands()
         count = 0
-        c.beginUpdate()
-        try: # In update...
-            u.beforeChangeGroup(current,undoType)
-            while 1:
-                pos1, pos2 = self.findNextMatch()
-                if pos1 is None: break
-                count += 1
-                self.batchChange(pos1,pos2)
-                s = w.getAllText()
-                i,j = g.getLine(s,pos1)
-                line = s[i:j]
-                # self.printLine(line,allFlag=True)
-            p = c.currentPosition()
-            u.afterChangeGroup(p,undoType,reportFlag=True)
-            g.es("changed:",count,"instances")
-        finally:
-            c.endUpdate()
-            self.restore(saveData)
+        # c.beginUpdate()
+        # try: # In update...
+        u.beforeChangeGroup(current,undoType)
+        while 1:
+            pos1, pos2 = self.findNextMatch()
+            if pos1 is None: break
+            count += 1
+            self.batchChange(pos1,pos2)
+            s = w.getAllText()
+            i,j = g.getLine(s,pos1)
+            line = s[i:j]
+            # self.printLine(line,allFlag=True)
+        p = c.currentPosition()
+        u.afterChangeGroup(p,undoType,reportFlag=True)
+        g.es("changed:",count,"instances")
+        # finally:
+        c.endUpdate()
+        self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection
     # Replace selection with self.change_text.
