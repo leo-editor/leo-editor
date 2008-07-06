@@ -19115,6 +19115,1418 @@ def createMiniBufferWidget (self):
     return label
 #@-node:ekr.20050920094212:f.createMiniBufferWidget
 #@-node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
+#@+node:ekr.20080704131040.1:Why does the paste unit test work ?
+#@+node:ekr.20061113151148.1:class leoTkTextWidget (Tk.Text)
+class leoTkTextWidget (Tk.Text):
+
+    '''A class to wrap the Tk.Text widget.
+    Translates Python (integer) indices to and from Tk (string) indices.
+
+    This class inherits almost all tkText methods: you call use them as usual.'''
+
+    # The signatures of tag_add and insert are different from the Tk.Text signatures.
+    # __pychecker__ = '--no-override' # suppress warning about changed signature.
+
+    def __repr__(self):
+        name = hasattr(self,'_name') and self._name or '<no name>'
+        return 'leoTkTextWidget id: %s name: %s' % (id(self),name)
+
+    @others
+#@nonl
+#@+node:ekr.20070213170937:bindings (not used)
+# Specify the names of widget-specific methods.
+# These particular names are the names of wx.TextCtrl methods.
+
+# def _appendText(self,s):            return self.widget.insert(s)
+# def _get(self,i,j):                 return self.widget.get(i,j)
+# def _getAllText(self):              return self.widget.get('1.0','end')
+# def _getFocus(self):                return self.widget.focus_get()
+# def _getInsertPoint(self):          return self.widget.index('insert')
+# def _getLastPosition(self):         return self.widget.index('end')
+# def _getSelectedText(self):         return self.widget.get('sel.start','sel.end')
+# def _getSelectionRange(self):       return self.widget.index('sel.start'),self.widget.index('sel.end')
+# def _hitTest(self,pos):             pass
+# def _insertText(self,i,s):          return self.widget.insert(i,s)
+# def _scrollLines(self,n):           pass
+# def _see(self,i):                   return self.widget.see(i)
+# def _setAllText(self,s):            self.widget.delete('1.0','end') ; self.widget.insert('1.0',s)
+# def _setBackgroundColor(self,color): return self.widget.configure(background=color)
+# def _setForegroundColor(self,color): return self.widget.configure(background=color)
+# def _setFocus(self):                return self.widget.focus_set()
+# def _setInsertPoint(self,i):        return self.widget.mark_set('insert',i)
+# def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
+#@-node:ekr.20070213170937:bindings (not used)
+#@+node:ekr.20061113151148.2:Index conversion (leoTextWidget)
+#@+node:ekr.20061117085824:w.toGuiIndex
+def toGuiIndex (self,i,s=None):
+    '''Convert a Python index to a Tk index as needed.'''
+    w = self
+    if i is None:
+        g.trace('can not happen: i is None',g.callers())
+        return '1.0'
+    elif type(i) == type(99):
+        # The 's' arg supports the threaded colorizer.
+        if s is None:
+            # This *must* be 'end-1c', even if other code must change.
+            s = Tk.Text.get(w,'1.0','end-1c')
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        i = '%s.%s' % (row+1,col)
+        # g.trace(len(s),i,repr(s))
+    else:
+        try:
+            i = Tk.Text.index(w,i)
+        except Exception:
+            # g.es_exception()
+            g.trace('Tk.Text.index failed:',repr(i),g.callers())
+            i = '1.0'
+    return i
+#@nonl
+#@-node:ekr.20061117085824:w.toGuiIndex
+#@+node:ekr.20061117085824.1:w.toPythonIndex
+def toPythonIndex (self,i):
+    '''Convert a Tk index to a Python index as needed.'''
+    w =self
+    if i is None:
+        g.trace('can not happen: i is None')
+        return 0
+    elif type(i) in (type('a'),type(u'a')):
+        s = Tk.Text.get(w,'1.0','end') # end-1c does not work.
+        i = Tk.Text.index(w,i) # Convert to row/column form.
+        row,col = i.split('.')
+        row,col = int(row),int(col)
+        row -= 1
+        i = g.convertRowColToPythonIndex(s,row,col)
+        #g.es_print('',i)
+    return i
+#@-node:ekr.20061117085824.1:w.toPythonIndex
+#@+node:ekr.20061117085824.2:w.rowColToGuiIndex
+# This method is called only from the colorizer.
+# It provides a huge speedup over naive code.
+
+def rowColToGuiIndex (self,s,row,col):
+
+    return '%s.%s' % (row+1,col)
+#@nonl
+#@-node:ekr.20061117085824.2:w.rowColToGuiIndex
+#@-node:ekr.20061113151148.2:Index conversion (leoTextWidget)
+#@+node:ekr.20061113151148.3:Wrapper methods (leoTextWidget)
+#@+node:ekr.20061113151148.4:delete
+def delete(self,i,j=None):
+
+    w = self
+    i = w.toGuiIndex(i)
+
+    if j is None:
+        Tk.Text.delete(w,i)
+    else:
+        j = w.toGuiIndex(j)
+        Tk.Text.delete(w,i,j)
+#@-node:ekr.20061113151148.4:delete
+#@+node:ekr.20061113151148.12:flashCharacter
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # tkTextWidget.
+
+    w = self
+
+    def addFlashCallback(w,count,index):
+        # g.trace(count,index)
+        i,j = w.toGuiIndex(index),w.toGuiIndex(index+1)
+        Tk.Text.tag_add(w,'flash',i,j)
+        Tk.Text.after(w,delay,removeFlashCallback,w,count-1,index)
+
+    def removeFlashCallback(w,count,index):
+        # g.trace(count,index)
+        Tk.Text.tag_remove(w,'flash','1.0','end')
+        if count > 0:
+            Tk.Text.after(w,delay,addFlashCallback,w,count,index)
+
+    try:
+        Tk.Text.tag_configure(w,'flash',foreground=fg,background=bg)
+        addFlashCallback(w,flashes,i)
+    except Exception:
+        pass # g.es_exception()
+#@nonl
+#@-node:ekr.20061113151148.12:flashCharacter
+#@+node:ekr.20061113151148.5:get
+def get(self,i,j=None):
+
+    w = self
+    i = w.toGuiIndex(i)
+
+    if j is None:
+        return Tk.Text.get(w,i)
+    else:
+        j = w.toGuiIndex(j)
+        return Tk.Text.get(w,i,j)
+#@-node:ekr.20061113151148.5:get
+#@+node:ekr.20061113151148.13:getAllText
+def getAllText (self): # tkTextWidget.
+
+    """Return all the text of Tk.Text widget w converted to unicode."""
+
+    w = self
+    s = Tk.Text.get(w,"1.0","end-1c") # New in 4.4.1: use end-1c.
+
+    if s is None:
+        return u""
+    else:
+        return g.toUnicode(s,g.app.tkEncoding)
+#@-node:ekr.20061113151148.13:getAllText
+#@+node:ekr.20061113151148.14:getInsertPoint
+def getInsertPoint(self): # tkTextWidget.
+
+    w = self
+    i = Tk.Text.index(w,'insert')
+    i = w.toPythonIndex(i)
+    return i
+#@-node:ekr.20061113151148.14:getInsertPoint
+#@+node:ekr.20061117160129:getName
+def getName (self):
+
+    w = self
+    return hasattr(w,'_name') and w._name or repr(w)
+#@nonl
+#@-node:ekr.20061117160129:getName
+#@+node:ekr.20061113151148.15:getSelectedText
+def getSelectedText (self): # tkTextWidget.
+
+    w = self
+    i,j = w.getSelectionRange()
+    if i != j:
+        i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+        s = Tk.Text.get(w,i,j)
+        return g.toUnicode(s,g.app.tkEncoding)
+    else:
+        return u""
+#@-node:ekr.20061113151148.15:getSelectedText
+#@+node:ekr.20061113151148.16:getSelectionRange
+def getSelectionRange (self,sort=True): # tkTextWidget.
+
+    """Return a tuple representing the selected range.
+
+    Return a tuple giving the insertion point if no range of text is selected."""
+
+    w = self
+    sel = Tk.Text.tag_ranges(w,"sel")
+    if len(sel) == 2:
+        i,j = sel
+    else:
+        i = j = Tk.Text.index(w,"insert")
+
+    i,j = w.toPythonIndex(i),w.toPythonIndex(j)  
+    if sort and i > j: i,j = j,i
+    return i,j
+#@nonl
+#@-node:ekr.20061113151148.16:getSelectionRange
+#@+node:ekr.20070212204016:getWidth
+def getWidth (self):
+
+    '''Return the width of the widget.
+    This is only called for headline widgets,
+    and gui's may choose not to do anything here.'''
+
+    w = self
+    return w.cget('width')
+#@-node:ekr.20070212204016:getWidth
+#@+node:ekr.20070211185433.1:getYScrollPosition
+def getYScrollPosition (self):
+
+    w = self
+    return w.yview()
+#@-node:ekr.20070211185433.1:getYScrollPosition
+#@+node:ekr.20061113151148.17:hasSelection
+def hasSelection (self):
+
+    w = self
+    i,j = w.getSelectionRange()
+    return i != j
+#@-node:ekr.20061113151148.17:hasSelection
+#@+node:ekr.20070213104858.1:indexIsVisible
+def indexIsVisible (self,i):
+
+    w = self
+
+    return w.dlineinfo(i)
+#@nonl
+#@-node:ekr.20070213104858.1:indexIsVisible
+#@+node:ekr.20061113151148.6:insert
+# The signature is more restrictive than the Tk.Text.insert method.
+
+def insert(self,i,s):
+
+    w = self
+    i = w.toGuiIndex(i)
+    Tk.Text.insert(w,i,s)
+
+#@-node:ekr.20061113151148.6:insert
+#@+node:ekr.20061113151148.7:mark_set NO LONGER USED
+# def mark_set(self,markName,i):
+
+    # w = self
+    # i = w.toGuiIndex(i)
+    # Tk.Text.mark_set(w,markName,i)
+#@-node:ekr.20061113151148.7:mark_set NO LONGER USED
+#@+node:ekr.20061113151148.18:replace
+def replace (self,i,j,s): # tkTextWidget
+
+    w = self
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+
+    Tk.Text.delete(w,i,j)
+    Tk.Text.insert(w,i,s)
+#@-node:ekr.20061113151148.18:replace
+#@+node:ekr.20061113180616:see
+def see (self,i): # tkTextWidget.
+
+    w = self
+    i = w.toGuiIndex(i)
+    Tk.Text.see(w,i)
+#@-node:ekr.20061113180616:see
+#@+node:ekr.20061113175002:seeInsertPoint
+def seeInsertPoint (self): # tkTextWidget.
+
+    w = self
+    Tk.Text.see(w,'insert')
+#@-node:ekr.20061113175002:seeInsertPoint
+#@+node:ekr.20061113151148.19:selectAllText
+def selectAllText (self,insert=None): # tkTextWidget
+
+    '''Select all text of the widget, *not* including the extra newline.'''
+
+    w = self ; s = w.getAllText()
+    if insert is None: insert = len(s)
+    w.setSelectionRange(0,len(s),insert=insert)
+#@-node:ekr.20061113151148.19:selectAllText
+#@+node:ekr.20061113151148.20:setAllText
+def setAllText (self,s): # tkTextWidget
+
+    w = self
+
+    state = Tk.Text.cget(w,"state")
+    Tk.Text.configure(w,state="normal")
+
+    Tk.Text.delete(w,'1.0','end')
+    if s: Tk.Text.insert(w,'1.0',s) # The 'if s:' is a workaround for a fedora bug.
+
+    Tk.Text.configure(w,state=state)
+#@-node:ekr.20061113151148.20:setAllText
+#@+node:ekr.20070218122857:setBackgroundColor & setForegroundColor
+def setBackgroundColor (self,color):
+
+    w = self
+    w.configure(background=color)
+
+def setForegroundColor (self,color):
+
+    w = self
+    w.configure(foreground=color)
+#@nonl
+#@-node:ekr.20070218122857:setBackgroundColor & setForegroundColor
+#@+node:ekr.20061113151148.21:setInsertPoint
+def setInsertPoint (self,i): # tkTextWidget.
+
+    w = self
+    i = w.toGuiIndex(i)
+    # g.trace(i,g.callers())
+    Tk.Text.mark_set(w,'insert',i)
+#@-node:ekr.20061113151148.21:setInsertPoint
+#@+node:ekr.20061113151148.22:setSelectionRange
+def setSelectionRange (self,i,j,insert=None): # tkTextWidget
+
+    w = self
+
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+
+    # g.trace('i,j,insert',repr(i),repr(j),repr(insert),g.callers())
+
+    # g.trace('i,j,insert',i,j,repr(insert))
+    if Tk.Text.compare(w,i, ">", j): i,j = j,i
+    Tk.Text.tag_remove(w,"sel","1.0",i)
+    Tk.Text.tag_add(w,"sel",i,j)
+    Tk.Text.tag_remove(w,"sel",j,"end")
+
+    if insert is not None:
+        w.setInsertPoint(insert)
+#@-node:ekr.20061113151148.22:setSelectionRange
+#@+node:ekr.20070212081121:setWidth
+def setWidth (self,width):
+
+    '''Set the width of the widget.
+    This is only called for headline widgets,
+    and gui's may choose not to do anything here.'''
+
+    w = self
+    w.configure(width=width)
+#@-node:ekr.20070212081121:setWidth
+#@+node:ekr.20070211185433:setYScrollPosition
+def setYScrollPosition (self,i):
+
+    w = self
+    w.yview('moveto',i)
+#@nonl
+#@-node:ekr.20070211185433:setYScrollPosition
+#@+node:ekr.20061113151148.8:tag_add
+# The signature is slightly different than the Tk.Text.insert method.
+
+def tag_add(self,tagName,i,j=None,*args):
+
+    w = self
+    i = w.toGuiIndex(i)
+
+    if j is None:
+        Tk.Text.tag_add(w,tagName,i,*args)
+    else:
+        j = w.toGuiIndex(j)
+        Tk.Text.tag_add(w,tagName,i,j,*args)
+
+#@-node:ekr.20061113151148.8:tag_add
+#@+node:ekr.20061113151148.9:tag_ranges
+def tag_ranges(self,tagName):
+
+    w = self
+    aList = Tk.Text.tag_ranges(w,tagName)
+    aList = [w.toPythonIndex(z) for z in aList]
+    return tuple(aList)
+#@-node:ekr.20061113151148.9:tag_ranges
+#@+node:ekr.20070116073907:tag_remove
+# The signature is slightly different than the Tk.Text.insert method.
+
+def tag_remove (self,tagName,i,j=None,*args):
+
+    w = self
+    i = w.toGuiIndex(i)
+
+    if j is None:
+        Tk.Text.tag_remove(w,tagName,i,*args)
+    else:
+        j = w.toGuiIndex(j)
+        Tk.Text.tag_remove(w,tagName,i,j,*args)
+
+
+#@-node:ekr.20070116073907:tag_remove
+#@+node:ekr.20061113151148.11:w.deleteTextSelection
+def deleteTextSelection (self): # tkTextWidget
+
+    w = self
+    sel = Tk.Text.tag_ranges(w,"sel")
+    if len(sel) == 2:
+        start,end = sel
+        if Tk.Text.compare(w,start,"!=",end):
+            Tk.Text.delete(w,start,end)
+#@-node:ekr.20061113151148.11:w.deleteTextSelection
+#@+node:ekr.20061113151148.23:xyToGui/PythonIndex
+def xyToGuiIndex (self,x,y): # tkTextWidget
+
+    w = self
+    return Tk.Text.index(w,"@%d,%d" % (x,y))
+
+def xyToPythonIndex(self,x,y): # tkTextWidget
+
+    w = self
+    i = Tk.Text.index(w,"@%d,%d" % (x,y))
+    i = w.toPythonIndex(i)
+    return i
+#@-node:ekr.20061113151148.23:xyToGui/PythonIndex
+#@-node:ekr.20061113151148.3:Wrapper methods (leoTextWidget)
+#@-node:ekr.20061113151148.1:class leoTkTextWidget (Tk.Text)
+#@+node:ekr.20040803072955.11:newText (tkTree) and helper
+def newText (self,p,x,y):
+
+    canvas = self.canvas ; tag = "textBox"
+    c = self.c ;  k = c.k
+    if self.freeText:
+        # w,theId = self.freeText.pop()
+        d = self.freeText ; data = d.keys()[0] ; w,theId = data ; del d[data]
+        canvas.coords(theId,x,y) # Make the window visible again.
+            # theId is the id of the *window* not the text.
+    else:
+        # Tags are not valid in Tk.Text widgets.
+        self.textNumber += 1
+        w = g.app.gui.plainTextWidget(
+            canvas,name='head-%d' % self.textNumber,
+            state="normal",font=self.font,bd=0,relief="flat",height=1)
+        w.bindtags(self.textBindings) # Set the bindings for this widget.
+
+        if 0: # Crashes on XP.
+            << patch by Maciej Kalisiak to handle scroll-wheel events >>
+
+        theId = canvas.create_window(x,y,anchor="nw",window=w,tag=tag)
+        w.leo_window_id = theId # Never changes.
+
+        if self.trace_alloc: g.trace('%3d %6s' % (theId,id(w)),align=-20)
+
+    # Common configuration.
+    if 0: # Doesn't seem to work.
+        balloon = Pmw.Balloon(canvas,initwait=700)
+        balloon.tagbind(canvas,theId,balloonHelp='Headline')
+
+    if p:
+        self.ids[theId] = p # Add the id of the *window*
+        self.setHeadlineText(theId,w,p.headString())
+        w.configure(width=self.headWidth(p=p))
+        w.leo_position = p # This p never changes.
+            # *Required*: onHeadlineClick uses w.leo_position to get p.
+
+        # Keys are p.key().  Entries are (w,theId)
+        self.visibleText [p.key()] = w,theId
+        ### self.visibleText[id(p.v)] = w,theId
+    else:
+        g.trace('**** can not happen.  No p')
+
+    return w
+#@+node:ekr.20050618045715:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
+def PropagateButton4(e):
+    canvas.event_generate("<Button-4>")
+    return "break"
+
+def PropagateButton5(e):
+    canvas.event_generate("<Button-5>")
+    return "break"
+
+def PropagateMouseWheel(e):
+    canvas.event_generate("<MouseWheel>")
+    return "break"
+
+instance_tag = w.bindtags()[0]
+w.bind_class(instance_tag, "<Button-4>", PropagateButton4)
+w.bind_class(instance_tag, "<Button-5>", PropagateButton5)
+w.bind_class(instance_tag, "<MouseWheel>",PropagateMouseWheel)
+#@-node:ekr.20050618045715:<< patch by Maciej Kalisiak  to handle scroll-wheel events >>
+#@+node:ekr.20040803072955.32:tree.setHeadlineText
+def setHeadlineText (self,theId,w,s):
+
+    """All changes to text widgets should come here."""
+
+    # __pychecker__ = '--no-argsused' # theId not used.
+
+    # if self.trace_alloc: g.trace('%4d %6s %s' % (theId,self.textAddr(w),s),align=-20)
+
+    state = w.cget("state")
+    if state != "normal":
+        w.configure(state="normal")
+    w.delete(0,"end")
+    # Important: do not allow newlines in headlines.
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+    w.insert("end",s)
+    # g.trace(repr(s))
+    if state != "normal":
+        w.configure(state=state)
+#@-node:ekr.20040803072955.32:tree.setHeadlineText
+#@-node:ekr.20040803072955.11:newText (tkTree) and helper
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    c = self ; aList = [] ; trace = False ; verbose = False
+
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    scrollFlag = c.requestRedrawScrollFlag
+    c.requestRedrawFlag = False
+    c.requestRedrawScrollFlag = False
+
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        # g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
+        c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+    c.requestedRedrawScrollFlag = False
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = False
+
+    if keysym in special_keys:
+        if verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',repr(event.keysym),'ch:',repr(event.char),'state',event.state)
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event: event = gui.leoKeyEvent(event,c)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('%s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+
+# elif k.unboundKeyAction == 'command':
+    # # In command mode we must disallow all keys except those actually bound in command-state.
+    # # That is, we cannot use general per-pane mode bindings.
+    # for key,name in (
+        # # Order here is similar to bindtags order.
+        # ('command',None),
+        # ('button',None),
+        # ('body','body'),
+        # ('text','head'), # Important: text bindings in head before tree bindings.
+        # ('tree','head'),
+        # ('tree','canvas'),
+        # ('log', 'log'),
+        # ('text','log'),
+        # ('text',None),
+        # ('all',None),
+    # ):
+        # if (
+            # name and w_name.startswith(name) or
+            # key in ('text','all') and g.app.gui.isTextWidget(w) or
+            # key in ('button','all')
+        # ):
+            # d = k.masterBindingsDict.get(key,{})
+            # # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+            # if d:
+                # b = d.get(stroke)
+                # if b:
+                    # if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                    # return k.masterCommand(event,b.func,b.stroke,b.commandName)
+    # else:
+        # if trace: g.trace('ignoring %s in command mode' % b.stroke)
+        # return 'break' # Disallow all unbound plain keys in command mode.
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+# g.trace('button',k.masterBindingsDict.get('button'))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d.keys())
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True) ### ,setDefaultUnboundKeyAction=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c
+    modesTuple = ('insert','overwrite')
+    trace = False
+
+    if trace:
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@+node:ekr.20070130115927.7:leoFrame.pasteText
+def pasteText (self,event=None,middleButton=False):
+
+    '''Paste the clipboard into a widget.
+    If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
+
+    f = self ; c = f.c ; w = event and event.widget
+    # g.trace('isText',g.app.gui.isTextWidget(w),w)
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    wname = c.widget_name(w)
+    i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
+    oldText = w.getAllText()
+
+    if middleButton and c.k.previousSelection is not None:
+        start,end = c.k.previousSelection
+        s = w.getAllText()
+        s = s[start:end]
+        c.k.previousSelection = None
+    else:
+        s = s1 = g.app.gui.getTextFromClipboard()
+
+    s = g.toUnicode(s,encoding=g.app.tkEncoding)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
+
+    singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+
+    if singleLine:
+        # Strip trailing newlines so the truncation doesn't cause confusion.
+        while s and s [ -1] in ('\n','\r'):
+            s = s [: -1]
+
+    try:
+        # Update the widget.
+        if i != j:
+            w.delete(i,j)
+        w.insert(i,s)
+
+        if wname.startswith('body'):
+            c.frame.body.forceFullRecolor()
+            c.frame.body.onBodyChanged('Paste',oldSel=oldSel,oldText=oldText)
+        elif singleLine:
+            s = w.getAllText()
+            while s and s [ -1] in ('\n','\r'):
+                s = s [: -1]
+            if wname.startswith('head'):
+                # The headline is not officially changed yet.
+                # p.initHeadString(s)
+                width = f.tree.headWidth(p=None,s=s)
+                w.setWidth(width)
+        else: pass
+    except Exception:
+        pass # Tk sometimes throws weird exceptions here.
+
+    return 'break' # Essential
+
+OnPasteFromMenu = pasteText
+#@-node:ekr.20070130115927.7:leoFrame.pasteText
+#@+node:ekr.20061031131434.126:manufactureKeyPressForCommandName
+def manufactureKeyPressForCommandName (self,w,commandName):
+
+    '''Implement a command by passing a keypress to Tkinter.'''
+
+    k = self ; c = k.c
+
+    stroke = k.getShortcutForCommandName(commandName)
+
+    # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
+
+    if stroke and w:
+        # g.trace(stroke)
+        g.app.gui.event_generate(w,stroke)
+    else:
+        g.trace('no shortcut for %s' % (commandName),color='red')
+#@-node:ekr.20061031131434.126:manufactureKeyPressForCommandName
+#@+node:ekr.20040803072955.90:head key handlers (leoTree)
+#@+node:ekr.20040803072955.91:onHeadChanged
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    c = self.c ; u = c.undoer ; w = c.edit_widget(p)
+    if c.suppressHeadChanged: return
+    if not w: return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    << truncate s if it has multiple lines >>
+    c.beginUpdate()
+    try:
+        # Make the change official, but undo to the *old* revert point.
+        oldRevert = self.revertHeadline
+        changed = s != oldRevert
+        self.revertHeadline = s
+        p.initHeadString(s)
+        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+        # g.trace(g.callers())
+        if changed:
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.scanForTabWidth(p)
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
+    finally:
+        c.endUpdate(flag=changed,scroll=False)
+        if changed:
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+        else:
+            c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged
+#@+node:ekr.20040803072955.88:onHeadlineKey
+def onHeadlineKey (self,event):
+
+    '''Handle a key event in a headline.'''
+
+    w = event and event.widget or None
+    ch = event and event.char or ''
+
+    # g.trace(repr(ch),g.callers())
+
+    # Testing for ch here prevents flashing in the headline
+    # when the control key is held down.
+    if ch:
+        # g.trace(repr(ch),g.callers())
+        self.updateHead(event,w)
+
+    return 'break' # Required
+#@-node:ekr.20040803072955.88:onHeadlineKey
+#@+node:ekr.20051026083544.2:updateHead
+def updateHead (self,event,w):
+
+    '''Update a headline from an event.
+
+    The headline officially changes only when editing ends.'''
+
+    c = self.c ; k = c.k
+    ch = event and event.char or ''
+    i,j = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    if i != j: ins = i
+
+    # g.trace('w',w,'ch',repr(ch),g.callers())
+
+    if ch == '\b':
+        if i != j:  w.delete(i,j)
+        else:       w.delete(ins-1)
+        w.setSelectionRange(i-1,i-1,insert=i-1)
+    elif ch and ch not in ('\n','\r'):
+        if i != j:                              w.delete(i,j)
+        elif k.unboundKeyAction == 'overwrite': w.delete(i,i+1)
+        w.insert(ins,ch)
+        w.setSelectionRange(ins+1,ins+1,insert=ins+1)
+
+    s = w.getAllText()
+    if s.endswith('\n'):
+        # g.trace('can not happen: trailing newline')
+        s = s[:-1]
+    w.setWidth(self.headWidth(s=s))
+
+    if ch in ('\n','\r'):
+        self.endEditLabel() # Now calls self.onHeadChanged.
+#@-node:ekr.20051026083544.2:updateHead
+#@+node:ekr.20040803072955.126:endEditLabel
+def endEditLabel (self):
+
+    '''End editing of a headline and update p.headString().'''
+
+    c = self.c ; k = c.k ; p = c.currentPosition()
+
+    self.setEditPosition(None) # That is, self._editPosition = None
+
+    # Important: this will redraw if necessary.
+    self.onHeadChanged(p)
+
+    if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        k.setDefaultInputState()
+        k.showStateAndMode()
+
+    if 0: # This interferes with the find command and interferes with focus generally!
+        c.bodyWantsFocus()
+#@-node:ekr.20040803072955.126:endEditLabel
+#@-node:ekr.20040803072955.90:head key handlers (leoTree)
+#@+node:ekr.20070228074312.15:event_generate (baseTextWidget)
+def event_generate(self,stroke):
+
+    w = self ; c = self.c ; char = stroke
+
+    # Canonicalize the setting.
+    stroke = c.k.shortcutFromSetting(stroke)
+
+    # g.trace('baseTextWidget','char',char,'stroke',stroke)
+
+    class eventGenerateEvent:
+        def __init__ (self,c,w,char,keysym):
+            self.c = c
+            self.char = char
+            self.keysym = keysym
+            self.leoWidget = w
+            self.widget = w
+
+    event = eventGenerateEvent(c,w,char,stroke)
+    c.k.masterKeyHandler(event,stroke=stroke)
+    c.outerUpdate()
+#@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
+#@+node:ekr.20061031132907:Events (leoGui)
+def event_generate(self,w,kind,*args,**keys):
+    '''Generate an event.'''
+    # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
+    return w.event_generate(kind,*args,**keys)
+
+def eventChar (self,event,c=None):
+    '''Return the char field of an event.'''
+    return event and event.char or ''
+
+def eventKeysym (self,event,c=None):
+    '''Return the keysym value of an event.'''
+    return event and event.keysym
+
+def eventWidget (self,event,c=None):
+    '''Return the widget field of an event.'''   
+    return event and event.widget
+
+def eventXY (self,event,c=None):
+    if event:
+        return event.x,event.y
+    else:
+        return 0,0
+#@nonl
+#@-node:ekr.20061031132907:Events (leoGui)
+#@+node:ekr.20061109215734:Events (tkGui)
+def event_generate(self,w,kind,*args,**keys):
+    '''Generate an event.'''
+    # g.trace('tkGui','kind',kind,'w',w,'args,keys',*args,**keys)
+    # g.trace(g.callers())
+    return w.event_generate(kind,*args,**keys)
+
+def eventChar (self,event,c=None):
+    '''Return the char field of an event.'''
+    return event and event.char or ''
+
+def eventKeysym (self,event,c=None):
+    '''Return the keysym value of an event.'''
+    return event and event.keysym
+
+def eventWidget (self,event,c=None):
+    '''Return the widget field of an event.'''   
+    return event and event.widget
+
+def eventXY (self,event,c=None):
+    if event:
+        return event.x,event.y
+    else:
+        return 0,0
+#@nonl
+#@-node:ekr.20061109215734:Events (tkGui)
+#@+node:ekr.20061031131434.131:k.registerCommand
+def registerCommand (self,commandName,shortcut,func,pane='all',verbose=False, wrap=True):
+
+    '''Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+
+    '''
+
+    # g.trace(commandName,g.callers())
+
+    k = self ; c = k.c
+
+    if wrap:
+        func = c.universalCallback(func)
+
+    f = c.commandsDict.get(commandName)
+    verbose = (False or verbose) and not g.app.unitTesting
+    if f and f.__name__ != 'dummyCallback' and verbose:
+        g.es_print('redefining',commandName, color='red')
+
+    c.commandsDict [commandName] = func
+    k.inverseCommandsDict [func.__name__] = commandName
+    # g.trace('leoCommands %24s = %s' % (func.__name__,commandName))
+
+    if shortcut:
+        stroke = k.shortcutFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    else:
+        # Try to get a shortcut from leoSettings.leo.
+        junk,bunchList = c.config.getShortcut(commandName)
+        for bunch in bunchList:
+            accel2 = bunch.val ; pane2 = bunch.pane
+            if accel2 and not pane2.endswith('-mode'):
+                shortcut2 = accel2
+                stroke = k.shortcutFromSetting(shortcut2)
+                if stroke: break
+        else: stroke = None
+
+    if stroke:
+        # g.trace('stroke',stroke,'pane',pane,commandName,g.callers())
+        ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
+        k.makeMasterGuiBinding(stroke) # Must be a stroke.
+        if verbose and ok and not g.app.silentMode:
+            g.es_print('','@command: %s = %s' % (
+                commandName,k.prettyPrintKey(stroke)),color='blue')
+            if 0:
+                d = k.masterBindingsDict.get('button',{})
+                g.print_dict(d)
+        c.frame.tree.setBindings()
+    elif verbose and not g.app.silentMode:
+        g.es_print('','@command: %s' % (commandName),color='blue')
+
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in d.values():
+            for key in d.keys():
+                if d.get(key) == commandName:
+                    c.commandsDict [key] = c.commandsDict.get(commandName)
+                    break
+#@-node:ekr.20061031131434.131:k.registerCommand
+#@+node:ekr.20061031131434.103:k.makeMasterGuiBinding
+def makeMasterGuiBinding (self,stroke,w=None):
+
+    '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
+
+    k = self ; c = k.c ; f = c.frame
+
+    bindStroke = k.tkbindingFromStroke(stroke)
+
+    # if stroke.lower()=='ctrl+v':
+        # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+
+    if w:
+        widgets = [w]
+    else:
+        # New in Leo 4.5: we *must* make the binding in the binding widget.
+        bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
+        bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
+        canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
+        if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
+            widgets = (c.miniBufferWidget,bodyCtrl)
+        else:
+            widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
+
+    # This is the only real key callback.
+    def masterBindKeyCallback (event,k=k,stroke=stroke):
+        # g.trace(stroke)
+        return k.masterKeyHandler(event,stroke=stroke)
+
+    if 0:
+        if stroke.lower().endswith('+s') or stroke.lower().endswith('-s'):
+            g.trace(sroke,widgets)
+        if stroke in ('s','S'):
+            g.trace(stroke,widgets)
+
+    for w in widgets:
+        if not w: continue
+        # Make the binding only if no binding for the stroke exists in the widget.
+        aList = k.masterGuiBindingsDict.get(bindStroke,[])
+        if w not in aList:
+            aList.append(w)
+            k.masterGuiBindingsDict [bindStroke] = aList
+            try:
+                c.bind(w,bindStroke,masterBindKeyCallback)
+                # g.trace(stroke,bindStroke,g.app.gui.widget_name(w))
+            except Exception:
+                if self.trace_bind_key_exceptions:
+                    g.es_exception()
+                g.es_print('exception binding',bindStroke,'to',c.widget_name(w),color='blue')
+
+                if g.app.unitTesting: raise
+#@-node:ekr.20061031131434.103:k.makeMasterGuiBinding
+#@+node:ekr.20040803072955.127:tree.editLabel
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+    trace = (False or self.trace_edit)
+
+    if p and p != self.editPosition():
+
+        if trace:
+            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+
+        c.beginUpdate()
+        try:
+            self.endEditLabel()
+        finally:
+            # This redraw *is* required so the c.edit_widget(p) will exist.
+            c.endUpdate(True)
+            c.outerUpdate()
+
+    self.setEditPosition(p) # That is, self._editPosition = p
+    w = c.edit_widget(p)
+
+    if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
+
+    if p and w:
+        self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+        self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        c.headlineWantsFocus(p) # Make sure the focus sticks.
+        c.k.showStateAndMode(w)
+
+    if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
+#@-node:ekr.20040803072955.127:tree.editLabel
+#@+node:ekr.20040803072955.75:tree.edit_widget
+def edit_widget (self,p):
+
+    """Returns the Tk.Edit widget for position p."""
+
+    return self.findEditWidget(p)
+#@nonl
+#@-node:ekr.20040803072955.75:tree.edit_widget
+#@+node:ekr.20040803072955.76:findEditWidget (tkTree)
+def findEditWidget (self,p):
+
+    """Return the Tk.Text item corresponding to p."""
+
+    c = self.c ; trace = False
+
+    # if trace: g.trace(g.callers())
+
+    if p and c:
+        # if trace: g.trace('h',p.headString(),'key',p.key())
+        aTuple = self.visibleText.get(p.key())
+        ### aTuple = self.visibleText.get(id(p.v))
+        if aTuple:
+            w,theId = aTuple
+            # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
+            return w
+        else:
+            if trace: g.trace('oops: not found',p,g.callers())
+            return None
+
+    if trace: g.trace('not found',p and p.headString())
+    return None
+#@-node:ekr.20040803072955.76:findEditWidget (tkTree)
+#@+node:ekr.20040803072955.135:setEditLabelState
+def setEditLabelState (self,p,selectAll=False): # selected, editing
+
+    c = self.c ; w = c.edit_widget(p)
+
+    if p and w:
+        c.widgetWantsFocusNow(w)
+        self.setEditHeadlineColors(p)
+        selectAll = selectAll or self.select_all_text_when_editing_headlines
+        if selectAll:
+            w.setSelectionRange(0,'end',insert='end')
+        else:
+            w.setInsertPoint('end') # Clears insert point.
+    else:
+        g.trace('no edit_widget')
+
+setNormalLabelState = setEditLabelState # For compatibility.
+#@-node:ekr.20040803072955.135:setEditLabelState
+#@+node:ekr.20080514131122.19:c.xWantsFocusNow
+# widgetWantsFocusNow does an automatic update.
+def widgetWantsFocusNow(self,w):
+    c = self
+    c.request_focus(w)
+    c.outerUpdate()
+    # Re-request widget so we don't use the body by default.
+    c.request_focus(w) 
+
+# All other "Now" methods wait.
+bodyWantsFocusNow = bodyWantsFocus
+headlineWantsFocusNow = headlineWantsFocus
+logWantsFocusNow = logWantsFocus
+minibufferWantsFocusNow = minibufferWantsFocus
+treeWantsFocusNow = treeWantsFocus
+#@-node:ekr.20080514131122.19:c.xWantsFocusNow
+#@+node:ekr.20031218072017.2373:tk.Gui.set_focus
+set_focus_count = 0
+
+def set_focus(self,c,w):
+
+    # __pychecker__ = '--no-argsused' # c not used at present.
+
+    """Put the focus on the widget."""
+
+    if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
+        self.set_focus_count += 1
+        # Do not call trace here: that might affect focus!
+        print 'gui.set_focus: %4d %10s %s' % (
+            self.set_focus_count,c and c.shortFileName(),
+            c and c.widget_name(w)), g.callers(5)
+
+    if w:
+        try:
+            if 0: # No longer needed.
+                # A call to findTab.bringToFront caused
+                # the focus problems with Pmw.Notebook.
+                w.update()
+
+            # It's possible that the widget doesn't exist now.
+            w.focus_set()
+
+            # This often fails.  The focus will be delayed until later...
+            # if not w != w.focus_get():
+                # g.trace('*** can not happen:',repr(w),repr(w.focus_get()))
+            return True
+        except Exception:
+            # g.es_exception()
+            return False
+#@-node:ekr.20031218072017.2373:tk.Gui.set_focus
+#@-node:ekr.20080704131040.1:Why does the paste unit test work ?
 #@-node:ekr.20080702123133.2:4.5 b2
 #@-all
 #@nonl
