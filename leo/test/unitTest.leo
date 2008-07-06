@@ -2184,6 +2184,7 @@
 </v>
 <v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
+<v t="ekr.20080705205520.1"><vh>regexp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -13157,16 +13158,16 @@ finally:
         c.redraw_now()</t>
 <t tx="ekr.20051109143831"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of typing tests.'</t>
 <t tx="ekr.20051120110335">c.insertHeadline()
@@ -15587,116 +15588,118 @@ last line
 </t>
 <t tx="ekr.20061104172236.1"></t>
 <t tx="ekr.20061104172236.2"># targetWord
-c.beginUpdate()
-try:
-    e = c.editCommands
-    k = c.k ; w = c.frame.body.bodyCtrl
-    w.setInsertPoint(0)
-    k.arg = 't' # 'targetWord'
-    k.setState('find-word',1)
-    for val in (True,False):
-        e.oneLineFlag = val
-        f = e.findWordInLine(event=None)
-        i,j = w.getSelectionRange()
-        assert i == 2, 'expected 2, got' % (i)
-        # s = w.getAllText()
-        # ch = s[i]
-        # assert word == 'targetWord', 'got: %s' % word
-finally:
-    c.endUpdate(False)
-    </t>
+# c.beginUpdate()
+# try:
+e = c.editCommands
+k = c.k ; w = c.frame.body.bodyCtrl
+w.setInsertPoint(0)
+k.arg = 't' # 'targetWord'
+k.setState('find-word',1)
+for val in (True,False):
+    e.oneLineFlag = val
+    f = e.findWordInLine(event=None)
+    i,j = w.getSelectionRange()
+    assert i == 2, 'expected 2, got' % (i)
+    # s = w.getAllText()
+    # ch = s[i]
+    # assert word == 'targetWord', 'got: %s' % word
+
+# finally:
+# c.endUpdate(False)
+</t>
 <t tx="ekr.20061104172236.3"># TARGETWORD
 
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    
-    for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-        w.setInsertPoint(5)
-        c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-        s = w.getAllText()
-        word = s[2:12]
-        assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-        i = w.getInsertPoint()
-        assert i == 5, 'Expected 5, got: %d' % i
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.4">c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    ec = c.editCommands
-    
-    for spot,result in (('1.0',0),(5,5)):
-        ec.setMoveCol(w,spot)
-        assert ec.moveSpot == result
-        assert ec.moveCol == result
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.5">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    
-    for i,j,python in (
-        # ('1.0','4.5',False),
-        (5,50,True),
-    ):
-        extend = True
-        ec.moveSpot = None # It's hard to init this properly.
-        ec.extendHelper(w,extend,j)
-        i2,j2 = w.getSelectionRange()
-        # print i2,j2
-        #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
-        #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.6">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+# c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
 
-    for i,j,python in (
-        #('1.0','4.5',False),
-        (5,50,True),
-    ):
-        event = None ; extend = True ; ec.moveSpot = None
-        w.setInsertPoint(i)
-        ec.moveToHelper (event,j,extend)
-        i2,j2 = w.getSelectionRange()
-        assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-        assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-        w.setSelectionRange(0,0,insert=None)
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.7">c.beginUpdate()
-try:
-    ec = c.editCommands
-
-    for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-        event = g.Bunch(widget=c.frame.body.bodyCtrl)
-        ec.scrollHelper(event,direction,extend)
-
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.8">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
+    w.setInsertPoint(5)
+    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
     s = w.getAllText()
-    
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
-    w.setInsertPoint(len(s))
-    for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
-    c.endUpdate(False)
+    word = s[2:12]
+    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+    i = w.getInsertPoint()
+    assert i == 5, 'Expected 5, got: %d' % i
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.4"># c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+ec = c.editCommands
+
+for spot,result in (('1.0',0),(5,5)):
+    ec.setMoveCol(w,spot)
+    assert ec.moveSpot == result
+    assert ec.moveCol == result
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.5"># c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+
+for i,j,python in (
+    # ('1.0','4.5',False),
+    (5,50,True),
+):
+    extend = True
+    ec.moveSpot = None # It's hard to init this properly.
+    ec.extendHelper(w,extend,j)
+    i2,j2 = w.getSelectionRange()
+    # print i2,j2
+    #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
+    #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
+
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.6"># c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+
+for i,j,python in (
+    #('1.0','4.5',False),
+    (5,50,True),
+):
+    event = None ; extend = True ; ec.moveSpot = None
+    w.setInsertPoint(i)
+    ec.moveToHelper (event,j,extend)
+    i2,j2 = w.getSelectionRange()
+    assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
+    assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
+    w.setSelectionRange(0,0,insert=None)
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.7"># c.beginUpdate()
+# try:
+ec = c.editCommands
+
+for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+    event = g.Bunch(widget=c.frame.body.bodyCtrl)
+    ec.scrollHelper(event,direction,extend)
+
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.8"># c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+s = w.getAllText()
+
+# This strings tests unicode, paren matching, and auto-indentation.
+u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
+u = u'(pdq):\n'
+w.setInsertPoint(len(s))
+for char in u:
+    event = g.Bunch(widget=w,char=char,keysym=None)
+    ec.selfInsertCommand(event)
+result = w.getAllText()
+#g.trace('result',repr(result))
+assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+# finally:
+w.setAllText(s)
+p.setBodyString(s)
+# g.trace(repr(s))
+c.recolor()
+# c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
@@ -15762,34 +15765,35 @@ for i in xrange(len(s)):
     assert(i3==i)
 </t>
 <t tx="ekr.20061104172236.22"># target.
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setInsertPoint(len(s))
-    c.k.previousSelection = 2,8
-    event = g.Bunch(widget=w)
-    c.frame.pasteText(event=event,middleButton=True)
-    s2 = w.getAllText()
-    assert len(s2) == len(s) + len('target')
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
-    c.endUpdate(False)
+
+# c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+w.setInsertPoint(len(s))
+c.k.previousSelection = 2,8
+event = g.Bunch(widget=w)
+c.frame.pasteText(event=event,middleButton=True)
+s2 = w.getAllText()
+assert len(s2) == len(s) + len('target')
+# finally:
+w.setAllText(s)
+p.setBodyString(s)
+# g.trace(repr(s))
+c.recolor()
+# c.endUpdate(False)
 
 # end</t>
-<t tx="ekr.20061104172236.23">c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    y = 10
-    for x in xrange(0,100,10):
-        event = g.Bunch(c=c,x=x,y=y,widget=w)
-        c.frame.body.onClick(event)
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.24">c.beginUpdate()
+<t tx="ekr.20061104172236.23"># c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+y = 10
+for x in xrange(0,100,10):
+    event = g.Bunch(c=c,x=x,y=y,widget=w)
+    c.frame.body.onClick(event)
+# finally:
+# c.endUpdate(False)</t>
+<t tx="ekr.20061104172236.24"># c.beginUpdate()
 try:
     k = c.k ; ac = k.autoCompleter
     w = c.frame.body.bodyCtrl
@@ -15804,7 +15808,8 @@ finally:
     w.setAllText(s)
     p.setBodyString(s)
     c.recolor()
-    c.endUpdate(False)
+    # c.endUpdate(False)
+
 # end:</t>
 <t tx="ekr.20061106112522">w = c.frame.body.bodyCtrl
 s = w.getAllText()
@@ -15879,51 +15884,55 @@ http://webpages.charter.net/edreamleo/front.html</t>
 <t tx="ekr.20061106201509.6"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    index = 11 # in the second line.
-    w.setInsertPoint(index)
-    before,ins,after = c.frame.body.getInsertLines()
-    assert before == '# line 1\n','Got %s' % repr(before)
-    assert ins    == '# line 2\n','Got %s' % repr(ins)
-    assert after.startswith('# line 3\n')
-    assert after.endswith('# end.')
-finally:
-    c.endUpdate(False)
+
+# c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+index = 11 # in the second line.
+w.setInsertPoint(index)
+before,ins,after = c.frame.body.getInsertLines()
+assert before == '# line 1\n','Got %s' % repr(before)
+assert ins    == '# line 2\n','Got %s' % repr(ins)
+assert after.startswith('# line 3\n')
+assert after.endswith('# end.')
+# finally:
+# c.endUpdate(False)
+
 # end.</t>
 <t tx="ekr.20061106201509.7"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    start,end = 11,15
-    w.setSelectionRange(start,end)
-    before,ins,after = c.frame.body.getSelectionAreas()
-    assert before == s[0:start],'Got %s' % repr(before)
-    assert ins    == s[start:end],'Got %s' % repr(ins)
-    assert after == s[end:]
-finally:
-    c.endUpdate(False)
+
+# c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+# finally:
+# c.endUpdate(False)
+
 # end.</t>
-<t tx="ekr.20061107031449">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
-    c.endUpdate(False)
+<t tx="ekr.20061107031449"># c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+s = w.getAllText()
+w.setSelectionRange(len(s)-9,len(s)-6)
+event = g.Bunch(widget=w,char='\t',keysym=None)
+ec.selfInsertCommand(event)
+result = w.getAllText()
+# g.trace('result',repr(result))
+assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+# finally:
+w.setAllText(s)
+p.setBodyString(s)
+# g.trace(repr(s))
+c.recolor()
+# c.endUpdate(False)
         
 ###abcdef</t>
 <t tx="ekr.20061109172511"></t>
@@ -16040,24 +16049,23 @@ finally:
             except AssertionError:
                 raise
 </t>
-<t tx="ekr.20061110094226">c.beginUpdate()
-try:
+<t tx="ekr.20061110094226"># c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
 
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    
-    for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
-        event = None ; extend = False; ec.moveSpot = None
-        w.setInsertPoint(i)
-        ec.moveUpOrDownHelper (event,direction,extend)
-        i2,j2 = w.getSelectionRange()
-        if 1:
-            break
-        else:
-            assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-            assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-            w.setSelectionRange(0,0,insert=None)
-finally:
-    c.endUpdate(False)</t>
+for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
+    event = None ; extend = False; ec.moveSpot = None
+    w.setInsertPoint(i)
+    ec.moveUpOrDownHelper (event,direction,extend)
+    i2,j2 = w.getSelectionRange()
+    if 1:
+        break
+    else:
+        assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
+        assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
+        w.setSelectionRange(0,0,insert=None)
+# finally:
+# c.endUpdate(False)</t>
 <t tx="ekr.20061110112507">import mnplugins
 
 w = c.frame.body.bodyCtrl
@@ -16128,8 +16136,8 @@ controller.parameterize()
 </t>
 <t tx="ekr.20061115074956"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
 # c.beginUpdate()
 # try:
@@ -16142,7 +16150,7 @@ c.endUpdate()
 print ; print 'End of general unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 # c.beginUpdate()
 # try:
@@ -16654,16 +16662,16 @@ p3 = c.currentPosition()
 </t>
 <t tx="ekr.20070306091949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 print ; print 'End of leoEditCommands tests.'</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
@@ -19049,58 +19057,59 @@ g.app.unitTestDict ['expectedMismatchLine'] = 1
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
 <t tx="ekr.20071113145804.4">@language python
 
-c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
+# c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+s = w.getAllText()
 
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
-    w.setInsertPoint(len(s))
-    for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
-    c.endUpdate(False)
+# This strings tests unicode, paren matching, and auto-indentation.
+u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
+u = u'(pdq):\n'
+w.setInsertPoint(len(s))
+for char in u:
+    event = g.Bunch(widget=w,char=char,keysym=None)
+    ec.selfInsertCommand(event)
+result = w.getAllText()
+#g.trace('result',repr(result))
+assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+# finally:
+w.setAllText(s)
+p.setBodyString(s)
+# g.trace(repr(s))
+c.recolor()
+c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
 
-c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
-    c.endUpdate(False)
+# c.beginUpdate()
+# try:
+ec = c.editCommands ; w = c.frame.body.bodyCtrl
+s = w.getAllText()
+w.setSelectionRange(len(s)-9,len(s)-6)
+event = g.Bunch(widget=w,char='\t',keysym=None)
+ec.selfInsertCommand(event)
+result = w.getAllText()
+# g.trace('result',repr(result))
+assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+# finally:
+w.setAllText(s)
+p.setBodyString(s)
+# g.trace(repr(s))
+c.recolor()
+# c.endUpdate(False)
+
 ###abcdef</t>
-<t tx="ekr.20071113145804.6">c.beginUpdate()
-try:
-    ec = c.editCommands
+<t tx="ekr.20071113145804.6"># c.beginUpdate()
+# try:
+ec = c.editCommands
 
-    for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-        event = g.Bunch(widget=c.frame.body.bodyCtrl)
-        ec.scrollHelper(event,direction,extend)
+for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+    event = g.Bunch(widget=c.frame.body.bodyCtrl)
+    ec.scrollHelper(event,direction,extend)
 
-finally:
-    c.endUpdate(False)
+# finally:
+# c.endUpdate(False)
 </t>
 <t tx="ekr.20071113145804.7">s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
 s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
@@ -19354,21 +19363,24 @@ assert aList1 == aList2
 <t tx="ekr.20071113145804.32"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    start,end = 11,15
-    w.setSelectionRange(start,end)
-    before,ins,after = c.frame.body.getSelectionAreas()
-    assert before == s[0:start],'Got %s' % repr(before)
-    assert ins    == s[start:end],'Got %s' % repr(ins)
-    assert after == s[end:]
-finally:
-    c.endUpdate(False)
+
+# c.beginUpdate()
+# try:
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+# finally:
+# c.endUpdate(False)
+
 # end.</t>
 <t tx="ekr.20071113145804.33"># target
-c.beginUpdate()
+
+# c.beginUpdate()
 try:
     w = c.frame.body.bodyCtrl
     # print (w)
@@ -19476,8 +19488,8 @@ This eliminates references to nodes that no longer exist in the present outline.
 <t tx="ekr.20071113200638.8"></t>
 <t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
 # c.beginUpdate()
 # try:
@@ -19490,8 +19502,8 @@ c.endUpdate()
 print ; print 'End of leoAtFile tests'</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
 # c.beginUpdate()
 # try:
@@ -19504,142 +19516,142 @@ c.endUpdate()
 print ; print 'End of leoCommands tests'</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 print ; print 'End of leoConfig tests'</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
-    
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
+  
 print ; print 'End of leoFileCommands tests.'</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of leoFind tests.'</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of leoFrame tests.'</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of leoGlobals tests.'</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of leoGui tests.'</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 print ; print 'End of leoImport tests.'</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 # print ; print 'End of leoKeys tests.'</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 print ; print 'End of leoNodes tests.'</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
+# import leo.core.leoTest as leoTest
+# u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+# finally:
+c.endUpdate()
     
 print ; print 'End of leoUndo tests.'</t>
 <t tx="ekr.20071113203234"></t>
@@ -20133,19 +20145,21 @@ leoTest.doTests(c, all=True)</t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080405085247.2"></t>
 <t tx="ekr.20080408094623.1"># targetWord
-c.beginUpdate()
-try:
-    e = c.editCommands
-    k = c.k ; w = c.frame.body.bodyCtrl
-    w.setInsertPoint(0)
-    k.arg = 'b' # 'beginUpdate'
-    k.setState('find-word',1)
-    e.oneLineFlag = False
-    f = e.findWord(event=None)
-    i,j = w.getSelectionRange()
-    assert i == 15, 'expected 15, got %s' % (i)
-finally:
-    c.endUpdate(False)
+# targetWord2
+
+# c.beginUpdate()
+# try:
+e = c.editCommands
+k = c.k ; w = c.frame.body.bodyCtrl
+w.setInsertPoint(0)
+k.arg = 'b' # 'beginUpdate'
+k.setState('find-word',1)
+e.oneLineFlag = False
+f = e.findWord(event=None)
+i,j = w.getSelectionRange()
+assert i == 32, 'expected 15, got %s' % (i)
+# finally:
+# c.endUpdate(False)
 </t>
 <t tx="ekr.20080418101332.1"></t>
 <t tx="ekr.20080423110627.2">n = 0
@@ -20696,5 +20710,7 @@ assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
 <t tx="ekr.20080703104536.1"></t>
+<t tx="ekr.20080705205520.1">( *)c.beginUpdate\(\)(.*)\n( *)try:(.*)$
+\1# c.beginUpdate()\n\3# try:</t>
 </tnodes>
 </leo_file>
