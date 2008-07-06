@@ -727,27 +727,27 @@ def runTestsExternally (c,all):
             #@nonl
             #@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@nl
-            c2.beginUpdate()
-            try:
-                self.copyRoot.expand()
-                for p,limit,lookForMark,lookForNodes in (
-                    (p1,limit1,lookForMark1,lookForNodes1),
-                    (p2,limit2,lookForMark2,lookForNodes2),
-                ):
-                    while p and p != limit:
-                        h = p.headString()
-                        if p.v.t in self.seen:
-                            p.moveToNodeAfterTree()
-                        elif lookForMark and h.startswith(markTag):
-                            self.addMarkTree(p)
-                            p.moveToNodeAfterTree()
-                        elif lookForNodes and self.isUnitTestNode(p):
-                            self.addNode(p)
-                            p.moveToNodeAfterTree()
-                        else:
-                            p.moveToThreadNext()
-            finally:
-                c2.endUpdate(False)
+            # c2.beginUpdate()
+            # try:
+            self.copyRoot.expand()
+            for p,limit,lookForMark,lookForNodes in (
+                (p1,limit1,lookForMark1,lookForNodes1),
+                (p2,limit2,lookForMark2,lookForNodes2),
+            ):
+                while p and p != limit:
+                    h = p.headString()
+                    if p.v.t in self.seen:
+                        p.moveToNodeAfterTree()
+                    elif lookForMark and h.startswith(markTag):
+                        self.addMarkTree(p)
+                        p.moveToNodeAfterTree()
+                    elif lookForNodes and self.isUnitTestNode(p):
+                        self.addNode(p)
+                        p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext()
+            # finally:
+            c2.endUpdate(False)
         #@nonl
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):

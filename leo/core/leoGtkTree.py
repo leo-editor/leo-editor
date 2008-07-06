@@ -3113,20 +3113,14 @@ class OutlineCanvas(gtk.DrawingArea):
         c = self.c
 
         #c.beginUpdate()     #lock out events
-        if 1: #try:
+        #try:
 
-            self._createNewBuffer()
-
-            #self._parent.hscrollUpdate()
-
-
-            self.draw()
-            self.refresh()
-
-
+        self._createNewBuffer()
+        #self._parent.hscrollUpdate()
+        self.draw()
+        self.refresh()
         #finally:
         #    c.endUpdate(False)
-
 
         return True
 
