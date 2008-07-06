@@ -5878,6 +5878,8 @@ class baseCommands:
         '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
         until the matching call to endUpdate.'''
 
+        # g.trace('***** c.beginUpdate is deprecated')
+        # if g.app.unitTesting: assert(False)
         pass
 
     def endUpdate(self,flag=True,scroll=True):
