@@ -4829,21 +4829,21 @@ class baseCommands:
         current = c.currentPosition()
         if not current: return
 
-        c.beginUpdate()
+        # c.beginUpdate()
         u.beforeChangeGroup(current,undoType)
-        try: # In update...
-            dirtyVnodeList = []
-            for p in current.children_iter():
-                if not p.isMarked():
-                    bunch = u.beforeMark(p,undoType)
-                    c.setMarked(p)
-                    dirtyVnodeList2 = p.setDirty()
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    c.setChanged(True)
-                    u.afterMark(p,undoType,bunch)
-        finally:
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-            c.endUpdate()
+        # try: # In update...
+        dirtyVnodeList = []
+        for p in current.children_iter():
+            if not p.isMarked():
+                bunch = u.beforeMark(p,undoType)
+                c.setMarked(p)
+                dirtyVnodeList2 = p.setDirty()
+                dirtyVnodeList.extend(dirtyVnodeList2)
+                c.setChanged(True)
+                u.afterMark(p,undoType,bunch)
+        # finally:
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+        c.endUpdate()
     #@-node:ekr.20031218072017.2929:markSubheads
     #@+node:ekr.20031218072017.2930:unmarkAll
     def unmarkAll (self,event=None):
@@ -4854,26 +4854,25 @@ class baseCommands:
         current = c.currentPosition()
         if not current: return
 
-        c.beginUpdate()
+        # c.beginUpdate()
         u.beforeChangeGroup(current,undoType)
-        try: # In update...
-            changed = False
-            for p in c.all_positions_with_unique_vnodes_iter():
-                if p.isMarked():
-                    bunch = u.beforeMark(p,undoType)
-                    # c.clearMarked(p) # Very slow: calls a hook.
-                    p.v.clearMarked()
-                    p.v.t.setDirty()
-                    u.afterMark(p,undoType,bunch)
-                    changed = True
-            dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
-            if changed:
-                g.doHook("clear-all-marks",c=c,p=p,v=p)
-                c.setChanged(True)
-        finally:
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-            c.endUpdate()
-    #@nonl
+        # try: # In update...
+        changed = False
+        for p in c.all_positions_with_unique_vnodes_iter():
+            if p.isMarked():
+                bunch = u.beforeMark(p,undoType)
+                # c.clearMarked(p) # Very slow: calls a hook.
+                p.v.clearMarked()
+                p.v.t.setDirty()
+                u.afterMark(p,undoType,bunch)
+                changed = True
+        dirtyVnodeList = [p.v for p in c.all_positions_with_unique_vnodes_iter() if p.v.isDirty()]
+        if changed:
+            g.doHook("clear-all-marks",c=c,p=p,v=p)
+            c.setChanged(True)
+        # finally:
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
+        c.endUpdate()
     #@-node:ekr.20031218072017.2930:unmarkAll
     #@-node:ekr.20031218072017.2922:Mark...
     #@+node:ekr.20031218072017.1766:Move... (Commands)

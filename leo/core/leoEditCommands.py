@@ -886,7 +886,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         c = self.c ; p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
-            c.beginUpdate()
+            # c.beginUpdate()
             c.setHeadString(p,name)
             c.endUpdate()
     #@-node:ekr.20050920084036.43:renameBuffer
