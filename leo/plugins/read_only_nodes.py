@@ -334,7 +334,7 @@ def insert_read_only_node (c,v,name):
             title="Open",
             filetypes=[("All files", "*")]
             )
-        c.beginUpdate()
+        # c.beginUpdate()
         c.setHeadString(v,"@read-only %s" % name)
         c.endUpdate()
     parse = urlparse.urlparse(name)
@@ -399,7 +399,7 @@ def on_open (tag,keywords):
 
     v = c.rootVnode()
     g.es("scanning for @read-only nodes...",color="blue")
-    c.beginUpdate()
+    # c.beginUpdate()
     while v:
         h = v.headString()
         if g.match_word(h,0,"@read-only"):

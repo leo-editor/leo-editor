@@ -996,14 +996,14 @@ class cleoController:
         self.c.sortSiblings(cmp=self.pricmp)
 
     def childrenTodo(self):
-        self.c.beginUpdate()
-        try:
-            for p in self.pickleP.children_iter():
-                if self.getat(p.v, 'priority') != 9999: continue
-                self.setat(p.v, 'priority', 19)
-                self.loadIcons(p)
-        finally:
-            self.c.endUpdate()
+        # self.c.beginUpdate()
+        # try:
+        for p in self.pickleP.children_iter():
+            if self.getat(p.v, 'priority') != 9999: continue
+            self.setat(p.v, 'priority', 19)
+            self.loadIcons(p)
+        # finally:
+        self.c.endUpdate()
 
     def priority_menu(self,parent,p):
 
@@ -1329,14 +1329,14 @@ class cleoController:
 
         # see if this node is a todo
         if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
-            self.c.beginUpdate()
-            try:
-                if p.getParent(): 
-                    self.c.selectPosition(p.getParent())
-                    self.c.expandNode()
-                self.c.selectPosition(p)
-            finally:
-                self.c.endUpdate()
+            # self.c.beginUpdate()
+            # try:
+            if p.getParent(): 
+                self.c.selectPosition(p.getParent())
+                self.c.expandNode()
+            self.c.selectPosition(p)
+            # finally:
+            self.c.endUpdate()
             return True
 
         for nd in p.children_iter():

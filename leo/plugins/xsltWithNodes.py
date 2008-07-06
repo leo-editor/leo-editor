@@ -181,7 +181,7 @@ def processDocumentNode( c ):
         proc = Processor()
         stylenode = stylenodes[ c ]
         pos = c.currentPosition()
-        c.beginUpdate()
+        # c.beginUpdate()
         c.selectPosition( stylenode )
         sIO = getString( c )
         mdom1 = minidom.parseString( sIO )
@@ -209,8 +209,7 @@ def processDocumentNode( c ):
     except Exception, x:
         g.es( 'exception ' + str( x ))
     c.endUpdate()
-
-
+#@nonl
 #@-node:mork.20041010095202.1:processDocumentNode
 #@+node:mork.20041025121608:addXSLTNode
 def addXSLTNode (c):
@@ -226,7 +225,7 @@ def addXSLTNode (c):
 </xsl:transform>'''
 
     # tnode = leoNodes.tnode(body,"xslt stylesheet")
-    c.beginUpdate()
+    # c.beginUpdate()
     p2 = pos.insertAfter() # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
@@ -292,7 +291,7 @@ def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
     if not styleNodeSelected( c ): return
     pos = stylenodes[ c ]
-    c.beginUpdate()
+    # c.beginUpdate()
     c.selectPosition( pos )
     c.endUpdate()
 
@@ -513,7 +512,7 @@ def addMenu( tag, keywords ):
     for z in data:
         csv_write.writerow( z )
     cS.seek( 0 )
-    self.c.beginUpdate() 
+    # self.c.beginUpdate() 
     if not save:
         # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
         p2 = pos.insertAfter() #  tnd )
@@ -594,7 +593,7 @@ def addMenu( tag, keywords ):
 
     # tnd = leoNodes.tnode( "", "New Table" )
     pos = c.currentPosition()
-    c.beginUpdate()
+    # c.beginUpdate()
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')
     c.endUpdate()

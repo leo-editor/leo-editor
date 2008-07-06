@@ -137,7 +137,7 @@ class controller:
 
         if dirName and len(dirName) > 0:
             g.es(dirName)
-            c.beginUpdate() # EKR: doing this here saves lots of time.
+            # c.beginUpdate() # EKR: doing this here saves lots of time.
             compteur, compteurglobal = self.importDir(dirName,compteur=0,compteurglobal=0)
             c.endUpdate(False)
             c.selectVnode(c.currentVnode())

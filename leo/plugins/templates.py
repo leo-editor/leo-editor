@@ -230,7 +230,7 @@ def getTemplateDialog (pos,c):
     if ok:
         # nTnd = leoNodes.tnode(bS,hS)
         pos = c.currentPosition()
-        c.beginUpdate()
+        # c.beginUpdate()
         p = pos.insertAsNthChild(0) #,nTnd)
         p.setBodyString(bS)
         p.setHeadString(hS)

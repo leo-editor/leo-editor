@@ -236,7 +236,7 @@ class Navigator:
         """Callback that selects position p."""
 
         if c.positionExists(p):
-            c.beginUpdate()
+            # c.beginUpdate()
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p)
             c.endUpdate()

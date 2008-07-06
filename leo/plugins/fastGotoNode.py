@@ -424,11 +424,11 @@ def getMoveAMenu (pmenu,c):
     mvmenu = None
 
     def mvchild (p,p2,c=c):
-        c.beginUpdate()
-        try:
-            p.moveToNthChildOf(p2,0)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        p.moveToNthChildOf(p2,0)
+        # finally:
+        c.endUpdate()
 
     p = c.currentPosition()
     alist = getAncestorList(p)
@@ -454,11 +454,11 @@ def getMoveSMenu (pmenu,c):
     bk = p.back()
     if bk: sibs.remove(bk)
     def mafter (p,p2,c=c):
-        c.beginUpdate()
-        try:
-            p.moveAfter(p2)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        p.moveAfter(p2)
+        # finally:
+        c.endUpdate()
     if sibs:
         smenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
@@ -560,13 +560,13 @@ def setFileDirective( c , directive, names ):
     hS = p.headString()
     hS = getCleanHeadString( hS, names )
     hS = directive + " " + hS
-    c.beginUpdate()
-    try:
-        c.setHeadString(p,hS )
-        c.frame.body.bodyCtrl.focus_set()  
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setHeadString(p,hS )
+    c.frame.body.bodyCtrl.focus_set()  
+    c.frame.body.bodyCtrl.update_idletasks()
+    # finally:
+    c.endUpdate()
 #@nonl
 #@-node:mork.20041018095448:setFileDirective
 #@+node:mork.20041018100044:removeFileDirective
@@ -575,13 +575,13 @@ def removeFileDirective (c,names):
     p = c.currentPosition()
     hS = p.headString()
     hS = getCleanHeadString(hS,names)
-    c.beginUpdate()
-    try:
-        c.setHeadString(p,hS)
-        c.frame.body.bodyCtrl.focus_set()
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setHeadString(p,hS)
+    c.frame.body.bodyCtrl.focus_set()
+    c.frame.body.bodyCtrl.update_idletasks()
+    # finally:
+    c.endUpdate()
 #@nonl
 #@-node:mork.20041018100044:removeFileDirective
 #@+node:mork.20041018091414.14:addGL
@@ -589,13 +589,13 @@ def addGL (c):
     vnode = c.currentVnode()
     hs = vnode.headString()
     nhs = "<" + "<" + hs + ">" + ">"
-    c.beginUpdate()
-    try:
-        c.setHeadString(vnode,nhs)
-        c.frame.body.bodyCtrl.focus_set()
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setHeadString(vnode,nhs)
+    c.frame.body.bodyCtrl.focus_set()
+    c.frame.body.bodyCtrl.update_idletasks()
+    # finally:
+    c.endUpdate()
 #@nonl
 #@-node:mork.20041018091414.14:addGL
 #@+node:mork.20041018091414.15:insertHeadline
@@ -603,24 +603,24 @@ def insertHeadline (directive,c):
     vnode = c.currentVnode()
     hs = vnode.headString()
     nhs = directive + " " + hs
-    c.beginUpdate()
-    try:
-        c.setHeadString(vnode,nhs)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setHeadString(vnode,nhs)
+    # finally:
+    c.endUpdate()
 #@nonl
 #@-node:mork.20041018091414.15:insertHeadline
 #@+node:mork.20041018091414.16:paster
 def paster (directive,c,end=' '):
     bdy = c.frame.body
-    c.beginUpdate()
-    try:
-        bdy.insertAtInsertPoint(directive+end)
-        bdy.onBodyChanged(undoType=None)
-        bdy.bodyCtrl.focus_set()
-        bdy.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    bdy.insertAtInsertPoint(directive+end)
+    bdy.onBodyChanged(undoType=None)
+    bdy.bodyCtrl.focus_set()
+    bdy.bodyCtrl.update_idletasks()
+    # finally:
+    c.endUpdate()
     bdy.bodyCtrl.focus_set()
 #@nonl
 #@-node:mork.20041018091414.16:paster
@@ -635,12 +635,12 @@ def clear ():
 #@+node:mork.20041018091414.18:jumpto
 def jumpto (vnode,c):
     smenu.unpost()
-    c.beginUpdate()
-    try:
-        c.frame.tree.expandAllAncestors(vnode)
-        c.selectVnode(vnode)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.frame.tree.expandAllAncestors(vnode)
+    c.selectVnode(vnode)
+    # finally:
+    c.endUpdate()
 #@-node:mork.20041018091414.18:jumpto
 #@-node:ekr.20060110203946.2:Utilities
 #@-others

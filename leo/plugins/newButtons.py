@@ -561,28 +561,28 @@ class Template:
     def addNodes (self,c,parent,parameter="",top=False):
         """Add this template to the current"""
 
-        c.beginUpdate()
-        try:
-            # Add this new node
-            c.insertHeadline()
-            c.endEditing()
-            p = c.currentPosition()
-            c.setHeadString(p,self.convert(self.headline,parameter,parent))
-            c.setBodyString(p,self.convert(self.body,parameter,parent))
+        # c.beginUpdate()
+        # try:
+        # Add this new node
+        c.insertHeadline()
+        c.endEditing()
+        p = c.currentPosition()
+        c.setHeadString(p,self.convert(self.headline,parameter,parent))
+        c.setBodyString(p,self.convert(self.body,parameter,parent))
 
-            # Move it to the proper place.
-            if top and not parent.isExpanded():
-                p.moveAfter(parent)
-            else:
-                p.moveToNthChildOf(parent,0)
+        # Move it to the proper place.
+        if top and not parent.isExpanded():
+            p.moveAfter(parent)
+        else:
+            p.moveToNthChildOf(parent,0)
 
-            # Now add the children - go in reverse so we can add them as child 0 (above)
-            children = self.children [:]
-            children.reverse()
-            for child in children:
-                child.addNodes(c,p,parameter)
-        finally:
-            c.endUpdate()
+        # Now add the children - go in reverse so we can add them as child 0 (above)
+        children = self.children [:]
+        children.reverse()
+        for child in children:
+            child.addNodes(c,p,parameter)
+        # finally:
+        c.endUpdate()
     #@nonl
     #@-node:pap.20051010184315:addNodes
     #@+node:ekr.20060107131019:getTemplateFromNode

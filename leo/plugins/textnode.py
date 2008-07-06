@@ -48,7 +48,7 @@ def on_open(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    c.beginUpdate()
+    # c.beginUpdate()
     for p in c.allNodes_iter():
         h = p.headString()
         if g.match_word(h,0,"@text"):

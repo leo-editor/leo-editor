@@ -131,7 +131,7 @@ class CSVVisualizer:
         for z in data:
             csv_write.writerow( z )
         cS.seek( 0 )
-        self.c.beginUpdate() 
+        # self.c.beginUpdate() 
         if not save:
             # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
             p2 = pos.insertAfter() # tnd )

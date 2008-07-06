@@ -120,7 +120,7 @@ def base64Import( c ):
         ltime = os.path.getmtime( f.name )
         f.close()
         b64_data = base64.encodestring( data )
-        c.beginUpdate()
+        # c.beginUpdate()
         body = '''
             @%s
             size: %s
