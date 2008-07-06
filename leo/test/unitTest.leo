@@ -4702,21 +4702,22 @@ leoTest.runLeoTest(c,path,verbose=False,full=True)
 h = p.headString()
 
 # c.beginUpdate()
-# try:
-child = p.firstChild()
-child.initHeadString("@thin bogus")
-assert child.headString() == "@thin bogus", "setting headline failed"
-child.clearDirty()
-assert not child.isDirty(), "clearing dirty failed"
-c.setHeadString(p,"changed")
-assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-# finally:
 try:
-    c.setHeadString(p,h)
-    c.setHeadString(child,"bogus")
-    p.clearDirty()
+    child = p.firstChild()
+    child.initHeadString("@thin bogus")
+    assert child.headString() == "@thin bogus", "setting headline failed"
     child.clearDirty()
-finally: pass
+    assert not child.isDirty(), "clearing dirty failed"
+    c.setHeadString(p,"changed")
+    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
+finally:
+    try:
+        c.setHeadString(p,h)
+        c.setHeadString(child,"bogus")
+        p.clearDirty()
+        child.clearDirty()
+    finally: pass
+
 c.endUpdate()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
@@ -15680,26 +15681,26 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
 # finally:
 # c.endUpdate(False)</t>
 <t tx="ekr.20061104172236.8"># c.beginUpdate()
-# try:
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-# This strings tests unicode, paren matching, and auto-indentation.
-u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-u = u'(pdq):\n'
-w.setInsertPoint(len(s))
-for char in u:
-    event = g.Bunch(widget=w,char=char,keysym=None)
-    ec.selfInsertCommand(event)
-result = w.getAllText()
-#g.trace('result',repr(result))
-assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
-# g.trace(repr(s))
-c.recolor()
-# c.endUpdate(False)
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    
+    # This strings tests unicode, paren matching, and auto-indentation.
+    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
+    u = u'(pdq):\n'
+    w.setInsertPoint(len(s))
+    for char in u:
+        event = g.Bunch(widget=w,char=char,keysym=None)
+        ec.selfInsertCommand(event)
+    result = w.getAllText()
+    #g.trace('result',repr(result))
+    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+    # c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
@@ -15767,21 +15768,21 @@ for i in xrange(len(s)):
 <t tx="ekr.20061104172236.22"># target.
 
 # c.beginUpdate()
-# try:
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setInsertPoint(len(s))
-c.k.previousSelection = 2,8
-event = g.Bunch(widget=w)
-c.frame.pasteText(event=event,middleButton=True)
-s2 = w.getAllText()
-assert len(s2) == len(s) + len('target')
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
-# g.trace(repr(s))
-c.recolor()
-# c.endUpdate(False)
+try:
+    w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setInsertPoint(len(s))
+    c.k.previousSelection = 2,8
+    event = g.Bunch(widget=w)
+    c.frame.pasteText(event=event,middleButton=True)
+    s2 = w.getAllText()
+    assert len(s2) == len(s) + len('target')
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+    # c.endUpdate(False)
 
 # end</t>
 <t tx="ekr.20061104172236.23"># c.beginUpdate()
@@ -15815,12 +15816,12 @@ finally:
 s = w.getAllText()
 
 # c.beginUpdate()
-# try:
-w.setInsertPoint(len(s))
-c.insertBodyTime()
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
+try:
+    w.setInsertPoint(len(s))
+    c.insertBodyTime()
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
 # c.recolor()
 # c.endUpdate(False)
 
@@ -15829,27 +15830,28 @@ p.setBodyString(s)
 s = w.getAllText()
 
 # c.beginUpdate()
-# try:
-pattern = '(abc)'
-for index,result in (
-    (len(s)+len(pattern),'('),
-    (len(s)+len(pattern)-4,')'),
-):
+try:
+    pattern = '(abc)'
+    for index,result in (
+        (len(s)+len(pattern),'('),
+        (len(s)+len(pattern)-4,')'),
+    ):
+        w.setAllText(s)
+        p.setBodyString(s)
+        w.setInsertPoint('end')
+        w.insert('end',pattern)
+        w.setInsertPoint(index)
+        c.findMatchingBracket()
+        ins = w.getInsertPoint()
+        s2 = w.getAllText()
+        ins = min(ins,len(s2)-1)
+        assert s2[ins] == result,'Expected: %s, got: %s' % (repr(result),repr(s2[ins]))
+finally:
     w.setAllText(s)
-    p.setBodyString(s)
-    w.setInsertPoint('end')
-    w.insert('end',pattern)
-    w.setInsertPoint(index)
-    c.findMatchingBracket()
-    ins = w.getInsertPoint()
-    s2 = w.getAllText()
-    ins = min(ins,len(s2)-1)
-    assert s2[ins] == result,'Expected: %s, got: %s' % (repr(result),repr(s2[ins]))
-# finally:
-w.setAllText(s)
-p.setBodyString = s
-c.recolor()
+    p.setBodyString = s
+    c.recolor()
 # c.endUpdate(False)
+
 # end:</t>
 <t tx="ekr.20061106184118">&lt;&lt; test defined &gt;&gt;</t>
 <t tx="ekr.20061106184118.1">pass</t>
@@ -15918,21 +15920,21 @@ assert after == s[end:]
 
 # end.</t>
 <t tx="ekr.20061107031449"># c.beginUpdate()
-# try:
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setSelectionRange(len(s)-9,len(s)-6)
-event = g.Bunch(widget=w,char='\t',keysym=None)
-ec.selfInsertCommand(event)
-result = w.getAllText()
-# g.trace('result',repr(result))
-assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
-# g.trace(repr(s))
-c.recolor()
-# c.endUpdate(False)
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setSelectionRange(len(s)-9,len(s)-6)
+    event = g.Bunch(widget=w,char='\t',keysym=None)
+    ec.selfInsertCommand(event)
+    result = w.getAllText()
+    # g.trace('result',repr(result))
+    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+    # c.endUpdate(False)
         
 ###abcdef</t>
 <t tx="ekr.20061109172511"></t>
@@ -16786,18 +16788,18 @@ c.clone()
 assert 2 == p.numberOfChildren()
 
 # c.beginUpdate()
-# try:
-# Select the first clone and demote (it should be illegal)
-c.selectPosition(p2)
-c.demote() # This should do nothing.
-assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-assert 2 == p.numberOfChildren(), 'fail 3'
-# Delete the children, but only if there are no errors.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# finally:
-c.endUpdate()
+try:
+    # Select the first clone and demote (it should be illegal)
+    c.selectPosition(p2)
+    c.demote() # This should do nothing.
+    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+    assert 2 == p.numberOfChildren(), 'fail 3'
+    # Delete the children, but only if there are no errors.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+finally:
+    c.endUpdate()
 </t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
@@ -19058,46 +19060,46 @@ runner.compareHelper(lines1,lines2,i,strict=False)</t>
 <t tx="ekr.20071113145804.4">@language python
 
 # c.beginUpdate()
-# try:
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-# This strings tests unicode, paren matching, and auto-indentation.
-u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-u = u'(pdq):\n'
-w.setInsertPoint(len(s))
-for char in u:
-    event = g.Bunch(widget=w,char=char,keysym=None)
-    ec.selfInsertCommand(event)
-result = w.getAllText()
-#g.trace('result',repr(result))
-assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
-# g.trace(repr(s))
-c.recolor()
-c.endUpdate(False)
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    
+    # This strings tests unicode, paren matching, and auto-indentation.
+    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
+    u = u'(pdq):\n'
+    w.setInsertPoint(len(s))
+    for char in u:
+        event = g.Bunch(widget=w,char=char,keysym=None)
+        ec.selfInsertCommand(event)
+    result = w.getAllText()
+    #g.trace('result',repr(result))
+    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+    # c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
 
 # c.beginUpdate()
-# try:
-ec = c.editCommands ; w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setSelectionRange(len(s)-9,len(s)-6)
-event = g.Bunch(widget=w,char='\t',keysym=None)
-ec.selfInsertCommand(event)
-result = w.getAllText()
-# g.trace('result',repr(result))
-assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-# finally:
-w.setAllText(s)
-p.setBodyString(s)
-# g.trace(repr(s))
-c.recolor()
-# c.endUpdate(False)
+try:
+    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+    s = w.getAllText()
+    w.setSelectionRange(len(s)-9,len(s)-6)
+    event = g.Bunch(widget=w,char='\t',keysym=None)
+    ec.selfInsertCommand(event)
+    result = w.getAllText()
+    # g.trace('result',repr(result))
+    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+finally:
+    w.setAllText(s)
+    p.setBodyString(s)
+    # g.trace(repr(s))
+    c.recolor()
+    # c.endUpdate(False)
 
 ###abcdef</t>
 <t tx="ekr.20071113145804.6"># c.beginUpdate()
