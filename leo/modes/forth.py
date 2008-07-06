@@ -427,7 +427,7 @@ class extendForth:
             return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
                 at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
                 delegate="",exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=True) # Require ending word.
+                no_escape=False, no_line_break=False, no_word_break=False) # Don't ending word.
 
         return forth_string_word_rule
     #@-node:ekr.20080703111151.10:createStringRule

@@ -1659,6 +1659,9 @@ for z in aList:
    asm[ s" some string" type ]asm cr
    asm[ abc ]asm
    a
+   s" abc "
+   s" abc"
+   a
    tty" abc "
    lcd2" abc "
    until
