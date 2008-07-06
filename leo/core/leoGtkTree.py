@@ -2025,7 +2025,7 @@ class leoGtkTree (leoFrame.leoTree):
         tree.endEditLabel()
         tree.dimEditLabel()
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
     #@-node:ekr.20080112145409.408:tree.OnDeactivate
     #@+node:ekr.20080112145409.409:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -3263,7 +3263,7 @@ class OutlineCanvas(gtk.DrawingArea):
         self._parent.vscrollUpdate()
         self._parent.hscrollUpdate()
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
 
     #@-node:bob.20080117104810.15:onSize

@@ -571,7 +571,7 @@ class leoFind:
         else:
             c.frame.body.onBodyChanged('Change',oldSel=oldSel)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
         c.frame.tree.drawIcon(p) # redraw only the icon.
 
         return True

@@ -128,7 +128,7 @@ class chapterController:
         dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
         c.undoer.afterChangeGroup(clone,undoType,reportFlag=False,dirtyVnodeList=dirtyVnodeList)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         toChapter.p = clone.copy()
         toChapter.select()
@@ -209,7 +209,7 @@ class chapterController:
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         toChapter.p = p2.copy()
         toChapter.select()
@@ -357,7 +357,7 @@ class chapterController:
                 dirtyVnodeList.extend(dirtyVnodeList2)
             u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
         # finally:
-        c.endUpdate(False) # toChapter.select will do the drawing.
+        # c.endUpdate(False) # toChapter.select will do the drawing.
 
         if sel:
             toChapter.p = p.copy()
@@ -498,7 +498,7 @@ class chapterController:
             t.setFileIndex(g.app.nodeIndices.getNewIndex())
         c.setChanged(True)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
     #@nonl
     #@-node:ekr.20070325101652:cc.createChaptersNode
     #@+node:ekr.20070325063303.2:cc.createChapterNode
@@ -525,7 +525,7 @@ class chapterController:
             cc.createChild(root,'%s node 1' % chapterName)
         c.setChanged(True)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         return root
     #@-node:ekr.20070325063303.2:cc.createChapterNode
@@ -560,7 +560,7 @@ class chapterController:
             # The chapter selection logic will select a new node.
             c.setChanged(True)
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
     #@nonl
     #@-node:ekr.20070325063303.4:cc.deleteChapterNode
     #@-node:ekr.20070511081405:Creating/deleting nodes (chapterController)

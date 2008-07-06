@@ -1528,7 +1528,7 @@ class undoer:
                 else:
                     g.trace('oops: no redo helper for %s' % u.undoType)
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
 
         u.groupCount -= 1
 
@@ -1862,7 +1862,7 @@ class undoer:
                 else:
                     g.trace('oops: no undo helper for %s' % u.undoType)
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
 
         u.groupCount -= 1
 

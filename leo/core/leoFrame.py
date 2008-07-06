@@ -2461,7 +2461,7 @@ class leoTree:
                 p.expand()
                 redraw_flag = True
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         return redraw_flag
     #@-node:ekr.20040803072955.143:tree.expandAllAncestors
@@ -3349,7 +3349,7 @@ class nullTree (leoTree):
             # try:
             self.endEditLabel()
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
 
         self.setEditPosition(p) # That is, self._editPosition = p
 

@@ -839,7 +839,7 @@ class leoImportCommands:
             # try:
             p.setBodyString('')
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()

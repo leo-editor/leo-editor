@@ -567,7 +567,7 @@ class atFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 

@@ -1752,7 +1752,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.drag_p = None
         # finally:
         # Must set self.drag_p = None first.
-        c.endUpdate(False) # redrawFlag)
+        # c.endUpdate(False) # redrawFlag)
         if redrawFlag:
             c.redraw_now()
         c.recolor_now() # Dragging can affect coloring.
@@ -2103,7 +2103,7 @@ class leoTkinterTree (leoFrame.leoTree):
         tree.endEditLabel()
         tree.dimEditLabel()
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
         c.outerUpdate()
     #@-node:ekr.20040803072955.108:tree.OnDeactivate
     #@+node:ekr.20040803072955.110:tree.OnPopup & allies

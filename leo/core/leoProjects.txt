@@ -3388,7 +3388,7 @@ def readOneAtAutoNode (self,fileName,p):
     while p.hasChildren():
         p.firstChild().doDelete()
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
@@ -3430,7 +3430,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
         # try:
         p.setBodyString('')
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -4102,7 +4102,7 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
         # try:
         p.setBodyString('')
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -8394,8 +8394,8 @@ def beginUpdate(self):
     '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
     until the matching call to endUpdate.'''
 
-    # g.trace('***** c.beginUpdate is deprecated')
-    # if g.app.unitTesting: assert(False)
+    g.trace('***** c.beginUpdate is deprecated')
+    if g.app.unitTesting: assert(False)
     pass
 
 def endUpdate(self,flag=True,scroll=True):
@@ -8971,7 +8971,7 @@ def new (self,event=None,gui=None):
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -8994,8 +8994,8 @@ def beginUpdate(self):
     '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
     until the matching call to endUpdate.'''
 
-    # g.trace('***** c.beginUpdate is deprecated')
-    # if g.app.unitTesting: assert(False)
+    g.trace('***** c.beginUpdate is deprecated')
+    if g.app.unitTesting: assert(False)
     pass
 
 def endUpdate(self,flag=True,scroll=True):
@@ -9230,8 +9230,8 @@ def beginUpdate(self):
     '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
     until the matching call to endUpdate.'''
 
-    # g.trace('***** c.beginUpdate is deprecated')
-    # if g.app.unitTesting: assert(False)
+    g.trace('***** c.beginUpdate is deprecated')
+    if g.app.unitTesting: assert(False)
     pass
 
 def endUpdate(self,flag=True,scroll=True):
@@ -9418,7 +9418,7 @@ def new (self,event=None,gui=None):
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -9589,7 +9589,7 @@ def createAllCompareClones(self,inserted,deleted,changed):
     c.selectPosition(parent)
     u.afterChangeGroup(parent,undoType,reportFlag=True) 
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
 
     c.redraw_now()
     c.outerUpdate()
@@ -10085,7 +10085,7 @@ def redoGroup (self):
             else:
                 g.trace('oops: no redo helper for %s' % u.undoType)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -10419,7 +10419,7 @@ def undoGroup (self):
             else:
                 g.trace('oops: no undo helper for %s' % u.undoType)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -10689,7 +10689,7 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     # try:
     c.endEditing() # Make sure we capture the headline for Undo.
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
 
     if cc: # Special cases for @chapter and @chapters nodes.
         chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -11273,7 +11273,7 @@ def endDrag (self,event):
     self.drag_p = None
     # finally:
     # Must set self.drag_p = None first.
-    c.endUpdate(False) # redrawFlag)
+    # c.endUpdate(False) # redrawFlag)
     if redrawFlag:
         c.redraw_now()
     c.recolor_now() # Dragging can affect coloring.
@@ -15734,7 +15734,7 @@ def new (self,event=None,gui=None):
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
     # finally:
-    c.endUpdate(False)
+    # c.endUpdate(False)
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
@@ -18271,7 +18271,9 @@ def tearDown (self):
 
     pass
 
-    # To do: restore the outline.
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
 #@-node:ekr.20051104075904.9:tearDown
 #@+node:ekr.20051104075904.10:runTest
 def runTest (self,define_g = True):

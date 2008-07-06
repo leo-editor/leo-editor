@@ -2802,7 +2802,7 @@ class editCommandsClass (baseEditCommandsClass):
             c.editCommands.cleanLines(event)
         c.selectPosition(current)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -4882,7 +4882,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         c.redraw_now()
         c.outerUpdate()

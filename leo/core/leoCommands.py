@@ -529,7 +529,7 @@ class baseCommands:
             g.doHook("menu2",c=frame.c,p=p,v=p)
             g.doHook("after-create-leo-frame",c=c)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use_chapters') and c.chapterController:
@@ -3415,7 +3415,7 @@ class baseCommands:
         # try:
         c.endEditing() # Make sure we capture the headline for Undo.
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -3476,7 +3476,7 @@ class baseCommands:
         # try:
         c.editPosition(p,selectAll=True)
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         return p # for mod_labels plugin.
     #@-node:ekr.20031218072017.1761:c.insertHeadline
@@ -4457,7 +4457,7 @@ class baseCommands:
         # try:
         parent.contract()
         # finally:
-        c.endUpdate(False)
+        # c.endUpdate(False)
 
         c.treeSelectHelper(parent)
     #@-node:ekr.20031218072017.2902:contractParent
@@ -5813,7 +5813,7 @@ class baseCommands:
         ):
             clone.doDelete(newNode=p) # Destroys clone and makes p the current node.
             c.selectPosition(p) # Also sets root position.
-            c.endUpdate(False) # Nothing has changed.
+            # c.endUpdate(False) # Nothing has changed.
             return
         c.endEditing()
         undoData = u.beforeInsertNode(current)
@@ -5878,8 +5878,8 @@ class baseCommands:
         '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
         until the matching call to endUpdate.'''
 
-        # g.trace('***** c.beginUpdate is deprecated')
-        # if g.app.unitTesting: assert(False)
+        g.trace('***** c.beginUpdate is deprecated')
+        if g.app.unitTesting: assert(False)
         pass
 
     def endUpdate(self,flag=True,scroll=True):

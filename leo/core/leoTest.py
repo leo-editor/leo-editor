@@ -152,7 +152,9 @@ class generalTestCase(unittest.TestCase):
 
         pass
 
-        # To do: restore the outline.
+        # Restore the outline.
+        self.c.outerUpdate()
+    #@nonl
     #@-node:ekr.20051104075904.9:tearDown
     #@+node:ekr.20051104075904.10:runTest
     def runTest (self,define_g = True):
@@ -747,7 +749,7 @@ def runTestsExternally (c,all):
                     else:
                         p.moveToThreadNext()
             # finally:
-            c2.endUpdate(False)
+            # c2.endUpdate(False)
         #@nonl
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
@@ -1736,7 +1738,7 @@ def runEditCommandTest (c,p):
     c.selectPosition(atTest)
     atTest.contract()
     # finally:
-    c.endUpdate(False) # Don't redraw.
+    # c.endUpdate(False) # Don't redraw.
 #@nonl
 #@-node:ekr.20061008140603:runEditCommandTest
 #@+node:ekr.20051104075904.95:throwAssertionError
