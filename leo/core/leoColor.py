@@ -71,7 +71,6 @@ default_colors_dict = {
     "cwebName"       :("cweb_section_name_color",     "red"),
     "pp"             :("directive_color",             "blue"),
     "docPart"        :("doc_part_color",              "red"),
-    "forthBrackets"  :("forth_bracket_range_color",   "orange"),
     "keyword"        :("keyword_color",               "blue"),
     "leoKeyword"     :("leo_keyword_color",           "blue"),
     "link"           :("section_name_color",          "red"),
@@ -1052,50 +1051,6 @@ class colorizer:
             "unless",
             "when","while"]
         #@-node:ekr.20031218072017.374:elisp keywords
-        #@+node:ekr.20041107093834:forth keywords
-        # Default forth keywords: extended by leo-forthwords.txt.
-        self.forth_keywords = [
-            "variable", "constant", "code", "end-code",
-            "dup", "2dup", "swap", "2swap", "drop", "2drop",
-            "r>", ">r", "2r>", "2>r",
-            "if", "else", "then",
-            "begin", "again", "until", "while", "repeat",
-            "v-for", "v-next", "exit",
-            "meta", "host", "target", "picasm", "macro",
-            "needs", "include",
-            "'", "[']",
-            ":", ";",
-            "@", "!", ",", "1+", "+", "-",
-            "<", "<=", "=", ">=", ">",
-            "invert", "and", "or", 
-            ]
-
-        # Forth words which define other words: extended by leo-forthdefwords.txt.
-        self.forth_definingwords = [
-            ":", "variable", "constant", "code",
-            ]
-
-        # Forth words that define brackets: extended by leo-forthdelimiters.txt
-        # Entries are tuples.
-        self.forth_delims = [
-            ]
-
-        # Forth words which start strings: extended by leo-forthstringwords.txt.
-        self.forth_stringwords = [
-            's"', '."', '"', '."',
-            'abort"',
-            ]
-
-        # Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
-        self.forth_boldwords = [ ]
-
-        # Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
-        self.forth_italicwords = [ ]
-
-        # Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
-        # Note: on some boxen, bold italics may show in plain bold.
-        self.forth_bolditalicwords = [ ]
-        #@-node:ekr.20041107093834:forth keywords
         #@+node:ekr.20031218072017.375:html keywords
         # No longer used by syntax colorer.
         self.html_keywords = []
@@ -1926,13 +1881,10 @@ class colorizer:
         self.line_index = 0
 
         # Others.
-        self.forth_brackets = []
-        self.forth_stringwords = []
         self.single_comment_start = None
         self.block_comment_start = None
         self.block_comment_end = None
         self.case_sensitiveLanguage = True
-        self.forth_bracket_end = None
         self.has_string = None
         self.string_delims = ("'",'"')
         self.has_pp_directives = None
@@ -1951,7 +1903,6 @@ class colorizer:
         self.state_dict = {
             "blockComment" : self.continueBlockComment,
             "doubleString" : self.continueDoubleString, # 1/25/03
-            "forthBrackets": self.continueForthBrackets,
             "nocolor"      : self.continueNocolor,
             "normal"       : self.doNormalState,
             "singleString" : self.continueSingleString,  # 1/25/03
@@ -1963,47 +1914,6 @@ class colorizer:
         #@-node:ekr.20031218072017.1607:<< define dispatch dicts >>
         #@nl
         self.setFontFromConfig()
-        #@    << extend forth words from files >>
-        #@+node:ekr.20041107094252:<< extend forth words from files >>
-        # Associate files with lists: probably no need to edit this.
-        table1 = (
-            (self.forth_definingwords, "leo-forthdefwords.txt", "defining words"),
-            (self.forth_delims, "leo-forthdelimiters.txt", "extra delimiter pairs"),
-            (self.forth_keywords, "leo-forthwords.txt", "words"),
-            (self.forth_stringwords, "leo-forthstringwords.txt", "string words"),
-            (self.forth_boldwords, "leo-forthboldwords.txt", "bold words"),
-            (self.forth_bolditalicwords, "leo-forthbolditalicwords.txt", "bold-italic words"),
-            (self.forth_italicwords, "leo-forthitalicwords.txt", "italic words"),
-        )
-
-        # Add entries from files (if they exist) and to the corresponding wordlists.
-        for (lst, path, typ) in table1:
-            try:
-                extras = []
-                path = g.os_path_join(g.app.loadDir,"..","plugins",path) # EKR.
-                for line in file(path).read().strip().split("\n"):
-                    line = line.strip()
-                    if line and line[0] != '\\':
-                        extras.append(line)
-                if extras:
-                    if 0: # I find this annoying.  YMMV.
-                        if not g.app.unitTesting and not g.app.batchMode:
-                            print "Found extra forth %s" % typ + ": " + " ".join(extras)
-                    lst.extend(extras)
-            except IOError:
-                # print "Not found",path
-                pass
-
-        # Create brackets1/2 and stringwords1/2 lists.
-        table2 = (
-            ("forth_brackets",    "leo-forthdelimiters.txt"),
-            ("forth_stringwords", "leo-forthstringwords.txt"),
-        )
-
-        for (ivar, fileName) in table2:
-            self.splitList (ivar,fileName)
-        #@-node:ekr.20041107094252:<< extend forth words from files >>
-        #@nl
     #@+node:ekr.20080704085627.3:splitList
     def splitList (self,ivar,fileName):
 
@@ -2238,7 +2148,7 @@ class colorizer:
             # The list of languages for which keywords exist.
             # Eventually we might just use language_delims_dict.keys()
             languages = [
-                "actionscript","ada","c","csharp","css","cweb","elisp","forth","html","java","latex","lua",
+                "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
                 "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","shell","tcltk"]
 
             self.keywords = []
@@ -2252,9 +2162,6 @@ class colorizer:
                     if self.language==name: 
                         # g.trace("setting keywords for",name)
                         self.keywords = getattr(self, name + "_keywords")
-
-            # For forth.
-            self.nextForthWordIsNew = False
 
             # Color plain text unless we are under the control of @nocolor.
             # state = g.choose(self.flag,"normal","nocolor")
@@ -2637,28 +2544,6 @@ class colorizer:
             #@nl
         return i,state
     #@-node:ekr.20031218072017.1614:continueDocPart
-    #@+node:ekr.20080703071815.2:continueForthBrackets
-    def continueForthBrackets (self,s,i):
-
-        tag = 'forthBrackets'
-        j = s.find(self.forth_bracket_end,i)
-
-        if j == -1:
-            j = len(s) # The entire line is part of the forth bracket.
-            if not g.doHook("color-optional-markup",
-                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
-                self.tag(tag,i,j)
-            return j,tag # skip the rest of the line.
-
-        else:
-            # End the forth bracket.
-            k = len(self.forth_bracket_end)
-            if not g.doHook("color-optional-markup",
-                colorer=self,p=self.p,v=self.p,s=s,i=i,j=j+k,colortag=tag):
-                self.tag(tag,i,j+k)
-            i = j + k
-            return i,"normal"
-    #@-node:ekr.20080703071815.2:continueForthBrackets
     #@+node:ekr.20031218072017.1894:continueNocolor
     def continueNocolor (self,s,i):
 
@@ -2774,8 +2659,7 @@ class colorizer:
         if ch in string.ascii_letters or ch == '_' or (
             (ch == '\\' and self.language=="latex") or
             (ch in '/&<>' and self.language=="html") or
-            (ch == '$' and self.language=="rapidq") or
-            (self.language == 'forth' and ch in "`~!@#$%^&*()_+-={}|[];':\",./<>?")
+            (ch == '$' and self.language=="rapidq")
         ):
             #@        << handle possible keyword >>
             #@+middle:ekr.20031218072017.1897:Valid regardless of latex mode
@@ -2823,46 +2707,6 @@ class colorizer:
                 else:
                     j = i + 1
                 #@-node:ekr.20031218072017.1900:<< handle possible html keyword >>
-                #@nl
-            elif self.language == "forth":
-                #@    << handle possible forth keyword >>
-                #@+node:ekr.20041107093219.3:<< handle possible forth keyword >>
-                j = self.skip_id(s,i+1,chars="`~!@#$%^&*()-_=+[]{};:'\\\",./<>?")
-                word = s[i:j]
-
-                #print "word=%s" % repr(word)
-
-                if not self.case_sensitiveLanguage:
-                    word = word.lower()
-
-                if self.nextForthWordIsNew:
-                    #print "trying to bold the defined word '%s'" % word
-                    self.tag("bold", i, j)
-                    self.nextForthWordIsNew = False
-                else:
-                    if word in self.forth_definingwords:
-                        self.nextForthWordIsNew = True
-
-                    if word in self.forth_brackets1:
-                        i = self.forth_brackets1.index(word)
-                        self.forth_bracket_end = self.forth_brackets2[i]
-                        self.tag("forthBrackets", i, j)
-                        state = "forthBrackets"
-                    elif word in self.forth_boldwords:
-                        self.tag("bold", i, j)
-                    elif word in self.forth_bolditalicwords:
-                        self.tag("bolditalic", i, j)
-                    elif word in self.forth_italicwords:
-                        self.tag("italic", i, j)
-                    elif word in self.forth_stringwords:
-                        self.tag("keyword", i, j-1)
-                        i = j - 1
-                        j, state = self.skip_string(s,j-1)
-                        self.tag("string",i,j)
-                        word = ''
-                    elif word in self.keywords:
-                        self.tag("keyword",i,j)
-                #@-node:ekr.20041107093219.3:<< handle possible forth keyword >>
                 #@nl
             else:
                 #@    << handle general keyword >>
