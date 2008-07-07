@@ -9,7 +9,7 @@ rem E1101 Instance of <class> has no x member
 REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
-goto all
+REM goto all
 goto bad_core
 
 echo A demonstration of the pylint bug
@@ -24,20 +24,21 @@ goto done
 
 echo tests that fail with dangerous settings enabled...
 
-cd c:\leo.repo\trunk\leo\core
+REM cd c:\leo.repo\trunk\leo\core
+cd :\leo\leo.repo\trunk
 
 echo .
 echo leoTkinterFind.py Dangerous: E1101,E1103: many Erroneous errors given.
-call pylint.bat leoTkinterFind.py   --rcfile=..\test\pylint-leo-rc.txt
+call pylint.bat leo\core\leoTkinterFind.py   --rcfile=leo\test\pylint-leo-rc.txt
 
 echo .
 echo leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
 echo leoTkinterFrame.py Dangerous: E1101 : many ERRONEOUS errors given
-call pylint.bat leoTkinterFrame.py  --disable-msg=W0221 --rcfile=..\test\pylint-leo-rc.txt
+call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo .
 echo leoTkinterMenu.py Dangerous: E1101: many ERRONEOUS errors given.
-call pylint.bat leoTkinterMenu.py   --rcfile=..\test\pylint-leo-rc.txt
+call pylint.bat leo\core\leoTkinterMenu.py   --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
