@@ -9401,7 +9401,7 @@ if wx:
             self.vscrollUpdate()
             self._canvas.resize(self.GetClientSize().height)
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
             event.Skip()
         #@-node:bob.20070813173446.9:onSize
         #@+node:bob.20070813173446.10:vscrollUpdate

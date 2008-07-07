@@ -139,7 +139,7 @@ class controller:
             g.es(dirName)
             # c.beginUpdate() # EKR: doing this here saves lots of time.
             compteur, compteurglobal = self.importDir(dirName,compteur=0,compteurglobal=0)
-            c.endUpdate(False)
+            # c.endUpdate(False)
             c.selectVnode(c.currentVnode())
             c.frame.tree.redraw_now()
             self.esfm("\n")

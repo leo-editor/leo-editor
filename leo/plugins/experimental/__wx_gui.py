@@ -5384,7 +5384,7 @@ if wx:
                 # try:
                 self.fullRedraw()
                 # finally:
-                c.endUpdate(False)
+                # c.endUpdate(False)
             finally:
                 self.paintLockout = False
             event.Skip()
@@ -5859,7 +5859,7 @@ if wx:
             c.selectPosition(p)
             p.contract()
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
 
         def onTreeCollapsed(self,event):
 
@@ -5883,7 +5883,7 @@ if wx:
             c.selectPosition(p)
             p.expand()
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
 
         def onTreeExpanded (self,event):
 
@@ -5904,7 +5904,7 @@ if wx:
             # try:
             c.selectPosition(p)
             # finally:
-            c.endUpdate(False)
+            # c.endUpdate(False)
         #@-node:edream.110203113231.283:Change selection
         #@+node:ekr.20061211064516:onRightDown/Up
         def onRightDown (self,event):
