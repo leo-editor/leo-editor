@@ -4626,7 +4626,7 @@ finally:
         child.clearDirty()
     finally: pass
 
-c.endUpdate()
+c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
 <t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
@@ -13065,7 +13065,7 @@ finally:
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of typing tests.'</t>
 <t tx="ekr.20051120110335">c.insertHeadline()
@@ -13237,7 +13237,7 @@ if p:
     p.expand()
     g.app.unitTestDict['restoreSelectedNode']=False
     c.selectPosition(p)
-    c.endUpdate()
+    c.redraw()
         
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
@@ -15979,7 +15979,7 @@ controller.parameterize()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of general unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
@@ -15988,7 +15988,7 @@ print ; print 'End of general unit tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoColor tests'</t>
 <t tx="ekr.20061127142311">#ab
@@ -16496,7 +16496,7 @@ p3 = c.currentPosition()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoEditCommands tests.'</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
@@ -16621,7 +16621,7 @@ try:
     while p.hasChildren():
         p.firstChild().doDelete()
 finally:
-    c.endUpdate()
+    c.redraw()
 </t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
@@ -19209,7 +19209,7 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
+
 # end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113145804.34">import string
 
@@ -19303,7 +19303,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoAtFile tests'</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
@@ -19312,7 +19312,7 @@ print ; print 'End of leoAtFile tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoCommands tests'</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
@@ -19321,7 +19321,7 @@ print ; print 'End of leoCommands tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoConfig tests'</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
@@ -19330,7 +19330,7 @@ print ; print 'End of leoConfig tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
   
 print ; print 'End of leoFileCommands tests.'</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
@@ -19339,7 +19339,7 @@ print ; print 'End of leoFileCommands tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoFind tests.'</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
@@ -19348,7 +19348,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoFrame tests.'</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
@@ -19357,7 +19357,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoGlobals tests.'</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
@@ -19366,7 +19366,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoGui tests.'</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
@@ -19375,7 +19375,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoImport tests.'</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
@@ -19384,7 +19384,7 @@ print ; print 'End of leoImport tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoKeys tests.'</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
@@ -19393,7 +19393,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoNodes tests.'</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
@@ -19402,7 +19402,7 @@ print ; print 'End of leoNodes tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoUndo tests.'</t>
 <t tx="ekr.20071113203234"></t>

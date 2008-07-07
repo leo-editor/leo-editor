@@ -5554,7 +5554,7 @@ class baseCommands:
             c.frame.tree.expandAllAncestors(p)
             c.selectPosition(p,updateBeadList=False)
             # finally:
-            c.endUpdate(redraw)
+            if redraw: c.redraw() # was c.endUpdate(redraw)
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -5875,11 +5875,14 @@ class baseCommands:
 
         '''Deprecated: does nothing.'''
 
-        g.trace('***** c.beginUpdate is deprecated')
+        g.trace('***** c.beginUpdate is deprecated',g.callers())
         if g.app.unitTesting: assert(False)
         pass
 
     def endUpdate(self,flag=True,scroll=True):
+
+        g.trace('***** c.endUpdate is deprecated',g.callers())
+        if g.app.unitTesting: assert(False)
 
         '''Request a redraw of the screen if flag is True.'''
 
