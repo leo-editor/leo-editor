@@ -5380,11 +5380,11 @@ if wx:
                 dc = wx.PaintDC(self.treeCtrl) # Required, even if not used.
                 dc.DestroyClippingRegion()
                 dc.Clear()
-                c.beginUpdate()
-                try:
-                    self.fullRedraw()
-                finally:
-                    c.endUpdate(False)
+                # c.beginUpdate()
+                # try:
+                self.fullRedraw()
+                # finally:
+                # c.endUpdate(False)
             finally:
                 self.paintLockout = False
             event.Skip()
@@ -5854,12 +5854,12 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c ; tree = self.treeCtrl
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                p.contract()
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            p.contract()
+            # finally:
+            # c.endUpdate(False)
 
         def onTreeCollapsed(self,event):
 
@@ -5878,12 +5878,12 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c ; tree = self.treeCtrl
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-                p.expand()
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            p.expand()
+            # finally:
+            # c.endUpdate(False)
 
         def onTreeExpanded (self,event):
 
@@ -5900,11 +5900,11 @@ if wx:
             # p will be None while redrawing, so this is the outermost click event.
             # Set the selection before redrawing so the tree is drawn properly.
             c = self.c
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            c.selectPosition(p)
+            # finally:
+            # c.endUpdate(False)
         #@-node:edream.110203113231.283:Change selection
         #@+node:ekr.20061211064516:onRightDown/Up
         def onRightDown (self,event):
@@ -6124,11 +6124,11 @@ if wx:
             # Eliminating switchFlag gets rid of most flashes.
             redrawFlag = expandFlag or idFlag
 
-            c.beginUpdate()
-            try:
-                self.endEditLabel()
-            finally:
-                c.endUpdate(redrawFlag)
+            # c.beginUpdate()
+            # try:
+            self.endEditLabel()
+            # finally:
+            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
 
             self.setEditPosition(p) # That is, self._editPosition = p
             tree_id = self.getIdDict(p)

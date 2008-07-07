@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -222,7 +222,10 @@
 <v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
 <v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
 </v>
-<v t="ekr.20080702193741.1" a="E"><vh>@thin c:\prog\test\shadow_test.py</vh></v>
+<v t="ekr.20080702193741.1"><vh>@@thin c:\prog\test\shadow_test.py</vh>
+<v t="ekr.20080702193741.3"><vh>spam</vh></v>
+<v t="ekr.20080702193741.4"><vh>eggs</vh></v>
+</v>
 <v t="ekr.20080702193741.2"><vh>@button shadow</vh></v>
 </vnodes>
 <tnodes>
@@ -1658,6 +1661,9 @@ for z in aList:
         print 'echo',name
         print 'call pylint.bat core\\%s' % name</t>
 <t tx="ekr.20080702113207.1"></t>
+<t tx="ekr.20080702193741.1">import leo.core.leoGlobals as leoGlobals
+
+@others</t>
 <t tx="ekr.20080702193741.2">"""
 Look for @thin files in the current subtree.
 Convert those thin files into a file with a shadow file,
@@ -1707,5 +1713,9 @@ for p in p.self_and_subtree_iter():
             targetfilename=fullfilename,
             marker_from_extension = marker_from_extension)
         g.es("File %s is now shadowed" % filename)</t>
+<t tx="ekr.20080702193741.3">def spam():
+    g.trace()</t>
+<t tx="ekr.20080702193741.4">def eggs():
+    g.trace()</t>
 </tnodes>
 </leo_file>

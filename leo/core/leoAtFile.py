@@ -562,12 +562,12 @@ class atFile:
             g.es("reading:",p.headString())
 
         # Delete all children.
-        c.beginUpdate()
-        try:
-            while p.hasChildren():
-                p.firstChild().doDelete()
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        # finally:
+        # c.endUpdate(False)
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 

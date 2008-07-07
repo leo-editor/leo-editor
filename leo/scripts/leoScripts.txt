@@ -407,25 +407,26 @@ def prependNamesInTree(p,nameList,prefix,replace=False):
     def_s = "def " ; def_n = len(def_s)
     prefix_n = len(prefix)
     total = 0
-    c.beginUpdate()
-    try:
-        for p in p.self_and_subtree_iter():
-            count = 0 ; s = p.bodyString()
-            printFlag = False
-            if s:
-                for name in nameList:
-                    i = 0 ; n = len(name)
-                    while 1:
-                        << look for name followed by '(' >>
-                if count and replace:
-                    if 0:
-                        << print before and after >>
-                    c.setBodyString(p,s)
-                    p.setDirty()
-            g.es("%3d %s" % (count,p.headString()))
-            total += count
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    for p in p.self_and_subtree_iter():
+        count = 0 ; s = p.bodyString()
+        printFlag = False
+        if s:
+            for name in nameList:
+                i = 0 ; n = len(name)
+                while 1:
+                    << look for name followed by '(' >>
+            if count and replace:
+                if 0:
+                    << print before and after >>
+                c.setBodyString(p,s)
+                p.setDirty()
+        g.es("%3d %s" % (count,p.headString()))
+        total += count
+    # finally:
+    c.endUpdate()
+
     return total
 #@nonl
 #@+node:<< look for name followed by '(' >>
@@ -735,12 +736,12 @@ def headfind():
                     # g.es(body2,color="orange")
                     return
                 else:
-                    c.beginUpdate()
-                    try:
-                        c.frame.tree.expandAllAncestors(p)
-                        c.selectVnode(p)
-                    finally:
-                        c.endUpdate()
+                    # c.beginUpdate()
+                    # try:
+                    c.frame.tree.expandAllAncestors(p)
+                    c.selectVnode(p)
+                    # finally:
+                    c.endUpdate()
                     return
 
         g.es("no headline matches '%s'" % (s),color="blue")
@@ -3096,21 +3097,21 @@ baseDir = r'c:\Python25\Lib\distutils'
 dirs = ('','command',) # '' represents the base dir.
 print '-' * 40
 
-c.beginUpdate()
-try:
-    for theDir in dirs:
-        pattern = g.os_path_join(baseDir,theDir,'*.py')
-        files = glob.glob(pattern)
-        print ; print 'pattern:', pattern ; print
-        # print g.listToString(files)
-        for name in files:
-            h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-            print 'creating',h
-            if reallyCreate:
-                child = p.insertAsLastChild()
-                child.initHeadString(h)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for theDir in dirs:
+    pattern = g.os_path_join(baseDir,theDir,'*.py')
+    files = glob.glob(pattern)
+    print ; print 'pattern:', pattern ; print
+    # print g.listToString(files)
+    for name in files:
+        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+        print 'creating',h
+        if reallyCreate:
+            child = p.insertAsLastChild()
+            child.initHeadString(h)
+# finally:
+c.endUpdate()
 #@-node:create-at-auto-nodes
 #@+node:@@button print g.es stats
 @first # -*- coding: utf-8 -*-
@@ -3217,11 +3218,11 @@ def main (self):
     # Put the results in the root node, or print them.
     if self.root:
         c.setBodyString(self.root,results)
-        c.beginUpdate()
-        try:
-            c.selectPosition(self.root)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        c.selectPosition(self.root)
+        # finally:
+        c.endUpdate()
     else:
         print 'node not found',self.rootName
         print results
@@ -5163,25 +5164,24 @@ data = (
         ]),
 )
 
-c.beginUpdate()
-try:
-    for menuName,tables in data:
-        # print menuName,tables
-        p2 = p.insertAsLastChild()
-        p2.initHeadString('@menu '+menuName)
-        for aTuple in tables:
-            subMenuName,aList = aTuple
-            if subMenuName:
-                p3 = p2.insertAsLastChild()
-                p3.initHeadString('@menu '+subMenuName)
-            else:
-                p3 = p2
-            for z in aList:
-                p4 = p3.insertAsLastChild()
-                setNode(p4,z)
-
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for menuName,tables in data:
+    # print menuName,tables
+    p2 = p.insertAsLastChild()
+    p2.initHeadString('@menu '+menuName)
+    for aTuple in tables:
+        subMenuName,aList = aTuple
+        if subMenuName:
+            p3 = p2.insertAsLastChild()
+            p3.initHeadString('@menu '+subMenuName)
+        else:
+            p3 = p2
+        for z in aList:
+            p4 = p3.insertAsLastChild()
+            setNode(p4,z)
+# finally:
+c.endUpdate()
 #@+node:setNode
 def setNode (p,data):
 
@@ -12621,11 +12621,11 @@ types = (".py",) #,".c",".html",".txt")
 dir = "c:/Zope-2.6.2-src/lib/python"
 dir = "c:/Zope-2.6.2-src/lib/Components"
 
-c.beginUpdate()
-try:
-    importFiles(dir,types,recursive=True)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+importFiles(dir,types,recursive=True)
+# finally:
+c.endUpdate()
 
 g.es("done",color="blue")
 #@+node:importFiles
@@ -12642,16 +12642,16 @@ def importFiles (dir,type=None,kind="@file",recursive=False):
         g.es("directory does not exist: " + dir)
         return
 
-    c.beginUpdate()
+    # c.beginUpdate()
+    # try:
+    root = createLastChildOf(v,"imported files")
     try:
-        root = createLastChildOf(v,"imported files")
-        try:
-            importDir (dir,type,kind,recursive,root)
-            root.contract()
-        except:
-            g.es_exception()
-    finally:
-        c.endUpdate()
+        importDir (dir,type,kind,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    # finally:
+    c.endUpdate()
 #@nonl
 #@-node:importFiles
 #@+node:importDir
@@ -13230,19 +13230,19 @@ fileMenu.insert(3,'command',label='Test',command=callback)
 #@-node:Scripts demonstrating how to do anything with Leo menus
 #@+node:Scripts that make unit tests
 #@+node:@command make-test
-c.beginUpdate()
-try:
-    p1 = p.insertAfter()
-    c.setHeadString(p1,'@test ')
-    body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
-    c.setBodyString(p1,body)
-    for s in ('work','before','after'):
-        p2 = p1.insertAsLastChild()
-        c.setHeadString(p2,s)
-    p1.expand()
-finally:
-    c.endUpdate()
-    c.editPosition(p1)
+# c.beginUpdate()
+# try:
+p1 = p.insertAfter()
+c.setHeadString(p1,'@test ')
+body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
+c.setBodyString(p1,body)
+for s in ('work','before','after'):
+    p2 = p1.insertAsLastChild()
+    c.setHeadString(p2,s)
+p1.expand()
+# finally:
+c.endUpdate()
+c.editPosition(p1)
 #@nonl
 #@-node:@command make-test
 #@+node:@command do-before
@@ -13258,13 +13258,13 @@ range of the work in the headline of the before node.
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top and work.bodyString():
-    c.beginUpdate()
-    try:
-        c.setBodyString(before,work.bodyString())
-        c.setBodyString(after,'')
-        putSelectionInHeadline(c,before,'before',sel)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setBodyString(before,work.bodyString())
+    c.setBodyString(after,'')
+    putSelectionInHeadline(c,before,'before',sel)
+    # finally:
+    c.endUpdate()
 else:
     g.es_print('do-before: not in a proper @test tree')
 #@nonl
@@ -13329,12 +13329,12 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    c.beginUpdate()
-    try:
-        c.setBodyString(after,work.bodyString())
-        putSelectionInHeadline(c,after,'after',sel)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setBodyString(after,work.bodyString())
+    putSelectionInHeadline(c,after,'after',sel)
+    # finally:
+    c.endUpdate()
 else:
     g.es_print('do-after: not in @test tree')
 #@nonl
@@ -13747,19 +13747,19 @@ print 'done!'
 # Same as delete-all-icons command (now removed)
 # A script seems safer because it can not be executed by mistake.
 
-c.beginUpdate()
-try:
-    for p in c.allNodes_iter():
-        if hasattr(p.v.t,"unknownAttributes"):
-            a = p.v.t.unknownAttributes
-            iconsList = a.get("icons")
-            if iconsList:
-                a["icons"] = []
-                a["lineYOffset"] = 0
-                p.setDirty()
-                c.setChanged(True)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for p in c.allNodes_iter():
+    if hasattr(p.v.t,"unknownAttributes"):
+        a = p.v.t.unknownAttributes
+        iconsList = a.get("icons")
+        if iconsList:
+            a["icons"] = []
+            a["lineYOffset"] = 0
+            p.setDirty()
+            c.setChanged(True)
+# finally:
+c.endUpdate()
 #@-node:Delete All Icons
 #@+node:Script to backup Outlook Express files
 # http://support.microsoft.com/default.aspx/kb/270670
@@ -14670,20 +14670,20 @@ def filter(c,e):
 
     pat = re.compile(e.get())
 
-    c.beginUpdate()
-    try: # update...
-        t = tnode('','A Filtered Hoist')
-        newRoot = c.rootVnode().insertAfter(t)
-        p = c.rootVnode()
-        while p:
-            if pat.search(p.bodyString()):
-                clone = p.clone(p)
-                clone.moveToLastChildOf(newRoot)
-            p = p.threadNext()
-        newRoot.moveToRoot(c.rootVnode())
-        c.setCurrentVnode(newRoot)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # update...
+    t = tnode('','A Filtered Hoist')
+    newRoot = c.rootVnode().insertAfter(t)
+    p = c.rootVnode()
+    while p:
+        if pat.search(p.bodyString()):
+            clone = p.clone(p)
+            clone.moveToLastChildOf(newRoot)
+        p = p.threadNext()
+    newRoot.moveToRoot(c.rootVnode())
+    c.setCurrentVnode(newRoot)
+    # finally:
+    c.endUpdate()
 
     c.hoist()
     fhp.withdraw()
@@ -14700,18 +14700,18 @@ def OLDfilter(c,e):
         v = v.next()
 
     regex = re.compile(e.get())
-    c.beginUpdate()
-    try: # update...
-        t = tnode('','A Filtered Hoist')
-        ticker = c.rootVnode().insertAfter(t)
-        for z in nodes:
-            for x in search(z,regex):
-                clone = x.clone( x )
-                clone.moveToNthChildOf(ticker,0)
-        c.setCurrentVnode(ticker)
-        ticker.moveToRoot(c.rootVnode())
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # update...
+    t = tnode('','A Filtered Hoist')
+    ticker = c.rootVnode().insertAfter(t)
+    for z in nodes:
+        for x in search(z,regex):
+            clone = x.clone( x )
+            clone.moveToNthChildOf(ticker,0)
+    c.setCurrentVnode(ticker)
+    ticker.moveToRoot(c.rootVnode())
+    # finally:
+    c.endUpdate()
     c.hoist()
     fhp.withdraw()
 #@-node:filter
@@ -17094,21 +17094,21 @@ s = p.bodyString()
 lines = g.splitLines(s)
 lines = [z.strip() for z in lines if z.strip()]
 
-c.beginUpdate()
-try:
-    for line in lines:
-        p2 = p.insertAsLastChild()
-        while line.find('  ') > -1:
-            line = line.replace('  ',' ')
-        i = line.find('#')
-        if i == -1:
-            p2.initHeadString(line)
-        else:
-            # Put comments in the body.
-            p2.initHeadString(line[:i].strip())
-            c.setBodyString(p2,line[i:].strip())
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for line in lines:
+    p2 = p.insertAsLastChild()
+    while line.find('  ') > -1:
+        line = line.replace('  ',' ')
+    i = line.find('#')
+    if i == -1:
+        p2.initHeadString(line)
+    else:
+        # Put comments in the body.
+        p2.initHeadString(line[:i].strip())
+        c.setBodyString(p2,line[i:].strip())
+# finally:
+c.endUpdate()
 #@nonl
 #@-node:@@button Create headlines from body
 #@+node:add tab after each :
@@ -17157,19 +17157,19 @@ s = child.bodyString()
 lines = g.splitLines(s)
 
 seen = {}
-c.beginUpdate()
-try:
-    for p in c.allNodes_iter():
-        if not seen.get(p.v.t):
-            seen[p.v.t] = True
-            h = p.headString().strip()
-            for line in lines:
-                if h == line.strip():
-                    print 'found',h
-                    clone = p.clone()
-                    clone.moveToLastChildOf(root)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for p in c.allNodes_iter():
+    if not seen.get(p.v.t):
+        seen[p.v.t] = True
+        h = p.headString().strip()
+        for line in lines:
+            if h == line.strip():
+                print 'found',h
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
+# finally:
+c.endUpdate()
 #@nonl
 #@+node:To be cloned
 @test getHandlersForTag
@@ -17292,22 +17292,23 @@ for p in p.self_and_subtree_iter():
 #@-node:Remove blank trailing lines
 #@+node:Remove all @test nodes
 count = 0
-c.beginUpdate()
-try:
-    p = c.rootVnode()
-    while p:
-        h = p.headString()
-        if h.startswith('@test '):
-            next = p.nodeAfterTree()
-            print 'deleting',h
-            count += 1
-            p.doDelete()
-            p = next
-        else:
-            if h.startswith('@thin'): print h
-            p.moveToThreadNext()
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+p = c.rootVnode()
+while p:
+    h = p.headString()
+    if h.startswith('@test '):
+        next = p.nodeAfterTree()
+        print 'deleting',h
+        count += 1
+        p.doDelete()
+        p = next
+    else:
+        if h.startswith('@thin'): print h
+        p.moveToThreadNext()
+# finally:
+c.endUpdate()
+
 print '%d @test nodes deleted' % count
 #@nonl
 #@-node:Remove all @test nodes
@@ -17338,14 +17339,14 @@ been changed.'''
 
 @others
 
-c.beginUpdate()
-try:
-    p = c.currentPosition()
-    pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
-    pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
-    g.es_print('done')
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+p = c.currentPosition()
+pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
+pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
+g.es_print('done')
+# finally:
+c.endUpdate()
 #@nonl
 #@+node:pass1
 def pass1(root):
@@ -17403,24 +17404,24 @@ def createChild (parent,body,line):
 s = p.bodyString()
 if s.strip():
     b = c.undoer.beforeChangeTree(p)
-    c.beginUpdate()
-    try:
-        lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
-        for line in lines:
-            if g.match_word(line,0,'def'):
-                if body and lastDefLine:
-                    createChild(p,body,lastDefLine)
-                    body = [] ; changed = True
-                lastDefLine = line
-            body.append(line)
-        if body and lastDefLine:
-            createChild(p,body,lastDefLine)
-            changed = True
-        if changed:
-            c.setChanged(True) ; c.setBodyString(p,'')
-    finally:
-        c.undoer.afterChangeTree(p,'split-defs',b)
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
+    for line in lines:
+        if g.match_word(line,0,'def'):
+            if body and lastDefLine:
+                createChild(p,body,lastDefLine)
+                body = [] ; changed = True
+            lastDefLine = line
+        body.append(line)
+    if body and lastDefLine:
+        createChild(p,body,lastDefLine)
+        changed = True
+    if changed:
+        c.setChanged(True) ; c.setBodyString(p,'')
+    # finally:
+    c.undoer.afterChangeTree(p,'split-defs',b)
+    c.endUpdate()
 #@nonl
 #@-node:split defs in body text to child nodes
 #@+node:stripBlankLines

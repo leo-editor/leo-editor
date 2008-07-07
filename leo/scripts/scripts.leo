@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0,3,2"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,9,11"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -77,7 +77,7 @@
 <v t="ekr.20070124092048"><vh>Find entries in k.guiBindNamesDict</vh></v>
 <v t="ekr.20070213074001.1"><vh>find w.xxx</vh></v>
 </v>
-<v t="ekr.20040715105834" a="E"><vh>Fun...</vh>
+<v t="ekr.20040715105834"><vh>Fun...</vh>
 <v t="EKR.20040626212434"><vh>Drawing experiments</vh>
 <v t="EKR.20040626212434.1"><vh>Rectangles &amp; ovals</vh></v>
 <v t="EKR.20040626212434.2"><vh>Lines &amp; arcs</vh></v>
@@ -1024,7 +1024,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051204180404"><vh>Text editing scripts</vh>
+<v t="ekr.20051204180404" a="E"><vh>Text editing scripts</vh>
 <v t="ekr.20071213062051"><vh>@@button Create headlines from body</vh></v>
 <v t="ekr.20051213093427"><vh>add tab after each :</vh></v>
 <v t="ekr.20051213092601"><vh>add tab before each =</vh></v>
@@ -1348,18 +1348,18 @@ approach to tree walking.</t>
         v = v.next()
 
     regex = re.compile(e.get())
-    c.beginUpdate()
-    try: # update...
-        t = tnode('','A Filtered Hoist')
-        ticker = c.rootVnode().insertAfter(t)
-        for z in nodes:
-            for x in search(z,regex):
-                clone = x.clone( x )
-                clone.moveToNthChildOf(ticker,0)
-        c.setCurrentVnode(ticker)
-        ticker.moveToRoot(c.rootVnode())
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # update...
+    t = tnode('','A Filtered Hoist')
+    ticker = c.rootVnode().insertAfter(t)
+    for z in nodes:
+        for x in search(z,regex):
+            clone = x.clone( x )
+            clone.moveToNthChildOf(ticker,0)
+    c.setCurrentVnode(ticker)
+    ticker.moveToRoot(c.rootVnode())
+    # finally:
+    c.endUpdate()
     c.hoist()
     fhp.withdraw()
 </t>
@@ -1437,20 +1437,20 @@ def OLDsearch(vn,regex):
 
     pat = re.compile(e.get())
 
-    c.beginUpdate()
-    try: # update...
-        t = tnode('','A Filtered Hoist')
-        newRoot = c.rootVnode().insertAfter(t)
-        p = c.rootVnode()
-        while p:
-            if pat.search(p.bodyString()):
-                clone = p.clone(p)
-                clone.moveToLastChildOf(newRoot)
-            p = p.threadNext()
-        newRoot.moveToRoot(c.rootVnode())
-        c.setCurrentVnode(newRoot)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # update...
+    t = tnode('','A Filtered Hoist')
+    newRoot = c.rootVnode().insertAfter(t)
+    p = c.rootVnode()
+    while p:
+        if pat.search(p.bodyString()):
+            clone = p.clone(p)
+            clone.moveToLastChildOf(newRoot)
+        p = p.threadNext()
+    newRoot.moveToRoot(c.rootVnode())
+    c.setCurrentVnode(newRoot)
+    # finally:
+    c.endUpdate()
 
     c.hoist()
     fhp.withdraw()
@@ -1650,12 +1650,12 @@ def headfind():
                     # g.es(body2,color="orange")
                     return
                 else:
-                    c.beginUpdate()
-                    try:
-                        c.frame.tree.expandAllAncestors(p)
-                        c.selectVnode(p)
-                    finally:
-                        c.endUpdate()
+                    # c.beginUpdate()
+                    # try:
+                    c.frame.tree.expandAllAncestors(p)
+                    c.selectVnode(p)
+                    # finally:
+                    c.endUpdate()
                     return
 
         g.es("no headline matches '%s'" % (s),color="blue")
@@ -7276,25 +7276,26 @@ if 0:
     def_s = "def " ; def_n = len(def_s)
     prefix_n = len(prefix)
     total = 0
-    c.beginUpdate()
-    try:
-        for p in p.self_and_subtree_iter():
-            count = 0 ; s = p.bodyString()
-            printFlag = False
-            if s:
-                for name in nameList:
-                    i = 0 ; n = len(name)
-                    while 1:
-                        &lt;&lt; look for name followed by '(' &gt;&gt;
-                if count and replace:
-                    if 0:
-                        &lt;&lt; print before and after &gt;&gt;
-                    c.setBodyString(p,s)
-                    p.setDirty()
-            g.es("%3d %s" % (count,p.headString()))
-            total += count
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    for p in p.self_and_subtree_iter():
+        count = 0 ; s = p.bodyString()
+        printFlag = False
+        if s:
+            for name in nameList:
+                i = 0 ; n = len(name)
+                while 1:
+                    &lt;&lt; look for name followed by '(' &gt;&gt;
+            if count and replace:
+                if 0:
+                    &lt;&lt; print before and after &gt;&gt;
+                c.setBodyString(p,s)
+                p.setDirty()
+        g.es("%3d %s" % (count,p.headString()))
+        total += count
+    # finally:
+    c.endUpdate()
+
     return total</t>
 <t tx="ekr.20051110105027.163">i = s.find(name,i)
 if i == -1:
@@ -7499,11 +7500,11 @@ types = (".py",) #,".c",".html",".txt")
 dir = "c:/Zope-2.6.2-src/lib/python"
 dir = "c:/Zope-2.6.2-src/lib/Components"
 
-c.beginUpdate()
-try:
-    importFiles(dir,types,recursive=True)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+importFiles(dir,types,recursive=True)
+# finally:
+c.endUpdate()
 
 g.es("done",color="blue")
 </t>
@@ -7520,16 +7521,16 @@ g.es("done",color="blue")
         g.es("directory does not exist: " + dir)
         return
 
-    c.beginUpdate()
+    # c.beginUpdate()
+    # try:
+    root = createLastChildOf(v,"imported files")
     try:
-        root = createLastChildOf(v,"imported files")
-        try:
-            importDir (dir,type,kind,recursive,root)
-            root.contract()
-        except:
-            g.es_exception()
-    finally:
-        c.endUpdate()</t>
+        importDir (dir,type,kind,recursive,root)
+        root.contract()
+    except:
+        g.es_exception()
+    # finally:
+    c.endUpdate()</t>
 <t tx="ekr.20051110105027.168">def importDir (dir,types,kind,recursive,root):
 
     g.es("dir: " + dir,color="blue")
@@ -8283,14 +8284,14 @@ been changed.'''
 
 @others
 
-c.beginUpdate()
-try:
-    p = c.currentPosition()
-    pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
-    pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
-    g.es_print('done')
-finally:
-    c.endUpdate()</t>
+# c.beginUpdate()
+# try:
+p = c.currentPosition()
+pass1(p) # Make the changes and do p.v.t.setDirty for all changed nodes p.
+pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
+g.es_print('done')
+# finally:
+c.endUpdate()</t>
 <t tx="ekr.20060808103945.1">def pass1(root):
 
     '''Remove trailing newlines from all nodes.'''
@@ -14521,19 +14522,19 @@ f.close()
 print '%d records' % n
 </t>
 <t tx="ekr.20061029095517"></t>
-<t tx="ekr.20061029095517.1">c.beginUpdate()
-try:
-    p1 = p.insertAfter()
-    c.setHeadString(p1,'@test ')
-    body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
-    c.setBodyString(p1,body)
-    for s in ('work','before','after'):
-        p2 = p1.insertAsLastChild()
-        c.setHeadString(p2,s)
-    p1.expand()
-finally:
-    c.endUpdate()
-    c.editPosition(p1)</t>
+<t tx="ekr.20061029095517.1"># c.beginUpdate()
+# try:
+p1 = p.insertAfter()
+c.setHeadString(p1,'@test ')
+body = 'import leoTest\nleoTest.runEditCommandTest(c,p)'
+c.setBodyString(p1,body)
+for s in ('work','before','after'):
+    p2 = p1.insertAsLastChild()
+    c.setHeadString(p2,s)
+p1.expand()
+# finally:
+c.endUpdate()
+c.editPosition(p1)</t>
 <t tx="ekr.20061029095517.2">@
 p should be in tree whose root is a @test node containing 'work', 'before' and
 'after' children. The work node should have body text. If all is as expected,
@@ -14546,13 +14547,13 @@ range of the work in the headline of the before node.
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top and work.bodyString():
-    c.beginUpdate()
-    try:
-        c.setBodyString(before,work.bodyString())
-        c.setBodyString(after,'')
-        putSelectionInHeadline(c,before,'before',sel)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setBodyString(before,work.bodyString())
+    c.setBodyString(after,'')
+    putSelectionInHeadline(c,before,'before',sel)
+    # finally:
+    c.endUpdate()
 else:
     g.es_print('do-before: not in a proper @test tree')</t>
 <t tx="ekr.20061029095517.3">def getSel(c):
@@ -14607,12 +14608,12 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    c.beginUpdate()
-    try:
-        c.setBodyString(after,work.bodyString())
-        putSelectionInHeadline(c,after,'after',sel)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.setBodyString(after,work.bodyString())
+    putSelectionInHeadline(c,after,'after',sel)
+    # finally:
+    c.endUpdate()
 else:
     g.es_print('do-after: not in @test tree')</t>
 <t tx="ekr.20061029095517.7">def getSel(c):
@@ -14931,25 +14932,24 @@ data = (
         ]),
 )
 
-c.beginUpdate()
-try:
-    for menuName,tables in data:
-        # print menuName,tables
-        p2 = p.insertAsLastChild()
-        p2.initHeadString('@menu '+menuName)
-        for aTuple in tables:
-            subMenuName,aList = aTuple
-            if subMenuName:
-                p3 = p2.insertAsLastChild()
-                p3.initHeadString('@menu '+subMenuName)
-            else:
-                p3 = p2
-            for z in aList:
-                p4 = p3.insertAsLastChild()
-                setNode(p4,z)
-
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for menuName,tables in data:
+    # print menuName,tables
+    p2 = p.insertAsLastChild()
+    p2.initHeadString('@menu '+menuName)
+    for aTuple in tables:
+        subMenuName,aList = aTuple
+        if subMenuName:
+            p3 = p2.insertAsLastChild()
+            p3.initHeadString('@menu '+subMenuName)
+        else:
+            p3 = p2
+        for z in aList:
+            p4 = p3.insertAsLastChild()
+            setNode(p4,z)
+# finally:
+c.endUpdate()
 </t>
 <t tx="ekr.20070930042719.1">def setNode (p,data):
 
@@ -14983,24 +14983,24 @@ def createChild (parent,body,line):
 s = p.bodyString()
 if s.strip():
     b = c.undoer.beforeChangeTree(p)
-    c.beginUpdate()
-    try:
-        lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
-        for line in lines:
-            if g.match_word(line,0,'def'):
-                if body and lastDefLine:
-                    createChild(p,body,lastDefLine)
-                    body = [] ; changed = True
-                lastDefLine = line
-            body.append(line)
-        if body and lastDefLine:
-            createChild(p,body,lastDefLine)
-            changed = True
-        if changed:
-            c.setChanged(True) ; c.setBodyString(p,'')
-    finally:
-        c.undoer.afterChangeTree(p,'split-defs',b)
-        c.endUpdate()</t>
+    # c.beginUpdate()
+    # try:
+    lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
+    for line in lines:
+        if g.match_word(line,0,'def'):
+            if body and lastDefLine:
+                createChild(p,body,lastDefLine)
+                body = [] ; changed = True
+            lastDefLine = line
+        body.append(line)
+    if body and lastDefLine:
+        createChild(p,body,lastDefLine)
+        changed = True
+    if changed:
+        c.setChanged(True) ; c.setBodyString(p,'')
+    # finally:
+    c.undoer.afterChangeTree(p,'split-defs',b)
+    c.endUpdate()</t>
 <t tx="ekr.20071104221525"></t>
 <t tx="ekr.20071104221525.1">@language lisp
 @nocolor
@@ -15608,19 +15608,19 @@ s = child.bodyString()
 lines = g.splitLines(s)
 
 seen = {}
-c.beginUpdate()
-try:
-    for p in c.allNodes_iter():
-        if not seen.get(p.v.t):
-            seen[p.v.t] = True
-            h = p.headString().strip()
-            for line in lines:
-                if h == line.strip():
-                    print 'found',h
-                    clone = p.clone()
-                    clone.moveToLastChildOf(root)
-finally:
-    c.endUpdate()</t>
+# c.beginUpdate()
+# try:
+for p in c.allNodes_iter():
+    if not seen.get(p.v.t):
+        seen[p.v.t] = True
+        h = p.headString().strip()
+        for line in lines:
+            if h == line.strip():
+                print 'found',h
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
+# finally:
+c.endUpdate()</t>
 <t tx="ekr.20071113150213.1">@test getHandlersForTag
 @test unit testing with embedded class
 @test move-lines-up
@@ -15659,22 +15659,23 @@ finally:
 @test g.reportBadChars
 </t>
 <t tx="ekr.20071113191025">count = 0
-c.beginUpdate()
-try:
-    p = c.rootVnode()
-    while p:
-        h = p.headString()
-        if h.startswith('@test '):
-            next = p.nodeAfterTree()
-            print 'deleting',h
-            count += 1
-            p.doDelete()
-            p = next
-        else:
-            if h.startswith('@thin'): print h
-            p.moveToThreadNext()
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+p = c.rootVnode()
+while p:
+    h = p.headString()
+    if h.startswith('@test '):
+        next = p.nodeAfterTree()
+        print 'deleting',h
+        count += 1
+        p.doDelete()
+        p = next
+    else:
+        if h.startswith('@thin'): print h
+        p.moveToThreadNext()
+# finally:
+c.endUpdate()
+
 print '%d @test nodes deleted' % count</t>
 <t tx="ekr.20071116114235"># Prints all icons in the Icons/Tango folder in wiki-markup format.
 # This allows the icons to be inserted into Leo's body pane,
@@ -15700,37 +15701,37 @@ s = p.bodyString()
 lines = g.splitLines(s)
 lines = [z.strip() for z in lines if z.strip()]
 
-c.beginUpdate()
-try:
-    for line in lines:
-        p2 = p.insertAsLastChild()
-        while line.find('  ') &gt; -1:
-            line = line.replace('  ',' ')
-        i = line.find('#')
-        if i == -1:
-            p2.initHeadString(line)
-        else:
-            # Put comments in the body.
-            p2.initHeadString(line[:i].strip())
-            c.setBodyString(p2,line[i:].strip())
-finally:
-    c.endUpdate()</t>
+# c.beginUpdate()
+# try:
+for line in lines:
+    p2 = p.insertAsLastChild()
+    while line.find('  ') &gt; -1:
+        line = line.replace('  ',' ')
+    i = line.find('#')
+    if i == -1:
+        p2.initHeadString(line)
+    else:
+        # Put comments in the body.
+        p2.initHeadString(line[:i].strip())
+        c.setBodyString(p2,line[i:].strip())
+# finally:
+c.endUpdate()</t>
 <t tx="ekr.20080105135417"># Same as delete-all-icons command (now removed)
 # A script seems safer because it can not be executed by mistake.
 
-c.beginUpdate()
-try:
-    for p in c.allNodes_iter():
-        if hasattr(p.v.t,"unknownAttributes"):
-            a = p.v.t.unknownAttributes
-            iconsList = a.get("icons")
-            if iconsList:
-                a["icons"] = []
-                a["lineYOffset"] = 0
-                p.setDirty()
-                c.setChanged(True)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for p in c.allNodes_iter():
+    if hasattr(p.v.t,"unknownAttributes"):
+        a = p.v.t.unknownAttributes
+        iconsList = a.get("icons")
+        if iconsList:
+            a["icons"] = []
+            a["lineYOffset"] = 0
+            p.setDirty()
+            c.setChanged(True)
+# finally:
+c.endUpdate()
 </t>
 <t tx="ekr.20080124063225"># There are bugs in the guessing logic.
 # The following does not fix all of them.
@@ -15877,11 +15878,11 @@ def trace(self,s):
     # Put the results in the root node, or print them.
     if self.root:
         c.setBodyString(self.root,results)
-        c.beginUpdate()
-        try:
-            c.selectPosition(self.root)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        c.selectPosition(self.root)
+        # finally:
+        c.endUpdate()
     else:
         print 'node not found',self.rootName
         print results
@@ -16266,21 +16267,21 @@ baseDir = r'c:\Python25\Lib\distutils'
 dirs = ('','command',) # '' represents the base dir.
 print '-' * 40
 
-c.beginUpdate()
-try:
-    for theDir in dirs:
-        pattern = g.os_path_join(baseDir,theDir,'*.py')
-        files = glob.glob(pattern)
-        print ; print 'pattern:', pattern ; print
-        # print g.listToString(files)
-        for name in files:
-            h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-            print 'creating',h
-            if reallyCreate:
-                child = p.insertAsLastChild()
-                child.initHeadString(h)
-finally:
-    c.endUpdate()
+# c.beginUpdate()
+# try:
+for theDir in dirs:
+    pattern = g.os_path_join(baseDir,theDir,'*.py')
+    files = glob.glob(pattern)
+    print ; print 'pattern:', pattern ; print
+    # print g.listToString(files)
+    for name in files:
+        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+        print 'creating',h
+        if reallyCreate:
+            child = p.insertAsLastChild()
+            child.initHeadString(h)
+# finally:
+c.endUpdate()
 </t>
 <t tx="ekr.20080519162425.1">change = False # True: actually make the changes.
 trace = True

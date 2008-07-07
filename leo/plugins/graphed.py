@@ -580,39 +580,37 @@ class GraphEd:
             return str(graph.GetLabeling(i))
 
         c = self.c
-        c.beginUpdate()
-        try:
+        # c.beginUpdate()
+        # try:
+        tgraph = tGraph()
+        gnode2nottnode = {}
+        for node in graph.Vertices():
+            tn = gNode()
+            gnode2nottnode[node] = tn
+            tn.title = label(node)
+            x = graph.GetEmbedding(node)
+            tn.x, tn.y = x.x,x.y
+            if node in self.gnode2attribs:
+                tn.body = self.gnode2attribs[node].body
+                tn.vnode = self.gnode2attribs[node].vnode
+                tn.attr.update(self.gnode2attribs[node].attr)
 
-            tgraph = tGraph()
-            gnode2nottnode = {}
-            for node in graph.Vertices():
-                tn = gNode()
-                gnode2nottnode[node] = tn
-                tn.title = label(node)
-                x = graph.GetEmbedding(node)
-                tn.x, tn.y = x.x,x.y
-                if node in self.gnode2attribs:
-                    tn.body = self.gnode2attribs[node].body
-                    tn.vnode = self.gnode2attribs[node].vnode
-                    tn.attr.update(self.gnode2attribs[node].attr)
+            tgraph.addNode(tn)
 
-                tgraph.addNode(tn)
+        for node0, node1 in graph.Edges():
+            tgraph.addDirectedEdge(gnode2nottnode[node0],gnode2nottnode[node1])
 
-            for node0, node1 in graph.Edges():
-                tgraph.addDirectedEdge(gnode2nottnode[node0],gnode2nottnode[node1])
+        newp = tgraph.createTreeFromGraph(p)
 
-            newp = tgraph.createTreeFromGraph(p)
+        c.setHeadString(p, 'OLD: ' + p.headString())
+        p.setDirty()
+        c.selectPosition(p)
+        c.contractNode()
 
-            c.setHeadString(p, 'OLD: ' + p.headString())
-            p.setDirty()
-            c.selectPosition(p)
-            c.contractNode()
-
-            c.selectPosition(newp)
-
-        finally:
-            c.setChanged(True)
-            c.endUpdate()
+        c.selectPosition(newp)
+        # finally:
+        c.setChanged(True)
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20071004090250.31:saveGraph
     #@+node:ekr.20071004090250.32:copyLink
     def copyLink(self, event = None):

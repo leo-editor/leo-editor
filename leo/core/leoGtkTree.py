@@ -1601,23 +1601,23 @@ class leoGtkTree (leoFrame.leoTree):
 
         c.setLog()
 
-        c.beginUpdate()
-        try:
-            if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
-                c.endEditing()
-                if p == p1 or self.initialClickExpandsOrContractsNode:
-                    if p.isExpanded(): p.contract()
-                    else:              p.expand()
-                self.select(p)
-                if c.frame.findPanel:
-                    c.frame.findPanel.handleUserClick(p)
-                if self.stayInTree:
-                    c.treeWantsFocus()
-                else:
-                    c.bodyWantsFocus()
-            g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
+            c.endEditing()
+            if p == p1 or self.initialClickExpandsOrContractsNode:
+                if p.isExpanded(): p.contract()
+                else:              p.expand()
+            self.select(p)
+            if c.frame.findPanel:
+                c.frame.findPanel.handleUserClick(p)
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+        g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+        # finally:
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20080112145409.387:onClickBoxClick
     #@-node:ekr.20080112145409.386:Click Box...
     #@+node:ekr.20080112145409.388:Dragging (gtkTree)
@@ -1634,54 +1634,54 @@ class leoGtkTree (leoFrame.leoTree):
         canvas = self.canvas
         if not event: return
 
-        c.beginUpdate()
-        try:
-            #@        << set vdrag, childFlag >>
-            #@+node:ekr.20080112145409.390:<< set vdrag, childFlag >>
-            x,y = event.x,event.y
-            canvas_x = canvas.canvasx(x)
-            canvas_y = canvas.canvasy(y)
+        # c.beginUpdate()
+        # try:
+        #@    << set vdrag, childFlag >>
+        #@+node:ekr.20080112145409.390:<< set vdrag, childFlag >>
+        x,y = event.x,event.y
+        canvas_x = canvas.canvasx(x)
+        canvas_y = canvas.canvasy(y)
 
-            theId = self.canvas.find_closest(canvas_x,canvas_y)
-            # theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
+        theId = self.canvas.find_closest(canvas_x,canvas_y)
+        # theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
 
-            vdrag = self.findPositionWithIconId(theId)
-            childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
-            #@-node:ekr.20080112145409.390:<< set vdrag, childFlag >>
+        vdrag = self.findPositionWithIconId(theId)
+        childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
+        #@-node:ekr.20080112145409.390:<< set vdrag, childFlag >>
+        #@nl
+        if self.allow_clone_drags:
+            if not self.look_for_control_drag_on_mouse_down:
+                self.controlDrag = c.frame.controlKeyIsDown
+
+        redrawFlag = vdrag and vdrag.v.t != p.v.t
+        if redrawFlag: # Disallow drag to joined node.
+            #@        << drag p to vdrag >>
+            #@+node:ekr.20080112145409.391:<< drag p to vdrag >>
+            # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
+
+            if self.controlDrag: # Clone p and move the clone.
+                if childFlag:
+                    c.dragCloneToNthChildOf(p,vdrag,0)
+                else:
+                    c.dragCloneAfter(p,vdrag)
+            else: # Just drag p.
+                if childFlag:
+                    c.dragToNthChildOf(p,vdrag,0)
+                else:
+                    c.dragAfter(p,vdrag)
+            #@-node:ekr.20080112145409.391:<< drag p to vdrag >>
             #@nl
-            if self.allow_clone_drags:
-                if not self.look_for_control_drag_on_mouse_down:
-                    self.controlDrag = c.frame.controlKeyIsDown
+        elif self.trace and self.verbose:
+            g.trace("Cancel drag")
 
-            redrawFlag = vdrag and vdrag.v.t != p.v.t
-            if redrawFlag: # Disallow drag to joined node.
-                #@            << drag p to vdrag >>
-                #@+node:ekr.20080112145409.391:<< drag p to vdrag >>
-                # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
-
-                if self.controlDrag: # Clone p and move the clone.
-                    if childFlag:
-                        c.dragCloneToNthChildOf(p,vdrag,0)
-                    else:
-                        c.dragCloneAfter(p,vdrag)
-                else: # Just drag p.
-                    if childFlag:
-                        c.dragToNthChildOf(p,vdrag,0)
-                    else:
-                        c.dragAfter(p,vdrag)
-                #@-node:ekr.20080112145409.391:<< drag p to vdrag >>
-                #@nl
-            elif self.trace and self.verbose:
-                g.trace("Cancel drag")
-
-            # Reset the old cursor by brute force.
-            self.canvas['cursor'] = "arrow"
-            self.dragging = False
-            self.drag_p = None
-        finally:
-            # Must set self.drag_p = None first.
-            c.endUpdate(redrawFlag)
-            c.recolor_now() # Dragging can affect coloring.
+        # Reset the old cursor by brute force.
+        self.canvas['cursor'] = "arrow"
+        self.dragging = False
+        self.drag_p = None
+        # finally:
+        # Must set self.drag_p = None first.
+        if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
+        c.recolor_now() # Dragging can affect coloring.
     #@-node:ekr.20080112145409.389:endDrag
     #@+node:ekr.20080112145409.392:startDrag
     # This precomputes numberOfVisibleNodes(), a significant optimization.
@@ -2020,12 +2020,12 @@ class leoGtkTree (leoFrame.leoTree):
 
         # g.trace(g.callers())
 
-        c.beginUpdate()
-        try:
-            tree.endEditLabel()
-            tree.dimEditLabel()
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        tree.endEditLabel()
+        tree.dimEditLabel()
+        # finally:
+        # c.endUpdate(False)
     #@-node:ekr.20080112145409.408:tree.OnDeactivate
     #@+node:ekr.20080112145409.409:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -2354,11 +2354,11 @@ class leoGtkTree (leoFrame.leoTree):
             if trace:
                 g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-            c.beginUpdate()
-            try:
-                self.endEditLabel()
-            finally:
-                c.endUpdate(True)
+            # c.beginUpdate()
+            # try:
+            self.endEditLabel()
+            # finally:
+            c.redraw() # was c.endUpdate(True)
 
         self.setEditPosition(p) # That is, self._editPosition = p
 
@@ -3113,20 +3113,14 @@ class OutlineCanvas(gtk.DrawingArea):
         c = self.c
 
         #c.beginUpdate()     #lock out events
-        if 1: #try:
+        #try:
 
-            self._createNewBuffer()
-
-            #self._parent.hscrollUpdate()
-
-
-            self.draw()
-            self.refresh()
-
-
+        self._createNewBuffer()
+        #self._parent.hscrollUpdate()
+        self.draw()
+        self.refresh()
         #finally:
         #    c.endUpdate(False)
-
 
         return True
 
@@ -3263,13 +3257,13 @@ class OutlineCanvas(gtk.DrawingArea):
 
 
         c = self.c
-        c.beginUpdate()
-        try:
-            self.resize()
-            self._parent.vscrollUpdate()
-            self._parent.hscrollUpdate()
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        self.resize()
+        self._parent.vscrollUpdate()
+        self._parent.hscrollUpdate()
+        # finally:
+        # c.endUpdate(False)
 
 
     #@-node:bob.20080117104810.15:onSize
