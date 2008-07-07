@@ -981,7 +981,7 @@
 <v t="ekr.20060829092306.1"><vh>erlang</vh></v>
 </v>
 <v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20041107105213.1"><vh>forth</vh></v>
+<v t="ekr.20080707101444.1"><vh>forth</vh></v>
 </v>
 <v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
 <v t="ekr.20040712101754.132"><vh>String bug in html</vh></v>
@@ -4804,18 +4804,6 @@ c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.headString()
 </t>
-<t tx="ekr.20041107105213.1">@language forth
-
-\ tiny demo of Leo forth syntax colouring
-\ 
-\ If you've correctly installed the hacked LeoPy.leo, the below you should see:
-\  - the ':' 's' and ';' in blue
-\  - the paren-comment in red
-\  - the string 'some string' in green
-
-: some-forth-word ( x1 x2 -- x3 )
-   s" some string" type cr
-;</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
 
@@ -20445,5 +20433,37 @@ assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
 <t tx="ekr.20080703104536.1"></t>
+<t tx="ekr.20080707101444.1">@language forth
+
+\ tiny demo of Leo forth syntax colouring
+
+: some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
+   label: y  \ blue label:
+   asm[ s" some string" type ]asm cr
+   asm[ abc ]asm
+   a
+   s" abc "
+   s" abc"
+   a
+   tty" abc "
+   lcd2" abc "
+   until
+
+@ test
+@c
+
+{ abc }
+
+a b @ c
+
+asm[ abc ]asm
+
+.( ab ) \ a string
+   
+: foo [ .s ] ;
+
+   [ a b c
+   x y z]
+;</t>
 </tnodes>
 </leo_file>
