@@ -428,7 +428,7 @@ def getMoveAMenu (pmenu,c):
         # try:
         p.moveToNthChildOf(p2,0)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
     p = c.currentPosition()
     alist = getAncestorList(p)
@@ -458,7 +458,7 @@ def getMoveSMenu (pmenu,c):
         # try:
         p.moveAfter(p2)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     if sibs:
         smenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
@@ -566,7 +566,7 @@ def setFileDirective( c , directive, names ):
     c.frame.body.bodyCtrl.focus_set()  
     c.frame.body.bodyCtrl.update_idletasks()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@nonl
 #@-node:mork.20041018095448:setFileDirective
 #@+node:mork.20041018100044:removeFileDirective
@@ -581,7 +581,7 @@ def removeFileDirective (c,names):
     c.frame.body.bodyCtrl.focus_set()
     c.frame.body.bodyCtrl.update_idletasks()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@nonl
 #@-node:mork.20041018100044:removeFileDirective
 #@+node:mork.20041018091414.14:addGL
@@ -595,7 +595,7 @@ def addGL (c):
     c.frame.body.bodyCtrl.focus_set()
     c.frame.body.bodyCtrl.update_idletasks()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@nonl
 #@-node:mork.20041018091414.14:addGL
 #@+node:mork.20041018091414.15:insertHeadline
@@ -607,7 +607,7 @@ def insertHeadline (directive,c):
     # try:
     c.setHeadString(vnode,nhs)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@nonl
 #@-node:mork.20041018091414.15:insertHeadline
 #@+node:mork.20041018091414.16:paster
@@ -620,7 +620,7 @@ def paster (directive,c,end=' '):
     bdy.bodyCtrl.focus_set()
     bdy.bodyCtrl.update_idletasks()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     bdy.bodyCtrl.focus_set()
 #@nonl
 #@-node:mork.20041018091414.16:paster
@@ -640,7 +640,7 @@ def jumpto (vnode,c):
     c.frame.tree.expandAllAncestors(vnode)
     c.selectVnode(vnode)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:mork.20041018091414.18:jumpto
 #@-node:ekr.20060110203946.2:Utilities
 #@-others

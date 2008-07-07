@@ -582,7 +582,7 @@ class Template:
         for child in children:
             child.addNodes(c,p,parameter)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@nonl
     #@-node:pap.20051010184315:addNodes
     #@+node:ekr.20060107131019:getTemplateFromNode

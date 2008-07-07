@@ -1323,7 +1323,7 @@ class pluginController(baseClasses.basePluginController):
                     def jump_command(c,event, ref=ref):
                         # c.beginUpdate()
                         c.selectPosition(ref)
-                        c.endUpdate()
+                        c.redraw() # was c.endUpdate()
                     menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
                     contextCommands.append( menu_item )
                 else:

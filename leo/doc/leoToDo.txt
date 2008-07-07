@@ -4715,7 +4715,7 @@ def importFilesCommand (self,files=None,treeType=None):
     c.validateOutline()
     current.expand()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
     c.selectVnode(current)
 #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
@@ -5487,7 +5487,7 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -5526,7 +5526,7 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -5583,7 +5583,7 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert

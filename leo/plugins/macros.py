@@ -180,7 +180,7 @@ class paramClass:
             v.setBodyString(bod)
             v.setHeadString(head)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@nonl
     #@-node:ekr.20040916084945.1:macros.parameterize
     #@+node:ekr.20040916084945.2:findParameters

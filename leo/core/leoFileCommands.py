@@ -815,7 +815,7 @@ class baseFileCommands:
         # try:
         c.atFileCommands.readAll(p,partialFlag=True)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         # Force an update of the body pane.
         c.setBodyString(p,p.bodyString())
@@ -878,7 +878,7 @@ class baseFileCommands:
         # try:
         ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         c.frame.deiconify()
         junk,junk,secondary_ratio = self.frame.initialRatios()
@@ -1361,7 +1361,7 @@ class baseFileCommands:
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             # finally:
-            c.endUpdate() # We must redraw in order to clear dirty node icons.
+            c.redraw() # was c.endUpdate() # We must redraw in order to clear dirty node icons.
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
@@ -1380,7 +1380,7 @@ class baseFileCommands:
                 c.setChanged(False) # Clears all dirty bits.
                 self.putSavedMessage(fileName)
             # finally:
-            c.endUpdate() # We must redraw in order to clear dirty node icons.
+            c.redraw() # was c.endUpdate() # We must redraw in order to clear dirty node icons.
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3043:saveAs
@@ -1397,7 +1397,7 @@ class baseFileCommands:
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
             # finally:
-            c.endUpdate() # We must redraw in order to clear dirty node icons.
+            c.redraw() # was c.endUpdate() # We must redraw in order to clear dirty node icons.
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3044:saveTo

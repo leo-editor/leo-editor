@@ -867,7 +867,7 @@ class gtkListBoxDialog (leoGtkDialog):
             c.selectPosition(p,updateBeadList=True)
                 # A case could be made for updateBeadList=False
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20080112145409.52:go
     #@-others
 #@-node:ekr.20080112145409.45:class gtkListboxDialog

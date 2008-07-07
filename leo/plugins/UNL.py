@@ -136,7 +136,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
         c.selectPosition(p)
         c.redraw()
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings_iter()

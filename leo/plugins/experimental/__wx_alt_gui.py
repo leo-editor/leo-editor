@@ -4077,7 +4077,7 @@ if wx:
             # print
             result =  leoKeys.keyHandlerClass.masterCommand(self, *args, **kw)
             # self.c.beginUpdate()
-            self.c.endUpdate()
+            self.c.redraw() # was self.c.endUpdate()
             return result
 
         #@-node:bob.20070901124034:masterCommand
@@ -7769,7 +7769,7 @@ if wx:
                 c.selectPosition(p,updateBeadList=True)
                     # A case could be made for updateBeadList=False
                 # finally:
-                c.endUpdate()
+                c.redraw() # was c.endUpdate()
         #@-node:bob.20080105082325.7:go
         #@+node:bob.20080105082325.8:hide
         def hide(self, event=None):
@@ -8914,7 +8914,7 @@ if wx:
 
             g.doHook("boxclick2", c=c, p=p, v=p, event=event)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
 
 
         #@-node:bob.20070814083933:onMouseClickBoxLeftDown
@@ -8949,7 +8949,7 @@ if wx:
 
             g.doHook("iconclick2", c=c, p=p, v=p, event=event)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
 
         #@-node:bob.20070814090359.1:onMouseIconBoxLeftDown
         #@+node:bob.20070906193733.1:onMouseIconBoxLeftUp
@@ -9011,7 +9011,7 @@ if wx:
                         c.bodyWantsFocus()
                 g.doHook("headclick2",c=c,p=p,v=p,event=event)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
 
         #@-node:bob.20070818153826:onMouseTextBoxLeftDown
         #@-node:bob.20070816213833:Text Box
@@ -9050,7 +9050,7 @@ if wx:
                 self.setEditPosition(p)
                 #g.trace('ep', self.editPosition())
                 # finally:
-                c.endUpdate()
+                c.redraw() # was c.endUpdate()
 
                 # Help for undo.
                 self.revertHeadline = s = p.headString()
@@ -9098,7 +9098,7 @@ if wx:
 
             self.setEditPosition(None)
             # c.beginUpdate()
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
 
             if c.config.getBool('stayInTreeAfterEditHeadline'):
                 c.treeWantsFocusNow()

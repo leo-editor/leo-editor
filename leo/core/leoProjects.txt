@@ -3302,7 +3302,7 @@ def readAtFileNodes (self,event=None):
     c.fileCommands.readAtFileNodes()
     u.afterChangeTree(p,'Read @file Nodes',undoData)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
 #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
 def readAtFileNodes (self):
@@ -3313,7 +3313,7 @@ def readAtFileNodes (self):
     # try:
     c.atFileCommands.readAll(p,partialFlag=True)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
     # Force an update of the body pane.
     c.setBodyString(p,p.bodyString())
@@ -3694,7 +3694,7 @@ def openWithFileName(fileName,old_c,
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
@@ -4475,7 +4475,7 @@ def showSuccess(self,pos,newpos):
     if not p: g.trace('can not happen: self.p is None')
     c.selectPosition(p)
     # finally:
-    c.endUpdate(redraw)
+    if redraw: c.redraw() # was c.endUpdate(redraw)
 
     if self.in_headline:
         c.editPosition(p)
@@ -4846,8 +4846,7 @@ def contractAllHeadlines (self,event=None):
         p.moveToParent()
     c.selectPosition(p)
     # finally:
-    c.endUpdate()
-
+    c.redraw() # was c.endUpdate()
     c.treeFocusHelper()
 
     c.expansionLevel = 1 # Reset expansion level.
@@ -8069,7 +8068,7 @@ if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
     p.v.iconVal = val
     redraw_flag = True
 #finally:
-c.endUpdate(redraw_flag)
+if redraw_flag: c.redraw() # was c.endUpdate(redraw_flag)
 #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
 #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
 #@+node:ekr.20031218072017.1833:reformatParagraph
@@ -8391,8 +8390,7 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
     g.trace('***** c.beginUpdate is deprecated')
     if g.app.unitTesting: assert(False)
@@ -8400,7 +8398,7 @@ def beginUpdate(self):
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
 
     c = self
     if flag:
@@ -8641,9 +8639,11 @@ def recolor_now(self,p=None,incremental=False,interruptable=True):
         incremental=incremental,interruptable=interruptable)
 #@-node:ekr.20080514131122.13:c.recolor_now
 #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
-def redraw (self):
+def redraw (self,scroll=True):
     c = self
     c.requestRedrawFlag = True
+    # This makes c.redraw *not quite* the same as c.endUpdate.
+    c.requestRedrawScrollFlag = scroll
 
 def redraw_now (self):
     c = self
@@ -8991,8 +8991,7 @@ def new (self,event=None,gui=None):
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
     g.trace('***** c.beginUpdate is deprecated')
     if g.app.unitTesting: assert(False)
@@ -9000,7 +8999,7 @@ def beginUpdate(self):
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
 
     c = self
     if flag:
@@ -9102,7 +9101,7 @@ def editLabel (self,p,selectAll=False):
         self.endEditLabel()
         # finally:
         # This redraw *is* required so the c.edit_widget(p) will exist.
-        c.endUpdate(True)
+        c.redraw() # was c.endUpdate(True)
         c.outerUpdate()
 
     self.setEditPosition(p) # That is, self._editPosition = p
@@ -9227,8 +9226,7 @@ def outerUpdate (self):
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
     g.trace('***** c.beginUpdate is deprecated')
     if g.app.unitTesting: assert(False)
@@ -9236,7 +9234,7 @@ def beginUpdate(self):
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
 
     c = self
     if flag:
@@ -9248,9 +9246,11 @@ BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
 #@-node:ekr.20080514131122.7:c.begin/endUpdate
 #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
-def redraw (self):
+def redraw (self,scroll=True):
     c = self
     c.requestRedrawFlag = True
+    # This makes c.redraw *not quite* the same as c.endUpdate.
+    c.requestRedrawScrollFlag = scroll
 
 def redraw_now (self):
     c = self
@@ -9592,7 +9592,7 @@ def createAllCompareClones(self,inserted,deleted,changed):
     # c.endUpdate(False)
 
     c.redraw_now()
-    c.outerUpdate()
+    ### c.outerUpdate()
 #@nonl
 #@+node:ekr.20070921074410:createCompareClones
 def createCompareClones (self,d,kind,parent):
@@ -9989,7 +9989,7 @@ def redo (self,event=None):
     else:
         c.setCurrentPosition(c.currentPosition())
     c.setChanged(True)
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     c.redraw_now()
     c.recolor_now()
@@ -10317,7 +10317,7 @@ def undo (self,event=None):
     else:
         c.setCurrentPosition(c.currentPosition())
     c.setChanged(True)
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
     c.redraw_now()
     c.recolor_now()
@@ -10711,7 +10711,7 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     c.setChanged(True)
     u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -10799,8 +10799,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         u.afterChangeNodeContents(p,undoType,undoData,
             dirtyVnodeList=dirtyVnodeList)
     # finally:
-    c.endUpdate(flag=changed,scroll=False)
     if changed:
+        c.redraw(scroll=False) # was c.endUpdate(flag=changed,scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
         else:
@@ -10933,7 +10933,7 @@ def setBodyString (self,p,s,encoding="utf-8"):
         if not c.isChanged():
             c.setChanged(True)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20060127052111.1:cutStack
 def cutStack (self):
@@ -11240,7 +11240,7 @@ def dragAfter(self,p,after):
     u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
     # finally:
     c.selectPosition(p) # Also sets root position.
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
     c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
 #@-node:ekr.20031218072017.2353:c.dragAfter
@@ -16064,7 +16064,7 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -16103,7 +16103,7 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -16160,7 +16160,7 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
@@ -16384,7 +16384,7 @@ def readFileIntoNode (self,event=None):
             p.setBodyString(s)
             w.setAllText(s)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode
@@ -16401,7 +16401,7 @@ def readAtAutoNodes (self,event=None):
     c.importCommands.readAtAutoNodes()
     u.afterChangeTree(p,'Read @auto Nodes',undoData)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
 #@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
 def readAtFileNodes (self,event=None):
@@ -16416,7 +16416,7 @@ def readAtFileNodes (self,event=None):
     c.fileCommands.readAtFileNodes()
     u.afterChangeTree(p,'Read @file Nodes',undoData)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
 #@+node:ekr.20031218072017.1809:importDerivedFile
 def importDerivedFile (self,event=None):
@@ -16892,7 +16892,7 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -16931,7 +16931,7 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20031218072017.2836:saveTo
@@ -16965,7 +16965,7 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2839:readOutlineOnly
@@ -17016,7 +17016,7 @@ def readFileIntoNode (self,event=None):
             p.setBodyString(s)
             w.setAllText(s)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode

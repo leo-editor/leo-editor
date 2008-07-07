@@ -1617,7 +1617,7 @@ class leoGtkTree (leoFrame.leoTree):
                 c.bodyWantsFocus()
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20080112145409.387:onClickBoxClick
     #@-node:ekr.20080112145409.386:Click Box...
     #@+node:ekr.20080112145409.388:Dragging (gtkTree)
@@ -1680,7 +1680,7 @@ class leoGtkTree (leoFrame.leoTree):
         self.drag_p = None
         # finally:
         # Must set self.drag_p = None first.
-        c.endUpdate(redrawFlag)
+        if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
         c.recolor_now() # Dragging can affect coloring.
     #@-node:ekr.20080112145409.389:endDrag
     #@+node:ekr.20080112145409.392:startDrag
@@ -2358,7 +2358,7 @@ class leoGtkTree (leoFrame.leoTree):
             # try:
             self.endEditLabel()
             # finally:
-            c.endUpdate(True)
+            c.redraw() # was c.endUpdate(True)
 
         self.setEditPosition(p) # That is, self._editPosition = p
 

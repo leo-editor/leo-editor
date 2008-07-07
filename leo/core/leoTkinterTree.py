@@ -18,10 +18,8 @@ The code is based on code found in Python's IDLE program.'''
 # 
 # - c.redraw_now() redraws the screen immediately by calling 
 # c.frame.tree.redraw_now().
-# 
 # - c.beginUpdate() and c.endUpdate() work as always.  They are the preferred 
 # way of doing redraws.
-# 
 # - No drawing is done at idle time.
 # 
 # c.redraw_now and c.endUpdate redraw all icons automatically. v.computeIcon
@@ -30,6 +28,17 @@ The code is based on code found in Python's IDLE program.'''
 # is. The body key handler simply compares these two values and sets 
 # redraw_flag
 # if they don't match.
+# 
+# New in Leo 4.5: The 'Newest World Order':
+# 
+# - Redrawing the screen and setting focus only happen in c.outerUpdate.
+# - c.redraw only requests a redraw.
+# - c.redraw_now is equivalent to c.redraw() followed by c.outerUpdate.
+# - c.beginUpdate does nothing.  c.endUpdate(False) does nothing.
+# - c.endUpdate() is equivalent to c.redraw()
+# - There is no longer any need to ensure c.endUpdate is called for every 
+# c.beginUpdate.
+#   Thus, there is no need for the associated try/finally statements.
 #@-at
 #@-node:ekr.20040803072955.1:  << About drawing >>
 #@nl
@@ -1665,7 +1674,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 c.bodyWantsFocus()
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         c.outerUpdate()
     #@-node:ekr.20040803072955.79:onClickBoxClick
@@ -2446,7 +2455,7 @@ class leoTkinterTree (leoFrame.leoTree):
             self.endEditLabel()
             # finally:
             # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.endUpdate(True)
+            c.redraw() # was c.endUpdate(True)
             c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p

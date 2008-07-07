@@ -110,7 +110,7 @@ def importCiscoConfig(c):
     p = current.insertAsNthChild(0)
     # c.beginUpdate()
     c.setHeadString(p,"cisco config: %s" % name)
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
     try:
         fh = open(name)

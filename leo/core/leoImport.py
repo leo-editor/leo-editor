@@ -899,7 +899,7 @@ class leoImportCommands:
         message = g.choose(found,'finished','no @auto nodes in the selected tree')
         g.es(message,color='blue')
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
     #@+node:ekr.20070807084545:readOneAtAutoNode
     def readOneAtAutoNode(self,p):
@@ -959,7 +959,7 @@ class leoImportCommands:
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -1012,7 +1012,7 @@ class leoImportCommands:
         c.validateOutline()
         current.expand()
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         c.selectVnode(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
@@ -1115,7 +1115,7 @@ class leoImportCommands:
             theRoot.setDirty()
             c.setChanged(True)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         return theRoot
     #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
@@ -1245,7 +1245,7 @@ class leoImportCommands:
             c.setChanged(True)
         c.selectVnode(current)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1611,7 +1611,7 @@ class leoImportCommands:
             c.setChanged(oldChanged)
         # finally:
         c.selectPosition(old_root)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         if g.app.unitTesting:
             assert ok

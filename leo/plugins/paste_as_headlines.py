@@ -88,7 +88,7 @@ def paste_as_headlines(c):
                 c.setHeadString(insertNode,tempHead)
     currentPos.expand()
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:danr7.20060912105041.6:paste_as_headlines
 #@-others
 

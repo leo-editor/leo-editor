@@ -521,7 +521,7 @@ class leoFind:
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
         self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection
@@ -1353,7 +1353,7 @@ class leoFind:
         if not p: g.trace('can not happen: self.p is None')
         c.selectPosition(p)
         # finally:
-        c.endUpdate(redraw)
+        if redraw: c.redraw() # was c.endUpdate(redraw)
 
         if self.in_headline:
             c.editPosition(p)

@@ -1432,7 +1432,7 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw_now()
         c.recolor_now()
@@ -1760,7 +1760,7 @@ class undoer:
         else:
             c.setCurrentPosition(c.currentPosition())
         c.setChanged(True)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw_now()
         c.recolor_now()

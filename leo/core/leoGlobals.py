@@ -2119,7 +2119,7 @@ def openWithFileName(fileName,old_c,
         g.doHook("menu2",c=frame.c,p=p,v=p)
         g.doHook("after-create-leo-frame",c=c)
     # finally:
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().

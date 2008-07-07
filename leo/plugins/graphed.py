@@ -610,7 +610,7 @@ class GraphEd:
         c.selectPosition(newp)
         # finally:
         c.setChanged(True)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20071004090250.31:saveGraph
     #@+node:ekr.20071004090250.32:copyLink
     def copyLink(self, event = None):

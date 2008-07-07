@@ -443,7 +443,7 @@ class Lassoer(object):
             self.copyTo()
             self.cloneTo()
             self.clear()
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
         else:
             g.es('No valid move',color='blue')
     #@nonl
@@ -470,8 +470,8 @@ class Lassoer(object):
             g.es('Ignoring clone transer',color='blue')
         self.clear()
         # finally:
-        c.endUpdate()
-        lassoer.c.endUpdate() # Do this last so we select the target outline.
+        c.redraw() # was c.endUpdate()
+        lassoer.c.redraw() # was lassoer.c.endUpdate() # Do this last so we select the target outline.
 
     #@-node:mork.20041019125724.3:transfer
     #@-node:ekr.20060325094821:Commands

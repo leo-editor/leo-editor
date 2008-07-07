@@ -400,7 +400,7 @@ class chapterController:
         cc.selectChapterByName('main')
         cc.afterRemoveChapter(bunch,c.currentPosition())
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()()
     #@-node:ekr.20070606075434:cc.removeChapterByName
     #@+node:ekr.20070317085437.41:cc.renameChapter
     # newName is for unitTesting.
@@ -946,7 +946,7 @@ class chapter:
         c.hoistStack = self.hoistStack[:]
         c.selectPosition(p)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl

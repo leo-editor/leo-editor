@@ -239,7 +239,7 @@ def move( c, children , parent):
     # c.beginUpdate()
     for n, ch in enumerate( children ):
         ch.moveToNthChildOf( parent, n )
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 #@-node:ekr.20040916074337.5:move
 #@+node:ekr.20040916074337.6:move2
@@ -251,7 +251,7 @@ def move2( c, children , oroot):
     for z in children[ 1: ]:
         z.moveAfter( z1 )
         z1 = z
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 #@-node:ekr.20040916074337.6:move2
 #@+node:ekr.20040916074337.7:buildAttList

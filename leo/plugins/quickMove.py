@@ -161,7 +161,7 @@ class quickMoveButton:
         c.selectPosition(nxt)
         c.undoer.afterMoveNode(p,'Quick Move', bunch)
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
     #@+node:ekr.20070123061606:checkMove
     def checkMove (self,p,p2):

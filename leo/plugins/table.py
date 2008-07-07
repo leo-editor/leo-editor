@@ -139,7 +139,7 @@ class CSVVisualizer:
             p2.setHeadString("Save of Edited " + str(pos.headString()))
         else:
             pos.setTnodeText( cS.getvalue() )
-        self.c.endUpdate()
+        self.c.redraw() # was self.c.endUpdate()
     #@-node:ekr.20041017035937.6:writeData
     #@+node:ekr.20041017035937.7:addRow
     def addRow( self , tab ):

@@ -136,7 +136,7 @@ def base64Import( c ):
         p = npos.insertAsNthChild(0) # , payload)
         p.setBodyString(b64_data)
         p.setHeadString(pload)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 #@-node:mork.20041020082653:base64Import
 #@+node:ekr.20050307135219.1:init
 def init ():

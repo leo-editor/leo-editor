@@ -744,7 +744,7 @@ class baseTangleCommands:
         if not g.unitTesting:
             g.es("untangle complete")
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20031218072017.3478:untangle
     #@+node:ekr.20031218072017.3479:untangleAll
     def untangleAll(self,event=None):
@@ -759,7 +759,7 @@ class baseTangleCommands:
             ok = self.untangleTree(p,False)
             if ok: has_roots = True
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         self.errors += g.app.scanErrors
 
@@ -789,7 +789,7 @@ class baseTangleCommands:
             else:
                 p.moveToThreadNext()
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         self.errors += g.app.scanErrors
 
@@ -2982,7 +2982,7 @@ class baseTangleCommands:
         p.setDirty()
         p.setMarked()
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
     #@-node:ekr.20031218072017.3575:update_current_vnode
     #@-node:ekr.20031218072017.3544:untangle
     #@+node:ekr.20031218072017.3576:utility methods

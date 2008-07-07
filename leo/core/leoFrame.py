@@ -1032,7 +1032,7 @@ class leoBody:
         c.frame.tree.expandAllAncestors(w.leo_p)
         c.selectPosition(w.leo_p,updateBeadList=True) # Calls assignPositionToEditor.
         # finally:
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>
@@ -1253,7 +1253,7 @@ class leoBody:
             p.v.iconVal = val
             redraw_flag = True
         #finally:
-        c.endUpdate(redraw_flag)
+        if redraw_flag: c.redraw() # was c.endUpdate(redraw_flag)
         #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
@@ -1855,7 +1855,7 @@ class leoFrame:
             c.endEditing()
             c.selectPosition(p)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -2357,8 +2357,8 @@ class leoTree:
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
         # finally:
-        c.endUpdate(flag=changed,scroll=False)
         if changed:
+            c.redraw(scroll=False) # was c.endUpdate(flag=changed,scroll=False)
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
@@ -2490,7 +2490,7 @@ class leoTree:
                     # try:
                     c.selectPosition(p)
                     # finally:
-                    c.endUpdate()
+                    c.redraw() # was c.endUpdate()
                     c.frame.body.bodyCtrl.setInsertPoint(0) # 2007/10/27
                 g.doHook("hypercclick2",c=c,p=p,v=p,event=event)
             except:

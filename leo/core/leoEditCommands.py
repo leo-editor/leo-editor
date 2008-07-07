@@ -732,7 +732,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
             c.recolor_now()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
@@ -761,7 +761,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             self.endCommand()
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
             c.recolor_now()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
@@ -790,7 +790,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -864,7 +864,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
             c.recolor_now()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
@@ -888,7 +888,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.endEditing()
             # c.beginUpdate()
             c.setHeadString(p,name)
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20050920084036.43:renameBuffer
     #@+node:ekr.20050920084036.40:switchToBuffer
     def switchToBuffer (self,event):
@@ -906,7 +906,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             # try:
             c.selectPosition(p)
             # finally:
-            c.endUpdate()
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
     #@+node:ekr.20050927102133.1:Utils
@@ -4194,7 +4194,7 @@ class editCommandsClass (baseEditCommandsClass):
                 # try:
                 c.selectPosition(p)
                 # finally:
-                c.endUpdate()
+                c.redraw() # was c.endUpdate()
 
                 s = w.getAllText()
                 w.insert(0,lines)
@@ -4244,7 +4244,7 @@ class editCommandsClass (baseEditCommandsClass):
                 # try:
                 c.selectPosition(p)
                 # finally:
-                c.endUpdate()
+                c.redraw() # was c.endUpdate()
 
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
@@ -4885,7 +4885,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         # c.endUpdate(False)
 
         c.redraw_now()
-        c.outerUpdate()
+        ### c.outerUpdate()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
@@ -8484,7 +8484,7 @@ class spellTabHandler (leoFind.leoFind):
                     # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
                     # finally:
-                    c.endUpdate(redraw)
+                    if redraw: c.redraw # was c.endUpdate(redraw)
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

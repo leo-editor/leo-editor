@@ -204,11 +204,11 @@ def processDocumentNode( c ):
         p2 = pos.insertAfter() # tnode )
         p2.setBodyString(result)
         p2.setHeadString(nhline)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
     except Exception, x:
         g.es( 'exception ' + str( x ))
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@nonl
 #@-node:mork.20041010095202.1:processDocumentNode
 #@+node:mork.20041025121608:addXSLTNode
@@ -229,7 +229,7 @@ def addXSLTNode (c):
     p2 = pos.insertAfter() # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:mork.20041025121608:addXSLTNode
 #@+node:mork.20041010110121:addXSLTElement
 def addXSLTElement( c , element):
@@ -293,7 +293,7 @@ def jumpToStyleNode( c ):
     pos = stylenodes[ c ]
     # c.beginUpdate()
     c.selectPosition( pos )
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 
 #@-node:mork.20041010125444:jumpToStyleNode
@@ -521,7 +521,7 @@ def addMenu( tag, keywords ):
     else:
         # pos.setTnodeText( cS.getvalue() )
         pos.setBodyString(cS.getvalue())
-    self.c.endUpdate()
+    self.c.redraw() # was self.c.endUpdate()
 
 
 
@@ -596,7 +596,7 @@ def addMenu( tag, keywords ):
     # c.beginUpdate()
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.selectPosition( npos )
     viewTable( c , True )
 

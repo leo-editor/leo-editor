@@ -1003,7 +1003,7 @@ class cleoController:
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
         # finally:
-        self.c.endUpdate()
+        self.c.redraw() # was self.c.endUpdate()
 
     def priority_menu(self,parent,p):
 
@@ -1336,7 +1336,7 @@ class cleoController:
                 self.c.expandNode()
             self.c.selectPosition(p)
             # finally:
-            self.c.endUpdate()
+            self.c.redraw() # was self.c.endUpdate()
             return True
 
         for nd in p.children_iter():
