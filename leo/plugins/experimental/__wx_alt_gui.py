@@ -8604,7 +8604,7 @@ if wx:
             self.drag_p = None
             # finally:
             # Must set self.drag_p = None first.
-            c.endUpdate(redrawFlag)
+            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
             c.recolor_now() # Dragging can affect coloring.
         #@-node:bob.20070906100746:endDrag
         #@-node:bob.20070907050034:onEndDrag

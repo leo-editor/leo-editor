@@ -6128,7 +6128,7 @@ if wx:
             # try:
             self.endEditLabel()
             # finally:
-            c.endUpdate(redrawFlag)
+            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
 
             self.setEditPosition(p) # That is, self._editPosition = p
             tree_id = self.getIdDict(p)
