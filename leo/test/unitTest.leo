@@ -2160,31 +2160,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051107115231.13"><vh>Typing and undo tests</vh>
-<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
-<v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
-<v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
-<v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
-<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
-<v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
-<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
-<v t="ekr.20060131102450"><vh>print end of typing and undo tests</vh></v>
-</v>
-<v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20080705205520.1"><vh>regexp</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4651,7 +4626,7 @@ finally:
         child.clearDirty()
     finally: pass
 
-c.endUpdate()
+c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
 <t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
@@ -13090,7 +13065,7 @@ finally:
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of typing tests.'</t>
 <t tx="ekr.20051120110335">c.insertHeadline()
@@ -13262,7 +13237,7 @@ if p:
     p.expand()
     g.app.unitTestDict['restoreSelectedNode']=False
     c.selectPosition(p)
-    c.endUpdate()
+    c.redraw()
         
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
@@ -16004,7 +15979,7 @@ controller.parameterize()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of general unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
@@ -16013,7 +15988,7 @@ print ; print 'End of general unit tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoColor tests'</t>
 <t tx="ekr.20061127142311">#ab
@@ -16521,7 +16496,7 @@ p3 = c.currentPosition()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoEditCommands tests.'</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
@@ -16646,7 +16621,7 @@ try:
     while p.hasChildren():
         p.firstChild().doDelete()
 finally:
-    c.endUpdate()
+    c.redraw()
 </t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
@@ -19234,7 +19209,7 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
+
 # end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113145804.34">import string
 
@@ -19328,7 +19303,7 @@ This eliminates references to nodes that no longer exist in the present outline.
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoAtFile tests'</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
@@ -19337,7 +19312,7 @@ print ; print 'End of leoAtFile tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoCommands tests'</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
@@ -19346,7 +19321,7 @@ print ; print 'End of leoCommands tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoConfig tests'</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
@@ -19355,7 +19330,7 @@ print ; print 'End of leoConfig tests'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
   
 print ; print 'End of leoFileCommands tests.'</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
@@ -19364,7 +19339,7 @@ print ; print 'End of leoFileCommands tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoFind tests.'</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
@@ -19373,7 +19348,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoFrame tests.'</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
@@ -19382,7 +19357,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoGlobals tests.'</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
@@ -19391,7 +19366,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoGui tests.'</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
@@ -19400,7 +19375,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoImport tests.'</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
@@ -19409,7 +19384,7 @@ print ; print 'End of leoImport tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 # print ; print 'End of leoKeys tests.'</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
@@ -19418,7 +19393,7 @@ c.endUpdate()
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoNodes tests.'</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
@@ -19427,7 +19402,7 @@ print ; print 'End of leoNodes tests.'</t>
 c.contractParent()
 c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.endUpdate()
+c.redraw()
     
 print ; print 'End of leoUndo tests.'</t>
 <t tx="ekr.20071113203234"></t>
@@ -20470,35 +20445,5 @@ assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
 <t tx="ekr.20080703104536.1"></t>
-<t tx="ekr.20080705205520.1"># Used to change c.begin/endUpdate/try/finally
-
-( *)c.beginUpdate\(\)(.*)\n( *)try:(.*)$
-\1# c.beginUpdate()\n\3# try:
-
-# Remove all commented out try &amp; finally
-    
-(^ *# *try:.*\n)|(^ *# *finally:.*\n)
-
-# Tests
-    # try:
-    # finally:
-        
-# Remove all commented out .endUpdate.
-^ *#.*\.endUpdate\(False\)
-^ *#.*\.endUpdate
-
-# Remove all commented out .beginUpdate
-^ *#.*\.beginUpdate.*\n
-^ *#.*\.beginUpdate
-
-# Tests
-# c.beginUpdate()
-    #c2.beginUpdate()#blah
-# c.endUpdate()
-    #c2.endUpdate(False)
-    
-^# import leo\.core\.leoTest as leoTest.*\n# u = leoTest\.testUtils(c)\n
-
-</t>
 </tnodes>
 </leo_file>
