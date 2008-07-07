@@ -18,7 +18,7 @@
 ;@+node:ekr.20050118092706.1:<< defines >>
 ;@<< 4.3 nsi installer version >>
 ;@+node:ekr.20050118124408:<< 4.3 nsi installer version >>
-!define PRODUCT_VERSION "4.4.8-final"
+!define PRODUCT_VERSION "4.5-b1"
 ;@nonl
 ;@-node:ekr.20050118124408:<< 4.3 nsi installer version >>
 ;@nl
@@ -73,7 +73,7 @@ WindowIcon off
 
 ; settings from HM NIS Edit Wizard
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "LeoSetup-4-4-8-final.exe"
+OutFile "LeoSetup-4-5-b1.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\Leo"
 Icon "..\Icons\leo_inst.ico"
@@ -409,17 +409,18 @@ Section "Leo" SEC01
   ;@nonl
   ;@-node:ekr.20050118104901.13:<< install scripts >>
   ;@nl
-  SetOutPath "$INSTDIR\src"
-  ;@  << install src files >>
-  ;@+node:ekr.20050118104901.10:<< install src files >>
-  File "..\src\buttons.txt"
-  File "..\src\leoProjects.txt"
-  File "..\src\LeoPy.leo"
-  File "..\src\oldLeoProjects.leo"
+  SetOutPath "$INSTDIR\core"
+  ;@  << install core files >>
+  ;@+node:ekr.20050118104901.10:<< install core files >>
+  File "..\core\buttons.txt"
+  File "..\core\leoProjects.txt"
+  File "..\core\LeoPy.leo"
+  File "..\core\oldLeoProjects.leo"
 
-  ; File "..\src\__init__.py"
-  File "..\src\leo*.py"
-  ;@-node:ekr.20050118104901.10:<< install src files >>
+  ; File "..\core\__init__.py"
+  File "..\core\leo*.py"
+  File "..\core\runLeo.py"
+  ;@-node:ekr.20050118104901.10:<< install core files >>
   ;@nl
   SetOutPath "$INSTDIR\test"
   ;@  << install test files >>
@@ -465,8 +466,8 @@ Section "Start Menu Shortcuts" SEC02
   CreateDirectory "$SMPROGRAMS\Leo"
   CreateShortCut "$SMPROGRAMS\Leo\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
 ; In Version 1.0 installer, was
-; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
-  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+; CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" "$PythonExecutable" '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$SMPROGRAMS\Leo\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 ;@nonl
 ;@-node:ekr.20050118092706.14:<< Section "Start Menu Shortcuts"  >>
@@ -474,7 +475,7 @@ SectionEnd
 ;@<< Section "Desktop Shortcut" >>
 ;@+node:ekr.20050118092706.15:<< Section "Desktop Shortcut" >>
 Section "Desktop Shortcut" SEC03
-  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\src\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
+  CreateShortCut "$DESKTOP\Leo.lnk" '"$PythonExecutable"' '"$INSTDIR\core\leo.py"' "$INSTDIR\Icons\LeoApp.ico" 0
 SectionEnd
 ;@nonl
 ;@-node:ekr.20050118092706.15:<< Section "Desktop Shortcut" >>
@@ -500,7 +501,7 @@ Label1:
 ;  WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico,0
 ; which does not work under Windows XP Professional SP2.
   WriteRegStr HKCR "LeoFile\DefaultIcon" "" $INSTDIR\Icons\LeoDoc.ico
-  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\src\leo.py" "%1"'
+  WriteRegStr HKCR "LeoFile\shell\open\command" "" '"$PythonExecutable" "$INSTDIR\core\leo.py" "%1"'
 
 SectionEnd
 ;@nonl
@@ -535,7 +536,7 @@ SectionEnd
 ; UninstallText "This will uninstall Leo from your system"
 
 UninstallCaption "Uninstall Leo"
-UninstallIcon c:\leo.repo\leo-editor\trunk\leo\Icons\uninst.ico
+UninstallIcon c:\leo.repo\trunk\leo\Icons\uninst.ico
 ;@nonl
 ;@-node:ekr.20050118092706.18:<< Uninstall-related Settings >>
 ;@nl
@@ -709,18 +710,19 @@ Section Uninstall
   ;@nonl
   ;@-node:ekr.20050118104901.14:<< uninstall scripts >>
   ;@nl
-  ;@  << uninstall src files >>
-  ;@+node:ekr.20050118104901.11:<< uninstall src files >>
-  Delete "$INSTDIR\src\buttons.txt"
-  Delete "$INSTDIR\src\leoProjects.txt"
-  Delete "$INSTDIR\src\LeoPy.leo"
-  Delete "$INSTDIR\src\oldLeoProjects.leo"
+  ;@  << uninstall core files >>
+  ;@+node:ekr.20050118104901.11:<< uninstall core files >>
+  Delete "$INSTDIR\core\buttons.txt"
+  Delete "$INSTDIR\core\leoProjects.txt"
+  Delete "$INSTDIR\core\LeoPy.leo"
+  Delete "$INSTDIR\core\oldLeoProjects.leo"
 
-  Delete "$INSTDIR\src\__init__.p*"
+  Delete "$INSTDIR\core\__init__.p*"
 
-  Delete "$INSTDIR\src\leo*.p*"
+  Delete "$INSTDIR\core\leo*.p*"
+  Delete "$INSTDIR\core\runLeo.py"
   ;@nonl
-  ;@-node:ekr.20050118104901.11:<< uninstall src files >>
+  ;@-node:ekr.20050118104901.11:<< uninstall core files >>
   ;@nl
   ;@  << uninstall test files >>
   ;@+node:ekr.20050118122740.3:<< uninstall test files >>
@@ -796,7 +798,7 @@ Section Uninstall
   RMDir "$INSTDIR\plugins"
 
   RMDir "$INSTDIR\scripts"
-  RMDir "$INSTDIR\src"
+  RMDir "$INSTDIR\core"
 
   RMDir "$INSTDIR\test\unittest"
   RMDir "$INSTDIR\test"

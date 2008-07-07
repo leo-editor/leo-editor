@@ -2345,6 +2345,9 @@ class keyHandlerClass:
 
         bindStroke = k.tkbindingFromStroke(stroke)
 
+        # if stroke.lower()=='ctrl+v':
+            # g.trace('stroke',repr(stroke),'bindStroke',repr(bindStroke),'w',repr(w),'\n',g.callers())
+
         if w:
             widgets = [w]
         else:
@@ -2968,6 +2971,8 @@ class keyHandlerClass:
         k = self ; c = k.c
 
         stroke = k.getShortcutForCommandName(commandName)
+
+        # g.trace('stroke',repr(stroke),'commandName',commandName,'w',w,g.callers())
 
         if stroke and w:
             # g.trace(stroke)

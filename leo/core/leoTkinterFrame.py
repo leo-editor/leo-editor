@@ -27,9 +27,7 @@ import sys
 Pmw = g.importExtension("Pmw",pluginName="leoTkinterFrame.py",verbose=False)
 tkColorChooser = g.importExtension('tkColorChooser',pluginName=None,verbose=False)
 
-# The following imports _are_ used.
-# __pychecker__ = '--no-import'
-import time
+# import time
 #@-node:ekr.20041221070525:<< imports >>
 #@nl
 
@@ -1320,13 +1318,9 @@ class leoTkinterFrame (leoFrame.leoFrame):
         lab = Tk.Label(f,text='mini-buffer',justify='left',anchor='nw',foreground='blue')
         lab.pack(side='left')
 
-        if c.useTextMinibuffer:
-            label = g.app.gui.plainTextWidget(
-                f,height=1,relief='groove',background='lightgrey',name='minibuffer')
-            label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
-        else:
-            label = Tk.Label(f,relief='groove',justify='left',anchor='w',name='minibuffer')
-            label.pack(side='left',fill='both',expand=1,padx=2,pady=1)
+        label = g.app.gui.plainTextWidget(
+            f,height=1,relief='groove',background='lightgrey',name='minibuffer')
+        label.pack(side='left',fill='x',expand=1,padx=2,pady=1)
 
         frame.minibufferVisible = c.showMinibuffer
 
@@ -1338,8 +1332,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         '''Create bindings for the minibuffer..'''
 
         f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
-
-        if not c.useTextMinibuffer: return
 
         table = [
             ('<Key>',           k.masterKeyHandler),
@@ -1632,7 +1624,6 @@ class leoTkinterFrame (leoFrame.leoFrame):
         try:
             c = self.c ; p = c.currentPosition()
             if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
-                pass # By default Leo does nothing.
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
             g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:

@@ -268,6 +268,8 @@ class View:
         @node is the node to work with
         """
 
+        c = self.c
+
         # delete all nodes before creating, to avoid duplicates
         while node.firstChild():
             node.firstChild().doDelete(node)
@@ -277,8 +279,8 @@ class View:
             c.setHeadString(child,'@view %s' % file.name)
 
         for file in path.dirs():
-           child = node.insertAsLastChild()
-           c.setHeadString(child,'@view %s' % file.name)
+            child = node.insertAsLastChild()
+            c.setHeadString(child,'@view %s' % file.name)
     #@-node:ktenney.20041211072654.14:processDirectory
     #@-others
 #@nonl

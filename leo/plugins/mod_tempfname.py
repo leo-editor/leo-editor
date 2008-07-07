@@ -37,75 +37,75 @@ def openWithTempFilePath (self,v,ext):
     #    hierarchy in Leo's outline.
     c = self
     if c.config.getBool('open_with_clean_filenames'):
-       atFileFound = False   #Track when first ancestor @file found
-       #Build list of all of node's parents
-       ancestor = []
-       p = c.currentPosition()
-       while p:
-           hs = p.isAnyAtFileNode() #Get file name if we're at a @file node
-           if not hs:
-               hs = p.headString()  #Otherwise, use the entire header
-           else:
+        atFileFound = False   #Track when first ancestor @file found
+        #Build list of all of node's parents
+        ancestor = []
+        p = c.currentPosition()
+        while p:
+            hs = p.isAnyAtFileNode() #Get file name if we're at a @file node
+            if not hs:
+                hs = p.headString()  #Otherwise, use the entire header
+            else:
 #@verbatim
-               #@file type node
-               if c.config.getBool('open_with_uses_derived_file_extensions'):
-                   #Leo configured to use node's derived file's extension
-                   if(atFileFound == False):
-                       atFileFound = True #no need to look any more.
-                       #Found first ancestor @file node in outline
-                       atFileBase,atFileExt = g.os_path_splitext(hs)
-                       if(p == c.currentPosition()):
-                           #node to edit is an @file, Move ext from hs to ext
-                           hs = atFileBase
-                       if atFileExt: #It has an extension
-                           ext = atFileExt #use it
+                #@file type node
+                if c.config.getBool('open_with_uses_derived_file_extensions'):
+                    #Leo configured to use node's derived file's extension
+                    if(atFileFound == False):
+                        atFileFound = True #no need to look any more.
+                        #Found first ancestor @file node in outline
+                        atFileBase,atFileExt = g.os_path_splitext(hs)
+                        if(p == c.currentPosition()):
+                            #node to edit is an @file, Move ext from hs to ext
+                            hs = atFileBase
+                        if atFileExt: #It has an extension
+                            ext = atFileExt #use it
 
-           #Remove unsupported directory & file name characters
-           if(os.name == "dos" or os.name == "nt"):
-               hsClean = ""
-               for ch in hs:
-                   if ch in g.string.whitespace: #Convert tabs to spaces
-                       hsClean += ' '
-                   elif ch in ('\\','/',':','|','<','>'): #Not in Dos/Windows
-                       hsClean += '_'
-                   elif ch in ('"'): #Leo code can't handle the "
-                       hsClean += '\''   #replace with '
-                   else:
-                       hsClean += ch
-               #Windows directory and file names can't end with a period
-               if hsClean.endswith( '.' ):
-                   hsClean += '_'
-           else:
-              hsClean = g.sanitize_filename(hs)
-           #Add node's headstring (filtered) to the list of ancestors
-           ancestor.append(hsClean)
-           p = p.parent()
+            #Remove unsupported directory & file name characters
+            if(os.name == "dos" or os.name == "nt"):
+                hsClean = ""
+                for ch in hs:
+                    if ch in g.string.whitespace: #Convert tabs to spaces
+                        hsClean += ' '
+                    elif ch in ('\\','/',':','|','<','>'): #Not in Dos/Windows
+                        hsClean += '_'
+                    elif ch in ('"'): #Leo code can't handle the "
+                        hsClean += '\''   #replace with '
+                    else:
+                        hsClean += ch
+                #Windows directory and file names can't end with a period
+                if hsClean.endswith( '.' ):
+                    hsClean += '_'
+            else:
+                hsClean = g.sanitize_filename(hs)
+            #Add node's headstring (filtered) to the list of ancestors
+            ancestor.append(hsClean)
+            p = p.parent()
 
-       #Put temporary directory structure under <tempdir>\Leo<uniqueId> directory
-       ancestor.append( "Leo" + str(id(v.t)))
+        #Put temporary directory structure under <tempdir>\Leo<uniqueId> directory
+        ancestor.append( "Leo" + str(id(v.t)))
 
-       #Build temporary directory
-       td = os.path.abspath(tempfile.gettempdir())
-       #Loop through all of node's ancestors
-       while len(ancestor) > 1:
-           #Add each ancestor of node from nearest to farthest
-           td = os.path.join(td, ancestor.pop()) #Add next subdirectory
-           if not os.path.exists(td):
-               os.mkdir(td)
-       #Add filename with extension to the path (last entry in ancestor list)
-       name = ancestor.pop() + ext
+        #Build temporary directory
+        td = os.path.abspath(tempfile.gettempdir())
+        #Loop through all of node's ancestors
+        while len(ancestor) > 1:
+            #Add each ancestor of node from nearest to farthest
+            td = os.path.join(td, ancestor.pop()) #Add next subdirectory
+            if not os.path.exists(td):
+                os.mkdir(td)
+        #Add filename with extension to the path (last entry in ancestor list)
+        name = ancestor.pop() + ext
     else:
-       #Use old method for unsupported operating systems
-       try:
-           leoTempDir = getpass.getuser() + "_" + "Leo"
-       except:
-           leoTempDir = "LeoTemp"
-           g.es("Could not retrieve your user name.")
-           g.es("Temporary files will be stored in: %s" % leoTempDir)
-       td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
-       if not os.path.exists(td):
-           os.mkdir(td)
-       name = g.sanitize_filename(v.headString()) + '_' + str(id(v.t)) + ext
+        #Use old method for unsupported operating systems
+        try:
+            leoTempDir = getpass.getuser() + "_" + "Leo"
+        except:
+            leoTempDir = "LeoTemp"
+            g.es("Could not retrieve your user name.")
+            g.es("Temporary files will be stored in: %s" % leoTempDir)
+        td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
+        if not os.path.exists(td):
+            os.mkdir(td)
+        name = g.sanitize_filename(v.headString()) + '_' + str(id(v.t)) + ext
 
     path = os.path.join(td,name)
     return path

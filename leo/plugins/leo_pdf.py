@@ -319,7 +319,7 @@ try:
 
     # General imports...
     import StringIO
-    import time
+    # import time
     import types
 except ImportError:
     docutils = None
@@ -467,7 +467,7 @@ if docutils:
                 pagesize=reportlab.lib.pagesizes.A4)
 
             # The 'real' code is doc.build(story)
-            self.buildFromIntermediateFile(s,story,visitor)
+            visitor.buildFromIntermediateFile(s,story,visitor)
 
             return out.getvalue()
         #@nonl
@@ -592,10 +592,10 @@ if docutils:
             for line in lines:
                 if line:
                     if line.startswith('createParagraph:'):
+                        style = line[len('createParagraph:'):].strip()
                         if para:
                             self.putParaFromIntermediateFile(para,style)
                             para = []
-                        style = line[len('createParagraph:'):].strip()
                     elif line.startswith('starttag:') or line.startswith('..'):
                         pass
                     else:

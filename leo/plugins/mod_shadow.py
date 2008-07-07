@@ -172,12 +172,12 @@ import leo.core.leoGlobals as g
 import leo.core.leoAtFile as leoAtFile
 import leo.core.leoCommands as leoCommands
 import leo.core.leoImport as leoImport 
-import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoPlugins as leoPlugins
 
 import ConfigParser 
 import os
-import shutil
-import sys
+# import shutil
+# import sys
 
 plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
 mod_shadow_core = g.importFromPath('mod_shadow_core',plugins_path)
@@ -448,9 +448,9 @@ def replaceTargetFileIfDifferent (self):
 #@+node:ekr.20060715100156.73:massageComment
 def massageComment (self,s):
 
-	"""Leo has no business changing comments!"""
+    """Leo has no business changing comments!"""
 
-	return s 
+    return s 
 #@-node:ekr.20060715100156.73:massageComment
 #@-node:ekr.20060715100156.68:Leo overwrites
 #@+node:ekr.20060715100156.74:test_support

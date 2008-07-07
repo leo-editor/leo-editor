@@ -90,8 +90,6 @@ unitTesting = False # A synonym for app.unitTesting.
 # It makes absolutely no sense to change these after Leo loads.
 unified_nodes = False
     # True: (Not recommended) unify vnodes and tnodes into a single vnode.
-newDrawing = True
-    # True: use c.outerUpdate to complete drawing, focus, recoloring.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
@@ -143,8 +141,11 @@ def computeGlobalConfigDir():
 
     encoding = g.startupEncoding()
 
-    if hasattr(sys,'leo_config_directory'):
-        theDir = sys.leo_config_directory
+    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
+    leo_config_dir = hasattr(sys,'leo_config_directory') and getattr(sys,'leo_config_directory')
+
+    if leo_config_dir:
+        theDir = leo_config_dir
     else:
         theDir = g.os_path_join(g.app.loadDir,"..","config")
 
@@ -1774,7 +1775,7 @@ class Tracer:
         try:
             # This can fail during startup.
             self_obj = frame.f_locals.get('self')
-            if self.obj: result.append(self_obj.__class__.__name__)
+            if self_obj: result.append(self_obj.__class__.__name__)
         except Exception:
             pass
 
@@ -2095,45 +2096,44 @@ def openWithFileName(fileName,old_c,
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    c.beginUpdate()
-    try:
-        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-            c.setLog()
-            app.lockLog()
-            frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-        # Bug fix in 4.4.
-        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        p = c.currentPosition()
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(relativeFileName or fileName)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        assert frame.c == c and c.frame == frame
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.chapterController:
-            c.chapterController.finishCreate()
-        k = c.k
-        if k:
-            k.setDefaultInputState()
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        if k:
-            k.showStateAndMode()
+    # c.beginUpdate()
+    # try:
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        app.lockLog()
+        frame.c.fileCommands.open(
+            theFile,fileName,
+            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+        app.unlockLog()
+        for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.currentPosition()
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
 
     return True, frame
 #@nonl
@@ -4132,11 +4132,31 @@ except Exception:
     else:
         #@        << define getpreferredencoding for *nix >>
         #@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        # Pychecker & pylint complains about CODESET
+        # Avoid pychecker & pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
+        if (
+            hasattr(locale,'CODESET') and
+            hasattr(locale,'LC_CTYPE') and
+            hasattr(locale,'nl_langinfo')
+        ):
+            codeset =  getattr(locale,'CODESET')
+            lc_ctype = getattr(locale,'LC_CTYPE')
+            nl_langinfo = getattr(locale,'nl_langinfo')
 
-        try:
-            locale.CODESET # Bug fix, 2/12/05
-        except NameError:
+            def getpreferredencoding(do_setlocale=True):
+                """Return the charset that the user is likely using,
+                according to the system configuration."""
+                try:
+                    if do_setlocale:
+                        oldloc = locale.setlocale(lc_ctype)
+                        locale.setlocale(lc_ctype, "")
+                        result = nl_langinfo(codeset)
+                        locale.setlocale(lc_ctype, oldloc)
+                        return result
+                    else:
+                        return nl_langinfo(codeset)
+                except Exception:
+                    return None
+        else:
             # Fall back to parsing environment variables :-(
             def getpreferredencoding(do_setlocale = True):
                 """Return the charset that the user is likely using,
@@ -4145,21 +4165,7 @@ except Exception:
                     return locale.getdefaultlocale()[1]
                 except Exception:
                     return None
-        else:
-            def getpreferredencoding(do_setlocale = True):
-                """Return the charset that the user is likely using,
-                according to the system configuration."""
-                try:
-                    if do_setlocale:
-                        oldloc = locale.setlocale(LC_CTYPE)
-                        locale.setlocale(LC_CTYPE, "")
-                        result = locale.nl_langinfo(CODESET)
-                        locale.setlocale(LC_CTYPE, oldloc)
-                        return result
-                    else:
-                        return locale.nl_langinfo(CODESET)
-                except Exception:
-                    return None
+
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
 
@@ -4647,14 +4653,16 @@ class mulderUpdateAlgorithm:
         that of the source file.
         """
 
-        # pychecker complains about mtime.
-
         st = os.stat(sourcefilename)
 
-        if hasattr(os, 'utime'):
-            os.utime(targetfilename, (st.st_atime, st.st_mtime))
-        elif hasattr(os, 'mtime'):
-            os.mtime(targetfilename, st.st_mtime)
+        # To avoid pychecker/pylint complaints.
+        utime = getattr(os,'utime')
+        mtime = getattr(os,'mtime')
+
+        if utime:
+            utime(targetfilename, (st.st_atime, st.st_mtime))
+        elif mtime:
+            mtime(targetfilename, st.st_mtime)
         else:
             g.trace("Can not set modification time")
     #@-node:EKR.20040504155109:copy_time

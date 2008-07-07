@@ -17,7 +17,8 @@ attributes of one another.'''
 
 #@<< imports >>
 #@+node:mork.20041018162155.2:<< imports >>
-import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoPlugins as leoPlugins
+
 import leo.core.leoGlobals as g
 import leo.core.leoTkinterFrame as leoTkinterFrame    
 
@@ -93,8 +94,8 @@ class AttrEditor:
         if name == 'Add Attribute': return self.add() 
         elif name == 'Remove Attribute': return self.rmv()
         else:
-             self.dialog.deactivate()
-             self.dialog.destroy()
+            self.dialog.deactivate()
+            self.dialog.destroy()
     #@-node:mork.20041018162155.5:buttonCommands
     #@+node:mork.20041018162155.6:_mkGui
     def _mkGui( self, frame ):

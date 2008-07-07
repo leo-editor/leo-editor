@@ -116,7 +116,7 @@ import leo.core.leoPlugins as leoPlugins
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
-import os
+# import os
 import string
 import sys
 #@nonl

@@ -116,6 +116,8 @@ __version__ = "1.8"
 #@-node:ekr.20050311104330:<< version history >>
 #@nl
 
+wikiColoredText = None
+
 #@+others
 #@+node:ekr.20060108112937:Module-level
 #@+node:ekr.20050311104330.1:init
@@ -172,24 +174,6 @@ def initAnyMarkup (tag,keywords):
 
     colorer.markup_string = "unknown" # default
 #@-node:edream.110403140857.9:initAnyMarkup
-#@+node:edream.110403140857.16:onBodykey1 (not ready)
-# def onBodykey1(tag,keywords):
-
-    # c = keywords.get("c")
-    # w = c.frame.body.bodyCtrl
-    # ins = w.getInsertPoint()
-    # ins = w.toGuiIndex(ins)
-    # # line,char = map(int, idx.split('.'))
-    # elideRange = body.bodyCtrl.tag_prevrange("elide",ins)
-    # if elideRange:
-        # elideLine,elideStart = map(int, elideRange[0].split('.'))
-        # elideLine,elideEnd   = map(int, elideRange[1].split('.'))
-        # if line==elideLine and elideStart<char<=elideEnd:
-            # pass
-            # # print "XXX: tag!"
-            # # body.bodyCtrl.mark_set("insert", "elide+1c")
-    # return 0 # do not override
-#@-node:edream.110403140857.16:onBodykey1 (not ready)
 #@+node:edream.110403140857.17:onBodydclick1 & allies
 def onBodydclick1(tag,keywords):
 

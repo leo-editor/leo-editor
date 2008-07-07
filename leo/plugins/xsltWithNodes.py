@@ -26,7 +26,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 #@<< imports >>
 #@+node:mork.20041025113509:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
@@ -181,7 +181,7 @@ def processDocumentNode( c ):
         proc = Processor()
         stylenode = stylenodes[ c ]
         pos = c.currentPosition()
-        c.beginUpdate()
+        # c.beginUpdate()
         c.selectPosition( stylenode )
         sIO = getString( c )
         mdom1 = minidom.parseString( sIO )
@@ -204,13 +204,12 @@ def processDocumentNode( c ):
         p2 = pos.insertAfter() # tnode )
         p2.setBodyString(result)
         p2.setHeadString(nhline)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 
     except Exception, x:
         g.es( 'exception ' + str( x ))
-    c.endUpdate()
-
-
+    c.redraw() # was c.endUpdate()
+#@nonl
 #@-node:mork.20041010095202.1:processDocumentNode
 #@+node:mork.20041025121608:addXSLTNode
 def addXSLTNode (c):
@@ -226,11 +225,11 @@ def addXSLTNode (c):
 </xsl:transform>'''
 
     # tnode = leoNodes.tnode(body,"xslt stylesheet")
-    c.beginUpdate()
+    # c.beginUpdate()
     p2 = pos.insertAfter() # tnode)
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 #@-node:mork.20041025121608:addXSLTNode
 #@+node:mork.20041010110121:addXSLTElement
 def addXSLTElement( c , element):
@@ -292,9 +291,9 @@ def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
     if not styleNodeSelected( c ): return
     pos = stylenodes[ c ]
-    c.beginUpdate()
+    # c.beginUpdate()
     c.selectPosition( pos )
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 
 #@-node:mork.20041010125444:jumpToStyleNode
@@ -513,7 +512,7 @@ def addMenu( tag, keywords ):
     for z in data:
         csv_write.writerow( z )
     cS.seek( 0 )
-    self.c.beginUpdate() 
+    # self.c.beginUpdate() 
     if not save:
         # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
         p2 = pos.insertAfter() #  tnd )
@@ -522,7 +521,7 @@ def addMenu( tag, keywords ):
     else:
         # pos.setTnodeText( cS.getvalue() )
         pos.setBodyString(cS.getvalue())
-    self.c.endUpdate()
+    self.c.redraw() # was self.c.endUpdate()
 
 
 
@@ -594,10 +593,10 @@ def addMenu( tag, keywords ):
 
     # tnd = leoNodes.tnode( "", "New Table" )
     pos = c.currentPosition()
-    c.beginUpdate()
+    # c.beginUpdate()
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
     c.selectPosition( npos )
     viewTable( c , True )
 

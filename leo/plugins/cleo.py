@@ -26,13 +26,8 @@ For full documentation see:
 #@+node:tbrown.20060903121429.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoTkinterTree as leoTkinterTree
-import leo.core.leoEditCommands as leoEditCommands
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-
-import sys
-#@nonl
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
 __version__ = "0.25.1"
@@ -716,34 +711,6 @@ class cleoController:
         return None
     #@nonl
     #@-node:tbrown.20060903121429.37:draw
-    #@+node:tbrown.20060903121429.38:draw_icon Not used
-    if 0:# Not used
-
-        c = self.c
-        print "> Drawing:"
-        print v 
-
-        canvas = c.frame.tree.canvas 
-        #draw_box(v, 'blue', canvas)
-        draw_topT(v,'yellow',canvas)
-
-        if not self.smiley:
-            print "loading image"
-            self.smiley = PhotoImage(file="/tmp/smile.gif")
-        draw_icon(v,self.smiley,canvas)
-        return None 
-
-        def draw_icon (v,img,canvas):
-            print canvas 
-            global images 
-            images[v] = canvas.create_image(v.iconx-9,v.icony,anchor=NW,image=img)
-
-        def draw0 (tag,key):
-            print "> Drawing:"
-            print tag 
-            print key 
-            return None 
-    #@-node:tbrown.20060903121429.38:draw_icon Not used
     #@+node:tbrown.20060903121429.39:draw_box
     def draw_box (self,v,color,canvas):
 
@@ -767,7 +734,7 @@ class cleoController:
         clear = colour == 'background-colour'
 
         if not clear:
-           self.marks.append(canvas.create_line(v.iconx-10,v.icony+8,v.iconx+5,v.icony+8,
+            self.marks.append(canvas.create_line(v.iconx-10,v.icony+8,v.iconx+5,v.icony+8,
                 arrow = "last", fill = colour, width = 4))
     #@nonl
     #@-node:tbrown.20060903121429.40:draw_arrow
@@ -1029,14 +996,14 @@ class cleoController:
         self.c.sortSiblings(cmp=self.pricmp)
 
     def childrenTodo(self):
-        self.c.beginUpdate()
-        try:
-            for p in self.pickleP.children_iter():
-                if self.getat(p.v, 'priority') != 9999: continue
-                self.setat(p.v, 'priority', 19)
-                self.loadIcons(p)
-        finally:
-            self.c.endUpdate()
+        # self.c.beginUpdate()
+        # try:
+        for p in self.pickleP.children_iter():
+            if self.getat(p.v, 'priority') != 9999: continue
+            self.setat(p.v, 'priority', 19)
+            self.loadIcons(p)
+        # finally:
+        self.c.redraw() # was self.c.endUpdate()
 
     def priority_menu(self,parent,p):
 
@@ -1362,14 +1329,14 @@ class cleoController:
 
         # see if this node is a todo
         if stage != 0 and self.getat(p.v, 'priority') in self.todo_priorities:
-            self.c.beginUpdate()
-            try:
-                if p.getParent(): 
-                    self.c.selectPosition(p.getParent())
-                    self.c.expandNode()
-                self.c.selectPosition(p)
-            finally:
-                self.c.endUpdate()
+            # self.c.beginUpdate()
+            # try:
+            if p.getParent(): 
+                self.c.selectPosition(p.getParent())
+                self.c.expandNode()
+            self.c.selectPosition(p)
+            # finally:
+            self.c.redraw() # was self.c.endUpdate()
             return True
 
         for nd in p.children_iter():

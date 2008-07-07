@@ -52,11 +52,11 @@ To install Leo from the .zip file:
     2. Unzip the .zip file and place the unpacked leo folder in 
        the 'Program Files' folder or any convenient location.
 
-After you have installed Leo, you should add the location of your leo/src folder to your python path.
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
 One way to do this is adding something like the following to python/Lib/sitecustomize.py:
 
     import sys
-    sys.path.append(r'<path-to-leo>leo\src')
+    sys.path.append(r'<path-to-leo>leo\core')
 
 Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
 
@@ -96,7 +96,7 @@ b) The OLD way: Download Leo-version-number.zip:
 
 Unzip the contents into the desired directory by double-clicking the downloaded file.
 
-5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/src/leo.py and open
+5) Run Leo by ontrol-clicking on /path_to_unzipped_dir/leo/core/leo.py and open
 with PythonLauncher.
 
 6) It is a good idea to set PythonLauncher as the default program to  

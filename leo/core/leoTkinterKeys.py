@@ -6,7 +6,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import Tkinter as Tk
+# import Tkinter as Tk
 import leo.core.leoKeys as leoKeys
 
 class tkinterKeyHandlerClass (leoKeys.keyHandlerClass):

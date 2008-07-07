@@ -1384,7 +1384,9 @@ class basePosition (object):
         return True
     #@-node:ekr.20080416161551.196:p.isVisible
     #@+node:ekr.20080416161551.197:p.level & simpleLevel
-    def level (p):
+    def level (self):
+
+        p = self
         return p.v and len(p.stack) or 0
 
     simpleLevel = level
@@ -1689,7 +1691,7 @@ class basePosition (object):
 
         #@    @+others
         #@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-        def __init__(self,p,mapping,unique=lambda p1: p1.v.t):
+        def __init__(self,p,mapping,unique=lambda p: p.v.t):
 
             # g.trace('p.unique_tnodes_iter.__init','p',p,)
 

@@ -2966,6 +2966,10 @@
 <v t="ekr.20080624093059.29"><vh>Fixed recent crasher</vh></v>
 <v t="ekr.20080624093059.30"><vh>Fixed encoding problems with paste from clipboard</vh></v>
 <v t="ekr.20080624093059.31"><vh>Changed installer to support leo-as-a-package</vh></v>
+<v t="ekr.20080628062747.69"><vh>Fixed undo problem</vh></v>
+<v t="ekr.20080628062747.70"><vh>Fixed insert-file bug</vh></v>
+<v t="ekr.20080628062747.71"><vh>Fixed script button bug</vh></v>
+<v t="ekr.20080628062747.72"><vh>Fixed dragging bug</vh></v>
 </v>
 <v t="ekr.20080624093059.32"><vh>Features</vh>
 <v t="ekr.20080624093059.33"><vh>Remove useTextWidget option from leoKeys.py</vh></v>
@@ -6716,24 +6720,27 @@ The p.self_and_subtree_iter iterator returns a list of all positions in ``p``'s 
 <t tx="ekr.20040403173920.17">You can use ``c.redraw_now`` to redraw the entire screen immediately::
 
     c.redraw_now()
+    
+However, it is usually better to *request* a redraw to be done later as follows::
 
-However, Leo's code redraws the screen using the following pattern::
+    c.redraw()
+    
+Leo actually redraws the screen in c.outerUpdate, provided that a redraw has been requested.
+Leo will call c.outerUpdate at the end of each script, event handler and Leo command.
+    
+The old (deprecated) way to redraw the screen was with the following pattern::
     
     c.beginUpdate()
     try:
         &lt;&lt; whatever &gt;&gt;
     finally:
         c.endUpdate()
-
-This suppresses redraws inside &lt;&lt;whatever&gt;&gt; that would otherwise be caused by
-``c.endUpdate``. ``c.endUpdate`` takes an optional argument::
-
-    c.endUpdate(flag)
-
-redraws the screen only if flag is True. This is an important pattern. Leo uses
-``c.beginUpdate`` and ``c.endUpdate`` almost everywhere to redraw the screen, so
-provided that &lt;&lt; whatever &gt;&gt; contains no calls to ``c.redraw_now`` this pattern
-insures that at most one redraw occurs.</t>
+        
+This pattern is no longer useful: as of Leo 4.5 b2,
+c.beginUpdate() does nothing,
+c.endUpdate() is equivalent to c.redraw(),
+and c.endUpdate(False) does nothing.
+</t>
 <t tx="ekr.20040403173920.18">Leo dispatches commands using c.doCommand,
 which calls the "command1" and "command2" hook routines for the given label.
 c.doCommand catches all exceptions thrown by the command::
@@ -13325,7 +13332,7 @@ You have two options:
 -   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
 
 -   The cvs repository contains "reference" .leo files.
-    These reference files should containing nothing but ``@thin`` nodes.
+    These reference files should contain nothing but ``@thin`` nodes.
     Reference files will change only when new derived files get added to the project.
 
     **Important**:
@@ -30032,7 +30039,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4.8 final]&lt;/a&gt;</t>
+    Download Leo[4.5 b1]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -30540,13 +30547,10 @@ to be reviewed and merged to trunk.
 -- Ville M. Vainio - vivainio.googlepages.com</t>
 <t tx="ekr.20080611105410.147">@language rest
 </t>
-<t tx="ekr.20080624093059.1">Leo 4.5 beta 1                      June 23, 2008
+<t tx="ekr.20080624093059.1">Leo 4.5 beta 1                      June 28, 2008
 
 Leo 4.5 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5 features three major code revisions and many bug fixes.
-There are no remaining major reorganizations left to do.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
@@ -30935,6 +30939,80 @@ delete-node does not copy node to clipboard:
 | Issue copy-node command followed by delete-node</t>
 <t tx="ekr.20080624093059.52"></t>
 <t tx="ekr.20080624093059.53">These are now treated much like empty @auto nodes</t>
+<t tx="ekr.20080628062747.69">http://groups.google.com/group/leo-editor/browse_thread/thread/794ca596f7c58ae5
+
+The fix was to call c.redraw_now in undo() and redo().  This allows the undo interlock to work.
+</t>
+<t tx="ekr.20080628062747.70">Minor nit - insert-file to load a file into a node, text appears in the
+body pane.  Without doing anything else to the body pane click on
+another node.  Inserted text is lost - body for node is empty.  As long
+as you move the cursor into the body frame and press a key after
+inserting the contents, it's retained.</t>
+<t tx="ekr.20080628062747.71">@nocolor
+
+c.beginUpdate()
+try:
+ add / change icons on some nodes
+ c.setChanged(True)
+finally:
+ c.endUpdate()
+
+seems not to give a redraw *after* a script button is pressed.
+
+It does give one before the action is taken, so pressing the button
+twice shows the change.
+
+EKR: The fix was to mod_scripting.py.
+
+@color</t>
+<t tx="ekr.20080628062747.72">The fix was a major addition to p._adjustPositionBeforeUnlink.
+
+Report:
+
+Run this script:
+
+t = p.insertAfter()
+c.setHeadString(t, 'test node 1')
+t = t.insertAfter()
+c.setHeadString(t, 'test node 2')
+t = t.insertAfter()
+c.setHeadString(t, 'test area')
+for i in range(200):
+   n = t.insertAsLastChild()
+   c.setHeadString(n, str(i))
+   if i == 3: x = n
+
+for i in range(100):
+   n = x.insertAsLastChild()
+   c.setHeadString(n, str(i+500))
+
+t.expand()
+
+It creates an outline, you might need to click on the node from which
+the script was run to see what was added.  It should look like this:
+
+test node 1
+test node 2
+test area
+   1
+   2
+  +3
+   4
+   5
+   etc.
+
+Now, use the mouse to drag test node 1 down to a position after node
+4... for me at least this results in the outline view leaping to the
+bottom of the tree, which it shouldn't do.
+
+Scroll back up to the top, and drag test node 2 down to a position
+after node 4, this time no leap.
+
+It appears that the first time you drag something into the test area it
+reacts as if 3 is expanded and repositions to allow for all those
+actually not visible lines, but the second time you drag something in
+it's ok, as if it has an accurate count on visible lines now.
+</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

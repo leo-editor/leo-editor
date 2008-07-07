@@ -32,23 +32,27 @@ __cvsid__   = "$Id: mod_shadow_core.py,v 1.11 2007/05/29 13:59:04 edream Exp $"
 #@+others
 #@+node:ekr.20060715100156.12:auxilary functions
 #@+others
-#@+node:ekr.20060715100156.13:copy_time
-def copy_time (sourcefilename, targetfilename):
-   """
-   Set the modification time of the targetfile the same
-   as the sourcefilename.
+#@+node:ekr.20080701085405.8:copy_time
+def copy_time(self,sourcefilename,targetfilename):
 
-   Does not work currently, if we can not read or change
-   the modification time.
-   """
-   st = os.stat(sourcefilename)
-   if hasattr(os, 'utime'):
-      os.utime(targetfilename, (st.st_atime, st.st_mtime))
-   elif hasattr(os, 'mtime'):
-      os.mtime(targetfilename, st.st_mtime)
-   else:
-      assert 0, "Sync operation can't work if no modification time can be set"
-#@-node:ekr.20060715100156.13:copy_time
+    """
+    Set the target file's modification time to
+    that of the source file.
+    """
+
+    st = os.stat(sourcefilename)
+
+    # To avoid pychecker/pylint complaints.
+    utime = getattr(os,'utime')
+    mtime = getattr(os,'mtime')
+
+    if utime:
+        utime(targetfilename, (st.st_atime, st.st_mtime))
+    elif mtime:
+        mtime(targetfilename, st.st_mtime)
+    else:
+        assert 0, "Sync operation can't work if no modification time can be set"
+#@-node:ekr.20080701085405.8:copy_time
 #@+node:ekr.20060715100156.14:default_marker_from_extension
 def default_marker_from_extension (filename):
     """

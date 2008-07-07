@@ -664,7 +664,13 @@ headlines of any future node joined to p.v.</p>
 <pre class="literal-block">
 c.redraw_now()
 </pre>
-<p>However, Leo's code redraws the screen using the following pattern:</p>
+<p>However, it is usually better to <em>request</em> a redraw to be done later as follows:</p>
+<pre class="literal-block">
+c.redraw()
+</pre>
+<p>Leo actually redraws the screen in c.outerUpdate, provided that a redraw has been requested.
+Leo will call c.outerUpdate at the end of each script, event handler and Leo command.</p>
+<p>The old (deprecated) way to redraw the screen was with the following pattern:</p>
 <pre class="literal-block">
 c.beginUpdate()
 try:
@@ -672,15 +678,10 @@ try:
 finally:
     c.endUpdate()
 </pre>
-<p>This suppresses redraws inside &lt;&lt;whatever&gt;&gt; that would otherwise be caused by
-<tt class="docutils literal"><span class="pre">c.endUpdate</span></tt>. <tt class="docutils literal"><span class="pre">c.endUpdate</span></tt> takes an optional argument:</p>
-<pre class="literal-block">
-c.endUpdate(flag)
-</pre>
-<p>redraws the screen only if flag is True. This is an important pattern. Leo uses
-<tt class="docutils literal"><span class="pre">c.beginUpdate</span></tt> and <tt class="docutils literal"><span class="pre">c.endUpdate</span></tt> almost everywhere to redraw the screen, so
-provided that &lt;&lt; whatever &gt;&gt; contains no calls to <tt class="docutils literal"><span class="pre">c.redraw_now</span></tt> this pattern
-insures that at most one redraw occurs.</p>
+<p>This pattern is no longer useful: as of Leo 4.5 b2,
+c.beginUpdate() does nothing,
+c.endUpdate() is equivalent to c.redraw(),
+and c.endUpdate(False) does nothing.</p>
 </div>
 <div class="section" id="invoking-commands-from-scripts">
 <h2><a class="toc-backref" href="#id18">Invoking commands from scripts</a></h2>

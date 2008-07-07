@@ -38,7 +38,7 @@ __version__ = "0.8"
 #@<< imports >>
 #@+node:ekr.20040909105522:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoPlugins as leoPlugins
 
 try:
     # From win32 extensions: http://www.python.org/windows/win32/
@@ -91,7 +91,7 @@ def getWordConnection():
     except Exception, err:
         g.es("Failed to connect to Word",color="blue")
         raise
-        return None
+        # return None
 #@nonl
 #@-node:ekr.20041109085615:getWordConnection
 #@+node:EKR.20040517075715.17:doPara

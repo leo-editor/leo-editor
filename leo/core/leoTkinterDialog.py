@@ -210,6 +210,8 @@ class tkinterAboutLeo (leoTkinterDialog):
 
         if g.app.unitTesting: return
 
+        c = self.c
+
         frame = self.frame
         theCopyright = self.copyright ; email = self.email
         url = self.url ; version = self.version
@@ -862,13 +864,13 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            c.beginUpdate()
-            try:
-                c.frame.tree.expandAllAncestors(p)
-                c.selectPosition(p,updateBeadList=True)
-                    # A case could be made for updateBeadList=False
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            c.frame.tree.expandAllAncestors(p)
+            c.selectPosition(p,updateBeadList=True)
+                # A case could be made for updateBeadList=False
+            # finally:
+            c.redraw() # was c.endUpdate()
     #@-node:ekr.20031218072017.3896:go
     #@-others
 #@-node:ekr.20031218072017.3889:class tkinterListboxDialog

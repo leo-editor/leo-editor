@@ -122,8 +122,11 @@ class DateNodes:
     }
 
     # Names of settings that have to be read with getBool()
-    boolean_settings = ["datenodes_month_node_omit_saturdays", "datenodes_month_node_omit_sundays", 
-                        "datenodes_year_node_omit_saturdays", "datenodes_year_node_omit_sundays"]
+    boolean_settings = [
+        "datenodes_month_node_omit_saturdays",
+        "datenodes_month_node_omit_sundays", 
+        "datenodes_year_node_omit_saturdays",
+        "datenodes_year_node_omit_sundays"]
 
     ascii_encoder = codecs.getencoder("ASCII")
 
@@ -170,7 +173,8 @@ class DateNodes:
             ascii_fmt = DateNodes.ascii_encoder(fmt)[0]
         except UnicodeError:
             g.es("datenodes plugin: WARNING: The format string " + fmt + " contains non-ASCII characters.")
-            ascii_fmt = DateNodes.ascii_encoder(fmt, replace)[0]
+            # Bug fix: EKR, on orders from pylint.
+            ascii_fmt = DateNodes.ascii_encoder(fmt,'replace')[0]
 
         return date.strftime(ascii_fmt)
 
@@ -299,12 +303,12 @@ def on_create(tag, keywords):
     if not (c and c.exists):
         return
 
-    try:
-        c.theDateNodesController
+    # Rewrite to eliminate a pylint complaint.
+    if hasattr(c,'theDateNodesController'):
         return
-    except AttributeError:
-        # establish a class instance
-        c.theDateNodesController = instance = DateNodes(c)
+
+    # establish a class instance
+    c.theDateNodesController = instance = DateNodes(c)
 
     #@    << Create the plug-in menu. >>
     #@+node:bobjack.20080615065747.3:<< Create the plug-in menu. >>

@@ -13,7 +13,7 @@ node name rather than the filename. Currently supports only perl and perlpod.
 #@<< imports >>
 #@+node:ekr.20050105150253:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoAtFile as leoAtFile
 import re

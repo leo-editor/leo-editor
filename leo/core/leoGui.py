@@ -333,6 +333,7 @@ class leoGui:
     #@+node:ekr.20061031132907:Events (leoGui)
     def event_generate(self,w,kind,*args,**keys):
         '''Generate an event.'''
+        # g.trace('baseGui','kind',kind,'args,keys',*args,**keys)
         return w.event_generate(kind,*args,**keys)
 
     def eventChar (self,event,c=None):

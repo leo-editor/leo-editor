@@ -34,7 +34,7 @@ in the future.
 #@+node:ekr.20050307134613.1:<< imports >>
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+# import leo.core.leoNodes as leoNodes
 import os.path
 import base64
 
@@ -46,7 +46,7 @@ try:
     importok = True
 except Exception, x:
     g.es( "Cant Import %s" % x )
-    importof = False
+    importok = False
 #@nonl
 #@-node:ekr.20050307134613.1:<< imports >>
 #@nl
@@ -120,7 +120,7 @@ def base64Import( c ):
         ltime = os.path.getmtime( f.name )
         f.close()
         b64_data = base64.encodestring( data )
-        c.beginUpdate()
+        # c.beginUpdate()
         body = '''
             @%s
             size: %s
@@ -136,7 +136,7 @@ def base64Import( c ):
         p = npos.insertAsNthChild(0) # , payload)
         p.setBodyString(b64_data)
         p.setHeadString(pload)
-        c.endUpdate()
+        c.redraw() # was c.endUpdate()
 #@-node:mork.20041020082653:base64Import
 #@+node:ekr.20050307135219.1:init
 def init ():

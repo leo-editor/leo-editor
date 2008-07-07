@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -20,7 +20,7 @@
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
 </v>
-<v t="ekr.20070224123943"><vh>@@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
@@ -199,7 +199,6 @@
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
-</v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
 <v t="ekr.20080605103500.1"><vh>Screen redraw bug</vh></v>
@@ -208,12 +207,26 @@
 <v t="ekr.20080616162655.1"><vh>Vim test</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
 <v t="ekr.20080618093010.1"><vh>Print bindings dicts</vh></v>
-<v t="ekr.20080624141305.1" tnodeList="ekr.20080624141305.1"><vh>@nosent at_ignore_test.txt</vh>
+<v t="ekr.20080624141305.1"><vh>@@nosent at_ignore_test.txt</vh>
 <v t="ekr.20080624141305.2"><vh>ignored</vh>
 <v t="ekr.20080624141305.3"><vh>a</vh></v>
 </v>
 </v>
 <v t="ekr.20080625094025.1"><vh>Drag script</vh></v>
+</v>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080701130406.1"><vh>plugins</vh></v>
+<v t="ekr.20080702113207.1"><vh>demo of pylint bugs</vh>
+<v t="ekr.20080702113207.2"><vh>@thin pylintTest/baseClass.py</vh></v>
+<v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
+<v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
+</v>
+<v t="ekr.20080702193741.1"><vh>@@thin c:\prog\test\shadow_test.py</vh>
+<v t="ekr.20080702193741.3"><vh>spam</vh></v>
+<v t="ekr.20080702193741.4"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20080702193741.2"><vh>@button shadow</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1177,6 +1190,7 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 
+mod_shadow.py
 # active_path.py
 # open_shell.py
 # ipython.py
@@ -1600,5 +1614,108 @@ for i in range(100):
 
 t.expand()
 c.redraw_now()</t>
+<t tx="ekr.20080628094340.1">if 0:
+    # Called when func is **defined**
+    def leo_command(func):
+        g.trace(func.__name__)
+        return func
+else:
+    class leo_command:
+        def __init__(self,func,c=c):
+            self.c = c
+            self.func = func
+            self.name = func.__name__
+            print "registering",self.name
+
+        def __call__(__self,*__args,**__kw):
+            print "before", __self.name
+            try:
+                return __self.func(*__args,**__kw)
+            finally:
+                print "after ", __self.name
+                print 'c',c
+                c.outerUpdate()
+
+
+@leo_command
+def hello():
+    print "Hello, world!"
+
+hello()
+</t>
+<t tx="ekr.20080701101740.1">import locale
+aList = dir(locale)
+# print g.listToString(aList)
+
+print g.getpreferredencoding()
+# import os
+# print dir(os)
+</t>
+<t tx="ekr.20080701130406.1">import glob
+
+aList = glob.glob(r'c:\leo.repo\trunk\leo\plugins\*.py')
+for z in aList:
+    name = g.shortFileName(z)
+    if not name.startswith('_'):
+        print 'echo .'
+        print 'echo',name
+        print 'call pylint.bat core\\%s' % name</t>
+<t tx="ekr.20080702113207.1"></t>
+<t tx="ekr.20080702193741.1">import leo.core.leoGlobals as leoGlobals
+
+@others</t>
+<t tx="ekr.20080702193741.2">"""
+Look for @thin files in the current subtree.
+Convert those thin files into a file with a shadow file,
+if this shadow file does not exist already.
+
+FIXME: the line end convention is currently changed:
+      unix lineendings are converted to DOS lineendings,
+      if files are converted on Windows.
+      Not sure if that is a probem or not.
+"""
+
+import mod_shadow_core, os, shutil
+
+def marker_from_extension(filename):
+    marker = g.comment_delims_from_extension(filename)[0]
+    return marker and marker + '@'
+
+shadow_subdir = c.config.getString("shadow_subdir").strip()
+if not shadow_subdir: assert False,'No shadow_subdir setting'
+prefix = c.config.getString("shadow_prefix")
+
+for p in p.self_and_subtree_iter():
+    h = p.headString().strip()
+    if h.startswith("@thin"):
+        start = h.find("@thin") + len("@thin")
+        leofiledir = os.path.split(c.mFileName)[0]
+        filename = h[start:].strip()
+        fullfilename = os.path.join(leofiledir, filename)
+        theDir = os.path.split(fullfilename)[0]
+        leoFolder = os.path.join(leofiledir, theDir, shadow_subdir)
+        if not os.path.exists(leoFolder):
+           os.mkdir(leoFolder)
+           assert os.path.exists(leoFolder)
+        else:
+           assert os.path.isdir(leoFolder)
+        junk, name = os.path.split(filename)
+        newname = os.path.join(leoFolder, prefix + name)
+        if os.path.exists(newname):
+            continue
+        g.es( "renaming %s to %s" % (filename, newname))
+        shutil.copy2(fullfilename, newname)
+        os.unlink(fullfilename)
+        f = file(fullfilename, "w")
+        f.close()
+        mod_shadow_core.copy_file_removing_sentinels(
+            sourcefilename=newname,
+            targetfilename=fullfilename,
+            marker_from_extension = marker_from_extension)
+        g.es("File %s is now shadowed" % filename)</t>
+<t tx="ekr.20080702193741.3">def spam():
+    g.trace()</t>
+<t tx="ekr.20080702193741.4">def eggs():
+    g.trace()</t>
 </tnodes>
 </leo_file>

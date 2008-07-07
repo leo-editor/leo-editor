@@ -111,26 +111,33 @@ class undoer:
         # Set the following ivars to keep pychecker happy.
         self.afterTree = None
         self.beforeTree = None
+        self.children = None
         self.dirtyVnodeList = None
+        self.followingSibs = None
         self.kind = None
         self.newBack = None
         self.newBody = None
+        self.newChildren = None
         self.newHead = None
         self.newMarked = None
         self.newN = None
         self.newP = None
         self.newParent = None
+        self.newParent_v = None
         self.newRecentFiles = None
         self.newTree = None
         self.oldBack = None
         self.oldBody = None
+        self.oldChildren = None
         self.oldHead = None
         self.oldMarked = None
         self.oldN = None
         self.oldParent = None
+        self.oldParent_v = None
         self.oldRecentFiles = None
         self.oldTree = None
         self.pasteAsClone = None
+        self.sortChildren = None
 
     def redoHelper(self):
         pass
@@ -174,7 +181,6 @@ class undoer:
     def dumpBead (self,n):
 
         u = self
-
         if n < 0 or n >= len(u.beads):
             return 'no bead: n = ',n
 
@@ -187,38 +193,12 @@ class undoer:
 
     def dumpTopBead(self):
 
+        u = self
         n = len(u.beads)
         if n > 0:
-            return dumpBead(n-1)
+            return self.dumpBead(n-1)
         else:
             return '<no top bead>'
-
-    #@+at 
-    #@nonl
-    # self.afterTree = None
-    #     self.beforeTree = None
-    #     self.dirtyVnodeList = None
-    #     self.kind = None
-    #     self.newBack = None
-    #     self.newBody = None
-    #     self.newHead = None
-    #     self.newMarked = None
-    #     self.newN = None
-    #     self.newP = None
-    #     self.newParent = None
-    #     self.newRecentFiles = None
-    #     self.newTree = None
-    #     self.oldBack = None
-    #     self.oldBody = None
-    #     self.oldHead = None
-    #     self.oldMarked = None
-    #     self.oldN = None
-    #     self.oldParent = None
-    #     self.oldRecentFiles = None
-    #     self.oldTree = None
-    #     self.pasteAsClone = None
-    #@-at
-    #@nonl
     #@-node:ekr.20080623083646.10:dumpBead
     #@+node:EKR.20040526150818:getBead
     def getBead (self,n):
@@ -1439,27 +1419,27 @@ class undoer:
         u.redoing = True 
         u.groupCount = 0
 
-        c.beginUpdate()
-        try:
-            c.endEditing()
-            if u.redoHelper: u.redoHelper()
-            else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-        finally:
-            c.frame.body.updateEditors() # New in Leo 4.4.8.
-            if 0: # Don't do this: it interferes with selection ranges.
-                # This strange code forces a recomputation of the root position.
-                c.selectPosition(c.currentPosition())
-            else:
-                c.setCurrentPosition(c.currentPosition())
-            c.setChanged(True)
-            c.endUpdate()
-            # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-            c.redraw_now()
-            c.recolor_now()
-            c.bodyWantsFocusNow()
-            u.redoing = False
-            u.bead += 1
-            u.setUndoTypes()
+        # c.beginUpdate()
+        # try:
+        c.endEditing()
+        if u.redoHelper: u.redoHelper()
+        else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+        # finally:
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.redraw() # was c.endUpdate()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.redoing = False
+        u.bead += 1
+        u.setUndoTypes()
     #@nonl
     #@+node:ekr.20050424170219:redoClearRecentFiles
     def redoClearRecentFiles (self):
@@ -1538,17 +1518,17 @@ class undoer:
         if not hasattr(bunch,'items'):
             g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
         else:
-            c.beginUpdate()
-            try:
-                for z in bunch.items:
-                    self.setIvarsFromBunch(z)
-                    if z.redoHelper:
-                        # g.trace(z.redoHelper)
-                        z.redoHelper() ; count += 1
-                    else:
-                        g.trace('oops: no redo helper for %s' % u.undoType)
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            for z in bunch.items:
+                self.setIvarsFromBunch(z)
+                if z.redoHelper:
+                    # g.trace(z.redoHelper)
+                    z.redoHelper() ; count += 1
+                else:
+                    g.trace('oops: no redo helper for %s' % u.undoType)
+            # finally:
+            # c.endUpdate(False)
 
         u.groupCount -= 1
 
@@ -1767,27 +1747,27 @@ class undoer:
         u.undoing = True
         u.groupCount = 0
 
-        c.beginUpdate()
-        try:
-            c.endEditing()
-            if u.undoHelper: u.undoHelper()
-            else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-        finally:
-            c.frame.body.updateEditors() # New in Leo 4.4.8.
-            if 0: # Don't do this: it interferes with selection ranges.
-                # This strange code forces a recomputation of the root position.
-                c.selectPosition(c.currentPosition())
-            else:
-                c.setCurrentPosition(c.currentPosition())
-            c.setChanged(True)
-            c.endUpdate()
-            # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-            c.redraw_now()
-            c.recolor_now()
-            c.bodyWantsFocusNow()
-            u.undoing = False
-            u.bead -= 1
-            u.setUndoTypes()
+        # c.beginUpdate()
+        # try:
+        c.endEditing()
+        if u.undoHelper: u.undoHelper()
+        else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+        # finally:
+        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        if 0: # Don't do this: it interferes with selection ranges.
+            # This strange code forces a recomputation of the root position.
+            c.selectPosition(c.currentPosition())
+        else:
+            c.setCurrentPosition(c.currentPosition())
+        c.setChanged(True)
+        c.redraw() # was c.endUpdate()
+        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        c.redraw_now()
+        c.recolor_now()
+        c.bodyWantsFocusNow()
+        u.undoing = False
+        u.bead -= 1
+        u.setUndoTypes()
     #@nonl
     #@+node:ekr.20050424170219.1:undoClearRecentFiles
     def undoClearRecentFiles (self):
@@ -1872,17 +1852,17 @@ class undoer:
             # Important bug fix: 9/8/06: reverse the items first.
             reversedItems = bunch.items[:]
             reversedItems.reverse()
-            c.beginUpdate()
-            try:
-                for z in reversedItems:
-                    self.setIvarsFromBunch(z)
-                    # g.trace(z.undoHelper)
-                    if z.undoHelper:
-                        z.undoHelper() ; count += 1
-                    else:
-                        g.trace('oops: no undo helper for %s' % u.undoType)
-            finally:
-                c.endUpdate(False)
+            # c.beginUpdate()
+            # try:
+            for z in reversedItems:
+                self.setIvarsFromBunch(z)
+                # g.trace(z.undoHelper)
+                if z.undoHelper:
+                    z.undoHelper() ; count += 1
+                else:
+                    g.trace('oops: no undo helper for %s' % u.undoType)
+            # finally:
+            # c.endUpdate(False)
 
         u.groupCount -= 1
 

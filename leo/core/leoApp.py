@@ -216,6 +216,8 @@ class LeoApp:
 
         c = frame.c
 
+        c.endEditing() # Commit any open edits.
+
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False

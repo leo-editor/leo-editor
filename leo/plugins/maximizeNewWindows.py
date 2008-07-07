@@ -29,7 +29,7 @@ __version__ = "1.3"
 #@+node:ekr.20070602072200:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import sys
+# import sys
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nonl
