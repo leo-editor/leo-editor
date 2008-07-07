@@ -4885,7 +4885,6 @@ class editFileCommandsClass (baseEditCommandsClass):
         # c.endUpdate(False)
 
         c.redraw_now()
-        ### c.outerUpdate()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
