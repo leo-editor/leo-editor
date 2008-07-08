@@ -2733,8 +2733,10 @@ def doHook(tag,*args,**keywords):
 #@+node:ekr.20031218072017.1318:g.plugin_signon
 def plugin_signon(module_name,verbose=False):
 
-    # The things we do to keep pychecker happy... 
-    m = g.Bunch(__name__='',__version__='')
+    # To keep pylint happy.
+    m = g.Bunch()
+    m.__name__=''
+    m.__version__=''
 
     exec("import %s ; m = %s" % (module_name,module_name))
 

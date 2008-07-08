@@ -414,10 +414,11 @@ class colorizer:
 
         if w is None:
             self.w = c.frame.body.bodyCtrl
-            try:
-                self.Tk_Text = g.app.gui.Tk_Text
+            # Use hasattr/getattr to keep pylint happy.
+            if hasattr(g.app.gui,'Tk_Text'):
+                self.Tk_Text = getattr(g.app.gui,'Tk_Text')
                 self.fake = True
-            except AttributeError:
+            else:
                 self.Tk_Text = Tk.Text
         else:
             self.w = w

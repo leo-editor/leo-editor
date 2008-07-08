@@ -102,6 +102,8 @@ class leoGui:
         self.plainTextWidget = None
         self.trace = False
 
+        # To keep pylint happy.
+        self.ScriptingControllerClass = nullScriptingControllerClass
     #@-node:ekr.20031218072017.3722: leoGui.__init__
     #@+node:ekr.20061109211054:leoGui.mustBeDefinedOnlyInBaseClass
     mustBeDefinedOnlyInBaseClass = (
@@ -268,6 +270,10 @@ class leoGui:
         self.oops()
     #@-node:ekr.20031218072017.3731:app.gui file dialogs
     #@+node:ekr.20031218072017.3732:app.gui panels
+    def createColorPanel(self,c):
+        """Create a color panel"""
+        self.oops()
+
     def createComparePanel(self,c):
         """Create Compare panel."""
         self.oops()
@@ -278,6 +284,10 @@ class leoGui:
 
     def createFindTab (self,c,parentFrame):
         """Create a Tkinter find tab in the indicated frame."""
+        self.oops()
+
+    def createFontPanel (self,c):
+        """Create a hidden Font panel."""
         self.oops()
 
     def createLeoFrame(self,title):
@@ -625,6 +635,23 @@ class nullGui(leoGui):
     #@-node:ekr.20031218072017.3747:simulateDialog
     #@-others
 #@-node:ekr.20031218072017.2223:class nullGui (leoGui)
+#@+node:ekr.20080707150137.5:class nullScriptingControllerClass
+class nullScriptingControllerClass:
+
+    '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
+
+    This keeps pylint happy.'''
+
+    def __init__ (self,c,iconBar=None):
+
+        self.c = c
+        self.iconBar = iconBar
+
+    def createAllButtons(self):
+
+        pass
+
+#@-node:ekr.20080707150137.5:class nullScriptingControllerClass
 #@+node:ekr.20031218072017.3742:class unitTestGui (nullGui)
 class unitTestGui(nullGui):
 
