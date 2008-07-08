@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,7 +28,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080529111617.1"><vh>plugins</vh>
+<v t="ekr.20080529111617.1" a="E"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -1192,7 +1192,7 @@ mod_shadow.py
 # active_path.py
 # open_shell.py
 # ipython.py
-cleo.py
+# cleo.py
 rClick.py
 toolbar.py
 

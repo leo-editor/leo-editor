@@ -6700,7 +6700,7 @@ implementing a new feature.
 #@-node:ekr.20071001052501:Versioning for nodes
 #@+node:ekr.20070220082124:Make sure Leo can generate Latex
 #@-node:ekr.20070220082124:Make sure Leo can generate Latex
-#@+node:ekr.20070521105645:Improve api docs with epidoc?
+#@+node:ekr.20070521105645:Improve api docs with epydoc?
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=4319363
 By: ktenney
@@ -6711,7 +6711,7 @@ I'm not sure of the best way to do that.
 
 Epydoc seems to be the most active project in this realm.
 http://epydoc.sourceforge.net/epydoc.html
-#@-node:ekr.20070521105645:Improve api docs with epidoc?
+#@-node:ekr.20070521105645:Improve api docs with epydoc?
 #@+node:ekr.20061116054917.6:Remove blanks in calltips
 #@-node:ekr.20061116054917.6:Remove blanks in calltips
 #@+node:ekr.20071004120359.2:Do expand-region-abbrevs from

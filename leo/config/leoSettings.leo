@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,9,1"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -92,7 +92,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -358,7 +358,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007" annotate="7d71002e"><vh>Fonts</vh>
+<v t="ekr.20041213105007" a="E" annotate="7d71002e"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -1411,22 +1411,6 @@
 <v t="TL.20080622104320.128"><vh>@mode vi-match</vh></v>
 <v t="TL.20080622104320.129"><vh>@mode vim-window-commands</vh></v>
 </v>
-</v>
-<v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
-<v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
-<v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
-<v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
-<v t="ekr.20080705064822.4"><vh>@data forth-delimiter-pairs</vh></v>
-<v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
-<v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
-<v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
 </v>
 </vnodes>
 <tnodes>
