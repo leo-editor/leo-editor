@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -222,7 +222,15 @@
 <v t="ekr.20080702193741.3"><vh>spam</vh></v>
 <v t="ekr.20080702193741.4"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20080702193741.2"><vh>@button shadow</vh></v>
+<v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
+<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.2" a="E"><vh>Data for @show tests</vh>
+<v t="ekr.20080708103735.3"><vh>old_private</vh></v>
+<v t="ekr.20080708103735.5"><vh>new_public</vh></v>
+<v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
+</v>
+<v t="ekr.20080708103735.6"><vh>@test basic replacement test</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1714,5 +1722,50 @@ for p in p.self_and_subtree_iter():
     g.trace()</t>
 <t tx="ekr.20080702193741.4">def eggs():
     g.trace()</t>
+<t tx="ekr.20080708103735.1">@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+</t>
+<t tx="ekr.20080708103735.2"></t>
+<t tx="ekr.20080708103735.3">#@string1
+line 1
+line 2
+</t>
+<t tx="ekr.20080708103735.4">#@string1
+xxx
+</t>
+<t tx="ekr.20080708103735.5">xxx
+</t>
+<t tx="ekr.20080708103735.6">import leo.core.leoShadow as leoShadow
+
+def get_lines(headline):
+    p = g.findNodeAnywhere(c, headline)
+    s = p.bodyString()    
+    return g.splitLines(s)
+
+old_private_lines       = get_lines ('old_private')
+new_public_lines        = get_lines ('new_public')
+expected_private_lines  = get_lines ('expected_after_private')
+
+assert old_private_lines
+assert new_public_lines
+assert expected_private_lines
+
+x = leoShadow.shadowController(c)
+
+x.test_propagate_changes (
+    old_private_lines,      # before_with_sentinels_lines,
+    new_public_lines,       # changed_without_sentinels_lines,
+    expected_private_lines, # after_with_sentinel_lines,
+    marker="#@")
+</t>
 </tnodes>
 </leo_file>
