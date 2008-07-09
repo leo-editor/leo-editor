@@ -330,7 +330,7 @@ class shadowController:
            if tag == 'insert' and limit >= old_private_lines_rdr.size():
                pass
            else:
-               self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+               self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
 
            if tag == 'equal':
                # Copy all lines (including sentinels) from the old private file to the new private file.
