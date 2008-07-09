@@ -158,7 +158,7 @@ class shadowController:
                lines1_message = "old sentinels",
                lines2_message = "new sentinels")
 
-       if ok: g.trace("success!")
+       # if ok: g.trace("success!")
    #@+node:ekr.20080708094444.33:show_error
    def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
@@ -198,7 +198,7 @@ class shadowController:
                writer.put(line)
    #@-node:ekr.20080708094444.37:copy_sentinels
    #@+node:ekr.20080708094444.38:propagate_changed_lines
-   def propagate_changed_lines(self,new_public_lines,old_private_lines,marker):
+   def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
        '''Propagate changes from 'new_public_lines' to 'old_private_lines.
 
@@ -215,16 +215,6 @@ class shadowController:
        # mapping tells which line of old_private_lines each line of old_public_lines comes from.
        old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
-       # if trace and verbose:
-           # print 'mapping',mapping
-           # print 'old_public_lines...'
-           # for z in old_public_lines:
-               # print z,
-           # print '(end)'
-           # print 'new_public_lines...'
-           # for z in new_public_lines:
-               # print z,
-           # print '(end)'
        #@    << init vars >>
        #@+node:ekr.20080708094444.40:<< init vars >>
        new_private_lines_wtr = sourcewriter()
@@ -252,7 +242,7 @@ class shadowController:
 
            sep1 = '=' * 10 ; sep2 = '-' * 20
 
-           print ; print sep1,message,sep1
+           print ; print sep1,message,sep1,p and p.headString()
 
            print ; print '%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j)
 
@@ -576,7 +566,9 @@ class shadowController:
        old_private_lines,      # with_sentinels
        new_public_lines,       # without sentinels
        expected_private_lines, # with sentinels
-       marker):
+       marker,
+       p = None
+   ):
 
        '''Check that propagate changed lines changes 'before_private_lines' to
        'expected_private_lines' based on changes to 'changed_public_lines'.'''
@@ -584,7 +576,8 @@ class shadowController:
        results = self.propagate_changed_lines(
            new_public_lines,   # new_lines_without_sentinels
            old_private_lines,  # lines_with_sentinels, 
-           marker = marker)
+           marker = marker,
+           p = p)
 
        assert results == expected_private_lines, 'results: %s\n\nexpected_private_lines: %s' % (
            results,expected_private_lines)
@@ -604,13 +597,14 @@ class shadowController:
 
        #@    @+others
        #@+node:ekr.20080709062932.13:__init__
-       def __init__ (self,c,p):
+       def __init__ (self,c,p,shadowController):
 
             # Init the base class.
            unittest.TestCase.__init__(self)
 
            self.c = c
            self.p = p.copy()
+           self.shadowController=shadowController
        #@-node:ekr.20080709062932.13:__init__
        #@+node:ekr.20080709062932.14: fail
        def fail (self,msg=None):
@@ -647,18 +641,17 @@ class shadowController:
        #@+node:ekr.20080709062932.17:runTest
        def runTest (self,define_g = True):
 
-           import leo.core.leoShadow as leoShadow
+           x = self.shadowController
 
-
-           x = leoShadow.shadowController(self.c)
-
-           ok = x.test_propagate_changes (
+           self.ok = x.test_propagate_changes (
                self.old_private_lines,
                self.new_public_lines,
                self.expected_private_lines,
                marker="#@")
 
-           assert ok
+           assert self.ok
+
+           return self.ok
        #@-node:ekr.20080709062932.17:runTest
        #@+node:ekr.20080709062932.18:shortDescription
        def shortDescription (self):
@@ -678,13 +671,23 @@ class shadowController:
 
        #@    @+others
        #@+node:ekr.20080709062932.6:__init__
-       def __init__ (self,c,p):
+       def __init__ (self,c,p,shadowController):
 
             # Init the base class.
            unittest.TestCase.__init__(self)
 
            self.c = c
            self.p = p.copy()
+           self.shadowController=shadowController
+
+           # Hard value for now.
+           self.marker = '#@'
+
+           # For teardown...
+           self.ok = True
+
+           # Debugging
+           self.trace = True
        #@-node:ekr.20080709062932.6:__init__
        #@+node:ekr.20080709062932.7: fail
        def fail (self,msg=None):
@@ -698,39 +701,112 @@ class shadowController:
 
            g.app.unitTestDict["fail"] = g.callers()
        #@-node:ekr.20080709062932.7: fail
-       #@+node:ekr.20080709062932.8:setUp
-       def findNode(self,c,p,headline):
-           p = g.findNodeAnywhere(c, headline)
-           assert(p)
-
+       #@+node:ekr.20080709062932.8:setUp & helpers
        def setUp (self):
 
-           c = self.c ; p = self.p
-           # c.selectPosition(p)
+           c = self.c ; p = self.p ; x = self.shadowController
 
-           self.old_node = self.findNode (c,p,'old')
-           self.new_node = self.findNode (c,p,'new')
-       #@-node:ekr.20080709062932.8:setUp
+           old = self.findNode (c,p,'old')
+           new = self.findNode (c,p,'new')
+
+           self.old_private_lines = self.makePrivateLines(old)
+           self.new_private_lines = self.makePrivateLines(new)
+
+           self.old_public_lines = self.makePublicLines(self.old_private_lines)
+           self.new_public_lines = self.makePublicLines(self.new_private_lines)
+
+           # We must change node:new to node:old
+           self.expected_private_lines = self.mungePrivateLines(self.new_private_lines,'node:new','node:old')
+
+       #@+node:ekr.20080709062932.19:findNode
+       def findNode(self,c,p,headline):
+           p = g.findNodeInTree(c,p,headline)
+           if not p:
+               g.es_print('can not find',headline)
+               assert False
+           return p
+       #@nonl
+       #@-node:ekr.20080709062932.19:findNode
+       #@+node:ekr.20080709062932.20:createSentinelNode
+       def createSentinelNode (self,root,p):
+
+           '''Write p's tree to a string, as if to a file.'''
+
+           h = p.headString()
+           p2 = root.insertAsLastChild()
+           p2.setHeadString(h + '-sentinels')
+           return p2
+
+       #@-node:ekr.20080709062932.20:createSentinelNode
+       #@+node:ekr.20080709062932.21:makePrivateLines
+       def makePrivateLines (self,p):
+
+           c = self.c ; at = c.atFileCommands
+
+           at.write (p,
+               nosentinels = False,
+               thinFile = False,  # Debatable.
+               scriptWrite = True,
+               toString = True,
+               write_strips_blank_lines = None,)
+
+           s = at.stringOutput
+
+           # g.trace(p.headString(),'\n',s)
+
+           return g.splitLines(s)
+       #@-node:ekr.20080709062932.21:makePrivateLines
+       #@+node:ekr.20080709062932.22:makePublicLines
+       def makePublicLines (self,lines):
+
+           x = self.shadowController
+
+           lines,mapping = x.strip_sentinels_with_map(lines,self.marker)
+
+           # g.trace(lines)
+
+           return lines
+       #@-node:ekr.20080709062932.22:makePublicLines
+       #@+node:ekr.20080709062932.23:mungePrivateLines
+       def mungePrivateLines (self,lines,find,replace):
+
+           x = self.shadowController
+
+           results = []
+           for line in lines:
+               if x.is_sentinel(line,self.marker):
+                   new_line = line.replace(find,replace)
+                   results.append(new_line)
+                   # if line != new_line: g.trace(new_line)
+               else:
+                   results.append(line)
+
+           return results
+       #@-node:ekr.20080709062932.23:mungePrivateLines
+       #@-node:ekr.20080709062932.8:setUp & helpers
        #@+node:ekr.20080709062932.9:tearDown
        def tearDown (self):
 
            pass
+
+           # No change is made to the outline.
+           # self.c.redraw()
        #@-node:ekr.20080709062932.9:tearDown
        #@+node:ekr.20080709062932.10:runTest
        def runTest (self,define_g = True):
 
-           import leo.core.leoShadow as leoShadow
+           x = self.shadowController
 
+           self.ok = x.test_propagate_changes (
+                   old_private_lines = self.old_private_lines,
+                   new_public_lines = self.new_public_lines,
+                   expected_private_lines = self.expected_private_lines,
+                   marker="#@",
+                   p = self.p)
 
-           x = leoShadow.shadowController(self.c)
+           assert self.ok
 
-           ok = x.test_propagate_changes (
-               self.old_private_lines,
-               self.new_public_lines,
-               self.expected_private_lines,
-               marker="#@")
-
-           assert ok
+           return self.ok
        #@-node:ekr.20080709062932.10:runTest
        #@+node:ekr.20080709062932.11:shortDescription
        def shortDescription (self):

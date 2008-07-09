@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -226,10 +226,34 @@
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
-<v t="ekr.20080709112843.1"><vh>@shadow-raw-test first test</vh>
+<v t="ekr.20080709112843.1"><vh>@@shadow-raw-test first test</vh>
 <v t="ekr.20080708103735.3"><vh>old_private</vh></v>
 <v t="ekr.20080708103735.5"><vh>new_public</vh></v>
 <v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
+</v>
+<v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20080709122414.2"><vh>old</vh></v>
+<v t="ekr.20080709122414.3"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709153206.1"><vh>@shadow-test change first line</vh>
+<v t="ekr.20080709153206.2"><vh>old</vh></v>
+<v t="ekr.20080709153206.3"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709153206.4"><vh>@shadow-test change last line</vh>
+<v t="ekr.20080709153206.5"><vh>old</vh></v>
+<v t="ekr.20080709153206.6"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709153206.11"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20080709153206.12"><vh>old</vh></v>
+<v t="ekr.20080709153206.13"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709153206.7"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20080709153206.8"><vh>old</vh></v>
+<v t="ekr.20080709153206.9"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709153206.14"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20080709153206.15"><vh>old</vh></v>
+<v t="ekr.20080709153206.16"><vh>new</vh></v>
 </v>
 </v>
 </v>
@@ -1758,9 +1782,12 @@ trace = True
 for p in root.children_iter():
     h = p.headString().strip()
     if h.startswith('@shadow-test'):
-        test = atShadowTestCase(c,p)
+        test = x.atShadowTestCase(c,p,x)
     elif h.startswith('@shadow-raw-test'):
-        test = x.atShadowRawTestCase(c,p)
+        test = x.atShadowRawTestCase(c,p,x)
+    else:
+        test = None
+
     if test:
         if trace: print h
         suite.addTest(test)
@@ -1769,5 +1796,44 @@ if suite:
     g.app.scriptDict['suite'] = suite
 </t>
 <t tx="ekr.20080709112843.1"></t>
+<t tx="ekr.20080709122414.1"></t>
+<t tx="ekr.20080709122414.2">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709122414.3">line 1
+line 2 changed
+line 3</t>
+<t tx="ekr.20080709153206.1"></t>
+<t tx="ekr.20080709153206.2">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.3">line 1 changed
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.4"></t>
+<t tx="ekr.20080709153206.5">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.6">line 1
+line 2
+line 3 changed</t>
+<t tx="ekr.20080709153206.7"></t>
+<t tx="ekr.20080709153206.8">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.9">line 1
+line 3</t>
+<t tx="ekr.20080709153206.11"></t>
+<t tx="ekr.20080709153206.12">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.13">line 2
+line 3</t>
+<t tx="ekr.20080709153206.14"></t>
+<t tx="ekr.20080709153206.15">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709153206.16">line 1
+line 2</t>
 </tnodes>
 </leo_file>
