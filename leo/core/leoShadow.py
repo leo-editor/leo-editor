@@ -301,9 +301,7 @@ class shadowController:
            # inserted or
            #    replacement text comes from this reader.
            # 
-           # The highlights of the loop:
-           # 
-           # A. Each time through the loop, we have the following invariants:
+           # Each time through the loop, the following are true:
            # 
            # - old_i is the index into old_public_lines of the start of the 
            # present SequenceMatcher opcode.
@@ -311,15 +309,17 @@ class shadowController:
            # - mapping[old_i] is the index into old_private_lines of the start 
            # of the same opcode.
            # 
-           # B. Step 1 effectively skips (deletes) all previously unwritten 
-           # non-sentinel
-           #    lines in old_private_lines_rdr whose index less than 
-           # mapping[old_i].
+           # At the start of the loop, the call to copy_sentinels effectively 
+           # skips (deletes)
+           # all previously unwritten non-sentinel lines in 
+           # old_private_lines_rdr whose index
+           # less than mapping[old_i].
            # 
-           # C. As a result, Step 2 does not need to delete elements from the
-           #    old_private_lines_rdr explicitly. This explains why the loop 
-           # handles the
-           #    'insert' and 'delete' opcodes in the same way.
+           # As a result, the opcode handlers do not need to delete elements 
+           # from the
+           # old_private_lines_rdr explicitly. This explains why opcode 
+           # handlers for the
+           # 'insert' and 'delete' opcodes are identical.
            #@-at
            #@-node:ekr.20080708192807.2:<< about this loop >>
            #@nl
