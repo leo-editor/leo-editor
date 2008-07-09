@@ -263,6 +263,10 @@ class parserBaseClass:
 
         # __pychecker__ = '--no-argsused' # kind not used.
 
+        trace = False
+
+        if trace: g.trace(p and p.headString(),kind,name,self.c.mFileName)
+
         d = self.parseFont(p)
 
         # Set individual settings.
@@ -272,6 +276,7 @@ class parserBaseClass:
                 name,val = data
                 setKind = key
                 self.set(p,setKind,name,val)
+                if trace and val not in (None,'none','None'): g.trace(key,val)
     #@-node:ekr.20041120094940.4:doFont
     #@+node:ekr.20041120103933:doIf
     def doIf(self,p,kind,name,val):

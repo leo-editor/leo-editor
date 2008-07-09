@@ -109,6 +109,24 @@ def onCreate(tag, keywords):
     search.addWidgets()
 #@nonl
 #@-node:ekr.20040909132007:onCreate
+#@+node:ekr.20080707161756.1:init
+def init():
+
+    g.pdb()
+
+    if not Tk:
+        return False # OK for unit testing.
+
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
+
+    if g.app.gui.guiName() == "tkinter":
+        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
+        g.plugin_signon(__name__)
+        return True
+    else:
+        return False
+#@-node:ekr.20080707161756.1:init
 #@+node:ekr.20040107092135.3:class SearchBox
 class SearchBox:
 
@@ -299,15 +317,5 @@ class QuickFind(leoFind.leoFind):
     #@-others
 #@-node:ekr.20040107092135.6:class QuickFind
 #@-others
-
-if Tk: # OK for unit testing.
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
-        g.plugin_signon(__name__)
-#@nonl
 #@-node:ekr.20040107092135.2:@thin searchbox.py
 #@-leo

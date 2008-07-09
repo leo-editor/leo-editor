@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -26,6 +26,8 @@
 <v t="ekr.20051025091355"><vh>@@button Spell</vh></v>
 <v t="ekr.20051104081502.554"><vh>@@button test @key=alt-shift-ctrl-y</vh></v>
 </v>
+<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
+<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </v>
 <v t="ekr.20080312090030.1"><vh>Commands</vh>
 <v t="ekr.20051104081502.552"><vh>@@command my-command @key = alt-shift-ctrl-z</vh></v>
@@ -803,6 +805,10 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
+<v t="ekr.20080703104536.1"><vh>Other tests</vh>
+<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
+<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+</v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
@@ -975,7 +981,7 @@
 <v t="ekr.20060829092306.1"><vh>erlang</vh></v>
 </v>
 <v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20041107105213.1"><vh>forth</vh></v>
+<v t="ekr.20080707101444.1"><vh>forth</vh></v>
 </v>
 <v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
 <v t="ekr.20040712101754.132"><vh>String bug in html</vh></v>
@@ -2036,7 +2042,7 @@
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
@@ -2154,10 +2160,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
-<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
-<v t="ekr.20080529114722.1"><vh>@button timeit</vh></v>
-<v t="ekr.20080529115911.1"><vh>@button profile</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2393,13 +2395,10 @@ last line 1: two trailing newlines
 </t>
 <t tx="ekr.20040712101754.116">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.117">@language plain
 @comment # /* */
 
@@ -2415,13 +2414,10 @@ continues */
 More plain text.</t>
 <t tx="ekr.20040712101754.118">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.119">@language actionscript
 
 break
@@ -2481,13 +2477,10 @@ _y, _ymouse, _yscale
 and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
 <t tx="ekr.20040712101754.120">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.121">@language c
 @comment /* */
 
@@ -2507,13 +2500,10 @@ finally:
 #include &lt;rlydef.h&gt;</t>
 <t tx="ekr.20040712101754.122">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.123">@language csharp
 @ comment
 @c
@@ -2547,13 +2537,10 @@ where while
 yield</t>
 <t tx="ekr.20040712101754.124">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.125">@language css
 /* New in 4.2. */
 
@@ -2624,13 +2611,10 @@ stress, azimuth, elevation, pitch, richness, volume,
 page-break, page-after, page-inside</t>
 <t tx="ekr.20040712101754.126">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.127">@language cweb
 
 % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
@@ -2660,13 +2644,10 @@ if else, while, do // C keywords.</t>
     /* This is also \LaTeX text */</t>
 <t tx="ekr.20040712101754.129">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.130">@language elisp
 
 ; Maybe...
@@ -2690,13 +2671,10 @@ unless
 when while</t>
 <t tx="ekr.20040712101754.131">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.132">@language html
 
 b = "cd"
@@ -2704,13 +2682,10 @@ d
 </t>
 <t tx="ekr.20040712101754.133">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.134">@language html
 
 &lt;HTML&gt;
@@ -2806,13 +2781,10 @@ HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
 &lt;/HTML&gt;</t>
 <t tx="ekr.20040712101754.135">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.136">@language html
 
 &lt;? xml version="1.0"&gt;
@@ -2821,13 +2793,10 @@ finally:
 &lt;/project&gt;"""</t>
 <t tx="ekr.20040712101754.137">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.138">@language latex
 
 % This is a \LaTeX mode comment.
@@ -2853,13 +2822,10 @@ The following 2-letter words should be colored, regardless of what follows:
 \(abc\)abc\{abc\}abc\@abc</t>
 <t tx="ekr.20040712101754.141">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.142">@language php
 @ doc
 This is a doc part.
@@ -2876,13 +2842,10 @@ __CLASS__
 &lt;?PHP and or array() ?&gt;</t>
 <t tx="ekr.20040712101754.143">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.144">@language html
 
 &lt;?xml version="1.0"?&gt;
@@ -3224,13 +3187,10 @@ finally:
 &lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
 <t tx="ekr.20040712101754.154">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.155">@language plsql
 
 "a string"
@@ -3613,13 +3573,10 @@ write,
 xor</t>
 <t tx="ekr.20040712101754.156">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.157">"""This creates a free-floating copy of v's tree for undo.
 The copied trees must use different tnodes than the original."""
     
@@ -3639,13 +3596,10 @@ def copyTree(self,root):
     return result</t>
 <t tx="ekr.20040712101754.158">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.159">' New in 4.2.
 @language rapidq
 ' a comment.
@@ -3678,13 +3632,10 @@ UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
 WEND,WHILE,WITH,WORD,XOR</t>
 <t tx="ekr.20040712101754.160">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.161">@language rebol
 
 ; a comment
@@ -3753,13 +3704,10 @@ within? word?
 zero?</t>
 <t tx="ekr.20040712101754.162">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.163"># New in 4.2.
 
 @language shell
@@ -3783,13 +3731,10 @@ shift,test,trap,ulimit,
 umask,wait</t>
 <t tx="ekr.20040712101754.164">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.165">@language html
 
 &lt;!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \ --&gt;
@@ -3885,13 +3830,10 @@ finally:
 &lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
 <t tx="ekr.20040712101754.168">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.169"># both color_markup &amp; add_directives plugins must be enabled.
 
 @markup wiki
@@ -3933,13 +3875,10 @@ if 1 and 2:
 print g.app().loadDir</t>
 <t tx="ekr.20040712101754.170">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20040712101754.171"># both color_markup &amp; add_directives plugins must be enabled.
 @markup wiki
 
@@ -3975,13 +3914,9 @@ print g.app().loadDir
 </t>
 <t tx="ekr.20040712101754.172">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
 </t>
 <t tx="ekr.20040712101754.173"># both color_markup &amp; add_directives plugins must be enabled.
 
@@ -4675,7 +4610,6 @@ leoTest.runLeoTest(c,path,verbose=False,full=True)
 <t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.headString()
 
-c.beginUpdate()
 try:
     child = p.firstChild()
     child.initHeadString("@thin bogus")
@@ -4691,7 +4625,8 @@ finally:
         p.clearDirty()
         child.clearDirty()
     finally: pass
-    c.endUpdate()
+
+c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
 <t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
@@ -4865,25 +4800,10 @@ last line</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
 <t tx="ekr.20041107105213">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20041107105213.1">@language forth
-
-\ tiny demo of Leo forth syntax colouring
-\ 
-\ If you've correctly installed the hacked LeoPy.leo, the below you should see:
-\  - the ':' 's' and ';' in blue
-\  - the paren-comment in red
-\  - the string 'some string' in green
-
-: some-forth-word ( x1 x2 -- x3 )
-   s" some string" type cr
-;</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
 
@@ -6612,13 +6532,10 @@ sec line 3
 after</t>
 <t tx="ekr.20050618053006">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20050618053006.1">@language plsql
 
 "a string"
@@ -12785,21 +12702,31 @@ else:
 </t>
 <t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
+trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
+if trace: print '='*20
+if trace: print '1',g.app.gui.get_focus(c)
 tree.editLabel(p)
+if trace: print '2',g.app.gui.get_focus(c)
 w = c.edit_widget(p)
+if trace: print '3',g.app.gui.get_focus(c)
+w2 = g.app.gui.get_focus(c)
+assert w==w2,'w: %s, w2: %s' % (w,w2)
+
 try:
     assert w
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
+    if trace: print 'before',p.headString()
     w.event_generate('&lt;Return&gt;')
+    if trace: print 'after',p.headString()
     assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:
@@ -13122,16 +13049,11 @@ finally:
         c.redraw_now()</t>
 <t tx="ekr.20051109143831"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of typing tests.'</t>
 <t tx="ekr.20051120110335">c.insertHeadline()
@@ -13293,19 +13215,17 @@ for state, ch, keysym, result in table:
     assert val==result,'Expected %s, Got %s' % (result,val)</t>
 <t tx="ekr.20060203201949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+import leo.core.leoTest as leoTest
+u = leoTest.testUtils(c) # This *is* used
 
 c.contractAllHeadlines()
 h = 'All unit tests'
 p = u.findNodeAnywhere(h)
 if p:
-    c.beginUpdate()
-    try:
-        p.expand()
-        g.app.unitTestDict['restoreSelectedNode']=False
-        c.selectPosition(p)
-    finally:
-        c.endUpdate()
+    p.expand()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.selectPosition(p)
+    c.redraw()
         
 print ; print 'End of plugins unit tests'</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
@@ -13594,13 +13514,10 @@ assert s == result
 </t>
 <t tx="ekr.20060829092306">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20060829092306.1">@language erlang
 
 halt()
@@ -13608,13 +13525,10 @@ halt()
 -module()</t>
 <t tx="ekr.20060829092306.2">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20060829092306.3">@ doc part
 @c
 
@@ -13629,13 +13543,10 @@ finally:
 /** @see tag = label */</t>
 <t tx="ekr.20060829092306.4">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20060829092306.5">@language r
 
 x &lt;- rnorm(10) 
@@ -13646,13 +13557,10 @@ def python_funct(uu):
 return uu</t>
 <t tx="ekr.20060829092306.6">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20060829092306.7">@language vbscript
 
 if
@@ -15552,97 +15460,79 @@ last line
 </t>
 <t tx="ekr.20061104172236.1"></t>
 <t tx="ekr.20061104172236.2"># targetWord
-c.beginUpdate()
-try:
-    e = c.editCommands
-    k = c.k ; w = c.frame.body.bodyCtrl
-    w.setInsertPoint(0)
-    k.arg = 't' # 'targetWord'
-    k.setState('find-word',1)
-    for val in (True,False):
-        e.oneLineFlag = val
-        f = e.findWordInLine(event=None)
-        i,j = w.getSelectionRange()
-        assert i == 2, 'expected 2, got' % (i)
-        # s = w.getAllText()
-        # ch = s[i]
-        # assert word == 'targetWord', 'got: %s' % word
-finally:
-    c.endUpdate(False)
-    </t>
+
+e = c.editCommands
+k = c.k ; w = c.frame.body.bodyCtrl
+w.setInsertPoint(0)
+k.arg = 't' # 'targetWord'
+k.setState('find-word',1)
+for val in (True,False):
+    e.oneLineFlag = val
+    f = e.findWordInLine(event=None)
+    i,j = w.getSelectionRange()
+    assert i == 2, 'expected 2, got' % (i)
+    # s = w.getAllText()
+    # ch = s[i]
+    # assert word == 'targetWord', 'got: %s' % word
+
+</t>
 <t tx="ekr.20061104172236.3"># TARGETWORD
 
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    
-    for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-        w.setInsertPoint(5)
-        c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-        s = w.getAllText()
-        word = s[2:12]
-        assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-        i = w.getInsertPoint()
-        assert i == 5, 'Expected 5, got: %d' % i
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.4">c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    ec = c.editCommands
-    
-    for spot,result in (('1.0',0),(5,5)):
-        ec.setMoveCol(w,spot)
-        assert ec.moveSpot == result
-        assert ec.moveCol == result
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.5">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    
-    for i,j,python in (
-        # ('1.0','4.5',False),
-        (5,50,True),
-    ):
-        extend = True
-        ec.moveSpot = None # It's hard to init this properly.
-        ec.extendHelper(w,extend,j)
-        i2,j2 = w.getSelectionRange()
-        # print i2,j2
-        #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
-        #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.6">c.beginUpdate()
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
+w = c.frame.body.bodyCtrl
 
-    for i,j,python in (
-        #('1.0','4.5',False),
-        (5,50,True),
-    ):
-        event = None ; extend = True ; ec.moveSpot = None
-        w.setInsertPoint(i)
-        ec.moveToHelper (event,j,extend)
-        i2,j2 = w.getSelectionRange()
-        assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-        assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-        w.setSelectionRange(0,0,insert=None)
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.7">c.beginUpdate()
-try:
-    ec = c.editCommands
+for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
+    w.setInsertPoint(5)
+    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
+    s = w.getAllText()
+    word = s[2:12]
+    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+    i = w.getInsertPoint()
+    assert i == 5, 'Expected 5, got: %d' % i
+</t>
+<t tx="ekr.20061104172236.4">w = c.frame.body.bodyCtrl
+ec = c.editCommands
 
-    for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-        event = g.Bunch(widget=c.frame.body.bodyCtrl)
-        ec.scrollHelper(event,direction,extend)
+for spot,result in (('1.0',0),(5,5)):
+    ec.setMoveCol(w,spot)
+    assert ec.moveSpot == result
+    assert ec.moveCol == result
+</t>
+<t tx="ekr.20061104172236.5">ec = c.editCommands ; w = c.frame.body.bodyCtrl
 
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.8">c.beginUpdate()
-try:
+for i,j,python in (
+    # ('1.0','4.5',False),
+    (5,50,True),
+):
+    extend = True
+    ec.moveSpot = None # It's hard to init this properly.
+    ec.extendHelper(w,extend,j)
+    i2,j2 = w.getSelectionRange()
+    # print i2,j2
+    #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
+    #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
+</t>
+<t tx="ekr.20061104172236.6">ec = c.editCommands ; w = c.frame.body.bodyCtrl
+
+for i,j,python in (
+    #('1.0','4.5',False),
+    (5,50,True),
+):
+    event = None ; extend = True ; ec.moveSpot = None
+    w.setInsertPoint(i)
+    ec.moveToHelper (event,j,extend)
+    i2,j2 = w.getSelectionRange()
+    assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
+    assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
+    w.setSelectionRange(0,0,insert=None)
+</t>
+<t tx="ekr.20061104172236.7">ec = c.editCommands
+
+for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+    event = g.Bunch(widget=c.frame.body.bodyCtrl)
+    ec.scrollHelper(event,direction,extend)
+
+</t>
+<t tx="ekr.20061104172236.8">try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
     
@@ -15659,9 +15549,7 @@ try:
 finally:
     w.setAllText(s)
     p.setBodyString(s)
-    # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
@@ -15727,7 +15615,7 @@ for i in xrange(len(s)):
     assert(i3==i)
 </t>
 <t tx="ekr.20061104172236.22"># target.
-c.beginUpdate()
+
 try:
     w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -15742,20 +15630,15 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
 
 # end</t>
-<t tx="ekr.20061104172236.23">c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    y = 10
-    for x in xrange(0,100,10):
-        event = g.Bunch(c=c,x=x,y=y,widget=w)
-        c.frame.body.onClick(event)
-finally:
-    c.endUpdate(False)</t>
-<t tx="ekr.20061104172236.24">c.beginUpdate()
-try:
+<t tx="ekr.20061104172236.23">w = c.frame.body.bodyCtrl
+y = 10
+for x in xrange(0,100,10):
+    event = g.Bunch(c=c,x=x,y=y,widget=w)
+    c.frame.body.onClick(event)
+</t>
+<t tx="ekr.20061104172236.24">try:
     k = c.k ; ac = k.autoCompleter
     w = c.frame.body.bodyCtrl
     ac.widget = w
@@ -15769,12 +15652,11 @@ finally:
     w.setAllText(s)
     p.setBodyString(s)
     c.recolor()
-    c.endUpdate(False)
+
 # end:</t>
 <t tx="ekr.20061106112522">w = c.frame.body.bodyCtrl
 s = w.getAllText()
 
-c.beginUpdate()
 try:
     w.setInsertPoint(len(s))
     c.insertBodyTime()
@@ -15782,12 +15664,11 @@ finally:
     w.setAllText(s)
     p.setBodyString(s)
     # c.recolor()
-    c.endUpdate(False)
+
 # end:</t>
 <t tx="ekr.20061106114738">w = c.frame.body.bodyCtrl
 s = w.getAllText()
 
-c.beginUpdate()
 try:
     pattern = '(abc)'
     for index,result in (
@@ -15808,7 +15689,8 @@ finally:
     w.setAllText(s)
     p.setBodyString = s
     c.recolor()
-    c.endUpdate(False)
+
+
 # end:</t>
 <t tx="ekr.20061106184118">&lt;&lt; test defined &gt;&gt;</t>
 <t tx="ekr.20061106184118.1">pass</t>
@@ -15843,37 +15725,32 @@ http://webpages.charter.net/edreamleo/front.html</t>
 <t tx="ekr.20061106201509.6"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    index = 11 # in the second line.
-    w.setInsertPoint(index)
-    before,ins,after = c.frame.body.getInsertLines()
-    assert before == '# line 1\n','Got %s' % repr(before)
-    assert ins    == '# line 2\n','Got %s' % repr(ins)
-    assert after.startswith('# line 3\n')
-    assert after.endswith('# end.')
-finally:
-    c.endUpdate(False)
+
+w = c.frame.body.bodyCtrl
+index = 11 # in the second line.
+w.setInsertPoint(index)
+before,ins,after = c.frame.body.getInsertLines()
+assert before == '# line 1\n','Got %s' % repr(before)
+assert ins    == '# line 2\n','Got %s' % repr(ins)
+assert after.startswith('# line 3\n')
+assert after.endswith('# end.')
+
 # end.</t>
 <t tx="ekr.20061106201509.7"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    start,end = 11,15
-    w.setSelectionRange(start,end)
-    before,ins,after = c.frame.body.getSelectionAreas()
-    assert before == s[0:start],'Got %s' % repr(before)
-    assert ins    == s[start:end],'Got %s' % repr(ins)
-    assert after == s[end:]
-finally:
-    c.endUpdate(False)
+
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+
 # end.</t>
-<t tx="ekr.20061107031449">c.beginUpdate()
-try:
+<t tx="ekr.20061107031449">try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
     w.setSelectionRange(len(s)-9,len(s)-6)
@@ -15885,9 +15762,7 @@ try:
 finally:
     w.setAllText(s)
     p.setBodyString(s)
-    # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
         
 ###abcdef</t>
 <t tx="ekr.20061109172511"></t>
@@ -16004,24 +15879,20 @@ finally:
             except AssertionError:
                 raise
 </t>
-<t tx="ekr.20061110094226">c.beginUpdate()
-try:
+<t tx="ekr.20061110094226">ec = c.editCommands ; w = c.frame.body.bodyCtrl
 
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    
-    for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
-        event = None ; extend = False; ec.moveSpot = None
-        w.setInsertPoint(i)
-        ec.moveUpOrDownHelper (event,direction,extend)
-        i2,j2 = w.getSelectionRange()
-        if 1:
-            break
-        else:
-            assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-            assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-            w.setSelectionRange(0,0,insert=None)
-finally:
-    c.endUpdate(False)</t>
+for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
+    event = None ; extend = False; ec.moveSpot = None
+    w.setInsertPoint(i)
+    ec.moveUpOrDownHelper (event,direction,extend)
+    i2,j2 = w.getSelectionRange()
+    if 1:
+        break
+    else:
+        assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
+        assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
+        w.setSelectionRange(0,0,insert=None)
+</t>
 <t tx="ekr.20061110112507">import mnplugins
 
 w = c.frame.body.bodyCtrl
@@ -16092,29 +15963,20 @@ controller.parameterize()
 </t>
 <t tx="ekr.20061115074956"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of general unit tests'</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoColor tests'</t>
 <t tx="ekr.20061127142311">#ab
@@ -16618,16 +16480,11 @@ p3 = c.currentPosition()
 </t>
 <t tx="ekr.20070306091949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoEditCommands tests.'</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
@@ -16741,7 +16598,6 @@ c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
-c.beginUpdate()
 try:
     # Select the first clone and demote (it should be illegal)
     c.selectPosition(p2)
@@ -16753,7 +16609,7 @@ try:
     while p.hasChildren():
         p.firstChild().doDelete()
 finally:
-    c.endUpdate()
+    c.redraw()
 </t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
@@ -19013,11 +18869,10 @@ g.app.unitTestDict ['expectedMismatchLine'] = 1
 runner.compareHelper(lines1,lines2,i,strict=False)</t>
 <t tx="ekr.20071113145804.4">@language python
 
-c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
-
+    
     # This strings tests unicode, paren matching, and auto-indentation.
     u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
     u = u'(pdq):\n'
@@ -19033,12 +18888,10 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
 
-c.beginUpdate()
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
     s = w.getAllText()
@@ -19053,18 +18906,14 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
+
 ###abcdef</t>
-<t tx="ekr.20071113145804.6">c.beginUpdate()
-try:
-    ec = c.editCommands
+<t tx="ekr.20071113145804.6">ec = c.editCommands
 
-    for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-        event = g.Bunch(widget=c.frame.body.bodyCtrl)
-        ec.scrollHelper(event,direction,extend)
+for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+    event = g.Bunch(widget=c.frame.body.bodyCtrl)
+    ec.scrollHelper(event,direction,extend)
 
-finally:
-    c.endUpdate(False)
 </t>
 <t tx="ekr.20071113145804.7">s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
 s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
@@ -19318,21 +19167,19 @@ assert aList1 == aList2
 <t tx="ekr.20071113145804.32"># line 1
 # line 2
 # line 3
-c.beginUpdate()
-try:
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    start,end = 11,15
-    w.setSelectionRange(start,end)
-    before,ins,after = c.frame.body.getSelectionAreas()
-    assert before == s[0:start],'Got %s' % repr(before)
-    assert ins    == s[start:end],'Got %s' % repr(ins)
-    assert after == s[end:]
-finally:
-    c.endUpdate(False)
+
+w = c.frame.body.bodyCtrl
+s = w.getAllText()
+start,end = 11,15
+w.setSelectionRange(start,end)
+before,ins,after = c.frame.body.getSelectionAreas()
+assert before == s[0:start],'Got %s' % repr(before)
+assert ins    == s[start:end],'Got %s' % repr(ins)
+assert after == s[end:]
+
 # end.</t>
 <t tx="ekr.20071113145804.33"># target
-c.beginUpdate()
+
 try:
     w = c.frame.body.bodyCtrl
     # print (w)
@@ -19350,7 +19197,7 @@ finally:
     p.setBodyString(s)
     # g.trace(repr(s))
     c.recolor()
-    c.endUpdate(False)
+
 # end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
 <t tx="ekr.20071113145804.34">import string
 
@@ -19440,170 +19287,110 @@ This eliminates references to nodes that no longer exist in the present outline.
 <t tx="ekr.20071113200638.8"></t>
 <t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoAtFile tests'</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoCommands tests'</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoConfig tests'</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
-    
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
+  
 print ; print 'End of leoFileCommands tests.'</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of leoFind tests.'</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of leoFrame tests.'</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of leoGlobals tests.'</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of leoGui tests.'</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoImport tests.'</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 # print ; print 'End of leoKeys tests.'</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoNodes tests.'</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c)
 
-c.beginUpdate()
-try:
-    c.contractParent()
-    c.selectPosition(p.parent())
-    g.app.unitTestDict['restoreSelectedNode']=False
-finally:
-    c.endUpdate()
+c.contractParent()
+c.selectPosition(p.parent())
+g.app.unitTestDict['restoreSelectedNode']=False
+c.redraw()
     
 print ; print 'End of leoUndo tests.'</t>
 <t tx="ekr.20071113203234"></t>
@@ -19801,13 +19588,10 @@ config.macros.br.handler = function(place)
 </t>
 <t tx="ekr.20071219170354">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20071219170354.1">@language perl
 
 # From a perl tutorial.
@@ -19865,13 +19649,10 @@ sub inside
 }</t>
 <t tx="ekr.20071219172126">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20071219172126.1">@language lisp
 
 ; Maybe...
@@ -19895,13 +19676,10 @@ unless
 when while</t>
 <t tx="ekr.20071219172615">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20071219172615.1">@language shellscript
 
 # comment
@@ -19987,13 +19765,10 @@ please ask for help on Leo's help forum:
 |back| |leo| |next|</t>
 <t tx="ekr.20071219184852">p = c.currentPosition().firstChild()
 
-c.beginUpdate()
-try:
-    c.selectVnode(p) # Sets body text.
-    val = c.frame.body.colorizer.colorize(p,incremental=False)
-    assert val=="ok", "colorizer test failed: %s" % p.headString()
-finally:
-    c.endUpdate(False)</t>
+c.selectVnode(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.headString()
+</t>
 <t tx="ekr.20080121080011">s = '''\
 """A file consisting only of a docstring.
 """
@@ -20096,20 +19871,18 @@ Important: this may cause crashes on some platforms.</t>
 leoTest.doTests(c, all=True)</t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080405085247.2"></t>
-<t tx="ekr.20080408094623.1"># targetWord
-c.beginUpdate()
-try:
-    e = c.editCommands
-    k = c.k ; w = c.frame.body.bodyCtrl
-    w.setInsertPoint(0)
-    k.arg = 'b' # 'beginUpdate'
-    k.setState('find-word',1)
-    e.oneLineFlag = False
-    f = e.findWord(event=None)
-    i,j = w.getSelectionRange()
-    assert i == 15, 'expected 15, got %s' % (i)
-finally:
-    c.endUpdate(False)
+<t tx="ekr.20080408094623.1"># start
+# targetWord
+
+e = c.editCommands
+k = c.k ; w = c.frame.body.bodyCtrl
+w.setInsertPoint(0)
+k.arg = 't' # 'targetWord'
+k.setState('find-word',1)
+e.oneLineFlag = False
+f = e.findWord(event=None)
+i,j = w.getSelectionRange()
+assert i == 10, 'expected 15, got %s' % (i)
 </t>
 <t tx="ekr.20080418101332.1"></t>
 <t tx="ekr.20080423110627.2">n = 0
@@ -20659,5 +20432,38 @@ assert row == expected_row,fail('row',expected_row,row)
 assert col == expected_col,fail('col',expected_col,col)
 print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
 </t>
+<t tx="ekr.20080703104536.1"></t>
+<t tx="ekr.20080707101444.1">@language forth
+
+\ tiny demo of Leo forth syntax colouring
+
+: some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
+   label: y  \ blue label:
+   asm[ s" some string" type ]asm cr
+   asm[ abc ]asm
+   a
+   s" abc "
+   s" abc"
+   a
+   tty" abc "
+   lcd2" abc "
+   until
+
+@ test
+@c
+
+{ abc }
+
+a b @ c
+
+asm[ abc ]asm
+
+.( ab ) \ a string
+   
+: foo [ .s ] ;
+
+   [ a b c
+   x y z]
+;</t>
 </tnodes>
 </leo_file>

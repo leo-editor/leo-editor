@@ -167,20 +167,20 @@ class paramClass:
 
         bodys = node.bodyString()
         # tn = leoNodes.tnode(bodys,sr)
-        c.beginUpdate()
-        try:
-            v = current.insertAsNthChild(0) #,tn)
-            v.setBodyString(bodys)
-            v.setHeadString(sr)
-            for z in xrange(0,len(sections)):
-                head = g.angleBrackets(str(z+1)+"$")
-                bod = sections [z]
-                # t = leoNodes.tnode(bod,head)
-                v.insertAsNthChild(0) #,t)
-                v.setBodyString(bod)
-                v.setHeadString(head)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        v = current.insertAsNthChild(0) #,tn)
+        v.setBodyString(bodys)
+        v.setHeadString(sr)
+        for z in xrange(0,len(sections)):
+            head = g.angleBrackets(str(z+1)+"$")
+            bod = sections [z]
+            # t = leoNodes.tnode(bod,head)
+            v.insertAsNthChild(0) #,t)
+            v.setBodyString(bod)
+            v.setHeadString(head)
+        # finally:
+        c.redraw() # was c.endUpdate()
     #@nonl
     #@-node:ekr.20040916084945.1:macros.parameterize
     #@+node:ekr.20040916084945.2:findParameters

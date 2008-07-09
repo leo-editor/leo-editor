@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -6720,24 +6720,27 @@ The p.self_and_subtree_iter iterator returns a list of all positions in ``p``'s 
 <t tx="ekr.20040403173920.17">You can use ``c.redraw_now`` to redraw the entire screen immediately::
 
     c.redraw_now()
+    
+However, it is usually better to *request* a redraw to be done later as follows::
 
-However, Leo's code redraws the screen using the following pattern::
+    c.redraw()
+    
+Leo actually redraws the screen in c.outerUpdate, provided that a redraw has been requested.
+Leo will call c.outerUpdate at the end of each script, event handler and Leo command.
+    
+The old (deprecated) way to redraw the screen was with the following pattern::
     
     c.beginUpdate()
     try:
         &lt;&lt; whatever &gt;&gt;
     finally:
         c.endUpdate()
-
-This suppresses redraws inside &lt;&lt;whatever&gt;&gt; that would otherwise be caused by
-``c.endUpdate``. ``c.endUpdate`` takes an optional argument::
-
-    c.endUpdate(flag)
-
-redraws the screen only if flag is True. This is an important pattern. Leo uses
-``c.beginUpdate`` and ``c.endUpdate`` almost everywhere to redraw the screen, so
-provided that &lt;&lt; whatever &gt;&gt; contains no calls to ``c.redraw_now`` this pattern
-insures that at most one redraw occurs.</t>
+        
+This pattern is no longer useful: as of Leo 4.5 b2,
+c.beginUpdate() does nothing,
+c.endUpdate() is equivalent to c.redraw(),
+and c.endUpdate(False) does nothing.
+</t>
 <t tx="ekr.20040403173920.18">Leo dispatches commands using c.doCommand,
 which calls the "command1" and "command2" hook routines for the given label.
 c.doCommand catches all exceptions thrown by the command::
@@ -13329,7 +13332,7 @@ You have two options:
 -   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
 
 -   The cvs repository contains "reference" .leo files.
-    These reference files should containing nothing but ``@thin`` nodes.
+    These reference files should contain nothing but ``@thin`` nodes.
     Reference files will change only when new derived files get added to the project.
 
     **Important**:
@@ -26281,12 +26284,13 @@ The type may be one of the following:
 \@enabled-plugins   Body text contains a list of enabled plugins
 \@font              Body text contains a font description
 \@menus             Child @menu and @item nodes create menus and menu items.
+\@menuat            Child @menu and @item nodes modify menu tree create by \@menus.
 \@mode [name]       Body text contains a list of shortcut specifiers.
 \@recentfiles       Body text contains a list of file paths.
 \@shortcuts         Body text contains a list of shortcut specifies.
 =================== =====================================================================
 
-The actual settings are specified in the body text.  At present, there are seven kinds of complex settings nodes:
+The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:
     
 - ``@buttons``
 
@@ -26358,6 +26362,65 @@ The actual settings are specified in the body text.  At present, there are seven
   ``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
    The children of this node should be @menu and @item nodes, used as with
    @menus.
+   
+- ``@menuat`` *&lt;path&gt;* *&lt;action&gt;* *[&lt;source&gt;]*
+
+  The @menuat setting has 2-3 parameters in its head text, its children are @menu and
+  @item nodes as for the @menu setting.  @menuat modifies the menu tree created by @menus.
+  It is intended to be used in myLeoSettings.leo to modify the menu tree created in
+  leoSettings.leo.  This allows you to change the menus without having to re-create the
+  entire menu tree from leoSettings.leo, and ensures you don't miss out when new things are
+  added in the @menus in leoSettings.leo, as you would if you replaced the @menus in
+  leoSettings.leo with one in myLeoSettings.leo.  @menuat should occur in a @settings tree,
+  but not as a descendant of a @menus tree.  There is an example of the use of the
+  @menuat setting in the file .../leo/core/test/menuAtTest.leo.
+  
+  - path
+  
+    This specifies a target location in the menu tree as defined by @menus and modified
+    by earlier @menuat settings.  The path takes the form /entry1/entry2/entry3 where
+    each entry is the name of a menu or item with all text except a-z and 0-9 removed.
+    Upper case letters are converted to lower case.  So for example to use the 
+    `Outline-&gt;Move-&gt;Move Down` menu item as a target, you would specify a path as
+    `/outline/move/movedown`.
+    
+  - action
+  
+    There are 5 available actions:
+    
+    - before
+    
+      The supplied items and sub menus will be inserted immediately before the target
+      menu or item.
+
+    - after
+    
+      The supplied items and sub menus will be inserted immediately after the target
+      menu or item.
+
+    - append
+    
+      The supplied items and sub menus will be appended at the end of the menu
+      containing the target menu or item.
+    
+    - cut
+    
+      The target menu or item will be removed from the menu tree and saved to
+      an internal clipboard.  This can be used for deleting menus or items.
+      Descendants of the @menuat setting are ignored.
+    
+    - copy
+    
+      The target menu or item will be copied and saved to
+      an internal clipboard.  Descendants of the @menuat setting are ignored.
+    
+  - source
+    
+    By default the before, after, and append actions insert the menus and items
+    supplied as descendants of the @menuat setting.  If you specify
+    "clipboard" (without the quotes) as the source, the contents of the clipboard
+    from a previous cut or copy action will be used instead.  This parameter is optional
+    and can be left blank.
 
 - ``@mode`` *&lt;mode name&gt;*
 
@@ -30036,7 +30099,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.4 beta 1]&lt;/a&gt;</t>
+    Download Leo[4.5 b1]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in

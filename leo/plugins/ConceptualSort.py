@@ -236,22 +236,22 @@ def getConcept( c ):
 #@+node:ekr.20040916074337.5:move
 def move( c, children , parent):
 
-    c.beginUpdate()
+    # c.beginUpdate()
     for n, ch in enumerate( children ):
         ch.moveToNthChildOf( parent, n )
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 #@-node:ekr.20040916074337.5:move
 #@+node:ekr.20040916074337.6:move2
 def move2( c, children , oroot):
 
-    c.beginUpdate()
+    # c.beginUpdate()
     children[ 0 ].moveToRoot( oroot )
     z1 = children[ 0 ]
     for z in children[ 1: ]:
         z.moveAfter( z1 )
         z1 = z
-    c.endUpdate()
+    c.redraw() # was c.endUpdate()
 
 #@-node:ekr.20040916074337.6:move2
 #@+node:ekr.20040916074337.7:buildAttList

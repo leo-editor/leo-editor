@@ -85,13 +85,16 @@ class tkFindTab (leoFind.findTab):
 
     #@    @+others
     #@+node:ekr.20061212085958.1: Birth
-    if 0: # We can use the base-class ctor.
+    #@+node:ekr.20080707150137.4: ctor (tkFindTab)
+    if 0: # Use the base class ctor.
 
         def __init__ (self,c,parentFrame):
 
             leoFind.findTab.__init__(self,c,parentFrame)
                 # Init the base class.
                 # Calls initGui, createFrame, createBindings & init(c), in that order.
+
+    #@-node:ekr.20080707150137.4: ctor (tkFindTab)
     #@+node:ekr.20051020120306.12:initGui
     def initGui (self):
 
@@ -462,6 +465,7 @@ class tkSpellTab:
         self.createFrame()
         self.createBindings()
         self.fillbox([])
+        self.positionList = []
     #@-node:ekr.20070212132230.1:tkSpellTab.__init__
     #@+node:ekr.20051025120920:createBindings
     def createBindings (self):

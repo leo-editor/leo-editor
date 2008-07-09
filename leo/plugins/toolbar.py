@@ -227,7 +227,7 @@ See the compound widgets and drag handles howto in test/testToolbar.leo
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.11"
+__version__ = "0.12" # EKR
 __plugin_name__ = 'Toolbar Manager'
 __plugin_id__ = 'Toolbar'
 
@@ -270,9 +270,8 @@ controllers = {}
 #       creating compound widgets for the iconbars easier.
 # 0.11 bobjack:
 #     - use baseclasses in rclickPluginBaseClasses
-# 
-# 
-# 
+# 0.12 EKR: add 'font' to list of allowed keys so that font settings are 
+# honored.
 #@-at
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
@@ -338,7 +337,7 @@ requiredIvars = (
 #@-node:bobjack.20080424195922.85:<< required ivars >>
 #@nl
 
-allowedButtonConfigItems = ('image', 'bg', 'fg', 'justify', 'padx', 'pady', 'relief', 'text', 'command', 'state')
+allowedButtonConfigItems = ('image', 'bg', 'fg', 'font','justify', 'padx', 'pady', 'relief', 'text', 'command', 'state')
 iconBasePath  = g.os_path_join(g.app.leoDir, 'Icons')
 
 
@@ -823,15 +822,16 @@ class ToolbarIconButton(Tk.Button, object):
         #@nl
         #@    << setup font >>
         #@+node:bobjack.20080506182829.33:<< setup font >>
-
         if not hasattr(self, 'font'):
             self.font = None
 
-        self.font = keys.get('font') or self.font or \
+        self.font = (
+            keys.get('font') or
+            self.font or
             self.c.config.getFontFromParams(
                 "button_text_font_family", "button_text_font_size",
                 "button_text_font_slant",  "button_text_font_weight",
-            )
+            ))
 
         keys['font'] = self.font
         #@-node:bobjack.20080506182829.33:<< setup font >>
@@ -917,8 +917,6 @@ class ToolbarIconButton(Tk.Button, object):
 
         if keys is None:
             keys = self.keys
-
-        #print 'Items sent to Tk.Button'
 
         haveKeys = set(keys.keys())
         allowedKeys = set(allowedButtonConfigItems)

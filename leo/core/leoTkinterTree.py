@@ -18,10 +18,8 @@ The code is based on code found in Python's IDLE program.'''
 # 
 # - c.redraw_now() redraws the screen immediately by calling 
 # c.frame.tree.redraw_now().
-# 
 # - c.beginUpdate() and c.endUpdate() work as always.  They are the preferred 
 # way of doing redraws.
-# 
 # - No drawing is done at idle time.
 # 
 # c.redraw_now and c.endUpdate redraw all icons automatically. v.computeIcon
@@ -30,6 +28,17 @@ The code is based on code found in Python's IDLE program.'''
 # is. The body key handler simply compares these two values and sets 
 # redraw_flag
 # if they don't match.
+# 
+# New in Leo 4.5: The 'Newest World Order':
+# 
+# - Redrawing the screen and setting focus only happen in c.outerUpdate.
+# - c.redraw only requests a redraw.
+# - c.redraw_now is equivalent to c.redraw() followed by c.outerUpdate.
+# - c.beginUpdate does nothing.  c.endUpdate(False) does nothing.
+# - c.endUpdate() is equivalent to c.redraw()
+# - There is no longer any need to ensure c.endUpdate is called for every 
+# c.beginUpdate.
+#   Thus, there is no need for the associated try/finally statements.
 #@-at
 #@-node:ekr.20040803072955.1:  << About drawing >>
 #@nl
@@ -1649,23 +1658,24 @@ class leoTkinterTree (leoFrame.leoTree):
 
         c.setLog()
 
-        c.beginUpdate()
-        try:
-            if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
-                c.endEditing()
-                if p == p1 or self.initialClickExpandsOrContractsNode:
-                    if p.isExpanded(): p.contract()
-                    else:              p.expand()
-                self.select(p)
-                if c.frame.findPanel:
-                    c.frame.findPanel.handleUserClick(p)
-                if self.stayInTree:
-                    c.treeWantsFocus()
-                else:
-                    c.bodyWantsFocus()
-            g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        if p and not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
+            c.endEditing()
+            if p == p1 or self.initialClickExpandsOrContractsNode:
+                if p.isExpanded(): p.contract()
+                else:              p.expand()
+            self.select(p)
+            if c.frame.findPanel:
+                c.frame.findPanel.handleUserClick(p)
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+        g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+        # finally:
+        c.redraw() # was c.endUpdate()
+
         c.outerUpdate()
     #@-node:ekr.20040803072955.79:onClickBoxClick
     #@+node:bobjack.20080401090801.2:onClickBoxRightClick
@@ -1705,56 +1715,56 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas = self.canvas
         if not event: return
 
-        c.beginUpdate()
-        try:
-            #@        << set vdrag, childFlag >>
-            #@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>
-            x,y = event.x,event.y
-            canvas_x = canvas.canvasx(x)
-            canvas_y = canvas.canvasy(y)
+        # c.beginUpdate()
+        # try:
+        #@    << set vdrag, childFlag >>
+        #@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>
+        x,y = event.x,event.y
+        canvas_x = canvas.canvasx(x)
+        canvas_y = canvas.canvasy(y)
 
-            theId = self.canvas.find_closest(canvas_x,canvas_y)
-            # theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
+        theId = self.canvas.find_closest(canvas_x,canvas_y)
+        # theId = self.canvas.find_overlapping(canvas_x,canvas_y,canvas_x,canvas_y)
 
-            vdrag = self.findPositionWithIconId(theId)
-            childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
-            #@-node:ekr.20040803072955.104:<< set vdrag, childFlag >>
+        vdrag = self.findPositionWithIconId(theId)
+        childFlag = vdrag and vdrag.hasChildren() and vdrag.isExpanded()
+        #@-node:ekr.20040803072955.104:<< set vdrag, childFlag >>
+        #@nl
+        if self.allow_clone_drags:
+            if not self.look_for_control_drag_on_mouse_down:
+                self.controlDrag = c.frame.controlKeyIsDown
+
+        redrawFlag = vdrag and vdrag.v.t != p.v.t
+        if redrawFlag: # Disallow drag to joined node.
+            #@        << drag p to vdrag >>
+            #@+node:ekr.20041111114148:<< drag p to vdrag >>
+            # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
+
+            if self.controlDrag: # Clone p and move the clone.
+                if childFlag:
+                    c.dragCloneToNthChildOf(p,vdrag,0)
+                else:
+                    c.dragCloneAfter(p,vdrag)
+            else: # Just drag p.
+                if childFlag:
+                    p = c.dragToNthChildOf(p,vdrag,0)
+                else:
+                    p = c.dragAfter(p,vdrag)
+            #@-node:ekr.20041111114148:<< drag p to vdrag >>
             #@nl
-            if self.allow_clone_drags:
-                if not self.look_for_control_drag_on_mouse_down:
-                    self.controlDrag = c.frame.controlKeyIsDown
+        elif self.trace and self.verbose:
+            g.trace("Cancel drag")
 
-            redrawFlag = vdrag and vdrag.v.t != p.v.t
-            if redrawFlag: # Disallow drag to joined node.
-                #@            << drag p to vdrag >>
-                #@+node:ekr.20041111114148:<< drag p to vdrag >>
-                # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
-
-                if self.controlDrag: # Clone p and move the clone.
-                    if childFlag:
-                        c.dragCloneToNthChildOf(p,vdrag,0)
-                    else:
-                        c.dragCloneAfter(p,vdrag)
-                else: # Just drag p.
-                    if childFlag:
-                        p = c.dragToNthChildOf(p,vdrag,0)
-                    else:
-                        p = c.dragAfter(p,vdrag)
-                #@-node:ekr.20041111114148:<< drag p to vdrag >>
-                #@nl
-            elif self.trace and self.verbose:
-                g.trace("Cancel drag")
-
-            # Reset the old cursor by brute force.
-            self.canvas['cursor'] = "arrow"
-            self.dragging = False
-            self.drag_p = None
-        finally:
-            # Must set self.drag_p = None first.
-            c.endUpdate(False) # redrawFlag)
-            if redrawFlag:
-                c.redraw_now()
-            c.recolor_now() # Dragging can affect coloring.
+        # Reset the old cursor by brute force.
+        self.canvas['cursor'] = "arrow"
+        self.dragging = False
+        self.drag_p = None
+        # finally:
+        # Must set self.drag_p = None first.
+        # c.endUpdate(False) # redrawFlag)
+        if redrawFlag:
+            c.redraw_now()
+        c.recolor_now() # Dragging can affect coloring.
 
         # g.trace(redrawFlag)
     #@-node:ekr.20041111115908:endDrag
@@ -2097,13 +2107,13 @@ class leoTkinterTree (leoFrame.leoTree):
 
         # g.trace(g.callers())
 
-        c.beginUpdate()
-        try:
-            tree.endEditLabel()
-            tree.dimEditLabel()
-        finally:
-            c.endUpdate(False)
-            c.outerUpdate()
+        # c.beginUpdate()
+        # try:
+        tree.endEditLabel()
+        tree.dimEditLabel()
+        # finally:
+        # c.endUpdate(False)
+        c.outerUpdate()
     #@-node:ekr.20040803072955.108:tree.OnDeactivate
     #@+node:ekr.20040803072955.110:tree.OnPopup & allies
     def OnPopup (self,p,event):
@@ -2433,31 +2443,33 @@ class leoTkinterTree (leoFrame.leoTree):
         """Start editing p's headline."""
 
         c = self.c
-        trace = (False or self.trace_edit) and not g.app.unitTesting
+        trace = (False or self.trace_edit)
 
         if p and p != self.editPosition():
 
             if trace:
                 g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-            c.beginUpdate()
-            try:
-                self.endEditLabel()
-            finally:
-                # This redraw *is* required so the c.edit_widget(p) will exist.
-                c.endUpdate(True)
-                c.outerUpdate()
+            # c.beginUpdate()
+            # try:
+            self.endEditLabel()
+            # finally:
+            # This redraw *is* required so the c.edit_widget(p) will exist.
+            c.redraw() # was c.endUpdate(True)
+            c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p
-
-        if trace: g.trace(c.edit_widget(p))
-
         w = c.edit_widget(p)
+
+        if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
+
         if p and w:
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             c.headlineWantsFocus(p) # Make sure the focus sticks.
             c.k.showStateAndMode(w)
+
+        if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
     #@-node:ekr.20040803072955.127:tree.editLabel
     #@+node:ekr.20040803072955.134:tree.set...LabelState
     #@+node:ekr.20040803072955.135:setEditLabelState
@@ -2466,7 +2478,6 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; w = c.edit_widget(p)
 
         if p and w:
-            # g.trace('*****',g.callers())
             c.widgetWantsFocusNow(w)
             self.setEditHeadlineColors(p)
             selectAll = selectAll or self.select_all_text_when_editing_headlines

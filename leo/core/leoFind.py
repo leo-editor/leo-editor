@@ -505,24 +505,24 @@ class leoFind:
         saveData = self.save()
         self.initBatchCommands()
         count = 0
-        c.beginUpdate()
-        try: # In update...
-            u.beforeChangeGroup(current,undoType)
-            while 1:
-                pos1, pos2 = self.findNextMatch()
-                if pos1 is None: break
-                count += 1
-                self.batchChange(pos1,pos2)
-                s = w.getAllText()
-                i,j = g.getLine(s,pos1)
-                line = s[i:j]
-                # self.printLine(line,allFlag=True)
-            p = c.currentPosition()
-            u.afterChangeGroup(p,undoType,reportFlag=True)
-            g.es("changed:",count,"instances")
-        finally:
-            c.endUpdate()
-            self.restore(saveData)
+        # c.beginUpdate()
+        # try: # In update...
+        u.beforeChangeGroup(current,undoType)
+        while 1:
+            pos1, pos2 = self.findNextMatch()
+            if pos1 is None: break
+            count += 1
+            self.batchChange(pos1,pos2)
+            s = w.getAllText()
+            i,j = g.getLine(s,pos1)
+            line = s[i:j]
+            # self.printLine(line,allFlag=True)
+        p = c.currentPosition()
+        u.afterChangeGroup(p,undoType,reportFlag=True)
+        g.es("changed:",count,"instances")
+        # finally:
+        c.redraw() # was c.endUpdate()
+        self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection
     # Replace selection with self.change_text.
@@ -562,17 +562,17 @@ class leoFind:
         c.widgetWantsFocus(w)
 
         # No redraws here: they would destroy the headline selection.
-        c.beginUpdate()
-        try:
-            if self.mark_changes:
-                p.setMarked()
-            if self.in_headline:
-                c.frame.tree.onHeadChanged(p,'Change')
-            else:
-                c.frame.body.onBodyChanged('Change',oldSel=oldSel)
-        finally:
-            c.endUpdate(False)
-            c.frame.tree.drawIcon(p) # redraw only the icon.
+        # c.beginUpdate()
+        # try:
+        if self.mark_changes:
+            p.setMarked()
+        if self.in_headline:
+            c.frame.tree.onHeadChanged(p,'Change')
+        else:
+            c.frame.body.onBodyChanged('Change',oldSel=oldSel)
+        # finally:
+        # c.endUpdate(False)
+        c.frame.tree.drawIcon(p) # redraw only the icon.
 
         return True
     #@+node:ekr.20060526201951:makeRegexSubs
@@ -1134,7 +1134,8 @@ class leoFind:
 
         # g.trace(g.callers())
         c.widgetWantsFocusNow(w)
-        g.app.gui.selectAllText(w)
+        # g.app.gui.selectAllText(w)
+        w.selectAllText()
         c.widgetWantsFocus(w)
     #@-node:ekr.20051020120306.26:bringToFront (leoFind)
     #@+node:ekr.20061111084423.1:oops (leoFind)
@@ -1338,22 +1339,23 @@ class leoFind:
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
         redraw = not p.isVisible(c)
-        c.beginUpdate()
-        try:
-            if sparseFind and not c.currentPosition().isAncestorOf(p):
-                # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-                for p2 in c.currentPosition().self_and_parents_iter():
-                    p2.contract()
-                    redraw = True
-            for p in self.p.parents_iter():
-                if not p.isExpanded():
-                    p.expand()
-                    redraw = True
-            p = self.p
-            if not p: g.trace('can not happen: self.p is None')
-            c.selectPosition(p)
-        finally:
-            c.endUpdate(redraw)
+        # c.beginUpdate()
+        # try:
+        if sparseFind and not c.currentPosition().isAncestorOf(p):
+            # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
+            for p2 in c.currentPosition().self_and_parents_iter():
+                p2.contract()
+                redraw = True
+        for p in self.p.parents_iter():
+            if not p.isExpanded():
+                p.expand()
+                redraw = True
+        p = self.p
+        if not p: g.trace('can not happen: self.p is None')
+        c.selectPosition(p)
+        # finally:
+        if redraw: c.redraw() # was c.endUpdate(redraw)
+
         if self.in_headline:
             c.editPosition(p)
         # Set the focus and selection after the redraw.
@@ -1608,8 +1610,8 @@ class nullFindTab (findTab):
             svar = self.svarDict[ivar].get()
             if svar:
                 self.svarDict["radio-find-type"].set(key)
-                w = d.get(key)
-                if w: w.set(True)
+                # w = d.get(key)
+                # if w: w.set(True)
                 break
         else:
             self.svarDict["radio-find-type"].set("plain-search")
@@ -1624,10 +1626,13 @@ class nullFindTab (findTab):
                 self.svarDict["radio-search-scope"].set(key)
                 break
         else:
-            key = 'entire-outline'
-            self.svarDict["radio-search-scope"].set(key)
-            w = self.widgetsDict.get(key)
-            if w: w.set(True)
+            key = ivar = 'entire-outline'
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-search-scope"].set(key)
+            # self.svarDict["radio-search-scope"].set(key)
+            # w = self.widgetsDict.get(key)
+            # if w: w.set(True)
         #@-node:ekr.20070302090616.6:<< set radio buttons from ivars >>
         #@nl
         #@    << set checkboxes from ivars >>
@@ -1645,8 +1650,9 @@ class nullFindTab (findTab):
         ):
             svar = self.svarDict[ivar].get()
             if svar:
-                w = self.widgetsDict.get(ivar)
-                if w: w.set(True)
+                svar.set(True)
+                # w = self.widgetsDict.get(ivar)
+                # if w: w.set(True)
         #@-node:ekr.20070302090616.7:<< set checkboxes from ivars >>
         #@nl
     #@-node:ekr.20070302090616.4:init

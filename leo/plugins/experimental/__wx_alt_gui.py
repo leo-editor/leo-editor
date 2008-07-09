@@ -4076,8 +4076,8 @@ if wx:
             # print
             # print
             result =  leoKeys.keyHandlerClass.masterCommand(self, *args, **kw)
-            self.c.beginUpdate()
-            self.c.endUpdate()
+            # self.c.beginUpdate()
+            self.c.redraw() # was self.c.endUpdate()
             return result
 
         #@-node:bob.20070901124034:masterCommand
@@ -7763,13 +7763,13 @@ if wx:
 
             if item > -1:
                 p = self.positionList[item]
-                c.beginUpdate()
-                try:
-                    c.frame.tree.expandAllAncestors(p)
-                    c.selectPosition(p,updateBeadList=True)
-                        # A case could be made for updateBeadList=False
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                c.frame.tree.expandAllAncestors(p)
+                c.selectPosition(p,updateBeadList=True)
+                    # A case could be made for updateBeadList=False
+                # finally:
+                c.redraw() # was c.endUpdate()
         #@-node:bob.20080105082325.7:go
         #@+node:bob.20080105082325.8:hide
         def hide(self, event=None):
@@ -8560,53 +8560,52 @@ if wx:
             if not event:
                 return
 
-            c.beginUpdate()
+            # c.beginUpdate()
             redrawFlag = False
-            try:
-
-                #@        << set drop_p, childFlag >>
-                #@+node:bob.20070906100746.1:<< set drop_p, childFlag >>
-
+            # try:
+            #@    << set drop_p, childFlag >>
+            #@+node:bob.20070906100746.1:<< set drop_p, childFlag >>
 
 
-                childFlag = drop_p and drop_p.hasChildren() and drop_p.isExpanded()
-                #@-node:bob.20070906100746.1:<< set drop_p, childFlag >>
+
+            childFlag = drop_p and drop_p.hasChildren() and drop_p.isExpanded()
+            #@-node:bob.20070906100746.1:<< set drop_p, childFlag >>
+            #@nl
+            if self.allow_clone_drags:
+                if not self.look_for_control_drag_on_mouse_down:
+                    self.controlDrag = c.frame.controlKeyIsDown
+
+            redrawFlag = drop_p and drop_p.v.t != p.v.t
+            if redrawFlag: # Disallow drag to joined node.
+                #@        << drag p to drop_p >>
+                #@+node:bob.20070906100746.2:<< drag p to drop_p>>
+                #g.trace('\n')
+                #print '\tsource:', p.headString()
+                #print '\ttarget:', drop_p.headString()
+
+                if self.controlDrag: # Clone p and move the clone.
+                    if childFlag:
+                        c.dragCloneToNthChildOf(p, drop_p, 0)
+                    else:
+                        c.dragCloneAfter(p, drop_p)
+                else: # Just drag p.
+                    if childFlag:
+                        c.dragToNthChildOf(p, drop_p, 0)
+                    else:
+                        c.dragAfter(p,drop_p)
+                #@-node:bob.20070906100746.2:<< drag p to drop_p>>
                 #@nl
-                if self.allow_clone_drags:
-                    if not self.look_for_control_drag_on_mouse_down:
-                        self.controlDrag = c.frame.controlKeyIsDown
+            elif self.trace and self.verbose:
+                g.trace("Cancel drag")
 
-                redrawFlag = drop_p and drop_p.v.t != p.v.t
-                if redrawFlag: # Disallow drag to joined node.
-                    #@            << drag p to drop_p >>
-                    #@+node:bob.20070906100746.2:<< drag p to drop_p>>
-                    #g.trace('\n')
-                    #print '\tsource:', p.headString()
-                    #print '\ttarget:', drop_p.headString()
-
-                    if self.controlDrag: # Clone p and move the clone.
-                        if childFlag:
-                            c.dragCloneToNthChildOf(p, drop_p, 0)
-                        else:
-                            c.dragCloneAfter(p, drop_p)
-                    else: # Just drag p.
-                        if childFlag:
-                            c.dragToNthChildOf(p, drop_p, 0)
-                        else:
-                            c.dragAfter(p,drop_p)
-                    #@-node:bob.20070906100746.2:<< drag p to drop_p>>
-                    #@nl
-                elif self.trace and self.verbose:
-                    g.trace("Cancel drag")
-
-                # Reset the old cursor by brute force.
-                self.setCursor('default')
-                self.dragging = False
-                self.drag_p = None
-            finally:
-                # Must set self.drag_p = None first.
-                c.endUpdate(redrawFlag)
-                c.recolor_now() # Dragging can affect coloring.
+            # Reset the old cursor by brute force.
+            self.setCursor('default')
+            self.dragging = False
+            self.drag_p = None
+            # finally:
+            # Must set self.drag_p = None first.
+            if redrawFlag: c.redraw() # was c.endUpdate(redrawFlag)
+            c.recolor_now() # Dragging can affect coloring.
         #@-node:bob.20070906100746:endDrag
         #@-node:bob.20070907050034:onEndDrag
         #@+node:bob.20070906195449:cancelDrag
@@ -8892,31 +8891,30 @@ if wx:
 
             p1 = c.currentPosition()
             #g.trace(source, type, p)
-            c.beginUpdate()
-            try:
-                if not g.doHook("boxclick1", c=c, p=p, v=p, event=event):
+            # c.beginUpdate()
+            # try:
+            if not g.doHook("boxclick1", c=c, p=p, v=p, event=event):
 
-                    self.endEditLabel()
+                self.endEditLabel()
 
-                    if p == p1 or self.initialClickExpandsOrContractsNode:
-                        if p.isExpanded():
-                            p.contract()
-                        else:
-                            p.expand()
-
-                    self.select(p)
-
-                    if c.frame.findPanel:
-                        c.frame.findPanel.handleUserClick(p)
-                    if self.stayInTree:
-                        c.treeWantsFocus()
+                if p == p1 or self.initialClickExpandsOrContractsNode:
+                    if p.isExpanded():
+                        p.contract()
                     else:
-                        c.bodyWantsFocus()
+                        p.expand()
 
-                g.doHook("boxclick2", c=c, p=p, v=p, event=event)
+                self.select(p)
 
-            finally:
-                c.endUpdate()
+                if c.frame.findPanel:
+                    c.frame.findPanel.handleUserClick(p)
+                if self.stayInTree:
+                    c.treeWantsFocus()
+                else:
+                    c.bodyWantsFocus()
+
+            g.doHook("boxclick2", c=c, p=p, v=p, event=event)
+            # finally:
+            c.redraw() # was c.endUpdate()
 
 
         #@-node:bob.20070814083933:onMouseClickBoxLeftDown
@@ -8933,26 +8931,25 @@ if wx:
             if not self.HasCapture():
                 self.CaptureMouse()
 
-            c.beginUpdate()
-            try:
-                if not g.doHook("iconclick1", c=c, p=p, v=p, event=event):
+            # c.beginUpdate()
+            # try:
+            if not g.doHook("iconclick1", c=c, p=p, v=p, event=event):
 
-                    self.endEditLabel()
-                    self.onDrag(p, event)
+                self.endEditLabel()
+                self.onDrag(p, event)
 
-                    self.select(p)
+                self.select(p)
 
-                    if c.frame.findPanel:
-                        c.frame.findPanel.handleUserClick(p)
-                    if self.stayInTree:
-                        c.treeWantsFocus()
-                    else:
-                        c.bodyWantsFocus()
+                if c.frame.findPanel:
+                    c.frame.findPanel.handleUserClick(p)
+                if self.stayInTree:
+                    c.treeWantsFocus()
+                else:
+                    c.bodyWantsFocus()
 
-                g.doHook("iconclick2", c=c, p=p, v=p, event=event)
-
-            finally:
-                c.endUpdate()
+            g.doHook("iconclick2", c=c, p=p, v=p, event=event)
+            # finally:
+            c.redraw() # was c.endUpdate()
 
         #@-node:bob.20070814090359.1:onMouseIconBoxLeftDown
         #@+node:bob.20070906193733.1:onMouseIconBoxLeftUp
@@ -8993,28 +8990,28 @@ if wx:
             c = self.c
             c.setLog()
 
-            c.beginUpdate()
-            try:
-                if c.isCurrentPosition(p):
+            # c.beginUpdate()
+            # try:
+            if c.isCurrentPosition(p):
 
-                    self.editLabel(p)
+                self.editLabel(p)
 
-                else:
-                    if not g.doHook("headclick1",c=c,p=p,v=p,event=event):
+            else:
+                if not g.doHook("headclick1",c=c,p=p,v=p,event=event):
 
-                        self.endEditLabel()
-                        self.select(p)
+                    self.endEditLabel()
+                    self.select(p)
 
-                        if c.frame.findPanel:
-                            c.frame.findPanel.handleUserClick(p)
+                    if c.frame.findPanel:
+                        c.frame.findPanel.handleUserClick(p)
 
-                        if self.stayInTree:
-                            c.treeWantsFocus()
-                        else:
-                            c.bodyWantsFocus()
-                    g.doHook("headclick2",c=c,p=p,v=p,event=event)
-            finally:
-                c.endUpdate()
+                    if self.stayInTree:
+                        c.treeWantsFocus()
+                    else:
+                        c.bodyWantsFocus()
+                g.doHook("headclick2",c=c,p=p,v=p,event=event)
+            # finally:
+            c.redraw() # was c.endUpdate()
 
         #@-node:bob.20070818153826:onMouseTextBoxLeftDown
         #@-node:bob.20070816213833:Text Box
@@ -9047,13 +9044,13 @@ if wx:
 
             if p:
 
-                c.beginUpdate()
-                try:
-                    self.endEditLabel()
-                    self.setEditPosition(p)
-                    #g.trace('ep', self.editPosition())
-                finally:
-                    c.endUpdate()
+                # c.beginUpdate()
+                # try:
+                self.endEditLabel()
+                self.setEditPosition(p)
+                #g.trace('ep', self.editPosition())
+                # finally:
+                c.redraw() # was c.endUpdate()
 
                 # Help for undo.
                 self.revertHeadline = s = p.headString()
@@ -9100,8 +9097,8 @@ if wx:
                 self.onHeadChanged(ep,undoType='Typing',s=s)
 
             self.setEditPosition(None)
-            c.beginUpdate()
-            c.endUpdate()
+            # c.beginUpdate()
+            c.redraw() # was c.endUpdate()
 
             if c.config.getBool('stayInTreeAfterEditHeadline'):
                 c.treeWantsFocusNow()
@@ -9399,13 +9396,13 @@ if wx:
             """React to changes in the size of the outlines display area."""
 
             c = self.c
-            c.beginUpdate()
-            try:
-                self.vscrollUpdate()
-                self._canvas.resize(self.GetClientSize().height)
-            finally:
-                c.endUpdate(False)
-                event.Skip()
+            # c.beginUpdate()
+            # try:
+            self.vscrollUpdate()
+            self._canvas.resize(self.GetClientSize().height)
+            # finally:
+            # c.endUpdate(False)
+            event.Skip()
         #@-node:bob.20070813173446.9:onSize
         #@+node:bob.20070813173446.10:vscrollUpdate
 
@@ -9664,27 +9661,23 @@ if wx:
             c = self.c
 
             #c.beginUpdate()     #lock out events
-            if 1: #try:
-                if height is not None:
-                    self._size.height = height
-                if width is not None and self._size.width < width:
-                    self._size.width = width
+            #try:
+            if height is not None:
+                self._size.height = height
+            if width is not None and self._size.width < width:
+                self._size.width = width
 
-                self.SetSize(self._size)
+            self.SetSize(self._size)
 
-                # TODO: decide if need to create new buffer?
-                self._createNewBuffer(self._size)
+            # TODO: decide if need to create new buffer?
+            self._createNewBuffer(self._size)
 
-                self._parent.hscrollUpdate()
-                self.draw()
-                self.refresh()
-
-
+            self._parent.hscrollUpdate()
+            self.draw()
+            self.refresh()
 
             #finally:
             #    c.endUpdate(False)
-
-
             return True
 
         redraw = resize

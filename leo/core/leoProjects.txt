@@ -19,7 +19,6 @@
 #@@tabwidth -4
 
 #@+all
-#@+node:ekr.20071217134533:Pylint errors
 #@+node:ekr.20071217231348:Pylint docs
 @nocolor
 
@@ -407,1830 +406,454 @@ Reports
 R0801:	Duplication
 #@-node:ekr.20071217231828.4:Simularities
 #@-node:ekr.20071217231348:Pylint docs
-#@+node:ekr.20071220081732:pylint report
-*** Erroneous errors in Leo 4.4.8
-
-
-
---- old --
-
-************* Module leoTkinterTree
-
-W0221:2377:leoTkinterTree.setSelectedLabelState: Arguments number differs from overridden method
-W0221:2387:leoTkinterTree.setUnselectedLabelState: Arguments number differs from overridden method
-#@+node:ekr.20080304091441:leoTkinterFind
-*** All these error messages are WRONG.
-
-leoTkinterFind.py Dangerous: E1101,E1103
-************* Module core.leoTkinterFind
-E1101:100:tkFindTab.initGui: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:103:tkFindTab.initGui: Instance of 'tkFindTab' has no 'newStringKeys' member
-E1101:110:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'c' member
-E1101:151:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:166:tkFindTab.createFrame.setFocus: Instance of 'tkFindTab' has no 'c' member
-E1101:200:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:253:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:261:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'resetWrap' member
-E1101:268:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'optionsOnly' member
-E1101:285:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findButtonCallback' member
-E1101:286:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'findAllButton' member
-E1101:288:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeButton' member
-E1101:289:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeThenFindButton' member
-E1101:290:tkFindTab.createFrame: Instance of 'tkFindTab' has no 'changeAllButton' member
-E1101:309:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'c' member
-E1103:312:tkFindTab.createBindings.resetWrapCallback: Instance of 'tkFindTab' has no 'resetWrap' member
-(but some types could not be inferred)
-E1103:316:tkFindTab.createBindings.findButtonBindingCallback: Instance of 'tkFindTab' has no 'findButton' member
-(but some types could not be inferred)
-E1101:332:tkFindTab.createBindings: Instance of 'tkFindTab' has no 'hideTab' member
-E1101:349:tkFindTab.onRightClick: Instance of 'tkFindTab' has no 'c' member
-E1101:350:tkFindTab.onRightClick: Instance of 'tkFindTab' has no 'c' member
-E1101:358:tkFindTab.init: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:427:tkFindTab.setOption: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:439:tkFindTab.toggleOption: Instance of 'tkFindTab' has no 'intKeys' member
-E1101:685:tkSpellTab.down: Instance of 'tkSpellTab' has no 'positionList' member
-W0611: 12: Unused import leoTkinterDialog
-"*****done*****"
-#@nonl
-#@-node:ekr.20080304091441:leoTkinterFind
-#@+node:ekr.20080304092628:leoTkinterFrame
-*** All these error messages are WRONG.
-
-leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
-leoTkinterFrame.py Dangerous: E1101
-************* Module core.leoTkinterFrame
-E1101: 52:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
-E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
-E1101:116:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
-E1101:130:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:137:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
-E1101:204:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:252:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:269:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
-E1101:273:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
-E1101:286:leoTkinterBody.tag_bind: Instance of 'leoTkinterBody' has no 'c' member
-E1101:334:leoTkinterBody.bind: Instance of 'leoTkinterBody' has no 'c' member
-E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
-E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:409:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
-E1101:467:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:469:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
-E1101:472:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
-E1101:1365:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
-W0107:1635:leoTkinterFrame.OnBodyRClick: Unnecessary pass statement
-E1101:1922:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:2132:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2159:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2161:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2324:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
-E1101:2444:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2445:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2452:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2453:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2454:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2483:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2484:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2485:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2496:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2497:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2498:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2510:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2535:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2536:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2537:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2577:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2594:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2595:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2608:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2610:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2817:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2818:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2875:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2876:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:3048:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3095:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
-E1101:3097:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3098:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
-W0611: 32: Unused import time
-"*****done*****"
-Press any key to continue . . .
-
-C:\leo.repo\trunk\leo\test>
-#@nonl
-#@-node:ekr.20080304092628:leoTkinterFrame
-#@+node:ekr.20080304093258:leoTkinterMenu
-*** All these error messages are WRONG.
-
-leoTkinterFrame.py Harmless: W0221: mismatch between Tk.Text methods and overridden methods.
-leoTkinterFrame.py Dangerous: E1101
-************* Module core.leoTkinterFrame
-E1101: 52:leoTkinterBody.__init__: Instance of 'leoTkinterBody' has no 'c' member
-E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'frame' member
-E1101: 66:leoTkinterBody.createBindings: Instance of 'leoTkinterBody' has no 'c' member
-E1101:116:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'c' member
-E1101:130:leoTkinterBody.createControl: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:137:leoTkinterBody.createTextWidget: Instance of 'leoTkinterBody' has no 'c' member
-E1101:204:leoTkinterBody.setColorFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:252:leoTkinterBody.setFontFromConfig: Instance of 'leoTkinterBody' has no 'c' member
-E1101:269:leoTkinterBody.hasFocus: Instance of 'leoTkinterBody' has no 'frame' member
-E1101:273:leoTkinterBody.setFocus: Instance of 'leoTkinterBody' has no 'c' member
-E1101:286:leoTkinterBody.tag_bind: Instance of 'leoTkinterBody' has no 'c' member
-E1101:334:leoTkinterBody.bind: Instance of 'leoTkinterBody' has no 'c' member
-E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'c' member
-E1101:381:leoTkinterBody.setEditorColors: Instance of 'leoTkinterBody' has no 'editorWidgets' member
-E1101:409:leoTkinterFrame.__init__: Class 'leoTkinterFrame' has no 'instances' member
-E1101:467:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:469:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createIconBar' member
-E1101:472:leoTkinterFrame.finishCreate: Instance of 'leoTkinterFrame' has no 'createStatusLine' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'comparePanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'colorPanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'fontPanel' member
-E1101:925:leoTkinterFrame.destroyAllPanels: Instance of 'leoTkinterFrame' has no 'prefsPanel' member
-E1101:1365:leoTkinterFrame.setMinibufferBindings: Instance of 'leoTkinterFrame' has no 'OnPaste' member
-W0107:1635:leoTkinterFrame.OnBodyRClick: Unnecessary pass statement
-E1101:1922:leoTkinterFrame.toggleTkSplitDirection: Instance of 'leoTkinterFrame' has no 'initialRatios' member
-E1101:2132:leoTkinterLog.createCanvasWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2159:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2161:leoTkinterLog.createTextWidget: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2324:leoTkinterLog.onActivateLog: Instance of 'leoTkinterLog' has no 'frame' member
-E1101:2444:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2445:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'logNumber' member
-E1101:2452:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2453:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2454:leoTkinterLog.createCanvas: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2483:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2484:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2485:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2496:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2497:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2498:leoTkinterLog.createTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2510:leoTkinterLog.cycleTabFocus: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2535:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'canvasDict' member
-E1101:2536:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2537:leoTkinterLog.deleteTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2577:leoTkinterLog.numberOfVisibleTabs: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2594:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2595:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2608:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2610:leoTkinterLog.selectTab: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2621:leoTkinterLog.setTabBindings: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2817:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2818:leoTkinterLog.createColorPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:2875:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'frameDict' member
-E1101:2876:leoTkinterLog.createFontPicker: Instance of 'leoTkinterLog' has no 'textDict' member
-E1101:3048:leoTkinterTreeTab.createControl: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3095:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'cc' member
-E1101:3097:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
-E1101:3098:leoTkinterTreeTab.selectTab: Instance of 'leoTkinterTreeTab' has no 'c' member
-W0611: 32: Unused import time
-"*****done*****"
-Press any key to continue . . .
-
-C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>echo off
-cd c:\leo.repo\trunk\leo
-tests that fail with dangerous settings enabled...
-ECHO is off.
-leoTkinterKeys.py Dangerous: E1101
-************* Module core.leoTkinterKeys
-W0611:  9: Unused import Tk
-"*****done*****"
-Press any key to continue . . .
-
-C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>echo off
-cd c:\leo.repo\trunk\leo
-tests that fail with dangerous settings enabled...
-ECHO is off.
-"*****done*****"
-Press any key to continue . . .
-
-C:\leo.repo\trunk\leo\test>trunk
-
-C:\leo.repo\trunk\leo\test>cd c:\leo.repo\trunk
-
-C:\leo.repo\trunk>t
-
-C:\leo.repo\trunk>leo leo\test\test.leo
-
-C:\leo.repo\trunk>c:\python25\python.exe leo\core\runLeo.py leo\test\test.leo
-reading settings in C:\leo.repo\trunk\leo\config\leoSettings.leo
-Using menus from leoSettings.leo
-reading settings in C:\Documents and Settings\HP_Administrator\My Documents\Edward\myLeoSettings.leo
-reading settings in C:\leo.repo\trunk\leo\test\test.leo
-reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
-@enabled-plugins found in myLeoSettings.leo
-rst3 plugin: SilverCity not loaded
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leoRecentFiles.txt
-
-C:\leo.repo\trunk>cd leo\test
-
-C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>echo off
-cd c:\leo.repo\trunk\leo
-tests that fail with dangerous settings enabled...
-ECHO is off.
-leoTkinterMenu.py Dangerous: E1101
-************* Module core.leoTkinterMenu
-E1101: 62:leoTkinterMenu.computeMenuPositions: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:138:leoTkinterMenu.insert: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:177:leoTkinterMenu.clearAccel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:188:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'updateAllMenus' member
-E1101:191:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'setMenu' member
-E1101:192:leoTkinterMenu.createMenuBar: Instance of 'leoTkinterMenu' has no 'createMenusFromTables' member
-E1101:217:leoTkinterMenu.disableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:237:leoTkinterMenu.enableMenu: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:270:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:273:leoTkinterMenu.setMenuLabel: Instance of 'leoTkinterMenu' has no 'getRealMenuName' member
-E1101:312:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'getMenu' member
-E1101:316:leoTkinterMenu.getMacHelpMenu: Instance of 'leoTkinterMenu' has no 'createMenuEntries' member
-"*****done*****"
-Press any key to continue . . .
-
-C:\leo.repo\trunk\leo\test>ed pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>C:\wscite\scite.exe pylint-leo.bat
-
-C:\leo.repo\trunk\leo\test>
-#@nonl
-#@-node:ekr.20080304093258:leoTkinterMenu
-#@+node:ekr.20080701085405.5:leoTkinterTree
-************* Module core.leoTkinterTree
-E1101:278:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'frame' member
-E1101:287:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'injectCallbacks' member
-E1101:304:leoTkinterTree.__init__: Instance of 'leoTkinterTree' has no 'setEditPosition' member
-E1101:339:leoTkinterTree.setBindings: Instance of 'leoTkinterTree' has no 'c' member
-E1101:354:leoTkinterTree.setBindingsHelper: Instance of 'leoTkinterTree' has no 'c' member
-E1101:380:leoTkinterTree.setCanvasBindings: Instance of 'leoTkinterTree' has no 'c' member
-E1101:521:leoTkinterTree.newText: Instance of 'leoTkinterTree' has no 'c' member
-E1101:711:leoTkinterTree.setFontFromConfig: Instance of 'leoTkinterTree' has no 'c' member
-E1101:820:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'frame' member
-E1101:825:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'c' member
-E1101:843:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:848:leoTkinterTree.redraw_now: Instance of 'leoTkinterTree' has no 'expandAllAncestors' member
-E1101:864:leoTkinterTree.redrawHelper: Instance of 'leoTkinterTree' has no 'frame' member
-E1101:871:leoTkinterTree.redrawHelper: Instance of 'leoTkinterTree' has no 'c' member
-E1101:900:leoTkinterTree.idle_second_redraw: Instance of 'leoTkinterTree' has no 'c' member
-E1101:920:leoTkinterTree.drawBox: Instance of 'leoTkinterTree' has no 'c' member
-E1101:951:leoTkinterTree.drawIcon: Instance of 'leoTkinterTree' has no 'c' member
-E1101:995:leoTkinterTree.drawNode: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1063:leoTkinterTree.drawText: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1082:leoTkinterTree.drawUserIcons: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1100:leoTkinterTree.drawUserIcon: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1212:leoTkinterTree.drawTopTree: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1264:leoTkinterTree.drawTree: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1334:leoTkinterTree.numberOfVisibleNodes: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1336:leoTkinterTree.numberOfVisibleNodes: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1348:leoTkinterTree.scrollTo: Instance of 'leoTkinterTree' has no 'frame' member
-E1101:1356:leoTkinterTree.scrollTo: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1466:leoTkinterTree.yoffset: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1471:leoTkinterTree.yoffset: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1481:leoTkinterTree.yoffsetTree: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1597:leoTkinterTree.findEditWidget: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1644:leoTkinterTree.onClickBoxClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1658:leoTkinterTree.onClickBoxClick: Instance of 'leoTkinterTree' has no 'select' member
-E1101:1679:leoTkinterTree.onPlusBoxRightClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1687:leoTkinterTree.onPlusBoxRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:1702:leoTkinterTree.endDrag: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1768:leoTkinterTree.startDrag: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1802:leoTkinterTree.onContinueDrag: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1840:leoTkinterTree.onDrag: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1859:leoTkinterTree.onEndDrag: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1873:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1886:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:1887:leoTkinterTree.onIconBoxClick: Instance of 'leoTkinterTree' has no 'select' member
-E1101:1901:leoTkinterTree.onIconBoxRightClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1913:leoTkinterTree.onIconBoxRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:1928:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1941:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:1942:leoTkinterTree.onIconBoxDoubleClick: Instance of 'leoTkinterTree' has no 'OnIconDoubleClick' member
-E1101:1962:leoTkinterTree.OnActivateHeadline: Instance of 'leoTkinterTree' has no 'c' member
-E1101:1976:leoTkinterTree.OnActivateHeadline: Instance of 'leoTkinterTree' has no 'select' member
-E1101:2005:leoTkinterTree.configureTextState: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2012:leoTkinterTree.configureTextState: Instance of 'leoTkinterTree' has no 'editPosition' member
-E1101:2031:leoTkinterTree.onHeadlineClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2062:leoTkinterTree.onHeadlineRightClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2075:leoTkinterTree.onHeadlineRightClick: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:2095:leoTkinterTree.OnDeactivate: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2101:leoTkinterTree.OnDeactivate: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:2117:leoTkinterTree.OnPopup: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2157:leoTkinterTree.createPopupMenu: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2205:leoTkinterTree.enablePopupMenuItems: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2232:leoTkinterTree.enablePopupMenuItems: Instance of 'leoTkinterTree' has no 'frame' member
-E1101:2251:leoTkinterTree.showPopupMenu: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2266:leoTkinterTree.onTreeClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2283:leoTkinterTree.onTreeRightClick: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2321:leoTkinterTree.allocateNodes: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2358:leoTkinterTree.updateNode: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2421:leoTkinterTree.dimEditLabel: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2426:leoTkinterTree.undimEditLabel: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2434:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2437:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'editPosition' member
-E1101:2444:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'endEditLabel' member
-E1101:2450:leoTkinterTree.editLabel: Instance of 'leoTkinterTree' has no 'setEditPosition' member
-E1101:2465:leoTkinterTree.setEditLabelState: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2486:leoTkinterTree.setSelectedLabelState: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2503:leoTkinterTree.setUnselectedLabelState: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2511:leoTkinterTree.setDisabledHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2532:leoTkinterTree.setEditHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
-E1101:2552:leoTkinterTree.setUnselectedHeadlineColors: Instance of 'leoTkinterTree' has no 'c' member
-#@-node:ekr.20080701085405.5:leoTkinterTree
-#@-node:ekr.20071220081732:pylint report
-#@+node:ekr.20080701085405.1:Recent runs of pylint
+#@+node:ekr.20080707150137.2:Pylint errors
 @nocolor
 
-22 plugins remain
+echo base64Packager.py
+E1101:166:viewAsGif: Module 'Pmw' has no 'Dialog' member
+E1101:167:viewAsGif: Module 'Pmw' has no 'ScrolledCanvas' member
+call pylint.bat leo\plugins\base64Packager.py --rcfile=leo\test\pylint-leo-rc.txt
 
-autotrees.py
-************* Module plugins.autotrees
-W0105:118: String statement has no effect
-W0601:160:onCreate: Global variable 'thePluginController' undefined at the module level
-W0601:169:topLevelMenu: Global variable 'thePluginController' undefined at the module level
-E0602:239:BaseTreeHandler.addChildren: Undefined variable 'c'
-E0602:240:BaseTreeHandler.addChildren: Undefined variable 'c'
 
-cursesGui.py
-************* Module plugins.cursesGui
-W0511: 25: TODO >>
-W0511: 26: TODO >>
-W0511: 50: TODO >>
-W0511:108: TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
-W0511:341: TODO Tkinter onBodyChanged undo call and many others. =(
-W0511:548: TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
-W0333:158:textGui.runOpenFileDialog: Use of the `` operator
-E1101:245:textFrame.finishCreate: Instance of 'textBody' has no 'use_chapters' member
-E1101:274:textFrame.setMinibufferBindings: Instance of 'textFrame' has no 'oops' member
-E0102:277:textFrame.setMinibufferBindings: method already defined line 273
-E1101:331:textBody.__init__: Instance of 'textBody' has no 'c' member
-E1101:351:textBody.text_show: Instance of 'textBodyCtrl' has no 'ins' member
-E1101:351:textBody.text_show: Instance of 'textBodyCtrl' has no 'sel' member
-E1101:352:textBody.text_show: Instance of 'textBodyCtrl' has no 's' member
-E1101:423:textLeoMenu.createMenuBar: Instance of 'textLeoMenu' has no 'createMenusFromTables' member
-W0333:428:textLeoMenu.new_menu: Use of the `` operator
-E1101:550:textTree.select: Instance of 'textTree' has no 'c' member
-E1101:571:textTree.text_draw_tree: Instance of 'textTree' has no 'c' member
+echo dtest.py
+W0611: Unused import g (may be needed for doctests)
+E1101: A pylint bug: setCommand defined in baseLeoPlugin.
+call pylint.bat leo\plugins\dtest.py         --rcfile=leo\test\pylint-leo-rc.txt
 
-fastGotoNode.py
-************* Module plugins.fastGotoNode
-W0311:362: Bad indentation. Found 8 spaces, expected 4
-W0311:363: Bad indentation. Found 8 spaces, expected 4
-W0311:364: Bad indentation. Found 8 spaces, expected 4
-W0311:365: Bad indentation. Found 12 spaces, expected 8
-W0311:366: Bad indentation. Found 12 spaces, expected 8
-W0311:367: Bad indentation. Found 12 spaces, expected 8
-W0311:368: Bad indentation. Found 16 spaces, expected 12
-W0311:369: Bad indentation. Found 16 spaces, expected 12
-W0311:375: Bad indentation. Found 8 spaces, expected 4
-W0311:510: Bad indentation. Found 7 spaces, expected 8
-W0601:100:init: Global variable 'smenu' undefined at the module level
-W0601:183:disappear: Global variable 'smenu' undefined at the module level
-W0611: 47: Unused import tkFileDialog
-W0611: 45: Unused import copy
 
-footprints.py
-************* Module plugins.footprints
-W0311:149: Bad indentation. Found 9 spaces, expected 12
-W0105: 56: String statement has no effect
-W0601: 66:init: Global variable 'click_registry' undefined at the module level
-W0601: 66:init: Global variable 'coloured_nodes' undefined at the module level
-W0107: 87: Unnecessary pass statement
-W0601:102:applyConfiguration: Global variable 'REFRESH' undefined at the module level
-W0601:102:applyConfiguration: Global variable 'COLD_FG' undefined at the module level
-W0601:102:applyConfiguration: Global variable 'HOT_FG' undefined at the module level
-W0601:102:applyConfiguration: Global variable 'HITS_TO_HOT' undefined at the module level
-W0601:126:installDrawMethod: Global variable 'lock' undefined at the module level
-E0602:188:updateNodes: Undefined variable 'c'
-E0602:189:updateNodes: Undefined variable 'c'
+echo macros.py
+E1103:141:paramClass.parameterize: Instance of 'tkinterGui' has no 'getInsertPoint' member (but some types could not be inferred)
+E1103:141:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
+E1103:141:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
+call pylint.bat leo\plugins\macros.py        --rcfile=leo\test\pylint-leo-rc.txt
 
-groupOperations.py
-************* Module plugins.groupOperations
-W0601:210:initImages: Global variable 'groupOpPI' undefined at the module level
-W0601:211:initImages: Global variable 'bullseyePI' undefined at the module level
-W0601:212:initImages: Global variable 'copyPI' undefined at the module level
-W0601:213:initImages: Global variable 'clonePI' undefined at the module level
-W0601:214:initImages: Global variable 'movePI' undefined at the module level
-W0601:215:initImages: Global variable 'move_arrowPI' undefined at the module level
-W0601:216:initImages: Global variable 'copy_arrowPI' undefined at the module level
-W0601:217:initImages: Global variable 'clone_arrowPI' undefined at the module level
-W0601:218:initImages: Global variable 'markSpotPI' undefined at the module level
-W0601:219:initImages: Global variable 'markForPI' undefined at the module level
-W0601:220:initImages: Global variable 'operateOnMarkedPI' undefined at the module level
-W0601:221:initImages: Global variable 'clearMarksPI' undefined at the module level
-W0601:222:initImages: Global variable 'transferFromPI' undefined at the module level
-W0611: 34: Unused import copy
-W0611: 35: Unused import base64
-W0611: 33: Unused import leoNodes
-.
-gtkDialogs.py
-************* Module plugins.gtkDialogs
-W0601:101:onStart2: Global variable 'oldopen' undefined at the module level
-W0601:101:onStart2: Global variable 'oldsave' undefined at the module level
-W0601:109:onStart2: Global variable 'pythoncommand' undefined at the module level
-E0602:208:runSaveFileDialog: Undefined variable 'none'
-E0602:208:runSaveFileDialog: Undefined variable 'none'
-W0614: 56: Unused import STDOUT from wildcard import
-W0614: 56: Unused import check_call from wildcard import
-W0614: 56: Unused import CalledProcessError from wildcard import
-W0614: 56: Unused import call from wildcard import
 
-leoOPML.py
-************* Module plugins.leoOPML
-E1101:206:opmlFileCommandsClass.putToOPML: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:220:opmlFileCommandsClass.putToOPML: Instance of 'opmlFileCommandsClass' has no 'putXMLLine' member
-E1101:229:opmlFileCommandsClass.putOPMLProlog: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:230:opmlFileCommandsClass.putOPMLProlog: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:232:opmlFileCommandsClass.putOPMLProlog: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:239:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:241:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_globals_attributes' member
-E1101:242:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:246:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:247:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:250:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:252:opmlFileCommandsClass.putOPMLHeader: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:260:opmlFileCommandsClass.putOPMLNodes: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:262:opmlFileCommandsClass.putOPMLNodes: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:267:opmlFileCommandsClass.putOPMLNodes: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:273:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:278:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:280:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_leo_details' member
-E1101:286:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:291:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:293:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:296:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_write_body_text' member
-E1101:297:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'opml_use_outline_elements' member
-E1101:298:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:299:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:301:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:305:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:310:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:313:opmlFileCommandsClass.putOPMLNode: Instance of 'opmlFileCommandsClass' has no 'put' member
-E1101:331:opmlFileCommandsClass.aAttributes: Instance of 'opmlFileCommandsClass' has no 'c' member
-E1101:375:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_write_ua_attributes' member
-E1101:377:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_expand_ua_dictionary' member
-E1101:379:opmlFileCommandsClass.uAAttributes: Instance of 'opmlFileCommandsClass' has no 'opml_skip_ua_dictionary_blanks' member
-E1101:390:opmlFileCommandsClass.putOPMLPostlog: Instance of 'opmlFileCommandsClass' has no 'put' member
-W0221:889:contentHandler.ignorableWhitespace: Arguments number differs from overridden method
+#@+node:ekr.20080707150137.6:Results of running the ":all" tests
+@nocolor
 
-leoupdate.py
-************* Module plugins.leoupdate
-W0105: 67: String statement has no effect
-W0601:106:onCreate: Global variable 'thePluginController' undefined at the module level
-W0601:115:topLevelMenu: Global variable 'thePluginController' undefined at the module level
-E1101:158:LeoUpdater.showManagerDialog.HandlerDialog.initLocalCollection: Instance of 'HandlerDialog' has no 'c' member
-E1101:179:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
-E1101:180:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-E1101:184:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-E1101:188:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
-E1101:189:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'plugin_list' member
-E1101:191:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'remote_plugin_list' member
-E1101:192:LeoUpdater.showManagerDialog.HandlerDialog.installPlugin: Instance of 'HandlerDialog' has no 'messagebar' member
-W0611: 30: Unused import sys
-W0611: 29: Unused import re
-W0611: 31: Unused import glob
+runLeo.py
+leoApp.py
+leoAtFile.py
+leoChapters.py
+leoCommands.py
+leoEditCommands.py
+************* Module leo.core.leoEditCommands
+W0511:2386: FIXME lineYOffset is expected to be on a tnode in drawing code
+leoFileCommands.py
+leoFind.py
+leoFrame.py
+leoGlobals.py
+leoGui.py
+leoImport.py
+leoMenu.py
+leoNodes.py
+leoPlugins.py
+leoTangle.py
+leoUndo.py
+leoTkinterDialog.py
+leoTkinterFind.py
+leoTkinterGui.py
+leoTkinterFrame.py
+leoTkinterKeys.py
+leoTkinterMenu.py
+leoTkinterTree.py
+active_path.py
+add_directives.py
+at_folder.py
+at_produce.py
+at_view.py
+base64Packager.py (suppress E1101)
+bibtex.py
+bookmarks.py
+chapter_hoist.py
+color_markup.py
+ConceptualSort.py
+datenodes.py
+detect_urls.py
+dtest.py (Suppress W0611)
+************* Module leo.plugins.dtest
+E1101: 85:DT.__init__: Instance of 'DT' has no 'setCommand' member
+dump_globals.py
+EditAttributes.py
+empty_leo_file.py
+enable_gc.py
+exampleTemacsExtension.py
+expfolder.py
+FileActions.py
+gtkGui.py
+hoist.py
+image.py
+import_cisco_config.py
+initinclass.py
+ipython.py
+keybindings.py
+leo_pdf.py
+leo_to_html.py
+leo_to_rtf.py
+Library.py
+lineNumbers.py
+macros.py
+************* Module leo.plugins.macros
+E1103:141:paramClass.parameterize: Instance of 'tkinterGui' has no 'getInsertPoint' member (but some types could not be inferred)
+E1103:141:paramClass.parameterize: Instance of 'unitTestGui' has no 'getInsertPoint' member (but some types could not be inferred)
+E1103:141:paramClass.parameterize: Instance of 'nullGui' has no 'getInsertPoint' member (but some types could not be inferred)
+maximizeNewWindows.py
+mnplugins.py
+mod_leo2ascd.py
+mod_read_dir_outline.py
+mod_shadow.py
+mod_shadow_core.py
+mod_scripting.py
+************* Module leo.plugins.mod_scripting
+E0611:461:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+mod_tempfname.py
+mod_timestamp.py
+multifile.py
+newButtons.py
+************* Module leo.plugins.newButtons
+E1101:277:UIHelperClass.addWidgets: Instance of 'FlatOptionMenu' has no 'pack' member
+niceNosent.py
+nodenavigator.py
+open_shell.py
+open_with.py
+outline_export.py
+override_commands.py
+paste_as_headlines.py
+plugins_menu.py
+pluginsTest.py
+quickMove.py
+quit_leo.py
+redirect_to_log.py
+rowcol.py
+rst.py
+rst3.py
+run_nodes.py
+scheduler.py
+script_io_to_body.py
+scripts_menu.py
+shortcut_button.py
+slideshow.py
+startfile.py
+table.py
+testRegisterCommand.py
+textnode.py
+threading_colorizer.py
+trace_gc_plugin.py
+trace_keys.py
+trace_tags.py
+UASearch.py
+UniversalScrolling.py
+UNL.py
+URLloader.py
+vim.py
+word_count.py
+word_export.py
+xemacs.py
+xsltWithNodes.py
+"*****done*****"
+#@-node:ekr.20080707150137.6:Results of running the ":all" tests
+#@+node:ekr.20080707150137.3:Fixed
+************* Module leo.core.leoCommands
+(fixed bug) W0104:2340:baseCommands.convertAllTabs: Statement seems to have no effect
+changed if x: redraw to if x: redraw()
 
-leo_interface.py
-************* Module plugins.leo_interface
-W0311: 45: Bad indentation. Found 3 spaces, expected 4
-W0311: 46: Bad indentation. Found 6 spaces, expected 8
-W0311: 50: Bad indentation. Found 3 spaces, expected 4
-W0311: 51: Bad indentation. Found 6 spaces, expected 8
-W0311: 62: Bad indentation. Found 3 spaces, expected 4
-W0311: 69: Bad indentation. Found 3 spaces, expected 4
-W0311: 70: Bad indentation. Found 7 spaces, expected 8
-W0311: 73: Bad indentation. Found 3 spaces, expected 4
-W0311: 74: Bad indentation. Found 7 spaces, expected 8
-W0311: 75: Bad indentation. Found 7 spaces, expected 8
-W0311: 78: Bad indentation. Found 3 spaces, expected 4
-W0311: 79: Bad indentation. Found 7 spaces, expected 8
-W0311: 82: Bad indentation. Found 3 spaces, expected 4
-W0311: 83: Bad indentation. Found 7 spaces, expected 8
-W0311: 84: Bad indentation. Found 11 spaces, expected 12
-W0311: 87: Bad indentation. Found 3 spaces, expected 4
-W0311: 88: Bad indentation. Found 7 spaces, expected 8
-W0311: 89: Bad indentation. Found 7 spaces, expected 8
-W0311: 90: Bad indentation. Found 11 spaces, expected 12
-W0311: 91: Bad indentation. Found 7 spaces, expected 8
-W0311: 92: Bad indentation. Found 7 spaces, expected 8
-W0311: 95: Bad indentation. Found 3 spaces, expected 4
-W0311: 96: Bad indentation. Found 7 spaces, expected 8
-W0311: 97: Bad indentation. Found 7 spaces, expected 8
-W0311: 98: Bad indentation. Found 7 spaces, expected 8
-W0311: 99: Bad indentation. Found 7 spaces, expected 8
-W0311:100: Bad indentation. Found 7 spaces, expected 8
-W0311:101: Bad indentation. Found 11 spaces, expected 12
-W0311:102: Bad indentation. Found 7 spaces, expected 8
-W0311:103: Bad indentation. Found 7 spaces, expected 8
-W0311:104: Bad indentation. Found 11 spaces, expected 12
-W0311:105: Bad indentation. Found 7 spaces, expected 8
-W0311:106: Bad indentation. Found 7 spaces, expected 8
-W0311:107: Bad indentation. Found 7 spaces, expected 8
-W0311:108: Bad indentation. Found 11 spaces, expected 12
-W0311:111: Bad indentation. Found 3 spaces, expected 4
-W0311:112: Bad indentation. Found 7 spaces, expected 8
-W0311:113: Bad indentation. Found 7 spaces, expected 8
-W0311:114: Bad indentation. Found 7 spaces, expected 8
-W0311:115: Bad indentation. Found 7 spaces, expected 8
-W0311:116: Bad indentation. Found 7 spaces, expected 8
-W0311:117: Bad indentation. Found 11 spaces, expected 12
-W0311:118: Bad indentation. Found 7 spaces, expected 8
-W0311:123: Bad indentation. Found 3 spaces, expected 4
-W0311:124: Bad indentation. Found 5 spaces, expected 8
-W0311:133: Bad indentation. Found 3 spaces, expected 4
-W0311:138: Bad indentation. Found 3 spaces, expected 4
-W0311:139: Bad indentation. Found 6 spaces, expected 8
-W0311:143: Bad indentation. Found 3 spaces, expected 4
-W0311:144: Bad indentation. Found 6 spaces, expected 8
-W0311:148: Bad indentation. Found 3 spaces, expected 4
-W0311:149: Bad indentation. Found 7 spaces, expected 8
-W0311:152: Bad indentation. Found 3 spaces, expected 4
-W0311:153: Bad indentation. Found 7 spaces, expected 8
-W0311:154: Bad indentation. Found 7 spaces, expected 8
-W0311:157: Bad indentation. Found 3 spaces, expected 4
-W0311:158: Bad indentation. Found 7 spaces, expected 8
-W0311:159: Bad indentation. Found 7 spaces, expected 8
-W0311:160: Bad indentation. Found 7 spaces, expected 8
-W0311:161: Bad indentation. Found 7 spaces, expected 8
-W0311:164: Bad indentation. Found 3 spaces, expected 4
-W0311:165: Bad indentation. Found 7 spaces, expected 8
-W0311:168: Bad indentation. Found 7 spaces, expected 8
-W0311:173: Bad indentation. Found 7 spaces, expected 8
-W0311:174: Bad indentation. Found 7 spaces, expected 8
-W0311:175: Bad indentation. Found 7 spaces, expected 8
-W0311:176: Bad indentation. Found 10 spaces, expected 12
-W0311:177: Bad indentation. Found 10 spaces, expected 12
-W0311:178: Bad indentation. Found 7 spaces, expected 8
-W0311:179: Bad indentation. Found 7 spaces, expected 8
-W0311:182: Bad indentation. Found 3 spaces, expected 4
-W0311:183: Bad indentation. Found 7 spaces, expected 8
-W0311:184: Bad indentation. Found 11 spaces, expected 12
-W0311:187: Bad indentation. Found 3 spaces, expected 4
-W0311:188: Bad indentation. Found 6 spaces, expected 8
-W0311:189: Bad indentation. Found 9 spaces, expected 12
-W0311:190: Bad indentation. Found 9 spaces, expected 12
-W0311:191: Bad indentation. Found 9 spaces, expected 12
-W0311:192: Bad indentation. Found 6 spaces, expected 8
-W0311:193: Bad indentation. Found 9 spaces, expected 12
-W0311:197: Bad indentation. Found 3 spaces, expected 4
-W0311:198: Bad indentation. Found 7 spaces, expected 8
-W0311:205: Bad indentation. Found 3 spaces, expected 4
-W0311:206: Bad indentation. Found 7 spaces, expected 8
-W0311:209: Bad indentation. Found 3 spaces, expected 4
-W0311:210: Bad indentation. Found 7 spaces, expected 8
-W0311:213: Bad indentation. Found 3 spaces, expected 4
-W0311:214: Bad indentation. Found 7 spaces, expected 8
-W0311:217: Bad indentation. Found 3 spaces, expected 4
-W0311:218: Bad indentation. Found 7 spaces, expected 8
-W0311:227: Bad indentation. Found 3 spaces, expected 4
-W0311:236: Bad indentation. Found 3 spaces, expected 4
-W0311:237: Bad indentation. Found 3 spaces, expected 4
-W0311:240: Bad indentation. Found 3 spaces, expected 4
-W0311:241: Bad indentation. Found 7 spaces, expected 8
-W0311:242: Bad indentation. Found 7 spaces, expected 8
-W0311:243: Bad indentation. Found 7 spaces, expected 8
-W0311:244: Bad indentation. Found 7 spaces, expected 8
-W0311:245: Bad indentation. Found 7 spaces, expected 8
-W0311:248: Bad indentation. Found 3 spaces, expected 4
-W0311:249: Bad indentation. Found 7 spaces, expected 8
-W0311:252: Bad indentation. Found 3 spaces, expected 4
-W0311:253: Bad indentation. Found 7 spaces, expected 8
-W0311:256: Bad indentation. Found 7 spaces, expected 8
-W0311:257: Bad indentation. Found 11 spaces, expected 12
-W0311:260: Bad indentation. Found 3 spaces, expected 4
-W0311:261: Bad indentation. Found 7 spaces, expected 8
-W0311:264: Bad indentation. Found 3 spaces, expected 4
-W0311:265: Bad indentation. Found 6 spaces, expected 8
-W0311:266: Bad indentation. Found 6 spaces, expected 8
-W0311:267: Bad indentation. Found 9 spaces, expected 12
-W0311:272: Bad indentation. Found 9 spaces, expected 12
-W0311:273: Bad indentation. Found 9 spaces, expected 12
-W0311:274: Bad indentation. Found 12 spaces, expected 16
-W0311:275: Bad indentation. Found 12 spaces, expected 16
-W0311:276: Bad indentation. Found 12 spaces, expected 16
-W0311:277: Bad indentation. Found 12 spaces, expected 16
-W0311:278: Bad indentation. Found 15 spaces, expected 20
-W0311:279: Bad indentation. Found 12 spaces, expected 16
-W0311:280: Bad indentation. Found 12 spaces, expected 16
-W0311:281: Bad indentation. Found 9 spaces, expected 12
-W0311:282: Bad indentation. Found 9 spaces, expected 12
-W0311:283: Bad indentation. Found 9 spaces, expected 12
-W0311:284: Bad indentation. Found 9 spaces, expected 12
-W0311:285: Bad indentation. Found 6 spaces, expected 8
-W0311:286: Bad indentation. Found 6 spaces, expected 8
-W0311:287: Bad indentation. Found 9 spaces, expected 12
-W0311:288: Bad indentation. Found 9 spaces, expected 12
-W0311:291: Bad indentation. Found 3 spaces, expected 4
-W0311:292: Bad indentation. Found 6 spaces, expected 8
-W0311:293: Bad indentation. Found 6 spaces, expected 8
-W0311:294: Bad indentation. Found 9 spaces, expected 12
-W0311:297: Bad indentation. Found 3 spaces, expected 4
-W0311:298: Bad indentation. Found 7 spaces, expected 8
-W0311:301: Bad indentation. Found 3 spaces, expected 4
-W0311:302: Bad indentation. Found 7 spaces, expected 8
-W0311:305: Bad indentation. Found 3 spaces, expected 4
-W0311:306: Bad indentation. Found 7 spaces, expected 8
-W0311:309: Bad indentation. Found 3 spaces, expected 4
-W0311:310: Bad indentation. Found 7 spaces, expected 8
-W0311:314: Bad indentation. Found 3 spaces, expected 4
-W0311:315: Bad indentation. Found 7 spaces, expected 8
-W0311:318: Bad indentation. Found 3 spaces, expected 4
-W0311:319: Bad indentation. Found 6 spaces, expected 8
-W0311:325: Bad indentation. Found 3 spaces, expected 4
-W0311:339: Bad indentation. Found 3 spaces, expected 4
-W0311:340: Bad indentation. Found 6 spaces, expected 8
-W0311:341: Bad indentation. Found 6 spaces, expected 8
-W0311:345: Bad indentation. Found 3 spaces, expected 4
-W0311:346: Bad indentation. Found 6 spaces, expected 8
-W0311:353: Bad indentation. Found 3 spaces, expected 4
-W0311:354: Bad indentation. Found 6 spaces, expected 8
-W0601:176:leo_file.gen1: Global variable 'vnode_count' undefined at the module level
-W0601:189:leo_file.gen_vnodes: Global variable 'allvnodes' undefined at the module level
-W0601:189:leo_file.gen_vnodes: Global variable 'vnode_stack' undefined at the module level
-W0333:200:leo_file.header: Use of the `` operator
-W0333:201:leo_file.header: Use of the `` operator
-W0333:254:leo_node.gen_tnodes: Use of the `` operator
-W0333:265:leo_node.gen_vnodes: Use of the `` operator
-W0105:271:leo_node.gen_vnodes: String statement has no effect
-W0601:281:leo_node.gen_vnodes: Global variable 'vnode_count' undefined at the module level
-W0333:282:leo_node.gen_vnodes: Use of the `` operator
 
-mod_autosave.py
-************* Module plugins.mod_autosave
-W0601: 49:init: Global variable 'LAST_AUTOSAVE' undefined at the module level
-W0601: 49:init: Global variable 'ACTIVE' undefined at the module level
-W0601: 49:init: Global variable 'AUTOSAVE_INTERVAL' undefined at the module level
-W0601: 69:applyConfiguration: Global variable 'LAST_AUTOSAVE' undefined at the module level
-W0601: 69:applyConfiguration: Global variable 'ACTIVE' undefined at the module level
-W0601: 69:applyConfiguration: Global variable 'AUTOSAVE_INTERVAL' undefined at the module level
-W0601: 85:autosave: Global variable 'LAST_AUTOSAVE' undefined at the module level
+************* Module leo.core.leoEditCommands
+(fixed bug) W0104:8486:spellTabHandler.findNextMisspelledWord: Statement seems to have no effect
+changed if x: redraw to if x: redraw()
 
-mod_http.py
-************* Module plugins.mod_http
-W0311:416: Bad indentation. Found 15 spaces, expected 16
-W0311:550: Bad indentation. Found 17 spaces, expected 16
-W0311:737: Bad indentation. Found 20 spaces, expected 16
-W0311:739: Bad indentation. Found 20 spaces, expected 16
-W0311:740: Bad indentation. Found 24 spaces, expected 20
-W0311:741: Bad indentation. Found 20 spaces, expected 16
-W0311:742: Bad indentation. Found 24 spaces, expected 20
-W0311:772: Bad indentation. Found 20 spaces, expected 16
-W0311:773: Bad indentation. Found 20 spaces, expected 16
-W0311:869: Bad indentation. Found 9 spaces, expected 8
-W0311:870: Bad indentation. Found 9 spaces, expected 8
-C0112:491:leo_interface.get_leo_windowlist: Empty docstring
-E1101:548:leo_interface.send_head: Instance of 'leo_interface' has no 'path' member
-E1101:555:leo_interface.send_head: Instance of 'leo_interface' has no 'send_error' member
-E1101:559:leo_interface.send_head: Instance of 'leo_interface' has no 'send_error' member
-E1101:564:leo_interface.send_head: Instance of 'leo_interface' has no 'send_error' member
-E1101:568:leo_interface.send_head: Instance of 'leo_interface' has no 'send_response' member
-E1101:569:leo_interface.send_head: Instance of 'leo_interface' has no 'send_header' member
-E1101:570:leo_interface.send_head: Instance of 'leo_interface' has no 'send_header' member
-E1101:571:leo_interface.send_head: Instance of 'leo_interface' has no 'end_headers' member
-W0223:618:RequestHandler: Method 'found_terminator' is abstract in class 'async_chat' but is not overridden
-E0602:850:poll: Undefined variable 'EINTR'
-W0611: 60: Unused import posixpath
-W0611: 67: Unused import urllib
-W0611: 55: Unused import ConfigParser
-W0611: 65: Unused import sys
-W0611: 68: Unused import urlparse
-W0611: 57: Unused import exceptions
-W0611: 59: Unused import os
+echo leoCommands.py
+E1103:1876:baseCommands.goToLineNumber: Instance of 'tnode' has no 'tnodeList' member (but some types could not be inferred)
+E1103:1876:baseCommands.goToLineNumber: Instance of 'vnode' has no 'tnodeList' member (but some types could not be inferred)
+E1103:2194:baseCommands.fontPanel: Instance of 'tkinterGui' has no 'createFontPanel' member (but some types could not be inferred)
+E1103:2194:baseCommands.fontPanel: Instance of 'unitTestGui' has no 'createFontPanel' member (but some types could not be inferred)
+E1103:2194:baseCommands.fontPanel: Instance of 'nullGui' has no 'createFontPanel' member (but some types could not be inferred)
+E1103:2206:baseCommands.colorPanel: Instance of 'tkinterGui' has no 'createColorPanel' member (but some types could not be inferred)
+E1103:2206:baseCommands.colorPanel: Instance of 'unitTestGui' has no 'createColorPanel' member (but some types could not be inferred)
+E1103:2206:baseCommands.colorPanel: Instance of 'nullGui' has no 'createColorPanel' member (but some types could not be inferred)
+call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
 
-mod_labels.py
-************* Module plugins.mod_labels
-W0311:131: Bad indentation. Found 3 spaces, expected 4
-W0311:132: Bad indentation. Found 6 spaces, expected 8
-W0311:139: Bad indentation. Found 6 spaces, expected 8
-W0311:141: Bad indentation. Found 3 spaces, expected 4
-W0311:142: Bad indentation. Found 6 spaces, expected 8
-W0311:148: Bad indentation. Found 3 spaces, expected 4
-W0311:149: Bad indentation. Found 6 spaces, expected 8
-W0311:150: Bad indentation. Found 6 spaces, expected 8
-W0311:155: Bad indentation. Found 6 spaces, expected 8
-W0311:157: Bad indentation. Found 3 spaces, expected 4
-W0311:158: Bad indentation. Found 6 spaces, expected 8
-W0311:230: Bad indentation. Found 20 spaces, expected 16
-W0311:231: Bad indentation. Found 20 spaces, expected 16
-W0311:232: Bad indentation. Found 20 spaces, expected 16
-W0311:233: Bad indentation. Found 28 spaces, expected 20
-W0311:234: Bad indentation. Found 20 spaces, expected 16
-W0311:236: Bad indentation. Found 20 spaces, expected 16
-W0311:252: Bad indentation. Found 20 spaces, expected 16
-W0311:254: Bad indentation. Found 20 spaces, expected 16
-W0311:262: Bad indentation. Found 20 spaces, expected 16
-E1101:650:labelsController.subnode_to_label: Instance of 'labelsController' has no 'get_labellist_for_node' member
-E0602:658:labelsController.subnode_to_label: Undefined variable 'v'
-E0602:684:labelsController.subnode_to_label: Undefined variable 'labels'
-E0602:685:labelsController.subnode_to_label: Undefined variable 'v'
-E0602:685:labelsController.subnode_to_label: Undefined variable 'labels'
-E0602:690:labelsController.subnode_to_label: Undefined variable 'v'
-E0602:754:labelsController.subnodes_to_labels: Undefined variable 'v'
-W0611: 45: Unused import tkinterListBoxDialog
-W0611: 45: Unused import leoTkinterDialog
-W0611: 41: Unused import leoAtFile
-W0611: 42: Unused import leoCommands
-W0611: 54: Unused import os
+echo leoEditCommands.py (suppress E1101,W0511)
+rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
+E1101:114:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'name' member
+E1101:115:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'undoType' member
+E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldSel' member
+E1101:116:baseEditCommandsClass.endCommand: Instance of 'Bunch' has no 'oldText' member
+call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
-nav_buttons.py
-************* Module plugins.nav_buttons
-W0311:349: Bad indentation. Found 19 spaces, expected 20
-W0601:165:init: Global variable 'Tk' undefined at the module level
-W0601:165:init: Global variable 'imageClass' undefined at the module level
-E1101:260:init.marksDialog.__init__: Instance of 'marksDialog' has no 'top' member
-E1101:267:init.marksDialog.__init__: Instance of 'marksDialog' has no 'top' member
-E1101:268:init.marksDialog.__init__: Instance of 'marksDialog' has no 'top' member
-E1101:278:init.marksDialog.addButtons.marksButtonCallback: Instance of 'marksDialog' has no 'top' member
-E1101:306:init.marksDialog.addCommand.showMarksDialogCallback: Instance of 'marksDialog' has no 'top' member
-E1101:361:init.marksDialog.createFrame: Instance of 'marksDialog' has no 'outerFrame' member
-E1101:364:init.marksDialog.createFrame: Instance of 'marksDialog' has no 'addStdButtons' member
-E1101:373:init.marksDialog.down: Instance of 'marksDialog' has no 'box' member
-E1101:380:init.marksDialog.down: Instance of 'marksDialog' has no 'box' member
-E1101:381:init.marksDialog.down: Instance of 'marksDialog' has no 'box' member
-E1101:383:init.marksDialog.down: Instance of 'marksDialog' has no 'box' member
-E1101:390:init.marksDialog.up: Instance of 'marksDialog' has no 'box' member
-E1101:396:init.marksDialog.up: Instance of 'marksDialog' has no 'box' member
-E1101:397:init.marksDialog.up: Instance of 'marksDialog' has no 'box' member
-E1101:408:init.marksDialog.updateMarks: Instance of 'marksDialog' has no 'box' member
-E1101:415:init.marksDialog.updateMarks: Instance of 'marksDialog' has no 'box' member
-E1101:420:init.marksDialog.updateMarks: Instance of 'marksDialog' has no 'box' member
-E1101:455:init.recentSectionsDialog.__init__: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:462:init.recentSectionsDialog.__init__: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:463:init.recentSectionsDialog.__init__: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:475:init.recentSectionsDialog.addCommand.recentSectionsCommandCallback: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:561:init.recentSectionsDialog.addFrameButtons: Instance of 'recentSectionsDialog' has no 'outerFrame' member
-E1101:582:init.recentSectionsDialog.addFrameButtons: Instance of 'recentSectionsDialog' has no 'addStdButtons' member
-E1101:605:init.recentSectionsDialog.addIconBarButtons.recentButtonCallback: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:724:init.recentSectionsDialog.deleteEntry: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:748:init.recentSectionsDialog.destroy: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:756:init.recentSectionsDialog.down: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:763:init.recentSectionsDialog.down: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:764:init.recentSectionsDialog.down: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:766:init.recentSectionsDialog.down: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:773:init.recentSectionsDialog.up: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:779:init.recentSectionsDialog.up: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:780:init.recentSectionsDialog.up: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:789:init.recentSectionsDialog.fillbox: Instance of 'recentSectionsDialog' has no 'top' member
-E1101:792:init.recentSectionsDialog.fillbox: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:797:init.recentSectionsDialog.fillbox: Instance of 'recentSectionsDialog' has no 'box' member
-E1101:802:init.recentSectionsDialog.fillbox: Instance of 'recentSectionsDialog' has no 'box' member
+echo leoFind.py
+E1103:1137:leoFind.bringToFront: Instance of 'tkinterGui' has no 'selectAllText' member (but some types could not be inferred)
+E1103:1137:leoFind.bringToFront: Instance of 'unitTestGui' has no 'selectAllText' member (but some types could not be inferred)
+E1103:1137:leoFind.bringToFront: Instance of 'nullGui' has no 'selectAllText' member (but some types could not be inferred)
+E1103:1613:nullFindTab.init: Instance of 'leoTkTextWidget' has no 'set' member (but some types could not be inferred)
+E1103:1613:nullFindTab.init: Instance of 'stringTextWidget' has no 'set' member (but some types could not be inferred)
+E1103:1631:nullFindTab.init: Instance of 'leoTkTextWidget' has no 'set' member (but some types could not be inferred)
+E1103:1631:nullFindTab.init: Instance of 'stringTextWidget' has no 'set' member (but some types could not be inferred)
+E1103:1650:nullFindTab.init: Instance of 'leoTkTextWidget' has no 'set' member (but some types could not be inferred)
+E1103:1650:nullFindTab.init: Instance of 'stringTextWidget' has no 'set' member (but some types could not be inferred)
+Hacked some code in nullFindTab init.
 
-nodebar.py
-************* Module plugins.nodebar
-W0601:200:initImages: Global variable 'clonePI' undefined at the module level
-W0601:201:initImages: Global variable 'copyPI' undefined at the module level
-W0601:202:initImages: Global variable 'cutPI' undefined at the module level
-W0601:203:initImages: Global variable 'dehoistPI' undefined at the module level
-W0601:204:initImages: Global variable 'deletePI' undefined at the module level
-W0601:205:initImages: Global variable 'demotePI' undefined at the module level
-W0601:206:initImages: Global variable 'hoistPI' undefined at the module level
-W0601:207:initImages: Global variable 'insertPI' undefined at the module level
-W0601:208:initImages: Global variable 'movedownPI' undefined at the module level
-W0601:209:initImages: Global variable 'moveleftPI' undefined at the module level
-W0601:210:initImages: Global variable 'moverightPI' undefined at the module level
-W0601:211:initImages: Global variable 'moveupPI' undefined at the module level
-W0601:212:initImages: Global variable 'nodedownPI' undefined at the module level
-W0601:213:initImages: Global variable 'nodeleftPI' undefined at the module level
-W0601:214:initImages: Global variable 'noderightPI' undefined at the module level
-W0601:215:initImages: Global variable 'nodeupPI' undefined at the module level
-W0601:216:initImages: Global variable 'pastePI' undefined at the module level
-W0601:217:initImages: Global variable 'pasteclonePI' undefined at the module level
-W0601:218:initImages: Global variable 'promotePI' undefined at the module level
-W0601:219:initImages: Global variable 'questionPI' undefined at the module level
-W0601:220:initImages: Global variable 'sortchildrenPI' undefined at the module level
-W0601:221:initImages: Global variable 'sortsiblingsPI' undefined at the module level
-E1101:321:addBalloon: Module 'Pmw' has no 'Balloon' member
-E1101:331:view_help: Module 'Pmw' has no 'Dialog' member
-E1101:332:view_help: Module 'Pmw' has no 'ScrolledFrame' member
-E1101:338:view_help: Module 'Pmw' has no 'LabeledWidget' member
-W0611: 17: Unused import weakref
+echo leoGlobals.py
+E1103:2745:plugin_signon: Instance of 'Bunch' has no '__name__' member (but some types could not be inferred)
+E1103:2745:plugin_signon: Instance of 'Bunch' has no '__version__' member (but some types could not be inferred)
+E1103:2747:plugin_signon: Instance of 'Bunch' has no '__name__' member (but some types could not be inferred)
+E1103:2747:plugin_signon: Instance of 'Bunch' has no '__version__' member (but some types could not be inferred)
+call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
-pie_menus.py
-************* Module plugins.pie_menus
-E1101:100:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
-E1101:100:PieMenu.drawString: Instance of 'PieMenu' has no 'l4' member
-E0602:131:PieMenu.construct: Undefined variable 'l1'
-E0602:135:PieMenu.construct: Undefined variable 'l1'
-E0602:139:PieMenu.construct: Undefined variable 'l1'
-E0602:144:PieMenu.construct: Undefined variable 'l1'
-E0602:148:PieMenu.construct: Undefined variable 'l1'
-E0602:163:PieMenu.construct: Undefined variable 'l1'
-E0602:178:PieMenu.construct: Undefined variable 'l3'
-E0602:184:PieMenu.construct: Undefined variable 'l3'
-E0602:191:PieMenu.construct: Undefined variable 'l3'
-E0602:201:PieMenu.construct: Undefined variable 'l2'
-E0602:207:PieMenu.construct: Undefined variable 'l2'
-E0602:213:PieMenu.construct: Undefined variable 'l2'
-E0602:220:PieMenu.construct: Undefined variable 'l2'
-E0602:226:PieMenu.construct: Undefined variable 'l2'
-E0602:236:PieMenu.construct: Undefined variable 'l4'
-E0602:242:PieMenu.construct: Undefined variable 'l4'
-E0602:249:PieMenu.construct: Undefined variable 'l4'
-E0602:259:PieMenu.construct: Undefined variable 'l5'
-E0602:269:PieMenu.construct: Undefined variable 'l6'
-E0602:279:PieMenu.construct: Undefined variable 'l7'
-E0602:285:PieMenu.construct: Undefined variable 'l7'
-E0602:291:PieMenu.construct: Undefined variable 'l7'
-E1101:397:PieMenu.clean: Instance of 'PieMenu' has no 'l1' member
-E1101:398:PieMenu.clean: Instance of 'PieMenu' has no 'l2' member
-E1101:399:PieMenu.clean: Instance of 'PieMenu' has no 'l3' member
-E1101:400:PieMenu.clean: Instance of 'PieMenu' has no 'l4' member
-E1101:401:PieMenu.clean: Instance of 'PieMenu' has no 'l5' member
-E1101:402:PieMenu.clean: Instance of 'PieMenu' has no 'l6' member
-E1101:403:PieMenu.clean: Instance of 'PieMenu' has no 'l7' member
-E1101:451:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
-E1101:452:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
-E1101:453:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
-E1101:454:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
-E1101:455:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
-E1101:456:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
-E1101:457:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
-E1101:458:PieMenu.draw: Instance of 'PieMenu' has no 'l1' member
-E1101:459:PieMenu.draw: Instance of 'PieMenu' has no 'l3' member
-E1101:460:PieMenu.draw: Instance of 'PieMenu' has no 'l2' member
-E1101:461:PieMenu.draw: Instance of 'PieMenu' has no 'l4' member
-E1101:462:PieMenu.draw: Instance of 'PieMenu' has no 'l5' member
-E1101:463:PieMenu.draw: Instance of 'PieMenu' has no 'l6' member
-E1101:464:PieMenu.draw: Instance of 'PieMenu' has no 'l7' member
-W0611: 13: Unused import leoPlugins
-W0611: 11: Unused import leoTkinterTree
+echo leoTkinterFind.py (suppress E1101)
+E1101:685:tkSpellTab.down: Instance of 'tkSpellTab' has no 'positionList' member
+call pylint.bat leo\core\leoTkinterFind.py   --rcfile=leo\test\pylint-leo-rc.txt
+(fixed bug) defined positionList in tkSpellTab.
 
-pretty_print.py
-************* Module plugins.pretty_print
-E0602: 60:myPrettyPrinter.putNormalToken: Undefined variable 'token'
-E1101: 72:myPrettyPrinter.putNormalToken: Instance of 'myPrettyPrinter' has no 'dispatchDict' member
-E1101: 82:myPrettyPrinter.doEndMarker: Instance of 'myPrettyPrinter' has no 'putArray' member
-E1101: 90:myPrettyPrinter.doErrorToken: Instance of 'myPrettyPrinter' has no 'array' member
-E1101: 97:myPrettyPrinter.doErrorToken: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:109:myPrettyPrinter.doIndent: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:118:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:119:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:121:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:126:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:128:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'putArray' member
-E1101:131:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:132:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:134:myPrettyPrinter.doMultiLine: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:146:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:147:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:149:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'parenLevel' member
-E1101:149:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'squareBracketLevel' member
-E1101:153:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:155:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:158:myPrettyPrinter.doName: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:170:myPrettyPrinter.doNewline: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:171:myPrettyPrinter.doNewline: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:171:myPrettyPrinter.doNewline: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:173:myPrettyPrinter.doNewline: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:174:myPrettyPrinter.doNewline: Instance of 'myPrettyPrinter' has no 'putArray' member
-E1101:182:myPrettyPrinter.doNumber: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:190:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'lineParenLevel' member
-E1101:190:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'parenLevel' member
-E1101:190:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'squareBracketLevel' member
-E1101:193:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:197:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:200:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'lastName' member
-E0602:200:myPrettyPrinter.doOp: Undefined variable 'keyword'
-E1101:201:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:202:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'parenLevel' member
-E1101:202:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'lineParenLevel' member
-E1101:206:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:210:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:211:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'squareBracketLevel' member
-E1101:215:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:216:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'squareBracketLevel' member
-E1101:218:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'parenLevel' member
-E1101:218:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'lineParenLevel' member
-E1101:222:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:225:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:228:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:233:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'array' member
-E1101:234:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'array' member
-E0602:235:myPrettyPrinter.doOp: Undefined variable 'string'
-E0602:235:myPrettyPrinter.doOp: Undefined variable 'string'
-E1101:236:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:237:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:238:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:240:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:242:myPrettyPrinter.doOp: Instance of 'myPrettyPrinter' has no 'put' member
-E1101:255:myPrettyPrinter.doStartLine: Instance of 'myPrettyPrinter' has no 'array' member
-E0203:157:myPrettyPrinter.doName: Access to member 'prevName' before its definition line 160
-W0611: 25: Unused import leoPlugins
+echo mod_scripting.py
+rem E0611:461:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+rem The 'debug-script' button writes leoScriptModule.py to the leo/core directory.
+call pylint.bat leo\plugins\mod_scripting.py       --rcfile=leo\test\pylint-leo-rc.txt
 
-rClick.py
-************* Module plugins.rClick
-W0511:637: TODO:
-E1101:991:pluginController.getButtonHandlers: Instance of 'pluginController' has no 'button_handlers' member
-E1101:1649:pluginController.findButtonCommandClass.doCommand: Instance of 'findButtonCommandClass' has no 'data' member
-W0102:2155:pluginController.rClicker.table_to_menu.invokeMinibufferMenuCommand: Dangerous default value item_data ({}) as argument
-W0102:2208:pluginController.rClicker.table_to_menu.invokeMenuCallback: Dangerous default value item_data ({}) as argument
-W0611:670: Unused import ImageTk
-W0611:669: Unused import Image
-
-rClickBasePluginClasses.py
-************* Module plugins.rClickBasePluginClasses
-E1101:143:pluginCommandClass.preDoCommand: Instance of 'pluginCommandClass' has no 'doCommand' member
-E1101:285:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandList' member
-E1101:292:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:297:basePluginController.getPublicCommands: Instance of 'basePluginController' has no 'commandPrefix' member
-E1101:338:basePluginController.getCommandList: Instance of 'basePluginController' has no 'commandList' member
-E1101:347:basePluginController.setDefaultContextMenus: Instance of 'basePluginController' has no 'defaultContextMenus' member
-
-read_only_nodes.py
-************* Module plugins.read_only_nodes
-E0602:204:FTPurl.read: Undefined variable 'sys'
-W0104:212:FTPurl.readline: Statement seems to have no effect
-E0602:241:FTPurl.write: Undefined variable 'sys'
-E0213:247:FTPurl.seek: Method should have "self" as first argument
-E0602:248:FTPurl.seek: Undefined variable 'self'
-E0211:251:FTPurl.flush: Method has no argument
-E0602:267:FTPurl.dir: Undefined variable 'sys'
-E0203:212:FTPurl.readline: Access to member 'lst' before its definition line 214
-W0601:308:enable_body: Global variable 'insertOnTime' undefined at the module level
-W0601:308:enable_body: Global variable 'insertOffTime' undefined at the module level
-W0601:318:disable_body: Global variable 'insertOnTime' undefined at the module level
-W0601:318:disable_body: Global variable 'insertOffTime' undefined at the module level
-
-searchbar.py
-************* Module plugins.searchbar
-W0311:100: Bad indentation. Found 9 spaces, expected 8
-W0107:125:onPreCreate: Unnecessary pass statement
-E1101:205:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'bg' member
-E1101:211:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'labelText' member
-E1101:213:SearchbarEntryWidget.__init__: Instance of 'SearchbarEntryWidget' has no 'command' member
-E1101:270:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
-E1101:275:SearchbarEntryWidget.detachWidget: Instance of 'SearchbarEntryWidget' has no 'leoIconBar' member
-E1101:299:SearchbarEntryWidget.onTextChanged: Instance of 'SearchbarEntryWidget' has no 'slave' member
-E1101:309:SearchbarEntryWidget.onRightClick: Instance of 'SearchbarEntryWidget' has no 'entry_menu' member
-E1101:316:SearchbarEntryWidget.onReturn: Instance of 'SearchbarEntryWidget' has no 'command' member
-W0221:391:pluginController.postCreate: Arguments number differs from overridden method
-W0107:460:pluginController.toggleSearchbarCommandClass.doCommand: Unnecessary pass statement
-W0611: 48: Unused import sys
-W0611: 56: Unused import ImageTk
-W0611: 55: Unused import Image
-W0611: 47: Unused import re
-W0611: 49: Unused import os
-
-templates.py
-************* Module plugins.templates
-W0601:112:initImages: Global variable 'templatePI' undefined at the module level
-W0601:113:initImages: Global variable 'tempwizPI' undefined at the module level
-E1101:127:getSelectDialog: Module 'Pmw' has no 'Dialog' member
-E1101:131:getSelectDialog: Module 'Pmw' has no 'ScrolledListBox' member
-E1101:184:getTemplateDialog: Module 'Pmw' has no 'Dialog' member
-E1101:187:getTemplateDialog: Module 'Pmw' has no 'ScrolledFrame' member
-E1101:190:getTemplateDialog: Module 'Pmw' has no 'logicalfont' member
-E1101:191:getTemplateDialog: Module 'Pmw' has no 'ScrolledText' member
-W0102:204:getTemplateDialog.action: Dangerous default value efs ([]) as argument
-W0102:204:getTemplateDialog.action: Dangerous default value values ([]) as argument
-E1101:250:colorize: Module 'Pmw' has no 'logicalfont' member
-E1101:266:addEntries: Module 'Pmw' has no 'EntryField' member
-E1101:281:getNoTemplates: Module 'Pmw' has no 'MessageDialog' member
-E1101:357:addButtons: Module 'Pmw' has no 'ButtonBox' member
-W0611: 67: Unused import cStringIO
-W0611: 58: Unused import leoNodes
-
-toolbar.py
-************* Module plugins.toolbar
-W0311:358: Bad indentation. Found 9 spaces, expected 8
-W0311:497: Bad indentation. Found 13 spaces, expected 12
-W0311:1000: Bad indentation. Found 13 spaces, expected 12
-W0311:1001: Bad indentation. Found 17 spaces, expected 16
-W0311:1003: Bad indentation. Found 16 spaces, expected 12
-W0311:1653: Bad indentation. Found 7 spaces, expected 8
-W0311:1786: Bad indentation. Found 11 spaces, expected 12
-W0311:2012: Bad indentation. Found 19 spaces, expected 20
-W0311:2488: Bad indentation. Found 17 spaces, expected 16
-W0511:800: FIXME:
-W0511:871: TODO: not ready yet
-E1101:450:ToolbarTkinterTreeTab.createControl: Instance of 'ToolbarTkinterTreeTab' has no 'c' member
-E1101:463:ToolbarTkinterTreeTab.createControl: Instance of 'ToolbarTkinterTreeTab' has no 'selectTab' member
-E1101:538:ToolbarTkinterFrame.clearIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:555:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:557:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBarClass' member
-E1101:558:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'c' member
-E1101:561:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:564:ToolbarTkinterFrame.createIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:585:ToolbarTkinterFrame.hideIconBar: Instance of 'ToolbarTkinterFrame' has no 'iconBars' member
-E1101:625:ToolbarTkinterFrame.getToolbarFrame: Instance of 'ToolbarTkinterFrame' has no 'toolBar' member
-E1101:643:ToolbarTkinterFrame.createToolbar: Instance of 'ToolbarTkinterFrame' has no 'c' member
-E1101:653:ToolbarTkinterFrame.createToolbar: Instance of 'ToolbarTkinterFrame' has no 'outerFrame' member
-E0203:646:ToolbarTkinterFrame.createToolbar: Access to member 'toolbar' before its definition line 653
-E1101:688:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
-E1101:693:ToolbarIconWidgetFrame.detachWidget: Instance of 'ToolbarIconWidgetFrame' has no 'leoIconBar' member
-W0102:732:ToolbarIconButton.__init__: Dangerous default value {} as argument
-E0102:814:ToolbarIconButton.__init__.commandCallback: function already defined line 811
-E0102:818:ToolbarIconButton.__init__.commandCallback: function already defined line 811
-E1101:903:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
-E1101:908:ToolbarIconButton.detachWidget: Instance of 'ToolbarIconButton' has no 'leoIconBar' member
-E0102:1027:ToolbarIconButton.setCommand.commandCallback: function already defined line 1024
-E0102:1032:ToolbarIconButton.setCommand.commandCallback: function already defined line 1024
-E1101:1035:ToolbarIconButton.setCommand: Instance of 'ToolbarIconButton' has no 'config' member
-W0102:1044:ToolbarScriptButton.__init__: Dangerous default value {} as argument
-E1101:1076:ToolbarScriptButton.__init__.<lambda>: Instance of 'ToolbarScriptButton' has no 'invoke' member
-E1101:1196:ToolbarScriptingController.createAtButtonFromSettingHelper: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1199:ToolbarScriptingController.createAtButtonFromSettingHelper: Instance of 'ToolbarScriptingController' has no 'cleanButtonText' mem
-ber
-E1101:1247:ToolbarScriptingController.executeScriptFromSettingButton: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1272:ToolbarScriptingController.createAtButtonHelper: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1276:ToolbarScriptingController.createAtButtonHelper: Instance of 'ToolbarScriptingController' has no 'cleanButtonText' member
-E1101:1314:ToolbarScriptingController.executeScriptFromButton: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1362:ToolbarScriptingController.getIconBar: Instance of 'ToolbarScriptingController' has no 'c' member
-E0213:1365:ToolbarScriptingController.setIconBar: Method should have "self" as first argument
-E1101:1382:ToolbarScriptingController.createIconButton: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1396:ToolbarScriptingController.createIconButton: Instance of 'ToolbarScriptingController' has no 'buttonsDict' member
-E1101:1405:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptingController' has no 'c' member
-E1101:1423:ToolbarScriptingController.createScriptButtonIconButton: Instance of 'ToolbarScriptButton' has no 'configure' member
-E1101:1434:ToolbarScriptingController.addScriptButtonCommand: Instance of 'ToolbarScriptingController' has no 'c' member
-W0106:1436:ToolbarScriptingController.addScriptButtonCommand: Unnecessary semicolon
-E1101:1439:ToolbarScriptingController.addScriptButtonCommand: Instance of 'ToolbarScriptingController' has no 'getButtonText' member
-E1101:1440:ToolbarScriptingController.addScriptButtonCommand: Instance of 'ToolbarScriptingController' has no 'getShortcut' member
-W0104:1814:ToolbarTkIconBarClass.doRepackButtons: Statement seems to have no effect
-E0602:2052:ToolbarTkIconBarClass.removeWidget: Undefined variable 'dw'
-E0602:2053:ToolbarTkIconBarClass.removeWidget: Undefined variable 'dw'
-E0602:2054:ToolbarTkIconBarClass.removeWidget: Undefined variable 'dw'
-W0107:2067:ToolbarTkIconBarClass.removeWidget: Unnecessary pass statement
-W0107:2089:ToolbarTkIconBarClass.clear: Unnecessary pass statement
-E0203:2098:ToolbarTkIconBarClass.getButton: Access to member 'item_data' before its definition line 2107
-W0221:2297:pluginController.postCreate: Arguments number differs from overridden method
-W0107:2453:pluginController.deleteButtonCommandClass.doCommand: Unnecessary pass statement
-W0611:306: Unused import ImageTk
-W0611:297: Unused import re
-W0611:298: Unused import sys
-W0611:312: Unused import leoTkinterTree
-W0611:305: Unused import Image
-W0611:299: Unused import os
-
-xcc_nodes.py
-************* Module plugins.xcc_nodes
-W0312:301: Found indentation with tabs instead of spaces
-W0312:533: Found indentation with tabs instead of spaces
-W0312:535: Found indentation with tabs instead of spaces
-W0312:536: Found indentation with tabs instead of spaces
-W0312:537: Found indentation with tabs instead of spaces
-W0312:539: Found indentation with tabs instead of spaces
-W0312:540: Found indentation with tabs instead of spaces
-W0312:546: Found indentation with tabs instead of spaces
-W0312:547: Found indentation with tabs instead of spaces
-W0312:555: Found indentation with tabs instead of spaces
-W0312:556: Found indentation with tabs instead of spaces
-W0312:557: Found indentation with tabs instead of spaces
-W0312:610: Found indentation with tabs instead of spaces
-W0312:612: Found indentation with tabs instead of spaces
-W0312:614: Found indentation with tabs instead of spaces
-W0312:615: Found indentation with tabs instead of spaces
-W0312:616: Found indentation with tabs instead of spaces
-W0312:620: Found indentation with tabs instead of spaces
-W0312:621: Found indentation with tabs instead of spaces
-W0312:639: Found indentation with tabs instead of spaces
-W0312:640: Found indentation with tabs instead of spaces
-W0312:641: Found indentation with tabs instead of spaces
-W0312:643: Found indentation with tabs instead of spaces
-W0312:644: Found indentation with tabs instead of spaces
-W0312:650: Found indentation with tabs instead of spaces
-W0312:651: Found indentation with tabs instead of spaces
-W0312:652: Found indentation with tabs instead of spaces
-W0312:653: Found indentation with tabs instead of spaces
-W0312:654: Found indentation with tabs instead of spaces
-W0312:655: Found indentation with tabs instead of spaces
-W0312:661: Found indentation with tabs instead of spaces
-W0312:662: Found indentation with tabs instead of spaces
-W0312:663: Found indentation with tabs instead of spaces
-W0312:664: Found indentation with tabs instead of spaces
-W0312:666: Found indentation with tabs instead of spaces
-W0312:671: Found indentation with tabs instead of spaces
-W0312:677: Found indentation with tabs instead of spaces
-W0312:678: Found indentation with tabs instead of spaces
-W0312:679: Found indentation with tabs instead of spaces
-W0312:680: Found indentation with tabs instead of spaces
-W0312:685: Found indentation with tabs instead of spaces
-W0312:686: Found indentation with tabs instead of spaces
-W0312:690: Found indentation with tabs instead of spaces
-W0312:691: Found indentation with tabs instead of spaces
-W0312:692: Found indentation with tabs instead of spaces
-W0312:693: Found indentation with tabs instead of spaces
-W0312:694: Found indentation with tabs instead of spaces
-W0312:696: Found indentation with tabs instead of spaces
-W0312:713: Found indentation with tabs instead of spaces
-W0312:714: Found indentation with tabs instead of spaces
-W0511:219: XXX to XxxClass.
-W0511:671: TODO: ","Add import code in ImportFiles function!")
-W0511:3885: TODO: Support precompiled header auto creation/inclusion."""
-W0511:4237: TODO: send a WATCHTASK if breaked
-E0602:448:OnStart2: Undefined variable 'XCC_INITED'
-E0602:450:OnStart2: Undefined variable 'InitXcc'
-W0104:464:OnSelect2: Statement seems to have no effect
-W0104:473:OnIdle: Statement seems to have no effect
-W0104:482:OnCommand2: Statement seems to have no effect
-W0104:491:OnBodyDoubleClick: Statement seems to have no effect
-W0104:500:OnBodyKey2: Statement seems to have no effect
-W0104:509:OnHeadKey2: Statement seems to have no effect
-E1101:547:linPause: Module 'os' has no 'kill' member
-E0601:555:AddText: Using variable 'c' before assignment
-E0602:556:AddText: Undefined variable 'LeoBody'
-E0602:557:AddText: Undefined variable 'LeoBody'
-E0602:615:DecompressIcon: Undefined variable 'Excetion'
-E0602:616:DecompressIcon: Undefined variable 'Traceback'
-E0602:690:ReplaceVars: Undefined variable 'NAME'
-E0602:691:ReplaceVars: Undefined variable 'EXT'
-E0602:692:ReplaceVars: Undefined variable 'ABS_PATH'
-E0602:693:ReplaceVars: Undefined variable 'REL_PATH'
-E0602:694:ReplaceVars: Undefined variable 'SRC_EXT'
-E0211:1023:controllerClass.UpdateProcess: Method has no argument
-E0601:1025:controllerClass.UpdateProcess: Using variable 'cc' before assignment
-E0602:1027:controllerClass.UpdateProcess: Undefined variable 'self'
-E0211:1227:controllerClass.sGetExecInfo: Method has no argument
-E0602:1229:controllerClass.sGetExecInfo: Undefined variable 'self'
-Exception exceptions.RuntimeError: 'generator ignored GeneratorExit' in <generator object at 0x018D6AF8> ignored
-Exception exceptions.RuntimeError: 'generator ignored GeneratorExit' in <generator object at 0x018D6A80> ignored
-Exception exceptions.RuntimeError: 'generator ignored GeneratorExit' in <generator object at 0x018D5CD8> ignored
-E0602:1257:controllerClass.sGoToError: Undefined variable 'CPL'
-E1101:1435:controllerClass.sSetText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1435:controllerClass.sSetText: Undefined variable 'SELECTED_NODE'
-E1101:1442:controllerClass.sAddText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1442:controllerClass.sAddText: Undefined variable 'SELECTED_NODE'
-E0602:1534:controllerClass.aStepIn: Undefined variable 'DBG'
-E0602:1551:controllerClass.aStepOver: Undefined variable 'DBG'
-E0602:1567:controllerClass.aStepOut: Undefined variable 'DBG'
-E1101:1622:controllerClass.aSetText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1622:controllerClass.aSetText: Undefined variable 'ACTIVE_NODE'
-E1101:1630:controllerClass.aAddText: Instance of 'controllerClass' has no 'ACTIVE_NOD' member
-E1101:1631:controllerClass.aAddText: Instance of 'controllerClass' has no 'setBodyText' member
-E0602:1634:controllerClass.aAddText: Undefined variable 'LeoBodyText'
-E1101:1666:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessClass' member
-E1101:1673:controllerClass.Compile: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1690:controllerClass.CplCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
-E0602:1735:controllerClass.CplCmd: Undefined variable 'CPL'
-E1101:1755:controllerClass.Debug: Instance of 'controllerClass' has no 'GetDebugInfo' member
-E1101:1764:controllerClass.Debug: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1773:controllerClass.DbgCmd: Instance of 'controllerClass' has no 'ReplaceVars' member
-E1101:1797:controllerClass.Execute: Instance of 'controllerClass' has no 'ProcessList' member
-E1101:1811:controllerClass.CplStart: Instance of 'controllerClass' has no 'VProcessList' member
-E1101:1898:controllerClass.DbgStart: Instance of 'controllerClass' has no 'ProcessList' member
-E0602:1918:controllerClass.DbgStart: Undefined variable 'DBG'
-E0602:1925:controllerClass.DbgStart: Undefined variable 'DBG'
-E0213:1929:controllerClass.DbgOut: Method should have "self" as first argument
-E0602:1933:controllerClass.DbgOut: Undefined variable 'self'
-E0602:1938:controllerClass.DbgOut: Undefined variable 'OutBuff'
-E1101:2024:controllerClass.ProgStart: Instance of 'controllerClass' has no 'ProcessList' member
-E0602:2041:controllerClass.ProgOut: Undefined variable 'ExtractLines'
-E0602:2041:controllerClass.ProgOut: Undefined variable 'OutBuff'
-E0602:2060:controllerClass.ProgErr: Undefined variable 'ExtractLines'
-E0602:2060:controllerClass.ProgErr: Undefined variable 'ErrBuff'
-E0602:2103:DBGTASK.__init__: Undefined variable 'DBG_SD'
-E0602:2105:DBGTASK.__init__: Undefined variable 'DBG_SD'
-E1101:2113:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
-E1101:2114:DBGTASK.Send: Instance of 'DBGTASK' has no 'aWrite' member
-E1101:2114:DBGTASK.Send: Instance of 'DBGTASK' has no 'Command' member
-E1101:2115:DBGTASK.Send: Instance of 'DBGTASK' has no 'DBG_SD' member
-E0602:2207:BREAKTASK.__init__: Undefined variable 'aGet'
-E0602:2209:BREAKTASK.__init__: Undefined variable 'DBG'
-E0602:2211:BREAKTASK.__init__: Undefined variable 'Waning'
-E0602:2216:BREAKTASK.__init__: Undefined variable 'DBG'
-E0602:2232:BREAKTASK.Send: Undefined variable 'NAME'
-E0602:2233:BREAKTASK.Send: Undefined variable 'aWrite'
-E0602:2235:BREAKTASK.Send: Undefined variable 'DBG_SD'
-E0602:2236:BREAKTASK.Send: Undefined variable 'DBG_RD'
-E0602:2249:BREAKTASK.Receive: Undefined variable 'aAddText'
-E0602:2310:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:2312:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:2316:WATCHTASK.__init__: Undefined variable 'cc'
-E0602:2317:WATCHTASK.__init__: Undefined variable 'ccWatcher'
-E0602:2320:WATCHTASK.__init__: Undefined variable 'DBG_SD'
-W0601:2331:WATCHTASK.Cancel: Global variable 'WATCH_TASK' undefined at the module level
-E0602:2332:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
-E0602:2333:WATCHTASK.Cancel: Undefined variable 'DBG_SD'
-E0602:2334:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
-E0602:2335:WATCHTASK.Cancel: Undefined variable 'DBG_RD'
-E0602:2336:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
-E0602:2337:WATCHTASK.Cancel: Undefined variable 'PROMPT_RD'
-E0602:2339:WATCHTASK.Cancel: Undefined variable 'Watcher'
-E0602:2346:WATCHTASK.Send: Undefined variable 'Watcher'
-E0602:2348:WATCHTASK.Send: Undefined variable 'aWrite'
-E0602:2348:WATCHTASK.Send: Undefined variable 'DBG'
-E0602:2349:WATCHTASK.Send: Undefined variable 'DBG_SD'
-E0602:2350:WATCHTASK.Send: Undefined variable 'DBG_RD'
-E0602:2351:WATCHTASK.Send: Undefined variable 'PROMPT_RD'
-E0602:2358:WATCHTASK.Receive: Undefined variable 'DBG_PROMPT'
-W0601:2364:WATCHTASK.OnPrompt: Global variable 'WATCH_TASK' undefined at the module level
-E0602:2366:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2372:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2377:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2378:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2381:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2382:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2384:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2387:WATCHTASK.OnPrompt: Undefined variable 'DBG_SD'
-E0602:2389:WATCHTASK.OnPrompt: Undefined variable 'Watcher'
-E0602:2392:WATCHTASK.OnPrompt: Undefined variable 'PROMPT_RD'
-E0602:2393:WATCHTASK.OnPrompt: Undefined variable 'DBG_RD'
-E0602:2478:BREAKIDTASK.Send: Undefined variable 'aWrite'
-E0602:2479:BREAKIDTASK.Send: Undefined variable 'DBG_SD'
-E0602:2480:BREAKIDTASK.Send: Undefined variable 'DBG_RD'
-W0104:2618:ProcessClass.Close: Statement seems to have no effect
-W0104:2620:ProcessClass.Close: Statement seems to have no effect
-W0104:2627:ProcessClass.Close: Statement seems to have no effect
-E0602:2998:ConfigClass.CplPageClass.Browse: Undefined variable 'e'
-E0602:3155:ConfigClass.DbgPageClass.Browse: Undefined variable 'e'
-W0104:3555:ConfigClass.SaveToNode: Statement seems to have no effect
-E0602:4099:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
-E0602:4100:ToolbarClass.SyncDisplayToError: Undefined variable 'BreakBar'
-E0602:4105:ToolbarClass.SyncDisplayToError: Undefined variable 'INSERT'
-E0602:4118:ToolbarClass.SyncDisplayToError: Undefined variable 'c'
-W0601:4123:ToolbarClass.SetError: Global variable 'PARSE_ERROR' undefined at the module level
-W0601:4123:ToolbarClass.SetError: Global variable 'PARSE_ERROR_NODE' undefined at the module level
-E0602:4162:ToolbarClass.Refresh: Undefined variable 'ACTIVE_NODE'
-E0602:4185:WatcherClass.__init__: Undefined variable 'c'
-E0602:4206:WatcherClass.__init__: Undefined variable 'c'
-E0602:4207:WatcherClass.__init__: Undefined variable 'c'
-E0602:4208:WatcherClass.__init__: Undefined variable 'c'
-E0602:4209:WatcherClass.__init__: Undefined variable 'c'
-E0602:4265:WatcherClass.OnDelete: Undefined variable 'sGet'
-W0221:4390:BreakbarClass.yview: Arguments number differs from overridden method
-E0602:4450:BreakbarClass.OnCut: Undefined variable 'LeoFrame'
-E0602:4455:BreakbarClass.OnPaste: Undefined variable 'LeoFrame'
-E1101:4461:BreakbarClass.OnRightClick: Instance of 'BreakbarClass' has no 'c' member
-E0602:4462:BreakbarClass.OnRightClick: Undefined variable 'Menu'
-E0602:4480:BreakbarClass.OnLeftClick: Undefined variable 'cGet'
-E0602:4482:BreakbarClass.OnLeftClick: Undefined variable 'CHILD_NODE'
-E0602:4495:BreakbarClass.OnLeftClick: Undefined variable 'SEL'
-E0602:4502:BreakbarClass.AddNodeBreak: Undefined variable 'cGet'
-E0602:4506:BreakbarClass.DeleteNodeBreak: Undefined variable 'cGet'
-E0602:4512:BreakbarClass.ClearNodeBreaks: Undefined variable 'cSet'
-E0602:4635:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_EXT'
-E0602:4635:BreakbarClass.BreaksFromTags: Undefined variable 'CHILD_LINE'
-E0602:4644:BreakbarClass.AddBreak: Undefined variable 'sGet'
-E0602:4687:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cGet'
-E0602:4691:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_EXT'
-E0602:4691:BreakbarClass.DeleteNodeBreaks: Undefined variable 'CHILD_LINE'
-E1101:4693:BreakbarClass.DeleteNodeBreaks: Instance of 'BreakbarClass' has no 'DeleteDbgBreaks' member
-E0602:4695:BreakbarClass.DeleteNodeBreaks: Undefined variable 'cSelect'
-E0602:5020:CppParserClass.FUNCRULE.DeclareFunc: Undefined variable 'ToolBar'
-E0602:5040:CppParserClass.FUNCRULE.DefineFunc: Undefined variable 'ToolBar'
-W0104:5069:CppParserClass.FUNCRULE.DefineFunc: Statement seems to have no effect
-W0104:5091:CppParserClass.FUNCRULE.DefineFunc: Statement seems to have no effect
-E0602:5184:CppParserClass.CLASSRULE.OnMatch: Undefined variable 'ToolBar'
-W0104:5211:CppParserClass.CLASSRULE.OnMatch: Statement seems to have no effect
-E1101:5400:CppParserClass.Docum: Instance of 'CppParserClass' has no 'CURRENT_DOC_LINE' member
-E0602:5428:CppParserClass.SetRealBodyDestination: Undefined variable 'EXT'
-E1101:5508:CppParserClass.CppParse: Instance of 'CppParserClass' has no 'cc' member
-E1102:5535:CppParserClass.CppParse: self.OnStart is not callable
-E0602:5542:CppParserClass.CppParse: Undefined variable 'NAME'
-W0104:5548:CppParserClass.CppParse: Statement seems to have no effect
-E1102:5548:CppParserClass.CppParse: self.OnEnd is not callable
-E1101:5563:CppParserClass.ParseNode: Instance of 'CppParserClass' has no 'cc' member
-E0602:5660:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
-E0602:5661:WriterClass.OnWriteStart: Undefined variable 'REL_PATH'
-E0602:5661:WriterClass.OnWriteStart: Undefined variable 'NAME'
-E0602:5663:WriterClass.OnWriteStart: Undefined variable 'NAME'
-E0602:5666:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5667:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:5671:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5672:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:5677:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5677:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5678:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:5678:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5679:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5682:WriterClass.OnWriteStart: Undefined variable 'EXT'
-E0602:5683:WriterClass.OnWriteStart: Undefined variable 'sAddText'
-E0602:5733:BreakFinderClass.__init__: Undefined variable 'controllerSELECTED_NODE'
-E0602:5733:BreakFinderClass.__init__: Undefined variable 'controllerEXT'
-E0602:5750:BreakFinderClass.OnFindStart: Undefined variable 'sSet'
-E0602:5751:BreakFinderClass.OnFindStart: Undefined variable 'sGet'
-E0602:5758:BreakFinderClass.OnFindEnd: Undefined variable 'sSet'
-E0602:5780:BreakFinderClass.BreakDef: Undefined variable 'SRC_EXT'
-W0611:270: Unused import tkSimpleDialog
-W0611:271: Unused import base64
-W0611:267: Unused import beep
-
-Note: this file should use @thin instead of @file.
-
-zenity_file_dialogs.py
-************* Module plugins.zenity_file_dialogs
-W0104: 93:init: Statement seems to have no effect
-W0104:106:onStart2: Statement seems to have no effect
-W0104:136:callZenity: Statement seems to have no effect
-W0104:151:runOpenFileDialog: Statement seems to have no effect
-W0104:163:runSaveFileDialog: Statement seems to have no effect
-W0614: 43: Unused import STDOUT from wildcard import
-W0614: 43: Unused import check_call from wildcard import
-W0614: 43: Unused import CalledProcessError from wildcard import
-W0614: 43: Unused import call from wildcard import
-
-@color
+echo threading_colorizer.py (suppress E1103)
+E1103:418:colorizer.__init__: Instance of 'tkinterGui' has no 'Tk_Text' member (but some types could not be inferred)
+E1103:418:colorizer.__init__: Instance of 'unitTestGui' has no 'Tk_Text' member (but some types could not be inferred)
+E1103:418:colorizer.__init__: Instance of 'nullGui' has no 'Tk_Text' member (but some types could not be inferred)
+call pylint.bat leo\plugins\threading_colorizer.py  --rcfile=leo\test\pylint-leo-rc.txt
+Workaround: use hasattr/getattr instead of try/except AttributeError.
 #@nonl
-#@+node:ekr.20080701085405.11:Plugins that don't pass
-autotrees.py
-cursesGui.py
-fastGotoNode.py
-footprints.py
-groupOperations.py
-gtkDialogs.py
-leoOPML.py       # Not in leoPlugins.leo
-leoupdate.py
-leo_interface.py
-mod_autosave.py
-mod_http.py
-mod_labels.py
-nav_buttons.py
-nodebar.py
-pie_menus.py
-pretty_print.py
-rClick.py
-rClickBasePluginClasses.py
-read_only_nodes.py
-searchbar.py
-templates.py
-toolbar.py
-xcc_nodes.py
-zenity_file_dialogs.py   Note: this file should use @thin instead of @file.
-#@nonl
-#@-node:ekr.20080701085405.11:Plugins that don't pass
-#@+node:ekr.20080701085405.2:Changed
-#@+node:ekr.20051025080420.1:commands...(spellCommandsClass)
-# Just open the Spell tab if it has never been opened.
-# For minibuffer commands, we must also force the Spell tab to be visible.
-# self.handler is a spellTabHandler object (inited by openSpellTab)
+#@-node:ekr.20080707150137.3:Fixed
+#@+node:ekr.20031218072017.3732:app.gui panels
+def createColorPanel(self,c):
+    """Create a color panel"""
+    self.oops()
 
-def find (self,event=None):
-    '''Simulate pressing the 'Find' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.find()
-    else:
-        self.openSpellTab()
-
-def change(self,event=None):
-    '''Simulate pressing the 'Change' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.change()
-    else:
-        self.openSpellTab()
-
-def changeThenFind (self,event=None):
-    '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        # A workaround for a pylint warning:
-        # self.handler.changeThenFind()
-        f = getattr(self.handler,'changeThenFind')
-        f()
-    else:
-        self.openSpellTab()
-
-def hide (self,event=None):
-    '''Hide the Spell tab.'''
-    if self.handler:
-        self.c.frame.log.selectTab('Log')
-        self.c.bodyWantsFocus()
-
-def ignore (self,event=None):
-    '''Simulate pressing the 'Ignore' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.ignore()
-    else:
-        self.openSpellTab()
-#@-node:ekr.20051025080420.1:commands...(spellCommandsClass)
-#@+node:ekr.20051025080633:openSpellTab
-def openSpellTab (self,event=None):
-
-    '''Open the Spell Checker tab in the log pane.'''
-
-    c = self.c ; log = c.frame.log ; tabName = 'Spell'
-
-    if log.frameDict.get(tabName):
-        log.selectTab(tabName)
-    else:
-        log.selectTab(tabName)
-        self.handler = spellTabHandler(c,tabName)
-        if not self.handler.loaded:
-            log.deleteTab(tabName,force=True)
-#@-node:ekr.20051025080633:openSpellTab
-#@+node:ekr.20031218072017.4058:tkGui panels
 def createComparePanel(self,c):
-    """Create a Tkinter color picker panel."""
-    return leoTkinterComparePanel.leoTkinterComparePanel(c)
+    """Create Compare panel."""
+    self.oops()
 
-# def createFindPanel(self,c):
-    # """Create a hidden Tkinter find panel."""
-    # panel = leoTkinterFind.leoTkinterFind(c)
-    # panel.top.withdraw()
-    # return panel
+def createFindPanel(self,c):
+    """Create a hidden Find panel."""
+    self.oops()
 
 def createFindTab (self,c,parentFrame):
     """Create a Tkinter find tab in the indicated frame."""
-    return leoTkinterFind.tkFindTab(c,parentFrame)
+    self.oops()
+
+def createFontPanel (self,c):
+    """Create a hidden Font panel."""
+    self.oops()
 
 def createLeoFrame(self,title):
     """Create a new Leo frame."""
-    # print 'tkGui.createLeoFrame'
-    gui = self
-    return leoTkinterFrame.leoTkinterFrame(title,gui)
-#@-node:ekr.20031218072017.4058:tkGui panels
-#@+node:ekr.20041117155521:computeGlobalConfigDir
-def computeGlobalConfigDir():
+    self.oops()
+#@-node:ekr.20031218072017.3732:app.gui panels
+#@+node:ekr.20070302090616.1:Birth (nullFindTab)
+#@+node:ekr.20070302090616.2: ctor (nullFindTab)
+if 0: # Use the base-class ctor.
 
-    import leo.core.leoGlobals as g
+    def __init__ (self,c,parentFrame):
 
-    encoding = g.startupEncoding()
+        findTab.__init__(self,c,parentFrame)
+            # Init the base class.
+            # Calls initGui, createFrame, createBindings & init(c), in that order.
+#@-node:ekr.20070302090616.2: ctor (nullFindTab)
+#@+node:ekr.20070302090616.3:initGui
+# Called from findTab.ctor.
 
-    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
-    leo_config_dir = hasattr(sys,'leo_config_directory') and getattr(sys,'leo_config_directory')
+def initGui (self):
 
-    if leo_config_dir:
-        theDir = leo_config_dir
-    else:
-        theDir = g.os_path_join(g.app.loadDir,"..","config")
+    self.svarDict = {} # Keys are ivar names, values are svar objects.
 
-    if theDir:
-        theDir = g.os_path_abspath(theDir)
+    for key in self.intKeys:
+        self.svarDict[key] = self.svar() # Was Tk.IntVar.
 
-    if (
-        not theDir or
-        not g.os_path_exists(theDir,encoding) or
-        not g.os_path_isdir(theDir,encoding)
-    ):
-        theDir = None
+    for key in self.newStringKeys:
+        self.svarDict[key] = self.svar() # Was Tk.StringVar.
+#@-node:ekr.20070302090616.3:initGui
+#@+node:ekr.20070302090616.4:init
+# Called from findTab.ctor.
 
-    return theDir
-#@-node:ekr.20041117155521:computeGlobalConfigDir
-#@+node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-# Suppress warning about redefining getpreferredencoding
-# __pychecker__ = '--no-reuseattr'
+def init (self,c):
 
-try:
-    # Use Python's version of getpreferredencoding if it exists.
-    # It is new in Python 2.3.
-    import locale
-    getpreferredencoding = locale.getpreferredencoding
-except Exception:
-    # Use code copied from locale.py in Python 2.3alpha2.
-    if sys.platform in ('win32', 'darwin', 'mac'):
-        << define getpreferredencoding using _locale >>
-    else:
-        << define getpreferredencoding for *nix >>
+    # Separate c.ivars are much more convenient than a svarDict.
+    for key in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(key)
+        setattr(self,key,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(key)
+        if svar: svar.set(val)
+        #g.trace(key,val)
 
-# __pychecker__ = '--reuseattr'
-#@+node:ekr.20031218072017.1504:<< define getpreferredencoding using _locale >>
-# On Win32, this will return the ANSI code page
-# On the Mac, it should return the system encoding;
-# it might return "ascii" instead.
+    << set find/change widgets >>
+    << set radio buttons from ivars >>
+    << set checkboxes from ivars >>
+#@+node:ekr.20070302090616.5:<< set find/change widgets >>
+self.find_ctrl.delete(0,"end")
+self.change_ctrl.delete(0,"end")
 
-def getpreferredencoding(do_setlocale = True):
-    """Return the charset that the user is likely using."""
-    try:
-        import _locale
-        return _locale._getdefaultlocale()[1]
-    except Exception:
-        return None
-#@-node:ekr.20031218072017.1504:<< define getpreferredencoding using _locale >>
-#@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-# Avoid pychecker & pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
-if (
-    hasattr(locale,'CODESET') and
-    hasattr(locale,'LC_CTYPE') and
-    hasattr(locale,'nl_langinfo')
+# Get setting from @settings.
+for w,setting,defaultText in (
+    (self.find_ctrl,"find_text",'<find pattern here>'),
+    (self.change_ctrl,"change_text",''),
 ):
-    codeset =  getattr(locale,'CODESET')
-    lc_ctype = getattr(locale,'LC_CTYPE')
-    nl_langinfo = getattr(locale,'nl_langinfo')
-
-    def getpreferredencoding(do_setlocale=True):
-        """Return the charset that the user is likely using,
-        according to the system configuration."""
-        try:
-            if do_setlocale:
-                oldloc = locale.setlocale(lc_ctype)
-                locale.setlocale(lc_ctype, "")
-                result = nl_langinfo(codeset)
-                locale.setlocale(lc_ctype, oldloc)
-                return result
-            else:
-                return nl_langinfo(codeset)
-        except Exception:
-            return None
+    s = c.config.getString(setting)
+    if not s: s = defaultText
+    w.insert("end",s)
+#@-node:ekr.20070302090616.5:<< set find/change widgets >>
+#@+node:ekr.20070302090616.6:<< set radio buttons from ivars >>
+# In Tk, setting the var also sets the widget.
+# Here, we do so explicitly.
+d = self.widgetsDict
+for ivar,key in (
+    ("pattern_match","pattern-search"),
+    #("script_search","script-search")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-find-type"].set(key)
+        # w = d.get(key)
+        # if w: w.set(True)
+        break
 else:
-    # Fall back to parsing environment variables :-(
-    def getpreferredencoding(do_setlocale = True):
-        """Return the charset that the user is likely using,
-        by looking at environment variables."""
-        try:
-            return locale.getdefaultlocale()[1]
-        except Exception:
-            return None
+    self.svarDict["radio-find-type"].set("plain-search")
 
-#@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-#@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-#@+node:bobjack.20080509080123.2:c.universalCallback
-def universalCallback(self, function):
+for ivar,key in (
+    ("suboutline_only","suboutline-only"),
+    ("node_only","node-only"),
+    # ("selection_only","selection-only")
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+        break
+else:
+    key = ivar = 'entire-outline'
+    svar = self.svarDict[ivar].get()
+    if svar:
+        self.svarDict["radio-search-scope"].set(key)
+    # self.svarDict["radio-search-scope"].set(key)
+    # w = self.widgetsDict.get(key)
+    # if w: w.set(True)
+#@-node:ekr.20070302090616.6:<< set radio buttons from ivars >>
+#@+node:ekr.20070302090616.7:<< set checkboxes from ivars >>
+for ivar in (
+    'ignore_case',
+    'mark_changes',
+    'mark_finds',
+    'pattern_match',
+    'reverse',
+    'search_body',
+    'search_headline',
+    'whole_word',
+    'wrap',
+):
+    svar = self.svarDict[ivar].get()
+    if svar:
+        svar.set(True)
+        # w = self.widgetsDict.get(ivar)
+        # if w: w.set(True)
+#@-node:ekr.20070302090616.7:<< set checkboxes from ivars >>
+#@-node:ekr.20070302090616.4:init
+#@+node:ekr.20070302090616.15:createBindings
+def createBindings (self):
+    pass
+#@nonl
+#@-node:ekr.20070302090616.15:createBindings
+#@+node:ekr.20070302090616.9:createFrame
+def createFrame (self,parentFrame):
 
-    """Create a universal command callback.
+    self.parentFrame = self.top = parentFrame
 
-    Create and return a callback that wraps a function with an rClick
-    signature in a callback which adapts standard minibufer command
-    callbacks to a compatible format.
+    self.createFindChangeAreas()
+    self.createBoxes()
+#@nonl
+#@+node:ekr.20070302090616.10:createFindChangeAreas
+def createFindChangeAreas (self):
 
-    This also serves to allow rClick callback functions to handle
-    minibuffer commands from sources other than rClick menus so allowing
-    a single function to handle calls from all sources.
+    c = self.c
 
-    A function wrapped in this wrapper can handle rclick generator
-    and invocation commands and commands typed in the minibuffer.
+    # A plainTextWidget must be a stringTextWidget
+    plainTextWidget = g.app.gui.plainTextWidget
 
-    It will also be able to handle commands from the minibuffer even
-    if rclick is not installed.
-    """
-    def minibufferCallback(event, function=function):
+    import leo.core.leoFrame as leoFrame
+    assert issubclass(plainTextWidget,leoFrame.stringTextWidget)
 
-        # Avoid a pylint complaint.
-        if hasattr(self,'theContextMenuController'):
-            cm = getattr(self,'theContextMenuController')
-            keywords = cm.mb_keywords
+    self.find_ctrl   = plainTextWidget(c,name='find-text')
+    self.change_ctrl = plainTextWidget(c,name='change-text')
+#@-node:ekr.20070302090616.10:createFindChangeAreas
+#@+node:ekr.20070302090616.12:createBoxes
+def createBoxes (self):
+
+    '''Create two columns of radio buttons & check boxes.'''
+
+    c = self.c
+    # f = self.parentFrame
+    self.boxes = []
+    self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
+
+    data = ( # Leading star denotes a radio button.
+        ('Whole &Word', 'whole_word',),
+        ('&Ignore Case','ignore_case'),
+        ('Wrap &Around','wrap'),
+        ('&Reverse',    'reverse'),
+        ('Rege&xp',     'pattern_match'),
+        ('Mark &Finds', 'mark_finds'),
+        ("*&Entire Outline","entire-outline"),
+        ("*&Suboutline Only","suboutline-only"),  
+        ("*&Node Only","node-only"),
+        ('Search &Headline','search_headline'),
+        ('Search &Body','search_body'),
+        ('Mark &Changes','mark_changes'),
+    )
+
+    # Important: changing these controls merely changes entries in self.svarDict.
+    # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+    # Second, self.init sets the values of widgets from the ivars.
+    # inGroup = False
+    for label,ivar in data:
+        if label.startswith('*'):
+            label = label[1:]
+            w = self.buttonWidget(label)
+            self.widgetsDict[ivar] = w
         else:
-            cm = keywords = None
+            w = self.buttonWidget(label)
+            self.widgetsDict[ivar] = w
+        self.boxes.append(w)
+#@nonl
+#@-node:ekr.20070302090616.12:createBoxes
+#@+node:ekr.20070302090616.14:createButtons (not used)
+def createButtons (self):
 
-        if not keywords:
-            # If rClick is not loaded or no keywords dict was provided
-            #  then the command must have been issued in a minibuffer
-            #  context.
-            keywords = {'c': self, 'rc_phase': 'minibuffer'}
+    '''Create two columns of buttons.'''
 
-        keywords['mb_event'] = event     
+    # # Create the alignment panes.
+    # buttons  = Tk.Frame(outer,background=bg)
+    # buttons1 = Tk.Frame(buttons,bd=1,background=bg)
+    # buttons2 = Tk.Frame(buttons,bd=1,background=bg)
+    # buttons.pack(side='top',expand=1)
+    # buttons1.pack(side='left')
+    # buttons2.pack(side='right')
 
-        retval = None
-        try:
-            retval = function(keywords)
-        finally:
-            if cm:
-                # Even if there is an error:
-                #   clear mb_keywords prior to next command and
-                #   ensure mb_retval from last command is wiped
-                cm.mb_keywords = None
-                cm.mb_retval = retval
+    # width = 15 ; defaultText = 'Find' ; buttons = []
 
-    return minibufferCallback
-
-#fix bobjacks spelling error
-universallCallback = universalCallback
-#@-node:bobjack.20080509080123.2:c.universalCallback
-#@+node:ekr.20080623083646.10:dumpBead
-def dumpBead (self,n):
-
-    u = self
-    if n < 0 or n >= len(u.beads):
-        return 'no bead: n = ',n
-
-    bunch = u.beads[n] ; result = []
-    result.append('-' * 10)
-    result.append('len(u.beads): %s, n: %s' % (len(u.beads),n))
-    for ivar in ('kind','newP','newN','p','oldN','undoHelper'):
-        result.append('%s = %s' % (ivar,getattr(self,ivar)))
-    return '\n'.join(result)
-
-def dumpTopBead(self):
-
-    u = self
-    n = len(u.beads)
-    if n > 0:
-        return self.dumpBead(n-1)
-    else:
-        return '<no top bead>'
-#@-node:ekr.20080623083646.10:dumpBead
-#@+node:ekr.20031218072017.3606:undo.__init__ & clearIvars
-def __init__ (self,c):
-
-    self.c = c
-    self.debug = False # True: enable debugging code in new undo scheme.
-    self.debug_print = False # True: enable print statements in debug code.
-
-    self.granularity = c.config.getString('undo_granularity')
-    if self.granularity: self.granularity = self.granularity.lower()
-    if self.granularity not in ('node','line','word','char'):
-        self.granularity = 'line'
-    # g.trace('undoer',self.granularity)
-
-    self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
-
-    # Statistics comparing old and new ways (only if self.debug is on).
-    self.new_mem = 0
-    self.old_mem = 0
-
-    # State ivars...
-    self.undoType = "Can't Undo"
-    # These must be set here, _not_ in clearUndoState.
-    self.redoMenuLabel = "Can't Redo"
-    self.undoMenuLabel = "Can't Undo"
-    self.realRedoMenuLabel = "Can't Redo"
-    self.realUndoMenuLabel = "Can't Undo"
-    self.undoing = False # True if executing an Undo command.
-    self.redoing = False # True if executing a Redo command.
-
-    # New in 4.2...
-    self.optionalIvars = []
-
-    # Set the following ivars to keep pychecker happy.
-    self.afterTree = None
-    self.beforeTree = None
-    self.children = None
-    self.dirtyVnodeList = None
-    self.followingSibs = None
-    self.kind = None
-    self.newBack = None
-    self.newBody = None
-    self.newChildren = None
-    self.newHead = None
-    self.newMarked = None
-    self.newN = None
-    self.newP = None
-    self.newParent = None
-    self.newParent_v = None
-    self.newRecentFiles = None
-    self.newTree = None
-    self.oldBack = None
-    self.oldBody = None
-    self.oldChildren = None
-    self.oldHead = None
-    self.oldMarked = None
-    self.oldN = None
-    self.oldParent = None
-    self.oldParent_v = None
-    self.oldRecentFiles = None
-    self.oldTree = None
-    self.pasteAsClone = None
-    self.sortChildren = None
-
-def redoHelper(self):
-    pass
-
-def undoHelper(self):
-    pass
-#@+node:ekr.20031218072017.3607:clearIvars
-def clearIvars (self):
-
-    u = self
-
-    u.p = None # The position/node being operated upon for undo and redo.
-
-    for ivar in u.optionalIvars:
-        setattr(u,ivar,None)
-#@-node:ekr.20031218072017.3607:clearIvars
-#@-node:ekr.20031218072017.3606:undo.__init__ & clearIvars
-#@+node:ekr.20070919133659.1:checkLeoFile (fileCommands)
-def checkLeoFile (self,event=None):
-
-    '''The check-leo-file command.'''
-
-    fc = self ; c = fc.c ; p = c.currentPosition()
-
-    # Put the body (minus the @nocolor) into the file buffer.
-    s = p.bodyString() ; tag = '@nocolor\n'
-    if s.startswith(tag): s = s[len(tag):]
-
-    # Do a trial read.
-    self.checking = True
-    self.initReadIvars()
-    c.loading = True # disable c.changed
-    try:
-        try:
-            # self.getAllLeoElements(fileName='check-leo-file',silent=False)
-            theFile,isZipped = g.openLeoOrZipFile(c.mFileName)
-            self.readSaxFile(theFile,fileName='check-leo-file',silent=False,inClipboard=False,reassignIndices=False)
-            g.es_print('check-leo-file passed',color='blue')
-        except Exception, message:
-            # g.es_exception()
-            g.es_print('check-leo-file failed:',str(message),color='red')
-    finally:
-        self.checking = False
-        c.loading = False # reenable c.changed
-#@-node:ekr.20070919133659.1:checkLeoFile (fileCommands)
-#@+node:ekr.20080416161551.197:p.level & simpleLevel
-def level (self):
-
-    p = self
-    return p.v and len(p.stack) or 0
-
-simpleLevel = level
-#@-node:ekr.20080416161551.197:p.level & simpleLevel
-#@+node:sps.20080331123552.8:p.unique_iter
-class unique_iter_class:
-
-    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
-
-    @others
-
-def unique_tnodes_iter (self):
-
-    return self.unique_iter_class(self, lambda p: p.v.t)
-
-def unique_vnodes_iter (self):
-
-    return self.unique_iter_class(self, lambda p: p.v)
-#@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-def __init__(self,p,mapping,unique=lambda p: p.v.t):
-
-    # g.trace('p.unique_tnodes_iter.__init','p',p,)
-
-    self.d = {}
-    self.first = p.copy()
-    self.p = None
-    self.mapping = mapping
-    self.unique=unique
-
-def __iter__(self):
-
-    return self
-#@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
-#@+node:sps.20080331123552.5:next
-def next(self):
-
-    if self.first:
-        self.p = self.first
-        self.first = None
-
-    elif self.p:
-        self.moveToThreadNextUnique()
-
-    if self.p:
-        return self.mapping(self.p)
-
-    raise StopIteration
-#@-node:sps.20080331123552.5:next
-#@+node:sps.20080331123552.7:moveToThreadNextUnique
-def moveToThreadNextUnique (self):
-
-    """Move a position to threadNext position."""
-
-    p = self.p
-    u = self.unique
-
-    if p:
-        # We've been visited
-        self.d[u(p)]=True
-
-        # First, try to find an unmarked child
-        if p.v.t.children:
-            p.moveToFirstChild()
-            while p and self.d.get(u(p)):
-                if p.hasNext():
-                    p.moveToNext()
-                else:
-                    p.moveToParent()
-
-        # If we didn't find an unmarked child,
-        # try to find an unmarked sibling
-        if p and self.d.get(u(p)):
-            while p.hasNext():
-                p.moveToNext()
-                if not self.d.get(u(p)):
-                    break
-
-        # If we didn't find an unmarked sibling,
-        # find a parent with an unmarked sibling
-        if p and self.d.get(u(p)):
-            p.moveToParent()
-            while p:
-                while p.hasNext():
-                    p.moveToNext()
-                    if not self.d.get(u(p)):
-                        break
-                # if we run out of siblings, go to parent
-                if self.d.get(u(p)):
-                    p.moveToParent()
-                else:
-                    break # found
-            # At this point, either (not p.d[p.v.t]) and found
-            # or (not p) and we're finished
-
-    return p 
-#@-node:sps.20080331123552.7:moveToThreadNextUnique
-#@-node:sps.20080331123552.8:p.unique_iter
-#@-node:ekr.20080701085405.2:Changed
-#@-node:ekr.20080701085405.1:Recent runs of pylint
-#@-node:ekr.20071217134533:Pylint errors
+    # for text,boxKind,frame,callback in (
+        # # Column 1...
+        # ('Find','button',buttons1,self.findButtonCallback),
+        # ('Find All','button',buttons1,self.findAllButton),
+        # # Column 2...
+        # ('Change','button',buttons2,self.changeButton),
+        # ('Change, Then Find','button',buttons2,self.changeThenFindButton),
+        # ('Change All','button',buttons2,self.changeAllButton),
+    # ):
+        # w = underlinedTkButton(boxKind,frame,
+            # text=text,command=callback)
+        # buttons.append(w)
+        # if text == defaultText:
+            # w.button.configure(width=width-1,bd=4)
+        # elif boxKind != 'check':
+            # w.button.configure(width=width)
+        # w.button.pack(side='top',anchor='w',pady=2,padx=2)
+#@-node:ekr.20070302090616.14:createButtons (not used)
+#@-node:ekr.20070302090616.9:createFrame
+#@-node:ekr.20070302090616.1:Birth (nullFindTab)
+#@-node:ekr.20080707150137.2:Pylint errors
 #@+node:ekr.20080408060320.4:4.5 b1
 # The first 4.5 release will be 4.5 b1.
 #@nonl
@@ -2778,8 +1401,14 @@ def beginCommandHelper (self,ch,undoType,w):
     if name.startswith('body'):
         oldSel =  w.getSelectionRange()
         oldText = p.bodyString()
-        self.undoData = g.Bunch(
-            ch=ch,name=name,oldSel=oldSel,oldText=oldText,w=w,undoType=undoType)
+        self.undoData = b = g.Bunch()
+        # To keep pylint happy.
+        b.ch=ch
+        b.name=name
+        b.oldSel=oldSel
+        b.oldText=oldText
+        b.w=w
+        b.undoType=undoType
     else:
         self.undoData = None
 
@@ -3296,24 +1925,24 @@ def readAtFileNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        undoData = u.beforeChangeTree(p)
-        c.fileCommands.readAtFileNodes()
-        u.afterChangeTree(p,'Read @file Nodes',undoData)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    undoData = u.beforeChangeTree(p)
+    c.fileCommands.readAtFileNodes()
+    u.afterChangeTree(p,'Read @file Nodes',undoData)
+    # finally:
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
 #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
 def readAtFileNodes (self):
 
     c = self.c ; p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        c.atFileCommands.readAll(p,partialFlag=True)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    c.atFileCommands.readAll(p,partialFlag=True)
+    # finally:
+    c.redraw() # was c.endUpdate()
 
     # Force an update of the body pane.
     c.setBodyString(p,p.bodyString())
@@ -3383,12 +2012,12 @@ def readOneAtAutoNode (self,fileName,p):
         g.es("reading:",p.headString())
 
     # Delete all children.
-    c.beginUpdate()
-    try:
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    finally:
-        c.endUpdate(False)
+    # c.beginUpdate()
+    # try:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    # finally:
+    # c.endUpdate(False)
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
@@ -3426,11 +2055,11 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        c.beginUpdate()
-        try:
-            p.setBodyString('')
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        p.setBodyString('')
+        # finally:
+        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -3671,45 +2300,44 @@ def openWithFileName(fileName,old_c,
     c.isZipped = isZipped
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    c.beginUpdate()
-    try:
-        if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-            c.setLog()
-            app.lockLog()
-            frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-        # Bug fix in 4.4.
-        frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
-        g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-        p = c.currentPosition()
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(relativeFileName or fileName)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-    finally:
-        c.endUpdate()
-        assert frame.c == c and c.frame == frame
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.chapterController:
-            c.chapterController.finishCreate()
-        k = c.k
-        if k:
-            k.setDefaultInputState()
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        if k:
-            k.showStateAndMode()
+    # c.beginUpdate()
+    # try:
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        app.lockLog()
+        frame.c.fileCommands.open(
+            theFile,fileName,
+            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+        app.unlockLog()
+        for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+            # The recent files list has been updated by c.updateRecentFiles.
+            z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = g.os_path_abspath(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.currentPosition()
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
 
     return True, frame
 #@nonl
@@ -4099,11 +2727,11 @@ def createOutline (self,fileName,parent,atAuto=False,s=None,ext=None):
     # Create the top-level headline.
     if atAuto:
         p = parent.copy()
-        c.beginUpdate()
-        try:
-            p.setBodyString('')
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        p.setBodyString('')
+        # finally:
+        # c.endUpdate(False)
     else:
         undoData = u.beforeInsertNode(parent)
         p = parent.insertAsLastChild()
@@ -4461,22 +3089,23 @@ def showSuccess(self,pos,newpos):
     sparseFind = c.config.getBool('collapse_nodes_during_finds')
     c.frame.bringToFront() # Needed on the Mac
     redraw = not p.isVisible(c)
-    c.beginUpdate()
-    try:
-        if sparseFind and not c.currentPosition().isAncestorOf(p):
-            # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
-            for p2 in c.currentPosition().self_and_parents_iter():
-                p2.contract()
-                redraw = True
-        for p in self.p.parents_iter():
-            if not p.isExpanded():
-                p.expand()
-                redraw = True
-        p = self.p
-        if not p: g.trace('can not happen: self.p is None')
-        c.selectPosition(p)
-    finally:
-        c.endUpdate(redraw)
+    # c.beginUpdate()
+    # try:
+    if sparseFind and not c.currentPosition().isAncestorOf(p):
+        # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
+        for p2 in c.currentPosition().self_and_parents_iter():
+            p2.contract()
+            redraw = True
+    for p in self.p.parents_iter():
+        if not p.isExpanded():
+            p.expand()
+            redraw = True
+    p = self.p
+    if not p: g.trace('can not happen: self.p is None')
+    c.selectPosition(p)
+    # finally:
+    if redraw: c.redraw() # was c.endUpdate(redraw)
+
     if self.in_headline:
         c.editPosition(p)
     # Set the focus and selection after the redraw.
@@ -4836,18 +3465,17 @@ def contractAllHeadlines (self,event=None):
 
     c = self
 
-    c.beginUpdate()
-    try: # update...
-        for p in c.all_positions_with_unique_vnodes_iter():
-            p.contract()
-        # Select the topmost ancestor of the presently selected node.
-        p = c.currentPosition()
-        while p and p.hasParent():
-            p.moveToParent()
-        c.selectPosition(p)
-    finally:
-        c.endUpdate()
-
+    # c.beginUpdate()
+    # try: # update...
+    for p in c.all_positions_with_unique_vnodes_iter():
+        p.contract()
+    # Select the topmost ancestor of the presently selected node.
+    p = c.currentPosition()
+    while p and p.hasParent():
+        p.moveToParent()
+    c.selectPosition(p)
+    # finally:
+    c.redraw() # was c.endUpdate()
     c.treeFocusHelper()
 
     c.expansionLevel = 1 # Reset expansion level.
@@ -6464,6 +5092,10 @@ def doFont (self,p,kind,name,val):
 
     # __pychecker__ = '--no-argsused' # kind not used.
 
+    trace = False
+
+    if trace: g.trace(p and p.headString(),kind,name,self.c.mFileName)
+
     d = self.parseFont(p)
 
     # Set individual settings.
@@ -6473,6 +5105,7 @@ def doFont (self,p,kind,name,val):
             name,val = data
             setKind = key
             self.set(p,setKind,name,val)
+            if trace and val not in (None,'none','None'): g.trace(key,val)
 #@-node:ekr.20041120094940.4:doFont
 #@+node:ekr.20041120103933:doIf
 def doIf(self,p,kind,name,val):
@@ -7929,9 +6562,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -8052,22 +6686,23 @@ if g.app.unitTesting:
     g.app.unitTestDict['colorized'] = True
 #@-node:ekr.20051026083733.6:<< recolor the body >>
 #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
-c.beginUpdate()
-try:
-    redraw_flag = False
-    # Update dirty bits.
-    # p.setDirty() sets all cloned and @file dirty bits.
-    if not p.isDirty() and p.setDirty():
-        redraw_flag = True
+# c.beginUpdate()
+# try:
 
-    # Update icons. p.v.iconVal may not exist during unit tests.
-    val = p.computeIcon()
-    # g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
-    if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
-        p.v.iconVal = val
-        redraw_flag = True
-finally:
-    c.endUpdate(redraw_flag)
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+#finally:
+if redraw_flag: c.redraw() # was c.endUpdate(redraw_flag)
 #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
 #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
 #@+node:ekr.20031218072017.1833:reformatParagraph
@@ -8281,9 +6916,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -8384,22 +7020,21 @@ def redrawHelper (self,scroll=True,forceDraw=False):
 #@-node:ekr.20040803072955.59:redrawHelper
 #@-node:ekr.20040803072955.58:tree.redraw_now & helper
 #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
-#@+node:ekr.20080514131122.6:New code
-if g.newDrawing:
-
-    @others
 #@+node:ekr.20080514131122.7:c.begin/endUpdate
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
-    pass
+    g.trace('***** c.beginUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
+
+    g.trace('***** c.endUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
     c = self
     if flag:
@@ -8436,9 +7071,10 @@ def add_command (self,menu,**keys):
 #@+node:ekr.20080610085158.3:c.bind and c.bind2
 def bind (self,w,pattern,func,*args,**keys):
 
-    c = self
+    c = self ; callers = g.callers()
 
-    def bindCallback(event,c=c,func=func):
+    def bindCallback(event,c=c,func=func,callers=callers):
+        # g.trace('w',w,'binding callers',callers)
         val = func(event)
         # Careful: func may destroy c.
         if c.exists: c.outerUpdate()
@@ -8450,13 +7086,13 @@ def bind2 (self,w,pattern,func,*args,**keys):
 
     c = self
 
-    def bindCallback(event,c=c,func=func):
+    def bindCallback2(event,c=c,func=func):
         val = func(event)
         # Careful: func may destroy c.
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback,*args,**keys)
+    w.bind(pattern,bindCallback2,*args,**keys)
 #@-node:ekr.20080610085158.3:c.bind and c.bind2
 #@+node:ekr.20080610085158.4:c.tag_bind
 def tag_bind (self,w,tag,event_kind,func):
@@ -8601,9 +7237,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -8638,9 +7275,11 @@ def recolor_now(self,p=None,incremental=False,interruptable=True):
         incremental=incremental,interruptable=interruptable)
 #@-node:ekr.20080514131122.13:c.recolor_now
 #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
-def redraw (self):
+def redraw (self,scroll=True):
     c = self
     c.requestRedrawFlag = True
+    # This makes c.redraw *not quite* the same as c.endUpdate.
+    c.requestRedrawScrollFlag = scroll
 
 def redraw_now (self):
     c = self
@@ -8737,7 +7376,6 @@ logWantsFocusNow = logWantsFocus
 minibufferWantsFocusNow = minibufferWantsFocus
 treeWantsFocusNow = treeWantsFocus
 #@-node:ekr.20080514131122.19:c.xWantsFocusNow
-#@-node:ekr.20080514131122.6:New code
 #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
 #@+node:ekr.20031218072017.1723:createMenuEntries
 def createMenuEntries (self,menu,table,dynamicMenu=False):
@@ -8898,9 +7536,10 @@ def add_command (self,menu,**keys):
 #@+node:ekr.20080610085158.3:c.bind and c.bind2
 def bind (self,w,pattern,func,*args,**keys):
 
-    c = self
+    c = self ; callers = g.callers()
 
-    def bindCallback(event,c=c,func=func):
+    def bindCallback(event,c=c,func=func,callers=callers):
+        # g.trace('w',w,'binding callers',callers)
         val = func(event)
         # Careful: func may destroy c.
         if c.exists: c.outerUpdate()
@@ -8912,13 +7551,13 @@ def bind2 (self,w,pattern,func,*args,**keys):
 
     c = self
 
-    def bindCallback(event,c=c,func=func):
+    def bindCallback2(event,c=c,func=func):
         val = func(event)
         # Careful: func may destroy c.
         if c.exists: c.outerUpdate()
         return val
 
-    w.bind(pattern,bindCallback,*args,**keys)
+    w.bind(pattern,bindCallback2,*args,**keys)
 #@-node:ekr.20080610085158.3:c.bind and c.bind2
 #@+node:ekr.20080610085158.4:c.tag_bind
 def tag_bind (self,w,tag,event_kind,func):
@@ -8947,55 +7586,58 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    # c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
 
-    finally:
-        c.endUpdate(False)
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20080514131122.7:c.begin/endUpdate
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
-    pass
+    g.trace('***** c.beginUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
+
+    g.trace('***** c.endUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
     c = self
     if flag:
@@ -9060,9 +7702,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -9084,31 +7727,33 @@ def editLabel (self,p,selectAll=False):
     """Start editing p's headline."""
 
     c = self.c
-    trace = (False or self.trace_edit) and not g.app.unitTesting
+    trace = (False or self.trace_edit)
 
     if p and p != self.editPosition():
 
         if trace:
             g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-        c.beginUpdate()
-        try:
-            self.endEditLabel()
-        finally:
-            # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.endUpdate(True)
-            c.outerUpdate()
+        # c.beginUpdate()
+        # try:
+        self.endEditLabel()
+        # finally:
+        # This redraw *is* required so the c.edit_widget(p) will exist.
+        c.redraw() # was c.endUpdate(True)
+        c.outerUpdate()
 
     self.setEditPosition(p) # That is, self._editPosition = p
-
-    if trace: g.trace(c.edit_widget(p))
-
     w = c.edit_widget(p)
+
+    if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
+
     if p and w:
         self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
         self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
         c.headlineWantsFocus(p) # Make sure the focus sticks.
         c.k.showStateAndMode(w)
+
+    if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
 #@-node:ekr.20040803072955.127:tree.editLabel
 #@+node:ekr.20080612091459.1:Found: .redraw_now
 #@+node:ekr.20080506135044.9:findAll
@@ -9196,9 +7841,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -9218,14 +7864,17 @@ def outerUpdate (self):
 
 def beginUpdate(self):
 
-    '''Suppress redraws of the tree (except for explict calls to c.redraw_now)
-    until the matching call to endUpdate.'''
+    '''Deprecated: does nothing.'''
 
-    pass
+    g.trace('***** c.beginUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
 def endUpdate(self,flag=True,scroll=True):
 
-    '''Redraw the screen if flag is True.'''
+    '''Request a redraw of the screen if flag is True.'''
+
+    g.trace('***** c.endUpdate is deprecated',g.callers())
+    if g.app.unitTesting: assert(False)
 
     c = self
     if flag:
@@ -9237,9 +7886,11 @@ BeginUpdate = beginUpdate # Compatibility with old scripts
 EndUpdate = endUpdate # Compatibility with old scripts
 #@-node:ekr.20080514131122.7:c.begin/endUpdate
 #@+node:ekr.20080514131122.14:c.redraw and c.redraw_now
-def redraw (self):
+def redraw (self,scroll=True):
     c = self
     c.requestRedrawFlag = True
+    # This makes c.redraw *not quite* the same as c.endUpdate.
+    c.requestRedrawScrollFlag = scroll
 
 def redraw_now (self):
     c = self
@@ -9386,41 +8037,41 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    # c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
 
-    finally:
-        c.endUpdate(False)
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20071001091231.80:reconfigureFromConfig (swingFrame)
@@ -9562,25 +8213,25 @@ def freeTreeWidgets (self,event=None):
 def createAllCompareClones(self,inserted,deleted,changed):
 
     c = self.c # Always use the visible commander
-    c.beginUpdate()
-    try:
-        # Create parent node at the start of the outline.
-        u = c.undoer ; undoType = 'Compare .leo Files'
-        u.beforeChangeGroup(c.currentPosition(),undoType)
-        undoData = u.beforeInsertNode(c.currentPosition())
-        parent = c.currentPosition().insertAfter()
-        c.setHeadString(parent,undoType)
-        u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
-        for d,kind in (
-            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
-        ):
-            self.createCompareClones(d,kind,parent)
-        c.selectPosition(parent)
-        u.afterChangeGroup(parent,undoType,reportFlag=True) 
-    finally:
-        c.endUpdate(False)
+    # c.beginUpdate()
+    # try:
+    # Create parent node at the start of the outline.
+    u = c.undoer ; undoType = 'Compare .leo Files'
+    u.beforeChangeGroup(c.currentPosition(),undoType)
+    undoData = u.beforeInsertNode(c.currentPosition())
+    parent = c.currentPosition().insertAfter()
+    c.setHeadString(parent,undoType)
+    u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
+    for d,kind in (
+        (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+    ):
+        self.createCompareClones(d,kind,parent)
+    c.selectPosition(parent)
+    u.afterChangeGroup(parent,undoType,reportFlag=True) 
+    # finally:
+    # c.endUpdate(False)
+
     c.redraw_now()
-    c.outerUpdate()
 #@nonl
 #@+node:ekr.20070921074410:createCompareClones
 def createCompareClones (self,d,kind,parent):
@@ -9638,7 +8289,6 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
         c.redraw_now()
-        c.outerUpdate()
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
     # Do this after reading derived files.
@@ -9774,8 +8424,6 @@ def pasteText (self,event=None,middleButton=False):
     i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
     oldText = w.getAllText()
 
-    # print 'pasteText',i,j,middleButton,wname,repr(c.k.previousSelection)
-
     if middleButton and c.k.previousSelection is not None:
         start,end = c.k.previousSelection
         s = w.getAllText()
@@ -9784,7 +8432,9 @@ def pasteText (self,event=None,middleButton=False):
     else:
         s = s1 = g.app.gui.getTextFromClipboard()
 
-    s = g.toUnicode(s,encoding=g.app.tkEncoding) # 6/22/08
+    s = g.toUnicode(s,encoding=g.app.tkEncoding)
+
+    # g.trace('pasteText','wname',wname,'s',s,g.callers())
 
     singleLine = wname.startswith('head') or wname.startswith('minibuffer')
 
@@ -9964,27 +8614,27 @@ def redo (self,event=None):
     u.redoing = True 
     u.groupCount = 0
 
-    c.beginUpdate()
-    try:
-        c.endEditing()
-        if u.redoHelper: u.redoHelper()
-        else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
-    finally:
-        c.frame.body.updateEditors() # New in Leo 4.4.8.
-        if 0: # Don't do this: it interferes with selection ranges.
-            # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
-        else:
-            c.setCurrentPosition(c.currentPosition())
-        c.setChanged(True)
-        c.endUpdate()
-        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
-        c.bodyWantsFocusNow()
-        u.redoing = False
-        u.bead += 1
-        u.setUndoTypes()
+    # c.beginUpdate()
+    # try:
+    c.endEditing()
+    if u.redoHelper: u.redoHelper()
+    else: g.trace('no redo helper for %s %s' % (u.kind,u.undoType))
+    # finally:
+    c.frame.body.updateEditors() # New in Leo 4.4.8.
+    if 0: # Don't do this: it interferes with selection ranges.
+        # This strange code forces a recomputation of the root position.
+        c.selectPosition(c.currentPosition())
+    else:
+        c.setCurrentPosition(c.currentPosition())
+    c.setChanged(True)
+    c.redraw() # was c.endUpdate()
+    # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+    c.redraw_now()
+    c.recolor_now()
+    c.bodyWantsFocusNow()
+    u.redoing = False
+    u.bead += 1
+    u.setUndoTypes()
 #@nonl
 #@+node:ekr.20050424170219:redoClearRecentFiles
 def redoClearRecentFiles (self):
@@ -10063,17 +8713,17 @@ def redoGroup (self):
     if not hasattr(bunch,'items'):
         g.trace('oops: expecting bunch.items.  bunch.kind = %s' % bunch.kind)
     else:
-        c.beginUpdate()
-        try:
-            for z in bunch.items:
-                self.setIvarsFromBunch(z)
-                if z.redoHelper:
-                    # g.trace(z.redoHelper)
-                    z.redoHelper() ; count += 1
-                else:
-                    g.trace('oops: no redo helper for %s' % u.undoType)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        for z in bunch.items:
+            self.setIvarsFromBunch(z)
+            if z.redoHelper:
+                # g.trace(z.redoHelper)
+                z.redoHelper() ; count += 1
+            else:
+                g.trace('oops: no redo helper for %s' % u.undoType)
+        # finally:
+        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -10292,27 +8942,27 @@ def undo (self,event=None):
     u.undoing = True
     u.groupCount = 0
 
-    c.beginUpdate()
-    try:
-        c.endEditing()
-        if u.undoHelper: u.undoHelper()
-        else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
-    finally:
-        c.frame.body.updateEditors() # New in Leo 4.4.8.
-        if 0: # Don't do this: it interferes with selection ranges.
-            # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
-        else:
-            c.setCurrentPosition(c.currentPosition())
-        c.setChanged(True)
-        c.endUpdate()
-        # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
-        c.bodyWantsFocusNow()
-        u.undoing = False
-        u.bead -= 1
-        u.setUndoTypes()
+    # c.beginUpdate()
+    # try:
+    c.endEditing()
+    if u.undoHelper: u.undoHelper()
+    else: g.trace('no undo helper for %s %s' % (u.kind,u.undoType))
+    # finally:
+    c.frame.body.updateEditors() # New in Leo 4.4.8.
+    if 0: # Don't do this: it interferes with selection ranges.
+        # This strange code forces a recomputation of the root position.
+        c.selectPosition(c.currentPosition())
+    else:
+        c.setCurrentPosition(c.currentPosition())
+    c.setChanged(True)
+    c.redraw() # was c.endUpdate()
+    # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+    c.redraw_now()
+    c.recolor_now()
+    c.bodyWantsFocusNow()
+    u.undoing = False
+    u.bead -= 1
+    u.setUndoTypes()
 #@nonl
 #@+node:ekr.20050424170219.1:undoClearRecentFiles
 def undoClearRecentFiles (self):
@@ -10397,17 +9047,17 @@ def undoGroup (self):
         # Important bug fix: 9/8/06: reverse the items first.
         reversedItems = bunch.items[:]
         reversedItems.reverse()
-        c.beginUpdate()
-        try:
-            for z in reversedItems:
-                self.setIvarsFromBunch(z)
-                # g.trace(z.undoHelper)
-                if z.undoHelper:
-                    z.undoHelper() ; count += 1
-                else:
-                    g.trace('oops: no undo helper for %s' % u.undoType)
-        finally:
-            c.endUpdate(False)
+        # c.beginUpdate()
+        # try:
+        for z in reversedItems:
+            self.setIvarsFromBunch(z)
+            # g.trace(z.undoHelper)
+            if z.undoHelper:
+                z.undoHelper() ; count += 1
+            else:
+                g.trace('oops: no undo helper for %s' % u.undoType)
+        # finally:
+        # c.endUpdate(False)
 
     u.groupCount -= 1
 
@@ -10673,11 +9323,11 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
     else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
 
-    c.beginUpdate()
-    try:
-        c.endEditing() # Make sure we capture the headline for Undo.
-    finally:
-        c.endUpdate(False)
+    # c.beginUpdate()
+    # try:
+    c.endEditing() # Make sure we capture the headline for Undo.
+    # finally:
+    # c.endUpdate(False)
 
     if cc: # Special cases for @chapter and @chapters nodes.
         chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -10690,16 +9340,16 @@ def deleteOutline (self,event=None,op_name="Delete Node"):
             if name:
                 return cc.removeChapterByName(name)
 
-    c.beginUpdate()
-    try:
-        undoData = u.beforeDeleteNode(p)
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.doDelete(newNode)
-        c.selectPosition(newNode)
-        c.setChanged(True)
-        u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    undoData = u.beforeDeleteNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.doDelete(newNode)
+    c.selectPosition(newNode)
+    c.setChanged(True)
+    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    # finally:
+    c.redraw() # was c.endUpdate()
 
     c.validateOutline()
 #@-node:ekr.20031218072017.1193:c.deleteOutline
@@ -10767,34 +9417,34 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     if s is None: s = w.getAllText()
     << truncate s if it has multiple lines >>
-    c.beginUpdate()
-    try:
-        # Make the change official, but undo to the *old* revert point.
-        oldRevert = self.revertHeadline
-        changed = s != oldRevert
-        self.revertHeadline = s
-        p.initHeadString(s)
-        # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
-        if changed:
-            undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
-            if not c.changed: c.setChanged(True)
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p,incremental=True)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
-    finally:
-        c.endUpdate(flag=changed,scroll=False)
-            # scroll=False in 4.4.1; flag = changed in 4.4.3.
-        if changed:
-            if self.stayInTree:
-                c.treeWantsFocus()
-            else:
-                c.bodyWantsFocus()
+    # c.beginUpdate()
+    # try:
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    # g.trace('changed',changed,'old',repr(oldRevert),'new',repr(s))
+    # g.trace(g.callers())
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    # finally:
+    if changed:
+        c.redraw(scroll=False) # was c.endUpdate(flag=changed,scroll=False)
+        if self.stayInTree:
+            c.treeWantsFocus()
         else:
-            c.frame.tree.setSelectedLabelState(p)
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
 
     g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
 #@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
@@ -10913,15 +9563,15 @@ def setBodyString (self,p,s,encoding="utf-8"):
 
     # Keep the body text in the tnode up-to-date.
     if v.t._bodyString != s:
-        c.beginUpdate()
-        try:
-            v.setBodyString(s)
-            v.t.setSelection(0,0)
-            p.setDirty()
-            if not c.isChanged():
-                c.setChanged(True)
-        finally:
-            c.endUpdate()
+        # c.beginUpdate()
+        # try:
+        v.setBodyString(s)
+        v.t.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+        # finally:
+        c.redraw() # was c.endUpdate()
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20060127052111.1:cutStack
 def cutStack (self):
@@ -11132,9 +9782,10 @@ def outerUpdate (self):
         c.recolor_now(incremental=c.incrementalRecolorFlag)
 
     if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
         if verbose: aList.append('focus: %s' % (
-            g.app.gui.widget_name(c.requestedFocusWidget)))
-        c.set_focus(c.requestedFocusWidget)
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
     else:
         # We can not set the focus to the body pane:
         # That would make nested calls to c.outerUpdate significant.
@@ -11210,24 +9861,25 @@ def dragAfter(self,p,after):
     if not c.checkDrag(p,after): return
     if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
 
-    c.beginUpdate()
-    try: # In update...
-        c.endEditing()
-        undoData = u.beforeMoveNode(current)
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        p.moveAfter(after)
-        if inAtIgnoreRange and not p.inAtIgnoreRange():
-            # The moved nodes have just become newly unignored.
-            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-            dirtyVnodeList.extend(dirtyVnodeList2)
-        else: # No need to mark descendents dirty.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-            dirtyVnodeList.extend(dirtyVnodeList2)
-        c.setChanged(True)
-        u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
-    finally:
-        c.selectPosition(p) # Also sets root position.
-        c.endUpdate()
+    # c.beginUpdate()
+    # try: # In update...
+    c.endEditing()
+    undoData = u.beforeMoveNode(current)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.moveAfter(after)
+    if inAtIgnoreRange and not p.inAtIgnoreRange():
+        # The moved nodes have just become newly unignored.
+        dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    else: # No need to mark descendents dirty.
+        dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+    c.setChanged(True)
+    u.afterMoveNode(p,undoType,undoData,dirtyVnodeList=dirtyVnodeList)
+    # finally:
+    c.selectPosition(p) # Also sets root position.
+    c.redraw() # was c.endUpdate()
+
     c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
 #@-node:ekr.20031218072017.2353:c.dragAfter
 #@+node:ekr.20041111115908:endDrag
@@ -11240,29 +9892,29 @@ def endDrag (self,event):
     canvas = self.canvas
     if not event: return
 
-    c.beginUpdate()
-    try:
-        << set vdrag, childFlag >>
-        if self.allow_clone_drags:
-            if not self.look_for_control_drag_on_mouse_down:
-                self.controlDrag = c.frame.controlKeyIsDown
+    # c.beginUpdate()
+    # try:
+    << set vdrag, childFlag >>
+    if self.allow_clone_drags:
+        if not self.look_for_control_drag_on_mouse_down:
+            self.controlDrag = c.frame.controlKeyIsDown
 
-        redrawFlag = vdrag and vdrag.v.t != p.v.t
-        if redrawFlag: # Disallow drag to joined node.
-            << drag p to vdrag >>
-        elif self.trace and self.verbose:
-            g.trace("Cancel drag")
+    redrawFlag = vdrag and vdrag.v.t != p.v.t
+    if redrawFlag: # Disallow drag to joined node.
+        << drag p to vdrag >>
+    elif self.trace and self.verbose:
+        g.trace("Cancel drag")
 
-        # Reset the old cursor by brute force.
-        self.canvas['cursor'] = "arrow"
-        self.dragging = False
-        self.drag_p = None
-    finally:
-        # Must set self.drag_p = None first.
-        c.endUpdate(False) # redrawFlag)
-        if redrawFlag:
-            c.redraw_now()
-        c.recolor_now() # Dragging can affect coloring.
+    # Reset the old cursor by brute force.
+    self.canvas['cursor'] = "arrow"
+    self.dragging = False
+    self.drag_p = None
+    # finally:
+    # Must set self.drag_p = None first.
+    # c.endUpdate(False) # redrawFlag)
+    if redrawFlag:
+        c.redraw_now()
+    c.recolor_now() # Dragging can affect coloring.
 
     # g.trace(redrawFlag)
 #@+node:ekr.20040803072955.104:<< set vdrag, childFlag >>
@@ -14327,12 +12979,10 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     c = self
 
-    if g.newDrawing:
-        self.requestedFocusWidget = None
-        self.requestRedrawFlag = False
-        self.requestRedrawScrollFlag = False
-        self.requestedIconify = '' # 'iconify','deiconify'
-        # g.es('Using new drawing code',color='red')
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestRedrawScrollFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
     self.requestRecolorFlag = False
 
     # g.trace('Commands')
@@ -15701,41 +14351,41 @@ def new (self,event=None,gui=None):
     # Needed for plugins.
     g.doHook("new",old_c=self,c=c,new_c=c)
     # Use the config params to set the size and location of the window.
-    c.beginUpdate()
-    try:
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.editPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
+    # c.beginUpdate()
+    # try:
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    v = leoNodes.vnode(context=c)
+    p = leoNodes.position(v)
+    v.initHeadString("NewHeadline")
+    # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+    p._linkAsRoot(oldRoot=None)
+    c.setRootVnode(v) # New in Leo 4.4.2.
+    c.editPosition(p)
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    p = c.currentPosition()
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(fileName=None)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # finally:
+    # c.endUpdate(False)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+        frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    # Force a call to c.outerUpdate.
+    # This is needed when we execute this command from a menu.
+    c.redraw_now()
 
-    finally:
-        c.endUpdate(False)
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.redraw_now()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:new
 #@+node:ekr.20031218072017.2821:open
@@ -16029,32 +14679,31 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    c.beginUpdate()
-    try:
-        if c.mFileName:
-            # Calls c.setChanged(False) if no error.
+    # c.beginUpdate()
+    # try:
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
             c.fileCommands.save(c.mFileName)
-        else:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
-
-            if fileName:
-                # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
-                g.chdir(c.mFileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -16067,33 +14716,33 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            g.trace(fileName)
-            # 7/2/02: don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            # Calls c.setChanged(False) if no error.
-            c.fileCommands.saveAs(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
 def saveAsUnzipped (self,event=None):
@@ -16129,29 +14778,28 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
-            c.fileCommands.saveTo(fileName)
-            c.updateRecentFiles(fileName)
-            g.chdir(fileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
 def revert (self,event=None):
@@ -16366,15 +15014,15 @@ def readFileIntoNode (self,event=None):
             g.chdir(fileName)
             s = theFile.read()
             s = '@nocolor\n' + s
-            c.beginUpdate()
-            try:
-                w = c.frame.body.bodyCtrl
-                p = c.insertHeadline(op_name=undoType)
-                p.setHeadString('@read-file-into-node ' + fileName)
-                p.setBodyString(s)
-                w.setAllText(s)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            w = c.frame.body.bodyCtrl
+            p = c.insertHeadline(op_name=undoType)
+            p.setHeadString('@read-file-into-node ' + fileName)
+            p.setBodyString(s)
+            w.setAllText(s)
+            # finally:
+            c.redraw() # was c.endUpdate()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode
@@ -16385,13 +15033,13 @@ def readAtAutoNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        undoData = u.beforeChangeTree(p)
-        c.importCommands.readAtAutoNodes()
-        u.afterChangeTree(p,'Read @auto Nodes',undoData)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    undoData = u.beforeChangeTree(p)
+    c.importCommands.readAtAutoNodes()
+    u.afterChangeTree(p,'Read @auto Nodes',undoData)
+    # finally:
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
 #@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
 def readAtFileNodes (self,event=None):
@@ -16400,13 +15048,13 @@ def readAtFileNodes (self,event=None):
 
     c = self ; u = c.undoer ; p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        undoData = u.beforeChangeTree(p)
-        c.fileCommands.readAtFileNodes()
-        u.afterChangeTree(p,'Read @file Nodes',undoData)
-    finally:
-        c.endUpdate()
+    # c.beginUpdate()
+    # try:
+    undoData = u.beforeChangeTree(p)
+    c.fileCommands.readAtFileNodes()
+    u.afterChangeTree(p,'Read @file Nodes',undoData)
+    # finally:
+    c.redraw() # was c.endUpdate()
 #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
 #@+node:ekr.20031218072017.1809:importDerivedFile
 def importDerivedFile (self,event=None):
@@ -16859,32 +15507,31 @@ def save (self,event=None):
         c.frame.title = ""
         c.mFileName = ""
 
-    c.beginUpdate()
-    try:
-        if c.mFileName:
-            # Calls c.setChanged(False) if no error.
+    # c.beginUpdate()
+    # try:
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
             c.fileCommands.save(c.mFileName)
-        else:
-            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
-            c.bringToFront()
-
-            if fileName:
-                # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
-                g.chdir(c.mFileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
 def saveAs (self,event=None):
@@ -16897,33 +15544,33 @@ def saveAs (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save As",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            g.trace(fileName)
-            # 7/2/02: don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
-            c.frame.title = c.mFileName
-            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-            # Calls c.setChanged(False) if no error.
-            c.fileCommands.saveAs(c.mFileName)
-            c.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        g.trace(fileName)
+        # 7/2/02: don't change mFileName until the dialog has suceeded.
+        c.mFileName = g.ensure_extension(fileName, ".leo")
+        c.frame.title = c.mFileName
+        c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+        c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.saveAs(c.mFileName)
+        c.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20031218072017.2836:saveTo
 def saveTo (self,event=None):
@@ -16936,29 +15583,28 @@ def saveTo (self,event=None):
         g.es("save commands disabled",color="purple")
         return
 
-    c.beginUpdate()
-    try:
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
+    # c.beginUpdate()
+    # try:
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
 
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
-        c.bringToFront()
+    # set local fileName, _not_ c.mFileName
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+        initialfile = c.mFileName,
+        title="Save To",
+        filetypes=[("Leo files", "*.leo")],
+        defaultextension=".leo")
+    c.bringToFront()
 
-        if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
-            c.fileCommands.saveTo(fileName)
-            c.updateRecentFiles(fileName)
-            g.chdir(fileName)
-
-    finally:
-        c.endUpdate()
-        c.widgetWantsFocusNow(w)
+    if fileName:
+        fileName = g.ensure_extension(fileName, ".leo")
+        c.fileCommands.saveTo(fileName)
+        c.updateRecentFiles(fileName)
+        g.chdir(fileName)
+    # finally:
+    c.redraw() # was c.endUpdate()
+    c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2839:readOutlineOnly
 def readOutlineOnly (self,event=None):
@@ -17000,15 +15646,15 @@ def readFileIntoNode (self,event=None):
             g.chdir(fileName)
             s = theFile.read()
             s = '@nocolor\n' + s
-            c.beginUpdate()
-            try:
-                w = c.frame.body.bodyCtrl
-                p = c.insertHeadline(op_name=undoType)
-                p.setHeadString('@read-file-into-node ' + fileName)
-                p.setBodyString(s)
-                w.setAllText(s)
-            finally:
-                c.endUpdate()
+            # c.beginUpdate()
+            # try:
+            w = c.frame.body.bodyCtrl
+            p = c.insertHeadline(op_name=undoType)
+            p.setHeadString('@read-file-into-node ' + fileName)
+            p.setBodyString(s)
+            w.setAllText(s)
+            # finally:
+            c.redraw() # was c.endUpdate()
         except:
             g.es("can not open:",fileName)
 #@-node:ekr.20070915134101:readFileIntoNode
@@ -18263,7 +16909,9 @@ def tearDown (self):
 
     pass
 
-    # To do: restore the outline.
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
 #@-node:ekr.20051104075904.9:tearDown
 #@+node:ekr.20051104075904.10:runTest
 def runTest (self,define_g = True):
@@ -19105,6 +17753,41 @@ def createMiniBufferWidget (self):
     return label
 #@-node:ekr.20050920094212:f.createMiniBufferWidget
 #@-node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
+#@+node:ekr.20080707093924.1:regexp for redraw branch
+# Used to change c.begin/endUpdate/try/finally
+
+( *)c.beginUpdate\(\)(.*)\n( *)try:(.*)$
+\1# c.beginUpdate()\n\3# try:
+
+# Comment out .endupdate(False)
+^( *)(.*)\.endUpdate\(False\)
+\1# \2.endUpdate(False)
+
+# Remove all commented out try & finally
+
+(^ *# *try:.*\n)|(^ *# *finally:.*\n)
+
+# Tests
+    # try:
+    # finally:
+
+# Remove all commented out .endUpdate.
+^ *#.*\.endUpdate\(False\)
+^ *#.*\.endUpdate
+
+# Remove all commented out .beginUpdate
+^ *#.*\.beginUpdate.*\n
+^ *#.*\.beginUpdate
+
+# Tests
+# c.beginUpdate()
+    #c2.beginUpdate()#blah
+# c.endUpdate()
+    #c2.endUpdate(False)
+
+^# import leo\.core\.leoTest as leoTest.*\n# u = leoTest\.testUtils(c)\n
+
+#@-node:ekr.20080707093924.1:regexp for redraw branch
 #@-node:ekr.20080702123133.2:4.5 b2
 #@-all
 #@nonl
