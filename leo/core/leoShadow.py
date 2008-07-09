@@ -69,11 +69,8 @@ import ConfigParser
 import difflib
 import os
 import sys
-
-# import shutil
-# import sys
-
-# plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
+import unittest
+#@nonl
 #@-node:ekr.20080708094444.52:<< imports >>
 #@nl
 
@@ -86,7 +83,7 @@ import sys
 #@@pagewidth 80
 
 #@+others
-#@+node:ekr.20080708094444.80:class pluginController
+#@+node:ekr.20080708094444.80:class shadowController
 class shadowController:
 
    '''A class to manage @shadow files'''
@@ -472,26 +469,6 @@ class shadowController:
           print "backup file in ", backupname 
    #@-node:ekr.20080708094444.84:make_backup_file
    #@-node:ekr.20080708094444.10:write_if_changed & helpers
-   #@+node:ekr.20080708094444.83:test_propagate_changes
-   # This is the heart of @shadow.
-
-   def test_propagate_changes (self,
-       old_private_lines,      # with_sentinels
-       new_public_lines,       # without sentinels
-       expected_private_lines, # with sentinels
-       marker):
-
-       '''Check that propagate changed lines changes 'before_private_lines' to
-       'expected_private_lines' based on changes to 'changed_public_lines'.'''
-
-       results = self.propagate_changed_lines(
-           new_public_lines,   # new_lines_without_sentinels
-           old_private_lines,  # lines_with_sentinels, 
-           marker = marker)
-
-       assert results == expected_private_lines, 'results: %s\n\nexpected_private_lines: %s' % (
-           results,expected_private_lines)
-   #@-node:ekr.20080708094444.83:test_propagate_changes
    #@+node:ekr.20080708094444.89:Utils...
    #@+node:ekr.20080708094444.27:copy_file_removing_sentinels (helper for at.replaceTargetFileIfDifferent)
    # Called by updated version of atFile.replaceTargetFileIfDifferent
@@ -593,8 +570,108 @@ class shadowController:
        return regular_lines, sentinel_lines 
    #@-node:ekr.20080708094444.29:separate_sentinels
    #@-node:ekr.20080708094444.89:Utils...
+   #@+node:ekr.20080709062932.1:Unit testing
+   #@+node:ekr.20080708094444.83:test_propagate_changes
+   def test_propagate_changes (self,
+       old_private_lines,      # with_sentinels
+       new_public_lines,       # without sentinels
+       expected_private_lines, # with sentinels
+       marker):
+
+       '''Check that propagate changed lines changes 'before_private_lines' to
+       'expected_private_lines' based on changes to 'changed_public_lines'.'''
+
+       results = self.propagate_changed_lines(
+           new_public_lines,   # new_lines_without_sentinels
+           old_private_lines,  # lines_with_sentinels, 
+           marker = marker)
+
+       assert results == expected_private_lines, 'results: %s\n\nexpected_private_lines: %s' % (
+           results,expected_private_lines)
+
+       return True # For unit tests.
+   #@-node:ekr.20080708094444.83:test_propagate_changes
+   #@+node:ekr.20080709062932.2:atShadowTestCase(c,before,after)
+   class atShadowTestCase (unittest.TestCase):
+
+       '''Create a unit test to test @shadow.'''
+
+       #@    @+others
+       #@+node:ekr.20080709062932.6:__init__
+       def __init__ (self,c,p):
+
+            # Init the base class.
+           unittest.TestCase.__init__(self)
+
+           self.c = c
+           self.p = p.copy()
+       #@-node:ekr.20080709062932.6:__init__
+       #@+node:ekr.20080709062932.7: fail
+       def fail (self,msg=None):
+
+           """Mark a unit test as having failed."""
+
+           # __pychecker__ = '--no-argsused'
+               #  msg needed so signature matches base class.
+
+           import leo.core.leoGlobals as g
+
+           g.app.unitTestDict["fail"] = g.callers()
+       #@-node:ekr.20080709062932.7: fail
+       #@+node:ekr.20080709062932.8:setUp
+       def get_lines(self,c,p,headline):
+           p = g.findNodeAnywhere(c, headline)
+           s = p.bodyString()    
+           return g.splitLines(s)
+
+       def setUp (self):
+
+           c = self.c ; p = self.p
+           # c.selectPosition(p)
+
+           self.old_private_lines       = self.get_lines (c,p,'old_private')
+           self.new_public_lines        = self.get_lines (c,p,'new_public')
+           self.expected_private_lines  = self.get_lines (c,p,'expected_after_private')
+
+           assert self.old_private_lines
+           assert self.new_public_lines
+           assert self.expected_private_lines
+       #@-node:ekr.20080709062932.8:setUp
+       #@+node:ekr.20080709062932.9:tearDown
+       def tearDown (self):
+
+           pass
+
+           # Restore the outline.
+           self.c.outerUpdate()
+       #@nonl
+       #@-node:ekr.20080709062932.9:tearDown
+       #@+node:ekr.20080709062932.10:runTest
+       def runTest (self,define_g = True):
+
+           import leo.core.leoShadow as leoShadow
+
+
+           x = leoShadow.shadowController(self.c)
+
+           ok = x.test_propagate_changes (
+               self.old_private_lines,
+               self.new_public_lines,
+               self.expected_private_lines,
+               marker="#@")
+
+           assert ok
+       #@-node:ekr.20080709062932.10:runTest
+       #@+node:ekr.20080709062932.11:shortDescription
+       def shortDescription (self):
+
+           return self.p.headString() + '\n'
+       #@-node:ekr.20080709062932.11:shortDescription
+       #@-others
+   #@-node:ekr.20080709062932.2:atShadowTestCase(c,before,after)
+   #@-node:ekr.20080709062932.1:Unit testing
    #@-others
-#@-node:ekr.20080708094444.80:class pluginController
+#@-node:ekr.20080708094444.80:class shadowController
 #@+node:ekr.20080708094444.12:class sourcereader
 class sourcereader:
     """
