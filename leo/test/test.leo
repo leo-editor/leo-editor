@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -224,13 +224,14 @@
 </v>
 <v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
-<v t="ekr.20080708103735.2" a="E"><vh>Data for @shadow tests</vh>
+<v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
+<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20080709112843.1"><vh>@shadow-raw-test first test</vh>
 <v t="ekr.20080708103735.3"><vh>old_private</vh></v>
 <v t="ekr.20080708103735.5"><vh>new_public</vh></v>
 <v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
 </v>
-<v t="ekr.20080708103735.6"><vh>@test basic replacement test</vh></v>
-<v t="ekr.20080709091709.1"><vh>@suite run all descendant @shadow unit tests</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1745,52 +1746,28 @@ xxx
 </t>
 <t tx="ekr.20080708103735.5">xxx
 </t>
-<t tx="ekr.20080708103735.6">import leo.core.leoShadow as leoShadow
-
-def get_lines(headline):
-    p = g.findNodeAnywhere(c, headline)
-    s = p.bodyString()    
-    return g.splitLines(s)
-
-old_private_lines       = get_lines ('old_private')
-new_public_lines        = get_lines ('new_public')
-expected_private_lines  = get_lines ('expected_after_private')
-
-assert old_private_lines
-assert new_public_lines
-assert expected_private_lines
-
-x = leoShadow.shadowController(c)
-
-x.test_propagate_changes (
-    old_private_lines,      # before_with_sentinels_lines,
-    new_public_lines,       # changed_without_sentinels_lines,
-    expected_private_lines, # after_with_sentinel_lines,
-    marker="#@")
-</t>
 <t tx="ekr.20080709091709.1">import unittest
 import leo.core.leoShadow as leoShadow
 
 suite = unittest.makeSuite(unittest.TestCase)
-
-p = g.findNodeAnywhere(c,'Data for @shadow tests')
-assert p
-
+root = g.findNodeAnywhere(c,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
 x = leoShadow.shadowController(c)
-test = x.atShadowTestCase(c,p)
-suite.addTest(test)
 
-# for p in p.subtree_iter():
-    # h = p.headString().strip()
-    # if h.startswith('shadow test'):
-        # before = g.findNodeInTree(c, p, 'before')
-        # after  = g.findNodeInTree(c, p, 'after')
-        # if before and after:
-            # test = atShadowTestCase(c,before,after)
-            # suite.addTest(test)
+trace = True
+for p in root.children_iter():
+    h = p.headString().strip()
+    if h.startswith('@shadow-test'):
+        test = atShadowTestCase(c,p)
+    elif h.startswith('@shadow-raw-test'):
+        test = x.atShadowRawTestCase(c,p)
+    if test:
+        if trace: print h
+        suite.addTest(test)
 
 if suite:
     g.app.scriptDict['suite'] = suite
 </t>
+<t tx="ekr.20080709112843.1"></t>
 </tnodes>
 </leo_file>

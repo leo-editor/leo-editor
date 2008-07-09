@@ -591,10 +591,90 @@ class shadowController:
 
        return True # For unit tests.
    #@-node:ekr.20080708094444.83:test_propagate_changes
-   #@+node:ekr.20080709062932.2:atShadowTestCase(c,before,after)
+   #@+node:ekr.20080709062932.12:atShadowRawTestCase
+   class atShadowRawTestCase (unittest.TestCase):
+
+       '''Support @shadow-raw-test nodes.
+
+       This node should have three descendants:
+
+       'old_private', 'new_public' and 'expected_after_private'
+
+       '''
+
+       #@    @+others
+       #@+node:ekr.20080709062932.13:__init__
+       def __init__ (self,c,p):
+
+            # Init the base class.
+           unittest.TestCase.__init__(self)
+
+           self.c = c
+           self.p = p.copy()
+       #@-node:ekr.20080709062932.13:__init__
+       #@+node:ekr.20080709062932.14: fail
+       def fail (self,msg=None):
+
+           """Mark a unit test as having failed."""
+
+           # __pychecker__ = '--no-argsused'
+               #  msg needed so signature matches base class.
+
+           import leo.core.leoGlobals as g
+
+           g.app.unitTestDict["fail"] = g.callers()
+       #@-node:ekr.20080709062932.14: fail
+       #@+node:ekr.20080709062932.15:setUp
+       def get_lines(self,c,p,headline):
+           p = g.findNodeAnywhere(c, headline)
+           assert p, 'node not found: %s' % headline
+           s = p.bodyString()    
+           return g.splitLines(s)
+
+       def setUp (self):
+
+           c = self.c ; p = self.p
+           # c.selectPosition(p)
+           self.old_private_lines       = self.get_lines (c,p,'old_private')
+           self.new_public_lines        = self.get_lines (c,p,'new_public')
+           self.expected_private_lines  = self.get_lines (c,p,'expected_after_private')
+       #@-node:ekr.20080709062932.15:setUp
+       #@+node:ekr.20080709062932.16:tearDown
+       def tearDown (self):
+
+           pass
+       #@-node:ekr.20080709062932.16:tearDown
+       #@+node:ekr.20080709062932.17:runTest
+       def runTest (self,define_g = True):
+
+           import leo.core.leoShadow as leoShadow
+
+
+           x = leoShadow.shadowController(self.c)
+
+           ok = x.test_propagate_changes (
+               self.old_private_lines,
+               self.new_public_lines,
+               self.expected_private_lines,
+               marker="#@")
+
+           assert ok
+       #@-node:ekr.20080709062932.17:runTest
+       #@+node:ekr.20080709062932.18:shortDescription
+       def shortDescription (self):
+
+           return self.p.headString() + '\n'
+       #@-node:ekr.20080709062932.18:shortDescription
+       #@-others
+   #@-node:ekr.20080709062932.12:atShadowRawTestCase
+   #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):
 
-       '''Create a unit test to test @shadow.'''
+       '''Support @shadow-test nodes.
+
+       These nodes should have two descendant nodes: 'before' and 'after'.
+
+       '''
 
        #@    @+others
        #@+node:ekr.20080709062932.6:__init__
@@ -619,32 +699,22 @@ class shadowController:
            g.app.unitTestDict["fail"] = g.callers()
        #@-node:ekr.20080709062932.7: fail
        #@+node:ekr.20080709062932.8:setUp
-       def get_lines(self,c,p,headline):
+       def findNode(self,c,p,headline):
            p = g.findNodeAnywhere(c, headline)
-           s = p.bodyString()    
-           return g.splitLines(s)
+           assert(p)
 
        def setUp (self):
 
            c = self.c ; p = self.p
            # c.selectPosition(p)
 
-           self.old_private_lines       = self.get_lines (c,p,'old_private')
-           self.new_public_lines        = self.get_lines (c,p,'new_public')
-           self.expected_private_lines  = self.get_lines (c,p,'expected_after_private')
-
-           assert self.old_private_lines
-           assert self.new_public_lines
-           assert self.expected_private_lines
+           self.old_node = self.findNode (c,p,'old')
+           self.new_node = self.findNode (c,p,'new')
        #@-node:ekr.20080709062932.8:setUp
        #@+node:ekr.20080709062932.9:tearDown
        def tearDown (self):
 
            pass
-
-           # Restore the outline.
-           self.c.outerUpdate()
-       #@nonl
        #@-node:ekr.20080709062932.9:tearDown
        #@+node:ekr.20080709062932.10:runTest
        def runTest (self,define_g = True):
@@ -665,10 +735,11 @@ class shadowController:
        #@+node:ekr.20080709062932.11:shortDescription
        def shortDescription (self):
 
-           return self.p.headString() + '\n'
+           return 'Test of @shadow: root data node:', self.p.headString() + '\n'
        #@-node:ekr.20080709062932.11:shortDescription
        #@-others
-   #@-node:ekr.20080709062932.2:atShadowTestCase(c,before,after)
+
+   #@-node:ekr.20080709062932.2:atShadowTestCase
    #@-node:ekr.20080709062932.1:Unit testing
    #@-others
 #@-node:ekr.20080708094444.80:class shadowController
