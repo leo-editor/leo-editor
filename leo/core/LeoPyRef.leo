@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="6,3,1,2,1"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -172,8 +172,8 @@ marks="ekr.20040803072955.127,"><vh>@thin leoTkinterTree.py</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080708094444.1"
-expanded="ekr.20080708094444.38,"><vh>@thin leoShadow.py</vh></v>
+<v t="ekr.20080708094444.1" a="E"
+expanded="ekr.20080708094444.80,ekr.20080708094444.36,ekr.20080708094444.38,"><vh>@thin leoShadow.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>

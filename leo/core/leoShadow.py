@@ -9,9 +9,9 @@
 leoShadow.py
 
 
-The shadow plugin allows you to use Leo with files which contain no
-Leo comments, and still have information flow in both directions:
-from the file into Leo, and from Leo into the file.
+This code allows users to use Leo with files which contain no sentinels
+and still have information flow in both directions between outlines and
+derived files.
 
 Private files contain sentinels: they live in the Leo-shadow subdirectory.
 Public files contain no sentinels: they live in the parent (main) directory.
@@ -21,13 +21,7 @@ When Leo first reads an @shadow we create a file without sentinels in the regula
 The slightly hard thing to do is to pick up changes from the file without
 sentinels, and put them into the file with sentinels.
 
-We have two invariants:
-1. We NEVER delete any sentinels.
-2. As a slighly weaker condition, insertions which could be put either
-   at the end of a node, or the beginning of the next node, should be put
-   at the end of the node.
-   The exception to this rule is the last node. Insertions should *always*
-   be done within sentinels.
+
 
 Settings:
 - @string shadow_subdir (default: LeoFolder): name of the shadow directory.
@@ -219,11 +213,12 @@ class shadowController:
 
        We compare the old and new public lines, create diffs and
        propagate the diffs to the new private lines, copying sentinels as well.
-       '''
 
-       # new_lines_without_sentinels = new_public_lines
-       # lines_with_sentinels = old_private_lines
-       # old_lines_without_sentinels, mapping = self.strip_sentinels_with_map(lines_with_sentinels, marker)
+       We have two invariants:
+       1. We *never* delete any sentinels.
+       2. Insertions that happen at the boundary between nodes will be put at
+          the end of a node.  However, insertions must always be done within sentinels.
+       '''
 
        trace = True
        old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
@@ -287,7 +282,7 @@ class shadowController:
            if tag == 'insert' and mapping[i1_old_lines] >= len(lines_with_sentinels):
                pass
            else:
-               self.copy_sentinels(reader_lines_with_sentinels, writer_new_sourcelines, marker, upto = mapping[i1_old_lines])
+               self.copy_sentinels(reader_lines_with_sentinels,writer_new_sourcelines,marker,upto=mapping[i1_old_lines])
            if tag=='equal':
                #@            << handle 'equal' op >>
                #@+node:ekr.20080708094444.41:<< handle 'equal' op >>
@@ -324,7 +319,7 @@ class shadowController:
 
                #@-node:ekr.20080708094444.44:<< handle 'insert' op >>
                #@nl
-           else: assert 0
+           else: g.trace('can not happen: tag = %s' % repr(tag))
 
        if trace: print_tags(tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines, "Before final copy")
        self.copy_sentinels(
