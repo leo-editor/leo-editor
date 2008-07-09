@@ -317,11 +317,6 @@ class shadowController:
            #@nl
            #@        << Handle the opcode >>
            #@+node:ekr.20080708192807.5:<< Handle the opcode >>
-           # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
-           # Because of this, nothing has to be explicitly deleted below.
-
-           limit=mapping[old_i]
-
            if trace: g.trace(tag,'old_i',old_i,'limit',limit)
 
            # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
@@ -330,6 +325,8 @@ class shadowController:
            if tag == 'insert' and limit >= old_private_lines_rdr.size():
                pass
            else:
+               # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+               # Because of this, nothing has to be explicitly deleted below.
                self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
 
            if tag == 'equal':
