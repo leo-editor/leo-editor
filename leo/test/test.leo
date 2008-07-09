@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12,1,10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -225,7 +225,8 @@
 <v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh></v>
+<v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
 <v t="ekr.20080709112843.1"><vh>@@shadow-raw-test first test</vh>
 <v t="ekr.20080708103735.3"><vh>old_private</vh></v>
 <v t="ekr.20080708103735.5"><vh>new_public</vh></v>
@@ -267,7 +268,7 @@
 <v t="ekr.20080709155243.2"><vh>old</vh></v>
 <v t="ekr.20080709155243.3"><vh>new</vh></v>
 </v>
-<v t="ekr.20080709155243.10" a="E"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20080709155243.10"><vh>@shadow-test insert after last line</vh>
 <v t="ekr.20080709155243.11"><vh>old</vh></v>
 <v t="ekr.20080709155243.12"><vh>new</vh></v>
 </v>
@@ -1792,9 +1793,10 @@ import leo.core.leoShadow as leoShadow
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeAnywhere(c,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-x = leoShadow.shadowController(c)
 
-trace = True
+x = leoShadow.shadowController(c,trace=False,trace_writers=False)
+
+trace = False ; vrbose = False
 for p in root.children_iter():
     h = p.headString().strip()
     if h.startswith('@shadow-test'):
@@ -1803,11 +1805,9 @@ for p in root.children_iter():
         test = x.atShadowRawTestCase(c,p,x)
     else:
         test = None
-
     if test:
-        if trace: print h
+        if trace and verbose: print h
         suite.addTest(test)
-
 if suite:
     g.app.scriptDict['suite'] = suite
 </t>
@@ -1883,5 +1883,6 @@ line 3</t>
 line 2
 line 3
 inserted line</t>
+<t tx="ekr.20080709162102.1"></t>
 </tnodes>
 </leo_file>

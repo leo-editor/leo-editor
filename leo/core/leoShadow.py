@@ -90,17 +90,21 @@ class shadowController:
 
    #@   @+others
    #@+node:ekr.20080708094444.79: ctor (shadowConroller)
-   def __init__ (self,c):
+   def __init__ (self,c,trace=False,trace_writers=False):
 
        self.c = c
 
        self.print_copy_operations = False   # True: tell when files are copied.
        self.do_backups = False              # True: always make backups of each file.
-       self.print_all = False               # True: print intermediate files.
 
        # Configuration
        self.shadow_subdir_default = 'LeoFolder'
        self.shadow_prefix_default = ''
+
+       # Debugging...
+       self.print_all = False              # True: print intermediate files.
+       self.trace = trace
+       self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
 
    #@-node:ekr.20080708094444.79: ctor (shadowConroller)
    #@+node:ekr.20080708192807.1:Propagation...
@@ -192,10 +196,11 @@ class shadowController:
 
        '''Copy sentinels from reader to writer while reader.index() < limit.'''
 
+       start = reader.index()
        while reader.index() < limit:
            line = reader.get()
            if self.is_sentinel(line, marker):
-               writer.put(line)
+               writer.put(line,tag='copy sent %s:%s' % (start,limit))
    #@-node:ekr.20080708094444.37:copy_sentinels
    #@+node:ekr.20080708094444.38:propagate_changed_lines
    def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
@@ -211,22 +216,22 @@ class shadowController:
           the end of a node.  However, insertions must always be done within sentinels.
        '''
 
-       trace = True ; verbose = True
+       trace = False ; verbose = False
        # mapping tells which line of old_private_lines each line of old_public_lines comes from.
        old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
        #@    << init vars >>
        #@+node:ekr.20080708094444.40:<< init vars >>
-       new_private_lines_wtr = sourcewriter()
+       new_private_lines_wtr = sourcewriter(self)
        # collects the contents of the new file.
 
-       new_public_lines_rdr = sourcereader(new_public_lines)
+       new_public_lines_rdr = sourcereader(self,new_public_lines)
            # Contains the changed source code.
 
-       old_public_lines_rdr = sourcereader(old_public_lines)
+       old_public_lines_rdr = sourcereader(self,old_public_lines)
            # this is compared to new_public_lines_rdr to find out the changes.
 
-       old_private_lines_rdr = sourcereader(old_private_lines) # lines_with_sentinels)
+       old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
            # This is the file which is currently produced by Leo, with sentinels.
 
        # Check that all ranges returned by get_opcodes() are contiguous
@@ -314,13 +319,25 @@ class shadowController:
            #@+node:ekr.20080708192807.5:<< Handle the opcode >>
            # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
            # Because of this, nothing has to be explicitly deleted below.
-           self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+
+           limit=mapping[old_i]
+
+           if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+           # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+           # In this special case, we must do the insert before the sentinels.
+           limit=mapping[old_i]
+           if tag == 'insert' and limit >= old_private_lines_rdr.size():
+               pass
+           else:
+               self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
 
            if tag == 'equal':
                # Copy all lines (including sentinels) from the old private file to the new private file.
+               start = old_private_lines_rdr.index()
                while old_private_lines_rdr.index() <= mapping[old_j-1]:
                   line = old_private_lines_rdr.get()
-                  new_private_lines_wtr.put(line)
+                  new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
 
                # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
                new_public_lines_rdr.sync(new_j)
@@ -328,9 +345,10 @@ class shadowController:
            elif tag in ('insert','replace'):
                # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
                # Copy lines from new_public_lines_rdr up to new_j.
+               start = new_public_lines_rdr.index()
                while new_public_lines_rdr.index() < new_j:
                    line = new_public_lines_rdr.get()
-                   new_private_lines_wtr.put(line)
+                   new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
            elif tag=='delete':
                # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
@@ -340,7 +358,8 @@ class shadowController:
            else:
                g.trace('can not happen: tag = %s' % repr(tag))
 
-           if trace: print_tags(tag, old_i, old_j, new_i, new_j, "After a new tag")
+           if trace and verbose:
+               print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
            #@nonl
            #@-node:ekr.20080708192807.5:<< Handle the opcode >>
            #@nl
@@ -579,8 +598,16 @@ class shadowController:
            marker = marker,
            p = p)
 
-       assert results == expected_private_lines, 'results: %s\n\nexpected_private_lines: %s' % (
-           results,expected_private_lines)
+       if results != expected_private_lines:
+
+           print '%s test_propagate_changes:failure' % ('*' * 40)
+           for aList,tag in ((results,'results'),(expected_private_lines,'expected_private_lines')):
+               print '%s...' % tag
+               for i, line in enumerate(aList):
+                   print '%3s %s' % (i,repr(line))
+               print '-' * 40
+
+       assert results == expected_private_lines
 
        return True # For unit tests.
    #@-node:ekr.20080708094444.83:test_propagate_changes
@@ -597,7 +624,7 @@ class shadowController:
 
        #@    @+others
        #@+node:ekr.20080709062932.13:__init__
-       def __init__ (self,c,p,shadowController):
+       def __init__ (self,c,p,shadowController,trace=False):
 
             # Init the base class.
            unittest.TestCase.__init__(self)
@@ -605,6 +632,7 @@ class shadowController:
            self.c = c
            self.p = p.copy()
            self.shadowController=shadowController
+           self.trace = trace
        #@-node:ekr.20080709062932.13:__init__
        #@+node:ekr.20080709062932.14: fail
        def fail (self,msg=None):
@@ -671,7 +699,7 @@ class shadowController:
 
        #@    @+others
        #@+node:ekr.20080709062932.6:__init__
-       def __init__ (self,c,p,shadowController):
+       def __init__ (self,c,p,shadowController,trace=False):
 
             # Init the base class.
            unittest.TestCase.__init__(self)
@@ -687,7 +715,7 @@ class shadowController:
            self.ok = True
 
            # Debugging
-           self.trace = True
+           self.trace = trace
        #@-node:ekr.20080709062932.6:__init__
        #@+node:ekr.20080709062932.7: fail
        def fail (self,msg=None):
@@ -811,7 +839,7 @@ class shadowController:
        #@+node:ekr.20080709062932.11:shortDescription
        def shortDescription (self):
 
-           return 'Test of @shadow: root data node:', self.p.headString() + '\n'
+           return self.p and self.p.headString() or '@test-shadow: no self.p'
        #@-node:ekr.20080709062932.11:shortDescription
        #@-others
 
@@ -839,32 +867,33 @@ class sourcereader:
     """
     #@	@+others
     #@+node:ekr.20080708094444.13:__init__
-    def __init__ (self, lines):
-       self.lines = lines 
-       self.length = len(self.lines)
-       self.i = 0
+    def __init__ (self,shadowController,lines):
+        self.lines = lines 
+        self.length = len(self.lines)
+        self.i = 0
+        self.shadowController=shadowController
     #@-node:ekr.20080708094444.13:__init__
     #@+node:ekr.20080708094444.14:index
     def index (self):
-       return self.i 
+        return self.i
     #@-node:ekr.20080708094444.14:index
     #@+node:ekr.20080708094444.15:get
     def get (self):
-       result = self.lines[self.i]
-       self.i+=1
-       return result 
+        result = self.lines[self.i]
+        self.i+=1
+        return result 
     #@-node:ekr.20080708094444.15:get
     #@+node:ekr.20080708094444.16:sync
     def sync (self,i):
-       self.i = i 
+        self.i = i 
     #@-node:ekr.20080708094444.16:sync
     #@+node:ekr.20080708094444.17:size
     def size (self):
-       return self.length 
+        return self.length 
     #@-node:ekr.20080708094444.17:size
     #@+node:ekr.20080708094444.18:atEnd
     def atEnd (self):
-       return self.index>=self.length 
+        return self.index>=self.length 
     #@-node:ekr.20080708094444.18:atEnd
     #@+node:ekr.20080708094444.19:clone
     def clone(self):
@@ -875,9 +904,7 @@ class sourcereader:
     #@-node:ekr.20080708094444.19:clone
     #@+node:ekr.20080708094444.20:dump
     def dump(self, title):
-        """
-        Little dump routine for easy debugging
-        """
+
         print title
         # print 'self.i',self.i
         for i, line in enumerate(self.lines):
@@ -896,26 +923,30 @@ class sourcewriter:
     """
     #@	@+others
     #@+node:ekr.20080708094444.22:__init__
-    def __init__ (self):
+    def __init__ (self,shadowController):
 
        self.i = 0
        self.lines =[]
+       self.shadowController=shadowController
+       self.trace = self.shadowController.trace_writers
     #@-node:ekr.20080708094444.22:__init__
     #@+node:ekr.20080708094444.23:put
-    def put(self, line):
+    def put(self, line, tag=''):
 
-       self.lines.append(line)
-       self.i+=1
+        self.lines.append(line)
+        self.i+=1
+        if self.trace:
+            g.trace('%16s %s' % (tag,repr(line)))
     #@-node:ekr.20080708094444.23:put
     #@+node:ekr.20080708094444.24:index
     def index (self):
 
-       return self.i 
+        return self.i 
     #@-node:ekr.20080708094444.24:index
     #@+node:ekr.20080708094444.25:getlines
     def getlines (self):
 
-       return self.lines 
+        return self.lines 
     #@-node:ekr.20080708094444.25:getlines
     #@+node:ekr.20080708094444.26:dump
     def dump(self, title):
