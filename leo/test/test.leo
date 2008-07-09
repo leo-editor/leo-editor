@@ -255,6 +255,22 @@
 <v t="ekr.20080709153206.15"><vh>old</vh></v>
 <v t="ekr.20080709153206.16"><vh>new</vh></v>
 </v>
+<v t="ekr.20080709155243.4"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20080709155243.5"><vh>old</vh></v>
+<v t="ekr.20080709155243.6"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709155243.7"><vh>@shadow-test insert after first line</vh>
+<v t="ekr.20080709155243.8"><vh>old</vh></v>
+<v t="ekr.20080709155243.9"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709155243.1"><vh>@shadow-test insert before last line</vh>
+<v t="ekr.20080709155243.2"><vh>old</vh></v>
+<v t="ekr.20080709155243.3"><vh>new</vh></v>
+</v>
+<v t="ekr.20080709155243.10"><vh>@shadow-test insert afte last line</vh>
+<v t="ekr.20080709155243.11"><vh>old</vh></v>
+<v t="ekr.20080709155243.12"><vh>new</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1835,5 +1851,37 @@ line 2
 line 3</t>
 <t tx="ekr.20080709153206.16">line 1
 line 2</t>
+<t tx="ekr.20080709155243.1"></t>
+<t tx="ekr.20080709155243.2">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.3">line 1
+line 2
+inserted line
+line 3</t>
+<t tx="ekr.20080709155243.4"></t>
+<t tx="ekr.20080709155243.5">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.6">inserted line
+line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.7"></t>
+<t tx="ekr.20080709155243.8">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.9">line 1
+inserted line
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.10"></t>
+<t tx="ekr.20080709155243.11">line 1
+line 2
+line 3</t>
+<t tx="ekr.20080709155243.12">line 1
+line 2
+line 3
+inserted line</t>
 </tnodes>
 </leo_file>
