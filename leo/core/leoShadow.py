@@ -106,7 +106,8 @@ class shadowController:
        self.shadow_prefix_default = ''
 
    #@-node:ekr.20080708094444.79: ctor (shadowConroller)
-   #@+node:ekr.20080708094444.36:propagate_changes & helpers
+   #@+node:ekr.20080708192807.1:Propagation...
+   #@+node:ekr.20080708094444.36:propagate_changes 
    def propagate_changes(self, old_private_file, old_public_file, marker_from_extension):
 
        '''Propagate the changes from the public file (without_sentinels)
@@ -114,19 +115,18 @@ class shadowController:
 
        old_public_lines  = file(old_public_file).readlines()
        old_private_lines = file(old_private_file).readlines()
+       marker = marker_from_extension(old_public_file)
 
        new_private_lines = self.propagate_changed_lines(
-           old_public_lines,
-           old_private_lines,
-           marker = marker_from_extension(old_public_file))
+           old_public_lines,old_private_lines,marker)
 
-       written = self.write_if_changed(
-           new_private_lines,
+       written = self.write_if_changed(new_private_lines,
            targetfilename=old_private_file,
            sourcefilename=old_public_file)
 
        return written
    #@nonl
+   #@-node:ekr.20080708094444.36:propagate_changes 
    #@+node:ekr.20080708094444.35:check_the_final_output & helper
    def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
        """
@@ -161,7 +161,7 @@ class shadowController:
                lines1_message = "old sentinels",
                lines2_message = "new sentinels")
 
-       if ok: g.trace("***success!")
+       if ok: g.trace("success!")
    #@+node:ekr.20080708094444.33:show_error
    def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
 
@@ -191,23 +191,17 @@ class shadowController:
    #@-node:ekr.20080708094444.33:show_error
    #@-node:ekr.20080708094444.35:check_the_final_output & helper
    #@+node:ekr.20080708094444.37:copy_sentinels
-   def copy_sentinels(self, reader_lines_with_sentinels, writer_new_sourcelines, marker, upto):
+   def copy_sentinels(self,reader,writer,marker,limit):
 
-       """
-       Copy the sentinels from reader_lines_with_sentinels to writer_new_sourcelines upto,
-       but not including, upto.
-       """
+       '''Copy sentinels from reader to writer while reader.index() < limit.'''
 
-       while reader_lines_with_sentinels.index() < upto:
-           line = reader_lines_with_sentinels.get()
+       while reader.index() < limit:
+           line = reader.get()
            if self.is_sentinel(line, marker):
-               writer_new_sourcelines.put(line)
+               writer.put(line)
    #@-node:ekr.20080708094444.37:copy_sentinels
    #@+node:ekr.20080708094444.38:propagate_changed_lines
-   def propagate_changed_lines(self,
-       new_public_lines,  # new_lines_without_sentinels
-       old_private_lines, # old_lines_with_sentinels, 
-       marker):
+   def propagate_changed_lines(self,new_public_lines,old_private_lines,marker):
 
        '''Propagate changes from 'new_public_lines' to 'old_private_lines.
 
@@ -220,50 +214,58 @@ class shadowController:
           the end of a node.  However, insertions must always be done within sentinels.
        '''
 
-       trace = True
+       trace = True ; verbose = True
+       # mapping tells which line of old_private_lines each line of old_public_lines comes from.
        old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+       # if trace and verbose:
+           # print 'mapping',mapping
+           # print 'old_public_lines...'
+           # for z in old_public_lines:
+               # print z,
+           # print '(end)'
+           # print 'new_public_lines...'
+           # for z in new_public_lines:
+               # print z,
+           # print '(end)'
        #@    << init vars >>
        #@+node:ekr.20080708094444.40:<< init vars >>
-       writer_new_sourcelines = sourcewriter()
+       new_private_lines_wtr = sourcewriter()
        # collects the contents of the new file.
 
-       reader_new_lines_without_sentinels = sourcereader(new_public_lines) # new_lines_without_sentinels)
+       new_public_lines_rdr = sourcereader(new_public_lines)
            # Contains the changed source code.
 
-       reader_old_lines_without_sentinels = sourcereader(old_public_lines) # old_lines_without_sentinels)
-           # this is compared to reader_new_lines_without_sentinels to find out the changes.
+       old_public_lines_rdr = sourcereader(old_public_lines)
+           # this is compared to new_public_lines_rdr to find out the changes.
 
-       reader_lines_with_sentinels = sourcereader(old_private_lines) # lines_with_sentinels)
+       old_private_lines_rdr = sourcereader(old_private_lines) # lines_with_sentinels)
            # This is the file which is currently produced by Leo, with sentinels.
 
        # Check that all ranges returned by get_opcodes() are contiguous
-       old_i2_old_lines, old_i2_modified_lines = -1,-1
+       old_old_j, old_i2_modified_lines = -1,-1
 
-       tag = i1_old_lines = i2_old_lines = i1_new_lines = i2_new_lines = None
+       tag = old_i = old_j = new_i = new_j = None
        #@nonl
        #@-node:ekr.20080708094444.40:<< init vars >>
        #@nl
        #@    << define print_tags >>
        #@+node:ekr.20080708094444.39:<< define print_tags >>
-       def print_tags(tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines, message):
+       def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
            sep1 = '=' * 10 ; sep2 = '-' * 20
 
-           print ; print ; sep1, message,sep1
+           print ; print sep1,message,sep1
 
-           print ; print (
-               "tag:", tag,
-               "  i1_old_lines:", i1_old_lines,
-               "  i2_old_lines:", i2_old_lines,
-               "  i1_new_lines:", i1_new_lines,
-               "  i2_new_lines:", i2_new_lines)
+           print ; print '%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j)
+
            print ; print sep2
 
            table = (
-               (reader_lines_with_sentinels,'old private lines'),
-               (reader_old_lines_without_sentinels,'old public lines'),
-               (reader_new_lines_without_sentinels,'new public lines'),
-               (writer_new_sourcelines,'new private lines'),
+               (old_private_lines_rdr,'old private lines'),
+               (old_public_lines_rdr,'old public lines'),
+               (new_public_lines_rdr,'new public lines'),
+               (new_private_lines_wtr,'new private lines'),
            )
 
            for f,tag in table:
@@ -274,65 +276,104 @@ class shadowController:
        #@-node:ekr.20080708094444.39:<< define print_tags >>
        #@nl
 
-       sm = difflib.SequenceMatcher(None, old_public_lines, new_public_lines)
+       sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+       prev_old_j = 0 ; prev_new_j = 0
 
-       # Loop invariant: all 3 readers are in synch.
-       for tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines in sm.get_opcodes():
-           if trace: print_tags(tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines, "After a new tag")
-           if tag == 'insert' and mapping[i1_old_lines] >= len(lines_with_sentinels):
-               pass
-           else:
-               self.copy_sentinels(reader_lines_with_sentinels,writer_new_sourcelines,marker,upto=mapping[i1_old_lines])
-           if tag=='equal':
-               #@            << handle 'equal' op >>
-               #@+node:ekr.20080708094444.41:<< handle 'equal' op >>
-               # Copy the lines from the leo file to the new sourcefile.
-               # This loop copies both text and sentinels.
-               while reader_lines_with_sentinels.index() <= mapping[i2_old_lines-1]:
-                  line = reader_lines_with_sentinels.get()
-                  writer_new_sourcelines.put(line)
+       for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
 
-               reader_new_lines_without_sentinels.sync(i2_new_lines)
-               #@-node:ekr.20080708094444.41:<< handle 'equal' op >>
-               #@nl
-           elif tag=='replace':
-               #@            << handle 'replace' op >>
-               #@+node:ekr.20080708094444.42:<< handle 'replace' op >>
-               while reader_new_lines_without_sentinels.index() < i2_new_lines:
-                  line = reader_new_lines_without_sentinels.get()
-                  writer_new_sourcelines.put(line)
-               #@-node:ekr.20080708094444.42:<< handle 'replace' op >>
-               #@nl
+           # Assert that SequenceMatcher never leaves gaps.
+           assert old_i == prev_old_j
+           assert new_i == prev_new_j
+           #@        << About this loop >>
+           #@+node:ekr.20080708192807.2:<< about this loop >>
+           #@+at
+           # 
+           # This loop writes all output lines using a single writer: 
+           # new_private_lines_wtr.
+           # 
+           # The output lines come from two, and *only* two readers:
+           # 
+           # 1. old_private_lines_rdr delivers the complete original sources. 
+           # All
+           #    sentinels and unchanged regular lines come from this reader.
+           # 
+           # 2. new_public_lines_rdr delivers the new, changed sources. All 
+           # inserted or
+           #    replacement text comes from this reader.
+           # 
+           # The highlights of the loop:
+           # 
+           # A. Each time through the loop, we have the following invariants:
+           # 
+           # - old_i is the index into old_public_lines of the start of the 
+           # present SequenceMatcher opcode.
+           # 
+           # - mapping[old_i] is the index into old_private_lines of the start 
+           # of the same opcode.
+           # 
+           # B. Step 1 effectively skips (deletes) all previously unwritten 
+           # non-sentinel
+           #    lines in old_private_lines_rdr whose index less than 
+           # mapping[old_i].
+           # 
+           # C. As a result, Step 2 does not need to delete elements from the
+           #    old_private_lines_rdr explicitly. This explains why the loop 
+           # handles the
+           #    'insert' and 'delete' opcodes in the same way.
+           #@-at
+           #@-node:ekr.20080708192807.2:<< about this loop >>
+           #@nl
+           #@        << Handle the opcode >>
+           #@+node:ekr.20080708192807.5:<< Handle the opcode >>
+           # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
+           # Because of this, nothing has to be explicitly deleted below.
+           self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+
+           if tag == 'equal':
+               # Copy all lines (including sentinels) from the old private file to the new private file.
+               while old_private_lines_rdr.index() <= mapping[old_j-1]:
+                  line = old_private_lines_rdr.get()
+                  new_private_lines_wtr.put(line)
+
+               # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+               new_public_lines_rdr.sync(new_j)
+
+           elif tag in ('insert','replace'):
+               # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+               # Copy lines from new_public_lines_rdr up to new_j.
+               while new_public_lines_rdr.index() < new_j:
+                   line = new_public_lines_rdr.get()
+                   new_private_lines_wtr.put(line)
+
            elif tag=='delete':
-               #@            << handle 'delete' op >>
-               #@+node:ekr.20080708094444.43:<< handle 'delete' op >>
-               # No copy operation for a deletion!
+               # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+               # Leave new_public_lines_rdr unchanged.
                pass
-               #@-node:ekr.20080708094444.43:<< handle 'delete' op >>
-               #@nl
-           elif tag=='insert':
-               #@            << handle 'insert' op >>
-               #@+node:ekr.20080708094444.44:<< handle 'insert' op >>
-               while reader_new_lines_without_sentinels.index()<i2_new_lines:
-                  line = reader_new_lines_without_sentinels.get()
-                  writer_new_sourcelines.put(line)
 
-               #@-node:ekr.20080708094444.44:<< handle 'insert' op >>
-               #@nl
-           else: g.trace('can not happen: tag = %s' % repr(tag))
+           else:
+               g.trace('can not happen: tag = %s' % repr(tag))
 
-       if trace: print_tags(tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines, "Before final copy")
+           if trace: print_tags(tag, old_i, old_j, new_i, new_j, "After a new tag")
+           #@nonl
+           #@-node:ekr.20080708192807.5:<< Handle the opcode >>
+           #@nl
+
+           # Remember the ends of the previous tag ranges.
+           prev_old_j = old_j
+           prev_new_j = new_j
+
+       # Copy all unwritten sentinels.
        self.copy_sentinels(
-           reader_lines_with_sentinels,
-           writer_new_sourcelines, marker,
-           upto = reader_lines_with_sentinels.size())
-       if trace: print_tags(tag, i1_old_lines, i2_old_lines, i1_new_lines, i2_new_lines, "At the end")
-       result = writer_new_sourcelines.getlines()
+           old_private_lines_rdr,new_private_lines_wtr,
+           marker, limit = old_private_lines_rdr.size())
+
+       # Get the result.
+       result = new_private_lines_wtr.getlines()
        if 1:
            #@        << do final correctness check>>
            #@+node:ekr.20080708094444.45:<< do final correctness check >>
            t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-               writer_new_sourcelines.lines, marker)
+               new_private_lines_wtr.lines, marker)
 
            self.check_the_final_output(
                new_private_lines   = result,
@@ -345,27 +386,27 @@ class shadowController:
    #@-node:ekr.20080708094444.38:propagate_changed_lines
    #@+node:ekr.20080708094444.34:strip_sentinels_with_map
    def strip_sentinels_with_map (self, lines, marker):
-      '''
-      Strip sentinels from 'lines', a list of lines with sentinels.
 
-      Return (results,mapping) where results is the lines stripped of sentinels and
-      mapping is a list that maps each line in results to its original line.
-      '''
+      '''Strip sentinels from lines, a list of lines with sentinels.
+
+      Return (results,mapping)
+
+      'lines':     A list of lines containing sentinels.
+      'results':   The list of non-sentinel lines.
+      'mapping':   A list mapping each line in results to the original list.
+                   results[i] comes from line mapping[i] of the origina lines.'''
+
       mapping = [] ; results = []
+      for i in xrange(len(lines)):
+         line = lines[i]
+         if not self.is_sentinel(line,marker):
+            results.append(line)
+            mapping.append(i)
 
-      si, l = 0, len(lines)
-      while si < l:
-         sline = lines[si]
-         if not self.is_sentinel(sline,marker):
-            results.append(sline)
-            mapping.append(si)
-         si+=1
-
-      # Create an additional mapping entry for convenience.
-      # This simplifies the programming of the copy_sentinels function below.
-      mapping.append(si)
+      mapping.append(len(lines)) # To terminate loops.
       return results, mapping 
    #@-node:ekr.20080708094444.34:strip_sentinels_with_map
+   #@-node:ekr.20080708192807.1:Propagation...
    #@+node:ekr.20080708094444.10:write_if_changed & helpers
    def write_if_changed (self,lines, sourcefilename, targetfilename):
 
@@ -431,7 +472,6 @@ class shadowController:
           print "backup file in ", backupname 
    #@-node:ekr.20080708094444.84:make_backup_file
    #@-node:ekr.20080708094444.10:write_if_changed & helpers
-   #@-node:ekr.20080708094444.36:propagate_changes & helpers
    #@+node:ekr.20080708094444.83:test_propagate_changes
    # This is the heart of @shadow.
 
@@ -615,13 +655,10 @@ class sourcereader:
         Little dump routine for easy debugging
         """
         print title
-        print self.i
+        # print 'self.i',self.i
         for i, line in enumerate(self.lines):
-            if i == self.i:
-                marker = "===>"
-            else:
-                marker = ""
-            print "%s%s:%s" % (marker, i, line),
+            marker = g.choose(i==self.i,'**','  ')
+            print "%s %3s:%s" % (marker, i, line),
     #@nonl
     #@-node:ekr.20080708094444.20:dump
     #@-others
@@ -663,7 +700,8 @@ class sourcewriter:
 
         print title
         for i, line in enumerate(self.lines):
-            print "%s:%s" % (i, line),
+            marker = '  '
+            print "%s %3s:%s" % (marker, i, line),
     #@-node:ekr.20080708094444.26:dump
     #@-others
 #@-node:ekr.20080708094444.21:class sourcewriter
