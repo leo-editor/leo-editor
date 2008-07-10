@@ -215,12 +215,8 @@
 </v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh>
-<v t="ekr.20080709112843.1"><vh>@@shadow-raw-test first test</vh>
-<v t="ekr.20080708103735.3"><vh>old_private</vh></v>
-<v t="ekr.20080708103735.5"><vh>new_public</vh></v>
-<v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
-</v>
+<v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
+<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh></v>
 <v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080709122414.2"><vh>old</vh></v>
 <v t="ekr.20080709122414.3"><vh>new</vh></v>
@@ -261,8 +257,6 @@
 <v t="ekr.20080709155243.11"><vh>old</vh></v>
 <v t="ekr.20080709155243.12"><vh>new</vh></v>
 </v>
-</v>
-<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
 <v t="ekr.20080709192609.7"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
 <v t="ekr.20080709192609.3"><vh>old</vh>
 <v t="ekr.20080709192609.4"><vh>node 1</vh></v>
@@ -1731,15 +1725,6 @@ For the delete and replace operators we must also test the case that the
 deletion or replacement spans more than one block.
 </t>
 <t tx="ekr.20080708103735.2"></t>
-<t tx="ekr.20080708103735.3">#@string1
-line 1
-line 2
-</t>
-<t tx="ekr.20080708103735.4">#@string1
-xxx
-</t>
-<t tx="ekr.20080708103735.5">xxx
-</t>
 <t tx="ekr.20080709091709.1">import unittest
 import leo.core.leoShadow as leoShadow
 
@@ -1756,8 +1741,6 @@ for p in root.children_iter():
         test = x.atShadowTestCase(c,p,x,lax=True)
     elif h.startswith('@shadow-test'):
         test = x.atShadowTestCase(c,p,x,lax=False)
-    elif h.startswith('@shadow-raw-test'):
-        test = x.atShadowRawTestCase(c,p,x)
     else:
         test = None
     if test:
@@ -1766,7 +1749,6 @@ for p in root.children_iter():
 if suite:
     g.app.scriptDict['suite'] = suite
 </t>
-<t tx="ekr.20080709112843.1"></t>
 <t tx="ekr.20080709122414.1"></t>
 <t tx="ekr.20080709122414.2">line 1
 line 2
