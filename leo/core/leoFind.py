@@ -771,7 +771,9 @@ class leoFind:
             try: # Precompile the regexp.
                 flags = re.MULTILINE
                 if self.ignore_case: flags |= re.IGNORECASE
+                # New in Leo 4.5: escape the search text.
                 self.re_obj = re.compile(self.find_text,flags)
+                # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
                 g.es('invalid regular expression:',self.find_text,color='blue')
                 self.errors += 1 # Abort the search.
