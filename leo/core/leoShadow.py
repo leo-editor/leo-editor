@@ -577,37 +577,6 @@ class shadowController:
    #@-node:ekr.20080708094444.29:separate_sentinels
    #@-node:ekr.20080708094444.89:Utils...
    #@+node:ekr.20080709062932.1:Unit testing
-   #@+node:ekr.20080708094444.83:test_propagate_changes
-   def test_propagate_changes (self,
-       old_private_lines,      # with_sentinels
-       new_public_lines,       # without sentinels
-       expected_private_lines, # with sentinels
-       marker,
-       p = None
-   ):
-
-       '''Check that propagate changed lines changes 'before_private_lines' to
-       'expected_private_lines' based on changes to 'changed_public_lines'.'''
-
-       results = self.propagate_changed_lines(
-           new_public_lines,   # new_lines_without_sentinels
-           old_private_lines,  # lines_with_sentinels, 
-           marker = marker,
-           p = p)
-
-       if results != expected_private_lines:
-
-           print '%s test_propagate_changes:failure' % ('*' * 40)
-           for aList,tag in ((results,'results'),(expected_private_lines,'expected_private_lines')):
-               print '%s...' % tag
-               for i, line in enumerate(aList):
-                   print '%3s %s' % (i,repr(line))
-               print '-' * 40
-
-       assert results == expected_private_lines
-
-       return True # For unit tests.
-   #@-node:ekr.20080708094444.83:test_propagate_changes
    #@+node:ekr.20080709062932.12:atShadowRawTestCase
    class atShadowRawTestCase (unittest.TestCase):
 
@@ -668,14 +637,24 @@ class shadowController:
 
            x = self.shadowController
 
-           self.ok = x.test_propagate_changes (
-               self.old_private_lines,
+           results = x.propagate_changed_lines(
                self.new_public_lines,
-               self.expected_private_lines,
-               marker="#@")
+               self.old_private_lines,
+               marker="#@",
+               p = self.p.copy())
+
+           if not self.lax and results != self.expected_private_lines:
+
+               g.pr('%s test_propagate_changes:failure' % ('*' * 40))
+               for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
+                   print '%s...' % tag
+                   for i, line in enumerate(aList):
+                       print '%3s %s' % (i,repr(line))
+                   print '-' * 40
+
+               assert results == self.expected_private_lines
 
            assert self.ok
-
            return self.ok
        #@-node:ekr.20080709062932.17:runTest
        #@+node:ekr.20080709062932.18:shortDescription
@@ -696,12 +675,13 @@ class shadowController:
 
        #@    @+others
        #@+node:ekr.20080709062932.6:__init__
-       def __init__ (self,c,p,shadowController,trace=False):
+       def __init__ (self,c,p,shadowController,lax,trace=False):
 
             # Init the base class.
            unittest.TestCase.__init__(self)
 
            self.c = c
+           self.lax = lax
            self.p = p.copy()
            self.shadowController=shadowController
 
@@ -817,22 +797,32 @@ class shadowController:
            # No change is made to the outline.
            # self.c.redraw()
        #@-node:ekr.20080709062932.9:tearDown
-       #@+node:ekr.20080709062932.10:runTest
+       #@+node:ekr.20080709062932.10:runTest (atShadowTestCase)
        def runTest (self,define_g = True):
 
            x = self.shadowController
 
-           self.ok = x.test_propagate_changes (
-                   old_private_lines = self.old_private_lines,
-                   new_public_lines = self.new_public_lines,
-                   expected_private_lines = self.expected_private_lines,
-                   marker="#@",
-                   p = self.p)
+           results = x.propagate_changed_lines(
+               self.new_public_lines,
+               self.old_private_lines,
+               marker="#@",
+               p = self.p.copy())
+
+           if not self.lax and results != self.expected_private_lines:
+
+               print '%s atShadowTestCase.runTest:failure' % ('*' * 40)
+               for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
+                   print '%s...' % tag
+                   for i, line in enumerate(aList):
+                       print '%3s %s' % (i,repr(line))
+                   print '-' * 40
+
+               assert results == self.expected_private_lines
 
            assert self.ok
-
            return self.ok
-       #@-node:ekr.20080709062932.10:runTest
+       #@nonl
+       #@-node:ekr.20080709062932.10:runTest (atShadowTestCase)
        #@+node:ekr.20080709062932.11:shortDescription
        def shortDescription (self):
 
