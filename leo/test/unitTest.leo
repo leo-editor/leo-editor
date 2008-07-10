@@ -2160,6 +2160,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20080710120401.1"><vh>print to g.pr regex</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2314,16 +2315,16 @@ line 4</t>
 &lt;&lt; duplicate tests &gt;&gt;
 
 if 0:
-    print "vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()])
-    print "tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()])
+    g.pr("vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()]))
+    g.pr("tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()]))
 
 if 0: # all nodes
-    for v in c.all_vnodes_iter(): print v
-    for t in c.all_tnodes_iter(): print t
+    for v in c.all_vnodes_iter(): g.pr(v)
+    for t in c.all_tnodes_iter(): g.pr(t)
         
 if 0: # unique nodes
-    for v in c.all_unique_vnodes_iter(): print v
-    for t in c.all_unique_tnodes_iter(): print t</t>
+    for v in c.all_unique_vnodes_iter(): g.pr(v)
+    for t in c.all_unique_tnodes_iter(): g.pr(t)</t>
 <t tx="ekr.20040712101754.100">v1 = [p.v for p in c.all_positions_iter()]
 v2 = [v for v in c.all_vnodes_iter()]
 for v in v2: assert(v in v1)
@@ -2334,7 +2335,7 @@ t2 = [t for t in c.all_tnodes_iter()]
 for t in t2: assert(t in t1)
 for t in t1: assert(t in t2)
 
-# print "coverage tests pass"</t>
+# g.pr("coverage tests pass")</t>
 <t tx="ekr.20040712101754.101">nodes = []
 for v in c.all_unique_vnodes_iter():
     assert v not in nodes
@@ -2345,7 +2346,7 @@ for t in c.all_unique_tnodes_iter():
     assert t not in nodes
     nodes.append(t)
     
-# print "duplicate tests pass"</t>
+# g.pr("duplicate tests pass")</t>
 <t tx="ekr.20040712101754.103">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -4011,10 +4012,10 @@ def moreBody (self):
             assert parent in parents1, "%s not in %s" % (parent,parent2)
 
 except AssertionError:
-    print "parents1"
-    for parent in parents1: print parent
-    print "parents2"
-    for parent in parents2: print parent
+    g.pr("parents1")
+    for parent in parents1: g.pr(parent)
+    g.pr("parents2")
+    for parent in parents2: g.pr(parent)
     raise</t>
 <t tx="ekr.20040712101754.184">try:
     for p in c.allNodes_iter():
@@ -4028,10 +4029,10 @@ except AssertionError:
                 for parent in vparents:
                     assert parent in parents, "not in parents: %s,%s" % (p,child)
 except AssertionError:
-    print "parents..."
-    for parent in parents: print parent
-    print "vparents..."
-    for parent in vparents: print parent
+    g.pr("parents...")
+    for parent in parents: g.pr(parent)
+    g.pr("vparents...")
+    for parent in vparents: g.pr(parent)
     raise # for unittest.</t>
 <t tx="ekr.20040712101754.186">import os
 import sys
@@ -4074,11 +4075,11 @@ vList1 = [v for v in current.vnodes_iter()]
 vList2 = [v for v in current.unique_vnodes_iter()]
 
 if 0:
-    for v in vList1: print v
-    for v in vList2: print v
+    for v in vList1: g.pr(v)
+    for v in vList2: g.pr(v)
 
 if 0:
-    print len(allList),len(vList1),len(vList2)
+    g.pr(len(allList),len(vList1),len(vList2))
 
 if 0: # v.iters no longer exist.
     &lt;&lt; tests of consistency of p and v iters &gt;&gt;
@@ -4102,14 +4103,14 @@ if 0: # v.iters no longer exist.
     list2 = [v   for v in c.all_vnodes_iter()]
     assert(list1==list2)
     
-    # print "consistency tests pass"
+    # g.pr("consistency tests pass")
 
 except AssertionError:
-    print tag
-    print "list1"
-    for v in list1: print v
-    print "list2"
-    for v in list2: print v
+    g.pr(tag)
+    g.pr("list1")
+    for v in list1: g.pr(v)
+    g.pr("list2")
+    for v in list2: g.pr(v)
     raise</t>
 <t tx="ekr.20040712101754.197">nodes = []
 for v in current.unique_vnodes_iter():
@@ -4121,19 +4122,19 @@ for t in current.unique_tnodes_iter():
     assert t not in nodes
     nodes.append(t)
     
-# print "duplicate tests pass"</t>
+# g.pr("duplicate tests pass")</t>
 <t tx="ekr.20040712101754.198">if 0:
-    for v in current.vnodes_iter(): print v
-    for v in current.unique_vnodes_iter(): print v
+    for v in current.vnodes_iter(): g.pr(v)
+    for v in current.unique_vnodes_iter(): g.pr(v)
 
 if 0: # subtree of root node:
     root = c.rootPosition()
-    for v in root.vnodes_iter(): print v
-    for t in root.tnodes_iter(): print t
+    for v in root.vnodes_iter(): g.pr(v)
+    for t in root.tnodes_iter(): g.pr(t)
 
 if 0: # child1's tree.  child2 should not be included.
-    for v in child.vnodes_iter(): print v
-    for t in child.tnodes_iter(): print t</t>
+    for v in child.vnodes_iter(): g.pr(v)
+    for t in child.tnodes_iter(): g.pr(t)</t>
 <t tx="ekr.20040712101754.199">assert(p == p.copy())
 assert(p != p.threadNext())
 
@@ -4235,10 +4236,10 @@ for p in c.allNodes_iter():
                     assert(z in parents), 'fail 3'
                     
 except AssertionError:
-    print "parents..."
-    for parent in parents: print parent
-    print "vparents..."
-    for parent in vparents: print parent
+    g.pr("parents...")
+    for parent in parents: g.pr(parent)
+    g.pr("vparents...")
+    for parent in vparents: g.pr(parent)
     g.pdb()
     raise # for unittest.</t>
 <t tx="ekr.20040712101754.209">for p in c.allNodes_iter():
@@ -4509,10 +4510,8 @@ if sys.platform.lower().startswith('win'):
     else:
         # Create an empty suite to suppress a warning.
         g.app.scriptDict['suite'] = unittest.TestSuite()
-        print
-        print "Can't create unit tests from doctests"
-        print "doctest.DocTestSuite requires Python 2.3 or above."
-        print
+        g.pr("\nCan't create unit tests from doctests")
+        g.pr("doctest.DocTestSuite requires Python 2.3 or above.\n")
         
 else:
     pass # There are problems on Linux.</t>
@@ -4550,7 +4549,7 @@ def spam (self):
         It should remain untouched."""
 
     if a == 3:
-        print "Ä á Û"
+        g.pr("Ä á Û")
 
     ''' Another ' triple'   quoted string:
         It should remain untouched.'''
@@ -4574,7 +4573,7 @@ def spam (self):
         It should remain untouched."""
 
     if a == 3:
-        print "Ä á Û"
+        g.pr("Ä á Û")
 
     ''' Another ' triple'   quoted string:
         It should remain untouched.'''
@@ -4684,7 +4683,7 @@ def checkLinuxLineEndings(filename):
             if ch == '\n': nl += 1
         assert cr == 0, "Bad Linux line ending in %s: cr: %d, nl: %d" % (filename,cr,nl)
     except IOError:
-        print "checkLinuxLineEndings: can not open %s" % filename
+        g.pr("checkLinuxLineEndings: can not open %s" % filename)
         raise
 
 for file in ("install","uninstall"):
@@ -4706,11 +4705,11 @@ c.selectPosition(p,updateBeadList=False)</t>
 
     if os.path.exists(test_file):
         if verbose:
-            print "@test batch mode: deleting",test_file
+            g.pr("@test batch mode: deleting",test_file)
         os.remove(test_file)
     else:
         if verbose:
-            print "@test batch mode: not found:",test_file
+            g.pr("@test batch mode: not found:",test_file)
 </t>
 <t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
@@ -4939,7 +4938,7 @@ assert exists(path2)
 f = file(path2)
 s = f.read()
 f.close()
-# print 'Contents of %s: %s' % (path2,s)
+# g.pr('Contents of %s: %s' % (path2,s))
 assert s == 'test %s' % path
 os.remove(path2)
 assert not exists(path)</t>
@@ -4984,7 +4983,7 @@ assert exists(path2)
 f = file(path2)
 s = f.read()
 f.close()
-# print 'Contents of %s: %s' % (path2,s)
+# g.pr('Contents of %s: %s' % (path2,s))
 assert s == 'test %s' % path
 os.remove(path2)
 assert not exists(path)</t>
@@ -5003,7 +5002,7 @@ for p in (at.outputFileName,at.targetFileName):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % p
-    # print repr(p),repr(s)
+    # g.pr(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p) # , '%s does not exist' % repr(p)
@@ -5013,14 +5012,14 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
 if 0:
-    print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
-    print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
+    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# print 'Contents of %s: %s' % (at.targetFileName,s)
+# g.pr('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050105095743">import os
@@ -5038,7 +5037,7 @@ for p in (at.outputFileName,at.targetFileName):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % at.outputFileName
-    # print repr(p),repr(s)
+    # g.pr(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p)
@@ -5048,14 +5047,14 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
-    print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
-    print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
+    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# print 'Contents of %s: %s' % (at.targetFileName,s)
+# g.pr('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050105100227">import os
@@ -5075,7 +5074,7 @@ for p in (at.outputFileName,):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % at.outputFileName
-    # print repr(p),repr(s)
+    # g.pr(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p)
@@ -5085,14 +5084,14 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
-    print '%s exists %s' % (at.outputFileName,exists(at.outputFileName))
-    print '%s exists %s' % (at.targetFileName,exists(at.targetFileName))
+    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# print 'Contents of %s: %s' % (at.targetFileName,s)
+# g.pr('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050106080304">import glob
@@ -5116,7 +5115,7 @@ for module in modules:
     if n:
         plural = g.choose(n==1,'','s')
         s = 'found %2d test routine%s for %s' % (n,plural,module)
-        print s ; g.es(s)
+        g.es_print(s)
 
 if 1: # For @suite nodes.  Better for unit testing.
     g.app.scriptDict['suite'] = suite
@@ -5126,7 +5125,7 @@ else: # For script button nodes.  Good for testing.
     c.setChanged(changed) # Restore changed state.
     c.selectVnode(p1) # N.B. Restore the selected node.
     
-print ; print 'End of test routines'</t>
+g.pr('\nEnd of test routines')</t>
 <t tx="ekr.20050106080318">def addTestRoutinesInModuleToSuite (c,g,moduleName,suite):
     
     module = g.importModule(moduleName)
@@ -5234,7 +5233,7 @@ print ; print 'End of test routines'</t>
             if theClass != theClass2 and issubclass(theClass2,theClass):
                 subClasses.append(theClass2)
         
-    # print '%20s' % (moduleName),'subClasses',g.listToString(subClasses)
+    # g.pr('%20s' % (moduleName),'subClasses',g.listToString(subClasses))
     
     baseClasses = []
     for theClass in classes:
@@ -5242,14 +5241,14 @@ print ; print 'End of test routines'</t>
             if theClass != subClass and issubclass(subClass,theClass):
                 baseClasses.append(theClass)
                 
-    # print '%20s' % (moduleName),'baseClasses',g.listToString(baseClasses)
+    # g.pr('%20s' % (moduleName),'baseClasses',g.listToString(baseClasses))
     
     classes = [theClass for theClass in classes
         if theClass in subClasses or not theClass in baseClasses]
         
     if 0:
         classNames = [theClass.__name__ for theClass in classes]
-        print '%20s' % (moduleName),'classes',classNames
+        g.pr('%20s' % (moduleName),'classes',classNames)
     
     allMethods = []
     for theClass in classes:
@@ -5258,7 +5257,7 @@ print ; print 'End of test routines'</t>
         except Exception:
             g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
             methods = []
-        # print '\nmethods of class %s...\n\n%s' % (theClass,toString(methods))
+        # g.pr('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
         methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
         allMethods.extend(methods)
 
@@ -5268,7 +5267,7 @@ print ; print 'End of test routines'</t>
         &lt;&lt; print classes, methods &amp; functions &gt;&gt;
     if 0:
         if functions:
-            print 'test functions in %s...\n%s' % (moduleName,toString(functions))
+            g.pr('test functions in %s...\n%s' % (moduleName,toString(functions)))
     
     result = functions
     result.extend(allMethods)
@@ -5307,35 +5306,35 @@ print ; print 'End of test routines'</t>
     return 'test function',repr(self.test)</t>
 <t tx="ekr.20050106095223">def findTestsInCommander (c):
     
-    print '=' * 40
+    g.pr('=' * 40)
     
     toString = g.listToString
 
     allMethods = []
     for obj in (c,c.frame,c.frame.tree):
         methods = inspect.getmembers(obj,inspect.ismethod)
-        # print '\nmethods of %s...\n\n%s' % (obj,toString(methods))
+        # g.pr('\nmethods of %s...\n\n%s' % (obj,toString(methods)))
         methods = [f for name,f in methods if name.startswith('test')]
         allMethods.extend(methods)
-        print '\ntest methods in %s...\n\n%s'   % (obj,toString(methods))
+        g.pr('\ntest methods in %s...\n\n%s'   % (obj,toString(methods)))
 
     return allMethods</t>
 <t tx="ekr.20050106123646">if 0:
     @others</t>
-<t tx="ekr.20050106124235">print '=' * 40
+<t tx="ekr.20050106124235">g.pr('=' * 40)
 
 if classes:
-    print 'classes in %s...\n%s' % (moduleName,toString(classes))
+    g.pr('classes in %s...\n%s' % (moduleName,toString(classes)))
 else:
-    print 'no classes in %s' % (moduleName)
+    g.pr('no classes in %s' % (moduleName))
 if allMethods:
-    print 'test methods in %s...\n%s'   % (moduleName,toString(allMethods))
+    g.pr('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
 else:
-    print 'no test methods in %s' % (moduleName)
+    g.pr('no test methods in %s' % (moduleName))
 if functions:
-    print 'test functions in %s...\n%s' % (moduleName,toString(functions))
+    g.pr('test functions in %s...\n%s' % (moduleName,toString(functions)))
 else:
-    print 'no test functions in %s' % (moduleName)</t>
+    g.pr('no test functions in %s' % (moduleName))</t>
 <t tx="ekr.20050106124624">def getAllLeoModules ():
 
     path = g.os_path_join(g.app.loadDir,"..","src")
@@ -5377,7 +5376,7 @@ else:
         elif not line.strip() and line.endswith('\n'):
             result.append('\n')
         else:
-            print 'unitTest.leo:underindented line:%s' % repr(line)
+            g.pr('unitTest.leo:underindented line:%s' % repr(line))
             result.append(line)
             
     # g.trace(g.listToString(result))
@@ -5396,7 +5395,7 @@ import sys
 
 if sys.platform.lower().startswith('win'):
 
-    print '@suite test syntax of all plugins'
+    g.pr('@suite test syntax of all plugins')
     
     suite = unittest.makeSuite(unittest.TestCase)
     
@@ -5533,10 +5532,8 @@ g.app.scriptDict['suite'] = suite</t>
 
     def runTest(self):
         c = self.c
-        print
-        print '%s a new window to test more plugin logic' % g.choose(
+        g.pr('\n%s a new window to test more plugin logic\n' % g.choose()
             self.openFlag,'opening','open')
-        print
         if self.openFlag:
             self.new_c = new_c = c.new() # Create the new window.
             new_c.frame.setTitle("unit test for 'new' hook")
@@ -5547,10 +5544,10 @@ g.app.scriptDict['suite'] = suite</t>
             c.close()</t>
 <t tx="ekr.20050120095423.21">import leo.core.leoPlugins as leoPlugins
 
-print
-print 'loaded plugins...'
+g.pr('\nloaded plugins...')
+
 for p in g.app.loadedPlugins:
-    print p
+    g.pr(p)
     
 leoPlugins.printHandlers()</t>
 <t tx="ekr.20050203001146"># g.es(c.page_width)
@@ -5561,7 +5558,7 @@ assert c.page_width == 80</t>
 assert w == 132</t>
 <t tx="ekr.20050206090416">file = u'Ỗ'
 path = g.os_path_join('Ỗ','Ỗ')
-# print g.toEncodedString(file,'utf-8')
+# g.pr(g.toEncodedString(file,'utf-8'))
 
 ok,frame = g.openWithFileName(path,c)
 
@@ -5630,7 +5627,7 @@ assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' 
 s = u'炰'
 s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s</t>
-<t tx="ekr.20050208135429"># print g.listToString(dir())
+<t tx="ekr.20050208135429"># g.pr(g.listToString(dir()))
 
 for ivar in ('c','g','p'):
     assert ivar in dir()
@@ -5668,7 +5665,7 @@ plugins = getAllPlugins()
 
 # g.printList(plugins)
 
-print '@suite run all plugin test routines'
+g.pr('@suite run all plugin test routines')
 
 if 1:
     g.app.unitTestDict["fail"] = False
@@ -5678,7 +5675,7 @@ if 1:
         if n:
             plural = g.choose(n==1,'','s')
             s = 'found %2d test routine%s for %s' % (n,plural,plugin)
-            print s ; g.es(s)
+            g.es_print(s)
     if 1: # For @suite nodes.  Better for unit testing.
         g.app.scriptDict['suite'] = suite
     else: # For script button nodes.  Good for testing.
@@ -5800,7 +5797,7 @@ if 1:
             # This looks like a bug in inspect: The zodb classes have no methods.
             # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
             methods = []
-        # print '\nmethods of class %s...\n\n%s' % (theClass,toString(methods))
+        # g.pr('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
         methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
         allMethods.extend(methods)
 
@@ -5814,20 +5811,20 @@ if 1:
     result = functions
     result.extend(allMethods)
     return result</t>
-<t tx="ekr.20050218015346.20">print '=' * 40
+<t tx="ekr.20050218015346.20">g.pr('=' * 40)
 
 if classes:
-    print 'classes in %s...\n%s' % (moduleName,toString(classes))
+    g.pr('classes in %s...\n%s' % (moduleName,toString(classes)))
 else:
-    print 'no classes in %s' % (moduleName)
+    g.pr('no classes in %s' % (moduleName))
 if allMethods:
-    print 'test methods in %s...\n%s'   % (moduleName,toString(allMethods))
+    g.pr('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
 else:
-    print 'no test methods in %s' % (moduleName)
+    g.pr('no test methods in %s' % (moduleName))
 if functions:
-    print 'test functions in %s...\n%s' % (moduleName,toString(functions))
+    g.pr('test functions in %s...\n%s' % (moduleName,toString(functions)))
 else:
-    print 'no test functions in %s' % (moduleName)</t>
+    g.pr('no test functions in %s' % (moduleName))</t>
 <t tx="ekr.20050218015346.21">def getAllPlugins ():
 
     path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
@@ -5860,7 +5857,7 @@ else:
         elif not line.strip() and line.endswith('\n'):
             result.append('\n')
         else:
-            print 'unitTest.leo:underindented line:%s' % repr(line)
+            g.pr('unitTest.leo:underindented line:%s' % repr(line))
             result.append(line)
             
     # g.trace(g.listToString(result))
@@ -6946,9 +6943,9 @@ We'll see the use of this added button soon, but before that, read up on the 'as
 
 import leoTest
 
-print "\nStart of Do @test"
+g.pr("\nStart of Do @test")
 leoTest.doTests(c,all=False)
-print "End of Do @test"</t>
+g.pr("End of Do @test")</t>
 <t tx="ekr.20050618061835.5">The first child node of the node you're reading right now, contains the simplest succeeding test possible.
 Select it, and press the button 'Do @test'.
 You can find the verbatim result as it got sent to my console in the second child node.
@@ -7155,7 +7152,7 @@ def        spam (self         )  :
         It should remain untouched."""
     
     if a==3:
-        print "Ä á Û"
+        g.pr("Ä á Û")
         
     ''' Another ' triple'   quoted string:
         It should remain untouched.'''
@@ -7208,9 +7205,9 @@ c.redraw_now()</t>
 
 p = position()
 v = p.v
-print "before", v, p.v, v is p.v
+g.pr("before", v, p.v, v is p.v)
 p.move()
-print "after ", v, p.v, v is p.v</t>
+g.pr("after ", v, p.v, v is p.v)</t>
 <t tx="ekr.20051104081502.24">class test_iter_class:
     def __init__ (self):
         self.vals = ("a","b","c")
@@ -7229,8 +7226,8 @@ def test_iter(): return test_iter_class()
         
 vals = [val for val in test_iter()]
 
-print vals</t>
-<t tx="ekr.20051104081502.25">print '-'*20
+g.pr(vals)</t>
+<t tx="ekr.20051104081502.25">g.pr('-'*20)
 
 # These are equivalent.
 positions1 = [p for p in c.allNodes_iter(copy=True)]
@@ -7242,9 +7239,9 @@ for i in xrange(len(positions1)):
 
 if 0:
     for p in positions1:
-        print p
-print "done"</t>
-<t tx="ekr.20051104081502.26">print '-'*20
+        g.pr(p)
+g.pr("done")</t>
+<t tx="ekr.20051104081502.26">g.pr('-'*20)
 
 positions = [p.copy() for p in c.allNodes_iter()]
 
@@ -7255,22 +7252,22 @@ for p in c.allNodes_iter():
         tnodes[t]=t
         vnodes.append(p.v)
         
-print len(positions),len(vnodes)
+g.pr(len(positions),len(vnodes))
 
 for v in vnodes:
-    print v</t>
+    g.pr(v)</t>
 <t tx="ekr.20051104081502.27">g.es("v",g.top().currentPosition())
 g.es(1,2)</t>
 <t tx="ekr.20051104081502.28">stack1 = ["a","b","c"]
 stack2 = ["a","b","c"]
 stack3 = ["a","b","d"]
 stack4 = ["a","b"]
-print stack1 == stack2
-print stack1 == stack3
-print stack1 == stack4</t>
-<t tx="ekr.20051104081502.29">print p.v.headString()
-print p.childIndex()
-print p.v.headString()</t>
+g.pr(stack1 == stack2)
+g.pr(stack1 == stack3)
+g.pr(stack1 == stack4)</t>
+<t tx="ekr.20051104081502.29">g.pr(p.v.headString())
+g.pr(p.childIndex())
+g.pr(p.v.headString())</t>
 <t tx="ekr.20051104081502.30">import timeit
 
 s1 = '''\
@@ -7293,7 +7290,7 @@ p2 = leoNodes.position(None,[])'''
 for s in (s1,s2,s3):
     t1 = timeit.Timer(stmt='p1==p2',setup=s).timeit()
     t2 = timeit.Timer(stmt='p1.equal(p2)',setup=s).timeit()
-    print "%2.2f,%2.2f,%0.2f" % (t1,t2,t1/t2)
+    g.pr("%2.2f,%2.2f,%0.2f" % (t1,t2,t1/t2))
 </t>
 <t tx="ekr.20051104081502.31"># "LPT1:", "PRN:" and "PRN" all freeze
 
@@ -7305,9 +7302,9 @@ try:
     f.write(s)
     f.flush()
     f.close()
-    print "done"
+    g.pr("done")
 except IOError:
-    print "Can not open",port</t>
+    g.pr("Can not open",port)</t>
 <t tx="ekr.20051104081502.32">@ By far the simplest way is just to write the string to a temp file, then import the temp files.
 
 All other approaches quickly get deeply involved with Leo's internals...</t>
@@ -7345,10 +7342,10 @@ def foobar(): pass
 Return a list of triples, each describing a particular type of module. Each triple has the form (suffix, mode, type), where suffix is a string to be appended to the module name to form the filename to search for, mode is the mode string to pass to the built-in open() function to open the file (this can be 'r' for text files or 'rb' for binary files), and type is the file type, which has one of the values PY_SOURCE, PY_COMPILED, or C_EXTENSION, described below.
 @c
 
-print '-' * 20
+g.pr('-' * 20)
 description = (".py","r",imp.PY_SOURCE)
 theFile = StringIO.StringIO(s) # Create a file-like object
-print repr(theFile)
+g.pr(repr(theFile))
 try:
     imp.load_module("myModule",theFile,"myFileName",description)
 except:
@@ -7361,24 +7358,24 @@ except:
     class myFile(file):
         pass
         
-    print myFile
-    print issubclass(myFile,file)
-    print isinstance(myFile,file)
-    print super(myFile)
-    print __import__
+    g.pr(myFile)
+    g.pr(issubclass(myFile,file))
+    g.pr(isinstance(myFile,file))
+    g.pr(super(myFile))
+    g.pr(__import__)
     
 if 0:
     old_import = __import__
         
     def myImport(*args,**keys):
-        print "myImport"
+        g.pr("myImport")
         global old_import
         old_import(*args,**keys)
         
     __import__ = myImport
     
 mod = __import__("leoApp")
-print mod</t>
+g.pr(mod)</t>
 <t tx="ekr.20051104081502.36">import compiler
 
 for child in p.children_iter():
@@ -7387,12 +7384,12 @@ for child in p.children_iter():
     
     try:
         val = compiler.parse(body)
-        print type(val)
-        print val
+        g.pr(type(val))
+        g.pr(val)
     except SyntaxError:
         g.es("Syntax error: %s" % h,color="blue")</t>
 <t tx="ekr.20051104081502.37">import doctest
-print doctest</t>
+g.pr(doctest)</t>
 <t tx="ekr.20051104081502.99"></t>
 <t tx="ekr.20051104081502.101">@language plain
 @pagewidth 40
@@ -7448,27 +7445,27 @@ About a year ago I found the website at www.literateprogamming.com and was immed
 I never did try CWEB or NOWEB though, because on the literate programming site I read about a tool named “Leo” that combined outlines with Literate Programming techniques. Since I’ve always found outlining tools very useful I downloaded and tried this. I found that using this tool completely changed my programming practice and brought out all of the power inherent in the original Literate Programming idea as I understood it.</t>
 <t tx="ekr.20051104081502.104">import os
 
-print os.getcwd()
+g.pr(os.getcwd())
 name = g.os_path_join("test","removeSentTest.txt")
 c.importCommands.removeSentinelsCommand(name)</t>
 <t tx="ekr.20051104081502.105">import leoTest
 import glob
 
-print '-' * 40
+g.pr('-' * 40)
 
 if 0:
-    print "modules in test.leo..."
+    g.pr("modules in test.leo...")
     paths = leoTest.findAllAtFileNodes(c)
     modules = leoTest.importAllModulesInPathList(paths)
     for module in modules:
-        print module
+        g.pr(module)
     
 if 1:
-    print "modules in leo/src..."
+    g.pr("modules in leo/src...")
     path = g.os_path_join(g.app.loadDir,"..","src")
     modules = leoTest.importAllModulesInPath(path)
     for module in modules:
-        print module
+        g.pr(module)
         
 if 0:
     directory = g.os_path_join(g.app.loadDir,"..","src")
@@ -7476,7 +7473,7 @@ if 0:
     files = glob.glob(glob_path)
     modules = leoTest.importAllModulesInPathList(files)
     for module in modules:
-        print module</t>
+        g.pr(module)</t>
 <t tx="ekr.20051104081502.106"></t>
 <t tx="ekr.20051104081502.107">import doctest
 import unittest
@@ -7502,7 +7499,7 @@ if suite:
     g.app.scriptDict['suite'] = suite</t>
 <t tx="ekr.20051104081502.108">for i in xrange(10000):
     if i and (i % 1000) == 0:
-        print i</t>
+        g.pr(i)</t>
 <t tx="ekr.20051104081502.109">i = 0
 for i in xrange(100000):
     i += 1
@@ -7528,7 +7525,7 @@ files = [(s1,t1)]
 
 @others
 
-print ; print '-' * 20
+g.pr('\n' + '-' * 20)
 sync(files) # push or pull, depending on date.
 </t>
 <t tx="ekr.20051104081502.113">def sync(files):
@@ -7542,12 +7539,12 @@ sync(files) # push or pull, depending on date.
         &lt;&lt; compute sourcetime and targettime &gt;&gt;
         &lt;&lt; compute operation &gt;&gt;
         if operation == push:
-            if testing: print push, sourcefilename, targetfilename
+            if testing: g.pr(push, sourcefilename, targetfilename)
             strippedLines = mu.removeSentinelsFromFile(sourcefilename)
             mu.write_if_changed(strippedLines,sourcefilename,targetfilename)
             mu.copy_time(sourcefilename,targetfilename)
         elif operation == pull:
-            if testing: print pull, sourcefilename, targetfilename
+            if testing: g.pr(pull, sourcefilename, targetfilename)
             if sourcetime:
                 mu.propagateDiffsToSentinelsFile(sourcefilename,targetfilename)
                 mu.copy_time(targetfilename,sourcefilename)
@@ -7584,16 +7581,16 @@ names = [name1]
 c.importCommands.importFilesCommand (names,"@file",
     perfectImport=True,testing=False,verbose=True)</t>
 <t tx="ekr.20051104081502.117"></t>
-<t tx="ekr.20051104081502.118">print '-'*20
+<t tx="ekr.20051104081502.118">g.pr('-'*20)
 
 for p in c.allNodes_iter():
     if p.isDirty():
         vnodes = p.findAllPotentiallyDirtyNodes()
-        print '-'*5, p
+        g.pr('-'*5, p)
         for v in vnodes:
-            print v
+            g.pr(v)
 
-print "done"</t>
+g.pr("done")</t>
 <t tx="ekr.20051104081502.119">import leoNodes
 
 position = leoNodes.position
@@ -7605,21 +7602,21 @@ child1 = current.firstChild()
 child2 = child1.firstChild()
 
 if 0:
-    print '-'*10, "parents"
-    for p in child2.parents_iter(): print p
+    g.pr('-'*10, "parents")
+    for p in child2.parents_iter(): g.pr(p)
 if 0:
-    print '-'*10, "subtree"
-    for p in pos.subtree_iter(): print p
+    g.pr('-'*10, "subtree")
+    for p in pos.subtree_iter(): g.pr(p)
 if 0:
-    print '-'*10, "children"
-    for p in child1.children_iter(): print p
+    g.pr('-'*10, "children")
+    for p in child1.children_iter(): g.pr(p)
 if 0:
-    print '-'*10, "siblings"
-    for p in pos.siblings_iter(): print p
+    g.pr('-'*10, "siblings")
+    for p in pos.siblings_iter(): g.pr(p)
 if 1:
-    print '-'*10, "all nodes"
+    g.pr('-'*10, "all nodes")
     for p in c.allNodes_iter():
-        print p.isCloned(),p
+        g.pr(p.isCloned(),p)
 </t>
 <t tx="ekr.20051104081502.120"></t>
 <t tx="ekr.20051104081502.121"></t>
@@ -7633,40 +7630,40 @@ if 1:
 <t tx="ekr.20051104081502.129"></t>
 <t tx="ekr.20051104081502.130"></t>
 <t tx="ekr.20051104081502.131"></t>
-<t tx="ekr.20051104081502.145">print '-'*20
+<t tx="ekr.20051104081502.145">g.pr('-'*20)
 
 for p in c.allNodes_iter():
     if p.isAnyAtFileNode():
-        print p
+        g.pr(p)
         
-print "done"</t>
+g.pr("done")</t>
 <t tx="ekr.20051104081502.146">import leoTest
 
 u = leoTest.testUtils(c)
 
-print "children", '-' * 20
+g.pr("children", '-' * 20)
 children = u.findChildrenOf(p)
-for child in children: print child.headString()
+for child in children: g.pr(child.headString())
 
-print "subtree", '-' * 20
+g.pr("subtree", '-' * 20)
 descendants = u.findSubnodesOf(p)
-for descendant in descendants: print descendant.headString()</t>
+for descendant in descendants: g.pr(descendant.headString())</t>
 <t tx="ekr.20051104081502.147">import binascii
 import pickle
 
 d = { "a":True }
 
-print '-' * 40
+g.pr('-' * 40)
 
 s = pickle.dumps(d,bin=True)
 s2 = binascii.hexlify(s)
-print `s`,s2
+g.pr(`s`,s2)
 
 s3 = binascii.unhexlify(s2)
 d2 = cPickle.loads(s3)
 
-print `d2`
-print d == d2, d is d2</t>
+g.pr(`d2`)
+g.pr(d == d2, d is d2)</t>
 <t tx="ekr.20051104081502.148">def redoBletch(self):
     g.trace()
     
@@ -7691,27 +7688,27 @@ if 1:
     # Warning: executing this in the a2 code base will cause any save operation to fail.
     p.v.unknownAttributes = { "myPlugin" : d }
     
-print repr(p.v.unknownAttributes)</t>
+g.pr(repr(p.v.unknownAttributes))</t>
 <t tx="ekr.20051104081502.150">import leoPlugins
 
 def onEnd (tag,keys):
-    print "onEnd",tag,keys
+    g.pr("onEnd",tag,keys)
     
 count = 0
     
 def onIdle (tag,keys):
     global count ; count += 1
     if count % 10 == 0:
-        print "onIdle",count,keys.get("c")
+        g.pr("onIdle",count,keys.get("c"))
 
 leoPlugins.registerHandler("end1", onEnd)
-print "onEnd registered as end1 hook"
+g.pr("onEnd registered as end1 hook")
 
 leoPlugins.registerHandler("idle", onIdle)
-print "onIdle registered as idle hook"</t>
+g.pr("onIdle registered as idle hook")</t>
 <t tx="ekr.20051104081502.151">for p in c.all_positions_iter():
-    print p.v.t.fileIndex</t>
-<t tx="ekr.20051104081502.152">print c.frame.bodyCtrl.focus()</t>
+    g.pr(p.v.t.fileIndex)</t>
+<t tx="ekr.20051104081502.152">g.pr(c.frame.bodyCtrl.focus())</t>
 <t tx="ekr.20051104081502.153"># This kind of code is used in the prototypes of new commands.
 
 from __future__ import generators
@@ -7725,23 +7722,23 @@ if 1: # Both work
 else:
     readline = g.readLinesClass(lines).next
 
-print '-' * 20
+g.pr('-' * 20)
 
 if 1: # Both work
     for s in g.readLinesGenerator(lines):
-        print s,
+        g.pr(s,)
 else:
     while 1:
         s = readline()
-        if s: print s,
+        if s: g.pr(s,)
         else: break
     
-print ; print '-' * 20</t>
+g.pr('\n' + '-' * 20)</t>
 <t tx="ekr.20051104081502.154"># Test
 @others
 # Last</t>
 <t tx="ekr.20051104081502.155">a = 1
-print "hello"
+g.pr("hello")
 c = b
 </t>
 <t tx="ekr.20051104081502.157">import leoTest
@@ -7751,12 +7748,12 @@ specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
 
 def printDoc(x,s):
     if hasattr(x,"__doc__") and x.__doc__:
-        print "%4d %s" % (len(x.__doc__),s)
+        g.pr("%4d %s" % (len(x.__doc__),s))
     else:
-        print "%4s %s" % (' ',s)
+        g.pr("%4s %s" % (' ',s))
 
-print '-' * 60
-print "%4d %s" % (len(leoTest.__doc__),"leoTest")
+g.pr('-' * 60)
+g.pr("%4d %s" % (len(leoTest.__doc__),"leoTest"))
 
 if 1:
     for s in leoTest.__dict__:
@@ -7768,7 +7765,7 @@ if 1:
                     for s2 in x.__dict__:
                         x2 = getattr(x,s2)
                         if s2 not in specialDictNames:
-                            print ' '*4,
+                            g.pr(' '*4,)
                             printDoc(x2,s2)
 else:
     &lt;&lt; print names sorted by type &gt;&gt;</t>
@@ -7778,7 +7775,7 @@ else:
     (types.FunctionType,"functions"),
 ):
 
-    print ; print "%s..." % typeName
+    g.pr("\n%s..." % typeName)
     for s in leoTest.__dict__:
         
         if s not in specialDictNames:
@@ -7786,17 +7783,17 @@ else:
             if type(x) == theType:
                 printDoc(x,s)
                 if theType == types.ClassType:
-                    print "\tmethods..."
+                    g.pr("\tmethods...")
                     for s2 in x.__dict__:
                         x2 = getattr(x,s2)
                         if s2 not in specialDictNames:
-                            print "\t",
+                            g.pr("\t",newline=False)
                             printDoc(x2,s2)</t>
 <t tx="ekr.20051104081502.159">import Tkinter as Tk
 
 root = Tk.Tk()
 c = Tk.Canvas(root,background='white')
-print c.bindtags()
+g.pr(c.bindtags())
 
 if 0:
     c.pack(expand=1,fill='both')
@@ -7892,7 +7889,7 @@ atRootTest2.txt</t>
 
 g.reportBadChars(s,"latin_1")
 
-print g.toEncodedString(s,"latin_1")</t>
+g.pr(g.toEncodedString(s,"latin_1"))</t>
 <t tx="ekr.20051104081502.209">arg = "arg" ; filename = "fileName"
 path = "path" ; shortPath = "shortPath"
 vtuple = "vtuple"
@@ -7955,9 +7952,9 @@ plugins.registerHandler(tags,traceHook)
 
 handlers = plugins.getHandlersForTag(tags)
 if handlers:
-    print "-" * 20
+    g.pr("-" * 20)
     for h in handlers:
-        print h</t>
+        g.pr(h)</t>
 <t tx="ekr.20051104081502.218">import leoPlugins as plugins
 
 tags = (
@@ -7973,15 +7970,15 @@ tags = (
 for tag in tags:
     handlers = plugins.getHandlersForTag(tag)
     if handlers:
-        print handlers
+        g.pr(handlers)
         for f in handlers:
             plugins.unregisterHandler(tag,f)
 
 handlers = plugins.getHandlersForTag(tags)
 if handlers:
-    print "-" * 20
+    g.pr("-" * 20)
     for h in handlers:
-        print h</t>
+        g.pr(h)</t>
 <t tx="ekr.20051104081502.219">import leoPlugins as plugins
 
 tags = (
@@ -7996,9 +7993,9 @@ tags = (
 
 handlers = plugins.getHandlersForTag(tags)
 if handlers:
-    print "-" * 20
+    g.pr("-" * 20)
     for h in handlers:
-        print h</t>
+        g.pr(h)</t>
 <t tx="ekr.20051104081502.220">"""Mini test that documentation of hooks in leoDocs.leo is correct.
 
 hookData should match that documentation for this test to be effective.
@@ -8022,9 +8019,9 @@ for name,args in hookData:
 if 0: # print all hooks.
     handlers = leoPlugins.getHandlersForTag(tags)
     if handlers:
-        print "-" * 20
+        g.pr("-" * 20)
         for h in handlers:
-            print h</t>
+            g.pr(h)</t>
 <t tx="ekr.20051104081502.221">import leoColor
 import leoCommands
 import leoNodes
@@ -8162,20 +8159,20 @@ import Tkinter as Tk</t>
     keys.sort()
     
     if len(args) != len(keys):
-        print "%25s expected:" % (tag),args
-        print "%25s      got:" % (tag),keys
+        g.pr("%25s expected:" % (tag),args)
+        g.pr("%25s      got:" % (tag),keys)
         ok = False
     else:
         for arg,key in zip(args,keys):
             arg_type = typeData.get(arg)
             val = keywords.get(key)
             if not checkOneHook(arg_type,val):
-                print "%25s      arg:" % (tag), arg
-                print "%25s expected:" % (tag), arg_type
-                print "%25s      got:" % (tag), type(val)
+                g.pr("%25s      arg:" % (tag), arg)
+                g.pr("%25s expected:" % (tag), arg_type)
+                g.pr("%25s      got:" % (tag), type(val))
                 ok = False
     if ok:
-        print tag</t>
+        g.pr(tag)</t>
 <t tx="ekr.20051104081502.225">def checkOneHook (arg_type, val):
     
     if 0:
@@ -8192,22 +8189,22 @@ g.redirectStdout()
 g.rawPrint("Test of g.rawPrint")
 g.restoreStdout()</t>
 <t tx="ekr.20051104081502.232">g.pdb()</t>
-<t tx="ekr.20051104081502.233">print g.app.debugSwitch
+<t tx="ekr.20051104081502.233">g.pr(g.app.debugSwitch)
 
 g.app.debugSwitch = 0 # 2: drop into pdb
 
 zerodivide = 1 / 0</t>
-<t tx="ekr.20051104081502.234">print c
-print 'use_plugins',c.use_plugins
-print 'tab_width',c.tab_width
-print 'page_width',c.page_width</t>
+<t tx="ekr.20051104081502.234">g.pr(c)
+g.pr('use_plugins',c.use_plugins)
+g.pr('tab_width',c.tab_width)
+g.pr('page_width',c.page_width)</t>
 <t tx="ekr.20051104081502.272"></t>
 <t tx="ekr.20051104081502.273">import glob,sys,traceback
 
 def printModules():
     mods = sys.modules.keys()
     mods.sort()
-    for mod in mods: print mod
+    for mod in mods: g.pr(mod)
 
 def leoModules():
     files = glob.glob(r'%s\*.py' % g.app.loadDir)
@@ -8226,7 +8223,7 @@ def delLeoModules():
 
 def test():
     for module in leoModules():
-        print module
+        g.pr(module)
         exec 'import %s' % module in {},{}
         del sys.modules[module]
     
@@ -8245,7 +8242,7 @@ test()
         if module[:3] == 'leo':
             modules.append(module)
     for module in modules:
-        print module
+        g.pr(module)
         try:
             exec 'import %s' % module in {},{}
             del sys.modules[module]
@@ -8256,19 +8253,19 @@ def printModules():
     import sys
     mods = sys.modules.keys()
     mods.sort()
-    for mod in mods: print mod
+    for mod in mods: g.pr(mod)
     
 </t>
 <t tx="ekr.20051104081502.305">stuff = g.toEncodedString(u'∑','utf-8')
-print type(stuff)
-print '*' * 10
+g.pr(type(stuff))
+g.pr('*' * 10)
 for ch in stuff:
-    print ch, ord(ch),
+    g.pr(ch, ord(ch),newline=False)
 print</t>
 <t tx="ekr.20051104081502.306"></t>
 <t tx="ekr.20051104081502.307">g.es(c.redirect_execute_script_output_to_log_pane)
 g.es(c.config.redirect_execute_script_output_to_log_pane)
-print 'hello'
+g.pr('hello')
 
 #assert c.redirect_execute_script_output_to_log_pane is True
 #assert c.config.redirect_execute_script_output_to_log_pane is True
@@ -8304,7 +8301,7 @@ test_g_removeExtraLws()</t>
         assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
             repr(s),repr(expected),repr(result))
             
-    print 'Success'</t>
+    g.pr('Success')</t>
 <t tx="ekr.20051104081502.311"># Running this as a unit test would hang the unit tests!
 g.pdb()</t>
 <t tx="ekr.20051104081502.312">try:
@@ -8313,16 +8310,16 @@ except AssertionError:
     g.es_exception()</t>
 <t tx="ekr.20051104081502.315"># Comment
 
-print z</t>
+g.pr(z)</t>
 <t tx="ekr.20051104081502.316">import leoTest
 
 leoTest.throwAssertionError()</t>
-<t tx="ekr.20051104081502.317">print '-'*60
+<t tx="ekr.20051104081502.317">g.pr('-'*60)
 count = 0
 for p in c.allNodes_iter():
     count += 1
-    print ' '*p.level(),p.headString()
-print 'found',count,'nodes'</t>
+    g.pr(' '*p.level(),p.headString())
+g.pr('found',count,'nodes')</t>
 <t tx="ekr.20051104081502.318">table = ('spawnv',None,(
     'os.spawnv',[
     r'c:\vim\vim63\gvim.exe',
@@ -8337,12 +8334,12 @@ c.frame.menu.createOpenWithMenuFromTable(table)</t>
 aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb cccccccccccccccccccc ddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffff </t>
 <t tx="ekr.20051104081502.321"># To run this test, set @bool redirect_execute_script_output_to_log_pane = True in the @settings tree.
 
-print 'hi'
-print c.config.redirect_execute_script_output_to_log_pane
-print c.xyzzy</t>
+g.pr('hi')
+g.pr(c.config.redirect_execute_script_output_to_log_pane)
+g.pr(c.xyzzy)</t>
 <t tx="ekr.20051104081502.322">@language html</t>
-<t tx="ekr.20051104081502.323">print '-'*20
-print g.getScript(c,p,forcePythonSentinels=False)</t>
+<t tx="ekr.20051104081502.323">g.pr('-'*20)
+g.pr(g.getScript(c,p,forcePythonSentinels=False))</t>
 <t tx="ekr.20051104081502.324">&lt;body&gt;
 @others
 &lt;/body&gt;</t>
@@ -9325,7 +9322,7 @@ self.timer.Start(3000)
 </t>
 <t tx="ekr.20051104081502.372">cursor = self.GetCursor(host)
 if cursor is None:
-    print "Couldn't get cursor to fill OwnerListBox"
+    g.pr("Couldn't get cursor to fill OwnerListBox")
     return
     
 cursor.execute("SELECT owner1 FROM %s UNION SELECT owner2 FROM %s UNION SELECT owner3 FROM %s"%((table,)*3))
@@ -9417,7 +9414,7 @@ self.SetTitle("List Manager:  %s:  %s:  %s"%(location,rdbms,table))
     try:
         cursor.execute(sql)
     except:
-        print "In OnShowTickler and attempt to Select an item failed"
+        g.pr("In OnShowTickler and attempt to Select an item failed")
         return
         
     row = cursor.fetchone()
@@ -9475,7 +9472,7 @@ self.SetTitle("List Manager:  %s:  %s:  %s"%(location,rdbms,table))
             if Properties['table'] == table:
                 break
         else:
-            print "Can't find %s"%table
+            g.pr("Can't find %s"%table)
             return
                     
         self.nb.SetSelection(L) #if the page changes it sends a EVT_NOTEBOOK_PAGE_CHANGED, which calls OnPageChange
@@ -9591,7 +9588,7 @@ self.copyitems = copyitems</t>
 <t tx="ekr.20051104081502.391">def OnPasteItems(self, evt=None, L=None): #noselect 051603
     #used by OnMoveToList, OnMoveToSpecificList and called directly
     if not self.copyitems:
-        print "Nothing was selected to be copied"
+        g.pr("Nothing was selected to be copied")
         return
         
     if L is None: #this is not needed by OnMoveTo or OnDragToTab but is for a straight call
@@ -9688,7 +9685,7 @@ self.copyitems = copyitems</t>
 </t>
 <t tx="ekr.20051104081502.393"></t>
 <t tx="ekr.20051104081502.394">def OnLeftDown(self, evt):
-    print "Here"
+    g.pr("Here")
     if self.modified:
         #if inplace editor is open and you click anywhere (same or different row from current row) but in the editor itself then just to close editor
         flag = self.modified.has_key('inplace')
@@ -9782,7 +9779,7 @@ self.copyitems = copyitems</t>
 
     
     if len(combine_list) &lt; 2:
-        print "Fewer than two items highlighted"
+        g.pr("Fewer than two items highlighted")
         return
     
     combine_list.sort()
@@ -10147,7 +10144,7 @@ LCtrl.SetItem(LC_Item)</t>
     LCtrl = self.ListCtrls[L]
     item = self.ItemLists[L][idx]
     if not self.ModifierDialog:
-        print "self.ModifierDialog is still being constructed"
+        g.pr("self.ModifierDialog is still being constructed")
         return
     #need to clear the current selections or you'll just be making more and more selections
     self.ModifierDialog.SelectCurrent(item.owners)
@@ -10337,7 +10334,7 @@ def Conflict(self, host, cursor, table, item):
     cursor.execute("Select timestamp from "+table+" WHERE id = %s", (item.id,))
     db_timestamp = cursor.fetchone()[0]
     if db_timestamp != item.timestamp:
-        print "There is a conflict and you should refresh display"
+        g.pr("There is a conflict and you should refresh display")
         return True
     else:
         return False
@@ -10359,7 +10356,7 @@ def Conflict(self, host, cursor, table, item):
         #object = "Process"
         #items, instances = win32pdh.EnumObjectItems(None,None,"Process", -1)
         #if 'TextPad' in instances:
-            #print "TextPad is running"
+            #g.pr("TextPad is running")
         #else:
             #self.editor = {}
     
@@ -10791,7 +10788,7 @@ def Conflict(self, host, cursor, table, item):
 
 </t>
 <t tx="ekr.20051104081502.430">def OnItemActivated(self,evt):
-    print "On Activated"
+    g.pr("On Activated")
     
 </t>
 <t tx="ekr.20051104081502.431">def OnShowAll(self, evt=None):
@@ -11056,7 +11053,7 @@ try:
     cp.write(cfile)
     cfile.close()
 except IOError:
-    print "The configuration file can't be written!"
+    g.pr("The configuration file can't be written!")
     time.sleep(10) #so you can see that there was a problem
 </t>
 <t tx="ekr.20051104081502.448"></t>
@@ -11094,7 +11091,7 @@ except IOError:
     try:
         cursor.execute(sql)
     except:
-        print "Cannot read %s: %s"%(Properties['host'],table)
+        g.pr("Cannot read %s: %s"%(Properties['host'],table))
         return
     else:
         results = cursor.fetchall()
@@ -11228,8 +11225,8 @@ except IOError:
     ###### Debug -- this does happen where note brings back None 053003
     z = cursor.fetchone()
     if z is None:
-        print "In GetNote -&gt; SELECT should not bring back None"
-        print "           -&gt; item.id=",item.id
+        g.pr("In GetNote -&gt; SELECT should not bring back None")
+        g.pr("           -&gt; item.id=",item.id)
         z = (None,)
     note = z[0]
     if note is None:
@@ -11316,7 +11313,7 @@ except IOError:
     try:
         cursor.execute(sql)
     except:
-        print "Cannot read %s: %s"%(Properties['host'],table)
+        g.pr("Cannot read %s: %s"%(Properties['host'],table))
         return None #[]
     else:
         return cursor.fetchall()
@@ -11404,24 +11401,24 @@ elif item.priority==3:
         return
     
     if REMOTE_HOST is None:
-        print "There doesn't appear to be a Remote Server"
+        g.pr("There doesn't appear to be a Remote Server")
         return
 
     if LOCAL_HOST is None:
-        print "There doesn't appear to be a Local Server"
+        g.pr("There doesn't appear to be a Local Server")
         return
         
-    print "LOCAL_HOST=",LOCAL_HOST
-    print "REMOTE_HOST=",REMOTE_HOST
+    g.pr("LOCAL_HOST=",LOCAL_HOST)
+    g.pr("REMOTE_HOST=",REMOTE_HOST)
 
     r_cursor = self.GetCursor(REMOTE_HOST)
     if r_cursor is None:
-        print "Couldn't get a cursor for %s"%REMOTE_HOST
+        g.pr("Couldn't get a cursor for %s"%REMOTE_HOST)
         return
 
     l_cursor = self.GetCursor(LOCAL_HOST)
     if l_cursor is None:
-        print "Couldn't get a cursor for %s"%LOCAL_HOST
+        g.pr("Couldn't get a cursor for %s"%LOCAL_HOST)
         return
 
     # moving the sync time back a second to make sure that we don't lose track of any nodes
@@ -11433,31 +11430,31 @@ elif item.priority==3:
     #having seen same issue for mysql but for consistency (and because sqlite could also be "server" rdbms
     l_ts = l_now - mx.DateTime.DateTimeDelta(0,0,0,0.02)
     r_ts = r_now - mx.DateTime.DateTimeDelta(0,0,0,0.02)
-    print "l_now=",l_now, "l_ts =",l_ts
-    print "r_now=",r_now, "r_ts=",r_ts
+    g.pr("l_now=",l_now, "l_ts =",l_ts)
+    g.pr("r_now=",r_now, "r_ts=",r_ts)
 
     r_cursor.execute("SELECT MAX(last_sync) FROM user_sync WHERE user = %s", (USER,))
     r_last_sync = r_cursor.fetchone()[0]
-    print "last sync (remote time) =",r_last_sync
+    g.pr("last sync (remote time) =",r_last_sync)
 
     l_cursor.execute("SELECT MAX(last_sync) FROM user_sync")
     l_last_sync = l_cursor.fetchone()[0] #note MAX returns a string with sqlite so we turn it make into DateTime
     l_last_sync = mx.DateTime.DateTimeFrom(l_last_sync)
-    print "last sync (local time) =",l_last_sync
+    g.pr("last sync (local time) =",l_last_sync)
 
     for table in SYNC_TABLES:
         # Need to pick up changes for both so syncing one doesn't add new things and screw up the second sync
-        print "Checking "+table+" on the Remote Server; changes (excluding deletes) are:"
+        g.pr("Checking "+table+" on the Remote Server; changes (excluding deletes) are:")
         r_cursor.execute("SELECT id,createdate from "+table+" WHERE timestamp &gt; %s AND timestamp &lt;= %s",(r_last_sync,r_now)) 
         r_results = r_cursor.fetchall()
-        print "Server changes (excluding deletes)"
-        print r_results
+        g.pr("Server changes (excluding deletes)")
+        g.pr(r_results)
         
-        print "Checking "+table+" on Local; changes (excluding deletes) are:"
+        g.pr("Checking "+table+" on Local; changes (excluding deletes) are:")
         l_cursor.execute("SELECT id,createdate from "+table+" WHERE timestamp &gt; %s AND timestamp &lt;= %s",(l_last_sync,l_now))
         l_results = l_cursor.fetchall()
-        print "Local changes (excluding deletes)"
-        print l_results
+        g.pr("Local changes (excluding deletes)")
+        g.pr(l_results)
 
         for id, createdate in r_results:
             r_cursor.execute("SELECT priority,name,owner1,owner2,owner3,createdate,finisheddate,duedate,note,id FROM "+table+" WHERE ID = %s",(id,))
@@ -11465,10 +11462,10 @@ elif item.priority==3:
             if row:
                 if createdate &gt; r_last_sync:
                     l_cursor.execute("INSERT INTO "+table+" (priority,name,owner1,owner2,owner3,createdate,finisheddate,duedate,note,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", row) #*row also works
-                    print "Created %s in %s on Local"%(id,table)
+                    g.pr("Created %s in %s on Local"%(id,table))
                 else:
                     l_cursor.execute("UPDATE "+table+" SET priority = %s, name =%s, owner1 = %s, owner2 = %s, owner3 = %s, createdate = %s, finisheddate = %s, duedate = %s, note = %s WHERE id = %s", row)
-                    print "Updated %s in %s on Local"%(id,table)
+                    g.pr("Updated %s in %s on Local"%(id,table))
                 # for reasons I don't understand l_now here is a 1/100 ahead of l_now when inserted into user_sync
                 l_cursor.execute("UPDATE "+table+" SET timestamp = %s WHERE id = %s", (l_ts,id))
         
@@ -11480,10 +11477,10 @@ elif item.priority==3:
                 #above needed because sqlite returns an enhanced tuple-like object that is not a tuple
                 if createdate &gt; l_last_sync:
                     r_cursor.execute("INSERT INTO "+table+" (priority,name,owner1,owner2,owner3,createdate,finisheddate,duedate,note,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", row)
-                    print "Created %s in %s on Server"%(id,table)
+                    g.pr("Created %s in %s on Server"%(id,table))
                 else:
                     r_cursor.execute("UPDATE "+table+" SET priority = %s, name =%s, owner1 = %s, owner2 = %s, owner3 = %s, createdate = %s, finisheddate = %s, duedate = %s, note = %s WHERE id = %s", row)
-                    print "Updated %s in %s on Server"%(id,table)
+                    g.pr("Updated %s in %s on Server"%(id,table))
                 r_cursor.execute("UPDATE "+table+" SET timestamp = %s WHERE id = %s", (r_ts,id))
     
     #Handle the deletes; Note if at some point only 'd's are being written won't have to check for 'd'
@@ -11495,18 +11492,18 @@ elif item.priority==3:
 
     for id,table in l_results:
         r_cursor.execute("DELETE from "+table+" WHERE id = %s", (id,))
-        print "Deleted %s from %s on Server (if it existed there)"%(id,table)
+        g.pr("Deleted %s from %s on Server (if it existed there)"%(id,table))
 
     for id,table in r_results:
         l_cursor.execute("DELETE from "+table+" WHERE id = %s", (id,))
-        print "Deleted %s from %s on Local (if it existed there)"%(id,table)	
+        g.pr("Deleted %s from %s on Local (if it existed there)"%(id,table)	)
     #End of deletes code
     
     #update the user_sync database with the latest sync times
     l_cursor.execute("INSERT INTO user_sync (user,last_sync) VALUES (%s,%s)", (USER,l_now)) #don't really need USER for local
     r_cursor.execute("INSERT INTO user_sync (user,last_sync) VALUES (%s,%s)", (USER,r_now)) 
     
-    print "Synchronization completed"
+    g.pr("Synchronization completed")
 
 </t>
 <t tx="ekr.20051104081502.461">def TimeStamper(self, host, cursor, table, id):
@@ -11530,8 +11527,8 @@ elif item.priority==3:
 </t>
 <t tx="ekr.20051104081502.464">def OnEvaluate(self, evt=None):
     expr = self.EvalDialog.EvalText.GetValue()
-    print "%s =&gt; "%expr,
-    print eval(expr)
+    g.pr("%s =&gt; "%expr,newline=False)
+    g.pr(eval(expr))
     
 </t>
 <t tx="ekr.20051104081502.465"></t>
@@ -11599,7 +11596,7 @@ elif item.priority==3:
             if Properties['table'] == table and Properties['host'] == host:
                 break
         else:
-            print "Table not open but wrote to database anyway" #Needs to be a dialog box
+            g.pr("Table not open but wrote to database anyway") #Needs to be a dialog box
             return
         
         # could have started to edit something and never finished it
@@ -12082,7 +12079,7 @@ import os
 <t tx="ekr.20051104081502.503">def OnCloseWindow(self, event):
     #self.cal.Destroy
     #self.Destroy()
-    print "I got to close window"
+    g.pr("I got to close window")
 </t>
 <t tx="ekr.20051104081502.504">def GetDate(self):
     return self.result
@@ -12470,16 +12467,16 @@ _reg_policy_spec_ = "win32com.server.policy.EventHandlerPolicy"
     else:
         win32ui.MessageBox("Could not find mail folder: %s\nOutlookAddin3"%Target)</t>
 <t tx="ekr.20051104081502.529">def OnDisconnection(self, mode, custom):
-    print "OnDisconnection"
+    g.pr("OnDisconnection")
 </t>
 <t tx="ekr.20051104081502.530">def OnAddInsUpdate(self, custom):
-    print "OnAddInsUpdate", custom
+    g.pr("OnAddInsUpdate", custom)
 </t>
 <t tx="ekr.20051104081502.531">def OnStartupComplete(self, custom):
-    print "OnStartupComplete", custom
+    g.pr("OnStartupComplete", custom)
 </t>
 <t tx="ekr.20051104081502.532">def OnBeginShutdown(self, custom):
-    print "OnBeginShutdown", custom
+    g.pr("OnBeginShutdown", custom)
 </t>
 <t tx="ekr.20051104081502.533">def RegisterAddin(klass):
     import _winreg
@@ -12609,13 +12606,13 @@ part 3, line 2, newline
 <t tx="ekr.20051104081502.546"># g.app.config.updateSettings(c)
 g.es('test_setting',c.config.getBool('test_setting'))</t>
 <t tx="ekr.20051104081502.547"># This problem has been around forever.
-print '-' * 40
+g.pr('-' * 40)
 # Yes. We *do* want to warn in c.config.exists.
-print 'exists',g.app.config.exists(c,'showMinibuffer','bool')
+g.pr('exists',g.app.config.exists(c,'showMinibuffer','bool'))
 val = c.config.getBool('showMinibuffer')
-print 'bool:showMinibuffer',val
+g.pr('bool:showMinibuffer',val)
 val = c.config.getShortcut('showMinibuffer')
-print 'shortcut:showMinibuffer',val</t>
+g.pr('shortcut:showMinibuffer',val)</t>
 <t tx="ekr.20051104081502.548">c.frame.log.selectTab('Test')
 g.es('Test',color='red',tabName='Test')</t>
 <t tx="ekr.20051104081502.549">c.frame.log.selectTab('Log')
@@ -12631,9 +12628,9 @@ def f2 (event):
 k.registerCommand('print-hello','Alt-Ctrl-Shift-p',f)
 k.registerCommand('print-hello2',None,f2)</t>
 <t tx="ekr.20051104081502.552">g.es('my-command',color='red')</t>
-<t tx="ekr.20051104081502.553">print 'This is my command 3'</t>
+<t tx="ekr.20051104081502.553">g.pr('This is my command 3')</t>
 <t tx="ekr.20051104081502.554">g.es('hi',color='red')</t>
-<t tx="ekr.20051104081502.555">print 'Rebound control E'</t>
+<t tx="ekr.20051104081502.555">g.pr('Rebound control E')</t>
 <t tx="ekr.20051104081502.556">@language python
 @tabwidth -4
 
@@ -12709,12 +12706,12 @@ p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.redraw_now() # To make node visible
-if trace: print '='*20
-if trace: print '1',g.app.gui.get_focus(c)
+if trace: g.pr('='*20)
+if trace: g.pr('1',g.app.gui.get_focus(c))
 tree.editLabel(p)
-if trace: print '2',g.app.gui.get_focus(c)
+if trace: g.pr('2',g.app.gui.get_focus(c))
 w = c.edit_widget(p)
-if trace: print '3',g.app.gui.get_focus(c)
+if trace: g.pr('3',g.app.gui.get_focus(c))
 w2 = g.app.gui.get_focus(c)
 assert w==w2,'w: %s, w2: %s' % (w,w2)
 
@@ -12724,9 +12721,9 @@ try:
     g.app.gui.replaceClipboardWith(paste)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
-    if trace: print 'before',p.headString()
+    if trace: g.pr('before',p.headString())
     w.event_generate('&lt;Return&gt;')
-    if trace: print 'after',p.headString()
+    if trace: g.pr('after',p.headString())
     assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:
@@ -12745,7 +12742,7 @@ if k.defaultUnboundKeyAction == 'insert':
     c.redraw_now() # To make node visible
     c.editPosition(p)
     w = c.edit_widget(p)
-    # print 'guiName',g.app.gui.guiName()
+    # g.pr('guiName',g.app.gui.guiName())
     try:
         assert w, 'oops1'
         wName = g.app.gui.widget_name(w)
@@ -12814,8 +12811,8 @@ try:
     w.event_generate('Y')
     w.event_generate('Z')
     w.event_generate('&lt;Return&gt;')
-    print 'after',repr(w.get('1.0','end'))
-    print 'end edit'
+    g.pr('after',repr(w.get('1.0','end')))
+    g.pr('end edit')
     expected = h[0] + 'XYZ' + h[2:]
     assert p.headString() == expected,'fail 1: expected "%s" got "%s"' % (
         expected,repr(p.headString()))
@@ -13055,7 +13052,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of typing tests.'</t>
+# g.pr('\nEnd of typing tests.')</t>
 <t tx="ekr.20051120110335">c.insertHeadline()
 assert c.undoer.undoMenuLabel == 'Undo Insert Node'
 c.undoer.undo()
@@ -13167,13 +13164,13 @@ d = c.commandsDict ; keys = d.keys() ; keys.sort()
 for key in keys:
     f = d.get(key) ; name = f and f.__name__
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    # print '%-28s' % (name),data
+    # g.pr('%-28s' % (name),data)
     arg0 = len(args) &gt; 0 and args[0]
     arg1 = len(args) &gt; 1 and args[1]
     assert arg0 == 'self' and arg1 == 'event' or arg0 == 'event',\
        'no event arg for %s, args: %s' % (name,data)</t>
-<t tx="ekr.20060131102450">print ; print 'End of typing and undo tests'</t>
-<t tx="ekr.20060203181203.2"># print 'settingsNameDict',c.k.settingsNameDict
+<t tx="ekr.20060131102450">g.pr('\nEnd of typing and undo tests')</t>
+<t tx="ekr.20060203181203.2"># g.pr('settingsNameDict',c.k.settingsNameDict)
 
 table = (
     ('a','a'),
@@ -13227,7 +13224,7 @@ if p:
     c.selectPosition(p)
     c.redraw()
         
-print ; print 'End of plugins unit tests'</t>
+g.pr('\nEnd of plugins unit tests')</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
@@ -13301,10 +13298,10 @@ n = c.frame.tree.redrawCount
 
 assert not p.bodyString(), 'oops1'
 try:
-    # print 'before insert a',c.currentPosition()
+    # g.pr('before insert a',c.currentPosition())
     assert p == c.currentPosition(),'position has changed!'
     c.frame.body.bodyCtrl.event_generate('a')
-    # print 'after insert a'
+    # g.pr('after insert a')
     assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
     if g.app.gui.guiName() != 'nullGui':
         n2 = c.frame.tree.redrawCount
@@ -13347,7 +13344,7 @@ d1 = c.commandsDict ; d2 = c.k.inverseCommandsDict
 if 0:
     vals = d2.values() ; vals.sort()
     vals = [z for z in vals if z.startswith('contract')]
-    print 'inverseCommandsDict.values()',vals
+    g.pr('inverseCommandsDict.values()',vals)
 
 keys1 = d1.keys() ; keys1.sort()
 vals1 = d1.values()
@@ -13358,10 +13355,10 @@ keys2 = d2.keys() ; keys2.sort()
 vals2 = d2.values(); vals2.sort()
 
 if 0:
-    print keys1 ; print ; print
-    print vals2 ; print ; print
-    print keys2 ; print ; print
-    print vals1
+    g.pr(keys1,'\n\n')
+    g.pr(vals2,'\n\n')
+    g.pr(keys2,'\n\n')
+    g.pr(vals1)
     
 # g.trace(g.dictToString(c.k.abbreviationsDict))
 
@@ -13388,7 +13385,7 @@ for z in g.app.config.atCommonButtonsList:
     if key not in buttonKeys:
         buttonKeys.append(key)
         
-# print 'buttonKeys',buttonKeys
+# g.pr('buttonKeys',buttonKeys)
 
 for key in keys1:
     if key not in vals2 and key.lower() not in vals2:
@@ -13432,7 +13429,7 @@ elif sys.platform== 'darwin':
 tkinter = c.config.getBool('test_tkinter_setting')
 wx      = c.config.getBool('test_wxWindows_setting')
 
-print guiname
+g.pr(guiname)
 
 if guiname == 'tkinter':
     assert(tkinter)
@@ -13470,10 +13467,9 @@ at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
 s = str(at.stringOutput)
 assert s == result
 # if s != result:
-    # print '-' * 30
-    # print repr(s)
-    # print
-    # print repr(result)
+    # g.pr('-' * 30)
+    # g.pr(repr(s))
+    # g.pr(repr(result))
     # assert False</t>
 <t tx="ekr.20060602195313.2">@language c
 #ifdef COMMENT
@@ -13575,10 +13571,10 @@ body.addEditor()
 
 # Select the leftmost editor.
 w = body.editorWidgets.get('1')
-#print '1',w
+#g.pr('1',w)
 body.selectEditor(w)
 body.bodyCtrl = frame.bodyCtrl = w
-#print '2',w
+#g.pr('2',w)
 # Delete the selected editor.
 # g.pdb()
 body.deleteEditor()</t>
@@ -13679,7 +13675,7 @@ assert count &gt;=3, "not enough @ignore's in written file"
 assert c.commandsDict.get('test-at-button-node'), 'no test-at-button-node command'
 assert c.commandsDict.get('delete-test-at-button-node-button'), 'no delete-test-at-button-node-button command'
 
-# print c.commandsDict.get('test-at-button')
+# g.pr(c.commandsDict.get('test-at-button'))
 </t>
 <t tx="ekr.20061101121602.78">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
@@ -15507,7 +15503,7 @@ for i,j,python in (
     ec.moveSpot = None # It's hard to init this properly.
     ec.extendHelper(w,extend,j)
     i2,j2 = w.getSelectionRange()
-    # print i2,j2
+    # g.pr(i2,j2)
     #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
     #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
 </t>
@@ -15808,7 +15804,7 @@ finally:
             assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
         except AssertionError:
             exctype, value = sys.exc_info()[:2]
-            print value
+            g.pr(value)
             raise
     
     for subClass in subClasses:
@@ -15824,7 +15820,7 @@ finally:
             except AssertionError:
                 #raise
                 exctype, value = sys.exc_info()[:2]
-                print value</t>
+                g.pr(value)</t>
 <t tx="ekr.20061109172511.4">if g.app.gui.guiName() == 'tkinter':
     import leo.core.leoFrame as leoFrame
     import leo.core.leoTkinterGui as leoTkinterGui
@@ -15969,7 +15965,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of general unit tests'</t>
+g.pr('\nEnd of general unit tests')</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -15978,7 +15974,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoColor tests'</t>
+g.pr('\End of leoColor tests')</t>
 <t tx="ekr.20061127142311">#ab
 #
 
@@ -16074,12 +16070,12 @@ s   = g.os_path_join(dir,u'chinese\u8116test.leo',encoding='utf-8')
 if not g.os_path_exists(dir):
     import os
     os.mkdir(dir)
-    print 'created chinese folder'
+    g.pr('created chinese folder')
     
 if not g.os_path_exists(s):
     f = file(s,'w')
     f.close()
-    print 'created chinese file'
+    g.pr('created chinese file')
     
 </t>
 <t tx="ekr.20070114140212">@
@@ -16441,7 +16437,7 @@ after</t>
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070301064408">print '\nAll plugins tests complete.'</t>
+<t tx="ekr.20070301064408">g.pr('\nAll plugins tests complete.')</t>
 <t tx="ekr.20070303143846.1"># Plugin_manager.py needs plugins_menu.py
 # Plugins_manager is not functional at present.
 # plugin_manager.py
@@ -16469,13 +16465,13 @@ rClick.py
 <t tx="ekr.20070305095401">p = c.currentPosition().copy()
 c.selectPosition(p.threadBack())
 p1 = c.currentPosition()
-# print p1
+# g.pr(p1)
 c.goPrevVisitedNode()
 p2 = c.currentPosition()
-# print p2
+# g.pr(p2)
 c.goNextVisitedNode()
 p3 = c.currentPosition()
-# print p3
+# g.pr(p3)
 # assert p == p3
 </t>
 <t tx="ekr.20070306091949"># This is **not** a real unit test.
@@ -16486,7 +16482,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoEditCommands tests.'</t>
+g.pr('\nEnd of leoEditCommands tests.')</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070315065720.1">a
@@ -16629,7 +16625,7 @@ import leoGui
 path = g.os_path_abspath(g.os_path_join(
     g.app.loadDir,'..','test','dynamicUnitTest.leo'))
 
-print '-'*20
+g.pr('-'*20)
 found = searchOutline(p.copy())
 if found:
     gui = leoGui.nullGui("nullGui")
@@ -16662,7 +16658,7 @@ else:
         for p in p.self_and_subtree_iter():
             h = p.headString()
             if h.startswith('@test') or h.startswith('@suite'):
-                # print h
+                # g.pr(h)
                 # c.copyOutline is too slow.
                 p2 = p.copyTreeAfter()
                 p2.unlink()
@@ -17720,16 +17716,15 @@ d1.keys().sort() ; d2.keys().sort()
 
 if 0: # not important
     print
-    print '----- Only in unitTest.leo'
+    g.pr('----- Only in unitTest.leo')
     for h in d1.keys():
         if not d2.get(h):
-            print h
+            g.pr(h)
 
-print
-print '----- Only in leoPy.leo'
+g.pr('\n----- Only in leoPy.leo')
 for h in d2.keys():
     if not d1.get(h):
-        print h</t>
+        g.pr(h)</t>
 <t tx="ekr.20071113143523"># These originally were run from leoPy.leo.</t>
 <t tx="ekr.20071113143523.1">creating: dynamicUnitTest.leo
 FF.F...F.........
@@ -18243,7 +18238,7 @@ if g.unitTesting:
     i,j = oldSel = w.getSelectionRange()  # Returns insert point if no selection.
     oldText = w.getAllText()
 
-    # print 'pasteText',i,j,middleButton,wname,repr(c.k.previousSelection)
+    # g.pr('pasteText',i,j,middleButton,wname,repr(c.k.previousSelection))
 
     if middleButton and c.k.previousSelection is not None:
         start,end = c.k.previousSelection
@@ -18291,7 +18286,7 @@ if g.unitTesting:
     c.beginUpdate()
     try:
         w = c.frame.body.bodyCtrl
-        # print (w)
+        # g.pr((w))
         s2 = p.bodyString()
         s = w.getAllText()
         assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
@@ -19182,7 +19177,7 @@ assert after == s[end:]
 
 try:
     w = c.frame.body.bodyCtrl
-    # print (w)
+    # g.pr((w))
     s2 = p.bodyString()
     s = w.getAllText()
     assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
@@ -19223,14 +19218,14 @@ special = (
 for ch in special:
     assert not k.isPlainKey(ch), 'wrong: is plain: %s' % (ch)
 </t>
-<t tx="ekr.20071113145804.35"># print '-' * 30
+<t tx="ekr.20071113145804.35"># g.pr('-' * 30)
 ok = True
 p = c.rootPosition()
 while p:
     if p.isAnyAtFileNode():
         h = p.headString()
         if h.endswith('.py'):
-            # print 'checking',p.headString()
+            # g.pr('checking',p.headString())
             # Check all the descendant nodes.
             for p2 in p.subtree_iter():
                 h = p2.headString()
@@ -19239,14 +19234,14 @@ while p:
                         s = p2.bodyString()
                         lines = g.splitLines(s)
                         for line in lines:
-                            # print 'line',line
+                            # g.pr('line',line)
                             if not line.strip() or line.startswith('#'):
                                 continue
                             elif line.startswith('if g.unitTesting:'):
                                 break
                             else:
-                                print 'in',p.headString()
-                                print 'missing "if g.unitTesting:"',h
+                                g.pr('in',p.headString())
+                                g.pr('missing "if g.unitTesting:"',h)
                                 ok = False ; break
         p.moveToNodeAfterTree()
     else:
@@ -19293,7 +19288,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoAtFile tests'</t>
+g.pr('\nEnd of leoAtFile tests')</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19302,7 +19297,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoCommands tests'</t>
+g.pr('\nEnd of leoCommands tests')</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19311,7 +19306,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoConfig tests'</t>
+g.pr('\nEnd of leoConfig tests')</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19320,7 +19315,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
   
-print ; print 'End of leoFileCommands tests.'</t>
+g.pr('\nEnd of leoFileCommands tests.')</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19329,7 +19324,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of leoFind tests.'</t>
+# g.pr('\nEnd of leoFind tests.')</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19338,7 +19333,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of leoFrame tests.'</t>
+# g.pr('\nEnd of leoFrame tests.')</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19347,7 +19342,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of leoGlobals tests.'</t>
+# g.pr('\nEnd of leoGlobals tests.')</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19356,7 +19351,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of leoGui tests.'</t>
+# g.pr('\nEnd of leoGui tests.')</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19365,7 +19360,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoImport tests.'</t>
+g.pr('\nEnd of leoImport tests.')</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19374,7 +19369,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-# print ; print 'End of leoKeys tests.'</t>
+# g.pr('\nEnd of leoKeys tests.')</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19383,7 +19378,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoNodes tests.'</t>
+g.pr('\nEnd of leoNodes tests.')</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19392,7 +19387,7 @@ c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
 c.redraw()
     
-print ; print 'End of leoUndo tests.'</t>
+g.pr('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20071119053439">s = '''\
     a
@@ -19621,7 +19616,7 @@ while ($a ne "fred")		# While input is wrong...
 
 if ($sentence =~ /under/)
 {
-	print "We're talking about rugby\n";
+	print "We're talking about rugby\\n";
 }
 
 $sentence =~ s/london/London/
@@ -19631,7 +19626,7 @@ $_ = "Capes:Geoff::Shot putter:::Big Avenue";
 
 foreach $age (values %ages)
 {
-	print "Somebody is $age\n";
+	print "Somebody is $age\\n";
 }
 
 &amp;mysubroutine;		# Call the subroutine
@@ -19892,7 +19887,7 @@ for v in c.all_unique_vnodes_iter():
         if d.get('str_leo_pos'):
             n += 1
             
-# print n
+# g.pr(n)
 assert n &lt; 2</t>
 <t tx="ekr.20080423110627.3"># Delete all children.
 while p.hasChildren():
@@ -20386,7 +20381,7 @@ for row in xrange(len(lines)):
     for col in xrange(len(line)):
         assert quickConvertRowColToPythonIndex(row+1,col) == n
         n += 1
-print 'pass'
+g.pr('pass')
 
 </t>
 <t tx="ekr.20080701183239.3"># aaaaaaaaaaaaaaaaaa add some more characters.
@@ -20416,7 +20411,7 @@ def fail(kind,expected,got):
 
 # This is fast because we never look at characters more than once.
 s = p.bodyString()
-print '-'*40
+g.pr('-'*40)
 last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
 while n &lt; len(s):
     expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
@@ -20430,7 +20425,7 @@ expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
 row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
 assert row == expected_row,fail('row',expected_row,row)
 assert col == expected_col,fail('col',expected_col,col)
-print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
+g.pr('pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars)
 </t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080707101444.1">@language forth
@@ -20465,5 +20460,15 @@ asm[ abc ]asm
    [ a b c
    x y z]
 ;</t>
+<t tx="ekr.20080710120401.1">print[ ]+(.*)$
+g.pr(\1)
+
+print[ ]+;[ ]+print[]+\'(.*)$
+# '
+g.pr('\\n\1)
+
+# Double escapes in print statements.
+print(.*)\\n(.*)$
+print\1\\\\n\2</t>
 </tnodes>
 </leo_file>
