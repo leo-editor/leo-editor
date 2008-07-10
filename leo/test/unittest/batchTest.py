@@ -8,7 +8,7 @@
 path = g.os_path_join(g.app.loadDir,"..","test","unittest","createdFile.txt")
 
 if 0:
-    print "creating", path
+    g.pr("creating", path)
 
 f = None
 try:

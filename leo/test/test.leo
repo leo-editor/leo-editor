@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="14"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -223,7 +223,7 @@
 <v t="ekr.20080702193741.4"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
-<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080708103735.2" a="E"><vh>Data for @show tests</vh>
 <v t="ekr.20080708103735.3"><vh>old_private</vh></v>
 <v t="ekr.20080708103735.5"><vh>new_public</vh></v>
@@ -231,6 +231,8 @@
 </v>
 <v t="ekr.20080708103735.6"><vh>@test basic replacement test</vh></v>
 </v>
+<v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
+<v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -273,7 +275,7 @@ gtk.main()</t>
 </t>
 <t tx="ekr.20041001211817">import os
 
-print os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse"))</t>
+g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
 <t tx="ekr.20060427103457"># Open leoSettings.leo
 c.openLeoSettings()</t>
 <t tx="ekr.20060809084033">'''A script to convert calls to g.es to g.et, and raw strings s to g._(s)'''
@@ -606,7 +608,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.</t>
-<t tx="ekr.20070515073111">print '=' * 50</t>
+<t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
 g.app.gui = leoGui.nullGui(guiName='testGui')
@@ -617,7 +619,7 @@ try:
     if ok:
         c2 = frame.c
         for p in c2.allNodes_iter():
-            print '.'*p.level(),p.headString()
+            g.pr('.'*p.level(),p.headString())
         g.app.closeLeoWindow(frame)
 finally:
     g.app.gui = oldGui</t>
@@ -633,7 +635,7 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
     n = 0
     for p in c.allNodes_iter():
         n += 1
-    print '%d nodes in %s' % (n,path)
+    g.pr('%d nodes in %s' % (n,path))
     # g.app.closeLeoWindow(c.frame)</t>
 <t tx="ekr.20070517160058.1"></t>
 <t tx="ekr.20070528111805"># FrontWindowCapture.pyw
@@ -714,7 +716,7 @@ class TaskBarApp(wx.Frame):
         for i in windows:
             if win32gui.IsWindowVisible(i):
                 winList.append(i)
-                #print i
+                #g.pr(i)
 
         win32gui.SetForegroundWindow(winList[1])    # found by trial and error
                                                     # that I need the second
@@ -722,7 +724,7 @@ class TaskBarApp(wx.Frame):
         time.sleep(0.1)  # give the previous command some time to finish
 
         fgwindow = win32ui.GetForegroundWindow()
-        #print "(C)lick!"
+        #g.pr("(C)lick!")
 
         bbox = fgwindow.GetWindowRect()
         img = ImageGrab.grab( bbox)
@@ -731,7 +733,7 @@ class TaskBarApp(wx.Frame):
             coeff = MAX_WIDTH * 1. / width
             height = bbox[3] - bbox[1]
             newHeight = int( coeff * height)
-            #print width, height, "scaled down to", MAX_WIDTH, newHeight
+            #g.pr(width, height, "scaled down to", MAX_WIDTH, newHeight)
             img = img.resize((MAX_WIDTH,newHeight), Image.ANTIALIAS)
         img = img.convert("P", dither=Image.NONE,
                               palette=Image.ADAPTIVE, colors=256)
@@ -741,7 +743,7 @@ class TaskBarApp(wx.Frame):
         self.FlashIcon(evt)
 
     def OnTaskBarRightClick(self, evt):
-        #print "Auta..." # that's about it...
+        #g.pr("Auta..." # that's about it...)
         self.tbicon.Destroy()
         self.Close(True)
         wx.GetApp().ProcessIdle()
@@ -867,7 +869,7 @@ produce its own C file.
 </t>
 <t tx="ekr.20070630142904.4">def spam(int i, char *s):
     if 1:
-        print i,s</t>
+        g.pr(i,s)</t>
 <t tx="ekr.20070630142904.5"># Use pyrexc to create myModule.c from myModule.pyx.
 
 import os,sys
@@ -902,9 +904,9 @@ def addTree(p):
 
 addTree(p)
 
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
+g.pr('nodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('edges...\n', g.listToString(x.edges(),sort=True))
+g.pr('yaml...\n')
 nx.write_yaml(x,sys.stdout) # 'graph.yaml')
 </t>
 <t tx="ekr.20070928095102">@ This is a plain Leo tree.
@@ -955,9 +957,9 @@ def addTree(p):
 
 addTree(p)
 
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
+g.pr('nodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('edges...\n', g.listToString(x.edges(),sort=True))
+g.pr('yaml...\n')
 nx.write_yaml(x,sys.stdout) # 'graph.yaml')</t>
 <t tx="ekr.20070929062147.2">'''Convert an @networkx node to a networkx graph.'''
 import networkx as nx
@@ -976,9 +978,9 @@ for z in edges:
     a,b = z
     x.add_edge(a,b)
 
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
+g.pr('\nnodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('\nedges...\n', g.listToString(x.edges(),sort=True))
+g.pr('\nyaml...\n')
 nx.write_yaml(x,sys.stdout) # 'graph.yaml')
 </t>
 <t tx="ekr.20070929070257">@ This is an @graph tree.
@@ -1069,7 +1071,7 @@ import sys
 
 @others
 
-print '=' * 10
+g.pr('=' * 10)
 
 p,edges,nodes = parse(p)
 
@@ -1186,7 +1188,7 @@ log.selectTab(tag)
 s = w.getAllText()
 ins = w.getInsertPoint()
 row,col = g.convertPythonIndexToRowCol(s,ins)
-print 'row',row,'col',col</t>
+g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
@@ -1196,7 +1198,6 @@ plugins_menu.py
 
 # searchbox.py
 
-mod_shadow.py
 # active_path.py
 # open_shell.py
 # ipython.py
@@ -1261,7 +1262,7 @@ else:
 
 if frame and not frame1:
     frame.configure(bg='white')
-    print 'logFrame',log.frameDict.get(tag)
+    g.pr('logFrame',log.frameDict.get(tag))
 </t>
 <t tx="ekr.20071129103842"># A script to create @auto nodes from all .py files in a directory.
 
@@ -1270,18 +1271,18 @@ import glob,os
 reallyCreate = False
 baseDir = r'c:\Python25\Lib\site-packages\pubsub'
 dirs = ('',) #'Extensions','UserConfig',)
-print '-----'
+g.pr('-----')
 
 c.beginUpdate()
 try:
     for theDir in dirs:
         pattern = g.os_path_join(baseDir,theDir,'*.py')
         files = glob.glob(pattern)
-        print pattern
-        # print g.listToString(files)
+        g.pr(pattern)
+        # g.pr(g.listToString(files))
         for name in files:
             h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-            print 'creating',h
+            g.pr('creating',h)
             if reallyCreate:
                 child = p.insertAsLastChild()
                 child.initHeadString(h)
@@ -1298,15 +1299,15 @@ rcArg = '--rcfile=%s' % rcFile
 &lt;&lt; define data &gt;&gt;
 
 # We expect only one W104 error, in leoGlobals.py
-print ; print '=' * 40
+g.pr('\n','=' * 40)
 for name,s in data:
     name2 = g.os_path_abspath(g.os_path_join(g.app.loadDir,name))
     args = [name2,rcArg]
     if s.strip():
         args.append('--disable-msg=%s' % s)
-    print name,s
+    g.pr(name,s)
     lint.Run(args)
-print ; print 'End of pylint run'</t>
+g.pr('\n' + 'End of pylint run')</t>
 <t tx="ekr.20080105120559">data = (
     ('leoAtFile.py',''), 
     ('leoChapters.py',''),
@@ -1377,25 +1378,25 @@ W1111 Assigning to a function call that only returns None</t>
 ************* Module leoGlobals
 W0104:3871: Statement seems to have no effect
 </t>
-<t tx="ekr.20080206055658">print 'settings...'
+<t tx="ekr.20080206055658">g.pr('settings...')
 for z in ('body','button','headline','log','menu','outline'):
     for z2 in ('family','size','slant','weight',):
         setting = '%s_text_font_%s' % (z,z2)
-        print setting,c.config.get(setting,z2)
+        g.pr(setting,c.config.get(setting,z2))
 
-print 'default sizes...'
+g.pr('default sizes...')
 for z in ('Body','Log','Menu','Tree'):
     setting = 'default%sFontSize' % z
-    print setting,getattr(c.config,setting)
+    g.pr(setting,getattr(c.config,setting))
 
-print 'actual fonts...'
+g.pr('actual fonts...')
 for z in ('body','button','headline','log','menu','outline'):
     kind = ('family','size','slant','weight')
     arg0,arg1,arg2,arg3 = args = ['%s_text_font_%s' % (z,z2) for z2 in kind]
     setting = '%s_text_font' % (z)
-    print '%20s' % (setting),c.config.getFontFromParams(arg0,arg1,arg2,arg3,defaultSize=12)
+    g.pr('%20s' % (setting),c.config.getFontFromParams(arg0,arg1,arg2,arg3,defaultSize=12))
 </t>
-<t tx="ekr.20080214091706.2">print 'hello from ekr'</t>
+<t tx="ekr.20080214091706.2">g.pr('hello from ekr')</t>
 <t tx="ekr.20080310111916.1">def myTranslateString (s):
 
     i = s.lower().find('can not')
@@ -1426,7 +1427,7 @@ path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','..'))
 project = rope.base.project.Project(path,fscommands=leoFSCommands)
 s = p.bodyString() # Could simulate a write to allow @others.
 
-print '*' * 40
+g.pr('*' * 40)
 for pattern in (
     # 'g.', # works.
     # 'g.trace(', # weird.
@@ -1437,9 +1438,9 @@ for pattern in (
     i = s.find(pattern)
     if i &gt; -1:
         proposals = codeassist.code_assist(project,s,i+len(pattern))
-        print '-' * 20
-        print 'pattern:',pattern
-        print g.listToString(proposals)</t>
+        g.pr('-' * 20)
+        g.pr('pattern:',pattern)
+        g.pr(g.listToString(proposals))</t>
 <t tx="ekr.20080529111617.1"></t>
 <t tx="ekr.20080529111617.2"></t>
 <t tx="ekr.20080529111617.3">The colour used instead of green in progress bars</t>
@@ -1476,12 +1477,12 @@ t.stop()
 
 @others
 
-print '*' * 60
+g.pr('*' * 60)
 ok,taglist,nextindex = tt.tag(s,lineTable)
-# print g.listToString(taglist)
+# g.pr(g.listToString(taglist))
 for z in taglist:
     printItem(z,level=0)
-print 'ok:',ok
+g.pr('ok:',ok)
 </t>
 <t tx="ekr.20080531131542.2">from mx.TextTools import * # Required for tags.
 
@@ -1527,7 +1528,7 @@ lineTable = (
 <t tx="ekr.20080531131542.4">def printItem(aList,level):
 
     obj,lt_index,rt_index,subtag = aList
-    print '  '*level,obj,repr(s[lt_index:rt_index])
+    g.pr('  '*level,obj,repr(s[lt_index:rt_index]))
     if subtag:
         for z in subtag:
             printItem(z,level+1)
@@ -1575,7 +1576,7 @@ w = Tk.Text(top)
 w.pack()
 
 def key(event):
-    if event.char: print 'state',event.state,'char', repr(event.char), repr(event.keysym)
+    if event.char: g.pr('state',event.state,'char', repr(event.char), repr(event.keysym))
 
 def after():
     g.trace()
@@ -1592,9 +1593,9 @@ w.update()
 # top.after_idle(after)
 top.mainloop()
 </t>
-<t tx="ekr.20080618093010.1">print 'Ctrl+s' in c.k.bindingsDict.keys()
-print c.k.masterBindingsDict.keys()
-print '&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys()</t>
+<t tx="ekr.20080618093010.1">g.pr('Ctrl+s' in c.k.bindingsDict.keys())
+g.pr(c.k.masterBindingsDict.keys())
+g.pr('&lt;Control-s&gt;' in c.k.masterGuiBindingsDict.keys())</t>
 <t tx="ekr.20080624141305.1">@others
 
 # done</t>
@@ -1630,31 +1631,31 @@ else:
             self.c = c
             self.func = func
             self.name = func.__name__
-            print "registering",self.name
+            g.pr("registering",self.name)
 
         def __call__(__self,*__args,**__kw):
-            print "before", __self.name
+            g.pr("before", __self.name)
             try:
                 return __self.func(*__args,**__kw)
             finally:
-                print "after ", __self.name
-                print 'c',c
+                g.pr("after ", __self.name)
+                g.pr('c',c)
                 c.outerUpdate()
 
 
 @leo_command
 def hello():
-    print "Hello, world!"
+    g.pr("Hello, world!")
 
 hello()
 </t>
 <t tx="ekr.20080701101740.1">import locale
 aList = dir(locale)
-# print g.listToString(aList)
+# g.pr(g.listToString(aList))
 
-print g.getpreferredencoding()
+g.pr(g.getpreferredencoding())
 # import os
-# print dir(os)
+# g.pr(dir(os))
 </t>
 <t tx="ekr.20080701130406.1">import glob
 
@@ -1662,9 +1663,9 @@ aList = glob.glob(r'c:\leo.repo\trunk\leo\plugins\*.py')
 for z in aList:
     name = g.shortFileName(z)
     if not name.startswith('_'):
-        print 'echo .'
-        print 'echo',name
-        print 'call pylint.bat core\\%s' % name</t>
+        g.pr('echo .')
+        g.pr('echo',name)
+        g.pr('call pylint.bat core\%s' % name)</t>
 <t tx="ekr.20080702113207.1"></t>
 <t tx="ekr.20080702193741.1">import leo.core.leoGlobals as leoGlobals
 
@@ -1767,5 +1768,13 @@ x.test_propagate_changes (
     expected_private_lines, # after_with_sentinel_lines,
     marker="#@")
 </t>
+<t tx="ekr.20080710111404.1">g.pr('a',newline=False)
+g.pr('b')</t>
+<t tx="ekr.20080710111404.2">print[ ]+(.*)$
+g.pr(\1)
+
+# Double escapes in print statements.
+print(.*)\\n(.*)$
+print\1\\\\n\2</t>
 </tnodes>
 </leo_file>
