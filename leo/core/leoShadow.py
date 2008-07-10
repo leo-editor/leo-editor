@@ -108,7 +108,7 @@ class shadowController:
 
    #@-node:ekr.20080708094444.79: ctor (shadowConroller)
    #@+node:ekr.20080708192807.1:Propagation...
-   #@+node:ekr.20080708094444.36:propagate_changes 
+   #@+node:ekr.20080708094444.36:propagate_changes
    def propagate_changes(self, old_private_file, old_public_file, marker_from_extension):
 
        '''Propagate the changes from the public file (without_sentinels)
@@ -127,7 +127,7 @@ class shadowController:
 
        return written
    #@nonl
-   #@-node:ekr.20080708094444.36:propagate_changes 
+   #@-node:ekr.20080708094444.36:propagate_changes
    #@+node:ekr.20080708094444.35:check_the_final_output & helper
    def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
        """
@@ -322,6 +322,7 @@ class shadowController:
            # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
            # In this special case, we must do the insert before the sentinels.
            limit=mapping[old_i]
+
            if tag == 'insert' and limit >= old_private_lines_rdr.size():
                pass
            else:
@@ -352,8 +353,7 @@ class shadowController:
                # Leave new_public_lines_rdr unchanged.
                pass
 
-           else:
-               g.trace('can not happen: tag = %s' % repr(tag))
+           else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
 
            if trace and verbose:
                print_tags(tag, old_i, old_j, new_i, new_j, "After tag")

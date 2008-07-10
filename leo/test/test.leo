@@ -225,8 +225,7 @@
 <v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh></v>
-<v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
+<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh>
 <v t="ekr.20080709112843.1"><vh>@@shadow-raw-test first test</vh>
 <v t="ekr.20080708103735.3"><vh>old_private</vh></v>
 <v t="ekr.20080708103735.5"><vh>new_public</vh></v>
@@ -271,6 +270,28 @@
 <v t="ekr.20080709155243.10"><vh>@shadow-test insert after last line</vh>
 <v t="ekr.20080709155243.11"><vh>old</vh></v>
 <v t="ekr.20080709155243.12"><vh>new</vh></v>
+</v>
+</v>
+<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20080709192609.7"><vh>@shadow-test insert between nodes: at end of prev node</vh>
+<v t="ekr.20080709192609.3"><vh>old</vh>
+<v t="ekr.20080709192609.4"><vh>node 1</vh></v>
+<v t="ekr.20080709192609.5"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080709192609.8"><vh>new</vh>
+<v t="ekr.20080709192609.9"><vh>node 1</vh></v>
+<v t="ekr.20080709192609.10"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080709192609.11"><vh>@shadow-test insert between nodes: at start of next node</vh>
+<v t="ekr.20080709192609.12"><vh>old</vh>
+<v t="ekr.20080709192609.13"><vh>node 1</vh></v>
+<v t="ekr.20080709192609.14"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080709192609.15"><vh>new</vh>
+<v t="ekr.20080709192609.16"><vh>node 1</vh></v>
+<v t="ekr.20080709192609.17"><vh>node 2</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1884,5 +1905,21 @@ line 2
 line 3
 inserted line</t>
 <t tx="ekr.20080709162102.1"></t>
+<t tx="ekr.20080709192609.3">@others</t>
+<t tx="ekr.20080709192609.4">node 1 line 1</t>
+<t tx="ekr.20080709192609.5">node 2 line 1</t>
+<t tx="ekr.20080709192609.7"></t>
+<t tx="ekr.20080709192609.8">@others</t>
+<t tx="ekr.20080709192609.9">node 1 line 1
+inserted node at end of node 1</t>
+<t tx="ekr.20080709192609.10">node 2 line 1</t>
+<t tx="ekr.20080709192609.11"></t>
+<t tx="ekr.20080709192609.12">@others</t>
+<t tx="ekr.20080709192609.13">node 1 line 1</t>
+<t tx="ekr.20080709192609.14">node 2 line 1</t>
+<t tx="ekr.20080709192609.15">@others</t>
+<t tx="ekr.20080709192609.16">node 1 line 1</t>
+<t tx="ekr.20080709192609.17">inserted node at start of node 2
+node 2 line 1</t>
 </tnodes>
 </leo_file>
