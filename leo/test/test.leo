@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="14"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1769,7 +1769,9 @@ x.test_propagate_changes (
     marker="#@")
 </t>
 <t tx="ekr.20080710111404.1">g.pr('a',newline=False)
-g.pr('b')</t>
+g.pr('b')
+f = open(c.fileName())
+g.pr(f)</t>
 <t tx="ekr.20080710111404.2">print[ ]+(.*)$
 g.pr(\1)
 

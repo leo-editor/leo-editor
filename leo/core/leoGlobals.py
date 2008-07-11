@@ -2926,6 +2926,8 @@ def pr(s,*args,**keys):
     except Exception:
         s = g.toEncodedString(s,'ascii')
 
+    if type(s) != type("") and type(s) != type(u""):
+        s = repr(s)
     s2 = g.translateArgs(s,args,commas,spaces)
 
     if newline:
