@@ -542,7 +542,7 @@ class shadowController:
 
        return marker
    #@-node:ekr.20080708094444.9:marker_from_extension
-   #@+node:ekr.20080708094444.85:error
+   #@+node:ekr.20080708094444.85:error & message
    def error (self,s,silent=False):
 
        x = self
@@ -553,7 +553,12 @@ class shadowController:
        # For unit testing.
        x.last_error = s
        x.errors += 1
-   #@-node:ekr.20080708094444.85:error
+
+   def message (self,s):
+
+       g.es_print(s,color='orange')
+   #@nonl
+   #@-node:ekr.20080708094444.85:error & message
    #@+node:ekr.20080708094444.11:is_sentinel
    def is_sentinel (self, line, marker):
 
