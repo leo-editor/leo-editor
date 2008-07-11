@@ -651,7 +651,8 @@ class shadowController:
 
        x = self ; theDir = x.baseDirName()
 
-       return theDir and g.os_path_abspath(g.os_path_join(theDir,x.shadow_subdir,x.shadow_prefix + filename))
+       return theDir and g.os_path_abspath(g.os_path_join(
+           theDir,x.shadow_subdir,x.shadow_prefix + g.shortFileName(filename)))
    #@nonl
    #@-node:ekr.20080711063656.6:shadowDirName and shadowPathName
    #@+node:ekr.20080711063656.2:rename

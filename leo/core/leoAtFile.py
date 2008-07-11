@@ -235,6 +235,8 @@ class atFile:
         self.root = None # The root of tree being read or written.
         self.root_seen = False # True: root vnode has been handled in this file.
         self.toString = False # True: sring-oriented read or write.
+        self.writing_to_shadow_directory = False
+        #@nonl
         #@-node:ekr.20041005105605.12:<< init common ivars >>
         #@nl
     #@-node:ekr.20041005105605.10:initCommonIvars
@@ -437,7 +439,7 @@ class atFile:
             if shadow_exists:   
                 if g.os_path_exists(filename) and os.path.getsize(filename) <= 2:
                     # Update the corresponding private file from the private shadow file.
-                    if x.trace: x.message("copied private %s to public %s " % (shadow_filename,filename))
+                    if True or x.trace: x.message("copied private %s to public %s " % (shadow_filename,filename))
                     x.copy_file_removing_sentinels(sourcefilename=shadow_filename,targetfilename=filename)
                 else:
                     # Update the private shadow file from the public file.
@@ -453,9 +455,33 @@ class atFile:
             return None
     #@-node:bwmulder.20041231170726:openForRead (atFile)
     #@+node:bwmulder.20050101094804:openForWrite (atFile)
-    if 1:
+    if 0:
         def openForWrite(self, *args, **kw):
             return open(*args, **kw)
+
+    def openForWrite (self, filename, wb):
+
+        '''Open a file for writes, handling shadow files.'''
+
+        c = self.c ; x = c.shadowController
+
+        try:
+            shadow_filename = x.shadowPathName(filename)
+            self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+            open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+            self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+            g.trace('file  ',filename) ; g.trace('shadow',shadow_filename)
+
+            if (True or x.trace) and self.writing_to_shadow_directory:
+                x.message("Using shadow file in folder %s" % x.shadowDirName(filename))
+
+            return open(open_file_name,'wb')
+
+        except IOError:
+            if not g.app.unitTesting:
+                g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+                g.es_exception()
+            return None
     #@-node:bwmulder.20050101094804:openForWrite (atFile)
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
