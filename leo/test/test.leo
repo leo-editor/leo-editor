@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,2,6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,2,7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -286,6 +286,7 @@
 <v t="ekr.20080711072651.3"><vh>@test x.shadowDirName</vh></v>
 <v t="ekr.20080711082216.1"><vh>@test x.rename</vh></v>
 <v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
+<v t="ekr.20080711094406.1"><vh>@test at.openForRead: not a shadow file</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1936,5 +1937,18 @@ x.rename('xyzzy','xyzzy2',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not rename')
 # g.pr(x.last_error)</t>
+<t tx="ekr.20080711094406.1">at = c.atFileCommands
+x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+assert None == at.openForRead(filename)
+
+filename = c.fileName()
+assert g.os_path_exists(filename)
+theFile = at.openForRead(filename)
+# g.pr(repr(theFile))
+assert theFile
+theFile.close()</t>
 </tnodes>
 </leo_file>

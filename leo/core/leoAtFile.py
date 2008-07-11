@@ -423,7 +423,7 @@ class atFile:
         def openForRead(self, *args, **kw):
             return open(*args, **kw)
 
-    def openForRead (self, filename, rb):
+    def openForRead (self, filename, rb='rb'):
 
         '''Open a file for reading, handling shadow files.'''
 
@@ -444,11 +444,12 @@ class atFile:
                     written = x.propagate_changes(old_private_file=shadow_filename,old_public_file=filename)
                     if written: x.message("updated private %s from public %s" % (shadow_filename, filename))
 
-            return open(open_file_name,'rb')
+            return open(open_file_name,rb)
 
         except Exception:
-            x.error('openForRead: exception opening file: %s' % (open_file_name))
-            g.es_exception()
+            if not g.app.unitTesting:
+                g.es_print('openForRead: exception opening file: %s' % (open_file_name),color='red')
+                g.es_exception()
             return None
     #@-node:bwmulder.20041231170726:openForRead (atFile)
     #@+node:bwmulder.20050101094804:openForWrite (atFile)
