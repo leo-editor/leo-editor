@@ -69,13 +69,17 @@ class shadowController:
        self.print_copy_operations = False   # True: tell when files are copied.
        self.do_backups = False              # True: always make backups of each file.
 
-       # Configuration
+       # Configuration...
        self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
        self.shadow_prefix = c.config.getString('shadow_prefix') or ''
 
        # Debugging...
        self.trace = trace
        self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
+
+       # Error handling...
+       self.errors = 0
+       self.last_error  = '' # The last error message, regardless of whether it was actually shown.
 
        # Support for goto-line-number.
        self.line_mapping = []
@@ -500,10 +504,15 @@ class shadowController:
 
        '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
+       x = self
+
        lines = file(sourcefilename).readlines()
-       marker = self.marker_from_extension(sourcefilename)
-       regular_lines, sentinel_lines = self.separate_sentinels(lines,marker)
-       self.write_if_changed(regular_lines, sourcefilename, targetfilename)
+
+       marker = x.marker_from_extension(sourcefilename)
+
+       regular_lines, junk = x.separate_sentinels(lines,marker)
+
+       x.write_if_changed(regular_lines, sourcefilename, targetfilename)
    #@-node:ekr.20080708094444.27:copy_file_removing_sentinels
    #@+node:ekr.20080708094444.9:marker_from_extension
    def marker_from_extension (self,filename):
@@ -534,9 +543,16 @@ class shadowController:
        return marker
    #@-node:ekr.20080708094444.9:marker_from_extension
    #@+node:ekr.20080708094444.85:error
-   def error (self,s):
+   def error (self,s,silent=False):
 
-       g.es_print(s,color='red')
+       x = self
+
+       if not silent:
+           g.es_print(s,color='red')
+
+       # For unit testing.
+       x.last_error = s
+       x.errors += 1
    #@-node:ekr.20080708094444.85:error
    #@+node:ekr.20080708094444.11:is_sentinel
    def is_sentinel (self, line, marker):
@@ -574,16 +590,91 @@ class shadowController:
        Returns (regular_lines, sentinel_lines)
        '''
 
-       regular_lines = [] ; sentinel_lines = []
+       x = self ; regular_lines = [] ; sentinel_lines = []
 
        for line in lines:
-         if self.is_sentinel(line,marker):
+         if x.is_sentinel(line,marker):
             sentinel_lines.append(line)
          else:
             regular_lines.append(line)
 
        return regular_lines, sentinel_lines 
    #@-node:ekr.20080708094444.29:separate_sentinels
+   #@+node:ekr.20080711063656.1:x.file utils
+   #@+node:ekr.20080711063656.7:baseDirName
+   def baseDirName (self):
+
+       x = self ; filename = x.c.fileName()
+
+       if filename:
+           return g.os_path_dirname(g.os_path_abspath(filename))
+       else:
+           self.error('Can not compute shadow path: .leo file has not been saved')
+           return None
+   #@nonl
+   #@-node:ekr.20080711063656.7:baseDirName
+   #@+node:ekr.20080711063656.4:dirName and pathName
+   def dirName (self,filename):
+
+       '''Return the directory for filename.'''
+
+       x = self
+
+       return g.os_path_dirname(x.pathName(filename))
+
+   def pathName (self,filename):
+
+       '''Return the full path name of filename.'''
+
+       x = self ; theDir = x.baseDirName()
+
+       return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
+   #@nonl
+   #@-node:ekr.20080711063656.4:dirName and pathName
+   #@+node:ekr.20080711063656.6:shadowDirName and shadowPathName
+   def shadowDirName (self,filename):
+
+       '''Return the directory for the shadow file corresponding to filename.'''
+
+       x = self
+
+       return g.os_path_dirname(x.shadowPathName(filename))
+
+   def shadowPathName (self,filename):
+
+       '''Return the full path name of filename, resolved using c.fileName()'''
+
+       x = self ; theDir = x.baseDirName()
+
+       return theDir and g.os_path_abspath(g.os_path_join(theDir,x.shadow_subdir,x.shadow_prefix + filename))
+   #@nonl
+   #@-node:ekr.20080711063656.6:shadowDirName and shadowPathName
+   #@+node:ekr.20080711063656.2:rename
+   def rename (self,src,dst,mode=None,silent=False):
+
+       x = self ; c = x.c
+
+       ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+       if not ok:
+           x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+       return ok
+   #@-node:ekr.20080711063656.2:rename
+   #@+node:ekr.20080711063656.3:unlink
+   def unlink (self, filename,silent=False):
+
+       '''Unlink filename from the file system.
+       Give an error on failure.'''
+
+       x = self
+
+       ok = g.utils_remove(filename, verbose=not silent)
+       if not ok:
+           x.error('can not delete %s' % (filename),silent=silent)
+
+       return ok
+   #@-node:ekr.20080711063656.3:unlink
+   #@-node:ekr.20080711063656.1:x.file utils
    #@-node:ekr.20080708094444.89:Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):

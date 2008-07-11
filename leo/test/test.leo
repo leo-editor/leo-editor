@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,2,6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -277,6 +277,15 @@
 <v t="ekr.20080709192609.17"><vh>node 2</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20080711065102.1" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
+<v t="ekr.20080711065102.3"><vh>@test x.pathName</vh></v>
+<v t="ekr.20080711072651.1"><vh>@test x.dirName</vh></v>
+<v t="ekr.20080711072651.2"><vh>@test x.shadowPathName</vh></v>
+<v t="ekr.20080711072651.3"><vh>@test x.shadowDirName</vh></v>
+<v t="ekr.20080711082216.1"><vh>@test x.rename</vh></v>
+<v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1840,5 +1849,92 @@ inserted node at end of node 1</t>
 <t tx="ekr.20080709192609.16">node 1 line 1</t>
 <t tx="ekr.20080709192609.17">inserted node at start of node 2
 node 2 line 1</t>
+<t tx="ekr.20080711065102.1"></t>
+<t tx="ekr.20080711065102.2">x = c.shadowController
+
+filename = x.pathName('xyzzy')
+# g.pr(filename)
+assert not g.os_path_exists(filename)
+n = x.errors
+x.unlink('xyzzy',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not delete xyzzy')
+# g.pr(x.last_error)</t>
+<t tx="ekr.20080711065102.3">x = c.shadowController
+
+filename = 'xyzzy'
+
+path = x.pathName(filename)
+expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
+
+# g.pr(path)
+# g.pr(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20080711072651.1">x = c.shadowController
+
+filename = 'xyzzy'
+path = x.dirName(filename)
+expected = g.os_path_dirname(g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
+
+# g.pr(path)
+# g.pr(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20080711072651.2">x = c.shadowController
+
+subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# g.pr('c.fileName',c.fileName())
+# g.pr('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowPathName(filename)
+expected = g.os_path_abspath(g.os_path_join(
+    g.os_path_dirname(c.fileName()),subdir,prefix+filename))
+
+if 0:
+    g.pr('prefix',prefix)
+    g.pr(path)
+    g.pr(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20080711072651.3">x = c.shadowController
+
+subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# g.pr('c.fileName',c.fileName())
+# g.pr('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowDirName(filename)
+expected = g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
+
+# g.pr(path)
+# g.pr(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20080711074601.1">x = c.shadowController
+
+path = x.baseDirName()
+expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
+
+# g.pr(path)
+# g.pr(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20080711082216.1">x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+n = x.errors
+x.rename('xyzzy','xyzzy2',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not rename')
+# g.pr(x.last_error)</t>
 </tnodes>
 </leo_file>
