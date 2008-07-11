@@ -13001,7 +13001,6 @@ def __init__(self,frame,fileName,relativeFileName=None):
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
     self.mRelativeFileName = relativeFileName
 
-
     # g.trace(c) # Do this after setting c.mFileName.
     c.initIvars()
     self.nodeHistory = nodeHistory(c)
@@ -13029,9 +13028,11 @@ def __init__(self,frame,fileName,relativeFileName=None):
     import leo.core.leoEditCommands as leoEditCommands
     import leo.core.leoFileCommands as leoFileCommands
     import leo.core.leoImport as leoImport
+    import leo.core.leoShadow as leoShadow
     import leo.core.leoTangle as leoTangle
     import leo.core.leoUndo as leoUndo
 
+    self.shadowController = leoShadow.shadowController(c)
     self.fileCommands   = leoFileCommands.fileCommands(c)
     self.atFileCommands = leoAtFile.atFile(c)
     self.importCommands = leoImport.leoImportCommands(c)

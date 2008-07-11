@@ -32,31 +32,6 @@ Settings:
 '''
 #@-node:ekr.20080708094444.78:<< docstring >>
 #@nl
-#@<< notes >>
-#@+node:ekr.20080708094444.51:<< notes >>
-#@+at
-# 
-# 1. Not sure if I should do something about read-only files. Are they a 
-# problem? Should I check for them?
-# 
-# 2. Introduced openForRead and openForWrite. Both are introduced only as a 
-# hook for the mod_shadow plugin, and default to
-# the predefined open.
-# 
-# 3. Changed replaceTargetFileIfDifferent to return True if the file has been 
-# replaced (otherwise, it still returns None).
-# 
-# 4. In gotoLineNumber: encapsulated
-#                 theFile=open(fileName)
-#                 lines = theFile.readlines()
-#                 theFile.close()
-# into a new method "gotoLinenumberOpen"
-# 
-# 5. Introduced a new function "applyLineNumberMappingIfAny" in 
-# gotoLineNumber. The default implementation returns the argument.
-#@-at
-#@-node:ekr.20080708094444.51:<< notes >>
-#@nl
 #@<< imports >>
 #@+node:ekr.20080708094444.52:<< imports >>
 import leo.core.leoGlobals as g
@@ -68,15 +43,12 @@ import leo.core.leoImport as leoImport
 import ConfigParser 
 import difflib
 import os
+import shutil
 import sys
 import unittest
 #@nonl
 #@-node:ekr.20080708094444.52:<< imports >>
 #@nl
-
-# Terminology:
-# 'push' create a file without sentinels from a file with sentinels.
-# 'pull' propagate changes from a file without sentinels to a file with sentinels.
 
 #@@language python
 #@@tabwidth -4
@@ -98,25 +70,27 @@ class shadowController:
        self.do_backups = False              # True: always make backups of each file.
 
        # Configuration
-       self.shadow_subdir_default = 'LeoFolder'
-       self.shadow_prefix_default = ''
+       self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+       self.shadow_prefix = c.config.getString('shadow_prefix') or ''
 
        # Debugging...
-       self.print_all = False              # True: print intermediate files.
        self.trace = trace
        self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
+
+       # Support for goto-line-number.
+       self.line_mapping = []
 
    #@-node:ekr.20080708094444.79: ctor (shadowConroller)
    #@+node:ekr.20080708192807.1:Propagation...
    #@+node:ekr.20080708094444.36:propagate_changes
-   def propagate_changes(self, old_private_file, old_public_file, marker_from_extension):
+   def propagate_changes(self, old_private_file, old_public_file):
 
        '''Propagate the changes from the public file (without_sentinels)
        to the private file (with_sentinels)'''
 
        old_public_lines  = file(old_public_file).readlines()
        old_private_lines = file(old_private_file).readlines()
-       marker = marker_from_extension(old_public_file)
+       marker = self.marker_from_extension(old_public_file)
 
        new_private_lines = self.propagate_changed_lines(
            old_public_lines,old_private_lines,marker)
@@ -410,6 +384,49 @@ class shadowController:
       return results, mapping 
    #@-node:ekr.20080708094444.34:strip_sentinels_with_map
    #@-node:ekr.20080708192807.1:Propagation...
+   #@+node:ekr.20080710082231.17:makeShadowFile & helper
+   def makeShadowFile (self,filename):
+
+       x = self ; trace = True
+
+       theDir = x.makeShadowDirectory(filename)
+       if not theDir:
+           if trace: x.error('can not create shadow directory for %s' % (filename))
+           return
+
+       name = g.os_path_basename(filename)
+       path = g.os_path_join(theDir,x.shadow_prefix + name)
+       if os.path.exists(path):
+           if trace: g.trace('shadow file already exists: %s' % (path))
+           return
+
+       fullname = g.os_path_join(g.app.loadDir,filename)
+       g.es("copying %s to %s" % (fullname, path),color='orange')
+
+       if 0: # not yet!
+           shutil.copy2(fullname, path)
+           os.unlink(fullname)
+           f = file(fullname, "w")
+           f.close()
+           x.copy_file_removing_sentinels(sourcefilename=path,targetfilename=fullname)
+           g.es("file %s is now shadowed" % (fullname),color='orange')
+   #@+node:ekr.20080710082231.19:makeShadowDirectory
+   def makeShadowDirectory (self,filename):
+
+       fullname = g.os_path_join(g.app.loadDir,filename)
+       theDir   = g.os_path_dirname(fullname)
+       path     = g.os_path_join(theDir,x.shadow_subdir)
+
+       if not g.os_path_exists(path):
+           try:
+               os.mkdir(path)
+           except Exception:
+               g.es_exception()
+               return False
+
+       return g.os_path_exists(path) and g.os_path_isdir(path)
+   #@-node:ekr.20080710082231.19:makeShadowDirectory
+   #@-node:ekr.20080710082231.17:makeShadowFile & helper
    #@+node:ekr.20080708094444.10:write_if_changed & helpers
    def write_if_changed (self,lines, sourcefilename, targetfilename):
 
@@ -476,27 +493,29 @@ class shadowController:
    #@-node:ekr.20080708094444.84:make_backup_file
    #@-node:ekr.20080708094444.10:write_if_changed & helpers
    #@+node:ekr.20080708094444.89:Utils...
-   #@+node:ekr.20080708094444.27:copy_file_removing_sentinels (helper for at.replaceTargetFileIfDifferent)
+   #@+node:ekr.20080708094444.27:copy_file_removing_sentinels
    # Called by updated version of atFile.replaceTargetFileIfDifferent
 
-   def copy_file_removing_sentinels (self,sourcefilename,targetfilename,marker_from_extension):
+   def copy_file_removing_sentinels (self,sourcefilename,targetfilename):
 
        '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-       # outlines, sentinel_lines = self.read_file_separating_out_sentinels(sourcefilename, marker_from_extension)
-
        lines = file(sourcefilename).readlines()
-       marker = marker_from_extension(sourcefilename)
+       marker = self.marker_from_extension(sourcefilename)
        regular_lines, sentinel_lines = self.separate_sentinels(lines,marker)
        self.write_if_changed(regular_lines, sourcefilename, targetfilename)
-   #@-node:ekr.20080708094444.27:copy_file_removing_sentinels (helper for at.replaceTargetFileIfDifferent)
-   #@+node:ekr.20080708094444.9:default_marker_from_extension
-   def default_marker_from_extension (self,filename):
+   #@-node:ekr.20080708094444.27:copy_file_removing_sentinels
+   #@+node:ekr.20080708094444.9:marker_from_extension
+   def marker_from_extension (self,filename):
 
-       '''Guess the sentinel delimiter comment from the filename's extension.
+       '''Return the sentinel delimiter comment to be used for filename.'''
 
-       This allows testing independent of Leo.'''
+       delims = g.comment_delims_from_extension(filename)
+       for i in (0,1):
+           if delims[i] is not None:
+               return delims[i]+'@'
 
+       # Try some other choices.
        root, ext = os.path.splitext(filename)
 
        if ext=='.tmp':
@@ -512,8 +531,8 @@ class shadowController:
            self.error("extension %s not known" % ext)
            marker = '#'
 
-       return marker 
-   #@-node:ekr.20080708094444.9:default_marker_from_extension
+       return marker
+   #@-node:ekr.20080708094444.9:marker_from_extension
    #@+node:ekr.20080708094444.85:error
    def error (self,s):
 
@@ -540,22 +559,12 @@ class shadowController:
 
       mapping =[None]
 
-      for linecount, line in enumerate(filelines):
+      for i, line in enumerate(filelines):
          if not self.is_sentinel(line,marker):
-            mapping.append(linecount+1)
+            mapping.append(i+1)
 
       return mapping 
    #@-node:ekr.20080708094444.30:push_filter_mapping
-   #@+node:ekr.20080708094444.28:read_file_separating_out_sentinels (not used)
-   # def read_file_separating_out_sentinels (sourcefilename, marker_from_extension):
-      # """
-      # Removes sentinels from the lines of 'sourcefilename'.
-
-      # Returns (regular_lines, sentinel_lines)
-      # """
-
-      # return self.separate_sentinels(file(sourcefilename).readlines(), marker_from_extension(sourcefilename))
-   #@-node:ekr.20080708094444.28:read_file_separating_out_sentinels (not used)
    #@+node:ekr.20080708094444.29:separate_sentinels
    def separate_sentinels (self, lines, marker):
 

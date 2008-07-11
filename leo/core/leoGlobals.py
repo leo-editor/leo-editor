@@ -416,7 +416,6 @@ def comment_delims_from_extension(filename):
 
     language = g.app.extension_dict.get(ext[1:])
     if ext:
-
         return g.set_delims_from_language(language)
     else:
         g.trace("unknown extension %s" % ext)

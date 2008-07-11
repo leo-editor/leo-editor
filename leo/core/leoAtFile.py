@@ -418,20 +418,20 @@ class atFile:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
     #@-node:ekr.20041005105605.19:openFileForReading (atFile)
-    #@+node:bwmulder.20041231170726:openForRead
+    #@+node:bwmulder.20041231170726:openForRead (atFile)
     def openForRead(self, *args, **kw):
         """
         Hook for the mod_shadow plugin.
         """
         return open(*args, **kw)
-    #@-node:bwmulder.20041231170726:openForRead
-    #@+node:bwmulder.20050101094804:openForWrite
+    #@-node:bwmulder.20041231170726:openForRead (atFile)
+    #@+node:bwmulder.20050101094804:openForWrite (atFile)
     def openForWrite(self, *args, **kw):
         """
         Hook for the mod_shadow plugin
         """
         return open(*args, **kw)
-    #@-node:bwmulder.20050101094804:openForWrite
+    #@-node:bwmulder.20050101094804:openForWrite (atFile)
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
     # Reads @thin, @file and @noref trees.
@@ -3810,6 +3810,7 @@ class atFile:
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
             return False
+    #@nonl
     #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     #@-node:ekr.20041005105605.211:putInitialComment
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes

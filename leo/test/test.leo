@@ -1726,13 +1726,16 @@ deletion or replacement spans more than one block.
 </t>
 <t tx="ekr.20080708103735.2"></t>
 <t tx="ekr.20080709091709.1">import unittest
-import leo.core.leoShadow as leoShadow
+
+if 1:
+    x = c.shadowController
+else:
+    import leo.core.leoShadow as leoShadow
+    x = leoShadow.shadowController(c,trace=False,trace_writers=False)
 
 suite = unittest.makeSuite(unittest.TestCase)
 root = g.findNodeAnywhere(c,'@shadow-tests')
 assert root, 'Node not found: @shadow-tests'
-
-x = leoShadow.shadowController(c,trace=False,trace_writers=False)
 
 trace = False ; vrbose = False
 for p in root.children_iter():

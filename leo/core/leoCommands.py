@@ -92,7 +92,6 @@ class baseCommands:
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName
 
-
         # g.trace(c) # Do this after setting c.mFileName.
         c.initIvars()
         self.nodeHistory = nodeHistory(c)
@@ -120,9 +119,11 @@ class baseCommands:
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
+        import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
+        self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
@@ -1728,7 +1729,8 @@ class baseCommands:
     #@nonl
     #@-node:ekr.20070115135502:writeScriptFile
     #@-node:ekr.20031218072017.2140:c.executeScript & helpers
-    #@+node:ekr.20031218072017.2864:goToLineNumber & allies
+    #@+node:ekr.20080710082231.10:gotoLineNumber and helpers
+    #@+node:ekr.20031218072017.2864: goToLineNumber
     def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False):
 
         '''Place the cursor on the n'th line of a derived file or script.'''
@@ -1997,6 +1999,23 @@ class baseCommands:
         w.seeInsertPoint()
         #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
         #@nl
+    #@-node:ekr.20031218072017.2864: goToLineNumber
+    #@+node:ekr.20080708094444.65:applyLineNumberMappingIfAny (from plugin)
+    def applyLineNumberMappingIfAny(self, n):
+
+        c = self ; x = c.shadowController
+
+        if len(x.line_mapping) > n:
+            return x.line_mapping[n]
+        else:
+            return n
+
+        # if hasattr(self,'line_mapping') and self.line_mapping:
+            # return self.line_mapping[n]
+        # else:
+            # return n
+    #@nonl
+    #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny (from plugin)
     #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
     #@+at 
     #@nonl
@@ -2124,6 +2143,31 @@ class baseCommands:
         # g.trace("childIndex,offset",childIndex,offset,vnodeName)
         return vnodeName,childIndex,gnx,offset,delim
     #@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
+    #@+node:ekr.20080708094444.63:gotoLineNumberOpen (from plugin)
+    def gotoLineNumberOpen (self,filename):
+        """
+        Open a file for "goto linenumber" command and check if a shadow file exists.
+        Construct a line mapping. This ivar is empty i no shadow file exists.
+        Otherwise it contains a mapping shadow file number -> real file number.
+        """
+        try:
+            c = self ; x = c.shadowController
+            theDir, simplename = os.path.split(filename)
+            shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
+            if os.path.exists(shadow_filename):
+                lines = file(shadow_filename).readlines()
+                c.line_mapping = x.push_filter_mapping(
+                    lines, x.marker_from_extension(shadow_filename))
+            else:
+                c.line_mapping = []
+                lines = file(filename).readlines()
+            return lines 
+        except:
+            # Make sure failures to open a file generate clear messages.
+            g.es_exception()
+            raise
+    #@nonl
+    #@-node:ekr.20080708094444.63:gotoLineNumberOpen (from plugin)
     #@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
     def skipToMatchingNodeSentinel (self,lines,n,delim):
 
@@ -2152,24 +2196,7 @@ class baseCommands:
         # g.trace(n)
         return n
     #@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
-    #@-node:ekr.20031218072017.2864:goToLineNumber & allies
-    #@+node:bwmulder.20041231211219:gotoLineNumberOpen
-    def gotoLineNumberOpen(self, *args, **kw):
-        """
-        Hook for mod_shadow plugin.
-        """
-        theFile = open(*args, **kw)
-        lines = theFile.readlines()
-        theFile.close()
-        return lines
-    #@-node:bwmulder.20041231211219:gotoLineNumberOpen
-    #@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny
-    def applyLineNumberMappingIfAny(self, n):
-        """
-        Hook for mod_shadow plugin.
-        """
-        return n
-    #@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny
+    #@-node:ekr.20080710082231.10:gotoLineNumber and helpers
     #@+node:EKR.20040612232221:goToScriptLineNumber
     def goToScriptLineNumber (self,root,script,n):
 
