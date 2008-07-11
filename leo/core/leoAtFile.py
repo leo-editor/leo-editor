@@ -419,18 +419,42 @@ class atFile:
                 at.inputFile = None
     #@-node:ekr.20041005105605.19:openFileForReading (atFile)
     #@+node:bwmulder.20041231170726:openForRead (atFile)
-    def openForRead(self, *args, **kw):
-        """
-        Hook for the mod_shadow plugin.
-        """
-        return open(*args, **kw)
+    if 0:
+        def openForRead(self, *args, **kw):
+            return open(*args, **kw)
+
+    def openForRead (self, filename, rb):
+
+        '''Open a file for reading, handling shadow files.'''
+
+        c = self.c ; x = c.shadowController
+
+        try:
+            shadow_filename = x.shadowPathName(filename)
+            shadow_exists   = g.os_path_exists(shadow_filename)
+            open_file_name  = g.choose(shadow_exists,shadow_filename,filename)
+
+            if shadow_exists:   
+                if g.os_path_exists(filename) and os.path.getsize(filename) <= 2:
+                    # Update the corresponding private file from the private shadow file.
+                    if x.trace: x.message("copied private %s to public %s " % (shadow_filename,filename))
+                    x.copy_file_removing_sentinels(sourcefilename=shadow_filename,targetfilename=filename)
+                else:
+                    # Update the private shadow file from the public file.
+                    written = x.propagate_changes(old_private_file=shadow_filename,old_public_file=filename)
+                    if written: x.message("updated private %s from public %s" % (shadow_filename, filename))
+
+            return open(open_file_name,'rb')
+
+        except Exception:
+            x.error('openForRead: exception opening file: %s' % (open_file_name))
+            g.es_exception()
+            return None
     #@-node:bwmulder.20041231170726:openForRead (atFile)
     #@+node:bwmulder.20050101094804:openForWrite (atFile)
-    def openForWrite(self, *args, **kw):
-        """
-        Hook for the mod_shadow plugin
-        """
-        return open(*args, **kw)
+    if 1:
+        def openForWrite(self, *args, **kw):
+            return open(*args, **kw)
     #@-node:bwmulder.20050101094804:openForWrite (atFile)
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
