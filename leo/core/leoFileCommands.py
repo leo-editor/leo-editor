@@ -1748,7 +1748,7 @@ class baseFileCommands:
 
         self.put("</vnodes>\n")
     #@nonl
-    #@+node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+    #@+node:ekr.20031218072017.1863:putVnode
     def putVnode (self,p,isIgnore=False):
 
         """Write a <v> element corresponding to a vnode."""
@@ -1863,7 +1863,7 @@ class baseFileCommands:
             fc.put('</v>\n')
         else:
             fc.put('%s</v>\n' % v_head) # Call put only once.
-    #@-node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+    #@-node:ekr.20031218072017.1863:putVnode
     #@+node:ekr.20031218072017.2002:putTnodeList (4.0,4.2)
     def putTnodeList (self,v):
 

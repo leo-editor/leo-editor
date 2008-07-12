@@ -13101,7 +13101,7 @@ self.put(" width=") ; self.put_in_dquotes(str(width))
 self.put("/>") ; self.put_nl()
 #@-node:ekr.20031218072017.3040:<< put the position of the log window >>
 #@-node:ekr.20031218072017.3037:putGlobals
-#@+node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@+node:ekr.20031218072017.1863:putVnode
 def putVnode (self,p,isIgnore=False):
 
     """Write a <v> element corresponding to a vnode."""
@@ -13212,7 +13212,7 @@ if isOrphan and isThin:
     g.es("writing erroneous:",p.headString(),color="blue")
     p.clearOrphan()
 #@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@-node:ekr.20031218072017.1863:putVnode
 #@+node:ekr.20060919110638.36:getPositionAttributes
 def getPositionAttributes (self,attrs):
 
@@ -14047,7 +14047,7 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
 # The caller must enclose this code in beginUpdate/endUpdate.
 # Reads @thin, @file and @noref trees.
 
-def read(self,root,importFileName=None,thinFile=False,fromString=None):
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
     """Read any derived file."""
 

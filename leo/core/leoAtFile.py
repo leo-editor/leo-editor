@@ -391,8 +391,8 @@ class atFile:
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-    #@+node:ekr.20041005105605.19:openFileForReading (atFile)
-    def openFileForReading(self,fileName,fromString=False):
+    #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helper
+    def openFileForReading(self,fileName,fromString=False,atShadow=False):
 
         at = self
 
@@ -401,93 +401,48 @@ class atFile:
         else:
             fn = g.os_path_join(at.default_directory,fileName)
             fn = g.os_path_normpath(fn)
+            if atShadow:
+                # If the private file exists, we will read *that* instead of the public file.
+                fn = at.prepareToReadShadowFile(fn)
+
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                at.inputFile = self.openForRead(fn,'rb') #bwm
-                #@            << warn on read-only file >>
-                #@+node:ekr.20041005105605.20:<< warn on read-only file >>
-                # os.access() may not exist on all platforms.
-                try:
-                    read_only = not os.access(fn,os.W_OK)
-                except AttributeError:
-                    read_only = False 
-
-                if read_only:
-                    g.es("read only:",fn,color="red")
-                #@-node:ekr.20041005105605.20:<< warn on read-only file >>
-                #@nl
+                at.inputFile = open(fn,'rb')
+                at.warnOnReadOnlyFile(fn)
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
-    #@-node:ekr.20041005105605.19:openFileForReading (atFile)
-    #@+node:bwmulder.20041231170726:openForRead (atFile)
-    if 0:
-        def openForRead(self, *args, **kw):
-            return open(*args, **kw)
 
-    def openForRead (self, filename, rb='rb'):
+        return at.inputFile # for unit tests.
+    #@+node:bwmulder.20041231170726:openShadowFileForRead (atFile)
+    def prepareToReadShadowFile (self,filename):
 
-        '''Open a file for reading, handling shadow files.'''
+        '''Open a public file for which a private shadow file is known to exist.'''
 
-        c = self.c ; x = c.shadowController
+        at = self ; c = at.c ; x = c.shadowController ; fn = filename
 
-        try:
-            shadow_filename = x.shadowPathName(filename)
-            shadow_exists   = g.os_path_exists(shadow_filename)
-            open_file_name  = g.choose(shadow_exists,shadow_filename,filename)
+        shadow_fn       = x.shadowPathName(fn)
+        shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
-            if shadow_exists:   
-                if g.os_path_exists(filename) and os.path.getsize(filename) <= 2:
-                    # Update the corresponding private file from the private shadow file.
-                    if True or x.trace: x.message("copied private %s to public %s " % (shadow_filename,filename))
-                    x.copy_file_removing_sentinels(sourcefilename=shadow_filename,targetfilename=filename)
-                else:
-                    # Update the private shadow file from the public file.
-                    written = x.propagate_changes(old_private_file=shadow_filename,old_public_file=filename)
-                    if written: x.message("updated private %s from public %s" % (shadow_filename, filename))
+        if shadow_exists:
 
-            return open(open_file_name,rb)
+            if x.isSignificantPublicFile(fn):
+                # Update the private shadow file from the public file.
+                written = x.propagate_changes(fn,shadow_fn)
+                if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+            else:
+                # Create the private file from the private shadow file.
+                x.copy_file_removing_sentinels(shadow_fn,fn)
+                x.message("created public %s from private %s " % (fn, shadow_fn))
 
-        except Exception:
-            if not g.app.unitTesting:
-                g.es_print('openForRead: exception opening file: %s' % (open_file_name),color='red')
-                g.es_exception()
-            return None
-    #@-node:bwmulder.20041231170726:openForRead (atFile)
-    #@+node:bwmulder.20050101094804:openForWrite (atFile)
-    if 0:
-        def openForWrite(self, *args, **kw):
-            return open(*args, **kw)
-
-    def openForWrite (self, filename, wb):
-
-        '''Open a file for writes, handling shadow files.'''
-
-        c = self.c ; x = c.shadowController
-
-        try:
-            shadow_filename = x.shadowPathName(filename)
-            self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-            open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
-            self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
-            g.trace('file  ',filename) ; g.trace('shadow',shadow_filename)
-
-            if (True or x.trace) and self.writing_to_shadow_directory:
-                x.message("Using shadow file in folder %s" % x.shadowDirName(filename))
-
-            return open(open_file_name,'wb')
-
-        except IOError:
-            if not g.app.unitTesting:
-                g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
-                g.es_exception()
-            return None
-    #@-node:bwmulder.20050101094804:openForWrite (atFile)
+        return g.choose(shadow_exists,shadow_fn,fn)
+    #@-node:bwmulder.20041231170726:openShadowFileForRead (atFile)
+    #@-node:ekr.20041005105605.19:openFileForReading (atFile) and helper
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
     # Reads @thin, @file and @noref trees.
 
-    def read(self,root,importFileName=None,thinFile=False,fromString=None):
+    def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
         """Read any derived file."""
 
@@ -685,6 +640,43 @@ class atFile:
 
         return isThin
     #@-node:ekr.20050103163224:scanHeaderForThin
+    #@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+    def readOneAtShadowNode (self,fileName,p):
+
+        at = self ; c = at.c ; x = c.shadowController
+
+        at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+        fileName = g.os_path_join(at.default_directory,fileName)
+
+        if x.isSignificantPublicFile(fileName):
+            at.read(p,atShadow=True) # at.openForRead will create or update the shadow file.
+        else:
+            if not g.unitTesting: g.es("reading:",p.headString())
+            at.importAtShadowNode(fileName,p)
+    #@+node:ekr.20080712080505.1:importAtShadowNode
+    def importAtShadowNode (self,fileName,p):
+
+        at = self ; c = at.c  ; ic = c.importCommands
+        oldChanged = c.isChanged()
+
+        # Delete all the child nodes.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
+        # Import the outline, exactly as @auto does.
+        ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+        if ic.errors:
+            g.es_print('errors inhibited read @shadow',fileName,color='red')
+
+        if ic.errors or not g.os_path_exists(fileName):
+            p.clearDirty()
+            c.setChanged(oldChanged)
+
+        # else: g.doHook('after-shadow', p = p)
+    #@-node:ekr.20080712080505.1:importAtShadowNode
+    #@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
     #@-node:ekr.20041005105605.18:Reading (top level)
     #@+node:ekr.20041005105605.71:Reading (4.x)
     #@+node:ekr.20041005105605.72:createThinChild4
@@ -2092,7 +2084,7 @@ class atFile:
                 root.setDirty()
 
         return at.outputFile is not None
-    #@+node:ekr.20041005105605.143:openFileForWritingHelper
+    #@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
     def openFileForWritingHelper (self,fileName):
 
         '''Open the file and return True if all went well.'''
@@ -2135,7 +2127,32 @@ class atFile:
             return False
 
         return True
-    #@-node:ekr.20041005105605.143:openFileForWritingHelper
+    #@+node:bwmulder.20050101094804:openForWrite (atFile)
+    def openForWrite (self, filename, wb='wb'):
+
+        '''Open a file for writes, handling shadow files.'''
+
+        c = self.c ; x = c.shadowController ; trace = True or x.trace
+
+        try:
+            shadow_filename = x.shadowPathName(filename)
+            self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+            open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+            self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+            if self.writing_to_shadow_directory:
+                if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+                x.message('writing %s' % shadow_filename)
+
+            return open(open_file_name,wb)
+
+        except IOError:
+            if not g.app.unitTesting:
+                g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+                g.es_exception()
+            return None
+    #@-node:bwmulder.20050101094804:openForWrite (atFile)
+    #@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
     #@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
     #@+node:ekr.20041005105605.144:write & helper
     # This is the entry point to the write code.  root should be an @file vnode.
@@ -2308,6 +2325,9 @@ class atFile:
                     elif p.isAtNoSentFileNode():
                         at.write(p,nosentinels=True,toString=toString)
                         writtenFiles.append(p.v.t) # No need for autosave
+                    elif p.isAtShadowFileNode():
+                        at.writeOneAtShadowNode(p,toString=toString,force=False)
+                        writtenFiles.append(p.v.t)
                     elif p.isAtThinFileNode():
                         at.write(p,thinFile=True,toString=toString)
                         writtenFiles.append(p.v.t) # No need for autosave.
@@ -2338,7 +2358,7 @@ class atFile:
         #@nl
         return mustAutoSave,atOk
     #@-node:ekr.20041005105605.147:writeAll (atFile)
-    #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtFileNodes (atFile) & helpers
+    #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
     def writeAtAutoNodes (self,event=None):
 
         '''Write all @auto nodes in the selected outline.'''
@@ -2460,7 +2480,130 @@ class atFile:
             return True
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
-    #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtFileNodes (atFile) & helpers
+    #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
+    #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
+    def writeAtShadowNodes (self,event=None):
+
+        '''Write all @shadow nodes in the selected outline.'''
+
+        at = self
+        at.writeAtShadowNodesHelper(writeDirtyOnly=False)
+
+    def writeDirtyAtShadowNodes (self,event=None):
+
+        '''Write all dirty @shadow nodes in the selected outline.'''
+
+        at = self
+        at.writeAtShadowNodesHelper(writeDirtyOnly=True)
+    #@nonl
+    #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
+    def writeAtShadowShadowHelper(self,toString=False,writeDirtyOnly=True):
+
+        """Write @shadow nodes in the selected outline"""
+
+        at = self ; c = at.c
+        p = c.currentPosition() ; after = p.nodeAfterTree()
+        found = False
+
+        while p and p != after:
+            if p.isAtShadowNode() and not p.isAtIgnoreNode() and (p.isDirty() or not writeDirtyOnly):
+                ok = at.writeOneAtShadowNode(p,toString=toString,force=True)
+                if ok:
+                    found = True
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+
+        if found:
+            g.es("finished")
+        elif writeDirtyOnly:
+            g.es("no dirty @shadow nodes in the selected tree")
+        else:
+            g.es("no @shadow nodes in the selected tree")
+    #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
+    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    def writeOneAtShadowNode(self,p,toString,force):
+
+        '''Write p, an @shadow node.
+
+        File indices *must* have already been assigned.'''
+
+        at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+        fileName = p.atShadowFileNodeName()
+        if not fileName: return False
+
+        at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        fileName = g.os_path_join(at.default_directory,fileName)
+        exists = g.os_path_exists(fileName)
+
+        if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
+            return False
+
+        # This code is similar to code in at.write.
+        c.endEditing() # Capture the current headline.
+        at.targetFileName = g.choose(toString,"<string-file>",fileName)
+        at.initWriteIvars(root,at.targetFileName,
+            nosentinels=True,thinFile=False,scriptWrite=False,
+            toString=toString,write_strips_blank_lines=False)
+
+        ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+        if ok:
+            at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=False)
+            at.closeWriteFile() # Sets stringOutput if toString is True.
+            if at.errors == 0:
+                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            else:
+                g.es("not written:",at.outputFileName)
+                root.setDirty() # New in Leo 4.4.8.
+
+        elif not toString:
+            root.setDirty() # Make _sure_ we try to rewrite this file.
+            g.es("not written:",at.outputFileName)
+
+        return ok
+    #@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+    #@+at 
+    #@nonl
+    # Much thought went into this decision tree:
+    # 
+    # - We do not want decisions to depend on past history.  That's too 
+    # confusing.
+    # - We must ensure that the file will be written if the user does 
+    # significant work.
+    # - We must ensure that the user can create an @shadow x node at any time
+    #   without risk of of replacing x with empty or insignificant 
+    # information.
+    # - We want the user to be able to create an @shadow node which will be 
+    # populated the next time the .leo file is opened.
+    # - We don't want minor import imperfections to be written to the @shadow 
+    # file.
+    # - The explicit commands that read and write @shadow trees must always be 
+    # honored.
+    #@-at
+    #@@c
+
+    def shouldWriteAtShadowNode (self,p,exists,force):
+
+        '''Return True if we should write the @shadow node at p.'''
+
+        if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+            return True
+        elif not exists: # We can write a non-existent file without danger.
+            return True
+        elif not p.isDirty(): # There is nothing new to write.
+            return False
+        elif not self.isSignificantTree(p): # There is noting of value to write.
+            g.es_print(p.headString(),'not written:',color='red')
+            g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+            return False
+        else: # The @shadow tree is dirty and contains significant info.
+            return True
+    #@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helper
+    #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
 
@@ -4456,6 +4599,18 @@ class atFile:
 
         return sentinelNameDict.get(kind,"<unknown sentinel!>")
     #@-node:ekr.20041005105605.243:sentinelName
+    #@+node:ekr.20041005105605.20:warnOnReadOnlyFile
+    def warnOnReadOnlyFile (self,fn):
+
+        # os.access() may not exist on all platforms.
+        try:
+            read_only = not os.access(fn,os.W_OK)
+        except AttributeError:
+            read_only = False 
+
+        if read_only:
+            g.es("read only:",fn,color="red")
+    #@-node:ekr.20041005105605.20:warnOnReadOnlyFile
     #@-node:ekr.20041005105605.219:at.Uilites
     #@-others
 #@-node:ekr.20041005105605.1:@thin leoAtFile.py

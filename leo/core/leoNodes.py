@@ -369,7 +369,8 @@ class vnode (baseVnode):
             "@thin",   "@file-thin",   "@thinfile",
             "@asis",   "@file-asis",   "@silentfile",
             "@noref",  "@file-noref",  "@rawfile",
-            "@nosent", "@file-nosent", "@nosentinelsfile")
+            "@nosent", "@file-nosent", "@nosentinelsfile",
+            "@shadow",)
 
         return self.findAtFileName(names)
     #@-node:ekr.20031218072017.3350:anyAtFileNodeName
@@ -394,6 +395,10 @@ class vnode (baseVnode):
 
     def atRawFileNodeName (self):
         names = ("@noref", "@file-noref", "@rawfile")
+        return self.findAtFileName(names)
+
+    def atShadowFileNodeName (self):
+        names = ("@shadow",)
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
@@ -443,6 +448,9 @@ class vnode (baseVnode):
 
     def isAtSilentFileNode (self): # @file-asis
         return g.choose(self.atSilentFileNodeName(),True,False)
+
+    def isAtShadowFileNode (self):
+        return g.choose(self.atShadowFileNodeName(),True,False)
 
     def isAtThinFileNode (self):
         return g.choose(self.atThinFileNodeName(),True,False)
@@ -1148,6 +1156,7 @@ class basePosition (object):
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
     def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
+    def atShadowFileNodeName      (self): return self.v.atShadowFileNodeName()
     def atSilentFileNodeName      (self): return self.v.atSilentFileNodeName()
     def atThinFileNodeName        (self): return self.v.atThinFileNodeName()
 
@@ -1165,6 +1174,7 @@ class basePosition (object):
     def isAtOthersNode          (self): return self.v.isAtOthersNode()
     def isAtRawFileNode         (self): return self.v.isAtRawFileNode()
     def isAtSilentFileNode      (self): return self.v.isAtSilentFileNode()
+    def isAtShadowFileNode      (self): return self.v.isAtShadowFileNode()
     def isAtThinFileNode        (self): return self.v.isAtThinFileNode()
 
     # New names, less confusing:

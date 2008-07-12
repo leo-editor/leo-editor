@@ -87,7 +87,7 @@ class shadowController:
    #@-node:ekr.20080708094444.79: ctor (shadowConroller)
    #@+node:ekr.20080708192807.1:Propagation...
    #@+node:ekr.20080708094444.36:propagate_changes
-   def propagate_changes(self, old_private_file, old_public_file):
+   def propagate_changes(self, old_public, old_private_file):
 
        '''Propagate the changes from the public file (without_sentinels)
        to the private file (with_sentinels)'''
@@ -391,37 +391,35 @@ class shadowController:
    #@+node:ekr.20080710082231.17:makeShadowFile & helper
    def makeShadowFile (self,filename):
 
-       x = self ; trace = True
+       x = self ; shadow_name = x.shadowPathName(filename)
 
        theDir = x.makeShadowDirectory(filename)
        if not theDir:
-           if trace: x.error('can not create shadow directory for %s' % (filename))
+           x.error('can not create shadow directory: ' % (x.shadowDirName(filename)))
            return
 
-       name = g.os_path_basename(filename)
-       path = g.os_path_join(theDir,x.shadow_prefix + name)
-       if os.path.exists(path):
-           if trace: g.trace('shadow file already exists: %s' % (path))
+       if os.path.exists(shadow_name):
+           g.trace('shadow file exists: %s' % (shadow_name))
            return
 
-       fullname = g.os_path_join(g.app.loadDir,filename)
-       g.es("copying %s to %s" % (fullname, path),color='orange')
+       fullname = x.pathName(filename)
+       x.message("creating shadow file: %s" % (shadow_name))
 
-       if 0: # not yet!
-           shutil.copy2(fullname, path)
-           os.unlink(fullname)
-           f = file(fullname, "w")
-           f.close()
-           x.copy_file_removing_sentinels(sourcefilename=path,targetfilename=fullname)
-           g.es("file %s is now shadowed" % (fullname),color='orange')
+       # Copy the original file to the shadow file.
+       shutil.copy2(fullname, shadow_name)
+
+       # Remove the sentinels from the original file.
+       x.unlink(fullname)
+       x.copy_file_removing_sentinels(shadow_name,fullname)
    #@+node:ekr.20080710082231.19:makeShadowDirectory
    def makeShadowDirectory (self,filename):
 
-       fullname = g.os_path_join(g.app.loadDir,filename)
-       theDir   = g.os_path_dirname(fullname)
-       path     = g.os_path_join(theDir,x.shadow_subdir)
+       x = self
+
+       path = x.shadowDirName(filename)
 
        if not g.os_path_exists(path):
+
            try:
                os.mkdir(path)
            except Exception:
@@ -500,11 +498,11 @@ class shadowController:
    #@+node:ekr.20080708094444.27:copy_file_removing_sentinels
    # Called by updated version of atFile.replaceTargetFileIfDifferent
 
-   def copy_file_removing_sentinels (self,sourcefilename,targetfilename):
+   def copy_file_removing_sentinels (self,source,target):
 
        '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-       x = self
+       x = self ; sourcefilename = source ; targetfilename = target
 
        lines = file(sourcefilename).readlines()
 
@@ -566,6 +564,16 @@ class shadowController:
 
       return line.lstrip().startswith(marker)
    #@-node:ekr.20080708094444.11:is_sentinel
+   #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+   def isSignificantPublicFile (self,filename):
+
+       '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+       return (
+           g.os_path_exists(filename) and
+           g.os_path_isfile(filename) and
+           g.os_path_getsize(fn) > 10)
+   #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
    #@+node:ekr.20080708094444.30:push_filter_mapping
    def push_filter_mapping (self,filelines, marker):
       """

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,2,7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -214,6 +214,7 @@
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
 <v t="ekr.20080711100148.1"><vh>@@file shadowWriteTest.py</vh></v>
+<v t="ekr.20080711120608.1" tnodeList="ekr.20080711120608.1"><vh>@shadow shadow-test.py</vh></v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
@@ -287,7 +288,8 @@
 <v t="ekr.20080711072651.3"><vh>@test x.shadowDirName</vh></v>
 <v t="ekr.20080711082216.1"><vh>@test x.rename</vh></v>
 <v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
-<v t="ekr.20080711094406.1"><vh>@test at.openForRead: not a shadow file</vh></v>
+<v t="ekr.20080711094406.1"><vh>@test at.prepareToReadShadowFile: not a shadow file</vh></v>
+<v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1941,16 +1943,32 @@ assert x.last_error.startswith('can not rename')
 <t tx="ekr.20080711094406.1">at = c.atFileCommands
 x = c.shadowController
 
-filename = x.pathName('xyzzy')
-assert not g.os_path_exists(filename)
-assert None == at.openForRead(filename)
+fn = x.pathName('xyzzy')
+assert not g.os_path_exists(fn)
+assert fn == at.prepareToReadShadowFile(fn)
 
-filename = c.fileName()
-assert g.os_path_exists(filename)
-theFile = at.openForRead(filename)
+fn = c.fileName()
+assert g.os_path_exists(fn)
+theFile = at.openFileForReading(fn)
 # g.pr(repr(theFile))
 assert theFile
 theFile.close()</t>
 <t tx="ekr.20080711100148.1"># shadowWriteTest.py</t>
+<t tx="ekr.20080711102819.1">at = c.atFileCommands
+x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+
+try:
+    theFile = at.openForWrite(filename)
+    # g.pr(repr(theFile))
+    if theFile: theFile.close()
+    
+finally:
+    if g.os_path_exists(filename):
+        x.unlink(filename)
+        assert not g.os_path_exists(filename)</t>
+<t tx="ekr.20080711120608.1">ab</t>
 </tnodes>
 </leo_file>
