@@ -654,6 +654,7 @@ class atFile:
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
             at.importAtShadowNode(fileName,p)
+            ## To do: call makeShadowFile.
     #@+node:ekr.20080712080505.1:importAtShadowNode
     def importAtShadowNode (self,fileName,p):
 
