@@ -392,17 +392,16 @@ class atFile:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
     #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helper
-    def openFileForReading(self,fileName,fromString=False,atShadow=False):
+    def openFileForReading(self,fn,fromString=False,atShadow=False):
 
         at = self
 
         if fromString:
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = g.os_path_join(at.default_directory,fileName)
+            fn = g.os_path_join(at.default_directory,fn)
             fn = g.os_path_normpath(fn)
             if atShadow:
-                # If the private file exists, we will read *that* instead of the public file.
                 fn = at.prepareToReadShadowFile(fn)
 
             try:
@@ -415,11 +414,14 @@ class atFile:
 
         return at.inputFile # for unit tests.
     #@+node:bwmulder.20041231170726:openShadowFileForRead (atFile)
-    def prepareToReadShadowFile (self,filename):
+    def prepareToReadShadowFile (self,fn):
 
-        '''Open a public file for which a private shadow file is known to exist.'''
+        '''Open a public file for which a private shadow file is known to exist.
 
-        at = self ; c = at.c ; x = c.shadowController ; fn = filename
+        Important: this code will not be called if the public file does not exist.
+        instead, the private file will be created after the public file is imported.'''
+
+        at = self ; c = at.c ; x = c.shadowController
 
         shadow_fn       = x.shadowPathName(fn)
         shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
@@ -641,22 +643,24 @@ class atFile:
         return isThin
     #@-node:ekr.20050103163224:scanHeaderForThin
     #@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-    def readOneAtShadowNode (self,fileName,p):
+    def readOneAtShadowNode (self,fn,p):
 
         at = self ; c = at.c ; x = c.shadowController
 
         at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
 
-        fileName = g.os_path_join(at.default_directory,fileName)
+        fn = g.os_path_join(at.default_directory,fn)
 
-        if x.isSignificantPublicFile(fileName):
-            at.read(p,atShadow=True) # at.openForRead will create or update the shadow file.
+        if x.isSignificantPublicFile(fn):
+            at.read(p,atShadow=True)
+                # This will create the public file or update the private file.
         else:
             if not g.unitTesting: g.es("reading:",p.headString())
-            at.importAtShadowNode(fileName,p)
-            ## To do: call makeShadowFile.
+            ok = at.importAtShadowNode(fn,p)
+            if ok:
+                x.makeShadowFile(fn)
     #@+node:ekr.20080712080505.1:importAtShadowNode
-    def importAtShadowNode (self,fileName,p):
+    def importAtShadowNode (self,fn,p):
 
         at = self ; c = at.c  ; ic = c.importCommands
         oldChanged = c.isChanged()
@@ -666,16 +670,18 @@ class atFile:
             p.firstChild().doDelete()
 
         # Import the outline, exactly as @auto does.
-        ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+        ic.createOutline(fn,parent=p.copy(),atAuto=True)
 
         if ic.errors:
-            g.es_print('errors inhibited read @shadow',fileName,color='red')
+            g.es_print('errors inhibited read @shadow',fn,color='red')
 
-        if ic.errors or not g.os_path_exists(fileName):
+        if ic.errors or not g.os_path_exists(fn):
             p.clearDirty()
             c.setChanged(oldChanged)
 
         # else: g.doHook('after-shadow', p = p)
+
+        return ic.errors == 0
     #@-node:ekr.20080712080505.1:importAtShadowNode
     #@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
     #@-node:ekr.20041005105605.18:Reading (top level)

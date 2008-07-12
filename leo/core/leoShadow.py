@@ -61,7 +61,7 @@ class shadowController:
    '''A class to manage @shadow files'''
 
    #@   @+others
-   #@+node:ekr.20080708094444.79: ctor (shadowConroller)
+   #@+node:ekr.20080708094444.79: x.ctor
    def __init__ (self,c,trace=False,trace_writers=False):
 
        self.c = c
@@ -84,7 +84,7 @@ class shadowController:
        # Support for goto-line-number.
        self.line_mapping = []
 
-   #@-node:ekr.20080708094444.79: ctor (shadowConroller)
+   #@-node:ekr.20080708094444.79: x.ctor
    #@+node:ekr.20080708192807.1:Propagation...
    #@+node:ekr.20080708094444.36:propagate_changes
    def propagate_changes(self, old_public, old_private_file):
@@ -388,114 +388,8 @@ class shadowController:
       return results, mapping 
    #@-node:ekr.20080708094444.34:strip_sentinels_with_map
    #@-node:ekr.20080708192807.1:Propagation...
-   #@+node:ekr.20080710082231.17:makeShadowFile & helper
-   def makeShadowFile (self,filename):
-
-       x = self ; shadow_name = x.shadowPathName(filename)
-
-       theDir = x.makeShadowDirectory(filename)
-       if not theDir:
-           x.error('can not create shadow directory: ' % (x.shadowDirName(filename)))
-           return
-
-       if os.path.exists(shadow_name):
-           g.trace('shadow file exists: %s' % (shadow_name))
-           return
-
-       fullname = x.pathName(filename)
-       x.message("creating shadow file: %s" % (shadow_name))
-
-       # Copy the original file to the shadow file.
-       shutil.copy2(fullname, shadow_name)
-
-       # Remove the sentinels from the original file.
-       x.unlink(fullname)
-       x.copy_file_removing_sentinels(shadow_name,fullname)
-   #@+node:ekr.20080710082231.19:makeShadowDirectory
-   def makeShadowDirectory (self,filename):
-
-       x = self
-
-       path = x.shadowDirName(filename)
-
-       if not g.os_path_exists(path):
-
-           try:
-               os.mkdir(path)
-           except Exception:
-               g.es_exception()
-               return False
-
-       return g.os_path_exists(path) and g.os_path_isdir(path)
-   #@-node:ekr.20080710082231.19:makeShadowDirectory
-   #@-node:ekr.20080710082231.17:makeShadowFile & helper
-   #@+node:ekr.20080708094444.10:write_if_changed & helpers
-   def write_if_changed (self,lines, sourcefilename, targetfilename):
-
-       '''Write lines to targetfilename if targetfilename's contents are not lines.
-
-       Set targetfilename's modification date to that of sourcefilename.
-
-       Produces a message, if wanted, about the overwrite, and optionally
-       keeps the overwritten file with a backup name.'''
-
-       if not os.path.exists(targetfilename):
-           copy = True 
-       else:
-           copy = lines != file(targetfilename).readlines()
-
-       if copy:
-           if print_copy_operations:
-               print "Copying ", sourcefilename, " to ", targetfilename, " without sentinals"
-           if self.do_backups and os.path.exists(targetfilename):
-               self.make_backup_file(backupname,targetfilename)
-           outfile = open(targetfilename, "w")
-           for line in lines:
-               outfile.write(line)
-           outfile.close()
-           self.copy_modification_time(sourcefilename, targetfilename)
-
-       return copy 
-   #@+node:ekr.20080708094444.8:copy_modification_time
-   def copy_modification_time(self,sourcefilename,targetfilename):
-
-       """
-       Set the target file's modification time to
-       that of the source file.
-       """
-
-       st = os.stat(sourcefilename)
-
-       # To avoid pychecker/pylint complaints.
-       utime = getattr(os,'utime')
-       mtime = getattr(os,'mtime')
-
-       if utime:
-           utime(targetfilename, (st.st_atime, st.st_mtime))
-       elif mtime:
-           mtime(targetfilename, st.st_mtime)
-       else:
-           self.error("Neither os.utime nor os.mtime exists: can't set modification time.")
-   #@-node:ekr.20080708094444.8:copy_modification_time
-   #@+node:ekr.20080708094444.84:make_backup_file
-   def make_backup_file (self,backupname,targetfilename):
-
-       # Keep the old file around while we are debugging.
-       count = 0
-       backupname = "%s.~%s~"%(targetfilename,count)
-
-       while os.path.exists(backupname):
-          count+=1
-          backupname = "%s.~%s~"%(targetfilename,count)
-
-       os.rename(targetfilename,backupname)
-
-       if self.print_copy_operations:
-          print "backup file in ", backupname 
-   #@-node:ekr.20080708094444.84:make_backup_file
-   #@-node:ekr.20080708094444.10:write_if_changed & helpers
    #@+node:ekr.20080708094444.89:Utils...
-   #@+node:ekr.20080708094444.27:copy_file_removing_sentinels
+   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
    # Called by updated version of atFile.replaceTargetFileIfDifferent
 
    def copy_file_removing_sentinels (self,source,target):
@@ -511,36 +405,8 @@ class shadowController:
        regular_lines, junk = x.separate_sentinels(lines,marker)
 
        x.write_if_changed(regular_lines, sourcefilename, targetfilename)
-   #@-node:ekr.20080708094444.27:copy_file_removing_sentinels
-   #@+node:ekr.20080708094444.9:marker_from_extension
-   def marker_from_extension (self,filename):
-
-       '''Return the sentinel delimiter comment to be used for filename.'''
-
-       delims = g.comment_delims_from_extension(filename)
-       for i in (0,1):
-           if delims[i] is not None:
-               return delims[i]+'@'
-
-       # Try some other choices.
-       root, ext = os.path.splitext(filename)
-
-       if ext=='.tmp':
-           root, ext = os.path.splitext(root)
-
-       if ext in('.h', '.c'):
-           marker = "//@"
-       elif ext in(".py", ".cfg", ".ksh", ".txt"):
-           marker = '#@'
-       elif ext in (".bat",):
-           marker = "REM@"
-       else:
-           self.error("extension %s not known" % ext)
-           marker = '#'
-
-       return marker
-   #@-node:ekr.20080708094444.9:marker_from_extension
-   #@+node:ekr.20080708094444.85:error & message
+   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   #@+node:ekr.20080708094444.85:x.error & message
    def error (self,s,silent=False):
 
        x = self
@@ -556,63 +422,7 @@ class shadowController:
 
        g.es_print(s,color='orange')
    #@nonl
-   #@-node:ekr.20080708094444.85:error & message
-   #@+node:ekr.20080708094444.11:is_sentinel
-   def is_sentinel (self, line, marker):
-
-      '''Return true if the line is a sentinel.'''
-
-      return line.lstrip().startswith(marker)
-   #@-node:ekr.20080708094444.11:is_sentinel
-   #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
-   def isSignificantPublicFile (self,filename):
-
-       '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
-
-       return (
-           g.os_path_exists(filename) and
-           g.os_path_isfile(filename) and
-           g.os_path_getsize(fn) > 10)
-   #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
-   #@+node:ekr.20080708094444.30:push_filter_mapping
-   def push_filter_mapping (self,filelines, marker):
-      """
-      Given the lines of a file, filter out all
-      Leo sentinels, and return a mapping:
-
-         stripped file -> original file
-
-      Filtering should be the same as
-      separate_sentinels
-      """
-
-      mapping =[None]
-
-      for i, line in enumerate(filelines):
-         if not self.is_sentinel(line,marker):
-            mapping.append(i+1)
-
-      return mapping 
-   #@-node:ekr.20080708094444.30:push_filter_mapping
-   #@+node:ekr.20080708094444.29:separate_sentinels
-   def separate_sentinels (self, lines, marker):
-
-       '''
-       Separates regular lines from sentinel lines.
-
-       Returns (regular_lines, sentinel_lines)
-       '''
-
-       x = self ; regular_lines = [] ; sentinel_lines = []
-
-       for line in lines:
-         if x.is_sentinel(line,marker):
-            sentinel_lines.append(line)
-         else:
-            regular_lines.append(line)
-
-       return regular_lines, sentinel_lines 
-   #@-node:ekr.20080708094444.29:separate_sentinels
+   #@-node:ekr.20080708094444.85:x.error & message
    #@+node:ekr.20080711063656.1:x.file utils
    #@+node:ekr.20080711063656.7:baseDirName
    def baseDirName (self):
@@ -689,6 +499,193 @@ class shadowController:
        return ok
    #@-node:ekr.20080711063656.3:unlink
    #@-node:ekr.20080711063656.1:x.file utils
+   #@+node:ekr.20080708094444.11:x.is_sentinel
+   def is_sentinel (self, line, marker):
+
+      '''Return true if the line is a sentinel.'''
+
+      return line.lstrip().startswith(marker)
+   #@-node:ekr.20080708094444.11:x.is_sentinel
+   #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+   def isSignificantPublicFile (self,filename):
+
+       '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+       return (
+           g.os_path_exists(filename) and
+           g.os_path_isfile(filename) and
+           g.os_path_getsize(fn) > 10)
+   #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
+   #@+node:ekr.20080710082231.19:x.makeShadowDirectory
+   def makeShadowDirectory (self,fn):
+
+       x = self ; path = x.shadowDirName(fn)
+
+       if not g.os_path_exists(path):
+
+           try:
+               os.mkdir(path)
+           except Exception:
+               g.es_exception()
+               return False
+
+       return g.os_path_exists(path) and g.os_path_isdir(path)
+   #@-node:ekr.20080710082231.19:x.makeShadowDirectory
+   #@+node:ekr.20080710082231.17:x.makeShadowFile
+   def makeShadowFile (self,fn):
+
+       x = self ; shadow_fn = x.shadowPathName(fn)
+
+       theDir = x.makeShadowDirectory(fn)
+       if not theDir:
+           x.error('can not create shadow directory: ' % (x.shadowDirName(fn)))
+           return
+
+       if os.path.exists(shadow_fn):
+           g.trace('replacing existing shadow file: %s' % (shadow_fn))
+
+       full_fn = x.pathName(fn)
+       x.message("creating shadow file: %s" % (shadow_fn))
+
+       # Copy the original file to the shadow file.
+       shutil.copy2(full_fn, shadow_fn)
+
+       # Remove the sentinels from the original file.
+       x.unlink(full_fn)
+       x.copy_file_removing_sentinels(shadow_fn,full_fn)
+   #@-node:ekr.20080710082231.17:x.makeShadowFile
+   #@+node:ekr.20080708094444.9:x.marker_from_extension
+   def marker_from_extension (self,filename):
+
+       '''Return the sentinel delimiter comment to be used for filename.'''
+
+       delims = g.comment_delims_from_extension(filename)
+       for i in (0,1):
+           if delims[i] is not None:
+               return delims[i]+'@'
+
+       # Try some other choices.
+       root, ext = os.path.splitext(filename)
+
+       if ext=='.tmp':
+           root, ext = os.path.splitext(root)
+
+       if ext in('.h', '.c'):
+           marker = "//@"
+       elif ext in(".py", ".cfg", ".ksh", ".txt"):
+           marker = '#@'
+       elif ext in (".bat",):
+           marker = "REM@"
+       else:
+           self.error("extension %s not known" % ext)
+           marker = '#'
+
+       return marker
+   #@-node:ekr.20080708094444.9:x.marker_from_extension
+   #@+node:ekr.20080708094444.30:x.push_filter_mapping
+   def push_filter_mapping (self,filelines, marker):
+      """
+      Given the lines of a file, filter out all
+      Leo sentinels, and return a mapping:
+
+         stripped file -> original file
+
+      Filtering should be the same as
+      separate_sentinels
+      """
+
+      mapping =[None]
+
+      for i, line in enumerate(filelines):
+         if not self.is_sentinel(line,marker):
+            mapping.append(i+1)
+
+      return mapping 
+   #@-node:ekr.20080708094444.30:x.push_filter_mapping
+   #@+node:ekr.20080708094444.29:x.separate_sentinels
+   def separate_sentinels (self, lines, marker):
+
+       '''
+       Separates regular lines from sentinel lines.
+
+       Returns (regular_lines, sentinel_lines)
+       '''
+
+       x = self ; regular_lines = [] ; sentinel_lines = []
+
+       for line in lines:
+         if x.is_sentinel(line,marker):
+            sentinel_lines.append(line)
+         else:
+            regular_lines.append(line)
+
+       return regular_lines, sentinel_lines 
+   #@-node:ekr.20080708094444.29:x.separate_sentinels
+   #@+node:ekr.20080708094444.10:x.write_if_changed & helpers
+   def write_if_changed (self,lines, sourcefilename, targetfilename):
+
+       '''Write lines to targetfilename if targetfilename's contents are not lines.
+
+       Set targetfilename's modification date to that of sourcefilename.
+
+       Produces a message, if wanted, about the overwrite, and optionally
+       keeps the overwritten file with a backup name.'''
+
+       if not os.path.exists(targetfilename):
+           copy = True 
+       else:
+           copy = lines != file(targetfilename).readlines()
+
+       if copy:
+           if print_copy_operations:
+               print "Copying ", sourcefilename, " to ", targetfilename, " without sentinals"
+           if self.do_backups and os.path.exists(targetfilename):
+               self.make_backup_file(backupname,targetfilename)
+           outfile = open(targetfilename, "w")
+           for line in lines:
+               outfile.write(line)
+           outfile.close()
+           self.copy_modification_time(sourcefilename, targetfilename)
+
+       return copy 
+   #@+node:ekr.20080708094444.8:copy_modification_time
+   def copy_modification_time(self,sourcefilename,targetfilename):
+
+       """
+       Set the target file's modification time to
+       that of the source file.
+       """
+
+       st = os.stat(sourcefilename)
+
+       # To avoid pychecker/pylint complaints.
+       utime = getattr(os,'utime')
+       mtime = getattr(os,'mtime')
+
+       if utime:
+           utime(targetfilename, (st.st_atime, st.st_mtime))
+       elif mtime:
+           mtime(targetfilename, st.st_mtime)
+       else:
+           self.error("Neither os.utime nor os.mtime exists: can't set modification time.")
+   #@-node:ekr.20080708094444.8:copy_modification_time
+   #@+node:ekr.20080708094444.84:make_backup_file
+   def make_backup_file (self,backupname,targetfilename):
+
+       # Keep the old file around while we are debugging.
+       count = 0
+       backupname = "%s.~%s~"%(targetfilename,count)
+
+       while os.path.exists(backupname):
+          count+=1
+          backupname = "%s.~%s~"%(targetfilename,count)
+
+       os.rename(targetfilename,backupname)
+
+       if self.print_copy_operations:
+          print "backup file in ", backupname 
+   #@-node:ekr.20080708094444.84:make_backup_file
+   #@-node:ekr.20080708094444.10:x.write_if_changed & helpers
    #@-node:ekr.20080708094444.89:Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):
