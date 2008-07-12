@@ -1941,20 +1941,6 @@ class atFile:
     #@+node:ekr.20041005105605.133:Writing (top level)
     #@+node:ekr.20041005105605.134:Don't override in plugins
     # Plugins probably should not need to override these methods.
-    #@+node:ekr.20041005105605.135:closeWriteFile
-    # 4.0: Don't use newline-pending logic.
-
-    def closeWriteFile (self):
-
-        at = self
-
-        if at.outputFile:
-            at.outputFile.flush()
-            if self.toString:
-                self.stringOutput = self.outputFile.get()
-            at.outputFile.close()
-            at.outputFile = None
-    #@-node:ekr.20041005105605.135:closeWriteFile
     #@+node:ekr.20041005105605.136:norefWrite
     def norefWrite(self,root,toString=False):
 
@@ -2539,38 +2525,50 @@ class atFile:
 
         at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
 
-        fileName = p.atShadowFileNodeName()
-        if not fileName: return False
+        fn = p.atShadowFileNodeName()
+        if not fn:
+            g.trace('can not happen: not an @shadow node',p.headString())
+            return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fileName = g.os_path_join(at.default_directory,fileName)
-        exists = g.os_path_exists(fileName)
+        fn = g.os_path_join(at.default_directory,fn)
+        exists = g.os_path_exists(fn)
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
             return False
 
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        at.targetFileName = g.choose(toString,"<string-file>",fileName)
         at.initWriteIvars(root,at.targetFileName,
             nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString,write_strips_blank_lines=False)
+            toString=True,write_strips_blank_lines=False)
 
-        ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-        if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=False)
-            at.closeWriteFile() # Sets stringOutput if toString is True.
-            if at.errors == 0:
-                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-            else:
-                g.es("not written:",at.outputFileName)
-                root.setDirty() # New in Leo 4.4.8.
+        # Write the public and private files to public_s and private_s strings.
+        data = []
+        for sentinels in (False,True):
+            theFile = at.openStringFile(fn)
+            at.sentinels = sentinels
+            at.writeOpenFile(root,nosentinels=None,toString=False,atAuto=False)
+                # The nosentinels flag only affects error messages, and then only if atAuto is True.
+            s = at.closeStringFile(theFile)
+            data.append(s)
+        at.public_s, at.private_s = data
 
-        elif not toString:
-            root.setDirty() # Make _sure_ we try to rewrite this file.
+        if at.errors == 0:
+            if not toString: # Write the actual files.
+                for s2,fn2 in ((at.public_s,fn),(at.private_s,x.shadowFileName(fn))):
+                    if g.os_path_exists(fn2):
+                        at.replaceFileWithString(s2,fn2)
+                    else:
+                        x.error('not ready yet: does not exist: %s' % (fn2))
+            ### at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        else:
             g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
 
-        return ok
+        # Step 2: remove sentinels from the private file and write to the public file.
+
+        return at.errors == 0
     #@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
     #@+at 
     #@nonl
@@ -3550,6 +3548,37 @@ class atFile:
     #@-node:ekr.20041005105605.194:putSentinel (applies cweb hack) 4.x
     #@-node:ekr.20041005105605.187:Writing 4,x sentinels...
     #@+node:ekr.20041005105605.196:Writing 4.x utils...
+    #@+node:ekr.20080712150045.3:closeStringFile
+    def closeStringFile (self,theFile):
+
+        at = self
+
+        if theFile:
+            theFile.flush()
+            s = at.stringOutput = theFile.get()
+            theFile.close()
+            at.outputFile = None
+            return s
+        else:
+            return None
+    #@-node:ekr.20080712150045.3:closeStringFile
+    #@+node:ekr.20041005105605.135:closeWriteFile
+    # 4.0: Don't use newline-pending logic.
+
+    def closeWriteFile (self):
+
+        at = self
+
+        if at.outputFile:
+            at.outputFile.flush()
+            if at.toString:
+                at.stringOutput = self.outputFile.get()
+            at.outputFile.close()
+            at.outputFile = None
+            return at.stringOutput
+        else:
+            return None
+    #@-node:ekr.20041005105605.135:closeWriteFile
     #@+node:ekr.20041005105605.197:compareFiles
     # This routine is needed to handle cvs stupidities.
 
@@ -3674,6 +3703,18 @@ class atFile:
 
         return p.hasChildren() or len(s2.strip()) >= 10
     #@-node:ekr.20070909103844:isSignificantTree
+    #@+node:ekr.20080712150045.2:openStringFile
+    def openStringFile (self,fn):
+
+        at = self
+
+        at.shortFileName = g.shortFileName(fn)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+        at.targetFileName = "<string-file>"
+
+        return at.outputFile
+    #@-node:ekr.20080712150045.2:openStringFile
     #@+node:ekr.20041005105605.201:os and allies
     # Note:  self.outputFile may be either a fileLikeObject or a real file.
     #@+node:ekr.20041005105605.202:oblank, oblanks & otabs
@@ -3935,6 +3976,40 @@ class atFile:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
+    #@+node:ekr.20080712150045.1:replaceFileWithString
+    def replaceFileWithString (self,s,fn):
+
+        '''Replace the file with s if s is different from theFile's contents.
+
+        Return True if theFile was changed.
+        '''
+
+        testing = g.app.unitTesting
+
+        if g.os_path_exists(fn):
+            try:
+                f = None
+                f = file(fn)
+                s2 = f.read()
+            except IOError:
+                g.es_exception()
+                return False
+            if f: f.close()
+            if s == s2:
+                if not testing: g.es('unchanged:',fn)
+                return False
+
+        # Replace
+        try:
+            f = file(fn,'wb')
+            f.write(s)
+            f.close()
+            if not testing: g.es('created:  ',fn)
+            return True
+        except IOError:
+            g.es_exception()
+            return False
+    #@-node:ekr.20080712150045.1:replaceFileWithString
     #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self,root):
 

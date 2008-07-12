@@ -280,7 +280,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080711065102.1" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080711065102.1"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080711065102.3"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080711072651.1"><vh>@test x.dirName</vh></v>
@@ -290,6 +290,13 @@
 <v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
 <v t="ekr.20080711094406.1"><vh>@test at.prepareToReadShadowFile: not a shadow file</vh></v>
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
+</v>
+<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
+<v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20080712155743.2"><vh>@@shadow test 1</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1970,5 +1977,49 @@ finally:
         x.unlink(filename)
         assert not g.os_path_exists(filename)</t>
 <t tx="ekr.20080711120608.1">ab</t>
+<t tx="ekr.20080712151349.1"></t>
+<t tx="ekr.20080712151349.2">s = 'abc'
+fn = 'unitTestFile.py'
+c.atFileCommands.replaceFileWithString(s,fn)
+f = file(fn)
+s2 = f.read()
+f.close()
+assert s == s2</t>
+<t tx="ekr.20080712154122.1">at = c.atFileCommands
+
+# at.toString is set by the execute-script command.
+
+f = at.openStringFile('abc')
+
+assert f.__class__.__name__ == 'fileLikeObject'
+
+s = 'abc'
+f.write(s)
+s2 = at.closeStringFile(f)
+
+assert s == s2
+
+# assert at.toString
+
+</t>
+<t tx="ekr.20080712155743.1">at = c.atFileCommands
+changed = c.changed
+child = p.firstChild()
+s = child.bodyString()
+# if not s.endswith('\n'): s = s + '\n' # Output logic adds this...
+
+try:
+    child.setHeadString('@shadow test 1')
+    at.writeOneAtShadowNode(child,toString=True,force=True)
+    g.pr('public...\n',at.public_s)
+    g.pr('private...\n',at.private_s)
+    # at.writeOneAtShadowNode(child,toString=False,force=True)
+    # assert at.stringOutput == s,'got %s, expected %s' % (repr(at.stringOutput),repr(s))
+finally:
+    child.setHeadString('@@shadow test 1')
+    c.setChanged(changed)
+    c.redraw_now()</t>
+<t tx="ekr.20080712155743.2">body of @shadow test node
+The last line.</t>
 </tnodes>
 </leo_file>

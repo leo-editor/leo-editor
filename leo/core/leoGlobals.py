@@ -2925,6 +2925,8 @@ def pr(s,*args,**keys):
     except Exception:
         s = g.toEncodedString(s,'ascii')
 
+    if type(s) != type("") and type(s) != type(u""):
+        s = repr(s)
     s2 = g.translateArgs(s,args,commas,spaces)
 
     if newline:
@@ -5248,6 +5250,8 @@ class fileLikeObject:
     #@-node:ekr.20050404151753.5:readline
     #@+node:ekr.20050404151753.6:write
     def write (self,s):
+
+        # g.trace(repr(s),g.callers())
 
         if s:
             self.list.append(s)
