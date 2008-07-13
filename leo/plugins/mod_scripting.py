@@ -112,6 +112,7 @@ most brilliant idea in Leo's history. """
 #@+node:ekr.20060328125248.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGui as leoGui
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
@@ -160,7 +161,8 @@ def init ():
     if ok:
 
         sc = 'ScriptingControllerClass'
-        if not hasattr(g.app.gui, sc):
+        if (not hasattr(g.app.gui, sc)
+            or getattr(g.app.gui, sc) is leoGui.nullScriptingControllerClass):
             setattr(g.app.gui, sc, scriptingController)
 
         # Note: call onCreate _after_ reading the .leo file.
