@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,3,2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -292,12 +292,16 @@
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh></v>
 </v>
-<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
+</v>
+<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
+<v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
+<v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
@@ -2075,5 +2079,8 @@ assert not os.path.exists(shadow_dir)
 
 # os.rmdir(shadow_dir)
 # assert not os.path.exists(shadow_dir)</t>
+<t tx="ekr.20080713085553.1"></t>
+<t tx="ekr.20080713085553.2"></t>
+<t tx="ekr.20080713085553.3"></t>
 </tnodes>
 </leo_file>
