@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -213,12 +213,14 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
-<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080711100148.1,ekr.20080713100139.1"><vh>@shadow shadowWriteTest-2.py</vh>
-<v t="ekr.20080713100139.1"><vh>spam</vh></v>
+<v t="ekr.20080711100148.1" a="E" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow shadowWriteTest-2.py</vh>
+<v t="ekr.20080713100139.1" a="M"><vh>spam</vh></v>
+<v t="ekr.20080713135029.2"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
+<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20080713135029.1"><vh>Passed</vh>
 <v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080709122414.2"><vh>old</vh></v>
 <v t="ekr.20080709122414.3"><vh>new</vh></v>
@@ -280,23 +282,13 @@
 </v>
 </v>
 <v t="ekr.20080713131842.2"><vh>@shadow-test delete between nodes: at start of next node</vh>
-<v t="ekr.20080713131842.3" a="E"><vh>old</vh>
+<v t="ekr.20080713131842.3"><vh>old</vh>
 <v t="ekr.20080713131842.4"><vh>node 1</vh></v>
 <v t="ekr.20080713131842.5"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713131842.6" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.6"><vh>new</vh>
 <v t="ekr.20080713131842.7"><vh>node 1</vh></v>
 <v t="ekr.20080713131842.8"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
-<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
-<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
-<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713131842.17"><vh>@shadow-test change end of prev node</vh>
@@ -317,6 +309,17 @@
 <v t="ekr.20080713131842.28"><vh>new</vh>
 <v t="ekr.20080713131842.29"><vh>node 1</vh></v>
 <v t="ekr.20080713131842.30"><vh>node 2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080713131842.9"><vh>@shadow-test delete between nodes: at end of prev node FIXME</vh>
+<v t="ekr.20080713131842.10"><vh>old</vh>
+<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
@@ -354,20 +357,10 @@
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 <v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
-<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
-<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
-<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
-<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
+<v t="ekr.20080713085553.1"><vh>To do</vh>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 <v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
@@ -375,16 +368,6 @@
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 <v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
-<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
-<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
-<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
-</v>
-<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
-<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
-</v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2233,7 +2216,7 @@ node 2 line 2</t>
 <t tx="ekr.20080713131842.6">@others</t>
 <t tx="ekr.20080713131842.7">node 1 line 1</t>
 <t tx="ekr.20080713131842.8">node 2 line 2</t>
-<t tx="ekr.20080713131842.9"># At present, the algorithm moves the first line of the following node into the prev node (!)</t>
+<t tx="ekr.20080713131842.9"></t>
 <t tx="ekr.20080713131842.10">@others</t>
 <t tx="ekr.20080713131842.11">node 1 line 1
 node 1 line 2</t>
@@ -2266,5 +2249,8 @@ node 2 line 2</t>
 node 1 line 2</t>
 <t tx="ekr.20080713131842.30">node 2 line 1 changed
 node 2 line 2</t>
+<t tx="ekr.20080713135029.1"></t>
+<t tx="ekr.20080713135029.2">def eggs():
+    pass</t>
 </tnodes>
 </leo_file>
