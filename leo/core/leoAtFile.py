@@ -2565,21 +2565,15 @@ class atFile:
             exceptions = ('public_s','private_s','sentinels','stringOutput')
             assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
-        if at.errors == 0:
-            if not toString: # Write the actual files.
-                # Make the public file
-                private_fn = x.shadowPathName(fn)
-                x.makeShadowDirectory(private_fn)
-                at.replaceFileWithString(private_fn,at.private_s)
-                at.replaceFileWithString(fn,at.public_s)
-                # table = (
-                    # (False,at.public_s,fn),
-                    # (True, at.private_s,x.shadowPathName(fn)))
-
-                # for isPrivate,s2,fn2 in table:
-                    # if isPrivate: x.makeShadowDirectory(fn2)
-                    # # g.trace('exists',g.os_path_exists(fn2),fn2)
-                    # at.replaceFileWithString(s2,fn2)
+        if at.errors == 0 and not toString:
+            ### It may be better to compute the public file by removing sentinels from at.private_s
+            ### This ensures that the (at-present) dubious x.isSentinel is used consistently by
+            ### the read/write logic.  OTOH, Leo's write logic should actually dominate x.isSentinel.
+            # Write the public and private files.
+            private_fn = x.shadowPathName(fn)
+            x.makeShadowDirectory(private_fn)
+            at.replaceFileWithString(private_fn,at.private_s)
+            at.replaceFileWithString(fn,at.public_s)
 
         if at.errors == 0:
             root.clearOrphan()
