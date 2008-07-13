@@ -402,11 +402,12 @@ class atFile:
             fn = g.os_path_join(at.default_directory,fn)
             fn = g.os_path_normpath(fn)
             if atShadow:
-                fn = at.prepareToReadShadowFile(fn)
+                fn = at.readShadowFileHelper(fn)
 
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                if trace and atShadow: g.trace('opening %s file: %s' % (g.choose(atShadow,'private','public'),fn))
+                if trace and atShadow: g.trace('opening %s file: %s' % (
+                    g.choose(atShadow,'private','public'),fn))
                 at.inputFile = open(fn,'rb')
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -414,10 +415,10 @@ class atFile:
                 at.inputFile = None
 
         return at.inputFile # for unit tests.
-    #@+node:bwmulder.20041231170726:prepareToReadShadowFile
-    def prepareToReadShadowFile (self,fn):
+    #@+node:bwmulder.20041231170726:readShadowFileHelper
+    def readShadowFileHelper (self,fn):
 
-        '''Open a public file for which a private shadow file is known to exist.
+        '''handle crucial @shadow read logic and return the actual file to read.
 
         Important: this code will not be called if the public file does not exist.
         instead, the private file will be created after the public file is imported.'''
@@ -426,6 +427,8 @@ class atFile:
 
         shadow_fn       = x.shadowPathName(fn)
         shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+        g.trace(g.choose(shadow_exists,'shadow file:','public file:'),'fn',fn)
 
         if shadow_exists:
 
@@ -439,7 +442,7 @@ class atFile:
                 x.message("created public %s from private %s " % (fn, shadow_fn))
 
         return g.choose(shadow_exists,shadow_fn,fn)
-    #@-node:bwmulder.20041231170726:prepareToReadShadowFile
+    #@-node:bwmulder.20041231170726:readShadowFileHelper
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) and helper
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
@@ -4021,6 +4024,7 @@ class atFile:
                 f = file(fn,'wb')
                 s2 = f.read()
             except IOError:
+                at.error('unexpected exception creating %s' % fn)
                 g.es_exception()
                 return False
             if f: f.close()
