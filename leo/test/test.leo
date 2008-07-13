@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -219,7 +219,7 @@
 </v>
 <v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
 <v t="ekr.20080713135717.45"><vh>Passed</vh></v>
 <v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080709122414.2"><vh>old</vh></v>
@@ -382,7 +382,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080711065102.1"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080711065102.1" a="E"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080711065102.3"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080711072651.1"><vh>@test x.dirName</vh></v>
@@ -395,9 +395,8 @@
 </v>
 <v t="ekr.20080713123855.3"><vh>@test x.replaceFileWithString</vh></v>
 </v>
-<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080713102628.1"><vh>@test at.openFileForReading</vh></v>
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713100725.1"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20080713100725.2"><vh>@@shadow unittest/read_test.py</vh></v>
@@ -409,25 +408,17 @@
 </v>
 </v>
 <v t="ekr.20080713085553.1"><vh>To do</vh>
+<v t="ekr.20080713102628.1"><vh>@test at.openFileForReading</vh></v>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
-<v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
-<v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
+<v t="ekr.20080713111837.1"><vh>@test importing a new @shadow node</vh></v>
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 <v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080713085553.1"><vh>To do</vh>
-<v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
-<v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
-<v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
-<v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
-<v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
-<v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
-<v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
-</v>
+<v t="ekr.20080713111837.1"><vh>@test importing a new @shadow node</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2250,7 +2241,6 @@ f = file(fn)
 s2 = f.read()
 f.close()
 assert s == s2</t>
-<t tx="ekr.20080713130510.1"></t>
 <t tx="ekr.20080713130510.2"></t>
 <t tx="ekr.20080713130510.3">at = c.atFileCommands
 x = c.shadowController
@@ -2285,7 +2275,17 @@ node 2 line 2</t>
 <t tx="ekr.20080713131842.14">node 1 line 1</t>
 <t tx="ekr.20080713131842.15">node 2 line 1
 node 2 line 2</t>
-<t tx="ekr.20080713131842.16"></t>
+<t tx="ekr.20080713131842.16"># x = c.shadowController
+# fn_1 = 'unittest/propagate-test1.py'
+# fn_2 = 'unittest/propagate-test2.py'
+
+# # Delete both files.
+# for fn in (fn_1,fn_2):
+    # if g.os_path_exists(shadow_fn):
+        # g.utils_remove(shadow_fn,verbose=True)
+        # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+        
+# x.propagate_changes(old_public_file, old_private_file)</t>
 <t tx="ekr.20080713131842.17"></t>
 <t tx="ekr.20080713131842.18">@others</t>
 <t tx="ekr.20080713131842.19">node 1 line 1

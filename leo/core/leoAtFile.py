@@ -391,7 +391,7 @@ class atFile:
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-    #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helper
+    #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helpers
     def openFileForReading(self,fn,fromString=False,atShadow=False):
 
         at = self ; trace = True and not g.app.unitTesting
@@ -415,7 +415,7 @@ class atFile:
                 at.inputFile = None
 
         return at.inputFile # for unit tests.
-    #@+node:bwmulder.20041231170726:readShadowFileHelper
+    #@+node:bwmulder.20041231170726:readShadowFileHelper & helper
     def readShadowFileHelper (self,fn):
 
         '''handle crucial @shadow read logic and return the actual file to read.
@@ -443,8 +443,23 @@ class atFile:
                 x.message("created public %s from private %s " % (fn, shadow_fn))
 
         return g.choose(shadow_exists,shadow_fn,fn)
-    #@-node:bwmulder.20041231170726:readShadowFileHelper
-    #@-node:ekr.20041005105605.19:openFileForReading (atFile) and helper
+    #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+    def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+        '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+        x = self ; marker = x.marker_from_extension(source_fn)
+
+        old_lines = file(source_fn).readlines()
+        new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+        copy = not os.path.exists(target_fn) or old_lines != new_lines
+        if copy:
+            s = ''.join(new_lines)
+            x.replaceFileWithString(target_fn,s)
+    #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+    #@-node:bwmulder.20041231170726:readShadowFileHelper & helper
+    #@-node:ekr.20041005105605.19:openFileForReading (atFile) and helpers
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
     # Reads @thin, @file and @noref trees.
@@ -669,7 +684,8 @@ class atFile:
             if not g.unitTesting: g.es("reading:",p.headString())
             ok = at.importAtShadowNode(fn,p)
             if ok:
-                x.makeShadowFile(fn)
+                # x.makeShadowFile(fn,p)
+                at.writeOneAtShadowNode(p,toString=False,force=True)
     #@+node:ekr.20080712080505.1:importAtShadowNode
     def importAtShadowNode (self,fn,p):
 
