@@ -180,7 +180,6 @@ class shadowController:
        old_lines = file(source_fn).readlines()
        new_lines, junk = x.separate_sentinels(old_lines,marker)
 
-       # x.write_if_changed(regular_lines, sourcefilename, targetfilename)
        copy = not os.path.exists(target_fn) or old_lines != new_lines
        if copy:
            s = ''.join(new_lines)
@@ -517,11 +516,13 @@ class shadowController:
        '''Propagate the changes from the public file (without_sentinels)
        to the private file (with_sentinels)'''
 
+       x = self
+
        old_public_lines  = file(old_public_file).readlines()
        old_private_lines = file(old_private_file).readlines()
-       marker = self.marker_from_extension(old_public_file)
+       marker = x.marker_from_extension(old_public_file)
 
-       new_private_lines = self.propagate_changed_lines(
+       new_private_lines = x.propagate_changed_lines(
            old_public_lines,
            old_private_lines,
            marker)
@@ -532,10 +533,6 @@ class shadowController:
        if copy:
            s = ''.join(new_private_lines)
            x.replaceFileWithString(fn,s)
-           # return self.write_if_changed(
-               # new_private_lines,
-               # old_public_file,
-               # old_private_file)
 
        return copy
    #@-node:ekr.20080708094444.36:x.propagate_changes
