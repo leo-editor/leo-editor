@@ -142,7 +142,7 @@ class shadowController:
 
        return g.os_path_exists(path) and g.os_path_isdir(path)
    #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-   #@+node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
+   #@+node:ekr.20080710082231.17:x.makeShadowFile
    def makeShadowFile (self,fn):
 
        x = self ; shadow_fn = x.shadowPathName(fn)
@@ -164,7 +164,7 @@ class shadowController:
        # Remove the sentinels from the original file.
        x.unlink(full_fn)
        x.copy_file_removing_sentinels(shadow_fn,full_fn)
-   #@-node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
+   #@-node:ekr.20080710082231.17:x.makeShadowFile
    #@+node:ekr.20080711063656.2:x.rename
    def rename (self,src,dst,mode=None,silent=False):
 
@@ -541,23 +541,6 @@ class shadowController:
    #@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
    #@-node:ekr.20080708192807.1:x.Propagation
    #@+node:ekr.20080708094444.89:x.Utils...
-   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used: might be used in writeOneAtShadowNode
-   # Called by updated version of atFile.replaceTargetFileIfDifferent
-
-   def copy_file_removing_sentinels (self,source,target):
-
-       '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
-
-       x = self ; sourcefilename = source ; targetfilename = target
-
-       lines = file(sourcefilename).readlines()
-
-       marker = x.marker_from_extension(sourcefilename)
-
-       regular_lines, junk = x.separate_sentinels(lines,marker)
-
-       x.write_if_changed(regular_lines, sourcefilename, targetfilename)
-   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used: might be used in writeOneAtShadowNode
    #@+node:ekr.20080708094444.85:x.error & message
    def error (self,s,silent=False):
 
@@ -676,69 +659,28 @@ class shadowController:
        g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
        assert 0, "Malfunction of @shadow"
    #@-node:ekr.20080708094444.33:x.show_error
-   #@+node:ekr.20080708094444.10:x.write_if_changed & helpers
-   # This is part of the **read** logic, called from propagate changes.
+   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   # Called by updated version of atFile.replaceTargetFileIfDifferent
 
-   def write_if_changed (self,lines, source_fn, target_fn):
+   def copy_file_removing_sentinels (self,source,target):
 
-       '''Write lines to target_fn if target_fn's contents are not lines.
+       '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-       Set target_fn's modification date to that of source_fn.
+       x = self ; sourcefilename = source ; targetfilename = target
 
-       Produces a message, if wanted, about the overwrite, and optionally
-       keeps the overwritten file with a backup name.'''
+       lines = file(sourcefilename).readlines()
 
-       x = self ; trace = True
+       marker = x.marker_from_extension(sourcefilename)
 
-       if trace: x.message("copy",source_fn,"to",target_fn)
+       regular_lines, junk = x.separate_sentinels(lines,marker)
 
-       # if False and self.do_backups and g.os_path_exists(target_fn):
-           # self.make_backup_file(backupname,target_fn)
-       outfile = open(target_fn, "w")
-       for line in lines:
-           outfile.write(line)
-       outfile.close()
-       x.copy_modification_time(source_fn, target_fn)
-
-       return copy 
-   #@+node:ekr.20080708094444.8:copy_modification_time
-   def copy_modification_time(self,source_fn,target_fn):
-
-       """
-       Set the target file's modification time to
-       that of the source file.
-       """
-
-       st = os.stat(source_fn)
-
-       # To avoid pychecker/pylint complaints.
-       utime = getattr(os,'utime')
-       mtime = getattr(os,'mtime')
-
-       if utime:
-           utime(target_fn, (st.st_atime, st.st_mtime))
-       elif mtime:
-           mtime(target_fn, st.st_mtime)
-       else:
-           self.error("Neither os.utime nor os.mtime exists: can't set modification time.")
-   #@-node:ekr.20080708094444.8:copy_modification_time
-   #@+node:ekr.20080708094444.84:make_backup_file
-   def make_backup_file (self,backupname,target_fn):
-
-       # Keep the old file around while we are debugging.
-       count = 0
-       backupname = "%s.~%s~"%(target_fn,count)
-
-       while os.path.exists(backupname):
-          count+=1
-          backupname = "%s.~%s~"%(target_fn,count)
-
-       os.rename(target_fn,backupname)
-
-       if self.print_copy_operations:
-          g.trace("backup file:", backupname)
-   #@-node:ekr.20080708094444.84:make_backup_file
-   #@-node:ekr.20080708094444.10:x.write_if_changed & helpers
+       # x.write_if_changed(regular_lines, sourcefilename, targetfilename)
+       fn = tagetfilename
+       copy = not os.path.exists(fn) or lines != regular_lines
+       if copy:
+           s = ''.join(regular_lines)
+           x.replaceFileWithString(fn,s)
+   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
    #@-node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):
