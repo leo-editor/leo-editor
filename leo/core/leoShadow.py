@@ -513,7 +513,7 @@ class shadowController:
    #@-node:ekr.20080711063656.3:x.unlink
    #@-node:ekr.20080711063656.1:x.File utils
    #@+node:ekr.20080708094444.89:Utils...
-   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used: might be used in writeOneAtShadowNode
    # Called by updated version of atFile.replaceTargetFileIfDifferent
 
    def copy_file_removing_sentinels (self,source,target):
@@ -529,7 +529,7 @@ class shadowController:
        regular_lines, junk = x.separate_sentinels(lines,marker)
 
        x.write_if_changed(regular_lines, sourcefilename, targetfilename)
-   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used: might be used in writeOneAtShadowNode
    #@+node:ekr.20080708094444.85:x.error & message
    def error (self,s,silent=False):
 

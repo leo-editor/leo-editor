@@ -1349,7 +1349,7 @@ if 0: # Test code: may be executed in the child node.
     #@-node:ekr.20031218072017.3123:<< test code >>
     #@nl
 #@-node:ekr.20031218072017.3121:redirecting stderr and stdout to Leo's log pane
-#@+node:ekr.20080712150045.4:getIvarsDict and checkUnchangedIvars
+#@+node:ekr.20080712150045.4:g.getIvarsDict and checkUnchangedIvars
 def getIvarsDict(obj):
 
     '''Return a dictionary of ivars:values for non-methods of obj.'''
@@ -1375,7 +1375,7 @@ def checkUnchangedIvars(obj,d,exceptions=None):
                     key,repr(d.get(key)),repr(getattr(obj,key))))
                 ok = False
     return ok
-#@-node:ekr.20080712150045.4:getIvarsDict and checkUnchangedIvars
+#@-node:ekr.20080712150045.4:g.getIvarsDict and checkUnchangedIvars
 #@+node:ekr.20031218072017.3127:g.get_line & get_line__after
 # Very useful for tracing.
 

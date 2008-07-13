@@ -2567,8 +2567,10 @@ class atFile:
 
         if at.errors == 0 and not toString:
             ### It may be better to compute the public file by removing sentinels from at.private_s
-            ### This ensures that the (at-present) dubious x.isSentinel is used consistently by
-            ### the read/write logic.  OTOH, Leo's write logic should actually dominate x.isSentinel.
+            ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+            ### x.isSentinel logic is used consistently by the @shadow read/write logic.
+            ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
             x.makeShadowDirectory(private_fn)
