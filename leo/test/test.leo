@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -219,7 +219,6 @@
 <v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
-<v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh></v>
 <v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080709122414.2"><vh>old</vh></v>
 <v t="ekr.20080709122414.3"><vh>new</vh></v>
@@ -280,6 +279,46 @@
 <v t="ekr.20080709192609.17"><vh>node 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080713131842.2"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20080713131842.3" a="E"><vh>old</vh>
+<v t="ekr.20080713131842.4"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.5"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.6" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.7"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.8"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
+<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
+<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713131842.17"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20080713131842.18"><vh>old</vh>
+<v t="ekr.20080713131842.19"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.20"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.21"><vh>new</vh>
+<v t="ekr.20080713131842.22"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.23"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713131842.24"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20080713131842.25"><vh>old</vh>
+<v t="ekr.20080713131842.26"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.27"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.28"><vh>new</vh>
+<v t="ekr.20080713131842.29"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.30"><vh>node 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080711065102.1"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
@@ -314,16 +353,38 @@
 <v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
+<v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
+<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
+<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
+<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080713085553.1"><vh>To do</vh>
+<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 <v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
 <v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
+<v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
+<v t="ekr.20080713131842.9"><vh>@shadow-test-lax delete between nodes: at end of prev node FIXME</vh>
+<v t="ekr.20080713131842.10" a="E"><vh>old</vh>
+<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1869,7 +1930,6 @@ line 3</t>
 line 2
 line 3
 inserted line</t>
-<t tx="ekr.20080709162102.1"></t>
 <t tx="ekr.20080709192609.3">@others</t>
 <t tx="ekr.20080709192609.4">node 1 line 1</t>
 <t tx="ekr.20080709192609.5">node 2 line 1</t>
@@ -2165,5 +2225,46 @@ finally:
     if g.os_path_exists(filename):
         x.unlink(filename)
         assert not g.os_path_exists(filename)</t>
+<t tx="ekr.20080713131842.2"></t>
+<t tx="ekr.20080713131842.3">@others</t>
+<t tx="ekr.20080713131842.4">node 1 line 1</t>
+<t tx="ekr.20080713131842.5">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.6">@others</t>
+<t tx="ekr.20080713131842.7">node 1 line 1</t>
+<t tx="ekr.20080713131842.8">node 2 line 2</t>
+<t tx="ekr.20080713131842.9"># At present, the algorithm moves the first line of the following node into the prev node (!)</t>
+<t tx="ekr.20080713131842.10">@others</t>
+<t tx="ekr.20080713131842.11">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713131842.12">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.13">@others</t>
+<t tx="ekr.20080713131842.14">node 1 line 1</t>
+<t tx="ekr.20080713131842.15">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.16"></t>
+<t tx="ekr.20080713131842.17"></t>
+<t tx="ekr.20080713131842.18">@others</t>
+<t tx="ekr.20080713131842.19">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713131842.20">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.21">@others</t>
+<t tx="ekr.20080713131842.22">node 1 line 1
+node 1 line 1 changed</t>
+<t tx="ekr.20080713131842.23">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.24"></t>
+<t tx="ekr.20080713131842.25">@others</t>
+<t tx="ekr.20080713131842.26">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713131842.27">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713131842.28">@others</t>
+<t tx="ekr.20080713131842.29">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713131842.30">node 2 line 1 changed
+node 2 line 2</t>
 </tnodes>
 </leo_file>
