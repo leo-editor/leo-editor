@@ -394,7 +394,7 @@ class atFile:
     #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helper
     def openFileForReading(self,fn,fromString=False,atShadow=False):
 
-        at = self ; trace = True
+        at = self ; trace = True and not g.app.unitTesting
 
         if fromString:
             at.inputFile = g.fileLikeObject(fromString=fromString)
@@ -423,14 +423,15 @@ class atFile:
         Important: this code will not be called if the public file does not exist.
         instead, the private file will be created after the public file is imported.'''
 
-        at = self ; c = at.c ; x = c.shadowController
+        at = self ; c = at.c ; x = c.shadowController ; trace = True
 
         shadow_fn       = x.shadowPathName(fn)
         shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
 
-        g.trace(g.choose(shadow_exists,'shadow file:','public file:'),'fn',fn)
-
         if shadow_exists:
+
+            if trace and not g.app.unitTesting:
+                g.trace('significant',x.isSignificantPublicFile(fn),fn)
 
             if x.isSignificantPublicFile(fn):
                 # Update the private shadow file from the public file.
@@ -4006,7 +4007,7 @@ class atFile:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20080712150045.1:replaceFileWithString
+    #@+node:ekr.20080712150045.1:at.replaceFileWithString
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -4018,16 +4019,15 @@ class atFile:
 
         exists = g.os_path_exists(fn)
 
-        if not exists:
+        if exists: # Read the file.  Return if it is the same.
             try:
-                f = None
-                f = file(fn,'wb')
+                f = file(fn,'rb')
                 s2 = f.read()
+                f.close()
             except IOError:
                 at.error('unexpected exception creating %s' % fn)
                 g.es_exception()
                 return False
-            if f: f.close()
             if s == s2:
                 if not testing: g.es('unchanged:',fn)
                 return False
@@ -4047,7 +4047,7 @@ class atFile:
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@-node:ekr.20080712150045.1:replaceFileWithString
+    #@-node:ekr.20080712150045.1:at.replaceFileWithString
     #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
     def replaceTargetFileIfDifferent (self,root):
 

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7,5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,7 +28,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080529111617.1" a="E"><vh>plugins</vh>
+<v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -216,7 +216,7 @@
 <v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080711100148.1,ekr.20080713100139.1"><vh>@shadow shadowWriteTest-2.py</vh>
 <v t="ekr.20080713100139.1"><vh>spam</vh></v>
 </v>
-<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
 <v t="ekr.20080709162102.1"><vh>passed @shadow tests</vh></v>
@@ -281,7 +281,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080711065102.1" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080711065102.1"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080711065102.3"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080711072651.1"><vh>@test x.dirName</vh></v>
@@ -289,22 +289,25 @@
 <v t="ekr.20080711072651.3"><vh>@test x.shadowDirName</vh></v>
 <v t="ekr.20080711082216.1"><vh>@test x.rename</vh></v>
 <v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
-<v t="ekr.20080711094406.1"><vh>@test at.readShadowFileHelper: not a shadow file</vh></v>
-<v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
-<v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh></v>
+<v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20080713120805.1"><vh>deleteShadowDir</vh></v>
 </v>
-<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
-<v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20080713123855.3"><vh>@test x.replaceFileWithString</vh></v>
+</v>
+<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
 <v t="ekr.20080713102628.1"><vh>@test at.openFileForReading</vh></v>
+<v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713100725.1"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20080713100725.2"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
+<v t="ekr.20080711094406.1"><vh>@test at.readShadowFileHelper: not a shadow file</vh></v>
+<v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
-<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
+</v>
+<v t="ekr.20080713085553.1"><vh>To do</vh>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 <v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
@@ -2032,7 +2035,10 @@ s = child.bodyString()
 
 try:
     child.setHeadString('@shadow unittest/test_1.py')
-    shadow_fn = x.shadowPathName('unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
@@ -2048,29 +2054,30 @@ finally:
 
     child.setHeadString('@@shadow unittest/test_1.py')
     c.setChanged(changed)
-    c.redraw_now()</t>
+    # c.redraw_now()</t>
 <t tx="ekr.20080712155743.2"># body of @shadow test node
 # The last line.</t>
-<t tx="ekr.20080713073749.1">import os
+<t tx="ekr.20080713073749.1">import glob
+import os
 
 x = c.shadowController
+
+@others
 
 shadow_fn  = x.shadowPathName('unittest/xyzzy')
 shadow_dir = x.shadowDirName('unittest/xyzzy')
 
 if g.os_path_exists(shadow_fn):
     g.utils_remove(shadow_fn,verbose=True)
-assert not os.path.exists(shadow_fn)
-    
-if g.os_path_exists(shadow_dir):
-    os.rmdir(shadow_dir)
-assert not os.path.exists(shadow_dir)
+    assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+
+deleteShadowDir(shadow_dir)
 
 x.makeShadowDirectory(shadow_dir)
 assert os.path.exists(shadow_dir)
 
-os.rmdir(shadow_dir)
-assert not os.path.exists(shadow_dir)</t>
+deleteShadowDir(shadow_dir)
+</t>
 <t tx="ekr.20080713082327.1"># This unit test should come last.
 
 import glob
@@ -2078,27 +2085,17 @@ import os
 
 x = c.shadowController
 
-# shadow_fn  = x.shadowPathName('unittest/xyzzy')
 shadow_dir = x.shadowDirName('unittest/xyzzy')
-g.pr(shadow_dir)
 
-# if g.os_path_exists(shadow_fn):
-    # g.utils_remove(shadow_fn,verbose=True)
-# assert not os.path.exists(shadow_fn)
-    
 if g.os_path_exists(shadow_dir):
     files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
     files = glob.glob(files)
     for z in files:
-        print z
-        # os.unlink(z)
-assert not os.path.exists(shadow_dir)
-
-# x.makeShadowDirectory(shadow_dir)
-# assert os.path.exists(shadow_dir)
-
-# os.rmdir(shadow_dir)
-# assert not os.path.exists(shadow_dir)</t>
+        if z != shadow_dir:
+            os.unlink(z)
+    os.rmdir(shadow_dir)
+    assert not os.path.exists(shadow_dir)
+</t>
 <t tx="ekr.20080713085553.1"></t>
 <t tx="ekr.20080713085553.2"></t>
 <t tx="ekr.20080713085553.3"></t>
@@ -2120,12 +2117,30 @@ try:
 finally:
     child.setHeadString('@@shadow %s' % fn)
     c.setChanged(changed)
-    c.redraw_now()</t>
+    # c.redraw_now()</t>
 <t tx="ekr.20080713100725.2"># body of @shadow test node
 # The last line.</t>
 <t tx="ekr.20080713102628.1"></t>
 <t tx="ekr.20080713111837.1">at = c.atFileCommands
 
 # at.importAtShadowNode (fn,p):</t>
+<t tx="ekr.20080713120805.1">def deleteShadowDir(shadowDir):
+
+    if g.os_path_exists(shadow_dir):
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                os.unlink(z)
+        os.rmdir(shadow_dir)
+        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir</t>
+<t tx="ekr.20080713123855.3">s = 'abc'
+fn = 'unitTestFile.py'
+x = c.shadowController
+x.replaceFileWithString(fn,s)
+f = file(fn)
+s2 = f.read()
+f.close()
+assert s == s2</t>
 </tnodes>
 </leo_file>

@@ -133,8 +133,10 @@ class shadowController:
        if not g.os_path_exists(path):
 
            try:
+               # g.trace('making',path)
                os.mkdir(path)
            except Exception:
+               x.error('unexpected exception creating %s' % path)
                g.es_exception()
                return False
 
@@ -174,6 +176,45 @@ class shadowController:
 
        return ok
    #@-node:ekr.20080711063656.2:x.rename
+   #@+node:ekr.20080713091247.1:x.replaceFileWithString
+   def replaceFileWithString (self,fn,s):
+
+       '''Replace the file with s if s is different from theFile's contents.
+
+       Return True if theFile was changed.
+       '''
+
+       x = self ; testing = g.app.unitTesting
+
+       exists = g.os_path_exists(fn)
+
+       if exists: # Read the file.  Return if it is the same.
+           try:
+               f = file(fn,'rb')
+               s2 = f.read()
+               f.close()
+           except IOError:
+               x.error('unexpected exception creating %s' % fn)
+               g.es_exception()
+               return False
+           if s == s2:
+               if not testing: g.es('unchanged:',fn)
+               return False
+
+       # Replace the file.
+       try:
+           f = file(fn,'wb')
+           f.write(s)
+           f.close()
+           if not testing:
+               if exists:  g.es('wrote:    ',fn)
+               else:       g.es('created:  ',fn)
+           return True
+       except IOError:
+           x.error('unexpected exception writing file: %s' % (fn))
+           g.es_exception()
+           return False
+   #@-node:ekr.20080713091247.1:x.replaceFileWithString
    #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
    def shadowDirName (self,filename):
 
@@ -459,14 +500,22 @@ class shadowController:
        marker = self.marker_from_extension(old_public_file)
 
        new_private_lines = self.propagate_changed_lines(
-           old_public_lines,old_private_lines,marker)
+           old_public_lines,
+           old_private_lines,
+           marker)
 
-       written = self.write_if_changed(new_private_lines,
-           targetfilename=old_private_file,
-           sourcefilename=old_public_file)
+       fn = old_private_file
+       copy = not os.path.exists(fn) or new_private_lines != old_private_lines
 
-       return written
-   #@nonl
+       if copy:
+           s = ''.join(new_private_lines)
+           x.replaceFileWithString(fn,s)
+           # return self.write_if_changed(
+               # new_private_lines,
+               # old_public_file,
+               # old_private_file)
+
+       return copy
    #@-node:ekr.20080708094444.36:x.propagate_changes
    #@+node:ekr.20080708094444.34:x.strip_sentinels_with_map
    def strip_sentinels_with_map (self, lines, marker):
@@ -628,68 +677,66 @@ class shadowController:
        assert 0, "Malfunction of @shadow"
    #@-node:ekr.20080708094444.33:x.show_error
    #@+node:ekr.20080708094444.10:x.write_if_changed & helpers
-   def write_if_changed (self,lines, sourcefilename, targetfilename):
+   # This is part of the **read** logic, called from propagate changes.
 
-       '''Write lines to targetfilename if targetfilename's contents are not lines.
+   def write_if_changed (self,lines, source_fn, target_fn):
 
-       Set targetfilename's modification date to that of sourcefilename.
+       '''Write lines to target_fn if target_fn's contents are not lines.
+
+       Set target_fn's modification date to that of source_fn.
 
        Produces a message, if wanted, about the overwrite, and optionally
        keeps the overwritten file with a backup name.'''
 
-       if not os.path.exists(targetfilename):
-           copy = True 
-       else:
-           copy = lines != file(targetfilename).readlines()
+       x = self ; trace = True
 
-       if copy:
-           if print_copy_operations:
-               print "Copying ", sourcefilename, " to ", targetfilename, " without sentinals"
-           if self.do_backups and os.path.exists(targetfilename):
-               self.make_backup_file(backupname,targetfilename)
-           outfile = open(targetfilename, "w")
-           for line in lines:
-               outfile.write(line)
-           outfile.close()
-           self.copy_modification_time(sourcefilename, targetfilename)
+       if trace: x.message("copy",source_fn,"to",target_fn)
+
+       # if False and self.do_backups and g.os_path_exists(target_fn):
+           # self.make_backup_file(backupname,target_fn)
+       outfile = open(target_fn, "w")
+       for line in lines:
+           outfile.write(line)
+       outfile.close()
+       x.copy_modification_time(source_fn, target_fn)
 
        return copy 
    #@+node:ekr.20080708094444.8:copy_modification_time
-   def copy_modification_time(self,sourcefilename,targetfilename):
+   def copy_modification_time(self,source_fn,target_fn):
 
        """
        Set the target file's modification time to
        that of the source file.
        """
 
-       st = os.stat(sourcefilename)
+       st = os.stat(source_fn)
 
        # To avoid pychecker/pylint complaints.
        utime = getattr(os,'utime')
        mtime = getattr(os,'mtime')
 
        if utime:
-           utime(targetfilename, (st.st_atime, st.st_mtime))
+           utime(target_fn, (st.st_atime, st.st_mtime))
        elif mtime:
-           mtime(targetfilename, st.st_mtime)
+           mtime(target_fn, st.st_mtime)
        else:
            self.error("Neither os.utime nor os.mtime exists: can't set modification time.")
    #@-node:ekr.20080708094444.8:copy_modification_time
    #@+node:ekr.20080708094444.84:make_backup_file
-   def make_backup_file (self,backupname,targetfilename):
+   def make_backup_file (self,backupname,target_fn):
 
        # Keep the old file around while we are debugging.
        count = 0
-       backupname = "%s.~%s~"%(targetfilename,count)
+       backupname = "%s.~%s~"%(target_fn,count)
 
        while os.path.exists(backupname):
           count+=1
-          backupname = "%s.~%s~"%(targetfilename,count)
+          backupname = "%s.~%s~"%(target_fn,count)
 
-       os.rename(targetfilename,backupname)
+       os.rename(target_fn,backupname)
 
        if self.print_copy_operations:
-          print "backup file in ", backupname 
+          g.trace("backup file:", backupname)
    #@-node:ekr.20080708094444.84:make_backup_file
    #@-node:ekr.20080708094444.10:x.write_if_changed & helpers
    #@-node:ekr.20080708094444.89:x.Utils...
