@@ -2573,7 +2573,7 @@ class atFile:
 
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
-            x.makeShadowDirectory(private_fn)
+            x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
             at.replaceFileWithString(fn,at.public_s)
 

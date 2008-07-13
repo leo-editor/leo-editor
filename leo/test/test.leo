@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8,3,2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -292,13 +292,14 @@
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh></v>
 </v>
-<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080712155743.1" a="E"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20080712155743.2"><vh>@@shadow test_1.py</vh></v>
+<v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 </v>
+<v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2011,8 +2012,8 @@ s = child.bodyString()
 # if not s.endswith('\n'): s = s + '\n' # Output logic adds this...
 
 try:
-    child.setHeadString('@shadow test_1.py')
-    shadow_fn = x.shadowPathName('test_1.py')
+    child.setHeadString('@shadow unittest/test_1.py')
+    shadow_fn = x.shadowPathName('unittest/test_1.py')
     if g.os_path_exists(shadow_fn):
         g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
@@ -2022,10 +2023,11 @@ try:
     at.writeOneAtShadowNode(child,toString=False,force=True)
     # assert at.stringOutput == s,'got %s, expected %s' % (repr(at.stringOutput),repr(s))
     assert g.os_path_exists(shadow_fn)
-    g.utils_remove(shadow_fn,verbose=True)
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
 finally:
 
-    child.setHeadString('@@shadow test_1.py')
+    child.setHeadString('@@shadow unittest/test_1.py')
     c.setChanged(changed)
     c.redraw_now()</t>
 <t tx="ekr.20080712155743.2"># body of @shadow test node
@@ -2034,8 +2036,8 @@ finally:
 
 x = c.shadowController
 
-shadow_fn  = x.shadowPathName('xyzzy')
-shadow_dir = x.shadowDirName('xyzzy')
+shadow_fn  = x.shadowPathName('unittest/xyzzy')
+shadow_dir = x.shadowDirName('unittest/xyzzy')
 
 if g.os_path_exists(shadow_fn):
     g.utils_remove(shadow_fn,verbose=True)
@@ -2050,5 +2052,28 @@ assert os.path.exists(shadow_dir)
 
 os.rmdir(shadow_dir)
 assert not os.path.exists(shadow_dir)</t>
+<t tx="ekr.20080713082327.1"># This unit test should come last.
+
+import os
+
+x = c.shadowController
+
+# shadow_fn  = x.shadowPathName('unittest/xyzzy')
+shadow_dir = x.shadowDirName('unittest/xyzzy')
+g.pr(shadow_dir)
+
+# if g.os_path_exists(shadow_fn):
+    # g.utils_remove(shadow_fn,verbose=True)
+# assert not os.path.exists(shadow_fn)
+    
+if g.os_path_exists(shadow_dir):
+    os.rmdir(shadow_dir)
+assert not os.path.exists(shadow_dir)
+
+# x.makeShadowDirectory(shadow_dir)
+# assert os.path.exists(shadow_dir)
+
+# os.rmdir(shadow_dir)
+# assert not os.path.exists(shadow_dir)</t>
 </tnodes>
 </leo_file>

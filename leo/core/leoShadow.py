@@ -129,6 +129,8 @@ class shadowController:
    #@+node:ekr.20080710082231.19:x.makeShadowDirectory
    def makeShadowDirectory (self,fn):
 
+       '''Make a shadow directory for the **public** fn.'''
+
        x = self ; path = x.shadowDirName(fn)
 
        if not g.os_path_exists(path):
@@ -188,10 +190,17 @@ class shadowController:
 
        '''Return the full path name of filename, resolved using c.fileName()'''
 
-       x = self ; theDir = x.baseDirName()
+       x = self ; baseDir = x.baseDirName()
+       fileDir = g.os_path_dirname(filename)
+       # g.trace(baseDir)
+       # g.trace(x.shadow_subdir)
+       # g.trace(fileDir)
 
-       return theDir and g.os_path_abspath(g.os_path_join(
-           theDir,x.shadow_subdir,x.shadow_prefix + g.shortFileName(filename)))
+       return baseDir and g.os_path_abspath(g.os_path_normpath(g.os_path_join(
+               baseDir,
+               fileDir, # Bug fix: honor any directories specified in filename.
+               x.shadow_subdir,
+               x.shadow_prefix + g.shortFileName(filename))))
    #@nonl
    #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
    #@+node:ekr.20080711063656.3:x.unlink
