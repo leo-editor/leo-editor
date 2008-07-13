@@ -444,7 +444,7 @@ class shadowController:
 
        return g.os_path_exists(path) and g.os_path_isdir(path)
    #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-   #@+node:ekr.20080710082231.17:x.makeShadowFile
+   #@+node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
    def makeShadowFile (self,fn):
 
        x = self ; shadow_fn = x.shadowPathName(fn)
@@ -466,7 +466,7 @@ class shadowController:
        # Remove the sentinels from the original file.
        x.unlink(full_fn)
        x.copy_file_removing_sentinels(shadow_fn,full_fn)
-   #@-node:ekr.20080710082231.17:x.makeShadowFile
+   #@-node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
    #@+node:ekr.20080711063656.2:x.rename
    def rename (self,src,dst,mode=None,silent=False):
 

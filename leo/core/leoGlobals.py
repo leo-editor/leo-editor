@@ -1349,6 +1349,33 @@ if 0: # Test code: may be executed in the child node.
     #@-node:ekr.20031218072017.3123:<< test code >>
     #@nl
 #@-node:ekr.20031218072017.3121:redirecting stderr and stdout to Leo's log pane
+#@+node:ekr.20080712150045.4:getIvarsDict and checkUnchangedIvars
+def getIvarsDict(obj):
+
+    '''Return a dictionary of ivars:values for non-methods of obj.'''
+
+    import types
+
+    d = dict(
+        [[key,getattr(obj,key)] for key in dir(obj)
+            if type (getattr(obj,key)) != types.MethodType])
+
+    # keys = d.keys() ; keys.sort() ;g.pr(g.listToString(keys))
+    return d
+
+def checkUnchangedIvars(obj,d,exceptions=None):
+
+    if not exceptions: exceptions = []
+    ok = True
+
+    for key in d.keys():
+        if key not in exceptions:
+            if getattr(obj,key) != d.get(key):
+                g.trace('changed ivar: %s old: %s new: %s' % (
+                    key,repr(d.get(key)),repr(getattr(obj,key))))
+                ok = False
+    return ok
+#@-node:ekr.20080712150045.4:getIvarsDict and checkUnchangedIvars
 #@+node:ekr.20031218072017.3127:g.get_line & get_line__after
 # Very useful for tracing.
 

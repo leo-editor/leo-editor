@@ -290,12 +290,13 @@
 <v t="ekr.20080711065102.2"><vh>@test x.unlink</vh></v>
 <v t="ekr.20080711094406.1"><vh>@test at.prepareToReadShadowFile: not a shadow file</vh></v>
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh></v>
 </v>
-<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20080712155743.2"><vh>@@shadow test 1</vh></v>
+<v t="ekr.20080712155743.1" a="E"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20080712155743.2"><vh>@@shadow test_1.py</vh></v>
 </v>
 </v>
 </v>
@@ -2003,23 +2004,51 @@ assert s == s2
 
 </t>
 <t tx="ekr.20080712155743.1">at = c.atFileCommands
+x = c.shadowController
 changed = c.changed
 child = p.firstChild()
 s = child.bodyString()
 # if not s.endswith('\n'): s = s + '\n' # Output logic adds this...
 
 try:
-    child.setHeadString('@shadow test 1')
+    child.setHeadString('@shadow test_1.py')
+    shadow_fn = x.shadowPathName('test_1.py')
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
     at.writeOneAtShadowNode(child,toString=True,force=True)
-    g.pr('public...\n',at.public_s)
-    g.pr('private...\n',at.private_s)
-    # at.writeOneAtShadowNode(child,toString=False,force=True)
+    if 0:
+        g.pr('public...\n',at.public_s)
+        g.pr('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
     # assert at.stringOutput == s,'got %s, expected %s' % (repr(at.stringOutput),repr(s))
+    assert g.os_path_exists(shadow_fn)
+    g.utils_remove(shadow_fn,verbose=True)
 finally:
-    child.setHeadString('@@shadow test 1')
+
+    child.setHeadString('@@shadow test_1.py')
     c.setChanged(changed)
     c.redraw_now()</t>
-<t tx="ekr.20080712155743.2">body of @shadow test node
-The last line.</t>
+<t tx="ekr.20080712155743.2"># body of @shadow test node
+# The last line.</t>
+<t tx="ekr.20080713073749.1">import os
+
+x = c.shadowController
+
+shadow_fn  = x.shadowPathName('xyzzy')
+shadow_dir = x.shadowDirName('xyzzy')
+
+if g.os_path_exists(shadow_fn):
+    g.utils_remove(shadow_fn,verbose=True)
+assert not os.path.exists(shadow_fn)
+    
+if g.os_path_exists(shadow_dir):
+    os.rmdir(shadow_dir)
+assert not os.path.exists(shadow_dir)
+
+x.makeShadowDirectory(shadow_dir)
+assert os.path.exists(shadow_dir)
+
+os.rmdir(shadow_dir)
+assert not os.path.exists(shadow_dir)</t>
 </tnodes>
 </leo_file>

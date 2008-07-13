@@ -2537,11 +2537,16 @@ class atFile:
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force):
             return False
 
-        # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root,at.targetFileName,
-            nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=True,write_strips_blank_lines=False)
+        at.initWriteIvars(root,targetFileName=None,
+            nosentinels=None,thinFile=False,scriptWrite=False,
+            toString=False,write_strips_blank_lines=False)
+                # at.targetFileName not used.
+                # at.thinFile could be set to True.
+                # at.sentinels set below.
+                # toString=True creates a fileLikeObject.  We will do that below.
+
+        if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
         # Write the public and private files to public_s and private_s strings.
         data = []
@@ -2549,24 +2554,34 @@ class atFile:
             theFile = at.openStringFile(fn)
             at.sentinels = sentinels
             at.writeOpenFile(root,nosentinels=None,toString=False,atAuto=False)
-                # The nosentinels flag only affects error messages, and then only if atAuto is True.
+                # nosentinels only affects error messages, and then only if atAuto is True.
             s = at.closeStringFile(theFile)
             data.append(s)
+
+        # Set these new ivars for unit tests.
         at.public_s, at.private_s = data
+
+        if g.app.unitTesting:
+            exceptions = ('public_s','private_s','sentinels','stringOutput')
+            assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
         if at.errors == 0:
             if not toString: # Write the actual files.
-                for s2,fn2 in ((at.public_s,fn),(at.private_s,x.shadowFileName(fn))):
-                    if g.os_path_exists(fn2):
-                        at.replaceFileWithString(s2,fn2)
-                    else:
-                        x.error('not ready yet: does not exist: %s' % (fn2))
-            ### at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+                table = (
+                    (False,at.public_s,fn),
+                    (True, at.private_s,x.shadowPathName(fn)))
+
+                for isPrivate,s2,fn2 in table:
+                    if isPrivate: x.makeShadowDirectory(fn2)
+                    # g.trace('exists',g.os_path_exists(fn2),fn2)
+                    at.replaceFileWithString(s2,fn2)
+
+        if at.errors == 0:
+            root.clearOrphan()
+            root.clearDirty()
         else:
             g.es("not written:",at.outputFileName)
             root.setDirty() # New in Leo 4.4.8.
-
-        # Step 2: remove sentinels from the private file and write to the public file.
 
         return at.errors == 0
     #@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
@@ -3558,6 +3573,9 @@ class atFile:
             s = at.stringOutput = theFile.get()
             theFile.close()
             at.outputFile = None
+            at.outputFileName = u''
+            at.shortFileName = ''
+            at.targetFileName = None
             return s
         else:
             return None
@@ -3984,7 +4002,7 @@ class atFile:
         Return True if theFile was changed.
         '''
 
-        testing = g.app.unitTesting
+        at = self ; testing = g.app.unitTesting
 
         if g.os_path_exists(fn):
             try:
@@ -4007,6 +4025,7 @@ class atFile:
             if not testing: g.es('created:  ',fn)
             return True
         except IOError:
+            at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
     #@-node:ekr.20080712150045.1:replaceFileWithString
