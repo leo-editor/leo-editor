@@ -85,28 +85,132 @@ class shadowController:
        self.line_mapping = []
 
    #@-node:ekr.20080708094444.79: x.ctor
-   #@+node:ekr.20080708192807.1:Propagation...
-   #@+node:ekr.20080708094444.36:propagate_changes
-   def propagate_changes(self, old_public, old_private_file):
+   #@+node:ekr.20080711063656.1:x.File utils
+   #@+node:ekr.20080711063656.7:x.baseDirName
+   def baseDirName (self):
 
-       '''Propagate the changes from the public file (without_sentinels)
-       to the private file (with_sentinels)'''
+       x = self ; filename = x.c.fileName()
 
-       old_public_lines  = file(old_public_file).readlines()
-       old_private_lines = file(old_private_file).readlines()
-       marker = self.marker_from_extension(old_public_file)
-
-       new_private_lines = self.propagate_changed_lines(
-           old_public_lines,old_private_lines,marker)
-
-       written = self.write_if_changed(new_private_lines,
-           targetfilename=old_private_file,
-           sourcefilename=old_public_file)
-
-       return written
+       if filename:
+           return g.os_path_dirname(g.os_path_abspath(filename))
+       else:
+           self.error('Can not compute shadow path: .leo file has not been saved')
+           return None
    #@nonl
-   #@-node:ekr.20080708094444.36:propagate_changes
-   #@+node:ekr.20080708094444.35:check_the_final_output & helper
+   #@-node:ekr.20080711063656.7:x.baseDirName
+   #@+node:ekr.20080711063656.4:x.dirName and pathName
+   def dirName (self,filename):
+
+       '''Return the directory for filename.'''
+
+       x = self
+
+       return g.os_path_dirname(x.pathName(filename))
+
+   def pathName (self,filename):
+
+       '''Return the full path name of filename.'''
+
+       x = self ; theDir = x.baseDirName()
+
+       return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
+   #@nonl
+   #@-node:ekr.20080711063656.4:x.dirName and pathName
+   #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
+   def isSignificantPublicFile (self,filename):
+
+       '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+       return (
+           g.os_path_exists(filename) and
+           g.os_path_isfile(filename) and
+           g.os_path_getsize(fn) > 10)
+   #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
+   #@+node:ekr.20080710082231.19:x.makeShadowDirectory
+   def makeShadowDirectory (self,fn):
+
+       x = self ; path = x.shadowDirName(fn)
+
+       if not g.os_path_exists(path):
+
+           try:
+               os.mkdir(path)
+           except Exception:
+               g.es_exception()
+               return False
+
+       return g.os_path_exists(path) and g.os_path_isdir(path)
+   #@-node:ekr.20080710082231.19:x.makeShadowDirectory
+   #@+node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
+   def makeShadowFile (self,fn):
+
+       x = self ; shadow_fn = x.shadowPathName(fn)
+
+       theDir = x.makeShadowDirectory(fn)
+       if not theDir:
+           x.error('can not create shadow directory: ' % (x.shadowDirName(fn)))
+           return False
+
+       if os.path.exists(shadow_fn):
+           g.trace('replacing existing shadow file: %s' % (shadow_fn))
+
+       full_fn = x.pathName(fn)
+       x.message("creating shadow file: %s" % (shadow_fn))
+
+       # Copy the original file to the shadow file.
+       shutil.copy2(full_fn, shadow_fn)
+
+       # Remove the sentinels from the original file.
+       x.unlink(full_fn)
+       x.copy_file_removing_sentinels(shadow_fn,full_fn)
+   #@-node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
+   #@+node:ekr.20080711063656.2:x.rename
+   def rename (self,src,dst,mode=None,silent=False):
+
+       x = self ; c = x.c
+
+       ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+       if not ok:
+           x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+       return ok
+   #@-node:ekr.20080711063656.2:x.rename
+   #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
+   def shadowDirName (self,filename):
+
+       '''Return the directory for the shadow file corresponding to filename.'''
+
+       x = self
+
+       return g.os_path_dirname(x.shadowPathName(filename))
+
+   def shadowPathName (self,filename):
+
+       '''Return the full path name of filename, resolved using c.fileName()'''
+
+       x = self ; theDir = x.baseDirName()
+
+       return theDir and g.os_path_abspath(g.os_path_join(
+           theDir,x.shadow_subdir,x.shadow_prefix + g.shortFileName(filename)))
+   #@nonl
+   #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
+   #@+node:ekr.20080711063656.3:x.unlink
+   def unlink (self, filename,silent=False):
+
+       '''Unlink filename from the file system.
+       Give an error on failure.'''
+
+       x = self
+
+       ok = g.utils_remove(filename, verbose=not silent)
+       if not ok:
+           x.error('can not delete %s' % (filename),silent=silent)
+
+       return ok
+   #@-node:ekr.20080711063656.3:x.unlink
+   #@-node:ekr.20080711063656.1:x.File utils
+   #@+node:ekr.20080708192807.1:x.Propagation
+   #@+node:ekr.20080708094444.35:x.check_the_final_output
    def check_the_final_output(self, new_private_lines, new_public_lines, sentinel_lines, marker):
        """
        Check that we produced a valid output.
@@ -141,35 +245,8 @@ class shadowController:
                lines2_message = "new sentinels")
 
        # if ok: g.trace("success!")
-   #@+node:ekr.20080708094444.33:show_error
-   def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
-
-       def p(s):
-           sys.stdout.write(s)
-           f1.write(s)
-       print "================================="
-       print message
-       print "================================="
-       print lines1_message 
-       print "---------------------------------"
-       f1 = file("mod_shadow.tmp1", "w")
-       for line in lines1:
-           p(line)
-       f1.close()
-       print
-       print "=================================="
-       print lines2_message 
-       print "---------------------------------"
-       f1 = file("mod_shadow.tmp2", "w")
-       for line in lines2:
-           p(line)
-       f1.close()
-       print
-       g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
-       assert 0, "Malfunction of @shadow"
-   #@-node:ekr.20080708094444.33:show_error
-   #@-node:ekr.20080708094444.35:check_the_final_output & helper
-   #@+node:ekr.20080708094444.37:copy_sentinels
+   #@-node:ekr.20080708094444.35:x.check_the_final_output
+   #@+node:ekr.20080708094444.37:x.copy_sentinels
    def copy_sentinels(self,reader,writer,marker,limit):
 
        '''Copy sentinels from reader to writer while reader.index() < limit.'''
@@ -179,8 +256,8 @@ class shadowController:
            line = reader.get()
            if self.is_sentinel(line, marker):
                writer.put(line,tag='copy sent %s:%s' % (start,limit))
-   #@-node:ekr.20080708094444.37:copy_sentinels
-   #@+node:ekr.20080708094444.38:propagate_changed_lines
+   #@-node:ekr.20080708094444.37:x.copy_sentinels
+   #@+node:ekr.20080708094444.38:x.propagate_changed_lines
    def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
        '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -364,8 +441,28 @@ class shadowController:
            #@-node:ekr.20080708094444.45:<< do final correctness check >>
            #@nl
        return result
-   #@-node:ekr.20080708094444.38:propagate_changed_lines
-   #@+node:ekr.20080708094444.34:strip_sentinels_with_map
+   #@-node:ekr.20080708094444.38:x.propagate_changed_lines
+   #@+node:ekr.20080708094444.36:x.propagate_changes
+   def propagate_changes(self, old_public, old_private_file):
+
+       '''Propagate the changes from the public file (without_sentinels)
+       to the private file (with_sentinels)'''
+
+       old_public_lines  = file(old_public_file).readlines()
+       old_private_lines = file(old_private_file).readlines()
+       marker = self.marker_from_extension(old_public_file)
+
+       new_private_lines = self.propagate_changed_lines(
+           old_public_lines,old_private_lines,marker)
+
+       written = self.write_if_changed(new_private_lines,
+           targetfilename=old_private_file,
+           sourcefilename=old_public_file)
+
+       return written
+   #@nonl
+   #@-node:ekr.20080708094444.36:x.propagate_changes
+   #@+node:ekr.20080708094444.34:x.strip_sentinels_with_map
    def strip_sentinels_with_map (self, lines, marker):
 
       '''Strip sentinels from lines, a list of lines with sentinels.
@@ -386,133 +483,9 @@ class shadowController:
 
       mapping.append(len(lines)) # To terminate loops.
       return results, mapping 
-   #@-node:ekr.20080708094444.34:strip_sentinels_with_map
-   #@-node:ekr.20080708192807.1:Propagation...
-   #@+node:ekr.20080711063656.1:x.File utils
-   #@+node:ekr.20080711063656.7:x.baseDirName
-   def baseDirName (self):
-
-       x = self ; filename = x.c.fileName()
-
-       if filename:
-           return g.os_path_dirname(g.os_path_abspath(filename))
-       else:
-           self.error('Can not compute shadow path: .leo file has not been saved')
-           return None
-   #@nonl
-   #@-node:ekr.20080711063656.7:x.baseDirName
-   #@+node:ekr.20080711063656.4:x.dirName and pathName
-   def dirName (self,filename):
-
-       '''Return the directory for filename.'''
-
-       x = self
-
-       return g.os_path_dirname(x.pathName(filename))
-
-   def pathName (self,filename):
-
-       '''Return the full path name of filename.'''
-
-       x = self ; theDir = x.baseDirName()
-
-       return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))
-   #@nonl
-   #@-node:ekr.20080711063656.4:x.dirName and pathName
-   #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
-   def isSignificantPublicFile (self,filename):
-
-       '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
-
-       return (
-           g.os_path_exists(filename) and
-           g.os_path_isfile(filename) and
-           g.os_path_getsize(fn) > 10)
-   #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
-   #@+node:ekr.20080710082231.19:x.makeShadowDirectory
-   def makeShadowDirectory (self,fn):
-
-       x = self ; path = x.shadowDirName(fn)
-
-       if not g.os_path_exists(path):
-
-           try:
-               os.mkdir(path)
-           except Exception:
-               g.es_exception()
-               return False
-
-       return g.os_path_exists(path) and g.os_path_isdir(path)
-   #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-   #@+node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
-   def makeShadowFile (self,fn):
-
-       x = self ; shadow_fn = x.shadowPathName(fn)
-
-       theDir = x.makeShadowDirectory(fn)
-       if not theDir:
-           x.error('can not create shadow directory: ' % (x.shadowDirName(fn)))
-           return False
-
-       if os.path.exists(shadow_fn):
-           g.trace('replacing existing shadow file: %s' % (shadow_fn))
-
-       full_fn = x.pathName(fn)
-       x.message("creating shadow file: %s" % (shadow_fn))
-
-       # Copy the original file to the shadow file.
-       shutil.copy2(full_fn, shadow_fn)
-
-       # Remove the sentinels from the original file.
-       x.unlink(full_fn)
-       x.copy_file_removing_sentinels(shadow_fn,full_fn)
-   #@-node:ekr.20080710082231.17:x.makeShadowFile (possibly not used)
-   #@+node:ekr.20080711063656.2:x.rename
-   def rename (self,src,dst,mode=None,silent=False):
-
-       x = self ; c = x.c
-
-       ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
-       if not ok:
-           x.error('can not rename %s to %s' % (src,dst),silent=silent)
-
-       return ok
-   #@-node:ekr.20080711063656.2:x.rename
-   #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
-   def shadowDirName (self,filename):
-
-       '''Return the directory for the shadow file corresponding to filename.'''
-
-       x = self
-
-       return g.os_path_dirname(x.shadowPathName(filename))
-
-   def shadowPathName (self,filename):
-
-       '''Return the full path name of filename, resolved using c.fileName()'''
-
-       x = self ; theDir = x.baseDirName()
-
-       return theDir and g.os_path_abspath(g.os_path_join(
-           theDir,x.shadow_subdir,x.shadow_prefix + g.shortFileName(filename)))
-   #@nonl
-   #@-node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
-   #@+node:ekr.20080711063656.3:x.unlink
-   def unlink (self, filename,silent=False):
-
-       '''Unlink filename from the file system.
-       Give an error on failure.'''
-
-       x = self
-
-       ok = g.utils_remove(filename, verbose=not silent)
-       if not ok:
-           x.error('can not delete %s' % (filename),silent=silent)
-
-       return ok
-   #@-node:ekr.20080711063656.3:x.unlink
-   #@-node:ekr.20080711063656.1:x.File utils
-   #@+node:ekr.20080708094444.89:Utils...
+   #@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
+   #@-node:ekr.20080708192807.1:x.Propagation
+   #@+node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used: might be used in writeOneAtShadowNode
    # Called by updated version of atFile.replaceTargetFileIfDifferent
 
@@ -621,6 +594,33 @@ class shadowController:
 
        return regular_lines, sentinel_lines 
    #@-node:ekr.20080708094444.29:x.separate_sentinels
+   #@+node:ekr.20080708094444.33:x.show_error
+   def show_error (self, lines1, lines2, message, lines1_message, lines2_message):
+
+       def p(s):
+           sys.stdout.write(s)
+           f1.write(s)
+       print "================================="
+       print message
+       print "================================="
+       print lines1_message 
+       print "---------------------------------"
+       f1 = file("mod_shadow.tmp1", "w")
+       for line in lines1:
+           p(line)
+       f1.close()
+       print
+       print "=================================="
+       print lines2_message 
+       print "---------------------------------"
+       f1 = file("mod_shadow.tmp2", "w")
+       for line in lines2:
+           p(line)
+       f1.close()
+       print
+       g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
+       assert 0, "Malfunction of @shadow"
+   #@-node:ekr.20080708094444.33:x.show_error
    #@+node:ekr.20080708094444.10:x.write_if_changed & helpers
    def write_if_changed (self,lines, sourcefilename, targetfilename):
 
@@ -686,7 +686,7 @@ class shadowController:
           print "backup file in ", backupname 
    #@-node:ekr.20080708094444.84:make_backup_file
    #@-node:ekr.20080708094444.10:x.write_if_changed & helpers
-   #@-node:ekr.20080708094444.89:Utils...
+   #@-node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):
 

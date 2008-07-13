@@ -413,7 +413,7 @@ class atFile:
                 at.inputFile = None
 
         return at.inputFile # for unit tests.
-    #@+node:bwmulder.20041231170726:openShadowFileForRead (atFile)
+    #@+node:bwmulder.20041231170726:prepareToReadShadowFile
     def prepareToReadShadowFile (self,fn):
 
         '''Open a public file for which a private shadow file is known to exist.
@@ -438,7 +438,7 @@ class atFile:
                 x.message("created public %s from private %s " % (fn, shadow_fn))
 
         return g.choose(shadow_exists,shadow_fn,fn)
-    #@-node:bwmulder.20041231170726:openShadowFileForRead (atFile)
+    #@-node:bwmulder.20041231170726:prepareToReadShadowFile
     #@-node:ekr.20041005105605.19:openFileForReading (atFile) and helper
     #@+node:ekr.20041005105605.21:read (atFile)
     # The caller must enclose this code in beginUpdate/endUpdate.
