@@ -4129,6 +4129,36 @@ def make_backup_file (self,backupname,target_fn):
        g.trace("backup file:", backupname)
 #@-node:ekr.20080708094444.84:make_backup_file
 #@-node:ekr.20080708094444.10:x.write_if_changed & helpers
+#@+node:ekr.20080708094444.67:atFile.replaceTargetFileIfDifferent (new)
+# We must patch in two places:
+# -When the temporary file is written(openWriteFile)
+# -When Leo renames the file(replaceTargetFileIfDifferent).
+
+def replaceTargetFileIfDifferent (self,root):
+
+    # Check if we are dealing with a shadow file
+    try:
+        c = self.c ; x = c.shadowController
+        targetFileName = self.targetFileName 
+        outputFileName = self.outputFileName
+        if self.writing_to_shadow_directory:
+            self.targetFileName = self.shadow_filename 
+            self.outputFileName = self.shadow_filename+'.tmp'
+
+        if original_replaceTargetFileIfDifferent(self,root):
+            if self.writing_to_shadow_directory:
+                x.message("Updating file from shadow folder: %s" % x.shadow_subdir)
+                x.copy_file_removing_sentinels(self.shadow_filename,targetFileName)
+    finally:
+        # if self.writing_to_shadow_directory:
+            # assert self.targetFileName == self.shadow_filename 
+            # assert self.outputFileName == self.shadow_filename+'.tmp'
+        # else:
+            # assert self.targetFileName == targetFileName
+            # assert self.outputFileName == outputFileName
+        self.targetFileName = targetFileName
+        self.outputFileName = outputFileName
+#@-node:ekr.20080708094444.67:atFile.replaceTargetFileIfDifferent (new)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

@@ -142,8 +142,12 @@ class shadowController:
 
        return g.os_path_exists(path) and g.os_path_isdir(path)
    #@-node:ekr.20080710082231.19:x.makeShadowDirectory
-   #@+node:ekr.20080710082231.17:x.makeShadowFile
+   #@+node:ekr.20080710082231.17:x.makeShadowFile & helper
    def makeShadowFile (self,fn):
+
+       '''Create a showdow file from the public fn.
+
+       This is a helper for at.readOneAtShadowNode.'''
 
        x = self ; shadow_fn = x.shadowPathName(fn)
 
@@ -153,7 +157,7 @@ class shadowController:
            return False
 
        if os.path.exists(shadow_fn):
-           g.trace('replacing existing shadow file: %s' % (shadow_fn))
+           x.message('replacing existing shadow file: %s' % (shadow_fn))
 
        full_fn = x.pathName(fn)
        x.message("creating shadow file: %s" % (shadow_fn))
@@ -164,7 +168,25 @@ class shadowController:
        # Remove the sentinels from the original file.
        x.unlink(full_fn)
        x.copy_file_removing_sentinels(shadow_fn,full_fn)
-   #@-node:ekr.20080710082231.17:x.makeShadowFile
+   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   # Called from x.makeShadowFile.
+
+   def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+       '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+       x = self ; marker = x.marker_from_extension(source_fn)
+
+       old_lines = file(source_fn).readlines()
+       new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+       # x.write_if_changed(regular_lines, sourcefilename, targetfilename)
+       copy = not os.path.exists(target_fn) or old_lines != new_lines
+       if copy:
+           s = ''.join(new_lines)
+           x.replaceFileWithString(target_fn,s)
+   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   #@-node:ekr.20080710082231.17:x.makeShadowFile & helper
    #@+node:ekr.20080711063656.2:x.rename
    def rename (self,src,dst,mode=None,silent=False):
 
@@ -659,28 +681,6 @@ class shadowController:
        g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
        assert 0, "Malfunction of @shadow"
    #@-node:ekr.20080708094444.33:x.show_error
-   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
-   # Called by updated version of atFile.replaceTargetFileIfDifferent
-
-   def copy_file_removing_sentinels (self,source,target):
-
-       '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
-
-       x = self ; sourcefilename = source ; targetfilename = target
-
-       lines = file(sourcefilename).readlines()
-
-       marker = x.marker_from_extension(sourcefilename)
-
-       regular_lines, junk = x.separate_sentinels(lines,marker)
-
-       # x.write_if_changed(regular_lines, sourcefilename, targetfilename)
-       fn = tagetfilename
-       copy = not os.path.exists(fn) or lines != regular_lines
-       if copy:
-           s = ''.join(regular_lines)
-           x.replaceFileWithString(fn,s)
-   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
    #@-node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase
    class atShadowTestCase (unittest.TestCase):

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -311,13 +311,19 @@
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 <v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
+<v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
+<v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
+<v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
+<v t="ekr.20080713085553.1"><vh>To do</vh>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 <v t="ekr.20080713111837.1"><vh>@test importAtShadowNode</vh></v>
+<v t="ekr.20080713130510.1"><vh>@test x.makeShadowFille</vh></v>
+<v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
+<v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2142,5 +2148,22 @@ f = file(fn)
 s2 = f.read()
 f.close()
 assert s == s2</t>
+<t tx="ekr.20080713130510.1"></t>
+<t tx="ekr.20080713130510.2"></t>
+<t tx="ekr.20080713130510.3">at = c.atFileCommands
+x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+
+try:
+    theFile = at.openForWrite(filename)
+    # g.pr(repr(theFile))
+    if theFile: theFile.close()
+    
+finally:
+    if g.os_path_exists(filename):
+        x.unlink(filename)
+        assert not g.os_path_exists(filename)</t>
 </tnodes>
 </leo_file>
