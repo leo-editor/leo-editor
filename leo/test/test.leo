@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -213,14 +213,14 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
-<v t="ekr.20080711100148.1" a="E" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow shadowWriteTest-2.py</vh>
-<v t="ekr.20080713100139.1" a="M"><vh>spam</vh></v>
+<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow shadowWriteTest-2.py</vh>
+<v t="ekr.20080713100139.1"><vh>spam</vh></v>
 <v t="ekr.20080713135029.2"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2" a="E"><vh>@shadow-tests</vh>
-<v t="ekr.20080713135029.1"><vh>Passed</vh>
+<v t="ekr.20080713135717.45"><vh>Passed</vh></v>
 <v t="ekr.20080709122414.1"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20080709122414.2"><vh>old</vh></v>
 <v t="ekr.20080709122414.3"><vh>new</vh></v>
@@ -281,6 +281,16 @@
 <v t="ekr.20080709192609.17"><vh>node 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080713131842.9"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20080713131842.10"><vh>old</vh>
+<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
+<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
+</v>
+</v>
 <v t="ekr.20080713131842.2"><vh>@shadow-test delete between nodes: at start of next node</vh>
 <v t="ekr.20080713131842.3"><vh>old</vh>
 <v t="ekr.20080713131842.4"><vh>node 1</vh></v>
@@ -311,15 +321,64 @@
 <v t="ekr.20080713131842.30"><vh>node 2</vh></v>
 </v>
 </v>
+<v t="ekr.20080713135717.3"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20080713135717.4" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.5"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.6"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713131842.9"><vh>@shadow-test delete between nodes: at end of prev node FIXME</vh>
-<v t="ekr.20080713131842.10"><vh>old</vh>
-<v t="ekr.20080713131842.11"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.12"><vh>node 2</vh></v>
+<v t="ekr.20080713135717.7" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.8"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.9"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
-<v t="ekr.20080713131842.14"><vh>node 1</vh></v>
-<v t="ekr.20080713131842.15"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.10"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
+<v t="ekr.20080713135717.11" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.12"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.13"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.14" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.15"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.16"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713135717.24"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20080713135717.25" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.26"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.27"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.28" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.29"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.30"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713135717.31"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20080713135717.32" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.33"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.34"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.35" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.36"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.37"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713135717.38"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20080713135717.39" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.40"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.41"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.42" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.43"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.44"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20080713135717.17"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20080713135717.18" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.19"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.20"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20080713135717.21" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.22"><vh>node 1</vh></v>
+<v t="ekr.20080713135717.23"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
@@ -1802,7 +1861,8 @@ for z in aList:
         print 'echo .'
         print 'echo',name
         print 'call pylint.bat core\\%s' % name</t>
-<t tx="ekr.20080708103735.1">@
+<t tx="ekr.20080708103735.1"></t>
+<t tx="ekr.20080708103735.2">@
 
 All the tags should be tested at least once (equal, replace, delete, insert).
 
@@ -1814,7 +1874,6 @@ The replace, delete, insert operations should happen at least once:
 For the delete and replace operators we must also test the case that the
 deletion or replacement spans more than one block.
 </t>
-<t tx="ekr.20080708103735.2"></t>
 <t tx="ekr.20080709091709.1">import unittest
 
 if 1:
@@ -2249,8 +2308,70 @@ node 2 line 2</t>
 node 1 line 2</t>
 <t tx="ekr.20080713131842.30">node 2 line 1 changed
 node 2 line 2</t>
-<t tx="ekr.20080713135029.1"></t>
 <t tx="ekr.20080713135029.2">def eggs():
     pass</t>
+<t tx="ekr.20080713135717.3"></t>
+<t tx="ekr.20080713135717.4">@others</t>
+<t tx="ekr.20080713135717.5">node 1 line 1</t>
+<t tx="ekr.20080713135717.6">node 2 line 1</t>
+<t tx="ekr.20080713135717.7">@others</t>
+<t tx="ekr.20080713135717.8">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1</t>
+<t tx="ekr.20080713135717.9">node 2 line 1</t>
+<t tx="ekr.20080713135717.10"></t>
+<t tx="ekr.20080713135717.11">@others</t>
+<t tx="ekr.20080713135717.12">node 1 line 1</t>
+<t tx="ekr.20080713135717.13">node 2 line 1</t>
+<t tx="ekr.20080713135717.14">@others</t>
+<t tx="ekr.20080713135717.15">node 1 line 1</t>
+<t tx="ekr.20080713135717.16">inserted node 1 at start of node 2
+inserted node 2 at start of node 2
+node 2 line 1</t>
+<t tx="ekr.20080713135717.17"></t>
+<t tx="ekr.20080713135717.18">@others</t>
+<t tx="ekr.20080713135717.19">node 1 line 1</t>
+<t tx="ekr.20080713135717.20">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20080713135717.21">@others</t>
+<t tx="ekr.20080713135717.22">node 1 line 1</t>
+<t tx="ekr.20080713135717.23">node 2 line 3</t>
+<t tx="ekr.20080713135717.24"></t>
+<t tx="ekr.20080713135717.25">@others</t>
+<t tx="ekr.20080713135717.26">node 1 line 1
+node 1 line 2
+node 1 line 3</t>
+<t tx="ekr.20080713135717.27">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713135717.28">@others</t>
+<t tx="ekr.20080713135717.29">node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed</t>
+<t tx="ekr.20080713135717.30">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713135717.31"></t>
+<t tx="ekr.20080713135717.32">@others</t>
+<t tx="ekr.20080713135717.33">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713135717.34">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713135717.35">@others</t>
+<t tx="ekr.20080713135717.36">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20080713135717.37">node 2 line 1 changed
+node 2 line 2 changed</t>
+<t tx="ekr.20080713135717.38"></t>
+<t tx="ekr.20080713135717.39">@others</t>
+<t tx="ekr.20080713135717.40">node 1 line 1
+node 1 line 2
+node 1 line 3</t>
+<t tx="ekr.20080713135717.41">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713135717.42">@others</t>
+<t tx="ekr.20080713135717.43">node 1 line 1</t>
+<t tx="ekr.20080713135717.44">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20080713135717.45"></t>
 </tnodes>
 </leo_file>
