@@ -3081,7 +3081,7 @@ def os_path_exists(path,encoding=None):
     return os.path.exists(path)
 #@-node:ekr.20031218072017.2149:os_path_exists
 #@+node:ekr.20080712080505.4:os_path_getsize
-def getsize (path,endcoding=None):
+def os_path_getsize (path,encoding=None):
 
     path = g.toUnicodeFileEncoding(path,encoding)
 

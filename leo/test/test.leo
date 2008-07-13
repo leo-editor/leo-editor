@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -213,8 +213,9 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
-<v t="ekr.20080711100148.1"><vh>@@file shadowWriteTest.py</vh></v>
-<v t="ekr.20080711120608.1" tnodeList="ekr.20080711120608.1"><vh>@shadow shadow-test.py</vh></v>
+<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080711100148.1,ekr.20080713100139.1"><vh>@shadow shadowWriteTest-2.py</vh>
+<v t="ekr.20080713100139.1"><vh>spam</vh></v>
+</v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
@@ -298,8 +299,12 @@
 <v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
+<v t="ekr.20080713102628.1"><vh>@test at.openFileForReading</vh></v>
+<v t="ekr.20080713100725.1"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20080713100725.2"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
-<v t="ekr.20080713085553.1" a="E"><vh>To do</vh>
+</v>
+<v t="ekr.20080713085553.1"><vh>To do</vh>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
 </v>
@@ -1966,7 +1971,12 @@ theFile = at.openFileForReading(fn)
 # g.pr(repr(theFile))
 assert theFile
 theFile.close()</t>
-<t tx="ekr.20080711100148.1"># shadowWriteTest.py</t>
+<t tx="ekr.20080711100148.1">@language python
+@tabwidth -4
+
+@others
+
+# changed</t>
 <t tx="ekr.20080711102819.1">at = c.atFileCommands
 x = c.shadowController
 
@@ -1982,7 +1992,6 @@ finally:
     if g.os_path_exists(filename):
         x.unlink(filename)
         assert not g.os_path_exists(filename)</t>
-<t tx="ekr.20080711120608.1">ab</t>
 <t tx="ekr.20080712151349.1"></t>
 <t tx="ekr.20080712151349.2">s = 'abc'
 fn = 'unitTestFile.py'
@@ -2082,5 +2091,27 @@ assert not os.path.exists(shadow_dir)
 <t tx="ekr.20080713085553.1"></t>
 <t tx="ekr.20080713085553.2"></t>
 <t tx="ekr.20080713085553.3"></t>
+<t tx="ekr.20080713100139.1">def spam():
+    pass</t>
+<t tx="ekr.20080713100725.1">at = c.atFileCommands
+x = c.shadowController
+
+changed = c.changed
+child = p.firstChild()
+s = child.bodyString()
+
+try:
+    fn = 'unittest/read_test.py'
+    child.setHeadString('@shadow %s' % fn)
+    # shadow_fn = x.shadowPathName(fn)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
+    at.readOneAtShadowNode(fn,child)
+finally:
+    child.setHeadString('@@shadow %s' % fn)
+    c.setChanged(changed)
+    c.redraw_now()</t>
+<t tx="ekr.20080713100725.2"># body of @shadow test node
+# The last line.</t>
+<t tx="ekr.20080713102628.1"></t>
 </tnodes>
 </leo_file>

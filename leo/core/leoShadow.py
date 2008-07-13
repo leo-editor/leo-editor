@@ -117,14 +117,11 @@ class shadowController:
    #@nonl
    #@-node:ekr.20080711063656.4:x.dirName and pathName
    #@+node:ekr.20080712080505.3:x.isSignificantPublicFile
-   def isSignificantPublicFile (self,filename):
+   def isSignificantPublicFile (self,fn):
 
        '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
 
-       return (
-           g.os_path_exists(filename) and
-           g.os_path_isfile(filename) and
-           g.os_path_getsize(fn) > 10)
+       return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) > 10
    #@-node:ekr.20080712080505.3:x.isSignificantPublicFile
    #@+node:ekr.20080710082231.19:x.makeShadowDirectory
    def makeShadowDirectory (self,fn):
@@ -452,7 +449,7 @@ class shadowController:
        return result
    #@-node:ekr.20080708094444.38:x.propagate_changed_lines
    #@+node:ekr.20080708094444.36:x.propagate_changes
-   def propagate_changes(self, old_public, old_private_file):
+   def propagate_changes(self, old_public_file, old_private_file):
 
        '''Propagate the changes from the public file (without_sentinels)
        to the private file (with_sentinels)'''

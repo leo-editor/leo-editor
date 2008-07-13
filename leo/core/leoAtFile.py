@@ -394,7 +394,7 @@ class atFile:
     #@+node:ekr.20041005105605.19:openFileForReading (atFile) and helper
     def openFileForReading(self,fn,fromString=False,atShadow=False):
 
-        at = self
+        at = self ; trace = True
 
         if fromString:
             at.inputFile = g.fileLikeObject(fromString=fromString)
@@ -406,6 +406,7 @@ class atFile:
 
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
+                if trace and atShadow: g.trace('opening %s file: %s' % (g.choose(atShadow,'private','public'),fn))
                 at.inputFile = open(fn,'rb')
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -467,7 +468,7 @@ class atFile:
         #@nl
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
         if at.errors: return False
-        at.openFileForReading(fileName,fromString=fromString)
+        at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
         if not at.inputFile: return False
         if not g.unitTesting:
             g.es("reading:",root.headString())
@@ -537,6 +538,11 @@ class atFile:
                 fileName = p.atAutoNodeName()
                 at.readOneAtAutoNode (fileName,p)
                 p.moveToNodeAfterTree()
+            elif p.isAtShadowFileNode():
+                # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+                fileName = p.atShadowFileNodeName()
+                at.readOneAtShadowNode (fileName,p)
+                p.moveToNodeAfterTree()
             elif p.isAtFileNode() or p.isAtNorefFileNode():
                 anyRead = True
                 wasOrphan = p.isOrphan()
@@ -564,7 +570,8 @@ class atFile:
         oldChanged = c.isChanged()
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = g.os_path_join(at.default_directory,fileName)
-        # g.trace(fileName)
+
+        g.trace(fileName)
 
         if not g.unitTesting:
             g.es("reading:",p.headString())
@@ -1842,6 +1849,7 @@ class atFile:
         end = s[j:i]
         #@-node:ekr.20041005105605.126:<< set the closing comment delim >>
         #@nl
+        # g.trace('new_df',new_df,repr(s))
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:parseLeoSentinel
     #@+node:ekr.20041005105605.127:readError
@@ -4005,10 +4013,12 @@ class atFile:
 
         at = self ; testing = g.app.unitTesting
 
-        if g.os_path_exists(fn):
+        exists = g.os_path_exists(fn)
+
+        if not exists:
             try:
                 f = None
-                f = file(fn)
+                f = file(fn,'wb')
                 s2 = f.read()
             except IOError:
                 g.es_exception()
@@ -4023,7 +4033,11 @@ class atFile:
             f = file(fn,'wb')
             f.write(s)
             f.close()
-            if not testing: g.es('created:  ',fn)
+            if not testing:
+                if exists:
+                    g.es('wrote:    ',fn)
+                else:
+                    g.es('created:  ',fn)
             return True
         except IOError:
             at.error('unexpected exception writing file: %s' % (fn))

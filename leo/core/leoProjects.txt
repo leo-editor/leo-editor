@@ -1979,6 +1979,11 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
             fileName = p.atAutoNodeName()
             at.readOneAtAutoNode (fileName,p)
             p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
         elif p.isAtFileNode() or p.isAtNorefFileNode():
             anyRead = True
             wasOrphan = p.isOrphan()
@@ -2006,7 +2011,8 @@ def readOneAtAutoNode (self,fileName,p):
     oldChanged = c.isChanged()
     at.scanDefaultDirectory(p,importing=True) # Set default_directory
     fileName = g.os_path_join(at.default_directory,fileName)
-    # g.trace(fileName)
+
+    g.trace(fileName)
 
     if not g.unitTesting:
         g.es("reading:",p.headString())
@@ -14024,6 +14030,11 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
             fileName = p.atAutoNodeName()
             at.readOneAtAutoNode (fileName,p)
             p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
         elif p.isAtFileNode() or p.isAtNorefFileNode():
             anyRead = True
             wasOrphan = p.isOrphan()
@@ -14055,7 +14066,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     << set fileName >>
     at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
     if at.errors: return False
-    at.openFileForReading(fileName,fromString=fromString)
+    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
     if not at.inputFile: return False
     if not g.unitTesting:
         g.es("reading:",root.headString())
