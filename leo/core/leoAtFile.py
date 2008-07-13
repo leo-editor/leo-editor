@@ -2567,14 +2567,19 @@ class atFile:
 
         if at.errors == 0:
             if not toString: # Write the actual files.
-                table = (
-                    (False,at.public_s,fn),
-                    (True, at.private_s,x.shadowPathName(fn)))
+                # Make the public file
+                private_fn = x.shadowPathName(fn)
+                x.makeShadowDirectory(private_fn)
+                at.replaceFileWithString(private_fn,at.private_s)
+                at.replaceFileWithString(fn,at.public_s)
+                # table = (
+                    # (False,at.public_s,fn),
+                    # (True, at.private_s,x.shadowPathName(fn)))
 
-                for isPrivate,s2,fn2 in table:
-                    if isPrivate: x.makeShadowDirectory(fn2)
-                    # g.trace('exists',g.os_path_exists(fn2),fn2)
-                    at.replaceFileWithString(s2,fn2)
+                # for isPrivate,s2,fn2 in table:
+                    # if isPrivate: x.makeShadowDirectory(fn2)
+                    # # g.trace('exists',g.os_path_exists(fn2),fn2)
+                    # at.replaceFileWithString(s2,fn2)
 
         if at.errors == 0:
             root.clearOrphan()
@@ -3995,7 +4000,7 @@ class atFile:
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20080712150045.1:replaceFileWithString
-    def replaceFileWithString (self,s,fn):
+    def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
 

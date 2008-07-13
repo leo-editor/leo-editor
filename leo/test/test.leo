@@ -292,7 +292,7 @@
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713073749.1"><vh>@test x.makeShadowDirectory</vh></v>
 </v>
-<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080712155743.1" a="E"><vh>@test at.writeOneAtShadowNode</vh>
@@ -1981,7 +1981,7 @@ finally:
 <t tx="ekr.20080712151349.1"></t>
 <t tx="ekr.20080712151349.2">s = 'abc'
 fn = 'unitTestFile.py'
-c.atFileCommands.replaceFileWithString(s,fn)
+c.atFileCommands.replaceFileWithString(fn,s)
 f = file(fn)
 s2 = f.read()
 f.close()
