@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="29" left="385" height="914" width="777"/>
+	<global_window_position top="29" left="385" height="914" width="852"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -213,11 +213,11 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
-<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow shadowWriteTest-2.py</vh>
+<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
+<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow unittest/shadowWriteTest-2.py</vh>
 <v t="ekr.20080713100139.1"><vh>spam</vh></v>
 <v t="ekr.20080713135029.2"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
 <v t="ekr.20080713135717.45"><vh>Passed</vh></v>
@@ -419,9 +419,6 @@
 <v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
-</v>
-<v t="ekr.20080713111837.1" a="E"><vh>@test importing a new @shadow node</vh>
-<v t="ekr.20080713185719.1"><vh>@@shadow ../test/unittest/leoGlobals.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2203,7 +2200,7 @@ if g.os_path_exists(shadow_dir):
 <t tx="ekr.20080713085553.2"></t>
 <t tx="ekr.20080713085553.3"></t>
 <t tx="ekr.20080713100139.1">def spam():
-    pass</t>
+    pass # changed 2</t>
 <t tx="ekr.20080713100725.1">at = c.atFileCommands
 x = c.shadowController
 
@@ -2267,11 +2264,14 @@ finally:
                 os.unlink(z)
         os.rmdir(shadow_dir)
         assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir</t>
-<t tx="ekr.20080713123855.3">s = 'abc'
-fn = 'unitTestFile.py'
-x = c.shadowController
-x.replaceFileWithString(fn,s)
-f = file(fn)
+<t tx="ekr.20080713123855.3">x = c.shadowController
+s = 'abc'
+
+fn = '../test/unittest/replaceFileWithStringTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+
+x.replaceFileWithString(path,s)
+f = file(path)
 s2 = f.read()
 f.close()
 assert s == s2</t>

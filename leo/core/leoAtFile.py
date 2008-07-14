@@ -2581,7 +2581,7 @@ class atFile:
         for sentinels in (False,True):
             theFile = at.openStringFile(fn)
             at.sentinels = sentinels
-            at.writeOpenFile(root,nosentinels=None,toString=False,atAuto=False)
+            at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
                 # nosentinels only affects error messages, and then only if atAuto is True.
             s = at.closeStringFile(theFile)
             data.append(s)
