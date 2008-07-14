@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -286,7 +286,7 @@
 <v t="ekr.20080713131842.11"><vh>node 1</vh></v>
 <v t="ekr.20080713131842.12"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713131842.13" a="E"><vh>new</vh>
+<v t="ekr.20080713131842.13"><vh>new</vh>
 <v t="ekr.20080713131842.14"><vh>node 1</vh></v>
 <v t="ekr.20080713131842.15"><vh>node 2</vh></v>
 </v>
@@ -322,67 +322,67 @@
 </v>
 </v>
 <v t="ekr.20080713135717.3"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
-<v t="ekr.20080713135717.4" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.4"><vh>old</vh>
 <v t="ekr.20080713135717.5"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.6"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.7" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.7"><vh>new</vh>
 <v t="ekr.20080713135717.8"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.9"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713135717.10"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
-<v t="ekr.20080713135717.11" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.11"><vh>old</vh>
 <v t="ekr.20080713135717.12"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.13"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.14" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.14"><vh>new</vh>
 <v t="ekr.20080713135717.15"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.16"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713135717.24"><vh>@shadow-test multiple-line change end of prev node</vh>
-<v t="ekr.20080713135717.25" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.25"><vh>old</vh>
 <v t="ekr.20080713135717.26"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.27"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.28" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.28"><vh>new</vh>
 <v t="ekr.20080713135717.29"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.30"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713135717.31"><vh>@shadow-test multiple-line change start of next node</vh>
-<v t="ekr.20080713135717.32" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.32"><vh>old</vh>
 <v t="ekr.20080713135717.33"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.34"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.35" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.35"><vh>new</vh>
 <v t="ekr.20080713135717.36"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.37"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713135717.38"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
-<v t="ekr.20080713135717.39" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.39"><vh>old</vh>
 <v t="ekr.20080713135717.40"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.41"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.42" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.42"><vh>new</vh>
 <v t="ekr.20080713135717.43"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.44"><vh>node 2</vh></v>
 </v>
 </v>
 <v t="ekr.20080713135717.17"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
-<v t="ekr.20080713135717.18" a="E"><vh>old</vh>
+<v t="ekr.20080713135717.18"><vh>old</vh>
 <v t="ekr.20080713135717.19"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.20"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080713135717.21" a="E"><vh>new</vh>
+<v t="ekr.20080713135717.21"><vh>new</vh>
 <v t="ekr.20080713135717.22"><vh>node 1</vh></v>
 <v t="ekr.20080713135717.23"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080711065102.1" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080711065102.1"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080711074601.1"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080711065102.3"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080711072651.1"><vh>@test x.dirName</vh></v>
@@ -395,7 +395,7 @@
 </v>
 <v t="ekr.20080713123855.3"><vh>@test x.replaceFileWithString</vh></v>
 </v>
-<v t="ekr.20080712151349.1" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080712151349.1"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080712154122.1"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080711102819.1"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080713100725.1"><vh>@test at.readOneAtShadowNode</vh>
@@ -411,14 +411,18 @@
 <v t="ekr.20080713102628.1"><vh>@test at.openFileForReading</vh></v>
 <v t="ekr.20080713085553.2"><vh>@test that write honors @path</vh></v>
 <v t="ekr.20080713085553.3"><vh>@test that read honors @path</vh></v>
-<v t="ekr.20080713111837.1"><vh>@test importing a new @shadow node</vh></v>
+<v t="ekr.20080713111837.1"><vh>@test importing a new @shadow node</vh>
+<v t="ekr.20080713185719.1"><vh>@@shadow ../test/unittest/leoGlobals.py</vh></v>
+</v>
 <v t="ekr.20080713130510.2"><vh>@test x.copy_file_removing_sentinels</vh></v>
 <v t="ekr.20080713130510.3"><vh>@test at.openForWrite: **IS** a shadow file</vh></v>
 <v t="ekr.20080713131842.16"><vh>@test x.propagate_changes</vh></v>
 </v>
 <v t="ekr.20080713082327.1"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20080713111837.1"><vh>@test importing a new @shadow node</vh></v>
+<v t="ekr.20080713111837.1" a="E"><vh>@test importing a new @shadow node</vh>
+<v t="ekr.20080713185719.1"><vh>@@shadow ../test/unittest/leoGlobals.py</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -2221,8 +2225,38 @@ finally:
 # The last line.</t>
 <t tx="ekr.20080713102628.1"></t>
 <t tx="ekr.20080713111837.1">at = c.atFileCommands
+x = c.shadowController
 
-# at.importAtShadowNode (fn,p):</t>
+changed = c.changed
+child = p.firstChild()
+assert child
+
+loadDir = g.app.loadDir
+fn_1 = 'leoGlobals.py'
+fn_2 = '../test/unittest/leoGlobals.py'
+path1 = g.os_path_abspath(g.os_path_join(loadDir,fn_1))
+path2 = g.os_path_abspath(g.os_path_join(loadDir,fn_2))
+
+try:
+    ok = False
+    f = open(path1,'rb')
+    s = f.read()
+    f.close()
+    lines = g.splitLines(s)
+    regular_lines,sentinel_lines = x.separate_sentinels(lines,marker='#@')
+    f = open(path2,'wb')
+    f.write(''.join(regular_lines))
+    f.close()
+    child.setHeadString('@shadow %s' % fn_2)
+    at.importAtShadowNode (path2,child)
+    ok = True
+finally:
+    child.setHeadString('@@shadow %s' % fn_2)
+    c.setChanged(changed)
+    if True and ok:
+        while child.hasFirstChild():
+            child.firstChild().doDelete()
+        c.redraw_now()</t>
 <t tx="ekr.20080713120805.1">def deleteShadowDir(shadowDir):
 
     if g.os_path_exists(shadow_dir):
@@ -2373,5 +2407,9 @@ node 2 line 2</t>
 <t tx="ekr.20080713135717.44">node 2 line 1
 node 2 line 2</t>
 <t tx="ekr.20080713135717.45"></t>
+<t tx="ekr.20080713185719.1">@language python
+@tabwidth -4
+@others
+</t>
 </tnodes>
 </leo_file>

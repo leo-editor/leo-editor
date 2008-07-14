@@ -88,8 +88,7 @@ unitTesting = False # A synonym for app.unitTesting.
 
 # "compile-time" constants.
 # It makes absolutely no sense to change these after Leo loads.
-unified_nodes = False
-    # True: (Not recommended) unify vnodes and tnodes into a single vnode.
+unified_nodes = False # True: (Not recommended) unify vnodes and tnodes into a single vnode.
 
 #@+others
 #@+node:ekr.20050328133058:g.createStandAloneTkApp
