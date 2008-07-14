@@ -1977,12 +1977,10 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
             at.read(p,thinFile=True)
             p.moveToNodeAfterTree()
         elif p.isAtAutoNode():
-            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
             fileName = p.atAutoNodeName()
             at.readOneAtAutoNode (fileName,p)
             p.moveToNodeAfterTree()
         elif p.isAtShadowFileNode():
-            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
             fileName = p.atShadowFileNodeName()
             at.readOneAtShadowNode (fileName,p)
             p.moveToNodeAfterTree()
@@ -14030,12 +14028,10 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
             at.read(p,thinFile=True)
             p.moveToNodeAfterTree()
         elif p.isAtAutoNode():
-            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
             fileName = p.atAutoNodeName()
             at.readOneAtAutoNode (fileName,p)
             p.moveToNodeAfterTree()
         elif p.isAtShadowFileNode():
-            # g.trace('@auto',p.headString(),'name',p.atAutoNodeName())
             fileName = p.atShadowFileNodeName()
             at.readOneAtShadowNode (fileName,p)
             p.moveToNodeAfterTree()
@@ -14059,12 +14055,9 @@ def readAll(self,root,partialFlag=False,forceGnx=False):
     if use_tracer: tt.stop()
 #@-node:ekr.20041005105605.26:readAll (atFile)
 #@+node:ekr.20041005105605.21:read (atFile)
-# The caller must enclose this code in beginUpdate/endUpdate.
-# Reads @thin, @file and @noref trees.
-
 def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
-    """Read any derived file."""
+    """Read any @thin, @file and @noref trees."""
 
     at = self ; c = at.c
     << set fileName >>

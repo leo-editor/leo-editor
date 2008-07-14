@@ -514,6 +514,42 @@ class shadowController:
       mapping.append(len(lines)) # To terminate loops.
       return results, mapping 
    #@-node:ekr.20080708094444.34:x.strip_sentinels_with_map
+   #@+node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
+   def updatePublicAndPrivateFiles (self,fn,shadow_fn):
+
+       '''handle crucial @shadow read logic.
+
+       This will be called only if the public and private files both exist.'''
+
+       x = self ; trace = False
+
+       if trace and not g.app.unitTesting:
+           g.trace('significant',x.isSignificantPublicFile(fn),fn)
+
+       if x.isSignificantPublicFile(fn):
+           # Update the private shadow file from the public file.
+           written = x.propagate_changes(fn,shadow_fn)
+           if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+       else:
+           # Create the private file from the private shadow file.
+           x.copy_file_removing_sentinels(shadow_fn,fn)
+           x.message("created public %s from private %s " % (fn, shadow_fn))
+   #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+       '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+       x = self ; marker = x.marker_from_extension(source_fn)
+
+       old_lines = file(source_fn).readlines()
+       new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+       copy = not os.path.exists(target_fn) or old_lines != new_lines
+       if copy:
+           s = ''.join(new_lines)
+           x.replaceFileWithString(target_fn,s)
+   #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+   #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
    #@-node:ekr.20080708192807.1:x.Propagation
    #@+node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080708094444.85:x.error & message

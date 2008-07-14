@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -214,14 +214,7 @@
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
 <v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
-<v t="ekr.20080711100148.1" tnodeList="ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2,ekr.20080711100148.1,ekr.20080713100139.1,ekr.20080713135029.2"><vh>@shadow unittest/shadowWriteTest-2.py</vh>
-<v t="ekr.20080713100139.1"><vh>spam</vh></v>
-<v t="ekr.20080713135029.2"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20080713193824.1" tnodeList="ekr.20080713193824.1,ekr.20080713193824.2,ekr.20080713193824.3,ekr.20080713193824.1,ekr.20080713193824.2,ekr.20080713193824.3"><vh>@shadow unittest/shadowWriteTest-3.py</vh>
-<v t="ekr.20080713193824.2"><vh>spam</vh></v>
-<v t="ekr.20080713193824.3"><vh>eggs</vh></v>
-</v>
+<v t="ekr.20080711100148.1" a="M" tnodeList="ekr.20080711100148.1,ekr.20080711100148.1"><vh>@shadow unittest/shadowWriteTest-2.py</vh></v>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
 <v t="ekr.20080713135717.45"><vh>Passed</vh></v>
@@ -405,7 +398,6 @@
 <v t="ekr.20080713100725.1"><vh>@test at.readOneAtShadowNode</vh>
 <v t="ekr.20080713100725.2"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
-<v t="ekr.20080711094406.1"><vh>@test at.readShadowFileHelper: not a shadow file</vh></v>
 <v t="ekr.20080712151349.2"><vh>@test at.replaceFileWithString</vh></v>
 <v t="ekr.20080712155743.1"><vh>@test at.writeOneAtShadowNode</vh>
 <v t="ekr.20080712155743.2"><vh>@@shadow unittest/test_1.py</vh></v>
@@ -2071,25 +2063,13 @@ x.rename('xyzzy','xyzzy2',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not rename')
 # g.pr(x.last_error)</t>
-<t tx="ekr.20080711094406.1">at = c.atFileCommands
-x = c.shadowController
-
-fn = x.pathName('xyzzy')
-assert not g.os_path_exists(fn)
-assert fn == at.readShadowFileHelper(fn)
-
-fn = c.fileName()
-assert g.os_path_exists(fn)
-theFile = at.openFileForReading(fn)
-# g.pr(repr(theFile))
-assert theFile
-theFile.close()</t>
 <t tx="ekr.20080711100148.1">@language python
 @tabwidth -4
-
 @others
 
-# changed 2</t>
+
+# changed 3
+</t>
 <t tx="ekr.20080711102819.1">at = c.atFileCommands
 x = c.shadowController
 
@@ -2203,8 +2183,6 @@ if g.os_path_exists(shadow_dir):
 <t tx="ekr.20080713085553.1"></t>
 <t tx="ekr.20080713085553.2"></t>
 <t tx="ekr.20080713085553.3"></t>
-<t tx="ekr.20080713100139.1">def spam():
-    pass # changed 2</t>
 <t tx="ekr.20080713100725.1">at = c.atFileCommands
 x = c.shadowController
 
@@ -2346,8 +2324,6 @@ node 2 line 2</t>
 node 1 line 2</t>
 <t tx="ekr.20080713131842.30">node 2 line 1 changed
 node 2 line 2</t>
-<t tx="ekr.20080713135029.2">def eggs():
-    pass</t>
 <t tx="ekr.20080713135717.3"></t>
 <t tx="ekr.20080713135717.4">@others</t>
 <t tx="ekr.20080713135717.5">node 1 line 1</t>
@@ -2415,15 +2391,5 @@ node 2 line 2</t>
 @tabwidth -4
 @others
 </t>
-<t tx="ekr.20080713193824.1">@language python
-@tabwidth -4
-
-@others
-
-# changed 2</t>
-<t tx="ekr.20080713193824.2">def spam():
-    pass # changed 2</t>
-<t tx="ekr.20080713193824.3">def eggs():
-    pass</t>
 </tnodes>
 </leo_file>
