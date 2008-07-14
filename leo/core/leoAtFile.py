@@ -408,12 +408,11 @@ class atFile:
                 # readOneAtShadowNode should already have checked these.
                 shadow_fn       = x.shadowPathName(fn)
                 shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-                if 0:
-                    # Disabled at present. x.updatePublicAndPrivate will create the public file
-                    # from the private file.  But this is highly dubious now that we can import public files.
-                    if not g.os_path_exists(fn):
-                        g.trace('oops public',fn,g.callers())
-                        return at.error('can not happen: public file does not exist: %s' % (fn))
+                # x.updatePublicAndPrivate will create the public file from the private file
+                # if the public file exists. This *is* reasonable: there is nothing to import!
+                # if not g.os_path_exists(fn):
+                    # g.trace('oops public',fn,g.callers())
+                    # return at.error('can not happen: public file does not exist: %s' % (fn))
                 if not shadow_exists:
                     g.trace('oops private',shadow_fn,g.callers())
                     return at.error('can not happen: private file does not exist: %s' % (shadow_fn))

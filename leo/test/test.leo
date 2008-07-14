@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -213,7 +213,7 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 </v>
-<v t="ekr.20080708103735.1" a="E"><vh>shadow tests</vh>
+<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
 <v t="ekr.20080711100148.1" a="M" tnodeList="ekr.20080711100148.1,ekr.20080711100148.1"><vh>@shadow unittest/shadowWriteTest-2.py</vh></v>
 <v t="ekr.20080709091709.1"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080708103735.2"><vh>@shadow-tests</vh>
