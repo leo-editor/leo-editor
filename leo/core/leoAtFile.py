@@ -544,7 +544,9 @@ class atFile:
         else: after = c.nullPosition()
         while p and not p.equal(after): # Don't use iterator.
             # g.trace(p.headString())
-            if p.isAtIgnoreNode():
+            if not p.headString().startswith('@'):
+                p.moveToThreadNext()
+            elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
