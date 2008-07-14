@@ -633,6 +633,7 @@ class atFile:
             lastLines = []
             g.es('can not read 3.x derived file',fileName,color='red')
             g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+            g.trace('root',root and root.headString(),fileName)
 
         if root:
             root.v.t.setVisited() # Disable warning about set nodes.
@@ -1869,7 +1870,8 @@ class atFile:
         end = s[j:i]
         #@-node:ekr.20041005105605.126:<< set the closing comment delim >>
         #@nl
-        # g.trace('new_df',new_df,repr(s))
+        if not new_df:
+            g.trace('not new_df(!)',repr(s))
         return valid,new_df,start,end,isThinDerivedFile
     #@-node:ekr.20041005105605.120:parseLeoSentinel
     #@+node:ekr.20041005105605.127:readError
