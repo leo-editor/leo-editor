@@ -416,6 +416,7 @@ class atFile:
                 if not shadow_exists:
                     g.trace('oops private',shadow_fn,g.callers())
                     return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
+                # This method is the gateway to the essence of the shadow algorithm.
                 x.updatePublicAndPrivateFiles(fn,shadow_fn)
                 fn = shadow_fn
 
