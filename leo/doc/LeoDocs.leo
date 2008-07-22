@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -809,6 +809,7 @@
 <v t="TL.20080622103911.4"><vh>General commands</vh></v>
 <v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
 <v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+<v t="TL.20080721130907.1"><vh>Not supported vi commands</vh></v>
 <v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -5175,9 +5176,9 @@ State change commands::
 
     i           Change state to insert from command state
     Esc         Change state to command from insert state
-    Ctrl-[      Change state to command from insert state
+    Ctrl-[      Same as ESC
 
-Miscellaneous commands::
+Save/Exit/Quite commands::
 
     :e          Revert
     :w&lt;return&gt;  Save '.leo' file
@@ -5185,12 +5186,18 @@ Miscellaneous commands::
     :q&lt;return&gt;  Quit Leo   (Leo will prompt if file not saved)
     ZZ          Save leo file and exit
 
+Undo/Redo commands::
+
     u           Undo previous command
     Ctrl-r      Redo previous command
+
+
+Miscellaneous commands::
 
     Tab         Toggle focus between Outline and Body pane
     =           Simulate double-click on current node's icon box
     Alt-G       Go to specified line number (relative to derived file)
+    Ctrl-:      Enter Leo's command line
 </t>
 <t tx="TL.20080622103911.5">Move cursor commands::
 
@@ -5226,9 +5233,17 @@ Miscellaneous commands::
 
     `.          Go to location of last edit (regardless of buffer)
     '.          Go to beginning of line of last edit (regardless of buffer)
-    
+
+Mark commands::
+
+    Only character count is tracked. Any inserts or deletes will change mark.
+    Node is not tracked.  Go to mark will go to location in current node.
+
+    m&lt;label&gt;    Assign cursor location to a single character label
+    `&lt;label&gt;    Go to location associated with label
+
 Insert/substitute commands::
-    
+
     a           Insert at cursor
     i           Mapped to "a" until "cursor on a character" supported
     A           Insert at end of line
@@ -5238,7 +5253,7 @@ Insert/substitute commands::
     R           Overwrite text
     s           Substitute character (Delete character, enter insert state)
     S           Substitute line (Delete line, enter insert state)
-    
+
 Change commands::
 
     C           Change to end of line
@@ -5252,7 +5267,8 @@ Change commands::
     c%          Change from current bracket type its matching bracket type
     ct&lt;char&gt;    Selects forward to &lt;char&gt; (follow with 'i' to change selection)
     cT&lt;char&gt;    Selects backward to &lt;char&gt; (follow with 'i' to change selection)
-    
+    c&lt;cr&gt;       Change selected text
+
 Delete commands::
 
     x           Delete next character
@@ -5267,8 +5283,10 @@ Delete commands::
     d{          Delete to start of paragraph
     d%          Delete from current bracket type to its apposing bracket
     dt&lt;ch&gt;      Delete to character (not limited to current line)
+    d&lt;cr&gt;       Delete selected text
+
     J           Join next line to end of current line (deletes carriage return)
-    
+
 Yank text commands::
 
     Y           Yank to end of line
@@ -5284,24 +5302,36 @@ Yank text commands::
     yT&lt;char&gt;    Select backward to &lt;char&gt; (use 'y&lt;cr&gt;' to yank selection)
 
     v           Toggle text select mode (Vim's "visual" mode)
-    y&lt;cr&gt;       Yank selected text (Vim uses 'y')
-    
-Paste text commands::
+    y&lt;cr&gt;       Yank selected text (Vim uses 'y' in visual mode)
 
-    Paste commands do not differentiate between yanked lines or partial lines.
-    Put cursor at beginning of line (key '|') before pasting full lines.
-    
-    P           Paste text in clipboard before cursor location
-      p         Mapped to "P" until character based cursor supported.
+Find character commands::
 
-Find commands::
-
-    /           Find next occurrence of user specified string
-    ?           Find previous occurrence of user specified string
     f           Find next occurrence of user specified character
     F           Find previous occurrence of user specified character
-    n           Find next occurrence of string specified by '/' command
-    N           Find previous occurrence of string specified by '/' command
+
+Find text commands::
+
+    /           Search forward within current node's body text
+    ?           Search backward within current node's body text
+    n           Find next (same scope, same direction)
+    N           Find next (same scope, other direction)
+    Ctrl-/      Change scope to search all nodes in outline (Forward only)
+
+Replace [and find next] commands::
+
+    Commands using Paste buffer (clipboard)
+    p           Paste text before cursor.
+    P           Mapped to "P" until character based cursor supported.
+    Ctrl-p      Paste then find next match
+                Note: Use 'pn' instead of 'Ctrl-p' in headlines (Leo limitation)
+                      Command will continue to paste regardless of success of the search.
+
+    Commands prompting for replace string
+    Note: Scope and search direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
+    Alt-/       Prompt for search &amp; replace string
+    Alt-p       Replace then search (use after Alt-/)
+                Note: Works in headlines and body panes.
+                      Doesn't paste unless last search found a match.
 
 Indent line commands::
 
@@ -5317,7 +5347,7 @@ Indent line commands::
     &lt;(          Remove all indentation to the beginning of sentence
     &lt;}          Remove all indentation to the end of paragraph
     &lt;{          Remove all indentation to the beginning of paragraph
-    
+
 Scroll commands::
 
     Ctrl-b      Scroll text up by pane's height
@@ -5337,7 +5367,7 @@ Window commands::
        Ctrl-w j Mapped to "Ctrl-w w" (Vim: Go to window below current window)
     Ctrl-w c    Close current view in body pane (Vim: Close current window)
        Ctrl-w q Mapped to "Ctrl-w c" (Vim: Quit current window)
-    
+
 Node commands::
 
     Ctrl-j      Go to next visible node
@@ -5349,87 +5379,104 @@ Node commands::
        Ctrl-UpArrow  Mapped to "Ctrl-k" for convenience
        Ctrl-LtArrow  Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow  Mapped to "Ctrl-l" for convenience
-
-Notable vi commands **not** supported in the Body pane::
-
-    t&lt;char&gt;     Move cursor to character before specified character
-    r           Replace a single character with a single character
-    &lt;num&gt;G      Go to specified line number
-    0           Go to 1st column in current line (Use '|' instead)
-    bksp        Move one character to the left
-    m&lt;label&gt;    Mark cursor location (and "'" and "`" to return to mark)
-    ~           Toggle character's case
-    .           Repeat last editing command
-    ;           Repeat last cursor movement command
-    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
-    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
-    z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
 </t>
 <t tx="TL.20080622103911.6">The following commands are supported when in a headline's command mode.
 
 State change commands::
 
-    Ctrl-i          Change state to command from grayed state
-    return          Change state to command from insert state
-    Ctrl-]          Change state to grayed from command state
+    Ctrl-i      Change state to command from grayed state
+    return      Change state to command from insert state
+    Ctrl-]      Change state to grayed from command state
 
-Headline editing commands::
+Headline cursor movement commands::
 
-    |               Go to Beginning of line
-    $               Go to end of line
-    %               Go to matching bracket
-    e               Go to end of word (stop at non-alpha characters)
-    E               Select to end of word
-    w               Go to beginning of next word
-    W               Select to beginning of next word
+    |           Go to Beginning of line
+    $           Go to end of line
+    %           Go to matching bracket
+    e           Go to end of word (stop at non-alpha characters)
+    E           Select to end of word
+    w           Go to beginning of next word
+    W           Select to beginning of next word
 
-    h               Go to previous character
-       LtArrow      Mapped to 'h' for convenience
-    l               Go to next character
-       RtArrow      Mapped to "l" for convenience
+    h           Go to previous character
+       LtArrow  Mapped to 'h' for convenience
+    l           Go to next character
+       RtArrow  Mapped to "l" for convenience
 
-    f               Find next occurrence of user specified character
-    /               Find next occurrence of user specified string
-    n               Find next occurrence of last search string
-    N               Find previous occurrence of last search string
+Headline edit commands::
 
-    x               Delete next character
-    delete          Delete next character
-    dd              kill-line 
+    x           Delete next character
+    delete      Delete next character
+    dd          kill-line
 
-    s               Select current character
+    s           Select current character
 
-    C               Select to end of line (follow with 'i' to change text)
-    cc              Delete line (follow with 'i' to change text)
+    v           Toggle text select mode (issue cursor movement commands)
+    y&lt;return&gt;   Yank selected text
 
-    D               Select to end of line (follow with 'x' to delete text)
-    dd              Delete line
+    C           Select to end of line (follow with 'i' to change text)
+    cc          Delete line (follow with 'i' to change text)
 
-    Y               Select to end of line (follow with 'y&lt;return&gt;' to yank text)
-    yy              Select line (follow with 'y&lt;return&gt;' to yank text)
+    D           Select to end of line (follow with 'x' to delete text)
+    dd          Delete line
 
-    v               Toggle text select mode
-    y&lt;return&gt;       Yank selected text
+    Y           Select to end of line (follow with 'y&lt;return&gt;' to yank text)
+    yy          Select line (follow with 'y&lt;return&gt;' to yank text)
+
+Headline find character commands::
+
+    f           Find next occurrence of user specified character
+    F           Find previous occurrence of user specified character
+
+Headline find text commands::
+
+    /           Search forward within current node and its subnodes
+    n           Find next (same scope, same direction)
+    N           Find next (same scope, other direction)
+    Ctrl-/      Change scope to search all nodes in outline (Forward only)
     
-Node commands::
+Headline replace [and find next] commands::
 
-    G               Go to the outline's last node
-    gg              Go to the outline's first node
+    Commands that use Paste buffer (clipboard)
+    Note: Paste-then-search command not possible in headlines (Use 'pn')
+    p           Paste text before cursor.
+    P           Mapped to "P" until character based cursor supported.
 
-    Ctrl-j          Go to next visible node
-    Ctrl-k          Go to previous visible node
-    Ctrl-h          Hide sub-nodes or, if hidden, go up 1 level
-    Ctrl-l          Display sub-nodes or, if displayed, go down 1 level
+    Commands that prompt for the replace string
+    Alt-/       Prompt for search &amp; replace string
+    Alt-p       Replace then search (use after Alt-/)
+                Note: Works in headlines and body panes.
+                      Doesn't paste unless last search found a match.
 
-       j            Mapped to "Ctrl-j" for convenience
-       DnArrow      Mapped to "Ctrl-j" for convenience
-       k            Mapped to "Ctrl-k" for convenience
-       UpArrow      Mapped to "Ctrl-k" for convenience
+Node edit commands::
+
+    Ctrl-o      Insert node after current node
+
+    Ctrl-x      Delete current node
+    Ctrl-c      Yank current node
+    Ctrl-v      Paste current node
+
+Node goto commands::
+
+    G           Go to the outline's last node
+    gg          Go to the outline's first node
+
+    Ctrl-j      Go to next visible node
+    Ctrl-k      Go to previous visible node
+    Ctrl-h      Hide sub-nodes or, if hidden, go up 1 level
+    Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
+
+       j        Mapped to "Ctrl-j" for convenience
+       DnArrow  Mapped to "Ctrl-j" for convenience
+       k        Mapped to "Ctrl-k" for convenience
+       UpArrow  Mapped to "Ctrl-k" for convenience
 
        Ctrl-DnArrow Mapped to "Ctrl-j" for convenience
        Ctrl-UpArrow Mapped to "Ctrl-k" for convenience
        Ctrl-LtArrow Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow Mapped to "Ctrl-l" for convenience
+
+Node move commands::
 
     Shift-Ctrl-k    Move node down
     Shift-Ctrl-h    Move node left
@@ -5441,31 +5488,46 @@ Node commands::
        Shift-Ctrl-RtArrow    Mapped to "Shift-Ctrl-l" for convenience
        Shift-Ctrl-UpArrow    Mapped to "Shift-Ctrl-j" for convenience
 
-    m               Toggle node mark
-    Ctrl-m          Go to next marked node
-    Alt-m           Clear all marked nodes
+Node mark commands::
 
-    t               Clone the current node (transclude)
-    Ctrl-t          Go to next clone of current node
+    m           Toggle node mark
+    Ctrl-m      Go to next marked node
+    Alt-m       Clear all marked nodes
 
-    Ctrl-o          Insert-node
+Node clone commands::
 
-    Ctrl-x          Delete node
-    Ctrl-c          Yank node
-    Ctrl-v          Paste node
+    t           Clone the current node (transclude)
+    Ctrl-t      Go to next clone of current node
 
-Scroll commands::
+Outline scroll commands::
 
-   Ctrl-y          Scroll outline up one line
-   Ctrl-e          scroll outline down one line
-       Ctrl-u       Mapped to Ctrl-y until scroll up by half a pane supported
-       Ctrl-d       Mapped to Ctrl-e until scroll down by half a pane supported
-       Ctrl-b       Mapped to Ctrl-y until scroll up by pane's height supported
-       Ctrl-f       Mapped to Ctrl-e until scroll down by pane's height supported
+   Ctrl-y       Scroll outline up one line
+   Ctrl-e       scroll outline down one line
+       Ctrl-u    Mapped to Ctrl-y until scroll up by half a pane supported
+       Ctrl-d    Mapped to Ctrl-e until scroll down by half a pane supported
+       Ctrl-b    Mapped to Ctrl-y until scroll up by pane's height supported
+       Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
 </t>
 <t tx="TL.20080622103911.7">-----------------------
 
 |back| |leo| |next|</t>
+<t tx="TL.20080721130907.1">Notable missing editing commands::
+
+    t&lt;char&gt;     Move cursor to character before specified character
+    r           Replace a single character with a single character
+    0           Go to 1st column in current line (Use '|' instead)
+    bksp        Move one character to the left
+    ~           Toggle character's case
+    .           Repeat last editing command
+    ;           Repeat last cursor movement command
+    &lt;n&gt;&lt;cmd&gt;    Perform command 'n' number of times
+    &lt;cmd&gt;&lt;n&gt;&lt;object&gt;    Perform the command on the n'th or up to the n'th object
+
+Notable missing body pane commands::
+
+    &lt;num&gt;G      Go to specified line number
+    z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
+</t>
 <t tx="bob.20080110214217"></t>
 <t tx="bob.20080110214217.1">gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
