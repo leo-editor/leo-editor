@@ -5192,6 +5192,24 @@ Undo/Redo commands::
     Ctrl-r      Redo previous command
 
 
+Search options::
+
+    Ctrl-/      Prompt for option to change
+                Options:
+                    a   Search all nodes (also &lt;cr&gt; key)
+                    h   Toggle headline search
+                    b   Toggle body search
+                    m   Toggle marking of nodes (specify sub-option)
+                        f   Toggle marking of nodes with found text
+                        c   Toggle marking of nodes with changed text
+                            (only supported with 'Alt-/', 'Alt-p')
+                    r   Toggle regex matches
+                        ('/' key turns off regex. 'n' key uses regex if turned on)
+    
+    Note: Whether search is limited to node's body or the node's sub-outline
+          is determined by which pane has focus when search text specified.
+          (See "Find text commands:" sub-sections in Outline/Body Pane sections)
+
 Miscellaneous commands::
 
     Tab         Toggle focus between Outline and Body pane
@@ -5210,23 +5228,25 @@ Miscellaneous commands::
     l           Go forward 1 character
        RtArrow  Mapped to "l" for convenience
 
-    w           Go to the next word (stop at non-alpha characters)
+    w           Go to beginning of next word
        W        Mapped to "w" until "stop after blank characters" supported
-    b           Go to beginning of word (stop at non-alpha characters)
+    b           Go to beginning of current/previous word
        B        Mapped to "b" until "stop at blank character" supported
-    e           Go to end of word (stop at non-alpha characters)
+    e           Go to end of current/next word
        E        Mapped to "e" until "stop at blank character" supported
+
+    Note: Move by word commands stop at non-alpha characters
 
     |           Goto beginning of current line
     ^           Go to 1st non-blank character on current line
     $           Goto end of current line
 
+    %           Go to matching bracket
+
     (           Go to beginning of current sentence
     )           Go to beginning of next sentence
     {           Go to beginning of current paragraph
     }           Go to beginning of next paragraph
-
-    %           Go to matching bracket
 
     gg          Go to the first line (Cursor at column 1)
     G           Go to the last line  (Cursor at column 1)
@@ -5236,11 +5256,11 @@ Miscellaneous commands::
 
 Mark commands::
 
-    Only character count is tracked. Any inserts or deletes will change mark.
-    Node is not tracked.  Go to mark will go to location in current node.
-
     m&lt;label&gt;    Assign cursor location to a single character label
     `&lt;label&gt;    Go to location associated with label
+
+    Note: Only character count is tracked. Any inserts or deletes will change mark.
+          Node is not tracked; "`&lt;label&gt;" key will go to location in current node.
 
 Insert/substitute commands::
 
@@ -5315,7 +5335,9 @@ Find text commands::
     ?           Search backward within current node's body text
     n           Find next (same scope, same direction)
     N           Find next (same scope, other direction)
-    Ctrl-/      Change scope to search all nodes in outline (Forward only)
+
+    Note: See "Search options" section above to change options using 'Ctrl-/'
+    
 
 Replace [and find next] commands::
 
@@ -5324,7 +5346,7 @@ Replace [and find next] commands::
     P           Mapped to "P" until character based cursor supported.
     Ctrl-p      Paste then find next match
                 Note: Use 'pn' instead of 'Ctrl-p' in headlines (Leo limitation)
-                      Command will continue to paste regardless of success of the search.
+                      Command will continue to paste when match no longer found.
 
     Commands prompting for replace string
     Note: Scope and search direction taken from last use of '/','?' or 'Ctrl-/'(scope only)
@@ -5388,22 +5410,29 @@ State change commands::
     return      Change state to command from insert state
     Ctrl-]      Change state to grayed from command state
 
-Headline cursor movement commands::
-
-    |           Go to Beginning of line
-    $           Go to end of line
-    %           Go to matching bracket
-    e           Go to end of word (stop at non-alpha characters)
-    E           Select to end of word
-    w           Go to beginning of next word
-    W           Select to beginning of next word
+Cursor movement commands::
 
     h           Go to previous character
        LtArrow  Mapped to 'h' for convenience
     l           Go to next character
        RtArrow  Mapped to "l" for convenience
 
-Headline edit commands::
+    w           Go to beginning of next word
+       W        Mapped to "w" until "stop after blank characters" supported
+    b           Go to beginning of current/previous word
+       B        Mapped to "b" until "stop at blank character" supported
+    e           Go to end of current/next word
+       E        Mapped to "e" until "stop at blank character" supported
+
+    Note: Move by word commands stop at non-alpha characters
+
+    |           Go to beginning of line
+    ^           Go to beginning of line
+    $           Go to end of line
+
+    %           Go to matching bracket
+
+Edit commands::
 
     x           Delete next character
     delete      Delete next character
@@ -5423,19 +5452,20 @@ Headline edit commands::
     Y           Select to end of line (follow with 'y&lt;return&gt;' to yank text)
     yy          Select line (follow with 'y&lt;return&gt;' to yank text)
 
-Headline find character commands::
+Find character commands::
 
     f           Find next occurrence of user specified character
     F           Find previous occurrence of user specified character
 
-Headline find text commands::
+Find text commands::
 
     /           Search forward within current node and its subnodes
     n           Find next (same scope, same direction)
     N           Find next (same scope, other direction)
-    Ctrl-/      Change scope to search all nodes in outline (Forward only)
+
+    Note: See "Search options" section above to change options using 'Ctrl-/'
     
-Headline replace [and find next] commands::
+Replace [and find next] commands::
 
     Commands that use Paste buffer (clipboard)
     Note: Paste-then-search command not possible in headlines (Use 'pn')
