@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -802,13 +802,16 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim with Leo</vh>
 <v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080728151130.3"><vh>Vim bindings</vh>
 <v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
 <v t="TL.20080622103911.4"><vh>General commands</vh></v>
 <v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
 <v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+</v>
+<v t="ekr.20080728151130.4"><vh>Using vim's modeline features</vh></v>
 <v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -5143,10 +5146,11 @@ verbose=True
 |back| |leo| |next|
 
 ############################################################
-Chapter 22: Using Vim Bindings with Leo
+Chapter 22: Using Vim with Leo
 ############################################################
 
-This chapter describes Leo's vim-like bindings, including how to install them.
+This chapter describes how to use Leo with vim.
+Most of the chapter tells how to install and use vim-like bindings in Leo.
 
 .. contents::
 </t>
@@ -7067,7 +7071,7 @@ Leo's Users Guide
 
 `Chapter 21: ILeo - the IPython bridge`_
 
-`Chapter 22: Using Vim Bindings with Leo`_
+`Chapter 22: Using Vim with Leo`_
 
 Appendices_
 
@@ -11554,7 +11558,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
-.. _`Chapter 22\: Using Vim Bindings with Leo`:     vimBindings.html
+.. _`Chapter 22\: Using Vim with Leo`:              vimBindings.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
@@ -31073,6 +31077,39 @@ reacts as if 3 is expanded and repositions to allow for all those
 actually not visible lines, but the second time you drag something in
 it's ok, as if it has an accurate count on visible lines now.
 </t>
+<t tx="ekr.20080728151130.3"></t>
+<t tx="ekr.20080728151130.4">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
+file refers to derived files then there is a risk that a derived file that is
+initially displayed via the "tag" command" in Vim is accidentally edited and
+saved from the external Vim editor while your Leo session still contains the
+derived file's original text that may later recreate the original derived file
+during a Leo save operation (overwriting the changes saved from the Vim editor).
+
+To prevent this problem, modifications to derived files can be avoided by using
+Vim's "modeline" feature to disable editing of derived files.
+
+Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
+of the file containing " vim:" followed by a series of Vim options. The text is
+usually embedded within a comment. The following example prevents modifications
+to a buffer in a Python file::
+
+    # vim:noma (A space is required between the '#' and "vim:noma")
+
+If this line is placed in a separate Leo node at the top or bottom of the list
+of nodes under a derived file node (ex: @thin) then any derived file saved and
+then later loaded into Vim will, by default, not be modifiable. If a derived
+file does need to be edited then modifications can be re-enabled on a
+file-by-file basis by issuing Vim's ":ma" command while viewing the derived
+file.
+
+The number of lines that Vim checks at the top and bottom of the buffer is
+configurable. The following Vim command must be placed in the vimrc file to
+allow for Leo's trailing sentinel lines::
+
+    set modelines=8
+
+Issue the ":help modeline" command within Vim for the more information about
+modelines.</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
