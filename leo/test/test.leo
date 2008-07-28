@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="15"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -233,6 +233,7 @@
 </v>
 <v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
 <v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
+<v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1778,5 +1779,18 @@ g.pr(\1)
 # Double escapes in print statements.
 print(.*)\\n(.*)$
 print\1\\\\n\2</t>
+<t tx="ekr.20080726123338.1">http://en.wikipedia.org/wiki/Compound_document
+
+http://en.wikipedia.org/wiki/Transclusion
+
+http://en.wikipedia.org/wiki/Software_componentry
+
+http://en.wikipedia.org/wiki/Universal_Network_Objects
+
+http://udk.openoffice.org/python/python-bridge.html
+
+http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_Developers_Guide
+
+http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO</t>
 </tnodes>
 </leo_file>
