@@ -776,7 +776,7 @@ class atFile:
         if not hasattr(v.t,"tnodeList"):
             at.readError("no tnodeList for " + repr(v))
             g.es("write the @file node or use the Import Derived File command")
-            g.trace("no tnodeList for ",v)
+            g.trace("no tnodeList for ",v,g.callers())
             return None
 
         if at.tnodeListIndex >= len(v.t.tnodeList):
@@ -2326,7 +2326,7 @@ class atFile:
                         writtenFiles.append(p.v.t) # No need for autosave
                     elif p.isAtShadowFileNode():
                         at.writeOneAtShadowNode(p,toString=toString,force=False)
-                        writtenFiles.append(p.v.t)
+                        writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
                     elif p.isAtThinFileNode():
                         at.write(p,thinFile=True,toString=toString)
                         writtenFiles.append(p.v.t) # No need for autosave.

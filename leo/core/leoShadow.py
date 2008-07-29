@@ -295,7 +295,7 @@ class shadowController:
           the end of a node.  However, insertions must always be done within sentinels.
        '''
 
-       trace = False ; verbose = False
+       x = self ; trace = False ; verbose = False
        # mapping tells which line of old_private_lines each line of old_public_lines comes from.
        old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -352,9 +352,6 @@ class shadowController:
 
        for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
 
-           # Assert that SequenceMatcher never leaves gaps.
-           assert old_i == prev_old_j
-           assert new_i == prev_new_j
            #@        << About this loop >>
            #@+node:ekr.20080708192807.2:<< about this loop >>
            #@+at
@@ -394,6 +391,13 @@ class shadowController:
            #@-at
            #@-node:ekr.20080708192807.2:<< about this loop >>
            #@nl
+
+           # Verify that SequenceMatcher never leaves gaps.
+           if old_i != prev_old_j: # assert old_i == prev_old_j
+               x.error('can not happen: gap in old:',old_i,prev_old_j)
+           if new_i != prev_new_j: # assert new_i == prev_new_j
+               x.error('can not happen: gap in new:',new_i,prev_new_j)
+
            #@        << Handle the opcode >>
            #@+node:ekr.20080708192807.5:<< Handle the opcode >>
            if trace: g.trace(tag,'old_i',old_i,'limit',limit)
@@ -668,7 +672,7 @@ class shadowController:
        f1.close()
        print
        g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
-       assert 0, "Malfunction of @shadow"
+       # assert 0, "Malfunction of @shadow"
    #@-node:ekr.20080708094444.33:x.show_error
    #@-node:ekr.20080708094444.89:x.Utils...
    #@+node:ekr.20080709062932.2:atShadowTestCase

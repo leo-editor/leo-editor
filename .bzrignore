@@ -30,3 +30,4 @@ gradient.png
 leo/core/leoKeys.py
 leo/test/at_ignore_test.txt
 leo/test/unittest/createdFile.txt
+leo/test/unittest/.leo_shadow

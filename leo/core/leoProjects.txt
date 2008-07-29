@@ -18606,7 +18606,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
        the end of a node.  However, insertions must always be done within sentinels.
     '''
 
-    trace = False ; verbose = False
+    x = self ; trace = False ; verbose = False
     # mapping tells which line of old_private_lines each line of old_public_lines comes from.
     old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
 
@@ -18618,10 +18618,14 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
 
-        # Assert that SequenceMatcher never leaves gaps.
-        assert old_i == prev_old_j
-        assert new_i == prev_new_j
         << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
         << Handle the opcode >>
 
         # Remember the ends of the previous tag ranges.
@@ -20948,7 +20952,7 @@ if p.v.isDirty() or writeAtFileNodesFlag or p.v.t in writtenFiles:
         writtenFiles.append(p.v.t) # No need for autosave
     elif p.isAtShadowFileNode():
         at.writeOneAtShadowNode(p,toString=toString,force=False)
-        writtenFiles.append(p.v.t)
+        writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
     elif p.isAtThinFileNode():
         at.write(p,thinFile=True,toString=toString)
         writtenFiles.append(p.v.t) # No need for autosave.
