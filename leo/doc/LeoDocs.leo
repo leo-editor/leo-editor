@@ -2301,7 +2301,7 @@
 </v>
 <v t="ekr.20060620094645.78"><vh>Code level</vh>
 <v t="ekr.20060620094645.79"><vh>Simplified gui bindings</vh></v>
-<v t="ekr.20060622130815.9"><vh>Created g.makeScriptButton</vh></v>
+<v t="ekr.20060622130815.9"><vh>Created g.app.gui.makeScriptButton</vh></v>
 </v>
 <v t="ekr.20060620094645.85"><vh>New &amp; improved features</vh>
 <v t="ekr.20060620094645.86"><vh>Improved filename completion</vh></v>
@@ -23324,7 +23324,7 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
         self.c = c
         c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
         script = "c.k.simulateCommand('print-cp')"
-        g.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
+        g.app.gui.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
         
    This registers the print_cp *method* of the pluginController class as the print-cp minibuffer command,
    and creates a script button with the following script::

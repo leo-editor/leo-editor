@@ -1791,6 +1791,7 @@ http://udk.openoffice.org/python/python-bridge.html
 
 http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_Developers_Guide
 
-http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO</t>
+http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO
+</t>
 </tnodes>
 </leo_file>
