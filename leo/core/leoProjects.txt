@@ -18829,11 +18829,11 @@ old_private_lines_rdr explicitly. This explains why opcode handlers for the
 'insert' and 'delete' opcodes are identical.
 #@-node:ekr.20080708192807.2:<< about this loop >>
 #@+node:ekr.20080708192807.5:<< Handle the opcode >>
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
 # Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
 # In this special case, we must do the insert before the sentinels.
 limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
 
 if tag == 'insert' and limit >= old_private_lines_rdr.size():
     pass
@@ -18846,8 +18846,8 @@ if tag == 'equal':
     # Copy all lines (including sentinels) from the old private file to the new private file.
     start = old_private_lines_rdr.index()
     while old_private_lines_rdr.index() <= mapping[old_j-1]:
-       line = old_private_lines_rdr.get()
-       new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
 
     # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
     new_public_lines_rdr.sync(new_j)
@@ -21188,7 +21188,7 @@ def writeDirtyAtShadowNodes (self,event=None):
     at.writeAtShadowNodesHelper(writeDirtyOnly=True)
 #@nonl
 #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
-def writeAtShadowShadowHelper(self,toString=False,writeDirtyOnly=True):
+def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
     """Write @shadow nodes in the selected outline"""
 

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="15"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="16,2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,7 +28,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080529111617.1" a="E"><vh>plugins</vh>
+<v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
@@ -50,6 +50,11 @@
 </v>
 </v>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
+<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = True</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = True</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = True</vh></v>
+</v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
@@ -234,6 +239,11 @@
 <v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
 <v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
 <v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
+<v t="ekr.20080729153237.1" a="E"><vh>Gc settings</vh>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = True</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = True</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = True</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edreamleo.20080110083531">import gtk
@@ -1793,5 +1803,9 @@ http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_D
 
 http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Professional_UNO
 </t>
+<t tx="ekr.20080729153237.1"></t>
+<t tx="ekr.20080729153237.2"># True: calls to the garbage collector.</t>
+<t tx="ekr.20080729153237.3"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
+<t tx="ekr.20080729153237.4"># True: verbose trace the garbage collector.</t>
 </tnodes>
 </leo_file>

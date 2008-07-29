@@ -49,7 +49,6 @@ import zipfile
 
 # These do not exist in IronPython.
 # However, it *is* valid for IronPython to use the Python 2.4 libs!
-import difflib
 import os
 import string
 import tempfile
@@ -2371,8 +2370,6 @@ def utils_stat (fileName):
 #@-node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@-node:ekr.20031218072017.3116:Files & Directories...
 #@+node:ekr.20031218072017.1588:Garbage Collection
-# debugGC = False # Must be true to enable traces below.
-
 lastObjectCount = 0
 lastObjectsDict = {}
 lastTypesDict = {}

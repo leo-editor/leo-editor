@@ -2496,7 +2496,7 @@ class atFile:
         at.writeAtShadowNodesHelper(writeDirtyOnly=True)
     #@nonl
     #@+node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    def writeAtShadowShadowHelper(self,toString=False,writeDirtyOnly=True):
+    def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
         """Write @shadow nodes in the selected outline"""
 

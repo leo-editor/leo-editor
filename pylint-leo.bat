@@ -19,7 +19,6 @@ goto all
 
 :errors
 
-
 goto done
 
 echo base64Packager.py
@@ -92,6 +91,9 @@ call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
 
+echo leoShadow.py
+call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
+
 echo leoTangle.py
 call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -121,7 +123,7 @@ call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\te
 echo leoTkinterTree.py
 call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
 
-REM goto done
+goto done
 
 :good_plugins
 

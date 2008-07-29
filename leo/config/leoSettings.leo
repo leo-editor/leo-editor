@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1431,6 +1431,11 @@
 <v t="TL.20080722111006.159"><vh>@mode body-match</vh></v>
 <v t="TL.20080722111006.160"><vh>@mode vim-window-commands</vh></v>
 </v>
+</v>
+<v t="ekr.20080729144737.2" a="E"><vh>Gc settings</vh>
+<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7517,6 +7522,7 @@ lcd2" "
 lcd1c" "
 lcd2c" "
 </t>
+<t tx="ekr.20080729144737.2"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
