@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="4,9,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4,14,13,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -358,7 +358,7 @@
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
 </v>
-<v t="ekr.20041213105007" a="E" annotate="7d71002e"><vh>Fonts</vh>
+<v t="ekr.20041213105007" annotate="7d71002e"><vh>Fonts</vh>
 <v t="ekr.20041119034357.45"><vh>@font body text font</vh></v>
 <v t="ekr.20070919125633"><vh>@font button font</vh></v>
 <v t="ekr.20041213105508"><vh>@font log font</vh></v>
@@ -998,7 +998,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1121,12 +1121,12 @@
 <v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
 <v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
 </v>
-<v t="ekr.20060730101451"><vh>shadow plugin</vh>
+<v t="ekr.20060730101451" a="E"><vh>shadow plugin</vh>
 <v t="ekr.20060730101451.1"><vh>@bool shadow_active = True</vh></v>
 <v t="ekr.20060730101451.2"><vh>@bool shadow_backups = True</vh></v>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
 <v t="ekr.20060730101451.4"><vh>@bool shadow_print_copy_operations = True</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = LeoShadow</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
 <v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
 <v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
 </v>
