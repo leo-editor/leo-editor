@@ -1567,7 +1567,7 @@ class basePosition (object):
     #@-node:ekr.20040303163330:p.setDirty
     #@-node:ekr.20040305162628:p.Dirty bits
     #@-node:ekr.20040305222924:p.Setters
-    #@+node:ekr.20040315023430:P.File Conversion
+    #@+node:ekr.20040315023430:p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be vnode methods because they 
     # uses level().
@@ -1630,7 +1630,7 @@ class basePosition (object):
             array.append(s)
         return '\n'.join(array)
     #@-node:ekr.20040315023430.3:p.moreBody
-    #@-node:ekr.20040315023430:P.File Conversion
+    #@-node:ekr.20040315023430:p.File Conversion
     #@+node:ekr.20040305162628.1:p.Iterators
     #@+at 
     #@nonl

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3,1,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5,1,4,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -168,7 +168,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20040629175400" a="E"><vh>Pychecker stuff</vh>
+<v t="ekr.20040629175400"><vh>Pychecker stuff</vh>
 <v t="ekr.20050212143754"><vh>Mods to pychecker in python23/site-packages</vh>
 <v t="ekr.20050212143754.4"><vh>_checkModuleAttribute (modified)</vh></v>
 <v t="ekr.20050212143754.3"><vh>_checkGlobal (modified)</vh></v>
@@ -183,7 +183,7 @@
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080402154207.1"><vh>Release files/info</vh>
+<v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
 <v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
 <v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
@@ -234,7 +234,8 @@
 </v>
 </v>
 <v t="ekr.20050118092706"
-marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
+marks="ekr.20050118124408,ekr.20050118092706.4,"
+expanded="ekr.20050118092706.13,"><vh>@thin leo-4-3.nsi</vh></v>
 </v>
 <v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
@@ -247,7 +248,7 @@ marks="ekr.20050118124408,ekr.20050118092706.4,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
@@ -2433,7 +2434,7 @@ File "..\core\leoProjects.txt"
 File "..\core\LeoPy.leo"
 File "..\core\oldLeoProjects.leo"
 
-; File "..\core\__init__.py"
+File "..\core\__init__.py"
 File "..\core\leo*.py"
 File "..\core\runLeo.py"
 </t>

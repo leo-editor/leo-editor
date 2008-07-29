@@ -280,6 +280,7 @@
 <v t="ekr.20050828210721.2"><vh>@tabwidth</vh></v>
 <v t="ekr.20050828061501.40"><vh>@raw and @end_raw</vh></v>
 <v t="ekr.20050828061501.41"><vh>@root-code and @root-doc</vh></v>
+<v t="ekr.20080729064227.3"><vh>@unit</vh></v>
 <v t="ekr.20050828061501.50"><vh>@verbose, @terse, @quiet and @silent</vh></v>
 <v t="ekr.20050828061501.42"><vh>@wrap and @nowrap</vh></v>
 </v>
@@ -802,13 +803,16 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim Bindings with Leo</vh>
+<v t="ekr.20080611105410.147"><vh>Chapter 22: Using Vim with Leo</vh>
 <v t="TL.20080622103911.1"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080622103911.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080728151130.3"><vh>Vim bindings</vh>
 <v t="TL.20080622103911.3"><vh>Installing vim bindings</vh></v>
 <v t="TL.20080622103911.4"><vh>General commands</vh></v>
 <v t="TL.20080622103911.5"><vh>Body pane commands</vh></v>
 <v t="TL.20080622103911.6"><vh>Outline commands</vh></v>
+</v>
+<v t="ekr.20080728151130.4"><vh>Using vim's modeline features</vh></v>
 <v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -2298,7 +2302,7 @@
 </v>
 <v t="ekr.20060620094645.78"><vh>Code level</vh>
 <v t="ekr.20060620094645.79"><vh>Simplified gui bindings</vh></v>
-<v t="ekr.20060622130815.9"><vh>Created g.makeScriptButton</vh></v>
+<v t="ekr.20060622130815.9"><vh>Created g.app.gui.makeScriptButton</vh></v>
 </v>
 <v t="ekr.20060620094645.85"><vh>New &amp; improved features</vh>
 <v t="ekr.20060620094645.86"><vh>Improved filename completion</vh></v>
@@ -5143,10 +5147,11 @@ verbose=True
 |back| |leo| |next|
 
 ############################################################
-Chapter 22: Using Vim Bindings with Leo
+Chapter 22: Using Vim with Leo
 ############################################################
 
-This chapter describes Leo's vim-like bindings, including how to install them.
+This chapter describes how to use Leo with vim.
+Most of the chapter tells how to install and use vim-like bindings in Leo.
 
 .. contents::
 </t>
@@ -6681,16 +6686,16 @@ Here is a way to count the *distinct* vnodes of an outline::
 <t tx="ekr.20040403173920.14">The ``p.parents_iter`` iterator returns a list of all parents of position ``p``, excluding ``p``::
 
     current = p.copy()
-    g.es("inclusive parents of %s" % current.headString(),color="purple")
-    for p in current.self_and_parents_iter():
+    g.es("exclusive of %s" % current.headString(),color="purple")
+    for p in current.parents_iter():
         g.es(p.headString())
 
 The ``p.self_and_parents_iter`` iterator returns a list of all parents of position ``p``, including ``p``::
 
     current = p.copy()
-    g.es("exclusive of %s" % current.headString(),color="purple")
-    for p in current.parents_iter():
-        g.es(p.headString())</t>
+    g.es("inclusive parents of %s" % current.headString(),color="purple")
+    for p in current.self_and_parents_iter():
+        g.es(p.headString())    </t>
 <t tx="ekr.20040403173920.15">The ``p.siblings_iter`` iterator returns a list of all siblings of position ``p``::
 
     current = c.currentPosition()
@@ -7067,7 +7072,7 @@ Leo's Users Guide
 
 `Chapter 21: ILeo - the IPython bridge`_
 
-`Chapter 22: Using Vim Bindings with Leo`_
+`Chapter 22: Using Vim with Leo`_
 
 Appendices_
 
@@ -11554,7 +11559,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
-.. _`Chapter 22\: Using Vim Bindings with Leo`:     vimBindings.html
+.. _`Chapter 22\: Using Vim with Leo`:              vimBindings.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
@@ -15008,9 +15013,9 @@ Here are some tips that may make running Leo easier:
     The following shell script will allow you to open foo.leo files by typing leo foo::
     
         #!/bin/sh 
-        python &lt;leopath&gt;/runLeo.py $1
+        python &lt;leopath&gt;/leo/core/runLeo.py $1
     
-    where &lt;leopath&gt; is replaced with the path to the leo directory. 
+    where &lt;leopath&gt; is the path to the directory containing the leo directory. 
 
 **Windows**
     If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
@@ -15018,7 +15023,9 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd &lt;path-to-leo&gt;
-        c:\python25\python &lt;path-to-leo&gt;\leo\core\runLeo.py %1
+        c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
+        
+    where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.
 
     This opens the file specified by the first argument (%1).
 
@@ -23320,7 +23327,7 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
         self.c = c
         c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
         script = "c.k.simulateCommand('print-cp')"
-        g.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
+        g.app.gui.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
         
    This registers the print_cp *method* of the pluginController class as the print-cp minibuffer command,
    and creates a script button with the following script::
@@ -26284,12 +26291,13 @@ The type may be one of the following:
 \@enabled-plugins   Body text contains a list of enabled plugins
 \@font              Body text contains a font description
 \@menus             Child @menu and @item nodes create menus and menu items.
+\@menuat            Child @menu and @item nodes modify menu tree create by \@menus.
 \@mode [name]       Body text contains a list of shortcut specifiers.
 \@recentfiles       Body text contains a list of file paths.
 \@shortcuts         Body text contains a list of shortcut specifies.
 =================== =====================================================================
 
-The actual settings are specified in the body text.  At present, there are seven kinds of complex settings nodes:
+The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:
     
 - ``@buttons``
 
@@ -26361,6 +26369,65 @@ The actual settings are specified in the body text.  At present, there are seven
   ``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
    The children of this node should be @menu and @item nodes, used as with
    @menus.
+   
+- ``@menuat`` *&lt;path&gt;* *&lt;action&gt;* *[&lt;source&gt;]*
+
+  The @menuat setting has 2-3 parameters in its head text, its children are @menu and
+  @item nodes as for the @menu setting.  @menuat modifies the menu tree created by @menus.
+  It is intended to be used in myLeoSettings.leo to modify the menu tree created in
+  leoSettings.leo.  This allows you to change the menus without having to re-create the
+  entire menu tree from leoSettings.leo, and ensures you don't miss out when new things are
+  added in the @menus in leoSettings.leo, as you would if you replaced the @menus in
+  leoSettings.leo with one in myLeoSettings.leo.  @menuat should occur in a @settings tree,
+  but not as a descendant of a @menus tree.  There is an example of the use of the
+  @menuat setting in the file .../leo/core/test/menuAtTest.leo.
+  
+  - path
+  
+    This specifies a target location in the menu tree as defined by @menus and modified
+    by earlier @menuat settings.  The path takes the form /entry1/entry2/entry3 where
+    each entry is the name of a menu or item with all text except a-z and 0-9 removed.
+    Upper case letters are converted to lower case.  So for example to use the 
+    `Outline-&gt;Move-&gt;Move Down` menu item as a target, you would specify a path as
+    `/outline/move/movedown`.
+    
+  - action
+  
+    There are 5 available actions:
+    
+    - before
+    
+      The supplied items and sub menus will be inserted immediately before the target
+      menu or item.
+
+    - after
+    
+      The supplied items and sub menus will be inserted immediately after the target
+      menu or item.
+
+    - append
+    
+      The supplied items and sub menus will be appended at the end of the menu
+      containing the target menu or item.
+    
+    - cut
+    
+      The target menu or item will be removed from the menu tree and saved to
+      an internal clipboard.  This can be used for deleting menus or items.
+      Descendants of the @menuat setting are ignored.
+    
+    - copy
+    
+      The target menu or item will be copied and saved to
+      an internal clipboard.  Descendants of the @menuat setting are ignored.
+    
+  - source
+    
+    By default the before, after, and append actions insert the menus and items
+    supplied as descendants of the @menuat setting.  If you specify
+    "clipboard" (without the quotes) as the source, the contents of the clipboard
+    from a previous cut or copy action will be used instead.  This parameter is optional
+    and can be left blank.
 
 - ``@mode`` *&lt;mode name&gt;*
 
@@ -26855,7 +26922,7 @@ After you have installed Leo, you should add the location of your leo/src folder
 One way to do this is adding something like the following to python/Lib/sitecustomize.py::
       
     import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\src')
+    sys.path.append(r'&lt;path-to-leo&gt;leo')
             
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 
@@ -27277,7 +27344,7 @@ process, so unit tests can never have any side effects. These commands never
 changes the outline from which the tests were run. These commands do the
 following:
 
-1. Copy all @test, @suite and @unit-test nodes (including their descendants) to the
+1. Copy all @test, @suite and @unit-tests nodes (including their descendants) to the
    file test/dynamicUnitTest.leo.
    
 2. Run test/leoDynamicTest.py in a separate process.
@@ -27318,8 +27385,8 @@ headlines in that file::
         g.es(g.toEncodedString(p.headString(),"utf-8"))
 </t>
 <t tx="ekr.20070630083055">Sometimes the code in an @test or @suite node requires other nodes. The
-@unit-test node groups nodes so that all nodes are available when running unit
-tests. That is, all nodes in an @unit-test are copied to
+@unit-tests node groups nodes so that all nodes are available when running unit
+tests. That is, all nodes in an @unit-tests tree are copied to
 test/DynamicUnitTest.leo. (See `How the unit test commands work`_ for full details.)</t>
 <t tx="ekr.20070701090840">Leo is not your ordinary text editor, class browser, project manager or database manager,
 though it resembles these programs in some respects.
@@ -27588,7 +27655,7 @@ A new unit test ensures that this is so.</t>
 <t tx="ekr.20070704074439">As described later, Leo's unit tests commands copy various nodes to
 test/dynamicUnitTest.leo, and then run these unit tests in a separate process.
 
-The run-all-unit-tests command copies all @test, @suite nodes @unit-tests trees
+The run-all-unit-tests command copies all @test, @suite nodes @unit-test trees
 and their descendants to test/dynamicUnitTest.leo.
 
 The run-unit-tests command searches for copies nodes to test/dynamicUnitTest.leo
@@ -27599,7 +27666,7 @@ as follows:
 
 2. The run-unit-test command copies all @test and @suite nodes in the presently
    selected tree. If the presently selected tree contains no such tree, it looks
-   up the tree looking for @test, @suite and @unit-test nodes. If such a node is
+   up the tree looking for @test, @suite and @unit-tests nodes. If such a node is
    found, the run-unit-test command copies all @test and @suite nodes in the
    nodes tree.
    
@@ -31013,6 +31080,42 @@ reacts as if 3 is expanded and repositions to allow for all those
 actually not visible lines, but the second time you drag something in
 it's ok, as if it has an accurate count on visible lines now.
 </t>
+<t tx="ekr.20080728151130.3"></t>
+<t tx="ekr.20080728151130.4">If you use the open-with plugin to open node text in Vim and your Vim's "tag"
+file refers to derived files then there is a risk that a derived file that is
+initially displayed via the "tag" command" in Vim is accidentally edited and
+saved from the external Vim editor while your Leo session still contains the
+derived file's original text that may later recreate the original derived file
+during a Leo save operation (overwriting the changes saved from the Vim editor).
+
+To prevent this problem, modifications to derived files can be avoided by using
+Vim's "modeline" feature to disable editing of derived files.
+
+Vim's "modeline" feature scans each loaded buffer for text at the top or bottom
+of the file containing " vim:" followed by a series of Vim options. The text is
+usually embedded within a comment. The following example prevents modifications
+to a buffer in a Python file::
+
+    # vim:noma (A space is required between the '#' and "vim:noma")
+
+If this line is placed in a separate Leo node at the top or bottom of the list
+of nodes under a derived file node (ex: @thin) then any derived file saved and
+then later loaded into Vim will, by default, not be modifiable. If a derived
+file does need to be edited then modifications can be re-enabled on a
+file-by-file basis by issuing Vim's ":ma" command while viewing the derived
+file.
+
+The number of lines that Vim checks at the top and bottom of the buffer is
+configurable. The following Vim command must be placed in the vimrc file to
+allow for Leo's trailing sentinel lines::
+
+    set modelines=8
+
+Issue the ":help modeline" command within Vim for the more information about
+modelines.</t>
+<t tx="ekr.20080729064227.3">The ``@unit`` directive expands the scope of section definitions in ``@root`` trees
+so that a section may be referenced in several ``@root`` trees.
+The ``@unit`` directive is ignored outside of ``@root`` trees.</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

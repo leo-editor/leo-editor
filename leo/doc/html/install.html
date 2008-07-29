@@ -358,7 +358,7 @@ the 'Program Files' folder or any convenient location.</li>
 One way to do this is adding something like the following to python/Lib/sitecustomize.py:</p>
 <pre class="literal-block">
 import sys
-sys.path.append(r'&lt;path-to-leo&gt;leo\src')
+sys.path.append(r'&lt;path-to-leo&gt;leo')
 </pre>
 <p>Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.</p>
 <p>Now that you have installed Leo and told Python where to find Leo,
@@ -544,9 +544,9 @@ leo.run(fileName=aFileName) # runs Leo, opening the given file name.
 <dd><p class="first">The following shell script will allow you to open foo.leo files by typing leo foo:</p>
 <pre class="literal-block">
 #!/bin/sh
-python &lt;leopath&gt;/runLeo.py $1
+python &lt;leopath&gt;/leo/core/runLeo.py $1
 </pre>
-<p class="last">where &lt;leopath&gt; is replaced with the path to the leo directory.</p>
+<p class="last">where &lt;leopath&gt; is the path to the directory containing the leo directory.</p>
 </dd>
 <dt><strong>Windows</strong></dt>
 <dd><p class="first">If you have <a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows">associated .leo files with Leo</a> you may run Leo by double-clicking any .leo file.
@@ -554,8 +554,9 @@ You can also use a batch file.
 Put the following .bat file in c:\Windows:</p>
 <pre class="literal-block">
 cd &lt;path-to-leo&gt;
-c:\python25\python &lt;path-to-leo&gt;\leo\core\runLeo.py %1
+c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
 </pre>
+<p>where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.</p>
 <p class="last">This opens the file specified by the first argument (%1).</p>
 </dd>
 </dl>

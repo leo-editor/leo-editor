@@ -766,7 +766,7 @@ def runTestsExternally (c,all):
         def addNode(self,p):
 
             '''
-            Add an @test, @suite or an @unit-test tree as the last child of self.copyRoot.
+            Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
             '''
 
             # g.trace(len(self.seen),p.headString())

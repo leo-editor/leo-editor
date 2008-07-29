@@ -573,15 +573,15 @@ for p in parent.children_iter():
 <p>The <tt class="docutils literal"><span class="pre">p.parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;inclusive parents of %s&quot; % current.headString(),color=&quot;purple&quot;)
-for p in current.self_and_parents_iter():
+g.es(&quot;exclusive of %s&quot; % current.headString(),color=&quot;purple&quot;)
+for p in current.parents_iter():
     g.es(p.headString())
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">p.self_and_parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, including <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;exclusive of %s&quot; % current.headString(),color=&quot;purple&quot;)
-for p in current.parents_iter():
+g.es(&quot;inclusive parents of %s&quot; % current.headString(),color=&quot;purple&quot;)
+for p in current.self_and_parents_iter():
     g.es(p.headString())
 </pre>
 </div>

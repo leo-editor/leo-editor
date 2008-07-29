@@ -771,7 +771,9 @@ class leoFind:
             try: # Precompile the regexp.
                 flags = re.MULTILINE
                 if self.ignore_case: flags |= re.IGNORECASE
+                # New in Leo 4.5: escape the search text.
                 self.re_obj = re.compile(self.find_text,flags)
+                # self.re_obj = re.compile(re.escape(self.find_text),flags)
             except Exception:
                 g.es('invalid regular expression:',self.find_text,color='blue')
                 self.errors += 1 # Abort the search.
@@ -1134,7 +1136,8 @@ class leoFind:
 
         # g.trace(g.callers())
         c.widgetWantsFocusNow(w)
-        g.app.gui.selectAllText(w)
+        # g.app.gui.selectAllText(w)
+        w.selectAllText()
         c.widgetWantsFocus(w)
     #@-node:ekr.20051020120306.26:bringToFront (leoFind)
     #@+node:ekr.20061111084423.1:oops (leoFind)
@@ -1609,8 +1612,8 @@ class nullFindTab (findTab):
             svar = self.svarDict[ivar].get()
             if svar:
                 self.svarDict["radio-find-type"].set(key)
-                w = d.get(key)
-                if w: w.set(True)
+                # w = d.get(key)
+                # if w: w.set(True)
                 break
         else:
             self.svarDict["radio-find-type"].set("plain-search")
@@ -1625,10 +1628,13 @@ class nullFindTab (findTab):
                 self.svarDict["radio-search-scope"].set(key)
                 break
         else:
-            key = 'entire-outline'
-            self.svarDict["radio-search-scope"].set(key)
-            w = self.widgetsDict.get(key)
-            if w: w.set(True)
+            key = ivar = 'entire-outline'
+            svar = self.svarDict[ivar].get()
+            if svar:
+                self.svarDict["radio-search-scope"].set(key)
+            # self.svarDict["radio-search-scope"].set(key)
+            # w = self.widgetsDict.get(key)
+            # if w: w.set(True)
         #@-node:ekr.20070302090616.6:<< set radio buttons from ivars >>
         #@nl
         #@    << set checkboxes from ivars >>
@@ -1646,8 +1652,9 @@ class nullFindTab (findTab):
         ):
             svar = self.svarDict[ivar].get()
             if svar:
-                w = self.widgetsDict.get(ivar)
-                if w: w.set(True)
+                svar.set(True)
+                # w = self.widgetsDict.get(ivar)
+                # if w: w.set(True)
         #@-node:ekr.20070302090616.7:<< set checkboxes from ivars >>
         #@nl
     #@-node:ekr.20070302090616.4:init

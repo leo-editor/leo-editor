@@ -1866,14 +1866,11 @@ class baseCommands:
                 #@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
                 # This is about the best that can be done without replicating the entire atFile write logic.
 
-                ok = True
-
-                if not hasattr(root.v.t,"tnodeList"):
-                    g.es_print("no child index for",root.headString(),color="red")
-                    ok = False
+                ok = hasattr(root.v.t,"tnodeList")
 
                 if ok:
-                    tnodeList = root.v.t.tnodeList
+                    # Use getattr to keep pylint happy.
+                    tnodeList = getattr(root.v.t,'tnodeList')
                     #@    << set tnodeIndex to the number of +node sentinels before line n >>
                     #@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
 
@@ -1938,6 +1935,8 @@ class baseCommands:
                         ok = False
                     #@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
                     #@nl
+                else:
+                    g.es_print("no child index for",root.headString(),color="red")
 
                 if not ok:
                     # Fall back to the old logic.
@@ -2337,7 +2336,7 @@ class baseCommands:
         if not g.unitTesting:
             g.es("tabs converted to blanks in",count,"nodes")
         # finally:
-        if count > 0: c.redraw # was c.endUpdate(count > 0)
+        if count > 0: c.redraw() # was c.endUpdate(count > 0)
     #@-node:ekr.20031218072017.1705:convertAllTabs
     #@+node:ekr.20031218072017.1821:convertBlanks
     def convertBlanks (self,event=None):
@@ -5877,14 +5876,13 @@ class baseCommands:
 
         g.trace('***** c.beginUpdate is deprecated',g.callers())
         if g.app.unitTesting: assert(False)
-        pass
 
     def endUpdate(self,flag=True,scroll=True):
 
+        '''Request a redraw of the screen if flag is True.'''
+
         g.trace('***** c.endUpdate is deprecated',g.callers())
         if g.app.unitTesting: assert(False)
-
-        '''Request a redraw of the screen if flag is True.'''
 
         c = self
         if flag:

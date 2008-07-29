@@ -28,7 +28,7 @@ def main ():
         # g.es('%s %s' % (tag,c.shortFileName()))
         runUnitTests(c,g)
 
-    # print tag,'done'
+    # g.pr(tag,'done')
 #@+node:ekr.20070626153912.2:runUnitTests
 def runUnitTests (c,g):
 

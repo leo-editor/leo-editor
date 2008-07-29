@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
 <title>Chapter 8: Customizing Leo</title>
 <style type="text/css">
 
@@ -249,16 +249,14 @@ hr { /* EKR */
 </head>
 <body>
 <div class="document">
-
-
 <!-- rst3: filename: html\customizing.html -->
 <p><a class="reference" href="scripting.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="history.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-8-customizing-leo">
-<h1><a class="toc-backref" href="#id2">Chapter 8: Customizing Leo</a></h1>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="chapter-8-customizing-leo" name="chapter-8-customizing-leo">Chapter 8: Customizing Leo</a></h1>
 <p>This chapter discusses how to customize Leo using the plugins and other means.
 See <a class="reference" href="commands.html#specifying-settings">Specifying settings</a> for a description of how to change Leo's settings.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
 <li><a class="reference" href="#chapter-8-customizing-leo" id="id2" name="id2">Chapter 8: Customizing Leo</a><ul>
 <li><a class="reference" href="#id1" id="id3" name="id3">Specifying settings</a><ul>
@@ -277,8 +275,8 @@ See <a class="reference" href="commands.html#specifying-settings">Specifying set
 </ul>
 </div>
 <!-- WARNING: image targets may not have upper case letters! -->
-<div class="section" id="id1">
-<h2><a class="toc-backref" href="#id3">Specifying settings</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="id1" name="id1">Specifying settings</a></h2>
 <p>Leo stores options in <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, that is, outlines whose headline is
 <tt class="docutils literal"><span class="pre">&#64;settings</span></tt>. When opening a .leo file, Leo looks for <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees not only
 in the outline being opened but also in various leoSettings.leo files.
@@ -308,13 +306,13 @@ node has the headline <tt class="docutils literal"><span class="pre">&#64;settin
 example, any setting specified in an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree in the file being loaded
 overrides any setting seen in any <tt class="docutils literal"><span class="pre">leoSettings.leo</span></tt> file.</p>
 <p>The following sections describe the kinds of nodes in <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees.</p>
-<div class="section" id="organizer-nodes">
-<h3><a class="toc-backref" href="#id4">Organizer nodes</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id4" id="organizer-nodes" name="organizer-nodes">Organizer nodes</a></h3>
 <p>Organizer nodes have headlines that do no start with &#64;.
 Organizer nodes may be inserted freely without changing the meaning of an &#64;setting tree.</p>
 </div>
-<div class="section" id="if-nodes">
-<h3><a class="toc-backref" href="#id5">&#64;if nodes</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id5" id="if-nodes" name="if-nodes">&#64;if nodes</a></h3>
 <p>Leo ignores any subtree of an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree whose headline starts with <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt>.</p>
 <p>You can use several other kinds of nodes to cause Leo to ignore parts of  an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree:</p>
 <ul>
@@ -333,8 +331,8 @@ to allow differing settings on only a few machines.</p>
 </li>
 </ul>
 </div>
-<div class="section" id="simple-settings-nodes">
-<h3><a class="toc-backref" href="#id6">Simple settings nodes</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id6" id="simple-settings-nodes" name="simple-settings-nodes">Simple settings nodes</a></h3>
 <p>Simple settings nodes have headlines of the form:</p>
 <pre class="literal-block">
 &#64;&lt;type&gt; name = val
@@ -394,8 +392,8 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 </ul>
 <p><strong>Important</strong>: you can use the show-colors minibuffer command to guide you in making these settings.</p>
 </div>
-<div class="section" id="complex-settings-nodes">
-<h3><a class="toc-backref" href="#id7">Complex settings nodes</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id7" id="complex-settings-nodes" name="complex-settings-nodes">Complex settings nodes</a></h3>
 <p>Complex settings nodes have headlines of the form:</p>
 <pre class="literal-block">
 &#64;&lt;type&gt; description
@@ -425,6 +423,9 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 <tr><td>&#64;menus</td>
 <td>Child &#64;menu and &#64;item nodes create menus and menu items.</td>
 </tr>
+<tr><td>&#64;menuat</td>
+<td>Child &#64;menu and &#64;item nodes modify menu tree create by &#64;menus.</td>
+</tr>
 <tr><td>&#64;mode [name]</td>
 <td>Body text contains a list of shortcut specifiers.</td>
 </tr>
@@ -436,7 +437,7 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 </tr>
 </tbody>
 </table>
-<p>The actual settings are specified in the body text.  At present, there are seven kinds of complex settings nodes:</p>
+<p>The actual settings are specified in the body text.  At present, there are nine kinds of complex settings nodes:</p>
 <ul>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;buttons</span></tt></p>
 <p>An &#64;buttons tree in a settings file defines global buttons that
@@ -454,9 +455,10 @@ All &#64;command nodes outside the commands tree create commands local to the se
 Lines starting with '#' are ignored.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;enabled-plugins</span></tt></p>
-<p>The body text of the &#64;enabled plugins node contains a list of enabled plugins.
-This body text is treated exactly as the contents of the pluginsManager.txt file.
-Notes:</p>
+<p>The body text of the &#64;enabled plugins node contains a list of enabled plugins, one per line.
+The first mention of a plugin controls whether the plugin is enabled or disabled.
+If the line starts with '#' the plugin is disabled.   Otherwise the plugin is enabled.</p>
+<p>Notes:</p>
 <blockquote>
 <ol class="upperalpha simple">
 <li>Leo attempts to load all plugins every time an &#64;enabled-plugins node is seen.
@@ -465,12 +467,8 @@ request to re-enable the plugin.
 Leo never attempts to disable a plugin while processing enabled plugin
 strings. Thus, plugins enabled in an &#64;enabled-plugins node in leoSettings.leo
 <em>will</em> be enabled regardless of the contents of any other &#64;enabled-plugins node.</li>
-<li>Leo will read the pluginsManager.txt file only if no &#64;enabled-plugins node is
-found. The pluginsManager.txt file will no longer be part of the Leo
-distribution. Instead, the default plugins will be enabled in an &#64;enabled-plugins
-node in leoSettings.leo.</li>
-<li>g.app.gui.getEnabledPlugins contains the last value last processed &#64;enabled-plugins node, or the
-contents of the first pluginsManager.txt file encountered.</li>
+<li>g.app.gui.getEnabledPlugins contains the last value last processed &#64;enabled-plugins node.</li>
+<li>Leo no longer uses the pluginsManager.txt file.</li>
 </ol>
 </blockquote>
 </li>
@@ -505,6 +503,60 @@ separator.</p>
 </dd>
 </dl>
 </li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">&#64;menuat</span></tt> <em>&lt;path&gt;</em> <em>&lt;action&gt;</em> <em>[&lt;source&gt;]</em></p>
+<p>The &#64;menuat setting has 2-3 parameters in its head text, its children are &#64;menu and
+&#64;item nodes as for the &#64;menu setting.  &#64;menuat modifies the menu tree created by &#64;menus.
+It is intended to be used in myLeoSettings.leo to modify the menu tree created in
+leoSettings.leo.  This allows you to change the menus without having to re-create the
+entire menu tree from leoSettings.leo, and ensures you don't miss out when new things are
+added in the &#64;menus in leoSettings.leo, as you would if you replaced the &#64;menus in
+leoSettings.leo with one in myLeoSettings.leo.  &#64;menuat should occur in a &#64;settings tree,
+but not as a descendant of a &#64;menus tree.  There is an example of the use of the
+&#64;menuat setting in the file .../leo/core/test/menuAtTest.leo.</p>
+<ul>
+<li><p class="first">path</p>
+<p>This specifies a target location in the menu tree as defined by &#64;menus and modified
+by earlier &#64;menuat settings.  The path takes the form /entry1/entry2/entry3 where
+each entry is the name of a menu or item with all text except a-z and 0-9 removed.
+Upper case letters are converted to lower case.  So for example to use the
+<cite>Outline-&gt;Move-&gt;Move Down</cite> menu item as a target, you would specify a path as
+<cite>/outline/move/movedown</cite>.</p>
+</li>
+<li><p class="first">action</p>
+<p>There are 5 available actions:</p>
+<ul>
+<li><p class="first">before</p>
+<p>The supplied items and sub menus will be inserted immediately before the target
+menu or item.</p>
+</li>
+<li><p class="first">after</p>
+<p>The supplied items and sub menus will be inserted immediately after the target
+menu or item.</p>
+</li>
+<li><p class="first">append</p>
+<p>The supplied items and sub menus will be appended at the end of the menu
+containing the target menu or item.</p>
+</li>
+<li><p class="first">cut</p>
+<p>The target menu or item will be removed from the menu tree and saved to
+an internal clipboard.  This can be used for deleting menus or items.
+Descendants of the &#64;menuat setting are ignored.</p>
+</li>
+<li><p class="first">copy</p>
+<p>The target menu or item will be copied and saved to
+an internal clipboard.  Descendants of the &#64;menuat setting are ignored.</p>
+</li>
+</ul>
+</li>
+<li><p class="first">source</p>
+<p>By default the before, after, and append actions insert the menus and items
+supplied as descendants of the &#64;menuat setting.  If you specify
+&quot;clipboard&quot; (without the quotes) as the source, the contents of the clipboard
+from a previous cut or copy action will be used instead.  This parameter is optional
+and can be left blank.</p>
+</li>
+</ul>
+</li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;mode</span></tt> <em>&lt;mode name&gt;</em></p>
 <p>The body text contains a list of shortcut specifiers.
 <tt class="docutils literal"><span class="pre">&#64;mode</span></tt> nodes work just like <tt class="docutils literal"><span class="pre">&#64;shortcuts</span></tt> nodes,
@@ -521,8 +573,8 @@ again one file per line.</p>
 </ul>
 </div>
 </div>
-<div class="section" id="input-modes">
-<h2><a class="toc-backref" href="#id8">Input modes</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id8" id="input-modes" name="input-modes">Input modes</a></h2>
 <p>Leo now allows you to specify input modes. You enter mode <tt class="docutils literal"><span class="pre">x</span></tt> with the
 <tt class="docutils literal"><span class="pre">enter-x-mode</span></tt> command. The purpose of a mode is to create different bindings
 for keys within a mode. Often plain keys are useful in input modes.</p>
@@ -551,8 +603,8 @@ commands alter what happens to unbound keys in the top-level mode.</li>
 </ul>
 <p>With all these options it should be possible to emulate the keyboard behavior of any other editor.</p>
 </div>
-<div class="section" id="adding-extensible-attributes-to-nodes-and-leo-files">
-<h2><a class="toc-backref" href="#id9">Adding extensible attributes to nodes and .leo files</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="adding-extensible-attributes-to-nodes-and-leo-files" name="adding-extensible-attributes-to-nodes-and-leo-files">Adding extensible attributes to nodes and .leo files</a></h2>
 <p>Leo's .leo file format is extensible. The basis for extending .leo files are the
 <tt class="docutils literal"><span class="pre">t.unknownAttributes</span></tt> and <tt class="docutils literal"><span class="pre">v.unknownAttributes</span></tt> ivars of tnodes and vnodes,
 or uA's for short. Leo translates between uA's and xml attributes in the
@@ -622,14 +674,14 @@ if the corresponding  vnode or tnode contains an <tt class="docutils literal"><s
 <li>Leo performs the usual xml escapes on these strings when reading or writing the <tt class="docutils literal"><span class="pre">unknownAttributes</span></tt> ivars.</li>
 </ul>
 </div>
-<div class="section" id="specifying-tk-options-using-leo-xresources">
-<h2><a class="toc-backref" href="#id10">Specifying Tk options using .leo_xresources</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id10" id="specifying-tk-options-using-leo-xresources" name="specifying-tk-options-using-leo-xresources">Specifying Tk options using .leo_xresources</a></h2>
 <p>Leo looks for a file called <tt class="docutils literal"><span class="pre">.leo_xresources</span></tt> in the users home directory. If
 found, Leo will pass that file to Tk's <tt class="docutils literal"><span class="pre">option_readfile</span></tt> method for the top
 widget. This allows users to set Tk options.</p>
 </div>
-<div class="section" id="translating-leo-s-menus-and-messages">
-<h2><a class="toc-backref" href="#id11">Translating Leo's menus and messages</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id11" id="translating-leo-s-menus-and-messages" name="translating-leo-s-menus-and-messages">Translating Leo's menus and messages</a></h2>
 <p>It is easy to translate Leo's menu strings: simply create an &#64;menus tree in
 leoSettings.leo or myLeoSettings.leo that contains the translated menu names.</p>
 <p><strong>New in Leo 4.4.8</strong>:

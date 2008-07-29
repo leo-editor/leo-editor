@@ -91,8 +91,14 @@ class baseEditCommandsClass:
         if name.startswith('body'):
             oldSel =  w.getSelectionRange()
             oldText = p.bodyString()
-            self.undoData = g.Bunch(
-                ch=ch,name=name,oldSel=oldSel,oldText=oldText,w=w,undoType=undoType)
+            self.undoData = b = g.Bunch()
+            # To keep pylint happy.
+            b.ch=ch
+            b.name=name
+            b.oldSel=oldSel
+            b.oldText=oldText
+            b.w=w
+            b.undoType=undoType
         else:
             self.undoData = None
 
@@ -8483,7 +8489,7 @@ class spellTabHandler (leoFind.leoFind):
                     # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
                     # finally:
-                    if redraw: c.redraw # was c.endUpdate(redraw)
+                    if redraw: c.redraw() # was c.endUpdate(redraw)
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

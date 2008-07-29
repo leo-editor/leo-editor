@@ -11,6 +11,6 @@ class subClass (baseClass.baseClass):
 
     def run(self):
 
-        print self.message
+        g.pr(self.message)
 #@-node:ekr.20080702113207.3:@thin pylintTest/subClass.py
 #@-leo

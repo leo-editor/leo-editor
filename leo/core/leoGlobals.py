@@ -2733,8 +2733,10 @@ def doHook(tag,*args,**keywords):
 #@+node:ekr.20031218072017.1318:g.plugin_signon
 def plugin_signon(module_name,verbose=False):
 
-    # The things we do to keep pychecker happy... 
-    m = g.Bunch(__name__='',__version__='')
+    # To keep pylint happy.
+    m = g.Bunch()
+    m.__name__=''
+    m.__version__=''
 
     exec("import %s ; m = %s" % (module_name,module_name))
 
@@ -2893,6 +2895,46 @@ def es_print(s,*args,**keys):
     if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
         g.es(s,*args,**keys)
 #@-node:ekr.20050707064040:es_print
+#@+node:ekr.20080710101653.1:pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+def pr(s,*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    encoding = sys.getdefaultencoding()
+
+    # Important: defining keyword arguments in addition to *args **does not work**.
+    # See Section 5.3.4 (Calls) of the Python reference manual.
+    # In other words, the following is about the best that can be done.
+    commas = keys.get('commas')
+    commas = g.choose( 
+        commas in (True,'True','true'),True,False)# default is False
+    newline = keys.get('newline')
+    newline = g.choose(
+        newline in (False,'False','false'),False,True)# default is True
+    spaces= keys.get('spaces')
+    spaces = g.choose(
+        spaces in (False,'False','false'),False,True)# default is True
+
+    try:
+        if type(s) != type(u''):
+            s = unicode(s,encoding)
+    except Exception:
+        s = g.toEncodedString(s,'ascii')
+
+    if type(s) != type("") and type(s) != type(u""):
+        s = repr(s)
+    s2 = g.translateArgs(s,args,commas,spaces)
+
+    if newline:
+        sys.stdout.write(s2 + '\n')
+    else:
+        sys.stdout.write(s2)
+#@-node:ekr.20080710101653.1:pr
 #@+node:ekr.20050707065530:es_trace
 def es_trace(s,*args,**keys):
 

@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.478494623656">
+	<global_window_position top="33" left="274" height="930" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="6,3,1,2,1"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -63,7 +63,7 @@
 <v t="ekr.20080121090750"><vh>create-at-auto-nodes</vh></v>
 </v>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
-<v t="ekr.20080412053100.4"><vh>@bool fixedWindow = True</vh></v>
+<v t="ekr.20080412053100.4"><vh>@bool fixedWindow = False</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -73,27 +73,31 @@
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
-marks="ekr.20060417194232.2,"><vh>@thin leoProjects.txt</vh></v>
+marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
-<v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
+<v t="ekr.20040117181936"
+marks="ekr.20080603052650.466,ekr.20031218072017.2834,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20060207133601"
+marks="ekr.20041107093834,"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
+<v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
+<v t="ekr.20031218072017.2606"><vh>&lt;&lt; Import pychecker &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes...</vh>
-<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"
-marks="ekr.20040629121554.1,"><vh>@thin leoCommands.py</vh></v>
-<v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
+marks="ekr.20040629121554.1,ekr.20031218072017.2834,"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20041117062700"
+marks="ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"
 marks="ekr.20060417194232.2,"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
+<v t="ekr.20060123151617"><vh>@thin leoFind.py</vh></v>
 <v t="ekr.20031218072017.3093"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
@@ -102,12 +106,13 @@ marks="ekr.20060417194232.2,"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e"><vh>@thin leoTest.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@thin leoCompare.py</vh></v>
-<v t="ekr.20060123151617"><vh>@thin leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@thin leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3655"
+marks="ekr.20040803072955.91,"><vh>@thin leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@thin leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
@@ -120,7 +125,8 @@ marks="ekr.20060417194232.2,"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.4047"><vh>@thin leoTkinterGui.py</vh></v>
 <v t="ekr.20031218072017.4099"><vh>@thin leoTkinterKeys.py</vh></v>
 <v t="ekr.20031218072017.4100"><vh>@thin leoTkinterMenu.py</vh></v>
-<v t="ekr.20040803072955"><vh>@thin leoTkinterTree.py</vh></v>
+<v t="ekr.20040803072955"
+marks="ekr.20040803072955.127,"><vh>@thin leoTkinterTree.py</vh></v>
 </v>
 <v t="ekr.20080112145409"><vh>Gui gtk classes</vh>
 <v t="ekr.20080112145409.1"><vh>@thin leoGtkDialog.py</vh></v>
@@ -132,6 +138,42 @@ marks="ekr.20060417194232.2,"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20080112170946"><vh>@thin leoGtkTree.py</vh></v>
 </v>
 </v>
+<v t="ekr.20080708094444.81"><vh>(add support for shadow files)</vh>
+<v t="ekr.20080708094444.71"><vh>shadow tests</vh>
+<v t="ekr.20080708094444.82"><vh>@shadow_data</vh>
+<v t="ekr.20080708094444.75"><vh>before with sentinels</vh></v>
+<v t="ekr.20080708094444.76"><vh>after with sentinels</vh></v>
+<v t="ekr.20080708094444.77"><vh>changed without sentinels</vh></v>
+</v>
+<v t="ekr.20080708094444.74"><vh>@test basic replacement test</vh>
+<v t="ekr.20080708094444.70"><vh>do_test_propagate_changes_Leo</vh></v>
+</v>
+</v>
+<v t="ekr.20080708094444.53"><vh>Module level</vh>
+<v t="ekr.20080708094444.54"><vh>init</vh></v>
+<v t="ekr.20080708094444.55"><vh>putInHooks</vh></v>
+<v t="ekr.20080708094444.56"><vh>OLDapplyConfiguration</vh></v>
+<v t="ekr.20080708094444.57"><vh>check_for_shadow_file (Not used)</vh></v>
+<v t="ekr.20080708094444.58"><vh>getVerbosity</vh></v>
+<v t="ekr.20080708094444.59"><vh>marker_from_extension</vh></v>
+</v>
+<v t="ekr.20080708094444.60" a="E"><vh>Leo overwrites</vh>
+<v t="ekr.20080708094444.87"><vh>Read/write</vh>
+<v t="ekr.20080708094444.61"><vh>openForRead</vh></v>
+<v t="ekr.20080708094444.62"><vh>openForWrite</vh></v>
+<v t="ekr.20080708094444.67"><vh>atFile.replaceTargetFileIfDifferent</vh></v>
+<v t="ekr.20080708094444.68"><vh>massageComment</vh></v>
+</v>
+<v t="ekr.20080708094444.88"><vh>goto-line-number changes</vh>
+<v t="ekr.20080708094444.63"><vh>gotoLineNumberOpen</vh></v>
+<v t="ekr.20080708094444.64"><vh>gotoLineNumber</vh>
+<v t="ekr.20080708094444.65"><vh>applyLineNumberMappingIfAny</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20080708094444.1" a="E"
+expanded="ekr.20080708094444.80,ekr.20080708094444.36,ekr.20080708094444.38,"><vh>@thin leoShadow.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
@@ -156,12 +198,27 @@ u:  an undoer
 v:  a vnode
 z:  a local temp.</t>
 <t tx="ekr.20031218072017.2604"></t>
+<t tx="ekr.20031218072017.2606">@color
+
+__pychecker__ = '--no-argsused'
+
+# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
+
+if 0: # Set to 1 for lint-like testing.
+      # Use t23.bat: only on Python 2.3.
+
+    try:
+        import pychecker.checker
+        print '\npychecker.checker running...\n'
+    except Exception:
+        print '\nCan not import pychecker\n'
+</t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
 <t tx="ekr.20031218072017.3821"></t>
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
-    return "Leo 4.4.8 final, build %s, April 6, 2008" % c.getBuildNumber()
+    return "Leo 4.5 b1, build %s, June 28, 2008" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -764,5 +821,290 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080312060129.6"></t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
+<t tx="ekr.20080708094444.53"></t>
+<t tx="ekr.20080708094444.54">def init ():
+
+    ok = mod_shadow_core is not None and not g.app.unitTesting
+        # Not safe for unit testing: changes Leo's core.
+
+    if ok:
+        putInHooks()
+        g.es_print("Shadow plugin enabled!",color="orange")
+
+    return ok</t>
+<t tx="ekr.20080708094444.55">def putInHooks ():
+    """Modify methods in Leo's core to support this plugin."""
+
+    # Need to modify Leo's Kernel first
+    # Overwrite existing Leo methods.
+    g.funcToMethod(replaceTargetFileIfDifferent,leoAtFile.atFile)
+    g.funcToMethod(massageComment,leoImport.leoImportCommands)
+
+    # Add new methods used by this plugin to various classes.
+    g.funcToMethod(openForRead,leoAtFile.atFile)
+    g.funcToMethod(openForWrite,leoAtFile.atFile)
+    g.funcToMethod(gotoLineNumberOpen,leoCommands.Commands)
+    g.funcToMethod(applyLineNumberMappingIfAny, leoCommands.Commands)
+</t>
+<t tx="ekr.20080708094444.56">def applyConfiguration (config=None):
+
+    """Called when the user presses the "Apply" button on the Properties form.
+
+    Not sure yet if we need configuration options for this plugin."""
+
+    if config is None:
+        fileName = os.path.join(g.app.loadDir,"..","plugins","mod_shadow.ini")
+        if os.path.exists(fileName):
+            config = ConfigParser.ConfigParser()
+            config.read(fileName)
+    if config:
+        mod_shadow_core.active = config.getboolean("Main","Active")
+        mod_shadow_core.testing = config.getboolean("Main", "testing")
+        mod_shadow_core.verbosity = config.getint("Main", "verbosity")
+        mod_shadow_core.prefix = config.get("Main", "prefix")
+        mod_shadow_core.print_copy_operations = config.get("Main", "print_copy_operations")
+        mod_shadow_core.shadow_subdir = config.get("Main", "shadow_subdir")</t>
+<t tx="ekr.20080708094444.57">def check_for_shadow_file (self,filename):
+    """
+    Check if there is a shadow file for filename.
+    Return:
+        - the name of the shadow file,
+        - an indicator if the file denoted by 'filename' is
+        of zero length.
+    """
+    dir, simplename = os.path.split(filename)
+    rootname, ext = os.path.splitext(simplename)
+    if ext=='.tmp':
+        shadow_filename = os.path.join(dir, mod_shadow_core.shadow_subdir, mod_shadow_core.prefix + rootname)
+        if os.path.exists(shadow_filename):
+            resultname = os.path.join(dir, mod_shadow_core.shadow_subdir, mod_shadow_core.prefix + simplename)
+            return resultname, False 
+        else:
+            return '', False 
+    else:
+        shadow_filename = os.path.join(dir,mod_shadow_core.shadow_subdir,mod_shadow_core.prefix + simplename)
+        if os.path.exists(shadow_filename):
+            return shadow_filename, os.path.getsize(filename)&lt;= 2
+        else:
+            return '', False </t>
+<t tx="ekr.20080708094444.58">def getVerbosity (c):
+
+    verbosity = c.config.getInt('shadow_verbose')
+    if verbosity is None: verbosity = 1
+    return verbosity</t>
+<t tx="ekr.20080708094444.59">def marker_from_extension(filename):
+    return g.comment_delims_from_extension(filename)[0] + "@"</t>
+<t tx="ekr.20080708094444.60"></t>
+<t tx="ekr.20080708094444.61">def openForRead (self, filename, rb):
+    """
+    Replaces the standard open for reads.
+    Checks and handles shadow files:
+        if the length of the real file is zero:
+            update the real file from the shadow file.
+        else:
+            update the shadow file from the real file.
+    """
+    c = self.c
+    shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
+    shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
+    shadow_verbosity = getVerbosity(c)
+    try:
+        dir, simplename = os.path.split(filename)
+        shadow_filename = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
+        if os.path.exists(shadow_filename):
+            file_to_read_from = shadow_filename
+            newfile = os.path.exists(filename)and os.path.getsize(filename)&lt;=2            
+            if newfile:
+                if shadow_verbosity &gt;= 2:
+                    g.es("Copy %s to %s without sentinels"%(shadow_filename, filename))
+                mod_shadow_core.copy_file_removing_sentinels(sourcefilename=shadow_filename,
+                                             targetfilename=filename,
+                                             marker_from_extension=marker_from_extension)
+            else:
+                sq = mod_shadow_core.sentinel_squasher(g.es, g.nullObject)
+                if shadow_verbosity &gt;= 2:
+                    g.es("reading from shadow directory %s"% (
+                        shadow_subdir),color="orange")
+                written = sq.propagate_changes(
+                                with_sentinels=shadow_filename,
+                                without_sentinels=filename,
+                                marker_from_extension=marker_from_extension)
+                if written:
+                    g.es("file %s updated from %s" % (shadow_filename, filename), color="orange")
+        else:
+            file_to_read_from = filename 
+        return open(file_to_read_from,'rb')
+    except:
+        # Make sure failures to open a file generate clear messages.
+        g.es_exception()
+        raise </t>
+<t tx="ekr.20080708094444.62">def openForWrite (self, filename, wb):
+    """
+    Replaces the standard open for writes:
+        - Check if filename designates a file
+          which has a shadow file.
+          If so, write to the shadow file,
+          and update the real file after the close.
+    """
+    c = self.c
+    shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
+    shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
+    shadow_verbosity = getVerbosity(c)
+    dir, simplename = os.path.split(filename)
+    rootname, ext = os.path.splitext(simplename)
+    assert ext=='.tmp'
+    shadow_filename = os.path.join(dir,shadow_subdir, shadow_prefix + rootname)
+    self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+    if self.writing_to_shadow_directory:
+        self.shadow_filename = shadow_filename 
+        if shadow_verbosity &gt;= 2: 
+            g.es("Using shadow file in folder %s" % shadow_subdir,color="orange")
+        file_to_use = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
+    else:
+        file_to_use = filename 
+    return open(file_to_use,'wb')
+</t>
+<t tx="ekr.20080708094444.63">def gotoLineNumberOpen (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This line_mapping instance variable is empty if
+    no shadow file exist, otherwise it contains a mapping 
+    shadow file number -&gt; real file number.
+    """
+    try:
+        c = self
+        shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
+        shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
+        dir, simplename = os.path.split(filename)
+        shadow_filename = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
+        if os.path.exists(shadow_filename):
+            import leo.core.leoShadow as leoShadow
+            cc = leoShadow.shadowController(c)
+            lines = file(shadow_filename).readlines()
+            self.line_mapping = cc.push_filter_mapping(
+                lines, marker_from_extension(shadow_filename))
+        else:
+            self.line_mapping = {}
+            lines = file(filename).readlines()
+        return lines 
+    except:
+        # Make sure failures to open a file generate clear messages.
+        g.es_exception()
+        raise</t>
+<t tx="ekr.20080708094444.64"></t>
+<t tx="ekr.20080708094444.65">def applyLineNumberMappingIfAny(self, n):
+    """
+    Hook for mod_shadow plugin.
+    """
+
+    if hasattr(self,'line_mapping') and self.line_mapping:
+        return self.line_mapping[n]
+    else:
+        return n</t>
+<t tx="ekr.20080708094444.67">original_replaceTargetFileIfDifferent = leoAtFile.atFile.replaceTargetFileIfDifferent
+
+# We must patch in two places:
+    # -When the temporary file is written(openWriteFile)
+    # -When Leo renames the file(replaceTargetFileIfDifferent).
+
+def replaceTargetFileIfDifferent (self):
+
+    # Check if we are dealing with a shadow file
+    try:
+        c = self.c
+        targetFileName = self.targetFileName 
+        outputFileName = self.outputFileName
+        shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
+        shadow_verbosity = getVerbosity(c)
+        if self.writing_to_shadow_directory:
+            self.targetFileName = self.shadow_filename 
+            self.outputFileName = self.shadow_filename+'.tmp'
+        if original_replaceTargetFileIfDifferent(self):
+            # Original_replaceTargetFileIfDifferent should be oblivious
+            # to the existance of the shadow directory.
+            if self.writing_to_shadow_directory:
+                if shadow_verbosity &gt;= 2:
+                    g.es("Updating file from shadow folder %s" % shadow_subdir,color='orange')
+                mod_shadow_core.copy_file_removing_sentinels(self.shadow_filename,targetFileName, marker_from_extension)
+
+    finally:
+        if self.writing_to_shadow_directory:
+            assert self.targetFileName == self.shadow_filename 
+            assert self.outputFileName == self.shadow_filename+'.tmp'
+        else:
+            assert self.targetFileName == targetFileName
+            assert self.outputFileName == outputFileName
+            # We need to check what's going on if the targetFileName or the outputFileName is changed.
+
+        # Not sure if this finally clause is needed or not
+        self.targetFileName = targetFileName
+        self.outputFileName = outputFileName 
+</t>
+<t tx="ekr.20080708094444.68">def massageComment (self,s):
+
+    """Leo has no business changing comments!"""
+
+    return s 
+</t>
+<t tx="ekr.20080708094444.70">def do_test_propagate_changes_Leo(c):
+    """
+    Leo version of the test procedure.
+    Gets the arguments from Leo nodes.
+    """
+    from leoTest import testUtils
+
+    def get_node_lines(title):
+        unicode_string = u.findNodeInTree(p, title).bodyString()
+        return unicode_string.split("\n")
+    try:
+        p = c.currentPosition()
+        u = testUtils(c)
+
+        before_with_sentinels_lines = get_node_lines ("before with sentinels")
+        changed_without_sentinels_lines = get_node_lines ("changed without sentinels")
+        after_with_sentinel_lines = get_node_lines ("after with sentinels")
+
+        sq = mod_shadow_core.sentinel_squasher(g.es, g.nullObject)
+        mod_shadow_core.propagate_changes_test (c,
+            before_with_sentinels_lines,
+            changed_without_sentinels_lines,
+            after_with_sentinel_lines,
+            "#@", g.es, g.nullObject)
+    finally:
+        pass</t>
+<t tx="ekr.20080708094444.71"></t>
+<t tx="ekr.20080708094444.74">@doc
+This is the most complicated part of the plugin, and needs most testing.
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+    
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+@c
+
+cc = c.shadowController
+
+if cc:
+    cc.do_test_propagate_changes_Leo(c)
+</t>
+<t tx="ekr.20080708094444.75">#@string1
+line 1
+line 2
+</t>
+<t tx="ekr.20080708094444.76">#@string2
+xxx
+</t>
+<t tx="ekr.20080708094444.77">xxx
+</t>
+<t tx="ekr.20080708094444.81"></t>
+<t tx="ekr.20080708094444.82"></t>
+<t tx="ekr.20080708094444.87"></t>
+<t tx="ekr.20080708094444.88"></t>
 </tnodes>
 </leo_file>

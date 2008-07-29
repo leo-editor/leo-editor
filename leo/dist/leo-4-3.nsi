@@ -417,7 +417,7 @@ Section "Leo" SEC01
   File "..\core\LeoPy.leo"
   File "..\core\oldLeoProjects.leo"
 
-  ; File "..\core\__init__.py"
+  File "..\core\__init__.py"
   File "..\core\leo*.py"
   File "..\core\runLeo.py"
   ;@-node:ekr.20050118104901.10:<< install core files >>
