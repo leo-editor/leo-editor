@@ -770,10 +770,9 @@
 <v t="ekr.20070704074747"><vh>Overview</vh></v>
 <v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
 <v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
-<v t="ekr.20070704074439"><vh>@rst-ignore How unit tests commands find tests</vh></v>
-<v t="ekr.20070630083055"><vh>@rst-ignore Including other nodes in unit tests</vh></v>
-<v t="ekr.20070628090657.2"><vh>@rst-ignore Unit test buttons</vh></v>
 <v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
+<v t="ekr.20080729064227.6"><vh>@button timer</vh></v>
+<v t="ekr.20080729064227.7"><vh>@button profile</vh></v>
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
@@ -27277,29 +27276,6 @@ just like in other scripts.  Thus, the line::
     
 is not needed.  However, it prevents pychecker warnings that c and p are undefined.
 </t>
-<t tx="ekr.20070628090657.2">test.leo and leoPy.leo contain two unit testing buttons::
-    
-    @button unit-tests @key=Alt+4
-    @button all-unit-tests @key=Alt+5
-
-The script in the unit-tests button is::
-
-    import leo.core.leoTest as leoTest
-    leoTest.runTestsExternally (c,all=False)
-    
-The script in the all-unit-tests button is::
-
-    import leo.core.leoTest as leoTest
-    leoTest.runTestsExternally (c,all=True)
-
-As you can see, each button writes a message, and calls runTestsExternally.
-The only difference in these scripts is the 'all' argument.
-
-These buttons create bindings for the 'unit-tests' and 'all-unit-tests' commands.
-Alternatively, you can dispense with these buttons and instead use the
-run-unit-tests and run-all-unit-tests commands directly.
-As always, you can create bindings for these commands in leoSettings.leo or myLeoSettings.leo.
-</t>
 <t tx="ekr.20070628094515.1">**@suite nodes** are nodes whose headlines start with @suite. @suite nodes allow
 you to create and run custom subclasses of unittest.TestCase.
 
@@ -27384,10 +27360,6 @@ headlines in that file::
     for p in newFrame.c.allNodes_iter():
         g.es(g.toEncodedString(p.headString(),"utf-8"))
 </t>
-<t tx="ekr.20070630083055">Sometimes the code in an @test or @suite node requires other nodes. The
-@unit-tests node groups nodes so that all nodes are available when running unit
-tests. That is, all nodes in an @unit-tests tree are copied to
-test/DynamicUnitTest.leo. (See `How the unit test commands work`_ for full details.)</t>
 <t tx="ekr.20070701090840">Leo is not your ordinary text editor, class browser, project manager or database manager,
 though it resembles these programs in some respects.
 Understanding what Leo is does take some work:
@@ -27652,27 +27624,6 @@ In short, this code is no worse than it has ever been.</t>
 A new unit test ensures that this is so.</t>
 <t tx="ekr.20070703095207.73">http://sourceforge.net/forum/message.php?msg_id=4382336
 </t>
-<t tx="ekr.20070704074439">As described later, Leo's unit tests commands copy various nodes to
-test/dynamicUnitTest.leo, and then run these unit tests in a separate process.
-
-The run-all-unit-tests command copies all @test, @suite nodes @unit-test trees
-and their descendants to test/dynamicUnitTest.leo.
-
-The run-unit-tests command searches for copies nodes to test/dynamicUnitTest.leo
-as follows:
-    
-1. The run-unit-test command copies all @test and @suite nodes in all
-   @mark-for-unit-tests trees.
-
-2. The run-unit-test command copies all @test and @suite nodes in the presently
-   selected tree. If the presently selected tree contains no such tree, it looks
-   up the tree looking for @test, @suite and @unit-tests nodes. If such a node is
-   found, the run-unit-test command copies all @test and @suite nodes in the
-   nodes tree.
-   
-In practice, these rules usually run the intended unit tests, namely all tests
-in @mark-for-unit-tests trees and all unit tests 'near' the presently selected
-node.</t>
 <t tx="ekr.20070704074747">Leo's **unit test commands** run the unit tests
 created by @test and @suite nodes. run-unit-tests and run-unit-tests-locally
 run all unit tests in the presently selected part of the Leo outline;
@@ -31116,6 +31067,24 @@ modelines.</t>
 <t tx="ekr.20080729064227.3">The ``@unit`` directive expands the scope of section definitions in ``@root`` trees
 so that a section may be referenced in several ``@root`` trees.
 The ``@unit`` directive is ignored outside of ``@root`` trees.</t>
+<t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module.
+See http://docs.python.org/lib/module-timeit.html.
+The contents of @button timer is::
+
+    import leo.core.leoTest as leoTest
+    leoTest.runTimerOnNode(c,p,count=100)
+    
+runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
+</t>
+<t tx="ekr.20080729064227.7">The profile button in unitTest.leo allows you to profile nodes using Python's profiler module.
+See http://docs.python.org/lib/module-profile.html
+The contents of @button profile is::
+
+    import leo.core.leoTest as leoTest
+    leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
+    
+runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
+</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

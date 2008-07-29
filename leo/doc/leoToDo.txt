@@ -5069,6 +5069,41 @@ Create a simple template myLeoSettings.leo in $HOME when you try to
 open it and it doesn't exist
 #@nonl
 #@-node:ekr.20080219080209:Create myLeoSettings.leo if it does not exist
+#@+node:ekr.20080729064227.5:Implement p.fileLevel?
+#@+node:ekr.20080416161551.197:p.level & simpleLevel
+def level (self):
+
+    '''Return the number of p's parents.'''
+
+    p = self
+    return p.v and len(p.stack) or 0
+
+simpleLevel = level
+#@-node:ekr.20080416161551.197:p.level & simpleLevel
+#@+node:ekr.20080519062109.1:add p.fileLevel and add support for it
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f744c2a5819e3
+
+> Let us define p.fileLevel() for any position p as follows:
+
+p.fileLevel() is 0 if p is not a descendant of any kind of @file node.
+
+Otherwise, suppose root is the position of the enclosing @file node (or @thin node, etc.)
+> p.fileLevel() is p.level() - root.level() and the "effective" column is the
+> node's column plus p.fileLevel() * c.tab_width. This could be displayed in
+> the status line.
+
+> Anyone want to try?
+
+> Edward
+
+I must admit I lack knowledge to implement this (I've got no
+experience with Python GUI programming at all). Would this feature
+appear in the next leo release?
+#@nonl
+#@-node:ekr.20080519062109.1:add p.fileLevel and add support for it
+#@-node:ekr.20080729064227.5:Implement p.fileLevel?
 #@-node:ekr.20080515170809.1:Files
 #@+node:ekr.20080425054202.3:ASAP
 # These are useful and easy.
