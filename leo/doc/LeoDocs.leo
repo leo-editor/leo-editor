@@ -280,6 +280,7 @@
 <v t="ekr.20050828210721.2"><vh>@tabwidth</vh></v>
 <v t="ekr.20050828061501.40"><vh>@raw and @end_raw</vh></v>
 <v t="ekr.20050828061501.41"><vh>@root-code and @root-doc</vh></v>
+<v t="ekr.20080729064227.3"><vh>@unit</vh></v>
 <v t="ekr.20050828061501.50"><vh>@verbose, @terse, @quiet and @silent</vh></v>
 <v t="ekr.20050828061501.42"><vh>@wrap and @nowrap</vh></v>
 </v>
@@ -31112,6 +31113,9 @@ allow for Leo's trailing sentinel lines::
 
 Issue the ":help modeline" command within Vim for the more information about
 modelines.</t>
+<t tx="ekr.20080729064227.3">The ``@unit`` directive expands the scope of section definitions in ``@root`` trees
+so that a section may be referenced in several ``@root`` trees.
+The ``@unit`` directive is ignored outside of ``@root`` trees.</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

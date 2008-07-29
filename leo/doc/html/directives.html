@@ -291,29 +291,30 @@ I recommend using Leo for two weeks, or longer, before attempting this chapter.<
 <li><a class="reference" href="#tabwidth" id="id20" name="id20">&#64;tabwidth</a></li>
 <li><a class="reference" href="#raw-and-end-raw" id="id21" name="id21">&#64;raw and &#64;end_raw</a></li>
 <li><a class="reference" href="#root-code-and-root-doc" id="id22" name="id22">&#64;root-code and &#64;root-doc</a></li>
-<li><a class="reference" href="#verbose-terse-quiet-and-silent" id="id23" name="id23">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></li>
-<li><a class="reference" href="#wrap-and-nowrap" id="id24" name="id24">&#64;wrap and &#64;nowrap</a></li>
+<li><a class="reference" href="#unit" id="id23" name="id23">&#64;unit</a></li>
+<li><a class="reference" href="#verbose-terse-quiet-and-silent" id="id24" name="id24">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></li>
+<li><a class="reference" href="#wrap-and-nowrap" id="id25" name="id25">&#64;wrap and &#64;nowrap</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#reference-the-seven-ways-of-creating-derived-files" id="id25" name="id25">Reference: the seven ways of creating derived files</a><ul>
-<li><a class="reference" href="#auto" id="id26" name="id26">&#64;auto</a><ul>
-<li><a class="reference" href="#perfect-import-checks" id="id27" name="id27">Perfect import checks</a></li>
-<li><a class="reference" href="#commands-related-to-auto" id="id28" name="id28">Commands related to &#64;auto</a></li>
+<li><a class="reference" href="#reference-the-seven-ways-of-creating-derived-files" id="id26" name="id26">Reference: the seven ways of creating derived files</a><ul>
+<li><a class="reference" href="#auto" id="id27" name="id27">&#64;auto</a><ul>
+<li><a class="reference" href="#perfect-import-checks" id="id28" name="id28">Perfect import checks</a></li>
+<li><a class="reference" href="#commands-related-to-auto" id="id29" name="id29">Commands related to &#64;auto</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#thin-and-file" id="id29" name="id29">&#64;thin and &#64;file</a></li>
-<li><a class="reference" href="#nosent" id="id30" name="id30">&#64;nosent</a></li>
-<li><a class="reference" href="#asis-and-noref" id="id31" name="id31">&#64;asis and &#64;noref</a></li>
-<li><a class="reference" href="#root" id="id32" name="id32">&#64;root</a><ul>
-<li><a class="reference" href="#sections-and-section-definitions" id="id33" name="id33">Sections and section definitions</a></li>
-<li><a class="reference" href="#tangling-root-trees-with-the-tangle-commands" id="id34" name="id34">Tangling &#64;root trees with the Tangle commands</a></li>
-<li><a class="reference" href="#untangling-root-trees-with-the-untangle-commands" id="id35" name="id35">Untangling &#64;root trees with the Untangle commands</a></li>
+<li><a class="reference" href="#thin-and-file" id="id30" name="id30">&#64;thin and &#64;file</a></li>
+<li><a class="reference" href="#nosent" id="id31" name="id31">&#64;nosent</a></li>
+<li><a class="reference" href="#asis-and-noref" id="id32" name="id32">&#64;asis and &#64;noref</a></li>
+<li><a class="reference" href="#root" id="id33" name="id33">&#64;root</a><ul>
+<li><a class="reference" href="#sections-and-section-definitions" id="id34" name="id34">Sections and section definitions</a></li>
+<li><a class="reference" href="#tangling-root-trees-with-the-tangle-commands" id="id35" name="id35">Tangling &#64;root trees with the Tangle commands</a></li>
+<li><a class="reference" href="#untangling-root-trees-with-the-untangle-commands" id="id36" name="id36">Untangling &#64;root trees with the Untangle commands</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#converting-root-trees-to-file-trees" id="id36" name="id36">Converting &#64;root trees to &#64;file trees</a></li>
+<li><a class="reference" href="#converting-root-trees-to-file-trees" id="id37" name="id37">Converting &#64;root trees to &#64;file trees</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#cweb-mode" id="id37" name="id37">CWEB mode</a></li>
+<li><a class="reference" href="#cweb-mode" id="id38" name="id38">CWEB mode</a></li>
 </ul>
 </li>
 </ul>
@@ -800,8 +801,14 @@ and I decided it wouldn't hurt to leave it in.
 Anyway, you now have complete flexibility about how <tt class="docutils literal"><span class="pre">&#64;root</span></tt> works,
 and in particular you can make <tt class="docutils literal"><span class="pre">&#64;root</span></tt> work just like <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.</p>
 </div>
+<div class="section" id="unit">
+<h3><a class="toc-backref" href="#id23">&#64;unit</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> directive expands the scope of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees
+so that a section may be referenced in several <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
+The <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> directive is ignored outside of <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.</p>
+</div>
 <div class="section" id="verbose-terse-quiet-and-silent">
-<h3><a class="toc-backref" href="#id23">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></h3>
+<h3><a class="toc-backref" href="#id24">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">&#64;verbose</span></tt>, <tt class="docutils literal"><span class="pre">&#64;terse</span></tt>, <tt class="docutils literal"><span class="pre">&#64;quiet</span></tt> and <tt class="docutils literal"><span class="pre">&#64;silent</span></tt> directives determine
 how the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command outputs comments in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 Comments written by the user in code sections are always output.
@@ -817,14 +824,14 @@ Like <tt class="docutils literal"><span class="pre">&#64;silent</span></tt>, <tt
 If more than one of these directives appear in the same body text the &quot;most verbose&quot; of these options will be in effect.</p>
 </div>
 <div class="section" id="wrap-and-nowrap">
-<h3><a class="toc-backref" href="#id24">&#64;wrap and &#64;nowrap</a></h3>
+<h3><a class="toc-backref" href="#id25">&#64;wrap and &#64;nowrap</a></h3>
 <p>By default, the <tt class="docutils literal"><span class="pre">body_pane_wraps</span></tt> setting controls whether body text wraps.
 You may override this setting for a particular tree using the <tt class="docutils literal"><span class="pre">&#64;wrap</span></tt> and <tt class="docutils literal"><span class="pre">&#64;nowrap</span></tt> directives.
 Only the first <tt class="docutils literal"><span class="pre">&#64;wrap</span></tt> or <tt class="docutils literal"><span class="pre">&#64;nowrap</span></tt> directive in a node has any effect.</p>
 </div>
 </div>
 <div class="section" id="reference-the-seven-ways-of-creating-derived-files">
-<h2><a class="toc-backref" href="#id25">Reference: the seven ways of creating derived files</a></h2>
+<h2><a class="toc-backref" href="#id26">Reference: the seven ways of creating derived files</a></h2>
 <p>In the following table all terms in each row are equivalent.
 The spelling in the first column is preferred:</p>
 <table border="1" class="docutils">
@@ -895,7 +902,7 @@ The spelling in the first column is preferred:</p>
 <p>Leo can not update the outline from changes made from derived files unless those files contain sentinels.
 The primary source for <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees are the outlines from which those files were derived.</p>
 <div class="section" id="auto">
-<h3><a class="toc-backref" href="#id26">&#64;auto</a></h3>
+<h3><a class="toc-backref" href="#id27">&#64;auto</a></h3>
 <p>&#64;auto trees allow people to use Leo in collaborative environments without using
 sentinels in the files Leo generates. In contrast to &#64;nosent, &#64;auto trees can
 change when the corresponding file changes outside of Leo.</p>
@@ -923,7 +930,7 @@ tags that create outline nodes. By default, the <strong>organizer tags</strong> 
 body, head, and div.</li>
 </ul>
 <div class="section" id="perfect-import-checks">
-<h4><a class="toc-backref" href="#id27">Perfect import checks</a></h4>
+<h4><a class="toc-backref" href="#id28">Perfect import checks</a></h4>
 <p>Leo performs several checks to ensure that the result of importing an external
 file will be equivalent to the file that writing the &#64;auto tree would produce.</p>
 <p>These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a
@@ -961,7 +968,7 @@ any unindented line of the node.</li>
 Such lines can not change the meaning of Python programs.</p>
 </div>
 <div class="section" id="commands-related-to-auto">
-<h4><a class="toc-backref" href="#id28">Commands related to &#64;auto</a></h4>
+<h4><a class="toc-backref" href="#id29">Commands related to &#64;auto</a></h4>
 <p>Three commands in the <a class="reference" href="File:Read/Write">File:Read/Write</a> menu allow you to manually read and
 write &#64;auto nodes from the presently selected outline. As always, an &#64;ignore
 directive in the &#64;auto node or its ancestors will suppress any of these
@@ -982,7 +989,7 @@ read-at-auto-nodes command to update &#64;auto nodes without having to reload th
 </div>
 </div>
 <div class="section" id="thin-and-file">
-<h3><a class="toc-backref" href="#id29">&#64;thin and &#64;file</a></h3>
+<h3><a class="toc-backref" href="#id30">&#64;thin and &#64;file</a></h3>
 <p>In most respects <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> works just like <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.
 In fact, you can convert from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> simply by opening an outline,
 changing <tt class="docutils literal"><span class="pre">&#64;file</span></tt> to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, and saving the outline.</p>
@@ -1008,7 +1015,7 @@ My local copy can contain nodes other than <tt class="docutils literal"><span cl
 </ul>
 </div>
 <div class="section" id="nosent">
-<h3><a class="toc-backref" href="#id30">&#64;nosent</a></h3>
+<h3><a class="toc-backref" href="#id31">&#64;nosent</a></h3>
 <p>Leo writes <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees just as for <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees,
 but Leo writes no sentinels at all.</p>
 <p>The &#64;bool force_newlines_in_at_nosent_bodies setting
@@ -1017,7 +1024,7 @@ end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</p>
 </div>
 <div class="section" id="asis-and-noref">
-<h3><a class="toc-backref" href="#id31">&#64;asis and &#64;noref</a></h3>
+<h3><a class="toc-backref" href="#id32">&#64;asis and &#64;noref</a></h3>
 <p>The only difference between <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> and <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees is that files derived from
 <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> contain sentinels while files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> do not.</p>
 <p>Leo creates files derived from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees by
@@ -1040,7 +1047,7 @@ the first line from the next node will concatenated to the last line of the prec
 </ul>
 </div>
 <div class="section" id="root">
-<h3><a class="toc-backref" href="#id32">&#64;root</a></h3>
+<h3><a class="toc-backref" href="#id33">&#64;root</a></h3>
 <p>This section discusses all aspects of <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 You should carefully consider whether the extra flexibility afforded by
 <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees is worth the extra bother.
@@ -1058,7 +1065,7 @@ so that a section may be referenced in several <tt class="docutils literal"><spa
 <li>The meaning of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees are independent of their position within the tree.</li>
 </ul>
 <div class="section" id="sections-and-section-definitions">
-<h4><a class="toc-backref" href="#id33">Sections and section definitions</a></h4>
+<h4><a class="toc-backref" href="#id34">Sections and section definitions</a></h4>
 <p>Just as with <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees, <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees may contain code parts and doc parts.
 Code parts start with section definition lines (see below) or the <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directive.
 Doc parts start with <tt class="docutils literal"><span class="pre">&#64;</span></tt> directive.
@@ -1120,7 +1127,7 @@ def putOpenNodeSentinel(self,v):
 Within a code part <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> in the first column (and only in the first column) stands for a single <tt class="docutils literal"><span class="pre">&#64;</span></tt> sign.</p>
 </div>
 <div class="section" id="tangling-root-trees-with-the-tangle-commands">
-<h4><a class="toc-backref" href="#id34">Tangling &#64;root trees with the Tangle commands</a></h4>
+<h4><a class="toc-backref" href="#id35">Tangling &#64;root trees with the Tangle commands</a></h4>
 <p>Each <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree represents a single derived file.
 <strong>Tangling</strong> is the process of creating derived files from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 Leo tangles <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees automatically whenever an outline is saved.
@@ -1215,7 +1222,7 @@ do not cause the tangle commands to issue spurious error messages.
 It also ensures that a tree can never contribute a section definition to another part of the outline by mistake.</p>
 </div>
 <div class="section" id="untangling-root-trees-with-the-untangle-commands">
-<h4><a class="toc-backref" href="#id35">Untangling &#64;root trees with the Untangle commands</a></h4>
+<h4><a class="toc-backref" href="#id36">Untangling &#64;root trees with the Untangle commands</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">Untangle</span></tt>, <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">All</span></tt> and <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">Marked</span></tt> commands are the
 reverse of the corresponding <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands.
 They update one or more <tt class="docutils literal"><span class="pre">&#64;root</span></tt> nodes based on changes made to the corresponding derived files.</p>
@@ -1250,7 +1257,7 @@ Therefore, the safe way to update text in cloned nodes is to make the change in 
 </div>
 </div>
 <div class="section" id="converting-root-trees-to-file-trees">
-<h3><a class="toc-backref" href="#id36">Converting &#64;root trees to &#64;file trees</a></h3>
+<h3><a class="toc-backref" href="#id37">Converting &#64;root trees to &#64;file trees</a></h3>
 <p>To convert an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree to an <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree, choose the root of the tree to be converted,
 then do the following in the Python window:</p>
 <pre class="literal-block">
@@ -1284,7 +1291,7 @@ place each different definition in a different node.</li>
 </div>
 </div>
 <div class="section" id="cweb-mode">
-<h2><a class="toc-backref" href="#id37">CWEB mode</a></h2>
+<h2><a class="toc-backref" href="#id38">CWEB mode</a></h2>
 <p>See <a class="reference" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> for a discussion of the CWEB language.
 CWEB mode refers to how Leo tangles an outline when <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">cweb</span></tt> is in effect or
 the <tt class="docutils literal"><span class="pre">cweb</span></tt> setting is in effect.
