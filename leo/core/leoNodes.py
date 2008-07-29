@@ -1386,6 +1386,8 @@ class basePosition (object):
     #@+node:ekr.20080416161551.197:p.level & simpleLevel
     def level (self):
 
+        '''Return the number of p's parents.'''
+
         p = self
         return p.v and len(p.stack) or 0
 
