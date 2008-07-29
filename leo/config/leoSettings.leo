@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="693" height="961" width="700"/>
+	<global_window_position top="10" left="203" height="961" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1126,7 +1126,7 @@
 <v t="ekr.20060730101451.2"><vh>@bool shadow_backups = True</vh></v>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
 <v t="ekr.20060730101451.4"><vh>@bool shadow_print_copy_operations = True</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = LeoShadow</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
 <v t="ekr.20060730101451.6"><vh>@bool shadow_testing = True</vh></v>
 <v t="ekr.20060730101451.7"><vh>@int shadow_verbose = 3</vh></v>
 </v>
