@@ -40,32 +40,7 @@ if [ ! -d $LEO_PREFIX/bin ] ; then
 fi
 
 # Copy the files
-#echo ""
-#echo Copying files	.
-
-# 7/29/08
-
-# # RESULTS=`cp -rp * $LEO_LIB_DIR/ 2>&1`
-# # if [ $? -ne 0 ]; then
-    # # echo Failure copying files to $LEO_LIB_DIR
-    # # exit 1;
-# # fi
-
-# Clean up the duplicate files.
-# Permissions were checked above.
-
-# 7/29/08
-
-# # rm -rf $LEO_LIB_DIR/core
-# # rm -rf $LEO_LIB_DIR/config
-
-# Copy the files
-cp -rp core $LEO_LIB_DIR/.
-cp -rp config $LEO_LIB_DIR/.
-
-# Create the startup script
-#echo ""
-#echo "Creating startup script located at: $LEO_RUN_SCRIPT_OUTPUT"
+cp -rp leo $LEO_LIB_DIR
 
 echo "python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"$@\"" > $LEO_RUN_SCRIPT_OUTPUT
 
