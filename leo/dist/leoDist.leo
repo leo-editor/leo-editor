@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5,0,0,8,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="5,1,4,0"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084904.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20050315084904.2"><vh>@recentfiles </vh></v>
@@ -184,8 +184,8 @@
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080402154207.1" a="E"><vh>Release files/info</vh>
-<v t="ekr.20050118095021" a="E"><vh>NSIS 4.x installer</vh>
-<v t="ekr.20050118103207" a="E"><vh>Keeping installer/uninstallers in synch</vh>
+<v t="ekr.20050118095021"><vh>NSIS 4.x installer</vh>
+<v t="ekr.20050118103207"><vh>Keeping installer/uninstallers in synch</vh>
 <v t="ekr.20050118104149"><vh>config files</vh>
 <v t="ekr.20050118104149.1"><vh>&lt;&lt; install config files &gt;&gt;</vh></v>
 <v t="ekr.20050118104149.2"><vh>&lt;&lt; uninstall config files &gt;&gt;</vh></v>
@@ -218,7 +218,7 @@
 <v t="ekr.20050118104901.13"><vh>&lt;&lt; install scripts &gt;&gt;</vh></v>
 <v t="ekr.20050118104901.14"><vh>&lt;&lt; uninstall scripts &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20050118104901.9" a="E"><vh>core files</vh>
+<v t="ekr.20050118104901.9"><vh>core files</vh>
 <v t="ekr.20050118104901.10"><vh>&lt;&lt; install core files &gt;&gt;</vh></v>
 <v t="ekr.20050118104901.11"><vh>&lt;&lt; uninstall core files &gt;&gt;</vh></v>
 </v>
@@ -248,7 +248,7 @@ expanded="ekr.20050118092706.13,"><vh>@thin leo-4-3.nsi</vh></v>
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@file-thin ../../uninstall</vh></v>
 </v>
