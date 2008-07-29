@@ -4799,7 +4799,7 @@ def putTnode (self,t):
     body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
     self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
 #@-node:ekr.20031218072017.1577:putTnode
-#@+node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@+node:ekr.20031218072017.1863:putVnode
 def putVnode (self,p,isIgnore=False):
 
     """Write a <v> element corresponding to a vnode."""
@@ -4910,7 +4910,7 @@ if isOrphan and isThin:
     g.es("writing erroneous:",p.headString(),color="blue")
     p.clearOrphan()
 #@-node:ekr.20040702085529:<< issue informational messages >>
-#@-node:ekr.20031218072017.1863:putVnode (3.x and 4.x)
+#@-node:ekr.20031218072017.1863:putVnode
 #@+node:ekr.20031218072017.1470:put
 def put (self,s):
 

@@ -3594,6 +3594,88 @@ def widgetWantsFocusNow(self,w):
     c = self ; c.set_focus(w,force=True)
 #@-node:ekr.20060210102201:c.xWantsFocusNow
 #@-node:ekr.20080514131122.4:Legacy code (leoCommands.py)
+#@+node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
+#@+node:ekr.20051104075904.88:About the Perfect Import tests
+@killcolor
+@
+
+This code assumes that the test code contains child nodes with the following headlines:
+
+-input          Contains the "before" tree, without sentinels
+-input-after    Contains the "after" tree, without sentinels.
+
+These two nodes define what the test means.
+
+The following nodes must also exist.  The test code sets their contents as follows:
+
+-output-sent        The result of writing the -input tree, with sentinels.
+-output-after-sent  The result of writing the -input-after tree, with sentinels.
+-i_lines            The i_lines list created by mu.create_mapping
+-j_lines            The j_lines list created by stripping sentinels from -input-after's tree.
+-result             The result of running mu.propagateDiffsToSentinelsLines, containing sentinels.
+
+A test passes if and only if the body of -result matches the body of output-after-sent, ignoring the details of @+node and @-node sentinels.
+#@-node:ekr.20051104075904.88:About the Perfect Import tests
+#@+node:ekr.20051104075904.89:runPerfectImportTest
+def runPerfectImportTest(c,p,
+    testing=False,verbose=False,
+    ignoreSentinelsInCompare=False):
+
+    # __pychecker__ = '--no-shadowbuiltin' # input is a builtin.
+
+    # The contents of the "-input" and "-input-after" nodes define the changes.
+
+    p = c.currentPosition()
+    u = testUtils(c)
+    input           = u.findNodeInTree(p,"-input")              # i file: before the change.
+    input_ins       = u.findNodeInTree(p,"-input-after")        # j file: after the change.
+    output_sent     = u.findNodeInTree(p,"-output-sent")        # fat file -> i file.
+    out_after_sent  = u.findNodeInTree(p,"-output-after-sent")  # Should match result.
+    result          = u.findNodeInTree(p,"-result")
+    ilines          = u.findNodeInTree(p,"-i_lines")
+    jlines          = u.findNodeInTree(p,"-j_lines")
+
+    # Create the output nodes containing sentinels from the original input.
+    u.writeNodesToNode(c,input,output_sent,sentinels=True)
+    u.writeNodesToNode(c,input_ins,out_after_sent,sentinels=True)
+
+    mu = g.mulderUpdateAlgorithm(testing=testing,verbose=verbose)
+    delims = g.comment_delims_from_extension("foo.py")
+
+    fat_lines = g.splitLines(output_sent.bodyString())
+    i_lines,mapping = mu.create_mapping(fat_lines,delims)
+    if input_ins.hasChildren():
+        # Get the lines by stripping sentinels from -output-after-sent node.
+        lines = g.splitLines(out_after_sent.bodyString()) 
+        j_lines = mu.removeSentinelsFromLines(lines,delims)
+    else:
+        j_lines = g.splitLines(input_ins.bodyString()) 
+
+    # For viewing...
+    ilines.scriptSetBodyString(''.join(i_lines))
+    jlines.scriptSetBodyString(''.join(j_lines))
+    if ilines.bodyString() != input.bodyString():
+        if not ignoreSentinelsInCompare:
+            print "i_lines != input !"
+
+    # Put the resulting lines (with sentinels) into the -result node.
+    lines = mu.propagateDiffsToSentinelsLines(i_lines,j_lines,fat_lines,mapping)
+    result.scriptSetBodyString(''.join(lines))
+
+    if ignoreSentinelsInCompare:
+        sList = []
+        for s in (result.bodyString(),out_after_sent.bodyString()):
+            lines = g.splitLines(s)
+            lines = mu.removeSentinelsFromLines(lines,delims)
+            sList.append(''.join(lines))
+        return sList[0] == sList[1]
+    else:
+        return u.compareIgnoringNodeNames(
+            result.bodyString(),
+            out_after_sent.bodyString(),
+            delims,verbose=True)
+#@-node:ekr.20051104075904.89:runPerfectImportTest
+#@-node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

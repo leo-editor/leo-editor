@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.478494623656">
+<globals body_outline_ratio="0.5">
 	<global_window_position top="33" left="274" height="930" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="6,3,1,2,1"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="2,0,4,2,0"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -71,9 +71,10 @@
 <v t="ekr.20060908104329"><vh>@url file:c:/prog/tigris-cvs/leo/doc/leoDocs.leo#Users Guide</vh></v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
-marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040519090151.3" a="E"><vh>Projects</vh>
+<v t="EKR.20040429143933" a="E" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e"
+marks="ekr.20060417194232.2,ekr.20041121130043,ekr.20041119204700,ekr.20070925144337.2,ekr.20040803072955.127,ekr.20040803072955.91,ekr.20031218072017.2834,ekr.20080708094444.67,ekr.20080708094444.63,ekr.20080708094444.65,"
+expanded="ekr.20080710082231.16,ekr.20080713091247.3,ekr.20080708094444.81,ekr.20080708094444.60,ekr.20080708094444.38,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"
@@ -139,16 +140,6 @@ marks="ekr.20040803072955.127,"><vh>@thin leoTkinterTree.py</vh></v>
 </v>
 </v>
 <v t="ekr.20080708094444.81"><vh>(add support for shadow files)</vh>
-<v t="ekr.20080708094444.71"><vh>shadow tests</vh>
-<v t="ekr.20080708094444.82"><vh>@shadow_data</vh>
-<v t="ekr.20080708094444.75"><vh>before with sentinels</vh></v>
-<v t="ekr.20080708094444.76"><vh>after with sentinels</vh></v>
-<v t="ekr.20080708094444.77"><vh>changed without sentinels</vh></v>
-</v>
-<v t="ekr.20080708094444.74"><vh>@test basic replacement test</vh>
-<v t="ekr.20080708094444.70"><vh>do_test_propagate_changes_Leo</vh></v>
-</v>
-</v>
 <v t="ekr.20080708094444.53"><vh>Module level</vh>
 <v t="ekr.20080708094444.54"><vh>init</vh></v>
 <v t="ekr.20080708094444.55"><vh>putInHooks</vh></v>
@@ -161,24 +152,75 @@ marks="ekr.20040803072955.127,"><vh>@thin leoTkinterTree.py</vh></v>
 <v t="ekr.20080708094444.87"><vh>Read/write</vh>
 <v t="ekr.20080708094444.61"><vh>openForRead</vh></v>
 <v t="ekr.20080708094444.62"><vh>openForWrite</vh></v>
-<v t="ekr.20080708094444.67"><vh>atFile.replaceTargetFileIfDifferent</vh></v>
+<v t="ekr.20080708094444.67" a="M"><vh>atFile.replaceTargetFileIfDifferent</vh></v>
 <v t="ekr.20080708094444.68"><vh>massageComment</vh></v>
 </v>
 <v t="ekr.20080708094444.88"><vh>goto-line-number changes</vh>
-<v t="ekr.20080708094444.63"><vh>gotoLineNumberOpen</vh></v>
+<v t="ekr.20080708094444.63" a="M"><vh>gotoLineNumberOpen</vh></v>
 <v t="ekr.20080708094444.64"><vh>gotoLineNumber</vh>
-<v t="ekr.20080708094444.65"><vh>applyLineNumberMappingIfAny</vh></v>
+<v t="ekr.20080708094444.65" a="M"><vh>applyLineNumberMappingIfAny</vh></v>
 </v>
 </v>
+<v t="ekr.20080708094444.79"><vh> x.ctor</vh></v>
+<v t="ekr.20041005105605.19"><vh>openFileForReading (atFile)</vh></v>
+<v t="ekr.20041005105605.21"><vh>read (atFile)</vh>
+<v t="ekr.20041005105605.22"><vh>&lt;&lt; set fileName &gt;&gt;</vh></v>
+<v t="ekr.20071105164407"><vh>&lt;&lt; advise user to delete all unvisited nodes &gt;&gt;</vh></v>
+<v t="ekr.20041005105605.25"><vh>&lt;&lt; delete all tempBodyStrings &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20041005105605.26"><vh>readAll (atFile)</vh></v>
+<v t="ekr.20080711093251.7"><vh>readOneAtShadowNode (atFile) &amp; helper</vh>
+<v t="ekr.20080712080505.1"><vh>importAtShadowNode</vh></v>
+</v>
+<v t="ekr.20041005105605.27"><vh>readOpenFile</vh>
+<v t="ekr.20041005105605.28"><vh>&lt;&lt; handle first and last lines &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20080711063656.1"><vh>x.File utils</vh>
+<v t="ekr.20080711063656.7"><vh>x.baseDirName</vh></v>
+<v t="ekr.20080711063656.4"><vh>x.dirName and pathName</vh></v>
+<v t="ekr.20080712080505.3"><vh>x.isSignificantPublicFile</vh></v>
+<v t="ekr.20080710082231.19"><vh>x.makeShadowDirectory</vh></v>
+<v t="ekr.20080711063656.2"><vh>x.rename</vh></v>
+<v t="ekr.20080713091247.1"><vh>x.replaceFileWithString</vh></v>
+<v t="ekr.20080711063656.6"><vh>x.shadowDirName and shadowPathName</vh></v>
+<v t="ekr.20080711063656.3"><vh>x.unlink</vh></v>
+</v>
+<v t="ekr.20080712080505.3"><vh>x.isSignificantPublicFile</vh></v>
+<v t="ekr.20080710082231.19"><vh>x.makeShadowDirectory</vh></v>
+<v t="ekr.20080708094444.36"><vh>x.propagate_changes</vh></v>
+<v t="bwmulder.20041231170726"><vh>x.updatePublicAndPrivateFiles</vh>
+<v t="ekr.20080708094444.27"><vh>x.copy_file_removing_sentinels</vh></v>
+</v>
+</v>
+<v t="ekr.20080710082231.4"><vh>@@button shadow</vh></v>
 </v>
 <v t="ekr.20080708094444.1" a="E"
-expanded="ekr.20080708094444.80,ekr.20080708094444.36,ekr.20080708094444.38,"><vh>@thin leoShadow.py</vh></v>
+expanded="ekr.20080708094444.80,ekr.20080708094444.38,"><vh>@thin leoShadow.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
 <t tx="EKR.20040519090151.3"></t>
+<t tx="bwmulder.20041231170726">def updatePublicAndPrivateFiles (self,fn,shadow_fn):
+
+    '''handle crucial @shadow read logic.
+
+    This will be called only if the public and private files both exist.'''
+
+    x = self ; trace = False
+
+    if trace and not g.app.unitTesting:
+        g.trace('significant',x.isSignificantPublicFile(fn),fn)
+
+    if x.isSignificantPublicFile(fn):
+        # Update the private shadow file from the public file.
+        written = x.propagate_changes(fn,shadow_fn)
+        if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
+    else:
+        # Create the private file from the private shadow file.
+        x.copy_file_removing_sentinels(shadow_fn,fn)
+        x.message("created public %s from private %s " % (fn, shadow_fn))
+</t>
 <t tx="ekr.20031218072017.2406">@tabwidth -4
 @pagewidth 80
 
@@ -219,6 +261,179 @@ if 0: # Set to 1 for lint-like testing.
 <t tx="ekr.20040629121554.1">def getSignOnLine (self):
     c = self
     return "Leo 4.5 b1, build %s, June 28, 2008" % c.getBuildNumber()
+</t>
+<t tx="ekr.20041005105605.19">def openFileForReading(self,fn,fromString=False,atShadow=False):
+
+    at = self ; trace = True and not g.app.unitTesting ; verbose = False
+
+    if fromString:
+        if atShadow:
+            return at.error('can not call read(atShadow=True,fromString=aString)')
+        at.inputFile = g.fileLikeObject(fromString=fromString)
+    else:
+        fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+
+        if atShadow:
+            x = at.c.shadowController
+            # readOneAtShadowNode should already have checked these.
+            shadow_fn       = x.shadowPathName(fn)
+            shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+            # x.updatePublicAndPrivate will create the public file from the private file
+            # if the public file exists. This *is* reasonable: there is nothing to import!
+            # if not g.os_path_exists(fn):
+                # g.trace('oops public',fn,g.callers())
+                # return at.error('can not happen: public file does not exist: %s' % (fn))
+            if not shadow_exists:
+                g.trace('oops private',shadow_fn,g.callers())
+                return at.error('can not happen: private file does not exist: %s' % (shadow_fn))
+            # This method is the gateway to the essence of the shadow algorithm.
+            x.updatePublicAndPrivateFiles(fn,shadow_fn)
+            fn = shadow_fn
+
+        try:
+            # Open the file in binary mode to allow 0x1a in bodies &amp; headlines.
+            if trace and verbose and atShadow: g.trace('opening %s file: %s' % (
+                g.choose(atShadow,'private','public'),fn))
+            at.inputFile = open(fn,'rb')
+            at.warnOnReadOnlyFile(fn)
+        except IOError:
+            at.error("can not open: '@file %s'" % (fn))
+            at.inputFile = None
+
+    return at.inputFile # for unit tests.
+</t>
+<t tx="ekr.20041005105605.21">def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    &lt;&lt; set fileName &gt;&gt;
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile)
+    if at.errors: return False
+    at.openFileForReading(fileName,fromString=fromString,atShadow=atShadow)
+    if not at.inputFile: return False
+    if not g.unitTesting:
+        g.es("reading:",root.headString())
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        &lt;&lt; advise user to delete all unvisited nodes &gt;&gt;
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    &lt;&lt; delete all tempBodyStrings &gt;&gt;
+    return at.errors == 0
+</t>
+<t tx="ekr.20041005105605.22">if fromString:
+    fileName = "&lt;string-file&gt;"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+</t>
+<t tx="ekr.20041005105605.25">for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+</t>
+<t tx="ekr.20041005105605.26">def readAll(self,root,partialFlag=False,forceGnx=False):
+
+    """Scan vnodes, looking for @file nodes to read."""
+
+    use_tracer = False
+    if use_tracer: tt = g.startTracer()
+
+    at = self ; c = at.c
+    if partialFlag:
+        # Capture the current headline only if we aren't doing the initial read.
+        c.endEditing() 
+    anyRead = False
+    p = root.copy()
+    if partialFlag: after = p.nodeAfterTree()
+    else: after = c.nullPosition()
+    while p and not p.equal(after): # Don't use iterator.
+        # g.trace(p.headString())
+        if not p.headString().startswith('@'):
+            p.moveToThreadNext()
+        elif p.isAtIgnoreNode():
+            p.moveToNodeAfterTree()
+        elif p.isAtThinFileNode():
+            anyRead = True
+            if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
+                at.forceGnxOnPosition(p)
+            at.read(p,thinFile=True)
+            p.moveToNodeAfterTree()
+        elif p.isAtAutoNode():
+            fileName = p.atAutoNodeName()
+            at.readOneAtAutoNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtShadowFileNode():
+            fileName = p.atShadowFileNodeName()
+            at.readOneAtShadowNode (fileName,p)
+            p.moveToNodeAfterTree()
+        elif p.isAtFileNode() or p.isAtNorefFileNode():
+            anyRead = True
+            wasOrphan = p.isOrphan()
+            ok = at.read(p)
+            if wasOrphan and not partialFlag and not ok:
+                # Remind the user to fix the problem.
+                p.setDirty()
+                c.setChanged(True)
+            p.moveToNodeAfterTree()
+        else: p.moveToThreadNext()
+    # Clear all orphan bits.
+    for v in c.all_unique_vnodes_iter():
+        v.clearOrphan()
+
+    if partialFlag and not anyRead:
+        g.es("no @file nodes in the selected tree")
+
+    if use_tracer: tt.stop()
+</t>
+<t tx="ekr.20041005105605.27">def readOpenFile(self,root,theFile,fileName):
+
+    '''Read an open derived file.
+
+    Leo 4.5 and later can only read 4.x derived files.'''
+
+    at = self
+
+    firstLines,read_new,junk = at.scanHeader(theFile,fileName)
+
+    if read_new:
+        lastLines = at.scanText4(theFile,fileName,root)
+    else:
+        # lastLines = at.scanText3(theFile,root,[],at.endLeo)
+        lastLines = []
+        g.es('can not read 3.x derived file',fileName,color='red')
+        g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+        g.trace('root',root and root.headString(),fileName)
+
+    if root:
+        root.v.t.setVisited() # Disable warning about set nodes.
+
+    &lt;&lt; handle first and last lines &gt;&gt;
+</t>
+<t tx="ekr.20041005105605.28">try:
+    body = root.v.t.tempBodyString
+except Exception:
+    body = ""
+
+lines = body.split('\n')
+at.completeFirstDirectives(lines,firstLines)
+at.completeLastDirectives(lines,lastLines)
+s = '\n'.join(lines).replace('\r', '')
+root.v.t.tempBodyString = s
 </t>
 <t tx="ekr.20050721093241">@nocolor
 
@@ -451,6 +666,18 @@ c.selectPosition(p,updateBeadList=False)</t>
 import leoTest
 
 leoTest.runTestsExternally(c,all=False)
+
+</t>
+<t tx="ekr.20071105164407">resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
 
 </t>
 <t tx="ekr.20080112145409"></t>
@@ -821,17 +1048,47 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080312060129.6"></t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
+<t tx="ekr.20080708094444.27">def copy_file_removing_sentinels (self,source_fn,target_fn):
+
+    '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
+
+    x = self ; marker = x.marker_from_extension(source_fn)
+
+    old_lines = file(source_fn).readlines()
+    new_lines, junk = x.separate_sentinels(old_lines,marker)
+
+    copy = not os.path.exists(target_fn) or old_lines != new_lines
+    if copy:
+        s = ''.join(new_lines)
+        x.replaceFileWithString(target_fn,s)
+</t>
+<t tx="ekr.20080708094444.36">def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    x = self
+
+    old_public_lines  = file(old_public_file).readlines()
+    old_private_lines = file(old_private_file).readlines()
+    marker = x.marker_from_extension(old_public_file)
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,
+        old_private_lines,
+        marker)
+
+    fn = old_private_file
+    copy = not os.path.exists(fn) or new_private_lines != old_private_lines
+
+    if copy:
+        s = ''.join(new_private_lines)
+        x.replaceFileWithString(fn,s)
+
+    return copy
+</t>
 <t tx="ekr.20080708094444.53"></t>
-<t tx="ekr.20080708094444.54">def init ():
-
-    ok = mod_shadow_core is not None and not g.app.unitTesting
-        # Not safe for unit testing: changes Leo's core.
-
-    if ok:
-        putInHooks()
-        g.es_print("Shadow plugin enabled!",color="orange")
-
-    return ok</t>
+<t tx="ekr.20080708094444.54"></t>
 <t tx="ekr.20080708094444.55">def putInHooks ():
     """Modify methods in Leo's core to support this plugin."""
 
@@ -895,96 +1152,24 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080708094444.59">def marker_from_extension(filename):
     return g.comment_delims_from_extension(filename)[0] + "@"</t>
 <t tx="ekr.20080708094444.60"></t>
-<t tx="ekr.20080708094444.61">def openForRead (self, filename, rb):
-    """
-    Replaces the standard open for reads.
-    Checks and handles shadow files:
-        if the length of the real file is zero:
-            update the real file from the shadow file.
-        else:
-            update the shadow file from the real file.
-    """
-    c = self.c
-    shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
-    shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
-    shadow_verbosity = getVerbosity(c)
-    try:
-        dir, simplename = os.path.split(filename)
-        shadow_filename = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
-        if os.path.exists(shadow_filename):
-            file_to_read_from = shadow_filename
-            newfile = os.path.exists(filename)and os.path.getsize(filename)&lt;=2            
-            if newfile:
-                if shadow_verbosity &gt;= 2:
-                    g.es("Copy %s to %s without sentinels"%(shadow_filename, filename))
-                mod_shadow_core.copy_file_removing_sentinels(sourcefilename=shadow_filename,
-                                             targetfilename=filename,
-                                             marker_from_extension=marker_from_extension)
-            else:
-                sq = mod_shadow_core.sentinel_squasher(g.es, g.nullObject)
-                if shadow_verbosity &gt;= 2:
-                    g.es("reading from shadow directory %s"% (
-                        shadow_subdir),color="orange")
-                written = sq.propagate_changes(
-                                with_sentinels=shadow_filename,
-                                without_sentinels=filename,
-                                marker_from_extension=marker_from_extension)
-                if written:
-                    g.es("file %s updated from %s" % (shadow_filename, filename), color="orange")
-        else:
-            file_to_read_from = filename 
-        return open(file_to_read_from,'rb')
-    except:
-        # Make sure failures to open a file generate clear messages.
-        g.es_exception()
-        raise </t>
-<t tx="ekr.20080708094444.62">def openForWrite (self, filename, wb):
-    """
-    Replaces the standard open for writes:
-        - Check if filename designates a file
-          which has a shadow file.
-          If so, write to the shadow file,
-          and update the real file after the close.
-    """
-    c = self.c
-    shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
-    shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
-    shadow_verbosity = getVerbosity(c)
-    dir, simplename = os.path.split(filename)
-    rootname, ext = os.path.splitext(simplename)
-    assert ext=='.tmp'
-    shadow_filename = os.path.join(dir,shadow_subdir, shadow_prefix + rootname)
-    self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-    if self.writing_to_shadow_directory:
-        self.shadow_filename = shadow_filename 
-        if shadow_verbosity &gt;= 2: 
-            g.es("Using shadow file in folder %s" % shadow_subdir,color="orange")
-        file_to_use = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
-    else:
-        file_to_use = filename 
-    return open(file_to_use,'wb')
-</t>
+<t tx="ekr.20080708094444.61"></t>
+<t tx="ekr.20080708094444.62"></t>
 <t tx="ekr.20080708094444.63">def gotoLineNumberOpen (self,filename):
     """
     Open a file for "goto linenumber" command and check if a shadow file exists.
-    Construct a line mapping. This line_mapping instance variable is empty if
-    no shadow file exist, otherwise it contains a mapping 
-    shadow file number -&gt; real file number.
+    Construct a line mapping. This ivar is empty i no shadow file exists.
+    Otherwise it contains a mapping shadow file number -&gt; real file number.
     """
     try:
-        c = self
-        shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
-        shadow_prefix = c.config.getString('shadow_prefix') or shadow_prefix_default
-        dir, simplename = os.path.split(filename)
-        shadow_filename = os.path.join(dir,shadow_subdir,shadow_prefix + simplename)
+        c = self ; x = c.shadowController
+        theDir, simplename = os.path.split(filename)
+        shadow_filename = os.path.join(theDir,x.shadow_subdir,x.shadow_prefix + simplename)
         if os.path.exists(shadow_filename):
-            import leo.core.leoShadow as leoShadow
-            cc = leoShadow.shadowController(c)
             lines = file(shadow_filename).readlines()
-            self.line_mapping = cc.push_filter_mapping(
-                lines, marker_from_extension(shadow_filename))
+            c.line_mapping = x.push_filter_mapping(
+                lines, x.marker_from_extension(shadow_filename))
         else:
-            self.line_mapping = {}
+            c.line_mapping = []
             lines = file(filename).readlines()
         return lines 
     except:
@@ -993,118 +1178,273 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
         raise</t>
 <t tx="ekr.20080708094444.64"></t>
 <t tx="ekr.20080708094444.65">def applyLineNumberMappingIfAny(self, n):
-    """
-    Hook for mod_shadow plugin.
-    """
 
-    if hasattr(self,'line_mapping') and self.line_mapping:
-        return self.line_mapping[n]
+    c = self ; x = c.shadowController
+
+    if len(x.line_mapping) &gt; n:
+        return x.line_mapping[n]
     else:
-        return n</t>
-<t tx="ekr.20080708094444.67">original_replaceTargetFileIfDifferent = leoAtFile.atFile.replaceTargetFileIfDifferent
+        return n
 
-# We must patch in two places:
-    # -When the temporary file is written(openWriteFile)
-    # -When Leo renames the file(replaceTargetFileIfDifferent).
+    # if hasattr(self,'line_mapping') and self.line_mapping:
+        # return self.line_mapping[n]
+    # else:
+        # return n</t>
+<t tx="ekr.20080708094444.67"># We must patch in two places:
+# -When the temporary file is written(openWriteFile)
+# -When Leo renames the file(replaceTargetFileIfDifferent).
 
-def replaceTargetFileIfDifferent (self):
+def replaceTargetFileIfDifferent (self,root):
 
     # Check if we are dealing with a shadow file
     try:
-        c = self.c
+        c = self.c ; x = c.shadowController
         targetFileName = self.targetFileName 
         outputFileName = self.outputFileName
-        shadow_subdir = c.config.getString('shadow_subdir') or shadow_subdir_default
-        shadow_verbosity = getVerbosity(c)
         if self.writing_to_shadow_directory:
             self.targetFileName = self.shadow_filename 
             self.outputFileName = self.shadow_filename+'.tmp'
-        if original_replaceTargetFileIfDifferent(self):
-            # Original_replaceTargetFileIfDifferent should be oblivious
-            # to the existance of the shadow directory.
+
+        if original_replaceTargetFileIfDifferent(self,root):
             if self.writing_to_shadow_directory:
-                if shadow_verbosity &gt;= 2:
-                    g.es("Updating file from shadow folder %s" % shadow_subdir,color='orange')
-                mod_shadow_core.copy_file_removing_sentinels(self.shadow_filename,targetFileName, marker_from_extension)
-
+                x.message("Updating file from shadow folder: %s" % x.shadow_subdir)
+                x.copy_file_removing_sentinels(self.shadow_filename,targetFileName)
     finally:
-        if self.writing_to_shadow_directory:
-            assert self.targetFileName == self.shadow_filename 
-            assert self.outputFileName == self.shadow_filename+'.tmp'
-        else:
-            assert self.targetFileName == targetFileName
-            assert self.outputFileName == outputFileName
-            # We need to check what's going on if the targetFileName or the outputFileName is changed.
-
-        # Not sure if this finally clause is needed or not
+        # if self.writing_to_shadow_directory:
+            # assert self.targetFileName == self.shadow_filename 
+            # assert self.outputFileName == self.shadow_filename+'.tmp'
+        # else:
+            # assert self.targetFileName == targetFileName
+            # assert self.outputFileName == outputFileName
         self.targetFileName = targetFileName
-        self.outputFileName = outputFileName 
+        self.outputFileName = outputFileName
 </t>
-<t tx="ekr.20080708094444.68">def massageComment (self,s):
+<t tx="ekr.20080708094444.68"></t>
+<t tx="ekr.20080708094444.79">def __init__ (self,c,trace=False,trace_writers=False):
 
-    """Leo has no business changing comments!"""
+    self.c = c
 
-    return s 
-</t>
-<t tx="ekr.20080708094444.70">def do_test_propagate_changes_Leo(c):
-    """
-    Leo version of the test procedure.
-    Gets the arguments from Leo nodes.
-    """
-    from leoTest import testUtils
+    # self.print_copy_operations = False   # (not used) Tsrue: tell when files are copied.
+    # self.do_backups = False              # (Not used) True: always make backups of each file.
 
-    def get_node_lines(title):
-        unicode_string = u.findNodeInTree(p, title).bodyString()
-        return unicode_string.split("\n")
-    try:
-        p = c.currentPosition()
-        u = testUtils(c)
+    # Configuration...
+    self.shadow_subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
+    self.shadow_prefix = c.config.getString('shadow_prefix') or ''
 
-        before_with_sentinels_lines = get_node_lines ("before with sentinels")
-        changed_without_sentinels_lines = get_node_lines ("changed without sentinels")
-        after_with_sentinel_lines = get_node_lines ("after with sentinels")
+    # Debugging...
+    self.trace = trace
+    self.trace_writers = trace_writers  # True: enable traces in all sourcewriters.
 
-        sq = mod_shadow_core.sentinel_squasher(g.es, g.nullObject)
-        mod_shadow_core.propagate_changes_test (c,
-            before_with_sentinels_lines,
-            changed_without_sentinels_lines,
-            after_with_sentinel_lines,
-            "#@", g.es, g.nullObject)
-    finally:
-        pass</t>
-<t tx="ekr.20080708094444.71"></t>
-<t tx="ekr.20080708094444.74">@doc
-This is the most complicated part of the plugin, and needs most testing.
+    # Error handling...
+    self.errors = 0
+    self.last_error  = '' # The last error message, regardless of whether it was actually shown.
 
-All the tags should be tested at least once (equal, replace, delete, insert).
+    # Support for goto-line-number.
+    self.line_mapping = []
 
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-    
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.
-@c
-
-cc = c.shadowController
-
-if cc:
-    cc.do_test_propagate_changes_Leo(c)
-</t>
-<t tx="ekr.20080708094444.75">#@string1
-line 1
-line 2
-</t>
-<t tx="ekr.20080708094444.76">#@string2
-xxx
-</t>
-<t tx="ekr.20080708094444.77">xxx
 </t>
 <t tx="ekr.20080708094444.81"></t>
-<t tx="ekr.20080708094444.82"></t>
 <t tx="ekr.20080708094444.87"></t>
 <t tx="ekr.20080708094444.88"></t>
+<t tx="ekr.20080710082231.4">"""
+Look for @thin files in the current subtree.
+Convert those thin files into a file with a shadow file,
+if this shadow file does not exist already.
+
+FIXME: the line end convention is currently changed:
+      unix lineendings are converted to DOS lineendings,
+      if files are converted on Windows.
+      Not sure if that is a probem or not.
+"""
+
+x = c.shadowController
+
+for p in p.self_and_subtree_iter():
+    h = p.headString() ; tag = '@shadow'
+    if h.startswith(tag):
+        filename = h[len(tag):].strip()
+        x.makeShadowFile(filename)
+</t>
+<t tx="ekr.20080710082231.19">def makeShadowDirectory (self,fn):
+
+    '''Make a shadow directory for the **public** fn.'''
+
+    x = self ; path = x.shadowDirName(fn)
+
+    if not g.os_path_exists(path):
+
+        try:
+            # g.trace('making',path)
+            os.mkdir(path)
+        except Exception:
+            x.error('unexpected exception creating %s' % path)
+            g.es_exception()
+            return False
+
+    return g.os_path_exists(path) and g.os_path_isdir(path)
+</t>
+<t tx="ekr.20080711063656.1"></t>
+<t tx="ekr.20080711063656.2">def rename (self,src,dst,mode=None,silent=False):
+
+    x = self ; c = x.c
+
+    ok = g.utils_rename (c,src,dst,mode=mode,verbose=not silent)
+    if not ok:
+        x.error('can not rename %s to %s' % (src,dst),silent=silent)
+
+    return ok
+</t>
+<t tx="ekr.20080711063656.3">def unlink (self, filename,silent=False):
+
+    '''Unlink filename from the file system.
+    Give an error on failure.'''
+
+    x = self
+
+    ok = g.utils_remove(filename, verbose=not silent)
+    if not ok:
+        x.error('can not delete %s' % (filename),silent=silent)
+
+    return ok
+</t>
+<t tx="ekr.20080711063656.4">def dirName (self,filename):
+
+    '''Return the directory for filename.'''
+
+    x = self
+
+    return g.os_path_dirname(x.pathName(filename))
+
+def pathName (self,filename):
+
+    '''Return the full path name of filename.'''
+
+    x = self ; theDir = x.baseDirName()
+
+    return theDir and g.os_path_abspath(g.os_path_join(theDir,filename))</t>
+<t tx="ekr.20080711063656.6">def shadowDirName (self,filename):
+
+    '''Return the directory for the shadow file corresponding to filename.'''
+
+    x = self
+
+    return g.os_path_dirname(x.shadowPathName(filename))
+
+def shadowPathName (self,filename):
+
+    '''Return the full path name of filename, resolved using c.fileName()'''
+
+    x = self ; baseDir = x.baseDirName()
+    fileDir = g.os_path_dirname(filename)
+    # g.trace(baseDir)
+    # g.trace(x.shadow_subdir)
+    # g.trace(fileDir)
+
+    return baseDir and g.os_path_abspath(g.os_path_normpath(g.os_path_join(
+            baseDir,
+            fileDir, # Bug fix: honor any directories specified in filename.
+            x.shadow_subdir,
+            x.shadow_prefix + g.shortFileName(filename))))</t>
+<t tx="ekr.20080711063656.7">def baseDirName (self):
+
+    x = self ; filename = x.c.fileName()
+
+    if filename:
+        return g.os_path_dirname(g.os_path_abspath(filename))
+    else:
+        self.error('Can not compute shadow path: .leo file has not been saved')
+        return None</t>
+<t tx="ekr.20080711093251.7">def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = g.os_path_abspath(g.os_path_normpath(g.os_path_join(at.default_directory,fn)))
+    shadow_fn       = x.shadowPathName(fn)
+    shadow_exists   = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+    # significant     = x.isSignificantPublicFile(fn)
+
+    if shadow_exists:
+        # x.updatePublicAndPrivateFiles creates the public file if it does not exist.
+        at.read(p,atShadow=True) # Calls x.updatePublicAndPrivateFiles
+    else:
+        if not g.unitTesting: g.es("reading:",p.headString())
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # x.makeShadowFile(fn,p)
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+</t>
+<t tx="ekr.20080712080505.1">def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+</t>
+<t tx="ekr.20080712080505.3">def isSignificantPublicFile (self,fn):
+
+    '''This tells the atFile.read logic whether to import a public file or use an existing public file.'''
+
+    return g.os_path_exists(fn) and g.os_path_isfile(fn) and g.os_path_getsize(fn) &gt; 10
+</t>
+<t tx="ekr.20080713091247.1">def replaceFileWithString (self,fn,s):
+
+    '''Replace the file with s if s is different from theFile's contents.
+
+    Return True if theFile was changed.
+    '''
+
+    x = self ; testing = g.app.unitTesting
+
+    exists = g.os_path_exists(fn)
+
+    if exists: # Read the file.  Return if it is the same.
+        try:
+            f = file(fn,'rb')
+            s2 = f.read()
+            f.close()
+        except IOError:
+            x.error('unexpected exception creating %s' % fn)
+            g.es_exception()
+            return False
+        if s == s2:
+            if not testing: g.es('unchanged:',fn)
+            return False
+
+    # Replace the file.
+    try:
+        f = file(fn,'wb')
+        f.write(s)
+        f.close()
+        if not testing:
+            if exists:  g.es('wrote:    ',fn)
+            else:       g.es('created:  ',fn)
+        return True
+    except IOError:
+        x.error('unexpected exception writing file: %s' % (fn))
+        g.es_exception()
+        return False
+</t>
 </tnodes>
 </leo_file>

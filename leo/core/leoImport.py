@@ -592,22 +592,22 @@ class leoImportCommands:
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
     #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3311:massageComment
-    def massageComment (self,s):
+    #@+node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
+    # def massageComment (self,s):
 
-        '''Returns s with all runs of whitespace and newlines converted to a single blank.
+        # '''Returns s with all runs of whitespace and newlines converted to a single blank.
 
-        Also removes leading and trailing whitespace.'''
+        # Also removes leading and trailing whitespace.'''
 
-        # g.trace(g.get_line(s,0))
-        s = string.strip(s)
-        s = string.replace(s,"\n"," ")
-        s = string.replace(s,"\r"," ")
-        s = string.replace(s,"\t"," ")
-        s = string.replace(s,"  "," ")
-        s = string.strip(s)
-        return s
-    #@-node:ekr.20031218072017.3311:massageComment
+        # # g.trace(g.get_line(s,0))
+        # s = string.strip(s)
+        # s = string.replace(s,"\n"," ")
+        # s = string.replace(s,"\r"," ")
+        # s = string.replace(s,"\t"," ")
+        # s = string.replace(s,"  "," ")
+        # s = string.strip(s)
+        # return s
+    #@-node:ekr.20031218072017.3311:massageComment (leoImport)(not used)
     #@+node:ekr.20031218072017.3312:massageWebBody
     def massageWebBody (self,s):
 
@@ -2083,20 +2083,20 @@ class baseScannerClass:
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
     #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070703122141.81:massageComment
-    def massageComment (self,s):
+    #@+node:ekr.20070703122141.81:massageComment (not used)
+    # def massageComment (self,s):
 
-        '''Return s with leading and trailing whitespace removed and all other
-        runs of whitespace and newlines converted to a single blank.'''
+        # '''Return s with leading and trailing whitespace removed and all other
+        # runs of whitespace and newlines converted to a single blank.'''
 
-        s = s.strip()
-        s = s.replace('\n',' ')
-        s = s.replace('\r',' ')
-        s = s.replace('\t',' ')
-        s = s.replace('  ',' ')
-        s = s.strip()
-        return s
-    #@-node:ekr.20070703122141.81:massageComment
+        # s = s.strip()
+        # s = s.replace('\n',' ')
+        # s = s.replace('\r',' ')
+        # s = s.replace('\t',' ')
+        # s = s.replace('  ',' ')
+        # s = s.strip()
+        # return s
+    #@-node:ekr.20070703122141.81:massageComment (not used)
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
