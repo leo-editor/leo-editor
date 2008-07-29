@@ -27343,7 +27343,7 @@ process, so unit tests can never have any side effects. These commands never
 changes the outline from which the tests were run. These commands do the
 following:
 
-1. Copy all @test, @suite and @unit-test nodes (including their descendants) to the
+1. Copy all @test, @suite and @unit-tests nodes (including their descendants) to the
    file test/dynamicUnitTest.leo.
    
 2. Run test/leoDynamicTest.py in a separate process.
@@ -27384,8 +27384,8 @@ headlines in that file::
         g.es(g.toEncodedString(p.headString(),"utf-8"))
 </t>
 <t tx="ekr.20070630083055">Sometimes the code in an @test or @suite node requires other nodes. The
-@unit-test node groups nodes so that all nodes are available when running unit
-tests. That is, all nodes in an @unit-test are copied to
+@unit-tests node groups nodes so that all nodes are available when running unit
+tests. That is, all nodes in an @unit-tests tree are copied to
 test/DynamicUnitTest.leo. (See `How the unit test commands work`_ for full details.)</t>
 <t tx="ekr.20070701090840">Leo is not your ordinary text editor, class browser, project manager or database manager,
 though it resembles these programs in some respects.
@@ -27654,7 +27654,7 @@ A new unit test ensures that this is so.</t>
 <t tx="ekr.20070704074439">As described later, Leo's unit tests commands copy various nodes to
 test/dynamicUnitTest.leo, and then run these unit tests in a separate process.
 
-The run-all-unit-tests command copies all @test, @suite nodes @unit-tests trees
+The run-all-unit-tests command copies all @test, @suite nodes @unit-test trees
 and their descendants to test/dynamicUnitTest.leo.
 
 The run-unit-tests command searches for copies nodes to test/dynamicUnitTest.leo
@@ -27665,7 +27665,7 @@ as follows:
 
 2. The run-unit-test command copies all @test and @suite nodes in the presently
    selected tree. If the presently selected tree contains no such tree, it looks
-   up the tree looking for @test, @suite and @unit-test nodes. If such a node is
+   up the tree looking for @test, @suite and @unit-tests nodes. If such a node is
    found, the run-unit-test command copies all @test and @suite nodes in the
    nodes tree.
    
