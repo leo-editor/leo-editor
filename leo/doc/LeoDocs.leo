@@ -6685,16 +6685,16 @@ Here is a way to count the *distinct* vnodes of an outline::
 <t tx="ekr.20040403173920.14">The ``p.parents_iter`` iterator returns a list of all parents of position ``p``, excluding ``p``::
 
     current = p.copy()
-    g.es("inclusive parents of %s" % current.headString(),color="purple")
-    for p in current.self_and_parents_iter():
+    g.es("exclusive of %s" % current.headString(),color="purple")
+    for p in current.parents_iter():
         g.es(p.headString())
 
 The ``p.self_and_parents_iter`` iterator returns a list of all parents of position ``p``, including ``p``::
 
     current = p.copy()
-    g.es("exclusive of %s" % current.headString(),color="purple")
-    for p in current.parents_iter():
-        g.es(p.headString())</t>
+    g.es("inclusive parents of %s" % current.headString(),color="purple")
+    for p in current.self_and_parents_iter():
+        g.es(p.headString())    </t>
 <t tx="ekr.20040403173920.15">The ``p.siblings_iter`` iterator returns a list of all siblings of position ``p``::
 
     current = c.currentPosition()
@@ -15012,9 +15012,9 @@ Here are some tips that may make running Leo easier:
     The following shell script will allow you to open foo.leo files by typing leo foo::
     
         #!/bin/sh 
-        python &lt;leopath&gt;/runLeo.py $1
+        python &lt;leopath&gt;/leo/core/runLeo.py $1
     
-    where &lt;leopath&gt; is replaced with the path to the leo directory. 
+    where &lt;leopath&gt; is the path to the directory containing the leo directory. 
 
 **Windows**
     If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
@@ -15022,7 +15022,9 @@ Here are some tips that may make running Leo easier:
     Put the following .bat file in c:\\Windows::
 
         cd &lt;path-to-leo&gt;
-        c:\python25\python &lt;path-to-leo&gt;\leo\core\runLeo.py %1
+        c:\python25\python &lt;path-to-leo&gt;leo\core\runLeo.py %1
+        
+    where &lt;path-to-leo&gt; is the path to the directory containing the leo directory.
 
     This opens the file specified by the first argument (%1).
 
@@ -26919,7 +26921,7 @@ After you have installed Leo, you should add the location of your leo/src folder
 One way to do this is adding something like the following to python/Lib/sitecustomize.py::
       
     import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\src')
+    sys.path.append(r'&lt;path-to-leo&gt;leo')
             
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 
