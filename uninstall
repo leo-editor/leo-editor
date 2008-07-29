@@ -9,7 +9,6 @@
 
 # Variables...
 LEO_PREFIX=${LEO_PREFIX:-/usr/local}
-LEO_RUN_SCRIPT_SOURCE='./scripts/install/leo-script.txt'
 LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
 LEO_LIB_DIR="${LEO_PREFIX}/lib/leo"
 
