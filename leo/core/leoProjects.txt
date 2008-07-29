@@ -6244,8 +6244,6 @@ def getString (self,c,setting):
 
     return self.get(c,setting,"string")
 #@-node:ekr.20041117081009.4:getString
-#@+node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
-#@-node:ekr.20041117062717.17:setCommandsIvars (not used) (leoConfig.py: configClass)
 #@+node:ekr.20041120074536:settingsRoot
 def settingsRoot (self,c):
 
