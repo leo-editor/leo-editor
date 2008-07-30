@@ -123,6 +123,9 @@ class bridgeController:
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
+
+        # Set leoGlobals.g here, rather than in leoGlobals.
+        leoGlobals.g = leoGlobals
         #@-node:ekr.20070227093629.1:<< import leoGlobals and leoApp >>
         #@nl
         g.computeStandardDirectories()
@@ -166,7 +169,7 @@ class bridgeController:
 
         #g.trace('loadDir',g.app.loadDir)
 
-        leoDirs = ('config','doc','extensions','modes','plugins','src','test')
+        leoDirs = ('config','doc','extensions','modes','plugins','core','test') # 2008/7/30
 
         for theDir in leoDirs:
             path = g.os_path_abspath(
@@ -208,6 +211,9 @@ class bridgeController:
         try:
             # This will fail if True/False are not defined.
             import leo.core.leoGlobals as g
+            # print('leoBridge:isValidPython:g',g)
+            # Set leoGlobals.g here, rather than in leoGlobals.py.
+            g.g = g
         except ImportError:
             print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0
