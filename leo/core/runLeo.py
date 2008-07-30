@@ -51,13 +51,13 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     #@    << import leoGlobals and leoApp >>
     #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
     if jyLeo:
-        print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+        print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
 
     # Add the current directory to sys.path *before* importing g.
     # This will fail if the current directory contains unicode characters...
     path = os.getcwd()
     if path not in sys.path:
-        # print 'appending %s to sys.path' % path
+        # print('appending %s to sys.path' % path)
         sys.path.append(path)
 
     # Import leoGlobals, but do NOT set g.
@@ -96,18 +96,6 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
 
     # There is a circular dependency between leoCommands and leoEditCommands.
     import leo.core.leoCommands as leoCommands
-
-    # try:
-        # import leo.core.leoNodes as leoNodes
-    # except ImportError:
-        # print "Error importing leoNodes.py"
-        # import traceback ; traceback.print_exc()
-
-    # try:
-        # import leo.core.leoConfig as leoConfig
-    # except ImportError:
-        # print "Error importing leoConfig.py"
-        # import traceback ; traceback.print_exc()
     #@-node:ekr.20041219072416.1:<< import other early files>>
     #@nl
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
@@ -264,16 +252,7 @@ def getFileName ():
     '''Return the filename from sys.argv.'''
 
     # Put no imports here.
-    # print 'leo.py:getFileName',sys.argv
-
     return len(sys.argv) > 1 and sys.argv[-1]
-
-    # if sys.platform=="win32": # Windows
-        # result = ' '.join(sys.argv[1:])
-    # else:
-        # result = len(sys.argv) > 1 and sys.argv[1] or None
-
-    # return result
 #@-node:ekr.20071117060958:getFileName
 #@+node:ekr.20031218072017.1936:isValidPython
 def isValidPython():
@@ -291,21 +270,21 @@ You may download Python from http://python.org/download/
         # This will fail if True/False are not defined.
         import leo.core.leoGlobals as g
     except ImportError:
-        print "isValidPython: can not import leo.core.leoGlobals"
+        print("isValidPython: can not import leo.core.leoGlobals")
         return 0
     except:
-        print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals"
+        print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals")
         traceback.print_exc()
         return 0
     try:
         version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
         ok = g.CheckVersion(version,'2.2.1')
         if not ok:
-            print message
+            print(message)
             g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
         return ok
     except Exception:
-        print "isValidPython: unexpected exception: g.CheckVersion"
+        print("isValidPython: unexpected exception: g.CheckVersion")
         traceback.print_exc()
         return 0
 #@-node:ekr.20031218072017.1936:isValidPython

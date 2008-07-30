@@ -7938,13 +7938,13 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.gui.runMainLoop()
 #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
 if jyLeo:
-    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
 
 # Add the current directory to sys.path *before* importing g.
 # This will fail if the current directory contains unicode characters...
 path = os.getcwd()
 if path not in sys.path:
-    # print 'appending %s to sys.path' % path
+    # print('appending %s to sys.path' % path)
     sys.path.append(path)
 
 # Import leoGlobals, but do NOT set g.
@@ -7971,18 +7971,6 @@ import leo.core.leoConfig as leoConfig
 
 # There is a circular dependency between leoCommands and leoEditCommands.
 import leo.core.leoCommands as leoCommands
-
-# try:
-    # import leo.core.leoNodes as leoNodes
-# except ImportError:
-    # print "Error importing leoNodes.py"
-    # import traceback ; traceback.print_exc()
-
-# try:
-    # import leo.core.leoConfig as leoConfig
-# except ImportError:
-    # print "Error importing leoConfig.py"
-    # import traceback ; traceback.print_exc()
 #@-node:ekr.20041219072416.1:<< import other early files>>
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20031218072017.1623:new
@@ -13631,13 +13619,13 @@ I also changed treeWantsFocus to treeWantsFocusNow in OnActivateHeadline.
 #@nonl
 #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
 if jyLeo:
-    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
 
 # Add the current directory to sys.path *before* importing g.
 # This will fail if the current directory contains unicode characters...
 path = os.getcwd()
 if path not in sys.path:
-    # print 'appending %s to sys.path' % path
+    # print('appending %s to sys.path' % path)
     sys.path.append(path)
 
 # Import leoGlobals, but do NOT set g.
@@ -13739,13 +13727,13 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     g.app.gui.runMainLoop()
 #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
 if jyLeo:
-    print '*** starting jyLeo',sys.platform # will be something like java1.6.0_02
+    print('*** starting jyLeo',sys.platform) # will be something like java1.6.0_02
 
 # Add the current directory to sys.path *before* importing g.
 # This will fail if the current directory contains unicode characters...
 path = os.getcwd()
 if path not in sys.path:
-    # print 'appending %s to sys.path' % path
+    # print('appending %s to sys.path' % path)
     sys.path.append(path)
 
 # Import leoGlobals, but do NOT set g.
@@ -13772,18 +13760,6 @@ import leo.core.leoConfig as leoConfig
 
 # There is a circular dependency between leoCommands and leoEditCommands.
 import leo.core.leoCommands as leoCommands
-
-# try:
-    # import leo.core.leoNodes as leoNodes
-# except ImportError:
-    # print "Error importing leoNodes.py"
-    # import traceback ; traceback.print_exc()
-
-# try:
-    # import leo.core.leoConfig as leoConfig
-# except ImportError:
-    # print "Error importing leoConfig.py"
-    # import traceback ; traceback.print_exc()
 #@-node:ekr.20041219072416.1:<< import other early files>>
 #@-node:ekr.20031218072017.1934:run
 #@+node:ekr.20080521132317.2:scanOptions

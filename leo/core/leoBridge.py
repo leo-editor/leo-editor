@@ -110,16 +110,14 @@ class bridgeController:
         try:
             import leo.core.leoGlobals as leoGlobals
         except ImportError:
-            # Not so easy to remove this.
-            print "Error importing leoGlobals.py"
+            print("Error importing leoGlobals.py")
 
         # Create the application object.
         try:
             import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
-            # Not so easy to remove this.
-            print "Error importing leoApp.py"
+            print("Error importing leoApp.py")
 
         # NOW we can set g.
         self.g = g = leoGlobals
@@ -134,13 +132,13 @@ class bridgeController:
         try:
             import leo.core.leoNodes as leoNodes
         except ImportError:
-            print "Error importing leoNodes.py"
+            print("Error importing leoNodes.py")
             import traceback ; traceback.print_exc()
 
         try:
             import leo.core.leoConfig as leoConfig
         except ImportError:
-            print "Error importing leoConfig.py"
+            print("Error importing leoConfig.py")
             import traceback ; traceback.print_exc()
         #@-node:ekr.20070227093629.2:<< import leoNodes and leoConfig >>
         #@nl
@@ -211,21 +209,21 @@ class bridgeController:
             # This will fail if True/False are not defined.
             import leo.core.leoGlobals as g
         except ImportError:
-            print "isValidPython: can not import leo.core.leoGlobals as leoGlobals"
+            print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0
         except:
-            print "isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g"
+            print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
             import traceback ; traceback.print_exc()
             return 0
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
             ok = g.CheckVersion(version,'2.2.1')
             if not ok:
-                print message
+                print(message)
                 g.app.gui.runAskOkDialog(None,"Python version error",message=message,text="Exit")
             return ok
         except:
-            print "isValidPython: unexpected exception: g.CheckVersion"
+            print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback ; traceback.print_exc()
             return 0
     #@nonl
