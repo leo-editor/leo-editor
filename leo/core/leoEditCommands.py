@@ -1354,22 +1354,26 @@ class debugCommandsClass (baseEditCommandsClass):
     #@-node:ekr.20060202133313:printStats
     #@+node:ekr.20060328121145:runUnitTest commands
     def runAllUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=True)
 
     def runUnitTestsLocally (self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
         c = self.c
         leoTest.doTests(c,all=False)
 
     def runAllUnitTests (self,event=None):
-        '''Run all unit tests contained in the entire outline.'''
+        '''Run all unit tests contained in the entire outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=True)
 
     def runUnitTests(self,event=None):
-        '''Run all unit tests contained in the presently selected outline.'''
+        '''Run all unit tests contained in the presently selected outline
+        Tests are run in an external process, so tests *cannot* change the outline.'''
         c = self.c
         leoTest.runTestsExternally(c,all=False)
     #@-node:ekr.20060328121145:runUnitTest commands
