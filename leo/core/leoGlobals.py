@@ -5170,7 +5170,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     path = g.toEncodedString(path,app and app.tkEncoding or 'ascii')
 
     # g.trace(verbose,name,pluginName)
-    module = sys.modules.get(moduleName) # or sys.modules.get('leo.src.%s' % moduleName)
+    module = sys.modules.get(moduleName)
     if not module:
         try:
             theFile = None
