@@ -59,8 +59,8 @@ become very convenient to use Leo to produce source that is intended
 to also be read by non Leo users. 
 #@nonl
 #@-node:ekr.20080626081829.2:Allow headline comments for @nosent files
-#@+node:ekr.20080630093024.2:Get pychecker working again
-#@-node:ekr.20080630093024.2:Get pychecker working again
+#@+node:ekr.20080630093024.2:Remove pychecker stuff
+#@-node:ekr.20080630093024.2:Remove pychecker stuff
 #@+node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20061031131434.156:Modes
 #@+node:ekr.20061031131434.157:badMode
@@ -5948,16 +5948,6 @@ for p in c.allNodes_iter():
     pass
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@-node:ekr.20080425054202.3:ASAP
-#@+node:ekr.20080623083646.1:Code reorg
-The following decorators might be useful:
-
-@leo_command
-@leo_event_handler
-
-- It would be good to eliminate command tables.
-  But how would we know about command classes/functions?
-#@nonl
-#@-node:ekr.20080623083646.1:Code reorg
 #@+node:ekr.20080411091507.1:Docs
 #@+node:ekr.20080323093939.3:Update Leo's intro pages
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
@@ -6282,7 +6272,7 @@ Leo should copy this download philosophy.
 #@+node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20080628095358.1:Make each Leo command a class??
+#@+node:ekr.20080628095358.1:Make each Leo command a class
 http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
 
 @nocolor
@@ -6311,7 +6301,7 @@ Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* 
 Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
-#@-node:ekr.20080628095358.1:Make each Leo command a class??
+#@-node:ekr.20080628095358.1:Make each Leo command a class
 #@-node:ekr.20071113093057:4.5 cleanups, graph world & vim bindings
 #@+node:ekr.20071211093011:4.6  autocompletion
 #@+node:ekr.20080113165010:About auto completion

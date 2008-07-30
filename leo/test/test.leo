@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -51,9 +51,9 @@
 </v>
 <v t="ekr.20080604104453.5"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20080729153237.1"><vh>Gc settings</vh>
-<v t="ekr.20080729153237.2"><vh>@bool trace_gc = True</vh></v>
-<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = True</vh></v>
-<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = True</vh></v>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
@@ -222,9 +222,9 @@
 <v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
 <v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
 <v t="ekr.20080729153237.1"><vh>Gc settings</vh>
-<v t="ekr.20080729153237.2"><vh>@bool trace_gc = True</vh></v>
-<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = True</vh></v>
-<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = True</vh></v>
+<v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
 </vnodes>
 <tnodes>

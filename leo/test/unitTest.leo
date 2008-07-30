@@ -2350,13 +2350,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050120095423.6"><vh>@suite test syntax of all plugins</vh>
-<v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
-<v t="ekr.20050120095423.8"><vh>__init__</vh></v>
-<v t="ekr.20050120095423.9"><vh>runTest</vh></v>
-<v t="ekr.20050120095423.10"><vh>shortDescription</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
