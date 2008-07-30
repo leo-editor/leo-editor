@@ -7,7 +7,7 @@
 
 __version__ = '0.6'
 
-# print 'IronPythonGui 1'
+# print ('IronPythonGui 1')
 
 #@<< version history >>
 #@+node:ekr.20070215164948.1:<< version history >>
@@ -35,7 +35,7 @@ import leo.core.leoGui as leoGui
 #@-node:ekr.20070215164948.2:<< imports >>
 #@nl
 
-# print 'IronPythonGui 2'
+# print ('IronPythonGui 2')
 
 #@+others
 #@+node:ekr.20070215164948.3:Module level
@@ -48,7 +48,7 @@ def init ():
         # and System.Windows.Forms is not None
     )
 
-    print 'ironPythonGui: init ok:', ok
+    g.pr('ironPythonGui: init ok:', ok)
 
     if ok:
         g.app.gui = ironPythonGui()
@@ -97,7 +97,7 @@ class ironPythonGui(leoGui.leoGui):
 
         self.root = f = System.Windows.Forms.Form()
 
-        def click(*args): print args
+        def click(*args): g.pr(args)
         f.Click += click
 
         if 0: # Not ready yet.
@@ -777,8 +777,8 @@ class ironPythonGui(leoGui.leoGui):
 
         try:
             font = tkFont.Font(family=family,size=size,slant=slant,weight=weight)
-            #print family_name,family,size,slant,weight
-            #print "actual_name:",font.cget("family")
+            #g.pr(family_name,family,size,slant,weight)
+            #g.pr("actual_name:",font.cget("family"))
             return font
         except:
             g.es("exception setting font from " + `family_name`)

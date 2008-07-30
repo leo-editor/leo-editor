@@ -26,7 +26,7 @@ except ImportError:
     try:
         from PIL import ImageTk
     except ImportError:
-        print 'image.py: can not import ImageTk'
+        g.pr('image.py: can not import ImageTk')
         ImageTk = None
 
 
@@ -61,7 +61,7 @@ def init ():
 
     ok = g.app.gui.guiName() == "tkinter"
 
-    # print 'image.init'
+    # g.pr('image.init')
 
     if ok:
         leoPlugins.registerHandler("select2", onSelect)

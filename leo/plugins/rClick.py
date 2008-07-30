@@ -1384,15 +1384,14 @@ class pluginController(baseClasses.basePluginController):
                             self.show_message_as_html(title, '\n'.join(xdoc[1:]))
                             g.es('done', color='blue')
                         else:
-                            g.es(doc, color='blue')
-                            print doc
+                            g.es_print(doc, color='blue')
                             return
 
                     if 'log' in flags:
                         g.es(doc,color="blue")
 
                     if 'print' in flags:
-                        print doc
+                        g.pr(doc)
 
                 except Exception, value:
                     g.es(str(value),color="red")

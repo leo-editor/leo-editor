@@ -133,7 +133,7 @@ def init ():
 
         if ok:
             if not g.app.unitTesting and not g.app.batchMode:
-                print "wiki markup enabled"
+                g.pr("wiki markup enabled")
 
             # default value for color-tagged wiki text
             global wikiColoredText
@@ -346,7 +346,7 @@ def doWikiText (colorer,s,i,end,colortag):
                         colorer.tag("elide",n2,n2+len(delim2))
                     else:
                         try:
-                            # print "entering", name
+                            # g.pr("entering", name)
                             c = colorer.c
                             c.frame.body.bodyCtrl.tag_configure(name,foreground=name)
                             colorer.color_tags_list.append(name)

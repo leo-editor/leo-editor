@@ -222,7 +222,7 @@ class SearchBox:
                 self.doSearch() 
                 break
         else:
-            print name, self.search_list 
+            g.pr(name, self.search_list )
             g.es("Recent search item not found! Looks like a bug ...", color="red")
     #@nonl
     #@-node:ekr.20040108054555.8:searchRecent

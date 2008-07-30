@@ -737,9 +737,9 @@ class ToolbarIconButton(Tk.Button, object):
 
         """
         if 0:
-            print 'ToolbarIconButton.__init__'
-            print '\t', cnf
-            print '\t', keys
+            g.pr('ToolbarIconButton.__init__')
+            g.pr('\t', cnf)
+            g.pr('\t', keys)
 
         self.c = c
         self.deleteOnRightClick = False
@@ -811,7 +811,7 @@ class ToolbarIconButton(Tk.Button, object):
 
         if not command:
             def commandCallback():
-                print "command for widget %s" % self
+                g.pr("command for widget %s" % self)
 
         elif isinstance(command, basestring):
             def commandCallback(c=self.c, command=command):
@@ -943,8 +943,8 @@ class ToolbarIconButton(Tk.Button, object):
 
         if 0:
             g.trace()
-            print '\t', cnf
-            print '\t', keys
+            g.pr('\t', cnf)
+            g.pr('\t', keys)
 
         if cnf:
             for key, value in keys.iteritems():
@@ -1023,7 +1023,7 @@ class ToolbarIconButton(Tk.Button, object):
 
         if not command:
             def commandCallback():
-                print "command for widget %s" % self
+                g.pr("command for widget %s" % self)
 
         if isinstance(command, basestring):
 

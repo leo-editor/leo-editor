@@ -2924,6 +2924,45 @@ def tkColorToWxColor (self, color):
     return d.get(color)
 #@nonl
 #@-node:ekr.20070228074312.43:tkColorToWxColor
+#@+node:ekr.20080710082231.11:Unused goto-line-number helpers from core
+#@+node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
+def gotoLineNumberOpen(self, *args, **kw):
+    """
+    Hook for mod_shadow plugin.
+    """
+    theFile = open(*args, **kw)
+    lines = theFile.readlines()
+    theFile.close()
+    return lines
+#@-node:bwmulder.20041231211219:gotoLineNumberOpen (core: no longer used)
+#@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
+def applyLineNumberMappingIfAny(self, n):
+    """
+    Hook for mod_shadow plugin.
+    """
+    return n
+#@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny (core: no longer used)
+#@-node:ekr.20080710082231.11:Unused goto-line-number helpers from core
+#@+node:ekr.20080708094444.83:test_propagate_changes (no longer used)
+def test_propagate_changes (self,
+    old_private_lines,      # with_sentinels
+    new_public_lines,       # without sentinels
+    expected_private_lines, # with sentinels
+    marker,
+    p = None
+):
+
+    '''Check that propagate changed lines changes 'before_private_lines' to
+    'expected_private_lines' based on changes to 'changed_public_lines'.'''
+
+    results = self.propagate_changed_lines(
+        new_public_lines,   # new_lines_without_sentinels
+        old_private_lines,  # lines_with_sentinels, 
+        marker = marker,
+        p = p)
+
+    return results # For unit tests.
+#@-node:ekr.20080708094444.83:test_propagate_changes (no longer used)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

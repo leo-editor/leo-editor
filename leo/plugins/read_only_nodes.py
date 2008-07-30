@@ -309,7 +309,7 @@ def enable_body(body):
     if body.cget("state") == "disabled":
         try:
             g.es("enable")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="normal")
             body.configure(insertontime=insertOnTime,insertofftime=insertOffTime)
         except: g.es_exception()
@@ -321,7 +321,7 @@ def disable_body(body):
             g.es("disable")
             insertOnTime = body.cget("insertontime")
             insertOffTime = body.cget("insertofftime")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="disabled")
         except: g.es_exception()
 #@-node:edream.110203113231.893:enable/disable_body

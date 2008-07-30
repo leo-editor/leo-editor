@@ -702,7 +702,7 @@ if 0:
         lines = traceback.format_exception(typ,val,tb)
         for line in lines:
             # g.es(line,color = "red")
-            print line
+            g.pr(line)
 
 TraceBack = g.es_exception
 #@nonl

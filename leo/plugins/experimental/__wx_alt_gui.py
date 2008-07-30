@@ -343,7 +343,7 @@ if wx:
             #@        @+others
             #@+node:bob.20071229151620.1:__init__ (tkFont.Font)
             def __init__(self,*args, **kw):
-                #print myclass(self), args, kw
+                #g.pr(myclass(self), args, kw)
 
                 self.kw = kw
 
@@ -735,7 +735,7 @@ if wx:
         def _appendText(self,s):
             #g.trace('stc:', _(s))
             self.widget.AppendText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         def _get(self,i,j):
             #g.trace( 'i: %s j:%s' %(i, j))
@@ -743,16 +743,16 @@ if wx:
             w = self.widget
             s = w.Text
             ii, jj = py(i,s),py(j,s)
-            #print '\tii=', ii, ' jj=', jj
+            #g.pr('	ii=', ii, ' jj=', jj)
             result = self.widget.GetTextRange(ii, jj)
-            #print '\n\t', type(result), 'len:', len(result)
-            #print _(result)
+            #g.pr('\n\t', type(result), 'len:', len(result))
+            #g.pr(_(result))
             return result
 
         def _getAllText(self):
             text = self.widget.Text
             #g.trace(_(text))
-            #print '\t', g.callers()
+            #g.pr('\t', g.callers())
             return text
 
         def _getFocus(self):
@@ -764,14 +764,12 @@ if wx:
         def _getInsertPoint(self):
             w = self.widget
             text = w.Text
-            # print
-            # print '---------------------'
+            # g.pr('\n---------------------')
             # g.trace(type(w.Text), type(w.TextUTF8), type(w.TextRaw))
             # g.trace(w.CurrentPos, text)
             result = self.fromStcIndex(w.CurrentPos, text)
             # g.trace(result, '[%s] [%s]' % (text[:result], text[result:]))
-            # print '---------------------'
-            # print
+            # g.pr('---------------------\n')
             return result
 
         def _getLastPosition(self):
@@ -815,7 +813,7 @@ if wx:
         def _setAllText(self,s):
             #g.trace('stc:\t', _(s))
             self.widget.SetText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         def _setBackgroundColor(self,color):
             #g.trace('stc:')
@@ -847,13 +845,13 @@ if wx:
 
             #print
             #g.trace( '\n\tHave FirstVisible:', first)
-            #print '\tWant FirstVisible:', wantfirst
+            #g.pr'\tWant FirstVisible:', wantfirst)
 
-            #print
             w.LineScroll(0, wantfirst - first)
-            #print '\tLines to scroll:', wantfirst - first
-            #print '\tNew FirstVisible:', w.FirstVisibleLine
-            #print
+            #g.pr('')
+            #g.pr('\tLines to scroll:', wantfirst - first)
+            #g.pr('\tNew FirstVisible:', w.FirstVisibleLine
+            #g.pr('')
         #@-node:bob.20070813163332.152:bindings (stc)
         #@+node:bob.20070813163332.153:Overrides of baseTextWidget methods
         #@+node:bob.20070901213413:toStcIndex
@@ -877,11 +875,11 @@ if wx:
                     if i == 'end':
                         i = len(s)
 
-            #print '\n\tChar-codes: [', ' | '.join([str(ord(ch)) for ch in s]), ']'
+            #g.pr('\n\tChar-codes: [', ' | '.join([str(ord(ch)) for ch in s]), ']')
 
             result =  len(s[:i].encode('utf8'))
 
-            #print '\n\t result', result
+            #g.pr('\n\t result', result)
             return result
 
         def fromStcIndex(self, i, s):
@@ -892,23 +890,23 @@ if wx:
             #g.trace('\n\tencoding:', type(s), i)
             try:
                 result = s.encode('utf8')[:i]
-                #print 'YAY encoded ok: type is ', type(result)
-                #print '\n\t len:', len(result),
-                #print '\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']'
+                #g.pr('YAY encoded ok: type is ', type(result))
+                #g.pr('\n\t len:', len(result),newline=False)
+                #g.pr('\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']')
             except:
-                print 'encoding error ============================'
-                print g.callers()
+                g.pr('encoding error ============================')
+                g.pr(g.callers())
 
             try:
                 result = result.decode('utf8')
-                #print 'YAY DECODING ok: type is ', type(result)
-                #print '\n\t len:', len(result),
-                #print '\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']'
+                #g.pr('YAY DECODING ok: type is ', type(result))
+                #g.pr('\n\t len:', len(result),newline=False)
+                #g.pr('\n\t chars:[',  ' | '.join([str(ord(ch)) for ch in result]), ']')
             except:
-                print 'decoding error #######################################'
+                g.pr('decoding error #######################################')
 
             result = len(result)
-            #print '\n\tinput:%s result:%s'%(i, result)
+            #g.pr('\n\tinput:%s result:%s'%(i, result))
             return result
 
         #@-node:bob.20070901213413:toStcIndex
@@ -917,7 +915,7 @@ if wx:
 
             #g.trace('stc:', _(s))
             self.widget.AppendText(s)
-            #print '\t', _(self.widget.Text)
+            #g.pr('\t', _(self.widget.Text))
 
         #@-node:bob.20070903082144:appendText
         #@+node:bob.20070903082228:delete
@@ -949,11 +947,11 @@ if wx:
             #line = w.LineFromPosition(w.CurrentPos)
 
             #g.trace( '\n\ttop:', w.FirstVisibleLine)
-            #print '\tcurrent line:', w.LineFromPosition(w.CurrentPos)
+            #g.pr('\tcurrent line:', w.LineFromPosition(w.CurrentPos))
 
 
             ii = self.toStcIndex(i, s)
-            #print '\ttarget line:', w.LineFromPosition(ii)
+            #g.pr('\ttarget line:', w.LineFromPosition(ii))
             w.ScrollToLine(w.LineFromPosition(ii))
 
         def seeInsertPoint(self):
@@ -975,7 +973,7 @@ if wx:
 
             #g.trace('py-index:', i, 'insert[%s]'%s)# g.callers())
 
-            #print '\t\t', g.callers()
+            #g.pr('\t\t', g.callers())
 
             w = self.widget
 

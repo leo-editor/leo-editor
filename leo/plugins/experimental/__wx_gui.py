@@ -3207,8 +3207,8 @@ if wx:
 
             try:
                 font = tkFont.Font(family=family,size=size,slant=slant,weight=weight)
-                #print family_name,family,size,slant,weight
-                #print "actual_name:",font.cget("family")
+                #g.pr(family_name,family,size,slant,weight)
+                #g.pr("actual_name:",font.cget("family"))
                 return font
             except:
                 g.es("exception setting font from " + `family_name`)
@@ -4951,7 +4951,7 @@ if wx:
                     g.es("createOpenWithMenuFromTable: invalid data",color="red")
                     return
 
-            # for i in shortcut_table: print i
+            # for i in shortcut_table: g.pr(i)
             self.createMenuItemsFromTable("Open &With...",shortcut_table,openWith=1)
         #@-node:edream.111603112846.1:createOpenWithMenuFromTable (not ready yet)
         #@+node:edream.111303103254:defineMenuCallback
@@ -4970,7 +4970,7 @@ if wx:
             # The first parameter must be event, and it must default to None.
             def wxOpenWithMenuCallback(event=None,command=command):
                 try: self.c.openWith(data=command)
-                except: print traceback.print_exc()
+                except: g.pr(traceback.print_exc())
 
             return wxOpenWithMenuCallback
         #@nonl

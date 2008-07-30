@@ -213,15 +213,15 @@ def doOpenWithSettings (aList):
         try:
             data = eval(command)
             if 0:
-                print name,shortcut
+                g.pr(name,shortcut)
                 for i in xrange(len(data)):
-                    print i,repr(data[i])
-                print
+                    g.pr(i,repr(data[i]))
+                g.pr('')
             entry = name,shortcut,data
             table.append(entry)
 
         except SyntaxError:
-            print g.es_exception()
+            g.pr(g.es_exception())
             return None
 
     return table

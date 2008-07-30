@@ -299,7 +299,7 @@ class cleoController:
     #@+node:tbrown.20060903121429.17:install_drawing_overrides
     def install_drawing_overrides (self):
 
-        # print "Cleo plugin: installing overrides for",self.c.shortFileName()
+        # g.pr("Cleo plugin: installing overrides for",self.c.shortFileName())
 
         tree = self.c.frame.tree # NOT leoTkinterTree.leoTkinterTree
 
@@ -617,7 +617,7 @@ class cleoController:
         #@-node:tbrown.20060903121429.30:<< arbitary colours >>
         #@nl
 
-        #print "> (%s,%s) %s" % (fg,bg,v.headString())
+        #g.pr("> (%s,%s) %s" % (fg,bg,v.headString()))
         return fg,bg
     #@nonl
     #@-node:tbrown.20060903121429.26:custom_colours

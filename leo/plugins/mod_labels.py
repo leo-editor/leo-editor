@@ -545,7 +545,7 @@ class labelsController(object):
                     labels_dict[labelname] = ''
                     self.set_labels_dict(p, labels_dict)
                     p.setDirty()
-                    # print p
+                    # g.pr(p)
     #@nonl
     #@-node:ekr.20050301095332.45:marks_to_label
     #@+node:ekr.20050301095332.46:label_to_marks

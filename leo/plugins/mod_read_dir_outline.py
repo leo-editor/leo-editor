@@ -161,7 +161,7 @@ class controller:
                 g.app.log.put(chaine,color=color)
             else:
                 g.app.logWaiting.append((chaine,color),)
-                print chaine,
+                g.pr(chaine,newline=False)
     #@nonl
     #@-node:ekr.20050301083306.9:esfm
     #@+node:ekr.20050301083306.10:importDir

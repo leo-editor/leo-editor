@@ -144,7 +144,7 @@ class textGui(leoGui.leoGui):
   #@-node:ekr.20071212073036:isTextWidget
   #@+node:ekr.20061207074949.5:oops
   def oops(self):
-    print "textGui oops", g.callers(), "should be implemented"
+    g.pr("textGui oops", g.callers(), "should be implemented")
   #@-node:ekr.20061207074949.5:oops
   #@+node:ekr.20061207074949.8:runMainLoop
   def runMainLoop(self):
@@ -177,7 +177,7 @@ class textGui(leoGui.leoGui):
       if frame_idx > len(self.frames) - 1:
         frame_idx = 0
       f = self.frames[frame_idx]
-      print f.getTitle()
+      g.pr(f.getTitle())
       s = raw_input('Do what? (menu,key,body,frames,tree,quit) > ')
 
       try:
@@ -195,7 +195,7 @@ class textGui(leoGui.leoGui):
       f.body.text_show()
     elif s in ('f','frames'):
       for i, f in enumerate(self.frames):
-        print i, ')', f.getTitle()
+        g.pr(i, ')', f.getTitle())
       s = raw_input('Operate on which frame? > ')
       try:
         s = int(s)
@@ -347,9 +347,9 @@ class textBody(leoFrame.leoBody):
   def text_show(self):
 
     w = self.bodyCtrl
-    print '--- body ---'
-    print 'ins',w.ins,'sel',w.sel
-    print w.s
+    g.pr('--- body ---')
+    g.pr('ins',w.ins,'sel',w.sel)
+    g.pr(w.s)
   #@-node:ekr.20061207074949.28:text_show
   #@-others
 #@-node:ekr.20061207074949.24:class textBody
@@ -457,8 +457,8 @@ class textLeoMenu(leoMenu.leoMenu):
       entries = last_menu.entries
 
       for i, entry in enumerate(entries):
-        print i, ')', entry.display()
-      print len(last_menu.entries), ')', '[Prev]'
+        g.pr(i, ')', entry.display())
+      g.pr(len(last_menu.entries), ')', '[Prev]')
 
       which = raw_input('Which menu entry? > ')
       which = which.strip()      
@@ -500,11 +500,11 @@ class textLog(leoFrame.leoLog):
   #@-node:ekr.20061207074949.64:setTabBindings
   #@+node:ekr.20061207074949.65:put
   def put(self, s, color=None, tabName='log'):
-    print s, # no newline
+    g.pr(s,newline=False)
   #@-node:ekr.20061207074949.65:put
   #@+node:ekr.20061207074949.66:putnl
   def putnl(self, tabName='log'):
-    print
+    g.pr('')
   #@-node:ekr.20061207074949.66:putnl
   #@+node:ekr.20061207074949.67:createControl
   # < < HACK Quiet, oops. >>
@@ -566,7 +566,7 @@ class textTree(leoFrame.leoTree):
   def text_draw_tree (self):
 
     # g.trace(g.callers())
-    print '--- tree ---'
+    g.pr('--- tree ---')
 
     self.draw_tree_helper(self.c.rootPosition(),indent=0)
 
@@ -585,7 +585,7 @@ class textTree(leoFrame.leoTree):
         g.choose(p.isCloned(),'@',' '),
         g.choose(p.isDirty(),'*',' '))
 
-      print " " * indent * 2, icons, box, p.headString()
+      g.pr(" " * indent * 2, icons, box, p.headString())
 
       if p.isExpanded() and p.hasChildren():
         self.draw_tree_helper(p.firstChild(),indent+1)

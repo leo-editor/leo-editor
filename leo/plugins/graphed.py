@@ -543,7 +543,7 @@ class GraphEd:
     # 
     # def editWholeTree(self, event=None):
     #     c = self.c
-    #     print c.rootPosition().headString()
+    #     g.pr(c.rootPosition().headString())
     #     self.editGraph(pos = c.rootPosition())
     #@-at
     #@-node:ekr.20071004090250.27:editWholeTree
