@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -188,10 +188,6 @@
 <v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
 <v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
 </v>
-</v>
-<v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
-<v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
-<v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
@@ -593,7 +589,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
-<t tx="ekr.20070315071830"># Do not remove these nodes.</t>
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
 <t tx="ekr.20070503085527"></t>
