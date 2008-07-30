@@ -845,7 +845,7 @@ class leoGtkFrame (leoFrame.leoFrame):
 
             if not command:
                 def command():
-                    print "command for widget %s" % (n)
+                    g.pr("command for widget %s" % (n))
 
             if imagefile or image:
                 #@        << create a picture >>
@@ -2444,10 +2444,10 @@ class leoGtkLog (leoFrame.leoLog):
 
         if sys.platform == "darwin": # Does not work on MacOS X.
             try:
-                print s, # Don't add a newline.
+                g.pr(s,newline=False) # Don't add a newline.
             except UnicodeError:
                 # g.app may not be inited during scripts!
-                print g.toEncodedString(s,'utf-8')
+                g.pr(g.toEncodedString(s,'utf-8'))
         else:
             self.logCtrl.update_idletasks()
     #@-node:ekr.20080112145409.222:forceLogUpdate
@@ -2468,7 +2468,7 @@ class leoGtkLog (leoFrame.leoLog):
 
         c = self.c
 
-        #print 'gtkLog.put', s, color, tabName #self.c.shortFileName(),tabName,g.callers()
+        #g.pr('gtkLog.put', s, color, tabName #self.c.shortFileName(),tabName,g.callers())
 
         if g.app.quitting or not c or not c.exists:
             return
@@ -2494,22 +2494,7 @@ class leoGtkLog (leoFrame.leoLog):
             #self.forceLogUpdate(s)
             #@-node:ekr.20080112145409.225:<< put s to log control >>
             #@nl
-            # self.logCtrl.update_idletasks()
-        # else:
-            # 
-            #@nonl
-            #@<< put s to logWaiting and print s >>
-            #@+node:ekr.20080112145409.226:<< put s to logWaiting and print s >>
-            # g.app.logWaiting.append((s,color),)
-
-            # print "Null gtk log"
-
-            # if type(s) == type(u""):
-                # s = g.toEncodedString(s,"ascii")
-
-            # print s
-            #@-node:ekr.20080112145409.226:<< put s to logWaiting and print s >>
-            #@nl
+    #@nonl
     #@-node:ekr.20080112145409.224:put
     #@+node:ekr.20080112145409.227:putnl
     def putnl (self,tabName='Log'):
@@ -2525,11 +2510,7 @@ class leoGtkLog (leoFrame.leoLog):
             self.logCtrl.insert("end",'\n')
             self.logCtrl.see('end')
             # self.forceLogUpdate('\n')
-        # else:
-            # # Put a newline to logWaiting and print newline
-            # g.app.logWaiting.append(('\n',"black"),)
-            # print "Null gtk log"
-            # print
+    #@nonl
     #@-node:ekr.20080112145409.227:putnl
     #@-node:ekr.20080112145409.223:put & putnl (gtkLog)
     #@+node:ekr.20080112145409.228:Tab (GtkLog)

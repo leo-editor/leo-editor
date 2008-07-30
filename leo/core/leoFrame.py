@@ -126,7 +126,7 @@ class baseTextWidget:
     #@+node:ekr.20070228074312.5:oops
     def oops (self):
 
-        print('wxGui baseTextWidget oops:',self,g.callers(),
+        g.pr('wxGui baseTextWidget oops:',self,g.callers(),
             'must be overridden in subclass')
     #@-node:ekr.20070228074312.5:oops
     #@+node:ekr.20070228074312.6:Index conversion
@@ -888,7 +888,7 @@ class leoBody:
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.bodyCtrl = w2
-            # print '***',g.app.gui.widget_name(w2),id(w2)
+            # g.pr('***',g.app.gui.widget_name(w2),id(w2))
 
         return 'break'
     #@-node:ekr.20060528170438:cycleEditorFocus
@@ -1591,7 +1591,7 @@ class leoFrame:
     #@+node:ekr.20031218072017.3691:oops
     def oops(self):
 
-        print "leoFrame oops:", g.callers(3), "should be overridden in subclass"
+        g.pr("leoFrame oops:", g.callers(3), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3691:oops
     #@+node:ekr.20031218072017.3692:promptForSave
     def promptForSave (self):
@@ -1608,7 +1608,7 @@ class leoFrame:
             "Confirm",
             'Save changes to %s before %s' % (name,theType))
 
-        # print answer
+        # g.pr(answer)
         if answer == "cancel":
             return True # Veto.
         elif answer == "no":
@@ -2193,7 +2193,7 @@ class leoLog:
     #@+node:ekr.20031218072017.3700:leoLog.oops
     def oops (self):
 
-        print "leoLog oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoLog oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3700:leoLog.oops
     #@-others
 #@-node:ekr.20031218072017.3694:class leoLog
@@ -2779,7 +2779,7 @@ class leoTree:
     #@+node:ekr.20031218072017.3718:oops
     def oops(self):
 
-        print "leoTree oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoTree oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20031218072017.3718:oops
     #@-others
 #@-node:ekr.20031218072017.3704:class leoTree
@@ -2829,7 +2829,7 @@ class leoTreeTab:
     #@+node:ekr.20070317083104:oops
     def oops(self):
 
-        print "leoTreeTree oops:", g.callers(), "should be overridden in subclass"
+        g.pr("leoTreeTree oops:", g.callers(), "should be overridden in subclass")
     #@-node:ekr.20070317083104:oops
     #@-others
 #@nonl
@@ -2973,7 +2973,7 @@ class nullFrame (leoFrame):
 
         self.c = c
 
-        # print 'nullFrame'
+        # g.pr('nullFrame')
 
         # Create do-nothing component objects.
         self.tree = nullTree(frame=self)
@@ -3077,7 +3077,7 @@ class nullIconBarClass:
 
         if not command:
             def commandCallback(name=name):
-                print "command for %s" % (name)
+                g.pr("command for %s" % (name))
             command = commandCallback
 
         class nullButtonWidget:
@@ -3171,15 +3171,15 @@ class nullLog (leoLog):
         if self.enabled:
             # g.rawPrint(s)
             try:
-                print s,
+                g.pr(s,newline=False)
             except UnicodeError:
                 s = s.encode('ascii','replace')
-                print s,
+                g.pr(s,newline=False)
 
     def putnl (self,tabName='Log'):
         if self.enabled:
             # g.rawPrint("")
-            print
+            g.pr('')
     #@-node:ekr.20041012083237.3:put and putnl (nullLog)
     #@+node:ekr.20060124085830:tabs
     def clearTab        (self,tabName,wrap='none'):             pass
@@ -3273,7 +3273,7 @@ class nullTree (leoTree):
         for key in keys:
             # keys are tnodes, values are stringTextWidgets.
             w = d.get(key)
-            print 'w',w,'t._headString:',key.headString,'s:',repr(w.s)
+            g.pr('w',w,'t._headString:',key.headString,'s:',repr(w.s))
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides

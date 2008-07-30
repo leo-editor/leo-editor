@@ -124,7 +124,7 @@ class tkinterGui(leoGui.leoGui):
                 else:
                     g.es('','Icons','directory not found:',path, color="red")
         except:
-            print "exception setting bitmap"
+            g.pr("exception setting bitmap")
             import traceback ; traceback.print_exc()
     #@-node:ekr.20031218072017.1856:setDefaultIcon
     #@+node:ekr.20031218072017.2186:tkGui.getDefaultConfigFont
@@ -141,7 +141,7 @@ class tkinterGui(leoGui.leoGui):
             font = tkFont.Font(font=fn) 
             family = font.cget("family")
             self.defaultFontFamily = family[:]
-            # print '***** getDefaultConfigFont',repr(family)
+            # g.pr('***** getDefaultConfigFont',repr(family))
 
         config.defaultFont = None
         config.defaultFontFamily = self.defaultFontFamily
@@ -183,11 +183,11 @@ class tkinterGui(leoGui.leoGui):
         if script:
             log = g.app.log
             if log:
-                print 'Start of batch script...\n'
+                g.pr('Start of batch script...\n')
                 log.c.executeScript(script=script)
-                print 'End of batch script'
+                g.pr('End of batch script')
             else:
-                print 'no log, no commander for executeScript in tkInterGui.runMainLoop'
+                g.pr('no log, no commander for executeScript in tkInterGui.runMainLoop')
         else:
              # g.trace("tkinterGui")
             self.root.mainloop()
@@ -305,7 +305,7 @@ class tkinterGui(leoGui.leoGui):
 
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
-        # print 'tkGui.createLeoFrame'
+        # g.pr('tkGui.createLeoFrame')
         gui = self
         return leoTkinterFrame.leoTkinterFrame(title,gui)
     #@-node:ekr.20031218072017.4058:tkGui panels
@@ -493,9 +493,9 @@ class tkinterGui(leoGui.leoGui):
         if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
             self.set_focus_count += 1
             # Do not call trace here: that might affect focus!
-            print 'gui.set_focus: %4d %10s %s' % (
+            g.pr('gui.set_focus: %4d %10s %s' % (
                 self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5)
+                c and c.widget_name(w)), g.callers(5))
 
         if w:
             try:

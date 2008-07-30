@@ -319,11 +319,11 @@ class shadowController:
 
             sep1 = '=' * 10 ; sep2 = '-' * 20
 
-            print ; print sep1,message,sep1,p and p.headString()
+            g.pr('\n',sep1,message,sep1,p and p.headString())
 
-            print ; print '%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j)
+            g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
 
-            print ; print sep2
+            g.pr('\n',sep2)
 
             table = (
                 (old_private_lines_rdr,'old private lines'),
@@ -334,7 +334,7 @@ class shadowController:
 
             for f,tag in table:
                 f.dump(tag)
-                print sep2
+                g.pr(sep2)
 
 
         #@-node:ekr.20080708094444.39:<< define print_tags >>
@@ -646,24 +646,23 @@ class shadowController:
         def p(s):
             sys.stdout.write(s)
             f1.write(s)
-        print "================================="
-        print message
-        print "================================="
-        print lines1_message 
-        print "---------------------------------"
+        g.pr("=================================")
+        g.pr(message)
+        g.pr("=================================")
+        g.pr(lines1_message )
+        g.pr("---------------------------------")
         f1 = file("mod_shadow.tmp1", "w")
         for line in lines1:
             p(line)
         f1.close()
-        print
-        print "=================================="
-        print lines2_message 
-        print "---------------------------------"
+        g.pr("\n==================================")
+        g.pr(lines2_message )
+        g.pr("---------------------------------")
         f1 = file("mod_shadow.tmp2", "w")
         for line in lines2:
             p(line)
         f1.close()
-        print
+        g.pr('')
         g.es("@shadow did not pick up the external changes correctly; please check shadow.tmp1 and shadow.tmp2 for differences")
         # assert 0, "Malfunction of @shadow"
     #@-node:ekr.20080708094444.33:x.show_error
@@ -811,12 +810,12 @@ class shadowController:
 
             if not self.lax and results != self.expected_private_lines:
 
-                print '%s atShadowTestCase.runTest:failure' % ('*' * 40)
+                g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
                 for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
-                    print '%s...' % tag
+                    g.pr('%s...' % tag)
                     for i, line in enumerate(aList):
-                        print '%3s %s' % (i,repr(line))
-                    print '-' * 40
+                        g.pr('%3s %s' % (i,repr(line)))
+                    g.pr('-' * 40)
 
                 assert results == self.expected_private_lines
 
@@ -892,11 +891,11 @@ class sourcereader:
     #@+node:ekr.20080708094444.20:dump
     def dump(self, title):
 
-        print title
-        # print 'self.i',self.i
+        g.pr(title)
+        # g.pr('self.i',self.i)
         for i, line in enumerate(self.lines):
             marker = g.choose(i==self.i,'**','  ')
-            print "%s %3s:%s" % (marker, i, line),
+            g.pr("%s %3s:%s" % (marker, i, line),)
     #@nonl
     #@-node:ekr.20080708094444.20:dump
     #@-others
@@ -940,10 +939,10 @@ class sourcewriter:
 
         '''Dump lines for debugging.'''
 
-        print title
+        g.pr(title)
         for i, line in enumerate(self.lines):
             marker = '  '
-            print "%s %3s:%s" % (marker, i, line),
+            g.es("%s %3s:%s" % (marker, i, line),newline=False)
     #@-node:ekr.20080708094444.26:dump
     #@-others
 #@-node:ekr.20080708094444.21:class sourcewriter

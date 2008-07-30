@@ -1895,7 +1895,7 @@ class colorizer:
 
         self.latex_cweb_docs     = c.config.getBool("color_cweb_doc_parts_with_latex")
         self.latex_cweb_comments = c.config.getBool("color_cweb_comments_with_latex")
-        # print "docs,comments",self.latex_cweb_docs,self.latex_cweb_comments
+        # g.pr("docs,comments",self.latex_cweb_docs,self.latex_cweb_comments)
         #@-node:ekr.20031218072017.1606:<< ivars for communication between colorizeAnyLanguage and its allies >>
         #@nl
         #@    << define dispatch dicts >>
@@ -2230,7 +2230,7 @@ class colorizer:
 
                 # Bug fix: 11/21/02: must test against None.
                 if leading != None and trailing != None:
-                    # print "leading,trailing:",leading,trailing
+                    # g.pr("leading,trailing:",leading,trailing)
                     leading_lines = leading
                     trailing_lines = trailing
                 else:
@@ -2259,7 +2259,7 @@ class colorizer:
                         # All lines match, and we must color _everything_.
                         # (several routine delete, then insert the text again,
                         # deleting all tags in the process).
-                        # print "recolor all"
+                        # g.pr("recolor all")
                         leading_lines = trailing_lines = 0
                     else:
                         i = 0
@@ -2272,7 +2272,7 @@ class colorizer:
                     #@nl
 
                 middle_lines = new_len - leading_lines - trailing_lines
-                # print "middle lines", middle_lines
+                # g.pr("middle lines", middle_lines)
 
                 #@<< clear leading_lines if middle lines involve @color or @recolor  >>
                 #@+node:ekr.20031218072017.1884:<< clear leading_lines if middle lines involve @color or @recolor  >>
@@ -2403,7 +2403,7 @@ class colorizer:
     #@+node:ekr.20031218072017.1892:colorizeLine & allies
     def colorizeLine (self,s,state):
 
-        # print "line,inc,state,s:",self.line_index,self.incremental,state,s
+        # g.pr("line,inc,state,s:",self.line_index,self.incremental,state,s)
 
         s = g.toUnicode(s,g.app.tkEncoding) # 10/28/03
 
@@ -2797,7 +2797,7 @@ class colorizer:
             #@        << handle single-line comment >>
             #@+middle:ekr.20031218072017.1897:Valid regardless of latex mode
             #@+node:ekr.20031218072017.1617:<< handle single-line comment >>
-            # print "single-line comment i,s:",i,s
+            # g.pr("single-line comment i,s:",i,s)
 
             if self.language == "cweb" and self.latex_cweb_comments:
                 j = i + len(self.single_comment_start)
@@ -3009,7 +3009,7 @@ class colorizer:
 
     def removeTagsFromLine (self):
 
-        # print "removeTagsFromLine",self.line_index
+        # g.pr("removeTagsFromLine",self.line_index)
         w = self.c.frame.body
         for tag in self.tags:
             w.tag_remove(tag,self.index(0),self.index("end")) # 10/27/03
@@ -3021,7 +3021,7 @@ class colorizer:
     #@+node:ekr.20050420083821:disable & enable
     def disable (self):
 
-        # print "disabling all syntax coloring"
+        # g.pr("disabling all syntax coloring")
         self.enabled=False
 
     def enable (self):

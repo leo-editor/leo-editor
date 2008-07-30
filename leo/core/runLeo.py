@@ -21,9 +21,9 @@ if 0: # Set to 1 for lint-like testing.
 
     try:
         import pychecker.checker
-        print '\npychecker.checker running...\n'
+        g.pr('\npychecker.checker running...')
     except Exception:
-        print '\nCan not import pychecker\n'
+        g.pr('\nCan not import pychecker\n')
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
 #@nl
 
@@ -450,7 +450,7 @@ def startPsyco ():
     except ImportError:
         g.app.use_psyco = False
     except:
-        print "unexpected exception importing psyco"
+        g.pr("unexpected exception importing psyco")
         g.es_exception()
         g.app.use_psyco = False
 #@-node:ekr.20040411081633:startPsyco

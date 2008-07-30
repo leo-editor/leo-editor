@@ -253,12 +253,12 @@ class undoer:
         u.clearIvars()
 
         if 0: # Debugging.
-            print '-' * 40
+            g.pr('-' * 40)
             keys = bunch.keys()
             keys.sort()
             for key in keys:
                 g.trace(key,bunch.get(key))
-            print '-' * 20
+            g.pr('-' * 20)
 
         for key in bunch.keys():
             val = bunch.get(key)
@@ -514,7 +514,7 @@ class undoer:
         ivars = ('kind','undoType')
 
         for ivar in ivars:
-            print ivar, getattr(self,ivar)
+            g.pr(ivar, getattr(self,ivar))
     #@-node:ekr.20050525151449:u.trace
     #@+node:ekr.20050410095424:updateMarks
     def updateMarks (self,oldOrNew):
@@ -1201,13 +1201,13 @@ class undoer:
             i -= 1
 
         if trace:
-            print "lead,trail",leading,trailing
-            print "old mid,nls:",len(old_middle_lines),old_newlines,oldText
-            print "new mid,nls:",len(new_middle_lines),new_newlines,newText
-            #print "lead,trail:",leading,trailing
-            #print "old mid:",old_middle_lines
-            #print "new mid:",new_middle_lines
-            print "---------------------"
+            g.pr("lead,trail",leading,trailing)
+            g.pr("old mid,nls:",len(old_middle_lines),old_newlines,oldText)
+            g.pr("new mid,nls:",len(new_middle_lines),new_newlines,newText)
+            #g.pr("lead,trail:",leading,trailing)
+            #g.pr("old mid:",old_middle_lines)
+            #g.pr("new mid:",new_middle_lines)
+            g.pr("---------------------")
         #@-node:ekr.20031218072017.1491:<< compute leading, middle & trailing  lines >>
         #@nl
         #@    << save undo text info >>
@@ -2032,8 +2032,8 @@ class undoer:
         result = s
 
         if u.debug_print:
-            print "body:  ",body
-            print "result:",result
+            g.pr("body:  ",body)
+            g.pr("result:",result)
         #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         #@nl
         p.setBodyString(result)

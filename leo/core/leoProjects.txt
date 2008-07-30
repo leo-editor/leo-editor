@@ -1478,7 +1478,7 @@ def getWSString (self,s):
 #@+node:ekr.20050920084036.7:oops
 def oops (self):
 
-    print("baseEditCommandsClass oops:",
+    g.pr("baseEditCommandsClass oops:",
         g.callers(),
         "must be overridden in subclass")
 #@-node:ekr.20050920084036.7:oops
@@ -2124,7 +2124,7 @@ if s and fileName.endswith('.py'):
     if line1.startswith(tag) and line1.endswith(tag2):
         e = line1[n1:-n2].strip()
         if e and g.isValidEncoding(e):
-            # print 'found',e,'in',line1
+            # g.pr('found',e,'in',line1)
             self.encoding = e
 
 s = g.toUnicode(s,self.encoding)
@@ -2796,7 +2796,7 @@ if s and fileName.endswith('.py'):
     if line1.startswith(tag) and line1.endswith(tag2):
         e = line1[n1:-n2].strip()
         if e and g.isValidEncoding(e):
-            # print 'found',e,'in',line1
+            # g.pr('found',e,'in',line1)
             self.encoding = e
 
 s = g.toUnicode(s,self.encoding)
@@ -2813,7 +2813,7 @@ def scanPHPText (self,s,parent,atAuto=False):
     # else:
         # fileName = scanner.fileName
         # if atAuto:
-            # print('seems to be mixed HTML and PHP:',fileName)
+            # g.pr('seems to be mixed HTML and PHP:',fileName)
         # else:
             # g.es_print('seems to be mixed HTML and PHP:',fileName)
         # scanner.createHeadline(
@@ -4145,7 +4145,7 @@ For the same reason we can't rely on any TK canvas methods here.
 @c
 
 def yoffset(self,p1):
-    # if not p1.isVisible(): print "yoffset not visible:",p1
+    # if not p1.isVisible(): g.pr("yoffset not visible:",p1)
     if not p1: return 0
     c = self.c
     if c.hoistStack:
@@ -4156,7 +4156,7 @@ def yoffset(self,p1):
     if root:
         h,flag = self.yoffsetTree(root,p1,isTop=True)
         # flag can be False during initialization.
-        # if not flag: print "*** yoffset fails:",'root',root,'p1',p1,'returns',h
+        # if not flag: g.pr("*** yoffset fails:",'root',root,'p1',p1,'returns',h)
         return h
     else:
         return 0
@@ -4421,7 +4421,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
                 s = g.toEncodedString(s,'ascii')
-                print s
+                g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
@@ -4717,7 +4717,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
                 s = g.toEncodedString(s,'ascii')
-                print s
+                g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
@@ -4845,7 +4845,7 @@ def visitNode (self,p):
             except Exception:
                 g.es_exception()
         else:
-            print "*** no handler",kind
+            g.pr("*** no handler",kind)
 
     return None
 #@-node:ekr.20041119204714:visitNode (settingsTreeParser)
@@ -4965,7 +4965,7 @@ def createModeCommand (self,modeName,name,modeDict):
 #@+node:ekr.20041120103012:error
 def error (self,s):
 
-    print s
+    g.pr(s)
 
     # Does not work at present because we are using a null Gui.
     g.es(s,color="blue")
@@ -5305,7 +5305,7 @@ def dumpMenuList (self,aList,level=0):
         if kind == '@item':
             g.trace(level,kind,val,val2)
         else:
-            print
+            g.pr('')
             g.trace(level,kind,'...')
             self.dumpMenuList(val,level+1)
 #@nonl
@@ -5475,7 +5475,7 @@ def doPopup (self,p,kind,name,val):
         g.app.config.context_menus = {}
 
     #if popupName in g.app.config.context_menus:
-        #print '*** duplicate popup ***', popupName
+        #g.pr('*** duplicate popup ***', popupName)
 
 
     g.app.config.context_menus[popupName] = aList
@@ -5625,7 +5625,7 @@ def munge(self,s):
 #@-node:ekr.20041124063257:munge
 #@+node:ekr.20041119204700.2:oops
 def oops (self):
-    print ("parserBaseClass oops:",
+    g.pr("parserBaseClass oops:",
         g.callers(),
         "must be overridden in subclass")
 #@-node:ekr.20041119204700.2:oops
@@ -6333,7 +6333,7 @@ def dumpMenuList (self,aList,level=0):
         if kind == '@item':
             g.trace(level,kind,val,val2)
         else:
-            print
+            g.pr('')
             g.trace(level,kind,'...')
             self.dumpMenuList(val,level+1)
 #@nonl
@@ -6639,11 +6639,13 @@ def findBoundParagraph (self,event=None):
 #@nonl
 #@+node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
 if 0:
-    print ; print "head_lines"
-    for line in head_lines: print line
-    print ; print "ins", ins
-    print ; print "tail_lines"
-    for line in tail_lines: print line
+    g.pr("\nhead_lines")
+    for line in head_lines:
+        g.pr(line)
+    g.pr("\nins", ins)
+    g.pr("\ntail_lines")
+    for line in tail_lines:
+        g.pr(line)
 else:
     g.es_print("head_lines: ",head_lines)
     g.es_print("ins: ",ins)
@@ -7159,52 +7161,6 @@ def masterFocusHandler (self):
 
     pass # No longer used.
 
-    # c = self
-    # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-    # # Give priority to later requests, but default to previously set widget.
-    # w = c.requestedFocusWidget or c.hasFocusWidget
-
-    # if trace: print \
-        # 'requested',c.widget_name(c.requestedFocusWidget),\
-        # 'present',c.widget_name(c.hasFocusWidget)
-
-    # if c.hasFocusWidget and (
-        # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-        # if trace: print 'no change.',c.widget_name(w)
-        # c.requestedFocusWidget = None
-    # elif w:
-        # # Ignore whatever g.app.gui.get_focus might say.
-        # ok = g.app.gui.set_focus(c,w)
-        # if ok: c.hasFocusWidget = w
-        # c.requestedFocusWidget = None    # c = self
-    # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-    # # Give priority to later requests, but default to previously set widget.
-    # w = c.requestedFocusWidget or c.hasFocusWidget
-
-    # if trace: print \
-        # 'requested',c.widget_name(c.requestedFocusWidget),\
-        # 'present',c.widget_name(c.hasFocusWidget)
-
-    # if c.hasFocusWidget and (
-        # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-        # if trace: print 'no change.',c.widget_name(w)
-        # c.requestedFocusWidget = None
-    # elif w:
-        # # Ignore whatever g.app.gui.get_focus might say.
-        # ok = g.app.gui.set_focus(c,w)
-        # if ok: c.hasFocusWidget = w
-        # c.requestedFocusWidget = None
-    # else:
-        # # This is not an error: it can arise because of a call to k.invalidateFocus.
-        # if trace: print '*'*20,'oops: moving to body pane.'
-        # c.bodyWantsFocusNow()
-    # else:
-        # # This is not an error: it can arise because of a call to k.invalidateFocus.
-        # if trace: print '*'*20,'oops: moving to body pane.'
-        # c.bodyWantsFocusNow()
-
 restoreRequestedFocus = masterFocusHandler
 #@-node:ekr.20080514131122.11:c.masterFocusHandler
 #@+node:ekr.20080514131122.20:c.outerUpdate
@@ -7331,7 +7287,7 @@ def traceFocus (self,w):
 
     if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
         c.trace_focus_count += 1
-        print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+        g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
 #@-node:ekr.20080514131122.16:c.traceFocus
 #@+node:ekr.20080514131122.17:c.widget_name
 def widget_name (self,widget):
@@ -8176,14 +8132,13 @@ def doCommand (self,command,label,event=None):
             if c and c.exists: # Be careful: the command could destroy c.
                 c.inCommand = False
                 c.k.funcReturn = val
-            # else: print 'c no longer exists',c
+            # else: g.pr('c no longer exists',c)
         except:
             c.inCommand = False
             if g.app.unitTesting:
                 raise
             else:
-                g.es("exception executing command")
-                print "exception executing command"
+                g.es_print("exception executing command")
                 g.es_exception(c=c)
                 if c and c.exists and hasattr(c,'frame'):
                     c.redraw_now()
@@ -9234,8 +9189,8 @@ if oldNewlines > 0:
 result = s
 
 if u.debug_print:
-    print "body:  ",body
-    print "result:",result
+    g.pr("body:  ",body)
+    g.pr("result:",result)
 #@-node:ekr.20061106105812.1:<< Compute the result using p's body text >>
 #@-node:ekr.20031218072017.1493:undoRedoText
 #@+node:ekr.20050408100042:undoRedoTree
@@ -9699,7 +9654,7 @@ def add(self,*args,**keys):
             return val
     else:
         def commandCallback():
-            print "command for widget %s" % (n)
+            g.pr("command for widget %s" % (n))
         command = commandCallback
 
     if imagefile or image:
@@ -9953,7 +9908,7 @@ For the same reason we can't rely on any TK canvas methods here.
 @c
 
 def yoffset(self,p1):
-    # if not p1.isVisible(): print "yoffset not visible:",p1
+    # if not p1.isVisible(): g.pr("yoffset not visible:",p1)
     if not p1: return 0
     c = self.c
     if c.hoistStack:
@@ -9964,7 +9919,7 @@ def yoffset(self,p1):
     if root:
         h,flag = self.yoffsetTree(root,p1,isTop=True)
         # flag can be False during initialization.
-        # if not flag: print "*** yoffset fails:",'root',root,'p1',p1,'returns',h
+        # if not flag: g.pr("*** yoffset fails:",'root',root,'p1',p1,'returns',h)
         return h
     else:
         return 0
@@ -10517,7 +10472,7 @@ def readRecentFilesFile (self,path):
     ok = g.os_path_exists(fileName)
     if ok:
         if not g.unitTesting and not self.silent:
-            print ('reading %s' % fileName)
+            g.pr(('reading %s' % fileName))
         lines = file(fileName).readlines()
         if lines and self.munge(lines[0])=='readonly':
             lines = lines[1:]
@@ -10573,7 +10528,7 @@ def writeRecentFilesFile (self,c):
             fileName = g.os_path_join(path,tag)
             if g.os_path_exists(fileName):
                 if not self.recentFileMessageWritten:
-                    print ('wrote recent file: %s' % fileName)
+                    g.pr(('wrote recent file: %s' % fileName))
                     written = True
                 self.writeRecentFilesFileHelper(fileName)
                 # Bug fix: Leo 4.4.6: write *all* recent files.
@@ -12527,10 +12482,7 @@ def attrsToList (self,attrs):
 #@+node:ekr.20060919110638.26:error
 def error (self, message):
 
-    print
-    print
-    print 'XML error: %s' % (message)
-    print
+    g.pr('\n\nXML error: %s\n' % (message))
 
     self.errors += 1
 #@nonl
@@ -12547,17 +12499,19 @@ def printStartElement(self,name,attrs):
     indent = '\t' * self.level or ''
 
     if attrs.getLength() > 0:
-        print '%s<%s %s>' % (
+        g.pr('%s<%s %s>' % (
             indent,
             self.clean(name).strip(),
             self.attrsToString(attrs,sep=' ')),
+            newline=False)
     else:
-        print '%s<%s>' % (
+        g.pr('%s<%s>' % (
             indent,
             self.clean(name).strip()),
+            newline=False)
 
     if name.lower() in ['v','t','vnodes','tnodes',]:
-        print
+        g.pr('')
 #@nonl
 #@+node:ekr.20060919110638.24:attrsToString
 def attrsToString (self,attrs,sep='\n'):
@@ -12600,7 +12554,7 @@ def characters(self,content):
         self.content.append(content)
 
     elif content.strip():
-        print 'unexpected content:',elementName,repr(content)
+        g.pr('unexpected content:',elementName,repr(content))
 #@nonl
 #@-node:ekr.20060919110638.30:characters
 #@+node:ekr.20060919110638.31:endElement & helpers
@@ -12610,7 +12564,7 @@ def endElement(self,name):
 
     if name in self.printElements or 'all' in self.printElements:
         indent = '\t' * (self.level-1) or ''
-        print '%s</%s>' % (indent,self.clean(name).strip())
+        g.pr('%s</%s>' % (indent,self.clean(name).strip()))
 
     data = self.dispatchDict.get(name)
 
@@ -12872,11 +12826,10 @@ __repr__ = __str__
 #@+node:ekr.20060919110638.18:node.dump
 def dump (self):
 
-    print
-    print 'node: tnx: %s len(body): %d %s' % (
-        self.tnx,len(self.bodyString),self.headString)
-    print 'children:',g.listToString(self.children)
-    print 'attrs:',self.attributes.values()
+    g.pr('\nnode: tnx: %s len(body): %d %s' % (
+        self.tnx,len(self.bodyString),self.headString))
+    g.pr('children:',g.listToString(self.children))
+    g.pr('attrs:',self.attributes.values())
 #@nonl
 #@-node:ekr.20060919110638.18:node.dump
 #@-node:ekr.20060919110638.15:class saxNodeClass
@@ -12888,8 +12841,8 @@ def es(s,*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    # print 'es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s)
-    # print 'es',repr(s)
+    # g.pr('es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s))
+    # g.pr('es',repr(s))
     log = app.log
     if app.killed:
         return
@@ -12921,8 +12874,7 @@ def es(s,*args,**keys):
     elif g.unitTesting:
         if log and not log.isNull:
             s = g.toEncodedString(s,'ascii')
-            if newline: print s
-            else: print s,
+            g.pr(s,newline=newline)
     else:
         if log and log.isNull:
             pass
@@ -13044,7 +12996,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
     leoEditCommands.createEditCommanders(c)
 
     if 0:
-        print ; print "*** using Null undoer ***" ; print
+        g.pr("\n*** using Null undoer ***\n")
         self.undoer = leoUndo.nullUndoer(self)
     else:
         self.undoer = leoUndo.undoer(self)
@@ -13927,7 +13879,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
                 s = g.toEncodedString(s,'ascii')
-                print s
+                g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
@@ -14182,24 +14134,24 @@ def computeName (self,frame):
 def report (self):
 
     if 0:
-        print ; print 'stack'
+        g.pr('\nstack')
         for z in self.stack:
-            print z
+            g.pr(z)
 
-    print ; print 'callDict...'
+    g.pr('\ncallDict...')
 
-    # print g.dictToString(self.callDict)
+    # g.pr(g.dictToString(self.callDict))
     keys = self.callDict.keys()
     keys.sort()
     for key in keys:
         # Print the calling function.
-        print '%d' % (self.calledDict.get(key,0)),key
+        g.pr('%d' % (self.calledDict.get(key,0)),key)
         # Print the called functions.
         d = self.callDict.get(key)
         keys2 = d.keys()
         keys2.sort()
         for key2 in keys2:
-            print '%8d' % (d.get(key2)),key2
+            g.pr('%8d' % (d.get(key2)),key2)
 #@-node:ekr.20080531075119.4:report
 #@+node:ekr.20080531075119.5:stop
 def stop (self):
@@ -14471,14 +14423,14 @@ if not ext:
     theDict = g.scanDirectives(c)
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
-    # print language,ext
+    # g.pr(language,ext)
     if ext == None:
         ext = "txt"
 
 if ext[0] != ".":
     ext = "."+ext
 
-# print "ext",ext
+# g.pr("ext",ext)
 #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
 #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
 theDict = None ; path = None
@@ -14640,7 +14592,7 @@ def createOpenWithTempFile (self,p,ext):
 for d in g.app.openWithFiles[:]:
     p2 = d.get("p")
     if p.v.t == p2.v.t:
-        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
         g.app.openWithFiles.remove(d)
 #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
 #@-node:ekr.20031218072017.2830:createOpenWithTempFile
@@ -16130,7 +16082,7 @@ def readSettingsFiles (self,fileName,verbose=True):
                 s = 'reading settings in %s' % path
                 # This occurs early in startup, so use the following instead of g.es_print.
                 s = g.toEncodedString(s,'ascii')
-                print s
+                g.pr(s)
                 g.app.logWaiting.append((s+'\n','blue'),)
 
             c = self.openSettingsFile(path)
@@ -16967,14 +16919,14 @@ def makeTestSuite (c,p):
     h = p.headString()
     script = g.getScript(c,p).strip()
     if not script:
-        print "no script in %s" % h
+        g.pr("no script in %s" % h)
         return None
 
     try:
         exec script + '\n' in {'c':c,'g':g,'p':p}
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            print "%s script did not set g.app.scriptDict" % h
+            g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
     except:
         g.trace('Exception creating test cases for %s' % p.headString())
@@ -18695,12 +18647,12 @@ def runTest (self,define_g = True):
 
     if not self.lax and results != self.expected_private_lines:
 
-        print '%s atShadowTestCase.runTest:failure' % ('*' * 40)
+        g.pr('%s atShadowTestCase.runTest:failure' % ('*' * 40))
         for aList,tag in ((results,'results'),(self.expected_private_lines,'expected_private_lines')):
-            print '%s...' % tag
+            g.pr('%s...' % tag)
             for i, line in enumerate(aList):
-                print '%3s %s' % (i,repr(line))
-            print '-' * 40
+                g.pr('%3s %s' % (i,repr(line)))
+            g.pr('-' * 40)
 
         assert results == self.expected_private_lines
 
@@ -18782,11 +18734,11 @@ def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
     sep1 = '=' * 10 ; sep2 = '-' * 20
 
-    print ; print sep1,message,sep1,p and p.headString()
+    g.pr('\n',sep1,message,sep1,p and p.headString())
 
-    print ; print '%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j)
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
 
-    print ; print sep2
+    g.pr('\n',sep2)
 
     table = (
         (old_private_lines_rdr,'old private lines'),
@@ -18797,7 +18749,7 @@ def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
     for f,tag in table:
         f.dump(tag)
-        print sep2
+        g.pr(sep2)
 
 
 #@-node:ekr.20080708094444.39:<< define print_tags >>
@@ -18987,7 +18939,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
     leoEditCommands.createEditCommanders(c)
 
     if 0:
-        print ; print "*** using Null undoer ***" ; print
+        g.pr("\n*** using Null undoer ***\n")
         self.undoer = leoUndo.nullUndoer(self)
     else:
         self.undoer = leoUndo.undoer(self)
@@ -19114,13 +19066,13 @@ def printCommandsDict (self):
 
     c = self
 
-    print 'Commands...'
+    g.pr('Commands...')
     keys = c.commandsDict.keys()
     keys.sort()
     for key in keys:
         command = c.commandsDict.get(key)
-        print '%30s = %s' % (key,g.choose(command,command.__name__,'<None>'))
-    print
+        g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
+    g.pr('')
 #@-node:ekr.20051007143620:printCommandsDict
 #@-node:ekr.20050920093543:c.finishCreate & helper
 #@-node:ekr.20031218072017.2811: c.Birth & death
@@ -19467,7 +19419,7 @@ else:
     lines = g.splitLines(lines)
     if 0:
         for line in lines:
-            print line,
+            g.pr(line,newline=False)
 #@-node:ekr.20031218072017.2865:<< set root >>
 #@+node:ekr.20031218072017.2866:<< read the file into lines >>
 # 1/26/03: calculate the full path.
@@ -19497,7 +19449,7 @@ for p in p.self_and_subtree_iter():
     lines = s.count('\n')
     if len(s) > 0 and s[-1] != '\n':
         lines += 1
-    # print lines,prev,p
+    # g.pr(lines,prev,p)
     if prev + lines >= n:
         found = True ; break
     prev += lines

@@ -392,7 +392,7 @@ class leoGtkTree (leoFrame.leoTree):
             method = self.gtkMouseActionTable[target][eventType]
         except KeyError:
             method = None
-            print 'no binding', target, eventType
+            g.pr('no binding', target, eventType)
 
         result = False
         if method:
@@ -714,7 +714,7 @@ class leoGtkTree (leoFrame.leoTree):
             # metrics = font.metrics()
             # linespace = metrics ["linespace"]
             # self.line_height = linespace + 5 # Same as before for the default font on Windows.
-            # # print metrics
+            # # g.pr(metrics)
         # except:
             # self.line_height = self.default_line_height
             # g.es("exception setting outline line height")
@@ -739,18 +739,18 @@ class leoGtkTree (leoFrame.leoTree):
             tree = self
 
             for theDict,tag,flag in ((tree.ids,"ids",True),(tree.iconIds,"icon ids",False)):
-                print '=' * 60
-                print ; print "%s..." % tag
+                g.pr('=' * 60)
+                g.pr("\n%s..." % tag)
                 keys = theDict.keys()
                 keys.sort()
                 for key in keys:
                     p = tree.ids.get(key)
                     if p is None: # For lines.
-                        print "%3d None" % key
+                        g.pr("%3d None" % key)
                     else:
-                        print "%3d" % key,p.headString()
+                        g.pr("%3d" % key,p.headString())
                 if flag and full:
-                    print '-' * 40
+                    g.pr('-' * 40)
                     values = theDict.values()
                     values.sort()
                     seenValues = []
@@ -760,7 +760,7 @@ class leoGtkTree (leoFrame.leoTree):
                             for item in theDict.items():
                                 key,val = item
                                 if val and val == value:
-                                    print "%3d" % key,val.headString()
+                                    g.pr("%3d" % key,val.headString())
         #@-node:ekr.20080112145409.346:traceIds (Not used)
         #@-others
         #TOEKR delete these?
@@ -1408,7 +1408,7 @@ class leoGtkTree (leoFrame.leoTree):
     #@@c
 
     def yoffset(self,p1):
-        # if not p1.isVisible(): print "yoffset not visible:",p1
+        # if not p1.isVisible(): g.pr("yoffset not visible:",p1)
         if not p1: return 0
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -1418,7 +1418,7 @@ class leoGtkTree (leoFrame.leoTree):
         if root:
             h,flag = self.yoffsetTree(root,p1)
             # flag can be False during initialization.
-            # if not flag: print "yoffset fails:",h,v1
+            # if not flag: g.pr("yoffset fails:",h,v1)
             return h
         else:
             return 0
@@ -1430,7 +1430,7 @@ class leoGtkTree (leoFrame.leoTree):
             return h,False # An extra precaution.
         p = p.copy()
         for p2 in p.self_and_siblings_iter():  # was p.siblings_iter
-            print "yoffsetTree:", p2
+            g.pr("yoffsetTree:", p2)
             if p2 == p1:
                 if trace: g.trace(p.headString(),p1.headString(),h)
                 return h, True
@@ -1474,8 +1474,7 @@ class leoGtkTree (leoFrame.leoTree):
     #@+node:ekr.20080112145409.381:dumpWidgetList
     def dumpWidgetList (self,tag):
 
-        print
-        print "checkWidgetList: %s" % tag
+        g.pr("\ncheckWidgetList: %s" % tag)
 
         for w in self.visibleText:
 
@@ -1485,11 +1484,11 @@ class leoGtkTree (leoFrame.leoTree):
                 h = p.headString().strip()
 
                 addr = self.textAddr(w)
-                print "p:",addr,h
+                g.pr("p:",addr,h)
                 if h != s:
-                    print "w:",'*' * len(addr),s
+                    g.pr("w:",'*' * len(addr),s)
             else:
-                print "w.leo_position == None",w
+                g.pr("w.leo_position == None",w)
     #@-node:ekr.20080112145409.381:dumpWidgetList
     #@+node:ekr.20080112145409.382:tree.edit_widget
     def edit_widget (self,p):
@@ -2215,7 +2214,7 @@ class leoGtkTree (leoFrame.leoTree):
 
             assert(where in ("above","below"))
 
-            # print "allocateNodes: %d lines %s visible area" % (lines,where)
+            # g.pr("allocateNodes: %d lines %s visible area" % (lines,where))
 
             # Expand the visible area: a little extra delta is safer.
             delta = lines * (self.line_height + 4)
@@ -2227,12 +2226,12 @@ class leoGtkTree (leoFrame.leoTree):
                 y1 = max(0.0,y1-delta)
 
             self.expandedVisibleArea=y1,y2
-            # print "expandedArea:   %5.1f %5.1f" % (y1,y2)
+            # g.pr("expandedArea:   %5.1f %5.1f" % (y1,y2))
 
             # Allocate all nodes in expanded visible area.
             self.updatedNodeCount = 0
             self.updateTree(self.c.rootPosition(),self.root_left,self.root_top,0,0)
-            # if self.updatedNodeCount: print "updatedNodeCount:", self.updatedNodeCount
+            # if self.updatedNodeCount: g.pr("updatedNodeCount:", self.updatedNodeCount)
         #@-node:ekr.20080112145409.418:allocateNodes
         #@+node:ekr.20080112145409.419:allocateNodesBeforeScrolling
         def allocateNodesBeforeScrolling (self, args):
@@ -2243,7 +2242,7 @@ class leoGtkTree (leoFrame.leoTree):
 
             if not self.allocateOnlyVisibleNodes: return
 
-            # print "allocateNodesBeforeScrolling:",self.redrawCount,args
+            # g.pr("allocateNodesBeforeScrolling:",self.redrawCount,args)
 
             assert(self.visibleArea)
             assert(len(args)==2 or len(args)==3)
@@ -2292,7 +2291,7 @@ class leoGtkTree (leoFrame.leoTree):
 
             r1,r2 = args
             r1,r2 = float(r1),float(r2)
-            # print "scroll ratios:",r1,r2
+            # g.pr("scroll ratios:",r1,r2)
 
             try:
                 s = self.canvas.cget("scrollregion")
@@ -2303,12 +2302,12 @@ class leoGtkTree (leoFrame.leoTree):
                 return
 
             scroll_h = y2-y1
-            # print "height of scrollregion:", scroll_h
+            # g.pr("height of scrollregion:", scroll_h)
 
             vy1 = y1 + (scroll_h*r1)
             vy2 = y1 + (scroll_h*r2)
             self.visibleArea = vy1,vy2
-            # print "setVisibleArea: %5.1f %5.1f" % (vy1,vy2)
+            # g.pr("setVisibleArea: %5.1f %5.1f" % (vy1,vy2))
         #@-node:ekr.20080112145409.422:setVisibleArea
         #@+node:ekr.20080112145409.423:tree.updateTree
         def updateTree (self,v,x,y,h,level):
@@ -2435,7 +2434,7 @@ class leoGtkTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                print "%10s %d %s" % ("edit",id(2),p.headString())
+                g.pr("%10s %d %s" % ("edit",id(2),p.headString()))
 
         fg    = self.headline_text_editing_foreground_color or 'black'
         bg    = self.headline_text_editing_background_color or 'white'
@@ -2455,7 +2454,7 @@ class leoGtkTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                print "%10s %d %s" % ("unselect",id(w),p.headString())
+                g.pr("%10s %d %s" % ("unselect",id(w),p.headString()))
                 # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_unselected_foreground_color or 'black'
@@ -2672,9 +2671,7 @@ class OutlineCanvasPanel(gobject.GObject):
 
         # self.showcount +=1
 
-        # print
         # g.trace(self.showcount, g.callers(20))
-        # print
 
         entry = self._entry
         canvas = self._canvas
@@ -2692,7 +2689,7 @@ class OutlineCanvasPanel(gobject.GObject):
             return self.hideEntry()
 
         x, y, width, height = sp._textBoxRect
-        #print '\t', x, y, width , height
+        #g.pr('	', x, y, width , height)
 
         entry._virtualTop = canvas._virtualTop + y -2
 
@@ -3273,7 +3270,7 @@ class OutlineCanvas(gtk.DrawingArea):
         # """Renders the offscreen buffer to the outline canvas."""
         # return
 
-        # #print 'refresh'
+        # #g.pr('refresh')
         # wx.ClientDC(self).BlitPointSize((0,0), self._size, self._buffer, (0, 0))
 
     refresh = onPaint
@@ -3572,10 +3569,10 @@ class OutlineCanvas(gtk.DrawingArea):
 
         # try:
             # result = self._leoTree.drawTreeHook(self)
-            # print 'result =', result
+            # g.pr('result =', result)
         # except:
             # result = False
-            # print 'result is False'
+            # g.pr('result is False')
 
         # if hasattr(self._leoTree, 'drawTreeHook'):
             # try:
@@ -3583,7 +3580,7 @@ class OutlineCanvas(gtk.DrawingArea):
             # except:
                 # result = False
         # else:
-            # #print 'drawTreeHook not known'
+            # #g.pr('drawTreeHook not known')
             # result = None
 
         # if not result:

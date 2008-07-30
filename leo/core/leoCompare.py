@@ -484,14 +484,14 @@ class baseLeoCompare:
     #@+node:ekr.20031218072017.3650:show
     def show (self,s):
 
-        # print s
+        # g.pr(s)
         if self.outputFile:
             self.outputFile.write(s + '\n')
         elif self.c:
             g.es(s)
         else:
-            print s
-            print
+            g.pr(s)
+            g.pr('')
     #@-node:ekr.20031218072017.3650:show
     #@+node:ekr.20031218072017.3651:showIvars
     def showIvars (self):

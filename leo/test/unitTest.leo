@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2350,7 +2350,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080710120401.1"><vh>print to g.pr regex</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -20650,16 +20649,6 @@ asm[ abc ]asm
    [ a b c
    x y z]
 ;</t>
-<t tx="ekr.20080710120401.1">print[ ]+(.*)$
-g.pr(\1)
-
-print[ ]+;[ ]+print[]+\'(.*)$
-# '
-g.pr('\\n\1)
-
-# Double escapes in print statements.
-print(.*)\\n(.*)$
-print\1\\\\n\2</t>
 <t tx="ekr.20080729200342.1"></t>
 <t tx="ekr.20080729200342.2">import unittest
 

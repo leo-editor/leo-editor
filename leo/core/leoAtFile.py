@@ -19,7 +19,7 @@
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
+    # g.pr("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -1179,17 +1179,17 @@ class atFile:
 
                     if found:
                         if 0: # For debugging.
-                            print ; print '-' * 40
-                            print "old",len(old)
+                            g.pr('\n','-' * 40)
+                            g.pr("old",len(old))
                             for line in g.splitLines(old):
                                 #line = line.replace(' ','< >').replace('\t','<TAB>')
-                                print repr(str(line))
-                            print ; print '-' * 40
-                            print "new",len(s)
+                                g.pr(repr(str(line)))
+                            g.pr('\n','-' * 40)
+                            g.pr("new",len(s))
                             for line in g.splitLines(s):
                                 #line = line.replace(' ','< >').replace('\t','<TAB>')
-                                print repr(str(line))
-                            print ; print '-' * 40
+                                g.pr(repr(str(line)))
+                            g.pr('\n','-' * 40)
                     else:
                         # This should never happen.
                         g.es("correcting hidden node: t=",repr(at.t),color="red")
@@ -1203,7 +1203,7 @@ class atFile:
                     if 0: # New in 4.4.1 final.  This warning can be very confusing.
                         if not at.updateWarningGiven:
                             at.updateWarningGiven = True
-                            # print "***",at.t,at.root.t
+                            # g.pr("***",at.t,at.root.t)
                             g.es("warning: updating changed text in",at.root.headString(),color="blue")
                     # Just set the dirty bit. Ancestors will be marked dirty later.
                     at.t.setDirty()
@@ -1354,7 +1354,7 @@ class atFile:
 
         if j < i:
             at.startSentinelComment = s[j:i]
-            # print "delim1:", at.startSentinelComment
+            # g.pr("delim1:", at.startSentinelComment)
 
             # Get the optional second delim.
             j = i = g.skip_ws(s,i)
@@ -1369,7 +1369,7 @@ class atFile:
                 at.out.append(line+'\n')
             else:
                 at.endSentinelComment = end
-                # print "delim2:",end
+                # g.pr("delim2:",end)
                 line = s[i0:i]
                 line = line.rstrip()
                 at.out.append(line+'\n')
@@ -1698,9 +1698,9 @@ class atFile:
             old_body = p.bodyString()
             if s != old_body:
                 if 0: # For debugging.
-                    print ; print "changed: " + p.headString()
-                    print ; print "new:",s
-                    print ; print "old:",p.bodyString()
+                    g.pr("\nchanged: " + p.headString())
+                    g.pr("\nnew:",s)
+                    g.pr("\nold:",p.bodyString())
                 if thinFile:
                     p.v.setBodyString(s)
                     if p.v.isDirty():
@@ -4210,9 +4210,9 @@ class atFile:
             g.es_error(message)
         else:
             try:
-                print message
+                g.pr(message)
             except UnicodeError:
-                print g.toEncodedString(message,'ascii')
+                g.pr(g.toEncodedString(message,'ascii'))
     #@+node:ekr.20070621091727:@@test printError
     # We typically don't enable this test.
 

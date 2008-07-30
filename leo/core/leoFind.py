@@ -1142,8 +1142,8 @@ class leoFind:
     #@-node:ekr.20051020120306.26:bringToFront (leoFind)
     #@+node:ekr.20061111084423.1:oops (leoFind)
     def oops(self):
-        print ("leoFind oops:",
-            g.callers(10),"should be overridden in subclass")
+        g.pr(("leoFind oops:",
+            g.callers(10),"should be overridden in subclass"))
     #@-node:ekr.20061111084423.1:oops (leoFind)
     #@+node:ekr.20051020120306.27:selectAllFindText (leoFind)
     def selectAllFindText (self,event=None):
@@ -1216,7 +1216,7 @@ class leoFind:
         w.setAllText(s)
         if ins is None:
             ins = g.choose(self.reverse,len(s),0)
-            # print g.choose(self.reverse,'.','*'),
+            # g.pr(g.choose(self.reverse,'.','*'),)
         else:
             pass # g.trace('ins',ins)
         w.setInsertPoint(ins)

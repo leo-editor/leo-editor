@@ -667,9 +667,9 @@ class chapterController:
         full = True
 
         if root and full:
-            print '@chapters tree...','(in main tree: %s)' % inTree
+            g.pr('@chapters tree...','(in main tree: %s)' % inTree)
             for p in root.self_and_subtree_iter():
-                print '.'*p.level(),p.v
+                g.pr('.'*p.level(),p.v)
     #@nonl
     #@-node:ekr.20070510064813:cc.printChaptersTree
     #@+node:ekr.20070615075643:cc.selectChapterForPosition

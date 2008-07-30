@@ -110,6 +110,7 @@ class bridgeController:
         try:
             import leo.core.leoGlobals as leoGlobals
         except ImportError:
+            # Not so easy to remove this.
             print "Error importing leoGlobals.py"
 
         # Create the application object.
@@ -117,6 +118,7 @@ class bridgeController:
             import leo.core.leoApp as leoApp
             leoGlobals.app = leoApp.LeoApp()
         except ImportError:
+            # Not so easy to remove this.
             print "Error importing leoApp.py"
 
         # NOW we can set g.
@@ -183,8 +185,8 @@ class bridgeController:
             import leo.core.leoGui as leoGui
             import leo.core.leoFrame as leoFrame
             g.app.gui = leoGui.nullGui("nullGui")
-            # print 'createGui:','g.app:',id(g.app),g.app
-            # print 'createGui:','g.app.gui',g.app.gui
+            # g.pr('createGui:','g.app:',id(g.app),g.app)
+            # g.pr('createGui:','g.app.gui',g.app.gui)
             g.app.log = g.app.gui.log = log = leoFrame.nullLog()
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
@@ -334,8 +336,8 @@ class bridgeController:
                 log.isNull = False
                 log.enabled = True
 
-            # print 'createGui:','g.app:',id(g.app),g.app
-            # print 'createGui:','g.app.gui',g.app.gui
+            # g.pr('createGui:','g.app:',id(g.app),g.app)
+            # g.pr('createGui:','g.app.gui',g.app.gui)
             return c
         else:
             return None

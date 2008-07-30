@@ -9,7 +9,7 @@
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
+    # g.pr("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -161,10 +161,7 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.26:error
         def error (self, message):
 
-            print
-            print
-            print 'XML error: %s' % (message)
-            print
+            g.pr('\n\nXML error: %s\n' % (message))
 
             self.errors += 1
         #@nonl
@@ -181,17 +178,19 @@ if sys.platform != 'cli':
             indent = '\t' * self.level or ''
 
             if attrs.getLength() > 0:
-                print '%s<%s %s>' % (
+                g.pr('%s<%s %s>' % (
                     indent,
                     self.clean(name).strip(),
                     self.attrsToString(attrs,sep=' ')),
+                    newline=False)
             else:
-                print '%s<%s>' % (
+                g.pr('%s<%s>' % (
                     indent,
                     self.clean(name).strip()),
+                    newline=False)
 
             if name.lower() in ['v','t','vnodes','tnodes',]:
-                print
+                g.pr('')
         #@nonl
         #@+node:ekr.20060919110638.24:attrsToString
         def attrsToString (self,attrs,sep='\n'):
@@ -234,7 +233,7 @@ if sys.platform != 'cli':
                 self.content.append(content)
 
             elif content.strip():
-                print 'unexpected content:',elementName,repr(content)
+                g.pr('unexpected content:',elementName,repr(content))
         #@nonl
         #@-node:ekr.20060919110638.30:characters
         #@+node:ekr.20060919110638.31:endElement & helpers
@@ -244,7 +243,7 @@ if sys.platform != 'cli':
 
             if name in self.printElements or 'all' in self.printElements:
                 indent = '\t' * (self.level-1) or ''
-                print '%s</%s>' % (indent,self.clean(name).strip())
+                g.pr('%s</%s>' % (indent,self.clean(name).strip()))
 
             data = self.dispatchDict.get(name)
 
@@ -507,11 +506,10 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.18:node.dump
         def dump (self):
 
-            print
-            print 'node: tnx: %s len(body): %d %s' % (
-                self.tnx,len(self.bodyString),self.headString)
-            print 'children:',g.listToString(self.children)
-            print 'attrs:',self.attributes.values()
+            g.pr('\nnode: tnx: %s len(body): %d %s' % (
+                self.tnx,len(self.bodyString),self.headString))
+            g.pr('children:',g.listToString(self.children))
+            g.pr('attrs:',self.attributes.values())
         #@nonl
         #@-node:ekr.20060919110638.18:node.dump
         #@-others
@@ -1167,7 +1165,7 @@ class baseFileCommands:
     def dumpSaxTree (self,root,dummy):
 
         if not root:
-            print 'dumpSaxTree: empty tree'
+            g.pr('dumpSaxTree: empty tree')
             return
         if not dummy:
             root.dump()
@@ -1976,9 +1974,9 @@ class baseFileCommands:
             resultDict[gnx]=d
 
         if 0:
-            print "resultDict..."
+            g.pr("resultDict...")
             for key in resultDict:
-                print repr(key),repr(resultDict.get(key))
+                g.pr(repr(key),repr(resultDict.get(key)))
 
         # Pickle and hexlify resultDict.
         if resultDict:

@@ -55,8 +55,8 @@ import tempfile
 import traceback
 import types
 
-# print '(types.FrameType)',repr(types.FrameType)
-# print '(types.StringTypes)',repr(types.StringTypes)
+# g.pr('(types.FrameType)',repr(types.FrameType))
+# g.pr('(types.StringTypes)',repr(types.StringTypes))
 #@-node:ekr.20050208101229:<< imports >>
 #@nl
 #@<< define general constants >>
@@ -233,12 +233,12 @@ def computeLoadDir():
             not g.os_path_isdir(loadDir,encoding)
         ):
             loadDir = os.getcwd()
-            print "Using emergency loadDir:",repr(loadDir)
+            g.pr("Exception getting load directory")
         loadDir = g.os_path_abspath(loadDir,encoding)
         # g.es("load dir:",loadDir,color="blue")
         return loadDir
     except:
-        print "Exception getting load directory"
+        g.pr("Exception getting load directory")
         raise
         #import traceback ; traceback.print_exc()
         #return None
@@ -1079,9 +1079,9 @@ def es_exception (full=True,c=None,color="red"):
         g.es_error(line,color=color)
         if not g.stdErrIsRedirected():
             try:
-                print line
+                g.pr(line)
             except Exception:
-                print g.toEncodedString(line,'ascii')
+                g.pr(g.toEncodedString(line,'ascii'))
 
     if g.app.debugSwitch > 1:
         import pdb # Be careful: g.pdb may or may not have been defined.
@@ -1130,10 +1130,10 @@ def getLastTracebackFileAndLineNumber():
 def print_bindings (name,window):
 
     bindings = window.bind()
-    print
-    print "Bindings for", name
+
+    g.pr("\nBindings for", name)
     for b in bindings:
-        print b
+        g.pr(b)
 #@-node:ekr.20031218072017.3113:printBindings
 #@+node:ekr.20031218072017.3114:printGlobals
 def printGlobals(message=None):
@@ -1145,17 +1145,17 @@ def printGlobals(message=None):
     # Print the list.
     if message:
         leader = "-" * 10
-        print leader, ' ', message, ' ', leader
+        g.pr(leader, ' ', message, ' ', leader)
     for glob in globs:
-        print glob
+        g.pr(glob)
 #@-node:ekr.20031218072017.3114:printGlobals
 #@+node:ekr.20070510074941:g.printEntireTree
 def printEntireTree(c,tag=''):
 
-    print 'printEntireTree','=' * 50
-    print 'printEntireTree',tag,'root',c.rootPosition()
+    g.pr('printEntireTree','=' * 50)
+    g.pr('printEntireTree',tag,'root',c.rootPosition())
     for p in c.allNodes_iter():
-        print '..'*p.level(),p.v
+        g.pr('..'*p.level(),p.v)
 #@nonl
 #@-node:ekr.20070510074941:g.printEntireTree
 #@+node:ekr.20031218072017.3115:printLeoModules
@@ -1170,11 +1170,11 @@ def printLeoModules(message=None):
     # Print the list.
     if message:
         leader = "-" * 10
-        print leader, ' ', message, ' ', leader
+        g.pr(leader, ' ', message, ' ', leader)
     mods.sort()
     for m in mods:
-        print m,
-    print
+        g.pr(m,newline=False)
+    g.pr('')
 #@-node:ekr.20031218072017.3115:printLeoModules
 #@-node:ekr.20031218072017.3108:Dumps
 #@+node:ekr.20031218072017.1317:file/module/plugin_date
@@ -1229,7 +1229,7 @@ class redirectClass:
         if self.old:
             self.old.write(s+'\n')
         else:
-            print s
+            g.pr(s)
     #@-node:ekr.20041012091252:rawPrint
     #@+node:ekr.20041012082437.3:redirect
     def redirect (self,stdout=1):
@@ -1263,7 +1263,7 @@ class redirectClass:
                 self.old.write(s+'\n')
         else:
             # Can happen when g.batchMode is True.
-            print s
+            g.pr(s)
     #@-node:ekr.20041012082437.5:write
     #@-others
     #@-node:ekr.20031218072017.1656:<< redirectClass methods >>
@@ -1407,7 +1407,7 @@ getLineAfter = get_line_after
 #@+node:ekr.20031218072017.3128:pause
 def pause (s):
 
-    print s
+    g.pr(s)
 
     i = 0
     while i < 1000000L:
@@ -1421,7 +1421,7 @@ def print_obj (obj,tag=None,sort=False,verbose=True,indent=''):
     elif type(obj) == type({}):
         g.print_dict(obj,tag,verbose,indent)
     else:
-        print '%s%s' % (indent,repr(obj).strip())
+        g.pr('%s%s' % (indent,repr(obj).strip()))
 
 def toString (obj,tag=None,sort=False,verbose=True,indent=''):
 
@@ -1439,8 +1439,8 @@ def print_dict(d,tag='',verbose=True,indent=''):
         # verbose unused, but present for compatibility with similar methods.
 
     if not d:
-        if tag: print '%s...{}' % tag
-        else:   print '{}'
+        if tag: g.pr('%s...{}' % tag)
+        else:   g.pr('{}')
         return
 
     keys = d.keys() ; keys.sort()
@@ -1448,11 +1448,11 @@ def print_dict(d,tag='',verbose=True,indent=''):
     for key in keys:
         if type(key) == type(''):
             n = max(n,len(key))
-    if tag: print '%s...{\n' % tag
-    else:   print '{\n'
+    if tag: g.es('%s...{\n' % tag)
+    else:   g.es('{\n')
     for key in keys:
-        print "%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip())
-    print '}'
+        g.pr("%s%*s: %s" % (indent,n,key,repr(d.get(key)).strip()))
+    g.pr('}')
 
 printDict = print_dict
 
@@ -1480,19 +1480,19 @@ def dictToString(d,tag=None,verbose=True,indent=''):
 def print_list(aList,tag=None,sort=False,indent=''):
 
     if not aList:
-        if tag: print '%s...[]' % tag
-        else:   print '[]'
+        if tag: g.pr('%s...[]' % tag)
+        else:   g.pr('[]')
         return
     if sort:
         bList = aList[:] # Sort a copy!
         bList.sort()
     else:
         bList = aList
-    if tag: print '%s...[' % tag
-    else:   print '['
+    if tag: g.pr('%s...[' % tag)
+    else:   g.pr('[')
     for e in bList:
-        print '%s%s' % (indent,repr(e).strip())
-    print ']'
+        g.pr('%s%s' % (indent,repr(e).strip()))
+    g.pr(']')
 
 printList = print_list
 
@@ -1594,7 +1594,7 @@ def get_Sherlock_args (args):
 
     # No args means trace everything.
     if not args or len(args)==0: args = ["+*"] 
-    # print "get_Sherlock_args:", args
+    # g.pr("get_Sherlock_args:", args)
     return args
 #@-node:ekr.20031218072017.3131:get_Sherlock_args
 #@+node:ekr.20031218072017.3132:init_trace
@@ -1608,17 +1608,17 @@ def init_trace(args,echo=1):
         else: prefix = arg[0] ; arg = arg[1:]
 
         if prefix == '?':
-            print "trace list:", t
+            g.pr("trace list:", t)
         elif prefix == '+' and not arg in t:
             t.append(string.lower(arg))
             if echo:
-                print "enabling:", arg
+                g.pr("enabling:", arg)
         elif prefix == '-' and arg in t:
             t.remove(string.lower(arg))
             if echo:
-                print "disabling:", arg
+                g.pr("disabling:", arg)
         else:
-            print "ignoring:", prefix + arg
+            g.pr("ignoring:", prefix + arg)
 #@-node:ekr.20031218072017.3132:init_trace
 #@+node:ekr.20031218072017.2317:trace
 # Convert all args to strings.
@@ -1662,9 +1662,9 @@ def trace (*args,**keys):
     message = g.toEncodedString(message,'ascii') # Bug fix: 10/10/07.
 
     if newline:
-        print name + ": " + message
+        g.pr(name + ": " + message)
     else:
-        print name + ": " + message,
+        g.pr(name + ": " + message,)
 #@-node:ekr.20031218072017.2317:trace
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
@@ -1688,7 +1688,7 @@ def trace_tag (name, *args):
     if minus: name = name[1:]
     if (not minus and '*' in t) or name.lower() in t:
         s = name + ": " + message
-        print s # Traces _always_ get printed.
+        g.es(s) # Traces _always_ get printed.
 #@-node:ekr.20031218072017.2318:trace_tag
 #@-node:ekr.20031218072017.3129:Sherlock... (trace)
 #@+node:ekr.20031218072017.3133:Statistics
@@ -1747,7 +1747,7 @@ def esDiffTime(message, start):
 
 def printDiffTime(message, start):
     delta = time.clock()-start
-    print "%s %6.3f" % (message,delta)
+    g.pr("%s %6.3f" % (message,delta))
     return time.clock()
 #@-node:ekr.20031218072017.3137:Timing
 #@+node:ekr.20080531075119.1:class Tracer & g.startTracer
@@ -1813,24 +1813,24 @@ class Tracer:
     def report (self):
 
         if 0:
-            print ; print 'stack'
+            g.pr('\nstack')
             for z in self.stack:
-                print z
+                g.pr(z)
 
-        print ; print 'callDict...'
+        g.pr('\ncallDict...')
 
-        # print g.dictToString(self.callDict)
+        # g.pr(g.dictToString(self.callDict))
         keys = self.callDict.keys()
         keys.sort()
         for key in keys:
             # Print the calling function.
-            print '%d' % (self.calledDict.get(key,0)),key
+            g.pr('%d' % (self.calledDict.get(key,0)),key)
             # Print the called functions.
             d = self.callDict.get(key)
             keys2 = d.keys()
             keys2.sort()
             for key2 in keys2:
-                print '%8d' % (d.get(key2)),key2
+                g.pr('%8d' % (d.get(key2)),key2)
     #@-node:ekr.20080531075119.4:report
     #@+node:ekr.20080531075119.5:stop
     def stop (self):
@@ -2022,7 +2022,7 @@ def is_sentinel (line,delims):
         j = line.find(delim3)
         return 0 == i < j
     else:
-        print repr(delims)
+        g.pr(repr(delims))
         g.es("can't happen: is_sentinel",color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
@@ -2392,8 +2392,7 @@ def collectGarbage():
             g.enable_gc_debug()
 
         if g.app.trace_gc_verbose or g.app.trace_gc_calls:
-            # print('Collecting garbage',g.callers())
-            print 'collectGarbage:'
+            g.pr('collectGarbage:')
 
         gc.collect()
     except Exception:
@@ -2442,14 +2441,14 @@ def printGc(tag=None):
 def printGcRefs (tag=''):
 
     refs = gc.get_referrers(app.windowList[0])
-    print('-' * 30,tag)
+    g.pr('-' * 30,tag)
 
     if g.app.trace_gc_verbose:
-        print("refs of", app.windowList[0])
+        g.pr("refs of", app.windowList[0])
         for ref in refs:
-            print(type(ref))
+            g.pr(type(ref))
     else:
-        print("%d referers" % len(refs))
+        g.pr("%d referers" % len(refs))
 #@-node:ekr.20031218072017.1593:printGcRefs
 #@-node:ekr.20031218072017.1592:printGc
 #@+node:ekr.20060202161935:printGcAll
@@ -2459,8 +2458,8 @@ def printGcAll (tag=''):
 
     tag = tag or g._callerName(n=2)
     d = {} ; objects = gc.get_objects()
-    print('-' * 30)
-    print('%s: %d objects' % (tag,len(objects)))
+    g.pr('-' * 30)
+    g.pr('%s: %d objects' % (tag,len(objects)))
 
     for obj in objects:
         t = type(obj)
@@ -2468,7 +2467,7 @@ def printGcAll (tag=''):
             try: t = obj.__class__
             except Exception: pass
         # if type(obj) == type(()):
-            # print id(obj),repr(obj)
+            # g.pr(id(obj),repr(obj))
         d[t] = d.get(t,0) + 1
 
     if 1: # Sort by n
@@ -2479,11 +2478,11 @@ def printGcAll (tag=''):
             items.sort(key=lambda x: x[1],reverse=True)
         except Exception: pass
         for z in items:
-            print '%40s %7d' % (z[0],z[1])
+            g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
         keys = d.keys() ; keys.sort()
         for t in keys:
-            print '%40s %7d' % (t,d.get(t))
+            g.pr('%40s %7d' % (t,d.get(t)))
 #@-node:ekr.20060202161935:printGcAll
 #@+node:ekr.20060127164729.1:printGcObjects   (printNewObjects=pno)
 def printGcObjects(tag=''):
@@ -2533,8 +2532,8 @@ def printGcObjects(tag=''):
         if not empty:
             # keys = [repr(key) for key in keys]
             keys.sort()
-            print '-' * 30
-            print "%s: garbage: %d, objects: %d, delta: %d" % (tag,n,n2,delta)
+            g.pr('-' * 30)
+            g.pr("%s: garbage: %d, objects: %d, delta: %d" % (tag,n,n2,delta))
 
             if 0:
                 for key in keys:
@@ -2542,7 +2541,7 @@ def printGcObjects(tag=''):
                     n2 = typesDict.get(key,0)
                     delta2 = n2-n1
                     if delta2 != 0:
-                        print("%+6d =%7d %s" % (delta2,n2,key))
+                        g.pr("%+6d =%7d %s" % (delta2,n2,key))
 
         lastTypesDict = typesDict
         typesDict = {}
@@ -2569,14 +2568,14 @@ def printGcObjects(tag=''):
                     key = repr(obj) # Don't create a pointer to the object!
                     funcDict[key]=None 
                     if n < 50 and not lastFunctionsDict.has_key(key):
-                        print(obj)
+                        g.pr(obj)
                         args, varargs, varkw,defaults  = inspect.getargspec(obj)
-                        print("args", args)
-                        if varargs: print("varargs",varargs)
-                        if varkw: print("varkw",varkw)
+                        g.pr("args", args)
+                        if varargs: g.pr("varargs",varargs)
+                        if varkw: g.pr("varkw",varkw)
                         if defaults:
-                            print("defaults...")
-                            for s in defaults: print(s)
+                            g.pr("defaults...")
+                            for s in defaults: g.pr(s)
 
             lastFunctionsDict = funcDict
             funcDict = {}
@@ -2600,7 +2599,7 @@ def printGcSummary (tag=''):
         n = len(gc.garbage)
         n2 = len(gc.get_objects())
         s = '%s: printGCSummary: garbage: %d, objects: %d' % (tag,n,n2)
-        print s
+        g.pr(s)
     except Exception:
         traceback.print_exc()
 #@-node:ekr.20060205043324.1:printGcSummary
@@ -2626,15 +2625,15 @@ def printGcVerbose(tag=''):
         o = newObjects[i]
         if type(o) == type({}): dicts += 1
         elif type(o) in (type(()),type([])):
-            #print id(o),repr(o)
+            #g.pr(id(o),repr(o))
             seqs += 1
         #else:
-        #    print(o)
+        #    g.pr(o)
         i += 1
-    print('=' * 40)
-    print('dicts: %d, sequences: %d' % (dicts,seqs))
-    print("%s: %d new, %d total objects" % (tag,len(newObjects),len(objects)))
-    print('-' * 40)
+    g.pr('=' * 40)
+    g.pr('dicts: %d, sequences: %d' % (dicts,seqs))
+    g.pr("%s: %d new, %d total objects" % (tag,len(newObjects),len(objects)))
+    g.pr('-' * 40)
 #@-node:ekr.20060127165509:printGcVerbose
 #@-others
 #@-node:ekr.20031218072017.1588:Garbage Collection
@@ -2678,12 +2677,12 @@ def idleTimeHookHandler(*args,**keys):
     if 0: # Do not use g.trace here!
         global trace_count ; trace_count += 1
         if 1:
-            print 'idleTimeHookHandler',trace_count
+            g.pr('idleTimeHookHandler',trace_count)
         else:
             if trace_count % 10 == 0:
                 for z in g.app.windowList:
                     c = z.c
-                    print "idleTimeHookHandler",trace_count,c.shortFileName()
+                    g.pr("idleTimeHookHandler",trace_count,c.shortFileName())
 
     # New for Python 2.3: may be called during shutdown.
     if g.app.killed: return
@@ -2729,7 +2728,7 @@ def doHook(tag,*args,**keywords):
 
     if args:
         # A minor error in Leo's core.
-        print "***ignoring args param.  tag = %s" % tag
+        g.pr("***ignoring args param.  tag = %s" % tag)
 
     if not g.app.config.use_plugins:
         if tag in ('open0','start1'):
@@ -2746,7 +2745,7 @@ def doHook(tag,*args,**keywords):
 
     try:
         # Pass the hook to the hook handler.
-        # print 'doHook',f.__name__,keywords.get('c')
+        # g.pr('doHook',f.__name__,keywords.get('c'))
         return f(tag,keywords)
     except Exception:
         g.es_exception()
@@ -2764,13 +2763,13 @@ def plugin_signon(module_name,verbose=False):
 
     exec("import %s ; m = %s" % (module_name,module_name))
 
-    # print 'plugin_signon',module_name # ,'gui',g.app.gui
+    # g.pr('plugin_signon',module_name # ,'gui',g.app.gui)
 
     if verbose:
         g.es('',"...%s.py v%s: %s" % (
             m.__name__, m.__version__, g.plugin_date(m)))
 
-        print m.__name__, m.__version__
+        g.pr(m.__name__, m.__version__)
 
     app.loadedPlugins.append(module_name)
 #@-node:ekr.20031218072017.1318:g.plugin_signon
@@ -2806,8 +2805,8 @@ def es(s,*args,**keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    # print 'es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s)
-    # print 'es',repr(s)
+    # g.pr('es','app.log',repr(app.log),'log.isNull',not app.log or app.log.isNull,repr(s))
+    # g.pr('es',repr(s))
     log = app.log
     if app.killed:
         return
@@ -2839,8 +2838,7 @@ def es(s,*args,**keys):
     elif g.unitTesting:
         if log and not log.isNull:
             s = g.toEncodedString(s,'ascii')
-            if newline: print s
-            else: print s,
+            g.pr(s,newline=newline)
     else:
         if log and log.isNull:
             pass
@@ -2907,14 +2905,14 @@ def es_print(s,*args,**keys):
 
     if newline:
         try:
-            print s2
+            g.pr(s2)
         except Exception:
-            print g.toEncodedString(s2,'ascii')
+            g.pr(g.toEncodedString(s2,'ascii'))
     else:
         try:
-            print s2,
+            g.pr(s2,newline=False)
         except Exception:
-            print g.toEncodedString(s2,'ascii'),
+            g.pr(g.toEncodedString(s2,'ascii'),newline=False)
 
     if g.app.gui and not g.app.gui.isNullGui and not g.unitTesting:
         g.es(s,*args,**keys)
@@ -4040,7 +4038,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
         change_text = change_p.bodyString()
     else:
         change_text = ""
-    # print find_p,change_p
+    # g.pr(find_p,change_p)
 
     # Initialize the find panel.
     c.script_search_flag = script_search
@@ -4152,8 +4150,8 @@ def executeFile(filename, options= ''):
         #@nl
         rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
         if rc:
-            print 'return code', rc
-        print so, se
+            g.pr('return code', rc)
+        g.pr(so, se)
     else:
         if fdir: os.chdir(fdir)
         d = {'__name__': '__main__'}
@@ -4474,8 +4472,8 @@ def CheckVersion (s1,s2,condition=">=",stringCompare=None,delimiter='.',trace=Fa
         raise EnvironmentError,"condition must be one of '>=', '>', '==', '!=', '<', or '<='."
 
     if trace:
-        # print '%10s' % (repr(vals1)),'%2s' % (condition),'%10s' % (repr(vals2)),result
-        print '%7s' % (s1),'%2s' % (condition),'%7s' % (s2),result
+        # g.pr('%10s' % (repr(vals1)),'%2s' % (condition),'%10s' % (repr(vals2)),result)
+        g.pr('%7s' % (s1),'%2s' % (condition),'%7s' % (s2),result)
     return result
 #@+node:ekr.20070120123930:CheckVersionToInt
 def CheckVersionToInt (s):
@@ -4981,7 +4979,7 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     if pluginName: s = s + " from plugin %s" % pluginName
 
     if not g.app or not g.app.gui:
-        print s
+        g.pr(s)
     elif g.unitTesting:
         return
     elif g.app.gui.guiName() == 'tkinter' and moduleName in ('Tkinter','Pmw'):
@@ -5055,7 +5053,7 @@ but this module may be missing if you get Leo from cvs.
         return
 
     if g.app.unitTesting:
-        print 'g.importExtension: can not import %s' % moduleName
+        g.pr('g.importExtension: can not import %s' % moduleName)
         return
 
     # Requires minimal further imports.
@@ -5066,9 +5064,9 @@ but this module may be missing if you get Leo from cvs.
         top = createDialogFrame(Tk,root,title,message)
         root.wait_window(top)
     except ImportError:
-        print 'Can not import %s' % moduleName
-        print 'Can not import Tkinter'
-        print 'Leo must now exit'
+        g.pr('Can not import %s' % moduleName)
+        g.pr('Can not import Tkinter')
+        g.pr('Leo must now exit')
 #@+node:ekr.20060329083310.1:createDialogFrame
 def createDialogFrame(Tk,root,title,message):
 
@@ -5367,7 +5365,7 @@ def removeExtraLws (s,tab_width):
     if 0:
         g.trace('lines...')
         for line in g.splitLines(result):
-            print repr(line)
+            g.pr(repr(line))
 
     return result
 #@-node:ekr.20050211120242.2:g.removeExtraLws

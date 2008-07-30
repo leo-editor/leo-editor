@@ -16,7 +16,7 @@
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
+    # g.pr("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -131,7 +131,7 @@ class baseCommands:
         leoEditCommands.createEditCommanders(c)
 
         if 0:
-            print ; print "*** using Null undoer ***" ; print
+            g.pr("\n*** using Null undoer ***\n")
             self.undoer = leoUndo.nullUndoer(self)
         else:
             self.undoer = leoUndo.undoer(self)
@@ -259,13 +259,13 @@ class baseCommands:
 
         c = self
 
-        print 'Commands...'
+        g.pr('Commands...')
         keys = c.commandsDict.keys()
         keys.sort()
         for key in keys:
             command = c.commandsDict.get(key)
-            print '%30s = %s' % (key,g.choose(command,command.__name__,'<None>'))
-        print
+            g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
+        g.pr('')
     #@-node:ekr.20051007143620:printCommandsDict
     #@-node:ekr.20050920093543:c.finishCreate & helper
     #@-node:ekr.20031218072017.2811: c.Birth & death
@@ -310,14 +310,13 @@ class baseCommands:
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
-                # else: print 'c no longer exists',c
+                # else: g.pr('c no longer exists',c)
             except:
                 c.inCommand = False
                 if g.app.unitTesting:
                     raise
                 else:
-                    g.es("exception executing command")
-                    print "exception executing command"
+                    g.es_print("exception executing command")
                     g.es_exception(c=c)
                     if c and c.exists and hasattr(c,'frame'):
                         c.redraw_now()
@@ -621,14 +620,14 @@ class baseCommands:
                     theDict = g.scanDirectives(c)
                     language = theDict.get("language")
                     ext = g.app.language_extension_dict.get(language)
-                    # print language,ext
+                    # g.pr(language,ext)
                     if ext == None:
                         ext = "txt"
 
                 if ext[0] != ".":
                     ext = "."+ext
 
-                # print "ext",ext
+                # g.pr("ext",ext)
                 #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 #@nl
                 #@            << create or reopen temp file, testing for conflicting changes >>
@@ -800,7 +799,7 @@ class baseCommands:
             for d in g.app.openWithFiles[:]:
                 p2 = d.get("p")
                 if p.v.t == p2.v.t:
-                    # print "removing previous entry in g.app.openWithFiles for",p.headString()
+                    # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
                     g.app.openWithFiles.remove(d)
             #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
             #@nl
@@ -1655,7 +1654,7 @@ class baseCommands:
             if script.strip():
                 sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
-                # print '*** script\n',script
+                # g.pr('*** script',script)
                 try:
                     p = c.currentPosition()
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
@@ -1771,7 +1770,7 @@ class baseCommands:
                 lines = g.splitLines(lines)
                 if 0:
                     for line in lines:
-                        print line,
+                        g.pr(line,newline=False)
             #@-node:ekr.20031218072017.2865:<< set root >>
             #@nl
         if lines is None:
@@ -1816,7 +1815,7 @@ class baseCommands:
                 lines = s.count('\n')
                 if len(s) > 0 and s[-1] != '\n':
                     lines += 1
-                # print lines,prev,p
+                # g.pr(lines,prev,p)
                 if prev + lines >= n:
                     found = True ; break
                 prev += lines
@@ -2000,7 +1999,7 @@ class baseCommands:
         #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
         #@nl
     #@-node:ekr.20031218072017.2864: goToLineNumber
-    #@+node:ekr.20080708094444.65:applyLineNumberMappingIfAny (from plugin)
+    #@+node:ekr.20080708094444.65:applyLineNumberMappingIfAny
     def applyLineNumberMappingIfAny(self, n):
 
         c = self ; x = c.shadowController
@@ -2015,7 +2014,7 @@ class baseCommands:
         # else:
             # return n
     #@nonl
-    #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny (from plugin)
+    #@-node:ekr.20080708094444.65:applyLineNumberMappingIfAny
     #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
     #@+at 
     #@nonl
@@ -2143,7 +2142,7 @@ class baseCommands:
         # g.trace("childIndex,offset",childIndex,offset,vnodeName)
         return vnodeName,childIndex,gnx,offset,delim
     #@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
-    #@+node:ekr.20080708094444.63:gotoLineNumberOpen (from plugin)
+    #@+node:ekr.20080708094444.63:gotoLineNumberOpen
     def gotoLineNumberOpen (self,filename):
         """
         Open a file for "goto linenumber" command and check if a shadow file exists.
@@ -2167,7 +2166,7 @@ class baseCommands:
             g.es_exception()
             raise
     #@nonl
-    #@-node:ekr.20080708094444.63:gotoLineNumberOpen (from plugin)
+    #@-node:ekr.20080708094444.63:gotoLineNumberOpen
     #@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
     def skipToMatchingNodeSentinel (self,lines,n,delim):
 
@@ -2615,11 +2614,13 @@ class baseCommands:
             #@        << trace head_lines, ins, tail_lines >>
             #@+node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
             if 0:
-                print ; print "head_lines"
-                for line in head_lines: print line
-                print ; print "ins", ins
-                print ; print "tail_lines"
-                for line in tail_lines: print line
+                g.pr("\nhead_lines")
+                for line in head_lines:
+                    g.pr(line)
+                g.pr("\nins", ins)
+                g.pr("\ntail_lines")
+                for line in tail_lines:
+                    g.pr(line)
             else:
                 g.es_print("head_lines: ",head_lines)
                 g.es_print("ins: ",ins)
@@ -3655,7 +3656,7 @@ class baseCommands:
                 if hasattr(v.t,"tnodeList") and len(v.t.tnodeList) > 0 and not v.isAnyAtFileNode():
                     if 0:
                         s = "deleting tnodeList for " + repr(v)
-                        print ; g.es_print(s,color="blue")
+                        g.es_print(s,color="blue")
                     delattr(v.t,"tnodeList")
                     v.t._p_changed = True
                 #@-node:ekr.20040313150633:<< remove unused tnodeList >>
@@ -3719,11 +3720,11 @@ class baseCommands:
                         try:
                             assert v.t == p.v.t
                         except AssertionError:
-                            print "p",p
-                            print "v",v
-                            print "p.v",p.v
-                            print "v.t",v.t
-                            print "p.v.t",p.v.t
+                            g.pr("p",p)
+                            g.pr("v",v)
+                            g.pr("p.v",p.v)
+                            g.pr("v.t",v.t)
+                            g.pr("p.v.t",p.v.t)
                             raise AssertionError, "v.t == p.v.t"
 
                         if p.v.isCloned():
@@ -3774,7 +3775,7 @@ class baseCommands:
                 #@            << give test failed message >>
                 #@+node:ekr.20040314044652:<< give test failed message >>
                 s = "test failed at position %s\n%s" % (repr(p),message)
-                print s ; g.es_print(s,color="red")
+                g.es_print(s,color="red")
                 #@-node:ekr.20040314044652:<< give test failed message >>
                 #@nl
         if verbose or not unittest:
@@ -3822,7 +3823,7 @@ class baseCommands:
                         import traceback ; traceback.print_exc()
                         return "surprise" # abort
                     if unittest and result != "ok":
-                        print "Syntax error in %s" % p.cleanHeadString()
+                        g.pr("Syntax error in %s" % p.cleanHeadString())
                         return result # End the unit test: it has failed.
 
         if not unittest:
@@ -4088,17 +4089,17 @@ class baseCommands:
 
             encoding = g.app.tkEncoding
 
-            print ; print '-'*10, p.cleanHeadString()
+            g.pr('\n','-'*10,p.cleanHeadString())
 
             if 0:
                 for line in lines:
                     line2 = g.toEncodedString(line,encoding,reportErrors=True)
-                    print line2, # Don't add a trailing newline!
+                    g.pr(line2,newline=False) # Don't add a trailing newline!)
             else:
                 for i in xrange(len(lines)):
                     line = lines[i]
                     line = g.toEncodedString(line,encoding,reportErrors=True)
-                    print "%3d" % i, repr(lines[i])
+                    g.pr("%3d" % i, repr(lines[i]))
         #@-node:ekr.20040713064323:dumpLines
         #@+node:ekr.20040711135244.7:dumpToken
         def dumpToken (self,token5tuple):
@@ -4111,10 +4112,10 @@ class baseCommands:
 
             startLine = self.line != srow
             if startLine:
-                print "----- line",srow,repr(line)
+                g.pr("----- line",srow,repr(line))
             self.line = srow
 
-            print "%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val))
+            g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
         #@-node:ekr.20040711135244.7:dumpToken
         #@+node:ekr.20040713091855:endUndo
         def endUndo (self):
@@ -4365,7 +4366,7 @@ class baseCommands:
         #@+node:ekr.20041021101911.1:oops
         def oops(self):
 
-            print "unknown PrettyPrinting code: %s" % (self.name)
+            g.pr("unknown PrettyPrinting code: %s" % (self.name))
         #@-node:ekr.20041021101911.1:oops
         #@+node:ekr.20041021101911.2:trace
         def trace(self):
@@ -6030,52 +6031,6 @@ class baseCommands:
 
         pass # No longer used.
 
-        # c = self
-        # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-        # # Give priority to later requests, but default to previously set widget.
-        # w = c.requestedFocusWidget or c.hasFocusWidget
-
-        # if trace: print \
-            # 'requested',c.widget_name(c.requestedFocusWidget),\
-            # 'present',c.widget_name(c.hasFocusWidget)
-
-        # if c.hasFocusWidget and (
-            # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-            # if trace: print 'no change.',c.widget_name(w)
-            # c.requestedFocusWidget = None
-        # elif w:
-            # # Ignore whatever g.app.gui.get_focus might say.
-            # ok = g.app.gui.set_focus(c,w)
-            # if ok: c.hasFocusWidget = w
-            # c.requestedFocusWidget = None    # c = self
-        # trace = False or (not g.app.unitTesting and c.config.getBool('trace_masterFocusHandler'))
-
-        # # Give priority to later requests, but default to previously set widget.
-        # w = c.requestedFocusWidget or c.hasFocusWidget
-
-        # if trace: print \
-            # 'requested',c.widget_name(c.requestedFocusWidget),\
-            # 'present',c.widget_name(c.hasFocusWidget)
-
-        # if c.hasFocusWidget and (
-            # not c.requestedFocusWidget or c.requestedFocusWidget == c.hasFocusWidget):
-            # if trace: print 'no change.',c.widget_name(w)
-            # c.requestedFocusWidget = None
-        # elif w:
-            # # Ignore whatever g.app.gui.get_focus might say.
-            # ok = g.app.gui.set_focus(c,w)
-            # if ok: c.hasFocusWidget = w
-            # c.requestedFocusWidget = None
-        # else:
-            # # This is not an error: it can arise because of a call to k.invalidateFocus.
-            # if trace: print '*'*20,'oops: moving to body pane.'
-            # c.bodyWantsFocusNow()
-        # else:
-            # # This is not an error: it can arise because of a call to k.invalidateFocus.
-            # if trace: print '*'*20,'oops: moving to body pane.'
-            # c.bodyWantsFocusNow()
-
     restoreRequestedFocus = masterFocusHandler
     #@-node:ekr.20080514131122.11:c.masterFocusHandler
     #@+node:ekr.20080514131122.20:c.outerUpdate
@@ -6202,7 +6157,7 @@ class baseCommands:
 
         if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
             c.trace_focus_count += 1
-            print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
+            g.pr('%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8))
     #@-node:ekr.20080514131122.16:c.traceFocus
     #@+node:ekr.20080514131122.17:c.widget_name
     def widget_name (self,widget):
@@ -7531,7 +7486,7 @@ class nodeHistory:
             self.beadList.append(data)
             self.beadPointer = len(self.beadList)-1
             #g.trace('updating bead list',p.headString())
-            #print [p.headString() for p in self.beadList]
+            #g.pr([p.headString() for p in self.beadList])
     #@-node:ekr.20040803072955.131:updatePositionList
     #@+node:ekr.20040803072955.132:updateVisitedList
     def updateVisitedList (self,p):

@@ -59,11 +59,11 @@ class gtkGui(leoGui.leoGui):
         if self.script:
             log = g.app.log
             if log:
-                print 'Start of batch script...\n'
+                g.pr('Start of batch script...\n')
                 log.c.executeScript(script=self.script)
-                print 'End of batch script'
+                g.pr('End of batch script')
             else:
-                print 'no log, no commander for executeScript in gtkGui.runMainLoop'
+                g.pr('no log, no commander for executeScript in gtkGui.runMainLoop')
         else:
             gtk.main()
     #@-node:ekr.20080112145409.440:runMainLoop (gtkGui)
@@ -117,7 +117,7 @@ class gtkGui(leoGui.leoGui):
                     else:
                         g.es("","Icons","directory not found:",path, color="red")
             except:
-                print "exception setting bitmap"
+                g.pr("exception setting bitmap")
                 import traceback ; traceback.print_exc()
         #@-node:ekr.20080112145409.442:gtkGui.setDefaultIcon
         #@+node:ekr.20080112145409.443:gtkGui.getDefaultConfigFont
@@ -132,7 +132,7 @@ class gtkGui(leoGui.leoGui):
                 font = gtkFont.Font(font=fn) 
                 family = font.cget("family")
                 self.defaultFontFamily = family[:]
-                # print '***** getDefaultConfigFont',repr(family)
+                # g.pr('***** getDefaultConfigFont',repr(family))
 
             config.defaultFont = None
             config.defaultFontFamily = self.defaultFontFamily
@@ -261,7 +261,7 @@ class gtkGui(leoGui.leoGui):
                     dialog.add_filter(filter)
 
             response = dialog.run()
-            print 'dialog response' , response
+            g.pr('dialog response' , response)
 
             if response == gtk.RESPONSE_OK:
 
@@ -277,7 +277,7 @@ class gtkGui(leoGui.leoGui):
 
             dialog.destroy()
 
-        print 'dialog result' , result
+        g.pr('dialog result' , result)
 
         return result
     #@-node:bob.20080116210510.1:runFileDialog
@@ -510,9 +510,9 @@ class gtkGui(leoGui.leoGui):
         if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
             self.set_focus_count += 1
             # Do not call trace here: that might affect focus!
-            print 'gui.set_focus: %4d %10s %s' % (
+            g.pr('gui.set_focus: %4d %10s %s' % (
                 self.set_focus_count,c and c.shortFileName(),
-                c and c.widget_name(w)), g.callers(5)
+                c and c.widget_name(w)), g.callers(5))
 
         if w:
             try:

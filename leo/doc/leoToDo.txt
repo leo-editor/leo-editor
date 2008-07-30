@@ -772,7 +772,7 @@ def endCommand (self,event,commandName):
             c.frame.body.onBodyChanged(undoType='Typing')
         if k.newMinibufferWidget:
             c.widgetWantsFocusNow(k.newMinibufferWidget)
-            # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
+            # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
             k.newMinibufferWidget = None
 #@-node:ekr.20061031131434.113:k.endCommand
 #@-node:ekr.20080605064555.3:Problem 1 (fixed)
@@ -1677,17 +1677,17 @@ def dumpMasterBindingsDict (self):
 
     k = self ; d = k.masterBindingsDict
 
-    print ; print 'k.masterBindingsDict...' ; print
+    g.pr('\nk.masterBindingsDict...\n')
     keys = d.keys()
     keys.sort()
     for key in keys:
-        print key, '-' * 40
+        g.pr(key, '-' * 40)
         d2 = d.get(key)
         keys2 = d2.keys()
         keys2.sort()
         for key2 in keys2:
             b = d2.get(key2)
-            print '%20s %s' % (key2,b.commandName)
+            g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
 #@+node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 def completeAllBindingsForWidget (self,w):
@@ -3117,17 +3117,17 @@ def dumpMasterBindingsDict (self):
 
     k = self ; d = k.masterBindingsDict
 
-    print ; print 'k.masterBindingsDict...' ; print
+    g.pr('\nk.masterBindingsDict...\n')
     keys = d.keys()
     keys.sort()
     for key in keys:
-        print key, '-' * 40
+        g.pr(key, '-' * 40)
         d2 = d.get(key)
         keys2 = d2.keys()
         keys2.sort()
         for key2 in keys2:
             b = d2.get(key2)
-            print '%20s %s' % (key2,b.commandName)
+            g.pr('%20s %s' % (key2,b.commandName))
 #@-node:ekr.20070218130238:dumpMasterBindingsDict
 #@+node:ekr.20061031131434.96:k.completeAllBindingsForWidget
 def completeAllBindingsForWidget (self,w):
@@ -3635,8 +3635,7 @@ def collectGarbage():
             g.enable_gc_debug()
 
         if g.app.trace_gc_verbose or g.app.trace_gc_calls:
-            # print('Collecting garbage',g.callers())
-            print 'collectGarbage:'
+            g.pr('collectGarbage:')
 
         gc.collect()
     except Exception:
@@ -3685,14 +3684,14 @@ def printGc(tag=None):
 def printGcRefs (tag=''):
 
     refs = gc.get_referrers(app.windowList[0])
-    print('-' * 30,tag)
+    g.pr('-' * 30,tag)
 
     if g.app.trace_gc_verbose:
-        print("refs of", app.windowList[0])
+        g.pr("refs of", app.windowList[0])
         for ref in refs:
-            print(type(ref))
+            g.pr(type(ref))
     else:
-        print("%d referers" % len(refs))
+        g.pr("%d referers" % len(refs))
 #@-node:ekr.20031218072017.1593:printGcRefs
 #@-node:ekr.20031218072017.1592:printGc
 #@+node:ekr.20060202161935:printGcAll
@@ -3702,8 +3701,8 @@ def printGcAll (tag=''):
 
     tag = tag or g._callerName(n=2)
     d = {} ; objects = gc.get_objects()
-    print('-' * 30)
-    print('%s: %d objects' % (tag,len(objects)))
+    g.pr('-' * 30)
+    g.pr('%s: %d objects' % (tag,len(objects)))
 
     for obj in objects:
         t = type(obj)
@@ -3711,7 +3710,7 @@ def printGcAll (tag=''):
             try: t = obj.__class__
             except Exception: pass
         # if type(obj) == type(()):
-            # print id(obj),repr(obj)
+            # g.pr(id(obj),repr(obj))
         d[t] = d.get(t,0) + 1
 
     if 1: # Sort by n
@@ -3722,11 +3721,11 @@ def printGcAll (tag=''):
             items.sort(key=lambda x: x[1],reverse=True)
         except Exception: pass
         for z in items:
-            print '%40s %7d' % (z[0],z[1])
+            g.pr('%40s %7d' % (z[0],z[1]))
     else: # Sort by type
         keys = d.keys() ; keys.sort()
         for t in keys:
-            print '%40s %7d' % (t,d.get(t))
+            g.pr('%40s %7d' % (t,d.get(t)))
 #@-node:ekr.20060202161935:printGcAll
 #@+node:ekr.20060127164729.1:printGcObjects   (printNewObjects=pno)
 def printGcObjects(tag=''):
@@ -3784,8 +3783,8 @@ for key in keys:
 if not empty:
     # keys = [repr(key) for key in keys]
     keys.sort()
-    print '-' * 30
-    print "%s: garbage: %d, objects: %d, delta: %d" % (tag,n,n2,delta)
+    g.pr('-' * 30)
+    g.pr("%s: garbage: %d, objects: %d, delta: %d" % (tag,n,n2,delta))
 
     if 0:
         for key in keys:
@@ -3793,7 +3792,7 @@ if not empty:
             n2 = typesDict.get(key,0)
             delta2 = n2-n1
             if delta2 != 0:
-                print("%+6d =%7d %s" % (delta2,n2,key))
+                g.pr("%+6d =%7d %s" % (delta2,n2,key))
 
 lastTypesDict = typesDict
 typesDict = {}
@@ -3817,14 +3816,14 @@ for obj in gc.get_objects():
         key = repr(obj) # Don't create a pointer to the object!
         funcDict[key]=None 
         if n < 50 and not lastFunctionsDict.has_key(key):
-            print(obj)
+            g.pr(obj)
             args, varargs, varkw,defaults  = inspect.getargspec(obj)
-            print("args", args)
-            if varargs: print("varargs",varargs)
-            if varkw: print("varkw",varkw)
+            g.pr("args", args)
+            if varargs: g.pr("varargs",varargs)
+            if varkw: g.pr("varkw",varkw)
             if defaults:
-                print("defaults...")
-                for s in defaults: print(s)
+                g.pr("defaults...")
+                for s in defaults: g.pr(s)
 
 lastFunctionsDict = funcDict
 funcDict = {}
@@ -3841,7 +3840,7 @@ def printGcSummary (tag=''):
         n = len(gc.garbage)
         n2 = len(gc.get_objects())
         s = '%s: printGCSummary: garbage: %d, objects: %d' % (tag,n,n2)
-        print s
+        g.pr(s)
     except Exception:
         traceback.print_exc()
 #@-node:ekr.20060205043324.1:printGcSummary
@@ -3867,15 +3866,15 @@ def printGcVerbose(tag=''):
         o = newObjects[i]
         if type(o) == type({}): dicts += 1
         elif type(o) in (type(()),type([])):
-            #print id(o),repr(o)
+            #g.pr(id(o),repr(o))
             seqs += 1
         #else:
-        #    print(o)
+        #    g.pr(o)
         i += 1
-    print('=' * 40)
-    print('dicts: %d, sequences: %d' % (dicts,seqs))
-    print("%s: %d new, %d total objects" % (tag,len(newObjects),len(objects)))
-    print('-' * 40)
+    g.pr('=' * 40)
+    g.pr('dicts: %d, sequences: %d' % (dicts,seqs))
+    g.pr("%s: %d new, %d total objects" % (tag,len(newObjects),len(objects)))
+    g.pr('-' * 40)
 #@-node:ekr.20060127165509:printGcVerbose
 #@-node:ekr.20031218072017.1588:Garbage Collection
 #@-node:ekr.20080710101653.3:Fix memory leak
@@ -5560,14 +5559,14 @@ if not ext:
     theDict = g.scanDirectives(c)
     language = theDict.get("language")
     ext = g.app.language_extension_dict.get(language)
-    # print language,ext
+    # g.pr(language,ext)
     if ext == None:
         ext = "txt"
 
 if ext[0] != ".":
     ext = "."+ext
 
-# print "ext",ext
+# g.pr("ext",ext)
 #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
 #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
 theDict = None ; path = None
@@ -5729,7 +5728,7 @@ def createOpenWithTempFile (self,p,ext):
 for d in g.app.openWithFiles[:]:
     p2 = d.get("p")
     if p.v.t == p2.v.t:
-        # print "removing previous entry in g.app.openWithFiles for",p.headString()
+        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
         g.app.openWithFiles.remove(d)
 #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
 #@-node:ekr.20031218072017.2830:createOpenWithTempFile

@@ -3657,7 +3657,7 @@ class baseTangleCommands:
                 root_dir = g.os_path_dirname(self.root_name)
             else:
                 root_dir = None
-            # print "root_dir:", root_dir
+            # g.pr("root_dir:", root_dir)
 
             table = ( # This is a precedence table.
                 (root_dir,"@root"), 
@@ -3668,7 +3668,7 @@ class baseTangleCommands:
 
             for dir2, kind in table:
                 if dir2 and len(dir2) > 0:
-                    # print "base,theDir:",base,theDir
+                    # g.pr("base,theDir:",base,theDir)
                     theDir = g.os_path_join(base,dir2)
                     if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
                         #@                << handle absolute path >>

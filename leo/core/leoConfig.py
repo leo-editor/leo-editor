@@ -130,7 +130,7 @@ class parserBaseClass:
     #@+node:ekr.20041120103012:error
     def error (self,s):
 
-        print s
+        g.pr(s)
 
         # Does not work at present because we are using a null Gui.
         g.es(s,color="blue")
@@ -474,7 +474,7 @@ class parserBaseClass:
             if kind == '@item':
                 g.trace(level,kind,val,val2)
             else:
-                print
+                g.pr('')
                 g.trace(level,kind,'...')
                 self.dumpMenuList(val,level+1)
     #@nonl
@@ -644,7 +644,7 @@ class parserBaseClass:
             g.app.config.context_menus = {}
 
         #if popupName in g.app.config.context_menus:
-            #print '*** duplicate popup ***', popupName
+            #g.pr('*** duplicate popup ***', popupName)
 
 
         g.app.config.context_menus[popupName] = aList
@@ -794,7 +794,7 @@ class parserBaseClass:
     #@-node:ekr.20041124063257:munge
     #@+node:ekr.20041119204700.2:oops
     def oops (self):
-        print ("parserBaseClass oops:",
+        g.pr("parserBaseClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@-node:ekr.20041119204700.2:oops
@@ -1835,7 +1835,7 @@ class configClass:
                     s = 'reading settings in %s' % path
                     # This occurs early in startup, so use the following instead of g.es_print.
                     s = g.toEncodedString(s,'ascii')
-                    print s
+                    g.pr(s)
                     g.app.logWaiting.append((s+'\n','blue'),)
 
                 c = self.openSettingsFile(path)
@@ -1957,7 +1957,7 @@ class configClass:
         ok = g.os_path_exists(fileName)
         if ok:
             if not g.unitTesting and not self.silent:
-                print ('reading %s' % fileName)
+                g.pr(('reading %s' % fileName))
             lines = file(fileName).readlines()
             if lines and self.munge(lines[0])=='readonly':
                 lines = lines[1:]
@@ -1993,7 +1993,7 @@ class configClass:
                 fileName = g.os_path_join(path,tag)
                 if g.os_path_exists(fileName):
                     if not self.recentFileMessageWritten:
-                        print ('wrote recent file: %s' % fileName)
+                        g.pr(('wrote recent file: %s' % fileName))
                         written = True
                     self.writeRecentFilesFileHelper(fileName)
                     # Bug fix: Leo 4.4.6: write *all* recent files.
@@ -2070,7 +2070,7 @@ class configClass:
         for key in keys:
             data = settings.get(key)
             letter,val = data
-            print '%45s = %s %s' % (key,letter,val)
+            g.pr('%45s = %s %s' % (key,letter,val))
             g.es('','%s %s = %s' % (letter,key,val))
     #@nonl
     #@+node:ekr.20070418075804:printSettingsHelper
@@ -2148,7 +2148,7 @@ class settingsTreeParser (parserBaseClass):
                 except Exception:
                     g.es_exception()
             else:
-                print "*** no handler",kind
+                g.pr("*** no handler",kind)
 
         return None
     #@-node:ekr.20041119204714:visitNode (settingsTreeParser)

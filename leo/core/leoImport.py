@@ -825,7 +825,7 @@ class leoImportCommands:
             if line1.startswith(tag) and line1.endswith(tag2):
                 e = line1[n1:-n2].strip()
                 if e and g.isValidEncoding(e):
-                    # print 'found',e,'in',line1
+                    # g.pr('found',e,'in',line1)
                     self.encoding = e
 
         s = g.toUnicode(s,self.encoding)
@@ -1675,7 +1675,7 @@ class leoImportCommands:
         # else:
             # fileName = scanner.fileName
             # if atAuto:
-                # print('seems to be mixed HTML and PHP:',fileName)
+                # g.pr('seems to be mixed HTML and PHP:',fileName)
             # else:
                 # g.es_print('seems to be mixed HTML and PHP:',fileName)
             # scanner.createHeadline(
@@ -2337,7 +2337,7 @@ class baseScannerClass:
             g.es_print('error:',s,color='red')
 
     def oops (self):
-        print 'baseScannerClass oops: %s must be overridden in subclass' % g.callers()
+        g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
 
     def report (self,message):
         if self.strict: self.error(message)
@@ -2527,7 +2527,7 @@ class baseScannerClass:
 
         self.error('no block')
         if 1:
-            print '** no block **'
+            g.pr('** no block **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:
@@ -3351,7 +3351,7 @@ class pascalScanner (baseScannerClass):
 
         self.error('no interface')
         if 1:
-            print '** no interface **'
+            g.pr('** no interface **')
             i,j = g.getLine(s,start)
             g.trace(i,s[i:j])
         else:

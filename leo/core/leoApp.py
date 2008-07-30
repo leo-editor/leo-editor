@@ -269,7 +269,7 @@ class LeoApp:
 
         if 0:
             if fileName:
-                print "Tk gui created in", g.shortFileName(fileName)
+                g.pr("Tk gui created in", g.shortFileName(fileName))
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
@@ -306,9 +306,9 @@ class LeoApp:
         if path and g.os_path_exists(path):
             try:
                 os.remove(path)
-                print "deleting temp file:", g.shortFileName(path)
+                g.pr("deleting temp file:", g.shortFileName(path))
             except:
-                print "can not delete temp file:", path
+                g.pr("can not delete temp file:", path)
 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
@@ -341,7 +341,7 @@ class LeoApp:
             g.app.gui.destroySelf()
 
         # Don't use g.trace!
-        # print 'app.finishQuit: setting g.app.killed',g.callers()
+        # g.pr('app.finishQuit: setting g.app.killed',g.callers())
 
         g.app.killed = True
             # Disable all further hooks and events.
@@ -349,7 +349,7 @@ class LeoApp:
 
         if g.app.afterHandler:
             # TK bug: This appears to have no effect, at least on Windows.
-            # print "finishQuit: cancelling",g.app.afterHandler
+            # g.pr("finishQuit: cancelling",g.app.afterHandler)
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
@@ -536,7 +536,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # print "setLog:",tag,"locked:",self.logIsLocked,log
+        # g.pr("setLog:",tag,"locked:",self.logIsLocked,log)
         if not self.logIsLocked:
             self.log = log
 
@@ -559,7 +559,7 @@ class LeoApp:
                     g.es('',s,color=color,newline=0) # The caller must write the newlines.
                 self.logWaiting = []
         else:
-            print 'writeWaitingLog: still no log!'
+            g.pr('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
     #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     def newLeoCommanderAndFrame(self,

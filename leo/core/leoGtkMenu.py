@@ -291,7 +291,7 @@ class leoGtkMenu(leoMenu.leoMenu):
     #@+node:ekr.20080112145409.195:oops
     def oops (self):
 
-        print "leoMenu oops:", g.callers(2), "should be overridden in subclass"
+        g.pr("leoMenu oops:", g.callers(2), "should be overridden in subclass")
     #@nonl
     #@-node:ekr.20080112145409.195:oops
     #@+node:bob.20080115223114.11:Menu methods (Tk names)
@@ -597,7 +597,7 @@ class leoGtkMenu(leoMenu.leoMenu):
         # The first parameter must be event, and it must default to None.
         def wxOpenWithMenuCallback(event=None,command=command):
             try: self.c.openWith(data=command)
-            except: print traceback.print_exc()
+            except: g.pr(traceback.print_exc())
 
         return wxOpenWithMenuCallback
     #@-node:bob.20080115223114.6:defineOpenWithMenuCallback

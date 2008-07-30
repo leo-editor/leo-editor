@@ -168,7 +168,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.7:oops
     def oops (self):
 
-        print("baseEditCommandsClass oops:",
+        g.pr("baseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@-node:ekr.20050920084036.7:oops
@@ -261,8 +261,8 @@ def finishCreateEditCommanders (c):
             if 0:
                 keys = d2.keys()
                 keys.sort()
-                print '----- %s' % name
-                for key in keys: print key
+                g.pr('----- %s' % name)
+                for key in keys: g.pr(key)
 
     return d
 #@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
@@ -1719,7 +1719,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = body
 
         # Warning: traces mess up the focus
-        # print g.app.gui.widget_name(w),g.app.gui.widget_name(pane)
+        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
 
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
@@ -1741,10 +1741,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         pane = None ; w_name = g.app.gui.widget_name
         trace = False
-        if trace: print (
-            '---- w',w_name(w),id(w),
-            '#tabs',c.frame.log.numberOfVisibleTabs(),
-            'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
+        if trace:
+            g.pr(
+                '---- w',w_name(w),id(w),
+                '#tabs',c.frame.log.numberOfVisibleTabs(),
+                'bodyCtrl',w_name(c.frame.body.bodyCtrl),id(c.frame.body.bodyCtrl))
 
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).startswith('body'):
@@ -1788,7 +1789,7 @@ class editCommandsClass (baseEditCommandsClass):
             pane = c.frame.body.bodyCtrl
             self.editWidgetCount = 1 ; self.logWidgetCount = 0
 
-        if trace: print 'old: %10s new: %10s' % (w_name(w),w_name(pane))
+        if trace: g.pr('old: %10s new: %10s' % (w_name(w),w_name(pane)))
 
         if pane:
             k.newMinibufferWidget = pane
@@ -4949,10 +4950,10 @@ class editFileCommandsClass (baseEditCommandsClass):
             (deleted, 'deleted  (only in %s)' % (fileName2)),
             (changed, 'changed'),
         ):
-            print ; print kind
+            g.pr('\n',kind)
             for key in d.keys():
                 p = d.get(key)
-                print '%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii'))
+                g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -8659,12 +8660,12 @@ class AspellClass:
 
             sc = new_aspell_config()
             if 0:
-                print sc 
-                print aspell_config_replace(sc, "prefix", self.aspell_dir) #1/0 
-                print 'prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix"))
-                print aspell_config_retrieve(sc, "lang")
-                print aspell_config_replace(sc, "lang",self.local_language_code)
-                print aspell_config_retrieve(sc, "lang")
+                g.pr(sc )
+                g.pr(aspell_config_replace(sc, "prefix", self.aspell_dir)) #1/0
+                g.pr('prefix', self.aspell_dir, repr(aspell_config_retrieve(sc, "prefix")))
+                g.pr(aspell_config_retrieve(sc, "lang"))
+                g.pr(aspell_config_replace(sc, "lang",self.local_language_code))
+                g.pr(aspell_config_retrieve(sc, "lang"))
 
             possible_err = aspell.new_aspell_speller(sc)
             aspell.delete_aspell_config(c_int(sc))
@@ -8788,7 +8789,7 @@ class AspellClass:
             return True
 
         except Exception, err:
-            print "unable to update local aspell dictionary:",err
+            g.pr("unable to update local aspell dictionary:",err)
             return False
     #@-node:ekr.20051025071455.11:updateDictionary
     #@-others

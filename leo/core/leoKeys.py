@@ -2190,17 +2190,17 @@ class keyHandlerClass:
 
         k = self ; d = k.masterBindingsDict
 
-        print ; print 'k.masterBindingsDict...' ; print
+        g.pr('\nk.masterBindingsDict...\n')
         keys = d.keys()
         keys.sort()
         for key in keys:
-            print key, '-' * 40
+            g.pr(key, '-' * 40)
             d2 = d.get(key)
             keys2 = d2.keys()
             keys2.sort()
             for key2 in keys2:
                 b = d2.get(key2)
-                print '%20s %s' % (key2,b.commandName)
+                g.pr('%20s %s' % (key2,b.commandName))
     #@-node:ekr.20070218130238:dumpMasterBindingsDict
     #@+node:ekr.20061031131434.96:k.completeAllBindingsForWidget
     def completeAllBindingsForWidget (self,w):
@@ -2673,7 +2673,7 @@ class keyHandlerClass:
                 c.frame.body.onBodyChanged(undoType='Typing')
             if k.newMinibufferWidget:
                 c.widgetWantsFocusNow(k.newMinibufferWidget)
-                # print 'endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers()
+                # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
     #@-node:ekr.20061031131434.113:k.endCommand
     #@-node:ekr.20061031131434.104:Dispatching (keyHandler)
@@ -4429,7 +4429,7 @@ class keyHandlerClass:
             last = fields and fields[-1]
             if not last:
                 if not g.app.menuWarningsGiven:
-                    print "bad shortcut specifier:", s
+                    g.pr("bad shortcut specifier:", s)
                 return None
 
         if len(last) == 1:

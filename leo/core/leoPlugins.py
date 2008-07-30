@@ -31,7 +31,7 @@ def callTagHandler (bunch,tag,keywords):
 
     handler = bunch.fn ; moduleName = bunch.moduleName
 
-    # if tag != 'idle': print 'callTagHandler',tag,keywords.get('c')
+    # if tag != 'idle': g.pr('callTagHandler',tag,keywords.get('c'))
 
     # Make sure the new commander exists.
     if tag == 'idle':
@@ -40,7 +40,7 @@ def callTagHandler (bunch,tag,keywords):
             if c:
                 # Make sure c exists and has a frame.
                 if not c.exists or not hasattr(c,'frame'):
-                    print 'skipping tag %s: c does not exists or does not have a frame.' % tag
+                    g.pr('skipping tag %s: c does not exists or does not have a frame.' % tag)
                     return None
 
     # Calls to registerHandler from inside the handler belong to moduleName.
@@ -172,12 +172,12 @@ def getEnabledFiles (s,plugins_path):
                 if s and s.find(' ') == -1 and s[-3:] == '.py':
                     path = g.os_path_abspath(g.os_path_join(plugins_path,s))
                     if path not in enabled_files and path not in disabled_files:
-                        # print 'disabled',path
+                        # g.pr('disabled',path)
                         disabled_files.append(path)
             else:
                 path = g.os_path_abspath(g.os_path_join(plugins_path,s))
                 if path not in enabled_files and path not in disabled_files:
-                    # print 'enabled',path
+                    # g.pr('enabled',path)
                     enabled_files.append(path)
 
     return enabled_files
@@ -310,8 +310,8 @@ def registerOneExclusiveHandler(tag, fn):
         moduleName = '<no module>'
 
     if 0:
-        if g.app.unitTesting: print
-        print '%6s %15s %25s %s' % (g.app.unitTesting,moduleName,tag,fn.__name__)
+        if g.app.unitTesting: g.pr('')
+        g.pr('%6s %15s %25s %s' % (g.app.unitTesting,moduleName,tag,fn.__name__))
 
     if g.app.unitTesting: return
 
@@ -345,8 +345,8 @@ def registerOneHandler(tag,fn):
         moduleName = '<no module>'
 
     if 0:
-        if g.app.unitTesting: print
-        print '%6s %15s %25s %s' % (g.app.unitTesting,moduleName,tag,fn.__name__)
+        if g.app.unitTesting: g.pr('')
+        g.pr('%6s %15s %25s %s' % (g.app.unitTesting,moduleName,tag,fn.__name__))
 
     items = handlers.get(tag,[])
     if fn not in items:
@@ -368,7 +368,7 @@ def unloadOnePlugin (moduleOrFileName,verbose=False):
 
     if moduleName in g.app.loadedPlugins:
         if verbose:
-            print 'unloading',moduleName
+            g.pr('unloading',moduleName)
         g.app.loadedPlugins.remove(moduleName)
 
     for tag in handlers.keys():
@@ -501,13 +501,13 @@ class baseLeoPlugin(object):
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
             def hello(self, event):
-                print("hello from node %s" % self.c.currentPosition().headString())
+                g.pr("hello from node %s" % self.c.currentPosition().headString())
 
             def hola(self, event):
-                print("hola from node %s" % self.c.currentPosition().headString())
+                g.pr("hola from node %s" % self.c.currentPosition().headString())
 
             def ciao(self, event):
-                print("ciao baby (%s)" % self.c.currentPosition().headString())
+                g.pr("ciao baby (%s)" % self.c.currentPosition().headString())
 
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
