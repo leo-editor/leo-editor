@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="16,2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -218,28 +218,10 @@
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080701130406.1"><vh>plugins</vh></v>
-<v t="ekr.20080702113207.1"><vh>demo of pylint bugs</vh>
-<v t="ekr.20080702113207.2"><vh>@thin pylintTest/baseClass.py</vh></v>
-<v t="ekr.20080702113207.3"><vh>@thin pylintTest/subClass.py</vh></v>
-<v t="ekr.20080702113207.4"><vh>@thin pylintTest/main.py</vh></v>
-</v>
-<v t="ekr.20080702193741.1"><vh>@@thin c:\prog\test\shadow_test.py</vh>
-<v t="ekr.20080702193741.3"><vh>spam</vh></v>
-<v t="ekr.20080702193741.4"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20080702193741.2"><vh>@@button shadow</vh></v>
-<v t="ekr.20080708103735.1"><vh>shadow tests</vh>
-<v t="ekr.20080708103735.2" a="E"><vh>Data for @show tests</vh>
-<v t="ekr.20080708103735.3"><vh>old_private</vh></v>
-<v t="ekr.20080708103735.5"><vh>new_public</vh></v>
-<v t="ekr.20080708103735.4"><vh>expected_after_private</vh></v>
-</v>
-<v t="ekr.20080708103735.6"><vh>@test basic replacement test</vh></v>
-</v>
 <v t="ekr.20080710111404.1"><vh>mini tests for g.pr</vh></v>
 <v t="ekr.20080710111404.2"><vh>print to g.pr regex</vh></v>
 <v t="ekr.20080726123338.1"><vh>Compound documents</vh></v>
-<v t="ekr.20080729153237.1" a="E"><vh>Gc settings</vh>
+<v t="ekr.20080729153237.1"><vh>Gc settings</vh>
 <v t="ekr.20080729153237.2"><vh>@bool trace_gc = True</vh></v>
 <v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = True</vh></v>
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = True</vh></v>
@@ -1677,108 +1659,6 @@ for z in aList:
         g.pr('echo .')
         g.pr('echo',name)
         g.pr('call pylint.bat core\%s' % name)</t>
-<t tx="ekr.20080702113207.1"></t>
-<t tx="ekr.20080702193741.1">import leo.core.leoGlobals as leoGlobals
-
-@others</t>
-<t tx="ekr.20080702193741.2">"""
-Look for @thin files in the current subtree.
-Convert those thin files into a file with a shadow file,
-if this shadow file does not exist already.
-
-FIXME: the line end convention is currently changed:
-      unix lineendings are converted to DOS lineendings,
-      if files are converted on Windows.
-      Not sure if that is a probem or not.
-"""
-
-import mod_shadow_core, os, shutil
-
-def marker_from_extension(filename):
-    marker = g.comment_delims_from_extension(filename)[0]
-    return marker and marker + '@'
-
-shadow_subdir = c.config.getString("shadow_subdir").strip()
-if not shadow_subdir: assert False,'No shadow_subdir setting'
-prefix = c.config.getString("shadow_prefix")
-
-for p in p.self_and_subtree_iter():
-    h = p.headString().strip()
-    if h.startswith("@thin"):
-        start = h.find("@thin") + len("@thin")
-        leofiledir = os.path.split(c.mFileName)[0]
-        filename = h[start:].strip()
-        fullfilename = os.path.join(leofiledir, filename)
-        theDir = os.path.split(fullfilename)[0]
-        leoFolder = os.path.join(leofiledir, theDir, shadow_subdir)
-        if not os.path.exists(leoFolder):
-           os.mkdir(leoFolder)
-           assert os.path.exists(leoFolder)
-        else:
-           assert os.path.isdir(leoFolder)
-        junk, name = os.path.split(filename)
-        newname = os.path.join(leoFolder, prefix + name)
-        if os.path.exists(newname):
-            continue
-        g.es( "renaming %s to %s" % (filename, newname))
-        shutil.copy2(fullfilename, newname)
-        os.unlink(fullfilename)
-        f = file(fullfilename, "w")
-        f.close()
-        mod_shadow_core.copy_file_removing_sentinels(
-            sourcefilename=newname,
-            targetfilename=fullfilename,
-            marker_from_extension = marker_from_extension)
-        g.es("File %s is now shadowed" % filename)</t>
-<t tx="ekr.20080702193741.3">def spam():
-    g.trace()</t>
-<t tx="ekr.20080702193741.4">def eggs():
-    g.trace()</t>
-<t tx="ekr.20080708103735.1">@
-
-All the tags should be tested at least once (equal, replace, delete, insert).
-
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.
-</t>
-<t tx="ekr.20080708103735.2"></t>
-<t tx="ekr.20080708103735.3">#@string1
-line 1
-line 2
-</t>
-<t tx="ekr.20080708103735.4">#@string1
-xxx
-</t>
-<t tx="ekr.20080708103735.5">xxx
-</t>
-<t tx="ekr.20080708103735.6">import leo.core.leoShadow as leoShadow
-
-def get_lines(headline):
-    p = g.findNodeAnywhere(c, headline)
-    s = p.bodyString()    
-    return g.splitLines(s)
-
-old_private_lines       = get_lines ('old_private')
-new_public_lines        = get_lines ('new_public')
-expected_private_lines  = get_lines ('expected_after_private')
-
-assert old_private_lines
-assert new_public_lines
-assert expected_private_lines
-
-x = leoShadow.shadowController(c)
-
-x.test_propagate_changes (
-    old_private_lines,      # before_with_sentinels_lines,
-    new_public_lines,       # changed_without_sentinels_lines,
-    expected_private_lines, # after_with_sentinel_lines,
-    marker="#@")
-</t>
 <t tx="ekr.20080710111404.1">g.pr('a',newline=False)
 g.pr('b')
 f = open(c.fileName())
