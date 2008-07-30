@@ -2936,8 +2936,7 @@
 <v t="ekr.20080405074410.38"><vh>Fixed several unit testing bugs relating to doTests(all=True)</vh></v>
 </v>
 </v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080730095710.1"><vh>4.5 code reorgs, vim bindings, @shadow</vh>
 <v t="ekr.20080624093059.1"><vh>4.5 b1</vh>
 <v t="ekr.20080624093059.2"><vh>Bug fixes</vh>
 <v t="ekr.20080624093059.3"><vh>Fixed bug in appendToRecentFiles</vh></v>
@@ -2999,6 +2998,10 @@
 <v t="ekr.20080624093059.53"><vh>Added check for empty @nosent nodes</vh></v>
 </v>
 </v>
+</v>
+</v>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="ekr.20080730095710.2"><vh>4.5 b2</vh></v>
 </v>
 </v>
 </vnodes>
@@ -31085,6 +31088,32 @@ The contents of @button profile is::
     
 runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
 </t>
+<t tx="ekr.20080730095710.1"></t>
+<t tx="ekr.20080730095710.2">Leo 4.5 beta 2                      July 31, 2008
+
+Leo 4.5 beta 2 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+This beta 2 version includes full support for @shadow trees.  Leo's writes public
+versions of @shadow trees without sentinels.
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.5:
+--------------------------
+- Several reorgs of Leo's code.
+- The beginning of usable vim-like bindings.
+- Full support for @shadow files in Leo's core.
+- Many small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**

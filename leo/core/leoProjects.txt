@@ -855,7 +855,15 @@ def createButtons (self):
 #@-node:ekr.20070302090616.1:Birth (nullFindTab)
 #@-node:ekr.20080707150137.2:Pylint errors
 #@+node:ekr.20080408060320.4:4.5 b1
-# The first 4.5 release will be 4.5 b1.
+@
+The first 4.5 release will be 4.5 b1.
+
+The b1 release featured several major code reorgs:
+
+- New drawing code.
+- New node organization: replaced links with arrays.
+    This is compatible with the node structure needed by the graph world.
+- Completed the transition to sax-based parsing.
 #@nonl
 #@+node:ekr.20080506135044.2:Unposted posting about removing .parents list
 @nocolor
@@ -17662,6 +17670,12 @@ Negligible
 #@-node:ekr.20080529054218.2:Benchmarked the read code
 #@-node:ekr.20080408060320.4:4.5 b1
 #@+node:ekr.20080702123133.2:4.5 b2
+@
+The 4.5 b2 release boasts these features:
+
+- Full support for @shadow in Leo's core.
+- Converted print to g.pr. This makes Leo's code base ready for Python 3.0.
+#@nonl
 #@+node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
 Should always use a Tk.Text widget.
 #@nonl
@@ -19135,7 +19149,7 @@ def updatePublicAndPrivateFiles (self,fn,shadow_fn):
         written = x.propagate_changes(fn,shadow_fn)
         if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
     else:
-        # Create the private file from the private shadow file.
+        # Create the public file from the private shadow file.
         x.copy_file_removing_sentinels(shadow_fn,fn)
         x.message("created public %s from private %s " % (fn, shadow_fn))
 #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
@@ -20721,7 +20735,7 @@ def updatePublicAndPrivateFiles (self,fn,shadow_fn):
         written = x.propagate_changes(fn,shadow_fn)
         if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
     else:
-        # Create the private file from the private shadow file.
+        # Create the public file from the private shadow file.
         x.copy_file_removing_sentinels(shadow_fn,fn)
         x.message("created public %s from private %s " % (fn, shadow_fn))
 #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
