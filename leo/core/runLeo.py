@@ -63,7 +63,7 @@ def run(fileName=None,pymacs=None,jyLeo=False,*args,**keywords):
     # Import leoGlobals, but do NOT set g.
     import leo.core.leoGlobals as leoGlobals
 
-    # Set leoGlobals.g, rather than in leoGlobals.py.
+    # Set leoGlobals.g here, rather than in leoGlobals.py.
     leoGlobals.g = leoGlobals
 
     import leo.core.leoApp as leoApp
