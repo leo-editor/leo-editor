@@ -827,16 +827,19 @@ def runTestsExternally (c,all):
 
             '''Run test/leoDynamicTest.py in a pristine environment.'''
 
+            # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
             path = g.os_path_abspath(g.os_path_join(
-                g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
+                # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
+                g.app.loadDir,'leoDynamicTest.py'))
 
             if ' ' in path and sys.platform.startswith('win'): 
                 path = '"' + path + '"'
 
             args = [sys.executable, path, '--silent']  
 
-            srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
-            os.chdir(srcDir)
+            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
+            # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
+            # os.chdir(srcDir)
 
             os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
         #@-node:ekr.20070627135336.11:runLeoDynamicTest
