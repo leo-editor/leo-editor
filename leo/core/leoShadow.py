@@ -528,7 +528,7 @@ class shadowController:
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
         else:
-            # Create the private file from the private shadow file.
+            # Create the public file from the private shadow file.
             x.copy_file_removing_sentinels(shadow_fn,fn)
             x.message("created public %s from private %s " % (fn, shadow_fn))
     #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
