@@ -56,11 +56,16 @@
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20080730212711.37"><vh>Original page</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
-<v t="ekr.20040414162124"><vh>@rst html\leo_TOC.html</vh>
+<v t="ekr.20040414162124"><vh>@@rst html\leo_TOC.html</vh>
 <v t="ekr.20050828112159"><vh>@rst-no-head All links (TOC)</vh></v>
 <v t="ekr.20040414163815"><vh>Table of Contents</vh></v>
 <v t="ekr.20050812134441.3"><vh>@rst-no-head end</vh></v>
+</v>
+<v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh>
+<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
+<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
@@ -813,6 +818,12 @@
 </v>
 <v t="ekr.20080728151130.4"><vh>Using vim's modeline features</vh></v>
 <v t="TL.20080622103911.7"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
+<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow files</vh>
+<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
+<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -3004,6 +3015,26 @@
 <v t="ekr.20080730095710.2"><vh>4.5 b2</vh></v>
 </v>
 </v>
+<v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow files</vh>
+<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
+<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
+</v>
+</v>
+<v t="ekr.20080730212711.18"><vh>About @shadow</vh>
+<v t="ekr.20080730212711.19"><vh>Docs for @shadow</vh>
+<v t="ekr.20080730212711.20"><vh>Thead: Eureka?? Can we just not use sentinels?</vh></v>
+<v t="ekr.20080730212711.21"><vh>Theory of operation: from leoShadow.py: first light</vh></v>
+<v t="ekr.20080730212711.22"><vh>Unit tests: from leoShadow.py: first light</vh></v>
+<v t="ekr.20080730212711.23"><vh>Thread: Giant Aha: @shadow *is* safe</vh></v>
+<v t="ekr.20080730212711.24"><vh>Thread: @shadow plugin *will* make Leo famous</vh>
+<v t="ekr.20080730212711.25"><vh>Post</vh></v>
+<v t="ekr.20080730212711.26"><vh>Post</vh></v>
+<v t="ekr.20080730212711.27"><vh>Post 3</vh></v>
+<v t="ekr.20080730212711.28"><vh>Post 4</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040518070558">Leo 4.2 alpha 2           May 18, 2004
@@ -5171,7 +5202,7 @@ Most of the chapter tells how to install and use vim-like bindings in Leo.
     :target: front.html
 
 .. |next| image:: arrow_rt.gif
-    :target: appendices.html
+    :target: atShadow.html
 </t>
 <t tx="TL.20080622103911.3">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
 so that it is not a descendant of the "@ignore Unused key bindings" node.
@@ -7075,6 +7106,8 @@ Leo's Users Guide
 `Chapter 21: ILeo - the IPython bridge`_
 
 `Chapter 22: Using Vim with Leo`_
+
+`Chapter 23: Using @shadow files`_
 
 Appendices_
 
@@ -11562,6 +11595,7 @@ Just use ``@thin`` to create your `derived files`_.</t>
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
 .. _`Chapter 22\: Using Vim with Leo`:              vimBindings.html
+.. _`Chapter 23\: Using @shadow files`:             atShadow.html
 .. _`Appendices`:                                   appendices.html
 .. _`Glossary`:                                     glossary.html
 .. _`What's new in Leo 4.4.7 and 4.4.8`:            new-4-4-8.html
@@ -13923,7 +13957,7 @@ Appendices
 .. WARNING: image targets may not have upper case letters!
 
 .. |back| image:: arrow_lt.gif
-	:target: vimBindings.html
+	:target: atShadow.html
 
 .. |next| image:: arrow_rt.gif
 	:target: glossary.html
@@ -30060,7 +30094,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080306071848">&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-    Download Leo[4.5 b1]&lt;/a&gt;</t>
+    Download Leo[4.5 b2]&lt;/a&gt;</t>
 <t tx="ekr.20080310093038.4">.. _gettext: http://docs.python.org/lib/module-gettext.html
 
 It is easy to translate Leo's menu strings: simply create an @menus tree in
@@ -31114,6 +31148,1162 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20080730212711.14"></t>
+<t tx="ekr.20080730212711.15">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+.. July 31, 2008
+
+|back| |leo| |next|
+
+############################################################
+Chapter 23: Using @shadow files
+############################################################
+
+This chapter describes how to use @shadow trees to eliminate Leo sentinels from public files that other people and projects use.
+
+.. contents::
+</t>
+<t tx="ekr.20080730212711.16">.. Links
+
+.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |back| image:: arrow_lt.gif
+    :target: vimBindings.html
+
+.. |leo|  image:: leo.gif
+    :target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: appendices.html
+</t>
+<t tx="ekr.20080730212711.17">-----------------------
+
+|back| |leo| |next|</t>
+<t tx="ekr.20080730212711.18"></t>
+<t tx="ekr.20080730212711.19"></t>
+<t tx="ekr.20080730212711.20">@nocolor
+
+On sleeping on this queston, I think the "Aha" really means that I
+should start using the shadow plugin. I *really* do not want to give
+up the advantages of sentinels: they are an important part of Leo's
+internal reliability.  Furthermore, @thin is just exactly what is
+needed to make .leo files compatible with cvs/bzr.
+
+Bernhard's plugin does, in fact, do everything that we want, and the
+possible solutions to edge conditions are exactly the same for the "do
+without sentinels" approach and the shadow plugin. So I'll start using
+this plugin soon and report my conclusions. </t>
+<t tx="ekr.20080730212711.21">@nocolor
+
+The distinction between public (no sentinels) and private (with sentinels) files
+clarifies the code considerably by making names much shorter. In this case, the
+improvement is actually quite useful.
+
+Last night I spent about four hours studying the heart of the shadow code, the
+method called propagate_changed_lines. I believe I now understand this code in
+considerable detail, something that has *never* been true for me in the past.
+
+In this post I'll report that Aha's that made the code comprehensible.
+
+propagate_changed_lines computes new_private_lines (the changed lines
+*with* sentinels) given two arguments:
+
+- old_private_lines (containing sentinels) and
+- new_public_lines (the changed lines without sentinels)
+
+As an overview, propagate_changed_lines works as follows:
+
+1. It reconstitutes old_public_lines (the original lines without sentinels) by
+removing sentinels from old_private_lines.
+
+2. It calls difflib.SequenceMatcher(None,old_public_lines,new_public_lines) to
+create a list of diffs of the old and new versions of the lines **without**
+sentinels.
+
+3. It (very cleverly) uses the list of diffs to drive what is, in effect, a
+two-way merge of old_private_lines (with sentinels) and new_public_lines
+(without sentinels). All sentinels and unchanged regular lines come from
+old_private_lines. All inserted or replacement lines come from new_public_lines.
+
+There are a *lot* of details in the algorithm. Probably the turning point, the
+point at which I truly started to understand the algorithm, was the realization
+that the main loop involves only input from old_private_lines and
+new_public_lines. Once I saw that, I could begin to the following:
+
+Most of the indices returned by SequenceMatcher.get_opcodes are *not* used in
+the main loop. In the present code, these indices are called old_i, old_j, new_i
+and new_j.
+
+Indeed, the main loop mostly ignores these indices (I'm exaggerating a bit) and
+instead mostly relies on implied pointers into the old_private_lines and
+new_public_lines arrays. These "implied pointers" are the position of the
+corresponding reader classes used to access old_private_lines and
+new_public_lines.
+
+This lead me, finally, to the realization that the main loop is, in effect, a
+two-way merge of old_private_lines and new_public_lines arrays. It's a clever,
+tricky, merge, but (in essence) a merge is exactly what it is.
+
+There is one crucial detail that you must understand to begin to make sense of
+this merge: the mapping array.
+
+propagate_changed_lines reconstitutes old_public_lines (the original lines
+without sentinels) by removing sentinels from old_private_lines as follows::
+
+  old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+As the name implies, this method not only strips sentinel lines, but it returns
+a mapping. This mapping is an array of n+1 entries, where n is
+len(old_public_lines). This mapping array is an essential part of the algorithm.
+mapping[i] is the index into old_private_lines of line i in old_public_lines.
+That is, for each i &lt; len(old_public_lines), line i in old_public_lines ==
+old_private_lines[i]. In other words, mapping[i] tells where line i of
+old_public_lines "came from".
+
+We are now in a position to begin to understand the main loop in detail. The
+main loop processes one SequenceMatcher opcode, of the form
+tag,old_i,old_j,new_i,new_j. tag is the opcode kind. It is in
+('insert','delete','equal','replace').
+
+The following code starts the opcode loop::
+
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to index mapping[old_i].
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_i])
+
+Understanding this single line is essential to understanding the rest of the tag
+(opcode) handlers.
+
+This line copies only sentinel lines from the current position of the
+old_private_lines_rdr up to mapping[old_i]. As a side effect, the current
+position of the old_private_lines_rdr is advanced to mapping[old_i], so in
+effect all non-sentinel lines from the last written line to limit are deleted
+from old_private_lines. That is, those lines will never be copied to the output.
+
+Now let's take a look at the rest of the main loop::
+
+    if tag == 'equal':
+        # Copy all lines (including sentinels) from the old private file to the new private file.
+        while old_private_lines_rdr.index() &lt;= mapping[old_j-1]:
+           line = old_private_lines_rdr.get()
+           new_private_lines_wtr.put(line)
+
+        # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+        new_public_lines_rdr.sync(new_j)
+
+Diff is telling us that old_public_lines[old_i:old_j] are the same as
+new_public_lines[new_i:new_j]. However, we can't use either of these arrays
+directly because we would lose sentinels lines. Instead we copy all lines,
+including sentinels, from the current position in old_private_lines_rdr to
+mapping[old_j-1] (I'm dubious about the -1: unit testing is required). Once we
+have done that, we skip all lines in new_public_lines up until line new_j.
+
+Note that *only* index old_j is used in this code. The old_i, new_i and new_j
+indices are not used at all. Similar remarks can be made about the other cases
+to be discussed below. The realization that most indices aren't used was an
+important Aha.
+::
+
+    elif tag in ('insert','replace'):
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Copy lines from new_public_lines_rdr up to new_j.
+        while new_public_lines_rdr.index() &lt; new_j:
+            line = new_public_lines_rdr.get()
+            new_private_lines_wtr.put(line)
+
+Diff is telling us that new_public_lines[new_i:new_j] should replace
+old_public_lines[old_i:old_j]. However, the call to copy_sentinels has *already*
+skipped lines up to old_private_lines[mapping[old_i]], and these correspond (via
+the mapping) to the lines up to old_public_lines[old_i]. Thus, for both the
+'insert' and 'replace' opcodes, all we have to do is copy unwritten lines from
+new_public_llines_rdr up to index new_j.
+
+Note: we could assert that new_public_lines.index() == new_i at the start of
+this case. This assertion, and similar assertions, are true because
+SequenceMatcher returns opcodes in increasing order without gaps.
+::
+
+    elif tag=='delete':
+        # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+        # Leave new_public_lines_rdr unchanged.
+        pass
+
+Diff is telling us delete old_public_lines[old_i:old_j]. The call to
+copy_sentinels has deleted old_private_lines up to index mapping [old_i],
+**not** up to mapping [old_j]. We could call::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=mapping[old_j])
+
+here, but there is no need to do so. The next time through the loop will do the
+equivalent. Finally, after the loop completes, the following code ensures that
+all trailing sentinels are written by calling::
+
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=old_private_lines_rdr.size())
+
+So that's it. The big picture is that the main loop is a two-way merge of
+old_private_lines (with sentinels) with new_public_lines (without sentinels).
+Unchanged lines come from old_private_lines; changed lines come from
+new_public_lines. The result of the merge forms new_private_lines.
+
+Clearly, every line of new_public_line gets written to the output. In the
+'equal' case, however, those lines actually come from old_private_lines.</t>
+<t tx="ekr.20080730212711.22">@nocolor
+
+The shadow branch now contains the first-ever usable unit-testing
+framework for @shadow.
+
+unitTest.leo contains complete unit tests for @shadow.  See the node::
+
+    @suite run @shadow-test nodes
+
+This @suite node creates and runs leoShadow.atShadowTestCase
+tests or each @shadow-test node in the @shadow-tests tree.
+Creating a new unit test is as easy as creating the following
+tree::
+
+    @shadow-test
+      old
+      new
+
+Two multi-node unit tests which demonstrate that it is impossible, in general,
+to properly place a line on the boundary between nodes. They are called::
+
+    @shadow-test-lax insert between nodes: at end of prev node
+    @shadow-test insert between nodes: at start of next node
+
+The reason one of these tests *must* fail is that both will generate
+exactly the same new_public_lines: the only difference between these
+tests is, in essence, the *expected* result.  This expected result is
+computed by the unit test from the 'new' outline, but this expected
+result is not available to the shadow code!
+
+Heuristics can not possibly help. The data available to the shadow
+code is exactly the same for both unit tests, yet the two unit tests
+ask for different results!  Thus, one test must fail.
+
+I had foreseen this situation years ago, but alas, I let this
+difficulty stop me.  In fact, this is not fatal flaw: it simply means
+that @auto must show nodes that have changed externally.
+
+Furthermore, the proximate cause of the failed unit test is an overly-
+strict test in test_propagate_changes.  A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests.  This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines.  This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+</t>
+<t tx="ekr.20080730212711.23">@nocolor
+
+The following post is long, but imo it is one of the most important in
+Leo's long history of long posts :-)
+
+This post finally, indisputably, proves that @shadow is safe, and
+proposes a consolation prize for the long delay in implementing
+@shadow, namely @auto-shadow.
+
+This is a continuation of the thread, leoShadow.py: first light.  In
+the last post to that thread I said:
+
+QQQ
+The proximate cause of the failed unit test is an overly-strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Last night in bed, thinking about what I had just written, I realized
+that the failed unit test simply is not a problem.  There are two
+reasons for this statement:
+
+1. The public file produced by the "failed" unit test will be
+identical with the original (that is, changed) public file.  Thus,
+regardless of where @shadow puts the inserted lines, there will be no
+difference that can be seen outside of Leo.  But this 'round trip of
+public files' is the essential requirement!
+
+2. Furthermore, once the Leo user saves the @shadow file, the location
+of all newly inserted lines will be "fixed" (determined).  That is,
+the next time Leo opens the @shadow file, the @shadow code will "know
+for sure" where the line should go. The reason is simple: the line
+will be placed by the "equal" SequenceMatcher opcode, rather than the
+"insert" opcode.  Thus, once the Leo user chooses the location of
+newly inserted lines, the @shadow code will know (or remember) the
+location of those lines, because they will be part of the original,
+unchanged, *private* file.  The sentinels in the private file will
+tell where to put the line unambiguously.
+
+In short:
+
+1. **Boundary conditions do not affect public files**, the files seen
+by people who do not use Leo.
+
+2. Once an inserted line has been saved (thereby generating a new
+public file), Leo will forever afterward remember the location of the
+file.
+
+Thus, the *only* remaining detail, a minor one, is to alert the user
+when changes to a public file results in change to the Leo outline.
+But Leo already warns when such external changes are made.  If the
+user does nothing, the corresponding public file will remain as it
+was.
+
+Imo, this discussion clearly demonstrates that @shadow is safe.  This
+is a huge step forward.
+
+This Aha came, in no small part, from the change in terminology from
+"files with/without sentinels" to "private/public files". When we
+focus on what the public sees, we see that @shadow is safe.  Is just
+about that simple.
+
+So the executive summary is:
+
+Boundary problems while scanning changed public files can affect only
+*private* view of the Leo outline.  The public file will remain
+unchanged regardless of how boundary conditions are resolved. The user
+can change her private view as she likes, and once she has done so and
+saved the @shadow file, the change will become permanent: it is
+embodied in her private files.
+
+Hurray!  Clarity!  Safety!
+
+So what to do about the failed unit test?   Let's reconsider the
+opening quote:
+
+QQQ
+The proximate cause of the failed unit test is an overly- strict test
+in test_propagate_changes. A lesser test at the end of
+propagate_changed_lines succeeds for both unit tests. This test
+ensures that the sentinel lines and non-sentinel lines *separately*
+match the expected sentinel and non-sentinel lines. This test is
+clearly too lax because it *completely* ignores the interleaving
+between sentinel and non-sentinel lines.
+QQQ
+
+Now it should be clear that the essential test is the test that non-
+sentinel (public!) lines are preserved.  Thus, the test at the end of
+propagate_changed_lines is *not* too lax: the test that sentinel
+(private!) lines are preserved is nice to have, but preserving public
+lines is the acid test.
+
+So the solution to unit tests that fail at the boundary of nodes is
+simply to relax the test.  I'll do this by marking such tests with
+@shadow-test-lax, which will cause the actual UnitTest test case not
+to perform the stricter test that fails.  How easy is that?
+Naturally, I'll put comments in each @shadow-test-lax node explaining
+why a looser test is required.
+
+The Aha just discussed will make Leo famous.
+
+I have been lamenting to myself recently that I didn't see all of this
+when Bernhard Mulder first proposed shadow files.  I'm not sure how
+clearly he understood all the issues I have just discussed, but in any
+case, the responsibility for dismissing shadow files is mine and mine
+alone.
+
+However, in the spirit of 'make lemonade from lemons', it may be that
+the long delay in recognizing @shadow's true importance has had some
+benefits.  In particular, @auto might not have happened had @shadow
+been adopted earlier.
+
+What good is @auto now that we have @shadow, you ask?  I reply in two
+ways:
+
+1. @auto is useful in its own right, for study, etc, quite
+independently of whether people use @shadow.
+
+2. We can eliminate some potential problem with both @auto and @shadow
+by using @auto-shadow. Yes, I'll provide abbreviations for this.
+
+@auto-shadow does what the name implies: It uses @auto logic to import
+the file if no private (shadow) files exist for the file; otherwise it
+uses the @shadow logic. This will smooth the process of creating and
+using other people's outlines.  @auto-shadow will ensure that
+everything "just works"
+
+A great day for Leo.
+
+==================
+
+Doh!  The abbreviation should be @shadow :-)  That is, @shadow should
+work as I proposed @auto-shadow to work.
+
+===================
+
+Another important simplification was Bernhard's use of
+reader and writer classes. In an algorithm as visually complex as the
+main opcode loop, any visual simplification can be significant.
+Furthermore, these classes were perfect for adding debugging and
+tracing info.  I wouldn't willing do without them.</t>
+<t tx="ekr.20080730212711.24">@nocolor</t>
+<t tx="ekr.20080730212711.25">Not paying more attention to Bernhard's mod_shadow plugin is probably
+the biggest mistake I have ever made with Leo.  I rejected the idea
+far too quickly: any minor problems with it can easily be solved.
+
+First, let me summarize what the mod_shadow (shadow) plugin does:
+
+1. The shadow plugin writes "shadowed" derived files in two forms: a
+"public" form without sentinels, and a "private", form with
+sentinels.  The shadow plugin writes private files to a leo-shadow
+folder.
+
+At present, a script button converts a non-shadowed file to a shadowed
+file.  We could make the process of shadowing files more automatic.
+For example, @shadow-thin and @shadow-file might create shadowed
+private files in @thin or @file formats respectively.
+
+2. Typically, only the *public* files get committed to a repository.
+This makes Leo available even in shops where Leo sentinels are
+considered odious.  I am astounded that I haven't paid more attention
+to this plugin.
+
+3. Suppose that a public file (without sentinels) changes as the
+result of a bzr merge. When Leo reads the changed *public* file, the
+shadow plugin can *deduce* what changes were made by comparing the
+changed public file and the (still unchanged) private file.
+
+This idea is a stroke of genius.  Furthermore, the implementation is
+relatively straightforward.  The shadow plugin does the following:
+
+A. Removes sentinels from the private file, thereby recreating the
+original *public* file.
+B. Uses Python's difflib.Differ class to compute line-by-line diffs
+between the original and changed public files.
+C. Uses the line-oriented diffs to update the *private* file.
+D. Uses the updated private file (containing sentinels) to load the
+derived file.
+
+My concerns were with step C.  There is a boundary problem.  Suppose a
+changed line appears on the boundary of adjacent nodes A and B.
+Should the line be inserted at the end of node A, or at the start of
+node B?
+
+At the time, I suppose I wanted absolute answers the this question.
+But that is extremely foolish, for several reasons:
+
+1. The shadow plugin could warn that there is an ambiguity, and let
+the user decide.  The easy way to do this is to guess the answer, then
+clone the ambiguous nodes so they can be presented to the user to
+change if need be.
+
+2. Furthermore, indentation often (usually?) makes clear in which node
+to insert the new line.  If A and B have the same starting indentation
+and the inserted line has a larger indentation, we should prefer to
+put the node at the end of A rather than the start of B.  Other
+heuristics could be used too.
+
+But the main point is, **the ambiguity isn't serious** as long as the
+user is informed and can easily override incorrect guesses in step C.
+</t>
+<t tx="ekr.20080730212711.26">&gt; My impression has been that they are private to Leo.
+
+The audience is anyone who wants to share files without sentinels.
+
+True, shadow files are private.  That is, they exist only in the Leo-shadow
+folder and they would typically not be part of the repository.  But the
+*public* files, the files without sentinels, could be shared in a
+repository.  The point is that Leo can update the private files from changes
+made to public files, so that changes to the repository will "magically"
+cause changes to the Leo outline.
+
+Perhaps an example will make this clearer.  Suppose, as is indeed the case,
+that I would like to study the pypy project.
+http://codespeak.net/pypy/dist/pypy/doc/home.html
+
+This is a major project, with lots of files.  Clearly, I don't want to try
+to convince the pypy folk to change all their files.  Here is what I am
+likely to do:
+
+1.  First, I'll create @auto for all the files of the pypy project in which
+I have an interest.  An already-existing script will help me do this.  See
+test.leo:
+
+Startup--&gt;Scripts--&gt;create-at-auto-nodes
+
+2.  Next, I'll convert @auto nodes to @shadow nodes (details a bit fuzzy,
+but let's ignore them for now).  When I save the outline, the original files
+get written as before.  In addition, the private files containing Leo
+sentinels will be saved to the private Leo-shadow directory.
+
+3.  When I reopen the Leo file, the outline structure will come from the
+private files.  However, if any of the *public* files have changed (by the
+pypy folk), those changes will be incorporated into the Leo outline, and
+when I save the Leo outline again the changes will be written back to the
+private files.
+
+Thus, I can use Leo to read and write pypy files, but the pypy folk will
+never see Leo sentinels in "their" files.  I can use the pypy repository and
+the pypy people will not know that I am using Leo.
+
+Edward
+
+P.S.  In the usage case just described we would *not* want to add headline
+comments to the public files because that would be change the pypy sources
+too much. </t>
+<t tx="ekr.20080730212711.27">&gt; 1.  First, I'll create @auto for all the files of the pypy project in which
+&gt; I have an interest.  An already-existing script will help me do this.
+
+There are often minor problems that must be corrected before @auto will
+import a python file "perfectly", typically tabnanny problems or
+underindented comments.  It would be necessary to convince the pypy
+community to allow me to fix these minor problems so that I can use Leo.
+Presumably, that would be easy to do: there should be no reason why a
+project should be committed to either inconsistent whitespace or
+underindented comments. </t>
+<t tx="ekr.20080730212711.28">&gt; I consider @auto to be a most happy development. In particular, @auto
+&gt; provides an excellent *starting* point for @shadow.
+
+@auto does one (important!) thing more: it guarantees that the result of
+writing an @auto file will be identical (up to some specified 'strictness'
+level) to the original files.  For 'strict' languages such as python, the
+comparison requires substantially identical leading whitespace.
+
+In other words, @auto isn't a lax import: when it succeeds it guarantees
+that we won't be changing the original (public) files.  When it fails, it
+tells us why it failed so we could, for example, request that pypy clean up
+the offending files.  I think this is *exactly* the right balance to have
+when dealing with external projects, especially Python projects. </t>
+<t tx="ekr.20080730212711.29">@first &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+@first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+
+@language html
+@tabwidth -4
+
+&lt;!-- Last Modified: July 31, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;&lt;head&gt;&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;&lt; body &gt;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20080730212711.30">&lt;title&gt;Leo's Table of contents&lt;/title&gt;
+
+&lt;meta name="description"
+    content="This page is the table of contents for Leo."/&gt;
+
+&lt;style type="text/css"&gt;
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+&lt;/style&gt;
+</t>
+<t tx="ekr.20080730212711.36">&lt;div class="document"&gt;
+
+&lt;p&gt;&lt;img alt="blank" src="Blank.gif" /&gt; &lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class="section" id="leo-s-users-guide"&gt;
+&lt;h1&gt;Leo's Users Guide&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;:
+LeoDocs.leo (included in all Leo distributions) contains the full source code for
+all parts of Leo's Users Guide.&lt;/p&gt;
+
+&lt;div class="section" id="table-of-contents"&gt;
+&lt;h2&gt;Table of Contents&lt;/h2&gt;
+
+&lt;a class="reference" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="preface.html"&gt;Preface&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="install.html"&gt;Chapter 1: Installing Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="intro.html"&gt;Chapter 2: A Tutorial Introduction to Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="outlines.html"&gt;Chapter 3: Using Leo's Outlines&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="directives.html"&gt;Chapter 4: Writing Programs in Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="commands.html"&gt;Chapter 5: Using Leo's Commands&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="design.html"&gt;Chapter 6: Leo and Literate Programming&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="scripting.html"&gt;Chapter 7: Scripting Leo with Python&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="customizing.html"&gt;Chapter 8: Customizing Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="history.html"&gt;Chapter 9: History of Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="theory.html"&gt;Chapter 10: Theory of Operation&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="whitepapers.html"&gt;Chapter 11: White Papers&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="plugins.html"&gt;Chapter 12: Plugins&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="writingPlugins.html"&gt;Chapter 13: Writing Plugins&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="rstplugin3.html"&gt;Chapter 14: Using the Rst3 Plugin&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="coloring.html"&gt;Chapter 15: Controlling Syntax Coloring&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="debuggers.html"&gt;Chapter 16: Debugging with Leo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference" href="zodb.html"&gt;Chapter 17: Using ZODB with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="emacs.html"&gt;Chapter 18: Leo and Emacs&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="leoBridge.html"&gt;Chapter 19: Embedding Leo with the leoBridge Module&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="unitTesting.html"&gt;Chapter 20: Unit testing with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="IPythonBridge.html"&gt;Chapter 21: ILeo - the IPython bridge&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="vimBindings.html"&gt;Chapter 22: Using Vim with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="atShadow.html"&gt;Chapter 23: Using @shadow files&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-8.html"&gt;What's new in Leo 4.4.7 and 4.4.8&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference" href="new-4-4-6.html"&gt;What's new in Leo 4.4.6&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-5.html"&gt;What's new in Leo 4.4.5&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-4.html"&gt;What's new in Leo 4.4.4&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-3.html"&gt;What's new in Leo 4.4.3&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-2.html"&gt;What's new in Leo 4.4.2&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-1.html"&gt;What's new in Leo 4.4.1&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4.html"&gt;What's new in Leo 4.4&lt;/a&gt;&lt;br&gt;
+
+&lt;hr class="docutils" /&gt;
+&lt;p&gt;&lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</t>
+<t tx="ekr.20080730212711.37">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Leo's Users Guide&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+&lt;!-- rst3: filename: html\leo_TOC.html --&gt;
+&lt;!-- August 28, 2005 --&gt;
+
+&lt;p&gt;&lt;img alt="blank" src="Blank.gif" /&gt; &lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div class="section" id="leo-s-users-guide"&gt;
+&lt;h1&gt;Leo's Users Guide&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;: LeoDocs.leo (included in all Leo distributions) contains the full source code for all parts of Leo's Users Guide.&lt;/p&gt;
+&lt;!-- WARNING: image targets may not have upper case letters! --&gt;
+&lt;div class="section" id="table-of-contents"&gt;
+&lt;h2&gt;Table of Contents&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="preface.html"&gt;Preface&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a class="reference" href="testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="install.html"&gt;Chapter 1: Installing Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="intro.html"&gt;Chapter 2: A Tutorial Introduction to Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="outlines.html"&gt;Chapter 3: Using Leo's Outlines&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="directives.html"&gt;Chapter 4: Writing Programs in Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="commands.html"&gt;Chapter 5: Using Leo's Commands&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="design.html"&gt;Chapter 6: Leo and Literate Programming&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="scripting.html"&gt;Chapter 7: Scripting Leo with Python&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a class="reference" href="customizing.html"&gt;Chapter 8: Customizing Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="history.html"&gt;Chapter 9: History of Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="theory.html"&gt;Chapter 10: Theory of Operation&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="whitepapers.html"&gt;Chapter 11: White Papers&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="plugins.html"&gt;Chapter 12: Plugins&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="writingPlugins.html"&gt;Chapter 13: Writing Plugins&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="rstplugin3.html"&gt;Chapter 14: Using the Rst3 Plugin&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="coloring.html"&gt;Chapter 15: Controlling Syntax Coloring&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="debuggers.html"&gt;Chapter 16: Debugging with Leo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a class="reference" href="zodb.html"&gt;Chapter 17: Using ZODB with Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="emacs.html"&gt;Chapter 18: Leo and Emacs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="leoBridge.html"&gt;Chapter 19: Embedding Leo with the leoBridge Module&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="unitTesting.html"&gt;Chapter 20: Unit testing with Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="IPythonBridge.html"&gt;Chapter 21: ILeo - the IPython bridge&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="vimBindings.html"&gt;Chapter 22: Using Vim with Leo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-8.html"&gt;What's new in Leo 4.4.7 and 4.4.8&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a class="reference" href="new-4-4-6.html"&gt;What's new in Leo 4.4.6&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-5.html"&gt;What's new in Leo 4.4.5&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-4.html"&gt;What's new in Leo 4.4.4&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-3.html"&gt;What's new in Leo 4.4.3&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-2.html"&gt;What's new in Leo 4.4.2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4-1.html"&gt;What's new in Leo 4.4.1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference" href="new-4-4.html"&gt;What's new in Leo 4.4&lt;/a&gt;&lt;/p&gt;
+&lt;hr class="docutils" /&gt;
+&lt;p&gt;&lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
