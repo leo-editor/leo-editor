@@ -16841,6 +16841,37 @@ The 4.5 b2 release boasts these features:
 - Full support for @shadow in Leo's core.
 - Converted print to g.pr. This makes Leo's code base ready for Python 3.0.
 #@nonl
+#@+node:ekr.20080730212711.2:Bugs
+#@+node:ekr.20080730161153.9:Fixed leoBridge and run-unit-tests
+@
+- leoBridgeTest.py and leoDynamicTest.py are now in the core directory.
+  This required some changes to imports.
+- runLeoDynamicTest now uses new paths.
+#@nonl
+#@+node:ekr.20070627135336.11:runLeoDynamicTest
+def runLeoDynamicTest (self):
+
+    '''Run test/leoDynamicTest.py in a pristine environment.'''
+
+    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    path = g.os_path_abspath(g.os_path_join(
+        # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
+        g.app.loadDir,'leoDynamicTest.py'))
+
+    if ' ' in path and sys.platform.startswith('win'): 
+        path = '"' + path + '"'
+
+    args = [sys.executable, path, '--silent']  
+
+    # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
+    # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
+    # os.chdir(srcDir)
+
+    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+#@-node:ekr.20070627135336.11:runLeoDynamicTest
+#@-node:ekr.20080730161153.9:Fixed leoBridge and run-unit-tests
+#@-node:ekr.20080730212711.2:Bugs
+#@+node:ekr.20080730212711.3:Code cleanups
 #@+node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
 Should always use a Tk.Text widget.
 #@nonl
@@ -16867,6 +16898,22 @@ def createMiniBufferWidget (self):
     return label
 #@-node:ekr.20050920094212:f.createMiniBufferWidget
 #@-node:ekr.20080629085849.3:Eliminated @bool useTextMinibuffer
+#@+node:ekr.20080730072844.1:Converted most calls to 'print' to calls to g.pr
+#@+node:ekr.20080729194150.2:print to g.pr regex
+@nocolor
+
+print[ ]+(.*)$
+g.pr(\1)
+
+print[ ]+;[ ]+print[]+\'(.*)$
+g.pr('\\n\1)
+
+# Double escapes in print statements.
+print(.*)\\n(.*)$
+print\1\\\\n\2
+#@nonl
+#@-node:ekr.20080729194150.2:print to g.pr regex
+#@-node:ekr.20080730072844.1:Converted most calls to 'print' to calls to g.pr
 #@+node:ekr.20080707093924.1:regexp for redraw branch
 @nocolor
 
@@ -16904,23 +16951,9 @@ def createMiniBufferWidget (self):
 ^# import leo\.core\.leoTest as leoTest.*\n# u = leoTest\.testUtils(c)\n
 
 #@-node:ekr.20080707093924.1:regexp for redraw branch
-#@+node:ekr.20080730072844.1:Converted most calls to 'print' to calls to g.pr
-#@+node:ekr.20080729194150.2:print to g.pr regex
-@nocolor
-
-print[ ]+(.*)$
-g.pr(\1)
-
-print[ ]+;[ ]+print[]+\'(.*)$
-g.pr('\\n\1)
-
-# Double escapes in print statements.
-print(.*)\\n(.*)$
-print\1\\\\n\2
-#@nonl
-#@-node:ekr.20080729194150.2:print to g.pr regex
-#@-node:ekr.20080730072844.1:Converted most calls to 'print' to calls to g.pr
-#@+node:ekr.20080710082231.16:shadow stuff
+#@-node:ekr.20080730212711.3:Code cleanups
+#@+node:ekr.20080730212711.4:New features
+#@+node:ekr.20080730212711.5:Added support for @shadow
 #@+node:ekr.20080710082231.3:(Added support for lax tests)
 #@+node:ekr.20080709062932.10:runTest (atShadowTestCase)
 def runTest (self,define_g = True):
@@ -19920,35 +19953,8 @@ def copy_file_removing_sentinels (self,source_fn,target_fn):
 #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
 #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
 #@-node:ekr.20080713091247.4:(Fixed problem with 'can not read 3.x derived file' message)
-#@-node:ekr.20080710082231.16:shadow stuff
-#@+node:ekr.20080730161153.9:Fixed leoBridge and run-unit-tests
-@
-- leoBridgeTest.py and leoDynamicTest.py are now in the core directory.
-  This required some changes to imports.
-- runLeoDynamicTest now uses new paths.
-#@nonl
-#@+node:ekr.20070627135336.11:runLeoDynamicTest
-def runLeoDynamicTest (self):
-
-    '''Run test/leoDynamicTest.py in a pristine environment.'''
-
-    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-    path = g.os_path_abspath(g.os_path_join(
-        # g.app.loadDir, '..', 'test', 'leoDynamicTest.py'))
-        g.app.loadDir,'leoDynamicTest.py'))
-
-    if ' ' in path and sys.platform.startswith('win'): 
-        path = '"' + path + '"'
-
-    args = [sys.executable, path, '--silent']  
-
-    # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','src'))
-    # srcDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..')
-    # os.chdir(srcDir)
-
-    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
-#@-node:ekr.20070627135336.11:runLeoDynamicTest
-#@-node:ekr.20080730161153.9:Fixed leoBridge and run-unit-tests
+#@-node:ekr.20080730212711.5:Added support for @shadow
+#@-node:ekr.20080730212711.4:New features
 #@-node:ekr.20080702123133.2:4.5 b2
 #@-all
 #@nonl

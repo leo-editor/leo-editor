@@ -2,7 +2,7 @@
 #@+node:ekr.20060207133601:@thin ../doc/leoToDoLater.txt
 #@+all
 #@+node:ekr.20060824110846:Colorizing
-#@+node:ekr.20060813121814:Add colorizer files for cweb, forth,  rapidq
+#@+node:ekr.20060813121814:Add colorizer files for cweb, rapidq
 #@+node:ekr.20060824103837:Notes
 @nocolor
 
@@ -12,50 +12,6 @@ Forth is going to be a problem, because keywords can be extensible.
 Perhaps the user should be responsible for updating forth.xml.
 #@nonl
 #@-node:ekr.20060824103837:Notes
-#@+node:ekr.20041107093834:forth keywords
-# Default forth keywords: extended by leo-forthwords.txt.
-self.forth_keywords = [
-    "variable", "constant", "code", "end-code",
-    "dup", "2dup", "swap", "2swap", "drop", "2drop",
-    "r>", ">r", "2r>", "2>r",
-    "if", "else", "then",
-    "begin", "again", "until", "while", "repeat",
-    "v-for", "v-next", "exit",
-    "meta", "host", "target", "picasm", "macro",
-    "needs", "include",
-    "'", "[']",
-    ":", ";",
-    "@", "!", ",", "1+", "+", "-",
-    "<", "<=", "=", ">=", ">",
-    "invert", "and", "or", 
-    ]
-
-# Forth words which define other words: extended by leo-forthdefwords.txt.
-self.forth_definingwords = [
-    ":", "variable", "constant", "code",
-    ]
-
-# Forth words that define brackets: extended by leo-forthdelimiters.txt
-# Entries are tuples.
-self.forth_delims = [
-    ]
-
-# Forth words which start strings: extended by leo-forthstringwords.txt.
-self.forth_stringwords = [
-    's"', '."', '"', '."',
-    'abort"',
-    ]
-
-# Forth words to be rendered in boldface: extended by leo-forthboldwords.txt.
-self.forth_boldwords = [ ]
-
-# Forth words to be rendered in italics: extended by leo-forthitalicwords.txt.
-self.forth_italicwords = [ ]
-
-# Forth bold-italics words: extemded leo-forthbolditalicwords.txt if present
-# Note: on some boxen, bold italics may show in plain bold.
-self.forth_bolditalicwords = [ ]
-#@-node:ekr.20041107093834:forth keywords
 #@+node:ekr.20040331145826:rapidq keywords
 self.rapidq_keywords = [
 # Syntax file for RapidQ
@@ -86,7 +42,7 @@ self.rapidq_keywords = [
 "UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
 "WEND","WHILE","WITH","WORD","XOR"]
 #@-node:ekr.20040331145826:rapidq keywords
-#@-node:ekr.20060813121814:Add colorizer files for cweb, forth,  rapidq
+#@-node:ekr.20060813121814:Add colorizer files for cweb, rapidq
 #@-node:ekr.20060824110846:Colorizing
 #@+node:ekr.20060527184335.1:Command-line options
 #@+node:ekr.20060103101524:Improve command-line handling
@@ -1802,39 +1758,6 @@ http://sourceforge.net/forum/message.php?msg_id=3957908
 #@-node:ekr.20061011111007:@bool autoload_most_recent_leo_file
 #@-node:ekr.20041228091154:Commands
 #@+node:ekr.20041022083226:Directives
-#@+node:ekr.20050225070857:@path stuff
-#@+node:ekr.20050121081635:Request:  cumulative @path directives
-@killcolor
-https://sourceforge.net/forum/message.php?msg_id=2936513
-By: ktenney
-
-In the @view plugin is a method, currentPath() which examines the current headline
-and body, and the headlines and bodies of it's parents, looking for @path and
-@view directives. It builds a path from them and checks for validity.
-
-if a top level node contains;
-@path /home/ktenney
-
-and a descendant of that node contains;
-@path projects/myproject
-
-Then a node further down the tree which contains;
-@view readme.txt
-
-will display /home/ktenney/projects/myproject/readme.txt
-
-I like this principle of cumulative paths, and would like other plugins to work
-the same way ... @image, @url etc.
-
-This brings me to my question, would it make sense for Leo to offer a 'Plugin'
-class to inherit from? It seems that there are some operations that are being
-re-written in many plugins.
-#@-node:ekr.20050121081635:Request:  cumulative @path directives
-#@+node:ekr.20050222045210:Better @path conventions
-See g.getBaseDirectory
-#@nonl
-#@-node:ekr.20050222045210:Better @path conventions
-#@-node:ekr.20050225070857:@path stuff
 #@+node:ekr.20031218072017.833:Use @file extension by default if no @language
 @nocolor
 
@@ -1952,6 +1875,45 @@ There's a literate programming mode in Haskell (and in a number of other functio
 Günther 
 #@nonl
 #@-node:ekr.20041130104552:(Support bird-track programs/comments?)
+#@+node:ekr.20031218072017.797:Allow @file http & @file ftp
+@nocolor
+
+I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
+
+in short, it would be very sweet if the following work: 
+
+@file http://www.somedomain.org/python/foo.py 
+
+@file pass@ftp.sd.org/python/foo.py" target="_blank" target="_new">ftp://user:pass@ftp.sd.org/python/foo.py> 
+
+while we are at it, what about xmlrpc/soap? 
+
+should there be new directive, like @source ?
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.810:Remote access Scott Powell
+I will wait. Here's clarification, when you're ready for it:
+
+All of my projects are stored on remote computers, and accessed via FTP. 
+What I want is basically the ability to open up these projects directly 
+through leo, instead of transferring the files manually between my computer 
+and the computers that hold my projects, preferably through FTP.
+
+My solution: A new menu item called 'FTP' or 'Remote'. Click on this, and an 
+FTP dialog opens up, with an empty list of FTP sites, and the ability to add 
+more. You select a site, and it brings up a list of files. You select a 
+file, and it is added to your project. When you hit 'save', it automatically 
+does an FTP send.
+
+Python makes this a lot easier with the builtin module 'ftplib'. I'm sure 
+there are similar things for C++. I hope you take this idea into 
+consideration.
+
+Scott Powell
+CEO, Dev Designs
+#@-node:ekr.20031218072017.810:Remote access Scott Powell
+#@-node:ekr.20031218072017.797:Allow @file http & @file ftp
 #@-node:ekr.20041022083226:Directives
 #@+node:ekr.20060527184335:Gui
 #@+node:ekr.20031218072017.793:Keep right panes constant when tiling horizontally (Tix)
@@ -1983,8 +1945,6 @@ def createBalloon (tab,sv):
 #@-node:ekr.20060213151918:Add baloons
 #@+node:ekr.20060116083043.1:Add context-menus on nodes or text
 #@-node:ekr.20060116083043.1:Add context-menus on nodes or text
-#@+node:ekr.20060203165231:Change outline or body text background when changing panes.
-#@-node:ekr.20060203165231:Change outline or body text background when changing panes.
 #@+node:ekr.20051207130144:Investigate Tk DnD
 @nocolor
 https://sourceforge.net/forum/message.php?msg_id=3460955
@@ -2104,35 +2064,6 @@ This prevents "hijacking" an already existing file.
 #@-node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder
 #@+node:ekr.20040311022923:Make sentinel name in @-node optional
 #@-node:ekr.20040311022923:Make sentinel name in @-node optional
-#@+node:ekr.20050713105353:Add configuration setting to set menu fonts
-#@+node:ekr.20050713105353.1:Email from Martin Moncrieffe <mcm35@cam.ac.uk>
-@nocolor
-
-I have looked into leo's code and managed to figure out how to change 
-some fonts. Here's what I did to change the menu fonts for example.
-
-Fonts for the menu can be set in Code->Gui Tkinter classes->@thin 
-leoTkinterMenu.py->Tkinter menu bindings->Routines with Tk 
-spellings->new_menu
-
-so to use the system font (linux) I changed the return statement to:
-
-return Tk.Menu(parent,tearoff=tearoff, font=("System",11))
-
-I'll try using .leo_xresources file and see if that works as well.
-#@nonl
-#@-node:ekr.20050713105353.1:Email from Martin Moncrieffe <mcm35@cam.ac.uk>
-#@-node:ekr.20050713105353:Add configuration setting to set menu fonts
-#@+node:ekr.20080225103954:Add 'else' clause to if-platform
-@nocolor
-
-**OR** put 'else' (default) first, and have @ifplatform only override parts.
-
-@ifplatform isn't very useful without @else or some other kind of default.
-
-This is no longer very important because of @ifhostname
-#@nonl
-#@-node:ekr.20080225103954:Add 'else' clause to if-platform
 #@-node:ekr.20041228085245:Options & settings
 #@+node:ekr.20070814070357:Performance
 #@+node:ekr.20061207073104:Convert bottlenecks to pyrex code
@@ -2562,51 +2493,6 @@ def next(self):
 #@-node:ekr.20040812170616:Pyrex versions of key classes
 #@-node:ekr.20061207073104:Convert bottlenecks to pyrex code
 #@-node:ekr.20070814070357:Performance
-#@+node:ekr.20041228090855.2:Plugins
-#@+node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@-node:ekr.20041022083005.3:@path and other directives accept python expressions
-#@+node:ekr.20031218072017.797:Allow @file http & @file ftp
-@nocolor
-
-I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
-
-in short, it would be very sweet if the following work: 
-
-@file http://www.somedomain.org/python/foo.py 
-
-@file pass@ftp.sd.org/python/foo.py" target="_blank" target="_new">ftp://user:pass@ftp.sd.org/python/foo.py> 
-
-while we are at it, what about xmlrpc/soap? 
-
-should there be new directive, like @source ?
-
-@color
-#@nonl
-#@+node:ekr.20031218072017.810:Remote access Scott Powell
-I will wait. Here's clarification, when you're ready for it:
-
-All of my projects are stored on remote computers, and accessed via FTP. 
-What I want is basically the ability to open up these projects directly 
-through leo, instead of transferring the files manually between my computer 
-and the computers that hold my projects, preferably through FTP.
-
-My solution: A new menu item called 'FTP' or 'Remote'. Click on this, and an 
-FTP dialog opens up, with an empty list of FTP sites, and the ability to add 
-more. You select a site, and it brings up a list of files. You select a 
-file, and it is added to your project. When you hit 'save', it automatically 
-does an FTP send.
-
-Python makes this a lot easier with the builtin module 'ftplib'. I'm sure 
-there are similar things for C++. I hope you take this idea into 
-consideration.
-
-Scott Powell
-CEO, Dev Designs
-#@-node:ekr.20031218072017.810:Remote access Scott Powell
-#@-node:ekr.20031218072017.797:Allow @file http & @file ftp
-#@+node:ekr.20040124074218.3:pyGtk plugin
-#@-node:ekr.20040124074218.3:pyGtk plugin
-#@-node:ekr.20041228090855.2:Plugins
 #@+node:ekr.20041228092223.3:Scripting
 #@+node:ekr.20031218072017.733:Execute scripts like IDE's do (does executeFile do this?)
 @nocolor
@@ -2733,6 +2619,104 @@ To create a splash screen:
 #@-node:ekr.20040908221501:@url http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/120687
 #@-node:ekr.20040908104644:Leo splash screen
 #@-node:ekr.20041228092223.4:Windows
+#@+node:ekr.20041228084143:Maybe never
+#@+node:ekr.20070426092031:Consider another way to compute home directory
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=4281562
+By: ktenney
+
+I don't know if this is a resolved issue, here's another approach,
+looks like a good one.
+
+email link
+http://murl.se/24201
+
+python.org os.path doc
+http://murl.se/24202
+
+>>> import os
+>>> lin_key, win_key = "home", "Documents"
+>>> homedir = os.path.expanduser('~')
+>>> if os.name == 'nt': os_key = win_key
+>>> if os.name == 'posix': os_key = lin_key
+>>> print homedir.find(os_key) > -1
+True
+
+#@-node:ekr.20070426092031:Consider another way to compute home directory
+#@+node:ekr.20060930110925:Fix arrow keys (if possible)
+Up/down arrow keys should move straight up/down, but this is difficult with Tk.
+Still the present way is very bad.
+#@nonl
+#@-node:ekr.20060930110925:Fix arrow keys (if possible)
+#@+node:ekr.20041022070154:(options for setting working directory during startup)
+#@+node:ekr.20041022070154.1:Request & response
+@killcolor
+
+http://sourceforge.net/forum/message.php?msg_id=2815599
+By: Antonio Pala
+
+All plugins I have tried (notably @run and the @rst variants) have their working
+directory set to my home directory, regardless of the position of the Leo file
+and all @path directives. This renders most of them useless, since I would have
+to use absolute pathnames. Is this the way they were meant to work, or is there
+a bug somewhere? Or maybe I have missed some configuration parameter?
+
+I am using Leo 4.2 with Python 2.3 on Linux.
+
+> All plugins I have tried (notably @run and the @rst variants) have their working directory set to my home directory, regardless of the position of the Leo file and all @path directives.
+
+Directory issues are different on different platforms.
+
+I would welcome specific proposals for setting directories during startup.  Early in the startup process Leo sets g.app.loadDir to the directory from which Leo was loaded.  Plugins can use this directory to set the working directory as they choose.
+
+@path directives will have no effect on plugins:  they are loaded before the outline.
+
+> This renders most [plugins] useless, since I would have to use absolute pathnames.
+
+No, it means you might have to add a few lines of code to your plugin to make it work just as you would like it to work.
+
+> Is this the way they were meant to work?
+
+I don't have much control over how plugins were "meant" to work.  However, an improved plugin manager might have facilities for setting the working directory.
+
+This is a non-trivial issue;   Leo uses and sets paths in many places in the code.  It seems dubious to have plugins change the working directory at random times.  Perhaps an option that inits the working directory would be good.  The new config system will allow per-outline options as well as global option. I believe such options could be loaded before plugins.
+
+Edward
+#@nonl
+#@-node:ekr.20041022070154.1:Request & response
+#@-node:ekr.20041022070154:(options for setting working directory during startup)
+#@+node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
+FocusIn does nothing for Label widgets.
+
+http://sourceforge.net/forum/message.php?msg_id=3412640
+By: btheado
+
+Currently clicking on the minibuffer and typing text has no effect.  Kinda confusing
+until the Alt-x binding I discovered that Alt-x is the way to access the minibuffer
+command mode.
+
+It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
+to Alt-x.
+#@nonl
+#@-node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
+#@+node:ekr.20031218072017.995:(Incremental update of screen)
+@ignore
+@nocolor
+
+To enable incremental allocation of Tk widgets during redraws, set self.allocateOnlyVisibleNodes = True in tree.__init__.
+
+To do:
+
+- We might switch to a line-oriented scheme.
+	- This might simplify the code and make the code more useful to users.
+	- Conceivably this scheme might eliminate the need for the auto-scroll in the redraw code,
+	and that might make a single-pass redraw scheme possible.
+
+- The last line isn't always completely visible: this is clearly a bug.
+
+@color
+#@nonl
+#@-node:ekr.20031218072017.995:(Incremental update of screen)
 #@+node:ekr.20041228094138:4.5  LeoN and collaboration
 This may not be so big a project.  LeoN already exists.
 #@nonl
@@ -2919,104 +2903,6 @@ RodrigoB.
 
 #@-node:ekr.20031218072017.411:From Rodrigo
 #@-node:ekr.20041228094138:4.5  LeoN and collaboration
-#@+node:ekr.20041228084143:Maybe never
-#@+node:ekr.20070426092031:Consider another way to compute home directory
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=4281562
-By: ktenney
-
-I don't know if this is a resolved issue, here's another approach,
-looks like a good one.
-
-email link
-http://murl.se/24201
-
-python.org os.path doc
-http://murl.se/24202
-
->>> import os
->>> lin_key, win_key = "home", "Documents"
->>> homedir = os.path.expanduser('~')
->>> if os.name == 'nt': os_key = win_key
->>> if os.name == 'posix': os_key = lin_key
->>> print homedir.find(os_key) > -1
-True
-
-#@-node:ekr.20070426092031:Consider another way to compute home directory
-#@+node:ekr.20060930110925:Fix arrow keys (if possible)
-Up/down arrow keys should move straight up/down, but this is difficult with Tk.
-Still the present way is very bad.
-#@nonl
-#@-node:ekr.20060930110925:Fix arrow keys (if possible)
-#@+node:ekr.20041022070154:(options for setting working directory during startup)
-#@+node:ekr.20041022070154.1:Request & response
-@killcolor
-
-http://sourceforge.net/forum/message.php?msg_id=2815599
-By: Antonio Pala
-
-All plugins I have tried (notably @run and the @rst variants) have their working
-directory set to my home directory, regardless of the position of the Leo file
-and all @path directives. This renders most of them useless, since I would have
-to use absolute pathnames. Is this the way they were meant to work, or is there
-a bug somewhere? Or maybe I have missed some configuration parameter?
-
-I am using Leo 4.2 with Python 2.3 on Linux.
-
-> All plugins I have tried (notably @run and the @rst variants) have their working directory set to my home directory, regardless of the position of the Leo file and all @path directives.
-
-Directory issues are different on different platforms.
-
-I would welcome specific proposals for setting directories during startup.  Early in the startup process Leo sets g.app.loadDir to the directory from which Leo was loaded.  Plugins can use this directory to set the working directory as they choose.
-
-@path directives will have no effect on plugins:  they are loaded before the outline.
-
-> This renders most [plugins] useless, since I would have to use absolute pathnames.
-
-No, it means you might have to add a few lines of code to your plugin to make it work just as you would like it to work.
-
-> Is this the way they were meant to work?
-
-I don't have much control over how plugins were "meant" to work.  However, an improved plugin manager might have facilities for setting the working directory.
-
-This is a non-trivial issue;   Leo uses and sets paths in many places in the code.  It seems dubious to have plugins change the working directory at random times.  Perhaps an option that inits the working directory would be good.  The new config system will allow per-outline options as well as global option. I believe such options could be loaded before plugins.
-
-Edward
-#@nonl
-#@-node:ekr.20041022070154.1:Request & response
-#@-node:ekr.20041022070154:(options for setting working directory during startup)
-#@+node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
-FocusIn does nothing for Label widgets.
-
-http://sourceforge.net/forum/message.php?msg_id=3412640
-By: btheado
-
-Currently clicking on the minibuffer and typing text has no effect.  Kinda confusing
-until the Alt-x binding I discovered that Alt-x is the way to access the minibuffer
-command mode.
-
-It would be nice if the <FocusIn> binding on the minibuffer widget were equivilent
-to Alt-x.
-#@nonl
-#@-node:ekr.20051104051733:Make Focus-in in minibuffer widget equivalent to Alt-x
-#@+node:ekr.20031218072017.995:(Incremental update of screen)
-@ignore
-@nocolor
-
-To enable incremental allocation of Tk widgets during redraws, set self.allocateOnlyVisibleNodes = True in tree.__init__.
-
-To do:
-
-- We might switch to a line-oriented scheme.
-	- This might simplify the code and make the code more useful to users.
-	- Conceivably this scheme might eliminate the need for the auto-scroll in the redraw code,
-	and that might make a single-pass redraw scheme possible.
-
-- The last line isn't always completely visible: this is clearly a bug.
-
-@color
-#@nonl
-#@-node:ekr.20031218072017.995:(Incremental update of screen)
 #@-node:ekr.20041228084143:Maybe never
 #@+node:ekr.20040123102724:Can't or won't
 #@+node:ekr.20060329102951:@ref
